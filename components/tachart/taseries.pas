@@ -241,6 +241,7 @@ type
   private
     FLinePen: TPen;
     FLineType: TLineType;
+    FOldLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FColorEach: TColorEachMode;
 
@@ -263,6 +264,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -436,6 +439,7 @@ begin
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
   SetPropDefaults(Self, ['LineType']);
+  FOldLineType := FLineType;
 end;
 
 destructor TLineSeries.Destroy;
@@ -772,6 +776,67 @@ begin
   end;
 end;
 
+function TLineSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  pointIndex, levelIndex: Integer;
+  ip1, ip2, q: TPoint;
+  d, dmin: Integer;
+  isInside: Boolean;
+  ext: TDoubleRect;
+begin
+  Result := false;
+  AResults.FDist := sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  Result := inherited;
+
+  if Result or (LineType <> ltFromPrevious) or
+     not ((nptCustom in AParams.FTargets) and (nptCustom in ToolTargets))
+  then
+    exit;
+
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  // Do not do anything if the series extent does not intersect CurrentExtent.
+  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then
+    exit;
+
+  // Iterate through all points of the series and - if nptYList is in Targets -
+  // at all stack levels.
+  PrepareGraphPoints(ext, true);
+  dmin := AResults.FDist;
+  for levelIndex := 0 to Source.YCount-1 do begin
+    ip1 := ParentChart.GraphToImage(FGraphPoints[0]);
+    for pointIndex := 1 to FUpBound - FLoBound do begin
+      ip2 := ParentChart.GraphToImage(FGraphPoints[pointIndex]);
+      d := PointLineDist(AParams.FPoint, ip1, ip2, q, isInside);
+      if isInside and (d < dmin) then begin
+        dmin := d;
+        AResults.FIndex := -1; //pointIndex + FLoBound;
+        AResults.FYIndex := levelIndex;
+        AResults.FImg := q;
+        AResults.FValue := ParentChart.ImageToGraph(q);
+      end;
+      ip1 := ip2;
+    end;
+    if not ((nptYList in AParams.FTargets) and (nptYList in ToolTargets)) then
+      break;
+    UpdateGraphPoints(levelIndex, FStacked);
+  end;
+
+  if dmin < AResults.FDist then
+  begin
+    AResults.FDist := d;
+    Result := true;
+  end;
+end;
+
 function TLineSeries.GetSeriesColor: TColor;
 begin
   Result := FLinePen.Color;
@@ -803,6 +868,7 @@ procedure TLineSeries.SetLineType(AValue: TLineType);
 begin
   if FLineType = AValue then exit;
   FLineType := AValue;
+  FOldLineType := FLineType;
   UpdateParentChart;
 end;
 
@@ -815,9 +881,11 @@ procedure TLineSeries.SetShowLines(Value: Boolean);
 begin
   if ShowLines = Value then exit;
   if Value then
-    FLineType := ltFromPrevious
-  else
+    FLineType := FOldLineType
+  else begin
+    FOldLineType := FLineType;
     FLineType := ltNone;
+  end;
   UpdateParentChart;
 end;
 

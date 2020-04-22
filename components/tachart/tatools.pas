@@ -1874,7 +1874,7 @@ begin
   best.FDist := MaxInt;
   for s in CustomSeries(FChart, FAffectedSeries.AsBooleans(FChart.SeriesCount)) do
     if
-      InBoundaryBox(s) and s.GetNearestPoint(p, cur) and
+      InBoundaryBox(s) and s.Active and s.GetNearestPoint(p, cur) and
       PtInRect(FChart.ClipRect, cur.FImg) and (cur.FDist < best.FDist)
     then begin
       bestS := s;

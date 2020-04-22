@@ -77,7 +77,8 @@ function NextNumberSeq(
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
-function PointLineDist(const P, A, B: TPoint): Integer;
+function PointLineDist(const P, A, B: TPoint): Integer; overload;
+function PointLineDist(const P, A,B: TPoint; out Q: TPoint; out Inside: Boolean): Integer; overload;
 function ProjToLine(const P, A, B: TDoublePoint): TDoublePoint; overload;
 function ProjToLine(const P, A, B: TPoint): TPoint; overload;
 function ProjToRect(
@@ -577,6 +578,36 @@ begin
     lv := PointDist(A, B);     // Length of vector AB
     Q := (v * dot) div lv;     // Projection of P onto line A-B, seen from A
     Result := PointDist(Q, w); // Length from A to Q
+  end;
+end;
+
+function PointLineDist(const P, A,B: TPoint; out Q: TPoint;
+  out Inside: Boolean): Integer;
+var
+  v, w: TPoint;
+  dot: Int64;
+  lv: Integer;
+
+  aq, bq: Integer;
+begin
+  if A = B then begin
+    Result := PointDist(A, P);
+    Inside := false;
+    Q := A;
+  end else begin
+    v := B - A;
+    w := P - A;
+    dot := Int64(v.x) * w.x + Int64(v.y) * w.y;
+    lv := PointDist(A, B);
+    Q := (v * dot) div lv;
+    Result := PointDist(Q, w);
+
+    // Check whether the projection point Q is inside the A-B line.
+    // In this case the lengths AQ and BQ are shorter than AB.
+    aq := sqr(Q.x) + sqr(Q.y);     // note: Q is seen from A, not from origin.
+    bq := PointDist(v, Q);
+    Inside := (aq <= lv) and (bq <= lv);
+    Q := Q + A;
   end;
 end;
 
