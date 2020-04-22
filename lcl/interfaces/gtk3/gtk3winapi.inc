@@ -1725,9 +1725,10 @@ begin
   AWindow := gdk_screen_get_active_window(gdk_screen_get_default);
   if AWindow <> nil then
   begin
-    AData := g_object_get_data(AWindow, 'lclwidget');
-    if AData <> nil then
+    gdk_window_get_user_data(AWindow,@AWidget);
+    if AWidget <> nil then
     begin
+      AData := g_object_get_data(AWidget, 'lclwidget');
       // DebugLn('TGtk3WidgetSet.GetActiveWindow found window from data ...',dbgsName(TGtk3Widget(AData).LCLObject));
       exit(HWND(AData));
     end;
