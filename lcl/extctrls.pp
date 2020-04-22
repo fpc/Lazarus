@@ -111,7 +111,7 @@ type
     procedure Delete(Index: Integer); override;
     function IndexOfObject(AObject: TObject): Integer; override;
     procedure Insert(Index: Integer; const S: string); override;
-//    procedure Move(CurIndex, NewIndex: Integer); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
   { TNotebook }
