@@ -323,9 +323,7 @@ begin
     // Handle Empty Value and Empty Display
     if FEmptyValue<>'' then begin
       KeyIndex := FControlItems.Add(FDisplayEmpty);
-      if KeyIndex<>length(FListKeys) then              // sanity check
-        raise Exception.Create('TDBLookup.FetchLookupData: inconsistency');
-      SetLength(FListKeys, KeyIndex+1); // Add one more
+      SetLength(FListKeys, ListLinkDataSet.RecordCount+1); // Add one more
       FListKeys[KeyIndex] := FEmptyValue;
       KeyListCount := 1;
     end;
