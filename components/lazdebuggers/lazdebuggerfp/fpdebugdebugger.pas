@@ -102,6 +102,7 @@ type
   protected
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure Init; override;
   public
     constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr); reintroduce;
   end;
@@ -154,6 +155,9 @@ type
     function GetCurrentProcess: TDbgProcess; inline;
     function GetCurrentThread: TDbgThread; inline;
     function GetDbgController: TDbgController; inline;
+    function dbgs(st: TExceptStepState): string;
+    function dbgs(loc: TBreakPointLoc): string;
+    function dbgs(locs: TBreakPointLocs): string;
   protected
     property DbgController: TDbgController read GetDbgController;
     property CurrentProcess: TDbgProcess read GetCurrentProcess;
@@ -611,6 +615,12 @@ begin
   end;
   {$POP}
   inherited InternalContinue(AProcess, AThread);
+end;
+
+procedure TDbgControllerStepThroughFpcSpecialHandler.Init;
+begin
+  InitStackFrameInfo;
+  inherited Init;
 end;
 
 constructor TDbgControllerStepThroughFpcSpecialHandler.Create(
@@ -1708,6 +1718,24 @@ begin
   Result := FDebugger.FDbgController;
 end;
 
+function TFpDebugExceptionStepping.dbgs(st: TExceptStepState): string;
+begin
+  writestr(Result, st);
+end;
+
+function TFpDebugExceptionStepping.dbgs(loc: TBreakPointLoc): string;
+begin
+  writestr(Result, loc);
+end;
+
+function TFpDebugExceptionStepping.dbgs(locs: TBreakPointLocs): string;
+var
+  a: TBreakPointLoc;
+begin
+  Result := '';
+  for a in locs do Result := Result + dbgs(a) +',';
+end;
+
 function TFpDebugExceptionStepping.GetCurrentProcess: TDbgProcess;
 begin
   Result := FDebugger.FDbgController.CurrentProcess;
@@ -1737,6 +1765,7 @@ var
   a: TBreakPointLoc;
 begin
   // Running in debug thread
+  //debugln(['EnableBreaksDirect ', dbgs(ALocs)]);
   for a in ALocs do
     if FBreakPoints[a] <> nil then begin
       if not(a in FBreakEnabled) then
@@ -1751,6 +1780,7 @@ var
   a: TBreakPointLoc;
 begin
   // Not in thread => only flag desired changes
+  //debugln(['DisableBreaks ', dbgs(ALocs)]);
   for a in ALocs do
     Exclude(FBreakNewEnabled, a);
 end;
@@ -1760,6 +1790,7 @@ var
   a: TBreakPointLoc;
 begin
   // Running in debug thread
+  //debugln(['DisableBreaksDirect ', dbgs(ALocs)]);
   for a in ALocs do
     if FBreakPoints[a] <> nil then begin
       if (a in FBreakEnabled) then
@@ -1872,13 +1903,14 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
 
   function CheckCommandFinishesInFrame(AFrameAddr: TDBGPtr): Boolean;
   begin
-    Result := ACurCommand is TDbgControllerHiddenBreakStepBaseCmd;
+    Result := (ACurCommand is TDbgControllerHiddenBreakStepBaseCmd) and
+              (TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrameInfo <> nil);
     if not Result then
       exit; // none stepping command, does not stop
     if ACurCommand is TDbgControllerStepOutCmd then
-      Result := TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrame < AFrameAddr
+      Result := TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrameInfo.StoredStackFrame < AFrameAddr
     else
-      Result := TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrame <= AFrameAddr;
+      Result := TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrameInfo.StoredStackFrame <= AFrameAddr;
   end;
 
   procedure CheckSteppedOutFromW64SehFinally;
@@ -1964,6 +1996,7 @@ begin
     if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
       exit;
 
+    //DebugLn(['THreadProcLoop ', dbgs(FState), ' ', DbgSName(CurrentCommand)]);
     DisableBreaksDirect([bplPopExcept, bplCatches, bplFpcSpecific]); // FpcSpecific was not needed -> not SEH based code
     case FState of
       esIgnoredRaise: begin

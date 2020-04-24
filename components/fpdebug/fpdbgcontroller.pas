@@ -75,8 +75,7 @@ type
 
   TDbgControllerHiddenBreakStepBaseCmd = class(TDbgControllerCmd)
   private
-    FStoredStackFrame, FStoredStackPointer: TDBGPtr; // In case of IsSteppedOut, those are kept to the original values
-    FIsSteppedOut: Boolean;
+    FStackFrameInfo: TDbgStackFrameInfo;
     FHiddenBreakpoint: TFpInternalBreakpoint;
     FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakFrameAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
     function GetIsSteppedOut: Boolean;
@@ -89,13 +88,15 @@ type
     procedure RemoveHiddenBreak;
     function CheckForCallAndSetBreak: boolean; // True, if break is newly set
 
-    procedure Init; override;
+    procedure InitStackFrameInfo; inline;
+
+    procedure CallProcessContinue(ASingleStep: boolean);
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
   public
     destructor Destroy; override;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
 
-    property StoredStackFrame: TDBGPtr read FStoredStackFrame;
+    property StoredStackFrameInfo: TDbgStackFrameInfo read FStackFrameInfo;
     property IsSteppedOut: Boolean read GetIsSteppedOut;
   end;
 
@@ -399,27 +400,8 @@ end;
 { TDbgControllerHiddenBreakStepBaseCmd }
 
 function TDbgControllerHiddenBreakStepBaseCmd.GetIsSteppedOut: Boolean;
-var
-  CurBp, CurSp: TDBGPtr;
 begin
-  Result := FIsSteppedOut;
-  if Result then
-    exit;
-
-  CurBp := FController.CurrentThread.GetStackBasePointerRegisterValue;
-  if FStoredStackFrame < CurBp then begin
-    CurSp := FController.CurrentThread.GetStackPointerRegisterValue;
-    if FStoredStackPointer >= CurSp then // this happens, if current was recorded before the BP frame was set up // a finally handle may then fake an outer frame
-      exit;
-    {$PUSH}{$Q-}{$R-}
-    if CurSp = FStoredStackPointer + FProcess.PointerSize then
-      exit; // Still in proc, but passed asm "leave" (BP has been popped, but IP not yet)
-    {$POP}
-    FIsSteppedOut := True;
-    debugln(FPDBG_COMMANDS, ['BreakStepBaseCmd.GetIsSteppedOut: Has stepped out Stored-BP=', FStoredStackFrame, ' < BP=', CurBp, ' / SP', CurSp]);
-  end;
-
-  Result := FIsSteppedOut;
+  Result := (FStackFrameInfo <> nil) and FStackFrameInfo.HasSteppedOut;
 end;
 
 function TDbgControllerHiddenBreakStepBaseCmd.IsAtHiddenBreak: Boolean;
@@ -485,36 +467,36 @@ begin
     {$POP}
 end;
 
-procedure TDbgControllerHiddenBreakStepBaseCmd.Init;
+procedure TDbgControllerHiddenBreakStepBaseCmd.InitStackFrameInfo;
 begin
-  FStoredStackPointer := FThread.GetStackPointerRegisterValue;
-  FStoredStackFrame   := FThread.GetStackBasePointerRegisterValue;
-  inherited Init;
+  FStackFrameInfo := FThread.GetCurrentStackFrameInfo;
+end;
+
+procedure TDbgControllerHiddenBreakStepBaseCmd.CallProcessContinue(
+  ASingleStep: boolean);
+begin
+  if (FStackFrameInfo <> nil) and ASingleStep and (FHiddenBreakpoint = nil) then // TODO: not check FHiddenBreakAddr;
+    FStackFrameInfo.CheckNextInstruction(NextInstruction);
+
+  FProcess.Continue(FProcess, FThread, ASingleStep);
 end;
 
 destructor TDbgControllerHiddenBreakStepBaseCmd.Destroy;
 begin
   RemoveHiddenBreak;
+  FreeAndNil(FStackFrameInfo);
   inherited Destroy;
 end;
 
 procedure TDbgControllerHiddenBreakStepBaseCmd.DoContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
-var
-  r: Boolean;
 begin
   if (AThread <> FThread) then begin
     FProcess.Continue(FProcess, AThread, False);
     exit;
   end;
 
-  r := NextInstruction.IsReturnInstruction;
-
   InternalContinue(AProcess, AThread);
-  if r and
-     (FHiddenBreakpoint = nil)
-  then
-    FIsSteppedOut := True;
 end;
 
 { TDbgControllerStepOverInstructionCmd }
@@ -524,7 +506,7 @@ procedure TDbgControllerStepOverInstructionCmd.InternalContinue(
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
   CheckForCallAndSetBreak;
-  FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
+  CallProcessContinue(FHiddenBreakpoint = nil);
 end;
 
 procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
@@ -548,6 +530,8 @@ end;
 
 procedure TDbgControllerLineStepBaseCmd.Init;
 begin
+  InitStackFrameInfo;
+
   if FStoreStepInfoAtInit then begin
     FThread.StoreStepInfo;
     FStartedInFuncName := FThread.StoreStepFuncName;
@@ -602,7 +586,7 @@ begin
       FThread.GetInstructionPointerRegisterValue - 1);
     {$POP}
     Result := not(CompRes in [dcsiNewLine, dcsiSameLine]); // Step once more, maybe we do a jmp....
-    DebugLn(DBG_VERBOSE or FPDBG_COMMANDS, ['UNEXPECTED absence of debug info @',FThread.GetInstructionPointerRegisterValue, ' Out:', FIsSteppedOut, ' Res:', Result]);
+    DebugLn(DBG_VERBOSE or FPDBG_COMMANDS, ['UNEXPECTED absence of debug info @',FThread.GetInstructionPointerRegisterValue,  ' Res:', Result]);
     exit;
   end;
 
@@ -646,14 +630,14 @@ begin
   begin
     if CheckForCallAndSetBreak then begin
       FState := siSteppingIn;
-      FProcess.Continue(FProcess, FThread, true);
+      CallProcessContinue(true);
       exit;
     end;
   end;
 
-  if FState <> siRunningStepOut then
+  if (FState <> siRunningStepOut) then
     StoreWasAtJumpInstruction;
-  FProcess.Continue(FProcess, FThread, FState <> siRunningStepOut);
+  CallProcessContinue(FState <> siRunningStepOut);
 end;
 
 constructor TDbgControllerStepIntoLineCmd.Create(AController: TDbgController);
@@ -725,7 +709,7 @@ begin
 
   if FHiddenBreakpoint = nil then
     StoreWasAtJumpInstruction;
-  FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
+  CallProcessContinue(FHiddenBreakpoint = nil);
 end;
 
 constructor TDbgControllerStepOverLineCmd.Create(AController: TDbgController);
@@ -824,7 +808,7 @@ begin
       if NextInstruction.IsReturnInstruction then  // asm "ret"
       begin
         FStepCount := MaxInt; // Do one more single-step, and we're finished.
-        FProcess.Continue(FProcess, FThread, True);
+        CallProcessContinue(True);
         exit;
       end;
     end
@@ -836,7 +820,7 @@ begin
   end;
   end;
 
-  FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
+  CallProcessContinue(FHiddenBreakpoint = nil);
 end;
 
 procedure TDbgControllerStepOutCmd.DoResolveEvent(var AnEvent: TFPDEvent;
@@ -849,7 +833,7 @@ begin
   if FWasOutsideFrame and (not IsSteppedOut) and
      (FHiddenBreakStackPtrAddr < FThread.GetStackPointerRegisterValue)
   then
-    FIsSteppedOut := True;
+    FStackFrameInfo.FlagAsSteppedOut;
 
   if IsSteppedOut or IsAtHiddenBreak then begin
     UpdateThreadStepInfoAfterStepOut;
@@ -882,7 +866,7 @@ procedure TDbgControllerRunToCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerRunToCmd.DoContinue: FProcess=AProcess');
-  FProcess.Continue(FProcess, FThread, False);
+  CallProcessContinue(False);
 end;
 
 procedure TDbgControllerRunToCmd.Init;

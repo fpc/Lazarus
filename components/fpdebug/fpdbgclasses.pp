@@ -88,6 +88,7 @@ type
   TFPDThreadArray = array of TDbgThread;
   TDbgLibrary = class;
   TOSDbgClasses = class;
+  TDbgAsmInstruction = class;
 
   TDbgCallstackEntry = class
   private
@@ -134,6 +135,29 @@ type
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
+  { TDbgStackFrameInfo
+    This can be overridden by each OS dependen class. Or it could be gotten from the Disassemble, if it is CPU specific
+    This default assumes an Intel like stack, with StackPointer and FrameBase.
+    This default assumes the stack grows by decreasing addresses.
+  }
+  TDbgStackFrameInfo = class
+  private
+    FThread: TDbgThread;
+    FStoredStackFrame, FStoredStackPointer: TDBGPtr;
+    FHasSteppedOut: Boolean;
+  protected
+    procedure DoCheckNextInstruction(ANextInstruction: TDbgAsmInstruction); virtual;
+    function  CalculateHasSteppedOut: Boolean;  virtual;
+  public
+    constructor Create(AThread: TDbgThread);
+    procedure CheckNextInstruction(ANextInstruction: TDbgAsmInstruction); inline;
+    function  HasSteppedOut: Boolean; inline;
+    procedure FlagAsSteppedOut; inline;
+
+    // only for FpLldbDebugger
+    property StoredStackFrame: TDBGPtr read FStoredStackFrame;
+  end;
+
   { TDbgThread }
   TFpInternalBreakpoint = class;
 
@@ -171,6 +195,7 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
@@ -2196,6 +2221,62 @@ begin
   Result := False;
 end;
 
+{ TDbgStackFrameInfo }
+
+procedure TDbgStackFrameInfo.DoCheckNextInstruction(
+  ANextInstruction: TDbgAsmInstruction);
+begin
+  if ANextInstruction.IsReturnInstruction then
+    FHasSteppedOut := True;
+end;
+
+function TDbgStackFrameInfo.CalculateHasSteppedOut: Boolean;
+var
+  CurBp, CurSp: TDBGPtr;
+begin
+  Result := False;
+  CurBp := FThread.GetStackBasePointerRegisterValue;
+  if FStoredStackFrame < CurBp then begin
+    CurSp := FThread.GetStackPointerRegisterValue;
+    if FStoredStackPointer >= CurSp then // this happens, if current was recorded before the BP frame was set up // a finally handle may then fake an outer frame
+      exit;
+    {$PUSH}{$Q-}{$R-}
+//    if CurSp = FStoredStackPointer + FThread.Process.PointerSize then
+//      exit; // Still in proc, but passed asm "leave" (BP has been popped, but IP not yet)
+    {$POP}
+    Result := True;
+    debugln(FPDBG_COMMANDS, ['BreakStepBaseCmd.GetIsSteppedOut: Has stepped out Stored-BP=', FStoredStackFrame, ' < BP=', CurBp, ' / SP', CurSp]);
+  end;
+end;
+
+constructor TDbgStackFrameInfo.Create(AThread: TDbgThread);
+begin
+  FThread := AThread;
+  FStoredStackFrame   := AThread.GetStackBasePointerRegisterValue;
+  FStoredStackPointer := AThread.GetStackPointerRegisterValue;
+end;
+
+procedure TDbgStackFrameInfo.CheckNextInstruction(
+  ANextInstruction: TDbgAsmInstruction);
+begin
+  if not FHasSteppedOut then
+    DoCheckNextInstruction(ANextInstruction);
+end;
+
+function TDbgStackFrameInfo.HasSteppedOut: Boolean;
+begin
+  Result := FHasSteppedOut;
+  if Result then
+    exit;
+  FHasSteppedOut := CalculateHasSteppedOut;
+  Result := FHasSteppedOut;
+end;
+
+procedure TDbgStackFrameInfo.FlagAsSteppedOut;
+begin
+  FHasSteppedOut := True;
+end;
+
 { TDbgThread }
 
 function TDbgThread.GetRegisterValueList: TDbgRegisterValueList;
@@ -2394,6 +2475,11 @@ end;
 function TDbgThread.DetectHardwareWatchpoint: Pointer;
 begin
   result := nil;
+end;
+
+function TDbgThread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+begin
+  Result := TDbgStackFrameInfo.Create(Self);
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
