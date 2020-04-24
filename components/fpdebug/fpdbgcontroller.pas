@@ -79,8 +79,6 @@ type
     FIsSteppedOut: Boolean;
     FHiddenBreakpoint: TFpInternalBreakpoint;
     FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakFrameAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
-    FWasAtJumpInstruction: Boolean;
-    FJumpPadCount: Integer;
     function GetIsSteppedOut: Boolean;
   protected
     function IsAtHiddenBreak: Boolean; inline;
@@ -90,8 +88,6 @@ type
     procedure SetHiddenBreak(AnAddr: TDBGPtr);
     procedure RemoveHiddenBreak;
     function CheckForCallAndSetBreak: boolean; // True, if break is newly set
-    procedure StoreWasAtJumpInstruction;
-    function  IsAtJumpPad: Boolean;
 
     procedure Init; override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
@@ -115,6 +111,8 @@ type
 
   TDbgControllerLineStepBaseCmd = class(TDbgControllerHiddenBreakStepBaseCmd)
   private
+    FWasAtJumpInstruction: Boolean;
+
     FStartedInFuncName: String;
     FStepInfoUpdatedForStepOut, FStepInfoUnavailAfterStepOut: Boolean;
     FStoreStepInfoAtInit: Boolean;
@@ -122,8 +120,14 @@ type
     procedure Init; override;
     procedure UpdateThreadStepInfoAfterStepOut;
     function HasSteppedAwayFromOriginLine: boolean; // Call only, if in original frame (or updated frame)
+
+    procedure StoreWasAtJumpInstruction;
+    function  IsAtJumpPad: Boolean;
+
   public
     constructor Create(AController: TDbgController; AStoreStepInfoAtInit: Boolean = False);
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+
     property StartedInFuncName: String read FStartedInFuncName;
   end;
 
@@ -481,22 +485,6 @@ begin
     {$POP}
 end;
 
-procedure TDbgControllerHiddenBreakStepBaseCmd.StoreWasAtJumpInstruction;
-begin
-  FWasAtJumpInstruction := NextInstruction.IsJumpInstruction;
-end;
-
-function TDbgControllerHiddenBreakStepBaseCmd.IsAtJumpPad: Boolean;
-begin
-  Result := FWasAtJumpInstruction and
-            NextInstruction.IsJumpInstruction(False) and
-            not FController.FCurrentThread.IsAtStartOfLine; // TODO: check for lines with line=0
-  if Result then
-    inc(FJumpPadCount);
-  if FJumpPadCount > 2 then
-    Result := False;
-end;
-
 procedure TDbgControllerHiddenBreakStepBaseCmd.Init;
 begin
   FStoredStackPointer := FThread.GetStackPointerRegisterValue;
@@ -520,7 +508,6 @@ begin
   else
     r := False;
 
-  FWasAtJumpInstruction := False;
   InternalContinue(AProcess, AThread);
   if r and
      (FHiddenBreakpoint = nil)
@@ -621,11 +608,31 @@ begin
   Result := True;
 end;
 
+procedure TDbgControllerLineStepBaseCmd.StoreWasAtJumpInstruction;
+begin
+  FWasAtJumpInstruction := NextInstruction.IsJumpInstruction;
+end;
+
+function TDbgControllerLineStepBaseCmd.IsAtJumpPad: Boolean;
+begin
+  Result := FWasAtJumpInstruction and
+            NextInstruction.IsJumpInstruction(False) and
+            not FController.FCurrentThread.IsAtStartOfLine; // TODO: check for lines with line=0
+end;
+
 constructor TDbgControllerLineStepBaseCmd.Create(AController: TDbgController;
   AStoreStepInfoAtInit: Boolean);
 begin
   FStoreStepInfoAtInit := AStoreStepInfoAtInit;
   inherited Create(AController);
+end;
+
+procedure TDbgControllerLineStepBaseCmd.DoContinue(AProcess: TDbgProcess;
+  AThread: TDbgThread);
+begin
+  if AThread = FThread then
+    FWasAtJumpInstruction := False;
+  inherited DoContinue(AProcess, AThread);
 end;
 
 { TDbgControllerStepIntoLineCmd }
