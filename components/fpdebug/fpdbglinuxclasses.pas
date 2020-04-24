@@ -1272,16 +1272,16 @@ begin
         else
 // TODO: check it is not a real breakpoint
 // or end of single step
-          if TDbgLinuxThread(AThread).FInternalPauseRequested then begin
-            DebugLn(DBG_VERBOSE, ['Received late SigTrag for thread ', AThread.ID]);
-            result := deInternalContinue; // left over signal
-          end
-          else
-            begin
+//          if TDbgLinuxThread(AThread).FInternalPauseRequested then begin
+//            DebugLn(DBG_VERBOSE, ['Received late SigTrag for thread ', AThread.ID]);
+//            result := deInternalContinue; // left over signal
+//          end
+//          else
+//            begin
             result := deBreakpoint; // or pause requested
             if not TDbgLinuxThread(AThread).FIsSteppingBreakPoint then
               AThread.CheckAndResetInstructionPointerAfterBreakpoint;
-            end;
+//            end;
         end;
       SIGBUS:
         begin
