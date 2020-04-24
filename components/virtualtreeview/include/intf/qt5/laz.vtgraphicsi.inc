@@ -786,11 +786,11 @@ var
   DestWidth,
   DestHeight: Integer;
   {$IFDEF CPU64}
+  ATransform: QTransformH;
+  DX, DY: QReal;
   AColor: QColorH;
   ADst: TQtDeviceContext absolute Destination;
   AFillColor: TQColor;
-  ATransform: QTransformH;
-  DX, DY: QReal;
   {$ENDIF}
 
   //BlendColor: TQColor;
