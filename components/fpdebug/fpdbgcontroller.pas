@@ -1365,13 +1365,14 @@ begin
     deBreakpoint:
       begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
-        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (CurWatch = nil) and (not HasPauseRequest);
+        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (CurWatch = nil);
         if (not continue) and assigned(OnHitBreakpointEvent) then begin
           if (CurWatch <> nil) then
             OnHitBreakpointEvent(continue, CurWatch);
           if assigned(FCurrentProcess.CurrentBreakpoint) then
             OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
-          HasPauseRequest := False;
+          if not continue then
+            HasPauseRequest := False;
         end;
       end;
     deExitProcess:
