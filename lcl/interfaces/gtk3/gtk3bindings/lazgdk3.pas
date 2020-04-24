@@ -3891,7 +3891,31 @@ type
   TGdkWindowRedirect = record
   end;
 
+  TGdkSubpixelLayout = (
+    GDK_SUBPIXEL_LAYOUT_UNKNOWN, // The layout is not known
+    GDK_SUBPIXEL_LAYOUT_NONE, // Not organized in this way
+    GDK_SUBPIXEL_LAYOUT_HORIZONTAL_RGB, // The layout is horizontal, the order is RGB
+    GDK_SUBPIXEL_LAYOUT_HORIZONTAL_BGR, // The layout is horizontal, the order is BGR
+    GDK_SUBPIXEL_LAYOUT_VERTICAL_RGB, // The layout is vertical, the order is RGB
+    GDK_SUBPIXEL_LAYOUT_VERTICAL_BGR // The layout is vertical, the order is BGR
+  );
 
+  { TGdkMonitor available since 3.22 }
+  PGdkMonitor = ^TGdkMonitor;
+  TGdkMonitor = object(TGObject)
+  public
+    function get_display ():PGdkDisplay;cdecl;inline;
+    procedure	geometry (geometry:PGdkRectangle);cdecl;inline;
+    procedure get_workarea (workarea:PGdkRectangle);cdecl;inline;
+    function get_width_mm():integer;cdecl;inline;
+    function get_height_mm():integer;cdecl;inline;
+    function get_manufacturer ():PChar;cdecl;inline;
+    function get_model ():PChar;cdecl;inline;
+    function get_scale_factor ():integer;cdecl;inline;
+    function get_refresh_rate ():integer;cdecl;inline;
+    function get_subpixel_layout ():TGdkSubpixelLayout;cdecl;inline;
+    function is_primary ():gboolean;cdecl;inline;
+  end;
 
 function gdk_app_launch_context_get_type: TGType; cdecl; external;
 function gdk_atom_intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl; external;
@@ -4364,7 +4388,80 @@ procedure gdk_window_unfullscreen(window: PGdkWindow); cdecl; external;
 procedure gdk_window_unmaximize(window: PGdkWindow); cdecl; external;
 procedure gdk_window_unstick(window: PGdkWindow); cdecl; external;
 procedure gdk_window_withdraw(window: PGdkWindow); cdecl; external;
+
+{ GDK monitor available since 3.22 }
+function gdk_monitor_get_display (monitor:PGdkMonitor):PGdkDisplay;cdecl;external;
+procedure gdk_monitor_get_geometry (monitor: PGdkMonitor; geometry:PGdkRectangle);cdecl;external;
+procedure gdk_monitor_get_workarea (monitor: PGdkMonitor; workarea:PGdkRectangle);cdecl;external;
+function gdk_monitor_get_width_mm(monitor:PGdkMonitor):integer;cdecl;external;
+function gdk_monitor_get_height_mm (monitor:PGdkMonitor):integer;cdecl;external;
+function gdk_monitor_get_manufacturer (monitor:PGdkMonitor):PChar;cdecl;external;
+function gdk_monitor_get_model (monitor:PGdkMonitor):PChar;cdecl;external;
+function gdk_monitor_get_scale_factor (monitor:PGdkMonitor):integer;cdecl;external;
+function gdk_monitor_get_refresh_rate (monitor:PGdkMonitor):integer;cdecl;external;
+function gdk_monitor_get_subpixel_layout (monitor:PGdkMonitor):TGdkSubpixelLayout;cdecl;external;
+function gdk_monitor_is_primary (monitor:PGdkMonitor):gboolean;cdecl;external;
+
+
 implementation
+
+{ TGdkMonitor }
+
+function TGdkMonitor.get_display(): PGdkDisplay; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_display (@Self);
+end;
+
+procedure TGdkMonitor.geometry(geometry: PGdkRectangle); cdecl;
+begin
+  LazGdk3.gdk_monitor_get_geometry (@Self, geometry);
+end;
+
+procedure TGdkMonitor.get_workarea(workarea: PGdkRectangle); cdecl;
+begin
+  LazGdk3.gdk_monitor_get_workarea (@Self, workarea);
+end;
+
+function TGdkMonitor.get_width_mm(): integer; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_width_mm(@Self);
+end;
+
+function TGdkMonitor.get_height_mm(): integer; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_height_mm (@Self);
+end;
+
+function TGdkMonitor.get_manufacturer(): PChar; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_manufacturer(@Self);
+end;
+
+function TGdkMonitor.get_model(): PChar; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_model(@Self);
+end;
+
+function TGdkMonitor.get_scale_factor(): integer; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_scale_factor(@Self);
+end;
+
+function TGdkMonitor.get_refresh_rate(): integer; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_refresh_rate(@Self);
+end;
+
+function TGdkMonitor.get_subpixel_layout(): TGdkSubpixelLayout; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_get_subpixel_layout(@Self);
+end;
+
+function TGdkMonitor.is_primary(): gboolean; cdecl;
+begin
+  Result:=LazGdk3.gdk_monitor_is_primary(@Self);
+end;
+
 procedure TGdkAppLaunchContext.set_desktop(desktop: gint); cdecl;
 begin
   LazGdk3.gdk_app_launch_context_set_desktop(@self, desktop);
