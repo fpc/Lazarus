@@ -284,6 +284,7 @@ type
 
   TGtk3ScrollBar = class(TGtk3Range)
   protected
+    class procedure value_changed (bar:TGtk3Scrollbar);cdecl;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     procedure SetParams;
@@ -3686,6 +3687,21 @@ begin
 end;
 
 { TGtk3ScrollBar }
+class procedure TGtk3ScrollBar.value_changed(bar: TGtk3Scrollbar); cdecl;
+var
+  scr:TScrollBar;
+  pgs:PGtkScrollbar;
+  ARange: PGtkRange;
+begin
+  scr:=TScrollbar(bar.LCLObject);
+  pgs:=PGtkScrollbar(bar.FWidget);
+  arange:=PGtkRange(pgs);
+  scr.SetParams(
+     round(arange^.adjustment^.value),
+     round(arange^.adjustment^.lower),
+     round(arange^.adjustment^.upper),
+     round(arange^.adjustment^.page_size));
+end;
 
 function TGtk3ScrollBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
@@ -3702,6 +3718,8 @@ begin
     ARange^.adjustment^.configure(Position, Min, Max + PageSize,
       SmallChange, LargeChange, PageSize);
     ARange^.adjustment^.set_value(Position);
+    g_signal_connect_data(ARange^.adjustment,
+         'value-changed', TGCallback(@TGtk3ScrollBar.value_changed), Self, nil, 0);
   end;
 end;
 
