@@ -1693,9 +1693,11 @@ begin
         begin
         try
           FAsyncMethod();
-        finally
-          RTLeventSetEvent(FDebugLoopStoppedEvent);
+        except
+          on E: Exception do
+            debugln(['FATAL: ',e.Message]);
         end;
+        RTLeventSetEvent(FDebugLoopStoppedEvent);
         end
       else
         begin
