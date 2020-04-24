@@ -35,10 +35,12 @@ type
     FAsyncMethod: TFpDbgAsyncMethod;
     FDebugLoopStoppedEvent: PRTLEvent;
     FFpDebugDebugger: TFpDebugDebugger;
+    FLoopIsRunnig: LongBool;
     FStartDebugLoopEvent: PRTLEvent;
     FStartSuccessfull: boolean;
     FQueuedFinish: boolean;  // true = DoDebugLoopFinishedASync queud in main thread
     procedure DoDebugLoopFinishedASync({%H-}Data: PtrInt);
+    function GetLoopIsRunnig: LongBool;
   public
     constructor Create(AFpDebugDebugger: TFpDebugDebugger);
     destructor Destroy; override;
@@ -47,6 +49,7 @@ type
     property StartDebugLoopEvent: PRTLEvent read FStartDebugLoopEvent;
     property DebugLoopStoppedEvent: PRTLEvent read FDebugLoopStoppedEvent;
     property AsyncMethod: TFpDbgAsyncMethod read FAsyncMethod write FAsyncMethod;
+    property LoopIsRunnig: LongBool read GetLoopIsRunnig;
   end;
 
   { TFpDebugDebuggerProperties }
@@ -263,7 +266,7 @@ type
     // On Linux, communication with the debuggee is only allowed from within
     // the thread that created the debuggee. So a method to execute functions
     // within the debug-thread is necessary.
-    procedure ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
+    function  ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod): boolean;
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
@@ -463,7 +466,7 @@ uses
   FpDbgCommon;
 
 var
-  DBG_VERBOSE, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
 
 type
 
@@ -836,6 +839,7 @@ begin
   begin
     FRegNum := ARegNum;
     FRegContext := AContext;
+    FRegValue := 0; // TODO: error detection
     FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
     AValue := FRegValue;
     result := FRegResult;
@@ -1658,6 +1662,11 @@ begin
   FFpDebugDebugger.DebugLoopFinished;
 end;
 
+function TFpDebugThread.GetLoopIsRunnig: LongBool;
+begin
+  Result := longbool(InterLockedExchangeAdd(longint(FLoopIsRunnig), 0));
+end;
+
 constructor TFpDebugThread.Create(AFpDebugDebugger: TFpDebugDebugger);
 begin
   FDebugLoopStoppedEvent := RTLEventCreate;
@@ -1685,7 +1694,9 @@ begin
   if FStartSuccessfull then
     begin
     repeat
+    InterLockedExchange(longint(FLoopIsRunnig), ord(LongBool(False)));
     RTLeventWaitFor(FStartDebugLoopEvent);
+    InterLockedExchange(longint(FLoopIsRunnig), ord(LongBool(True)));
     RTLeventResetEvent(FStartDebugLoopEvent);
     if not terminated then
       begin
@@ -1697,11 +1708,13 @@ begin
           on E: Exception do
             debugln(['FATAL: ',e.Message]);
         end;
+        InterLockedExchange(longint(FLoopIsRunnig), ord(LongBool(False)));
         RTLeventSetEvent(FDebugLoopStoppedEvent);
         end
       else
         begin
         FFpDebugDebugger.FDbgController.ProcessLoop;
+        InterLockedExchange(longint(FLoopIsRunnig), ord(LongBool(False))); // The main thread can set the start event.
         if not FQueuedFinish then
           begin
           FQueuedFinish:=true;
@@ -2140,7 +2153,7 @@ begin
   end
   else
   // bplSehW64Except
-  if FBreakPoints[bplSehW64Except].HasLocation(PC) then begin // always assigned
+  if assigned(FBreakPoints[bplSehW64Except]) and FBreakPoints[bplSehW64Except].HasLocation(PC) then begin // always assigned
     debugln(FPDBG_COMMANDS, ['@ bplSehW64Except ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
     FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
@@ -2176,7 +2189,7 @@ begin
   end
   else
   // bplSehW64Finally
-  if FBreakPoints[bplSehW64Finally].HasLocation(PC) then begin // always assigned
+  if assigned(FBreakPoints[bplSehW64Finally]) and FBreakPoints[bplSehW64Finally].HasLocation(PC) then begin // always assigned
     debugln(FPDBG_COMMANDS, ['@ bplSehW64Finally ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
     // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
@@ -2937,14 +2950,23 @@ begin
   result := true;
 end;
 
-procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
+function TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod
+  ): boolean;
 begin
+  Result := True;
   if ThreadID = FFpDebugThread.ThreadID then begin
     AMethod();
     exit;
   end;
 
+  Result := False;
   assert(not assigned(FFpDebugThread.AsyncMethod));
+  if FFpDebugThread.LoopIsRunnig then begin
+    DebugLn(DBG_WARNINGS, ['ExecuteInDebugThread while thread busy']);
+    exit;
+  end;
+
+  Result := True;
   FFpDebugThread.AsyncMethod:=AMethod;
   RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
   RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
@@ -3113,6 +3135,7 @@ begin
   begin
     FCacheLocation:=ALocation;
     FCacheBoolean:=AnEnabled;
+    FCacheBreakpoint := nil;
     ExecuteInDebugThread(@DoAddBreakLocation);
     result := FCacheBreakpoint;
   end
@@ -3131,6 +3154,7 @@ begin
     FCacheFileName:=AFileName;
     FCacheLine:=ALine;
     FCacheBoolean:=AnEnabled;
+    FCacheBreakpoint := nil;
     ExecuteInDebugThread(@DoAddBreakLine);
     result := FCacheBreakpoint;
   end
@@ -3146,6 +3170,7 @@ begin
     FCacheFileName:=AFuncName;
     FCacheLib:=ALib;
     FCacheBoolean:=AnEnabled;
+    FCacheBreakpoint := nil;
     ExecuteInDebugThread(@DoAddBreakFuncLib);
     result := FCacheBreakpoint;
   end
@@ -3166,6 +3191,7 @@ begin
     FCacheLine:=ASize;
     FCacheReadWrite:=AReadWrite;
     FCacheScope:=AScope;
+    FCacheBreakpoint := nil;
     ExecuteInDebugThread(@DoAddBWatch);
     result := FCacheBreakpoint;
   end
@@ -3193,6 +3219,7 @@ begin
     FCacheLocation := AAdress;
     FCacheLine:=ASize;
     FCachePointer := @AData;
+    FCacheBoolean := False;
     ExecuteInDebugThread(@DoReadData);
     result := FCacheBoolean;
   end
@@ -3245,6 +3272,7 @@ begin
   begin
     FCacheThreadId := AThreadId;
     FCacheStackFrame := AStackFrame;
+    FCacheContext := nil;
     ExecuteInDebugThread(@DoFindContext);
     Result := FCacheContext;
   end
@@ -3259,6 +3287,7 @@ begin
   begin
     FParamAsStringStackEntry := AStackEntry;
     FParamAsStringPrettyPrinter := APrettyPrinter;
+    FParamAsString:='';
     ExecuteInDebugThread(@DoGetParamsAsString);
     Result := FParamAsString;
   end
@@ -3394,9 +3423,10 @@ begin
 end;
 
 initialization
-  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_VERBOSE     := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS    := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
-  FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
+  FPDBG_COMMANDS  := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
 
 end.
 
