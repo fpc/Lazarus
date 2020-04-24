@@ -503,10 +503,12 @@ procedure TDbgControllerHiddenBreakStepBaseCmd.DoContinue(AProcess: TDbgProcess;
 var
   r: Boolean;
 begin
-  if (AThread = FThread) then
-    r := NextInstruction.IsReturnInstruction
-  else
-    r := False;
+  if (AThread <> FThread) then begin
+    FProcess.Continue(FProcess, AThread, False);
+    exit;
+  end;
+
+  r := NextInstruction.IsReturnInstruction;
 
   InternalContinue(AProcess, AThread);
   if r and
@@ -521,7 +523,6 @@ procedure TDbgControllerStepOverInstructionCmd.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverInstructionCmd.DoContinue: FProcess=AProcess');
-  if (AThread = FThread) then
   CheckForCallAndSetBreak;
   FProcess.Continue(FProcess, FThread, FHiddenBreakpoint = nil);
 end;
@@ -641,7 +642,7 @@ procedure TDbgControllerStepIntoLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepIntoLineCmd.DoContinue: FProcess=AProcess');
-  if (FState = siSteppingCurrent) and (AThread = FThread) then
+  if (FState = siSteppingCurrent) then
   begin
     if CheckForCallAndSetBreak then begin
       FState := siSteppingIn;
@@ -720,7 +721,6 @@ procedure TDbgControllerStepOverLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
-  if (AThread = FThread) then
   CheckForCallAndSetBreak;
 
   if FHiddenBreakpoint = nil then
