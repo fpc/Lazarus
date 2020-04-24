@@ -785,6 +785,11 @@ var
   SourceHeight,
   DestWidth,
   DestHeight: Integer;
+  {$IFDEF CPU64}
+  AColor: QColorH;
+  ADst: TQtDeviceContext absolute Destination;
+  AFillColor: TQColor;
+  {$ENDIF}
 
   //BlendColor: TQColor;
 begin
@@ -864,7 +869,16 @@ begin
             R.Right - R.Left, R.Bottom - R.Top, @BlendColor);
           }
           // Source is ignored since there is a constant color value.
-
+          {$IFDEF CPU64}
+          if ADst <> nil then
+          begin
+            AColor := QColor_create((Bias and $000000FF), ((Bias shr 8) and $000000FF), ((Bias shr 16) and $000000FF), ConstantAlpha);
+            QColor_convertTo(AColor, @AFillColor, QColorRgb);
+            QPainter_fillRect(ADst.Widget, R.Left + Target.x, R.Top + Target.y,
+              R.Right - R.Left, R.Bottom - R.Top, PQColor(@AFillColor));
+            QColor_destroy(AColor);
+          end;
+          {$ELSE}
           DestBits := GetBitmapBitsFromDeviceContext(Destination, DestWidth, DestHeight);
           if Assigned(DestBits) then
           begin
@@ -876,6 +890,7 @@ begin
             end;
           end;
           EMMS;
+          {$ENDIF}
         end;
     end;
   end;
