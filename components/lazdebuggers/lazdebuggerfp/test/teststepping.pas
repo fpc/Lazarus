@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, TestOutputLogger,
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase, Forms;
+  FpDebugDebugger, DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase, Forms;
 
 type
 
@@ -35,6 +35,10 @@ type
                                   out AContinue: Boolean);
     function StepOverToLine(ATestName, ABrkName: String; AnExitIfNoLineInfo: Boolean = False): Boolean;
     function StepIfAtLine(ATestName, ABrkName: String): Boolean;
+    procedure DoTestStepOver(ANextOnlyStopOnStartLine: Boolean);
+    procedure DoTestStepOverInstr(ANextOnlyStopOnStartLine: Boolean);
+    procedure DoTestExceptionStepOutEx(ANextOnlyStopOnStartLine: Boolean);
+    procedure DoTestExceptionStepOverEx(ANextOnlyStopOnStartLine: Boolean);
   published
     (* Step over to work with various events happening during the step
        - creation/exit of threads
@@ -46,13 +50,22 @@ type
     procedure TestStepOverInstr;
     procedure TestExceptionStepOutEx;
     procedure TestExceptionStepOverEx;
+
+    procedure TestStepOver_NextOnlyFalse;
+    procedure TestStepOverInstr_NextOnlyFalse;
+    procedure TestExceptionStepOutEx_NextOnlyFalse;
+    procedure TestExceptionStepOverEx_NextOnlyFalse;
   end;
 
 implementation
 
 var
-  ControlTest, ControlTestStepOver, ControlTestStepOverInstr,
+  ControlTest,
+  ControlTest_NextOnlyTrue, ControlTestStepOver, ControlTestStepOverInstr,
   ControlTestExceptionStepOutEx, ControlTestExceptionStepOverEx: Pointer;
+
+  ControlTest_NextOnly, ControlTestStepOver_NextOnly, ControlTestStepOverInstr_NextOnly,
+  ControlTestExceptionStepOutEx_NextOnly, ControlTestExceptionStepOverEx_NextOnly: Pointer;
 
 procedure TTestStepping.TestLocation(ATestName, ABrkName: String;
   ABreakHitCount: Integer; AnAcceptLinesBefore: integer);
@@ -127,25 +140,25 @@ begin
   debugln(['XXXXXXXXXXXXXXXXXXXXXXXX STEPPED from END LINE to begin??? ', ABrkName, '  ',ATestName]);
 end;
 
-procedure TTestStepping.TestStepOver;
+procedure TTestStepping.DoTestStepOver(ANextOnlyStopOnStartLine: Boolean);
 var
   ExeName: String;
   MainBrk, BrkDis, BrkHitCnt: TDBGBreakPoint;
   ThreadIdMain: Integer;
 begin
-  if SkipTest then exit;
-  if not TestControlCanTest(ControlTestStepOver) then exit;
   Src := GetCommonSourceFor(AppDir + 'StepOverPrg.pas');
   TestCompile(Src, ExeName);
 
   TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
+  TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
 
   try
     MainBrk := Debugger.SetBreakPoint(Src, 'BrkStart');
     Debugger.SetBreakPoint(Src, 'BrkThreadCreateInStep');
     Debugger.SetBreakPoint(Src, 'BrkInterfereByThread');
     Debugger.SetBreakPoint(Src, 'BrkNested');
+    Debugger.SetBreakPoint(Src, 'CallStepOverEnd');
 
     BrkDis    := Debugger.SetBreakPoint(Src, 'BrkDisabled');
     BrkHitCnt := Debugger.SetBreakPoint(Src, 'BrkHitCnt');
@@ -243,7 +256,7 @@ begin
     (* The debugger will step over a call.
        Other threads will hit the FHiddenBreakpoint
     *)
-   Debugger.RunToNextPause(dcRun);
+    Debugger.RunToNextPause(dcRun);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkInterfereByThread', 'BrkInterfereByThread', -1);
 
@@ -254,6 +267,30 @@ begin
     TestEquals('ThreadId AfterInterfereByThread', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
 
 
+
+
+    (* go to CallMyNested
+       Step into, and step to endline
+       => ensure "end" takes ONE step to leave
+    *)
+    Debugger.RunToNextPause(dcRun);
+    TestLocation('At CallStepOverEnd', 'CallStepOverEnd', -1);
+    Debugger.RunToNextPause(dcStepInto);
+    Debugger.RunToNextPause(dcStepOver);
+    if not IsAtLocation('StepOverEnd') then  // depends on "begin" was code or not
+      Debugger.RunToNextPause(dcStepOver);
+
+    Debugger.RunToNextPause(dcStepInto);
+    Debugger.RunToNextPause(dcStepOver);
+    if not IsAtLocation('StepOverEnd') then  // depends on "begin" was code or not
+      Debugger.RunToNextPause(dcStepOver);
+
+    TestLocation('At StepOverEnd', 'StepOverEnd', -1);
+    Debugger.RunToNextPause(dcStepOver);
+    Debugger.RunToNextPause(dcStepOver);
+    TestLocation('At AfterCallStepOverEnd', 'AfterCallStepOverEnd', -1);
+
+
     dbg.Stop;
   finally
     Debugger.FreeDebugger;
@@ -262,7 +299,63 @@ begin
   end;
 end;
 
+procedure TTestStepping.TestStepOver;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepOver) then exit;
+  DoTestStepOver(True);
+end;
+
 procedure TTestStepping.TestStepOverInstr;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepOverInstr) then exit;
+  DoTestStepOverInstr(True);
+end;
+
+procedure TTestStepping.TestExceptionStepOutEx;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestExceptionStepOutEx) then exit;
+  DoTestExceptionStepOutEx(True);
+end;
+
+procedure TTestStepping.TestExceptionStepOverEx;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestExceptionStepOverEx) then exit;
+  DoTestExceptionStepOverEx(True);
+end;
+
+procedure TTestStepping.TestStepOver_NextOnlyFalse;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepOver_NextOnly) then exit;
+  DoTestStepOver(False);
+end;
+
+procedure TTestStepping.TestStepOverInstr_NextOnlyFalse;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepOverInstr_NextOnly) then exit;
+  DoTestStepOverInstr(False);
+end;
+
+procedure TTestStepping.TestExceptionStepOutEx_NextOnlyFalse;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestExceptionStepOutEx_NextOnly) then exit;
+  DoTestExceptionStepOutEx(False);
+end;
+
+procedure TTestStepping.TestExceptionStepOverEx_NextOnlyFalse;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestExceptionStepOverEx_NextOnly) then exit;
+  DoTestExceptionStepOverEx(False);
+end;
+
+procedure TTestStepping.DoTestStepOverInstr(ANextOnlyStopOnStartLine: Boolean);
   procedure StepInstrToNextLine(AName: String; MaxSteps: integer = 50);
   var
     lc: TDBGLocationRec;
@@ -280,13 +373,12 @@ var
   MainBrk, BrkDis, BrkHitCnt: TDBGBreakPoint;
   ThreadIdMain: Integer;
 begin
-  if SkipTest then exit;
-  if not TestControlCanTest(ControlTestStepOverInstr) then exit;
   Src := GetCommonSourceFor(AppDir + 'StepOverPrg.pas');
   TestCompile(Src, ExeName);
 
   TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
+  TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
 
   try
     MainBrk := Debugger.SetBreakPoint(Src, 'BrkStart');
@@ -361,19 +453,20 @@ begin
   end;
 end;
 
-procedure TTestStepping.TestExceptionStepOutEx;
+procedure TTestStepping.DoTestExceptionStepOutEx(
+  ANextOnlyStopOnStartLine: Boolean);
 var
   ExeName, TstName: String;
 begin
-  if SkipTest then exit;
-  if not TestControlCanTest(ControlTestExceptionStepOutEx) then exit;
   ClearTestErrors;
+  FGotExceptCount := 0;
 
   Src := GetCommonSourceFor(AppDir + 'ExceptTestPrg.pas');
   TestCompile(Src, ExeName);
 
   TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
+  TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
   try
     dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
@@ -404,7 +497,8 @@ begin
   AssertTestErrors;
 end;
 
-procedure TTestStepping.TestExceptionStepOverEx;
+procedure TTestStepping.DoTestExceptionStepOverEx(
+  ANextOnlyStopOnStartLine: Boolean);
   procedure ExpectEnterFinally(AName: String; ATestAppRecStep: Integer;
     ATestIgnoreRaise, ATestRaiseSkipped, ATestStepOverNested: Boolean;
     ATestIgnoreRaise_2, ATestRaiseSkipped_2, ATestStepOverNested_2: Boolean);
@@ -538,6 +632,8 @@ procedure TTestStepping.TestExceptionStepOverEx;
     Debugger.RunToNextPause(dcStepOver);  // Step back to end
     StepIfAtLine(TstName, 'BrkStepNestedExcept_TRY'); // may step to "try"
     Debugger.RunToNextPause(dcStepOver);  // Step back to finaly
+    if not ANextOnlyStopOnStartLine then
+      StepIfAtLine(TstName, 'BrkStepNestedExcept_Finally_BEFORE'); // TODO: XXXXX StepOver may stop at the step out line.
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally_AFTER', -1);
 
     StepOverToLine(TstName,'BrkStepNestedExcept_Finally_END', True);
@@ -588,8 +684,6 @@ var
   ExeName, TstName, LName: String;
   TestAppRecRaise, TestAppRecStep: Integer;
 begin
-  if SkipTest then exit;
-  if not TestControlCanTest(ControlTestExceptionStepOverEx) then exit;
   ClearTestErrors;
 
   Src := GetCommonSourceFor(AppDir + 'ExceptTestPrg.pas');
@@ -597,6 +691,7 @@ begin
 
   TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
+  TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
   try
     dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
@@ -644,10 +739,18 @@ end;
 initialization
 
   RegisterDbgTest(TTestStepping);
+
   ControlTest              := TestControlRegisterTest('TTestStepping');
-  ControlTestStepOver      := TestControlRegisterTest('TTestStepOver', ControlTest);
-  ControlTestStepOverInstr := TestControlRegisterTest('TTestStepOverInstr', ControlTest);
-  ControlTestExceptionStepOutEx  := TestControlRegisterTest('TTestExceptionStepOutEx', ControlTest);
-  ControlTestExceptionStepOverEx := TestControlRegisterTest('TTestExceptionStepOverEx', ControlTest);
+  ControlTest_NextOnlyTrue := TestControlRegisterTest('TTestStepping_NextOnly=True', ControlTest);
+  ControlTestStepOver      := TestControlRegisterTest('TTestStepOver', ControlTest_NextOnlyTrue);
+  ControlTestStepOverInstr := TestControlRegisterTest('TTestStepOverInstr', ControlTest_NextOnlyTrue);
+  ControlTestExceptionStepOutEx  := TestControlRegisterTest('TTestExceptionStepOutEx', ControlTest_NextOnlyTrue);
+  ControlTestExceptionStepOverEx := TestControlRegisterTest('TTestExceptionStepOverEx', ControlTest_NextOnlyTrue);
+
+  ControlTest_NextOnly              := TestControlRegisterTest('TTestStepping_NextOnly=False', ControlTest);
+  ControlTestStepOver_NextOnly      := TestControlRegisterTest('TTestStepOver_NextOnly=False', ControlTest_NextOnly);
+  ControlTestStepOverInstr_NextOnly := TestControlRegisterTest('TTestStepOverInstr_NextOnly=False', ControlTest_NextOnly);
+  ControlTestExceptionStepOutEx_NextOnly  := TestControlRegisterTest('TTestExceptionStepOutEx_NextOnly=False', ControlTest_NextOnly);
+  ControlTestExceptionStepOverEx_NextOnly := TestControlRegisterTest('TTestExceptionStepOverEx_NextOnly=False', ControlTest_NextOnly);
 end.
 

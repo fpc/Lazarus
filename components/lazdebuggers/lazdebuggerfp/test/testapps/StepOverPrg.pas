@@ -29,9 +29,20 @@ begin
   x := 1;
 end;
 
-Procedure MyNested(ALvl: Integer = 0);
+Procedure StepOverEnd(a: integer);
+var
+  b: integer;
 begin
-  if ALvl > 3 then exit;
+  b := a;
+// end returns to the same line
+if a < 1 then StepOverEnd(a+1); end;   // TEST_BREAKPOINT=StepOverEnd
+
+
+Procedure MyNested(ALvl: Integer = 0);
+var
+  a: integer;
+begin
+  if ALvl > 3 then exit; a := x;
   if ALvl = 0 then
     x := 1;  // TEST_BREAKPOINT=BrkNested
   x := 3; MyNested(ALvl + 1); x := 4; if ALvl = 0 then // only reach "AfterNested" in most outer recurse
@@ -115,6 +126,10 @@ begin
   //sleep(500);
   BreakDummy := 1;
 
+
+  StepOverEnd(0); // TEST_BREAKPOINT=CallStepOverEnd
+  BreakDummy := 1;  // TEST_BREAKPOINT=AfterCallStepOverEnd
+  BreakDummy := 1;
 
 end.
 
