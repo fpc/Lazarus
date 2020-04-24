@@ -277,7 +277,7 @@ type
   protected
     // Helper vars to run in debug-thread
     FCallStackEntryListThread: TDbgThread;
-    FCallStackEntryListFrameRequired: Integer;
+    FCallStackEntryListFrameRequired, FNewThreadId: Integer;
     FParamAsString: String;
     FParamAsStringStackEntry: TDbgCallstackEntry;
     FParamAsStringPrettyPrinter: TFpPascalPrettyPrinter;
@@ -291,6 +291,7 @@ type
     procedure DoFreeBreakpoint;
     procedure DoFindContext;
     procedure DoGetParamsAsString;
+    procedure DoChangeCurrentThreadId;
     //
     function AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
@@ -720,12 +721,17 @@ begin
   inherited ChangeCurrentThread(ANewId);
   if not(Debugger.State in [dsPause, dsInternalPause]) then exit;
 
-  {$IFDEF windows}
-  TFpDebugDebugger(Debugger).FDbgController.CurrentThreadId := ANewId;
-  if CurrentThreads <> nil
-  then CurrentThreads.CurrentThreadId := ANewId;
+  if TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    TFpDebugDebugger(Debugger).FNewThreadId := ANewId;
+    TFpDebugDebugger(Debugger).ExecuteInDebugThread(@TFpDebugDebugger(Debugger).DoChangeCurrentThreadId);
+  end
+  else begin
+    TFpDebugDebugger(Debugger).FDbgController.CurrentThreadId := ANewId;
+    if CurrentThreads <> nil
+    then CurrentThreads.CurrentThreadId := ANewId;
+  end;
   Changed;
-  {$ENDIF}
 end;
 
 { TFpDebugDebuggerProperties }
@@ -3127,6 +3133,12 @@ begin
   FParamAsString := FParamAsStringStackEntry.GetParamsAsString(FParamAsStringPrettyPrinter);
 end;
 
+procedure TFpDebugDebugger.DoChangeCurrentThreadId;
+begin
+  FDbgController.CurrentThreadId := FNewThreadId;
+  if Threads.CurrentThreads <> nil
+  then Threads.CurrentThreads.CurrentThreadId := FNewThreadId;
+end;
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
   ): TFpDbgBreakpoint;
