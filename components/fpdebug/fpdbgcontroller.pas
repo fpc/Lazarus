@@ -545,13 +545,13 @@ begin
   if not FController.NextOnlyStopOnStartLine then
     exit;
 
-  if IsAtLastHiddenBreakAddr then begin
+  FStepInfoUnavailAfterStepOut := not IsAtLastHiddenBreakAddr;
+  if not FStepInfoUnavailAfterStepOut then begin
     {$PUSH}{$Q-}{$R-}
     FThread.StoreStepInfo(FThread.GetInstructionPointerRegisterValue +
       FThread.GetInstructionPointerRegisterValue - 1);
     {$POP}
   end;
-  FStepInfoUnavailAfterStepOut := not IsAtLastHiddenBreakAddr;
   FStepInfoUpdatedForStepOut := True;
 end;
 
@@ -559,14 +559,21 @@ function TDbgControllerLineStepBaseCmd.HasSteppedAwayFromOriginLine: boolean;
 var
   CompRes: TFPDCompareStepInfo;
 begin
-  Result := IsSteppedOut and (not FController.NextOnlyStopOnStartLine);
-  if Result then
-    exit;
+  Result := IsSteppedOut;
+  if Result then begin
+    Result := (not FController.NextOnlyStopOnStartLine);
+    if Result then
+      exit;
 
-// LIMIT steps ? // avoid further stepping out ? // stop at leave/ret ?
-  if IsSteppedOut and FStepInfoUnavailAfterStepOut then begin
-    Result := FController.FCurrentThread.IsAtStartOfLine;
-    exit;
+    // If stepped out, do not step out again
+    Result := NextInstruction.IsLeaveStackFrame or NextInstruction.IsReturnInstruction;
+    if Result then
+      exit;
+
+    if FStepInfoUnavailAfterStepOut then begin
+      Result := FController.FCurrentThread.IsAtStartOfLine;
+      exit;
+    end;
   end;
 
   CompRes := FThread.CompareStepInfo;
