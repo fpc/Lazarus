@@ -1041,6 +1041,9 @@ begin
     exit;
   end;
 
+  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+    AThread.NextIsSingleStep:=SingleStep;
+
   // check for pending events in other threads
   if FPostponedSignals.Count > 0 then begin
     {$IFDEF DebuglnLinuxDebugEvents}
@@ -1049,14 +1052,11 @@ begin
     exit;
   end;
 
-  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
-    AThread.NextIsSingleStep:=SingleStep;
-
   // check other threads if they need a singlestep
   for TDbgThread(ThreadToContinue) in FThreadMap do
     if (ThreadToContinue <> AThread) and ThreadToContinue.FIsPaused then begin
       IP := ThreadToContinue.GetInstructionPointerRegisterValue;
-      if HasInsertedBreakInstructionAtLocation(IP) then begin
+      if HasInsertedBreakInstructionAtLocation(IP) or ThreadToContinue.NextIsSingleStep then begin
         TempRemoveBreakInstructionCode(IP);
         ThreadToContinue.BeforeContinue;
 
@@ -1066,13 +1066,17 @@ begin
           Debugln(['Single-stepping other TID: ', ThreadToContinue.ID]);
           {$ENDIF}
           fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(ThreadToContinue).FExceptionSignal)));
-          TDbgLinuxThread(ThreadToContinue).ResetPauseStates; // So BeforeContinue will not run again
 
+          TDbgLinuxThread(ThreadToContinue).ResetPauseStates;
           ThreadToContinue.FIsPaused := True;
           if CheckNoError then begin
             PID := fpWaitPid(ThreadToContinue.ID, WaitStatus, __WALL);
             if PID <> ThreadToContinue.ID then begin
               DebugLn(DBG_WARNINGS, ['Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
+              break;
+            end;
+            if ThreadToContinue.NextIsSingleStep then begin
+              FPostponedSignals.AddSignal(PID, WaitStatus);
               break;
             end;
             if (wstopsig(WaitStatus) = SIGTRAP) then
@@ -1086,6 +1090,13 @@ begin
 
       end;
     end;
+
+  if FPostponedSignals.Count > 0 then begin
+    {$IFDEF DebuglnLinuxDebugEvents}
+    debugln(['Exit for DEFERRED SingleSteps event TID']);
+    {$ENDIF}
+    exit;
+  end;
 
   if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
@@ -1126,7 +1137,7 @@ begin
     {$IFDEF DebuglnLinuxDebugEvents}
     Debugln(['RUN ']);
     {$ENDIF}
-    if SingleStep then
+    if AThread.NextIsSingleStep then
       fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)))
     else
       fpPTrace(PTRACE_CONT, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
@@ -1365,7 +1376,7 @@ begin
 
   {$IFDEF DebuglnLinuxDebugEvents}
   for TDbgThread(ThreadToPause) in FThreadMap do
-  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause, ' exs:', ThreadToPause.FExceptionSignal]);
+  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause, ' exs:', ThreadToPause.FExceptionSignal, '  sstep:',ThreadToPause.NextIsSingleStep]);
   debugln('<<<<<<<<<<<<<<<<<<<<<<<<');
   {$ENDIF}
 
