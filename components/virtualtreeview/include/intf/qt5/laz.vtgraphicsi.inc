@@ -789,6 +789,8 @@ var
   AColor: QColorH;
   ADst: TQtDeviceContext absolute Destination;
   AFillColor: TQColor;
+  ATransform: QTransformH;
+  DX, DY: QReal;
   {$ENDIF}
 
   //BlendColor: TQColor;
@@ -872,10 +874,15 @@ begin
           {$IFDEF CPU64}
           if ADst <> nil then
           begin
+            ATransform := QPainter_transform(ADst.Widget);
+            DX := QTransform_dx(ATransform);
+            DY := QTransform_dy(ATransform);
+            ADst.translate(-DX, -DY);
             AColor := QColor_create((Bias and $000000FF), ((Bias shr 8) and $000000FF), ((Bias shr 16) and $000000FF), ConstantAlpha);
             QColor_convertTo(AColor, @AFillColor, QColorRgb);
             QPainter_fillRect(ADst.Widget, R.Left + Target.x, R.Top + Target.y,
               R.Right - R.Left, R.Bottom - R.Top, PQColor(@AFillColor));
+            ADst.translate(DX, DY);
             QColor_destroy(AColor);
           end;
           {$ELSE}
