@@ -224,6 +224,8 @@ type
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
     function IsLeaveStackFrame: boolean; override;
+    //function ModifiesBasePointer: boolean; override;
+    function ModifiesStackPointer: boolean; override;
     function IsJumpInstruction(IncludeConditional: Boolean = True; IncludeUncoditional: Boolean = True): boolean; override;
     function InstructionLength: Integer; override;
     function X86OpCode: TOpCode;
@@ -440,19 +442,112 @@ begin
 end;
 
 function TX86AsmInstruction.IsReturnInstruction: boolean;
+var
+  a: PByte;
 begin
-  Disassemble;
+  ReadCode;
   if diCodeReadError in FFlags then
     exit(False);
-  Result := (FInstruction.OpCode = OPret) or (FInstruction.OpCode = OPretf);
+  a := @FCodeBin[0];
+
+  // CF: IRET
+  Result := (a^ in [$C2, $C3, $CA, $CB, $CF]);
 end;
 
 function TX86AsmInstruction.IsLeaveStackFrame: boolean;
+var
+  a: PByte;
 begin
-  Disassemble;
+  ReadCode;
   if diCodeReadError in FFlags then
     exit(False);
-  Result := (FInstruction.OpCode = OPleave);
+  a := @FCodeBin[0];
+  // C9: leave
+  Result := (a^ = $C9);
+  if Result then
+    exit;
+  if (FAsmDecoder.FProcess.Mode = dm64) then begin
+    Result :=
+      // 48 8D 65 00 / 5D: lea rsp,[rbp+$00] / pop ebp
+      ( (a^ = $48) and (a[1] = $8D) and (a[2] = $65) and (a[3] = $00)
+        and (a[4] = $5D)
+      ) or
+      // 48 89 ec / 5D: mov esp,ebp / pop ebp
+      ( (a^ = $48) and (a[1] = $89) and (a[2] = $EC)
+        and (a[3] = $5D)
+      );
+  end
+  else begin
+    Result :=
+      // 8D 65 00 / 5D: lea rsp,[rbp+$00] / pop ebp
+      ( (a[0] = $8D) and (a[1] = $65) and (a[2] = $00)
+       and (a[3] = $5D)
+      ) or
+      // 89 ec / 5D: mov esp,ebp / pop ebp
+      ( (a[0] = $89) and (a[1] = $EC)
+       and (a[2] = $5D)
+      );
+  end;
+end;
+
+function TX86AsmInstruction.ModifiesStackPointer: boolean;
+var
+  a: PByte;
+begin
+  (* Enter, Leave
+     mov sp, ...
+     lea sp, ...
+     pop / push
+
+     BUT NOT ret
+  *)
+  Result := False;
+  ReadCode;
+  if diCodeReadError in FFlags then
+    exit;
+  a := @FCodeBin[0];
+
+  if (FAsmDecoder.FProcess.Mode = dm64) then begin
+    while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$40..$4F, $64..$67]) do
+      inc(a);
+
+    // Pop/Push
+    if (a^ in [$50..$61, $68, $8F, $9C, $9d])
+    then
+      exit(True);
+  end
+  else begin
+    while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$26, $2E, $36, $3E, $64..$67]) do
+      inc(a);
+
+    // Pop/Push
+    if (a^ in [$06, $07, $0E, $16, $17, $1E, $1F, $50..$61, $68, $6A, $8F, $9C, $9d])
+    then
+      exit(True);
+  end;
+
+  // Pop/Push
+  if (a^ in [$FF])
+  then begin
+    Disassemble;
+    exit(FInstruction.OpCode = OPpush);
+  end;
+
+  if (a^ = $0F) and (a[1] in [$A0, $A1, $A8, $A9]) then
+    exit(True);
+
+  // Enter/Leave
+  if (a^ in [$C8, $C9])
+  then
+    exit(True);
+
+  // Mov/Lea
+  if (a^ in [$89, $8B, $8D]) and
+     (  ((a[1] and $38) = $20) or ((a[1] and $03) = $04)  )  // SP is involved
+  then begin
+    //Disassemble;
+    exit(True);  // does report some "false positives"
+  end;
 end;
 
 function TX86AsmInstruction.IsJumpInstruction(IncludeConditional: Boolean;

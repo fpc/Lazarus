@@ -140,17 +140,21 @@ type
     This default assumes an Intel like stack, with StackPointer and FrameBase.
     This default assumes the stack grows by decreasing addresses.
   }
+
   TDbgStackFrameInfo = class
   private
     FThread: TDbgThread;
     FStoredStackFrame, FStoredStackPointer: TDBGPtr;
     FHasSteppedOut: Boolean;
+    FProcessAfterRun: Boolean;
+    FLeaveState: (lsNone, lsWasAtLeave1, lsWasAtLeave2, lsLeaveDone);
+    Procedure DoAfterRun;
   protected
-    procedure DoCheckNextInstruction(ANextInstruction: TDbgAsmInstruction); virtual;
+    procedure DoCheckNextInstruction(ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean); virtual;
     function  CalculateHasSteppedOut: Boolean;  virtual;
   public
     constructor Create(AThread: TDbgThread);
-    procedure CheckNextInstruction(ANextInstruction: TDbgAsmInstruction); inline;
+    procedure CheckNextInstruction(ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean); inline;
     function  HasSteppedOut: Boolean; inline;
     procedure FlagAsSteppedOut; inline;
 
@@ -430,6 +434,8 @@ type
     function IsCallInstruction: boolean; virtual;
     function IsReturnInstruction: boolean; virtual;
     function IsLeaveStackFrame: boolean; virtual;
+    //function ModifiesBasePointer: boolean; virtual;
+    function ModifiesStackPointer: boolean; virtual;
     function IsJumpInstruction(IncludeConditional: Boolean = True; IncludeUncoditional: Boolean = True): boolean; virtual;
     function InstructionLength: Integer; virtual;
   end;
@@ -1316,6 +1322,11 @@ begin
 end;
 
 function TDbgAsmInstruction.IsLeaveStackFrame: boolean;
+begin
+  Result := False;
+end;
+
+function TDbgAsmInstruction.ModifiesStackPointer: boolean;
 begin
   Result := False;
 end;
@@ -2223,27 +2234,70 @@ end;
 
 { TDbgStackFrameInfo }
 
-procedure TDbgStackFrameInfo.DoCheckNextInstruction(
-  ANextInstruction: TDbgAsmInstruction);
+procedure TDbgStackFrameInfo.DoAfterRun;
+var
+  CurStackFrame: TDBGPtr;
 begin
-  if ANextInstruction.IsReturnInstruction then
+  FProcessAfterRun := False;
+  case FLeaveState of
+    lsWasAtLeave1: begin
+        CurStackFrame   := FThread.GetStackBasePointerRegisterValue;
+        FStoredStackPointer := FThread.GetStackPointerRegisterValue;
+        if CurStackFrame <> FStoredStackFrame then
+          FLeaveState := lsLeaveDone // real leave
+        else
+          FLeaveState := lsWasAtLeave2; // lea rsp,[rbp+$00] / pop ebp // epb in next command
+      end;
+    lsWasAtLeave2: begin
+        // TODO: maybe check, if stackpointer only goes down by sizeof(pointer) "Pop bp"
+        FStoredStackFrame   := FThread.GetStackBasePointerRegisterValue;
+        FStoredStackPointer := FThread.GetStackPointerRegisterValue;
+        FLeaveState := lsLeaveDone;
+      end;
+  end;
+end;
+
+procedure TDbgStackFrameInfo.DoCheckNextInstruction(
+  ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean);
+begin
+  if FProcessAfterRun then
+    DoAfterRun;
+
+  if not NextIsSingleStep then begin
+    if FLeaveState = lsWasAtLeave2 then
+      FLeaveState := lsLeaveDone;
+    exit;
+  end;
+
+  if ANextInstruction.IsReturnInstruction then begin
     FHasSteppedOut := True;
+    FLeaveState := lsLeaveDone;
+  end
+  else if FLeaveState = lsNone then begin
+    if ANextInstruction.IsLeaveStackFrame then
+      FLeaveState := lsWasAtLeave1;
+  end;
+
+  FProcessAfterRun := FLeaveState in [lsWasAtLeave1, lsWasAtLeave2];
 end;
 
 function TDbgStackFrameInfo.CalculateHasSteppedOut: Boolean;
 var
   CurBp, CurSp: TDBGPtr;
 begin
+  if FProcessAfterRun then
+    DoAfterRun;
+
   Result := False;
   CurBp := FThread.GetStackBasePointerRegisterValue;
   if FStoredStackFrame < CurBp then begin
     CurSp := FThread.GetStackPointerRegisterValue;
     if FStoredStackPointer >= CurSp then // this happens, if current was recorded before the BP frame was set up // a finally handle may then fake an outer frame
       exit;
-    {$PUSH}{$Q-}{$R-}
+//    {$PUSH}{$Q-}{$R-}
 //    if CurSp = FStoredStackPointer + FThread.Process.PointerSize then
 //      exit; // Still in proc, but passed asm "leave" (BP has been popped, but IP not yet)
-    {$POP}
+//    {$POP}
     Result := True;
     debugln(FPDBG_COMMANDS, ['BreakStepBaseCmd.GetIsSteppedOut: Has stepped out Stored-BP=', FStoredStackFrame, ' < BP=', CurBp, ' / SP', CurSp]);
   end;
@@ -2257,10 +2311,10 @@ begin
 end;
 
 procedure TDbgStackFrameInfo.CheckNextInstruction(
-  ANextInstruction: TDbgAsmInstruction);
+  ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean);
 begin
   if not FHasSteppedOut then
-    DoCheckNextInstruction(ANextInstruction);
+    DoCheckNextInstruction(ANextInstruction, NextIsSingleStep);
 end;
 
 function TDbgStackFrameInfo.HasSteppedOut: Boolean;

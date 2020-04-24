@@ -472,11 +472,10 @@ begin
   FStackFrameInfo := FThread.GetCurrentStackFrameInfo;
 end;
 
-procedure TDbgControllerHiddenBreakStepBaseCmd.CallProcessContinue(
-  ASingleStep: boolean);
+procedure TDbgControllerHiddenBreakStepBaseCmd.CallProcessContinue(ASingleStep: boolean);
 begin
-  if (FStackFrameInfo <> nil) and ASingleStep and (FHiddenBreakpoint = nil) then // TODO: not check FHiddenBreakAddr;
-    FStackFrameInfo.CheckNextInstruction(NextInstruction);
+  if (FStackFrameInfo <> nil) then
+    FStackFrameInfo.CheckNextInstruction(NextInstruction, ASingleStep);
 
   FProcess.Continue(FProcess, FThread, ASingleStep);
 end;
