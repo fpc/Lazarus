@@ -43,6 +43,9 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
     <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="DebuggerIntf"/>

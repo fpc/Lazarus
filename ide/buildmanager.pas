@@ -357,7 +357,7 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
-  FreeAndNil(ExternalTools);
+  ExternalTools.Free; // sets ExternalTools to nil, do not use FreeAndNil!
 
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
@@ -530,9 +530,13 @@ begin
 end;
 
 procedure TBuildManager.SetupExternalTools(aToolsClass: TExternalToolsClass);
+var
+  Tools: TExternalTools;
 begin
   // setup the external tool queue
-  ExternalTools:=aToolsClass.Create(Self);
+  Tools:=aToolsClass.Create(Self);
+  if Tools<>ExternalTools then
+    raise Exception.Create('TBuildManager.SetupExternalTools ExternalTools='+DbgSName(ExternalTools));
   EnvOptsChanged;
   RegisterFPCParser;
   RegisterPas2jsParser;
