@@ -163,17 +163,21 @@ type
     procedure RegisterParser(Parser: TExtToolParserClass); override;
     procedure UnregisterParser(Parser: TExtToolParserClass); override;
     function FindParserForTool(const SubTool: string): TExtToolParserClass; override;
-    function FindParserWithName(const ParserName: string): TExtToolParserClass;
-      override;
+    function FindParserWithName(const ParserName: string): TExtToolParserClass; override;
     function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; override;
   end;
 
   TExternalToolsClass = class of TExternalTools;
 
-var
-  ExternalTools: TExternalTools = nil;
+function ExternalToolsRef: TExternalTools;
+
 
 implementation
+
+function ExternalToolsRef: TExternalTools;
+begin
+  Result := ExternalToolList as TExternalTools;
+end;
 
 {$IF defined(VerboseExtToolErrors) or defined(VerboseExtToolThread) or defined(VerboseExtToolAddOutputLines)}
 function ArgsToString(Args: array of const): string;
@@ -1205,10 +1209,6 @@ begin
   fRunning:=TFPList.Create;
   fParsers:=TFPList.Create;
   MaxProcessCount:=DefaultMaxProcessCount;
-  if ExternalToolList=nil then
-    ExternalToolList:=Self;
-  if ExternalTools=nil then
-    ExternalTools:=Self;
   RunExternalTool := @RunExtToolHandler;
 end;
 
@@ -1220,10 +1220,6 @@ begin
   try
     if fRunning.Count>0 then
       raise Exception.Create('TExternalTools.Destroy some tools still running');
-    if ExternalToolList=Self then
-      ExternalToolList:=nil;
-    if ExternalTools=Self then
-      ExternalTools:=nil;
     inherited Destroy;
     FreeAndNil(fRunning);
     FreeAndNil(fParsers);

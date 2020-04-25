@@ -357,7 +357,7 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
-  ExternalTools.Free; // sets ExternalTools to nil, do not use FreeAndNil!
+  ExternalToolList.Free; // sets ExternalToolList to nil, do not use FreeAndNil!
 
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
@@ -535,8 +535,8 @@ var
 begin
   // setup the external tool queue
   Tools:=aToolsClass.Create(Self);
-  if Tools<>ExternalTools then
-    raise Exception.Create('TBuildManager.SetupExternalTools ExternalTools='+DbgSName(ExternalTools));
+  if Tools<>ExternalToolList then
+    raise Exception.Create('TBuildManager.SetupExternalTools ExternalTools='+DbgSName(ExternalToolList));
   EnvOptsChanged;
   RegisterFPCParser;
   RegisterPas2jsParser;
@@ -561,9 +561,9 @@ end;
 procedure TBuildManager.EnvOptsChanged;
 begin
   if EnvironmentOptions.MaxExtToolsInParallel<=0 then
-    ExternalTools.MaxProcessCount:=DefaultMaxProcessCount
+    ExternalToolsRef.MaxProcessCount:=DefaultMaxProcessCount
   else
-    ExternalTools.MaxProcessCount:=EnvironmentOptions.MaxExtToolsInParallel;
+    ExternalToolsRef.MaxProcessCount:=EnvironmentOptions.MaxExtToolsInParallel;
 end;
 
 function TBuildManager.GetBuildMacroOverride(const MacroName: string): string;

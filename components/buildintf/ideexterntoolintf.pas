@@ -1611,6 +1611,8 @@ constructor TExternalToolsBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   fItems:=TFPList.Create;
+  if ExternalToolList=nil then
+    ExternalToolList:=Self;
 end;
 
 destructor TExternalToolsBase.Destroy;

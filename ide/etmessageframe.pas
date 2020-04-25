@@ -2752,7 +2752,7 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       if View.Tool=nil then continue;
       ToolData:=TIDEExternalToolData(View.Tool.Data);
       if not (ToolData is TIDEExternalToolData) then continue;
-      IDETool:=ExternalTools.GetIDEObject(ToolData);
+      IDETool:=ExternalToolList.GetIDEObject(ToolData);
       if IDETool=nil then continue;
       if IDETool is TLazProject then begin
         CompOpts:=TLazProject(IDETool).LazCompilerOptions as TBaseCompilerOptions;
@@ -3046,7 +3046,7 @@ begin
   Item:=TIDEMenuCommand(Sender);
   MsgId:=Item.Tag;
   ToolData:=TIDEExternalToolData(Item.UserTag);
-  IDETool:=ExternalTools.GetIDEObject(ToolData);
+  IDETool:=ExternalToolList.GetIDEObject(ToolData);
   if IDETool=nil then exit;
   if IDETool is TLazProject then begin
     CompOpts:=TLazProject(IDETool).LazCompilerOptions;

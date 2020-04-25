@@ -1666,8 +1666,8 @@ begin
 
   IDECommandList.RemoveCustomUpdateEvent(@UpdateMainIDECommands);
 
-  if Assigned(ExternalTools) then
-    ExternalTools.TerminateAll;
+  if Assigned(ExternalToolList) then
+    ExternalToolList.TerminateAll;
 
   if ConsoleVerbosity>0 then
     DebugLn('Hint: (lazarus) [TMainIDE.Destroy]');
@@ -4945,7 +4945,7 @@ begin
   if (Index<0)
   or (Index>=ExternalUserTools.Count)
   then exit;
-  if ExternalTools.RunningCount=0 then
+  if ExternalToolsRef.RunningCount=0 then
     IDEMessagesWindow.Clear;
   DoRunExternalTool(Index,false);
 end;
@@ -7169,7 +7169,7 @@ end;
 function TMainIDE.DoAbortBuild(Interactive: boolean): TModalResult;
 begin
   Result:=mrOk;
-  if ExternalTools.RunningCount=0 then exit;
+  if ExternalToolsRef.RunningCount=0 then exit;
   // IDE code is currently running a build process
   // we cannot continue, while some IDE code is waiting for the processes
   // => exit this event (no matter if the processes are stopped or not)
@@ -7766,7 +7766,7 @@ begin
 
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
-  if ExternalTools.RunningCount=0 then
+  if ExternalToolsRef.RunningCount=0 then
     IDEMessagesWindow.Clear;
   fBuilder.ProfileChanged:=false;
   OldToolStatus:=ToolStatus;
@@ -7952,7 +7952,7 @@ begin
       exit;
     end;
   end;
-  if ExternalTools.RunningCount=0 then
+  if ExternalToolsRef.RunningCount=0 then
     IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
   OldToolStatus:=ToolStatus;
@@ -8379,7 +8379,7 @@ begin
   if MainBuildBoss.CompilerOnDiskChanged then
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 
-  if (IDEMessagesWindow<>nil) and (ExternalTools.RunningCount=0) then
+  if (IDEMessagesWindow<>nil) and (ExternalToolsRef.RunningCount=0) then
     IDEMessagesWindow.Clear;
 end;
 
@@ -8626,7 +8626,7 @@ end;
 
 procedure TMainIDE.AbortBuild;
 begin
-  ExternalTools.TerminateAll;
+  ExternalToolList.TerminateAll;
 end;
 
 procedure TMainIDE.UpdateCaption;
