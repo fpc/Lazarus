@@ -1517,6 +1517,7 @@ begin
       //debugln(['RunTool Last=',OutputLine]);
       if OutputLine<>'' then
         Result.Add(OutputLine);
+      //debugln(['RunTool Result=',Result[Result.Count-1]]);
       TheProcess.WaitOnExit;
     finally
       TheProcess.Free;
@@ -1702,7 +1703,6 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
     Filename: String;
     p: SizeInt;
   begin
-    //DebugLn(['ProcessOutputLine ',Line]);
     Line:=SysToUtf8(Line);
     len := length(Line);
     if len <= 6 then Exit; // shortest match
@@ -9054,14 +9054,16 @@ begin
             debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
         end;
       end;
-      if Kind=pcFPC then
+      if Kind=pcFPC then begin
         RealTargetCPUCompiler:=FindDefaultTargetCPUCompiler(TargetCPU,true);
+        if RealCompiler='' then RealCompiler:=RealTargetCPUCompiler;
+      end;
       PreparePaths(UnitPaths);
       PreparePaths(IncludePaths);
       // store the real compiler file and date
-      if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
-        RealCompilerDate:=FileAgeCached(RealCompiler);
-      end else if Kind=pcFPC then begin
+      if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
+        RealCompilerDate:=FileAgeCached(RealCompiler)
+      else if Kind=pcFPC then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] cannot find real compiler for this platform: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
       end;
