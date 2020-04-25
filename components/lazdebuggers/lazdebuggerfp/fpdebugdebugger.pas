@@ -739,7 +739,7 @@ end;
 constructor TFpDebugDebuggerProperties.Create;
 begin
   inherited Create;
-  FNextOnlyStopOnStartLine:=true;
+  FNextOnlyStopOnStartLine:=False;
 end;
 
 procedure TFpDebugDebuggerProperties.Assign(Source: TPersistent);
