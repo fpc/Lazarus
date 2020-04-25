@@ -632,8 +632,8 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
     Debugger.RunToNextPause(dcStepOver);  // Step back to end
     StepIfAtLine(TstName, 'BrkStepNestedExcept_TRY'); // may step to "try"
     Debugger.RunToNextPause(dcStepOver);  // Step back to finaly
-    if not ANextOnlyStopOnStartLine then
-      StepIfAtLine(TstName, 'BrkStepNestedExcept_Finally_BEFORE'); // TODO: XXXXX StepOver may stop at the step out line.
+    //if not ANextOnlyStopOnStartLine then
+    //  StepIfAtLine(TstName, 'BrkStepNestedExcept_Finally_BEFORE'); // TODO: XXXXX StepOver may stop at the step out line.
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally_AFTER', -1);
 
     StepOverToLine(TstName,'BrkStepNestedExcept_Finally_END', True);
