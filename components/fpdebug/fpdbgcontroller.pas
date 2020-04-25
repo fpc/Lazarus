@@ -119,8 +119,8 @@ type
     FStoreStepInfoAtInit: Boolean;
   protected
     procedure Init; override;
-    procedure UpdateThreadStepInfoAfterStepOut;
-    function HasSteppedAwayFromOriginLine: boolean; // Call only, if in original frame (or updated frame)
+    procedure UpdateThreadStepInfoAfterStepOut(ANextOnlyStopOnStartLine: Boolean);
+    function HasSteppedAwayFromOriginLine(ANextOnlyStopOnStartLine: Boolean): boolean; // Call only, if in original frame (or updated frame)
 
     procedure StoreWasAtJumpInstruction;
     function  IsAtJumpPad: Boolean;
@@ -538,11 +538,12 @@ begin
   inherited Init;
 end;
 
-procedure TDbgControllerLineStepBaseCmd.UpdateThreadStepInfoAfterStepOut;
+procedure TDbgControllerLineStepBaseCmd.UpdateThreadStepInfoAfterStepOut(
+  ANextOnlyStopOnStartLine: Boolean);
 begin
   if FStepInfoUpdatedForStepOut or not IsSteppedOut then
     exit;
-  if not FController.NextOnlyStopOnStartLine then
+  if not ANextOnlyStopOnStartLine then
     exit;
 
   FStepInfoUnavailAfterStepOut := not IsAtLastHiddenBreakAddr;
@@ -555,13 +556,14 @@ begin
   FStepInfoUpdatedForStepOut := True;
 end;
 
-function TDbgControllerLineStepBaseCmd.HasSteppedAwayFromOriginLine: boolean;
+function TDbgControllerLineStepBaseCmd.HasSteppedAwayFromOriginLine(
+  ANextOnlyStopOnStartLine: Boolean): boolean;
 var
   CompRes: TFPDCompareStepInfo;
 begin
   Result := IsSteppedOut;
   if Result then begin
-    Result := (not FController.NextOnlyStopOnStartLine);
+    Result := (not ANextOnlyStopOnStartLine);
     if Result then
       exit;
 
@@ -656,7 +658,7 @@ procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
 var
   CompRes: TFPDCompareStepInfo;
 begin
-  UpdateThreadStepInfoAfterStepOut;
+  UpdateThreadStepInfoAfterStepOut(True);
 
   if IsAtOrOutOfHiddenBreakFrame then begin
     RemoveHiddenBreak;
@@ -665,7 +667,7 @@ begin
   assert((FHiddenBreakpoint<>nil) xor (FState=siSteppingCurrent), 'TDbgControllerStepIntoLineCmd.DoResolveEvent: (FHiddenBreakpoint<>nil) xor (FState=siSteppingCurrent)');
 
   if (FState = siSteppingCurrent) then begin
-    Finished := HasSteppedAwayFromOriginLine;
+    Finished := HasSteppedAwayFromOriginLine(True);
     if Finished then
       Finished := not IsAtJumpPad;
   end
@@ -732,7 +734,7 @@ end;
 procedure TDbgControllerStepOverLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  UpdateThreadStepInfoAfterStepOut;
+  UpdateThreadStepInfoAfterStepOut(True);
   if IsAtOrOutOfHiddenBreakFrame then
       RemoveHiddenBreak;
 
@@ -740,7 +742,7 @@ begin
     Finished := False;
   end
   else begin
-    Finished := HasSteppedAwayFromOriginLine;
+    Finished := HasSteppedAwayFromOriginLine(True);
     if Finished then
       Finished := not IsAtJumpPad;
   end;
@@ -842,7 +844,7 @@ begin
     FStackFrameInfo.FlagAsSteppedOut;
 
   if IsSteppedOut or IsAtHiddenBreak then begin
-    UpdateThreadStepInfoAfterStepOut;
+    UpdateThreadStepInfoAfterStepOut(FController.NextOnlyStopOnStartLine);
 
     if IsAtOrOutOfHiddenBreakFrame then
         RemoveHiddenBreak;
@@ -850,7 +852,7 @@ begin
     if FHiddenBreakpoint <> nil then
       Finished := False
     else
-      Finished := HasSteppedAwayFromOriginLine;
+      Finished := HasSteppedAwayFromOriginLine(FController.NextOnlyStopOnStartLine);
   end;
 
   if Finished then
