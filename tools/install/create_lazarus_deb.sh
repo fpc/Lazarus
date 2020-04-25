@@ -142,7 +142,10 @@ if [ "$UseCHMHelp" = "1" ]; then
   cp -v *.kwd *.chm $LazDestDir/docs/chm/
   cd -
 fi
-chmod a-x $LazDestDir/debian/rules
+rm -rf $LazDestDir/debian
+rm -rf $LazDestDir/components/aggpas/gpc
+rm -rf $LazDestDir/components/mpaslex
+rm -rf $LazDestDir/lcl/interfaces/carbon
 
 # compile
 echo
