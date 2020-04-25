@@ -4,6 +4,7 @@ Version: LAZVERSION
 Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@freepascal.org>
+Homepage: https://www.lazarus-ide.org/
 Architecture: ARCH
 Replaces: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
 Conflicts: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
@@ -13,3 +14,5 @@ Description: RAD tool for freepascal
  Lazarus is a free and opensource IDE and RAD tool for Free Pascal using the
  Lazarus component library LCL. The LCL is included in this package too.
  See http://www.lazarus.freepascal.org
+XB-AppName: Lazarus IDE
+XB-Category: Editor

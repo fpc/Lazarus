@@ -175,7 +175,10 @@ if [ ! "x$Pas2jsZip" = "x" ]; then
   Pas2jsVer=$($Pas2jsBin -iV | tr -d '\n')
   mv $LazDestDir/pas2js/*pas2js* $LazDestDir/pas2js/$Pas2jsVer
 fi
-chmod a-x $LazDestDir/debian/rules
+rm -rf $LazDestDir/debian
+rm -rf $LazDestDir/components/aggpas/gpc
+rm -rf $LazDestDir/components/mpaslex
+rm -rf $LazDestDir/lcl/interfaces/carbon
 
 # compile
 echo

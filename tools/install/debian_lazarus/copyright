@@ -1,7 +1,7 @@
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: lazarus-project
 Upstream-Contact: Mattias Gaertner <mattias@freepascal.org>
-Source: svn http://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_8
+Source: http://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_8
 
 Files: *
 Copyright: Lazarus team 2020 <lazarus@lists.lazarus-ide.org>
