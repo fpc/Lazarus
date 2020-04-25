@@ -191,7 +191,19 @@ idepkg:
 # requires lazbuild
 # ignores LCL_PLATFORM and OPTS
 useride: 
-	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
+ifdef LAZBUILDJOBS
+ifdef LCL_PLATFORM
+	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
+else
+	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide=
+endif
+else
+ifdef LCL_PLATFORM
+	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
+else
+ 	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
+endif
+endif
 
 #-----------------------------------------------------------------------------
 starter:
