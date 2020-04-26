@@ -3611,8 +3611,11 @@ begin
         Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];
       end;
       Project1.AutoAddOutputDirToIncPath;
+      // call ProjectOpening handlers
+      HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpening, Project1);
       MainIDE.UpdateCaption;
-      if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+      if ProjInspector<>nil then
+        ProjInspector.LazProject:=Project1;
       // add and load default required packages
       PkgBoss.OpenProjectDependencies(Project1,true);
       // rebuild codetools defines
@@ -3653,7 +3656,7 @@ begin
     for i:=0 to Project1.UnitCount-1 do
       Project1.Units[i].ClearModifieds;
     Project1.Modified:=false;
-    // call handlers
+    // call ProjectOpened handlers
     HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;
@@ -3676,7 +3679,10 @@ begin
   try
     Project1.BeginUpdate(true);
     try
-      if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+      // call ProjectOpening handlers
+      HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpening, Project1);
+      if ProjInspector<>nil then
+        ProjInspector.LazProject:=Project1;
 
       // read project info file
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B3');{$ENDIF}
@@ -3810,7 +3816,7 @@ begin
           AnUnitInfo.Loaded := false;
       end;
     end;
-    // call handlers
+    // call ProjectOpened handlers
     HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;

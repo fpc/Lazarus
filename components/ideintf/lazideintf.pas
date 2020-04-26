@@ -236,6 +236,7 @@ type
     lihtSaveAsEditorFile, // called after user selected a new filename for an editor file
     lihtIDERestoreWindows, // called when IDE is restoring the windows (before opening the first project)
     lihtIDEClose, // called when IDE is shutting down (after closequery, so no more interactivity)
+    lihtProjectOpening,// called before IDE opens a project
     lihtProjectOpened,// called after IDE opened a project
     lihtProjectClose, // called before IDE closes a project
     lihtProjectBuilding, // called before IDE builds the project
@@ -470,6 +471,11 @@ type
     procedure AddHandlerOnIDEClose(const OnIDECloseEvent: TNotifyEvent;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnIDEClose(const OnIDECloseEvent: TNotifyEvent);
+    procedure AddHandlerOnProjectOpening(
+                         const OnProjectOpeningEvent: TLazProjectChangedFunction;
+                         AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectOpening(
+                        const OnProjectOpeningEvent: TLazProjectChangedFunction);
     procedure AddHandlerOnProjectOpened(
                          const OnProjectOpenedEvent: TLazProjectChangedFunction;
                          AsLast: boolean = false);
@@ -898,6 +904,18 @@ procedure TLazIDEInterface.RemoveHandlerOnIDEClose(
   const OnIDECloseEvent: TNotifyEvent);
 begin
   RemoveHandler(lihtIDEClose,TMethod(OnIDECloseEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectOpening(
+  const OnProjectOpeningEvent: TLazProjectChangedFunction; AsLast: boolean);
+begin
+  AddHandler(lihtProjectOpening,TMethod(OnProjectOpeningEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectOpening(
+  const OnProjectOpeningEvent: TLazProjectChangedFunction);
+begin
+  RemoveHandler(lihtProjectOpening,TMethod(OnProjectOpeningEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnProjectOpened(

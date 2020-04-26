@@ -1402,8 +1402,7 @@ begin
   Result:=nil;
 end;
 
-function TAbstractExternalTool.FindParser(const SubTool: string
-  ): TExtToolParser;
+function TAbstractExternalTool.FindParser(const SubTool: string): TExtToolParser;
 var
   i: Integer;
   ParserClass: TExtToolParserClass;
