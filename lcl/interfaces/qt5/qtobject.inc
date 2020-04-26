@@ -17,6 +17,10 @@
   Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtWidgetSet.Create;
+{$IFDEF MSWINDOWS}
+var
+  WStr: WideString;
+{$ENDIF}
 begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
   FLastWFPResult := 0;
@@ -26,6 +30,11 @@ begin
     App := QApplicationH(QCoreApplication_instance())
   else
   begin
+    {$IFDEF MSWINDOWS}
+    //add directory plugins to the Qt paths if Qt is distributed with application under mswindows.
+    WStr := 'plugins';
+    QCoreApplication_addLibraryPath(@WStr);
+    {$ENDIF}
     QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
     App := QApplication_Create(@argc, argv);
   end;
