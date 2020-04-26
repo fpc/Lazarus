@@ -33,6 +33,7 @@ type
     FBookmark: TBookmark;
     FCurItem: TChartDataItem;
     FDataLink: TDataLink;
+    FDateTimeFormat: String;
     FFieldColor: String;
     FFieldText: String;
     FFieldX: String;
@@ -66,6 +67,7 @@ type
     procedure Reset;
   published
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DateTimeFormat: String read FDateTimeFormat write FDateTimeFormat;
     property FieldColor: String read FFieldColor write SetFieldColor;
     property FieldText: String read FFieldText write SetFieldText;
     property FieldX: String read FFieldX write SetFieldX;
@@ -80,7 +82,7 @@ procedure Register;
 implementation
 
 uses
-  Math, SysUtils, TAMath;
+  Math, SysUtils, DateUtils, TAMath;
 
 type
 
@@ -187,8 +189,12 @@ procedure TDbChartSource.DefaultGetItem(var AItem: TChartDataItem);
       if IsNull then
         Result := SafeNan
       else if ADateTime then
-        Result := AsDateTime
-      else
+      begin
+        if (DataType = ftString) and (FDateTimeFormat <> '')  then
+          Result := ScanDateTime(FDateTimeFormat, AsString)
+        else
+          Result := AsDateTime
+      end else
         Result := AsFloat;
   end;
 
