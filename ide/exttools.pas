@@ -720,7 +720,7 @@ begin
   NeedProcTerminate:=false;
   EnterCriticalSection;
   try
-    //debugln(['TExternalTool.DoTerminate ',Title,' Terminated=',Terminated,' Stage=',dbgs(Stage)]);
+    DebugLn(['TExternalTool.DoTerminate ',Title,', Terminated=',Terminated,', Stage=',dbgs(Stage)]);
     if Terminated then exit;
     if Stage=etsStopped then exit;
 
@@ -736,8 +736,10 @@ begin
   finally
     LeaveCriticalSection;
   end;
-  if NeedProcTerminate and (Process<>nil) then
+  if NeedProcTerminate and (Process<>nil) then begin
+    DebugLn([' TExternalTool.DoTerminate ',Title,'. Terminating the process.']);
     Process.Terminate(AbortedExitCode);
+  end;
 end;
 
 procedure TExternalTool.Notification(AComponent: TComponent; Operation: TOperation);
@@ -753,8 +755,7 @@ end;
 
 function TExternalTool.CanFree: boolean;
 begin
-  Result:=(FThread=nil)
-       and inherited CanFree;
+  Result:=(FThread=nil) and inherited CanFree;
 end;
 
 function TExternalTool.IsExecutedBefore(Tool: TAbstractExternalTool): Boolean;
@@ -1289,10 +1290,7 @@ var
   i: Integer;
 begin
   for i:=Count-1 downto 0 do
-  begin
-    Assert(i<Count, 'TExternalTools.TerminateAll: xxx'); // if i>=Count then continue;  <- why was this?
     Terminate(Items[i] as TExternalTool);
-  end;
 end;
 
 procedure TExternalTools.Clear;

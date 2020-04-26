@@ -550,7 +550,7 @@ end;
 
 procedure TCodeExplorerView.FormActivate(Sender: TObject);
 begin
-  DebugLn(['TCodeExplorerView.FormActivate!']);
+  //DebugLn(['TCodeExplorerView.FormActivate!']);
   FCodeCmd1:=IDECommandList.FindIDECommand(ecFindDeclaration);
   FCodeCmd2:=IDECommandList.FindIDECommand(ecFindProcedureDefinition);
   FCodeCmd3:=IDECommandList.FindIDECommand(ecFindProcedureMethod);

@@ -210,7 +210,7 @@ end;
 
 procedure TExternalToolConsole.QueueAsyncAutoFree;
 begin
-  debugln(['WARNING: TExternalTool.SetThread can not call AutoFree from other thread']);
+  DebugLn(['WARNING: TExternalTool.SetThread can not call AutoFree from other thread']);
 end;
 
 { TExternalToolsConsole }
@@ -234,8 +234,10 @@ end;
 
 procedure TExternalToolsConsole.HandleMesages;
 begin
-  if IsMultiThread then
+  if IsMultiThread then begin
+    DebugLn('TExternalToolsConsole.HandleMesages: Calling CheckSynchronize!');
     CheckSynchronize;
+  end;
 end;
 
 end.

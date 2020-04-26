@@ -508,8 +508,7 @@ type
     function GetExecuteAfter(Index: integer): TAbstractExternalTool; virtual; abstract;
     function GetExecuteBefore(Index: integer): TAbstractExternalTool; virtual; abstract;
     procedure DoExecute; virtual; abstract;  // starts thread, returns immediately
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CanFree: boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1155,8 +1154,7 @@ begin
   FHandlers[HandlerType].Remove(AMethod);
 end;
 
-procedure TAbstractExternalTool.DoCallNotifyHandler(
-  HandlerType: TExternalToolHandler);
+procedure TAbstractExternalTool.DoCallNotifyHandler(HandlerType: TExternalToolHandler);
 begin
   FHandlers[HandlerType].CallNotifyEvents(Self);
 end;
@@ -1180,10 +1178,8 @@ function TAbstractExternalTool.CanFree: boolean;
 begin
   Result:=false;
   if csDestroying in ComponentState then exit;
-  if (FReferences.Count>0)
-  or (ViewCount>0) then exit;
-  if (Process<>nil) and (Process.Running) then
-    exit;
+  if (FReferences.Count>0) or (ViewCount>0) then exit;
+  if (Process<>nil) and (Process.Running) then exit;
   Result:=true;
 end;
 
@@ -1325,8 +1321,7 @@ begin
   RemoveHandler(ethNewOutput,TMethod(OnNewOutput));
 end;
 
-function TAbstractExternalTool.AddParsers(const SubTool: string
-  ): TExtToolParser;
+function TAbstractExternalTool.AddParsers(const SubTool: string): TExtToolParser;
 var
   ParserClass: TExtToolParserClass;
   i: Integer;
@@ -1358,8 +1353,7 @@ begin
   Result.FTool:=Self;
 end;
 
-function TAbstractExternalTool.AddParserByName(const ParserName: string
-  ): TExtToolParser;
+function TAbstractExternalTool.AddParserByName(const ParserName: string): TExtToolParser;
 var
   aClass: TExtToolParserClass;
 begin
@@ -1564,8 +1558,7 @@ begin
   Result:='';
 end;
 
-class function TExtToolParser.GetMsgHint(SubTool: string; MsgID: integer
-  ): string;
+class function TExtToolParser.GetMsgHint(SubTool: string; MsgID: integer): string;
 begin
   Result:='';
 end;
@@ -1611,16 +1604,24 @@ constructor TExternalToolsBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   fItems:=TFPList.Create;
-  if ExternalToolList=nil then
+  if ExternalToolList=nil then begin
     ExternalToolList:=Self;
+    DebugLn(['TExternalToolsBase.Create: Setting ExternalToolList to ', ExternalToolList]);
+  end
+  else
+    DebugLn(['TExternalToolsBase.Create: ExternalToolList ', ExternalToolList, ' is already set.']);
 end;
 
 destructor TExternalToolsBase.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(fItems);
-  if ExternalToolList=Self then
+  if ExternalToolList=Self then begin
+    DebugLn(['TExternalToolsBase.Destroy: Resetting ExternalToolList, was ', ExternalToolList]);
     ExternalToolList:=nil;
+  end
+  else
+    DebugLn(['TExternalToolsBase.Destroy: ExternalToolList ', ExternalToolList, ' differs from Self.']);
 end;
 
 procedure TExternalToolsBase.ConsistencyCheck;
