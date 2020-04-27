@@ -140,8 +140,9 @@ begin
         writeln('FindReferences failed in "',Code.Filename,'"');
         continue;
       end;
-      // add references to tree
       if ListOfPCodeXYPosition=nil then continue;
+      // In order to show all references after any parser error, they are
+      // collected in a tree
       if TreeOfPCodeXYPosition=nil then
         TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
       CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
