@@ -107,6 +107,12 @@ Creating other system specific rpms:
 
 Debian:
 
+NOTE:
+  These packages are maintained by the Lazarus team. Debian distribution
+  maintains its version of packages separately here:
+  https://salsa.debian.org/pascal-team/lazarus/tree/master/debian
+  https://salsa.debian.org/pascal-team/fpc/tree/master/debian
+
 Creating the debian fpc and fpc-src packages:
 
   There are two versions of the compiler: the stable 2.0.x and the unstable

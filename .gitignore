@@ -317,8 +317,6 @@ components/turbopower_ipro/units
 components/units
 converter/*.bak
 converter/units
-debian/*.bak
-debian/units
 debugger/*.bak
 debugger/test/*.bak
 debugger/test/units
