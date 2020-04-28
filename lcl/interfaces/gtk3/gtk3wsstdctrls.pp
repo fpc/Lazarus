@@ -394,6 +394,7 @@ var
 begin
   AListBox := TGtk3ListBox.Create(AWinControl, AParams);
   AListBox.BorderStyle := TCustomListBox(AWinControl).BorderStyle;
+  AListBox.MultiSelect := TCustomListBox(AWinControl).MultiSelect;
   Result := TLCLIntfHandle(AListBox);
 end;
 
