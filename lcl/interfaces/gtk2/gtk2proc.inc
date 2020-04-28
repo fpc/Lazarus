@@ -82,13 +82,33 @@ begin
   result := PGdkEvent(Event)^._type;
 end;
 
-procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
-  BeforeEvent: boolean);
+function KeyEventWasHandledByLCL(Event: PGdkEventKey; BeforeEvent: boolean
+  ): TLCLHandledKeyEvent;
 var
-  HandledEvent: TLCLHandledKeyEvent;
+  i: Integer;
   EventList: TFPList;
 begin
-  if KeyEventWasHandledByLCL(Event,BeforeEvent) then exit;
+  Result:=nil;
+  if BeforeEvent then
+    EventList:=LCLHandledKeyEvents
+  else
+    EventList:=LCLHandledKeyAfterEvents;
+  if EventList=nil then exit;
+  for i:=0 to EventList.Count-1 do begin
+    Result:=TLCLHandledKeyEvent(EventList[i]);
+    if Result.IsEqual(Event) then
+      exit;
+  end;
+  Result:=nil;
+end;
+
+function RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
+  BeforeEvent: boolean):TLCLHandledKeyEvent;
+var
+  EventList: TFPList;
+begin
+  Result:= KeyEventWasHandledByLCL(Event,BeforeEvent);
+  if Result<>nil then exit;
   if BeforeEvent then begin
     if LCLHandledKeyEvents=nil then
       LCLHandledKeyEvents:=TFPList.Create;
@@ -98,34 +118,11 @@ begin
       LCLHandledKeyAfterEvents:=TFPList.Create;
     EventList:=LCLHandledKeyAfterEvents;
   end;
-  HandledEvent:=TLCLHandledKeyEvent.Create(Event);
-  EventList.Add(HandledEvent);
+  Result:=TLCLHandledKeyEvent.Create(Event);
+  EventList.Add(Result);
   while EventList.Count>10 do begin
-    HandledEvent:=TLCLHandledKeyEvent(EventList[0]);
-    HandledEvent.Free;
+    TLCLHandledKeyEvent(EventList[0]).Free;
     EventList.Delete(0);
-  end;
-end;
-
-function KeyEventWasHandledByLCL(Event: PGdkEventKey; BeforeEvent: boolean
-  ): boolean;
-var
-  i: Integer;
-  HandledEvent: TLCLHandledKeyEvent;
-  EventList: TFPList;
-begin
-  Result:=false;
-  if BeforeEvent then
-    EventList:=LCLHandledKeyEvents
-  else
-    EventList:=LCLHandledKeyAfterEvents;
-  if EventList=nil then exit;
-  for i:=0 to EventList.Count-1 do begin
-    HandledEvent:=TLCLHandledKeyEvent(EventList[i]);
-    if HandledEvent.IsEqual(Event) then begin
-      Result:=true;
-      exit;
-    end;
   end;
 end;
 
@@ -1880,7 +1877,7 @@ var
   FocusedWidget: PGtkWidget;
   LCLObject: TObject;
   FocusedWinControl: TWinControl;
-  HandledByLCL: Boolean;
+  EventHandledByLCL: TLCLHandledKeyEvent;
   TargetWidget: PGtkWidget;
   TargetObj: gPointer;
   KeyPressesChar: char;
@@ -1897,6 +1894,8 @@ var
     end;
     {MWE:.$EndIf}
     AEvent^.KeyVal := 0;
+    if EventHandledByLCL <> nil then
+      EventHandledByLCL.keyval := 0;
   end;
 
   procedure StopKeyEvent;
@@ -2197,7 +2196,7 @@ begin
   Result := CallBackDefaultReturn;
 
   EventStopped := False;
-  HandledByLCL := KeyEventWasHandledByLCL(AEvent, ABeforeEvent);
+  EventHandledByLCL := KeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
   {$IFDEF VerboseKeyboard}
   DebugLn(['[HandleGTKKeyUpDown] START ',DbgSName(TControl(AData)),
@@ -2209,11 +2208,11 @@ begin
     ' _string="',dbgMemRange(PByte(AEvent^._string),AEvent^.length),'"',
     ' group=',(AEvent^.group),
     ' Widget=',GetWidgetClassName(AWidget),
-    ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
+    ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL<>nil]);
   {$ENDIF}
   
   // handle every key event only once
-  if HandledByLCL then exit;
+  if EventHandledByLCL<>nil then exit;
 
   while (not GtkWidgetIsA(AWidget, gtk_window_get_type)) and (AWidget^.parent <> nil) do
     AWidget := AWidget^.parent;
@@ -2254,7 +2253,7 @@ begin
   end;
 
   // remember this event
-  RememberKeyEventWasHandledByLCL(AEvent, ABeforeEvent);
+  EventHandledByLCL := RememberKeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
   if TargetWidget = nil then Exit;
 

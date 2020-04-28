@@ -439,10 +439,7 @@ function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 function gdk_event_get_type(Event: Pointer): TGdkEventType;
-procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
-                                          BeforeEvent: boolean);
-function KeyEventWasHandledByLCL(Event: PGdkEventKey;
-                                 BeforeEvent: boolean): boolean;
+
 function HandleGTKKeyUpDown(AWidget: PGtkWidget; AEvent: PGdkEventKey;
   AData: gPointer; ABeforeEvent, AHandleDown: Boolean; const AEventName: PGChar
   ) : GBoolean;
