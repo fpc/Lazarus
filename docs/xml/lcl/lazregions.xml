@@ -66,11 +66,11 @@
         <short>Base class used for rectangular areas in a region</short>
         <descr>
           <p>
-            <var>TLazRegionPart</var> defines the base class used to represent a rectangular area in a region. <var>TLazRegionPart</var> is used as the ancestor for the <var>LazRegionRect</var> class.
+            <var>TLazRegionPart</var> defines the base class used to represent a rectangular area in a region. <var>TLazRegionPart</var> is used as the ancestor for the <var>TLazRegionRect</var> class.
           </p>
         </descr>
         <seealso>
-          <link id="LazRegionRect"/>
+          <link id="TLazRegionRect"/>
         </seealso>
       </element>
 
@@ -346,9 +346,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TFPCustomRegion"/>
           <link id="TLazRegionWithChilds"/>
-          <link id="#LCL.LazCanvas.TLazCanvas.ClipRegion"/>
+          <link id="#LCL.LazCanvas.TLazCanvas"/>
           <link id="#LCL.LazCanvas.TLazCanvasState.ClipRegion"/>
         </seealso>
       </element>

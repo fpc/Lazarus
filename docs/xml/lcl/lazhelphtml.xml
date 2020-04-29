@@ -387,10 +387,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="THTMLHelpDatabase.RegisterSelf"/>
-          <link id="THTMLHelpDatabase.UnregisterSelf"/>
+          <link id="THelpDatabase.RegisterSelf"/>
+          <link id="THelpDatabase.UnregisterSelf"/>
           <link id="THelpDatabase.ID"/>
-          <link id="THelpDatabase.Name"/>
+          <link id="THelpDatabase.GetLocalizedName"/>
         </seealso>
       </element>
 
@@ -468,9 +468,9 @@
 
       <element name="THTMLBrowserHelpViewer.FBrowserPath" link="THTMLBrowserHelpViewer.BrowserPath"/>
 
-      <element name="THTMLBrowserHelpViewer.FDefaultBrowser" link="THTMLBrowserHelpViewer.DefaultBrowser"/>
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowser" link="THTMLBrowserHelpViewer.FindDefaultBrowser"/>
 
-      <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams" link="THTMLBrowserHelpViewer.DefaultBrowserParams"/>
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams"/>
 
       <element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser" link="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
 
@@ -505,7 +505,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="THTMLBrowserHelpViewer.AddSupportedMimeType"/>
+          <link id="THelpDatabase.AddSupportedMimeType"/>
           <link id="THTMLBrowserHelpViewer.BrowserParams"/>
           <link id="#LCL.LazHelpIntf.THelpViewer.ParameterHelp"/>
         </seealso>
@@ -567,7 +567,7 @@
         <seealso>
           <link id="THTMLBrowserHelpViewer.BrowserPath"/>
           <link id="THTMLBrowserHelpViewer.BrowserParams"/>
-          <link id="THTMLBrowserHelpViewer.ShowURL"/>
+          <link id="THTMLHelpDatabase.ShowURL"/>
           <link id="TShowHelpResult"/>
           <link id="THelpViewer"/>
           <link id="THelpNode"/>
@@ -681,7 +681,7 @@
         </descr>
         <seealso>
           <link id="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
-          <link id="THTMLBrowserHelpViewer.DefaultBrowser"/>
+          <link id="THTMLBrowserHelpViewer.FindDefaultBrowser"/>
           <link id="THTMLBrowserHelpViewer.BrowserParams"/>
           <link id="THTMLBrowserHelpViewer.ShowNode"/>
         </seealso>
@@ -704,7 +704,7 @@
         </descr>
         <seealso>
           <link id="THTMLBrowserHelpViewer.BrowserPath"/>
-          <link id="THTMLBrowserHelpViewer.DefaultBrowserParams"/>
+          <link id="THTMLBrowserHelpViewer.BrowserParams"/>
           <link id="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
           <link id="THTMLBrowserHelpViewer.ShowNode"/>
         </seealso>

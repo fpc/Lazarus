@@ -58,7 +58,7 @@
         <seealso>
           <link id="TXMLConfig.WriteToStream"/>
           <link id="TXMLConfig.SetValue"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
         </seealso>
       </element>
 
@@ -108,11 +108,10 @@
         </descr>
         <seealso>
           <link id="TXMLConfig.Clear"/>
-          <link id="TXMLConfig.CreateConfigNode"/>
           <link id="TXMLConfig.Destroy"/>
           <link id="TXMLConfig.InternalFindNode"/>
           <link id="TXMLConfig.ReadFromStream"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
           <link id="TXMLConfig.SetValue"/>
         </seealso>
       </element>
@@ -274,7 +273,7 @@
           <link id="TXMLConfig.Destroy"/>
           <link id="TXMLConfig.Clear"/>
           <link id="TXMLConfig.ReadFromStream"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
           <link id="TXMLConfig.InvalidatePathCache"/>
         </seealso>
       </element>
@@ -293,7 +292,7 @@
         </descr>
         <seealso>
           <link id="TXMLConfig.InternalFindNode"/>
-          <link id="TNodeCache"/>
+          <link id="TXmlConfig.TNodeCache"/>
         </seealso>
       </element>
       <element name="TXMLConfig.SetPathNodeCache.Index">
@@ -340,11 +339,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TXMLConfig.PathNodeCache"/>
-          <link id="TXMLConfig.InvalidatePathCache"/>
           <link id="TXMLConfig.SetPathNodeCache"/>
+          <link id="TXMLConfig.InvalidatePathCache"/>
           <link id="TXMLConfig.FindChildNode"/>
-          <link id="TNodeCache"/>
+          <link id="TXmlConfig.TNodeCache"/>
         </seealso>
       </element>
       <element name="TXMLConfig.InvalidateCacheTilEnd.StartIndex">
@@ -530,7 +528,7 @@
           <link id="TXMLConfig.Document"/>
           <link id="TXMLConfig.Filename"/>
           <link id="TXMLConfig.Modified"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
           <link id="TXMLConfig.WriteXMLFile"/>
         </seealso>
       </element>
@@ -579,7 +577,6 @@
         </descr>
         <seealso>
           <link id="TXMLConfig.Document"/>
-          <link id="TXMLConfig.CreateConfigNode"/>
           <link id="TXMLConfig.WriteFlags"/>
           <link id="#LazUtils.Laz2_XMLWrite.WriteXMLFile"/>
         </seealso>
@@ -636,7 +633,7 @@
         </short>
         <descr>
           <p>
-            <var>GetExtendedValue</var> is an <var>Extended</var> function used to get the value for a DOM node at the specified path as an Extended data type. GetExtendedValue is similar to the <link id="GetValue"/> method; in fact it calls GetValue to retrieve the value for the DOM node in <var>APath</var>. It calls <var>StrToExtended</var> to convert the node value to the Extended data type used as the return value.
+            <var>GetExtendedValue</var> is an <var>Extended</var> function used to get the value for a DOM node at the specified path as an Extended data type. GetExtendedValue is similar to the <link id="TXMLConfig.GetValue"/> method; in fact it calls GetValue to retrieve the value for the DOM node in <var>APath</var>. It calls <var>StrToExtended</var> to convert the node value to the Extended data type used as the return value.
           </p>
           <p>
             Use <var>ADefault</var> to specify the default value used in the method when the DOM node does not contain any content (or value).
@@ -993,7 +990,7 @@
           <link id="TXMLConfig.ReadXMLFile"/>
           <link id="TXMLConfig.FreeDoc"/>
           <link id="TXMLConfig.InternalCleanNode"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
         </seealso>
       </element>
 
@@ -1031,8 +1028,7 @@
         <seealso>
           <link id="TXMLConfig.Clear"/>
           <link id="TXMLConfig.FreeDoc"/>
-          <link id="TXMLConfig.CreateConfigNode"/>
-          <link id="TXMLConfig.SetFilename"/>
+          <link id="TXMLConfig.Filename"/>
           <link id="TXMLDocument"/>
         </seealso>
       </element>
@@ -1080,7 +1076,7 @@
         </descr>
         <seealso>
           <link id="TXMLConfig.Create"/>
-          <link id="TXMLConfig.WriteToSteam"/>
+          <link id="TXMLConfig.WriteToStream"/>
           <link id="TXMLConfig.WriteXMLFile"/>
           <link id="TXMLWriterFlags"/>
         </seealso>
@@ -1225,11 +1221,11 @@
             <var>CompareDomNodeNames</var> is an <var>Integer</var> function used to compare the pointers to DOM nodes specified in <var>DOMNode1</var> and <var>DOMNode2</var>. CompareDomNodeNames calls <var>CompareStr</var> to examine the names in the pointers. The return value contains the relative sort order for the node names as determined in the <var>CompareStr</var> routine.
           </p>
           <p>
-            CompareDomNodeNames is the routine passed as an argument to MergeSortLen in the <var>TXMLConfig.TNodeCache.RefreshChildren</var> method.
+            CompareDomNodeNames is the routine passed as an argument to MergeSortLen in the <var>TNodeCache.RefreshChildren</var> method.
           </p>
         </descr>
         <seealso>
-          <link id="TXMLConfig.TNodeCache.RefreshChildren"/>
+          <link id="TXMLConfig"/>
         </seealso>
       </element>
       <element name="CompareDomNodeNames.Result">

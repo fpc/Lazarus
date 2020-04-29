@@ -26,7 +26,6 @@
           <link id="TLinkListItem.Next"/>
           <link id="TLinkList.First"/>
           <link id="TLinkList.Last"/>
-          <link id="TLinkList.FFirstFree"/>
         </seealso>
       </element>
 
@@ -142,8 +141,6 @@
         </descr>
         <seealso>
           <link id="TLinkList.CreateItem"/>
-          <link id="TLinkList.FFirstFree"/>
-          <link id="TLinkList.FFreeCount"/>
           <link id="TLinkListItem.Prior"/>
           <link id="TLinkListItem.Next"/>
         </seealso>
@@ -186,7 +183,6 @@
         <seealso>
           <link id="TLinkList.Last"/>
           <link id="TLinkList.AddAsLast"/>
-          <link id="TLinkList.Unbind"/>
         </seealso>
       </element>
 
@@ -199,8 +195,6 @@
         </descr>
         <seealso>
           <link id="TLinkList.AddAsLast"/>
-          <link id="TLinkList.Unbind"/>
-          <link id="TLinkList.FLast"/>
         </seealso>
       </element>
 
@@ -212,10 +206,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLinkList.Unbind"/>
           <link id="TLinkList.AddAsLast"/>
-          <link id="TLinkList.FCount"/>
-          <link id="TLinkList.FFreeCount"/>
         </seealso>
       </element>
 
@@ -230,7 +221,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLinkList.Unbind"/>
           <link id="TLinkList.Count"/>
           <link id="TLinkListItem.Prior"/>
           <link id="TLinkListItem.Next"/>
@@ -253,7 +243,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLinkList.Unbind"/>
           <link id="TLinkList.AddAsLast"/>
           <link id="TLinkListItem.Prior"/>
           <link id="TLinkListItem.Next"/>
@@ -306,7 +295,6 @@
         </descr>
         <seealso>
           <link id="TLinkList.Clear"/>
-          <link id="TLinkList.FFirstFree"/>
           <link id="TLinkListItem.Next"/>
         </seealso>
       </element>

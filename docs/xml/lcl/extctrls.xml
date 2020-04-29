@@ -128,7 +128,7 @@
         <short>Sets the value for the Parent property</short>
         <descr></descr>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl.Parent"/>
+          <link id="#LCL.Controls.TControl.Parent"/>
         </seealso>
       </element>
       <element name="TPage.SetParent.AParent">
@@ -414,6 +414,40 @@
         <short></short>
       </element>
 
+      <element name="TUNBPages.Move">
+        <short>Moves the active page to a position in the page list</short>
+        <descr>
+          <p>
+            <var>Move</var> is an overridden procedure in <var>TUNBPages</var>.  It re-implements the method defined in the <var>TStrings</var> ancestor class. Move is used to relocate the active page in a NoteBook control to a new position in the page list.
+          </p>
+          <p>
+            Move uses the internal <var>TNotebook</var> member that is the owner of the class instance to retrieve the current page and its ordinal position.
+          </p>
+          <p>
+            <var>CurIndex</var> is set to the <var>PageIndex</var> for the active page in the Notebook component. <var>NewIndex</var> specifies the new ordinal position in the page list for the <var>TPage</var> instance.
+          </p>
+          <p>
+            The Move method in the internal page list (TObjectList) is called to move the TPage instance from using the required positions. The PageIndex for the TNotebook control is reset to re-activate the page moved in the operation.
+          </p>
+          <remark>
+            Please note : Move does <b>NOT</b> call the inherited method.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="#LCL.ExtCtrls.TNotebook.Pages"/>
+          <link id="#LCL.ExtCtrls.TNotebook.PageIndex"/>
+          <link id="#LCL.ExtCtrls.TNotebook.IndexOf"/>
+          <link id="#LCL.ExtCtrls.TPage"/>
+          <link id="#RTL.Classes.TStrings.Move"/>
+        </seealso>
+      </element>
+      <element name="TUNBPages.Move.CurIndex`">
+        <short>Current position for the active page</short>
+      </element>
+      <element name="TUNBPages.Move.NewIndex`">
+        <short>New position in the page list for the page</short>
+      </element>
+
       <element name="TNotebook">
         <short>
           <var>TNotebook</var> is a container for a series of <var>pages</var> placed together
@@ -645,7 +679,7 @@
         <short>Indicates the number of page objects defined for the notebook control</short>
         <descr>
           <p>
-            <p>PageCount</p> is a read-only Integer property that indicates the number of page objects defined for the notebook control. The value in PageCount is determined by the total number of entries stored in the list of Pages.
+            <var>PageCount</var> is a read-only Integer property that indicates the number of page objects defined for the notebook control. The value in PageCount is  determined by the total number of entries stored in the list of Pages.
           </p>
           <p>
             Use methods and properties in Pages to maintain the page names used in the notebook control.
@@ -785,7 +819,6 @@
         <seealso>
           <link id="TCustomTimer"/>
           <link id="TIdleTimer"/>
-          <link id="TCustomTimer.UpdateHandlers"/>
           <link id="TApplication.AddOnIdleHandler"/>
           <link id="TApplication.AddOnIdleEndHandler"/>
           <link id="TApplication.AddOnUserInputHandler"/>
@@ -838,7 +871,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomIdleTimer.UpdateHandlers"/>
           <link id="#LCL.Forms.Application"/>
         </seealso>
       </element>
@@ -908,7 +940,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomIdleTimer.UpdateHandlers"/>
           <link id="#rtl.Classes.TComponent.Loaded"/>
         </seealso>
       </element>
@@ -1634,7 +1665,7 @@
           </p>
         </descr>
         <seealso>
-           <link id="#LCL.Controls.TControl.SetAnchors"/>
+           <link id="#LCL.Controls.TControl.Anchors"/>
         </seealso>
       </element>
       <element name="TCustomSplitter.SetAnchors.AValue">
@@ -2374,7 +2405,6 @@
           <link id="#LCL.Graphics.TPicture.OnChange"/>
           <link id="TCustomImage.PictureChanged"/>
           <link id="TCustomImage.Canvas"/>
-          <link id="TCustomImage.GetCanvas"/>
         </seealso>
       </element>
 
@@ -3555,8 +3585,6 @@
         </descr>
         <seealso>
           <link id="TCustomCheckGroup.Items"/>
-          <link id="TCustomCheckGroup.UpdateItems"/>
-          <link id="TCustomCheckGroup.DoClick"/>
           <link id="TCustomCheckGroup.OnItemClick"/>
           <link id="#LCL.StdCtrls.TCheckBox.OnClick"/>
         </seealso>
@@ -3737,8 +3765,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckGroup.UpdateItems"/>
-          <link id="TCustomCheckGroup.UpdateControlsPerLine"/>
           <link id="#lcl.LCLProc.OwnerFormDesignerModified"/>
         </seealso>
       </element>
@@ -3804,7 +3830,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckGroup.UpdateItems"/>
           <link id="#rtl.Classes.TComponent.Loaded"/>
         </seealso>
       </element>
@@ -3893,11 +3918,10 @@
         </short>
         <descr>
           <p>
-            <var>Items</var> is a <var>TStrings</var> property which stores the captions for the check boxes on the grouped edit control. When the class instance is created, <var>TCheckGroupStringList</var> is used as the storage for the property values.
+            <var>Items</var> is a <var>TStrings</var> property which stores the captions for the check boxes on the grouped edit control. When the class instance is created, <var>TCheckGroupStringList</var> is used as the storage for the property values in the <var>Items</var> property.
           </p>
         </descr>
         <seealso>
-          <link id="TCheckGroupStringList"/>
         </seealso>
       </element>
 
@@ -3954,8 +3978,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckGroup.ChildSizing"/>
-          <link id="TCustomCheckGroup.UpdateControlsPerLine"/>
+          <link id="#LCL.Controls.TWinControl.ChildSizing"/>
+          <link id="TCheckGroup.ChildSizing"/>
         </seealso>
       </element>
 
@@ -3975,8 +3999,9 @@
         <seealso>
           <link id="TCustomCheckGroup.Items"/>
           <link id="TCustomCheckGroup.Columns"/>
-          <link id="TCustomCheckGroup.ChildSizing"/>
           <link id="TColumnLayout"/>
+          <link id="TCheckGroup.ChildSizing"/>
+          <link id="#LCL.Controls.TWinControl.ChildSizing"/>
         </seealso>
       </element>
 
@@ -4269,11 +4294,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomLabeledEdit.Parent"/>
           <link id="TCustomLabeledEdit.EditLabel"/>
           <link id="TCustomLabeledEdit.LabelPosition"/>
           <link id="TCustomLabeledEdit.LabelSpacing"/>
-          <link id="TCustomLabeledEdit.DoPositionLabel"/>
+          <link id="#LCL.Controls.TControl.Parent"/>
         </seealso>
       </element>
       <element name="TCustomLabeledEdit.SetParent.AParent">
@@ -4328,12 +4352,12 @@
         </descr>
         <seealso>
           <link id="TCustomLabeledEdit.EditLabel"/>
-          <link id="TCustomLabeledEdit.Parent"/>
           <link id="TCustomLabeledEdit.LabelPosition"/>
           <link id="TCustomLabeledEdit.LabelSpacing"/>
-          <link id="TCustomLabeledEdit.Visible"/>
-          <link id="#lcl.Controls.TControl.DisableAlign"/>
-          <link id="#lcl.Controls.TControl.EnableAlign"/>
+          <link id="#lcl.Controls.TControl.Visible"/>
+          <link id="#lcl.Controls.TWinControl.DisableAlign"/>
+          <link id="#lcl.Controls.TWinControl.EnableAlign"/>
+          <link id="#lcl.Controls.TControl.Parent"/>
         </seealso>
       </element>
 
@@ -4412,7 +4436,6 @@
         <seealso>
           <link id="TCustomLabeledEdit.EditLabel"/>
           <link id="TBoundLabel"/>
-          <link id="TBoundLabel.ControlStyle"/>
           <link id="TBoundLabel.FocusControl"/>
         </seealso>
       </element>
@@ -4734,8 +4757,8 @@
         </descr>
         <seealso>
           <link id="TCustomPanel.UpdateParentColorChange"/>
-          <link id="TCustomPanel.ControlStyle"/>
           <link id="TCustomPanel.ParentColor"/>
+          <link id="#LCL.Controls.TControl.ControlStyle"/>
         </seealso>
       </element>
 
@@ -4818,9 +4841,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomPanel.Invalidate"/>
           <link id="TCustomPanel.Paint"/>
           <link id="#LCL.Graphics.TTextStyle"/>
+          <link id="#LCL.Controls.TControl.Invalidate"/>
         </seealso>
       </element>
 
@@ -4852,8 +4875,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomPanel.Invalidate"/>
           <link id="#LCL.Classes.TAlignment"/>
+          <link id="#LCL.Controls.TControl.Invalidate"/>
           <link id="#LCL.StdCtrls.TCustomEdit.Alignment"/>
         </seealso>
       </element>
@@ -4869,8 +4892,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomPanel.PaintBevel"/>
-          <link id="TCustomPanel.Invalidate"/>
+          <link id="#LCL.Controls.TWinControl.Invalidate"/>
         </seealso>
       </element>
 
@@ -4923,7 +4945,7 @@
         </descr>
         <seealso>
           <link id="TCustomPanel.ControlStyle"/>
-          <link id="#LCL.Controls.TControl.ParentBackground"/>
+          <link id="#LCL.Controls.TWinControl.ParentBackground"/>
         </seealso>
       </element>
 
@@ -5209,7 +5231,6 @@
       <element name="TFlowPanelControl.WrapAfter">
         <short>Determines the wrap policy after this control.</short>
         <descr>
-          Valid only when <link id="#LCLBase.TCustomFlowPanel.AutoWrap">TFlowPanel.AutoWrap</link> is set to <b>True</b>.
         </descr>
       </element>
 
@@ -5923,7 +5944,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Classes.TComponent.Loaded"/>
+          <link id="#RTL.Classes.TComponent.Loaded"/>
         </seealso>
       </element>
 
@@ -6648,9 +6669,9 @@
         <seealso>
           <link id="TCustomPanel"/>
           <link id="TCtrlBands"/>
-          <link id="#LCL.Graphics.ComCtrls.TToolBar"/>
-          <link id="#LCL.Graphics.ComCtrls.TCoolBar"/>
-          <link id="#LCL.Graphics.ComCtrls.TToolButton"/>
+          <link id="#LCL.ComCtrls.TToolBar"/>
+          <link id="#LCL.ComCtrls.TCoolBar"/>
+          <link id="#LCL.ComCtrls.TToolButton"/>
         </seealso>
       </element>
 

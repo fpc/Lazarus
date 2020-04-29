@@ -149,21 +149,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- destructor Visibility: public -->
+
       <element name="TContainedAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
-        <descr>If you call Destroy for an object which hasn't being initialized yet it will generate an error. Always use
-the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
-
-Take the following precautions when creating your own Destroy method:
-
-* Declare Destroy with the override directive, because it is a virtual method.
-
-* Always call 'inherited Destroy;' as the last thing on the destructor code.
-
-* An exception may be raised on the constructor in case there is not enough memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
-
-* Remember to call Free for all objects created on the constructor.
-</descr>
+        <descr>
+          <p>
+            If you call <var>Destroy</var> for an object which hasn't being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+          </p>
+          <p>
+            Take the following precautions when creating your own Destroy method:
+          </p>
+          <ul>
+            <li>
+              Declare Destroy with the override directive, because it is a virtual method.
+            </li>
+            <li>
+              Always call 'inherited Destroy;' as the last thing on the destructor code.
+            </li>
+            <li>
+              An exception may be raised on the constructor in case there is not enough memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+            </li>
+            <li>
+              Remember to call Free for all objects created on the constructor.
+            </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -274,11 +283,11 @@ Take the following precautions when creating your own Destroy method:
         </short>
         <descr>
           <p>
-            <var>TCustomActionList</var> - the ancestor class for <var>TActionList</var>. If you want to define your own action list class, you should derive it from this class.</p>
+            <var>TCustomActionList</var> - the ancestor class for <var>TActionList</var>. If you want to define your own action list class, you should derive it from this class.
+          </p>
           <p>
-            <var>TActionList</var>, <var>TAction</var>, <var>TActionLink</var> and <var>TContainedAction</var> are used to centralize
- the implementation of user commands, and can then be linked to the appropriate button, menu or another component. This is an Object-Oriented programming strategy
- to reuse the code, as opposed to the Event-Oriented approach of writing an OnClick event for each component.</p>
+            <var>TActionList</var>, <var>TAction</var>, <var>TActionLink</var> and <var>TContainedAction</var> are used to centralize the implementation of user commands, and can then be linked to the appropriate button, menu or another component. This is an Object-Oriented programming strategy to reuse the code, as opposed to the Event-Oriented approach of writing an OnClick event for each component.
+          </p>
         </descr>
         <seealso>
           <link id="TActionList"/>
@@ -499,74 +508,79 @@ Take the following precautions when creating your own Destroy method:
         <descr/>
         <seealso/>
       </element>
-      <!-- constructor Visibility: public -->
+
       <element name="TCustomActionList.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomActionList</var>: calls inherited <var>Create</var> then initializes some local variables</short>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for <var>TCustomActionList</var>, and calls the inherited constructor.
+          </p>
+          <p>
+            Create allocates resources needed for members in the class instance, and assigns the <var>OnChange</var> event handler used in the internal <var>TChangeLink</var> instance when the <var>Images</var> property is altered.
+          </p>
+          <p>
+            Create sets the default value in the <var>State</var> property to     <var>asNormal</var>.
+          </p>
+        </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="TCustomActionList.Images"/>
+          <link id="#LCL.ImgList.TChangeLink.OnChange"/>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create"/>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomActionList.Create.AOwner">
         <short/>
       </element>
-      <!-- destructor Visibility: public -->
+
       <element name="TCustomActionList.Destroy">
+        <short>Destructor for the class instance</short>
         <descr>
-          <var>Destroy</var> sends a <var>opRemove</var> notification to all components 
-in the free-notification list. After that, all owned components are
-destroyed by calling <link id="#rtl.Classes.TComponent.DestroyComponents">DestroyComponents</link>
-(and hence removed from the list of owned components). When this
-is done, the component removes itself from its owner's child component list.
-After that, the parent's destroy method is called.
-</descr>
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomActionList</var>: frees various links then calls inherited <var>Destroy</var>
-        </short>
+          <p>
+            <var>Destroy</var> is the destructor for <var>TCustomActionList</var>. It frees the internal TChangeLink instance used in the class, frees any class instance and resources allocated to the <var>Actions</var> property.
+          </p>
+          <p>
+            Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
+          <link id="TCustomActionList.Actions"/>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy"/>
+          <link id="#LCL.ImgList.TChangeLink"/>
         </seealso>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TCustomActionList.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction">
+        <short>Examines and executes the specified Action</short>
         <descr>
-          <var>ExecuteAction</var> checks whether <var>Action</var> handles the
-current component, and if yes, calls the <var>ExecuteAction</var> method,
-passing itself as a parameter. The function returns <var>True</var> if the
-action handles the current component.
-</descr>
-        <errors/>
+          <p>
+            <var>ExecuteAction</var> checks whether <var>Action</var> handles the current component, and if yes, calls the <var>ExecuteAction</var> method, passing itself as a parameter. The function returns <var>True</var> if the action handles the current component.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomActionList.ExecuteAction.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomActionList.ExecuteAction.Action">
         <short/>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TCustomActionList.UpdateAction" link="#rtl.Classes.TComponent.UpdateAction">
-        <descr>
-          <var>UpdateAction</var> checks whether <var>Action</var> handles the
-current component, and if yes, calls the <var>UpdateTarget</var> method,
-passing itself as a parameter. The function returns <var>True</var> if the
-action handles the current component.
-</descr>
-        <errors/>
+          <short>Examines and updates the target for the specified Action</short>
+          <descr>
+            <p>
+              <var>UpdateAction</var> checks whether <var>Action</var> handles the current component, and if yes, calls the <var>UpdateTarget</var> method, passing itself as a parameter. The function returns <var>True</var> if the action handles the current component.
+            </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomActionList.UpdateAction.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomActionList.UpdateAction.Action">
         <short/>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TCustomActionList.IndexOfName">
         <short>The Index value of the name of this action in the ActionList</short>
         <descr/>
@@ -622,25 +636,32 @@ action handles the current component.
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TActionList">
         <short>
           <var>TActionList</var>   - The basic actions list class</short>
         <descr>
           <p>
-            <var>TActionList</var> - The basic actions list class</p>
-          <p>
-            <var>TActionList</var> is the last component on the "Standard" component palette on the Lazarus IDE.</p>
-          <p>To use an ActionList, click on the icon on the IDE Standard Components toolbar, then click anywhere on the main form and an ActionList icon will appear. It doesn't matter where you position it, because it is not visible at run-time. </p>
-          <p>You can add, remove or modify actions on the list by right-clicking on the ActionList icon on the form editor and then choosing "Edit action list...", or by double-clicking on the icon with the left mouse button. This will open the "Action List Editor". </p>
-          <p>You can now use the "+" and "-" buttons to add and remove actions. The ActionList editor menu allows you to select standard actions from a selection (option 'New Standard Action')  or create a new action (option 'New Action'). To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action's name on the "Action List Editor".</p>
-          <p>The <var>TActionList</var>
- Class introduces very few properties of its own, but inherits a lot from its ancestor, <link id="#lcl.ActnList.TCustomActionList">TCustomActionList</link>, and related components <link id="#lcl.ActnList.TAction">TAction</link>, <link id="#lcl.ActnList.TCustomAction">TCustomAction</link>, <link id="#lcl.ActnList.TContainedAction">TContainedAction</link> and <link id="#rtl.Classes.TBasicAction">TBasicAction</link>
+            <var>TActionList</var> - The basic actions list class. <var>TActionList</var> is the last component on the "Standard" component palette on the Lazarus IDE.
           </p>
-          <p>Each entry in the ActionList appears in the Object Inspector as an instance of <var>TAction</var>, and its properties are accessible and modifiable from the Object Inspector</p>
+          <p>
+            To use an ActionList, click on the icon on the IDE Standard Components toolbar, then click anywhere on the main form and an ActionList icon will appear. It doesn't matter where you position it, because it is not visible at run-time.
+          </p>
+          <p>
+            You can add, remove or modify actions on the list by right-clicking on the ActionList icon on the form editor and then choosing "Edit action list...", or by double-clicking on the icon with the left mouse button. This will open the "Action List Editor".
+          </p>
+          <p>
+            You can now use the "+" and "-" buttons to add and remove actions. The ActionList editor menu allows you to select standard actions from a selection (option 'New Standard Action')  or create a new action (option 'New Action'). To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action's name on the "Action List Editor".
+          </p>
+          <p>
+            The <var>TActionList</var> class introduces very few properties of its own, but inherits a lot from its ancestor, <link id="#lcl.ActnList.TCustomActionList">TCustomActionList</link>, and related components <link id="#lcl.ActnList.TAction">TAction</link>, <link id="#lcl.ActnList.TCustomAction">TCustomAction</link>, <link id="#lcl.ActnList.TContainedAction">TContainedAction</link> and <link id="#rtl.Classes.TBasicAction">TBasicAction</link>.
+          </p>
+          <p>
+            Each entry in the ActionList appears in the Object Inspector as an instance of <var>TAction</var>, and its properties are accessible and modifiable from the Object Inspector.
+          </p>
         </descr>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TActionList.Images" link="#LCL.ActnList.TCustomActionList.Images">
         <descr/>
         <seealso/>
@@ -1038,27 +1059,30 @@ action handles the current component.
       <element name="TCustomAction.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <descr>
           <p>
-            <var>AssignTo</var> is the generic function to assign the class' contents to 
-another class. This method must be overridden by descendent classes to
-actually assign the content of the source instance to the destination
-instance. 
-</p>
-          <p>The <link id="TPersistent"/> implementation of <var>Assignto</var> raises 
-an <var>EConvertError</var> exception. This is done for the following
-reason: If the source class doesn't know how to assign itself to the
-destination class (using <var>AssignTo</var>), the destination class may 
-know how get the data from the source class (using <link id="TPersistent.Assign">Assign</link>). If all descendent methods are
-implemented correctly, then if neither of the two classes knows how to
-assign their contents to each other, execution will end up at <link id="TPersistent.Assign"/>, which will simply execute 
-</p>
-          <code>Dest.AssignTo(Self);
-</code>
-          <p>If neither of the classes knows how to assign to/from each other, then
-execution will end up at the <var>TPersistent</var> implementation of
-<var>AssignTo</var>, and an exception will be raised.
-</p>
+            <var>AssignTo</var> is the generic function to assign the class' contents to
+            another class. This method must be overridden by descendent classes to
+            actually assign the content of the source instance to the destination
+            instance.
+          </p>
+          <p>
+            The <link id="TPersistent"/> implementation of <var>Assignto</var> raises
+            an <var>EConvertError</var> exception. This is done for the following
+            reason: If the source class doesn't know how to assign itself to the
+            destination class (using <var>AssignTo</var>), the destination class may
+            know how get the data from the source class (using <link id="TPersistent.Assign">Assign</link>). If all descendent methods are
+            implemented correctly, then if neither of the two classes knows how to
+            assign their contents to each other, execution will end up at <link id="TPersistent.Assign"/>, which will simply execute
+          </p>
+          <code>Dest.AssignTo(Self);</code>
+          <p>
+            If neither of the classes knows how to assign to/from each other, then
+            execution will end up at the <var>TPersistent</var> implementation of
+            <var>AssignTo</var>, and an exception will be raised.
+          </p>
         </descr>
-        <errors/>
+        <errors>
+          Raises an EConvertError exception if the current class cannot be assigned to the  persistent class instance in Dest.
+        </errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -1215,9 +1239,14 @@ execution will end up at the <var>TPersistent</var> implementation of
           <var>TAction</var> is the basic action object used on the LCL.</short>
         <descr>
           <p>
-            <var>TAction</var> is the basic action object used on the LCL.</p>
-          <p>It redeclares many properties inherited from TCustomAction on the public section, but does not add any new features. For more details look at the See Also section for TCustomAction.</p>
-          <p>The properties of each Action can be modified at design time in the Object Inspector</p>
+            <var>TAction</var> is the basic action object used on the LCL.
+          </p>
+          <p>
+            It redeclares many properties inherited from TCustomAction on the public section, but does not add any new features. For more details look at the See Also section for TCustomAction.
+          </p>
+          <p>
+            The properties of each Action can be modified at design time in the Object Inspector.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomAction"/>
@@ -1281,38 +1310,35 @@ execution will end up at the <var>TPersistent</var> implementation of
       </element>
       <!-- property Visibility: published -->
       <element name="TAction.OnExecute" link="#rtl.Classes.TBasicAction.OnExecute">
-        <descr><p><var>OnExecute</var> is the event triggered when the action is activated
-(executed). The event is triggered e.g. when the user clicks e.g. on a menu
-item or a button associated to the action. The application programmer 
-should provide a <var>OnExecute</var> event handler to execute whatever code
-is necessary when the button is pressed or the menu item is chosen.
-</p><p>Note that assigning an <var>OnExecute</var> handler will result in the
-<link id="TBasicAction.Execute">Execute</link> method returning a
-<var>True</var> value. Predefined actions (such as dataset actions)
-will check the result of <var>Execute</var> and will not perform their 
-normal task if the <var>OnExecute</var> handler was called.
-</p><p>Since version 1.1 setting OnExecute no longer sets the owner's OnClick. You can now specify an event for the action and a more specific OnClick for control and both are called. OnClick is called before OnExecute.
-</p>
+        <short>Event called when action is executed</short>
+        <descr>
+          <p>
+            <var>OnExecute</var> is the event triggered when the action is activated (executed). The event is triggered e.g. when the user clicks e.g. on a menu item or a button associated to the action. The application programmer should provide a <var>OnExecute</var> event handler to execute whatever code is necessary when the button is pressed or the menu item is chosen.
+          </p>
+          <p>
+            Note that assigning an <var>OnExecute</var> handler will result in the <link id="TBasicAction.Execute">Execute</link> method returning a <var>True</var> value. Predefined actions (such as dataset actions) will check the result of <var>Execute</var> and will not perform their normal task if the <var>OnExecute</var> handler was called.
+          </p>
+          <p>
+            Since version 1.1 setting OnExecute no longer sets the owner's OnClick. You can now specify an event for the action and a more specific OnClick for control and both are called. OnClick is called before OnExecute.
+          </p>
         </descr>
         <seealso/>
-      <short>Event called when action is executed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TAction.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TAction.OnUpdate" link="#rtl.Classes.TBasicAction.OnUpdate">
         <descr>
-          <var>OnUpdate</var> is the event triggered when the application is idle, and
-the action is being updated. The <var>OnUpdate</var> event can be used to
-set the state of the action, for instance disable it if the action cannot be
-executed at this point in time.
-</descr>
+          <p>
+            <var>OnUpdate</var> is the event triggered when the application is idle, and the action is being updated. The <var>OnUpdate</var> event can be used to set the state of the action, for instance disable it if the action cannot be executed at this point in time.
+          </p>
+          </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
+
       <element name="TAction.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
         <descr/>
         <seealso/>
@@ -1331,8 +1357,11 @@ executed at this point in time.
       <!-- object Visibility: default -->
       <element name="TActionLink">
         <short>A link between an action and a client class</short>
-        <descr>The class definition includes a number of protected procedures for setting properties for the action (as defined in <link id="TCustomAction"/>), and a number of public boolean functions to indicate which part of the action is linked to the client
-</descr>
+        <descr>
+          <p>
+            The class definition includes a number of protected procedures for setting properties for the action (as defined in <link id="TCustomAction"/>), and a number of public boolean functions to indicate which part of the action is linked to the client.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
-    <!--
-  ====================================================================
-    Graphics
-  ====================================================================
--->
+      <!--
+    ====================================================================
+      Graphics
+    ====================================================================
+    -->
     <module name="Graphics">
       <short>Unit contains definitions for many fundamental classes and types used in graphic applications</short>
       <descr/>
@@ -289,11 +289,7 @@ Additionally there are "system colors", like clWindowText, which have a color or
       <!-- constant Visibility: default -->
       <element name="DefFontData">
         <short>
-          <var>Default Data</var>  for any new 
-          
-          
-          
-          <var>Font</var>
+          <var>Default Data</var>  for any new <var>Font</var>
         </short>
         <descr>
           <p>New <var>TFont</var> instances are initialized with the values in this structure.</p>
@@ -1581,7 +1577,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.Changing">
         <short>
-          <var>Changing</var> - software emulation of 
+          <var>Changing</var> - software emulation of
           <var>OnChanging</var> event</short>
         <descr/>
         <errors/>
@@ -1590,7 +1586,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.Changed">
         <short>
-          <var>Changed</var> - software emulation of 
+          <var>Changed</var> - software emulation of
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -1716,8 +1712,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- function Visibility: public -->
       <element name="TFontHandleCache.FindFontDesc">
         <short>
-          <var>FindFontDesc</var> - returns the descriptor for the FontHandle using its 
-          <var>LogName</var> and its 
+          <var>FindFontDesc</var> - returns the descriptor for the FontHandle using its
+          <var>LogName</var> and its
           <var>LongFontName</var>
         </short>
         <descr/>
@@ -1739,8 +1735,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- function Visibility: public -->
       <element name="TFontHandleCache.Add">
         <short>
-          <var>Add</var> the Font specified by its handle, 
-          <var>LogFont</var> and 
+          <var>Add</var> the Font specified by its handle,
+          <var>LogFont</var> and
           <var>LongFontName</var>, and returns a descriptor</short>
         <descr/>
         <errors/>
@@ -1897,15 +1893,15 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetName">
+        <short>
+          <var>SetName</var> - if
+          <var>AValue</var> is a new name, frees the old reference, calls inherited method and sets the
+          <var>Changed</var> property
+        </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomFont.SetName">TFPCustomFont.SetName</link>
         </seealso>
-        <short>
-          <var>SetName</var> - if 
-          <var>AValue</var> is a new name, frees the old reference, calls inherited method and sets the 
-          <var>Changed</var> property</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.SetName.AValue">
@@ -1913,15 +1909,13 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetSize">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomFont.SetSize">TFPCustomFont.SetSize</link>
-        </seealso>
         <short>
-          <var>SetSize</var> - if 
-          <var>AValue</var> is a new size, frees the old reference, calls the inherited method, performs the appropriate rounding and sets the 
-          <var>Changed</var> property</short>
+          <var>SetSize</var> - if <var>AValue</var> is a new size, frees the old reference, calls the inherited method, performs the appropriate rounding and sets the <var>Changed</var> property
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TFont.Size"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.SetSize.AValue">
@@ -1929,15 +1923,11 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.Changed">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.Changed">TFPCanvasHelper.Changed</link>
-        </seealso>
         <short>
-          <var>Changed</var> - checks for pending updates (if there are any, returns True) or calls inherited 
-          <var>Changed</var>
+          <var>Changed</var> - checks for pending updates (if there are any, returns True) or calls inherited <var>Changed</var>
         </short>
+        <descr/>
+        <seealso></seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetCharSet">
@@ -2109,13 +2099,13 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <element name="TFont.Create">
         <descr>
           <p>
-            <var>Create</var> - constructor for 
-            <var>TFont</var>: Opens a new instance of the class , calling inherited 
+            <var>Create</var> - constructor for
+            <var>TFont</var>: Opens a new instance of the class , calling inherited
             <var>Create</var> and sets defaults for character set, color, size etc</p>
         </descr>
         <short>
-          <var>Create</var> - constructor for 
-          <var>TFont</var>: Opens a new instance of the class, calling inherited 
+          <var>Create</var> - constructor for
+          <var>TFont</var>: Opens a new instance of the class, calling inherited
           <var>Create</var> and setting some defaults</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -2124,8 +2114,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- destructor Visibility: public -->
       <element name="TFont.Destroy">
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TFont</var>: frees reference then performs inherited 
+          <var>Destroy</var> - destructor for
+          <var>TFont</var>: frees reference then performs inherited
           <var>Destroy</var>
         </short>
         <seealso>
@@ -2230,30 +2220,24 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <short>
           <var>Color</var> of the current <var>Font</var>
         </short>
-        <descr>Default is the same as the text used for the rest of the Window
-</descr>
+        <descr>
+          Default is the same as the text used for the rest of the Window
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Height">
         <short>The <var>Height</var> of the current Font</short>
       </element>
       <!-- property Visibility: published -->
-      <element link="#fcl.FPCanvas.TFPCustomFont.Name" name="TFont.Name"/>
+      <element name="TFont.Name" link="#fcl.FPCanvas.TFPCustomFont.Name"/>
       <!-- property Visibility: published -->
       <element name="TFont.Pitch">
         <short>
-          <var>Pitch</var> type of the 
-          
-          
-          
-          
-          
-          
-          
-          <var>Font</var>
+          <var>Pitch</var> type of the <var>Font</var>
         </short>
-        <descr>Fixed or variable pitch, or Default<br/>
-Reads or writes a flag to determine pitch type</descr>
+        <descr>
+          Fixed or variable pitch, or Default. Reads or writes a flag to determine pitch type.
+        </descr>
         <seealso>
           <link id="TFontPitch"/>
         </seealso>
@@ -2271,18 +2255,11 @@ Reads or writes a flag to determine pitch type</descr>
       <!-- property Visibility: published -->
       <element name="TFont.Style">
         <short>
-          <var>Style</var> of the 
-          
-          
-          
-          
-          
-          
-          
-          <var>Font</var>
+          <var>Style</var> of the <var>Font</var>
         </short>
-        <descr>Bold, Italic, Strike out, Underline<br/>
-Property is a set, so may contain zero or more of the above (if set is empty, Normal font is displayed)</descr>
+        <descr>
+          Bold, Italic, Strike out, Underline. Property is a set, so may contain zero or more of the above (if set is empty, Normal font is displayed)
+        </descr>
       </element>
       <!-- record type Visibility: default -->
       <element name="TPenData">
@@ -2308,9 +2285,9 @@ Property is a set, so may contain zero or more of the above (if set is empty, No
       <element name="TPenData.Style">
         <short>The <var>Style</var> associated with the current <var>Pen</var>
         </short>
-        <descr>The <var>Style</var> associated with the current <var>Pen</var><br/>
-Can take any of the values:
-psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
+        <descr>
+          The <var>Style</var> associated with the current <var>Pen</var><br/> Can take any of the values: psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear.
+        </descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPenHandleCache">
@@ -2459,7 +2436,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
  from the parent class
 </descr>
         <short>
-          <var>Create</var> - constructor for TPen: performs inherited 
+          <var>Create</var> - constructor for TPen: performs inherited
           <var>Create</var> then sets some local defaults, style, mode, width and color</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -2470,8 +2447,8 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <descr>Most of its properties are <b>inherited</b> from the parent class
 </descr>
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TPen</var>: frees reference then performs inherited 
+          <var>Destroy</var> - destructor for
+          <var>TPen</var>: frees reference then performs inherited
           <var>Destroy</var>
         </short>
         <seealso>
@@ -2481,8 +2458,8 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       <!-- procedure Visibility: public -->
       <element name="TPen.Assign">
         <short>
-          <var>Assign</var> - copies settings from Source to itself (provided Source is another 
-          <var>TPen</var>), then performs inherited 
+          <var>Assign</var> - copies settings from Source to itself (provided Source is another
+          <var>TPen</var>), then performs inherited
           <var>Assign</var>
         </short>
         <seealso>
@@ -2688,9 +2665,9 @@ Default is psSolid
   Copies the source brush to itself
 </descr>
         <short>
-          <var>Assign</var> - if 
-          <var>Source</var> is another 
-          <var>TBrush</var>, copies settings to itself, else performs inherited 
+          <var>Assign</var> - if
+          <var>Source</var> is another
+          <var>TBrush</var>, copies settings to itself, else performs inherited
           <var>Assign</var>
         </short>
         <seealso>
@@ -2700,15 +2677,7 @@ Default is psSolid
       <!-- argument Visibility: default -->
       <element name="TBrush.Assign.Source">
         <short>
-          <var>Source</var> - another 
-          
-          
-          
-          
-          
-          
-          
-          <var>Brush</var>
+          <var>Source</var> - another <var>Brush</var>
         </short>
       </element>
       <!-- constructor Visibility: public -->
@@ -2717,8 +2686,8 @@ Default is psSolid
           <b>Inherits</b> most of its properties from ancestor Classes
 </descr>
         <short>
-          <var>Create</var> - constructor for 
-          <var>TBrush</var>: perform inherited 
+          <var>Create</var> - constructor for
+          <var>TBrush</var>: perform inherited
           <var>Create</var> then initialize some local variables and
           <var>SetStyle</var>
         </short>
@@ -2729,27 +2698,11 @@ Default is psSolid
       <!-- destructor Visibility: public -->
       <element name="TBrush.Destroy">
         <descr>
-          <b>Inherits</b> properties to remove 
-          
-          
-          
-          
-          
-          
-          
-          <var>Brush</var> and frees 
-          
-          
-          
-          
-          
-          
-          
-          <var>Handle</var>
+          <b>Inherits</b> properties to remove <var>Brush</var> and frees <var>Handle</var>
         </descr>
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TBrush</var>: free reference then perform inherited 
+          <var>Destroy</var> - destructor for
+          <var>TBrush</var>: free reference then perform inherited
           <var>Destroy</var>
         </short>
         <seealso>
@@ -2893,8 +2846,8 @@ Default is psSolid
       <!-- constructor Visibility: public -->
       <element name="TRegion.Create">
         <short>
-          <var>Create</var> - constructor for 
-          <var>TRegion</var>: calls inherited 
+          <var>Create</var> - constructor for
+          <var>TRegion</var>: calls inherited
           <var>Create</var> and sets FillChar</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -2903,8 +2856,8 @@ Default is psSolid
       <!-- destructor Visibility: public -->
       <element name="TRegion.Destroy">
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TRegion</var>: frees reference then calls inherited 
+          <var>Destroy</var> - destructor for
+          <var>TRegion</var>: frees reference then calls inherited
           <var>Destroy</var>
         </short>
         <seealso>
@@ -2914,8 +2867,8 @@ Default is psSolid
       <!-- procedure Visibility: public -->
       <element name="TRegion.Assign">
         <short>
-          <var>Assign</var> - if 
-          <var>Source</var> is another 
+          <var>Assign</var> - if
+          <var>Source</var> is another
           <var>TRegion</var>, copies the dimensions of the clipping rectangle</short>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
@@ -2942,13 +2895,13 @@ Default is psSolid
       <!-- object Visibility: default -->
       <element name="TGraphic">
         <short>
-          <var>TGraphic</var> - Base class for dealing with 
+          <var>TGraphic</var> - Base class for dealing with
           <var>Graphic</var>   images</short>
         <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes e.g. <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/><var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/><var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
 ).<br/><var>SaveToStream</var> - stream analogue of <var>SaveToFile</var> .<br/><var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided.  If the <var>TGraphic</var>
  does not support that format it will generate an exception.<br/><var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><var>Height</var> - The native, unstretched, height of the graphic.<br/><var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><var>Transparent</var> - Some parts of the image are not opaque, i.e. the background can be seen through.<br/><var>Width</var> - The native, unstretched, width of the graphic.<br/><var>OnChange</var> - Called whenever the graphic changes<br/><var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
   and <var>TImage OnProgress</var> events.<br/><br/>
- 
+
   As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
 </descr>
       </element>
@@ -2985,7 +2938,7 @@ Default is psSolid
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Changed">
         <short>
-          <var>Changed</var> - software emulation of a call to the 
+          <var>Changed</var> - software emulation of a call to the
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -3018,7 +2971,7 @@ Default is psSolid
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.DefineProperties">TPersistent.DefineProperties</link>
+          <link id="#RTL.Classes.TPersistent.DefineProperties"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3234,7 +3187,7 @@ Default is psSolid
       <!-- procedure Visibility: public -->
       <element name="TGraphic.Assign">
         <short>
-          <var>Assign</var> - checks if there really is a source to assign (if not, calls 
+          <var>Assign</var> - checks if there really is a source to assign (if not, calls
           <var>Clear</var>), then calls inherited method</short>
         <descr/>
         <errors/>
@@ -3257,19 +3210,11 @@ Default is psSolid
       <!-- constructor Visibility: public -->
       <element name="TGraphic.Create">
         <descr>
-          <b>Virtual</b> method, so recommend that a constructor be supplied to 
-          
-          
-          
-          
-          
-          
-          
-          <b>override</b> this method in descendant classes
-</descr>
+          <b>Virtual</b> method, so recommend that a constructor be supplied to <b>override</b> this method in descendant classes
+        </descr>
         <short>
-          <var>Create</var> - constructor for 
-          <var>TGraphic</var>: calls inherited 
+          <var>Create</var> - constructor for
+          <var>TGraphic</var>: calls inherited
           <var>Create</var>
         </short>
         <seealso>
@@ -3303,32 +3248,11 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromStream">
         <short>
-          <var>LoadFromStream</var>  - reads graphic data from a stream (e.g. 
-          
-          
-          
-          <var>TBlobStream</var> )</short>
+          <var>LoadFromStream</var>  - reads graphic data from a stream (e.g. <var>TBlobStream</var> )
+        </short>
         <descr>
-          <var>LoadFromStream</var>
- - Like 
-          
-          
-          
-          
-          
-          
-          
-          <var>LoadFromFile</var>
- except source is a stream (e.g. 
-          
-          
-          
-          
-          
-          
-          
-          <var>TBlobStream</var>)
-</descr>
+          <var>LoadFromStream</var> - Like <var>LoadFromFile</var> except source is a stream (e.g. <var>TBlobStream</var>)
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.LoadFromStream.Stream">
@@ -3593,66 +3517,27 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- object Visibility: default -->
       <element name="TPicture">
         <short>
-          <var>TPicture</var> is a  
-          
-          
-          
-          <var>TGraphic</var>  container, used in place of a  
-          
-          
-          
-          <var>TGraphic</var> if the graphic can be of any 
-          
-          
-          
-          <var>TGraphic</var> class.</short>
+          <var>TPicture</var> is a <var>TGraphic</var>  container, used in place of a <var>TGraphic</var> if the graphic can be of any <var>TGraphic</var> class.
+        </short>
         <descr>
           <p>
-            <var>TPicture</var> is a 
-            
-            
-            
-            <var>TGraphic</var> container.  It is used in place of a 
-            
-            
-            
-            <var>TGraphic</var> if the graphic can be of any 
-            
-            
-            
-            <var>TGraphic</var> class. </p>
-          <p>It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>
+            <var>TPicture</var> is a <var>TGraphic</var> container.  It is used in place of a <var>TGraphic</var> if the graphic can be of any <var>TGraphic</var> class.
           </p>
-          <p>Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc</p>
-          <p>It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.</p>
           <p>
-            <var>LoadFromFile</var> and 
-            
-            
-            
-            <var>SaveToFile</var> are polymorphic. For example, if the 
-            
-            
-            
-            <var>TPicture</var> is holding an 
-            
-            
-            
-            <var>Icon</var>, you can 
-            
-            
-            
-            <var>LoadFromFile</var> a bitmap file, whereas if the class is 
-            
-            
-            
-            <var>TIcon</var> you could only read  .ICO files.</p>
+            It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>.
+          </p>
+          <p>
+            Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc.
+          </p>
+          <p>
+            It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.
+          </p>
+          <p>
+            <var>LoadFromFile</var> and <var>SaveToFile</var> are polymorphic. For example, if the <var>TPicture</var> is holding an <var>Icon</var>, you can <var>LoadFromFile</var> a bitmap file, whereas if the class is <var>TIcon</var> you could only read  .ICO files.
+          </p>
           <ul>
             <li>
-              <var>LoadFromFile</var> - Reads a picture from disk. The 
-              
-              
-              
+              <var>LoadFromFile</var> - Reads a picture from disk. The
               <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.</li>
             <li>
               <var>SaveToFile</var> - Writes the picture to disk.</li>
@@ -3661,57 +3546,25 @@ If the file is not of the right format, an exception will be generated.</descr>
             <li>
               <var>SaveToClipboardFormats</var> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</li>
             <li>
-              <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by 
-              
-              
-              
+              <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by
               <var>LoadFromClipboardFormat</var>
             </li>
             <li>
-              <var>Assign</var> - Copies the contents of the given 
-              
-              
-              
+              <var>Assign</var> - Copies the contents of the given
               <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.</li>
             <li>
-              <var>RegisterFileFormat</var> - Register a new 
-              
-              
-              
-              <var>TGraphic</var> class for use in 
-              
-              
-              
-              <var>LoadFromFile</var>.</li>
+              <var>RegisterFileFormat</var> - Register a new <var>TGraphic</var> class for use in <var>LoadFromFile</var>.</li>
             <li>
-              <var>RegisterClipboardFormat</var> - Registers a new 
-              
-              
-              
-              <var>TGraphic</var> class for use in 
-              
-              
-              
+              <var>RegisterClipboardFormat</var> - Registers a new <var>TGraphic</var> class for use in
               <var>LoadFromClipboardFormat</var>.</li>
             <li>
-              <var>UnRegisterGraphicClass</var> - Removes all references to the specified 
-              
-              
-              
-              <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.</li>
+              <var>UnRegisterGraphicClass</var> - Removes all references to the specified <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.</li>
             <li>
               <var>Height</var> - The native, unstretched, height of the picture.</li>
             <li>
               <var>Width</var> - The native, unstretched, width of the picture.</li>
             <li>
-              <var>Graphic</var> - The 
-              
-              
-              
-              <var>TGraphic</var> object contained by the 
-              
-              
-              
+              <var>Graphic</var> - The <var>TGraphic</var> object contained by the
               <var>TPicture</var>
             </li>
             <li>
@@ -3719,23 +3572,11 @@ If the file is not of the right format, an exception will be generated.</descr>
             <li>
               <var>Pixmap</var> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.</li>
             <li>
-              <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
-              
-              
-              
-              <var>TPortableNetworkGraphic</var>) is returned.</li>
+              <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<var>TPortableNetworkGraphic</var>) is returned.</li>
             <li>
-              <var>PNM</var> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (
-              
-              
-              
-              <var>TPortableAnyMapGraphic</var>) is returned.</li>
+              <var>PNM</var> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<var>TPortableAnyMapGraphic</var>) is returned.</li>
             <li>
-              <var>Jpeg</var> - Returns a jpeg. If the contents is not already a jpeg, the contents are thrown away and a blank jpeg (
-              
-              
-              
-              <var>TJPegImage</var>) is returned.</li>
+              <var>Jpeg</var> - Returns a jpeg. If the contents is not already a jpeg, the contents are thrown away and a blank jpeg (<var>TJPegImage</var>) is returned.</li>
           </ul>
         </descr>
       </element>
@@ -3914,10 +3755,10 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TPicture.AssignTo">
         <short>
-          <var>AssignTo</var> if 
-          <var>Dest</var> is of correct (Graphic) type, calls 
-          <var>Assign</var> for 
-          <var>Dest</var>, otherwise calls inherited 
+          <var>AssignTo</var> if
+          <var>Dest</var> is of correct (Graphic) type, calls
+          <var>Assign</var> for
+          <var>Dest</var>, otherwise calls inherited
           <var>AssignTo</var>
         </short>
         <descr/>
@@ -3933,7 +3774,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TPicture.Changed">
         <short>
-          <var>Changed</var> - software emulation of a call to the 
+          <var>Changed</var> - software emulation of a call to the
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -3944,7 +3785,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#rtl.Classes.TPersistent.DefineProperties" name="TPicture.DefineProperties">
+      <element name="TPicture.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -3992,7 +3833,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- constructor Visibility: public -->
       <element name="TPicture.Create">
         <short>
-          <var>Create</var> - constructor for TPicture: performs inherited 
+          <var>Create</var> - constructor for TPicture: performs inherited
           <var>Create</var> then loads file and clipboard formats</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -4003,8 +3844,8 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes
 </descr>
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TPicture</var>: frees graphic then performs inherited 
+          <var>Destroy</var> - destructor for
+          <var>TPicture</var>: frees graphic then performs inherited
           <var>Destroy</var>
         </short>
         <seealso>
@@ -4016,15 +3857,8 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>LoadFromFile</var> - Reads a picture from disk</short>
         <descr>
-          <var>LoadFromFile</var> - Reads a picture from disk. The 
-          
-          
-          
-          
-          
-          
-          
-          <var>TGraphic</var> class created is determined by the file extension of the file.</descr>
+          <var>LoadFromFile</var> - Reads a picture from disk. The<var>TGraphic</var> class created is determined by the file extension of the file.
+        </descr>
         <errors>If the file extension is  not recognized an exception is generated</errors>
       </element>
       <!-- argument Visibility: default -->
@@ -4084,15 +3918,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- function Visibility: public -->
       <element name="TPicture.SupportsClipboardFormat">
         <short>
-          <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by 
-          
-          
-          
-          
-          
-          
-          
-          <var>LoadFromClipboardFormat</var>
+          <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by<var>LoadFromClipboardFormat</var>
         </short>
       </element>
       <!-- function result Visibility: default -->
@@ -4106,20 +3932,12 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TPicture.Assign">
         <short>
-          <var>Assign</var> - if the Source is a valid graphic type, copy the relevant details to the current object, otherwise call inherited 
+          <var>Assign</var> - if the Source is a valid graphic type, copy the relevant details to the current object, otherwise call inherited
           <var>Assign</var>
         </short>
         <descr>
-          <var>Assign</var> - Copies the contents of the given 
-          
-          
-          
-          
-          
-          
-          
-          <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.
-</descr>
+          <var>Assign</var> - Copies the contents of the given <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
@@ -4131,15 +3949,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterFileFormat">
         <short>
-          <var>RegisterFileFormat</var> - Register a new 
-          
-          
-          
-          <var>TGraphic</var> class for use in 
-          
-          
-          
-          <var>LoadFromFile</var>
+          <var>RegisterFileFormat</var> - Register a new <var>TGraphic</var> class for use in <var>LoadFromFile</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -4157,15 +3967,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterClipboardFormat">
         <short>
-          <var>RegisterClipboardFormat</var> - Registers a new 
-          
-          
-          
-          <var>TGraphic</var> class for use in  
-          
-          
-          
-          <var>LoadFromClipboardFormat</var>
+          <var>RegisterClipboardFormat</var> - Registers a new <var>TGraphic</var> class for use in <var>LoadFromClipboardFormat</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -4179,25 +3981,11 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TPicture.UnregisterGraphicClass">
         <short>
-          <var>UnRegisterGraphicClass</var>  - Removes all references to the specified 
-          
-          
-          
-          <var>TGraphic</var>
+          <var>UnRegisterGraphicClass</var>  - Removes all references to the specified <var>TGraphic</var>
         </short>
         <descr>
-          <var>UnRegisterGraphicClass</var>
- - Removes all references to the specified 
-          
-          
-          
-          
-          
-          
-          
-          <var>TGraphic</var>
-  class and all its descendants from the file format and clipboard format internal lists
-</descr>
+          <var>UnRegisterGraphicClass</var> - Removes all references to the specified <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.UnregisterGraphicClass.AClass">
@@ -4227,12 +4015,8 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>PNG</var> - Returns a png</short>
         <descr>
-          <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
-          
-          
-          
-          <var>TPortableNetworkGraphic</var>) is returned
-</descr>
+          <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<var>TPortableNetworkGraphic</var>) is returned.
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Icon">
@@ -4242,15 +4026,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- property Visibility: public -->
       <element name="TPicture.Graphic">
         <short>
-          <var>Graphic</var> - The 
-          
-          
-          
-          <var>TGraphic</var> object contained by the 
-          
-          
-          
-          <var>TPicture</var>
+          <var>Graphic</var> - The <var>TGraphic</var> object contained by the <var>TPicture</var>
         </short>
       </element>
       <!-- property Visibility: public -->
@@ -4461,7 +4237,6 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.GetColor">TFPCustomCanvas.GetColor</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -4519,7 +4294,6 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.SetColor">TFPCustomCanvas.SetColor</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4555,7 +4329,6 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.SetPenPos">TFPCustomCanvas.SetPenPos</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4607,15 +4380,14 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.CreateBrush">
         <short>
-          <var>CreateBrush</var> creates necessary handles, sets up local defaults for style, hatching, background color</short>
+          <var>CreateBrush</var> creates necessary handles, sets up local defaults for style, hatching, background color
+        </short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.CreateBrush">TFPCustomCanvas.CreateBrush</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCustomCanvas.CreateFont" name="TCanvas.CreateFont">
+      <element name="TCanvas.CreateFont">
         <short/>
         <descr/>
         <errors/>
@@ -4632,11 +4404,11 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.CreatePen">
         <short>
-          <var>CreatePen</var> sets up local handles and defaults for Pen creation, sets initial position of Pen</short>
+          <var>CreatePen</var> sets up local handles and defaults for Pen creation, sets initial position of Pen
+        </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.CreatePen">TFPCustomCanvas.CreatePen</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -4658,9 +4430,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.PenChanging">
         <short>
-          <var>PenChanging</var>
-          <var/> - software emulation for call to 
-          <var>OnChanging</var> event for Pen</short>
+          <var>PenChanging</var> <var/> - software emulation for call to <var>OnChanging</var> event for Pen
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4672,7 +4443,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.RealizeAutoRedraw">
         <short>
-          <var>RealizeAutoRedraw</var> - implement the AutoDraw feature</short>
+          <var>RealizeAutoRedraw</var> - implement the AutoDraw feature
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4680,7 +4452,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.RequiredState">
         <short>
-          <var>RequiredState</var> - the set of Canvas State required (csHandleValid, csFontValid, csPenvalid, csBrushValid, csRegionValid)</short>
+          <var>RequiredState</var> - the set of Canvas State required (csHandleValid, csFontValid, csPenvalid, csBrushValid, csRegionValid)
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4704,7 +4477,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.SetInternalPenPos">
         <short>
-          <var>SetInternalPenPos</var> - specify position for the Pen</short>
+          <var>SetInternalPenPos</var> - specify position for the Pen
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4716,7 +4490,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.SetPixel">
         <short>
-          <var>SetPixel</var> - specify a color for the stated pixel</short>
+          <var>SetPixel</var> - specify a color for the stated pixel
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4735,19 +4510,18 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCanvas.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCanvas</var>: calls inherited <var>Create</var> and sets defaults for many properties and actions
+        </short>
         <descr>
           <p>
-            <var>Create</var> - constructor for 
-            <var>TCanvas</var>: calls inherited 
-            <var>Create</var> and sets defaults for many properties and actions</p>
-          <p>initializes Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity</p>
+            <var>Create</var> - constructor for <var>TCanvas</var>: calls inherited <var>Create</var> and sets defaults for many properties and actions.
+          </p>
+          <p>
+            Initializes Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity.
+          </p>
         </descr>
-        <short>
-          <var>Create</var> - constructor for 
-          <var>TCanvas</var>: calls inherited 
-          <var>Create</var> and sets defaults for many properties and actions</short>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Create">TFPCustomCanvas.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
@@ -4756,11 +4530,10 @@ If the file is not of the right format, an exception will be generated.</descr>
           <var>TCanvas</var> and makes its resources available
 </descr>
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TCanvas</var>: frees handles and region, calls inherited 
+          <var>Destroy</var> - destructor for
+          <var>TCanvas</var>: frees handles and region, calls inherited
           <var>Destroy</var>, sets font, pen and brush resources to nil</short>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Destroy">TFPCustomCanvas.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -4790,7 +4563,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Changing">
         <short>
-          <var>Changing</var> - software emulation of a call to the 
+          <var>Changing</var> - software emulation of a call to the
           <var>OnChanging</var> event</short>
         <descr/>
         <errors/>
@@ -4799,7 +4572,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Changed">
         <short>
-          <var>Changed</var> - software emulation of a call to the 
+          <var>Changed</var> - software emulation of a call to the
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -4807,14 +4580,14 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short>Use <var>Arc</var>   to draw an elliptically curved line with the current Pen</short>
-        <descr>Method:   TCanvas.Arc<br/>
-
-Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey<br/>
-
-Returns:  Nothing<br/><br/>
-
-Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.</descr>
+        <short>
+          Use <var>Arc</var>   to draw an elliptically curved line with the current Pen
+        </short>
+        <descr>
+          <p>
+            Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.x">
@@ -4842,24 +4615,20 @@ Use Arc to draw an elliptically curved line with the current Pen. The values sx,
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short>Use <var>Arc</var>  to draw an elliptically curved line with the current Pen</short>
-        <descr>Method:   TCanvas.Arc<br/>
-
-Params:   ALeft, ATop, ARight, ABottom, angle1, angle2<br/>
-
-Returns:  Nothing<br/><br/>
-
-Use Arc to draw an elliptically curved line with the current Pen.<br/>
-
-The angles angle1 and angle2 are 1/16th of a degree. <br/>
-
-For example, a full  circle equals 5760 (16*360). <br/>
-
-Positive values of <var>Angle</var>
- and <var>AngleLength</var>
- mean counter-clockwise while negative values mean clockwise direction.<br/>
-
-Zero degrees is at the 3 o'clock position.</descr>
+          <short>
+            Use <var>Arc</var>  to draw an elliptically curved line with the current Pen
+          </short>
+          <descr>
+            <p>
+              Use Arc to draw an elliptically curved line with the current Pen.
+            </p>
+            <p>
+              The angles angle1 and angle2 are 1/16th of a degree. For example, a full  circle equals 5760 (16*360).
+            </p>
+            <p>
+              Positive values of <var>Angle</var> and <var>AngleLength</var> mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+            </p>
+          </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.x">
@@ -4918,14 +4687,22 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Chord">
+        <short>Draw a filled-chord shape starting and finishing at the specified angular positions on the circumference
+        </short>
         <descr>
-          <p>Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg</p>
-          <p>Use Chord to draw a filled Chord-shape on the canvas. </p>
-          <p>The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760(16*360). </p>
-          <p>Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.</p>
-          <p>Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey)</p>
+          <p>
+            Use Chord to draw a filled Chord-shape on the canvas.
+          </p>
+          <p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760(16*360).
+          </p>
+          <p>
+            Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+          </p>
+          <p>
+            Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey).
+          </p>
         </descr>
-        <short>Draw a filled-chord shape starting and finishing at the specified angular positions on the circumference</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Chord.x">
@@ -4954,43 +4731,19 @@ Zero degrees is at the 3 o'clock position.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Chord">
         <short>
-          <var>Chord</var>  draws a filled Chord-shape on the canvas</short>
-        <descr>Method:   TCanvas.Chord<br/>
-
-
-
-Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
-
-
-
-Returns:  Nothing<br/><br/>
-
-
-
-Use <var>Chord</var>
-
-
- to draw a filled Chord-shape on the canvas. The angles <var>angle1</var>
-
-
- and <var>angle2</var>
-
-
- are 1/16th of a degree. For example, a full circle equals 5760(16*360).<br/>
-
-
-
-Positive values of <var>Angle</var>
-
-
- and <var>AngleLength</var>
-
-
- mean counter-clockwise while negative values mean clockwise direction. <br/>
-
-
-
-Zero degrees is at the 3 o'clock position.</descr>
+          <var>Chord</var>  draws a filled Chord-shape on the canvas
+        </short>
+        <descr>
+          <p>
+            Use <var>Chord</var> to draw a filled Chord-shape on the canvas. The angles <var>angle1</var> and <var>angle2</var> are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+          </p>
+          <p>
+            Positive values of <var>Angle</var> and <var>AngleLength</var> mean counter-clockwise while negative values mean clockwise direction.
+          </p>
+          <p>
+            Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Chord.x">
@@ -5031,7 +4784,6 @@ Zero degrees is at the 3 o'clock position.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.CopyRect">TFPCustomCanvas.CopyRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5048,16 +4800,13 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Draw">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Draw">TFPCustomCanvas.Draw</link>
-          <link id="#LCL.Graphics.TCanvas.StretchDraw">TCanvas.StretchDraw</link>
-        </seealso>
         <short>
-          <var>Draw</var> - copies bounds from 
-          <var>SrcGraphic</var>, then calls 
-          <var>StretchDraw</var> to perform the drawing</short>
+          <var>Draw</var> - copies bounds from <var>SrcGraphic</var>, then calls <var>StretchDraw</var> to perform the drawing
+        </short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.Graphics.TCanvas.StretchDraw"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Draw.X">
@@ -5073,16 +4822,13 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.StretchDraw">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.StretchDraw">TFPCustomCanvas.StretchDraw</link>
-          <link id="#LCL.Graphics.TGraphic.Draw">TGraphic.Draw</link>
-        </seealso>
         <short>
-          <var>StretchDraw</var> - uses the 
-          <var>Draw</var> method of the source graphic (
-          <var>TGraphic</var>)</short>
+          <var>StretchDraw</var> - uses the <var>Draw</var> method of the source graphic ( <var>TGraphic</var>)
+        </short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.Graphics.TGraphic.Draw"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.StretchDraw.DestRect">
@@ -5094,10 +4840,12 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
-        <descr/>
         <short>
-          <var>Ellipse</var> draws a filled circle or ellipse on the canvas, using the method for the current interface or widget set</short>
-        <seealso><link id="#fcl.FPCanvas.TFPCustomCanvas.Ellipse">TFPCustomCanvas.Ellipse</link><link id="#LCL.LCLIntf.Ellipse">LCLIntf.Ellipse</link>
+          <var>Ellipse</var> draws a filled circle or ellipse on the canvas, using the method for the current interface or widget set
+        </short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.LCLIntf.Ellipse"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5107,14 +4855,13 @@ Zero degrees is at the 3 o'clock position.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
         <short>
-          <var>Ellipse</var>  draws a filled circle or ellipse on the canvas</short>
-        <descr>Method:   TCanvas.Ellipse<br/>
-
-&#x9;&#x9;      Params:   X1, Y1, X2, Y2<br/>
-
-Returns:  Nothing<br/><br/>
-Use <var>Ellipse</var>
- to draw a filled circle or ellipse on the canvas.</descr>
+          <var>Ellipse</var>  draws a filled circle or ellipse on the canvas
+        </short>
+        <descr>
+          <p>
+            Use <var>Ellipse</var> to draw a filled circle or ellipse on the canvas.
+          </p>
+         </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Ellipse.x1">
@@ -5135,11 +4882,11 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FillRect">
         <short>
-          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space, using the method for the current interface or widget set</short>
+          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space, using the method for the current interface or widget set
+        </short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#LCL.LCLIntf.FillRect">LCLIntf.FillRect</link>
+          <link id="#LCL.LCLIntf.FillRect"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5149,9 +4896,9 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FillRect">
         <short>
-          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space</short>
+          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -5172,15 +4919,13 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FloodFill">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.FloodFill">TFPCustomCanvas.FloodFill</link>
-          <link id="#LCL.LCLIntf.FloodFill">LCLIntf.FloodFill</link>
-        </seealso>
         <short>
-          <var>FloodFill</var> flood-fills an area with the given color, starting from the specified point; uses the
-          <var>FloodFill</var> method for the current interface or widget set</short>
+          <var>FloodFill</var> flood-fills an area with the given color, starting from the specified point; uses the <var>FloodFill</var> method for the current interface or widget set
+        </short>
+        <descr/>
+        <seealso>
+          <link id="#LCL.LCLIntf.FloodFill"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.FloodFill.X">
@@ -5201,11 +4946,11 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame3d">
         <short>
-          <var>Frame3d</var> - produce a frame with 3-D effect (with beveled edges etc) in the specified rectangle</short>
+          <var>Frame3d</var> - produce a frame with 3-D effect (with beveled edges etc) in the specified rectangle
+        </short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#LCL.LCLIntf.Frame3d">LCLIntf.Frame3d</link>
+          <link id="#LCL.LCLIntf.Frame3d"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5222,9 +4967,10 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame">
-        <short>Produce a <var>Frame</var> or border around the specified rectangle with a Pen; uses the <var>Frame</var> method of the current interface or widget set</short>
+        <short>
+          Produces a <var>Frame</var> or border around the specified rectangle with a Pen; uses the <var>Frame</var> method of the current interface or widget set
+        </short>
         <descr/>
-        <errors/>
         <seealso>
           <link id="#LCL.LCLIntf.Frame">LCLIntf.Frame</link>
         </seealso>
@@ -5235,7 +4981,9 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame">
-        <short>Produce a <var>Frame</var> or border around the specified rectangle using a Pen</short>
+        <short>
+          Produces a <var>Frame</var> or border around the specified rectangle using a Pen
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5259,10 +5007,9 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FrameRect">
         <short>
-          <var>FrameRect</var> - produce a border around the specified rectangle with a Brush; uses the 
-          <var>FrameRect</var> method of the current interface or widget set</short>
+          <var>FrameRect</var> - produce a border around the specified rectangle with a Brush; uses the <var>FrameRect</var> method of the current interface or widget set
+        </short>
         <descr/>
-        <errors/>
         <seealso>
           <link id="#LCL.LCLIntf.FrameRect">LCLIntf.FrameRect</link>
         </seealso>
@@ -5296,7 +5043,7 @@ Use <var>Ellipse</var>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#fcl.FPCanvas.TFPCustomCanvas.Line" name="TCanvas.Line"/>
+      <element name="TCanvas.Line"/>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Line.X1">
         <short/>
@@ -5314,7 +5061,7 @@ Use <var>Ellipse</var>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#fcl.FPCanvas.TFPCustomCanvas.LineTo" name="TCanvas.LineTo"/>
+      <element name="TCanvas.LineTo"/>
       <!-- argument Visibility: default -->
       <element name="TCanvas.LineTo.X1">
         <short/>
@@ -5324,7 +5071,7 @@ Use <var>Ellipse</var>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#fcl.FPCanvas.TFPCustomCanvas.MoveTo" name="TCanvas.MoveTo"/>
+      <element name="TCanvas.MoveTo"/>
       <!-- argument Visibility: default -->
       <element name="TCanvas.MoveTo.X1">
         <short/>
@@ -5376,63 +5123,11 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
         <short>
-          <var>RadialPie</var> uses 
-          
-          
-          
-          
-          
-          
-          
-          <var>Pie</var>    to draw a filled pie-shaped wedge on the canvas</short>
-        <descr>Method:   TCanvas.RadialPie<br/>
-
-
-
-
-Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
-
-
-
-
-Returns:  Nothing<br/><br/>
-
-
-
-
-Uses <var>Pie</var>
-
-
-
- to draw a filled pie-shaped wedge on the canvas.<br/>
-
-
-
-
-The angles <var>StartAngle16Deg</var>
-
-
-
- and <var>EndAngle16Deg</var>
-
-
-
- are 1/16th of a degree.<br/>
-
-
-
-
-For example, a full circle equals 5760 (16*360).<br/>
-
-
-
-
-Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction.<br/>
-
-
-
-
-Zero degrees is at the 3 o'clock position</descr>
+          <var>RadialPie</var> uses <var>Pie</var>    to draw a filled pie-shaped wedge on the canvas
+        </short>
+        <descr>
+          Uses <var>Pie</var> to draw a filled pie-shaped wedge on the canvas.<br/> The angles <var>StartAngle16Deg</var> and <var>EndAngle16Deg</var> are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.x">
@@ -5537,42 +5232,18 @@ Use <var>Pie</var>
       <element name="TCanvas.PolyBezier">
         <short>
           <var>Polybezier</var>    draws cubic Bezier curves</short>
-        <descr>Method:  TCanvas.PolyBezier<br/>
-
-
-
-Params:  Points, Filled, Continuous<br/>
-
-
-
-Returns: Boolean<br/><br/>
-
-
-
-Use <var>Polybezier</var>
-
-
- to draw cubic Bezier curves. <br/>
-
-
-
-The first curve is drawn from the first point to the fourth point with the second and third points being the control points. <br/>
-
-
-
-If the <var>Continuous</var> flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
-
-
-
-If the <var>Continuous</var> flag is set to FALSE, then each subsequent curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
-
-
-
-If the <var>Filled</var> flag is set to TRUE then a straight line is drawn from the last connected point to the starting point, and the entire curve is filled with the current brush.<br/><br/>
-
-
-
-Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points to be connected. </descr>
+        <descr>
+          Method:  TCanvas.PolyBezier<br/>
+          Params:  Points, Filled, Continuous<br/>
+          Returns: Boolean<br/><br/>
+          Use <var>Polybezier</var>
+          to draw cubic Bezier curves. <br/>
+          The first curve is drawn from the first point to the fourth point with the second and third points being the control points. <br/>
+          If the <var>Continuous</var> flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
+          If the <var>Continuous</var> flag is set to FALSE, then each subsequent curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+          If the <var>Filled</var> flag is set to TRUE then a straight line is drawn from the last connected point to the starting point, and the entire curve is filled with the current brush.<br/><br/>
+          Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points to be connected.
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.PolyBezier.Points">
@@ -5628,146 +5299,19 @@ Any additional points which do not add up to a full Bezier(4 for Continuous, 3 o
       <element name="TCanvas.Polygon">
         <short>
           <var>Polygon</var>    draws a closed, many-sided shape on the canvas, using the value   of Pen</short>
-        <descr>Method:   TCanvas.Polygon<br/>
-
-
-
-
-
-Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer = 0; NumPts: Integer = -1<br/>
-
-
-
-
-
-Returns:  Nothing<br/><br/>
-
-
-
-
-
-Use <var>Polygon</var>
-
-
-
-
- to draw a closed, many-sided shape on the canvas, using the value of <var>Pen</var>
-
-
-
-
-. After drawing the complete shape, <var>Polygon</var>
-
-
-
-
- fills the shape using the value of <var>Brush</var>
-
-
-
-
-.<br/><br/>
-
-
-
-
-
-The <var>Points</var>
-
-
-
-
- parameter is an array of points that give the vertices of the polygon.<br/><var>Winding</var>
-
-
-
-
- determines how the polygon is filled. When <var>Winding</var>
-
-
-
-
- is True, <var>Polygon</var>
-
-
-
-
-
-  fills the shape using the <var>Winding</var>
-
-
-
-
- fill algorithm. <br/>
-
-
-
-
-
-When <var>Winding</var>
-
-
-
-
- is False, <var>Polygon</var>
-
-
-
-
- uses the even-odd (alternative) fill algorithm.<br/><var>StartIndex</var>
-
-
-
-
- gives the index of the first point in the array to use. All points before this are ignored.<br/><var>NumPts</var>
-
-
-
-
- indicates the number of points to use, starting at <var>StartIndex</var>
-
-
-
-
-.<br/>
-
-
-
-
-
-If <var>NumPts</var>
-
-
-
-
- is -1 (the default), <var>Polygon</var>
-
-
-
-
- uses all points from <var>StartIndex</var>
-
-
-
-
- to the end of the array.<br/>
-
-
-
-
-
-The first point is always connected to the last point.<br/>
-
-
-
-
-
-To draw a polygon on the canvas, without filling it, use the <var>Polyline</var>
-
-
-
-
- method,  specifying the first point a second time at the end.</descr>
+        <descr>
+          Method:   TCanvas.Polygon<br/>
+          Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer = 0; NumPts: Integer = -1<br/>
+          Returns:  Nothing<br/><br/>
+          Use <var>Polygon</var> to draw a closed, many-sided shape on the canvas, using the value of <var>Pen</var> . After drawing the complete shape, <var>Polygon</var> fills the shape using the value of <var>Brush</var> .<br/><br/>
+          The <var>Points</var> parameter is an array of points that give the vertices of the polygon.<br/><var>Winding</var> determines how the polygon is filled. When <var>Winding</var> is True, <var>Polygon</var> fills the shape using the <var>Winding</var> fill algorithm. <br/>
+          When <var>Winding</var> is False, <var>Polygon</var> uses the even-odd (alternative) fill algorithm.<br/>
+          <var>StartIndex</var> gives the index of the first point in the array to use. All points before this are ignored.<br/>
+          <var>NumPts</var> indicates the number of points to use, starting at <var>StartIndex</var> .<br/>
+          If <var>NumPts</var> is -1 (the default), <var>Polygon</var> uses all points from <var>StartIndex</var> to the end of the array.<br/>
+          The first point is always connected to the last point.<br/>
+          To draw a polygon on the canvas, without filling it, use the <var>Polyline</var> method,  specifying the first point a second time at the end.
+          </descr>
         <seealso>
           <link id="TCanvas.PolyLine"/>
         </seealso>
@@ -5812,130 +5356,23 @@ To draw a polygon on the canvas, without filling it, use the <var>Polyline</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polyline">
         <short>
-          <var>Polyline</var>    connects a set of points on the canvas</short>
-        <descr>Method:   TCanvas.Polyline<br/>
-
-
-
-
-
-
-Params:   Points: array of TPoint; StartIndex: Integer = 0; NumPts: Integer = -1<br/>
-
-
-
-
-
-
-Returns:  Nothing<br/><br/>
-
-
-
-
-
-
-Use <var>Polyline</var>
-
-
-
-
-
- to connect a set of points on the <var>Canvas</var>
-
-
-
-
-
-. If you specify only two points, <var>Polyline</var>
-
-
-
-
-
- draws a single line.<br/>
-
-
-
-
-
-
-The <var>Points</var>
-
-
-
-
-
- parameter is an array of points to be connected.<br/><var>StartIndex</var>
-
-
-
-
-
- identifies the first point in the array to use.<br/><var>NumPts</var>
-
-
-
-
-
- indicates the number of points to use. If <var>NumPts</var>
-
-
-
-
-
- is -1 (the default), <var>PolyLine</var>
-
-
-
-
-
- uses all the points from <var>StartIndex</var>
-
-
-
-
-
- to the end of the array.<br/>
-
-
-
-
-
-
-Calling the <var>MoveTo</var>
-
-
-
-
-
- function with the value of the first point, and then repeatedly calling <var>LineTo</var>
-
-
-
-
-
- with all subsequent points will draw the same image on the canvas. However, unlike <var>LineTo</var>
-
-
-
-
-
-, <var>Polyline</var>
-
-
-
-
-
- does not change the value of <var>PenPos</var>
-
-
-
-
-
-.</descr>
+          <var>Polyline</var>    connects a set of points on the canvas
+        </short>
+        <descr>
+          <p>
+            Use <var>Polyline</var> to connect a set of points on the <var>Canvas</var>.  If you specify only two points, <var>Polyline</var> draws a single line. The <var>Points</var> parameter is an array of points to be connected.
+          </p>
+          <p>
+            <var>StartIndex</var> identifies the first point in the array to use.
+          </p>
+          <p>
+            <var>NumPts</var> indicates the number of points to use. If <var>NumPts</var> is -1 (the default), <var>PolyLine</var> uses all the points from <var>StartIndex</var> to the end of the array.
+          </p>
+          <p>
+            Calling the <var>MoveTo</var> function with the value of the first point, and then repeatedly calling <var>LineTo</var> with all subsequent points will draw the same image on the canvas. However, unlike <var>LineTo</var>, <var>Polyline</var> does not change the values in <var>PenPos</var>.
+          </p>
+        </descr>
         <seealso>
-          <link id="TCanvas.MoveTo"/>
-          <link id="TCanvas.LineTo"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5946,10 +5383,8 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.Rectangle">
         <short>Draws a <var>Rectangle</var> at the specified coordinates, using the <var>Rectangle</var> method for the current interface or widget set</short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#FCL.FPCanvas.TFPCustomCanvas.Rectangle">TFPCustomCanvas.Rectangle</link>
-          <link id="#LCL.LCLIntf.Rectangle">LCLIntf.Rectangle</link>
+          <link id="#LCL.LCLIntf.Rectangle"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5982,7 +5417,7 @@ Calling the <var>MoveTo</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RoundRect">
         <short>
-          <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY; uses the 
+          <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY; uses the
           <var>RoundRect</var> method of the current interface or widget set</short>
         <descr/>
         <errors/>
@@ -6036,10 +5471,16 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.TextOut">
-        <short>Writes the <var>Text</var> string at the position <var>X, Y</var> on the canvas and leaves the pen at the end of the text; uses the <var>ExtUTF8Out</var> method of the current interface or widget set</short>
+        <short>
+          Writes text at the specified position
+        </short>
+        <descr>
+          <p>
+            Writes the <var>Text</var> string at the position <var>X, Y</var> on the canvas and leaves the pen at the end of the text. Uses the <var>ExtUTF8Out</var> method of the current interface or widget set.
+          </p>
+        </descr>
         <seealso>
-          <link id="#LCL.LCLIntf.ExtUTF8Out">LCLIntf.ExtUTF8Out</link>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.TextOut">TFPCustomCanvas.TextOut</link>
+          <link id="#LCL.LCLIntf.ExtUTF8Out"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6048,6 +5489,9 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextOut.Y">
+        <short/>
+      </element>
+      <element name="TCanvas.TextOut.Text">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
@@ -6236,9 +5680,7 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.Brush">
         <short>The <var>Brush</var> to be used for painting this Canvas</short>
         <descr/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Brush">TFPCustomCanvas.Brush</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.CopyMode">
@@ -6248,19 +5690,15 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Font">
-        <descr/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Font">TFPCustomCanvas.Font</link>
-        </seealso>
         <short>The <var>Font</var> to be used for text in this canvas</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Pen">
-        <descr/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Pen">TFPCustomCanvas.Pen</link>
-        </seealso>
         <short>The <var>Pen</var> to be used for writing in this canvas</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Region">
@@ -7009,53 +6447,24 @@ Calling the <var>MoveTo</var>
         <short>
           <var>BitMap</var> constructor</short>
         <descr>
-          <var>BitMap</var> constructor. The supplied code can 
-          
-          
-          
-          
-          
-          
-          
-          <b>override</b> the definition from ancestor classes</descr>
+          <var>BitMap</var> constructor. The supplied code can <b>override</b> the definition from ancestor classes
+        </descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBitmap.Destroy">
         <short>
           <var>BitMap</var> destructor</short>
         <descr>
-          <var>BitMap</var> destructor. The supplied code can 
-          
-          
-          
-          
-          
-          
-          
-          <b>override</b> the method defined for ancestor classes</descr>
+          <var>BitMap</var> destructor. The supplied code can <b>override</b> the method defined for ancestor classes
+        </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Assign">
         <short>
           <var>Assign</var>: find out about the Source of the call.</short>
         <descr>
-          <var>Assign</var>: find out about the Source of the call. If the 
-          
-          
-          
-          
-          
-          
-          
-          <var>BitMap</var> data are already in use, the data are shared; if not, a new 
-          
-          
-          
-          
-          
-          
-          
-          <var>BitMap</var> is produced</descr>
+          <var>Assign</var>: find out about the Source of the call. If the <var>BitMap</var> data are already in use, the data are shared; if not, a new <var>BitMap</var> is produced.
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.Assign.Source">
@@ -7123,23 +6532,7 @@ Calling the <var>MoveTo</var>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromDevice">
         <short>
-          <var>LoadFromDevice</var>: obtain 
-          
-          
-          
-          
-          
-          
-          
-          <var>BitMap</var> data from a device with Handle 
-          
-          
-          
-          
-          
-          
-          
-          <var>DC</var>
+          <var>LoadFromDevice</var>: obtain <var>BitMap</var> data from a device with Handle <var>DC</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -7169,24 +6562,10 @@ Calling the <var>MoveTo</var>
         <short>
           <var>LoadFromLazarusResource</var>: obtain data from a valid Lazarus Resource Stream</short>
         <descr>
-          <var>LoadFromLazarusResource</var>: obtain data from a valid Lazarus Resource Stream
-          
-          
-          
-          
-          
-          
-          
+          <var>LoadFromLazarusResource</var>: obtain data from a valid Lazarus Resource Stream.
           <br/>
-Checks for the presence of a valid Lazarus Resource, then uses 
-          
-          
-          
-          
-          
-          
-          
-          <var>LoadFromStream</var> to acquire the data</descr>
+          Checks for the presence of a valid Lazarus Resource, then uses <var>LoadFromStream</var> to acquire the data.
+        </descr>
         <seealso>
           <link id="TBitmap.LoadFromStream"/>
         </seealso>
@@ -7226,15 +6605,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromMimeStream">
         <short>
-          <var>LoadFromMimeStream</var> - get 
-          
-          
-          
-          
-          
-          
-          
-          <var>Bitmap </var>data from the specified MIME stream</short>
+          <var>LoadFromMimeStream</var> - get <var>Bitmap </var>data from the specified MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7282,14 +6653,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromXPMFile">
         <short>
-          <var>LoadFromXPMFile</var>: obtain data from file in native 
-          
-          
-          
-          
-          
-          
-          
+          <var>LoadFromXPMFile</var>: obtain data from file in native
           <var>PixMap</var> format</short>
       </element>
       <!-- argument Visibility: default -->
@@ -7533,11 +6897,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- object Visibility: default -->
       <element name="TPixmap">
         <short>
-          <var>PixMap</var>  - a class derived from  
-          
-          
-          
-          <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (i.e. using 'XPM' format)</short>
+          <var>PixMap</var>  - a class derived from <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (i.e. using 'XPM' format)</short>
         <descr>
           <var>PixMap</var>
   - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organizes saving and writing
@@ -7835,15 +7195,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>TIcon</var> destructor</short>
         <descr>
-          <var>TIcon</var> destructor. Method can 
-          
-          
-          
-          
-          
-          
-          
-          <b>override</b> the destructor defined in ancestor classes</descr>
+          <var>TIcon</var> destructor. Method can <b>override</b> the destructor defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIcon.AddBitmap">
@@ -7971,12 +7323,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="ColorToIdent.Ident">
         <short>
-          <var>Ident </var>- the name of the supplied 
-          
-          
-          <var>Color</var> as found in the look-up table of 
-          
-          
+          <var>Ident </var>- the name of the supplied <var>Color</var> as found in the look-up table of
           <var>Colors</var>
         </short>
       </element>
@@ -7993,10 +7340,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="IdentToColor.Ident">
         <short>
-          <var>Ident</var> - the supplied name for the required
-          
-          
-          <var>Color</var>
+          <var>Ident</var> - the supplied name for the required <var>Color</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -8007,10 +7351,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="SysColorToSysColorIndex">
         <short>
-          <var>SysColorToSysColorIndex</var> - if 
-          
+          <var>SysColorToSysColorIndex</var> - if
+
           <var>Color</var> is one of the system colors, returns the
-          
+
           <var>Index</var> of the system color</short>
         <errors>If <var>Color</var> is not a system color, returns -1</errors>
       </element>
@@ -8025,13 +7369,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="ColorToRGB">
         <short>
-          <var>ColorToRGB</var> - given a 
-          
-          
-          <var>Color</var> value, converts into 
-          
-          
-          <var>RGB</var>
+          <var>ColorToRGB</var> - given a <var>Color</var> value, converts into <var>RGB</var>
         </short>
       </element>
       <!-- function result Visibility: default -->
@@ -8164,15 +7502,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="FPColorToTColor">
         <short>
-          <var>FPColorToTColor</var> - converts a color specified as a
-          
-          
-          
-          <var>FPColor </var>to a color of type
-          
-          
-          
-          <var>TColor</var>
+          <var>FPColorToTColor</var> - converts a color specified as a <var>FPColor </var>to a color of type <var>TColor</var>
         </short>
         <descr/>
         <errors/>
@@ -8191,14 +7521,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="TColorToFPColor">
         <short>
-          <var>TColorToFPColor</var> - converts a color of type
-          
-          
-          
-          <var>TColor </var>to one specified as a 
-          
-          
-          
+          <var>TColorToFPColor</var> - converts a color of type <var>TColor </var>to one specified as a
           <var>FPColor</var>
         </short>
         <descr/>
@@ -8212,10 +7535,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="TColorToFPColor.c">
         <short>
-          <var>c</var> - the supplied color specified as type
-          
-          
-          <var>TColor</var>
+          <var>c</var> - the supplied color specified as type <var>TColor</var>
         </short>
       </element>
       <!-- procedure Visibility: default -->
@@ -8672,19 +7992,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <element name="TPicture.PNM">
         <short>
-          <var>PNM </var>- a 
-          
-          
-          
-          <b>PortableAnyMapGraphic </b>image</short>
+          <var>PNM </var>- a <b>PortableAnyMapGraphic </b>image
+        </short>
         <descr>
           <p>
-            <var>PNM </var>- a 
-            
-            
-            
-            <b>PortableAnyMapGraphic </b>image</p>
-          <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
+            <var>PNM </var>- a
+            <b>PortableAnyMapGraphic </b>image.
+          </p>
+          <p>
+            Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated.
+          </p>
         </descr>
       </element>
       <element name="TJPEGImage">
@@ -8724,14 +8041,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <element name="TBitmap.LoadFromIntfImage">
         <short>
-          <var>LoadFromIntfImage</var> - gets 
-          
-          
-          
-          
-          
-          
-          
+          <var>LoadFromIntfImage</var> - gets
           <var>Bitmap</var> data from an interface image</short>
       </element>
       <element name="TBitmap.GetResourceType">
@@ -8763,7 +8073,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <element name="TJPEGImage.Create">
         <short>
-          <var>Create</var> - constructor for TJPEGImage: performs inherited 
+          <var>Create</var> - constructor for TJPEGImage: performs inherited
           <var>Create</var> then initializes local variables for performance, quality and encoding</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -8777,20 +8087,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>Monitoring the progress of drawing a complicated Graphic</short>
         <descr>
           <p>
-            <var>TProgressEvent</var> is a generic progress notification event which may be used by 
-            
-            
-            
-            
-            
-            
+            <var>TProgressEvent</var> is a generic progress notification event which may be used by
             <var>TGraphic</var> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
           <table>
             <caption>Event params:
 </caption>
             <tr>
               <td>Stage</td>
-              <td>Indicates whether this call to the <var>OnProgress</var> event is to prepare for, process, or clean up after a graphic operation.  If <var>OnProgress</var> is called at all, the first call for a graphic operation will be with <var>Stage = psStarting</var>, to allow the <var>OnProgress</var> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <var>Stage = psStarting</var>, you are guaranteed that  <var>OnProgress</var> will be called again with 
+              <td>Indicates whether this call to the <var>OnProgress</var> event is to prepare for, process, or clean up after a graphic operation.  If <var>OnProgress</var> is called at all, the first call for a graphic operation will be with <var>Stage = psStarting</var>, to allow the <var>OnProgress</var> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <var>Stage = psStarting</var>, you are guaranteed that  <var>OnProgress</var> will be called again with
 <var>Stage = psEnding</var> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to  <var>OnProgress </var>with <var>Stage = psRunning</var> may occur between the <var>psStarting</var> and  <var>psEnding</var> calls.</td>
             </tr>
             <tr>
@@ -8799,9 +8103,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
             </tr>
             <tr>
               <td>RedrawNow</td>
-              <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call 
-  <var>Update</var> to force a control to be redrawn immediately in the 
-  <var>OnProgress </var>event handler. Redrawing a graphic when 
+              <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call
+  <var>Update</var> to force a control to be redrawn immediately in the
+  <var>OnProgress </var>event handler. Redrawing a graphic when
   RedrawNow = False could corrupt the image and/or cause exceptions.</td>
             </tr>
             <tr>
@@ -8810,8 +8114,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
             </tr>
             <tr>
               <td>Msg</td>
-              <td>Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The 
-  <var>Msg</var> string can also be empty. 
+              <td>Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The
+  <var>Msg</var> string can also be empty.
   <var>Msg</var> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if Msg = 'Loading' then...)</td>
             </tr>
           </table>
@@ -9050,10 +8354,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- class Visibility: default -->
       <element name="TCustomBitmap">
         <short>
-          <var>TCustomBitMap </var>- the base class for 
-          
-          
-          <var>TBitmap</var>
+          <var>TCustomBitMap </var>- the base class for  <var>TBitmap</var>
         </short>
       </element>
       <!-- "class of" type Visibility: default -->
@@ -9143,26 +8444,22 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoAllocateResources">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoAllocateResources">TFPCanvasHelper.DoAllocateResources</link>
-        </seealso>
         <short>
-          <var>DoAllocateResources</var> - calls inherited method then calls 
+          <var>DoAllocateResources</var> - calls inherited method then calls
           <var>GetReference</var>
         </short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoCopyProps">
+        <short>
+          <var>DoCopyProps</var> - calls inherited method; if <var>From</var> argument is another Font, copies specified properties directly
+        </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoCopyProps">TFPCanvasHelper.DoCopyProps</link>
-        </seealso>
-        <short>
-          <var>DoCopyProps</var> - calls inherited method; if 
-          <var>From</var> argument is another Font, copies specified properties directly</short>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.DoCopyProps.From">
@@ -9170,13 +8467,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoDeAllocateResources">
+        <short>
+          <var>DoDeAllocateResources</var> - frees references then calls inherited method
+        </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoDeAllocateResources">TFPCanvasHelper.DoDeAllocateResources</link>
-        </seealso>
-        <short>
-          <var>DoDeAllocateResources</var> - frees references then calls inherited method</short>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.SetColor.NewColor">
@@ -9188,15 +8484,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetFlags">
+        <short>
+          <var>SetFlags</var> - if the passed argument <var>AValue</var> for the <var>Index</var> is the same, returns unchanged; otherwise, calls inherited method and sets style flags as appropriate
+        </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.SetFlags">TFPCanvasHelper.SetFlags</link>
-        </seealso>
-        <short>
-          <var>SetFlags</var> - if the passed argument 
-          <var>AValue</var> for the 
-          <var>Index</var> is the same, returns unchanged; otherwise, calls inherited method and sets style flags as appropriate</short>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.SetFlags.Index">
@@ -9208,13 +8501,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetFPColor">
+        <short>
+          <var>SetFPColor</var> converts TFPColor to TColor
+        </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.SetFPColor">TFPCanvasHelper.SetFPColor</link>
+          <link id="FPColorToTColor"/>
         </seealso>
-        <short>
-          <var>SetFPColor</var> converts TFPColor to TColor</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.SetFPColor.AValue">
@@ -9290,21 +8584,21 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCanvasHelper.DoAllocateResources" name="TPen.DoAllocateResources">
+      <element name="TPen.DoAllocateResources">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCanvasHelper.DoDeAllocateResources" name="TPen.DoDeAllocateResources">
+      <element name="TPen.DoDeAllocateResources">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCanvasHelper.DoCopyProps" name="TPen.DoCopyProps">
+      <element name="TPen.DoCopyProps">
         <short/>
         <descr/>
         <errors/>
@@ -9323,7 +8617,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCanvasHelper.SetFPColor" name="TPen.SetFPColor">
+      <element  name="TPen.SetFPColor">
         <short/>
         <descr/>
         <errors/>
@@ -9390,13 +8684,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TBrush.DoAllocateResources">
         <short>
-          <var>DoAllocateResources</var> - calls inherited method then calls 
+          <var>DoAllocateResources</var> - calls inherited method then calls
           <var>GetReference</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoAllocateResources">TFPCanvasHelper.DoAllocateResources</link>
+          <link id="#fcl.FPCanvas.TFPCustomBrush"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -9405,21 +8699,17 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>DoDeAllocateResources</var> - frees reference then calls inherited method</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoDeAllocateResources">TFPCanvasHelper.DoDeAllocateResources</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TBrush.DoCopyProps">
         <short>
-          <var>DoCopyProps</var> - if the 
-          <var>From</var>argument is another 
-          <var>Brush</var>, frees reference before calling inherited method, then sets the 
-          <var>Changed</var> property</short>
+          <var>DoCopyProps</var> - if the <var>From</var>argument is another <var>Brush</var>, frees reference before calling inherited method, then sets the <var>Changed</var> property.
+        </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCanvasHelper.DoCopyProps">TFPCanvasHelper.DoCopyProps</link>
+          <link id="#fcl.FPCanvas.TFPCustomBrush"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9645,13 +8935,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.DoCreateDefaultFont">
         <short>
-          <var>DoCreateDefaultFont</var> - calls 
+          <var>DoCreateDefaultFont</var> - calls
           <var>TFont.Create</var> to create a default font</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultFont">TFPCustomCanvas.DoCreateDefaultFont</link>
-          <link id="#LCL.Graphics.TFont.Create">TFont.Create</link>
+          <link id="#LCL.Graphics.TFont.Create"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9661,13 +8950,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.DoCreateDefaultPen">
         <short>
-          <var>DoCreateDefaultPen</var> - calls 
+          <var>DoCreateDefaultPen</var> - calls
           <var>TPen.Create</var> to create a default pen</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultPen">TFPCustomCanvas.DoCreateDefaultPen</link>
-          <link id="#LCL.Graphics.TPen.Create">TPen.Create</link>
+          <link id="#LCL.Graphics.TPen.Create"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9677,13 +8965,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.DoCreateDefaultBrush">
         <short>
-          <var>DoCreateDefaultBrush</var> - calls 
+          <var>DoCreateDefaultBrush</var> - calls
           <var>TBrush.Create</var> to create a default brush</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultBrush">TFPCustomCanvas.DoCreateDefaultBrush</link>
-          <link id="#LCL.Graphics.TBrush.Create">TBrush.Create</link>
+          <link id="#LCL.Graphics.TBrush.Create"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9713,13 +9000,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.SetHeight">
         <short>
-          <var>SetHeight</var> - should never be called for Canvas: raises an exception if it is called</short>
+          <var>SetHeight</var> - should never be called for Canvas: raises an exception if it is called
+        </short>
         <descr/>
-        <errors>If called, raises an exception:
-'TCanvas.SetHeight not allowed for LCL canvas'</errors>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.SetHeight">TFPCustomCanvas.SetHeight</link>
-        </seealso>
+        <errors>
+          If called, raises an exception: 'TCanvas.SetHeight not allowed for LCL canvas'
+        </errors>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.SetHeight.AValue">
@@ -9731,9 +9018,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>GetHeight</var> - if a handle has been allocated, returns the height from the device size</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.GetHeight">TFPCustomCanvas.GetHeight</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCanvas.GetHeight.Result">
@@ -9742,13 +9027,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.SetWidth">
         <short>
-          <var>SetWidth</var> - should never be called; raises an exception if it is called</short>
+          <var>SetWidth</var> - should never be called; raises an exception if it is called
+        </short>
         <descr/>
-        <errors>Raises an exception:
-'TCanvas.SetWidth not allowed for LCL canvas'</errors>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.SetWidth">TFPCustomCanvas.SetWidth</link>
-        </seealso>
+        <errors>
+          Raises an exception: 'TCanvas.SetWidth not allowed for LCL canvas'
+        </errors>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.SetWidth.AValue">
@@ -9757,12 +9042,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.GetWidth">
         <short>
-          <var>GetWidth</var> - if a handle has been allocated, returns the width from the device size</short>
+          <var>GetWidth</var> - if a handle has been allocated, returns the width from the device size
+        </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.GetWidth">TFPCustomCanvas.GetWidth</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCanvas.GetWidth.Result">
@@ -9777,31 +9061,24 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>DoLockCanvas</var> - enters critical locking section then calls inherited method</short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLockCanvas">TFPCustomCanvas.DoLockCanvas</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoUnlockCanvas">
         <short>
           <var>DoUnlockCanvas</var> - leaves the critical locking section then calls inherited method</short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoUnlockCanvas">TFPCustomCanvas.DoUnlockCanvas</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoTextOut">
         <short>
-          <var>DoTextOut</var> calls 
+          <var>DoTextOut</var> calls
           <var>TextOut</var> for the specified coordinates and string</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoTextOut">TFPCustomCanvas.DoTextOut</link>
-          <link id="#LCL.Graphics.TCanvas.TextOut">TCanvas.TextOut</link>
+          <link id="#LCL.Graphics.TCanvas.TextOut"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9819,13 +9096,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoGetTextSize">
         <short>
-          <var>DoGetTextSize</var> calls 
+          <var>DoGetTextSize</var> calls
           <var>TextExtent</var> to find width and height of specified text string</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextSize">TFPCustomCanvas.DoGetTextSize</link>
-          <link id="#LCL.Graphics.TCanvas.TextExtent">TCanvas.TextExtent</link>
+          <link id="#LCL.Graphics.TCanvas.TextExtent"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9843,13 +9119,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.DoGetTextHeight">
         <short>
-          <var>DoGetTextHeight</var> calls 
+          <var>DoGetTextHeight</var> calls
           <var>TextHeight</var> to return the height of the text</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextHeight">TFPCustomCanvas.DoGetTextHeight</link>
-          <link id="#LCL.Graphics.TCanvas.TextHeight">TCanvas.TextHeight</link>
+          <link id="#LCL.Graphics.TCanvas.TextHeight"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9863,13 +9138,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.DoGetTextWidth">
         <short>
-          <var>DoGetTextWidth</var> calls 
+          <var>DoGetTextWidth</var> calls
           <var>TextWidth</var> to return the width of the given text string</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextWidth">TFPCustomCanvas.DoGetTextWidth</link>
-          <link id="#LCL.Graphics.TCanvas.TextWidth">TCanvas.TextWidth</link>
+          <link id="#LCL.Graphics.TCanvas.TextWidth"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9883,13 +9157,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoRectangle">
         <short>
-          <var>DoRectangle</var> calls 
+          <var>DoRectangle</var> calls
           <var>Frame</var> to draw a rectangle in the given bounds</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangle">TFPCustomCanvas.DoRectangle</link>
-          <link id="#LCL.Graphics.TCanvas.Frame">TCanvas.Frame</link>
+          <link id="#LCL.Graphics.TCanvas.Frame"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9899,13 +9172,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoRectangleFill">
         <short>
-          <var>DoRectangleFill</var> calls 
+          <var>DoRectangleFill</var> calls
           <var>FillRect</var> to draw a filled rectangle with the given bounds</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangleFill">TFPCustomCanvas.DoRectangleFill</link>
-          <link id="#LCL.Graphics.TCanvas.FillRect">TCanvas.FillRect</link>
+          <link id="#LCL.Graphics.TCanvas.FillRect"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9915,13 +9187,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoRectangleAndFill">
         <short>
-          <var>DoRectangleAndFill</var> - calls 
+          <var>DoRectangleAndFill</var> - calls
           <var>Rectangle</var> to draw a rectangle and fill it</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangleAndFill">TFPCustomCanvas.DoRectangleAndFill</link>
-          <link id="#LCL.Graphics.TCanvas.Rectangle">TCanvas.Rectangle</link>
+          <link id="#LCL.Graphics.TCanvas.Rectangle"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9931,14 +9202,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoEllipse">
         <short>
-          <var>DoEllipse</var> draws an 
-          <var>Arc</var> of 360 degrees within given 
-          <var>Bounds</var>, making an ellipse</short>
-        <descr/>
+          Draws an Arc of 360 degrees within the specified Bounds
+        </short>
+        <descr>
+          <var>DoEllipse</var> draws an <var>Arc</var> of 360 degrees within given <var>Bounds</var>, making an ellipse.
+        </descr>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoEllipse">TFPCustomCanvas.DoEllipse</link>
-          <link id="#LCL.Graphics.TCanvas.Arc">TCanvas.Arc</link>
+          <link id="#LCL.Graphics.TCanvas.Arc"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9948,14 +9219,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoEllipseFill">
         <short>
-          <var>DoEllipseFill</var> calls 
+          <var>DoEllipseFill</var> calls
           <var>Ellipse</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoEllipseFill">TFPCustomCanvas.DoEllipseFill</link>
-          <link id="#LCL.Graphics.TCanvas.Ellipse">TCanvas.Ellipse</link>
+          <link id="#LCL.Graphics.TCanvas.Ellipse"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9965,14 +9235,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoEllipseAndFill">
         <short>
-          <var>DoEllipseAndFill</var> - calls inherited 
-          <var>DoEllipseAndFill</var>
+          <var>DoEllipseAndFill</var> calls the inherited <var>DoEllipseAndFill</var>
         </short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoEllipseAndFill">TFPCustomCanvas.DoEllipseAndFill</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoEllipseAndFill.Bounds">
@@ -9981,13 +9247,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoPolygon">
         <short>
-          <var>DoPolygon</var> calls 
+          <var>DoPolygon</var> calls
           <var>PolyLine</var> to draw a series of lines through the points</short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolygon">TFPCustomCanvas.DoPolygon</link>
-          <link id="#LCL.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
+          <link id="#LCL.Graphics.TCanvas.PolyLine"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9997,13 +9261,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoPolygonFill">
         <short>
-          <var>DoPolygonFill</var> calls 
+          <var>DoPolygonFill</var> calls
           <var>Polygon</var> for the supplied points</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolygonFill">TFPCustomCanvas.DoPolygonFill</link>
-          <link id="#LCL.Graphics.TCanvas.Polygon">TCanvas.Polygon</link>
+          <link id="#LCL.Graphics.TCanvas.Polygon"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10015,10 +9278,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>DoPolygonAndFill</var> calls inherited method</short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolygonAndFill">TFPCustomCanvas.DoPolygonAndFill</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoPolygonAndFill.Points">
@@ -10027,13 +9287,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoPolyline">
         <short>
-          <var>DoPolyline</var> calls 
+          <var>DoPolyline</var> calls
           <var>PolyLine</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolyline">TFPCustomCanvas.DoPolyline</link>
           <link id="#LCL.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
         </seealso>
       </element>
@@ -10044,14 +9303,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoFloodFill">
         <short>
-          <var>DoFloodFill</var> calls 
+          <var>DoFloodFill</var> calls
           <var>FloodFill</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoFloodFill">TFPCustomCanvas.DoFloodFill</link>
-          <link id="#LCL.Graphics.TCanvas.FloodFill">TCanvas.FloodFill</link>
+          <link id="#LCL.Graphics.TCanvas.FloodFill"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10065,14 +9323,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoMoveTo">
         <short>
-          <var>DoMoveTo</var> calls 
+          <var>DoMoveTo</var> calls
           <var>MoveTo</var>
         </short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoMoveTo">TFPCustomCanvas.DoMoveTo</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoMoveTo.x">
@@ -10085,14 +9340,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoLineTo">
         <short>
-          <var>DoLineTo</var> calls 
-          <var>LineTo</var>
+          <var>DoLineTo</var> calls <var>LineTo</var>
         </short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLineTo">TFPCustomCanvas.DoLineTo</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoLineTo.x">
@@ -10105,13 +9356,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoLine">
         <short>
-          <var>DoLine</var> calls 
+          <var>DoLine</var> calls
           <var>Line</var> to draw from x1, y1 to x2, y2</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLine">TFPCustomCanvas.DoLine</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoLine.x1">
@@ -10131,17 +9380,17 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoCopyRect">
-        <short>
-          <var>DoCopyRect</var> checks that 
-          <var>SrcCanvas</var> is of correct type then copies coordinates and calls 
-          <var>CopyRect</var>
-        </short>
-        <descr/>
-        <errors>If <var>SrcCanvas</var> is not of type <var>TCanvas</var> then writes a warning to the debug output that copying is not supported
+        <short>Verifies and copies the source canvas</short>
+        <descr>
+          <p>
+            <var>DoCopyRect</var> checks that <var>SrcCanvas</var> is of correct type then copies coordinates and calls <var>CopyRect</var>.
+          </p>
+        </descr>
+        <errors>
+          If <var>SrcCanvas</var> is not of type <var>TCanvas</var> then writes a warning to the debug output that copying is not supported
         </errors>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCopyRect">TFPCustomCanvas.DoCopyRect</link>
-          <link id="#LCL.Graphics.TCanvas.CopyRect">TCanvas.CopyRect</link>
+          <link id="#LCL.Graphics.TCanvas.CopyRect"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10163,13 +9412,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.DoDraw">
         <short>
-          <var>DoDraw</var> checks that 
-          <var>Image</var> is of the right type, makes a local copy, creates the necessary handles and bitmaps for drawing</short>
+          <var>DoDraw</var> checks that <var>Image</var> is of the right type, makes a local copy, creates the necessary handles and bitmaps for drawing
+        </short>
         <descr/>
-        <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.DoDraw">TFPCustomCanvas.DoDraw</link>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.DoDraw.x">
@@ -10186,11 +9432,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.CheckHelper">
         <short>
-          <var>CheckHelper</var> - ignored by current class</short>
+          <var>CheckHelper</var> - ignored by current class
+        </short>
         <descr/>
-        <errors>Writes a message to debug output that the call is ignored</errors>
+        <errors>
+          Writes a message to debug output indicating the call is ignored.
+        </errors>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.CheckHelper">TFPCustomCanvas.CheckHelper</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10200,11 +9448,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TCanvas.GetClipRect">
         <short>
-          <var>GetClipRect</var> - if an error is encountered in finding the Clipping Rectangle dimensions, sets some defaults anyway</short>
+          <var>GetClipRect</var> - if an error is encountered in finding the Clipping Rectangle dimensions, sets some defaults anyway
+        </short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.GetClipRect">TFPCustomCanvas.GetClipRect</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -10215,7 +9462,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCanvas.FontChanging">
         <short>
           <var>FontChanging</var>
-          <var/> - software emulation for call to 
+          <var/> - software emulation for call to
           <var>OnChanging</var> event for Font</short>
         <descr/>
         <errors/>
@@ -10229,7 +9476,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCanvas.BrushChanging">
         <short>
           <var>BrushChanging</var>
-          <var/> - software emulation for call to 
+          <var/> - software emulation for call to
           <var>OnChanging</var> event for Brush</short>
         <descr/>
         <errors/>
@@ -10243,7 +9490,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCanvas.RegionChanging">
         <short>
           <var>RegionChanging</var>
-          <var/> - software emulation for call to 
+          <var/> - software emulation for call to
           <var>OnChanging</var> event for Region</short>
         <descr/>
         <errors/>
@@ -10379,19 +9626,15 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Height">
-        <descr/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Height">TFPCustomCanvas.Height</link>
-        </seealso>
         <short>The <var>Height</var> of the canvas</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Width">
-        <descr/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomCanvas.Width">TFPCustomCanvas.Width</link>
-        </seealso>
         <short>The <var>Width</var> of the Canvas</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TBitmapNativeType.bnCursor">
@@ -10404,10 +9647,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- class Visibility: default -->
       <element name="TCustomBitmapImage">
         <short>
-          <var>TCustomBitmapImage</var> - the base type for 
-          
-          
-          <var>TBitmapImage</var>
+          <var>TCustomBitmapImage</var> - the base type for  <var>TBitmapImage</var>
         </short>
       </element>
       <!-- variable Visibility: private -->
@@ -11066,58 +10306,45 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomBitmap.Create">
-        <descr>
-          <var>BitMap</var> constructor. The supplied code can 
-          
-          
-          <b>override</b> the definition from ancestor classes
-</descr>
         <short>
-          <var>Create</var> - constructor for 
-          <var>TCustomBitmap</var>: performs inherited 
-          <var>Create</var> and initializes pixel format</short>
+          <var>Create</var> - constructor for <var>TCustomBitmap</var>: performs inherited <var>Create</var> and initializes pixel format
+        </short>
+        <descr>
+          <var>BitMap</var> constructor. The supplied code can <b>override</b> the definition from ancestor classes.
+        </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomBitmap.Destroy">
-        <descr>
-          <var>BitMap</var> destructor. The supplied code can
-
-          
-          
-          <b>override</b> the method defined for ancestor classes
-</descr>
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TCustomBitmap</var>: frees any Mask handles, then performs inherited 
-          <var>Destroy</var>
+          <var>Destroy</var> - destructor for <var>TCustomBitmap</var>: frees any Mask handles, then performs inherited <var>Destroy</var>
         </short>
-        <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
-        </seealso>
+        <descr>
+          <p>
+            <var>Destroy</var> is the destructor for the class instance. The supplied code can <b>override</b> the method defined for ancestor classes.
+          </p>
+        </descr>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.Assign">
         <short>
-          <var>Assign</var>: find out about the 
-          
-          
-          <var>Source</var> of the call.</short>
+          <var>Assign</var>: find out about the <var>Source</var> of the call</short>
         <descr>
           <p>
-            <var>Assign</var>: find out about the 
-            
-            
-            <var>Source</var> of the call.</p>
-          <p>If the   <var>BitMap</var> data are already in use, the data are shared; if not, a new  <var>BitMap</var> is produced
-</p>
+            <var>Assign</var>: find out about the <var>Source</var> of the call.
+          </p>
+          <p>
+            If the  <var>BitMap</var> data are already in use, the data are shared; if not, a new  <var>BitMap</var> is produced.
+          </p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.Assign.Source">
-        <short>The <var>Source</var> control (usually a Bitmap) for the <var>Assign</var> procedure</short>
+        <short>
+          The <var>Source</var> control (usually a Bitmap) for the <var>Assign</var> procedure
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.FreeImage">
@@ -11756,14 +10983,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
             <var>IdentEntry</var> - checks that a given Entry exists in a Map of  color names
 </p>
           <p>A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)</p>
-          <p>This function checks that the value in 
-          
-          <var>Entry</var> is within the permitted range, and returns the data pair 
-          
-          <var>Value</var>, 
-          
+          <p>This function checks that the value in
+
+          <var>Entry</var> is within the permitted range, and returns the data pair
+
+          <var>Value</var>,
+
           <var>Name</var> of the corresponding color in
-          
+
           <var>MapEntry</var>.
 </p>
           <p>If <var>Entry</var> is out of range the Result is False</p>
@@ -11783,16 +11010,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="IdentEntry.MapEntry">
         <short>
-          <var>MapEntry</var> - the record of 
-          
-          
-          <var>Value</var>, 
-          
-          
-          <var>Name</var> returned from the look-up table of 
-          
-          
-          <var>Colors</var>
+          <var>MapEntry</var> - the record of <var>Value</var>, <var>Name</var> returned from the look-up table of <var>Colors</var>
         </short>
       </element>
       <!-- function result Visibility: default -->
@@ -12088,7 +11306,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- "class of" type Visibility: default -->
       <element name="TSharedRasterImageClass">
         <short>
-          <var>TSharedRasterImageClass</var> - class of 
+          <var>TSharedRasterImageClass</var> - class of
           <var>TSharedRasterImage</var>
         </short>
         <descr/>
@@ -12097,8 +11315,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- class Visibility: default -->
       <element name="TRasterImage">
         <short>
-          <var>TRasterImage</var> - base class for a number of graphic controls, including 
-          <var>TCustomBitmap</var> and 
+          <var>TRasterImage</var> - base class for a number of graphic controls, including
+          <var>TCustomBitmap</var> and
           <var>TCustomIcon</var>, which use a raster of dots to display graphic information</short>
         <descr/>
         <errors/>
@@ -12226,7 +11444,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TRasterImage.CreateDefaultBitmapHandle">
         <short>
-          <var>CreateDefaultBitmapHandle</var> - returns a bitmap handle matching the description 
+          <var>CreateDefaultBitmapHandle</var> - returns a bitmap handle matching the description
           <var>ADesc</var>
         </short>
         <descr/>
@@ -12488,7 +11706,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TRasterImage.UnshareImage">
         <short>
-          <var>UnshareImage</var> - stops an image from being shared: if 
+          <var>UnshareImage</var> - stops an image from being shared: if
           <var>CopyContent</var> is True, the Image gets copied</short>
         <descr/>
         <errors/>
@@ -12665,14 +11883,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- destructor Visibility: public -->
       <element name="TRasterImage.Destroy">
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TRasterImage</var>: frees canvas, releases image then calls inherited 
-          <var>Destroy</var>
+          <var>Destroy</var> is the destructor for <var>TRasterImage</var>: frees the canvas, and releases image then calls inherited <var>Destroy</var>
         </short>
         <descr/>
-        <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#RTL.Classes.TPersistent.Destroy"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -13032,7 +12247,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TSharedCustomBitmap.FreeHandle">
         <short>
-          <var>FreeHandle</var> frees Palette then calls inherited 
+          <var>FreeHandle</var> frees Palette then calls inherited
           <var>FreeHandle</var>
         </short>
         <descr/>
@@ -13084,8 +12299,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- constructor Visibility: public -->
       <element name="TSharedCustomBitmap.Create">
         <short>
-          <var>Create</var> - constructor for 
-          <var>TSharedCustomBitmap</var>: calls inherited 
+          <var>Create</var> - constructor for
+          <var>TSharedCustomBitmap</var>: calls inherited
           <var>Create</var> and initializes the image</short>
         <descr/>
         <errors/>
@@ -13096,8 +12311,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- destructor Visibility: public -->
       <element name="TSharedCustomBitmap.Destroy">
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TSharedCustomBitmap</var>: frees stream, handle and image, then calls inherited 
+          <var>Destroy</var> - destructor for
+          <var>TSharedCustomBitmap</var>: frees stream, handle and image, then calls inherited
           <var>Destroy</var>
         </short>
         <descr/>
@@ -13279,7 +12494,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitmap.RawimageNeeded">
         <short>
-          <var>RawimageNeeded</var> - method to signal that a raw image is required; if 
+          <var>RawimageNeeded</var> - method to signal that a raw image is required; if
           <var>ADescOnly</var> is True, only a descriptor is required</short>
         <descr/>
         <errors/>
@@ -13721,8 +12936,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- constructor Visibility: public -->
       <element name="TSharedIcon.Create">
         <short>
-          <var>Create</var> - constructor for 
-          <var>TSharedIcon</var>: performs inherited 
+          <var>Create</var> - constructor for
+          <var>TSharedIcon</var>: performs inherited
           <var>Create</var> then creates a list of images</short>
         <descr/>
         <errors/>
@@ -13733,8 +12948,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- destructor Visibility: public -->
       <element name="TSharedIcon.Destroy">
         <short>
-          <var>Destroy</var> - destructor for 
-          <var>TSharedIcon</var>: frees the list of images and performs inherited 
+          <var>Destroy</var> - destructor for
+          <var>TSharedIcon</var>: frees the list of images and performs inherited
           <var>Destroy</var>
         </short>
         <descr/>
@@ -14256,9 +13471,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Add">
         <short>
-          <var>Add</var> - an Icon formatted as 
-          <var>AFormat</var>, with specified 
-          <var>Height</var> and 
+          <var>Add</var> - an Icon formatted as
+          <var>AFormat</var>, with specified
+          <var>Height</var> and
           <var>Width</var>
         </short>
         <descr/>
@@ -14316,9 +13531,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Remove">
         <short>
-          <var>Remove</var> the Icon specified by 
-          <var>AFormat</var>, 
-          <var>AHeight</var> and 
+          <var>Remove</var> the Icon specified by
+          <var>AFormat</var>,
+          <var>AHeight</var> and
           <var>AWidth</var>
         </short>
         <descr/>
@@ -14559,7 +13774,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- property Visibility: public -->
       <element name="TCursorImageImage.HotSpot">
         <short>
-          <var>HotSpot</var> - the coordinates of the point to which the cursor refers, and which represents the 'active' position on the current form or canvas</short>
+          <var>HotSpot</var> - the coordinates of the point to which the cursor refers, and which represents the 'active' position on the current form or canvas
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14704,27 +13920,31 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <element name="TSharedIcon.Add">
         <short>
-          <var>Add</var> a reference to the shared icon</short>
+          <var>Add</var> a reference to the shared icon
+        </short>
       </element>
       <element name="TSharedIcon.Count">
         <short>
-          <var>Count</var> - returns the number of references to the shared icon</short>
+          <var>Count</var> - returns the number of references to the shared icon
+        </short>
       </element>
       <element name="TRasterImage.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start the update process</short>
+          <var>BeginUpdate</var> - start the update process
+        </short>
         <descr>
-          <var>BeginUpdate</var> - start the update process; by default the boolean argument 
-          <var>ACanvasOnly</var> is False, i.e. more than just the Canvas is to be updated
-</descr>
+          <var>BeginUpdate</var> - start the update process; by default the boolean argument <var>ACanvasOnly</var> is False, i.e. more than just the Canvas is to be updated.
+        </descr>
       </element>
       <element name="TRasterImage.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finishes the update process</short>
+          <var>EndUpdate</var> - finishes the update process
+        </short>
         <descr>
-          <var>EndUpdate</var> - finishes the update process. By default the boolean argument 
-          <var>AStreamIsValid</var> is False, i.e. no stream is valid at the end of the process.
-be careful with this, modify only within a begin/endupdate</descr>
+          <p>
+            <var>EndUpdate</var> finishes the update process. By default the boolean argument <var>AStreamIsValid</var> is False, i.e. no stream is valid at the end of the process. Be careful with this, modify only within a begin/endupdate.
+          </p>
+        </descr>
       </element>
       <element name="TRasterImage.GetSize">
         <short>
@@ -14747,7 +13967,7 @@ be careful with this, modify only within a begin/endupdate</descr>
       <element link="#LCL.Graphics.TGraphic.Clear" name="TCustomBitmap.Clear"/>
       <element name="TIconImage.RawImageNeeded">
         <short>
-          <var>RawImageNeeded</var> - if 
+          <var>RawImageNeeded</var> - if
           <var>ADescOnly</var> is True (descriptor only), then we need a Raw Image</short>
       </element>
       <element name="TCustomIcon.AssignImage">
@@ -14817,14 +14037,14 @@ be careful with this, modify only within a begin/endupdate</descr>
       <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TIcnsIcon.GetSharedImageClass"/>
       <element name="TFPImageBitmapClass">
         <short>
-          <var>TFPImageBitmapClass</var> - class of 
+          <var>TFPImageBitmapClass</var> - class of
           <var>TFPImageBitmap</var>
         </short>
       </element>
       <element link="#LCL.LCLResCache.TResourceCache.CompareDescriptors" name="TPenHandleCache.CompareDescriptors"/>
       <element name="TPenHandleCache.FindPen">
         <short>
-          <var>FindPen</var> - returns a 
+          <var>FindPen</var> - returns a
           <var>ResourceCacheItem</var> corresponding to the nominated Handle</short>
       </element>
       <element name="TPenHandleCache.FindPenDesc">
@@ -14853,16 +14073,28 @@ be careful with this, modify only within a begin/endupdate</descr>
       </element>
       <element name="TPen.Cosmetic">
         <short>Whether the Pen is <var>Cosmetic</var>, i.e. non-geometric</short>
-        <descr>Pens can be Cosmetic and Geometric. Cosmetic pens are always 1 pixel wide, while geometric pens can have any width. But width of geometric pens are defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to canvas. Operations with cosmetic pens are faster.</descr>
+        <descr>
+          <p>
+            Pens can be Cosmetic or Geometric. Cosmetic pens are always 1 pixel wide, while geometric pens can have any width. The width of geometric pens are defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to canvas. Operations with cosmetic pens are faster.
+          </p>
+        </descr>
       </element>
       <element name="TPen.EndCap">
         <short>The sort of <var>EndCap</var> used on the Pen</short>
-        <descr>The end cap can be: Round, Square and Flat. When end caps are round - last points are drawn round, when end caps are square - last points are drawn square. When end caps are flat - last points are not drawn at all.</descr>
+        <descr>
+          <p>
+            The end cap can be Round, Square or Flat. When end caps are round, the last points are drawn round. When end caps are square, the last points are drawn square. When end caps are flat, the last points are not drawn at all.
+          </p>
+        </descr>
       </element>
       <element name="TPen.JoinStyle">
         <short>
           <var>JoinStyle</var> - the style of joint where two lines meet or cross</short>
-        <descr>The join style can be: Round, Bevel and Miter. When style is Round then line joins are round. When style is Bevel then line joins are beveled. When style is Miter then line joins are mitered.</descr>
+        <descr>
+          <p>
+            The join style can be: Round, Bevel or Miter. When style is Round, then line joins are round. When style is Bevel, then line joins are beveled. When style is Miter, then line joins are mitered.
+          </p>
+        </descr>
       </element>
       <element name="TPenHandleCacheDescriptor">
         <short>
@@ -14892,7 +14124,14 @@ be careful with this, modify only within a begin/endupdate</descr>
           <var>FontData</var> - the data describing the font</short>
       </element>
       <element name="TFont.Orientation">
-        <short>The <var>Orientation</var>Rotation of the current font in 10th of a degree. Zero is text drawn to the right, upsides. With value 900 (90 degrees) it will be drawn towards the top. With 1800 it will be upside-down and drawn to the left.</short>
+        <short>
+          Rotation for the current font in 1/10ths of a degree
+        </short>
+        <descr>
+          <p>
+            The <var>Orientation</var> Rotation of the current font in 10th of a degree. Zero is text drawn to the right, upsides. With value 900 (90 degrees) it will be drawn towards the top. With 1800 it will be upside-down and drawn to the left.
+          </p>
+        </descr>
       </element>
       <element name="TCanvas.SetClipRect"/>
       <element name="TCanvas.GetClipping">

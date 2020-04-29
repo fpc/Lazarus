@@ -45,7 +45,6 @@
         </descr>
         <seealso>
           <link id="TLazCanvas.CanvasCopyRect"/>
-          <link id="#LCL.CustomDrawnInt.TCDWidgetSet"/>
         </seealso>
       </element>
       <element name="TLazCanvasImageFormat.clfOther">
@@ -119,12 +118,11 @@
         <seealso>
           <link id="TLazCanvas.SaveState"/>
           <link id="TLazCanvas.RestoreState"/>
-          <link id="TLazCanvas.Brush"/>
-          <link id="TLazCanvas.Font"/>
-          <link id="TLazCanvas.Pen"/>
+          <link id="TLazCanvas.AssignedBrush"/>
+          <link id="TLazCanvas.AssignedFont"/>
+          <link id="TLazCanvas.AssignedPen"/>
           <link id="TLazCanvas.BaseWindowOrg"/>
           <link id="TLazCanvas.WindowOrg"/>
-          <link id="TLazCanvas.Clipping"/>
         </seealso>
       </element>
 
@@ -212,7 +210,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#FCL.FPImgCanv.TFPImageCanvas"/>
           <link id="#LCL.Graphics.TCanvas"/>
         </seealso>
       </element>
@@ -347,7 +344,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#FCL.FPCanvas.TFPCustomCanvas.DoRectangle"/>
           <link id="TLazCanvas.DoRectangleFill"/>
         </seealso>
       </element>
@@ -363,9 +359,7 @@
             Adjusts the fcl-image coordinate system to be compatible with coordinates used in <var>TCanvas</var>.
           </p>
         </descr>
-        <seealso>
-          <link id="#FCL.FPCanvas.TFPCustomCanvas.DoRectangleFill"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TLazCanvas.DoRectangleFill.Bounds">
         <short></short>
@@ -474,7 +468,6 @@
         </descr>
         <seealso>
           <link id="TLazCanvas.HasNoImage"/>
-          <link id="TLazCanvas.GraphicStateList"/>
         </seealso>
       </element>
       <element name="TLazCanvas.Create.AnImage">
@@ -492,7 +485,6 @@
         <seealso>
           <link id="TLazCanvas.AssignedBrush"/>
           <link id="TLazCanvas.AssignedPen"/>
-          <link id="TLazCanvas.GraphicStateList"/>
         </seealso>
       </element>
 
@@ -521,12 +513,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLazCanvas.Brush"/>
-          <link id="TLazCanvas.Pen"/>
-          <link id="TLazCanvas.Font"/>
+          <link id="TLazCanvas.AssignedBrush"/>
+          <link id="TLazCanvas.AssignedPen"/>
+          <link id="TLazCanvas.AssignedFont"/>
           <link id="TLazCanvas.BaseWindowOrg"/>
           <link id="TLazCanvas.WindowOrg"/>
-          <link id="TLazCanvas.Clipping"/>
           <link id="TLazCanvas.RestoreState"/>
         </seealso>
       </element>

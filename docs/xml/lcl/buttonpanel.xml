@@ -76,8 +76,8 @@
         </descr>
         <seealso>
           <link id="TPanelButton"/>
-          <link id="TButtonPanel.ShowButtons"/>
-          <link id="TButtonPanel.ShowGlyphs"/>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+          <link id="TCustomButtonPanel.ShowGlyphs"/>
         </seealso>
       </element>
 
@@ -92,10 +92,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TButtonPanel.OKButton"/>
-          <link id="TButtonPanel.CancelButton"/>
-          <link id="TButtonPanel.CloseButton"/>
-          <link id="TButtonPanel.HelpButton"/>
+          <link id="TCustomButtonPanel.OKButton"/>
+          <link id="TCustomButtonPanel.CancelButton"/>
+          <link id="TCustomButtonPanel.CloseButton"/>
+          <link id="TCustomButtonPanel.HelpButton"/>
           <link id="#LCL.Buttons.TCustomBitBtn"/>
         </seealso>
       </element>
@@ -182,9 +182,7 @@
             <var>Name</var> is a String property with the identifier assigned to the button to indicates its usage in <var>TButtonPanel</var>. <var>Name</var> contains a constant value like 'OKButton', 'CancelButton', 'CloseButton', or 'HelpButton'. The value in <var>Name</var> is assigned when the button is created in the <var>CreateButton</var> method in <var>TCustomButtonPanel</var>.
           </p>
         </descr>
-        <seealso>
-          <link id="TCustomButtonPanel.CreateButton"/>
-        </seealso>
+        <seealso></seealso>
       </element>
 
       <element name="TPanelBitBtn.PopupMenu">
@@ -296,8 +294,6 @@
         <seealso>
           <link id="TCustomButtonPanel.CreateButton"/>
           <link id="TCustomButtonPanel.ShowButtons"/>
-          <link id="TCustomButtonPanel.UpdateButtonOrder"/>
-          <link id="TCustomButtonPanel.UpdateButtonLayout"/>
           <link id="TPanelButton"/>
           <link id="TPanelBitBtn"/>
         </seealso>
@@ -722,11 +718,7 @@
             <var>Align</var> is a public property in <var>TCustomButtonPanel</var> used to specify the border (or edge) where the panel (and its buttons and bevel) are aligned. The default value for the property is <var>alBottom</var>. Changing the value in <var>Align</var> causes the <var>UpdateButtonLayout</var>, <var>UpdateBevel</var>, and <var>UpdateSizes</var> methods to be called.
           </p>
         </descr>
-        <seealso>
-          <link id="TCustomButtonPanel.UpdateButtonLayout"/>
-          <link id="TCustomButtonPanel.UpdateBevel"/>
-          <link id="TCustomButtonPanel.UpdateSizes"/>
-        </seealso>
+        <seealso></seealso>
       </element>
 
       <element name="TCustomButtonPanel.AutoSize">
@@ -819,7 +811,6 @@
         </descr>
         <seealso>
           <link id="TCustomButtonPanel.Align"/>
-          <link id="TCustomButtonPanel.UpdateBevel"/>
         </seealso>
       </element>
 
@@ -834,9 +825,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomButtonPanel.InvalidatePreferredSize"/>
-          <link id="TCustomButtonPanel.ReAlign"/>
-          <link id="TCustomButtonPanel.BorderSpacing"/>
+          <link id="TButtonPanel.BorderSpacing"/>
+          <link id="#LCL.Controls.TWinControl.ReAlign"/>
+          <link id="#LCL.Controls.TControl.InvalidatePreferredSize"/>
         </seealso>
       </element>
 
@@ -855,24 +846,18 @@
       <element name="TButtonPanel.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TButtonPanel.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TButtonPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-
-      <element name="TButtonPanel.BorderSpacing" link=""/>
-      <element name="TButtonPanel.Constraints" link=""/>
-      <element name="TButtonPanel.Enabled" link=""/>
-
+      <element name="TButtonPanel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TButtonPanel.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TButtonPanel.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TButtonPanel.OKButton" link="TCustomButtonPanel.OKButton"/>
       <element name="TButtonPanel.HelpButton" link="TCustomButtonPanel.HelpButton"/>
       <element name="TButtonPanel.CloseButton" link="TCustomButtonPanel.CloseButton"/>
       <element name="TButtonPanel.CancelButton" link="TCustomButtonPanel.CancelButton"/>
-
-      <element name="TButtonPanel.Color" link=""/>
-
+      <element name="TButtonPanel.Color" link="#LCL.ExtCtrls.TCustomPanel.Color"/>
       <element name="TButtonPanel.ButtonOrder" link="TCustomButtonPanel.ButtonOrder"/>
       <element name="TButtonPanel.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TButtonPanel.DefaultButton" link="TCustomButtonPanel.DefaultButton"/>
-
-      <element name="TButtonPanel.Spacing" link=""/>
-
+      <element name="TButtonPanel.Spacing" link="TCustomButtonPanel.Spacing"/>
       <element name="TButtonPanel.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TButtonPanel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TButtonPanel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>

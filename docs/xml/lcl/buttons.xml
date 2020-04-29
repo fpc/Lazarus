@@ -127,14 +127,13 @@
             <var>TransparentMode</var> indicates whether the glyph image is drawn with transparency, as works in conjunction with the <var>Transparent</var> property in the parent control.
           </p>
           <p>
-            <var>TButtonGlyph</var> implements the <var>IImageCacheListener</var> interface used to provide support for cached images in <var>TImageList</var>. <var>TButtonGlyph</var> also implements the <var>IUnknown</var> interface to support the <var>QuertInterface</var> method and reference counting.
+            <var>TButtonGlyph</var> implements the <var>IImageCacheListener</var> interface used to provide support for cached images in <var>TImageList</var>. <var>TButtonGlyph</var> also implements the <var>IUnknown</var> interface to support the <var>QueryInterface</var> method and reference counting.
           </p>
           <p>
             <var>TButtonGlyph</var> is the type used to implement the <var>ButtonGlyph</var> property in <var>TCustomBitBtn</var> and <var>TCustomSpeedButton</var>.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomBitBtn.ButtonGlyph"/>
           <link id="TCustomSpeedButton.ButtonGlyph"/>
           <link id="#LCL.Menus.TMenu"/>
           <link id="#LCL.Menus.TMenuItem"/>
@@ -428,7 +427,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TButtonGlyph.ClearImages"/>
           <link id="TButtonGlyph.OnChange"/>
           <link id="TButtonGlyph.CanShow"/>
           <link id="TButtonGlyph.Glyph"/>
@@ -545,9 +543,8 @@
         <seealso>
           <link id="TButtonGlyph.ExternalImages"/>
           <link id="TButtonGlyph.ExternalImageIndex"/>
-          <link id="TButtonGlyph.LCLGlyphResourceName"/>
+          <link id="TButtonGlyph.LCLGlyphName"/>
           <link id="TButtonGlyph.Images"/>
-          <link id="TButtonGlyph.ImageIndexes"/>
           <link id="TButtonGlyph.Draw"/>
           <link id="TCustomSpeedButton.GetGlyphSize"/>
         </seealso>
@@ -717,7 +714,6 @@
           <link id="TButtonGlyph.ExternalImages"/>
           <link id="TButtonGlyph.ExternalImageIndex"/>
           <link id="TButtonGlyph.ExternalImageWidth"/>
-          <link id="TButtonGlyph.ClearImages"/>
           <link id="TButtonGlyph.OnChange"/>
           <link id="BitBtnResNames"/>
         </seealso>
@@ -1072,7 +1068,6 @@
           <link id="TCustomBitBtn.ModalResult"/>
           <link id="TCustomBitBtn.Default"/>
           <link id="TCustomBitBtn.Cancel"/>
-          <link id="TCustomBitBtn.GetCaptionOfKind"/>
           <link id="TBitBtnKind"/>
           <link id="GetDefaultBitBtnGlyph"/>
           <link id="BitBtnModalResults"/>
@@ -1087,7 +1082,6 @@
         <short>Gets the default value for the Caption used for the button Kind</short>
         <descr></descr>
         <seealso>
-          <link ied="TCustomBitBtn.RealizeKind"/>
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetCaptionOfKind.Result">
@@ -1203,9 +1197,6 @@
         </descr>
         <seealso>
           <link id="TCustomBitBtn.Glyph"/>
-          <link id="TCustomBitBtn.ImageListChange"/>
-          <link id="TCustomBitBtn.InvalidatePreferredSize"/>
-          <link id="TCustomBitBtn.AdjustSize"/>
           <link id="TButtonGlyph.OnChange"/>
         </seealso>
       </element>
@@ -1376,7 +1367,6 @@
         </descr>
         <seealso>
           <link id="TCustomBitBtn.DefaultCaption"/>
-          <link id="TCustomBitBtn.GetCaptionOfKind"/>
           <link id="TCustomBitBtn.Kind"/>
           <link id="TBitBtnKind"/>
         </seealso>
@@ -1388,7 +1378,6 @@
         <seealso>
           <link id="TCustomBitBtn.Caption"/>
           <link id="TCustomBitBtn.Kind"/>
-          <link id="TCustomBitBtn.GetCaptionOfKind"/>
         </seealso>
       </element>
 
@@ -1400,7 +1389,6 @@
           <link id="TCustomBitBtn.ImageIndex"/>
           <link id="TCustomBitBtn.ImageWidth"/>
           <link id="TCustomBitBtn.Kind"/>
-          <link id="TCustomBitBtn.RealizeKind"/>
           <link id="TCustomBitBtn.LoadGlyphFromResourceName"/>
           <link id="TCustomBitBtn.LoadGlyphFromLazarusResource"/>
           <link id="TCustomBitBtn.LoadGlyphFromStock"/>
@@ -2845,7 +2833,6 @@
         </descr>
         <seealso>
           <link id=" LoadGlyphFromStock"/>
-          <link id=" #LCL.themes.TThemeServices.GetStockImage"/>
         </seealso>
       </element>
       <element name="GetButtonIcon.Result">
@@ -2896,7 +2883,6 @@
         </descr>
         <seealso>
           <link id="TBitBtnKind"/>
-          <link id="TCustomBitBtn.RealizeKind"/>
         </seealso>
       </element>
 
@@ -2925,7 +2911,6 @@
         </descr>
         <seealso>
           <link id="BitBtnImages"/>
-          <link id="TCustomBitBtn.RealizeKind"/>
         </seealso>
       </element>
 

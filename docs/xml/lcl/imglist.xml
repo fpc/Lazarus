@@ -12,7 +12,7 @@
       </short>
       <descr></descr>
 
-      <!-- unresolved externals
+      <!-- unresolved externals -->
       <element name="Types"/>
       <element name="Math"/>
       <element name="SysUtils"/>
@@ -39,7 +39,6 @@
       <element name="IntfGraphics"/>
       <element name="WSReferences"/>
       <element name="RtlConsts"/>
-      -->
 
       <!-- "type" alias type Visibility: default -->
       <element name="TImageIndex">
@@ -263,9 +262,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolution.AddImages"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
-          <link id="TCustomImageListResolution.ReadData"/>
           <link id="TCustomImageList.Assign"/>
         </seealso>
       </element>
@@ -301,7 +297,6 @@
         <seealso>
           <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageList.AddImages"/>
-          <link id="TCustomImageListResolution.AddImages"/>
         </seealso>
       </element>
       <element name="TCustomImageListResolution.Add.Result">
@@ -471,7 +466,6 @@
         </descr>
         <seealso>
           <link id="#LazUtils.GraphType.TRawImage"/>
-          <link id="#LazUtils.GraphType.TRawImageDescription"/>
           <link id="TCustomImageListResolution.GetFullBitmap"/>
           <link id="TCustomImageList.GetFullRawImage"/>
         </seealso>
@@ -503,7 +497,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.WriteData"/>
-          <link id="TCustomImageListResolution.ReadData"/>
           <link id="TCustomImageList.ReadData"/>
         </seealso>
       </element>
@@ -572,7 +565,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.ReadData"/>
-          <link id="TCustomImageListResolution.WriteData"/>
         </seealso>
       </element>
       <element name="TCustomImageListResolution.ReadData.AStream">
@@ -704,7 +696,6 @@
         </descr>
         <seealso>
           <link id="#LazUtils.GraphType.TRawImageDescription"/>
-          <link id="TCustomImageListResolution.GetFullRawImage"/>
           <link id="TCustomImageListResolution.GetRawImage"/>
         </seealso>
       </element>
@@ -841,7 +832,7 @@
             GetRawImage calls <var>CheckIndex</var> to ensure that Index contains a valid position in  the image resolution. An exception is raised in CheckIndex if the requested position is invalid. No actions are performed in the method when Count contains <b>0</b> (<b>zero</b>).
           </p>
           <p>
-            GetRawImage stores image metadata in Image by calling the <vart>FillDescription</vart> method. The 32-bit RGBA raw image data at the specified Index in the resolution is stored in Image. Its DataSize property is updated to reflect the number of pixels (<b>Width * Height * 32b</b>) stored in the class instance.
+            GetRawImage stores image metadata in Image by calling the <var>FillDescription</var> method. The 32-bit RGBA raw image data at the specified Index in the resolution is stored in Image. Its DataSize property is updated to reflect the number of pixels (<b>Width * Height * 32b</b>) stored in the class instance.
           </p>
           <p>
             GetRawImage is used in the implementation of the <var>GetBitmap</var>, <var>GetFullBitmap</var>,  <var>GetIcon</var>, and <var>ReadData</var> methods. It is also used in the <var>AddImages</var> and <var>GetRawImage</var> methods in <var>TCustomImageList</var>.
@@ -851,7 +842,6 @@
           <link id="TCustomImageListResolution.GetBitmap"/>
           <link id="TCustomImageListResolution.GetFullBitmap"/>
           <link id="TCustomImageListResolution.GetIcon"/>
-          <link id="TCustomImageListResolution.ReadData"/>
           <link id="TCustomImageList.AddImages"/>
           <link id="TCustomImageList.GetRawImage"/>
         </seealso>
@@ -989,7 +979,7 @@
             AIndex contains the ordinal position for the base image drawn in the method.
           </p>
           <p>
-            AOverlay contains the position in the <var>ImageList.Overlays</var> property where the index position for the overlay image is stored. The value in AOverlay must be in the range 0..14 (the range defined in <var>TOverlay</var>).
+            AOverlay contains the position in the <var>ImageList.Overlay</var> property where the index position for the overlay image is stored. The value in AOverlay must be in the range 0..14 (the range defined in <var>TOverlay</var>).
           </p>
           <p>
             ADrawingStyle contains the <var>TDrawingStyle</var> enumeration value applied to the rendered image.
@@ -1078,7 +1068,6 @@
         <seealso>
           <link id="TCustomImageListResolution.Height"/>
           <link id="TCustomImageListResolution.Count"/>
-          <link id="TCustomImageListResolution.AllocData"/>
           <link id="TCustomImageList.Resolution"/>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageListResolutions.ImageLists"/>
@@ -1101,7 +1090,6 @@
         <seealso>
           <link id="TCustomImageListResolution.Width"/>
           <link id="TCustomImageListResolution.Count"/>
-          <link id="TCustomImageListResolution.AllocData"/>
           <link id="TCustomImageList.Resolution"/>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageListResolutions.ImageLists"/>
@@ -1163,9 +1151,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolution.GetReference"/>
-          <link id="TWSCustomImageListReference"/>
-          <link id="TWSCustomImageListResolutionClass"/>
+          <link id="TCustomImageListResolution.Reference"/>
         </seealso>
       </element>
 
@@ -1190,7 +1176,6 @@
         <seealso>
           <link id="TCustomImageListResolution"/>
           <link id="TCustomImageList.ResolutionForPPI"/>
-          <link id="TCustomImageList.GetResolutionForPPI"/>
           <link id="TCustomImageList.DrawForPPI"/>
         </seealso>
       </element>
@@ -1389,7 +1374,7 @@
             The <var>ImageLists</var> property provides access to the image list for a specific image width (or resolution), and performs image scaling when needed. New image resolutions are dynamically created and added to the container when a size is requested that is not already present.
           </p>
           <p>
-            Use the <varf>Items</varf> property to access the TCustomImageListResolution class instances stored in the container. Use the <var>Count</var> property to determine the number of image resolutions stored in the container. Use the <var>Clear</var> and <var>Delete</var> methods to maintain image resolutions in the container.
+            Use the <var>Items</var> property to access the TCustomImageListResolution class instances stored in the container. Use the <var>Count</var> property to determine the number of image resolutions stored in the container. Use the <var>Clear</var> and <var>Delete</var> methods to maintain image resolutions in the container.
           </p>
           <p>
             TCustomImageListResolutions is used in the implementation of TCustomImageList.
@@ -1568,8 +1553,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolutions.Find"/>
-          <link id="TCustomImageListResolutions.FindBestToCopyFrom"/>
           <link id="TCustomImageList.StretchDraw"/>
         </seealso>
       </element>
@@ -1636,11 +1619,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolutions.GetImageLists"/>
-          <link id="TCustomImageListResolutions.Find"/>
-          <link id="TCustomImageListResolutions.FindBestToCopyFrom"/>
           <link id="TCustomImageListResolutions.Items"/>
-          <link id="TCustomImageList.GetHeightForWidth"/>
+          <link id="TCustomImageList.HeightForWidth"/>
           <link id="TCustomImageList.AddImages"/>
         </seealso>
       </element>
@@ -1834,8 +1814,8 @@
           <link id="TCustomImageListResolutionEnumerator.MoveNext"/>
           <link id="TCustomImageListResolutionEnumerator.Create"/>
           <link id="TCustomImageListResolution"/>
-          <link id="TCustomImageList>Resolutions"/>
-          <link id="TCustomImageList>ResolutionsDesc"/>
+          <link id="TCustomImageList.Resolutions"/>
+          <link id="TCustomImageList.ResolutionsDesc"/>
         </seealso>
       </element>
 
@@ -1865,7 +1845,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.WidthForPPI"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
           <link id="TCustomImageList.OnGetWidthForPPI"/>
         </seealso>
       </element>
@@ -2083,7 +2062,7 @@
          </descr>
          <seealso>
            <link id="TScaledImageListResolution"/>
-           <link id="TCustomImageList.Resoution"/>
+           <link id="TCustomImageList.Resolution"/>
            <link id="TCustomImageList.DrawForPPI"/>
          </seealso>
        </element>
@@ -2144,7 +2123,6 @@
          <seealso>
            <link id="TCustomImageList.GetHeightForPPI"/>
            <link id="TCustomImageListResolutions.ImageLists"/>
-           <link id="TCustomImageListResolutions.GetImageLists"/>
          </seealso>
        </element>
        <element name="TCustomImageList.GetHeightForWidth.Result">
@@ -2188,7 +2166,7 @@
          </descr>
          <seealso>
            <link id="TCustomImageList.SizeForPPI"/>
-           <link id="TCustomImageList.GetWidthForPPI"/>
+           <link id="TCustomImageList.WidthForPPI"/>
            <link id="TCustomImageList.GetResolution"/>
          </seealso>
        </element>
@@ -2434,7 +2412,7 @@
           <link id="TCustomImageList.Create"/>
           <link id="TCustomImageList.CreateSize"/>
           <link id="TCustomImageList.ClearOverlays"/>
-          <link id="TCustomImageList.Overlays"/>
+          <link id="TCustomImageList.Overlay"/>
           <link id="TCustomImageListResolutions"/>
           <link id="TChangeLink"/>
         </seealso>
@@ -2494,12 +2472,10 @@
           <link id="TCustomImageList.Width"/>
           <link id="TCustomImageList.Height"/>
           <link id="TCustomImageList.Resolution"/>
-          <link id="TCustomImageList.Overlays"/>
+          <link id="TCustomImageList.Overlay"/>
           <link id="TCustomImageList.Clear"/>
           <link id="TCustomImageList.CreateSize"/>
           <link id="TCustomImageList.Assign"/>
-          <link id="TCustomImageList.SetHeight"/>
-          <link id="TCustomImageList.SetWidth"/>
         </seealso>
       </element>
       <element name="TCustomImageList.SetWidthHeight.NewWidth">
@@ -2558,7 +2534,7 @@
       </element>
       <element name="TCustomImageList.Create.AOwner">
         <short>Owner of the class instance</short>
-      </element>
+      </element<name />
 
       <element name="TCustomImageList.CreateSize">
         <short>
@@ -2587,6 +2563,20 @@
       </element>
       <element name="TCustomImageList.CreateSize.AHeight">
         <short>The height of images in the default resolution</short>
+      </element>
+
+      <element name="TCustomImageList.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the internal <var>TCustomImageListResolutions</var> instance in the class are freed, and calls the inherited destructor. Destroy calls <var>UnRegisterChanges</var> to remove the <var>TChangeLink</var> items in the internal list of change links for the class, and frees resources allocated to the list.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomImageList.UnRegisterChanges"/>
+          <link id="TCustomImageListResolutions"/>
+          <link id="TChangeLink"/>
+        </seealso>
       </element>
 
       <element name="TCustomImageList.ScaleImage">
@@ -2633,7 +2623,6 @@
             <li>TCustomImageList.ReplaceMasked</li>
             <li>TCustomImageListResolution.Add</li>
             <li>TCustomImageListResolution.AddImages</li>
-            <li>TCustomImageListResolution.ReadData</li>
           </ul>
         </descr>
         <seealso>
@@ -2646,9 +2635,6 @@
           <link id="TCustomImageList.Replace"/>
           <link id="TCustomImageList.ReplaceIcon"/>
           <link id="TCustomImageList.ReplaceMasked"/>
-          <link id="TCustomImageListResolution.Add"/>
-          <link id="TCustomImageListResolution.AddImages"/>
-          <link id="TCustomImageListResolution.ReadData"/>
           <link id="TRGBAQuadArray"/>
         </seealso>
       </element>
@@ -2760,7 +2746,6 @@
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageList.WriteAdvData"/>
           <link id="TCustomImageList.ReadData"/>
-          <link id="TCustomImageListResolution.WriteData"/>
         </seealso>
       </element>
       <element name="TCustomImageList.WriteData.AStream">
@@ -2900,9 +2885,6 @@
           <link id="TCustomImageList.Change"/>
           <link id="TCustomImageList.OnChange"/>
           <link id="TCustomImageList.Resolutions"/>
-          <link id="TCustomImageListResolutions.GetImageLists"/>
-          <link id="TCustomImageListResolution.ReadData"/>
-          <link id="TImageListSignature"/>
           <link id="#lcl.LResources.ReadLRSCardinal"/>
         </seealso>
       </element>
@@ -3053,12 +3035,13 @@
           </p>
         </descr>
         <seealso>
+          <link id="TCustomImageList.Insert"/>
+          <link id="TCustomImageList.InsertIcon"/>
+          <link id="TCustomImageList.InsertMasked"/>
           <link id="TCustomImageList.Count"/>
-          <link id="TCustomImageList.CreateDefaultResolution"/>
           <link id="TCustomImageList.Resolutions"/>
+          <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageListResolution"/>
-          <link id="TCustomImageListResolution.ScaleImage"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
           <link id="TCustomImageListResolutions"/>
         </seealso>
         <notes><note>The wording in this topic seems awkward. Suggestions?</note></notes>
@@ -3101,7 +3084,6 @@
           <link id="TCustomImageList.Count"/>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ScaleImage"/>
-          <link id="TCustomImageListResolutions.InternalInsert"/>
           <link id="TRGBAQuadArray"/>
         </seealso>
       </element>
@@ -3146,13 +3128,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.CreateDefaultResolution"/>
           <link id="TCustomImageList.Count"/>
           <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageList.AddSliceCentered"/>
           <link id="TCustomImageListResolution.Height"/>
           <link id="TCustomImageListResolution.Width"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
           <link id="TCustomImageListResolutions"/>
           <link id="TRGBAQuadArray"/>
         </seealso>
@@ -3391,7 +3371,6 @@
         <seealso>
           <link id="TCustomImageList.BeginUpdate"/>
           <link id="TCustomImageList.EndUpdate"/>
-          <link id="TCustomImageList.NotifyChangeLink"/>
           <link id="TCustomImageList.OnChange"/>
         </seealso>
       </element>
@@ -3408,7 +3387,7 @@
         <seealso>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ClearOverlays"/>
-          <link id="TCustomImageList.Overlays"/>
+          <link id="TCustomImageList.Overlay"/>
           <link id="TCustomImageList.Change"/>
           <link id="TCustomImageList.OnChange"/>
           <link id="TCustomImageListResolutions"/>
@@ -3635,7 +3614,7 @@
             <link id="TCustomImageList.Width"/>
             <link id="TCustomImageList.GetResolution"/>
             <link id="TCustomImageListResolution.DrawOverlay"/>
-            <link id="TGraphicsDrawEffect"/>
+            <link id="#LazUtils.GraphType.TGraphicsDrawEffect"/>
             <link id="TDrawingStyle"/>
             <link id="TOverlay"/>
           </seealso>
@@ -3693,7 +3672,7 @@
           <link id="TCustomImageList.Width"/>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageListResolution"/>
-          <link id="TGraphicsDrawEffect"/>
+          <link id="#LazUtils.GraphType.TGraphicsDrawEffect"/>
         </seealso>
       </element>
       <element name="TCustomImageList.GetBitmap.Index">
@@ -3759,7 +3738,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.GetResolution"/>
-          <link id="TCustomImageListResolution.GetFullRawImage"/>
           <link id="#LazUtils.GraphType.TRawImage"/>
         </seealso>
       </element>
@@ -3806,11 +3784,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.CreateDefaultResolution"/>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageListResolutions"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
         </seealso>
       </element>
       <element name="TCustomImageList.Insert.AIndex">
@@ -3843,9 +3819,7 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.Resolutions"/>
-          <link id="TCustomImageList.GetBestIconIndexForSize"/>
           <link id="TCustomImageList.ScaleImage"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
           <link id="TCustomImageListResolution"/>
           <link id="#lcl.Graphics.TCustomIcon"/>
         </seealso>
@@ -3879,10 +3853,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.CreateDefaultResolution"/>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ScaleImage"/>
-          <link id="TCustomImageListResolution.InternalInsert"/>
           <link id="TCustomImageListResolutions"/>
           <link id="TCustomImageList.Insert"/>
         </seealso>
@@ -3919,7 +3891,6 @@
           <link id="TCustomImageList.CheckIndex"/>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.Change"/>
-          <link id="TCustomImageListResolution.InternalMove"/>
         </seealso>
       </element>
       <element name="TCustomImageList.Move.ACurIndex">
@@ -4004,8 +3975,6 @@
           <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageListResolutions"/>
-          <link id="TCustomImageListResolution.InternalReplace"/>
-          <link id=""/>
         </seealso>
       </element>
       <element name="TCustomImageList.Replace.AIndex">
@@ -4045,7 +4014,6 @@
         <seealso>
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ScaleImage"/>
-          <link id="TCustomImageListResolution.InternalReplace"/>
           <link id="TCustomImageListResolutions"/>
         </seealso>
       </element>
@@ -4124,9 +4092,7 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.Resolutions"/>
-          <link id="TCustomImageList.GetBestIconIndexForSize"/>
           <link id="TCustomImageList.ScaleImage"/>
-          <link id="TCustomImageListResolution.InternalReplace"/>
           <link id="TCustomImageListResolutions"/>
         </seealso>
       </element>
@@ -4195,15 +4161,17 @@
             No actions are performed when Value is unassigned (contains <b>Nil</b>) or when it has already been added to the internal list of subscribers.
           </p>
           <p>
-            Value, and other subscribers the internal list, receive change notifications when the Reference class for an image resolution is freed and when the <var>NotifyChangeLink</var> method is called.
+            Value, and other subscribers the internal list, receive change notifications when the Reference class for an image resolution is freed and when the private  <var>NotifyChangeLink</var> method is called.
           </p>
           <p>
             Use <var>UnRegisterChanges</var> to remove a TChangeLink instance from the internal list of subscribers.
           </p>
+          <p>
+            NotifyChangeLink is called from the implementation of the <var>Change</var> method.
+          </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.DoDestroyResolutionReference"/>
-          <link id="TCustomImageList.NotifyChangeLink"/>
+          <link id="TCustomImageList.Change"/>
         </seealso>
       </element>
       <element name="TCustomImageList.RegisterChanges.Value">
@@ -4226,7 +4194,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TChangeLink"/>
           <link id="TChangeLink.Destroy"/>
           <link id="TCustomImageList.Destroy"/>
         </seealso>
@@ -4260,7 +4227,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolution.FindBestToScaleFrom"/>
+          <link id="TCustomImageListResolutions.FindBestToScaleFrom"/>
           <link id="TCustomImageListResolution.StretchDraw"/>
         </seealso>
       </element>
@@ -4314,7 +4281,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolutions.Find"/>
           <link id="TCustomImageListResolutions.Delete"/>
         </seealso>
       </element>
@@ -4341,7 +4307,6 @@
           </p>
         </descr>
         <seealso>
-          <link id ="TCustomImageListResolutions.Find"/>
           <link id ="TCustomImageListResolution"/>
           <link id ="TCustomImageList.ResolutionByIndex"/>
           <link id ="TCustomImageList.Replace"/>
@@ -4374,7 +4339,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolution.AllocaData"/>
           <link id="TCustomImageListResolution.WSCreateReference"/>
         </seealso>
       </element>
@@ -4492,9 +4456,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.GetWidthForPPI"/>
-          <link id="TCustomImageListResolution.GetHeightForWidth"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
+          <link id="TCustomImageList.WidthForPPI"/>
+          <link id="TCustomImageList.HeightForWidth"/>
         </seealso>
       </element>
       <element name="TCustomImageList.HeightForPPI.AImageWidth">
@@ -4526,8 +4489,7 @@
         <seealso>
           <link id="TCustomImageList.Width"/>
           <link id="TCustomImageList.Height"/>
-          <link id="TCustomImageList.GetHeightForPPI"/>
-          <link id="TCustomImageListResolutions.GetImageLists"/>
+          <link id="TCustomImageList.HeightForPPI"/>
         </seealso>
       </element>
       <element name="TCustomImageList.HeightForWidth.AWidth">
@@ -4605,7 +4567,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.Scaled"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
           <link id="TCustomImageList.OnGetWidthForPPI"/>
           <link id="TCustomImageListGetWidthForPPI"/>
         </seealso>
@@ -4639,7 +4600,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.GetWidthForPPI"/>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageList.Resolution"/>
           <link id="TCustomImageList.ResolutionForPPI"/>
@@ -4666,7 +4626,6 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.Change"/>
-          <link id="TCustomImageList.NotifyChangeLink"/>
         </seealso>
       </element>
 
@@ -4702,9 +4661,7 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.GetResolution"/>
-          <link id="TCustomImageListResolution.GetReference"/>
-          <link id="TWSCustomImageListReference"/>
-          <link id="TWSCustomImageListResolutionClass"/>
+          <link id="TCustomImageListResolution.Reference"/>
         </seealso>
       </element>
 
@@ -4727,9 +4684,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.GetReferenceForPPI"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
-          <link id="TCustomImageList.GetReference"/>
+          <link id="TCustomImageList.WidthForPPI"/>
+          <link id="TCustomImageList.Reference"/>
         </seealso>
       </element>
       <element name="TCustomImageList.ReferenceForPPI.AImageWidth">
@@ -4830,7 +4786,6 @@
         </descr>
         <seealso>
           <link id="TScaledImageListResolution"/>
-          <link id="TCustomImageList.GetResolutionForPPI"/>
           <link id="TCustomImageList.Resoution"/>
           <link id="TCustomImageList.DrawForPPI"/>
         </seealso>
@@ -4922,12 +4877,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageList.GetResolutionForPPI"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
+          <link id="TCustomImageList.ResolutionForPPI"/>
+          <link id="TCustomImageList.WidthForPPI"/>
           <link id="TCustomImageList.OnGetWidthForPPI"/>
           <link id="TCustomImageList.FindResolution"/>
           <link id="TCustomImageList.Resolution"/>
-          <link id="TCustomImageList.ResolutionForPPI"/>
           <link id="TCustomImageList.Resolutions"/>
         </seealso>
       </element>
@@ -4985,7 +4939,6 @@
         <seealso>
           <link id="TCustomImageListGetWidthForPPI"/>
           <link id="TCustomImageList.WidthForPPI"/>
-          <link id="TCustomImageList.GetWidthForPPI"/>
         </seealso>
       </element>
 

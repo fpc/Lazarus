@@ -121,7 +121,7 @@
           Name of the file where stream content is read or written
         </short>
         <descr>
-          FileName is a read-only String property that contains the name of the file where stream content is read or 
+          FileName is a read-only String property that contains the name of the file where stream content is read or
 written. FileName can contain UTF-8-encoded characters.
         </descr>
         <seealso></seealso>
@@ -193,7 +193,7 @@ written. FileName can contain UTF-8-encoded characters.
         </short>
         <descr>
           <p>
-            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can 
+            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can
 contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FileName, and calls the SaveToStream method to store values from the string list.
           </p>
         </descr>
@@ -261,7 +261,7 @@ contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to 
         </short>
         <descr>
           <p>
-            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name. 
+            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name.
 List is the TStrings decendant where the content from FileName is stored. FileName can contain UTF-8-encoded characters. LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the content in FileName, and calls the Assign method in List to store the values.
           </p>
         </descr>
@@ -314,11 +314,11 @@ List is the TStrings decendant where the content from FileName is stored. FileNa
             CompareStringListItemsUTF8LowerCase converts the string values to lowercase using UTF8LowerCase, and calls the CompareStr function to perform the comparison. The return value is in the following ranges:
           </p>
           <dl>
-            <dt><code> &lt;0 </code></dt>
+            <dt>&lt;0</dt>
             <dd>String at Index1 comes before String at Index2</dd>
-            <dt><code> 0 </code></dt>
+            <dt>0</dt>
             <dd>Strings have the same value</dd>
-            <dt><code> &gt;0 </code> </dt>
+            <dt>&gt;0</dt>
             <dd>String at Index1 comes after String at Index2</dd>
           </dl>
         </descr>

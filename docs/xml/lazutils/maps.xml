@@ -555,7 +555,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TMap.GetData">TMap.GetData</link>
+          <link id="#LazUtils.Maps.TMap.GetData"/>
         </seealso>
       </element>
       <!-- function result Visibility: protected -->
@@ -588,9 +588,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TBaseMap.Delete">TBaseMap.Delete</link>
-          <link id="TBaseMap.FreeData">TBaseMap.FreeData</link>
-          <link id="TMap.GetDataPtr">TMap.GetDataPtr</link>
+          <link id="TBaseMap.Delete"/>
+          <link id="#LazUtils.Maps.TMap.GetDataPtr"/>
         </seealso>
       </element>
       <!-- function result Visibility: protected -->

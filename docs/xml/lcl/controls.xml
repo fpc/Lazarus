@@ -867,9 +867,8 @@
           <p>
             <var>TCursor</var> is an Integer type which defines the range of values used for cursor shapes. <var>TCursor</var> includes the following values:
           </p>
+          <p><b>Standard Cursors</b></p>
           <dl>
-            <dt><b>Standard Cursors</b></dt>
-
             <dt>crDefault</dt>
             <dd>TCursor(0) - current cursor unchanged</dd>
             <dt>crNone</dt>
@@ -880,9 +879,9 @@
             <dd>TCursor(-3) - graphics cursor, for pixel or rectangle selection</dd>
             <dt>crIBeam</dt>
             <dd>TCursor(-4) - text cursor, for setting insertion point</dd>
-
-            <dt><b>Sizing Cursors</b></dt>
-
+          </dl>
+          <p><b>Sizing Cursors</b></p>
+          <dl>
             <dt>crSize</dt>
             <dd>TCursor(-22)</dd>
             <dt>crSizeAll</dt>
@@ -911,9 +910,9 @@
             <dd>TCursor(-29)</dd>
             <dt>crSizeSE</dt>
             <dd>TCursor(-30)</dd>
-
-            <dt><b>Drag and Drop Cursors</b></dt>
-
+          </dl>
+          <p><b>Drag and Drop Cursors</b></p>
+          <dl>
             <dt>crDrag</dt>
             <dd>TCursor(-12) - dragging, drop allowed</dd>
             <dt>crNoDrop</dt>
@@ -922,16 +921,15 @@
             <dd>TCursor(-16) - dragging multiple items</dd>
             <dt>crNo</dt>
             <dd>TCursor(-18)</dd>
-
-            <dt><b>Splitter Cursors</b></dt>
-
+            <dt>Splitter Cursors</dt>
+            <dd></dd>
             <dt>crHSplit</dt>
             <dd>TCursor(-14)</dd>
             <dt>crVSplit</dt>
             <dd>TCursor(-15)</dd>
-
-            <dt><b>Other  Cursors</b></dt>
-
+          </dl>
+          <p><b>Other  Cursors</b></p>
+          <dl>
             <dt>crUpArrow</dt>
             <dd>TCursor(-10)</dd>
             <dt>crHourGlass</dt>
@@ -1483,7 +1481,6 @@
         </descr>
         <seealso>
           <link id="TControl.IsProcessingPaintMsg"/>
-          <link id="TControl.Paint"/>
         </seealso>
       </element>
       <element name="TControlCanvas.ControlIsPainting.Result">
@@ -1760,7 +1757,7 @@
           <link id="TDragImageList"/>
           <link id="TControl.GetDragImages"/>
           <link id="TControl.ControlStyle"/>
-          <link id="TControlStyleType.csDisplayDragImage"/>"
+          <link id="TControlStyleType"/>"
         </seealso>
       </element>
 
@@ -1772,7 +1769,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImageListResolution.Create"/>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create"/>
         </seealso>
       </element>
       <element name="TDragImageListResolution.Create.TheOwner">
@@ -1787,7 +1784,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDragImageListResolution.DragHostSpot"/>
+          <link id="TDragImageListResolution.DragHostspot"/>
         </seealso>
       </element>
       <element name="TDragImageListResolution.GetHotSpot.Result">
@@ -2886,7 +2883,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDrawDockImageEvent.OnDrawDockImage"/>
+          <link id="OnDrawDockImage"/>
         </seealso>
       </element>
       <element name="TDrawDockImageEvent.Sender">
@@ -2906,14 +2903,13 @@
         <short>Routine used to draw dock images in drag/dock operations </short>
         <descr>
           <p>
-            <var>OnDrawDockImage</var> is a <var>TDrawDockImageEvent</var> variable which contains the default routine used to draw the docking image in a drag/dock operation. It is used in <var>TDragDockObject</var> methods which draw docking images likes <var>HideDockImage</var>, <var>ShowDockImage</var>, and <var>MoveDockInage</var>. It normally contains a reference to the <var>HintDockImage</var> procedure.
+            <var>OnDrawDockImage</var> is a <var>TDrawDockImageEvent</var> variable which contains the default routine used to draw the docking image in a drag/dock operation. It is used in <var>TDragDockObject</var> methods which draw docking images likes <var>HideDockImage</var>, <var>ShowDockImage</var>, and <var>MoveDockInage</var>.
           </p>
         </descr>
         <seealso>
           <link id="TDragDockObject.ShowDockImage"/>
           <link id="TDragDockObject.HideDockImage"/>
           <link id="TDragDockObject.MoveDockImage"/>
-          <link id="HintDockImage"/>
         </seealso>
       </element>
 
@@ -3126,10 +3122,6 @@
         <short/>
       </element>
 
-      <element name="TDragManagerDefault" link="TDragManager">
-        <short>The default implementation of TDragManager</short>
-      </element>
-
       <element name="TDragManager">
         <short>
           The abstract base class used to manage dragging of controls (for drop or dock operations)
@@ -3336,11 +3328,11 @@
             <var>CanStartDragging</var> is an abstract virtual <var>Boolean</var> function used to determine if the mouse has been moved beyond the threshold that initiates a drag operation. The result is <b>True</b> when the mouse coordinates in X and Y are located within the client rectangle and threshold for the specified control in <var>Site</var>.
           </p>
           <p>
-            CanStartDragging must be implemented in a descendent class, like <var>TDragManageDefault</var>.
+            CanStartDragging must be implemented in a descendent class, like <var>TDragManagerDefault</var>.
           </p>
         </descr>
         <seealso>
-          <link id="TDragManageDefault"/>
+          <link id="TDragManagerDefault"/>
         </seealso>
       </element>
       <element name="TDragManager.CanStartDragging.Result">
@@ -3370,6 +3362,69 @@
           The threshold amount for mouse movement before delayed dragging starts (default is 5 pixels)
         </short>
         <seealso/>
+      </element>
+
+      <element name="TDragManagerDefault" link="TDragManager">
+        <short>The default implementation of TDragManager</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDragManagerDefault.FDockSites"/>
+      <element name="TDragManagerDefault.FPerformer"/>
+      <element name="TDragManagerDefault.FStartPosition"/>
+      <element name="TDragManagerDefault.FThresholdValue"/>
+      <element name="TDragManagerDefault.FWaitForTreshold"/>
+      <element name="TDragManagerDefault.FInDragStop"/>
+
+      <element name="TDragManagerDefault.KeyUp" link="TDragManager.KeyUp"/>
+      <element name="TDragManagerDefault.KeyDown" link="TDragManager.KeyDown"/>
+      <element name="TDragManagerDefault.CaptureChanged" link="TDragManager.CaptureChanged"/>
+      <element name="TDragManagerDefault.MouseMove" link="TDragManager.MouseMove"/>
+      <element name="TDragManagerDefault.MouseUp" link="TDragManager.MouseUp"/>
+      <element name="TDragManagerDefault.MouseDown" link="TDragManager.MouseDown"/>
+      <element name="TDragManagerDefault.Notification" link="#RTL.Classes.TComponent.Notification"/>
+
+      <element name="TDragManagerDefault.Create">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TDragManagerDefault.Create.TheOwner">
+        <short></short>
+      </element>
+      <element name="TDragManagerDefault.Destroy">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TDragManagerDefault.IsDragging" link="TDragManager.IsDragging"/>
+      <element name="TDragManagerDefault.IsDragging.Result" link="TDragManager.IsDragging.Result"/>
+      <element name="TDragManagerDefault.Dragging" link="TDragManager.Dragging"/>
+      <element name="TDragManagerDefault.Dragging.Result" link="TDragManager.Dragging.Result"/>
+      <element name="TDragManagerDefault.RegisterDocksite" link="TDragManager.Dragging.RegisterDockSite"/>
+      <element name="TDragManagerDefault.RegisterDocksite.SIte" link="TDragManager.Dragging.RegisterDockSite.Site"/>
+      <element name="TDragManagerDefault.DragStart" link="TDragManager.DragStart"/>
+      <element name="TDragManagerDefault.DragStart.AControl" link="TDragManager.DragStart.AControl"/>
+      <element name="TDragManagerDefault.DragStart.AImmediate" link="TDragManager.DragStart.AImmediate"/>
+      <element name="TDragManagerDefault.DragStart.AThreshold" link="TDragManager.DragStart.AThreshold"/>
+      <element name="TDragManagerDefault.DragStart.StartFromCurrentMouse" link="TDragManager.DragStart.StartFromCurrentMouse"/>
+      <element name="TDragManagerDefault.DragMove" link="TDragManager.DragMove"/>
+      <element name="TDragManagerDefault.DragMove.APosition" link="TDragManager.DragMove.APosition"/>
+      <element name="TDragManagerDefault.DragStop" link="TDragManager.DragStop"/>
+      <element name="TDragManagerDefault.DragStop.ADropped" link="TDragManager.DragStop.ADropped"/>
+      <element name="TDragManagerDefault.CanStartDragging" link="TDragManager.CanStartDragging"/>
+      <element name="TDragManagerDefault.CanStartDragging.Result" link="TDragManager.CanStartDragging.Result"/>
+      <element name="TDragManagerDefault.CanStartDragging.Site" link="TDragManager.CanStartDragging.Site"/>
+      <element name="TDragManagerDefault.CanStartDragging.AThreshold" link="TDragManager.CanStartDragging.AThreshold"/>
+      <element name="TDragManagerDefault.CanStartDragging.X" link="TDragManager.CanStartDragging.X"/>
+      <element name="TDragManagerDefault.CanStartDragging.Y" link="TDragManager.CanStartDragging.Y"/>
+
+      <element name="TDragManagerDefault.StartPosition">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
 
       <element name="DragManager" link="TDragManager">
@@ -4275,7 +4330,8 @@
         <short>The space on a control side, including Around space</short>
         <descr/>
         <seealso>
-          <link id="TControlBorderSpacing.GetSpace"/>
+          <link id="TControlBorderSpacing.Space"/>
+          <link id="TControlBorderSpacing.GetSideSpace"/>
         </seealso>
       </element>
       <element name="TControlBorderSpacing.GetSideSpace.Result">
@@ -4286,6 +4342,7 @@
       </element>
 
       <element link="TControlBorderSpacing.Space" name="TControlBorderSpacing.GetSpace"/>
+
       <element name="TControlBorderSpacing.GetSpace.Result">
         <short/>
       </element>
@@ -7260,7 +7317,7 @@
         </descr>
         <seealso>
           <link id="TControl.OnDragOver"/>
-          <link id="TControl.DockOver"/>
+          <link id="TWinControl.DockOver"/>
         </seealso>
       </element>
       <element name="TControl.DragOver.Source">
@@ -7508,7 +7565,6 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.DefineProperties"/>
           <link id="#rtl.Classes.TPersistent.DefineProperties"/>
         </seealso>
       </element>
@@ -7581,7 +7637,7 @@
         </descr>
         <seealso>
           <link id="TControl.Font"/>
-          <link id="TControl.PartentFont"/>
+          <link id="TControl.ParentFont"/>
           <link id="TControl.DesktopFont"/>
           <link id="TControl.Invalidate"/>
           <link id="TControl.InvalidatePreferredSize"/>
@@ -7589,7 +7645,6 @@
           <link id="TControl.IsVisible"/>
           <link id="TControl.AutoSize"/>
           <link id="TControl.Perform"/>
-          <link id="TFont.OnChange"/>
         </seealso>
       </element>
       <element name="TControl.FontChanged.Sender">
@@ -8273,7 +8328,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TControl.TDragDropEvent"/>
+          <link id="TDragDropEvent"/>
           <link id="TControl.DragDrop"/>
         </seealso>
       </element>
@@ -9009,10 +9064,10 @@
         <seealso>
           <link id="TControl.WMSize"/>
           <link id="TControl.WMMove"/>
-          <link id="TWinControl.WMWindowPosChanged"/>
           <link id="TControl.DoAutoSize"/>
           <link id="TControl.DoAutoAdjustLayout"/>
-          <link id="TControl.DoUndock"/>
+          <link id="TWinControl.WMWindowPosChanged"/>
+          <link id="TWinControl.DoUndock"/>
           <link id="TControl.Loaded"/>
         </seealso>
       </element>
@@ -9200,7 +9255,6 @@
           <link id="TControl.Anchors"/>
           <link id="TControl.AnchorSide"/>
           <link id="TControl.AutoSize"/>
-          <link id="TControl.Scale"/>
           <link id="TControl.SetBoundsKeepBase"/>
         </seealso>
       </element>
@@ -9215,13 +9269,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.LCLClasses.TLCLComponent.ComponentState"/>
-          <link id="Left"/>
-          <link id="Top"/>
-          <link id="Width"/>
-          <link id="Height"/>
-          <link id="SetBounds"/>
-          <link id="BaseBounds"/>
+          <link id="TControl.Left"/>
+          <link id="TControl.Top"/>
+          <link id="TControl.Width"/>
+          <link id="TControl.Height"/>
+          <link id="TControl.SetBounds"/>
+          <link id="TControl.BaseBounds"/>
           <link id="TControlFlag"/>
         </seealso>
       </element>
@@ -9808,9 +9861,9 @@
         <short>Makes the control visible, by setting Visible to True</short>
         <descr/>
         <seealso>
-          <link id="TControl.ShowControl"/>
           <link id="TControl.Visible"/>
           <link id="TControl.Hide"/>
+          <link id="TWinControl.ShowControl"/>
         </seealso>
       </element>
 
@@ -10426,7 +10479,7 @@
         <seealso>
           <link id="#lcl.Menus.TPopupMenu"/>
           <link id="TControl.OnContextPopup"/>
-          <link id="TControl.TContextPopupEvent"/>
+          <link id="TContextPopupEvent"/>
         </seealso>
       </element>
 
@@ -10831,10 +10884,7 @@
             <dd>Set to the value in the OwnerControl argument</dd>
             <dt>Layout</dt>
             <dd>Set to cclNone</dd>
-            <dt>EnlargeHorizontal</dt>
-            <dt>EnlargeVertical</dt>
-            <dt>ShrinkHorizontal</dt>
-            <dt>ShrinkVertical</dt>
+            <dt>EnlargeHorizontal, EnlargeVertical, ShrinkHorizontal, ShrinkVertical</dt>
             <dd>Set to crsAnchorAligning</dd>
           </dl>
         </descr>
@@ -11212,9 +11262,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TWinControl.Current"/>
-          <link id="TWinControl.GetCurrent"/>
-          <link id="TWinControl.MoveNext"/>
+          <link id="TWinControlEnumerator.Current"/>
+          <link id="TWinControlEnumerator.MoveNext"/>
           <link id="TWinControl.GetEnumeratorControls"/>
           <link id="TWinControl.GetEnumeratorControlsReverse"/>
         </seealso>
@@ -11529,7 +11578,7 @@
           </p>
         </errors>
         <seealso>
-          <link id="TWinControl.Parent"/>
+          <link id="TControl.Parent"/>
           <link id="TWinControl.Controls"/>
           <link id="TWinControl.InsertControl"/>
           <link id="TControl.DisableAutoSizing"/>
@@ -11566,7 +11615,7 @@
         </descr>
         <seealso>
           <link id="TWinControl.Controls"/>
-          <link id="TWinControl.Parent"/>
+          <link id="TControl.Parent"/>
           <link id="TWinControl.RemoveControl"/>
           <link id="TControl.EnableAutoSizing"/>
         </seealso>
@@ -11970,7 +12019,6 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
         </seealso>
       </element>
       <element name="TWinControl.GetChildren.Proc">
@@ -12038,7 +12086,7 @@
         <short>Scales (resizes) all child controls</short>
         <descr/>
         <seealso>
-          <link id="TWinControl.ChangeScale"/>
+          <link id="#LCL.Controls.TControl.ChangeScale"/>
         </seealso>
       </element>
       <element name="TWinControl.ScaleControls.Multiplier">
@@ -12138,7 +12186,7 @@
 
       <element name="TWinControl.CMShowHintChanged">
         <short>
-          Handler for changed <link id="TWinControl.ShowHint">ShowHint</link> message; notifies all child controls
+          Handler for changed <link id="TControl.ShowHint">ShowHint</link> message; notifies all child controls
         </short>
         <descr/>
         <seealso/>
@@ -12194,10 +12242,12 @@
 
       <element name="TWinControl.WMEraseBkgnd">
         <short>
-          Erases the background, when <link id="TWinControlFlag.wcfEraseBackground">required</link>
+          Erases the background, when required.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControlFlag.wcfEraseBackground"/>
+        </seealso>
       </element>
       <element name="TWinControl.WMEraseBkgnd.Message">
         <short/>
@@ -12553,7 +12603,7 @@
         </descr>
         <seealso>
           <link id="TControl.PositionDockRect"/>
-          <link id="TControl.OnDockOver"/>
+          <link id="TWinControl.OnDockOver"/>
         </seealso>
       </element>
       <element name="TWinControl.DockOver.Source">
@@ -12659,7 +12709,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TWinControl.Parent"/>
+          <link id="TControl.Parent"/>
           <link id="TWinControl.ParentWindow"/>
         </seealso>
       </element>
@@ -12731,7 +12781,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TControl.GetDockCaption"/>
+          <link id="TWinControl.GetDockCaption"/>
           <link id="TWinControl.OnGetDockCaption"/>
         </seealso>
       </element>
@@ -14015,7 +14065,6 @@ end;
         </errors>
         <seealso>
           <link id="TWinControl.HandleAllocated"/>
-          <link id="TWSWinControlClass"/>
         </seealso>
       </element>
       <element name="TWinControl.ScrollBy_WS.DeltaX">
@@ -14056,10 +14105,10 @@ end;
         </descr>
         <seealso>
           <link id="TControl.AutoAdjustLayout"/>
-          <link id="TControl.Controls"/>
           <link id="TControl.DisableAutoSizing"/>
           <link id="TControl.EnableAutoSizing"/>
           <link id="TControl.DoAutoAdjustLayout"/>
+          <link id="TWinControl.Controls"/>
         </seealso>
       </element>
       <element name="TWinControl.AutoAdjustLayout.AMode">
@@ -14157,9 +14206,9 @@ end;
           </p>
         </descr>
         <seealso>
-          <link id="TWinControl.Parent"/>
+          <link id="TControl.Parent"/>
           <link id="TWinControl.Controls"/>
-          <link id="TWinControl.Remove"/>
+          <link id="TWinControl.RemoveControl"/>
           <link id="TWinControl.DockManager"/>
           <link id="TWinControl.DockClients"/>
           <link id="TControl.HostDockSite"/>
@@ -15446,7 +15495,7 @@ if MyControl.CanSetFocus then
           <link id="TDockTree.BeginUpdate"/>
           <link id="TDockTree.EndUpdate"/>
           <link id="TDockTreeFlags"/>
-          <link id="TDockTreeFlag.dtfUpdateAllNeeded"/>
+          <link id="TDockTreeFlag"/>
         </seealso>
         <notes>
           <note>

@@ -382,7 +382,7 @@
           <link id="TCustomEditButton.Button"/>
           <link id="TCustomEditButton.ButtonOnlyWhenFocused"/>
           <link id="TCustomEditButton.Edit"/>
-          <link id="TCustomEditButton.Visible"/>
+          <link id="#LCL.Controls.TControl.Visible"/>
         </seealso>
       </element>
       <element name="TCustomEditButton.CalcButtonVisible.Result">
@@ -605,9 +605,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TEditButton.Edit"/>
-          <link id="TEditButton.Button"/>
           <link id="TCustomEditButton"/>
+          <link id="TCustomEditButton.Edit"/>
+          <link id="TCustomEditButton.Button"/>
           <link id="#LCL.GroupedEdit.TCustomAbstractGroupedEdit"/>
         </seealso>
       </element>
@@ -1235,7 +1235,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomControlFilterEdit.OnIdle"/>
           <link id="TCustomControlFilterEdit.Filter"/>
           <link id="TCustomControlFilterEdit.InvalidateFilter"/>
           <link id="TCustomControlFilterEdit.ApplyFilter"/>
@@ -1542,11 +1541,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="TFileNameEdit.Button"/>
-          <link id="TFileNameEdit.Edit"/>
+          <link id="TCustomEditButton.ButtonClick"/>
+          <link id="TCustomEditButton.Button"/>
+          <link id="TCustomEditButton.Edit"/>
+          <link id="TCustomEditButton.FocusOnButtonClick"/>
           <link id="TFileNameEdit.RunDialog"/>
-          <link id="TFileNameEdit.FocusOnButtonClick"/>
-          <link id="TFileNameEdit.FocusAndMaybeSelectAll"/>
+          <link id="TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll"/>
         </seealso>
       </element>
 
@@ -1657,7 +1657,7 @@
         <seealso>
           <link id="TFileNameEdit.RunDialog"/>
           <link id="TFileNameEdit.SaveDialogResult"/>
-          <link id="TFileNameEdit.Button"/>
+          <link id="TCustomEditButton.Button"/>
           <link id="TDialogKind"/>
         </seealso>
       </element>
@@ -1887,7 +1887,6 @@
         </descr>
         <seealso>
           <link id="TDirectoryEdit.Directory"/>
-          <link id="TDirectoryEdit.FileName"/>
           <link id="TDirectoryEdit.RootDir"/>
           <link id="TDirectoryEdit.DialogOptions"/>
           <link id="TDirectoryEdit.DialogTitle"/>
@@ -1913,7 +1912,7 @@
           <link id="TDirectoryEdit.RunDialog"/>
           <link id="TDirectoryEdit.OnAcceptDirectory"/>
           <link id="TDirectoryEdit.Directory"/>
-          <link id="#LCL.Dialogs.TSelectDirectoryDialog.FileName"/>
+          <link id="#LCL.Dialogs.TSelectDirectoryDialog"/>
           <link id="#LCL.Dialogs.TCommonDialog"/>
         </seealso>
       </element>
@@ -1935,12 +1934,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDirectoryEdit.Button"/>
-          <link id="TDirectoryEdit.Edit"/>
+          <link id="TCustomEditButton.Button"/>
+          <link id="TCustomEditButton.Edit"/>
+          <link id="TCustomEditButton.FocusOnButtonClick"/>
+          <link id="TCustomEditButton.BuddyClick"/>
           <link id="TDirectoryEdit.RunDialog"/>
-          <link id="TDirectoryEdit.FocusOnButtonClick"/>
-          <link id="TDirectoryEdit.FocusAndMaybeSelectAll"/>
-          <link id="TCustomEdit.BuddyClick"/>
+          <link id="TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll"/>
         </seealso>
       </element>
 
@@ -2202,7 +2201,6 @@
         </descr>
         <seealso>
           <link id="TDateEdit.OnCustomDate"/>
-          <link id="TDateEdit.TextToDate"/>
         </seealso>
       </element>
       <element name="TCustomDateEvent.Sender">
@@ -2223,12 +2221,11 @@
             <var>TDateOrder</var> is an enumerated type with values that indicate the display order for the Month, Day, and Year portions of a date value.
           </p>
           <p>
-            TDateOrder is the type used to implement the <var>DateOrder</var> property in <var>TDateEdit</var>, and passed as an argument to the <var>ParseDate</var> routine.
+            TDateOrder is the type used to implement the <var>DateOrder</var> property in <var>TDateEdit</var>, and passed as an argument to the <var>ParseDate</var> routine in the implementation for the unit.
           </p>
         </descr>
         <seealso>
           <link id="TDateEdit.DateOrder"/>
-          <link id="ParseDate"/>
         </seealso>
       </element>
       <element name="TDateOrder.doNone">
@@ -2304,6 +2301,7 @@
         <short>Gets the value for the Date property</short>
         <descr/>
         <seealso>
+          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
         </seealso>
       </element>
@@ -2315,6 +2313,7 @@
         <short>Sets the value for the Date property</short>
         <descr/>
         <seealso>
+          <link id="TDateEdit.GetDate"/>
           <link id="TDateEdit.Date"/>
         </seealso>
       </element>
@@ -2340,6 +2339,8 @@
         <seealso>
           <link id="TDateEdit.ButtonClick"/>
           <link id="TDateEdit.OnAcceptDate"/>
+          <link id="TDateEdit.GetDate"/>
+          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="#LCL.CalendarPopup.ShowCalendarPopup"/>
           <link id="#LCL.CalendarPopup.ShowCalendarPopup.OnReturnDate"/>
@@ -2403,8 +2404,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.GetDate"/>
           <link id="TDateEdit.SetDate"/>
+          <link id="TDateEdit.Date"/>
           <link id="TDateEdit.EditEditingDone"/>
           <link id="TDateEdit.RealSetText"/>
           <link id="#RTL.SysUtils.DefaultFormatSettings"/>
@@ -2477,9 +2479,10 @@
         </descr>
         <seealso>
           <link id="TDateEdit.DirectInput"/>
+          <link id="TDateEdit.GetDate"/>
+          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.Text"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.DefaultToday"/>
           <link id="NullDate"/>
         </seealso>
@@ -2497,6 +2500,8 @@
         </descr>
         <seealso>
           <link id="TDateEdit.DefaultToday"/>
+          <link id="TDateEdit.GetDate"/>
+          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.Text"/>
         </seealso>
@@ -2627,10 +2632,10 @@
           </p>
         </descr>
         <seealso>
+          <link id="TDateEdit.GetDate"/>
+          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.DateOrder"/>
-          <link id="TDateEdit.DateToText"/>
-          <link id="TDateEdit.TextToDate"/>
           <link id="TDateOrder"/>
         </seealso>
       </element>
@@ -2960,7 +2965,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TTimeEdit.GetTime"/>
           <link id="TTimeEdit.Time"/>
         </seealso>
       </element>

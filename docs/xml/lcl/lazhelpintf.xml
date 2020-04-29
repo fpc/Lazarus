@@ -17,18 +17,18 @@
         <p>
           Author: Mattias Gaertner
         </p>
-        <notes>
-          <note>
-            ToDo:
-            <ul>
-              <li>Fix TCHMHelpViewer descendant.</li>
-              <li>Make THelpDatabase and THelpViewer components usable in the designer.</li>
-              <li>Add localization support.</li>
-              <li>Add Help Editing functions.</li>
-            </ul>
-          </note>
-        </notes>
       </descr>
+      <notes>
+        <note>
+          ToDo:
+          <ul>
+            <li>Fix TCHMHelpViewer descendant.</li>
+            <li>Make THelpDatabase and THelpViewer components usable in the designer.</li>
+            <li>Add localization support.</li>
+            <li>Add Help Editing functions.</li>
+          </ul>
+        </note>
+      </notes>
 
       <!-- unresolved type references Visibility: default -->
       <element name="Classes"/>
@@ -211,7 +211,7 @@
         <seealso>
           <link id="TPascalHelpContextList.Items"/>
           <link id="TPascalHelpContextList.List"/>
-          <link id="TPascalHelpContext.Context"/>
+          <link id="TPascalHelpContext"/>
         </seealso>
       </element>
 
@@ -2155,7 +2155,6 @@
         </descr>
         <seealso>
           <link id="#LCL.LazHelpHTML.THTMLBrowserHelpViewer"/>
-          <link id="#LCL.LazHelpCHM.TCHMHelpViewer"/>
         </seealso>
       </element>
 

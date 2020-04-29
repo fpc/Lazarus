@@ -16,7 +16,7 @@
         </p>
       </descr>
 
-      <element name="TByteList" link="#rtl.fgl.TFPGList">
+      <element name="TByteList" link="#RTL.fgl.TFPGList">
         <short>Implements a specialization of TFPGList for Byte data types</short>
         <descr>
           <p>
@@ -24,7 +24,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList"/>
+          <link id="#RTL.fgl.TFPGList"/>
         </seealso>
       </element>
 

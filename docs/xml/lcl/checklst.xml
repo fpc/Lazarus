@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
+  <package name="lcl">#LCL.StdCtrls.TCustomListBox.Items
     <!--
     ====================================================================
       CheckLst
@@ -320,7 +320,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.GetCheckWidth"/>
         </seealso>
       </element>
@@ -481,7 +481,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.AllowGrayed"/>
           <link id="TCustomCheckListBox.Checked"/>
           <link id="TCustomCheckListBox.State"/>
@@ -506,7 +506,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.Checked"/>
           <link id="TCustomCheckListBox.State"/>
           <link id="TCustomCheckListBox.ItemEnabled"/>
@@ -587,9 +587,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.DrawItem"/>
-          <link id="TCustomCheckListBox.SendItemHeader"/>
           <link id="TCustomListBox.CheckIndex"/>
         </seealso>
       </element>
@@ -616,9 +615,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.AllowGrayed"/>
-          <link id="TCustomCheckListBox.Enabled"/>
+          <link id="#LCL.Controls.TControl.Enabled"/>
         </seealso>
       </element>
       <element name="TCustomCheckListBox.ItemEnabled.AIndex">
@@ -644,9 +643,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.ItemEnabled"/>
-          <link id="TCustomCheckListBox.SendItemState"/>
           <link id="TCustomCheckListBox.Checked"/>
           <link id="TCustomCheckListBox.CheckAll"/>
           <link id="TCustomCheckListBox.Toggle"/>
@@ -671,9 +669,8 @@
         <seealso>
           <link id="TCustomCheckListBox.ItemClick"/>
           <link id="TCustomCheckListBox.OnItemClick"/>
-          <link id="TCustomCheckListBox.OnClick"/>
-          <link id="TCustomCheckListBox.DoChange"/>
           <link id="TCustomCheckListBox.KeyDown"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.OnClick"/>
         </seealso>
       </element>
 
@@ -694,10 +691,9 @@
         </descr>
         <seealso>
           <link id="TCheckListClicked"/>
-          <link id="TCustomCheckListBox.Items"/>
+          <link id="#LCL.StdCtrls.TCustomListBox.Items"/>
           <link id="TCustomCheckListBox.ItemClick"/>
           <link id="TCustomCheckListBox.OnClickCheck"/>
-          <link id="TCustomCheckListBox.DoChange"/>
           <link id="TCustomCheckListBox.KeyDown"/>
         </seealso>
       </element>

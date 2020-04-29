@@ -47,9 +47,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.MaskEdit.TCustomMaskEdit.BaseEditor"/>
-          <link id="#LCL.MaskEdit.TCustomMaskEdit.PerformTab"/>
           <link id="TGEEdit.PerformTab"/>
+          <link id="#LCL.Controls.TWinControl.PerformTab"/>
+          <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
         </seealso>
       </element>
 
@@ -1108,8 +1108,8 @@
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
           <link id="TCustomAbstractGroupedEdit.AutoSelect"/>
           <link id="TCustomAbstractGroupedEdit.BuddyClick"/>
-          <link id="TCustomMaskEdit.SelectAll"/>
-          <link id="TCustomMaskEdit.SelStart"/>
+          <link id="TCustomAbstractGroupedEdit.SelectAll"/>
+          <link id="TCustomAbstractGroupedEdit.SelStart"/>
         </seealso>
       </element>
 
@@ -1305,21 +1305,16 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomAbstractGroupedEdit.OnEditChange"/>
-          <link id="TCustomAbstractGroupedEdit.InternalOnEditChange"/>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
           <link id="TCustomEdit.OnChange"/>
         </seealso>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.EditClick">
-        <short>Signals the OnEditClick event handler, when assigned</short>
+        <short>Signals the internal OnEditClick event handler, when assigned</short>
         <descr></descr>
         <seealso>
-          <link id="TCustomAbstractGroupedEdit.OnEditClick"/>
-          <link id="TCustomAbstractGroupedEdit.InternalOnEditClick"/>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-          <link id="TCustomEdit.OnClick"/>
         </seealso>
       </element>
 
@@ -1665,7 +1660,7 @@
         <short>Sets the value for the Cursor property</short>
         <descr/>
         <seealso>
-          <link id="TCustomAbstractGroupedEdit.Cursor"/>
+          <link id="#LCL.Controls.TControl.Cursor"/>
         </seealso>
       </element>
       <element name="TCustomAbstractGroupedEdit.SetCursor.AValue">
@@ -2145,9 +2140,7 @@
         </descr>
         <seealso>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-          <link id="TCustomAbstractGroupedEdit.GetSelText"/>
-          <link id="TCustomAbstractGroupedEdit.SetSelText"/>
-          <link id="TCustomMaskEdit.SelText"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.SelText"/>
         </seealso>
       </element>
 
@@ -2159,7 +2152,6 @@
         </descr>
         <seealso>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-          <link id="TCustomMaskEdit.TabStop"/>
           <link id="#LCL.Controls.TWinControl.TabStop"/>
         </seealso>
       </element>
@@ -2179,7 +2171,6 @@
         </descr>
         <seealso>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-          <link id="TCustomMaskEdit.TextHint"/>
           <link id="#LCL.Controls.TControl.Hint"/>
         </seealso>
       </element>
@@ -2194,7 +2185,6 @@
         <seealso>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
           <link id="TCustomAbstractGroupedEdit.EditChange"/>
-          <link id="TCustomMaskEdit.OnChange"/>
         </seealso>
       </element>
 

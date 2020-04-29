@@ -416,7 +416,7 @@
           <p>
             <var>SplitterType</var> is a TPairSplitterType property which specifies the orientation for the splitter in the component. The values in TPairSplitterType dictate the splitter orientation relative to the adjacent children in Sides. Writing a new value in the SplitterType property causes the value in the Cursor property to be changed to match the selected orientation. For example:
           </p>
-          <dt>
+          <dl>
             <dt>pstHorizontal</dt>
             <dd>
               Splitter is oriented to size adjacent children horizontally. Cursor is set to <var>crHSplit</var>. (<b>Default value</b>)
@@ -425,7 +425,7 @@
             <dd>
               Splitter is oriented to size adjacent children vertically. Cursor is set to <var>crVSplit</var>.
             </dd>
-          </dt>
+          </dl>
         </descr>
         <seealso/>
       </element>

@@ -36,7 +36,7 @@
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#fcl.DB.TField"/>
           <link id="#fcl.DB.TDatasource"/>
-          <link id="#fcl.Classes.TBasicAction"/>
+          <link id="#rtl.Classes.TBasicAction"/>
         </seealso>
       </element>
 
@@ -60,7 +60,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
@@ -85,7 +84,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
@@ -110,7 +108,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
         </seealso>
@@ -134,7 +131,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#fcl.DB.TDataSource"/>
         </seealso>
@@ -160,7 +156,6 @@
         <seealso>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
         </seealso>
       </element>
@@ -183,7 +178,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#fcl.DB.TDataSource"/>
         </seealso>
@@ -226,7 +220,6 @@
         </descr>
         <seealso>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
         </seealso>
       </element>
       <!-- function result Visibility: private -->
@@ -371,7 +364,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Modified"/>
@@ -389,7 +381,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
@@ -407,7 +398,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
@@ -423,7 +413,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
           <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
@@ -459,7 +448,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.Classes.TBasicAction"/>
+          <link id="#rtl.Classes.TBasicAction"/>
           <link id="#lcl.Forms.TApplication.OnActionExecute"/>
         </seealso>
       </element>
@@ -482,7 +471,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.Classes.TBasicAction"/>
+          <link id="#rtl.Classes.TBasicAction"/>
         </seealso>
       </element>
       <!-- function result Visibility: public -->
@@ -509,7 +498,6 @@
         </descr>
         <seealso>
           <link id="#fcl.DB.TField"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
@@ -530,7 +518,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
           <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
@@ -548,7 +535,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
           <link id="#lcl.DBCtrls.TFieldDataLink"/>
           <link id="#fcl.DB.TDataSource"/>
         </seealso>

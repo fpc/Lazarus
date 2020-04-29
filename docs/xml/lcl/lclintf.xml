@@ -13,16 +13,16 @@
           This unit was created for Delphi compatibility. It contains selected functions from the Delphi Windows unit, which finally are implemented in the widgetsets.
         </p>
         <p>
-          For LCL users:<br/>
+          <b>For LCL users:</b>
+        </p>
+        <p>
           The functions can be used to make porting of Delphi applications easier, and are not 100% emulating WinAPI functions, not even under windows. They were implemented and tested with some common Delphi libraries. The LCL contains many extra functions that the Delphi VCL does not have.
         </p>
         <remark>
           Some functions are not exactly Delphi or WinAPI compatible.
         </remark>
         <p>
-          For example:<br/>
-          Instead of using the common Windows functions SaveDC and RestoreDC use the
-          Canvas.SaveHandleState and Canvas.RestoreHandleState.
+          For example: Instead of using the common Windows functions SaveDC and RestoreDC use the Canvas.SaveHandleState and Canvas.RestoreHandleState.
         </p>
       </descr>
 
@@ -1991,15 +1991,18 @@ end;
       </element>
 
       <element name="GetWindowRect">
-        <short>Retrieves the bounding rectangle of a window, including the window decoration in screen
-          coordinates</short>
-        <descr>Retrieves the bounding rectangle of a window, including the window decoration. The
-          coordinates are given relative to the upper-left corner of the screen in screen.</descr>
+        <short>
+          Retrieves the bounding rectangle of a window, including the window decoration in screen coordinates
+        </short>
+        <descr>
+          Retrieves the bounding rectangle of a window, including the window decoration. The
+          coordinates are given relative to the upper-left corner of the screen in screen.
+
+          After the call, Rect will be the control area in screen coordinates. That means, Left and Top will be the screen coordinate of the TopLeft pixel of the Handle object and Right and Bottom will be the screen coordinate of the BottomRight pixel.
+        </descr>
         <seealso>
           <link id="GetWindowSize"/>
           <link id="SetWindowPos"/>
-          <link id="#lcl.Forms.TCustomForm.Width"/>
-          <link id="#lcl.Forms.TCustomForm.Height"/>
         </seealso>
       </element>
       <element name="GetWindowRect.Result">
@@ -2024,10 +2027,8 @@ end;
         <errors></errors>
         <seealso>
           <link id="GetWindowRect"/>
-          <link id="#lcl.Forms.TCustomForm.Width"/>
-          <link id="#lcl.Forms.TCustomForm.Height"/>
-          <link id="#lcl.Forms.TCustomForm.ClientWidth"/>
-          <link id="#lcl.Forms.TCustomForm.ClientHeight"/>
+          <link id="#lcl.Forms.TForm.ClientWidth"/>
+          <link id="#lcl.Forms.TForm.ClientHeight"/>
         </seealso>
       </element>
       <element name="GetWindowSize.Result">

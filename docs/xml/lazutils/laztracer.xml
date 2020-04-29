@@ -26,8 +26,7 @@
         <seealso>
           <link id="GetStackTracePointers"/>
           <link id="StackTraceAsString"/>
-          <link id="#LCL.LCLProc.TDebugLCLItemInfo.CreationStack"/>
-          <link id="#LCL.LCLProc.TDebugLCLItemInfo.DestructionStack"/>
+          <link id="#LCL.LCLProc.TDebugLCLItemInfo"/>
         </seealso>
       </element>
 
@@ -99,12 +98,11 @@
             <var>GetStackTrace</var> is a <var>String</var> function used to retrieve backtrace information for code addresses in a string format.
           </p>
           <p>
-            Calls <var>GetLineInfo</var> to get information for the code addresses, using the value in <var>UseCache</var> as an argument. UseCache indicates if cached line information from an internal AVL tree can be used in the routine. When UseCache contains <b>False</b>, the <var>BackTraceStrFunc</var> in <file>lclproc.pas</file> is called to get the line information for each of the backtrace addresses.
+            Calls <var>GetLineInfo</var> to get information for the code addresses, using the value in <var>UseCache</var> as an argument. UseCache indicates if cached line information from an internal AVL tree can be used in the routine. When UseCache contains <b>False</b>, the <var>BackTraceStrFunc</var> in <file>lclproc.pas</file> initialization section is called to get the line information for each of the backtrace addresses.
           </p>
         </descr>
         <seealso>
           <link id="GetLineInfo"/>
-          <link id="#LCL.LCLProc.BackTraceStrFunc"/>
         </seealso>
       </element>
       <element name="GetStackTrace.Result">
@@ -164,12 +162,10 @@
             <var>GetLineInfo</var> is a <var>String</var> function used to get information about the code address specified in <var>Addr</var>.
           </p>
           <p>
-            <var>UseCache</var> indicates if cached line information from an internal AVL tree can be used in the routine. When UseCache contains <b>False</b>, the <var>BackTraceStrFunc</var> in <file>lclproc.pas</file> is called to get the line information for each of the backtrace addresses.
+            <var>UseCache</var> indicates if cached line information from an internal AVL tree can be used in the routine. When UseCache contains <b>False</b>, the <var>BackTraceStrFunc</var> in the <file>lclproc.pas</file> initialization section is called to get the line information for each of the backtrace addresses.
           </p>
         </descr>
-        <seealso>
-          <link id="#LCL.LCLProc.BackTraceStrFunc"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="GetLineInfo.Result">
         <short>String with information about the code address</short>

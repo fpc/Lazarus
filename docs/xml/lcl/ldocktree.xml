@@ -550,7 +550,7 @@
           <var>Notification</var> - if the required operation is removal, sets MainControl to nil, then calls inherited <var>Notification</var>
         </short>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Notification">TCustomForm.Notification</link>
+          <link id="#LCL.Forms.TCustomForm.Notification"/>
         </seealso>
       </element>
       <element name="TLazDockForm.UpdateMainControl">

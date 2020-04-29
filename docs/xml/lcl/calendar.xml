@@ -114,11 +114,11 @@
         </short>
         <descr>
           <p>
-            TCalendarPart is an enumerated type with values that indicate where a mouse click occurred in a calendar control. TCalendarPart is used to implement the TCalendar.HitTest method.
+            TCalendarPart is an enumerated type with values that indicate where a mouse click occurred in a calendar control. TCalendarPart is used to implement the TCustomCalendar.HitTest method.
           </p>
         </descr>
         <seealso>
-          <link id="TCalendar.HitTest">TCalendar.HitTest</link>
+          <link id="TCustomCalendar.HitTest"/>
         </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -161,11 +161,11 @@
         </short>
         <descr>
           <p>
-            TCalendarView is an enumeration type with values that define the view for a calendar control. TCalendarView makes it possible to set the calendar view introduced in Windows Vista or later. In other widgetsets, as well as in older versions of Windows, a calendar has only a standard "month view" grid with days representing a month. TCalendarView is used to implement the TCalendar.GetCalendarView method.
+            TCalendarView is an enumeration type with values that define the view for a calendar control. TCalendarView makes it possible to set the calendar view introduced in Windows Vista or later. In other widgetsets, as well as in older versions of Windows, a calendar has only a standard "month view" grid with days representing a month. TCalendarView is used to implement the TCustomCalendar.GetCalendarView method.
           </p>
         </descr>
         <seealso>
-          <link id="TCalendar.GetCalendarView"/>
+          <link id="TCustomCalendar.GetCalendarView"/>
         </seealso>
       </element>
       <!-- enumeration value Visibility: default -->

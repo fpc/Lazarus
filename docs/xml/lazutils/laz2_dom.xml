@@ -1273,7 +1273,6 @@
         </descr>
         <seealso>
           <link id="TDOMNode.InsertBefore">TDOMNode.InsertBefore</link>
-          <link id="TDOMNode.InternalAppend">TDOMNode.InternalAppend</link>
           <link id="TDOMNode.AppendChild">TDOMNode.AppendChild</link>
           <link id="TDOMNode.DetachChild">TDOMNode.DetachChild</link>
           <link id="TDOMNode.ChildNodes">TDOMNode.ChildNodes</link>
@@ -1389,7 +1388,7 @@
           </p>
         </descr>
         <seealso>
-          <link iid="TDOMDocument">TDOMDocument</link>
+          <link id="TDOMDocument">TDOMDocument</link>
         </seealso>
       </element>
 
@@ -1535,12 +1534,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDOMNode_WithChildren.DetachChild">
-            TDOMNode_WithChildren.DetachChild
-          </link>
-          <link id="TDOMNode.NodeType">
-            TDOMNode.NodeType
-          </link>
+          <link id="TDOMNode_WithChildren.DetachChild"/>
+          <link id="TDOMNode.NodeType"/>
         </seealso>
       </element>
 
@@ -2867,9 +2862,6 @@
         <seealso>
           <link id="TDOMNode_WithChildren">TDOMNode_WithChildren</link>
           <link id="TDOMDocument">TDOMDocument</link>
-          <link id="TDOMImplementation.CreateDocumentFragment">
-            TDOMImplementation.CreateDocumentFragment
-          </link>
         </seealso>
       </element>
 
@@ -4820,10 +4812,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDOMCharacterData">TDOMCharacterData</link>
-          <link id="TDOMComment.GetNodeType">TDOMComment.GetNodeType</link>
-          <link id="TDOMComment.GetNodeName">TDOMComment.GetNodeType</link>
-          <link id="TDOMComment.CloneNode">TDOMComment.CloneNode</link>
+          <link id="TDOMCharacterData"/>
         </seealso>
       </element>
 
@@ -4888,10 +4877,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDOMText">TDOMText</link>
-          <link id="TDOMCDATASection.GetNodeType">TDOMCDATASection.GetNodeType</link>
-          <link id="TDOMCDATASection.GetNodeName">TDOMCDATASection.GetNodeName</link>
-          <link id="TDOMCDATASection.CloneNode">TDOMCDATASection.CloneNode</link>
+          <link id="TDOMText"/>
         </seealso>
       </element>
 

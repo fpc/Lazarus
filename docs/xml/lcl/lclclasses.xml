@@ -54,7 +54,7 @@
         </descr>
         <seealso>
           <link id="TLCLReferenceComponent"/>
-          <link id="#LCL.Classes.TComponent"/>
+          <link id="#RTL.Classes.TComponent"/>
         </seealso>
       </element>
 
@@ -76,8 +76,6 @@
         </descr>
         <seealso>
           <link id="TLCLComponent.WidgetSetClass"/>
-          <link id="#LCL.WidgetSet.FindWSComponentClass"/>
-          <link id="#LCL.WidgetSet.TWSLCLComponent"/>
         </seealso>
       </element>
       <element name="TLCLComponent.GetWSComponentClass.Result">
@@ -118,7 +116,6 @@
         <descr/>
         <seealso>
           <link id="TLCLComponent.WidgetSetClass"/>
-          <link id="#RTL.System.TObject.NewInstance"/>
         </seealso>
       </element>
       <element name="TLCLComponent.NewInstance.Result">
@@ -153,8 +150,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLCLComponent.IncLCLRefCount"/>
-          <link id="TLCLComponent.DecLCLRefCount"/>
           <link id="#LCL.Controls.TWinControl.IntfUTF8KeyPress"/>
         </seealso>
       </element>

@@ -90,7 +90,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TTimePopupForm.OnReturnTime"/>
+          <link id="TTimePopupForm"/>
           <link id="TCustomForm.Close"/>
           <link id="TReturnTimeEvent"/>
         </seealso>
@@ -301,8 +301,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TTimePopupForm.FormDeactivate"/>
-          <link id="TTimePopupForm.SetLayout"/>
+          <link id="TTimePopupForm"/>
           <link id="#lcl.Forms.Application"/>
           <link id="#lcl.Forms.TApplication.AddOnDeactivateHandler"/>
         </seealso>

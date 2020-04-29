@@ -282,7 +282,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor.EditorMode">TValueListEditor.EditorMode</link>
+          <link id="#LCL.Grids.TCustomStringGrid.EditorMode"/>
         </seealso>
       </element>
 
@@ -303,7 +303,7 @@
         <seealso>
           <link id="TEditStyle">TEditStyle</link>
           <link id="TItemProp.PickList">TItemProp.PickList</link>
-          <link id="TValueListEditor">TValueListEditor.EditorMode</link>
+          <link id="#LCL.Grids.TCustomStringGrid.EditorMode"/>
         </seealso>
       </element>
 
@@ -337,7 +337,7 @@
         </descr>
         <seealso>
           <link id="TItemProp.EditStyle">TItemProp.EditStyle</link>
-          <link id="TValueListEditor">TValueListEditor.EditorMode</link>
+          <link id="#LCL.Grids.TCustomStringGrid.EditorMode"/>
         </seealso>
       </element>
 
@@ -351,7 +351,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor">TValueListEditor.EditorMode</link>
+          <link id="#LCL.Grids.TCustomStringGrid.EditorMode"/>
         </seealso>
       </element>
 
@@ -365,7 +365,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor">TValueListEditor.EditorMode</link>
+          <link id="#LCL.Grids.TCustomStringGrid.EditorMode"/>
         </seealso>
       </element>
 
@@ -1456,12 +1456,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor.Strings">TValueListEditor.Strings</link>
-          <link id="TValueListStrings.Names">TValueListStrings.Names</link>
-          <link id="TValueListStrings.ValueFromIndex">
-            TValueListStrings.ValueFromIndex
-          </link>
-          <link id="TValueListEditor.TitleCaptions">TValueListEditor.TitleCaptions</link>
+          <link id="TValueListEditor.Strings"/>
+          <link id="#RTL.Classes.TStrings.Names"/>
+          <link id="#RTL.Classes.TStrings.ValueFromIndex"/>
+          <link id="TValueListEditor.TitleCaptions"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -1500,11 +1498,11 @@
         </descr>
         <seealso>
           <link id="TValueListEditor.KeyOptions">TValueListEditor.KeyOptions</link>
-          <link id="TValueListEditor.EditorOptions">TValueListEditor.EditorOptions</link>
           <link id="TValueListEditor.ItemProps">TValueListEditor.ItemProps</link>
           <link id="TValueListEditor.OnGetPickList">TValueListEditor.OnGetPickList</link>
           <link id="TItemProp.EditStyle">TItemProp.EditStyle</link>
           <link id="TItemProp.ReadOnly">TItemProp.ReadOnly</link>
+          <link id="#LCL.Grids.TCustomGrid.EditorOptions"/>
         </seealso>
       </element>
       <element name="TValueListEditor.GetDefaultEditor.Column">
@@ -1585,9 +1583,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor.AutoFillColumns">
-            TValueListEditor.AutoFillColumns
-          </link>
+          <link id="#LCL.Grids.TCustomDrawGrid.AutoFillColumns"/>
           <link id="TValueListEditor.DisplayOptions">
             TValueListEditor.DisplayOptions
           </link>

@@ -1,105 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-<!--
-  ====================================================================
+  <package name="lazutils">
+    <!--
+    ====================================================================
     lazCollections
-  ====================================================================
--->
-<module name="lazCollections">
+    ====================================================================
+    -->
+    <module name="lazCollections">
       <short>Contains classes used to implement thread-safe collections</short>
-<descr>
+      <descr>
         <file>lazCollections.pas</file> contains classes used to implement thread-safe collections.
-</descr>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="SysUtils"/>
       <element name="SyncObjs"/>
       <element name="LazSysUtils"/>
 
-<!-- class Visibility: default -->
-<element name="TLazMonitor">
+      <!-- class Visibility: default -->
+      <element name="TLazMonitor">
         <short>
           Implements a synchronization construct which provides thread-safe access to resources
         </short>
-<descr>
+        <descr>
           <p>
             <var>TLazMonitor</var> is a <var>TCriticalSection</var> descendant which implements a synchronization construct that provides thread-safe access to resources. TLazMonitor extends the ancestor class to use a fixed number of spinlock (or busy waiting) attempts in its Acquire method. Acquire also yields CPU cycles to allow other threads to execute when fixed yield and/or sleep threshold(s) have been reached.
           </p>
           <p>
             <var>TLazMonitor</var> is used in the implementation of the <var>TLazThreadedQueue</var> class, and in the <var>fppkg</var> package.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor.Acquire"/>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
           <link id="TLazThreadedQueue"/>
-          <link id="#rtl.SyncObjs.TCriticalSection"/>
-</seealso>
-</element>
+          <link id="#FCL.SyncObjs.TCriticalSection"/>
+        </seealso>
+      </element>
 
-<!-- variable Visibility: private -->
+      <!-- variable Visibility: private -->
       <element name="TLazMonitor.FSpinCount" link="TLazMonitor.SpinCount"/>
 
-<!-- variable Visibility: private -->
+      <!-- variable Visibility: private -->
       <element name="TLazMonitor.FDefaultSpinCount" link="TLazMonitor.DefaultSpinCount"/>
 
-<!-- class function Visibility: private -->
+      <!-- class function Visibility: private -->
       <element name="TLazMonitor.GetDefaultSpinCount" link="TLazMonitor.DefaultSpinCount">
         <short>Gets the value for the DefaultSpinCount class property</short>
-</element>
-<!-- function result Visibility: private -->
-<element name="TLazMonitor.GetDefaultSpinCount.Result">
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TLazMonitor.GetDefaultSpinCount.Result">
         <short>Value for the class property</short>
-</element>
+      </element>
 
-<!-- class procedure Visibility: private -->
+      <!-- class procedure Visibility: private -->
       <element name="TLazMonitor.SetDefaultSpinCount" link="TLazMonitor.DefaultSpinCount">
         <short>Sets the value for the DefaultSpinCount property</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazMonitor.SetDefaultSpinCount.AValue">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazMonitor.SetDefaultSpinCount.AValue">
         <short>New value for the property</short>
-</element>
+      </element>
 
-<!-- function Visibility: private -->
+      <!-- function Visibility: private -->
       <element name="TLazMonitor.GetSpinCount" link="TLazMonitor.SpinCount">
         <short>Gets the value for the SpinCount property</short>
-</element>
-<!-- function result Visibility: private -->
-<element name="TLazMonitor.GetSpinCount.Result">
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TLazMonitor.GetSpinCount.Result">
         <short>Value for the property</short>
-</element>
+      </element>
 
-<!-- procedure Visibility: private -->
+      <!-- procedure Visibility: private -->
       <element name="TLazMonitor.SetSpinCount" link="TLazMonitor.SpinCount">
         <short>Sets the value for the SpinCount property</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazMonitor.SetSpinCount.AValue">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazMonitor.SetSpinCount.AValue">
         <short>New value for the property</short>
-</element>
+      </element>
 
-<!-- constructor Visibility: public -->
+      <!-- constructor Visibility: public -->
       <element name="TLazMonitor.Create">
         <short>Constructor for the class instance</short>
-<descr>
+        <descr>
           <p>
             <var>Create</var> is the constructor for the class instance, and sets the value in the <var>SpinCount</var> property to the <var>DefaultSpinCount</var> used in   instances of the class. Create calls the inherited constructor prior to exiting from the method.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
-          <link id="#rtl.SyncObjs.TCriticalSection.Create"/>
-</seealso>
-</element>
+          <link id="#FCL.SyncObjs.TCriticalSection.Create"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazMonitor.Acquire">
+      <!-- procedure Visibility: public -->
+      <element name="TLazMonitor.Acquire">
         <short>Limits thread access to the calling thread</short>
-<descr>
+        <descr>
           <p>
             <var>Acquire</var> is an overridden procedure used to limit threaded access to resources to the current calling thread. Acquire extends the inherited method to use a spinlock (or busy waiting loop) to get mutually exclusive access to resources shared between threads.
           </p>
@@ -112,59 +112,59 @@
           <p>
             Use the <var>SpinCount</var> property to determine the maximum number of iterations for the spinlock processing cycle. Use <var>DefaultSpinCount</var> to determine the default value used for the SpinCount property in new instances of the class.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
-          <link id="#rtl.SyncObjs.TCriticalSection.Enter"/>
-</seealso>
-</element>
+          <link id="#FCL.SyncObjs.TCriticalSection.Enter"/>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazMonitor.SpinCount">
+      <!-- property Visibility: public -->
+      <element name="TLazMonitor.SpinCount">
         <short>Number of busy waiting iterations used in the monitor</short>
-<descr>
+        <descr>
           <p>
             <var>SpinCount</var> is an <var>Integer</var> property which indicates the number of busy waiting iterations used in the monitor. The default value for the property is set in the <var>Create</var> constructor to the value in the <var>DefaultSpinCount</var> class property.
           </p>
           <p>
             Set the value in <var>SpinCount</var> to increase or decrease the number of spinlock iterations performed in the <var>Acquire</var> method. The value should be kept as small as possible to avoid the overhead of process scheduler/context switching conflicts for executing threads.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor.Create"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
           <link id="TLazMonitor.Acquire"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazMonitor.DefaultSpinCount">
+      <!-- property Visibility: public -->
+      <element name="TLazMonitor.DefaultSpinCount">
         <short>Default number of busy waiting iterations used in instances of the class</short>
-<descr>
+        <descr>
           <p>
             <var>DefaultSpinCount</var> is an <var>Integer</var> class property which identifies the default number of busy waiting iterations used in instances of the class. <var>DefaultSpinCount</var> provides the default value for the <var>SpinCount</var> property in new instances of the class.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.Acquire"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- generic class Visibility: default -->
-<element name="TLazThreadedQueue">
+      <!-- generic class Visibility: default -->
+      <element name="TLazThreadedQueue">
         <short>
           Implements a thread-safe FIFO queue for items of a generic type
         </short>
-<descr>
+        <descr>
           <p>
             <var>TLazThreadedQueue</var> is generic class which implements a thread-safe FIFO queue using a generic type for its items. The class requires specialization to specify the type stored in the items for the queue. For example:
           </p>
           <code>
-  TLazThreadedQueueString = specialize TLazThreadedQueue&lt;String&gt;;
-  TLazThreadedQueueInt = specialize TLazThreadedQueue&lt;Integer&gt;;
-  TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
+            TLazThreadedQueueString = specialize TLazThreadedQueue&lt;String&gt;;
+            TLazThreadedQueueInt = specialize TLazThreadedQueue&lt;Integer&gt;;
+            TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
           </code>
           <p>
             <var>TLazThreadedQueue</var> uses an internal <var>TLazMonitor</var> member to synchronize access to resources in the queue between executing threads. Methods in the class which require thread-safe access use the monitor to enable/disable resource protection. Items in the queue are maintained using the <var>PushItem</var>, <var>PopItem</var>, and <var>PopItemTimeout</var> methods. Properties are provided to determine the size of the queue, and the number of items added or removed.
@@ -172,13 +172,13 @@
           <p>
             TLazThreadedQueue specializations are used in the implementation of the <var>fpdserver</var> component, and its integration into the Lazarus IDE.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazMonitor"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- variable Visibility: private -->
+      <!-- variable Visibility: private -->
       <element name="TLazThreadedQueue.FMonitor"/>
       <element name="TLazThreadedQueue.FList"/>
       <element name="TLazThreadedQueue.FPushTimeout"/>
@@ -190,56 +190,56 @@
       <element name="TLazThreadedQueue.FHasItemEvent"/>
       <element name="TLazThreadedQueue.FShutDown"/>
 
-<!-- function Visibility: private -->
-<element name="TLazThreadedQueue.TryPushItem">
+      <!-- function Visibility: private -->
+      <element name="TLazThreadedQueue.TryPushItem">
         <short>Tries to add the specified item to the queue</short>
-<descr>
+        <descr>
           <p>
             <var>TryPushItem</var> is a <var>Boolean</var> function which tries to add the item specified in <var>AItem</var> to the internal storage for the queue. The return value is <b>True</b> if the item was successfully added in the method.
           </p>
           <p>
             <var>TryPushItem</var> is used in the implementation of the <var>PushItem</var> method. Use <var>PushItem</var> or to add an item to the thread-safe queue.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.PushItem"/>
-</seealso>
-</element>
-<!-- function result Visibility: private -->
-<element name="TLazThreadedQueue.TryPushItem.Result">
+        </seealso>
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TLazThreadedQueue.TryPushItem.Result">
         <short>True if the item was added successfully</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.TryPushItem.AItem">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.TryPushItem.AItem">
         <short>Item added to the queue in the method</short>
-</element>
+      </element>
 
-<!-- function Visibility: private -->
-<element name="TLazThreadedQueue.TryPopItem">
+      <!-- function Visibility: private -->
+      <element name="TLazThreadedQueue.TryPopItem">
         <short>
           Tries to remove the next item in the thread-safe queue
         </short>
         <descr></descr>
         <errors></errors>
         <seealso></seealso>
-</element>
-<!-- function result Visibility: private -->
-<element name="TLazThreadedQueue.TryPopItem.Result">
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TLazThreadedQueue.TryPopItem.Result">
         <short>
           True if an item was successfully removed from the queue
         </short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.TryPopItem.AItem">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.TryPopItem.AItem">
         <short>
           Item removed from the queue in the method
         </short>
-</element>
+      </element>
 
-<!-- constructor Visibility: public -->
+      <!-- constructor Visibility: public -->
       <element name="TLazThreadedQueue.Create">
         <short>Constructor for the class instance</short>
-<descr>
+        <descr>
           <p>
             <var>Create</var> is the constructor for the class instance. Create allocates internal resources used to implement the thread-safe queue, and sets the default values for its properties.
           </p>
@@ -249,70 +249,70 @@
           <p>
             <var>PushTimeout</var> and <var>PopTimeout</var> indicate the number of milliseconds (or ticks) to wait for successful completion of enqueue or dequeue requests, and are assigned as the default value for the corresponding internal members in the class instance.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.Grow"/>
           <link id="TLazThreadedQueue.PushItem"/>
           <link id="TLazThreadedQueue.PopItem"/>
           <link id="TLazThreadedQueue.Destroy"/>
-</seealso>
-</element>
-<!-- argument Visibility: default -->
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.Create.AQueueDepth">
         <short>
           Indicates the maximum number of items that can be stored in the thread-safe queue
         </short>
-</element>
-<!-- argument Visibility: default -->
+      </element>
+      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.Create.PushTimeout">
         <short>
           Number of ticks (milliseconds) to wait for successful completion of an enqueue request
         </short>
-</element>
+      </element>
 
-<!-- argument Visibility: default -->
+      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.Create.PopTimeout">
         <short>
           Number of ticks (milliseconds) to wait for successful completion of a dequeue request
         </short>
-</element>
+      </element>
 
-<!-- destructor Visibility: public -->
-<element name="TLazThreadedQueue.Destroy">
+      <!-- destructor Visibility: public -->
+      <element name="TLazThreadedQueue.Destroy">
         <short>Destructor for the class instance</short>
-<descr>
+        <descr>
           <p>
             <var>Destroy</var> is the destructor for the class instance. Destroy calls the private <var>DoShutDown</var> method to free internal resources allocated in the class instance. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.DoShutDown"/>
           <link id="TLazThreadedQueue.Create"/>
-          <link id="#rtl.SyncObjs.TCriticalSection.Destroy"/>
-</seealso>
-</element>
+          <link id="#FCL.SyncObjs.TCriticalSection.Destroy"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazThreadedQueue.Grow">
+      <!-- procedure Visibility: public -->
+      <element name="TLazThreadedQueue.Grow">
         <short>
           Increases the allocated storage for the queue by the specified size
         </short>
-<descr>
+        <descr>
           <p>
             <var>Grow</var> is a procedure which increases the storage allocated for items in the queue by the specified value in <var>ADelta</var>. The internal queue size is incremented by the value in <var>ADelta</var>. The length of the internal storage for the queue is increased to match the new queue size.
           </p>
-</descr>
+        </descr>
         <seealso></seealso>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.Grow.ADelta">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.Grow.ADelta">
         <short>Value used to increase the size of the queue</short>
-</element>
+      </element>
 
-<!-- function Visibility: public -->
-<element name="TLazThreadedQueue.PushItem">
+      <!-- function Visibility: public -->
+      <element name="TLazThreadedQueue.PushItem">
         <short>Adds the specified item to the queue</short>
-<descr>
+        <descr>
           <p>
             <var>PushItem</var> is a <var>TWaitResult</var> function used to add the item specified in <var>AItem</var> to the thread-safe queue.
           </p>
@@ -328,25 +328,26 @@
           <p>
             The return value contains a <var>TWaitResult</var> enumeration value that indicates the status for the enqueue request. See <var>TWaitResult</var> for more information about enumeration values and their meanings.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.ShutDown"/>
-          <link id="#rtl.SyncObjs.TWaitFor"/>
-</seealso>
-</element>
-<!-- function result Visibility: public -->
-<element name="TLazThreadedQueue.PushItem.Result">
+          <link id="#FCL.SyncObjs.TWaitResult"/>
+          <link id="#RTL.System.RTLeventWaitFor"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TLazThreadedQueue.PushItem.Result">
         <short>Contains the status for the enqueue request</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.PushItem.AItem">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.PushItem.AItem">
         <short>Item added to the storage for the queue</short>
-</element>
+      </element>
 
-<!-- function Visibility: public -->
-<element name="TLazThreadedQueue.PopItem">
+      <!-- function Visibility: public -->
+      <element name="TLazThreadedQueue.PopItem">
         <short>Pops the next item from the queue</short>
-<descr>
+        <descr>
           <p>
             <var>PopItem</var> is a <var>TWaitResult</var> function used remove the next item available in the thread-safe queue. PopItem calls the <var>PopItemTimeout</var> method using the value in the <var>PopTimeout</var> property as an argument.
           </p>
@@ -356,25 +357,25 @@
           <p>
             The return value contains a <var>TWaitResult</var> enumeration value that indicates the status for the dequeue request. See <var>TWaitResult</var> for more information about enumeration values and their meanings.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
-          <link id="#rtl.SyncObjs.TWaitResult"/>
-</seealso>
-</element>
-<!-- function result Visibility: public -->
-<element name="TLazThreadedQueue.PopItem.Result">
+          <link id="#FCL.SyncObjs.TWaitResult"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TLazThreadedQueue.PopItem.Result">
         <short>Contains the status for the dequeue request</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.PopItem.AItem">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.PopItem.AItem">
         <short>Item removed from the queue</short>
-</element>
+      </element>
 
-<!-- function Visibility: public -->
-<element name="TLazThreadedQueue.PopItemTimeout">
+      <!-- function Visibility: public -->
+      <element name="TLazThreadedQueue.PopItemTimeout">
         <short>Pops an item off the queue with a timeout value</short>
-<descr>
+        <descr>
           <p>
             <var>PopItemTimeout</var> is a <var>TWaitResult</var> function used to remove the next available item in the queue with a timeout in effect for the dequeue operation.
           </p>
@@ -390,51 +391,51 @@
           <p>
             The return value contains a <var>TWaitResult</var> enumeration value that indicates the status for the dequeue request. See <var>TWaitResult</var> for more information about enumeration values and their meanings.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.PopItem"/>
           <link id="TLazThreadedQueue.ShutDown"/>
-          <link id="#rtl.SyncObjs.TWaitResult"/>
-</seealso>
-</element>
-<!-- function result Visibility: public -->
-<element name="TLazThreadedQueue.PopItemTimeout.Result">
+          <link id="#FCL.SyncObjs.TWaitResult"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TLazThreadedQueue.PopItemTimeout.Result">
         <short>Contains  the status for the dequeue request</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.PopItemTimeout.AItem">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.PopItemTimeout.AItem">
         <short>Item removed from the queue</short>
-</element>
-<!-- argument Visibility: default -->
-<element name="TLazThreadedQueue.PopItemTimeout.Timeout">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLazThreadedQueue.PopItemTimeout.Timeout">
         <short>Maximum number of ticks to wait for the item to be removed from the queue</short>
-</element>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazThreadedQueue.DoShutDown">
+      <!-- procedure Visibility: public -->
+      <element name="TLazThreadedQueue.DoShutDown">
         <short>
           Performs actions required when the thread-safe queue is freed
         </short>
-<descr>
+        <descr>
           <p>
             <var>DoShutDown</var> is a procedure used to perform actions required when the instance of the thread-safe queue is freed. DoShutDown sets the value in the <var>ShutDown</var> property to <b>True</b> to signal executing threads that the queue is being freed. In additional, RTL events are set/reset to reflect the state for the internal storage in the queue.
           </p>
           <p>
             <var>DoShutDown</var> is called prior to freeing resources for the class instance in the <var>Destroy</var> method.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.ShutDown"/>
           <link id="TLazThreadedQueue.Destroy"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazThreadedQueue.QueueSize">
+      <!-- property Visibility: public -->
+      <element name="TLazThreadedQueue.QueueSize">
         <short>
           Number of storage slots for items in the queue
         </short>
-<descr>
+        <descr>
           <p>
             <var>QueueSize</var> is a read-only <var>Integer</var> property that indicates the number of storage slots available in the internal storage for the queue. The initial value for <var>QueueSize</var> is set using an argument passed to the constructor.
           </p>
@@ -444,79 +445,78 @@
           <p>
             Values in the <var>TotalItemsPushed</var>, <var>TotalItemsPopped</var>, and <var>QueueSize</var> properties determine if storage and/or items are available in the queue.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.TotalItemsPopped"/>
           <link id="TLazThreadedQueue.TotalItemsPushed"/>
           <link id="TLazThreadedQueue.Create"/>
           <link id="TLazThreadedQueue.PushItem"/>
           <link id="TLazThreadedQueue.PopItem"/>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazThreadedQueue.TotalItemsPopped">
+      <!-- property Visibility: public -->
+      <element name="TLazThreadedQueue.TotalItemsPopped">
         <short>
           Total number of items removed from the queue
         </short>
-<descr>
+        <descr>
           <p>
             <var>TotalItemsPopped</var> is a read-only <var>QWord</var> property that indicates the total number of items removed from the queue. The value in the internal member for the property is incremented each time the <var>PopItem</var> or <var>PopItemTimeout</var> method is completed successfully.
           </p>
           <p>
             Values in <var>TotalItemsPopped</var> and <var>TotalItemsPushed</var> determine whether items are available in the queue. Use <var>TotalItemsPushed</var> to determine the number of items added to the queue.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.PopItem"/>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
           <link id="TLazThreadedQueue.TotalItemsPushed"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazThreadedQueue.TotalItemsPushed">
+      <!-- property Visibility: public -->
+      <element name="TLazThreadedQueue.TotalItemsPushed">
         <short>
           Total number of items added to the queue
         </short>
-<descr>
+        <descr>
           <p>
             <var>TotalItemsPushed</var> is a read-only <var>QWord</var> property that indicates the total number of items added to the queue. The value in the internal member for the property is incremented each time the <var>PushItem</var> method is completed successfully.
           </p>
           <p>
             Values in <var>TotalItemsPushed</var> and <var>TotalItemsPopped</var> determine whether items are available in the queue. Use <var>TotalItemsPopped</var> to determine the total number of items removed from the queue.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.PushItem"/>
           <link id="TLazThreadedQueue.TotalItemsPopped"/>
-</seealso>
-</element>
+        </seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TLazThreadedQueue.ShutDown">
+      <!-- property Visibility: public -->
+      <element name="TLazThreadedQueue.ShutDown">
         <short>
           Indicates if the DoShutdown method has been called but not finished
         </short>
-<descr>
+        <descr>
           <p>
             <var>ShutDown</var> is a read-only <var>Boolean</var> property which indicates if the DoShutDown method has been called, but not yet completed, for the class instance. The value in ShutDown is used in the <var>PushItem</var> and <var>PopItemTimeout</var> methods to determine the status for the respective requests. The value <var>wrAbandoned</var> is returned from these methods when <var>ShutDown</var> contains <b>True</b>.
           </p>
           <p>
             The value in <var>ShutDown</var> is set to <b>True</b> in the <var>DoShutDown</var> method.
           </p>
-</descr>
-<seealso>
+        </descr>
+        <seealso>
           <link id="TLazThreadedQueue.DoShutDown"/>
           <link id="TLazThreadedQueue.PushItem"/>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
-          <link id="#rtl.SyncObjs.TWaitResult"/>
-</seealso>
-</element>
+          <link id="#FCL.SyncObjs.TWaitResult"/>
+        </seealso>
+      </element>
 
     </module>
     <!-- lazCollections -->
-
 </package>
 </fpdoc-descriptions>

@@ -196,11 +196,11 @@
         </short>
         <descr>
           <p>
-            ParamStrUTF8 is a String function used to convert the specified command line parameter to a UTF-8-encoded string. The implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like environments, SysToUTF8 is called to convert the value for the command line parameter at the position in Param. For Windows platforms like WinCE,  the stub for the Ansi or WideString version of ParamStr is called.
+            <var>ParamStrUTF8</var> is a String function used to convert the specified command line parameter to a UTF-8-encoded string. The implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like environments, SysToUTF8 is called to convert the value for the command line parameter at the position in Param. For Windows platforms like WinCE,  the stub for the Ansi or WideString version of ParamStr is called.
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.ObjPas.ParamStr">ObjPas.ParamStr</link>
+          <link id="SysToUTF8"/>
         </seealso>
       </element>
       <element name="ParamStrUTF8.Result">

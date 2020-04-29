@@ -9814,14 +9814,14 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
+
       <element name="RequireDerivedFormResource">
         <short>
           When True every form must have a resource (e.g. a .res file). An exception is raised if the resource is missing when creating a form.
         </short>
         <descr>
           <p>
-            The form resource is the <file>.lfm</file> file compiled into the executable of your application. For this flag, it does not matter if it was compiled via an <file>.lrs</file> file or via <file>fpcres</file>. The resource is automatically loaded by <var>TForm</var> and its descendants when created using the   <code>Create(Owner)</code> method.
+            The form resource is the <file>.lfm</file> file compiled into the executable of your application. For this flag, it does not matter if it was compiled via an <file>.lrs</file> file or via <file>fpcres</file>. The resource is automatically loaded by <var>TForm</var> and its descendants when created using the   <var>Create(Owner)</var> method.
           </p>
           <p>
             If the resource file is missing, there is something wrong with either a resource or the unit which contains the faulty form. If the flag is False, you will see a blank form and probably search a long time what is wrong. If you set this flag to True, you get an exception.
@@ -9845,7 +9845,6 @@
         </descr>
         <seealso>
         </seealso>
-        <notes><note>?</note></notes>
       </element>
       <!-- function type Visibility: default -->
       <element name="TMessageBoxFunction">

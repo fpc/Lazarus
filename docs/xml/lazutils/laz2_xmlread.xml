@@ -114,11 +114,10 @@
             <var>EXMLReadError</var> is an <var>Exception</var> descendant raised when an error occurs while reading XML content. EXMLReadError provides properties that indicate the severity of the error, its error message, and the position where the error occurred.
           </p>
           <p>
-            EXMLReadError is used in the implementation of TXMLReader class which de-serializes XML documents.
+            EXMLReadError is used in the TXMLReader implementation class which de-serializes XML documents.
           </p>
         </descr>
         <seealso>
-          <link id="TXMLReader"/>
           <link id="TErrorSeverity"/>
         </seealso>
       </element>
@@ -142,9 +141,6 @@
         </descr>
         <seealso>
           <link id="TErrorSeverity"/>
-          <link id="TXMLReader.ProcessXML"/>
-          <link id="TXMLReader.ProcessFragment"/>
-          <link id="TXMLReader.ProcessDTD"/>
         </seealso>
       </element>
 
@@ -162,7 +158,6 @@
         <seealso>
           <link id="EXMLReadError.Severity"/>
           <link id="TErrorSeverity"/>
-          <link id="TXMLReader"/>
         </seealso>
       </element>
 
@@ -214,7 +209,6 @@
         </descr>
         <seealso>
           <link id="TXMLDocument"/>
-          <link id="TXMLReader.ProcessXML"/>
           <link id="TXMLReaderFlag"/>
         </seealso>
       </element>
@@ -265,7 +259,6 @@
         </descr>
         <seealso>
           <link id="laz2_DOM.TDOMNode"/>
-          <link id="TXMLReader.ProcessFragment"/>
           <link id="TXMLReaderFlag"/>
         </seealso>
       </element>

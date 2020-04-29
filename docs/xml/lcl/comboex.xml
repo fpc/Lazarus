@@ -195,7 +195,6 @@
           <link id="TListControlItems.CustomSort"/>
           <link id="TListControlItems.Sort"/>
           <link id="TListControlItems.SortType"/>
-          <link id="TListControlItems.Data"/>
           <link id="TListControlItems.OnCompare"/>
           <link id="TListControlItems.CompareItems"/>
         </seealso>
@@ -233,12 +232,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.OnItemChange"/>
-          <link id="TCheckCombo.OnItemChange"/>
           <link id="TCustomCheckCombo.Checked"/>
-          <link id="TCustomCheckCombo.SetChecked"/>
           <link id="TCustomCheckCombo.State"/>
-          <link id="TCustomCheckCombo.SetState"/>
+          <link id="TCustomCheckCombo.OnItemChange"/>
+          <link id="TCheckComboBox.OnItemChange"/>
         </seealso>
       </element>
       <element name="TCheckItemChange.Sender">
@@ -371,7 +368,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.ClassesTCollectionItem.DisplayName"/>
+          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
         </seealso>
       </element>
 
@@ -482,7 +479,7 @@
         </descr>
         <seealso>
           <link id="TComboExItems.Notify"/>
-          <link id="TCustomComboBoxEx.Items"/>
+          <link id="TListControlItems.Items"/>
           <link id="#rtl.Classes.TCollectionItem.Collection"/>
           <link id="#rtl.Classes.TCollection.Owner"/>
           <link id="#rtl.Classes.TCollection.Count"/>
@@ -520,7 +517,6 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Changed"/>
         </seealso>
       </element>
 
@@ -878,8 +874,8 @@
         </descr>
         <seealso>
           <link id="TComboExItems.AddItem"/>
-          <link id="TComboExItem"/>
           <link id="TListControlItems.Add"/>
+          <link id="TComboExItem"/>
         </seealso>
       </element>
       <element name="TComboExItems.Add.Result">
@@ -903,13 +899,12 @@
         </descr>
         <seealso>
           <link id="TComboExItems.Add"/>
-          <link id="TComboExItem"/>
-          <link id="TComboExItem.Caption"/>
           <link id="TComboExItem.Indent"/>
-          <link id="TComboExItem.ImageIndex"/>
           <link id="TComboExItem.OverlayImageIndex"/>
-          <link id="TComboExItem.SetSelectedImageIndex"/>
-          <link id="TComboExItem.Data"/>
+          <link id="TComboExItem.SelectedImageIndex"/>
+          <link id="TListControlItem.Data"/>
+          <link id="TListControlItem.Caption"/>
+          <link id="TListControlItem.ImageIndex"/>
         </seealso>
       </element>
       <element name="TComboExItems.AddItem.Result">
@@ -1175,7 +1170,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.ItemHeight"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.ItemHeight"/>
         </seealso>
       </element>
       <element name="TCustomComboBoxEx.SetItemHeight.AValue">
@@ -1291,10 +1286,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TComboExItems.ItemsEx"/>
+          <link id="TComboExItems"/>
           <link id="TComboExItems.AddItem"/>
-          <link id="TComboExItems.Clear"/>
-          <link id="TComboExItems.Assign"/>
+          <link id="#RTL.Classes.TCollection.Assign"/>
+          <link id="#RTL.Classes.TCollection.Clear"/>
         </seealso>
       </element>
       <element name="TCustomComboBoxEx.AssignItemsEx.AItems">
@@ -1313,8 +1308,8 @@
         </descr>
         <seealso>
           <link id="TCustomComboBoxEx.ItemsEx"/>
-          <link id="TCustomComboBoxEx.Items"/>
-          <link id="TComboExItems.Clear"/>
+          <link id="TListControlItems.Items"/>
+          <link id="#RTL.Classes.TCollection.Clear"/>
         </seealso>
       </element>
 
@@ -1328,7 +1323,7 @@
           </p>
         </descr>
         <seealso>
-          <link id-="TComboExItems.Delete"/>
+          <link id="TComboExItems.Delete"/>
           <link id="TCustomComboBoxEx.ItemsEx"/>
         </seealso>
       </element>
@@ -1344,7 +1339,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBoxEx.ItemIndex"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
           <link id="TCustomComboBoxEx.ItemsEx"/>
           <link id="TCustomComboBoxEx.Delete"/>
         </seealso>
@@ -1404,8 +1399,8 @@
         <seealso>
           <link id="TCustomComboBoxEx.Images"/>
           <link id="TCustomComboBoxEx.DrawItem"/>
-          <link id="TCustomComboBoxEx.Invalidate"/>
           <link id="TComboBoxEx.Font"/>
+          <link id="#LCL.Controls.TWinControl.Invalidate"/>
         </seealso>
       </element>
 
@@ -1862,8 +1857,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.Items"/>
-          <link id="TCustomCheckCombo.SetItems"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCustomCheckCombo.AssignItems"/>
           <link id="TCustomCheckCombo.Clear"/>
         </seealso>
@@ -1880,9 +1874,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.Update"/>
-          <link id="TCustomCheckCombo.DropDown"/>
-          <link id="TCustomComboBox.CloseUp"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.DropDown"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.CloseUp"/>
+          <link id="#LCL.Controls.TWinControl.Update"/>
         </seealso>
       </element>
 
@@ -1964,8 +1958,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.InitializeWnd"/>
-          <link id="TCustomComboBox.Items"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.InitializeWnd"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCustomCheckCombo.State"/>
           <link id="TCustomCheckCombo.InitItemStates"/>
           <link id="TCustomCheckCombo.CheckItemStates"/>
@@ -1984,7 +1978,7 @@
         </short>
         <descr>
           <p>
-            <var>CheckItemStates</var> is a procedure used to ensure that <var>TCheckComboItemState</var> class instances exist for the <var>Items</var> defined in the checkbox combo control. CheckItemStates iterates over the values in Items to determine if its Object property contains a valid TCheckComboItemState instance. An Exception is raised when the Object is not derived from TCheckComboItemState.
+            <var>CheckItemStates</var> is a procedure used to ensure that <var>TCheckComboItemState</var> class instances exist for the <var>Items</var> defined in the checkbox combo control. CheckItemStates iterates over the values in Items to determine if its Objects property contains a valid TCheckComboItemState instance. An Exception is raised when the object is not derived from TCheckComboItemState.
           </p>
           <p>
             CheckItemStates is used in the implementation of the <var>InitializeWnd</var> and <var>AsyncCheckItemStates</var> methods.
@@ -1994,11 +1988,10 @@
           Raises an Exception when a checkbox in Items does not have a valid TCheckComboItemState object.
         </errors>
         <seealso>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCustomCheckCombo.InitializeWnd"/>
-          <link id="TCustomCheckCombo.AsyncCheckItemStates"/>
           <link id="TCheckComboItemState"/>
-          <link id="#rtl.Classes.TStrings.Object"/>
+          <link id="#rtl.Classes.TStrings.Objects"/>
         </seealso>
       </element>
 
@@ -2012,7 +2005,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.AsyncCheckItemStates"/>
           <link id="TCustomCheckCombo.DrawItem"/>
           <link id="#lcl.Forms.TApplication.QueueAsyncCall"/>
           <link id="#lcl.Forms.Application"/>
@@ -2030,7 +2022,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.SDTCustomComboBox.KeyDown"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.KeyDown"/>
         </seealso>
       </element>
       <element name="TCustomCheckCombo.KeyDown.Key">
@@ -2051,7 +2043,7 @@
         </descr>
         <seealso>
           <link id="TCustomCheckCombo.InitItemStates"/>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCheckComboItemState"/>
         </seealso>
       </element>
@@ -2128,7 +2120,7 @@
           <link id="TCustomCheckCombo.ItemIndex"/>
           <link id="TCustomCheckCombo.Toggle"/>
           <link id="TCustomCheckCombo.KeyDown"/>
-          <link id="TCustomCheckCombo.DropDown"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.DropDown"/>
           <link id="#lcl.StdCtrls.TCustomComboBox.Select"/>
         </seealso>
       </element>
@@ -2151,7 +2143,7 @@
           </dl>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
           <link id="#rtl.Classes.TStringList.Duplicates"/>
         </seealso>
       </element>
@@ -2168,7 +2160,7 @@
         </descr>
         <seealso>
           <link id="TCustomCheckCombo.ClearItemStates"/>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCheckComboItemState"/>
         </seealso>
       </element>
@@ -2209,8 +2201,8 @@
           <link id="TCustomCheckCombo.ClearItemStates"/>
           <link id="TCustomCheckCombo.InitItemStates"/>
           <link id="TCheckComboItemState"/>
-          <link id="#rtl.Classes.TStringList.Assign"/>
-          <link id="#rtl.Classes.TStringList.Objects"/>
+          <link id="#rtl.Classes.TStrings.Assign"/>
+          <link id="#rtl.Classes.TStrings.Objects"/>
         </seealso>
       </element>
       <element name="TCustomCheckCombo.AssignItems.AItems">
@@ -2227,7 +2219,7 @@
         <seealso>
           <link id="TCustomCheckCombo.ClearItemStates"/>
           <link id="#rtl.Classes.TStringList.Clear"/>
-          <link id="#rtl.Classes.TStringList.Objects"/>
+          <link id="#rtl.Classes.TStrings.Objects"/>
           <link id="TCheckComboItemState"/>
         </seealso>
       </element>
@@ -2304,8 +2296,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TStringList.Count"/>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#rtl.Classes.TStrings.Count"/>
+          <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCustomCheckCombo.AddItem"/>
           <link id="TCustomCheckCombo.DeleteItem"/>
           <link id="TCustomCheckCombo.Clear"/>
@@ -2400,10 +2392,8 @@
         </descr>
         <seealso>
           <link id="TCustomCheckCombo.Checked"/>
-          <link id="TCustomCheckCombo.SetChecked"/>
           <link id="TCustomCheckCombo.State"/>
-          <link id="TCustomCheckCombo.SetState"/>
-          <link id="TCustomCheckCombo.Items"/>
+          <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
         </seealso>
       </element>
 
@@ -2416,40 +2406,40 @@
       <element name="TCheckComboBox.Align" link="#lcl.Controls.TControl.Align"/>
       <element name="TCheckComboBox.AllowGrayed" link="TCustomCheckCombo.AllowGrayed"/>
       <element name="TCheckComboBox.Anchors" link="#lcl.Controls.TControl.Anchors"/>
-      <element name="TCheckComboBox.ArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
-      <element name="TCheckComboBox.AutoDropDown" link="TCustomComboBox.AutoDropDown"/>
-      <element name="TCheckComboBox.AutoSize" link="TCustomComboBox.AutoSize"/>
+      <element name="TCheckComboBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TCheckComboBox.AutoDropDown" link="#lcl.StdCtrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TCheckComboBox.AutoSize" link="#lcl.StdCtrls.TCustomComboBox.AutoSize"/>
       <element name="TCheckComboBox.BidiMode" link="#lcl.Controls.TControl.BidiMode"/>
       <element name="TCheckComboBox.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing"/>
       <element name="TCheckComboBox.BorderStyle" link="#lcl.Controls.TControl.BorderStyle"/>
       <element name="TCheckComboBox.Color" link="#lcl.Controls.TControl.Color"/>
       <element name="TCheckComboBox.Constraints" link="#lcl.Controls.TControl.Constraints"/>
-      <element name="TCheckComboBox.Count" link="TCustomComboBox.Count"/>
+      <element name="TCheckComboBox.Count" link="#lcl.StdCtrls.TCustomComboBox.Count"/>
       <element name="TCheckComboBox.DragCursor" link="#lcl.Controls.TControl.DragCursor"/>
       <element name="TCheckComboBox.DragKind" link="#lcl.Controls.TControl.DragKind"/>
       <element name="TCheckComboBox.DragMode" link="#lcl.Controls.TControl.DragMode"/>
-      <element name="TCheckComboBox.DropDownCount" link="TCustomComboBox.DropDownCount"/>
+      <element name="TCheckComboBox.DropDownCount" link="#lcl.StdCtrls.TCustomComboBox.DropDownCount"/>
       <element name="TCheckComboBox.Enabled" link="#lcl.Controls.TControl.Enabled"/>
       <element name="TCheckComboBox.Font" link="#lcl.Controls.TControl.Font"/>
-      <element name="TCheckComboBox.ItemHeight" link="TCustomComboBox.ItemHeight"/>
-      <element name="TCheckComboBox.ItemIndex" link="TCustomComboBox.ItemIndex"/>
-      <element name="TCheckComboBox.Items" link="TCustomComboBox.Items"/>
-      <element name="TCheckComboBox.ItemWidth" link="TCustomComboBox.ItemWidth"/>
-      <element name="TCheckComboBox.MaxLength" link="TCustomComboBox.MaxLength"/>
-      <element name="TCheckComboBox.OnChange" link="TCustomComboBox.OnChange"/>
+      <element name="TCheckComboBox.ItemHeight" link="#lcl.StdCtrls.TCustomComboBox.ItemHeight"/>
+      <element name="TCheckComboBox.ItemIndex" link="#lcl.StdCtrls.TCustomComboBox.ItemIndex"/>
+      <element name="TCheckComboBox.Items" link="#lcl.StdCtrls.TCustomComboBox.Items"/>
+      <element name="TCheckComboBox.ItemWidth" link="#lcl.StdCtrls.TCustomComboBox.ItemWidth"/>
+      <element name="TCheckComboBox.MaxLength" link="#lcl.StdCtrls.TCustomComboBox.MaxLength"/>
+      <element name="TCheckComboBox.OnChange" link="#lcl.StdCtrls.TCustomComboBox.OnChange"/>
       <element name="TCheckComboBox.OnChangeBounds" link="#lcl.Controls.TControl.OnChangeBounds"/>
       <element name="TCheckComboBox.OnClick" link="#lcl.Controls.TControl.OnClick"/>
-      <element name="TCheckComboBox.OnCloseUp" link="TCustomComboBox.OnCloseUp"/>
+      <element name="TCheckComboBox.OnCloseUp" link="#lcl.StdCtrls.TCustomComboBox.OnCloseUp"/>
       <element name="TCheckComboBox.OnContextPopup" link="#lcl.Controls.TControl.OnContextPopup"/>
       <element name="TCheckComboBox.OnDblClick" link="#lcl.Controls.TControl.OnDblClick"/>
       <element name="TCheckComboBox.OnDragDrop" link="#lcl.Controls.TControl.OnDragDrop"/>
       <element name="TCheckComboBox.OnDragOver" link="#lcl.Controls.TControl.OnDragOver"/>
       <element name="TCheckComboBox.OnEndDrag" link="#lcl.Controls.TControl.OnEndDrag"/>
-      <element name="TCheckComboBox.OnDropDown" link="TCustomComboBox.OnDropDown"/>
+      <element name="TCheckComboBox.OnDropDown" link="#lcl.StdCtrls.TCustomComboBox.OnDropDown"/>
       <element name="TCheckComboBox.OnEditingDone" link="#lcl.Controls.TControl.OnEditingDone"/>
       <element name="TCheckComboBox.OnEnter" link="#lcl.Controls.TWinControl.OnExit"/>
       <element name="TCheckComboBox.OnExit" link="#lcl.Controls.TWinControl.OnExit"/>
-      <element name="TCheckComboBox.OnGetItems" link="TCustomComboBox.OnGetItems"/>
+      <element name="TCheckComboBox.OnGetItems" link="#lcl.StdCtrls.TCustomComboBox.OnGetItems"/>
       <element name="TCheckComboBox.OnItemChange" link="TCustomCheckCombo.OnItemChange"/>
       <element name="TCheckComboBox.OnKeyDown" link="#lcl.Controls.TWinControl.OnKeyDown"/>
       <element name="TCheckComboBox.OnKeyPress" link="#lcl.Controls.TWinControl.OnKeyPress"/>

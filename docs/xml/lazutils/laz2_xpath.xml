@@ -22,7 +22,7 @@
         </p>
         <p>
           <url href="https://www.w3.org/TR/1999/REC-xpath-19991116/">
-            XML Path Language (XPath) Version 1.0 <br/>
+            XML Path Language (XPath) Version 1.0
             W3C Recommendation 16 November 1999
           </url>
         </p>
@@ -99,10 +99,10 @@
         <short>Token contains the :: axis operator</short>
       </element>
       <element name="TXPathToken.tkLess">
-        <short>Token contains the &amp;lt; operator</short>
+        <short>Token contains the LessThan operator</short>
       </element>
       <element name="TXPathToken.tkLessEqual">
-        <short>Token contains the &amp;lt;= operator</short>
+        <short>Token contains the LessThanOrEqual operator</short>
       </element>
       <element name="TXPathToken.tkEqual">
         <short>Token contains the = operator</short>
@@ -111,10 +111,10 @@
         <short>Token contains the != operator</short>
       </element>
       <element name="TXPathToken.tkGreater">
-        <short>Token contains the &amp;gt; operator</short>
+        <short>Token contains the GreaterThan operator</short>
       </element>
       <element name="TXPathToken.tkGreaterEqual">
-        <short>Token contains the &amp;gt;= operator</short>
+        <short>Token contains the GreaterThanOrEqual operator</short>
       </element>
       <element name="TXPathToken.tkAt">
         <short>Token contains the @ expression character</short>
@@ -364,9 +364,7 @@
 
       <!-- array type Visibility: default -->
       <element name="TXPathNodeArray">
-        <short>
-          Array used to store TXPathExprNode entries
-        </short>
+        <short>Array used to store TXPathExprNode entries</short>
         <descr>
           <p>
             <var>TXPathNodeArray</var> is an array of <var>TXPathExprNode</var> type. It is used to store XPath predicate expressions passed as arguments to <var>TXPathExprNode</var> descendants or <var>TXPathScanner</var>.
@@ -380,9 +378,7 @@
 
       <!-- class Visibility: default -->
       <element name="TXPathConstantNode">
-        <short>
-          Represents an XPath Literal expression
-        </short>
+        <short>Represents an XPath Literal expression</short>
         <descr>
           <p>
             <var>TXPathConstantNode</var> is a <var>TXPathExprNode</var> descendant that represents an XPath predicate expression which contains a Literal value (any value surrounded by Quotation Marks). The return value is the <var>TXPathVariable</var> passed to the constructor for the class instance.
@@ -447,9 +443,7 @@
           <p>
             <var>TXPathVariableNode</var> is a <var>TXPathExprNode</var> descendant that represents an XPath Variable Reference expression in the XPath syntax. For example:
           </p>
-          <p>
-            <code>$prefix:varname</code>
-          </p>
+          <code>&#36;prefix:varname</code>
           <p>
             TXPathVariableNode provides an overridden Evaluate method that is used to get the value for the node from the variable bindings in the XPath environment.
           </p>
@@ -518,9 +512,7 @@
           <p>
             TXPathFunctionNode is a TXPathExprNode descendant that represents a Function Name expression in the XPath syntax. For example:
           </p>
-          <p>
-            <code>local-name()</code> or <code>ms:utc()</code>
-          </p>
+          <code>local-name() or ms:utc()</code>
           <p>
             TXPathFunctionNode provides an overridden Evaluate method which is used to access the named function in the XPath environment with the arguments found in the expression. TXPathFunctionNode provides private members that are used to store the name for the function and its optional arguments.
           </p>
@@ -604,9 +596,7 @@
           <p>
             <var>TXPathNegationNode</var> is a <var>TXPathExprNode</var> descendant used to represent a Unary Expression with a Negation literal in the XPath syntax. For example:
           </p>
-          <p>
-            <code>-$varname</code>
-          </p>
+          <code>-&#36;varname</code>
           <p>
             TXPathNegationNode provides an overridden Evaluate method used to derive the return value for the expression.
           </p>
@@ -941,11 +931,7 @@
           <p>
             <var>TXPathUnionNode</var> is a <var>TXPathBinaryNode</var> descendant used to represent a Union expression in the XPath syntax. For example:
           </p>
-          <p>
-            <code>
-              ./child::*|./attribute::*
-            </code>
-          </p>
+          <code>./child::*|./attribute::*</code>
           <p>
             TXPathUnionNode provides a constructor used to set the operands for the Union expression. An overridden Evaluate method is provided to evaluate node sets generated for the XPath expression. It ensures that the selected node sets for each operand are in document order.
           </p>
@@ -1010,11 +996,7 @@
           <p>
             <var>TXPathFilterNode</var> is a <var>TXPathExprNode</var> descendant used to implement a Filter expression in the XPath syntax. For example:
           </p>
-          <p>
-            <code>
-              //book[@*]
-            </code>
-          </p>
+          <code>//book[@*]</code>
           <p>
             TXPathFilterNode allows a node set to be filtered to ensure that only values matching the XPath expression are included in the result. An overridden Evaluate method is provided to generate the node set in the return value, and to apply predicates in the XPath expression.
           </p>
@@ -1172,11 +1154,7 @@
           <p>
             <var>TStep</var> is a <var>TXPathFilterNode</var> descendant used to implement a Location Step expression in the XPath syntax. A location step expression contains an Axis name, a node test, and optional predicates that determine the items available in a node set. For example:
           </p>
-          <p>
-            <code>
-              ./child::book[@lang='en']
-            </code>
-          </p>
+          <code>./child::book[@lang='en']</code>
           <p>
             Use the constructor to specify the Axis and Node Test for the XPath expression. An overridden Evaluate method is provided to select the nodes included in the node set returned by the method.
           </p>
@@ -1776,19 +1754,15 @@
         <short>Prefix to locate in the Namespace information for the Context node</short>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TXPathScanner">
-        <short>
-          Implements a lexical scanner/parser using XPath syntax and semantics
-        </short>
+        <short>Implements a lexical scanner and parser using XPath syntax and semantics</short>
         <descr>
           <p>
             <var>TXPathScanner</var> is a class which implements a lexical scanner/parser using the syntax and semantics defined in XPath (XML Path Language). TXPathScanner provides methods used to tokenize and parse the XPath Expression types defined in the specification, at:
           </p>
           <p>
             <url href="https://www.w3.org/TR/1999/REC-xpath-19991116/">
-              XML Path Language (XPath) Version 1.0 <br/>
-              W3C Recommendation 16 November 1999
+              XML Path Language (XPath) Version 1.0  W3C Recommendation 16 November 1999
             </url>
           </p>
           <p>
@@ -1815,43 +1789,33 @@
       <element name="TXPathScanner.FTokenId"/>
       <element name="TXPathScanner.FResolver"/>
 
-      <!-- procedure Visibility: private -->
       <element name="TXPathScanner.Error">
         <short>Raises an exception with the specified message</short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathScanner.Error.Msg">
         <short>Message for the error</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TXPathScanner.ParsePredicates">
         <short>Parses XPath Predicate expressions</short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathScanner.ParsePredicates.Dest">
         <short>Destination nodes for XPath predicates in the expression</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TXPathScanner.ParseStep">
         <short>Parses XPath Location Steps in the expression</short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TXPathScanner.ParseStep.Result">
         <short>TStep class instance for the Location Step</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TXPathScanner.ParseNodeTest">
         <short>
           Parses XPath Node Tests to determine the principal node type for the expression
@@ -1859,13 +1823,9 @@
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TXPathScanner.ParseNodeTest.Result">
         <short>TStep class instance for the Location Step</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathScanner.ParseNodeTest.axis">
         <short>Axis to use for the Location Step in the result value</short>
       </element>
@@ -3089,14 +3049,12 @@
         <short>Ordinal position for the requested XPath function</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TXPathEnvironment.FunctionsByName">
         <short>Gets an XPath function with the specified name</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="TXPathEnvironment.FunctionsByName.AName">
         <short>Name for the requested XPath function</short>
       </element>
@@ -3108,24 +3066,19 @@
         <seealso></seealso>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="TXPathEnvironment.Variables.Index">
         <short>Ordinal position for the requested variable</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TXPathEnvironment.VariablesByName">
         <short>Gets an XPath variable with the specified name</short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathEnvironment.VariablesByName.AName">
         <short>Name of the requested variable</short>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TXPathExpression">
         <short>
           Evaluates an XPath expression using the specified scanner and resolver
@@ -3134,39 +3087,29 @@
         <seealso></seealso>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TXPathExpression.FRootNode"/>
 
-      <!-- constructor Visibility: public -->
       <element name="TXPathExpression.Create">
         <short>Constructor for the class instance</short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathExpression.Create.AScanner">
         <short>Lexical scanner/parser used to evaluate the expression</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathExpression.Create.CompleteExpression">
         <short>The XPath expression evaluated in the class instance</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathExpression.Create.AResolver">
         <short>Namespace resolver used to evaluate the expression</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TXPathExpression.Destroy">
         <short>Destructor for the class instance</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TXPathExpression.Evaluate">
         <short>
           Evaluates an XPath expression using the specified context node and environment
@@ -3174,18 +3117,12 @@
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TXPathExpression.Evaluate.Result">
         <short>Value from the evaluated expression</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathExpression.Evaluate.AContextNode">
         <short>Context node for the expression</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TXPathExpression.Evaluate.AEnvironment">
         <short>XPath environment for the evaluation</short>
       </element>
@@ -3198,23 +3135,15 @@
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="EvaluateXPathExpression.Result">
         <short>XPath variable representing the evaluated XPath expression</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="EvaluateXPathExpression.AExpressionString">
         <short>XPath expression evaluated in the routine</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="EvaluateXPathExpression.AContextNode">
         <short>Context node for the XPath expression</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="EvaluateXPathExpression.AResolver">
         <short>Namespace resolver for the evaluation</short>
       </element>

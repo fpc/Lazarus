@@ -173,9 +173,6 @@
         <seealso>
           <link id="TInternalMask"/>
           <link id="TCustomMaskEdit.EditMask"/>
-          <link id="TCustomMaskEdit.AddToMask"/>
-          <link id="TCustomMaskEdit.SetMask"/>
-          <link id="TCustomMaskEdit.CharMatchesMask"/>
         </seealso>
       </element>
       <element name="TMaskedType.Char_Start">
@@ -307,7 +304,6 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.EditMask"/>
-          <link id="TCustomMaskEdit.SetMask"/>
           <link id="TCustomMaskEdit.DisableMask"/>
           <link id="TCustomMaskEdit.ApplyMaskToText"/>
         </seealso>
@@ -356,11 +352,10 @@
             <var>EInvalidCodePoint</var> is an <var>EInvalidUtf8</var> descendant that implements the Exeption raised when an error occurs while setting a UTF-8 Code Point in a String. The exception message contains the constant value in <var>SInvalidCodePoint</var>.
           </p>
           <p>
-            Used in the <var>SetCodePoint</var> routine.
+            Used in the <var>SetCodePoint</var> routine in the implementation section for the unit.
           </p>
         </descr>
         <seealso>
-          <link id="SetCodePoint"/>
           <link id="SInvalidCodePoint"/>
         </seealso>
       </element>
@@ -370,7 +365,6 @@
         <descr></descr>
         <seealso>
           <link id="EInvalidUtf8"/>
-          <link id="SetCodePoint"/>
         </seealso>
       </element>
 
@@ -489,7 +483,6 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.EditMask"/>
-          <link id="TCustomMaskEdit.SetMask"/>
           <link id="TInternalMask"/>
         </seealso>
       </element>
@@ -513,7 +506,6 @@
         <descr/>
         <seealso>
           <link id="TCustomMaskEdit.EditMask"/>
-          <link id="TCustomMaskEdit.AddToMask"/>
           <link id="TCustomMaskEdit.ClearInternalMask"/>
           <link id="TCustomMaskEdit.RealGetText"/>
         </seealso>
@@ -584,7 +576,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.SetCursorPos"/>
           <link id="TCustomMaskEdit.IsLiteral"/>
         </seealso>
       </element>
@@ -781,7 +772,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.CharMatchesMask"/>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.TextIsValid.Result">
@@ -810,9 +800,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.TextIsValid"/>
           <link id="TCustomMaskEdit.CharToMask"/>
           <link id="TCustomMaskEdit.EditMask"/>
+          <link id="TCustomMaskEdit.ValidateEdit"/>
           <link id="TMaskType"/>
         </seealso>
       </element>
@@ -897,10 +887,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.CanInsertChar"/>
-          <link id="TCustomMaskEdit.ClearChar"/>
           <link id="TCustomMaskEdit.HandleKeyPress"/>
-          <link id="SetCodePoint"/>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.InsertChar.Ch">
@@ -1281,7 +1268,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.OnChangeHandler"/>
           <link id="#LCL.StdCtrls.TCustomEdit.Change"/>
           <link id="#LCL.StdCtrls.TCustomEdit.OnChange"/>
         </seealso>
@@ -1301,7 +1287,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.SetCharCase"/>
           <link id="#LCL.StdCtrls.TCustomEdit.CharCase"/>
         </seealso>
       </element>
@@ -1369,7 +1354,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Loaded"/>
+          <link id="#LCL.Controls.TWinControl.Loaded"/>
         </seealso>
       </element>
 
@@ -1507,8 +1492,7 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.IsMasked"/>
-          <link id="TCustomMaskEdit.SetCursorPos"/>
-          <link id="TCustomMaskEdit.SetSpaceChar"/>
+          <link id="TCustomMaskEdit.SpaceChar"/>
         </seealso>
       </element>
 
@@ -1610,8 +1594,7 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.IsMasked"/>
-          <link id="TCustomMaskEdit.ClearChar"/>
-          <link id="TCustomMaskEdit.SetMask"/>
+          <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.RestoreMask"/>
           <link id="TCustomMaskEdit.SetTextApplyMask"/>
           <link id="#LCL.StdCtrls.TCustomEdit.Clear"/>
@@ -1641,9 +1624,9 @@
         </errors>
         <seealso>
           <link id="TCustomMaskEdit.IsMasked"/>
-          <link id="TMaskEdit.Text"/>
-          <link id="TCustomMaskEdit.TextIsValid"/>
           <link id="TCustomMaskEdit.DoExit"/>
+          <link id="TCustomMaskEdit.ValidateEdit"/>
+          <link id="TMaskEdit.Text"/>
           <link id="EDBEditError"/>
           <link id="SMaskEditNoMatch"/>
         </seealso>
@@ -1959,7 +1942,6 @@
           <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.RealGetText"/>
           <link id="TCustomMaskEdit.RealSetText"/>
-          <link id="TCustomMaskEdit.RealSetTextWhileMasked"/>
         </seealso>
         <notes>
           <note>Discuss relationship between Text, EditText, RealSetText, et. al.</note>
@@ -2034,7 +2016,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.SetMask"/>
           <link id="TCustomMaskEdit.EditMask"/>
         </seealso>
       </element>
@@ -2060,7 +2041,7 @@
         </descr>
         <seealso>
           <link id="TMaskEdit"/>
-          <link id="#LCL.Classes.RegisterComponents"/>
+          <link id="#RTL.Classes.RegisterComponents"/>
         </seealso>
       </element>
 

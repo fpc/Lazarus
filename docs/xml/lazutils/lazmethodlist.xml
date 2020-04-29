@@ -22,7 +22,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TMethod">TMethod</link>
+          <link id="#rtl.System.TMethod"/>
         </seealso>
       </element>
 
@@ -178,7 +178,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TMethodList.Ietms">TMethodList.Items</link>
+          <link id="TMethodList.Items">TMethodList.Items</link>
           <link id="TMethodList.CallNotifyEvents">TMethodList.CallNotifyEvents</link>
         </seealso>
       </element>
@@ -306,12 +306,8 @@
         </errors>
         <seealso>
           <link id="TMethodList.AllowDuplicates">TMethodList.AllowDuplicates</link>
-          <link id="TMethodList.InternalInsert">TMethodList.InternalInsert</link>
           <link id="TMethodList.Count">TMethodList.Count</link>
           <link id="TMethodList.Move">TMethodList.Move</link>
-          <link id="TMethodList.RaiseIndexOutOfBounds">
-            TMethodList.RaiseIndexOutOfBounds
-          </link>
         </seealso>
       </element>
       <element name="TMethodList.Insert.Index">
@@ -343,9 +339,6 @@
         <seealso>
           <link id="TMethodList.Items">TMethodList.Items</link>
           <link id="TMethodList.Count">TMethodList.Count</link>
-          <link id="TMethodList.RaiseIndexOutOfBounds">
-            TMethodList.RaiseIndexOutOfBounds
-          </link>
         </seealso>
       </element>
       <element name="TMethodList.Move.OldIndex">
@@ -369,7 +362,7 @@
         <seealso>
           <link id="TMethodList.Items">TMethodList.Items</link>
           <link id="TMethodList.Delete">TMethodList.Delete</link>
-          <link id="#rtl.System.TMethod">TMethod</link>
+          <link id="#rtl.System.TMethod"/>
         </seealso>
       </element>
       <element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
@@ -385,7 +378,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TNotifyEvent">TNotifyEvent</link>
+          <link id="#rtl.Classes.TNotifyEvent"/>
         </seealso>
       </element>
       <element name="TMethodList.CallNotifyEvents.Sender">
@@ -401,8 +394,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TItemsEnumerator">TItemsEnumerator</link>
-          <link id="#rtl.Classes.TFPListEnumerator">TFPListEnumerator</link>
+          <link id="TMethodList.GetEnumerator"/>
         </seealso>
       </element>
       <element name="TMethodList.GetReversedEnumerator.Result">
@@ -415,8 +407,7 @@
           <var>GetEnumerator</var> is a <var>TItemsEnumerator</var> function used to get an enumerator for Items in the list. The enumerator provides access to the current value, and allows navigation to the next value for the enumerator. Item navigation occurs in the natural order (ascending ordinal position) in the list.
         </descr>
         <seealso>
-          <link id="TItemsEnumerator">TItemsEnumerator</link>
-          <link id="#rtl.Classes.TFPListEnumerator">TFPListEnumerator</link>
+          <link id="TMethodList.GetReversedEnumerator"/>
         </seealso>
       </element>
       <element name="TMethodList.GetEnumerator.Result">
@@ -455,7 +446,7 @@
           <link id="TMethodList.GetReversedEnumerator">
             TMethodList.GetReversedEnumerator
           </link>
-          <link id="#rtl.System.TMethod">TMethod</link>
+          <link id="#rtl.System.TMethod"/>
           <link id="#rtl.Classes.EListError">EListError</link>
         </seealso>
       </element>

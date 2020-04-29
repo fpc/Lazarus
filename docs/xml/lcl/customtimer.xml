@@ -248,8 +248,8 @@
         <short>Indicates if the timer is ready to start</short>
         <descr>
           <p>
+            <var>Enabled</var> is a <var>Boolean</var> property which controls the state for the timer class instance. When Enabled contains True the timer can be executed, and its <var>OnTimer</var> event handler is signalled when the Interval for the timer has elapsed. Changing the value in Enabled causes the <var>UpdateTimer</var> method to be called to set the current value for properties in the timer.
           </p>
-          <var>Enabled</var> is a <var>Boolean</var> property which controls the state for the timer class instance. When Enabled contains True the timer can be executed, and its <var>OnTimer</var> event handler is signalled when the Interval for the timer has elapsed. Changing the value in Enabled causes the <var>UpdateTimer</var> method to be called to set the current value for properties in the timer.
         </descr>
         <seealso>
           <link id="TCustomTimer.Create"/>

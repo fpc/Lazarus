@@ -2,14 +2,16 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    InterfaceBase
-  ====================================================================
--->
+    ====================================================================
+      InterfaceBase
+    ====================================================================
+    -->
     <module name="InterfaceBase">
-      <short>Provides an platform independent widgetset and helper functions.
+      <short>
+        Provides an platform independent widgetset and helper functions.
       </short>
       <descr/>
+
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
@@ -38,72 +40,67 @@
       <element name="GraphMath">
         <short/>
       </element>
-<!-- "type" alias type Visibility: default -->
+      <!-- "type" alias type Visibility: default -->
       <element name="PEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PProcessEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PPipeEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PSocketEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TChildExitReason">
         <short>Reasons for child process exit.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TChildExitReason.cerExit">
         <short>Normal exit</short>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TChildExitReason.cerSignal">
         <short>Killed</short>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPipeReason">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TPipeReason.prDataAvailable">
@@ -120,21 +117,19 @@
       <!-- procedure type Visibility: default -->
       <element name="TApplicationMainLoop">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TWaitHandleEvent">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWaitHandleEvent.AData">
@@ -146,11 +141,10 @@
       <!-- procedure type Visibility: default -->
       <element name="TChildExitEvent">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TChildExitEvent.AData">
@@ -165,11 +159,10 @@
       <!-- procedure type Visibility: default -->
       <element name="TPipeEvent">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TPipeEvent.AData">
@@ -181,11 +174,10 @@
       <!-- procedure type Visibility: default -->
       <element name="TSocketEvent">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TSocketEvent.AData">
@@ -198,10 +190,8 @@
       <element name="TLCLWndMethod">
         <short>The type of all LCL message handlers.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLWndMethod.TheMessage">
         <short/>
@@ -209,10 +199,8 @@
       <!-- enumeration type Visibility: default -->
       <element name="TLCLPlatform">
         <short>The supported platforms.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLPlatform.lpGtk">
         <short/>
@@ -249,10 +237,8 @@
       <!-- enumeration type Visibility: default -->
       <element name="TLCLCapability">
         <short>Capabilities of the (current) platform.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLCapability.lcAsyncProcess">
         <short>Supports async process.</short>
@@ -263,7 +249,8 @@
       <element name="TLCLCapability.lcNeedMininimizeAppWithMainForm">
         <short>When main form is minimized, then minimize also app.
         </short>
-      <notes><note>all forms?</note>
+        <notes>
+          <note>all forms?</note>
         </notes>
       </element>
       <element name="TLCLCapability.lcApplicationTitle">
@@ -284,27 +271,24 @@
       <element name="TLCLCapability.lcAntialiasingEnabledByDefault">
         <short>Is amDontCare = amOn for the widgetset.
         </short>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TLCLCapability.lcLMHelpSupport">
         <short>Support for LM_HELP command.</short>
       </element>
       <element name="TLCLCapability.lcReceivesLMClearCutCopyPasteReliably">
-        <short>In Carbon we do not receive LM_CLEAR, CUT, COPY, PASTE etc. reliably,
-          and this affects DB controls.
+        <short>In Carbon we do not receive LM_CLEAR, CUT, COPY, PASTE etc. reliably, and this affects DB
+          controls.
         </short>
       </element>
-<!-- class Visibility: default -->
+      <!-- class Visibility: default -->
       <element name="TDialogButton">
-        <short>Description of standard dialog buttons.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Description of standard dialog buttons.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDialogButton.FCaption" link="TDialogButton.Caption"/>
@@ -331,8 +315,7 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TDialogButton.GetDisplayName">
-        <short>Here: returns Caption.
-        </short>
+        <short>Here: returns Caption.</short>
       </element>
       <element name="TDialogButton.GetDisplayName.Result">
         <short/>
@@ -349,50 +332,34 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButton.Caption">
-        <short>The button title.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The button title.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButton.Cancel">
-        <short>True for Cancel button(s) only.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True for Cancel button(s) only.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButton.Default">
-        <short>True for Default button(s) only.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True for Default button(s) only.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButton.ModalResult">
-        <short>The modal result, returned when the button is clicked.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The modal result, returned when the button is clicked.</short>
+        <descr/>
+        <seealso/>
       </element>
-<!-- class Visibility: default -->
+      <!-- class Visibility: default -->
       <element name="TDialogButtons">
-        <short>Collection of TDialogButton descriptions.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Collection of TDialogButton descriptions.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TDialogButtons.FCancelButton" link="TDialogButtons.CancelButton"/>
@@ -427,28 +394,20 @@
       <element name="TDialogButtons.Destroy"/>
       <!-- function Visibility: public -->
       <element name="TDialogButtons.Add">
-        <short>Adds a new button description.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Adds a new button description.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TDialogButtons.Add.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDialogButtons.FindButton">
-        <short>Find the button associated with (one of) the given modal result.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Find the button associated with (one of) the given modal result.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TDialogButtons.FindButton.Result">
         <short/>
@@ -462,46 +421,37 @@
       <!-- property Visibility: public -->
       <element name="TDialogButtons.DefaultButton">
         <short>The Default button for this dialog kind.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButtons.CancelButton">
         <short>The Cancel button for this dialog kind.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDialogButtons.Items">
         <short>Indexed access to the button descriptions.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TDialogButtons.Items.Index">
         <short/>
       </element>
-<!-- procedure type Visibility: default -->
+      <!-- procedure type Visibility: default -->
       <element name="TWSTimerProc">
-        <short>Type of a timer callback procedure
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
+        <short>Type of a timer callback procedure</short>
+        <descr/>
+        <seealso/>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
 
-<!-- object Visibility: default -->
+      <!-- object Visibility: default -->
       <element name="TWidgetSet">
-        <short>Application helper class (platform and drawing interface).
-        </short>
+        <short>Application helper class (platform and drawing interface).</short>
         <descr>
           <p>
             The declaration contains a number of specific methods for interfacing with the operating system.
@@ -517,7 +467,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- function Visibility: protected -->
@@ -545,7 +496,8 @@
         <descr>Called by Application.Initialize. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.AppInit.ScreenInfo">
@@ -555,10 +507,8 @@
       <element name="TWidgetSet.AppRun">
         <short>Enters a state in which the application waits for system messages</short>
         <descr>Called by Application.Run. Don't use this directly, the LCL will use it when adequate.</descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppRun.ALoop">
         <short/>
@@ -567,19 +517,16 @@
       <element name="TWidgetSet.AppWaitMessage">
         <short>Waits for arrival of a message.</short>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppProcessMessages">
         <short>Handles all pending messages.</short>
-        <descr>Called by Application.ProcessMessages. Don't use this directly, the LCL will use it when adequate.</descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr>Called by Application.ProcessMessages. Don't use this directly, the LCL will use it when
+          adequate.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
@@ -587,7 +534,8 @@
         <descr>Called by Application.Terminate. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- procedure Visibility: public -->
@@ -597,7 +545,8 @@
         <seealso>
           <link id="TWidgetSet.AppRestore"/>
         </seealso>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- procedure Visibility: public -->
@@ -613,15 +562,15 @@
         <short>Brings the entire application on top of all other non-topmost programs.</short>
         <descr>Called by Application.BringToFront. Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetIcon">
         <short>Set the icon of the taskbar button.</short>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppSetIcon.Small">
         <short/>
@@ -633,10 +582,8 @@
       <element name="TWidgetSet.AppSetTitle">
         <short/>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppSetTitle.ATitle">
         <short/>
@@ -645,8 +592,7 @@
       <element name="TWidgetSet.AppSetVisible">
         <short>Change the visibility of the application window.</short>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppSetVisible.AVisible">
         <short/>
@@ -655,8 +601,7 @@
       <element name="TWidgetSet.AppRemoveStayOnTopFlags">
         <short>Resets all StayOnTop windows to NoTopmost.</short>
         <descr>Don't use this directly, the LCL will use it when adequate.</descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.Result">
         <short>False on failure</short>
@@ -667,10 +612,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRestoreStayOnTopFlags">
         <short>Sets all windows in the StayOnTop list to TopMost.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppRestoreStayOnTopFlags.Result">
         <short/>
@@ -681,12 +624,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetMainFormOnTaskBar">
         <short>Shows/Hides the MainForm taskbar icon.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AppSetMainFormOnTaskBar.DoSet">
         <short>The visibility of the MainForm in the TaskBar.</short>
@@ -694,10 +634,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.LCLPlatform">
         <short>Returns the widgetset in use.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.LCLPlatform.Result">
         <short/>
@@ -705,10 +643,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetLCLCapability">
         <short>Checks the widgetset for available capabilities.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetLCLCapability.Result">
         <short>Can be either LCL_CAPABILITY_NO or LCL_CAPABILITY_YES</short>
@@ -722,7 +658,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.DCGetPixel.Result">
@@ -743,7 +680,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.DCSetPixel.CanvasHandle">
@@ -764,7 +702,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.DCRedraw.CanvasHandle">
@@ -773,12 +712,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCSetAntialiasing">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DCSetAntialiasing.CanvasHandle">
         <short/>
@@ -792,7 +728,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.SetDesigning.AComponent">
@@ -801,12 +738,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InitStockFont">
         <short>Initializes a font object to an (predefined) stock font.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.InitStockFont.Result">
         <short>False on failure.</short>
@@ -820,10 +754,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsHelpKey">
         <short>Checks whether the widgetset uses the key to show help.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsHelpKey.Result">
         <short>True when this is a Help key.</short>
@@ -840,7 +772,8 @@
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.CreateTimer.Result">
@@ -863,7 +796,8 @@
         <seealso>
           <link id="TWidgetSet.CreateTimer"/>
         </seealso>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.DestroyTimer.Result">
@@ -877,25 +811,25 @@
         <short>Native handle for TApplication</short>
         <descr>The meaning of the handle changes from widgetset to widgetset
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
-<!-- function Visibility: public -->
+      <!-- function Visibility: public -->
       <element name="TWidgetSet.Arc">
         <short>Use Arc to draw an elliptically curved line with the current Pen.</short>
         <descr>
           <p>
             The arc is part of the ellipse inscribed in the bounding rectangle.
-          </p><p>
-            The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-            circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-            counter-clockwise while negative values mean clockwise direction.
-            Zero degrees is at the 3'o clock position.
+          </p>
+          <p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760
+            (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values
+            mean clockwise direction. Zero degrees is at the 3'o clock position.
           </p>
         </descr>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
+        <notes>
+          <note>?</note>
         </notes>
       </element>
       <element name="TWidgetSet.Arc.Result">
@@ -928,11 +862,11 @@
         <descr>
           <p>
             The chord is outlined with the current pen, and filled with the current brush.
-          </p><p>
+          </p>
+          <p>
             The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760
-            16*360). Positive values of Angle and AngleLength mean counter-clockwise while
-            negative values mean clockwise direction. Zero degrees is at the 3'o clock
-            position.
+            16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values
+            mean clockwise direction. Zero degrees is at the 3'o clock position.
           </p>
         </descr>
         <errors/>
@@ -968,11 +902,12 @@
         <short>Start painting in a window.</short>
         <descr>
           <p>
-            This function is for use in WM_PAINT handlers only.
-            Not all platforms allow for painting outside WM_PAINT messages.
-          </p><p>
-            BeginPaint prepares the specified window for painting
-            and fills a PAINTSTRUCT structure with information about the painting.
+            This function is for use in WM_PAINT handlers only. Not all platforms allow for painting outside
+            WM_PAINT messages.
+          </p>
+          <p>
+            BeginPaint prepares the specified window for painting and fills a PAINTSTRUCT structure with
+            information about the painting.
           </p>
         </descr>
         <seealso/>
@@ -988,28 +923,27 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.BitBlt">
-        <short>Copies part of an source DC into an destination DC,
-          using the specified raster operation.
-        </short>
+        <short>Copies part of an source DC into an destination DC, using the specified raster operation. </short>
         <descr>
           <p>
-            This routine implements the equivalent Windows GDI API
-            of the same name in all platforms supported by Lazarus.
-          </p><p>
-            It copies a section of a Canvas to another one, without any stretching.
-            It allows one to select the kind of operation which should be
-            performed to draw the pixels into the destination in the parameter ROP.
-            Allowed operations go from simply copying the pixels without change
-            to inverting them and also to executing logical operations involving the source pixels and the previously
+            This routine implements the equivalent Windows GDI API of the same name in all platforms
+            supported by Lazarus.
+          </p>
+          <p>
+            It copies a section of a Canvas to another one, without any stretching. It allows one to select
+            the kind of operation which should be performed to draw the pixels into the destination in the
+            parameter ROP. Allowed operations go from simply copying the pixels without change to inverting
+            them and also to executing logical operations involving the source pixels and the previously
             existing pixels in the destination Canvas.
-          </p><p>
-            For normal usage one should only use SRCOPY in the ROP parameter,
-            other operations may not be supported by all widgetsets.
-          </p><p>
-            There exist 16 raster operations, according to the possible combinations
-            of two (boolean) values.
-            Excluding the NOP case, that doesn't modify the target area,
-            the possible values for ROP are:</p>
+          </p>
+          <p>
+            For normal usage one should only use SRCOPY in the ROP parameter, other operations may not be
+            supported by all widgetsets.
+          </p>
+          <p>
+            There exist 16 raster operations, according to the possible combinations of two (boolean)
+            values. Excluding the NOP case, that doesn't modify the target area, the possible values for ROP
+            are:</p>
           <ul>
             <li>BLACKNESS - Fills the destination rectangle with black</li>
             <li>DSTINVERT - Inverts the colors of the destination area</li>
@@ -1024,17 +958,18 @@
             <li>SRCCOPY -</li>
             <li>SRCERASE -</li>
             <li>SRCINVERT -</li>
-            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR on each pixel</li>
+            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR on
+              each pixel</li>
             <li>WHITENESS - Fills the destination rectangle with white</li>
           </ul>
           <p>These flags can be added to above ROPs:
           </p>
           <ul>
-            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas.
-              This option is not recommended and is very hard to implement in all supported platforms.
+            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas. This option is not
+              recommended and is very hard to implement in all supported platforms.
             </li>
-            <li>NOMIRRORBITMAP - Prevents the bitmap from being mirrored.
-              (The coordinates are sorted before painting?)
+            <li>NOMIRRORBITMAP - Prevents the bitmap from being mirrored. (The coordinates are sorted before
+              painting?)
             </li>
           </ul>
         </descr>
@@ -1120,8 +1055,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ClientToScreen">
-        <short>Converts (relative) Client coordinates into absolute Screen coordinates.
-        </short>
+        <short>Converts (relative) Client coordinates into absolute Screen coordinates.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1139,25 +1073,30 @@
       <element name="TWidgetSet.CombineRgn">
         <short>Combines two regions.</short>
         <descr>
-          <p>The Destination must already be initialized.
-            The Return value is the Destination's Region type, or ERROR (0).
-          </p><p>
+          <p>The Destination must already be initialized. The Return value is the Destination's Region
+            type, or ERROR (0).
+          </p>
+          <p>
             fnCombineMode can be one of:
           </p>
           <ul>
             <li>
-              RGN_AND  : Gets a region of all points which are in both source regions.
-            </li><li>
+              RGN_AND : Gets a region of all points which are in both source regions.
+            </li>
+            <li>
               RGN_COPY : Gets an exact copy of the first source region.
-            </li><li>
-              RGN_DIFF : Gets a region of all points which are in the first source region
-              but not in the second.(Src1 - Src2)
-            </li><li>
-              RGN_OR   : Gets a region of all points which are in either the first
-                 source region or in the second.(Src1 + Src2)
-            </li><li>
-              RGN_XOR  : Gets all points which are in either the first Source Region
-                 or in the second, but not in both.
+            </li>
+            <li>
+              RGN_DIFF : Gets a region of all points which are in the first source region but not in the
+              second.(Src1 - Src2)
+            </li>
+            <li>
+              RGN_OR : Gets a region of all points which are in either the first source region or in the
+              second.(Src1 + Src2)
+            </li>
+            <li>
+              RGN_XOR : Gets all points which are in either the first Source Region or in the second, but not
+              in both.
             </li>
           </ul>
         </descr>
@@ -1167,8 +1106,7 @@
         <short>The Destination's Region type, or ERROR (0).</short>
       </element>
       <element name="TWidgetSet.CombineRgn.Dest">
-        <short>The Handle of the destination region. This region must already exist!
-        </short>
+        <short>The Handle of the destination region. This region must already exist!</short>
       </element>
       <element name="TWidgetSet.CombineRgn.Src1">
         <short>The handle of a region to combine.</short>
@@ -1181,8 +1119,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateBitmap">
-        <short>Creates a bitmap with the specified width, height, and color format (color planes and bits per pixel).
-        </short>
+        <short>Creates a bitmap with the specified width, height, and color format (color planes and
+          bits per pixel).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1221,9 +1159,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateCaret">
-        <short>Creates a new shape for the system caret
-          and assigns ownership of the caret to the specified window.
-        </short>
+        <short>Creates a new shape for the system caret and assigns ownership of the caret to the
+          specified window.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1234,8 +1171,7 @@
         <short>The window that owns the caret.</short>
       </element>
       <element name="TWidgetSet.CreateCaret.Bitmap">
-        <short>Bitmap Handle, or zero for a solid (black) caret, 1 for a grey caret.
-        </short>
+        <short>Bitmap Handle, or zero for a solid (black) caret, 1 for a grey caret.</short>
       </element>
       <element name="TWidgetSet.CreateCaret.Width">
         <short/>
@@ -1331,9 +1267,8 @@
         <short>Pointer to the bitmap pixels.</short>
       </element>
       <element name="TWidgetSet.CreateDIBSection.SectionHandle">
-        <short>Zero or the Handle of a file-mapping object, from which the bitmap is initialized
-          (needs CreateFileMapping).
-        </short>
+        <short>Zero or the Handle of a file-mapping object, from which the bitmap is initialized (needs
+          CreateFileMapping).</short>
       </element>
       <element name="TWidgetSet.CreateDIBSection.Offset">
         <short>The offset to the bitmap bits in the file-mapping object.</short>
@@ -1398,10 +1333,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateIconIndirect">
         <short>Creates an icon or cursor.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.CreateIconIndirect.Result">
         <short>The Handle, zero on failure.</short>
@@ -1427,14 +1360,14 @@
         <short>Creates a logical brush, selectable into any DC.</short>
         <descr>
           <p>
-            The bitmap pattern is repeated for areas of larger width or height,
-            it should allow for smooth transitions.
-          </p><p>
+            The bitmap pattern is repeated for areas of larger width or height, it should allow for smooth
+            transitions.
+          </p>
+          <p>
             Monochrome bitmaps obtain the actual text (0) or background (1) color of the DC.
           </p>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.CreatePatternBrush.Result">
         <short>The brush handle, zero on failure.</short>
@@ -1460,14 +1393,15 @@
         <short>Creates a polygonal region.</short>
         <descr>
           <p>
-            The Points parameter is an array of points that give the vertices of the polygon.
-            The connections between two points can cross others.
-          </p><p>
-            FillMode determines what points are going to be included in the region.
-            When FillMode=Winding points are selected by using the Winding fill algorithm.
-            When FillMode=ALTERNATE points are selected by using using the
-            even-odd (alternative) fill algorithm.
-          </p><p>
+            The Points parameter is an array of points that give the vertices of the polygon. The
+            connections between two points can cross others.
+          </p>
+          <p>
+            FillMode determines what points are going to be included in the region. When FillMode=Winding
+            points are selected by using the Winding fill algorithm. When FillMode=ALTERNATE points are
+            selected by using using the even-odd (alternative) fill algorithm.
+          </p>
+          <p>
             The last point is connected to the first point, to close the region.
           </p>
         </descr>
@@ -1510,12 +1444,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateRoundRectRgn">
-        <short>Creates a rectangular region with rounded corners.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Creates a rectangular region with rounded corners.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.Result">
         <short>The region Handle, zero on failure.</short>
@@ -1542,8 +1473,7 @@
       <element name="TWidgetSet.DeleteCriticalSection">
         <short>Deletes an unowned critical section.</short>
         <descr/>
-        <errors>Results are unpredictable when the section is owned,
-          i.e. has been entered but not yet left.
+        <errors>Results are unpredictable when the section is owned, i.e. has been entered but not yet left.
         </errors>
         <seealso>
           <link id="TWidgetSet.InitializeCriticalSection"/>
@@ -1569,9 +1499,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DeleteObject">
-        <short>Deletes a graphic object, freeing all system resources
-          associated with the object.
-        </short>
+        <short>Deletes a graphic object, freeing all system resources associated with the object.</short>
         <descr/>
         <errors>The function fails when the Handle is selected into an DC.
         </errors>
@@ -1599,10 +1527,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyCursor">
         <short>Destroys an mouse cursor.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DestroyCursor.Result">
         <short>False on failure.</short>
@@ -1613,12 +1539,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyIcon">
         <short>Destroys an icon.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DestroyIcon.Result">
         <short>False on failure.</short>
@@ -1646,29 +1569,32 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DrawFrameControl">
-        <short>Draws a window frame control, of the specified type and style.
-        </short>
+        <short>Draws a window frame control, of the specified type and style.</short>
         <descr>
           <p>
             A window frame includes these components (uType):
           </p>
-            <ul>
-              <li>
-                title bar (DFC_CAPTION)
-              </li><li>
-                menu bar (DFC_MENU)
-              </li><li>
-                popup menus (DFC_POPUPMENU)
-              </li><li>
-                scrollbars (DFC_SCROLL)
-              </li>
-            </ul>
+          <ul>
+            <li>
+              title bar (DFC_CAPTION)
+            </li>
+            <li>
+              menu bar (DFC_MENU)
+            </li>
+            <li>
+              popup menus (DFC_POPUPMENU)
+            </li>
+            <li>
+              scrollbars (DFC_SCROLL)
+            </li>
+          </ul>
           <p>
-            Window managers do not normally allow the user to paint the
-            components of an window frame, do not even supply an DC for that purpose.
-          </p><p>
-            The available features depend on the window manager of the actual platform,
-            and the used widgetset.
+            Window managers do not normally allow the user to paint the components of an window frame, do
+            not even supply an DC for that purpose.
+          </p>
+          <p>
+            The available features depend on the window manager of the actual platform, and the used
+            widgetset.
           </p>
         </descr>
         <errors/>
@@ -1694,27 +1620,25 @@
         <short>Shows or hides a floating rectangle.</short>
         <descr>
           <p>
-            This function is intended to <b>temporarily</b> outline part of an canvas,
-            e.g. a rectangular selection following mouse moves
-            (rubber box, DockRect).
-          </p><p>
-            A second call of the function, with the same parameters,
-            removes the rectangle again (XOR painting).
-            Due to this behavior the frame should be removed
-            before it might be overwritten by any other painting operation.
+            This function is intended to
+            <b>temporarily</b>
+            outline part of an canvas, e.g. a rectangular selection following mouse moves (rubber box,
+            DockRect).
+          </p>
+          <p>
+            A second call of the function, with the same parameters, removes the rectangle again (XOR
+            painting). Due to this behavior the frame should be removed before it might be overwritten by
+            any other painting operation.
           </p>
           <remark>
             Not all platforms allow for painting outside WM_PAINT events.
           </remark>
           <remark>
-            Child windows may be excluded (clipped),
-            i.e. the rectangle is not necessarily fully shown.
+            Child windows may be excluded (clipped), i.e. the rectangle is not necessarily fully shown.
           </remark>
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DrawFocusRect.Result">
         <short>False on failure.</short>
@@ -1753,9 +1677,10 @@
         <descr>
           <p>
             Several formatting options are available (DT_WORDBREAK...).
-          </p><p>
-            DT_CALCRECT suppresses all painting, instead the extent of the formatted text
-            is returned in the Rect parameter.
+          </p>
+          <p>
+            DT_CALCRECT suppresses all painting, instead the extent of the formatted text is returned in the
+            Rect parameter.
           </p>
         </descr>
         <errors/>
@@ -1763,10 +1688,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.DrawText.Result">
-        <short>The height of the drawn text,
-          from Rect.Top to the bottom of the text.
-          Zero on failure.
-        </short>
+        <short>The height of the drawn text, from Rect.Top to the bottom of the text. Zero on failure.</short>
       </element>
       <element name="TWidgetSet.DrawText.DC">
         <short/>
@@ -1778,17 +1700,14 @@
         <short>The number of (Wide)Chars in the text.</short>
       </element>
       <element name="TWidgetSet.DrawText.Rect">
-        <short>The bounding (clipping) rectangle.
-        </short>
+        <short>The bounding (clipping) rectangle.</short>
       </element>
       <element name="TWidgetSet.DrawText.Flags">
         <short>Various flags.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnableScrollBar">
-        <short>Enables or disables the arrows of a scrollbar control,
-          or of the scrollbars of a window.
-        </short>
+        <short>Enables or disables the arrows of a scrollbar control, or of the scrollbars of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1807,8 +1726,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnableWindow">
-        <short>Enables or disables mouse and keyboard input to the specified window or control.
-        </short>
+        <short>Enables or disables mouse and keyboard input to the specified window or control.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1842,12 +1760,11 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.EnterCriticalSection">
         <short>Enters a critical section.</short>
-        <descr>The call returns only when the calling thread has obtained ownership of the critical section.
-          See TryEnterCriticalSection for testing the ownership of the critical section.
+        <descr>The call returns only when the calling thread has obtained ownership of the critical
+          section. See TryEnterCriticalSection for testing the ownership of the critical section.
         </descr>
         <seealso>
           <link id="TWidgetSet.InitializeCriticalSection"/>
-          <link id="TWidgetSet.TryEnterCriticalSection"/>
         </seealso>
       </element>
       <element name="TWidgetSet.EnterCriticalSection.CritSection">
@@ -1856,12 +1773,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnumDisplayMonitors">
         <short>Invokes a callback function for every available display monitor.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.Result">
         <short>False on failure.</short>
@@ -1881,8 +1795,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnumFontFamilies">
         <short>Invokes a callback function for every font available on a specified device.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.EnumFontFamiliesEx"/>
         </seealso>
@@ -1904,14 +1817,10 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnumFontFamiliesEx">
-        <short>Invokes a callback function for every available font that matches certain criteria.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Invokes a callback function for every available font that matches certain criteria.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.EnumFontFamiliesEx.Result">
         <short>The last value returned by the callback function.</short>
@@ -1934,8 +1843,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Ellipse">
         <short>Draws a filled circle or ellipse, bounded by a rectangle.</short>
-        <descr>The ellipse is outlined with the current pen,
-          and filled with the current brush.
+        <descr>The ellipse is outlined with the current pen, and filled with the current brush.
         </descr>
         <seealso>
           <link id="TWidgetSet.Arc"/>
@@ -1961,9 +1869,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExcludeClipRect">
-        <short>Excludes a rectangle from the clipping region,
-          i.e. prevents painting within the rectangle.
-        </short>
+        <short>Excludes a rectangle from the clipping region, i.e. prevents painting within the rectangle.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1989,10 +1895,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtCreatePen">
         <short>Creates a logical pen, selectable into any DC.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.ExtCreatePen.Result">
         <short>The pen handle, zero on failure.</short>
@@ -2018,20 +1922,20 @@
         <descr>
           <p>
             The string is drawn with the current font and colors.
-          </p><p>
+          </p>
+          <p>
             The following Options are supported:
           </p>
           <ul>
             <li>
               ETO_CLIPPED - the text is clipped to the given rectangle.
-            </li><li>
+            </li>
+            <li>
               ETO_OPAQUE - the rectangle is filled with the background color.
             </li>
           </ul>
         </descr>
-        <seealso>
-          <link id="TWidgetSet.ExtUTF8Out"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.ExtTextOut.Result">
         <short>False on failure.</short>
@@ -2068,13 +1972,17 @@
           <ul>
             <li>
               RGN_AND - all points which are in both regions.
-            </li><li>
+            </li>
+            <li>
               RGN_COPY - an exact copy of the source region, same as SelectClipRGN.
-            </li><li>
+            </li>
+            <li>
               RGN_DIFF - all points which are in the Clipping Region but but not in the Source. (Clip - RGN)
-            </li><li>
+            </li>
+            <li>
               RGN_OR - all points which are in either the Clip Region or in the Source. (Clip + RGN)
-            </li><li>
+            </li>
+            <li>
               RGN_XOR - all points which are in either the Clip Region or in the Source, but not in both.
             </li>
           </ul>
@@ -2141,11 +2049,16 @@
           </p>
           <ul>
             <li>
-              When FillStyle is <var>fsBorder</var>, the area is <b>bounded</b> by a certain Color,
-              the boundary must not have gaps in it.
-            </li><li>
-              When FillStyle is <var>fsSurface</var>, the area <b>has</b> the specified Color,
-              and all adjacent pixels of this color are replaced.
+              When FillStyle is
+              <var>fsBorder</var>, the area is
+              <b>bounded</b>
+              by a certain Color, the boundary must not have gaps in it.
+            </li>
+            <li>
+              When FillStyle is
+              <var>fsSurface</var>, the area
+              <b>has</b>
+              the specified Color, and all adjacent pixels of this color are replaced.
             </li>
           </ul>
           <p>
@@ -2178,8 +2091,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FrameRect">
         <short>Draws a border around a rectangle.</short>
-        <descr>The boundary is one logical unit wide,
-          painted using the given brush.
+        <descr>The boundary is one logical unit wide, painted using the given brush.
         </descr>
         <errors/>
         <seealso/>
@@ -2230,10 +2142,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetBkColor">
         <short>Returns the background color of an device context.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetBkColor.Result">
         <short>The background color, CLR_INVALID on failure.</short>
@@ -2269,10 +2179,10 @@
         <short>Returns the client rectangle of a window.</short>
         <descr>
           <p>
-            The client rectangle is the size of the inner area of a control,
-            where e.g. the child controls are visible.
-            Left and Top are always 0.
-          </p><p>
+            The client rectangle is the size of the inner area of a control, where e.g. the child controls
+            are visible. Left and Top are always 0.
+          </p>
+          <p>
             A child control with Align=alClient will completely fill the clientrect.
           </p>
         </descr>
@@ -2289,8 +2199,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetClipBox">
-        <short>Returns the smallest rectangle
-          which includes the entire clipping region of an device context.
+        <short>Returns the smallest rectangle which includes the entire clipping region of an device context.
         </short>
         <descr/>
         <errors/>
@@ -2324,10 +2233,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetCurrentObject">
         <short>Returns an currently selected object in an device context.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetCurrentObject.Result">
         <short>The object handle, zero on failure.</short>
@@ -2396,23 +2303,32 @@
           <ul>
             <li>
               HORZSIZE - Horizontal size in millimeters
-            </li><li>
+            </li>
+            <li>
               VERTSIZE - Vertical size in millimeters
-            </li><li>
+            </li>
+            <li>
               HORZRES - Horizontal width in pixels
-            </li><li>
+            </li>
+            <li>
               VERTRES - Vertical height in pixels
-            </li><li>
+            </li>
+            <li>
               BITSPIXEL - Number of bits per pixel
-            </li><li>
+            </li>
+            <li>
               PLANES - Number of color planes
-            </li><li>
+            </li>
+            <li>
               LOGPIXELSX - The number of pixels per logical inch, in X (horizontal) direction.
-            </li><li>
+            </li>
+            <li>
               LOGPIXELSY - The number of pixels per logical inch, in Y (vertical) direction.
-            </li><li>
+            </li>
+            <li>
               SIZEPALETTE - Number of entries in the color palette
-            </li><li>
+            </li>
+            <li>
               NUMRESERVED - Number of reserved entries in the color palette
             </li>
           </ul>
@@ -2436,17 +2352,17 @@
         <short>Fills an buffer with bitmap color bits.</short>
         <descr>
           <p>
-            The bitmap must be a compatible (device dependent) bitmap,
-            for the given device context.
-            It should not be selected into any DC.
-          </p><p>
-            The color bits are copied into the Bits array
-            in Device Independent Bitmap (DIB) format.
-          </p><p>
-            When Bits is Nil, the BitInfo record receives the bitmap information,
-            from which the required size of the Bits array can be determined.
-          </p><p>
+            The bitmap must be a compatible (device dependent) bitmap, for the given device context. It
+            should not be selected into any DC.
           </p>
+          <p>
+            The color bits are copied into the Bits array in Device Independent Bitmap (DIB) format.
+          </p>
+          <p>
+            When Bits is Nil, the BitInfo record receives the bitmap information, from which the required
+            size of the Bits array can be determined.
+          </p>
+          <p></p>
         </descr>
         <errors/>
         <seealso>
@@ -2480,12 +2396,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetDoubleClickTime">
         <short>Returns the double-click time, in milliseconds.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetDoubleClickTime.Result">
         <short/>
@@ -2523,10 +2436,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetForegroundWindow">
         <short>Returns the window that the user is currently working with, session wide.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetForegroundWindow.Result">
         <short>The window handle, zero when no such window exists.</short>
@@ -2534,12 +2445,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetIconInfo">
         <short>Returns information about an Icon or Cursor.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetIconInfo.Result">
         <short/>
@@ -2555,17 +2463,17 @@
         <short>The status of a virtual key.</short>
         <descr>
           <p>
-            The result reflects the message processing state,
-            at the time of the last seen key message.
-          </p><p>
+            The result reflects the message processing state, at the time of the last seen key message.
+          </p>
+          <p>
             A key can be up, down or toggled.
-          </p><p>
-            The high order bit of the result is the up/down state,
-            1 for down.
-          </p><p>
-            The low order bit of the result is the toggled state,
-            applicable to e.g. the caps-lock key.
-            The bit is set if the key is toggled (active).
+          </p>
+          <p>
+            The high order bit of the result is the up/down state, 1 for down.
+          </p>
+          <p>
+            The low order bit of the result is the toggled state, applicable to e.g. the caps-lock key. The
+            bit is set if the key is toggled (active).
           </p>
         </descr>
         <errors/>
@@ -2580,14 +2488,14 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetMapMode">
         <short>Returns the mapping mode of an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetMapMode"/>
         </seealso>
       </element>
       <element name="TWidgetSet.GetMapMode.Result">
-        <short>The <link id="TWidgetSet.SetMapMode">mapping mode</link>, zero on failure.</short>
+        <short>The
+          <link id="TWidgetSet.SetMapMode">mapping mode</link>, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetMapMode.DC">
         <short>The device context.</short>
@@ -2595,10 +2503,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetMonitorInfo">
         <short>Returns information about an display monitor.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.Result">
         <short>False on failure.</short>
@@ -2700,8 +2606,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetROP2">
         <short>The current Foreground Mixing Mode in an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetROP2"/>
           <link id="#lcl.LCLType.R2_COPYPEN"/>
@@ -2743,41 +2648,59 @@
           <ul>
             <li>
               BLACK_BRUSH
-            </li><li>
+            </li>
+            <li>
               DKGRAY_BRUSH
-            </li><li>
+            </li>
+            <li>
               DC_BRUSH
-            </li><li>
+            </li>
+            <li>
               GRAY_BRUSH
-            </li><li>
+            </li>
+            <li>
               HOLLOW_BRUSH
-            </li><li>
+            </li>
+            <li>
               LTGRAY_BRUSH
-            </li><li>
+            </li>
+            <li>
               NULL_BRUSH
-            </li><li>
+            </li>
+            <li>
               WHITE_BRUSH
-            </li><li>
+            </li>
+            <li>
               BLACK_PEN
-            </li><li>
+            </li>
+            <li>
               DC_PEN
-            </li><li>
+            </li>
+            <li>
               WHITE_PEN
-            </li><li>
+            </li>
+            <li>
               ANSI_FIXED_FONT
-            </li><li>
+            </li>
+            <li>
               ANSI_VAR_FONT
-            </li><li>
+            </li>
+            <li>
               DEVICE_DEFAULT_FONT
-            </li><li>
+            </li>
+            <li>
               DEFAULT_GUI_FONT
-            </li><li>
+            </li>
+            <li>
               OEM_FIXED_FONT
-            </li><li>
+            </li>
+            <li>
               SYSTEM_FONT
-            </li><li>
+            </li>
+            <li>
               SYSTEM_FIXED_FONT
-            </li><li>
+            </li>
+            <li>
               DEFAULT_PALETTE
             </li>
           </ul>
@@ -2800,69 +2723,98 @@
           <ul>
             <li>
               COLOR_3DDKSHADOW
-            </li><li>
+            </li>
+            <li>
               COLOR_3DFACE, COLOR_BTNFACE
-            </li><li>
+            </li>
+            <li>
               COLOR_3DHIGHLIGHT, COLOR_3DHILIGHT, COLOR_BTNHILIGHT, COLOR_BTNHIGHLIGHT
-            </li><li>
+            </li>
+            <li>
               COLOR_3DLIGHT
-            </li><li>
+            </li>
+            <li>
               COLOR_3DSHADOW, COLOR_BTNSHADOW
-            </li><li>
+            </li>
+            <li>
               COLOR_ACTIVEBORDER
-            </li><li>
+            </li>
+            <li>
               COLOR_ACTIVECAPTION
-            </li><li>
+            </li>
+            <li>
               COLOR_APPWORKSPACE
-            </li><li>
+            </li>
+            <li>
               COLOR_BACKGROUND, COLOR_DESKTOP
-            </li><li>
+            </li>
+            <li>
               COLOR_BTNTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_CAPTIONTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_GRADIENTACTIVECAPTION
-            </li><li>
+            </li>
+            <li>
               COLOR_GRADIENTINACTIVECAPTION
-            </li><li>
+            </li>
+            <li>
               COLOR_GRAYTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_HIGHLIGHT
-            </li><li>
+            </li>
+            <li>
               COLOR_HIGHLIGHTTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_HOTLIGHT
-            </li><li>
+            </li>
+            <li>
               COLOR_INACTIVEBORDER
-            </li><li>
+            </li>
+            <li>
               COLOR_INACTIVECAPTION
-            </li><li>
+            </li>
+            <li>
               COLOR_INACTIVECAPTIONTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_INFOBK
-            </li><li>
+            </li>
+            <li>
               COLOR_INFOTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_MENU
-            </li><li>
+            </li>
+            <li>
               COLOR_MENUHILIGHT
-            </li><li>
+            </li>
+            <li>
               COLOR_MENUBAR
-            </li><li>
+            </li>
+            <li>
               COLOR_MENUTEXT
-            </li><li>
+            </li>
+            <li>
               COLOR_SCROLLBAR
-            </li><li>
+            </li>
+            <li>
               COLOR_WINDOW
-            </li><li>
+            </li>
+            <li>
               COLOR_WINDOWFRAME
-            </li><li>
+            </li>
+            <li>
               COLOR_WINDOWTEXT
             </li>
           </ul>
           <p>
-            Since all returned values are valid colors, errors cannot be detected.
-            GetSysColorBrush instead returns a zero handle on failure.
+            Since all returned values are valid colors, errors cannot be detected. GetSysColorBrush instead
+            returns a zero handle on failure.
           </p>
         </descr>
         <seealso>
@@ -2878,8 +2830,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSysColorBrush">
         <short>Retrieves a system brush for standard display elements.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.GetSysColor"/>
         </seealso>
@@ -2919,128 +2870,181 @@
         <descr>
           <p>
             All dimensions are measured in pixels.
-          </p><p>
+          </p>
+          <p>
             These are available items:
           </p>
           <ul>
             <li>
               SM_ARRANGE
-            </li><li>
+            </li>
+            <li>
               SM_CLEANBOOT
-            </li><li>
+            </li>
+            <li>
               SM_CMONITORS
-            </li><li>
+            </li>
+            <li>
               SM_CMOUSEBUTTONS
-            </li><li>
+            </li>
+            <li>
               SM_CXBORDER, SM_CYBORDER
-            </li><li>
+            </li>
+            <li>
               SM_CXCURSOR, SM_CYCURSOR
-            </li><li>
+            </li>
+            <li>
               SM_CXDLGFRAME, SM_CYDLGFRAME
-            </li><li>
+            </li>
+            <li>
               SM_CXDOUBLECLK, SM_CYDOUBLECLK
-            </li><li>
+            </li>
+            <li>
               SM_CXDRAG, SM_CYDRAG
-            </li><li>
+            </li>
+            <li>
               SM_CXEDGE, SM_CYEDGE
-            </li><li>
+            </li>
+            <li>
               SM_CXFIXEDFRAME, SM_CYFIXEDFRAME
-            </li><li>
+            </li>
+            <li>
               (sm_cxfocusborder)
-            </li><li>
+            </li>
+            <li>
               SM_CXFRAME, SM_CYFRAME
-            </li><li>
+            </li>
+            <li>
               SM_CXFULLSCREEN, SM_CYFULLSCREEN
-            </li><li>
+            </li>
+            <li>
               SM_CXHSCROLL, SM_CYHSCROLL
-            </li><li>
+            </li>
+            <li>
               SM_CXHTHUMB
-            </li><li>
+            </li>
+            <li>
               SM_CXICON, SM_CYICON
-            </li><li>
+            </li>
+            <li>
               SM_CXICONSPACING, SM_CYICONSPACING
-            </li><li>
+            </li>
+            <li>
               SM_CXMAXIMIZED, SM_CYMAXIMIZED
-            </li><li>
+            </li>
+            <li>
               SM_CXMAXTRACK, SM_CYMAXTRACK
-            </li><li>
+            </li>
+            <li>
               SM_CXMENUCHECK, SM_CYMENUCHECK
-            </li><li>
+            </li>
+            <li>
               SM_CXMENUSIZE, SM_CYMENUSIZE
-            </li><li>
+            </li>
+            <li>
               SM_CXMIN, SM_CYMIN
-            </li><li>
+            </li>
+            <li>
               SM_CXMINIMIZED, SM_CYMINIMIZED
-            </li><li>
+            </li>
+            <li>
               SM_CXMINSPACING, SM_CYMINSPACING
-            </li><li>
+            </li>
+            <li>
               SM_CXMINTRACK, SM_CYMINTRACK
-            </li><li>
+            </li>
+            <li>
               SM_CXSCREEN, SM_CYSCREEN
-            </li><li>
+            </li>
+            <li>
               SM_CXSIZE, SM_CYSIZE
-            </li><li>
+            </li>
+            <li>
               SM_CXSIZEFRAME, SM_CYSIZEFRAME
-            </li><li>
+            </li>
+            <li>
               SM_CXSMICON, SM_CYSMICON
-            </li><li>
+            </li>
+            <li>
               SM_CXSMSIZE, SM_CYSMSIZE
-            </li><li>
+            </li>
+            <li>
               SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN
-            </li><li>
+            </li>
+            <li>
               SM_CXVSCROLL, SM_CYVSCROLL
-            </li><li>
+            </li>
+            <li>
               SM_CYCAPTION
-            </li><li>
+            </li>
+            <li>
               SM_CYKANJIWINDOW
-            </li><li>
+            </li>
+            <li>
               SM_CYMENU
-            </li><li>
+            </li>
+            <li>
               SM_CYSMCAPTION
-            </li><li>
+            </li>
+            <li>
               SM_CYVTHUMB
-            </li><li>
+            </li>
+            <li>
               SM_DBCSENABLED
-            </li><li>
+            </li>
+            <li>
               SM_DEBUG
-            </li><li>
-              sm_imeenabled
-              sm_mediacenter
-            </li><li>
+            </li>
+            <li>
+              sm_imeenabled sm_mediacenter
+            </li>
+            <li>
               SM_MENUDROPALIGNMENT
-            </li><li>
+            </li>
+            <li>
               SM_MIDEASTENABLED
-            </li><li>
+            </li>
+            <li>
               SM_MOUSEPRESENT
-            </li><li>
+            </li>
+            <li>
               SM_MOUSEWHEELPRESENT
-            </li><li>
+            </li>
+            <li>
               SM_NETWORK
-            </li><li>
+            </li>
+            <li>
               SM_PENWINDOWS
-            </li><li>
-              sm_remotecontrol
-              sm_remotesession
-            </li><li>
+            </li>
+            <li>
+              sm_remotecontrol sm_remotesession
+            </li>
+            <li>
               SM_SECURE
-            </li><li>
+            </li>
+            <li>
               SM_SAMEDISPLAYFORMAT
-            </li><li>
+            </li>
+            <li>
               SM_SHOWSOUNDS
-            </li><li>
+            </li>
+            <li>
               sm_shuttingdown
-            </li><li>
+            </li>
+            <li>
               SM_SLOWMACHINE
-            </li><li>
+            </li>
+            <li>
               SM_SWAPBUTTON
-            </li><li>
+            </li>
+            <li>
               sm_tabletpc
-            </li><li>
+            </li>
+            <li>
               SM_XVIRTUALSCREEN, SM_YVIRTUALSCREEN
             </li>
           </ul>
-          <p>
-          </p>
+          <p></p>
         </descr>
         <seealso/>
       </element>
@@ -3080,14 +3084,17 @@
         <short>The string containing the characters.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Count">
-        <short>The number of <b>bytes</b> in Str, -1 for automatic detection.</short>
+        <short>The number of
+          <b>bytes</b>
+          in Str, -1 for automatic detection.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxWidth">
         <short>The maximum display width, in logical units.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxCount">
-        <short>Receives the number of <b>logical</b> (UTF) characters that can be displayed.
-          When Nil, MaxWidth is ignored.</short>
+        <short>Receives the number of
+          <b>logical</b>
+          (UTF) characters that can be displayed. When Nil, MaxWidth is ignored.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.PartialWidths">
         <short>Receives the widths for every partial sequence of characters. Can be Nil.</short>
@@ -3115,7 +3122,9 @@
         <short>The text.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Count">
-        <short>The number of <b>bytes</b> in Str, -1 for automatic detection.</short>
+        <short>The number of
+          <b>bytes</b>
+          in Str, -1 for automatic detection.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Size">
         <short>Receives the total width and height of the required display area.</short>
@@ -3124,8 +3133,7 @@
       <element name="TWidgetSet.GetTextExtentPoint32" link="TWidgetSet.GetTextExtentPoint">
         <short>Computes the display width and height of an string.</short>
         <descr/>
-        <errors>
-        </errors>
+        <errors/>
         <seealso>
           <link id="TWidgetSet.GetTextExtentPoint"/>
           <link id="TWidgetSet.GetTextExtentExPoint"/>
@@ -3164,8 +3172,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetViewPortExtEx">
         <short>Returns the size of the viewport of an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetViewPortExtEx"/>
           <link id="TWidgetSet.GetViewPortOrgEx"/>
@@ -3183,8 +3190,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetViewPortOrgEx">
         <short>Returns the origin of the viewport of an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetViewPortOrgEx"/>
           <link id="TWidgetSet.GetViewPortExtEx"/>
@@ -3202,10 +3208,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowExtEx">
         <short>Returns the extent of a window, in logical units.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.Result">
         <short>False (zero) on failure.</short>
@@ -3225,17 +3229,23 @@
           <ul>
             <li>
               GWL_EXSTYLE - extended window style flags. See CreateWindowEx.
-            </li><li>
+            </li>
+            <li>
               GWL_STYLE - window style flags.
-            </li><li>
+            </li>
+            <li>
               GWL_WNDPROC - the window procedure (address or handle). See CallWindowProc.
-            </li><li>
+            </li>
+            <li>
               GWL_HINSTANCE - handle of the application instance.
-            </li><li>
+            </li>
+            <li>
               GWL_HWNDPARENT - handle of the parent window.
-            </li><li>
+            </li>
+            <li>
               GWL_ID - the identifier of the window.
-            </li><li>
+            </li>
+            <li>
               GWL_USERDATA - user data associated with the window.
             </li>
           </ul>
@@ -3244,16 +3254,17 @@
           <ul>
             <li>
               DWL_DLGPROC - the dialog box procedure (address or handle).
-            </li><li>
+            </li>
+            <li>
               DWL_MSGRESULT - the return value of a message processed in the dialog box procedure.
-            </li><li>
+            </li>
+            <li>
               DWL_USER - extra application information.
             </li>
           </ul>
           <p>
-            GWL_USERDATA and DWL_USER are the base offsets of user added attributes.
-            The second user attribute can be access with an additional offset of 4,
-            and so on.
+            GWL_USERDATA and DWL_USER are the base offsets of user added attributes. The second user
+            attribute can be access with an additional offset of 4, and so on.
           </p>
         </descr>
         <errors/>
@@ -3352,8 +3363,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.HideCaret">
         <short>Removes the caret from the screen.</short>
-        <descr>Calls are cumulative,
-          for every HideCaret a call to ShowCaret is required.
+        <descr>Calls are cumulative, for every HideCaret a call to ShowCaret is required.
         </descr>
         <seealso/>
       </element>
@@ -3368,20 +3378,19 @@
         <short>Initializes a Critical Section object.</short>
         <descr>
           <p>
-            Critical sections are thread synchronization elements,
-            typically used to prevent concurrent access to a shared resource.
-          </p><p>
-            Only one thread can own a critical section at the same time,
-            other requests (to enter the same critical section)
-            are delayed until the owner has left the critical section.
-          </p><p>
-            The TCriticalSection type is platform specific,
-            treat it like a Handle.
+            Critical sections are thread synchronization elements, typically used to prevent concurrent
+            access to a shared resource.
+          </p>
+          <p>
+            Only one thread can own a critical section at the same time, other requests (to enter the same
+            critical section) are delayed until the owner has left the critical section.
+          </p>
+          <p>
+            The TCriticalSection type is platform specific, treat it like a Handle.
           </p>
         </descr>
         <seealso>
           <link id="TWidgetSet.EnterCriticalSection"/>
-          <link id="TWidgetSet.TryEnterCriticalSection"/>
           <link id="TWidgetSet.LeaveCriticalSection"/>
           <link id="TWidgetSet.DeleteCriticalSection"/>
         </seealso>
@@ -3392,21 +3401,18 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IntersectClipRect">
         <short>
-          Shrinks the clipping region of an Device Context
-          to a rectangular boundary, e.g. a text area.
+          Shrinks the clipping region of an Device Context to a rectangular boundary, e.g. a text area.
         </short>
         <descr>
           <p>
-            Use this method before painting into a rectangle in an DC,
-            to clip everything outside the rectangle
-            <b>and</b> outside the current clipping region of the DC.
-          </p><p>
+            Use this method before painting into a rectangle in an DC, to clip everything outside the
+            rectangle
+            <b>and</b>
+            outside the current clipping region of the DC.
+          </p>
+          <p>
             The result can be one of the following constants:<br/>
-            Error
-            NullRegion
-            SimpleRegion
-            ComplexRegion
-            Region_Error
+            Error NullRegion SimpleRegion ComplexRegion Region_Error
           </p>
         </descr>
         <seealso/>
@@ -3432,8 +3438,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateRect">
         <short>Marks a display area for repaint.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.InvalidateRgn"/>
         </seealso>
@@ -3453,8 +3458,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateRgn">
         <short>Marks a display area for repaint.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.InvalidateRect"/>
         </seealso>
@@ -3475,8 +3479,7 @@
       <element name="TWidgetSet.IsDBCSLeadByte">
         <short/>
         <descr/>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.Result">
         <short>True when the character code is the first of a double-byte character sequence</short>
@@ -3487,12 +3490,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsIconic">
         <short>True when the window is minimized.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsIconic.Result">
         <short>True when the window is minimized.</short>
@@ -3503,10 +3503,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsWindow">
         <short>Checks whether a handle refers to a window.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsWindow.Result">
         <short>True when handle is a valid window handle.</short>
@@ -3518,10 +3516,8 @@
       <element name="TWidgetSet.IsWindowEnabled">
         <short>Determines whether a window can receive mouse and keyboard input.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsWindowEnabled.Result">
         <short>True when the window is enabled (and visible).</short>
@@ -3545,8 +3541,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsZoomed">
         <short>True when the window is maximized.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.IsIconic"/>
         </seealso>
@@ -3592,10 +3587,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.LPtoDP">
         <short>Converts logical coordinates into device coordinates.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.LPtoDP.Result">
         <short>False on failure.</short>
@@ -3611,19 +3604,18 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MaskBlt">
-        <short>Copies part of an source DC into an destination DC,
-          using the specified foreground and background raster operations.
+        <short>Copies part of an source DC into an destination DC, using the specified foreground and
+          background raster operations.
         </short>
         <descr>
           <p>
-            MaskBlt behaves like BitBlt when no mask bitmap is specified.
-            It does a SRCOPY operation when also no Rop is specified.
-            See BitBlt for general information about raster operations.
-          </p><p>
-            Rop contains both a foreground and a background raster operation
-            (see MakeROP4).
-            When a (monochrome) mask bitmap is present, its bits select
-            either the foreground (1) or background (0) raster operation.
+            MaskBlt behaves like BitBlt when no mask bitmap is specified. It does a SRCOPY operation when
+            also no Rop is specified. See BitBlt for general information about raster operations.
+          </p>
+          <p>
+            Rop contains both a foreground and a background raster operation (see MakeROP4). When a
+            (monochrome) mask bitmap is present, its bits select either the foreground (1) or background (0)
+            raster operation.
           </p>
         </descr>
         <errors/>
@@ -3674,77 +3666,71 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MessageBox">
-        <short>The MessageBox function displays an modal dialog,
-          with the given text, caption, icon and buttons.
+        <short>The MessageBox function displays an modal dialog, with the given text, caption, icon and
+          buttons.
         </short>
         <descr>
           <p>
             uType is a combination of flags from the following lists.
-          </p><p>
+          </p>
+          <p>
             The shown buttons are selected by one of:
           </p>
           <ul>
             <li>
               MB_ABORTRETRYIGNORE - Abort, Retry, and Ignore.
-            </li><li>
-              MB_CANCELTRYCONTINUE - Cancel, Try Again, Continue.
-               Use this message box type instead of MB_ABORTRETRYIGNORE.
-            </li><li>
+            </li>
+            <li>
+              MB_CANCELTRYCONTINUE - Cancel, Try Again, Continue. Use this message box type instead of
+              MB_ABORTRETRYIGNORE.
+            </li>
+            <li>
               MB_OK - OK.
-            </li><li>
+            </li>
+            <li>
               MB_OKCANCEL - OK and Cancel.
-            </li><li>
+            </li>
+            <li>
               MB_RETRYCANCEL - Retry and Cancel.
-            </li><li>
+            </li>
+            <li>
               MB_YESNO - Yes and No.
-            </li><li>
+            </li>
+            <li>
               MB_YESNOCANCEL - Yes, No, and Cancel.
             </li>
           </ul>
           <p>
-             Add MB_HELP for an Help button.
-             When the user clicks the Help button or presses F1,
-             the owner window receives a WM_HELP message.
-          </p><p>
+            Add MB_HELP for an Help button. When the user clicks the Help button or presses F1, the owner
+            window receives a WM_HELP message.
+          </p>
+          <p>
             An icon can be added by one of:
           </p>
           <ul>
             <li>
-              MB_ICONEXCLAMATION,
-              MB_ICONWARNING - exclamation-point icon
-            </li><li>
-              MB_ICONINFORMATION,
-              MB_ICONASTERISK - letter i in a circle
-            </li><li>
+              MB_ICONEXCLAMATION, MB_ICONWARNING - exclamation-point icon
+            </li>
+            <li>
+              MB_ICONINFORMATION, MB_ICONASTERISK - letter i in a circle
+            </li>
+            <li>
               MB_ICONQUESTION - question-mark icon
-            </li><li>
-              MB_ICONSTOP,
-              MB_ICONERROR,
-              MB_ICONHAND - stop-sign icon
+            </li>
+            <li>
+              MB_ICONSTOP, MB_ICONERROR, MB_ICONHAND - stop-sign icon
             </li>
           </ul>
           <p>
-            The default button number, activated when the user presses Enter,
-             can be indicated by one of:<br/>
-              MB_DEFBUTTON1
-              MB_DEFBUTTON2
-              MB_DEFBUTTON3
-              MB_DEFBUTTON4
+            The default button number, activated when the user presses Enter, can be indicated by one of:<br/>
+            MB_DEFBUTTON1 MB_DEFBUTTON2 MB_DEFBUTTON3 MB_DEFBUTTON4
           </p>
           <p>
-            Further Windows MessageBox specific options
-            are not (yet) implemented on other platforms.
-          </p><p>
+            Further Windows MessageBox specific options are not (yet) implemented on other platforms.
+          </p>
+          <p>
             The function result corresponds to the pressed button:<br/>
-            IDABORT
-            IDCANCEL
-            IDCONTINUE
-            IDIGNORE
-            IDNO
-            IDOK
-            IDRETRY
-            IDTRYAGAIN
-            IDYES
+            IDABORT IDCANCEL IDCONTINUE IDIGNORE IDNO IDOK IDRETRY IDTRYAGAIN IDYES
           </p>
         </descr>
         <seealso/>
@@ -3767,14 +3753,15 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromPoint">
         <short>Finds an monitor from screen coordinates.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.MonitorFromPoint.Result">
-        <short><p>The monitor handle.</p>
-          <p>When no monitor applies, <var>dwFlags</var> determines the result:</p>
+        <short>
+          <p>The monitor handle.</p>
+          <p>When no monitor applies,
+            <var>dwFlags</var>
+            determines the result:</p>
           <ul>
             <li>
               MONITOR_DEFAULTTONEAREST - the nearest monitor.
@@ -3792,50 +3779,48 @@
         <short>The point in screen coordinates.</short>
       </element>
       <element name="TWidgetSet.MonitorFromPoint.dwFlags">
-        <short>How coordinates outside any monitor are handled,
-          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        <short>
+          How coordinates outside any monitor are handled, see
+          <link id="TWidgetSet.MonitorFromPoint">MonitorFromPoint</link>.
         </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromRect" link="TWidgetSet.MonitorFromPoint">
         <short>Finds the monitor covering most of a rectangle.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.MonitorFromRect.Result">
-        <short>The monitor handle,
-          see <link id="TWidgetSet.MonitorFromPoint.Result"> dwFlags</link>.
+        <short>The monitor handle, see
+          <link id="TWidgetSet.MonitorFromPoint">
+            dwFlags</link>.
         </short>
       </element>
       <element name="TWidgetSet.MonitorFromRect.lprcScreenCoords">
         <short>The logical screen coordinates.</short>
       </element>
       <element name="TWidgetSet.MonitorFromRect.dwFlags">
-        <short>How coordinates outside any monitor are handled,
-          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        <short>How coordinates outside any monitor are handled, see
+          <link id="TWidgetSet.MonitorFromPoint">MonitorFromPoint.Result</link>.
         </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromWindow">
         <short>Finds the monitor covering most of a window.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.Result">
-        <short>The monitor handle,
-          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        <short>The monitor handle, see
+          <link id="TWidgetSet.MonitorFromPoint">MonitorFromPoint.Result</link>.
         </short>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.hWnd">
         <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.dwFlags">
-        <short>How coordinates outside any monitor are handled,
-          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        <short>How coordinates outside any monitor are handled, see
+          <link id="TWidgetSet.MonitorFromPoint">MonitorFromPoint.Result</link>.
         </short>
       </element>
       <!-- function Visibility: public -->
@@ -3862,10 +3847,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.OffsetRgn">
         <short>Moves a region relative.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.OffsetRgn.Result">
         <short>The new region kind, zero on failure.</short>
@@ -3892,8 +3875,8 @@
         <short>Receives the message.</short>
       </element>
       <element name="TWidgetSet.PeekMessage.Handle">
-        <short>The target window handle of the message.
-          Zero for any window, INVALID_HANDLE_VALUE for thread messages.
+        <short>The target window handle of the message. Zero for any window, INVALID_HANDLE_VALUE for
+          thread messages.
         </short>
       </element>
       <element name="TWidgetSet.PeekMessage.wMsgFilterMin">
@@ -3907,24 +3890,21 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Pie">
-        <short>Draws a filled pie-shaped wedge, from an ellipse and two radials.
+        <short>
+          Draws a filled pie-shaped wedge, from an ellipse and two radials.
         </short>
         <descr>
           <p>
             The ellipse is bounded by a rectangle x1..y2.
-          </p><p>
-            Each radial is defined by the center of the rectangle an point,
-            which must not necessarily reside on the ellipse.
-          </p><p>
-            The bounding arc goes counter-clockwise from the Start to the End radial.
-          </p><p>
+          </p>
+          <p>
+            Each radial is defined by the center of the rectangle an point, which must not necessarily
+            reside on the ellipse. The bounding arc goes counter-clockwise from the Start to the End radial.
             The pie is outlined with the current pen and filled with the current brush.
           </p>
         </descr>
         <errors/>
-        <seealso>
-          <link id="TWidgetSet.Chord"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.Pie.Result">
         <short>False on failure.</short>
@@ -3959,19 +3939,29 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
         <short>Draws Bezier curves.</short>
-        <descr><p>Use PolyBezier to draw cubic Bézier curves.
-          </p><p>The first curve is drawn from the first point to the fourth point
-            with the second and third points being the control points.
-          </p><p>If the <var>Continuous</var> flag is TRUE then each subsequent curve
-            requires three more points, using the end-point of the previous Curve
-            as its starting point.
-          </p><p>If the <var>Continuous</var> flag is set to FALSE, then each subsequent curve
-            requires 4 additional points, which are used exactly as in the first curve.
-          </p><p>If the <var>Filled</var> flag is set to TRUE then a straight line is drawn from the last connected point to the starting
+        <descr>
+          <p>Use PolyBezier to draw cubic Bézier curves.
+          </p>
+          <p>The first curve is drawn from the first point to the fourth point with the second and third
+            points being the control points.
+          </p>
+          <p>If the
+            <var>Continuous</var>
+            flag is TRUE then each subsequent curve requires three more points, using the end-point of the
+            previous Curve as its starting point.
+          </p>
+          <p>If the
+            <var>Continuous</var>
+            flag is set to FALSE, then each subsequent curve requires 4 additional points, which are used
+            exactly as in the first curve.
+          </p>
+          <p>If the
+            <var>Filled</var>
+            flag is set to TRUE then a straight line is drawn from the last connected point to the starting
             point, and the entire curve is filled with the current brush.
-          </p><p>Any additional points which do not add up to a full
-            Bezier (4 for Continuous, 3 otherwise) are ignored.
-            There must be at least 4 points to be connected.
+          </p>
+          <p>Any additional points which do not add up to a full Bezier (4 for Continuous, 3 otherwise)
+            are ignored. There must be at least 4 points to be connected.
           </p>
         </descr>
         <errors/>
@@ -4000,19 +3990,23 @@
         <short>Draws a filled Polygon.</short>
         <descr>
           <p>
-            Use Polygon to draw a closed, many-sided shape on the canvas,
-            outlined with the current Pen and filled with the current Brush.
-          </p><p>
+            Use Polygon to draw a closed, many-sided shape on the canvas, outlined with the current Pen and
+            filled with the current Brush.
+          </p>
+          <p>
             The Points parameter is an array of the vertices of the polygon.
-          </p><p>
-            Winding determines how the polygon is filled.
-            When Winding is True, Polygon fills the shape using the Winding fill algorithm.
-            When Winding is False, Polygon uses the even-odd (alternative) fill algorithm.
-          </p><p>
+          </p>
+          <p>
+            Winding determines how the polygon is filled. When Winding is True, Polygon fills the shape
+            using the Winding fill algorithm. When Winding is False, Polygon uses the even-odd (alternative)
+            fill algorithm.
+          </p>
+          <p>
             The first point is always connected to the last point.
-          </p><p>
-            To draw an unfilled polygon use the Polyline method,
-            specifying the first point a second time at the end.
+          </p>
+          <p>
+            To draw an unfilled polygon use the Polyline method, specifying the first point a second time at
+            the end.
           </p>
         </descr>
         <errors/>
@@ -4039,15 +4033,17 @@
         <descr>
           <p>
             Use Polyline to connect a set of points on the canvas.
-          </p><p>
+          </p>
+          <p>
             The Points parameter is an array of points to be connected.
-          </p><p>
+          </p>
+          <p>
             If you specify only two points, Polyline draws a single line.
-          </p><p>
-            Calling the MoveTo function with the value of the first point,
-            and then repeatedly calling LineTo with all subsequent points
-            will draw the same image on the canvas.
-            However, unlike LineTo, Polyline does not change the value of PenPos.
+          </p>
+          <p>
+            Calling the MoveTo function with the value of the first point, and then repeatedly calling
+            LineTo with all subsequent points will draw the same image on the canvas. However, unlike
+            LineTo, Polyline does not change the value of PenPos.
           </p>
         </descr>
         <errors/>
@@ -4074,28 +4070,27 @@
             This section was copied from LCLIntf, and may not apply to all platforms.
           </remark>
           <p>
-            This method is a thread-safe solution to send messages to windows.
-            Those messages will be handled in the message loop of the application
-            and therefore can be sent from any thread.
-            They are not immediate, but they will awake the main thread if it
-            is waiting for messages.
-          </p><p>
-            These messages can be handled by procedures with the keyword message
-            in the class of a form for example.
-            One would then use the handle of this form as the Handle parameter
-            of this routine.
-          </p><p>
-            Custom messages should always have an identification number
-            (represented by the parameter Msg) larger then the constant LM_USER.
-          </p><p>
-            The two parameters WParam and LParam will be passed along to the
-            window together with the Msg identification number.
-          </p><p>
-            The difference between SendMessage and PostMessage is the way that
-            they return control to the calling thread.
-            With SendMessage control is not returned until the window that the
-            message was sent to has completed processing the sent message,
-            however with PostMessage control is returned immediately.
+            This method is a thread-safe solution to send messages to windows. Those messages will be
+            handled in the message loop of the application and therefore can be sent from any thread. They
+            are not immediate, but they will awake the main thread if it is waiting for messages.
+          </p>
+          <p>
+            These messages can be handled by procedures with the keyword message in the class of a form for
+            example. One would then use the handle of this form as the Handle parameter of this routine.
+          </p>
+          <p>
+            Custom messages should always have an identification number (represented by the parameter Msg)
+            larger then the constant LM_USER.
+          </p>
+          <p>
+            The two parameters WParam and LParam will be passed along to the window together with the Msg
+            identification number.
+          </p>
+          <p>
+            The difference between SendMessage and PostMessage is the way that they return control to the
+            calling thread. With SendMessage control is not returned until the window that the message was
+            sent to has completed processing the sent message, however with PostMessage control is returned
+            immediately.
           </p>
         </descr>
         <errors/>
@@ -4153,11 +4148,12 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Rectangle">
         <short>Draws a filled rectangle.</short>
-          <p>
-            The rectangle is outlined with the current Pen, and filled with the current Brush.
-          </p><p>
-            The bottom and right edges are not part of the rectangle.
-          </p>
+        <p>
+          The rectangle is outlined with the current Pen, and filled with the current Brush.
+        </p>
+        <p>
+          The bottom and right edges are not part of the rectangle.
+        </p>
         <errors/>
         <seealso/>
       </element>
@@ -4199,74 +4195,79 @@
         <short>Redraws (part of) a window.</short>
         <descr>
           <p>
-            All invalidated parts of a window, which deserve an update,
-            are collected in the update region.
-            When this region is not empty, WM_ERASEBKGND, WM_PAINT and WM_NCPAINT messages
-            are sent to the window, as soon as the application is (almost) idle.
-            RedrawWindow can be used to force an immediate redraw instead.
-          </p><p>
-            WM_ERASEBKGND is optional, erases the background before painting.
-            WM_NCPAINT paints the non-client areas (borders, caption...),
-            without assistance by user code.
-          </p><p>
-            When neither lprcUpdate nor hrgnUpdate are specified,
-            the whole client area of the window is affected.
-            Otherwise the region takes precedence over the rectangle.
-          </p><p>
-            Flags specify how the window is invalidated or validated,
-            and when repainting occurs.
-            Flags other than RDW_ERASE may not be supported by all platforms.
-          </p><p>
+            All invalidated parts of a window, which deserve an update, are collected in the update region.
+            When this region is not empty, WM_ERASEBKGND, WM_PAINT and WM_NCPAINT messages are sent to the
+            window, as soon as the application is (almost) idle. RedrawWindow can be used to force an
+            immediate redraw instead.
+          </p>
+          <p>
+            WM_ERASEBKGND is optional, erases the background before painting. WM_NCPAINT paints the
+            non-client areas (borders, caption...), without assistance by user code.
+          </p>
+          <p>
+            When neither lprcUpdate nor hrgnUpdate are specified, the whole client area of the window is
+            affected. Otherwise the region takes precedence over the rectangle.
+          </p>
+          <p>
+            Flags specify how the window is invalidated or validated, and when repainting occurs. Flags
+            other than RDW_ERASE may not be supported by all platforms.
+          </p>
+          <p>
             To invalidate specify RDW_INVALIDATE, and optionally one of:
           </p>
           <ul>
             <li>
               RDW_ERASE - forces a WM_ERASEBKGND message before painting.
-            </li><li>
-              RDW_FRAME - also redraws the window frame, as covered by the update region.
-            </li><li>
-              RDW_INTERNALPAINT - force WM_PAINT even if the update region is empty.
-            </li><li>
             </li>
+            <li>
+              RDW_FRAME - also redraws the window frame, as covered by the update region.
+            </li>
+            <li>
+              RDW_INTERNALPAINT - force WM_PAINT even if the update region is empty.
+            </li>
+            <li></li>
           </ul>
           <p>
-            Validation is not implemented for all platforms.
-            To validate specify RDW_VALIDATE, and optionally one of:
+            Validation is not implemented for all platforms. To validate specify RDW_VALIDATE, and
+            optionally one of:
           </p>
           <ul>
             <li>
               RDW_NOERASE - suppress all pending WM_ERASEBKGND messages.
-            </li><li>
+            </li>
+            <li>
               RDW_NOFRAME - suppress all pending WM_NCPAINT messages.
-            </li><li>
+            </li>
+            <li>
               RDW_NOINTERNALPAINT - suppress all pending internal WM_PAINT messages.
             </li>
           </ul>
           <p>
-            These flags specify <b>when</b> repainting will occur:
+            These flags specify
+            <b>when</b>
+            repainting will occur:
           </p>
           <ul>
             <li>
               RDW_ERASENOW - send WM_ERASEBKGND messages before returning.
-            </li><li>
+            </li>
+            <li>
               RDW_UPDATENOW - send WM_PAINT messages before returning.
             </li>
           </ul>
           <p>
-            The handling of child windows normally depends on the
-            WS_CLIPCHILDREN window style flag.
-            Clipped child windows are not normally affected by RedrawWindow.
-            These flags override:
+            The handling of child windows normally depends on the WS_CLIPCHILDREN window style flag. Clipped
+            child windows are not normally affected by RedrawWindow. These flags override:
           </p>
           <ul>
             <li>
               RDW_ALLCHILDREN - include all child windows.
-            </li><li>
+            </li>
+            <li>
               RDW_NOCHILDREN - exclude all child windows.
             </li>
           </ul>
-          <p>
-          </p>
+          <p></p>
         </descr>
         <seealso>
           <link id="TWidgetSet.InvalidateRect"/>
@@ -4290,8 +4291,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ReleaseCapture">
-        <short>Restores normal mouse input processing,
-          after <link id="TWidgetSet.SetCapture">SetCapture</link>.
+        <short>Restores normal mouse input processing, after
+          <link id="TWidgetSet.SetCapture">SetCapture</link>.
         </short>
         <descr/>
         <seealso/>
@@ -4317,12 +4318,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RemoveProp">
         <short>Removes a named property from a window.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RemoveProp.Result">
         <short>The handle of the removed data, zero on failure.</short>
@@ -4336,7 +4334,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RestoreDC">
         <short>Restores an Device Context (DC) to an previously
-          <link id="TWidgetSet.SaveDC">saved</link> state.</short>
+          <link id="TWidgetSet.SaveDC">saved</link>
+          state.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -4422,20 +4421,25 @@
           </p>
           <ul>
             <li>
-              SW_ERASE - when used with SW_INVALIDATE sends WM_ERASEBKGND messages
-              for the invalidated parts of the window.
-            </li><li>
+              SW_ERASE - when used with SW_INVALIDATE sends WM_ERASEBKGND messages for the invalidated parts
+              of the window.
+            </li>
+            <li>
               SW_INVALIDATE - invalidates the resulting hrgnUpdate region.
-            </li><li>
-              SW_SCROLLCHILDREN - also scrolls child windows within the scroll rect.
-              Beware: also scrolls <b>parts</b> of the child windows!
-            </li><li>
-              SW_SMOOTHSCROLL - set HIWORD of <var>flags</var> to the time for the scrolling operation.
+            </li>
+            <li>
+              SW_SCROLLCHILDREN - also scrolls child windows within the scroll rect. Beware: also scrolls
+              <b>parts</b>
+              of the child windows!
+            </li>
+            <li>
+              SW_SMOOTHSCROLL - set HIWORD of
+              <var>flags</var>
+              to the time for the scrolling operation.
             </li>
           </ul>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.Result">
         <short>False on failure.</short>
@@ -4501,10 +4505,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectPalette">
         <short>Selects a logical palette into an device context.</short>
-        <descr>A foreground palette becomes the palette of the device, when the
-          application is in the foreground.
-          A background palette instead is mapped to the closest
-          colors in the palette of the physical device.
+        <descr>A foreground palette becomes the palette of the device, when the application is in the
+          foreground. A background palette instead is mapped to the closest colors in the palette of the
+          physical device.
         </descr>
         <errors/>
         <seealso/>
@@ -4530,22 +4533,24 @@
           </remark>
           <p>
             This method is a thread-safe solution to send messages to windows.
-          </p><p>
-            The messages will be handled in the message loop of the application
-            and therefore can be sent from any thread.
-            They are not immediate, but they will awake the main thread if it
-            is waiting for messages.
-          </p><p>
+          </p>
+          <p>
+            The messages will be handled in the message loop of the application and therefore can be sent
+            from any thread. They are not immediate, but they will awake the main thread if it is waiting
+            for messages.
+          </p>
+          <p>
             Custom messages should always have an ID higher than the constant LM_USER.
-          </p><p>
-            The two parameters WParam and LParam will be passed to the
-            message handler, together with the message ID.
-          </p><p>
-            The difference between SendMessage and PostMessage is the way that
-            they return control to the calling thread.
-            With SendMessage control is not returned until the window that the
-            message was sent to has completed processing the sent message,
-            however with PostMessage control is returned immediately.
+          </p>
+          <p>
+            The two parameters WParam and LParam will be passed to the message handler, together with the
+            message ID.
+          </p>
+          <p>
+            The difference between SendMessage and PostMessage is the way that they return control to the
+            calling thread. With SendMessage control is not returned until the window that the message was
+            sent to has completed processing the sent message, however with PostMessage control is returned
+            immediately.
           </p>
         </descr>
         <errors/>
@@ -4602,14 +4607,15 @@
         <short>Sets the background mix mode (transparency) of an device context.</short>
         <descr>
           <p>
-            The background mode specifies the handling of non-solid painting objects,
-            like text, hatched brushes or dotted pens.
+            The background mode specifies the handling of non-solid painting objects, like text, hatched
+            brushes or dotted pens.
           </p>
           <ul>
             <li>
-              OPAQUE mode fills the affected painting area with the background color
-              before painting the foreground.
-            </li><li>
+              OPAQUE mode fills the affected painting area with the background color before painting the
+              foreground.
+            </li>
+            <li>
               TRANSPARENT mode leaves the background unchanged.
             </li>
           </ul>
@@ -4629,8 +4635,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCapture">
         <short>Sets the mouse capture to the specified window.</short>
-        <descr>The window will receive all mouse messages, until capture
-          is released again.
+        <descr>The window will receive all mouse messages, until capture is released again.
         </descr>
         <errors/>
         <seealso>
@@ -4698,10 +4703,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCursorPos">
         <short>Changes the position of the mouse cursor.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetCursorPos.Result">
         <short>False on failure.</short>
@@ -4728,10 +4731,8 @@
       <element name="TWidgetSet.SetForegroundWindow">
         <short>Moves a window in front of all other windows, and activates it.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetForegroundWindow.Result">
         <short>False on failure.</short>
@@ -4744,31 +4745,38 @@
         <short>Sets the mapping mode of an device context.</short>
         <descr>
           <p>
-            The mapping mode specifies the correspondence between logical and physical units.
-            Supported modes are:
+            The mapping mode specifies the correspondence between logical and physical units. Supported
+            modes are:
           </p>
           <ul>
             <li>
               MM_ANISOTROPIC - arbitrary mapping
-            </li><li>
+            </li>
+            <li>
               MM_HIENGLISH - 0.001 inch
-            </li><li>
+            </li>
+            <li>
               MM_HIMETRIC - 0.01 mm
-            </li><li>
+            </li>
+            <li>
               MM_ISOTROPIC - arbitrary mapping, same for X and Y axis
-            </li><li>
+            </li>
+            <li>
               MM_LOENGLISH - 0.01 inch
-            </li><li>
+            </li>
+            <li>
               MM_LOMETRIC - 0.1 mm
-            </li><li>
+            </li>
+            <li>
               MM_TEXT - 1 device pixel
-            </li><li>
+            </li>
+            <li>
               MM_TWIPS - 1/20th point (twip, 1/1440 inch)
             </li>
           </ul>
           <p>
-            Positive X is right, except for (an)isotropic mappings.
-            Positive Y is up, except for (an)isotropic and MM_TEXT mappings.
+            Positive X is right, except for (an)isotropic mappings. Positive Y is up, except for
+            (an)isotropic and MM_TEXT mappings.
           </p>
         </descr>
         <seealso>
@@ -4787,10 +4795,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetMenu">
         <short>Assigns a menu to a window.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetMenu.Result">
         <short>False on failure.</short>
@@ -4804,10 +4810,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetParent">
         <short>Changes the parent of a window.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetParent.Result">
         <short>The handle of the previous parent window, zero if none or failure.</short>
@@ -4843,46 +4847,63 @@
         <short>Sets the Foreground Mixing Mode in an device context.</short>
         <descr>
           <p>
-            The raster operation specifies how foreground painting (Brush, Pen)
-            is combined with the current pixels in the DC.
-          </p><p>
+            The raster operation specifies how foreground painting (Brush, Pen) is combined with the current
+            pixels in the DC.
+          </p>
+          <p>
             The operation combines bitwise the distinct red, green and blue values of the pixel colors.
-          </p><p>
-            There exist 16 raster operations, according to the possible combinations
-            of two (boolean) values:
+          </p>
+          <p>
+            There exist 16 raster operations, according to the possible combinations of two (boolean)
+            values:
           </p>
           <ul>
             <li>
               R2_BLACK - all black (0).
-            </li><li>
+            </li>
+            <li>
               R2_COPYPEN - Pen color.
-            </li><li>
+            </li>
+            <li>
               R2_MASKNOTPEN - Dst and not Pen.
-            </li><li>
+            </li>
+            <li>
               R2_MASKPEN - Dst and Pen.
-            </li><li>
+            </li>
+            <li>
               R2_MASKPENNOT - (not Dst) and Pen.
-            </li><li>
+            </li>
+            <li>
               R2_MERGENOTPEN - Dst or not Pen.
-            </li><li>
+            </li>
+            <li>
               R2_MERGEPEN - Dst or Pen.
-            </li><li>
+            </li>
+            <li>
               R2_MERGEPENNOT - (not Dst) or Pen.
-            </li><li>
+            </li>
+            <li>
               R2_NOP - Dst (unchanged).
-            </li><li>
+            </li>
+            <li>
               R2_NOT - not Dst.
-            </li><li>
+            </li>
+            <li>
               R2_NOTCOPYPEN - not Pen.
-            </li><li>
+            </li>
+            <li>
               R2_NOTMASKPEN - not (Dst and Pen).
-            </li><li>
+            </li>
+            <li>
               R2_NOTMERGEPEN - not (Dst or Pen).
-            </li><li>
+            </li>
+            <li>
               R2_NOTXORPEN - not (Dst xor Pen).
-            </li><li>
+            </li>
+            <li>
               R2_WHITE - all white.
-            </li><li>
+            </li>
+            <li>
               R2_XORPEN - Dst xor Pen.
             </li>
           </ul>
@@ -4934,11 +4955,14 @@
           <ul>
             <li>
               BLACKONWHITE - preserves black pixels in a monochrome bitmap.
-            </li><li>
+            </li>
+            <li>
               COLORONCOLOR
-            </li><li>
+            </li>
+            <li>
               HALFTONE, STRETCH_HALFTONE
-            </li><li>
+            </li>
+            <li>
               WHITEONBLACK - preserves white pixels in a monochrome bitmap.
             </li>
           </ul>
@@ -4959,7 +4983,8 @@
         <short>Sets the colors for one or more display elements of window borders and desktop.</short>
         <descr/>
         <seealso>
-          <link id="TWidgetSet.GetSysColor">GetSysColor</link> for the element identifiers.
+          <link id="TWidgetSet.GetSysColor">GetSysColor</link>
+          for the element identifiers.
         </seealso>
       </element>
       <element name="TWidgetSet.SetSysColors.Result">
@@ -5009,8 +5034,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetViewPortExtEx">
         <short>Sets the extent of the viewport for a device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetViewPortOrgEx"/>
           <link id="TWidgetSet.SetWindowExtEx"/>
@@ -5034,8 +5058,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetViewPortOrgEx">
         <short>Sets the device origin corresponding to the window origin (0,0) in an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetViewPortExtEx"/>
           <link id="TWidgetSet.SetWindowOrgEx"/>
@@ -5059,8 +5082,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowExtEx">
         <short>Sets the extent of the window for an device context.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.SetViewPortExtEx"/>
           <link id="TWidgetSet.SetWindowOrgEx"/>
@@ -5132,11 +5154,14 @@
           <ul>
             <li>
               HWND_BOTTOM - behind all other windows.
-            </li><li>
+            </li>
+            <li>
               HWND_NOTOPMOST - behind all topmost windows.
-            </li><li>
+            </li>
+            <li>
               HWND_TOP - above all other windows.
-            </li><li>
+            </li>
+            <li>
               HWND_TOPMOST - above all other non-topmost windows.
             </li>
           </ul>
@@ -5145,42 +5170,52 @@
           </p>
           <ul>
             <li>
-              SWP_ASYNCWINDOWPOS - don't block the calling thread
-                when the window is owned by an different thread.
-            </li><li>
+              SWP_ASYNCWINDOWPOS - don't block the calling thread when the window is owned by an different
+              thread.
+            </li>
+            <li>
               SWP_DEFERERASE - suppress WM_SYNCPAINT message.
-            </li><li>
+            </li>
+            <li>
               SWP_DRAWFRAME - draw the window frame.
-            </li><li>
+            </li>
+            <li>
               SWP_FRAMECHANGED - apply new frame style.
-            </li><li>
+            </li>
+            <li>
               SWP_HIDEWINDOW - hides the window.
-            </li><li>
+            </li>
+            <li>
               SWP_NOACTIVATE - don't activate the window.
-            </li><li>
-              SWP_NOCOPYBITS - invalidate the entire client area.
-                If not set, the window content moves together with the window.
-            </li><li>
+            </li>
+            <li>
+              SWP_NOCOPYBITS - invalidate the entire client area. If not set, the window content moves
+              together with the window.
+            </li>
+            <li>
               SWP_NOMOVE - the position is not changed (ignores X, Y).
-            </li><li>
-              SWP_NOREPOSITION,
-              SWP_NOOWNERZORDER - the Z order of the owner window is unchanged.
-            </li><li>
-              SWP_NOREDRAW - nothing is redrawn automatically,
-                not even uncovered parts of the window.
-            </li><li>
-            </li><li>
+            </li>
+            <li>
+              SWP_NOREPOSITION, SWP_NOOWNERZORDER - the Z order of the owner window is unchanged.
+            </li>
+            <li>
+              SWP_NOREDRAW - nothing is redrawn automatically, not even uncovered parts of the window.
+            </li>
+            <li></li>
+            <li>
               SWP_NOSENDCHANGING - no WM_WINDOWPOSCHANGING message.
-            </li><li>
+            </li>
+            <li>
               SWP_NOSIZE - the size is unchanged (ignores cx, cy).
-            </li><li>
+            </li>
+            <li>
               SWP_NOZORDER - the Z order is unchanged (ignores hWndInsertAfter)
-            </li><li>
+            </li>
+            <li>
               SWP_SHOWWINDOW - unhide the window.
             </li>
           </ul>
-          <p>
-          </p>
+          <p></p>
         </descr>
         <seealso/>
       </element>
@@ -5211,10 +5246,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowRgn">
         <short>Restricts the visible part of the entire window.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetWindowRgn.Result">
         <short>False on failure.</short>
@@ -5272,27 +5305,38 @@
           <ul>
             <li>
               sw_forceminimize
-            </li><li>
+            </li>
+            <li>
               SW_HIDE - hides the window.
-            </li><li>
+            </li>
+            <li>
               SW_MAXIMIZE - maximizes the window.
-            </li><li>
+            </li>
+            <li>
               SW_MINIMIZE - minimizes the window.
-            </li><li>
+            </li>
+            <li>
               SW_RESTORE - activates and restores from minimized/maximized to normal state.
-            </li><li>
+            </li>
+            <li>
               SW_SHOW - activates and shows the window.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWMAXIMIZED - activates and maximizes the window.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWMINIMIZED - activates and minimizes the window.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWMINNOACTIVE - minimizes the window.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWNA - shows the window.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWNOACTIVATE - shows the window as designed.
-            </li><li>
+            </li>
+            <li>
               SW_SHOWNORMAL - activates and shows the window as designed.
             </li>
           </ul>
@@ -5319,8 +5363,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchBlt">
-        <short>Copies a rectangular region into an device context,
-          shrinking or stretching it as required.
+        <short>Copies a rectangular region into an device context, shrinking or stretching it as required.
         </short>
         <descr/>
         <seealso>
@@ -5367,8 +5410,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchDIBits">
-        <short>Copies a rectangular region from a DIB into an device context,
-          shrinking or stretching it as required.
+        <short>
+          Copies a rectangular region from a DIB into an device context, shrinking or stretching it
+          as required.
         </short>
         <descr/>
         <seealso>
@@ -5425,196 +5469,181 @@
         <descr>
           <p>
             Most of the parameters are Windows platform specific.
-          </p><p>
-            SPI_GETACCESSTIMEOUT
-            SPI_GETFILTERKEYS
-            SPI_GETFOCUSBORDERHEIGHT
-            SPI_GETFOCUSBORDERWIDTH
-            SPI_GETHIGHCONTRAST
-            SPI_GETMOUSECLICKLOCK
-            SPI_GETMOUSECLICKLOCKTIME
-            SPI_GETMOUSEKEYS
-            SPI_GETMOUSESONAR
-            SPI_GETMOUSEVANISH
-            SPI_GETSCREENREADER
-            SPI_GETSERIALKEYS
-            SPI_GETSHOWSOUNDS
-            SPI_GETSOUNDSENTRY
-            SPI_GETSTICKYKEYS
-            SPI_GETTOGGLEKEYS
-
-            SPI_SETACCESSTIMEOUT
-            SPI_SETFILTERKEYS
-            SPI_SETFOCUSBORDERHEIGHT
-            SPI_SETFOCUSBORDERWIDTH
-            SPI_SETHIGHCONTRAST
-            SPI_SETMOUSECLICKLOCK
-            SPI_SETMOUSECLICKLOCKTIME
-            SPI_SETMOUSEKEYS
-            SPI_SETMOUSESONAR
-            SPI_SETMOUSEVANISH
-            SPI_SETSCREENREADER
-            SPI_SETSERIALKEYS
-            SPI_SETSHOWSOUNDS
-            SPI_SETSOUNDSENTRY
-            SPI_SETSTICKYKEYS
-            SPI_SETTOGGLEKEYS
-          </p><p>
-            SPI_GETDESKWALLPAPER
-            SPI_GETDROPSHADOW
-            SPI_GETFLATMENU
-            SPI_GETFONTSMOOTHING
-            SPI_GETFONTSMOOTHINGCONTRAST
-            SPI_GETFONTSMOOTHINGTYPE
-            SPI_GETWORKAREA
-
-            SPI_SETCURSORS
-            SPI_SETDESKPATTERN
-            SPI_SETDESKWALLPAPER
-            SPI_SETDROPSHADOW
-            SPI_SETFLATMENU
-            SPI_SETFONTSMOOTHING
-            SPI_SETFONTSMOOTHINGCONTRAST
-            SPI_SETFONTSMOOTHINGTYPE
-            SPI_SETWORKAREA
-          </p><p>
-            SPI_GETICONMETRICS
-            SPI_GETICONTITLELOGFONT
-            SPI_GETICONTITLEWRAP
-            SPI_ICONHORIZONTALSPACING
-            SPI_ICONVERTICALSPACING
-
-            SPI_SETICONMETRICS
-            SPI_SETICONS
-            SPI_SETICONTITLELOGFONT
-            SPI_SETICONTITLEWRAP
-          </p><p>
-            SPI_GETBEEP
-            SPI_GETBLOCKSENDINPUTRESETS
-            SPI_GETDEFAULTINPUTLANG
-            SPI_GETKEYBOARDCUES
-            SPI_GETKEYBOARDDELAY
-            SPI_GETKEYBOARDPREF
-            SPI_GETKEYBOARDSPEED
-            SPI_GETMOUSE
-            SPI_GETMOUSEHOVERHEIGHT
-            SPI_GETMOUSEHOVERTIME
-            SPI_GETMOUSEHOVERWIDTH
-            SPI_GETMOUSESPEED
-            SPI_GETMOUSETRAILS
-            SPI_GETSNAPTODEFBUTTON
-            SPI_GETWHEELSCROLLLINES
-
-            SPI_SETBEEP
-            SPI_SETBLOCKSENDINPUTRESETS
-            SPI_SETDEFAULTINPUTLANG
-            SPI_SETDOUBLECLICKTIME
-            SPI_SETDOUBLECLKHEIGHT
-            SPI_SETDOUBLECLKWIDTH
-            SPI_SETKEYBOARDCUES
-            SPI_SETKEYBOARDDELAY
-            SPI_SETKEYBOARDPREF
-            SPI_SETKEYBOARDSPEED
-            SPI_SETLANGTOGGLE
-            SPI_SETMOUSE
-            SPI_SETMOUSEBUTTONSWAP
-            SPI_SETMOUSEHOVERHEIGHT
-            SPI_SETMOUSEHOVERTIME
-            SPI_SETMOUSEHOVERWIDTH
-            SPI_SETMOUSESPEED
-            SPI_SETMOUSETRAILS
-            SPI_SETSNAPTODEFBUTTON
-            SPI_SETWHEELSCROLLLINES
-          </p><p>
-            SPI_GETMENUDROPALIGNMENT
-            SPI_GETMENUFADE
-            SPI_GETMENUSHOWDELAY
-
-            SPI_SETMENUDROPALIGNMENT
-            SPI_SETMENUFADE
-            SPI_SETMENUSHOWDELAY
-          </p><p>
-            SPI_GETLOWPOWERACTIVE
-            SPI_GETLOWPOWERTIMEOUT
-            SPI_GETPOWEROFFACTIVE
-            SPI_GETPOWEROFFTIMEOUT
-
-            SPI_SETLOWPOWERACTIVE
-            SPI_SETLOWPOWERTIMEOUT
-            SPI_SETPOWEROFFACTIVE
-            SPI_SETPOWEROFFTIMEOUT
-          </p><p>
-            SPI_GETSCREENSAVEACTIVE
-            SPI_GETSCREENSAVERRUNNING
-            SPI_GETSCREENSAVETIMEOUT
-
-            SPI_SETSCREENSAVEACTIVE
-            SPI_SETSCREENSAVERRUNNING
-            SPI_SETSCREENSAVETIMEOUT
-          </p><p>
-            SPI_GETCOMBOBOXANIMATION
-            SPI_GETCURSORSHADOW
-            SPI_GETGRADIENTCAPTIONS
-            SPI_GETHOTTRACKING
-            SPI_GETLISTBOXSMOOTHSCROLLING
-            SPI_GETMENUANIMATION
-            SPI_GETMENUUNDERLINES
-            SPI_GETSELECTIONFADE
-            SPI_GETTOOLTIPANIMATION
-            SPI_GETTOOLTIPFADE
-            SPI_GETUIEFFECTS
-
-            SPI_SETCOMBOBOXANIMATION
-            SPI_SETCURSORSHADOW
-            SPI_SETGRADIENTCAPTIONS
-            SPI_SETHOTTRACKING
-            SPI_SETLISTBOXSMOOTHSCROLLING
-            SPI_SETMENUANIMATION
-            SPI_SETMENUUNDERLINES
-            SPI_SETSELECTIONFADE
-            SPI_SETTOOLTIPANIMATION
-            SPI_SETTOOLTIPFADE
-            SPI_SETUIEFFECTS
-          </p><p>
-            SPI_GETACTIVEWINDOWTRACKING
-            SPI_GETACTIVEWNDTRKZORDER
-            SPI_GETACTIVEWNDTRKTIMEOUT
-            SPI_GETANIMATION
-            SPI_GETBORDER
-            SPI_GETCARETWIDTH
-            SPI_GETDRAGFULLWINDOWS
-            SPI_GETFOREGROUNDFLASHCOUNT
-            SPI_GETFOREGROUNDLOCKTIMEOUT
-            SPI_GETMINIMIZEDMETRICS
-            SPI_GETNONCLIENTMETRICS
-            SPI_GETSHOWIMEUI
-
-            SPI_SETACTIVEWINDOWTRACKING
-            SPI_SETACTIVEWNDTRKZORDER
-            SPI_SETACTIVEWNDTRKTIMEOUT
-            SPI_SETANIMATION
-            SPI_SETBORDER
-            SPI_SETCARETWIDTH
-            SPI_SETDRAGFULLWINDOWS
-            SPI_SETDRAGWIDTH
-            SPI_SETDRAGWIDTH
-            SPI_SETFOREGROUNDFLASHCOUNT
-            SPI_SETFOREGROUNDLOCKTIMEOUT
-            SPI_SETMINIMIZEDMETRICS
-            SPI_SETNONCLIENTMETRICS
-            SPI_SETSHOWIMEUI
-          </p><p>
-            SPI_GETWINDOWSEXTENSION
-            SPI_SETPENWINDOWS
-          </p><p>
-            Additional actions (zero for none):<br/>
-            spif_updateinifile
-            spif_sendchange
-            spif_sendwindowinichange
           </p>
+          <ul>
+            <li>SPI_GETACCESSTIMEOUT</li>
+            <li>SPI_GETFILTERKEYS</li>
+            <li>SPI_GETFOCUSBORDERHEIGHT</li>
+            <li>SPI_GETFOCUSBORDERWIDTH</li>
+            <li>SPI_GETHIGHCONTRAST</li>
+            <li>SPI_GETMOUSECLICKLOCK</li>
+            <li>SPI_GETMOUSECLICKLOCKTIME</li>
+            <li>SPI_GETMOUSEKEYS</li>
+            <li>SPI_GETMOUSESONAR</li>
+            <li>SPI_GETMOUSEVANISH</li>
+            <li>SPI_GETSCREENREADER</li>
+            <li>SPI_GETSERIALKEYS</li>
+            <li>SPI_GETSHOWSOUNDS</li>
+            <li>SPI_GETSOUNDSENTRY</li>
+            <li>SPI_GETSTICKYKEYS</li>
+            <li>SPI_GETTOGGLEKEYS</li>
+            <li>SPI_SETACCESSTIMEOUT</li>
+            <li>SPI_SETFILTERKEYS</li>
+            <li>SPI_SETFOCUSBORDERHEIGHT</li>
+            <li>SPI_SETFOCUSBORDERWIDTH</li>
+            <li>SPI_SETHIGHCONTRAST</li>
+            <li>SPI_SETMOUSECLICKLOCK</li>
+            <li>SPI_SETMOUSECLICKLOCKTIME</li>
+            <li>SPI_SETMOUSEKEYS</li>
+            <li>SPI_SETMOUSESONAR</li>
+            <li>SPI_SETMOUSEVANISH</li>
+            <li>SPI_SETSCREENREADER</li>
+            <li>SPI_SETSERIALKEYS</li>
+            <li>SPI_SETSHOWSOUNDS</li>
+            <li>SPI_SETSOUNDSENTRY</li>
+            <li>SPI_SETSTICKYKEYS</li>
+            <li>SPI_SETTOGGLEKEYS</li>
+            <li>SPI_GETDESKWALLPAPER</li>
+            <li>SPI_GETDROPSHADOW</li>
+            <li>SPI_GETFLATMENU</li>
+            <li>SPI_GETFONTSMOOTHING</li>
+            <li>SPI_GETFONTSMOOTHINGCONTRAST</li>
+            <li>SPI_GETFONTSMOOTHINGTYPE</li>
+            <li>SPI_GETWORKAREA</li>
+            <li>SPI_SETCURSORS</li>
+            <li>SPI_SETDESKPATTERN</li>
+            <li>SPI_SETDESKWALLPAPER</li>
+            <li>SPI_SETDROPSHADOW</li>
+            <li>SPI_SETFLATMENU</li>
+            <li>SPI_SETFONTSMOOTHING</li>
+            <li>SPI_SETFONTSMOOTHINGCONTRAST</li>
+            <li>SPI_SETFONTSMOOTHINGTYPE</li>
+            <li>SPI_SETWORKAREA</li>
+            <li>SPI_GETICONMETRICS</li>
+            <li>SPI_GETICONTITLELOGFONT</li>
+            <li>SPI_GETICONTITLEWRAP</li>
+            <li>SPI_ICONHORIZONTALSPACING</li>
+            <li>SPI_ICONVERTICALSPACING</li>
+            <li>SPI_SETICONMETRICS</li>
+            <li>SPI_SETICONS</li>
+            <li>SPI_SETICONTITLELOGFONT</li>
+            <li>SPI_SETICONTITLEWRAP</li>
+            <li>SPI_GETBEEP</li>
+            <li>SPI_GETBLOCKSENDINPUTRESETS</li>
+            <li>SPI_GETDEFAULTINPUTLANG</li>
+            <li>SPI_GETKEYBOARDCUES</li>
+            <li>SPI_GETKEYBOARDDELAY</li>
+            <li>SPI_GETKEYBOARDPREF</li>
+            <li>SPI_GETKEYBOARDSPEED</li>
+            <li>SPI_GETMOUSE</li>
+            <li>SPI_GETMOUSEHOVERHEIGHT</li>
+            <li>SPI_GETMOUSEHOVERTIME</li>
+            <li>SPI_GETMOUSEHOVERWIDTH</li>
+            <li>SPI_GETMOUSESPEED</li>
+            <li>SPI_GETMOUSETRAILS</li>
+            <li>SPI_GETSNAPTODEFBUTTON</li>
+            <li>SPI_GETWHEELSCROLLLINES</li>
+            <li>SPI_SETBEEP</li>
+            <li>SPI_SETBLOCKSENDINPUTRESETS</li>
+            <li>SPI_SETDEFAULTINPUTLANG</li>
+            <li>SPI_SETDOUBLECLICKTIME</li>
+            <li>SPI_SETDOUBLECLKHEIGHT</li>
+            <li>SPI_SETDOUBLECLKWIDTH</li>
+            <li>SPI_SETKEYBOARDCUES</li>
+            <li>SPI_SETKEYBOARDDELAY</li>
+            <li>SPI_SETKEYBOARDPREF</li>
+            <li>SPI_SETKEYBOARDSPEED</li>
+            <li>SPI_SETLANGTOGGLE</li>
+            <li>SPI_SETMOUSE</li>
+            <li>SPI_SETMOUSEBUTTONSWAP</li>
+            <li>SPI_SETMOUSEHOVERHEIGHT</li>
+            <li>SPI_SETMOUSEHOVERTIME</li>
+            <li>SPI_SETMOUSEHOVERWIDTH</li>
+            <li>SPI_SETMOUSESPEED</li>
+            <li>SPI_SETMOUSETRAILS</li>
+            <li>SPI_SETSNAPTODEFBUTTON</li>
+            <li>SPI_SETWHEELSCROLLLINES</li>
+            <li>SPI_GETMENUDROPALIGNMENT</li>
+            <li>SPI_GETMENUFADE</li>
+            <li>SPI_GETMENUSHOWDELAY</li>
+            <li>SPI_SETMENUDROPALIGNMENT</li>
+            <li>SPI_SETMENUFADE</li>
+            <li>SPI_SETMENUSHOWDELAY</li>
+            <li>SPI_GETLOWPOWERACTIVE</li>
+            <li>SPI_GETLOWPOWERTIMEOUT</li>
+            <li>SPI_GETPOWEROFFACTIVE</li>
+            <li>SPI_GETPOWEROFFTIMEOUT</li>
+            <li>SPI_SETLOWPOWERACTIVE</li>
+            <li>SPI_SETLOWPOWERTIMEOUT</li>
+            <li>SPI_SETPOWEROFFACTIVE</li>
+            <li>SPI_SETPOWEROFFTIMEOUT</li>
+            <li>SPI_GETSCREENSAVEACTIVE</li>
+            <li>SPI_GETSCREENSAVERRUNNING</li>
+            <li>SPI_GETSCREENSAVETIMEOUT</li>
+            <li>SPI_SETSCREENSAVEACTIVE</li>
+            <li>SPI_SETSCREENSAVERRUNNING</li>
+            <li>SPI_SETSCREENSAVETIMEOUT</li>
+            <li>SPI_GETCOMBOBOXANIMATION</li>
+            <li>SPI_GETCURSORSHADOW</li>
+            <li>SPI_GETGRADIENTCAPTIONS</li>
+            <li>SPI_GETHOTTRACKING</li>
+            <li>SPI_GETLISTBOXSMOOTHSCROLLING</li>
+            <li>SPI_GETMENUANIMATION</li>
+            <li>SPI_GETMENUUNDERLINES</li>
+            <li>SPI_GETSELECTIONFADE</li>
+            <li>SPI_GETTOOLTIPANIMATION</li>
+            <li>SPI_GETTOOLTIPFADE</li>
+            <li>SPI_GETUIEFFECTS</li>
+            <li>SPI_SETCOMBOBOXANIMATION</li>
+            <li>SPI_SETCURSORSHADOW</li>
+            <li>SPI_SETGRADIENTCAPTIONS</li>
+            <li>SPI_SETHOTTRACKING</li>
+            <li>SPI_SETLISTBOXSMOOTHSCROLLING</li>
+            <li>SPI_SETMENUANIMATION</li>
+            <li>SPI_SETMENUUNDERLINES</li>
+            <li>SPI_SETSELECTIONFADE</li>
+            <li>SPI_SETTOOLTIPANIMATION</li>
+            <li>SPI_SETTOOLTIPFADE</li>
+            <li>SPI_SETUIEFFECTS</li>
+            <li>SPI_GETACTIVEWINDOWTRACKING</li>
+            <li>SPI_GETACTIVEWNDTRKZORDER</li>
+            <li>SPI_GETACTIVEWNDTRKTIMEOUT</li>
+            <li>SPI_GETANIMATION</li>
+            <li>SPI_GETBORDER</li>
+            <li>SPI_GETCARETWIDTH</li>
+            <li>SPI_GETDRAGFULLWINDOWS</li>
+            <li>SPI_GETFOREGROUNDFLASHCOUNT</li>
+            <li>SPI_GETFOREGROUNDLOCKTIMEOUT</li>
+            <li>SPI_GETMINIMIZEDMETRICS</li>
+            <li>SPI_GETNONCLIENTMETRICS</li>
+            <li>SPI_GETSHOWIMEUI</li>
+            <li>SPI_SETACTIVEWINDOWTRACKING</li>
+            <li>SPI_SETACTIVEWNDTRKZORDER</li>
+            <li>SPI_SETACTIVEWNDTRKTIMEOUT</li>
+            <li>SPI_SETANIMATION</li>
+            <li>SPI_SETBORDER</li>
+            <li>SPI_SETCARETWIDTH</li>
+            <li>SPI_SETDRAGFULLWINDOWS</li>
+            <li>SPI_SETDRAGWIDTH</li>
+            <li>SPI_SETDRAGWIDTH</li>
+            <li>SPI_SETFOREGROUNDFLASHCOUNT</li>
+            <li>SPI_SETFOREGROUNDLOCKTIMEOUT</li>
+            <li>SPI_SETMINIMIZEDMETRICS</li>
+            <li>SPI_SETNONCLIENTMETRICS</li>
+            <li>SPI_SETSHOWIMEUI</li>
+            <li>SPI_GETWINDOWSEXTENSION</li>
+            <li>SPI_SETPENWINDOWS</li>
+          </ul>
+          <p>
+            Additional actions (zero for none):
+          </p>
+          <ul>
+            <li>spif_updateinifile</li>
+            <li>spif_sendchange</li>
+            <li>spif_sendwindowinichange</li>
+          </ul>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.Result">
         <short>False on failure.</short>
@@ -5685,12 +5714,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AddEventHandler.Result">
         <short/>
@@ -5710,12 +5736,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddProcessEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AddProcessEventHandler.Result">
         <short/>
@@ -5732,12 +5755,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AddPipeEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AddPipeEventHandler.Result">
         <short/>
@@ -5753,8 +5773,7 @@
       </element>
       <element name="TWidgetSet.AllocateHWnd">
         <short>Allocates an invisible window that can be used to receive messages.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.DeallocateHWnd"/>
         </seealso>
@@ -5768,12 +5787,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AskUser">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.AskUser.Result">
         <short/>
@@ -6005,12 +6021,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateRubberBand">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.CreateRubberBand.Result">
         <short/>
@@ -6024,8 +6037,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateStandardCursor">
         <short>Creates one of the standard cursors.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="#lcl.Controls.TCursor"/>
           <link id="TWidgetSet.SetCursor"/>
@@ -6055,8 +6067,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DeallocateHWnd">
         <short>Deletes a window created with AllocateHWnd.</short>
-        <descr>
-        </descr>
+        <descr/>
         <seealso>
           <link id="TWidgetSet.AllocateHWnd"/>
         </seealso>
@@ -6067,12 +6078,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DestroyRubberBand">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DestroyRubberBand.ARubberBand">
         <short/>
@@ -6080,14 +6088,11 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DrawDefaultDockImage">
         <short>Draws the DockRect during drag-dock operations.</short>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
-          The Windows implementation doesn't cooperate with the DragManager.
-          See Mantis 0018525
+          The Windows implementation doesn't cooperate with the DragManager. See Mantis 0018525
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DrawDefaultDockImage.AOldRect">
         <short>The old DockRect.</short>
@@ -6101,12 +6106,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DrawGrid">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.DrawGrid.DC">
         <short/>
@@ -6123,9 +6125,8 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtUTF8Out" link="TWidgetSet.ExtTextOut">
         <short>Draws an UTF-8 string without formatting (single line).</short>
-        <descr>The inter-character spacing array (Dx) must have one element for
-          every Char (byte) in the UTF-8 text.
-          For multi-byte character codes the values of all Dx elements are summed up.
+        <descr>The inter-character spacing array (Dx) must have one element for every Char (byte) in the
+          UTF-8 text. For multi-byte character codes the values of all Dx elements are summed up.
         </descr>
         <seealso>
           <link id="TWidgetSet.ExtTextOut"/>
@@ -6173,12 +6174,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontIsMonoSpace">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.FontIsMonoSpace.Result">
         <short/>
@@ -6635,12 +6633,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDesignerDC">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.IsDesignerDC.Result">
         <short/>
@@ -6875,12 +6870,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_CreateBitmaps">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_CreateBitmaps.Result">
         <short/>
@@ -6900,12 +6892,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromBitmap.Result">
         <short/>
@@ -6919,12 +6908,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_DescriptionFromDevice">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_DescriptionFromDevice.Result">
         <short/>
@@ -6938,12 +6924,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_FromBitmap">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_FromBitmap.Result">
         <short/>
@@ -6963,12 +6946,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RawImage_FromDevice">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_FromDevice.Result">
         <short/>
@@ -6984,12 +6964,9 @@
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RawImage_QueryDescription.Result">
         <short/>
@@ -7041,24 +7018,18 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.RemoveEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RemoveEventHandler.AHandler">
         <short/>
       </element>
       <element name="TWidgetSet.RemoveProcessEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RemoveProcessEventHandler.AHandler">
         <short/>
@@ -7066,12 +7037,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.RemovePipeEventHandler">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.RemovePipeEventHandler.AHandler">
         <short/>
@@ -7179,12 +7147,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetEventHandlerFlags">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetEventHandlerFlags.AHandler">
         <short/>
@@ -7195,12 +7160,9 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetRubberBandRect">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.SetRubberBandRect.ARubberBand">
         <short/>
@@ -7278,12 +7240,9 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.TextUTF8Out">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TWidgetSet.TextUTF8Out.Result">
         <short/>
@@ -7306,36 +7265,28 @@
       <!-- property Visibility: public -->
       <element name="TWidgetSet.ThemeServices">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
-<!-- "class of" type Visibility: default -->
+      <!-- "class of" type Visibility: default -->
       <element name="TWidgetSetClass" link="TWidgetSet"/>
       <!-- constant Visibility: default -->
       <element name="LCLPlatformDirNames">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="LCL_CAPABILITY_NO">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="LCL_CAPABILITY_YES">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="EInterfaceException">
@@ -7457,10 +7408,8 @@
       <!-- function type Visibility: default -->
       <element name="TQuestionDialogFunction">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TQuestionDialogFunction.Result">
         <short/>
@@ -7480,21 +7429,17 @@
       <element name="TQuestionDialogFunction.HelpCtx">
         <short/>
       </element>
-<!-- variable Visibility: default -->
+      <!-- variable Visibility: default -->
       <element name="QuestionDialogFunction">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="WidgetSet">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
     </module>
     <!-- InterfaceBase -->

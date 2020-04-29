@@ -32,15 +32,14 @@
             The return value indicates the relative order in a sort operation, and can contain the following values:
           </p>
           <dl>
-            <dt><code> &lt;0 </code></dt>
+            <dt>&lt;0</dt>
             <dd>Filename1 comes before Filename2</dd>
-            <dt><code> 0 </code></dt>
+            <dt>0</dt>
             <dd>Filename1 and Filename2 to have the same value</dd>
-            <dt><code> &gt;0 </code></dt>
+            <dt>&gt;0</dt>
             <dd>Filename1 comes after Filename2</dd>
           </dl>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="CompareFilenamesIgnoreCase"/>
         </seealso>
@@ -74,11 +73,11 @@
             The return value indicates the relative order in a case-insensitive sort operation, and can contain the following values:
           </p>
           <dl>
-            <dt><code> &lt;0 </code></dt>
+            <dt>&lt;0</dt>
             <dd>Filename1 comes before Filename2</dd>
-            <dt><code> 0 </code></dt>
+            <dt>0</dt>
             <dd>Filename1 and Filename2 to have the same value</dd>
-            <dt><code> &gt;0 </code></dt>
+            <dt>&gt;0</dt>
             <dd>Filename1 comes after Filename2</dd>
           </dl>
         </descr>
@@ -164,12 +163,11 @@
             <var>CompareFilenameStarts</var> is an <var>Integer</var> function used to compare the specified file names to determine their relative sort order. Arguments in Filename1 and Filename2 do not need to be the same length. When they have different lengths, the number of characters common to both are used in the comparison. CompareFilenameStarts calls CompareFileNames to perform the comparison, and get the return value for the function.
           </p>
           <p>
-            See CompareFilename for more information about the numeric return value and its meaning.
+            See CompareFilenames for more information about the numeric return value and its meaning.
           </p>
         </descr>
         <seealso>
-          <link id ="CompareFileNames">CompareFilenames</link>
-          <link id ="CompareFileName">CompareFilename</link>
+          <link id ="CompareFileNames"/>
         </seealso>
       </element>
 
@@ -211,11 +209,11 @@
             <var>IgnoreCase</var> indicates if upper- or lower-case differences are ignored in the file name comparison; the default value for the parameter is <b>False</b> (indicating that case differences are <b>not</b> ignored). For platforms where <b>CaseInsensitiveFilenames</b> is defined, the value in IgnoreCase defaults to <b>True</b>. When IgnoreCase is <b>True</b>, the <var>UTF8CompareText</var> function is called to perform a case-insensitive comparison of the specified file names. Otherwise, the ordinal byte values in the specified file names are compared until a difference is found, or the entire file name in Filename1 has been examined.
           </p>
           <p>
-            If either Filename1 or Filename2 are unassigned (contain <b>Nil</b>) or begin with a Null character (<b>Decimal 0</b>), the return value is set <b>0</b> (<b>zero</b>) and no additional actions are performed in the function. See CompareFilename for more information about the numeric return value for the function and its meaning.
+            If either Filename1 or Filename2 are unassigned (contain <b>Nil</b>) or begin with a Null character (<b>Decimal 0</b>), the return value is set <b>0</b> (<b>zero</b>) and no additional actions are performed in the function. See CompareFilenames for more information about the numeric return value for the function and its meaning.
           </p>
         </descr>
         <seealso>
-          <link id="CompareFilename"/>
+          <link id="CompareFilenames"/>
           <link id="UTF8CompareText"/>
         </seealso>
       </element>
@@ -277,10 +275,10 @@
         </errors>
         <seealso>
           <link id="FileCreateUTF8"/>
-          <link id="FileWrite"/>
-          <link id="FileClose"/>
           <link id="DeleteFileUTF8"/>
           <link id="InvalidateFileStateCache"/>
+          <link id="#rtl.SysUtils.FileWrite"/>
+          <link id="#rtl.SysUtils.FileClose"/>
         </seealso>
       </element>
 
@@ -445,7 +443,7 @@
         </short>
         <descr>
           <p>
-            CheckIfFileIsExecutable is a procedure used to examine the specified file name to see if it is executable. CheckIfFileIsExecutable is implemented for UNIX-like environments, and allows TProcess to better determine if the file can be executed on the platform or OS, and to get better error messages when it cannot.
+            CheckIfFileIsExecutable is a procedure used to examine the specified file name to see if it is executable. CheckIfFileIsExecutable is implemented for UNIX-like environments, and allows  a process to better determine if the file can be executed on the platform or OS, and to get better error messages when it cannot.
           </p>
           <p>
             CheckIfFileIsExecutable raises an exception with a specific message when the platform or OS facilities indicate it is necessary.
@@ -493,9 +491,6 @@
            </dd>
           </dl>
         </errors>
-        <seealso>
-          <link id="#fcl.Process.TProcess"/>
-        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -537,7 +532,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="FpReadLink"/>
+          <link id="#rtl.System.FpReadLink"/>
           <link id="FileGetAttrUTF8"/>
         </seealso>
       </element>
@@ -565,7 +560,7 @@
         </descr>
         <seealso>
           <link id="FileOpenUTF8"/>
-          <link id="fpfstat"/>
+          <link id="#rtl.System.fpfstat"/>
         </seealso>
       </element>
       <element name="FileIsHardLink.Result">
@@ -582,11 +577,11 @@
         </short>
         <descr>
           <p>
-            FileIsReadable is a Boolean function which indicates if the specified file name is readable. For UNIX-like environments, FpAccess is used to get the return value. On Windows, the return value is the result from FileExistsUTF8. In short, the function is not really useful on the Windows platform where a suitable file attribute does not exist for the purpose.
+            <var>FileIsReadable</var> is a <var>Boolean</var> function which indicates if the specified file name is readable. For UNIX-like environments, FpAccess is used to get the return value. On Windows, the return value is the result from FileExistsUTF8. In short, the function is not really useful on the Windows platform where a suitable file attribute does not exist for the purpose.
           </p>
         </descr>
         <seealso>
-          <link id="FpAccess"/>
+          <link id="#rtl.BaseUnix.FpAccess"/>
           <link id="FileExistsUTF8"/>
         </seealso>
       </element>
@@ -1025,7 +1020,7 @@
         <seealso>
           <link id="TPathDelimSwitch"/>
           <link id="SwitchPathDelims"/>
-          <link id="DirectorySeparator"/>
+          <link id="#RTL.System.DirectorySeparator"/>
         </seealso>
       </element>
 
@@ -1494,7 +1489,7 @@
         </descr>
         <errors></errors>
         <seealso>
-          <link id="#rtl.Dos.FIndFirst"/>
+          <link id="#rtl.SysUtils.FIndFirst"/>
         </seealso>
       </element>
 
@@ -1844,14 +1839,16 @@
           <p>
             <var>GetCurrentDirUTF8</var> is a <var>String</var> function used to get the name for the current directory in the local file system.
           </p>
-            For the Windows environment, GetCurrentDirectoryW is called to get the current directory name. UTF8Encode is called to convert the WideString value to UTF-8, and used as the return value for the function.
           <p>
+            For the Windows environment, GetCurrentDirectoryW is called to get the current directory name. UTF8Encode is called to convert the WideString value to UTF-8, and used as the return value for the function.
           </p>
           <p>
             For UNIX-like environments, GetCurrentDir in SysUtils is called to get the current directory name.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.SysUtils.GetCurrentDir"/>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1949,7 +1946,6 @@
             The return value is True when the specified directory is successfully removed.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="#rtl.SysUtils.RemoveDir"/>
         </seealso>
@@ -2061,10 +2057,9 @@
       <element name="FileSizeUtf8">
         <short>Gets the size for the specified file name</short>
         <descr>
-          <var>FileSizeUTF8</var> is an <var>Int64</var> function used to get the size for the file specified in the UTF-8-encoded <var>Filename</var> argument. FileSizeUTF8 calls <var>UTFToAnsi</var> to convert the value in Filename to an AnsiString type, and calls the <var>FindFirst</var> routine in the <file>SysUtils</file> unit to get the size for the specified file name.
+          <var>FileSizeUTF8</var> is an <var>Int64</var> function used to get the size for the file specified in the UTF-8-encoded <var>Filename</var> argument. FileSizeUTF8 calls <var>Utf8ToSys</var> to convert the value in Filename to the system string type type, and calls the <var>FindFirst</var> routine in the <file>SysUtils</file> unit to get the size for the specified file name.
         </descr>
         <seealso>
-          <link id="UTF8ToAnsi"/>
           <link id="#RTL.SysUtils.FindFirst"/>
         </seealso>
       </element>
@@ -2230,7 +2225,7 @@ Modified: MM/DD/YYYY hh:mm
             <var>TPhysicalFilenameOnError</var> is an enumerated type with values that indicate the action taken when an error is encountered when retrieving the physical file name for a symbolic link on the local file system. TPhysicalFilenameOnError includes the following enumeration values and meanings:
           </p>
           <dl>
-            <dd>pfeException</dd>
+            <dt>pfeException</dt>
             <dd>
               Causes an exception to be raised for the missing file name.
             </dd>
@@ -2390,19 +2385,25 @@ Modified: MM/DD/YYYY hh:mm
             <var>GetAppConfigFileUTF8</var> is a <var>String</var> function used to get a UTF-8-encoded configuration file name for the current application. GetAppConfigFileUTF8 calls the <var>GetAppConfigFile</var> function in the <file>SysUtils</file> unit to get the return value for the function. <var>SysToUTF8</var> is called for the file name to ensure that it is encoded using the UTF-8 encoding scheme.
           </p>
           <p>
-            <var>Global</var> is a <var>Boolean</var> which indicates if system- or user-specific path information is used in the configuration file name. When Global contains <b>True</b>, the system-wide configuration path is used in the return value. Otherwise, a user-specific path is used in the return value.
+            <var>Global</var> is a <var>Boolean</var> which indicates whether system- or user-specific path information is used in the configuration file name. When Global contains <b>True</b>, the system-wide configuration path is used in the return value. Otherwise, a user-specific path is used in the return value.
           </p>
           <p>
-            <var>SubDir</var> is a <var>Boolean</var> value that indicates if a sub-directory for the application is included in the path for the configuration file. When SubDir is <b>True</b>, a sub-directory with the same name as the application is included in the path information.
+            <var>SubDir</var> is a <var>Boolean</var> value that indicates if a sub-directory for the application is included in the path for the configuration file. When SubDir is <b>True</b>, a "Config" sub-directory  is included in the path information.
           </p>
           <p>
             <var>CreateDir</var> is a <var>Boolean</var> argument that indicates if any missing directories in the configuration file path are created in the function. When CreateDir is <b>False</b>, no additional actions are performed in the function. Otherwise, the path information is passed to <var>ForceDirectoriesUTF8</var> to create any missing directories. If any of the directories are not successfully created, an <var>EInOutError</var> exception is raised with the message in <var>lrsUnableToCreateConfigDirectoryS</var>.
           </p>
+          <p>
+            The return value contains the path to the configuration file including the requested path, configuration file name, and configuration file extension.
+          </p>
         </descr>
+        <errors>
+          Raises an EInOutError exception when directories in the  path cannot be created on the local file system.
+        </errors>
         <seealso>
-          <link id="#RTL.SysUtils.GetAppConfigFile"/>
-          <link id="#RTL.SysUtils.SysToUTF8"/>
           <link id="ForceDirectoriesUTF8"/>
+          <link id="#RTL.SysUtils.GetAppConfigFile"/>
+          <link id="#LazUtils.LazUTF8.SysToUTF8"/>
         </seealso>
       </element>
       <element name="GetAppConfigFileUTF8.Result">
@@ -2712,7 +2713,6 @@ C:\
         </descr>
         <seealso>
           <link id="TInvalidateFileStateCacheEvent"/>
-          <link id="InvalidateFileStateCacheEvent"/>
         </seealso>
       </element>
 

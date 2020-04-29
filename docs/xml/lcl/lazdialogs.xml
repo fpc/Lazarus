@@ -275,7 +275,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TLazarusFileDialogForm.OnCloseQuery"/>
           <link id="TLazarusFileDialogForm.Initialize"/>
           <link id="TLazarusFileDialogForm.FileName"/>
           <link id="TLazarusFileDialogForm.ShellTreeView"/>

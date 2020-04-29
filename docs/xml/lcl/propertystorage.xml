@@ -629,7 +629,6 @@
           <link id="TCustomPropertyStorage.OnSaveProperties"/>
           <link id="TCustomPropertyStorage.OnSavingProperties"/>
           <link id="TCustomPropertyStorage.StoredValues"/>
-          <link id="TCustomPropertyStorage.NotifyLinks"/>
         </seealso>
       <notes><note>?</note><note>or?</note><note>supply links?</note><note>???</note>
         </notes>
@@ -655,7 +654,6 @@
           <link id="TCustomPropertyStorage.OnRestoreProperties"/>
           <link id="TCustomPropertyStorage.OnRestoringProperties"/>
           <link id="TCustomPropertyStorage.StoredValues"/>
-          <link id="TCustomPropertyStorage.NotifyLinks"/>
         </seealso>
       <notes><note>?</note><note>or?</note><note>supply links?</note><note>???</note>
         </notes>

@@ -362,7 +362,7 @@
         <seealso>
           <link id="TObjectArray.List"/>
           <link id="TObjectArray.Count"/>
-          <link id="T2Pointer.Item"/>
+          <link id="T2Pointer"/>
         </seealso>
       </element>
       <element name="TObjectArray.First.Result">
@@ -383,7 +383,7 @@
         </descr>
         <seealso>
           <link id="TObjectArray.List"/>
-          <link id="T2Pointer.Item"/>
+          <link id="T2Pointer"/>
         </seealso>
       </element>
       <element name="TObjectArray.IndexOf.Result">
@@ -452,7 +452,7 @@
         <seealso>
           <link id="TObjectArray.List"/>
           <link id="TObjectArray.Count"/>
-          <link id="T2Pointer.Item"/>
+          <link id="T2Pointer"/>
         </seealso>
       </element>
       <element name="TObjectArray.Last.Result">
@@ -502,7 +502,7 @@
           <link id="TObjectArray.Clear"/>
           <link id="TObjectArray.Count"/>
           <link id="TObjectArray.List"/>
-          <link id="T2Pointer.Item"/>
+          <link id="T2Pointer"/>
         </seealso>
       </element>
       <element name="TObjectArray.Assign.SrcList">
@@ -545,7 +545,7 @@
         <seealso>
           <list id="TObjectArray.List"/>
           <list id="TObjectArray.Count"/>
-          <list id="T2Pointer.Item"/>
+          <list id="T2Pointer"/>
         </seealso>
       </element>
 

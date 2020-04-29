@@ -719,9 +719,7 @@
         </short>
         <descr>
           <p>
-            <p>
-              <var>Title</var> is a String property that provides access to the title for the popup notification form. GetTitle is the read access specifier for the property. SetTitle is the write access specifier for the property.
-            </p>
+            <var>Title</var> is a String property that provides access to the title for the popup notification form. GetTitle is the read access specifier for the property. SetTitle is the write access specifier for the property.
           </p>
         </descr>
         <seealso></seealso>

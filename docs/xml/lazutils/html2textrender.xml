@@ -160,8 +160,6 @@
         </descr>
         <seealso>
           <link id="THTML2TextRenderer.Render"/>
-          <link id="THTML2TextRenderer.HtmlTag"/>
-          <link id="THTML2TextRenderer.HtmlEntity"/>
           <link id="THTML2TextRenderer.LineEndMark"/>
           <link id="THTML2TextRenderer.MoreMark"/>
         </seealso>
@@ -260,9 +258,7 @@
             The return value is the result from the <var>AddOutput</var> method, and contains <b>False</b> when the maximum number of lines has been exceeded in the renderer.
           </p>
         </descr>
-        <seealso>
-          <link id="THTML2TextRenderer.AddOutput"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="THTML2TextRenderer.HtmlEntity.Result">
         <short>True on success, False when the maximum number of lines is exceeded</short>
@@ -360,12 +356,11 @@
         <short>Defines the end-of-line character sequence</short>
         <descr>
           <p>
-            <var>LineEndMark</var> is a <var>String</var> property which contains the end-of-line character sequence inserted in the plain text output for the renderer. The default value for the property is the value from the <var>LineEnding</var> constant defined for the platform or OS. The value is inserted in the renderer output in the <var>AddOutput</var> method.
+            <var>LineEndMark</var> is a <var>String</var> property which contains the end-of-line character sequence inserted in the plain text output for the renderer. By convention, the default value for the property is the value from the <var>LineEnding</var> constant defined for the platform or OS. The value is inserted in the renderer output in the <var>AddOutput</var> method.
           </p>
         </descr>
         <seealso>
-          <link id="THTML2TextRenderer.AddOutput"/>
-          <link id="#rtl.System.LineEnding"/>
+          <link id="#RTL.System.LineEnding"/>
         </seealso>
       </element>
 
@@ -376,9 +371,6 @@
             <var>TitleMark</var> is inserted both prior to and following a title/header found in the HTML content in the <var>HtmlTag</var> method. The default value is the UTF-8 character '◈' (Decimal #9672 or Hex #x25C8).
           </p>
         </descr>
-        <seealso>
-          <link id="THTML2TextRenderer.HtmlTag"/>
-        </seealso>
       </element>
 
       <element name="THTML2TextRenderer.HorzLineMark">
@@ -400,7 +392,6 @@
         </descr>
         <seealso>
           <link id="THTML2TextRenderer.LinkEndMark"/>
-          <link id="THTML2TextRenderer.HtmlTag"/>
         </seealso>
       </element>
 
@@ -413,7 +404,6 @@
         </descr>
         <seealso>
           <link id="THTML2TextRenderer.LinkBeginMark"/>
-          <link id="THTML2TextRenderer.HtmlTag"/>
         </seealso>
       </element>
 
@@ -424,10 +414,7 @@
             <var>ListItemMark</var> is a <var>String</var> property which contains the character(s) inserted before a HTML LI tag. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
           </p>
         </descr>
-        <seealso>
-          <link id="THTML2TextRenderer.HtmlTag"/>
-          <link id="THTML2TextRenderer.AddOutput"/>
-        </seealso>
+        <seealso/>
       </element>
 
       <element name="THTML2TextRenderer.MoreMark">
@@ -439,11 +426,7 @@
             The default value for the property is three (3) Period ('.') characters - <b>NOT</b> an Ellipsis character. The value is added to the plain text output for the renderer when the maximum number of lines has been exceeded in the <var>AddOutput</var> method.
           </p>
         </descr>
-        <seealso>
-          <link id="THTML2TextRenderer.AddOutput"/>
-          <link id="THTML2TextRenderer.HtmlTag"/>
-          <link id="THTML2TextRenderer.HtmlEntity"/>
-        </seealso>
+        <seealso/>
       </element>
 
       <element name="THTML2TextRenderer.IndentStep">
@@ -455,10 +438,7 @@
             <var>IndentStep</var> is an <var>Integer</var> property used to indicate the number of space characters generated for each indentation level in the plain text output for the renderer. The default value for the property is <b>2</b>, and is used in the implementation of the <var>AddOutput</var> method.
           </p>
         </descr>
-        <seealso>
-          <link id="THTML2TextRenderer.AddOutput"/>
-          <link id="THTML2TextRenderer.HtmlTag"/>
-        </seealso>
+        <seealso/>
       </element>
 
     </module>

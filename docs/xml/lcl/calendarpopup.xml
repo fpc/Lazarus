@@ -32,7 +32,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
           <link id="ShowCalendarPopup"/>
         </seealso>
       </element>
@@ -59,8 +58,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalendarPopupForm.Calendar"/>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
           <link id="ShowCalendarPopup"/>
           <link id="#lcl.EditBtn.TDateEdit"/>
         </seealso>
@@ -78,9 +75,6 @@
         </descr>
         <seealso>
           <link id="TCalendar"/>
-          <link id="TCalendarPopupForm.ReturnDate"/>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
-          <link id="TCalendarPopupForm.Initialize"/>
           <link id="ShowCalendarPopup"/>
           <link id="TDisplaySettings"/>
         </seealso>
@@ -96,11 +90,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalendarPopupForm.Calendar"/>
           <link id="#lcl.Calendar.TCustomCalendar.HitTest"/>
           <link id="#lcl.Calendar.TCalendarPart"/>
-          <link id="TCalendarPopupForm.ReturnDate"/>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
         </seealso>
       </element>
       <element name="TCalendarPopupForm.CalendarDblClick.Sender">
@@ -126,11 +117,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalendarPopupForm.Calendar"/>
-          <link id="TCalendarPopupForm.ReturnDate"/>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
           <link id="#lcl.Forms.TCustomForm.Close"/>
-          <link id="#lcl.Controls.TControl.OnKeyDown"/>
         </seealso>
       </element>
       <element name="TCalendarPopupForm.CalendarKeyDown.Sender">
@@ -236,10 +223,6 @@
         </descr>
         <seealso>
           <link id="TCalendarPopupForm"/>
-          <link id="TCalendarPopupForm.Calendar"/>
-          <link id="TCalendarPopupForm.Initialize"/>
-          <link id="TCalendarPopupForm.KeepInView"/>
-          <link id="TCalendarPopupForm.OnReturnDate"/>
           <link id="TReturnDateEvent"/>
           <link id="#lcl.Calendar.TDisplaySettings"/>
         </seealso>

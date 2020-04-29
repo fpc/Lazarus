@@ -1206,8 +1206,9 @@ properties</short>
         </descr>
         <errors/>
         <seealso>
-          <link id="TCustomComboBox.OnClick">OnClick</link>
-          <link id="TCustomComboBox.OnSelect">OnSelect</link>
+          <link id="TCustomComboBox.OnSelect"/>
+          <link id="#LCL.Controls.TControl.Click"/>
+          <link id="#LCL.Controls.TControl.OnClick"/>
         </seealso>
       </element>
       <element name="TCustomComboBox.SelectItem.Result">
@@ -2391,7 +2392,6 @@ Assign an new string to replace the selected text.</descr>
         <short>Index of the first visible (topmost) item.</short>
         <descr/>
         <seealso>
-          <link id="TCustomListBox.MakeVisible"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3538,7 +3538,6 @@ Qt and Carbon have not implemented it.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TBasicActionLink.AssignClient">TBasicActionLink.AssignClient</link>
         </seealso>
       </element>
       <element name="TButtonActionLink.AssignClient.AClient">
@@ -4620,7 +4619,7 @@ Qt and Carbon have not implemented it.</descr>
         <descr>
           <p>
             Opaque Labels have their enclosing rectangle filled with the background color of the label.
-            This can be the color of the Parent control, when ParentColor is True. Setting Transparent 
+            This can be the color of the Parent control, when ParentColor is True. Setting Transparent
             to True makes the label transparent, not hiding any background details.
           </p><p>
             Note that the default value of this property in the LCL is true, which is different from the

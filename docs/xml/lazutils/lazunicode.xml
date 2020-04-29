@@ -37,11 +37,13 @@
           Copies the specified number of codepoints starting at a character position
         </short>
         <descr>
-          Copies the number of codepoints in CharCount from s, starting at the character position in StartCharIndex. For platforms that require UTF-16, UTF16Copy is called. For other platforms, UTF8Copy is called.
+          <p>
+            Copies the number of codepoints in <var>CharCount</var> from <var>s</var>, starting at the character position in <var>StartCharIndex</var>. For platforms that require UTF-16, <var>UTF16Copy</var> is called. For other platforms, <var>UTF8Copy</var> is called.
+          </p>
         </descr>
         <seealso>
-          <link id="#lcl.LazUtils.LazUTF16.UTF16Copy">UTF16Copy</link>
-          <link id="#lcl.LazUtils.LazUTF8.UTF8Copy">UTF8Copy</link>
+          <link id="#LazUtils.LazUTF16.UTF16Copy"/>
+          <link id="#LazUtils.LazUTF8.UTF8Copy"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->

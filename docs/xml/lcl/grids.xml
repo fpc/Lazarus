@@ -153,7 +153,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.GetDefColWidth"/>
+          <link id="TCustomGrid.DefaultColWidth"/>
         </seealso>
       </element>
 
@@ -684,10 +684,11 @@
       <element name="TItemType">
         <short></short>
         <descr>
-          <notes>
-            <note>Not used in the current implementation.</note>
-          </notes>
+          Not used in the current implementation.
         </descr>
+        <notes>
+          <note>Not used in the current implementation.</note>
+        </notes>
         <seealso></seealso>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1240,11 +1241,11 @@
         <short>Constructor for the class instance</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor using the value in <var>AOwner</var> as an argument. Create sets the value in the <var>AutoSize</var> to <b>False</b>.
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor using the value in <var>AOwner</var> as an argument. Create sets the value in the <var>AutoSize</var> property to <b>False</b>.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomMaskEdit.AutoSize"/>
+          <link id="#LCL.StdCtrls.TCustomEdit.AutoSize"/>
         </seealso>
       </element>
       <element name="TStringCellEditor.Create.AOwner">
@@ -1900,7 +1901,7 @@
         <seealso>
           <link id="TCustomGrid.OnValidateEntry"/>
           <link id="TCustomGrid.ValidateEntry"/>
-          <link id="TCustomGrid.EditorGetValue"/>
+          <link id="TCustomGrid.EditorDoGetValue"/>
           <link id="TCustomStringGrid.SelectionSetText"/>
         </seealso>
       </element>
@@ -4047,7 +4048,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element link="#rtl.Classes.TCollection.Update" name="TGridColumns.Update">
+      <element name="TGridColumns.Update" link="#rtl.Classes.TCollection.Update">
         <short>Notifies the Grid using the collection when a column is updated</short>
         <descr></descr>
         <seealso></seealso>
@@ -4068,8 +4069,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TGridColumn.Title"/>
-          <link id="TCustomGrid.OnTitleFontChanged"/>
+          <link id="TCustomGrid.TitleFont"/>
+          <link id="TGridColumnTitle.Font"/>
+          <link id="TGridColumnTitle.IsDefault"/>
         </seealso>
       </element>
 
@@ -4208,8 +4210,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TGridColumns.Count"/>
+          <link id="TGridColumns.Items"/>
           <link id="TGridColumn"/>
+          <link id="#RTL.Classes.TCollection.Count"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -4283,9 +4286,10 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.CreateColumns"/>
-          <link id="TGridColumns.Owner"/>
-          <link id="TGridColumns.Update"/>
+          <link id="TCustomGrid.ColumnsChanged"/>
           <link id="TGridColumns.InsertColumn"/>
+          <link id="TGridColumns.Update"/>
+          <link id="#RTL.Classes.TCollection.Owner"/>
         </seealso>
       </element>
 
@@ -4312,12 +4316,12 @@
           </p>
         </descr>
         <seealso>
+          <link id="TGridColumns.Clear"/>
+          <link id="TGridColumns.IndexOf"/>
           <link id="TGridColumns.Add"/>
           <link id="TGridColumns.InsertColumn"/>
           <link id="TGridColumns.RemoveColumn"/>
-          <link id="TGridColumns.Delete"/>
-          <link id="TGridColumns.Clear"/>
-          <link id="TGridColumns.IndexOf"/>
+          <link id="#RTL.Classes.TCollection.Delete"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4384,9 +4388,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.StartColSizing"/>
-          <link id="TCustomGrid.DoColSizing"/>
-          <link id="TCustomGrid.DoRowSizing"/>
+          <link id="TCustomGrid.MouseMove"/>
           <link id="TCustomGrid.MouseUp"/>
           <link id="TCustomGrid.DblClick"/>
         </seealso>
@@ -4729,7 +4731,7 @@
             <b>Key methods and events:</b>
           </p>
           <p>
-            If the user highlights a cell of the grid, the <link id="TCustomGrid.SelectCell">SelectCell</link> method is called that triggers the <link id="TCustomGrid.OnSelectCell">OnSelectCell</link> event. The position of the highlighted cell is stored within the <link id="TCustomGrid.Col">Col</link> and <link id="TCustomGrid.Row">Row</link> property.
+            If the user highlights a cell of the grid, the <link id="TCustomGrid.SelectCell">SelectCell</link> method is called that triggers the OnSelectCell event. The position of the highlighted cell is stored within the <link id="TCustomGrid.Col">Col</link> and <link id="TCustomGrid.Row">Row</link> property.
           </p>
           <p>
             The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method calculates a grid cell from a given screen position.
@@ -4911,10 +4913,10 @@
         </short>
         <descr></descr>
         <seealso>
-          <link id="TCustomGrid.ResetSizes"/>
           <link id="TCustomGrid.ScrollBy"/>
+          <link id="TCustomGrid.VisualChange"/>
+          <link id="TCustomGrid.ResetSizes"/>
           <link id="TCustomGrid.ResetOffset"/>
-          <link id="TCustomGrid.UpdateSizes"/>
         </seealso>
       </element>
 
@@ -4986,7 +4988,6 @@
         <short>Value examined in the method</short>
       </element>
 
-      <!-- WIP -->
       <!-- function Visibility: private -->
       <element name="TCustomGrid.CheckTopLeft">
         <short></short>
@@ -6338,10 +6339,8 @@
         <seealso>
           <link id="TCustomGrid.SetCursor"/>
           <link id="TCustomGrid.SetSpecialCursor"/>
-          <link id="TCustomGrid.doColSizing"/>
-          <link id="TCustomGrid.doRowSizing"/>
-          <link id="TCustomGrid.doColMoving"/>
-          <link id="TCustomGrid.doRowMoving"/>
+          <link id="TCustomGrid.MouseMove"/>
+          <link id="TCustomGrid.MouseUp"/>
         </seealso>
       </element>
       <element name="TCustomGrid.ChangeCursor.ACursor">
@@ -6615,8 +6614,8 @@
         <seealso>
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.CursorState"/>
-          <link id="TGripOption.goColSizing"/>
-          <link id="TGripOption.goRowSizing"/>
+          <link id="TGridOption.goColSizing"/>
+          <link id="TGridOption.goRowSizing"/>
           <link id="TGridCursorState.gcsColWidthChanging"/>
           <link id="TGridCursorState.gcsRowHeightChanging"/>
         </seealso>
@@ -6733,7 +6732,6 @@
           <link id="TCustomGrid.UpdateHorzScrollBar"/>
           <link id="TCustomGrid.UpdateVertScrollBar"/>
           <link id="TCustomGrid.ScrollBy"/>
-          <link id="TCustomGrid.UpdateSizes"/>
         </seealso>
       </element>
 
@@ -7137,7 +7135,7 @@
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.ColCount"/>
           <link id="TCustomGrid.HeaderClick`"/>
-          <link id="#LCL.StdCtrls.TControl.DialogChar"/>
+          <link id="#LCL.StdCtrls.TWinControl.DialogChar"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DialogChar.Result">
@@ -7214,7 +7212,6 @@
           <link id="TCustomGrid.OnEditButtonClick"/>
           <link id="TCustomGrid.OnButtonClick"/>
           <link id="TCustomGrid.MouseUp"/>
-          <link id="TButtonCellEditor.OnClick"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DoEditButtonClick.ACol">
@@ -7620,7 +7617,7 @@
         </short>
         <descr>
           <p>
-            <var>DrawThemedCell</var> is a procedure used to draw the cell at the specified coordinates using the theme services for the platform or widget set. DrawThemedCell is used to render fixed header cells in the <var>DefaultDrawCell</var> method.
+            <var>DrawThemedCell</var> is a procedure used to draw the cell at the specified coordinates using the theme services for the platform or widget set.
           </p>
           <p>
             <var>aCol</var> contains the column number for the affected cell.
@@ -7658,7 +7655,7 @@
           </table>
         </descr>
         <seealso>
-          <link id="TCustomGrid.DefaultDrawCell"/>
+          <link id="TCustomDrawGrid.DefaultDrawCell"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DrawThemedCell.aCol">
@@ -7994,8 +7991,8 @@
           </ul>
         </descr>
         <seealso>
+          <link id="TCustomGrid.ColWidths"/>
           <link id="TCustomGrid.FixedCols"/>
-          <link id="TCustomGrid.GetColWidths"/>
           <link id="TCustomGrid.GetIsCellTitle"/>
           <link id="TCustomGrid.ColumnIndexFromGridColumn"/>
           <link id="TCustomGrid.GridColumnFromColumnIndex"/>
@@ -8677,7 +8674,7 @@
         <short>Performs actions needed when the mouse wheel is scrolled in the grid</short>
         <descr></descr>
         <seealso>
-          <link id="MoveNextSelectable"/>
+          <link id="TCustomGrid.MoveNextSelectable"/>
         </seealso>
       </element>
       <element name="TCustomGrid.GridMouseWheel.Shift">
@@ -9296,7 +9293,6 @@
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.Options2"/>
           <link id="TCustomGrid.SaveContent"/>
-          <link id="TCustomGrid.LoadOptions"/>
           <link id="TCustomGrid.LoadContent"/>
         </seealso>
       </element>
@@ -9432,14 +9428,14 @@
             <var>aValue</var> is a <var>Boolean</var> argument that indicates if the specified scrollbar(s) are visible or hidden. When aValue contains <b>True</b>, the corresponding scrollbar(s) are displayed. Otherwise, they are hidden.
           </p>
           <p>
-            No actions are performed in the method if a handle has not been allocated for the grid instance (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow ensures that <var>gfUpdatingScrollbar</var> is included in the grid flags prior to calling the <var>ShowScrollBar</var> method. The flag value is removed immediately after updating the scrollbar display. Internal members used to track scrollbar visibility are set to the state requested in AValue.
+            No actions are performed in the method if a handle has not been allocated for the grid instance (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow ensures that <var>gfUpdatingScrollbar</var> is included in the grid flags prior to calling the <var>ShowScrollBar</var> routine in the LCL interface. The flag value is removed immediately after updating the scrollbar display. Internal members used to track scrollbar visibility are set to the state requested in AValue.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomControl.HandleAllocated"/>
-          <link id="TCustomGrid.ShowScrollBar"/>
           <link id="TGridFlags"/>
           <link id="TGridFlagsOption"/>
+          <link id="#LCL.Controls.TWinControl.HandleAllocated"/>
+          <link id="#LCL.LCLIntf.ShowScrollBar"/>
         </seealso>
       </element>
       <element name="TCustomGrid.ScrollBarShow.Which">
@@ -9497,7 +9493,7 @@
             The <var>aCol</var> and <var>aRow</var> parameters contain the column and the row of the highlighted cell.
           </p>
           <p>
-            Component developers may use the <var>SelectCell</var> method to react to focus changes. The <var>Result</var> is true if the cell can be selected. Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectCell">OnSelectCell</link> event instead.
+            Component developers may use the <var>SelectCell</var> method to react to focus changes. The <var>Result</var> is true if the cell can be selected. Application developers should use the <link id="TCustomDrawGrid.OnSelectCell">OnSelectCell</link> event instead.
           </p>
         </descr>
       </element>
@@ -9545,7 +9541,7 @@
         </short>
         <descr></descr>
         <seealso>
-          <link id="TCustomGrid.Color"/>
+          <link id="#LCL.Controls.TControl.Color"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9574,7 +9570,10 @@
         <short>Changes the cursor shape in the grid to the specified value</short>
         <descr></descr>
         <seealso>
+          <link id="TCustomGrid.ColSizingCursor"/>
+          <link id="TCustomGrid.RowSizingCursor"/>
           <link id="TCustomGrid.ChangeCursor"/>
+          <link id="TCustomGrid.SetSpecialCursor"/>
         </seealso>
       </element>
       <element name="TCustomGrid.SetCursor.AValue">
@@ -9903,7 +9902,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.UpdateSizes"/>
           <link id="TCustomGrid.Invalidate"/>
           <link id="TCustomGrid.BeginUpdate"/>
           <link id="TCustomGrid.EndUpdate"/>
@@ -10071,25 +10069,26 @@
             <var>ColCount</var> is an Integer that represents the number of columns in the grid, including fixed and normal columns. Changing the value in <var>ColCount</var> after <var>Columns</var> have been created causes an <var>EGridException</var> to be raised. Use the <var>Columns</var> to add or delete columns defined in the grid.
           </p>
           <p>
-            Use <var>FixedColCount</var> for the number of fixed columns in the grid.
+            Use <var>FixedCols</var> for the number of fixed columns in the grid.
           </p>
           <p>
             Use <var>VisibleColCount</var> for the number of non-fixed columns in the grid.
           </p>
           <p>
-            Use <var>RowCount</var>, <var>FixedRowCount</var>, and <var>VisibleRowCount</var> to access the row-oriented equivalents.
+            Use <var>RowCount</var>, <var>FixedRows</var>, and <var>VisibleRowCount</var> to access the row-oriented equivalents.
           </p>
         </descr>
         <errors>
           Raises an <var>EGridException</var> when the value is changed and <var>Columns</var> already exist in the grid.
         </errors>
         <seealso>
-          <link id="TCustomGrid.FixedColCount"/>
-          <link id="TCustomGrid.VisibleColCount"/>
-          <link id="TCustomGrid.RowCount"/>
-          <link id="TCustomGrid.FixedRowCount"/>
-          <link id="TCustomGrid.VisibleRowCount"/>
+          <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.FixedRows"/>
           <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.VisibleColCount"/>
+          <link id="TCustomGrid.VisibleRowCount"/>
+          <link id="TGridPropertyBackup"/>
           <link id="EGridException"/>
         </seealso>
       </element>
@@ -10100,18 +10099,16 @@
         </short>
         <descr>
           <p>
-            <var>ColRow</var> is a <var>TPoint</var> used to provide access to the current values in Col and Row as a TPoint instance. The <var>X</var> member in TPoint is used for the value in the <var>Col</var> property. The <var>Y</var> member in TPoint is used for the value in the <var>Row</var> property.
+            <var>ColRow</var> is a <var>TPoint</var> property used to provide access to the current values at the position specified in Col and Row. The <var>X</var> member in TPoint is used for the value in the <var>Col</var> property. The <var>Y</var> member in TPoint is used for the value in the <var>Row</var> property.
           </p>
           <p>
             Setting the value for the causes the <var>CheckLimitsWithError</var> method to be called for the X and Y values when <var>AllowOutboundEvents</var> is <b>False</b>. The <var>SetColRow</var> method is called to update the values in the Col and Row properties.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.GetQuickColRow"/>
-          <link id="TCustomGrid.SetQuickColRow"/>
           <link id="TCustomGrid.CheckLimitsWithError"/>
-          <link id="TCustomGrid.GetColRow"/>
           <link id="TCustomGrid.SetColRow"/>
+          <link id="TCustomGrid.AllowOutboundEvents"/>
         </seealso>
       </element>
 
@@ -10209,7 +10206,7 @@
             Use 0 for auto-sized width.
           </p>
           <p>
-            Use <link id="TCustomGrid.GetRealDefaultColWidth">GetRealDefaultColWidth</link> for real value.
+            Use GetRealDefaultColWidth for the real value.
           </p>
         </descr>
         <seealso>
@@ -10228,7 +10225,7 @@
             Use 0 for auto-sized height.
           </p>
           <p>
-            Use <link id="TCustomGrid.GetRealDefaultRowHeight">GetRealDefaultRowHeight</link> for real value.
+            Use GetRealDefaultRowHeight for the real value.
           </p>
         </descr>
         <seealso>
@@ -10563,13 +10560,12 @@
           </p>
           <ul>
             <li>DrawColumnTitleImage</li>
-            <li>GetSortTitleImageInfo</li>
             <li>AutoAdjustColumn</li>
+            <li>GetSortTitleImageInfo</li>
           </ul>
         </descr>
         <seealso>
           <link id="TCustomGrid.DrawColumnTitleImage"/>
-          <link id="TCustomGrid.GetSortTitleImageInfo"/>
           <link id="TCustomStringGrid.AutoAdjustColumn"/>
         </seealso>
       </element>
@@ -10673,7 +10669,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="TCustomGrid.TRangeSelectMode"/>
+          <link id="TRangeSelectMode"/>
           <link id="TCustomGrid.ClearSelections"/>
           <link id="TCustomGrid.AddSelectedRange"/>
           <link id="TCustomGrid.GetIsCellSelected"/>
@@ -10837,7 +10833,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.SelectionSetText"/>
           <link id="TCustomGrid.ValidateEntry"/>
           <link id="TCustomGrid.OnValidateEntry"/>
         </seealso>
@@ -11206,7 +11201,6 @@
         <descr></descr>
         <seealso>
           <link id="TCustomGrid.MouseDown"/>
-          <link id="TCustomGrid.SetRangeSelectMode"/>
         </seealso>
       </element>
 
@@ -11348,7 +11342,6 @@
         <seealso>
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.RangeSelectMode"/>
-          <link id="TCustomGrid.Selections"/>
           <link id="TGridOption.goRangeSelect"/>
           <link id="TRangeSelectMode.rsmMulti"/>
         </seealso>
@@ -11664,8 +11657,6 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.RangeSelectMode"/>
-          <link id="TCustomGrid.Selections"/>
-          <link id="TCustomGrid.SelectedRangeCount"/>
           <link id="TCustomGrid.AddSelectedRange"/>
           <link id="TCustomGrid.ClearSelections"/>
           <link id="TCustomGrid.Col"/>
@@ -11725,7 +11716,22 @@
         <short></short>
       </element>
 
-      <!-- procedure type Visibility: default -->
+      <element name="TCustomGrid.IMEEndComposition">
+        <short>Handles the WM_IME_ENDCOMPOSITION message</short>
+        <descr>
+          <p>
+            Handles the Input Method Editor API WM_IME_ENDCOMPOSITION message.
+          </p>
+          <p>
+            Dispatches the message specified in <var>Msg</var> in the current visible and active <var>Editor</var> for the control. Defined for the Windows platform only.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomGrid.IMEEndComposition.Msg">
+        <short>Message handled in the method</short>
+      </element>
+
       <element name="TGetEditEvent">
         <short>Specifies an event handler used to get edit values or masks in a grid</short>
         <descr>
@@ -12586,7 +12592,7 @@
       <element name="TDrawGrid.OnPrepareCanvas" link="TCustomGrid.OnPrepareCanvas"/>
       <element name="TDrawGrid.OnSelectEditor" link="TCustomGrid.OnSelectEditor"/>
       <element name="TDrawGrid.OnSelection" link="TCustomGrid.OnSelection"/>
-      <element name="TDrawGrid.OnSelectCell" link="TCustomGrid.OnSelectCell"/>
+      <element name="TDrawGrid.OnSelectCell" link="TCustomDrawGrid.OnSelectCell"/>
       <element name="TDrawGrid.OnSetCheckboxState" link="TCustomGrid.OnSetCheckboxState"/>
       <element name="TDrawGrid.OnSetEditText" link="TCustomGrid.OnSetEditText"/>
       <element name="TDrawGrid.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
@@ -13546,7 +13552,7 @@
         </descr>
         <seealso>
           <link id="TCustomStringGrid.Modified"/>
-          <link id="TCustomStringGrid.Celda"/>
+          <link id="TVirtualGrid.Celda"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->

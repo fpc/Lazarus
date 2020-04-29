@@ -6175,7 +6175,7 @@ docs/xml/lazutils/fpcadds.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/fpmake.xml svneol=native#text/plain
 docs/xml/lazutils/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/html2textrender.xml svneol=native#text/plain
-docs/xml/lazutils/integerlist.xml -text svneol=native#text/plain
+docs/xml/lazutils/integerlist.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_dom.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlcfg.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlread.xml svneol=native#text/plain
@@ -6206,7 +6206,7 @@ docs/xml/lazutils/lazloggerprofiling.xml svneol=native#text/plain
 docs/xml/lazutils/lazmethodlist.xml svneol=native#text/plain
 docs/xml/lazutils/lazstringutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazsysutils.xml svneol=native#text/plain
-docs/xml/lazutils/laztracer.xml -text svneol=native#text/plain
+docs/xml/lazutils/laztracer.xml svneol=native#text/plain
 docs/xml/lazutils/lazunicode.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf16.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8.xml svneol=native#text/plain
@@ -6215,13 +6215,13 @@ docs/xml/lazutils/lazutf8sysutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazutilities.xml svneol=native#text/plain
 docs/xml/lazutils/lazutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazutilsstrconsts.xml svneol=native#text/plain
-docs/xml/lazutils/lazversion.xml -text svneol=native#text/plain
+docs/xml/lazutils/lazversion.xml svneol=native#text/plain
 docs/xml/lazutils/lconvencoding.xml svneol=native#text/plain
 docs/xml/lazutils/lcsvutils.xml svneol=native#text/plain
 docs/xml/lazutils/lookupstringlist.xml svneol=native#text/plain
 docs/xml/lazutils/maps.xml svneol=native#text/plain
 docs/xml/lazutils/masks.xml svneol=native#text/plain
-docs/xml/lazutils/objectlists.xml -text svneol=native#text/plain
+docs/xml/lazutils/objectlists.xml svneol=native#text/plain
 docs/xml/lazutils/paswstring.xml svneol=native#text/plain
 docs/xml/lazutils/stringhashlist.xml svneol=native#text/plain
 docs/xml/lazutils/textstrings.xml svneol=native#text/plain
@@ -6251,7 +6251,7 @@ docs/xml/lcl/buttonpanel.xml svneol=native#text/plain
 docs/xml/lcl/buttons.xml svneol=native#text/xml
 docs/xml/lcl/calcform.xml -text svneol=native#text/plain
 docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/calendarpopup.xml -text svneol=native#text/plain
+docs/xml/lcl/calendarpopup.xml svneol=native#text/plain
 docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
@@ -6383,7 +6383,7 @@ docs/xml/lcl/stdactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls/tcustomcheckbox_allowgrayed.pas svneol=native#text/plain
 docs/xml/lcl/themes.xml svneol=native#text/plain
-docs/xml/lcl/timepopup.xml -text svneol=native#text/plain
+docs/xml/lcl/timepopup.xml svneol=native#text/plain
 docs/xml/lcl/tmschema.xml svneol=native#text/plain
 docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf

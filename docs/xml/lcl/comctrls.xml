@@ -268,7 +268,7 @@
           <var>GetDisplayName</var> is an overridden String function which returns the value displayed as the name of the collection item. The value in the Text property is used as the return value when it is not an empty string (''). Otherwise, the inherited GetDisplayName method is called to get the return value.
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.GetDisplayName"/>
+          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
         </seealso>
       </element>
       <element name="TStatusPanel.GetDisplayName.Result">
@@ -292,7 +292,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.SetIndex">TCollectionItem.SetIndex</link>
+          <link id="#rtl.Classes.TCollectionItem.Index"/>
         </seealso>
       </element>
       <element name="TStatusPanel.SetIndex.Value">
@@ -436,7 +436,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
+          <link id="#rtl.Classes.TPersistent.Owner"/>
         </seealso>
       </element>
       <element name="TStatusPanels.GetOwner.Result">
@@ -1004,8 +1004,8 @@
         <short>Event handler signalled to draw a panel in the status bar</short>
         <descr>
           <p>
+            <var>OnDrawPanel</var> is an event handler used to draw the specified panel on the status bar. OnDrawPanel is signalled (when assigned) from the DrawPanel method. Assign an object procedure using the signature in TDrawPanelEvent to render the  specified panel to the desired rectangle in the status bar.
           </p>
-          <var>OnDrawPanel</var> is an event handler used to draw the specified panel on the status bar. OnDrawPanel is signalled (when assigned) from the DrawPanel method. Assign an object procedure using the signature in TDrawPanelEvent to render the  specified panel to the desired rectangle in the status bar.
         </descr>
         <seealso/>
       </element>
@@ -1491,7 +1491,7 @@
         <short/>
       </element>
 
-      <element name="TNBPages.Get" link="#rtl.Classes.TStrings.Get">
+      <element name="TNBPages.Get" link="#rtl.Classes.TStringList.Get">
         <short/>
         <descr/>
         <seealso/>
@@ -1503,7 +1503,7 @@
         <short/>
       </element>
 
-      <element name="TNBPages.GetCount" link="#rtl.Classes.TStrings.GetCount">
+      <element name="TNBPages.GetCount" link="#rtl.Classes.TStringList.GetCount">
         <short/>
         <descr/>
         <seealso/>
@@ -1512,7 +1512,7 @@
         <short/>
       </element>
 
-      <element name="TNBPages.GetObject" link="#rtl.Classes.TStrings.GetObject">
+      <element name="TNBPages.GetObject" link="#rtl.Classes.TStringList.GetObject">
         <short/>
         <descr/>
         <seealso/>
@@ -1524,7 +1524,7 @@
         <short/>
       </element>
 
-      <element name="TNBPages.Put" link="#rtl.Classes.TStrings.Put">
+      <element name="TNBPages.Put" link="#rtl.Classes.TStringList.Put">
         <short/>
         <descr/>
         <seealso/>
@@ -2758,8 +2758,9 @@
         </descr>
         <seealso>
           <link id="TCustomTabControl.Images"/>
-          <link id="TCustomTabControl.DoImageListChange"/>
+          <link id="TCustomTabControl.ImagesWidth"/>
           <link id="TCustomTabControl.UpdateTabProperties"/>
+          <link id="TChangeLink.OnChange"/>
         </seealso>
       </element>
 
@@ -3271,9 +3272,10 @@
         <short>Convenience routine used to make the TPageControl more intuitive to use</short>
         <descr/>
         <seealso>
+          <link id="TTabSheet.PageControl"/>
+          <link id="TPageControl.Pages"/>
+          <link id="TPageControl.ActivePage"/>
           <link id="TPageControl.GetPageClass"/>
-          <link id="TPageControl.PageControl"/>
-          <link id="TTabSheet"/>
         </seealso>
       </element>
       <element name="TPageControl.AddTabSheet.Result">
@@ -3895,7 +3897,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Get">TStrings.Get</link>
+          <link id="#rtl.Classes.TStringList.Get"/>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Get.Result">
@@ -3905,7 +3907,7 @@
         <short/>
       </element>
 
-      <element name="TTabControlNoteBookStrings.GetCount" link="#rtl.Classes.TStrings.GetCount">
+      <element name="TTabControlNoteBookStrings.GetCount" link="#rtl.Classes.TStringList.GetCount">
         <short/>
         <descr/>
         <seealso/>
@@ -3920,7 +3922,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.GetObject"/>
+          <link id="#rtl.Classes.TStringList.GetObject"/>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.GetObject.Result">
@@ -4005,7 +4007,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Put"/>
+          <link id="#rtl.Classes.TStringList.Put"/>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Put.Index">
@@ -4021,7 +4023,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.PutObject"/>
+          <link id="#rtl.Classes.TStringList.PutObject"/>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.PutObject.Index">
@@ -4067,7 +4069,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.SetUpdateState"/>
+          <link id="#rtl.Classes.TStringList.SetUpdateState"/>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.SetUpdateState.Updating">
@@ -4492,7 +4494,7 @@
         <short>Sets the value for the Options property</short>
         <descr/>
         <seealso>
-          <link id="TTabControl.Options"/>
+          <link id="TCustomTabControl.Options"/>
           <link id="TCustomTabControl.SetOptions"/>
         </seealso>
       </element>
@@ -4577,7 +4579,7 @@
         <short>Sets the value for the TabIndex property</short>
         <descr/>
         <seealso>
-          <link id="TTabControl.TabIndex"/>
+          <link id="TCustomTabControl.TabIndex"/>
         </seealso>
       </element>
       <element name="TTabControl.SetTabIndex.Value">
@@ -6592,7 +6594,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.SetIndex"/>
+          <link id="#rtl.Classes.TCollectionItem.Index"/>
         </seealso>
       </element>
       <element name="TListColumn.SetIndex.AValue">
@@ -6605,7 +6607,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.GetDisplayName"/>
+          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
         </seealso>
       </element>
       <element name="TListColumn.GetDisplayName.Result">
@@ -8873,12 +8875,12 @@
         <short>event handler signalled to render an owner drawn item</short>
         <descr>
           <p>
-            OnDrawItem is a TLVDrawItemEvent  property which is the event handler signalled to render an owner drawn item. The event is triggered (when assigned) in the DrawItem method only when OwnerDraw is set to True and ListStyle contains vsReport.
+            OnDrawItem is a TLVDrawItemEvent  property which is the event handler signalled to render an owner drawn item. The event is triggered (when assigned) in the DrawItem method only when OwnerDraw is set to True and ViewStyle contains vsReport.
           </p>
         </descr>
         <seealso>
           <link id="TCustomListView.OwnerDraw"/>
-          <link id="TCustomListView.ListStyle"/>
+          <link id="TCustomListView.ViewStyle"/>
           <link id="TCustomListView.DrawItem"/>
         </seealso>
       </element>
@@ -10719,7 +10721,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TBasicActionLink.AssignClient">TBasicActionLink.AssignClient</link>
+          <link id="#rtl.Classes.TBasicActionLink.AssignClient"/>
         </seealso>
       </element>
       <element name="TToolButtonActionLink.AssignClient.AClient">
@@ -11367,12 +11369,12 @@
         </short>
         <descr>
           <p>
-            <var>Index</var> is a read-only <var>Integer</var> property with the sequence number for the current button in the list of buttons. When the internal toolbar has been assigned, its <var>IndexOf</var> method is called to get the position for the current class instance in the toolbar control. When the internal toolbar is unassigned (contains <b>Nil</b>), the value <b>-1</b> is used as the return value.
+            <var>Index</var> is a read-only <var>Integer</var> property with the sequence number for the current button in the list of buttons. When the internal toolbar button list has been assigned, its <var>IndexOf</var> method is called to get the position for the current class instance in the toolbar control. When the internal toolbar is unassigned (contains <b>Nil</b>), the value <b>-1</b> is used as the return value.
           </p>
         </descr>
         <seealso>
-          <link id="TToolButton.Parent"/>
-          <link id="TToolBar.IndexOf"/>
+          <link id="TToolBar.Buttons"/>
+          <link id="TToolBar.ButtonList"/>
         </seealso>
       </element>
 
@@ -12329,9 +12331,9 @@
           <var>ButtonHeight</var> - the height of the buttons
         </short>
         <descr>
-          <p>Use 0 for auto-sized value</p>
+          <p>Use 0 for auto-sized value.</p>
           <p>
-            Use <link id="TToolBar.GetRealButtonHeight">GetRealButtonHeight</link> to get the real value.
+            An internal member with the real height for buttons is maintained when reading or writing the value for the property.
           </p>
         </descr>
         <seealso/>
@@ -12344,7 +12346,7 @@
         <descr>
           <p>Use 0 for auto-sized value</p>
           <p>
-            Use <link id="TToolBar.GetRealButtonWidth">GetRealButtonWidth</link> ti get the real value.
+            An internal member is maintained when reading or writing the value for the property.
           </p>
         </descr>
         <seealso/>
@@ -12368,10 +12370,7 @@
       <element name="TToolBar.DropDownWidth">
         <short>Width of the drop down arrow button.</short>
         <descr>
-          <p>Use 0 for auto-sized value</p>
-          <p>
-            Use <link id="TToolBar.GetRealDropDownWidth">GetRealDropDownWidth</link> to get the real value.
-          </p>
+          <p>Use 0 for auto-sized value.</p>
         </descr>
       </element>
 
@@ -12453,7 +12452,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TToolBar.UpdateVisibleBar"/>
           <link id="TToolBar.Buttons"/>
           <link id="TToolButton"/>
         </seealso>
@@ -19844,9 +19842,6 @@
           <p>
             Use 0 for auto-sized value.
           </p>
-          <p>
-            Use <link id="TCustomTreeView.GetRealIndent">GetRealIndent</link> for real value.
-          </p>
         </descr>
         <seealso/>
       </element>
@@ -20614,9 +20609,6 @@
         <short>Size of expand/collapse (fold/unfold) symbol.</short>
         <descr>
           <p>Use 0 for auto-sized value.</p>
-          <p>
-            Use <link id="TCustomTreeView.GetRealExpandSignSize">GetRealExpandSignSize</link> for real value.
-          </p>
         </descr>
       </element>
 
@@ -21175,7 +21167,7 @@
         <seealso/>
       </element>
 
-      <element name="THeaderSection.GetDisplayName" link="#RTL.Classes.TCollectionItem.GetDisplayName">
+      <element name="THeaderSection.GetDisplayName" link="#RTL.Classes.TCollectionItem.DisplayName">
         <short/>
         <descr/>
         <seealso/>
@@ -21317,7 +21309,7 @@
           <var>GetOwner</var> returns a HeaderControl, overriding inherited value
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
+          <link id="#rtl.Classes.TPersistent.Owner"/>
         </seealso>
       </element>
       <element name="THeaderSections.GetOwner.Result">

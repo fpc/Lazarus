@@ -216,7 +216,7 @@
         <seealso>
           <link id="TPreviewFileControl"/>
           <link id="TPreviewFileDialog.CreatePreviewControl"/>
-          <link id="TPreviewFileDialog.Execute"/>
+          <link id="#LCL.Dialogs.TOpenDialog.Execute"/>
         </seealso>
       </element>
 
@@ -285,11 +285,10 @@
         </descr>
         <seealso>
           <link id="TOpenPictureDialog.ImageCtrl"/>
-          <link id="TOpenPictureDialog.PreviewFileControl"/>
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.InitPreviewControl" link="#LCL.ExtDlgs.TPreviewFileDialog.InitPreviewControl">
+      <element name="TOpenPictureDialog.InitPreviewControl" link="TPreviewFileDialog.InitPreviewControl">
         <short>Initializes the PreviewFileControl for the dialog</short>
         <descr>
           <p>
@@ -299,7 +298,6 @@
         <seealso>
           <link id="TPreviewFileDialog.PreviewFileControl"/>
           <link id="TPreviewFileDialog.CreatePreviewControl"/>
-          <link id="TPreviewFileDialog.PictureGroupBox"/>
           <link id="TOpenPictureDialog.ImageCtrl"/>
         </seealso>
       </element>
@@ -343,10 +341,8 @@
         <seealso>
           <link id="TOpenPictureDialog.ImageCtrl"/>
           <link id="TOpenPictureDialog.PictureGroupBox"/>
-          <link id="TOpenPictureDialog.DoSelectionChange"/>
           <link id="TOpenPictureDialog.ClearPreview"/>
-          <link id="TPreviewFileDialog.PreviewFileName"/>
-          <link id="TFileDialog.FileName"/>
+          <link id="#LCL.Dialogs.TFileDialog.FileName"/>
         </seealso>
       </element>
 
@@ -729,9 +725,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Forms.TPosition.poMainFormCenter"/>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalendarDialog.Execute"/>
+          <link id="#lcl.Forms.TPosition"/>
         </seealso>
       </element>
 
@@ -823,10 +819,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalculatorForm.OnClose"/>
-          <link id="TCalculatorDialog.Execute"/>
-          <link id="TCalculatorDialog.DoClose"/>
-          <link id="TCalculatorDialog.OnClose"/>
+          <link id="#LCL.CalcForm.TCalculatorForm.OnClose"/>
+          <link id="#LCL.CalcForm.TCalculatorDialog.Execute"/>
+          <link id="#LCL.CalcForm.TCalculatorDialog.OnDialogClose"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogClose.Sender">
@@ -849,8 +844,7 @@
         <seealso>
           <link id="TCalculatorForm.OnShow"/>
           <link id="TCalculatorDialog.Execute"/>
-          <link id="TCalculatorDialog.DoShow"/>
-          <link id="TCalculatorDialog.OnShow"/>
+          <link id="TCalculatorDialog.OnDialogShow"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogShow.Sender">
@@ -870,10 +864,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalculatorForm.OnCloseQuery"/>
-          <link id="TCalculatorDialog.Execute"/>
-          <link id="TCalculatorDialog.DoCanClose"/>
-          <link id="TCalculatorDialog.OnCanClose"/>
+          <link id="#LCL.CalcForm.TCalculatorForm.OnCloseQuery"/>
+          <link id="#LCL.CalcForm.TCalculatorDialog.Execute"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
@@ -1027,7 +1019,6 @@
         </descr>
         <seealso>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Value"/>
         </seealso>
       </element>
@@ -1043,9 +1034,7 @@
         </descr>
         <seealso>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Execute"/>
-          <link id="TCalculatorDialog.UserChoice"/>
         </seealso>
       </element>
 
@@ -1060,7 +1049,6 @@
         </descr>
         <seealso>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Execute"/>
         </seealso>
       </element>
@@ -1076,7 +1064,7 @@
           <dl>
             <dt>clNormal</dt>
             <dd>Buttons and panels use a larger size with more whitespace</dd>
-            <dl>clSimple</dl>
+            <dt>clSimple</dt>
             <dd>Buttons and panels use a more compact size with less whitespace</dd>
           </dl>
           <p>
@@ -1086,7 +1074,6 @@
         <seealso>
           <link id="#lcl.CalcForm.TCalculatorLayout"/>
           <link id="#lcl.CalcForm.CreateCalculatorForm"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Execute"/>
         </seealso>
       </element>
@@ -1106,7 +1093,6 @@
         <seealso>
           <link id="TCalculatorDialog.Value"/>
           <link id="TCalculatorDialog.CalcDisplay"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="#lcl.CalcForm.CalcDefPrecision"/>
           <link id="#rtl.SysUtils.FloatToStrF"/>
@@ -1128,9 +1114,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalendarDialog.CalcDisplay"/>
           <link id="TCalendarDialog.Execute"/>
-          <link id="TCalendarDialog.DlgForm"/>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
         </seealso>
       </element>
@@ -1149,8 +1133,7 @@
         </descr>
         <seealso>
           <link id="TCalculatorDialog.CalcKey"/>
-          <link id="TCalculatorDialog.DlgForm"/>
-          <link id="#lcl.CalcFrom.TCalculatorForm.OnCalcKey"/>
+          <link id="#lcl.CalcForm.TCalculatorForm.OnCalcKey"/>
           <link id="#lcl.Controls.TKeyPressEvent"/>
         </seealso>
       </element>
@@ -1169,7 +1152,6 @@
         </descr>
         <seealso>
           <link id="TCalculatorDialog.Change"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Execute"/>
           <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="#rtl.Classes.TNotifyEvent"/>
@@ -1185,7 +1167,6 @@
         </descr>
         <seealso>
           <link id="#lcl.CalcForm.TCalculatorForm.OnDisplayChange"/>
-          <link id="TCalculatorDialog.DlgForm"/>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalculatorDialog.DisplayChange"/>
           <link id="#rtl.Classes.TNotifyEvent"/>
@@ -1209,8 +1190,6 @@
         </descr>
         <seealso>
           <link id="TCalculatorDialog.Execute"/>
-          <link id="TCalculatorDialog.DlgForm"/>
-          <link id="#lcl.CalcForm.TCalculatorForm.ScaleBy"/>
         </seealso>
       </element>
 
@@ -1277,10 +1256,8 @@
           <link id="TExtCommonDialog"/>
           <link id="TCalendarDialog.DlgForm"/>
           <link id="TCalendarDialog.Date"/>
-          <link id="TCalendarDialog.DialopPosition"/>
+          <link id="TCalendarDialog.DialogPosition"/>
           <link id="TCalendarDialog.Execute"/>
-          <link id="TCalendarDialog.UserChoice"/>
-          <link id="TCalendarDialog.Calendar"/>
           <link id="#lcl.Calendar.TCalendar"/>
         </seealso>
       </element>

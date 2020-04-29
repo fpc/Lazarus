@@ -126,8 +126,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TComponentDataLink.OnFocusControl">TComponentDataLink.OnFocusControl</link>
-          <link id="TCustomDBGrid.OnFocusControl">TCustomDBGrid.OnFocusControl</link>
+          <link id="TComponentDataLink.OnFocusControl"/>
         </seealso>
       </element>
       <!-- argument visibility: default -->
@@ -525,8 +524,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDbGridStatus">TDbGridStatus</link>
-          <link id="#lcl.DBGrids.TDBGrid.GridStatus">TDBGrid.GridStatus</link>
+          <link id="TDbGridStatus"/>
+          <link id="TCustomDBGrid.GridStatus"/>
         </seealso>
       </element>
 
@@ -585,8 +584,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDbGridStatusItem">TDbGridStatusItem</link>
-          <link id="#lcl.DBGrids.TDBGrid.GridStatus">TDBGrid.GridStatus</link>
+          <link id="TDbGridStatusItem"/>
+          <link id="TCustomDBGrid.GridStatus"/>
         </seealso>
       </element>
 
@@ -602,8 +601,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDBGrid.OnSelectEditor">TDBGrid.OnSelectEditor</link>
-          <link id="#lcl.DBGrids.TDBGrid.SelectEditor">TDBGrid.SelectEditor</link>
+          <link id="#lcl.DBGrids.TDBGrid.OnSelectEditor"/>
+          <link id="#lcl.DBGrids.TCustomDBGrid.SelectEditor"/>
         </seealso>
       </element>
 
@@ -1197,11 +1196,11 @@
             <var>TComponentDataLink</var> is a TDatalink descendant that maintains an association between a component and its linked dataset. TComponentDataLink coordinates the actions of the component and the dataset, and allows the component to respond to data events. TComponentDataLink defines event handlers which can be used to forward dataset events to the component implementation.
           </p>
           <p>
-            TComponentDataLink is the type used to implement the <var>TDBGrid.DataLink</var> property.
+            TComponentDataLink is the type used to implement the <var>TCustomDBGrid.DataLink</var> property.
           </p>
         </descr>
         <seealso>
-          <link id="TDBGrid.DataLink">TDBGrid.DataLink</link>
+          <link id="TCustomDBGrid.DataLink"/>
         </seealso>
       </element>
 
@@ -1314,9 +1313,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.RecordChanged">TDataLink.RecordChanged</link>
-          <link id="TComponentDataLink.OnRecordChanged">TComponentDataLink.OnRecordChanged</link>
-          <link id="TDBGrid.OnRecordChanged">TDBGrid.OnRecordChanged</link>
+          <link id="TCustomDBGrid.OnRecordChanged"/>
+          <link id="TComponentDataLink.OnRecordChanged"/>
+          <link id="#fcl.db.TDataLink.RecordChanged"/>
         </seealso>
       </element>
 
@@ -1338,7 +1337,7 @@
         <seealso>
           <link id="#fcl.db.TDataLink.DatasetChanged">TDataLink.DatasetChanged</link>
           <link id="TComponentDataLink.OnDatasetChanged">TComponentDataLink.OnDatasetChanged</link>
-          <link id="TDBGrid.OnDatasetChanged">TDBGrid.OnDatasetChanged</link>
+          <link id="TCustomDBGrid.OnDatasetChanged"/>
         </seealso>
       </element>
 
@@ -1374,8 +1373,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.LayoutChanged">TDataLink.LayoutChanged</link>
-          <link id="TDBGrid.OnLayoutChanged">TDBGrid.OnLayoutChanged</link>
+          <link id="#fcl.db.TDataLink.LayoutChanged"/>
+          <link id="TCustomDBGrid.LayoutChanged"/>
         </seealso>
       </element>
 
@@ -1390,8 +1389,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.DatasetScrolled">TDataLink.DatasetScrolled</link>
-          <link id="TDBGrid.OnDataSetScrolled">TDBGrid.OnDataSetScrolled</link>
+          <link id="#fcl.db.TDataLink.ActiveRecord"/>
+          <link id="#fcl.db.TDataLink.DatasetScrolled"/>
         </seealso>
       </element>
 
@@ -1442,7 +1441,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.EditingChanged">TDataLink.EditingChanged</link>
+          <link id="TCustomDBGrid.OnEditingChanged"/>
+          <link id="#fcl.db.TDataLink.EditingChanged"/>
         </seealso>
       </element>
 
@@ -1966,9 +1966,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TColumn.Field">TColumn.Field</link>
-          <link id="TColumn.GetDisplayFormat">TColumn.GetDisplayFormat</link>
-          <link id="#fcl.db.TField.DisplayFormat">TField.DisplayFormat</link>
+          <link id="TColumn.Field"/>
+          <link id="TColumn.DisplayFormat"/>
         </seealso>
       </element>
       <!-- function result visibility: default -->
@@ -2046,8 +2045,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TColumn.FieldName">TColumn.FieldName</link>
-          <link id="#rtl.Classes.TCollectionItem.GetDisplayName">TCollectionItem.GetDisplayName</link>
+          <link id="TColumn.FieldName"/>
+          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
         </seealso>
       </element>
       <!-- function result visibility: default -->
@@ -2066,9 +2065,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TGridColumn.GetDefaultReadOnly">TGridColumn.GetDefaultReadOnly</link>
-          <link id="#lcl.Grids.TGrid.ReadOnly">TGrid.ReadOnly</link>
-          <link id="#rtl.DB.TField.ReadOnly">TField.ReadOnly</link>
+          <link id="TGridColumn.GetDefaultReadOnly"/>
+          <link id="TCustomDBGrid.ReadOnly"/>
+          <link id="#fcl.Db.TField.ReadOnly"/>
         </seealso>
       </element>
       <!-- function result visibility: default -->
@@ -2091,7 +2090,6 @@
         </descr>
         <seealso>
           <link id="TGridColumn.GetDefaultWidth">TGridColumn.GetDefaultWidth</link>
-          <link id="CalcColumnFieldWidth">CalcColumnFieldWidth</link>
         </seealso>
       </element>
       <!-- function result visibility: default -->
@@ -2113,8 +2111,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TGridColumn.GetPickList">TGridColumn.GetPickList</link>
-          <link id="#fcl.DB.TField">TField</link>
+          <link id="#lcl.Grids.TGridColumn.PickList"/>
+          <link id="#fcl.DB.TField"/>
         </seealso>
       </element>
       <!-- function result visibility: default -->
@@ -2175,15 +2173,15 @@
           <p>
             LinkField finds the Field in the linked dataset with the name specified in FieldName. The TField instance is stored in the Field property. LinkField calls the ApplyDisplayFormat method to update the DisplayFormat used for the column.
           </p>
-          <note>
+          <p>
             LinkField is called when reading the value for the Field property and it has not already been assigned.
-          </note>
+          </p>
         </descr>
         <seealso>
-          <link id="TColumn.Field">TColumn.Field</link>
-          <link id="TColumn.DisplayFormat">TColumn.DisplayFormat</link>
-          <link id="TColumn.ApplyDisplayFormat">TColumn.ApplyDisplayFormat</link>
-          <link id="TDBGrid.DataLink">TDBGrid.DataLink</link>
+          <link id="TColumn.LinkField"/>
+          <link id="TColumn.DisplayFormat"/>
+          <link id="TColumn.Field"/>
+          <link id="TCustomDBGrid.DataLink"/>
         </seealso>
       </element>
 
@@ -2263,8 +2261,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.db.TField">TField</link>
-          <link id="TColumn.LinkField">TColumn.LinkField</link>
+          <link id="#fcl.db.TField"/>
+          <link id="TColumn.LinkField"/>
         </seealso>
       </element>
 
@@ -2279,9 +2277,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TColumn.Create">TColumn.Create</link>
-          <link id="TDBGridColumns.ResetColumnsOrder">TDBGridColumns.ResetColumnsOrder</link>
-          <link id="CompareDesignIndex">CompareDesignIndex</link>
+          <link id="TDBGridColumns.ResetColumnsOrder"/>
+          <link id="TColumn.Create"/>
         </seealso>
       </element>
 
@@ -2396,7 +2393,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Update">TCollection.Update</link>
+          <link id="#rtl.Classes.TCollection.Update"/>
         </seealso>
       </element>
       <!-- argument visibility: default -->
@@ -2522,9 +2519,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDBGridColumns.Items">TDBGridColumns.Items</link>
-          <link id="TColumn.IsDesignColumn">TColumn.IsDesignColumn</link>
-          <link id="TColumn.ResetColumnsOrder">TColumn.ResetColumnsOrder</link>
+          <link id="TDBGridColumns.Items"/>
+          <link id="TDBGridColumns.ResetColumnsOrder"/>
+          <link id="TColumn.IsDesignColumn"/>
         </seealso>
       </element>
 
@@ -2550,8 +2547,8 @@
             </p>
         </descr>
         <seealso>
-          <link id="TDBGrid.GridStatus">TDBGrid.GridStatus</link>
-          <link id="TDBGrid.OptionsExtra">TDBGrid.OptionsExtra</link>
+          <link id="TCustomDBGrid.GridStatus"/>
+          <link id="TCustomDBGrid.OptionsExtra"/>
         </seealso>
       </element>
 
@@ -3678,7 +3675,6 @@
         </descr>
         <seealso>
           <link id="TCustomDBGrid.BeginLayout">TCustomDBGrid.BeginLayout</link>
-          <link id="TCustomDBGrid.DoLayoutChanged">TCustomDBGrid.DoLayoutChanged</link>
           <link id="TCustomDBGrid.LayoutChanged">TCustomDBGrid.LayoutChanged</link>
           <link id="TCustomDBGrid.Options">TCustomDBGrid.Options</link>
           <link id="TCustomDBGrid.AutoAdjustColumn">TCustomDBGrid.AutoAdjustColumn</link>
