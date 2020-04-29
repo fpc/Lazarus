@@ -51,6 +51,7 @@ uses
 
 type
 
+{$IFDEF HASX}
   { TDummyWidget }
 
   TDummyWidget = class(TObject) {needed for accurate frame on x11}
@@ -68,6 +69,7 @@ type
     procedure HideWidget;
     property Widget: PGtkWidget read FWidget write FWidget;
   end;
+{$ENDIF}
 
   { TGtk2WidgetSet }
 
