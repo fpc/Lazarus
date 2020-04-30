@@ -139,10 +139,6 @@ msgstr "Outras opções"
 msgid "Unit names, separated by commas"
 msgstr "Nomes de unidade, separadas por vírgulas"
 
-#: tcreatecodeform.etoplevelclassname.text
-msgid "TMyObject"
-msgstr ""
-
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
 msgstr "Argumentos construtor"

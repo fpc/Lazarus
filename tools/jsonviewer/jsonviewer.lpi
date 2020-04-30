@@ -15,6 +15,9 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
+      <ExcludedIdentifiers Count="1">
+        <Item1 Value="tcreatecodeform.etoplevelclassname.text"/>
+      </ExcludedIdentifiers>
     </i18n>
     <VersionInfo>
       <Language Value=""/>
