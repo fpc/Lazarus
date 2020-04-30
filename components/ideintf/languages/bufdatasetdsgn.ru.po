@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: bufdatasetdsgn.lrsbufdsfilters
+msgid "XML data files|*.xml;Binary data files|*.dat"
+msgstr "Файлы данных XML|*.xml;Двоичные файлы данных|*.dat"
+
+#: bufdatasetdsgn.lrscopyfromdataset
+msgid "Copy data from other dataset"
+msgstr "Копировать данные из другого набора"
+
+#: bufdatasetdsgn.lrscreatedataset
+msgid "Create dataset"
+msgstr "Создать набор данных"
+
+#: bufdatasetdsgn.lrsdatasetactive
+msgid "Dataset is already active, close it first."
+msgstr "Сначала следует закрыть активный набор данных."
+
+#: bufdatasetdsgn.lrsloadfromfile
+msgid "Load data from file"
+msgstr "Загрузить данные из файла"
+
+#: bufdatasetdsgn.lrsnodatasetsavailableforcopy
+msgid "No dataset available to copy data from."
+msgstr "Отсутствуют наборы данных для копирования из них."
+
+#: bufdatasetdsgn.lrsprovidedatafilename
+msgid "Select a data file to save data to"
+msgstr "Выберите файл для сохранения данных"
+
+#: bufdatasetdsgn.lrssavetofile
+msgid "Save data to file"
+msgstr "Сохранить данные в файл"
+
+#: bufdatasetdsgn.lrsselectdatafilename
+msgid "Select a file with data to load into dataset"
+msgstr "Выберите файл с данными для загрузки в набор"
+

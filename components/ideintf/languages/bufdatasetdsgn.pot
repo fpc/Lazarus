@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: bufdatasetdsgn.lrsbufdsfilters
+msgid "XML data files|*.xml;Binary data files|*.dat"
+msgstr ""
+
+#: bufdatasetdsgn.lrscopyfromdataset
+msgid "Copy data from other dataset"
+msgstr ""
+
+#: bufdatasetdsgn.lrscreatedataset
+msgid "Create dataset"
+msgstr ""
+
+#: bufdatasetdsgn.lrsdatasetactive
+msgid "Dataset is already active, close it first."
+msgstr ""
+
+#: bufdatasetdsgn.lrsloadfromfile
+msgid "Load data from file"
+msgstr ""
+
+#: bufdatasetdsgn.lrsnodatasetsavailableforcopy
+msgid "No dataset available to copy data from."
+msgstr ""
+
+#: bufdatasetdsgn.lrsprovidedatafilename
+msgid "Select a data file to save data to"
+msgstr ""
+
+#: bufdatasetdsgn.lrssavetofile
+msgid "Save data to file"
+msgstr ""
+
+#: bufdatasetdsgn.lrsselectdatafilename
+msgid "Select a file with data to load into dataset"
+msgstr ""
+
