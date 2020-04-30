@@ -1,0 +1,16 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: generatesqldlg.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr ""
+
+#: generatesqldlg.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr ""
+
+#: generatesqldlg.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr ""
+

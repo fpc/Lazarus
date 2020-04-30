@@ -294,7 +294,7 @@ Resourcestring
   SEditSQL = 'Edit SQL ...';
   SGenerateUpdateSQL = 'Generate update SQL';
   SEditUpdateSQL = 'Edit all SQL statements';
-  SErrConnectionNotAssigned = 'Database not assigned. Assign Database first';
+  SErrConnectionNotAssigned = 'Database not assigned. Assign Database first.';
 
   SFireBirdDatabases = 'Firebird databases';
   SSQLite3Databases = 'SQLite3 databases';

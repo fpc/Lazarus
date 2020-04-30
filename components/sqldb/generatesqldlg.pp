@@ -118,7 +118,7 @@ implementation
 Resourcestring
   lrsGeneratesqlstatements = 'Edit/Generate SQL statements';
   lrsSQLDataSetOpen = 'Dataset not open: %s';
-  lrsSQLGenSelect = 'You must select fields to be updated and key fields';
+  lrsSQLGenSelect = 'You must select fields to be updated and key fields.';
 
 
 Function GenerateSQL(Q : TSQLQuery): Boolean;

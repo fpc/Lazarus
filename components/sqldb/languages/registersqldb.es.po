@@ -18,7 +18,7 @@ msgid "Edit all SQL statements"
 msgstr ""
 
 #: registersqldb.serrconnectionnotassigned
-msgid "Database not assigned. Assign Database first"
+msgid "Database not assigned. Assign Database first."
 msgstr ""
 
 #: registersqldb.sfirebirddatabases
