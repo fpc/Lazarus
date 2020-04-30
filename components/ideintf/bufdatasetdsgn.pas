@@ -5,7 +5,7 @@ unit bufdatasetdsgn;
 interface
 
 uses
-  Classes, SysUtils, DB, bufdataset, ComponentEditors, FieldsEditor;
+  Classes, SysUtils, DB, bufdataset, ComponentEditors, FieldsEditor, ObjInspStrConsts;
 
 Type
 
@@ -33,17 +33,6 @@ Type
 implementation
 
 Uses TypInfo, Forms, Dialogs, LazIDEintf, selectdatasetdlg;
-
-resourcestring
-  lrsDatasetActive = 'Dataset is already active, close it first.';
-  lrsCreateDataset = 'Create dataset';
-  lrsLoadFromFile = 'Load data from file';
-  lrsSaveToFile = 'Save data to file';
-  lrsSelectDataFileName = 'Select a file with data to load into dataset';
-  lrsProvideDataFileName = 'Select a data file to save data to';
-  lrsBufDSFilters = 'XML data files|*.xml;Binary data files|*.dat';
-  lrsCopyFromDataset = 'Copy data from other dataset';
-  lrsNoDatasetsAvailableForCopy = 'No dataset available to copy data from.';
 
 { TBufDatasetDesignEditor }
 

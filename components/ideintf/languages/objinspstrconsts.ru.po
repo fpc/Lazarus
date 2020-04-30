@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-12 19:27+0300\n"
+"PO-Revision-Date: 2020-05-01 02:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -297,6 +297,42 @@ msgstr "IfNDef"
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
 msgstr "Установить значение"
+
+#: objinspstrconsts.lrsbufdsfilters
+msgid "XML data files|*.xml;Binary data files|*.dat"
+msgstr "Файлы данных XML|*.xml;Двоичные файлы данных|*.dat"
+
+#: objinspstrconsts.lrscopyfromdataset
+msgid "Copy data from other dataset"
+msgstr "Копировать данные из другого набора"
+
+#: objinspstrconsts.lrscreatedataset
+msgid "Create dataset"
+msgstr "Создать набор данных"
+
+#: objinspstrconsts.lrsdatasetactive
+msgid "Dataset is already active, close it first."
+msgstr "Сначала следует закрыть активный набор данных."
+
+#: objinspstrconsts.lrsloadfromfile
+msgid "Load data from file"
+msgstr "Загрузить данные из файла"
+
+#: objinspstrconsts.lrsnodatasetsavailableforcopy
+msgid "No dataset available to copy data from."
+msgstr "Отсутствуют наборы данных для копирования из них."
+
+#: objinspstrconsts.lrsprovidedatafilename
+msgid "Select a data file to save data to"
+msgstr "Выберите файл для сохранения данных"
+
+#: objinspstrconsts.lrssavetofile
+msgid "Save data to file"
+msgstr "Сохранить данные в файл"
+
+#: objinspstrconsts.lrsselectdatafilename
+msgid "Select a file with data to load into dataset"
+msgstr "Выберите файл с данными для загрузки в набор"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"

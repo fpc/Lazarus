@@ -298,6 +298,42 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Nastavit hodnotu"
 
+#: objinspstrconsts.lrsbufdsfilters
+msgid "XML data files|*.xml;Binary data files|*.dat"
+msgstr ""
+
+#: objinspstrconsts.lrscopyfromdataset
+msgid "Copy data from other dataset"
+msgstr ""
+
+#: objinspstrconsts.lrscreatedataset
+msgid "Create dataset"
+msgstr ""
+
+#: objinspstrconsts.lrsdatasetactive
+msgid "Dataset is already active, close it first."
+msgstr ""
+
+#: objinspstrconsts.lrsloadfromfile
+msgid "Load data from file"
+msgstr ""
+
+#: objinspstrconsts.lrsnodatasetsavailableforcopy
+msgid "No dataset available to copy data from."
+msgstr ""
+
+#: objinspstrconsts.lrsprovidedatafilename
+msgid "Select a data file to save data to"
+msgstr ""
+
+#: objinspstrconsts.lrssavetofile
+msgid "Save data to file"
+msgstr ""
+
+#: objinspstrconsts.lrsselectdatafilename
+msgid "Select a file with data to load into dataset"
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

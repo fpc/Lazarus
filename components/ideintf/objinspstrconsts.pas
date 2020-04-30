@@ -482,6 +482,17 @@ resourcestring
   oisRenamePage = 'Rename Page';
   oisDeletePageQuestion = 'Do you want to delete the page?';
 
+  // TBufDatasetDesignEditor
+  lrsDatasetActive = 'Dataset is already active, close it first.';
+  lrsCreateDataset = 'Create dataset';
+  lrsLoadFromFile = 'Load data from file';
+  lrsSaveToFile = 'Save data to file';
+  lrsSelectDataFileName = 'Select a file with data to load into dataset';
+  lrsProvideDataFileName = 'Select a data file to save data to';
+  lrsBufDSFilters = 'XML data files|*.xml;Binary data files|*.dat';
+  lrsCopyFromDataset = 'Copy data from other dataset';
+  lrsNoDatasetsAvailableForCopy = 'No dataset available to copy data from.';
+
 implementation
 
 end.
