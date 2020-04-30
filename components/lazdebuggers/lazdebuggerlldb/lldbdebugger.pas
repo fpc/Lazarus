@@ -244,7 +244,7 @@ type
     FOnFinish: TNotifyEvent;
     procedure BreakSetSuccess(Sender: TObject);
     procedure DoFailed(Sender: TObject);
-    procedure DoFinshed(Sender: TObject);
+    procedure DoFinished(Sender: TObject);
     procedure QueueInstruction(AnInstr: TLldbInstruction);
   public
     constructor Create(AName: String; ADebugger: TLldbDebugger; ABeforePrologue: Boolean = False);
@@ -2616,7 +2616,7 @@ end;
 
 procedure TlldbInternalBreakPoint.QueueInstruction(AnInstr: TLldbInstruction);
 begin
-  AnInstr.OnFinish := @DoFinshed;
+  AnInstr.OnFinish := @DoFinished;
   FDebugger.DebugInstructionQueue.QueueInstruction(AnInstr);
   AnInstr.ReleaseReference;
 end;
@@ -2634,7 +2634,7 @@ begin
     OnFail(Self);
 end;
 
-procedure TlldbInternalBreakPoint.DoFinshed(Sender: TObject);
+procedure TlldbInternalBreakPoint.DoFinished(Sender: TObject);
 begin
   FDwarfLoadErrors := TLldbInstruction(Sender).DwarfLoadErrors;
   if OnFinish <> nil then
