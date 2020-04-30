@@ -96,7 +96,7 @@
       </Item>
       <Item>
         <Filename Value="fieldseditor.pas"/>
-        <UnitName Value="fieldseditor"/>
+        <UnitName Value="FieldsEditor"/>
       </Item>
       <Item>
         <Filename Value="fieldseditor.lfm"/>
@@ -306,6 +306,14 @@
       <Item>
         <Filename Value="unitresources.pas"/>
         <UnitName Value="UnitResources"/>
+      </Item>
+      <Item>
+        <Filename Value="bufdatasetdsgn.pas"/>
+        <UnitName Value="bufdatasetdsgn"/>
+      </Item>
+      <Item>
+        <Filename Value="selectdatasetdlg.pas"/>
+        <UnitName Value="selectdatasetdlg"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

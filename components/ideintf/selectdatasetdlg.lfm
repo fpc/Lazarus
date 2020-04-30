@@ -1,0 +1,49 @@
+object SelectDatasetForm: TSelectDatasetForm
+  Left = 527
+  Height = 244
+  Top = 310
+  Width = 392
+  BorderStyle = bsSizeToolWin
+  Caption = 'Select dataset to copy data from'
+  ClientHeight = 244
+  ClientWidth = 392
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object BPDatasets: TButtonPanel
+    Left = 6
+    Height = 39
+    Top = 199
+    Width = 380
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object lbDatasets: TListBox
+    Left = 16
+    Height = 153
+    Top = 32
+    Width = 364
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ExtendedSelect = False
+    ItemHeight = 0
+    ScrollWidth = 362
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object lblCaption: TLabel
+    Left = 16
+    Height = 17
+    Top = 8
+    Width = 105
+    Caption = '&Available datasets:'
+    FocusControl = lbDatasets
+    ParentColor = False
+  end
+end
