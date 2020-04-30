@@ -132,6 +132,10 @@ msgstr "Muut optiot"
 msgid "Unit names, separated by commas"
 msgstr "Pilkulla erotetut käännösyksikön nimet"
 
+#: tcreatecodeform.etoplevelclassname.text
+msgid "TMyObject"
+msgstr ""
+
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
 msgstr "Constructor parametrit"
@@ -139,6 +143,10 @@ msgstr "Constructor parametrit"
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
 msgstr "Property tyypin liite"
+
+#: tcreatecodeform.letoplevelclassname.caption
+msgid "Toplevel class name"
+msgstr ""
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"

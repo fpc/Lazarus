@@ -139,6 +139,10 @@ msgstr "Прочие параметры"
 msgid "Unit names, separated by commas"
 msgstr "Имена модулей, разделённые запятыми"
 
+#: tcreatecodeform.etoplevelclassname.text
+msgid "TMyObject"
+msgstr ""
+
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
 msgstr "Аргументы конструктора"
@@ -146,6 +150,10 @@ msgstr "Аргументы конструктора"
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
 msgstr "Суффикс типа свойства"
+
+#: tcreatecodeform.letoplevelclassname.caption
+msgid "Toplevel class name"
+msgstr ""
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"

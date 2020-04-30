@@ -139,6 +139,10 @@ msgstr "További beállítás&ok"
 msgid "Unit names, separated by commas"
 msgstr "Unit nevek, vesszőkkel elválasztva"
 
+#: tcreatecodeform.etoplevelclassname.text
+msgid "TMyObject"
+msgstr ""
+
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
 msgstr "Constructor paraméterei"
@@ -146,6 +150,10 @@ msgstr "Constructor paraméterei"
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
 msgstr "Tulajdonság típus utótag"
+
+#: tcreatecodeform.letoplevelclassname.caption
+msgid "Toplevel class name"
+msgstr ""
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"

@@ -139,6 +139,10 @@ msgstr "Outras opções"
 msgid "Unit names, separated by commas"
 msgstr "Nomes de unidade, separadas por vírgulas"
 
+#: tcreatecodeform.etoplevelclassname.text
+msgid "TMyObject"
+msgstr ""
+
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
 msgstr "Argumentos construtor"
@@ -146,6 +150,10 @@ msgstr "Argumentos construtor"
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
 msgstr "Sufixo tipo de propriedade"
+
+#: tcreatecodeform.letoplevelclassname.caption
+msgid "Toplevel class name"
+msgstr ""
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
