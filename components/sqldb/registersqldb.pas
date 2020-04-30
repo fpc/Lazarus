@@ -63,7 +63,7 @@ unit registersqldb;
 interface
 
 uses
-  Classes, SysUtils, db, sqldb,
+  Classes, SysUtils, typinfo, db, sqldb,
   {$IFDEF HASIBCONNECTION}
     ibconnection,
   {$ENDIF}
@@ -119,6 +119,9 @@ uses
   ProjectIntf,
   IDEMsgIntf,
   IDEExternToolIntf,
+  ComponentEditors,
+  fieldseditor,
+  bufdatasetdsgn,
   CodeCache,
   CodeToolManager;
 
@@ -201,6 +204,19 @@ Type
     Property SourceFileName : String Read FSFN;
  end;
 
+ { TSQLQueryEditor }
+
+ TSQLQueryEditor = class(TBufDatasetDesignEditor)
+ Private
+   FVOffset : Integer;
+   Procedure EditSQL;
+ public
+   constructor Create(AComponent: TComponent;   ADesigner: TComponentEditorDesigner); override;
+   procedure ExecuteVerb(Index: integer); override;
+   function GetVerb(Index: integer): string; override;
+   function GetVerbCount: integer; override;
+ end;
+
 procedure Register;
 
 implementation
@@ -270,6 +286,7 @@ Resourcestring
   SSQLScript     = 'SQL Script file';
   SSQLScriptDesc = 'Create a new SQL Script file';
   SSQLSource = 'Insert your SQL statements here';
+  SEditSQL = 'Edit SQL...';
 
   SFireBirdDatabases = 'Firebird databases';
   SSQLite3Databases = 'SQLite3 databases';
@@ -277,6 +294,75 @@ Resourcestring
   SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
 
   sLibraries = 'Shared libraries';
+
+{ TSQLQueryEditor }
+
+procedure TSQLQueryEditor.EditSQL;
+
+var
+  TheDialog:TSQLStringsPropertyEditorDlg;
+  Strings  :TStrings;
+  Query    :TSQLQuery;
+begin
+  Query := Component as TSQLQuery;
+  Strings := Query.SQL;
+  TheDialog := TSQLStringsPropertyEditorDlg.Create(Application);
+  try
+    TheDialog.SQLEditor.Text := Strings.Text;
+    TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, ['SQL']);
+    TheDialog.Connection  := (Query.DataBase as TSQLConnection);
+    TheDialog.Transaction := (Query.Transaction as TSQLTransaction);
+    if (TheDialog.ShowModal = mrOK)then
+      begin
+      Strings.Text := TheDialog.SQLEditor.Text;
+      Modified;
+      end;
+  finally
+    FreeAndNil(TheDialog);
+  end;
+end;
+
+
+constructor TSQLQueryEditor.Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+  FVOffset:=Inherited GetVerbCount;
+end;
+
+procedure TSQLQueryEditor.ExecuteVerb(Index: integer);
+var
+  AHook: TPropertyEditorHook;
+  pe: TPropertyEditor;
+begin
+  if Index < FVOffset then
+    inherited
+  else
+    if not GetHook(AHook) then
+      editSQL
+    else
+      begin
+      pe := TSQLStringsPropertyEditor.Create(AHook, 1);
+      try
+        pe.SetPropEntry(0, Component, FindPropInfo(Component, 'SQL'));
+        pe.Edit;
+      finally
+        pe.Free;
+      end;
+      end;
+end;
+
+function TSQLQueryEditor.GetVerb(Index: integer): string;
+begin
+  if Index < FVOffset then
+    Result := inherited
+  else
+    Result := SEditSQL;
+end;
+
+function TSQLQueryEditor.GetVerbCount: integer;
+begin
+  Result := FVOffset + 1;
+end;
 
 { TSQLDBLibraryLoaderConnectionTypePropertyEditor }
 
@@ -567,6 +653,7 @@ begin
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'RefreshSQL',TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLScript, 'Script'   , TSQLStringsPropertyEditor);
   RegisterProjectFileDescriptor(TSQLFileDescriptor.Create);
+  RegisterComponentEditor(TSQLQuery, TSQLQueryEditor);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
   AChecker:=TSQLSyntaxChecker.Create(Nil);
