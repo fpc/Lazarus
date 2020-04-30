@@ -11,9 +11,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: registersqldb.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: registersqldb.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: registersqldb.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first"
+msgstr ""
+
 #: registersqldb.sfirebirddatabases
 msgid "Firebird databases"
 msgstr "Firebird adatbázisok"
+
+#: registersqldb.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
 
 #: registersqldb.sinterbasedatabases
 msgid "Interbase databases"

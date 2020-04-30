@@ -13,9 +13,25 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: registersqldb.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: registersqldb.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: registersqldb.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first"
+msgstr ""
+
 #: registersqldb.sfirebirddatabases
 msgid "Firebird databases"
 msgstr "Бази даних Firebird"
+
+#: registersqldb.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
 
 #: registersqldb.sinterbasedatabases
 msgid "Interbase databases"
