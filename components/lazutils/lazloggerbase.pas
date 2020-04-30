@@ -117,7 +117,8 @@ type
     procedure SetUseGlobalLogGroupList(AValue: Boolean);
   protected
     procedure DoInit; virtual;
-    procedure DoFinsh; virtual;
+    procedure DoFinish; virtual;
+    procedure DoFinsh; deprecated 'Use DoFinish'; // Deprecated in 2.1 / 30.04.2020 / Remove in 2.3
 
     procedure IncreaseIndent; overload; virtual;
     procedure DecreaseIndent; overload; virtual;
@@ -703,9 +704,14 @@ begin
     DumpAddr(Frames[FrameNumber]);
 end;
 
-procedure TLazLogger.DoFinsh;
+procedure TLazLogger.DoFinish;
 begin
   //
+end;
+
+procedure TLazLogger.DoFinsh;
+begin
+  DoFinish;
 end;
 
 procedure TLazLogger.DoDebuglnStack(const s: string);
@@ -831,7 +837,7 @@ end;
 procedure TLazLogger.Finish;
 begin
   if FIsInitialized then
-    DoFinsh;
+    DoFinish;
   FIsInitialized := False;
 end;
 
