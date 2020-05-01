@@ -18,10 +18,10 @@ Type
     procedure GetDatasetNames(const S: string);
   Protected
     function GetProjectDir: String; virtual;
-    Procedure CreateDataset(aBufDS : TBufDataset); virtual;
-    Procedure LoadDataFromFile(aBufDS : TBufDataset); virtual;
-    Procedure SaveDataToFile(aBufDS : TBufDataset); virtual;
-    procedure CopyFromDataset(aBufDS: TBufDataset); virtual;
+    Procedure CreateDataset(aBufDS : TCustomBufDataset); virtual;
+    Procedure LoadDataFromFile(aBufDS : TCustomBufDataset); virtual;
+    Procedure SaveDataToFile(aBufDS : TCustomBufDataset); virtual;
+    procedure CopyFromDataset(aBufDS: TCustomBufDataset); virtual;
   Public
     constructor Create(AComponent: TComponent;   ADesigner: TComponentEditorDesigner); override;
     Destructor Destroy; override;
@@ -36,12 +36,13 @@ Uses TypInfo, Forms, Dialogs, LazIDEintf, selectdatasetdlg;
 
 { TBufDatasetDesignEditor }
 
-procedure TBufDatasetDesignEditor.CreateDataset(aBufDS: TBufDataset);
+procedure TBufDatasetDesignEditor.CreateDataset(aBufDS: TCustomBufDataset);
 begin
   if aBufDs.Active then
     ShowMessage(lrsDatasetActive)
   else
     aBufDS.CreateDataset;
+  Modified;
 end;
 
 procedure TBufDatasetDesignEditor.GetDatasetNames(const S: string);
@@ -58,7 +59,7 @@ begin
     Result:=GetUserDir;
 end;
 
-procedure TBufDatasetDesignEditor.LoadDataFromFile(aBufDS: TBufDataset);
+procedure TBufDatasetDesignEditor.LoadDataFromFile(aBufDS: TCustomBufDataset);
 
 Var
   Dlg : TOpenDialog;
@@ -71,13 +72,16 @@ begin
     Dlg.Filter:=lrsBufDSFilters;
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
     if Dlg.Execute then
+      begin
       aBufDS.LoadFromFile(Dlg.FileName);
+      Modified;
+      end;
   finally
     Dlg.Free;
   end;
 end;
 
-procedure TBufDatasetDesignEditor.SaveDataToFile(aBufDS: TBufDataset);
+procedure TBufDatasetDesignEditor.SaveDataToFile(aBufDS: TCustomBufDataset);
 Var
   Dlg : TOpenDialog;
 
@@ -89,13 +93,16 @@ begin
     Dlg.Filter:=lrsBufDSFilters;
     Dlg.Options:=Dlg.Options+[ofPathMustExist];
     if Dlg.Execute then
+      begin
       aBufDS.LoadFromFile(Dlg.FileName);
+      Modified;
+      end;
   finally
     Dlg.Free;
   end;
 end;
 
-procedure TBufDatasetDesignEditor.CopyFromDataset(aBufDS : TBufDataset);
+procedure TBufDatasetDesignEditor.CopyFromDataset(aBufDS : TCustomBufDataset);
 
 Var
   Idx : Integer;
@@ -124,6 +131,7 @@ begin
     exit;
   aSrc.Active:=True;
   aBufDS.CopyFromDataset(aSrc,True);
+  Modified;
 end;
 
 constructor TBufDatasetDesignEditor.Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner);
@@ -159,18 +167,20 @@ end;
 procedure TBufDatasetDesignEditor.ExecuteVerb(Index: Integer);
 
 Var
-  BufDS : TBufDataset;
+  BufDS : TCustomBufDataset;
 
 begin
-  BufDS:=GetComponent as TBufDataset;
   if Index<FOffset then
     Inherited ExecuteVerb(Index)
   else
+    begin
+    BufDS:=GetComponent as TCustomBufDataset;
     Case Index-FOffset of
       0 : CreateDataset(BufDS);
       1 : LoadDataFromFile(BufDS);
       2 : SaveDataToFile(BufDS);
       3 : CopyFromDataset(BufDS);
+    end;
     end;
 end;
 
