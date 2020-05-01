@@ -12486,6 +12486,7 @@ tools/lazdatadesktop/lazdatadesktop.lpi svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.lpr svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.res -text
 tools/lazdatadesktop/querypanel.res -text
+tools/lazdatadesktop/reglddfeatures.pp svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
 tools/lfm_to_lrs.sh svneol=native#text/plain
