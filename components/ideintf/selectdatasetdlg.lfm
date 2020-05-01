@@ -1,4 +1,4 @@
-object SelectDatasetForm: TSelectDatasetForm
+object SelectOtherDatasetForCopyForm: TSelectOtherDatasetForCopyForm
   Left = 527
   Height = 244
   Top = 310

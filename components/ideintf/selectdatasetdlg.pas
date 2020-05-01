@@ -9,9 +9,9 @@ uses
 
 type
 
-  { TSelectDatasetForm }
+  { TSelectOtherDatasetForCopyForm }
 
-  TSelectDatasetForm = class(TForm)
+  TSelectOtherDatasetForCopyForm = class(TForm)
     BPDatasets: TButtonPanel;
     lblCaption: TLabel;
     lbDatasets: TListBox;
@@ -28,7 +28,7 @@ type
 Function SelectDataset(aList : TStrings; aTitle : String = '') : String;
 
 var
-  SelectDatasetForm: TSelectDatasetForm;
+  SelectOtherDatasetForCopyForm: TSelectOtherDatasetForCopyForm;
 
 implementation
 
@@ -38,7 +38,7 @@ Function SelectDataset(aList : TStrings; aTitle : String = '') : String;
 
 begin
   Result:='';
-  With TSelectDatasetForm.Create(Application) do
+  With TSelectOtherDatasetForCopyForm.Create(Application) do
     try
       Datasets:=aList;
       if aTitle<>'' then
@@ -51,15 +51,15 @@ begin
 end;
 
 
-{ TSelectDatasetForm }
+{ TSelectOtherDatasetForCopyForm }
 
-function TSelectDatasetForm.GetDatasets: TStrings;
+function TSelectOtherDatasetForCopyForm.GetDatasets: TStrings;
 
 begin
   Result:=lbDatasets.Items;
 end;
 
-function TSelectDatasetForm.GetSelected: String;
+function TSelectOtherDatasetForCopyForm.GetSelected: String;
 
 begin
   With LbDatasets do
@@ -69,7 +69,7 @@ begin
       Result:=Items[ItemIndex];
 end;
 
-procedure TSelectDatasetForm.SetDatasets(AValue: TStrings);
+procedure TSelectOtherDatasetForCopyForm.SetDatasets(AValue: TStrings);
 
 begin
   lbDatasets.Items:=aValue;
