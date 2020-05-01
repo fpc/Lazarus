@@ -381,7 +381,6 @@ constructor TCustomColorBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   inherited Style := csOwnerDrawFixed;
-  inherited ReadOnly := True;
 
   FColorRectWidth := -1;
   FColorRectOffset := cDefaultColorRectOffset;

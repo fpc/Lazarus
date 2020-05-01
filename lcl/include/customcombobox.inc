@@ -1091,11 +1091,6 @@ begin
   end;
 end;
 
-procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
-begin
-  // will be removed in 1.10
-end;
-
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.UpdateSorted;
  ------------------------------------------------------------------------------}

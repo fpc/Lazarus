@@ -234,7 +234,6 @@ constructor TChartComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DropdownCount := DEFAULT_DROPDOWN_COUNT;
-  ReadOnly := true;  // Needed to see the symbol without dropdown.
   Style := csOwnerDrawFixed;
   SetLength(FPenPattern, 2);
   FPenPattern[0] := 1;

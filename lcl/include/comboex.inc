@@ -275,7 +275,6 @@ begin
   FAutoCompleteOptions:=cDefAutoCompOpts;
   FItemsEx:=TComboExItems.Create(self, TComboExItem);
   FNeedMeasure:=True;
-  ReadOnly:=True;
   inherited Style:=csOwnerDrawFixed;
   FStyle:=cDefStyle;
   FStyleEx:=[];
@@ -492,7 +491,6 @@ constructor TCustomCheckCombo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TStringList(Items).Duplicates:=dupIgnore;
-  ReadOnly:=True;
   Style:=csOwnerDrawFixed;
   FNeedMeasure:=True;
   FRejectToggleOnSelect:=True;

@@ -12445,7 +12445,6 @@ begin
     AdjustControl;
     with TComboBox(FControl) do begin
       Style := csDropDownList;
-      ReadOnly := not FComboBox;
       OnEditingDone := ControlOnEditingdone;
     end;
   end;
