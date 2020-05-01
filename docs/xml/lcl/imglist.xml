@@ -2534,7 +2534,7 @@
       </element>
       <element name="TCustomImageList.Create.AOwner">
         <short>Owner of the class instance</short>
-      </element<name />
+      </element>
 
       <element name="TCustomImageList.CreateSize">
         <short>
@@ -4786,7 +4786,7 @@
         </descr>
         <seealso>
           <link id="TScaledImageListResolution"/>
-          <link id="TCustomImageList.Resoution"/>
+          <link id="TCustomImageList.Resolution"/>
           <link id="TCustomImageList.DrawForPPI"/>
         </seealso>
       </element>
