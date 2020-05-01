@@ -389,18 +389,25 @@ procedure TSQLQueryEditor.DoEditSQL(aQuery: TSQLQuery);
 
 var
   AHook: TPropertyEditorHook;
-  pe: TPropertyEditor;
+  PEC: TPropertyEditorClass;
+  PE: TPropertyEditor;
+  SQLPropInfo : PPropInfo;
+
 begin
-  if not GetHook(AHook) then
+  PEC:=Nil;
+  SQLPropInfo:=GetPropInfo(aQuery,'SQL');
+  if Assigned(SQLPropInfo) then
+    PEC:=GetEditorClass(SQLPropInfo,aQuery);
+  if (PEC=Nil) or not GetHook(AHook) then
     EditSQL(aQuery)
   else
     begin
-    pe := TSQLStringsPropertyEditor.Create(AHook, 1);
+    PE:=PEC.Create(AHook,1);
     try
-      pe.SetPropEntry(0, Component, FindPropInfo(Component, 'SQL'));
-      pe.Edit;
+      PE.SetPropEntry(0,aQuery,SQLPropInfo);
+      PE.Edit;
     finally
-      pe.Free;
+      PE.Free;
     end;
     end;
 end;
