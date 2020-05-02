@@ -299,7 +299,6 @@ type
     function GetAutoComplete: boolean;
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
-    function GetReadOnly: Boolean;
     procedure SetAutoComplete(const AValue: boolean);
     procedure SetItemWidth(const AValue: Integer);
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
@@ -403,7 +402,6 @@ type
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
-    property ReadOnly: Boolean read GetReadOnly stored False;
     property SelLength: integer read GetSelLength write SetSelLength;// UTF-8 length
     property SelStart: integer read GetSelStart write SetSelStart;// UTF-8 position
     property SelText: String read GetSelText write SetSelText;

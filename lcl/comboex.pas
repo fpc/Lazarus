@@ -248,7 +248,6 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ReadOnly;
     property ShowHint;
     property Style;
     property StyleEx;

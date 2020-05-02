@@ -189,11 +189,6 @@ begin
   Result := FMaxLength;
 end;
 
-function TCustomComboBox.GetReadOnly: Boolean;
-begin
-  Result := Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable];
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.LMChanged
   Params: msg -
