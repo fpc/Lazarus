@@ -943,7 +943,7 @@ begin
   repeat
     ExternalToolList.HandleMesages;
     if AllStopped then exit;
-    Sleep(20);
+    Sleep(50);
     //debugln(['TExternalToolGroup.WaitForExit ',Now,'==========================']);
     //for i:=0 to Count-1 do
     //  debugln(['  Stage=',dbgs(Items[i].Stage),' "',Items[i].Title,'"']);
@@ -1233,6 +1233,7 @@ end;
 
 procedure TAbstractExternalTool.LeaveCriticalSection;
 begin
+  Assert(Assigned(FWorkerMessages), 'TAbstractExternalTool.LeaveCriticalSection: FWorkerMessages=Nil.');
   FWorkerMessages.LeaveCriticalSection;
 end;
 

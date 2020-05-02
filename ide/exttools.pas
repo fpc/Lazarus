@@ -904,10 +904,11 @@ begin
       Assert(Owner is TExternalToolsBase, 'TExternalTool.WaitForExit: Owner is not TExternalToolsBase.');
       TExternalToolsBase(Owner).HandleMesages;
     end;
+    Assert(Assigned(ExternalToolList), 'TExternalTool.WaitForExit: ExternalToolList=Nil.');
     // check if this tool still exists
     if MyTools.IndexOf(Self)<0 then exit;
     // still running => wait
-    Sleep(10);
+    Sleep(50);
   until false;
 end;
 
