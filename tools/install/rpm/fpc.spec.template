@@ -93,8 +93,10 @@ make install ${INSTALLOPTS}
     fi
 %endif
 
-# create link
+# create link /usr/bin/ppc*
 ln -sf %{_libdir}/%{name}/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
+# install /usr/bin/fpcmkcfg
+install `pwd`/utils/fpcmkcfg/bin/%{_arch}-linux/fpcmkcfg %{buildroot}%{_bindir}/fpcmkcfg
 
 # Workaround:
 # newer rpm versions do not allow garbage
@@ -117,10 +119,14 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
+# since fpc 3.1.1:
 %{_libdir}/libpas2jslib.so
 
 %changelog
-* Sat Nov 7 2018 Mattias Gaertner <mattias@freepascal.org> 3.3.1
+* Sat May 2 2020 Mattias Gaertner <mattias@freepascal.org> 3.0.4
+- commented libpas2jslib.so, added fpcmkcfg
+
+* Sat Nov 10 2018 Mattias Gaertner <mattias@freepascal.org> 3.3.1
 - added libpas2jslib.so
 
 * Sat Feb 25 2017 Mattias Gaertner <mattias@freepascal.org> 3.0.2
