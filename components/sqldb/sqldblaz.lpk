@@ -24,47 +24,51 @@
 
 With the exception of the unit registersqldb, which is GPL-2. This unit contains code for the IDE and is usually not used by programs."/>
     <Version Major="1" Release="2"/>
-    <Files Count="5">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="registersqldb.pas"/>
         <HasRegisterProc Value="True"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="registersqldb"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="sqlstringspropertyeditordlg.lfm"/>
         <Type Value="LFM"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="sqlstringspropertyeditordlg.pas"/>
         <UnitName Value="SQLStringsPropertyEditorDlg"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="generatesqldlg.lfm"/>
         <Type Value="LFM"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <Filename Value="generatesqldlg.pp"/>
         <UnitName Value="generatesqldlg"/>
-      </Item5>
+      </Item>
+      <Item>
+        <Filename Value="sqldbstrconst.pas"/>
+        <UnitName Value="sqldbstrconst"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="4">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="SynEdit"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item4>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

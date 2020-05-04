@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Last-Translator: Philippe BOUCAULT <philbouc@users.sourceforge.net>\n"
+"PO-Revision-Date: 2017-02-06 10:04+0100\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: sqldb\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr ""
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr ""
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr ""
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr ""
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Bases de données Firebird"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Bases de données Interbase"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Bibliothèques partagées"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr "Charger du code SQL..."
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Colonnes"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Veuillez spécifier une table dans le champ objet."
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Procédures"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "Tables systèmes"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Métadonnées"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Tables"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr "Aucune erreur de syntaxe dans l'instruction SQL."
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr "Vérification rapide de la syntaxe SQL"
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Résultats"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr "Exécuter du code SQL"
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr "Enregistrer du code SQL..."
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr "Erreur SQL probable"
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "Bases de données SQLite3"
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr "Vérification SQL rapide OK"
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "Fichier script SQL"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Créer un nouveau fichier script SQL"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Insérez vos instructions SQL ici"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Editing %s"
+msgstr "Édition de %s"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+"Probable erreur de syntaxe dans l'instruction SQL :\n"
+"%s"
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "Code SQL"
+

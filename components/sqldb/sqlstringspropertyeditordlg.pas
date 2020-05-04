@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, strutils,
   SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids, Menus,
-  SrcEditorIntf, clipbrd, StdCtrls, fpsqltree, fpsqlparser;
+  SrcEditorIntf, clipbrd, StdCtrls, fpsqltree, fpsqlparser, sqldbstrconst;
 
 type
 
@@ -85,29 +85,6 @@ type
 implementation
 
 {$R *.lfm}
-
-resourcestring
-  SResultTabCaption = 'Results';
-  SSQLTabCaption    = 'SQL Code';
-  SMetaTabCaption   = 'Metadata';
-  SMetaTables       = 'Tables';
-  SMetaColumns      = 'Columns';
-  SMetaProcedures   = 'Procedures';
-  SMetaPleaseSpecifyATableInTheObjectField = 'Please specify a table in the '
-    +'object field.';
-  SMetaSysTables    = 'SysTables';
-
-  SLoadSQLCodeHint = 'Load SQL code ...';
-  SSaveSQLCodeHint = 'Save SQL code ...';
-  SRunSQLCodeHint = 'Run SQL code';
-  SQuickCheckOfSQLSyntaxHint = 'Quick check of SQL syntax';
-
-  // SQL Parser results:
-  // Note: sql parser is not quite exact, so indicate it's not completely sure
-  SSQLOK            = 'Quick SQL check OK';
-  SQLSyntaxOK       = 'No syntax errors in SQL statement found.';
-  SSQLError         = 'Probable SQL error';
-  SSQLSyntaxError   = 'Probable syntax error in SQL statement:'+slineBreak+'%s';
 
 { TSQLStringsPropertyEditorDlg }
 

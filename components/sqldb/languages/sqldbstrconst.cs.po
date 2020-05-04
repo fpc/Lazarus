@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr ""
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr ""
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr ""
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr ""
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Firebird datebáze"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Interbase databáze"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Sdílené knihovny"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Sloupce"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Prosím specifikujte tabulkiu v políčku objekt"
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Procedurey"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "Systémové tabulky"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Metadata"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Tabulky"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr ""
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr ""
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Výsledky"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr ""
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr ""
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "SQL Script soubor"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Vytvořit nový SQL Script soubor"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Vložte své SQL dotazy sem"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Editing %s"
+msgstr "Upraviji %s"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "SQL Kód"
+

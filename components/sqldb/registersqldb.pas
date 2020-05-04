@@ -64,7 +64,7 @@ unit registersqldb;
 interface
 
 uses
-  Classes, SysUtils, typinfo, db, sqldb,
+  Classes, SysUtils, typinfo, db, sqldb, sqldbstrconst,
   {$IFDEF HASIBCONNECTION}
     ibconnection,
   {$ENDIF}
@@ -285,23 +285,6 @@ begin
 {$ENDIF}
     ]);
 end;
-
-
-Resourcestring
-  SSQLScript     = 'SQL Script file';
-  SSQLScriptDesc = 'Create a new SQL Script file';
-  SSQLSource = 'Insert your SQL statements here';
-  SEditSQL = 'Edit SQL ...';
-  SGenerateUpdateSQL = 'Generate update SQL';
-  SEditUpdateSQL = 'Edit all SQL statements';
-  SErrConnectionNotAssigned = 'Database not assigned. Assign Database first.';
-
-  SFireBirdDatabases = 'Firebird databases';
-  SSQLite3Databases = 'SQLite3 databases';
-  SInterbaseDatabases = 'Interbase databases';
-  SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
-
-  sLibraries = 'Shared libraries';
 
 Type
 

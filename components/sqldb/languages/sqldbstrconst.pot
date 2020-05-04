@@ -1,0 +1,132 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr ""
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr ""
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr ""
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr ""
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr ""
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr ""
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr ""
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr ""
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr ""
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr ""
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr ""
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr ""
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr ""
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr ""
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr ""
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr ""
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr ""
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Editing %s"
+msgstr ""
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr ""
+

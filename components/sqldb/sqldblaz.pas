@@ -8,7 +8,8 @@ unit SQLDBLaz;
 interface
 
 uses
-  registersqldb, SQLStringsPropertyEditorDlg, generatesqldlg, LazarusPackageIntf;
+  registersqldb, SQLStringsPropertyEditorDlg, generatesqldlg, sqldbstrconst, 
+  LazarusPackageIntf;
 
 implementation
 

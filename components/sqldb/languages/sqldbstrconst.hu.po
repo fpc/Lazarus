@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr ""
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr ""
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr ""
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr ""
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr ""
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr ""
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Firebird adatbázisok"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr ""
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Interbase adatbázisok"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Megosztott függvénytárak"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr "SQL kód betöltése ..."
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Oszlopok"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Meg kell adni egy táblát az objektum mezőben."
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Eljárások"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "SysTables"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Metaadatok"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Táblák"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr "Nincs szintaktikai hiba az SQL állományban."
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr "SQL szintaxis gyors ellenőrzése"
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Eredmények"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr "SQL kód futtatása"
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr "SQL kód mentése ..."
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr "Lehetséges SQL hiba"
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "SQLite3 adatbázisok"
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr "Gyors SQL ellenőrzés OK"
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "SQL parancsfájl"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Új SQL parancsfájl létrehozása"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Ide kell írni az SQL utasításokat"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Editing %s"
+msgstr "%s szerkesztése"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+"Lehetséges szintaktikai hiba az SQL állományban:\n"
+"%s"
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "SQL kód"
+

@@ -26,7 +26,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  DB, SQLDB, ExtCtrls, Buttons, StdCtrls, Spin, ButtonPanel, SynEdit, SynHighlighterSQL;
+  DB, SQLDB, ExtCtrls, Buttons, StdCtrls, Spin, ButtonPanel, SynEdit, SynHighlighterSQL,
+  sqldbstrconst;
 
 type
   TSQLKeyWord = (skInsert,skInto,skDelete,skFrom,skUpdate,skSelect,skWhere,skAnd,skValues,skSet);
@@ -114,12 +115,6 @@ type
 Function GenerateSQL(Q : TSQLQuery): Boolean;
 
 implementation
-
-Resourcestring
-  lrsGeneratesqlstatements = 'Edit/Generate SQL statements';
-  lrsSQLDataSetOpen = 'Dataset not open: %s';
-  lrsSQLGenSelect = 'You must select fields to be updated and key fields.';
-
 
 Function GenerateSQL(Q : TSQLQuery): Boolean;
 

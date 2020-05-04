@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL statements"
+msgstr "Редактирование и генерация выражений SQL"
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr "Невозможно открыть набор данных: %s"
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr "Требуется выбрать поля для обновления и ключевые поля."
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr "Редактировать код SQL ..."
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr "Редактировать все выражения SQL"
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr "Сначала следует указать базу данных."
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Базы данных Firebird"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr "Генерировать код SQL для обновления"
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Базы данных Interbase"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Динамические библиотеки"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr "Загрузить код SQL ..."
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Столбцы"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Следует указать таблицу в поле объекта."
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Процедуры"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "Системные таблицы"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Метаданные"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Таблицы"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr "В выражении SQL синтаксических ошибок не найдено."
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr "Выполнить быструю проверку синтаксиса кода SQL"
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Результаты"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr "Запустить код SQL"
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr "Сохранить код SQL ..."
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr "Возможная ошибка SQL"
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "Базы данных SQLite3"
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr "Быстрая проверка кода SQL прошла успешно"
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "Файл сценария SQL"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Создать новый файл сценария SQL"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Вставьте выражения SQL здесь"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Editing %s"
+msgstr "Редактирование %s"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+"Возможно, имеется синтаксическая ошибка в выражении SQL:\n"
+"%s"
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "Код SQL"
+
