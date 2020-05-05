@@ -492,6 +492,7 @@ type
     procedure SpaceProc;
     procedure StringProc;
     procedure SymbolProc;
+    function TypeHelpersIsStored: Boolean;
     procedure UnknownProc;
     procedure SetD4syntax(const Value: boolean);
     // Divider
@@ -558,6 +559,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
+    procedure Loading; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -620,7 +623,7 @@ type
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     property NestedComments: boolean read FNestedComments write SetNestedComments;
-    property TypeHelpers: boolean read FTypeHelpers write FTypeHelpers;
+    property TypeHelpers: boolean read FTypeHelpers write FTypeHelpers stored TypeHelpersIsStored;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -901,8 +904,10 @@ end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
-  NestedComments:=AValue in [pcmFPC,pcmObjFPC]; // NestedComments has to be reset even if CompilerMode doesn't change
-  TypeHelpers := AValue in [pcmDelphi];
+  if not(csLoading in ComponentState) then begin
+    NestedComments:=AValue in [pcmFPC,pcmObjFPC]; // NestedComments has to be reset even if CompilerMode doesn't change
+    TypeHelpers := AValue in [pcmDelphi];  // keep in sync with TypeHelpersIsStored / Loaded
+  end;
   if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
   PasCodeFoldRange.Mode:=FCompilerMode;
@@ -2485,6 +2490,19 @@ begin
   inherited Destroy;
 end;
 
+procedure TSynPasSyn.Loaded;
+begin
+  if Byte(FTypeHelpers) = 99 then
+    FTypeHelpers := FCompilerMode in [pcmDelphi];
+  inherited Loaded;
+end;
+
+procedure TSynPasSyn.Loading;
+begin
+  Byte(FTypeHelpers) := 99; // Help detecting, if changed while loading.
+  inherited Loading;
+end;
+
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
@@ -3173,6 +3191,11 @@ procedure TSynPasSyn.SymbolProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+end;
+
+function TSynPasSyn.TypeHelpersIsStored: Boolean;
+begin
+  Result := FTypeHelpers = (FCompilerMode in [pcmDelphi]);
 end;
 
 procedure TSynPasSyn.UnknownProc;
