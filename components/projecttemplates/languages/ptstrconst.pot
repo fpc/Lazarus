@@ -1,0 +1,68 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr ""
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr ""
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr ""
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr ""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr ""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr ""
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr ""
+
+#: ptstrconst.snewfromtemplate
+msgctxt "ptstrconst.snewfromtemplate"
+msgid "New project from template"
+msgstr ""
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr ""
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr ""
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr ""
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr ""
+
+#: ptstrconst.stitle
+msgctxt "ptstrconst.stitle"
+msgid "Project templates settings"
+msgstr ""
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr ""
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr ""
+

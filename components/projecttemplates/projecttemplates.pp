@@ -7,7 +7,9 @@ interface
 uses
   Classes, SysUtils, IniFiles,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8Classes;
+  FileUtil, LazFileUtils, LazUTF8Classes,
+  // ProjectTemplates
+  ptstrconst;
 
 type
 
@@ -90,22 +92,12 @@ Const
   varprefixstr   = '__';     	// subtitution pattern is "__varname__"
   varpostfixstr  = '__';     
 
-resourcestring
-  SbtnOK          = '&OK';
-  SbtnCancel      = 'Cancel';
-
 Function SubstituteString(Const S : String; Variables : TStrings): String;
 Function SimpleFileCopy(Const Source,Dest : String) : Boolean;
 
 implementation
 
-resourcestring
-  SErrNoSuchTemplate = '"%s": No such template.';
-  SErrCouldNotCreateDir = 'Could not create directory "%s"';
-  SErrFailedToCopyFile = 'Failed to copy file "%s" to "%s"';
-
 { Auxiliary function }
-
 
 Function SubstituteString(Const S : String; Variables : TStrings): String;
 

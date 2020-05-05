@@ -8,7 +8,7 @@ uses
   // LCL
   LclIntf, Forms, StdCtrls, EditBtn, ButtonPanel,
   // ProjectTemplates
-  ProjectTemplates;
+  ProjectTemplates, ptstrconst;
 
 type
 
@@ -33,10 +33,6 @@ var
 
 implementation
 
-resourcestring
-  STitle = 'Project templates settings';
-  SDirect= '&Directory with templates:';
-
 {$R *.lfm}
 
 { TTemplateSettingsForm }
@@ -45,8 +41,6 @@ procedure TTemplateSettingsForm.FormCreate(Sender: TObject);
 begin
   Caption := STitle;
   Label1.Caption := SDirect;
-  ButtonPanel1.OKButton.Caption:=SbtnOK;
-  ButtonPanel1.CancelButton.Caption:=SbtnCancel;
 end;
 
 procedure TTemplateSettingsForm.HelpButtonClick(Sender: TObject);

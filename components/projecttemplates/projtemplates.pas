@@ -8,7 +8,7 @@ unit ProjTemplates;
 interface
 
 uses
-  ProjectTemplates, IDETemplateProject, frmTemplateVariables, 
+  ProjectTemplates, IDETemplateProject, frmTemplateVariables, ptstrconst, 
   LazarusPackageIntf;
 
 implementation

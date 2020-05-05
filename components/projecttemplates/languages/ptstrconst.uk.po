@@ -1,0 +1,79 @@
+# Olexandr Pylypchuk <lxlalexlxl@ukr.net>, 2019.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2019-09-20 21:09+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Lokalize 2.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Створити у &теці:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Опис"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Тека з шаблонами:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Неможливо створити теку \"%s\""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Неможливо скопіювати файл \"%s\" в \"%s\""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Немає такого шаблона."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Назва нового проєкту:"
+
+#: ptstrconst.snewfromtemplate
+#, fuzzy
+msgid "New project from template"
+msgstr "Новий проєкт з шаблона"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Цей проєкт не має додаткових змінних."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Параметри шаблонів проєкту ..."
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Шаблони проєктів"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Цей проєкт містить додаткові змінні. Задайте їх значення."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Параметри шаблонів проєкту"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Значення"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Змінна"
+

@@ -13,7 +13,7 @@ uses
   // IdeIntf
   ProjectIntf, NewItemIntf, MenuIntf, BaseIDEIntf, LazIDEIntf,
   // ProjectTemplates
-  ProjectTemplates, frmTemplateSettings, frmTemplateVariables;
+  ProjectTemplates, frmTemplateSettings, frmTemplateVariables, ptstrconst;
 
 type
 
@@ -71,11 +71,6 @@ Const
   STemplateSettings = 'itmTemplateSettings';
   SItmtemplate = 'itmTemplate';
   
-Resourcestring
-  STemplateCategory = 'Template projects';
-  SProjectTemplateSettings = 'Project templates options ...';
-  SNewFromTemplate = 'New project from template';
-
 { ---------------------------------------------------------------------
   Configuration
   ---------------------------------------------------------------------}

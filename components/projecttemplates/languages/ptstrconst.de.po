@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Erzeuge in Verzeichnis:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Beschreibung"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "Verzeichnis mit den Vorlagen:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Verzeichnis %s konnte nicht angelegt werden"
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "%s konnte nicht nach %s kopiert werden"
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "Die Vorlage %s fehlt."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Name für neues Projekt:"
+
+#: ptstrconst.snewfromtemplate
+msgid "New project from template"
+msgstr "Neues Projekt aus Vorlage"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Das Projekt enthält keine weiteren Variablen."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Optionen für Projektvorlagen"
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Vorlagenprojekte"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Dieses Projekt enthält zusätzliche Variablen. Bitte geben sie Werte für diese Variablen an."
+
+#: ptstrconst.stitle
+msgctxt "ptstrconst.stitle"
+msgid "Project templates settings"
+msgstr "Projektvorlagen-Einstellungen"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Wert"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Variable"
+

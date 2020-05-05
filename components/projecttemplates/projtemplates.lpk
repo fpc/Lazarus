@@ -23,50 +23,54 @@
     <License Value="Modified LGPL as per the FCL license
 "/>
     <Version Major="1"/>
-    <Files Count="7">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="projecttemplates.pp"/>
         <UnitName Value="ProjectTemplates"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="idetemplateproject.pp"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="IDETemplateProject"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="frmtemplatevariables.lfm"/>
         <Type Value="LFM"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="frmtemplatevariables.pas"/>
         <UnitName Value="frmTemplateVariables"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <Filename Value="frmtemplatesettings.lfm"/>
         <Type Value="LFM"/>
-      </Item5>
-      <Item6>
+      </Item>
+      <Item>
         <Filename Value="frmtemplatesettings.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frmtemplatesettings"/>
-      </Item6>
-      <Item7>
+      </Item>
+      <Item>
         <Filename Value="README.txt"/>
         <Type Value="Text"/>
-      </Item7>
+      </Item>
+      <Item>
+        <Filename Value="ptstrconst.pas"/>
+        <UnitName Value="ptstrconst"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="2">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item2>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: projecttemplates\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-1-13 18:21+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Crear el directorio & en:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Descripción"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Directorio con plantillas:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "No se puede crear el directorio \"%s\""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Ha fallado la copia del archivo \"%s\" a \"%s\""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": No existe plantilla."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Nombre para el nuevo proyecto:"
+
+#: ptstrconst.snewfromtemplate
+msgctxt "ptstrconst.snewfromtemplate"
+msgid "New project from template"
+msgstr ""
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Este proyecto no tiene variables adicionales."
+
+#: ptstrconst.sprojecttemplatesettings
+msgctxt "ptstrconst.sprojecttemplatesettings"
+msgid "Project templates options ..."
+msgstr ""
+
+#: ptstrconst.stemplatecategory
+#, fuzzy
+msgctxt "ptstrconst.stemplatecategory"
+msgid "Template projects"
+msgstr "Proyectos de plantilla"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Este proyecto contiene algunas variables adicionales. Por favor proporcione valores para estas variables."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Configuración de plantillas de proyecto"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Valor"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Variable"
+

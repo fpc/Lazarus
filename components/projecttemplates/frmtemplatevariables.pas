@@ -9,7 +9,7 @@ uses
   // LCL
   Forms, ExtCtrls, Grids, StdCtrls, EditBtn, ButtonPanel,
   // ProjectTemplates
-  ProjectTemplates;
+  ProjectTemplates, ptstrconst;
 
 type
 
@@ -48,17 +48,6 @@ implementation
 
 {$R *.lfm}
 
-resourcestring
-  SVariable    = 'Variable';
-  SValue       = 'Value';
-  SDescription = 'Description';
-  SNoAdditionalVars = 'This project has no additional variables.';
-  //
-  SNameforProject = '&Name for new project:';
-  SCreateinDir    = 'Create in &directory:';
-  SThisProject    = 'This project contains some additional variables. Please provide values for these variables.';
-  STitle          = 'New project from template';
-
 { TProjectVariablesForm }
 
 procedure TProjectVariablesForm.ProjectVariablesFormShow(Sender: TObject);
@@ -86,12 +75,10 @@ end;
 
 procedure TProjectVariablesForm.FormCreate(Sender: TObject);
 begin
-  Caption := STitle;
+  Caption := SNewFromTemplate;
   ProjNameLabel.Caption:= SNameforProject;
   DEDestDirLabel.Caption:= SCreateinDir;
   PDescription.Caption:= SThisProject;
-  ButtonPanel1.CancelButton.Caption:= SbtnCancel;
-  ButtonPanel1.OKButton.Caption:= SbtnOK;
 end;
 
 procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);

@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: projecttemplates\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2016-10-01 13:52+0200\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Twórz w &katalogu:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Opis"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Katalog z szablonami:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Nie udało się utworzyć katalogu \"%s\"."
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Nie udało się skopiować pliku \"%s\" do \"%s\"."
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Brak szablonu."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Nazwa nowego projektu:"
+
+#: ptstrconst.snewfromtemplate
+msgid "New project from template"
+msgstr "Nowy projekt z szablonu"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Projekt nie zawiera żadnych dodatkowych zmiennych."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Opcje szablonów projektu"
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Szablony projektów"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Projekt zawiera dodatkowe zmienne. Proszę podać wartości tych zmiennych."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Ustawienia szablonów projektów"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Wartość"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Zmienna"
+

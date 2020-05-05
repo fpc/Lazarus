@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: \n"
+"Language: tr\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "&Dizin oluşturun:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Açıklama"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Şablonlu dizin:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "\"%s\" dizini oluşturulamadı"
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "\"%s\" dosyası \"%s\" altına kopyalanamadı"
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Böyle bir şablon yok."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Yeni projenin adı:"
+
+#: ptstrconst.snewfromtemplate
+msgid "New project from template"
+msgstr "Şablondan yeni proje"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Bu projenin ek değişkenleri yoktur."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Proje şablonları ayarları...."
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Şablon projeleri"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Bu proje bazı ek değişkenler içerir. Lütfen bu değişkenler için değerler sağlayın."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Proje şablonları ayarları"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Değer"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Değişken"
+

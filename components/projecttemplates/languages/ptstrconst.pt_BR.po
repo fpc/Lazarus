@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Criar no &diretório:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Descrição"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Diretório com modelos:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Impossível criar diretório \"%s\""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Falha ao copiar arquivo  \"%s\" para \"%s\""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Modelo não existe."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Nome para o novo projeto:"
+
+#: ptstrconst.snewfromtemplate
+msgid "New project from template"
+msgstr "Novo projeto do modelo"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Este projeto não tem variáveis adicionais."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Opções modelos de projeto ..."
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Modelos de Projetos"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Este projeto contem algumas variáveis adicionais. Favor informar os valores dessas variáveis."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Configurações dos modelos de Projeto"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Valor"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Variável"
+

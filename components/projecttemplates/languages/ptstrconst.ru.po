@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-05-05 01:59+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Создать в &каталоге:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Описание"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Каталог с шаблонами:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Невозможно создать каталог \"%s\""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Невозможно скопировать файл \"%s\" в \"%s\""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Нет такого шаблона."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Имя нового проекта:"
+
+#: ptstrconst.snewfromtemplate
+msgid "New project from template"
+msgstr "Новый проект из шаблона"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Этот проект не имеет дополнительных переменных."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Параметры шаблонов проектов ..."
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Шаблоны проектов"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Этот проект содержит дополнительные переменные. Задайте их значения."
+
+#: ptstrconst.stitle
+msgid "Project templates settings"
+msgstr "Параметры шаблонов проектов"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Значение"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Переменная"
+
