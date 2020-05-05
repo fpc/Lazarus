@@ -21782,6 +21782,10 @@ msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Yapıştır"
 
+#: lazarusidestrconsts.srkmecpasteascolumns
+msgid "Paste (as Columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
 msgstr "programı duraklat"

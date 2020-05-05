@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-04-23 01:08+0300\n"
+"PO-Revision-Date: 2020-05-05 19:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -21883,6 +21883,10 @@ msgstr "Переместить курсор вверх на одну стран�
 msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Вставить"
+
+#: lazarusidestrconsts.srkmecpasteascolumns
+msgid "Paste (as Columns)"
+msgstr "Вставить (как столбцы)"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"

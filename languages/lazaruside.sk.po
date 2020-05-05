@@ -22488,6 +22488,10 @@ msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Vložiť zo schránky na aktuálnu pozíciu"
 
+#: lazarusidestrconsts.srkmecpasteascolumns
+msgid "Paste (as Columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
 msgstr "prerušiť program"

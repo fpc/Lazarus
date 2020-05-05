@@ -22252,6 +22252,10 @@ msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Incolla la selezione nella posizione corrente"
 
+#: lazarusidestrconsts.srkmecpasteascolumns
+msgid "Paste (as Columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
 msgstr "poni in pausa il programma"

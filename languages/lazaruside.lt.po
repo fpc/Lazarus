@@ -22178,6 +22178,10 @@ msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Įdėti Iš iškarpinės"
 
+#: lazarusidestrconsts.srkmecpasteascolumns
+msgid "Paste (as Columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
 msgstr "pristabdyti programos veiką"
