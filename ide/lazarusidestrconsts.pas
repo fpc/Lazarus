@@ -3121,6 +3121,7 @@ resourcestring
   srkmecCut                   = 'Cut';
   srkmecCopy                  = 'Copy';
   srkmecPaste                 = 'Paste';
+  srkmecPasteAsColumns        = 'Paste (as Columns)';
   srkmecCopyAdd               = 'Copy (Add to Clipboard)';
   srkmecCutAdd                = 'Cut (Add to Clipboard)';
   srkmecCopyCurrentLine       = 'Copy current line';

@@ -2700,6 +2700,7 @@ begin
   AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
   AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
   AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
+  AddDefault(C, 'Paste clipboard (as columns) to current position', srkmecPasteAsColumns, ecPasteAsColumns);
   AddDefault(C, 'Copy - Add to Clipboard', srkmecCopyAdd, ecCopyAdd);
   AddDefault(C, 'Cut - Add to Clipboard', srkmecCutAdd, ecCutAdd);
   AddDefault(C, 'Copy current line', srkmecCopyCurrentLine, ecCopyCurrentLine);

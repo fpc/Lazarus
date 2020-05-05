@@ -265,6 +265,8 @@ const
   ecCutCurrentLine     = 609; //
   ecCutAddCurrentLine  = 610; //
 
+  ecPasteAsColumns  = 611;  // Paste clipboard to current position as if it was column mode
+
   ecBlockIndent     = 615;  // Indent selection
   ecBlockUnindent   = 616;  // Unindent selection
   ecTab             = 617;  // Tab key

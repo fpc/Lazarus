@@ -926,7 +926,7 @@ type
     procedure SetSelStart(const Value: integer);
     property TextView : TSynEditFoldedView read FFoldedLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
-    function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
+    function PasteFromClipboardEx(ClipHelper: TSynClipboardStream; AForceColumnMode: Boolean = False): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     // Todo: Reduce the argument list of Creategutter
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
@@ -1015,7 +1015,7 @@ type
     // Clipboard
     procedure CopyToClipboard;
     procedure CutToClipboard;
-    procedure PasteFromClipboard;
+    procedure PasteFromClipboard(AForceColumnMode: Boolean = False);
     procedure DoCopyToClipboard(SText: string; FoldInfo: String = '');
     property CanPaste: Boolean read GetCanPaste;
 
@@ -4363,20 +4363,21 @@ begin
   FOverrideCursor := c;
 end;
 
-procedure TCustomSynEdit.PasteFromClipboard;
+procedure TCustomSynEdit.PasteFromClipboard(AForceColumnMode: Boolean);
 var
   ClipHelper: TSynClipboardStream;
 begin
   ClipHelper := TSynClipboardStream.Create;
   try
     ClipHelper.ReadFromClipboard(Clipboard);
-    PasteFromClipboardEx(ClipHelper);
+    PasteFromClipboardEx(ClipHelper, AForceColumnMode);
   finally
     ClipHelper.Free;
   end;
 end;
 
-function TCustomSynEdit.PasteFromClipboardEx(ClipHelper: TSynClipboardStream) : Boolean;
+function TCustomSynEdit.PasteFromClipboardEx(ClipHelper: TSynClipboardStream;
+  AForceColumnMode: Boolean): Boolean;
 var
   PTxt: PChar;
   PStr: String;
@@ -4388,7 +4389,10 @@ begin
   InternalBeginUndoBlock;
   try
     PTxt := ClipHelper.TextP;
-    PMode := ClipHelper.SelectionMode;
+    if AForceColumnMode then
+      PMode := smColumn
+    else
+      PMode := ClipHelper.SelectionMode;
     PasteAction := scaContinue;
     if assigned(FOnPaste) then begin
       if ClipHelper.IsPlainText then PasteAction := scaPlainText;
@@ -7128,9 +7132,9 @@ begin
         begin
           CopyToClipboard;
         end;
-      ecPaste:
+      ecPaste, ecPasteAsColumns:
         begin
-          if not ReadOnly then PasteFromClipboard;
+          if not ReadOnly then PasteFromClipboard(Command = ecPasteAsColumns);
         end;
       ecCopyAdd, ecCutAdd:
         if SelAvail then begin
