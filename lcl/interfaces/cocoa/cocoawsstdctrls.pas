@@ -491,8 +491,7 @@ end;
 
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 begin
-  Result := Assigned(cmb)
-            and (ComboBoxStyleIsReadOnly(cmb.Style) or cmb.ReadOnly);
+  Result := Assigned(cmb) and (ComboBoxStyleIsReadOnly(cmb.Style));
 end;
 
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
@@ -1787,7 +1786,7 @@ begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   ACustomComboBox:= TCustomComboBox(AWinControl);
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     //Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
   begin
@@ -1828,7 +1827,7 @@ begin
     Exit;
   end;
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
     idx := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
@@ -1846,7 +1845,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
   begin
     rocmb := TCocoaReadOnlyComboBox(ACustomComboBox.Handle);
     rocmb.lastSelectedItemIndex := NewIndex;
@@ -1862,7 +1861,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then Exit;
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then Exit;
   TCocoaComboBox(ACustomComboBox.Handle).setNumberOfVisibleItems(NewCount);
 end;
 
@@ -1874,7 +1873,7 @@ begin
     Exit;
   end;
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).list
   else
     Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
@@ -1889,7 +1888,7 @@ begin
     Exit;
   end;
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     Result := 26 // ToDo
   else
     Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
@@ -1901,7 +1900,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
+  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     Exit // ToDo
   else
     TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
