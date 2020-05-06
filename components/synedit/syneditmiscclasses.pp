@@ -425,6 +425,7 @@ type
     FText: String;
     FTextP: PChar;
     FIsPlainText: Boolean;
+    FColumnModeFlag: Boolean;
 
     function GetMemory: Pointer;
     function GetSize: LongInt;
@@ -436,6 +437,8 @@ type
     constructor Create;
     destructor Destroy; override;
     class function ClipboardFormatId: TClipboardFormat;
+    class function ClipboardFormatMSDEVColumnSelect: TClipboardFormat;
+    class function ClipboardFormatBorlandIDEBlockType: TClipboardFormat;
 
     function CanReadFromClipboard(AClipboard: TClipboard): Boolean;
     function ReadFromClipboard(AClipboard: TClipboard): Boolean;
@@ -1619,7 +1622,10 @@ var
 begin
   PasteMode := GetTagPointer(synClipTagMode);
   if PasteMode = nil then
-    Result := smNormal
+    if FColumnModeFlag then
+      Result := smColumn
+    else
+      Result := smNormal
   else
     Result := PasteMode^;
 end;
@@ -1627,6 +1633,7 @@ end;
 procedure TSynClipboardStream.SetSelectionMode(const AValue: TSynSelectionMode);
 begin
   AddTag(synClipTagMode, @AValue, SizeOf(TSynSelectionMode));
+  FColumnModeFlag := AValue = smColumn;
 end;
 
 procedure TSynClipboardStream.SetText(const AValue: String);
@@ -1660,6 +1667,26 @@ begin
   Result := Format;
 end;
 
+class function TSynClipboardStream.ClipboardFormatMSDEVColumnSelect: TClipboardFormat;
+const
+  MSDEV_CLIPBOARD_FORMAT_TAGGED = 'MSDEVColumnSelect';
+  Format: TClipboardFormat = 0;
+begin
+  if Format = 0 then
+    Format := ClipboardRegisterFormat(MSDEV_CLIPBOARD_FORMAT_TAGGED);
+  Result := Format;
+end;
+
+class function TSynClipboardStream.ClipboardFormatBorlandIDEBlockType: TClipboardFormat;
+const
+  BORLAND_CLIPBOARD_FORMAT_TAGGED = 'Borland IDE Block Type';
+  Format: TClipboardFormat = 0;
+begin
+  if Format = 0 then
+    Format := ClipboardRegisterFormat(BORLAND_CLIPBOARD_FORMAT_TAGGED);
+  Result := Format;
+end;
+
 function TSynClipboardStream.CanReadFromClipboard(AClipboard: TClipboard): Boolean;
 begin
   Result := AClipboard.HasFormat(ClipboardFormatId);
@@ -1669,6 +1696,7 @@ function TSynClipboardStream.ReadFromClipboard(AClipboard: TClipboard): Boolean;
 var
   ip: PInteger;
   len: LongInt;
+  buf: TMemoryStream;
 begin
   Result := false;
   Clear;
@@ -1695,10 +1723,26 @@ begin
       if (length(FText) = 0) or (ip = nil) or (length(FText) <> ip^) then
         FIsPlainText := True;
     end;
+    FColumnModeFlag := AClipboard.HasFormat(ClipboardFormatMSDEVColumnSelect);
+    if (not FColumnModeFlag) and AClipboard.HasFormat(ClipboardFormatBorlandIDEBlockType) then begin
+      buf := TMemoryStream.Create;
+      try
+      AClipboard.GetFormat(ClipboardFormatBorlandIDEBlockType, buf);
+      except
+        buf.Clear;
+      end;
+      if buf.Size = 1 then begin
+        buf.Position := 0;
+        FColumnModeFlag := buf.ReadByte = 2;
+      end;
+      buf.Free;
+    end;
   end;
 end;
 
 function TSynClipboardStream.WriteToClipboard(AClipboard: TClipboard): Boolean;
+const
+  FormatBuf: array [0..0] of byte = (2);
 begin
   AClipboard.Open;
   try
@@ -1706,6 +1750,10 @@ begin
       AClipboard.AsText:= FText;
     end;
     Result := AClipboard.AddFormat(ClipboardFormatId, FMemStream.Memory^, FMemStream.Size);
+    if FColumnModeFlag then begin
+      AClipboard.AddFormat(ClipboardFormatMSDEVColumnSelect, FormatBuf[0], 0);
+      AClipboard.AddFormat(ClipboardFormatBorlandIDEBlockType, FormatBuf[0], 1);
+    end;
   finally
     AClipboard.Close;
   end;
@@ -1719,6 +1767,7 @@ procedure TSynClipboardStream.Clear;
 begin
   FMemStream.Clear;
   FIsPlainText := False;
+  FColumnModeFlag := False;
 end;
 
 function TSynClipboardStream.HasTag(ATag: TSynClipboardStreamTag): Boolean;
