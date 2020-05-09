@@ -486,7 +486,7 @@ type
             extension : Pointer;
             (* a typeless pointer to the face object's extensions *)
 
-            generic   : Pointer;
+            genericP  : Pointer;
             (* generic pointer - see TT_Set/Get_Face_Pointer *)
           end;
 
@@ -537,7 +537,7 @@ type
                 (* execution context with the instance object *)
                 (* rather than asking it on demand            *)
 
-                generic : Pointer;
+                genericP: Pointer;
                 (* generic pointer - see TT_Set/Get_Instance_Pointer *)
               end;
 

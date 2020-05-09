@@ -618,7 +618,7 @@ uses
     face := PFace(_face.z);
     if face <> nil then
       begin
-        face^.generic       := data;
+        face^.genericP      := data;
         TT_Set_Face_Pointer := TT_Err_Ok;
       end
     else
@@ -634,7 +634,7 @@ uses
   begin
     face := PFace(_face.z);
     if face <> nil then
-      TT_Get_Face_Pointer := face^.generic
+      TT_Get_Face_Pointer := face^.genericP
     else
       TT_get_Face_Pointer := nil;
   end;
@@ -880,7 +880,7 @@ uses
     ins := PInstance(_ins.z);
     if ins <> nil then
       begin
-        ins^.generic := data;
+        ins^.genericP := data;
         TT_Set_Instance_Pointer := TT_Err_Ok;
       end
     else
@@ -896,7 +896,7 @@ uses
   begin
     ins := PInstance(_ins.z);
     if ins <> nil then
-      TT_Get_Instance_Pointer := ins^.generic
+      TT_Get_Instance_Pointer := ins^.genericP
     else
       TT_Get_Instance_Pointer := nil;
   end;
