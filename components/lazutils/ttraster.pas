@@ -243,8 +243,10 @@ function IncludeFullGrainMin(minValue: integer; Grain: integer): integer;
 begin
   if minValue mod Grain <> 0 then
   begin
-    if minValue > 0 then result := minValue - (minValue mod Grain)
-      else result := minValue - (Grain - (-minValue) mod Grain);
+    if minValue > 0 then
+      result := minValue - (minValue mod Grain)
+    else
+      result := minValue - (Grain - (-minValue) mod Grain);
   end else
     result := minValue;
 end;
@@ -253,8 +255,10 @@ function IncludeFullGrainMax(maxValue: integer; Grain: integer): integer;
 begin
   if maxValue mod Grain <> Grain-1 then
   begin
-    if maxValue > 0 then result := maxValue + (Grain-1 - (maxValue mod Grain))
-    else result := maxValue + (((-maxValue) mod Grain) - 1);
+    if maxValue > 0 then
+      result := maxValue + (Grain-1 - (maxValue mod Grain))
+    else
+      result := maxValue + (((-maxValue) mod Grain) - 1);
   end
   else
     result := maxValue;

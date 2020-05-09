@@ -727,14 +727,14 @@ begin
   f := TFreeTypeFont(Afont);
 
   if ftaTop in AAlign then
-   y += AFont.Ascent
+    y += AFont.Ascent
   else if ftaVerticalCenter in AALign then
-   y += AFont.Ascent - AFont.LineFullHeight*0.5
+    y += AFont.Ascent - AFont.LineFullHeight*0.5
   else if ftaBottom in AAlign then
-   y += AFont.Ascent - AFont.LineFullHeight;
+    y += AFont.Ascent - AFont.LineFullHeight;
 
   if ftaCenter in AAlign then
-   x -= f.CharWidthFromGlyph(AGlyph)*0.5
+    x -= f.CharWidthFromGlyph(AGlyph)*0.5
   else if ftaRight in AAlign then
     x -= f.CharWidthFromGlyph(AGlyph);
 
@@ -743,10 +743,9 @@ end;
 
 { TFreeTypeGlyph }
 
-{$push}
-{$hints off}
 function TFreeTypeGlyph.GetBounds: TRect;
-var metrics: TT_Glyph_Metrics;
+var
+  metrics: TT_Glyph_Metrics;
 begin
   TT_Get_Glyph_Metrics(FGlyphData, metrics);
   with metrics.bbox do
@@ -755,21 +754,24 @@ begin
 end;
 
 function TFreeTypeGlyph.GetAdvance: single;
-var metrics: TT_Glyph_Metrics;
+var
+  metrics: TT_Glyph_Metrics;
 begin
   TT_Get_Glyph_Metrics(FGlyphData, metrics);
   result := metrics.advance/64;
 end;
 
 function TFreeTypeGlyph.GetBoundsWithOffset(x, y: single): TRect;
-var metrics: TT_Glyph_Metrics;
+var
+  metrics: TT_Glyph_Metrics;
 begin
   TT_Get_Glyph_Metrics(FGlyphData, metrics);
   with metrics.bbox do
-    result := rect(IncludeFullGrainMin(xMin+round(x*64),64) div 64,IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
-       (IncludeFullGrainMax(xMax+round(x*64),64)+1) div 64,(IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
+    result := rect(IncludeFullGrainMin(xMin+round(x*64), 64) div 64,
+                   IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
+                  (IncludeFullGrainMax(xMax+round(x*64), 64)+1) div 64,
+                  (IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
 end;
-{$pop}
 
 constructor TFreeTypeGlyph.Create(AFont: TFreeTypeFont; AIndex: integer);
 begin
