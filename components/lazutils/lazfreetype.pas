@@ -347,7 +347,8 @@ const
   (*  Get an outline's bounding box                                *)
   (*                                                               *)
   function TT_Get_Outline_BBox( var out  : TT_Outline;
-                                var bbox : TT_Bbox     ) : TT_Error;
+                                var bbox : TT_Bbox;
+                                nbPhantomPoints : integer = 0 ) : TT_Error;
 
   (*****************************************************************)
   (*  Create a new glyph outline                                   *)
@@ -1337,7 +1338,8 @@ uses
   (*  Compute an outline's bounding box                            *)
   (*                                                               *)
   function TT_Get_Outline_BBox( var out  : TT_Outline;
-                                var bbox : TT_Bbox     ) : TT_Error;
+                                var bbox : TT_Bbox;
+                                nbPhantomPoints : integer ) : TT_Error;
   var
     x,    y    : TT_Pos;
     n          : Int;
@@ -1350,7 +1352,7 @@ uses
       yMin := $7FFFFFFF;
       yMax := -$80000000;
 
-      for n := 0 to out.n_points-1 do
+      for n := 0 to out.n_points-1-nbPhantomPoints do
       begin
         x := out.points^[n].x;
         if x < xMin then xMin := x;

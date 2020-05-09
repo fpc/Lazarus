@@ -1233,7 +1233,7 @@ const
    glyph^.outline.n_contours  := num_contours;
    glyph^.outline.second_pass := true;
 
-   TT_Get_Outline_BBox( glyph^.outline, glyph^.metrics.bbox );
+   TT_Get_Outline_BBox( glyph^.outline, glyph^.metrics.bbox, 2 );
 
    glyph^.metrics.horiBearingX := glyph^.metrics.bbox.xMin - subglyph^.pp1.x;
    glyph^.metrics.horiBearingY := glyph^.metrics.bbox.yMax;
