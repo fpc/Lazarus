@@ -1127,8 +1127,8 @@ end;
 
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
 begin
+  ADesc.Init;
   ADesc.Format := ricfRGBA;
-
   ADesc.Depth := ABitmapInfo.bmBitsPixel;             // used bits per pixel
   ADesc.Width := ABitmapInfo.bmWidth;
   ADesc.Height := ABitmapInfo.bmHeight;
@@ -1145,7 +1145,6 @@ begin
     ADesc.PaletteColorCount := 0;
   end
   else ADesc.PaletteColorCount := 0;
-
 
   FillRawImageDescriptionColors(ADesc);
 

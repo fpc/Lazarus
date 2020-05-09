@@ -398,8 +398,8 @@ end;
 
 procedure FillRawImageDescription(const ABitmapInfo: TfpgImage; out ADesc: TRawImageDescription);
 begin
+  ADesc.Init;
   ADesc.Format := ricfRGBA;
-
   ADesc.Depth := 32;             // used bits per pixel
   ADesc.Width := ABitmapInfo.Width;
   ADesc.Height := ABitmapInfo.Height;
@@ -416,7 +416,6 @@ begin
     ADesc.PaletteColorCount := 0;
   end
   else ADesc.PaletteColorCount := 0;
-
 
   FillRawImageDescriptionColors(ADesc);
 
