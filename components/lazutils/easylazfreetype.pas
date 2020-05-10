@@ -747,30 +747,37 @@ function TFreeTypeGlyph.GetBounds: TRect;
 var
   metrics: TT_Glyph_Metrics;
 begin
-  TT_Get_Glyph_Metrics(FGlyphData, metrics);
-  with metrics.bbox do
-    result := rect(IncludeFullGrainMin(xMin,64) div 64,IncludeFullGrainMin(-yMax,64) div 64,
-       (IncludeFullGrainMax(xMax,64)+1) div 64,(IncludeFullGrainMax(-yMin,64)+1) div 64);
+  if TT_Get_Glyph_Metrics(FGlyphData, metrics) = TT_Err_Ok then
+    with metrics.bbox do
+      result := rect(IncludeFullGrainMin(xMin,64) div 64,IncludeFullGrainMin(-yMax,64) div 64,
+         (IncludeFullGrainMax(xMax,64)+1) div 64,(IncludeFullGrainMax(-yMin,64)+1) div 64)
+  else
+      result := TRect.Empty;
 end;
 
 function TFreeTypeGlyph.GetAdvance: single;
 var
   metrics: TT_Glyph_Metrics;
 begin
-  TT_Get_Glyph_Metrics(FGlyphData, metrics);
-  result := metrics.advance/64;
+  if TT_Get_Glyph_Metrics(FGlyphData, metrics) = TT_Err_Ok then
+    result := metrics.advance/64
+  else
+    result := 0;
 end;
 
 function TFreeTypeGlyph.GetBoundsWithOffset(x, y: single): TRect;
 var
   metrics: TT_Glyph_Metrics;
 begin
-  TT_Get_Glyph_Metrics(FGlyphData, metrics);
-  with metrics.bbox do
-    result := rect(IncludeFullGrainMin(xMin+round(x*64), 64) div 64,
-                   IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
-                  (IncludeFullGrainMax(xMax+round(x*64), 64)+1) div 64,
-                  (IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
+  if TT_Get_Glyph_Metrics(FGlyphData, metrics) = TT_Err_Ok then
+  begin
+    with metrics.bbox do
+      result := rect(IncludeFullGrainMin(xMin+round(x*64),64) div 64,
+                     IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
+                    (IncludeFullGrainMax(xMax+round(x*64),64)+1) div 64,
+                    (IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
+  end else
+    result := TRect.Empty;
 end;
 
 constructor TFreeTypeGlyph.Create(AFont: TFreeTypeFont; AIndex: integer);

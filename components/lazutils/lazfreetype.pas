@@ -254,13 +254,13 @@ const
   (*  Get a glyph's metrics                                        *)
   (*                                                               *)
   function TT_Get_Glyph_Metrics( _glyph       : TT_Glyph;
-                                 var gmetrics : TT_Glyph_Metrics ) : TT_Error;
+                                 out gmetrics : TT_Glyph_Metrics ) : TT_Error;
 
   (*****************************************************************)
   (*  Get a glyph's big metrics                                    *)
   (*                                                               *)
   function TT_Get_Glyph_Big_Metrics( _glyph       : TT_Glyph;
-                                     var gmetrics : TT_Big_Glyph_Metrics
+                                     out gmetrics : TT_Big_Glyph_Metrics
                                    ) : TT_Error;
 
   (*****************************************************************)
@@ -1027,7 +1027,7 @@ uses
   (*                                                               *)
   (*                                                               *)
   function TT_Get_Glyph_Metrics( _glyph       : TT_Glyph;
-                                 var gmetrics : TT_Glyph_Metrics ) : TT_Error;
+                                 out gmetrics : TT_Glyph_Metrics ) : TT_Error;
   var
     glyph : PGlyph;
   begin
@@ -1041,14 +1041,17 @@ uses
         TT_Get_Glyph_Metrics := TT_Err_Ok;
       end
     else
-      TT_Get_Glyph_Metrics := TT_Err_Invalid_Glyph_Handle;
+      begin
+        fillchar(gmetrics, sizeof(gmetrics), 0);
+        TT_Get_Glyph_Metrics := TT_Err_Invalid_Glyph_Handle;
+      end;
   end;
 
   (*****************************************************************)
   (*  Get a glyph's big metrics                                    *)
   (*                                                               *)
   function TT_Get_Glyph_Big_Metrics( _glyph       : TT_Glyph;
-                                     var gmetrics : TT_Big_Glyph_Metrics
+                                     out gmetrics : TT_Big_Glyph_Metrics
                                    ) : TT_Error;
   var
     glyph : PGlyph;
@@ -1060,7 +1063,10 @@ uses
         TT_Get_Glyph_Big_Metrics := TT_Err_Ok;
       end
     else
-      TT_Get_Glyph_Big_Metrics := TT_Err_Invalid_Glyph_Handle;
+      begin
+        fillchar(gmetrics, sizeof(gmetrics), 0);
+        TT_Get_Glyph_Big_Metrics := TT_Err_Invalid_Glyph_Handle;
+      end;
   end;
 
   (*****************************************************************)
@@ -1345,6 +1351,15 @@ uses
     n          : Int;
   begin
 
+    if out.n_points-nbPhantomPoints <= 0 then
+    with bbox do
+    begin
+      xMin := 0;
+      xMax := 0;
+      yMin := 0;
+      yMax := 0;
+    end
+    else
     with bbox do
     begin
       xMin := $7FFFFFFF;
