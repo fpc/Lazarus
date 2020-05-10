@@ -2466,7 +2466,7 @@ begin
   if FFlags=AValue then exit;
   ChangedFlags:=(FFlags-AValue)+(AValue-FFlags);
   FFlags:=AValue;
-  if ChangedFlags*[lpfAutoIncrementVersionOnBuild]<>[] then
+  if ChangedFlags*[lpfAutoIncrementVersionOnBuild,lpfCompatibilityMode]<>[] then
     Modified:=true;
 end;
 
@@ -2860,7 +2860,13 @@ var
     if FileVersion<=4 then begin
       // set CompatibilityMode flag for legacy projects (this flag was added in FileVersion=5 that changed
       // item format so that LPK cannot be opened in legacy Lazarus unless lpfCompatibilityMode is set)
-      UseLegacyLists := True;
+      Include(FFlags,lpfCompatibilityMode);
+    end else
+    begin
+      if XMLConfig.GetValue(ThePath+'CompatibilityMode/Value',true) then
+        Include(FFlags,lpfCompatibilityMode)
+      else
+        Exclude(FFlags,lpfCompatibilityMode);
     end;
   end;
 
@@ -2961,6 +2967,8 @@ var
   begin
     XMLConfig.SetDeleteValue(ThePath+'AutoIncrementVersionOnBuild/Value',
       AutoIncrementVersionOnBuild,true);
+    XMLConfig.SetDeleteValue(ThePath+'CompatibilityMode/Value',
+      UseLegacyLists,true);
   end;
 
 begin
