@@ -71,6 +71,7 @@ type
     fRowsPerScreen: integer;
     fColsPerRow: integer;
     fFirstLine: integer;
+    FMemoEndsInEOL: Boolean;
     procedure getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
     procedure consoleSizeChanged;
   protected
@@ -364,6 +365,7 @@ const
 var
   lineLimit, numLength, i: integer;
   buffer: TStringList;
+  TextEndsInEOL: Boolean;
 
 
   (* Translate C0 control codes to "control pictures", and optionally C1 codes
@@ -755,6 +757,7 @@ begin
 (* "interesting" behavior once the amount of text causes it to start scrolling  *)
 (* so having an intermediate that can be inspected might be useful.             *)
 
+  TextEndsInEOL := (AText <> '') and (AText[Length(AText)-1] in [#10]);
   buffer := TStringList.Create;
   try
     buffer.Text := AText;     (* Decides what line breaks it wants to swallow   *)
@@ -776,13 +779,21 @@ begin
         buffer[i] := PadLeft(IntToStr(fFirstLine), numLength) + ' ' + buffer[i];
       fFirstLine += 1
     end;
-    if RadioGroupRight.ItemIndex = 3 then (* Expand hex line-by-line in reverse *)
+    if RadioGroupRight.ItemIndex = 3 then begin (* Expand hex line-by-line in reverse *)
       for i := buffer.Count - 1 downto 0 do
         expandAsHex(buffer, i, numLength);
+      FMemoEndsInEOL := True;
+    end;
 
 (* Add the buffered text to the visible control(s), and clean up.               *)
 
-    Memo1.Lines.AddStrings(buffer)
+    if (not FMemoEndsInEOL) and (Memo1.Lines.Count > 0) and (AText <> '') then begin
+      Memo1.Lines[Memo1.Lines.Count-1] := Memo1.Lines[Memo1.Lines.Count-1] + buffer[0];
+      buffer.Delete(0);
+    end;
+    if (AText <> '') then
+      Memo1.Lines.AddStrings(buffer);
+    FMemoEndsInEOL := TextEndsInEOL;
   finally
     buffer.Free;
     Memo1.Lines.EndUpdate
