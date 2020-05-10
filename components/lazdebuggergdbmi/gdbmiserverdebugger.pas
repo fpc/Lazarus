@@ -313,14 +313,17 @@ begin
     ExecuteCommand(Format('set remotetimeout %d', [t]), R);
 
   // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done before Start
+  s := '';
   if TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Target_Mode = dtTargetExtendedRemote then
-    FSuccess := ExecuteCommand(Format('target extended-remote %s',
-                               [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname
+    s := 'extended-';
+  if TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port = '' then
+    FSuccess := ExecuteCommand(Format('target %sremote %s',
+                               [s, TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname
                                 ]),
                                R)
   else
-    FSuccess := ExecuteCommand(Format('target remote %s:%s',
-                               [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
+    FSuccess := ExecuteCommand(Format('target %sremote %s:%s',
+                               [s, TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
                                 TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
                                R);
 
