@@ -4560,8 +4560,10 @@ var
       finally
         Params.Flags := OldFlags;
       end;
-    until ((HelperKind=fdhlkDelphiHelper) and not (cmsMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
-     or (not Helpers.GetNext(HelperContext,HelperIterator));
+    until ((HelperKind=fdhlkDelphiHelper)
+      and (Params.StartTool<>nil)
+      and not (cmsMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
+      or (not Helpers.GetNext(HelperContext,HelperIterator));
     //debugln(['SearchInHelpers END']);
   end;
 
