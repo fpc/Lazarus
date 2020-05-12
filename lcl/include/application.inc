@@ -205,7 +205,7 @@ begin
           if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
             StartHintTimer(HintPause, ahttShowHint);
         end;
-      ahttShowHint:
+      ahttShowHint, ahttReshowHint:
         StartHintTimer(HintPause, ahttShowHint);
     end;
   end
@@ -713,10 +713,8 @@ procedure TApplication.DoOnMouseMove;
 var
   CursorPos: TPoint;
 begin
-  if not GetCursorPos(CursorPos) then
-    Exit;
-
-  ActivateHint(CursorPos, True);
+  if GetCursorPos(CursorPos) then
+    ActivateHint(CursorPos, True);
 end;
 
 procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
