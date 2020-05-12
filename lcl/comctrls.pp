@@ -3339,7 +3339,8 @@ type
     FLastVertScrollInfo: TScrollInfo;
     FMaxLvl: integer; // maximum level of all nodes
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
-    fMouseDownPos: TPoint;
+    FMouseDownPos: TPoint;
+    FMouseDownNodeSelected: Boolean;
     FMultiSelectStyle: TMultiSelectStyle;
     FHotTrackColor: TColor;
     FDisabledFontColor: TColor;
@@ -3423,6 +3424,7 @@ type
     function IsStoredBackgroundColor: Boolean;
     procedure HintMouseLeave(Sender: TObject);
     procedure ImageListChange(Sender: TObject);
+    function MouseDownNode(X, Y: Integer): TTreeNode;
     procedure OnChangeTimer(Sender: TObject);
     procedure SetAutoExpand(Value: Boolean);
     procedure SetBackgroundColor(Value: TColor);
@@ -3516,6 +3518,7 @@ type
     procedure Change(Node: TTreeNode); virtual;
     procedure Collapse(Node: TTreeNode); virtual;
     procedure CreateWnd; override;
+    procedure DblClick; override;
     procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); virtual;

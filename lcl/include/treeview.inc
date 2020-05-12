@@ -3315,6 +3315,12 @@ begin
   inherited CreateWnd;
 end;
 
+procedure TCustomTreeView.DblClick;
+begin
+  if FMouseDownNodeSelected then
+    inherited DblClick;
+end;
+
 procedure TCustomTreeView.InitializeWnd;
 begin
   inherited InitializeWnd;
@@ -5550,23 +5556,27 @@ begin
   Result := FIndent >= 0;
 end;
 
+function TCustomTreeView.MouseDownNode(X, Y: Integer): TTreeNode;
+begin
+  Result := GetNodeAt(X, Y);
+  // Update the NodeSelected flag.
+  FMouseDownNodeSelected := (Result<>nil) and
+    (Result.Selected or ((tvoAllowMultiselect in Options) and Result.MultiSelected));
+end;
+
 procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   CursorNode: TTreeNode;
   LogicalX: Integer;
-  CursorNodeSelected: Boolean;
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.MouseDown A ',DbgSName(Self),' ');
   {$ENDIF}
-  fMouseDownPos := Point(X,Y);
+  FMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
 
-  CursorNode := GetNodeAt(X, Y);
-  CursorNodeSelected := (CursorNode<>nil)
-    and (CursorNode.Selected
-      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
+  CursorNode := MouseDownNode(X, Y);
   LogicalX:=X;
 
   //change selection on right click
@@ -5580,7 +5590,7 @@ begin
     if not (tvoAllowMultiselect in Options) then
       Selected := CursorNode
     else
-    if not CursorNodeSelected then
+    if not FMouseDownNodeSelected then
       Items.SelectOnlyThis(CursorNode);
   end;
 
@@ -5590,10 +5600,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
-  CursorNode := GetNodeAt(X, Y);
-  CursorNodeSelected := (CursorNode<>nil)
-    and (CursorNode.Selected
-      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
+  CursorNode := MouseDownNode(X, Y);
 
   //change selection on left click
   if (Button = mbLeft) and//left click
@@ -5609,8 +5616,7 @@ begin
     end
     else if LogicalX >= CursorNode.DisplayStateIconLeft then
     begin
-      // mousedown occured in text or icon
-      // -> select node and begin drag operation
+      // mousedown occured in text or icon -> select node and begin drag operation
       {$IFDEF VerboseDrag}
       DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
       {$ENDIF}
@@ -5639,7 +5645,7 @@ begin
         end
         else
         begin
-          if not CursorNodeSelected then
+          if not FMouseDownNodeSelected then
             Items.SelectOnlyThis(CursorNode)
           else
             Include(FStates, tvsSingleSelectOnMouseUp);
@@ -5680,27 +5686,29 @@ procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   aMouseDownNode, aMouseUpNode: TTreeNode;
 begin
-  if (FHintWnd<>nil) and FHintWnd.Visible then // must hide hint window in mouse up to receive redirected mouse up messages
+  // must hide hint window in mouse up to receive redirected mouse up messages
+  if (FHintWnd<>nil) and FHintWnd.Visible then
     FHintWnd.Hide;
   inherited MouseUp(Button, Shift, X, Y);
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
   if Button=mbLeft then
+  begin
     MouseCapture := False;
-  if (Button=mbLeft)
-  and (FStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [])
-  then begin
-    //AquirePrimarySelection;
-    aMouseDownNode:=GetNodeAt(fMouseDownPos.X,fMouseDownPos.Y);
-    aMouseUpNode:=GetNodeAt(X,Y);
-    if (abs(fMouseDownPos.X-X)+abs(fMouseDownPos.Y-Y)<10)
-    and (aMouseDownNode=aMouseUpNode) then
+    if FStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [] then
     begin
-      // mouse up on mouse-down node
-      if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
-        BeginEditing(Selected)
-      else if (tvsSingleSelectOnMouseUp in FStates) then
-        Items.SelectOnlyThis(aMouseUpNode);
+      //AquirePrimarySelection;
+      aMouseDownNode:=GetNodeAt(FMouseDownPos.X,FMouseDownPos.Y);
+      aMouseUpNode:=GetNodeAt(X,Y);
+      if (abs(FMouseDownPos.X-X)+abs(FMouseDownPos.Y-Y)<10)
+      and (aMouseDownNode=aMouseUpNode) then
+      begin
+        // mouse up on mouse-down node
+        if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
+          BeginEditing(Selected)
+        else if (tvsSingleSelectOnMouseUp in FStates) then
+          Items.SelectOnlyThis(aMouseUpNode);
+      end;
     end;
   end;
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
