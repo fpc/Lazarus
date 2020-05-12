@@ -368,12 +368,6 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
       <element name="TColorBox.Selected" link="#LCL.ColorBox.TCustomColorBox.Selected"/>
       <!-- property Visibility: published -->
       <element name="TColorBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
@@ -987,7 +981,7 @@
       <element name="TCustomColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem"/>
       <element name="TCustomColorBox.Create">
         <short>
-          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colors and color list, ReadOnly and Selected properties</short>
+          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colors and color list, and Selected properties</short>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomCombobox.Create">TCustomCombobox.Create</link>
         </seealso>

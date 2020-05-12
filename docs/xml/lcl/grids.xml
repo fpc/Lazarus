@@ -6338,7 +6338,7 @@
         <descr></descr>
         <seealso>
           <link id="TCustomGrid.SetCursor"/>
-          <link id="TCustomGrid.SetSpecialCursor"/>
+          <link id="TCustomGrid.CursorState"/>
           <link id="TCustomGrid.MouseMove"/>
           <link id="TCustomGrid.MouseUp"/>
         </seealso>
@@ -7005,10 +7005,10 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.ColumnFromGridColumn"/>
-          <link id="DoOPExchangeColRow"/>
-          <link id="DoOPInsertColRow"/>
-          <link id="DoOPMoveColRow"/>
-          <link id="DoOPDeleteColRow"/>
+          <link id="TCustomGrid.DoOPExchangeColRow"/>
+          <link id="TCustomGrid.DoOPInsertColRow"/>
+          <link id="TCustomGrid.DoOPMoveColRow"/>
+          <link id="TCustomGrid.DoOPDeleteColRow"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -7135,7 +7135,7 @@
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.ColCount"/>
           <link id="TCustomGrid.HeaderClick`"/>
-          <link id="#LCL.StdCtrls.TWinControl.DialogChar"/>
+          <link id="#LCL.Controls.TWinControl.DialogChar"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DialogChar.Result">
@@ -9572,8 +9572,7 @@
         <seealso>
           <link id="TCustomGrid.ColSizingCursor"/>
           <link id="TCustomGrid.RowSizingCursor"/>
-          <link id="TCustomGrid.ChangeCursor"/>
-          <link id="TCustomGrid.SetSpecialCursor"/>
+          <link id="TCustomGrid.CursorState"/>
         </seealso>
       </element>
       <element name="TCustomGrid.SetCursor.AValue">
@@ -12668,7 +12667,7 @@
         <short>Gets the number of strings in the class instance</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStrings.GetCount"/>
+          <link id="#RTL.Classes.TStringList.GetCount"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetCount.Result">
@@ -12680,7 +12679,7 @@
         <short>Gets the object stored at the specified index position</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStrings.GetObject"/>
+          <link id="#RTL.Classes.TStringList.GetObject"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetObject.Result">
@@ -12695,7 +12694,7 @@
         <short>Stores a string at the specified index position</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStrings.Put"/>
+          <link id="#RTL.Classes.TStringList.Put"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.Put.Index">
@@ -12710,7 +12709,7 @@
         <short>Stores an Object at the specified index position</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStrings.PutObject"/>
+          <link id="#RTL.Classes.TStringList.PutObject"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.PutObject.Index">

@@ -1186,8 +1186,6 @@
           <dl>
             <dt>AutoCompleteOptions</dt>
             <dd>Set to the constant in cDefAutoCompOpts</dd>
-            <dt>ReadOnly</dt>
-            <dd>Set to True</dd>
             <dt>Style</dt>
             <dd>
               The inherited property is set to csOwnerDrawFixed; the value is set to the constant in cDefStyle in the class instance
@@ -1323,7 +1321,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TComboExItems.Delete"/>
+          <link id="#RTL.Classes.TCollection.Delete"/>
           <link id="TCustomComboBoxEx.ItemsEx"/>
         </seealso>
       </element>
@@ -1540,7 +1538,6 @@
       <element name="TComboBoxEx.ParentFont" link="#lcl.Controls.TControl.ParentFont"/>
       <element name="TComboBoxEx.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
       <element name="TComboBoxEx.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
-      <element name="TComboBoxEx.ReadOnly" link="#lcl.StdCtrls.TCustomComboBox.ReadOnly"/>
       <element name="TComboBoxEx.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
       <element name="TComboBoxEx.Style" link="TCustomComboBoxEx.Style"/>
       <element name="TComboBoxEx.StyleEx" link="TCustomComboBoxEx.StyleEx"/>
@@ -2132,8 +2129,6 @@
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method.  Create ensures that the <var>Items</var> property is configured to ignore duplicate values. Create sets the default values for the following properties and members:
           </p>
           <dl>
-            <dt>ReadOnly</dt>
-            <dd>Set to True</dd>
             <dt>Style</dt>
             <dd>Set to the value csOwnerDrawFixed</dd>
             <dt>FNeedMeasure</dt>

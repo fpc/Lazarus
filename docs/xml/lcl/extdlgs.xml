@@ -216,7 +216,7 @@
         <seealso>
           <link id="TPreviewFileControl"/>
           <link id="TPreviewFileDialog.CreatePreviewControl"/>
-          <link id="#LCL.Dialogs.TOpenDialog.Execute"/>
+          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
         </seealso>
       </element>
 
@@ -819,9 +819,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.CalcForm.TCalculatorForm.OnClose"/>
-          <link id="#LCL.CalcForm.TCalculatorDialog.Execute"/>
-          <link id="#LCL.CalcForm.TCalculatorDialog.OnDialogClose"/>
+          <link id="TCalculatorDialog.OnDialogClose"/>
+          <link id="#LCL.Forms.TForm.OnClose"/>
+          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogClose.Sender">
@@ -842,9 +842,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCalculatorForm.OnShow"/>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalculatorDialog.OnDialogShow"/>
+          <link id="#LCL.Forms.TForm.OnShow"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogShow.Sender">
@@ -864,8 +864,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.CalcForm.TCalculatorForm.OnCloseQuery"/>
-          <link id="#LCL.CalcForm.TCalculatorDialog.Execute"/>
+          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
+          <link id="#LCL.Forms.TForm.OnCloseQuery"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
@@ -1254,9 +1254,9 @@
         </descr>
         <seealso>
           <link id="TExtCommonDialog"/>
-          <link id="TCalendarDialog.DlgForm"/>
           <link id="TCalendarDialog.Date"/>
-          <link id="TCalendarDialog.DialogPosition"/>
+          <link id="TExtCommonDialog.DialogPosition"/>
+          <link id="TExtCommonDialog.DlgForm"/>
           <link id="TCalendarDialog.Execute"/>
           <link id="#lcl.Calendar.TCalendar"/>
         </seealso>

@@ -66,7 +66,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TBookmarkList.CheckActive">TBookmarkList.CheckActive</link>
         </seealso>
       </element>
 
@@ -1313,7 +1312,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomDBGrid.OnRecordChanged"/>
           <link id="TComponentDataLink.OnRecordChanged"/>
           <link id="#fcl.db.TDataLink.RecordChanged"/>
         </seealso>
@@ -1337,7 +1335,6 @@
         <seealso>
           <link id="#fcl.db.TDataLink.DatasetChanged">TDataLink.DatasetChanged</link>
           <link id="TComponentDataLink.OnDatasetChanged">TComponentDataLink.OnDatasetChanged</link>
-          <link id="TCustomDBGrid.OnDatasetChanged"/>
         </seealso>
       </element>
 
@@ -1441,7 +1438,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomDBGrid.OnEditingChanged"/>
           <link id="#fcl.db.TDataLink.EditingChanged"/>
         </seealso>
       </element>

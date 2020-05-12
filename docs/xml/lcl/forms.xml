@@ -304,11 +304,10 @@
         <short>The AutoScroll state of the associated <link id="TScrollingWinControl"/></short>
         <descr>
           <remark>
-            Please note: GetAutoScroll is not used as the read access specifier for the AutoScroll property. It is used in methods to ensure that the class reflects the current state for its associated Control.
+            Please note: GetAutoScroll is not used as the read access specifier for a property. It is used in methods to ensure that the class reflects the current state for its associated control.
           </remark>
         </descr>
         <seealso>
-          <link id="TControlScrollBar.Control"/>
           <link id="TControlScrollBar.AutoScroll"/>
         </seealso>
       </element>
@@ -819,10 +818,10 @@
           <link id="TScrollingWinControl.AutoScroll"/>
           <link id="TScrollingWinControl.VertScrollBar"/>
           <link id="TScrollingWinControl.HorzScrollBar"/>
-          <link id="TScrollingWinControl.Width"/>
-          <link id="TScrollingWinControl.Height"/>
-          <link id="TScrollingWinControl.ClientWidth"/>
-          <link id="TScrollingWinControl.ClientHeight"/>
+          <link id="#LCL.Controls.TControl.Height"/>
+          <link id="#LCL.Controls.TControl.Width"/>
+          <link id="#LCL.Controls.TControl.ClientHeight"/>
+          <link id="#LCL.Controls.TControl.ClientWidth"/>
         </seealso>
       </element>
       <element name="TScrollingWinControl.GetPreferredSizeClientFrame.aWidth">
@@ -1080,14 +1079,13 @@
             An overridden <var>Loaded</var> method is provided to adjust the design-time PPI (when scaling is enabled in the application).
           </p>
           <p>
-            TCustomDesignControl is used as the ancestor for <var>TCustomFrame</var> and <var>TCustomForm</var>, and is the type used for the <var>ParentForm</var> property in <var>TControl</var> and its descendants.
+            TCustomDesignControl is used as the ancestor for <var>TCustomFrame</var> and <var>TCustomForm</var>.
           </p>
         </descr>
         <seealso>
           <link id="TApplication.Scaled"/>
           <link id="TCustomForm"/>
           <link id="TCustomFrame"/>
-          <link id="TControl.ParentForm"/>
           <link id="GetParentDesignControl"/>
           <link id="NeedParentDesignControl"/>
         </seealso>
@@ -1141,11 +1139,11 @@
           </remark>
         </descr>
         <seealso>
-          <link id="TCustomDesignControl.Parent"/>
-          <link id="TCustomDesignControl.BorderSpacing"/>
-          <link id="TCustomDesignControl.Constraints"/>
-          <link id="TLayoutAdjustmentPolicy.lapAutoAdjustWithoutHorizontalScrolling"/>
-          <link id="TLayoutAdjustmentPolicy.lapAutoAdjustForDPI"/>
+          <link id="#LCL.Controls.TLayoutAdjustmentPolicy.lapAutoAdjustWithoutHorizontalScrolling"/>
+          <link id="#LCL.Controls.TLayoutAdjustmentPolicy.lapAutoAdjustForDPI"/>
+          <link id="#LCL.Controls.TControl.Constraints"/>
+          <link id="#LCL.Controls.TControl.BorderSpacing"/>
+          <link id="#LCL.Controls.TControl.Parent"/>
         </seealso>
       </element>
       <element name="TCustomDesignControl.DoAutoAdjustLayout.AMode">
@@ -1176,8 +1174,8 @@
           <link id="TCustomDesignControl.Scaled"/>
           <link id="TCustomDesignControl.PixelsPerInch"/>
           <link id="TCustomDesignControl.Scaled"/>
-          <link id="TCustomDesignControl.Font"/>
           <link id="TApplication.Scaled"/>
+          <link id="#LCL.Controls.TControl.Font"/>
         </seealso>
       </element>
       <element name="TCustomDesignControl.Create.TheOwner">
@@ -1237,9 +1235,9 @@
         </descr>
         <seealso>
           <link id="TCustomDesignControl.PixelsPerInch"/>
-          <link id="TCustomDesignControl.Font"/>
           <link id="TCustomDesignControl.Scaled"/>
           <link id="TApplication.Scaled"/>
+          <link id="#LCL.Controls.TControl.Font"/>
         </seealso>
       </element>
       <element name="TCustomDesignControl.PixelsPerInch">
@@ -1661,7 +1659,7 @@
         <seealso/>
       </element>
       <!-- range type Visibility: default -->
-      <element name="TModalResult">
+      <element name="TModalResult" link="#LCL.UITypes.TModalResult">
         <short>Dummy type for the values that can be returned as a modal result</short>
         <descr>
           <p>
@@ -1727,7 +1725,6 @@
           <link id="TCustomForm.PopupMode"/>
           <link id="TCustomForm.PopupParent"/>
           <link id="TCustomForm.GetRealPopupParent"/>
-          <link id="TCustomForm.SetPopupParent"/>
         </seealso>
       </element>
       <element name="TPopupMode.pmNone">
@@ -1870,7 +1867,7 @@
         <seealso>
           <link id="TCustomForm.OnShowModalFinished"/>
           <link id="TApplication.OnMessageDialogFinished"/>
-          <link id="#LCL.Controls.TModalResult"/>
+          <link id="TModalResult"/>
         </seealso>
       </element>
       <element name="TModalDialogFinished.Sender">
@@ -2477,7 +2474,7 @@
         </descr>
         <seealso>
           <link id="TCustomForm.BeginFormUpdate"/>
-          <link id="TCustomForm.FormEndUpdated"/>
+          <link id="#LCL.Controls.TWinControl.FormEndUpdated"/>
         </seealso>
       </element>
       <element name="TCustomForm.HandleCreateException">
@@ -2682,7 +2679,7 @@
         <descr>
         </descr>
         <seealso>
-          <link id="TCustomForm.RemoveActionList"/>
+          <link id="TCustomForm.DoRemoveActionList"/>
         </seealso>
       </element>
       <element name="TCustomForm.DoAddActionList.List">
@@ -2695,7 +2692,7 @@
         <errors>
         </errors>
         <seealso>
-          <link id="TCustomForm.AddActionList"/>
+          <link id="TCustomForm.DoAddActionList"/>
         </seealso>
       </element>
       <element name="TCustomForm.DoRemoveActionList.List">
@@ -3338,13 +3335,19 @@
           The border style affects the title bar, border and resize behavior of the form.
         </short>
         <descr>
-          <p>Use borderstyle to get or set the appearance of the form's border. </p>
-          <p>By default it is a sizeable window, but it could, for example, be a dialog form
-            or a tool window, or could be non-sizeable.</p>
-          <p>This property is slightly different (has a different base type) from the
+          <p>
+            Use borderstyle to get or set the appearance of the form's border.
+          </p>
+          <p>
+            By default it is a sizeable window, but it could, for example, be a dialog form
+            or a tool window, or could be non-sizeable.
+          </p>
+          <p>
+            This property is slightly different (has a different base type) from the
             <var>TCustomControl.BorderStyle</var> property. When the form is put into
             another control the window borders depend on the widget set. There are no
-            borders under GTK.</p>
+            borders under GTK.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomForm.AutoScroll"/>
@@ -3357,12 +3360,9 @@
       <element name="TCustomForm.CancelControl">
         <short>The control associated with the Cancel action</short>
         <descr>
-          <p>Determines the control associated with the Cancel action
-            (exit from the modal form without changing anything).</p>
-          <p>This is usually a button with the caption 'Cancel', but might
-            be an 'Exit' button or anything else the application programmer decides.</p>
-          <p>This control is selected either by explicitly clicking with the mouse,
-            or by hitting the 'Esc' key.</p>
+          <p>
+            Determines the control associated with the Cancel action (exit from the modal form without changing anything). This is usually a button with the caption 'Cancel', but might be an 'Exit' button or anything else the application programmer decides. This control is selected either by explicitly clicking with the mouse, or by hitting the 'Esc' key.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomForm.DefaultControl"/>
@@ -4061,8 +4061,8 @@
         <seealso>
           <link id="THintWindow.HintRect"/>
           <link id="THintWindow.AutoHide"/>
-          <link id="THintWindow.Visible"/>
           <link id="THintWindow.ActivateHint"/>
+          <link id="#LCL.Controls.TControl.Visible"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -4090,7 +4090,7 @@
         <short>Sets the value for the Color property</short>
         <descr/>
         <seealso>
-          <link id="THintWindow.Color"/>
+          <link id="#LCL.Controls.TControl.Color"/>
         </seealso>
       </element>
       <element name="THintWindow.SetColor.Value">
@@ -4271,7 +4271,6 @@
         <seealso>
           <link id="THintWindow.HintRect"/>
           <link id="THintWindow.HintRectAdjust"/>
-          <link id="THintWindow.AdjustBoundsForMonitor"/>
         </seealso>
       </element>
       <element name="THintWindow.OffsetHintRect.Result">
@@ -8465,7 +8464,7 @@
            <p>Used in TCustomForm.SetActive.</p>
         </descr>
         <seealso>
-          <link id="TCustomForm.SetActive"/>
+          <link id="TCustomForm.Active"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8527,9 +8526,7 @@
         </descr>
         <seealso>
           <link id="TApplication.MainFormHandle"/>
-          <link id="TApplication.GetMainFormHandle"/>
           <link id="TApplication.MainForm"/>
-          <link id="TApplication.AddHandler"/>
           <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
         </seealso>
       </element>
@@ -8697,7 +8694,7 @@
           </descr>
           <seealso>
             <link id="TApplicationProperties.ShowHint"/>
-            <link id="TCustomForm.ShowHint"/>
+            <link id="TForm.ShowHint"/>
             <link id="TControl.ParentShowHint"/>
             <link id="THintWindow"/>
           </seealso>
@@ -9867,7 +9864,6 @@
         </descr>
         <seealso>
           <link id="MessageBoxFunction"/>
-          <link id="DefaultMessageBox"/>
         </seealso>
       </element>
       <element name="TMessageBoxFunction.Result">

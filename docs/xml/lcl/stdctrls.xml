@@ -775,7 +775,6 @@ properties</short>
       <element name="TCustomComboBox.FOnGetItems"/>
       <element name="TCustomComboBox.FOnMeasureItem"/>
       <element name="TCustomComboBox.FOnSelect"/>
-      <element name="TCustomComboBox.FReadOnly"/>
       <element name="TCustomComboBox.FSelLength"/>
       <element name="TCustomComboBox.FSelStart"/>
       <element name="TCustomComboBox.FSorted"/>
@@ -853,11 +852,6 @@ properties</short>
         <seealso/>
       </element>
       <element name="TCustomComboBox.CNCommand.TheMessage">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetReadOnly" link="TCustomComboBox.ReadOnly"/>
-      <element name="TCustomComboBox.SetReadOnly.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
@@ -1050,11 +1044,6 @@ properties</short>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetMaxLength" link="TCustomComboBox.MaxLength"/>
       <element name="TCustomComboBox.GetMaxLength.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.IsReadOnlyStored" link="TCustomComboBox.ReadOnly"/>
-      <element name="TCustomComboBox.IsReadOnlyStored.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
@@ -1477,14 +1466,6 @@ properties</short>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <!-- property Visibility: public -->
-      <element name="TCustomComboBox.ReadOnly">
-        <short>Disallows entry of free text.</short>
-        <descr>When True, only items from the list are accepted,
-          by direct selection from the list or AutoComplete.</descr>
-        <seealso><link id="TCustomComboBox.AutoComplete"/>
-        </seealso>
-      </element>
-      <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
         <short>The number of selected UTF-8 characters in the edit box.</short>
         <descr>
@@ -1533,8 +1514,10 @@ Assign an new string to replace the selected text.</descr>
         <descr>
           <p>
             The Style is quite Windows centric, reflecting the evolution of ComboBox styles.
-          </p><p>
-            Basic styles are</p>
+          </p>
+          <p>
+            Basic styles are:
+          </p>
           <ul>
             <li>csSimple: edit box with a static list (no drop-down).</li>
             <li>csDropDown: edit box with a drop-down list.</li>
@@ -1545,8 +1528,6 @@ Assign an new string to replace the selected text.</descr>
             <li>csOwnerDrawFixed: all items in the drop-down list have the same height.</li>
             <li>csOwnerDrawVariable: every item can have a different height.</li>
           </ul>
-          <p>The ReadOnly property affects the edit box behavior even in the owner-draw styles.
-          </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -1555,34 +1536,42 @@ Assign an new string to replace the selected text.</descr>
       <element name="TCustomComboBox.Text">
         <short>The string appearing in the edit box.</short>
         <descr>
-          <p>Setting Text selects a possibly matching item in the list.
-          </p><p>
-           If an item is selected from the list, it replaces the contents of <var>Text</var>.
-          </p><p>
-            Free user input can be disallowed by the ReadOnly property, so that only strings from the list can be selected.
-          </p><p>
-            Text completion can be established by the AutoComplete property.
+          <p>
+            Setting the value in Text selects a possibly matching item in the list. If an item is selected from the list, it replaces the contents of <var>Text</var>.
+          </p>
+          <p>
+            Use the Style property to control the display and editing features enabled for the control.
+          </p>
+          <p>
+            Text completion can be enabled or disabled using the AutoComplete property.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.ReadOnly"/>
           <link id="TCustomComboBox.Style"/>
           <link id="TCustomComboBox.AutoComplete"/>
+          <link id="TCustomComboBox.Text"/>
         </seealso>
       </element>
 <!-- object Visibility: default -->
       <element name="TComboBox">
         <short>A combination of an edit box and a (drop-down) list allowing one of several options to be chosen.</short>
         <descr>
-          <p>The Text property reflects the text entered into the edit box, or selected from the list.
+          <p>
+            The Text property reflects the text entered into the edit box, or selected from the list.
           </p>
-          <p>The selectable values are kept in the <var>Items</var> list.
+          <p>
+            The selectable values are kept in the <var>Items</var> list.
             Clicking on the ellipsis (...), next to <var>Items</var> in the Object Inspector,
-            opens an editor which allows the designer to populate the Items list.</p>
-          <p>At run-time, the entry selected from the list replaces the text in the edit box,
-            and <var>ItemIndex</var> holds the (zero-based) index number of the selected item.</p>
-          <p>If no value is selected from the drop-down list, the default text (if any) remains, or any information typed directly into <var>Text</var> will be returned,
-            and <var>ItemIndex</var> takes the value of -1</p>
+            opens an editor which allows the designer to populate the Items list.
+          </p>
+          <p>
+            At run-time, the entry selected from the list replaces the text in the edit box,
+            and <var>ItemIndex</var> holds the (zero-based) index number of the selected item.
+          </p>
+          <p>
+            If no value is selected from the drop-down list, the default text (if any) remains, or any information typed directly into <var>Text</var> will be returned,
+            and <var>ItemIndex</var> takes the value of -1.
+          </p>
         </descr>
         <seealso>
           <link id="HowToUseStdCtrls"/>
@@ -1647,7 +1636,6 @@ Assign an new string to replace the selected text.</descr>
       <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly"/>
       <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted"/>
       <element name="TComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
@@ -1700,22 +1688,14 @@ Assign an new string to replace the selected text.</descr>
       </element>
       <element name="TCustomListBox.FCanvas"/>
       <element name="TCustomListBox.FClickOnSelChange" link="TCustomListBox.ClickOnSelChange"/>
-      <element name="TCustomListBox.FClickTriggeredBySelectionChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomListBox.FClickTriggeredBySelectionChange"/>
       <element name="TCustomListBox.FColumns" link="TCustomListBox.Columns"/>
       <element name="TCustomListBox.FExtendedSelect" link="TCustomListBox.ExtendedSelect"/>
       <element name="TCustomListBox.FIntegralHeight" link="TCustomListBox.IntegralHeight"/>
       <element name="TCustomListBox.FItemHeight" link="TCustomListBox.ItemHeight"/>
       <element name="TCustomListBox.FItemIndex" link="TCustomListBox.ItemIndex"/>
       <element name="TCustomListBox.FItems" link="TCustomListBox.Items"/>
-      <element name="TCustomListBox.FLockSelectionChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomListBox.FLockSelectionChange"/>
       <element name="TCustomListBox.FMultiSelect" link="TCustomListBox.MultiSelect"/>
       <element name="TCustomListBox.FOnDrawItem" link="TCustomListBox.OnDrawItem"/>
       <element name="TCustomListBox.FOnMeasureItem" link="TCustomListBox.OnMeasureItem"/>
@@ -2215,11 +2195,17 @@ Assign an new string to replace the selected text.</descr>
       <element name="TCustomListBox.ClickOnSelChange">
         <short>Allows selection changes to generate a Click event.</short>
         <descr>
-          Delphi generates an OnClick event when the selection changes.
-          The LCL adds a more specific OnSelectionChange event.
-          Set ClickOnSelChange to False, when selection changes should be handled only in OnSelectionChange, and should not generate an OnClick event (Delphi compatible).
+          <p>
+            Delphi generates an <var>OnClick</var> event when the selection changes. The LCL adds a more specific <var>OnSelectionChange</var> event.
+          </p>
+          <p>
+            Set <var>ClickOnSelChange</var> to <b>False</b> when selection changes should be handled by  the OnSelectionChange event, and should not generate an OnClick event.  Setting  ClickOnSelChange to <b>True</b> gives the Delphi compatible behavior. The default value for the property is <b>True</b>.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListBox.OnClick"/>
+          <link id="TCustomListBox.OnSelectionChange"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Columns">
@@ -2227,9 +2213,9 @@ Assign an new string to replace the selected text.</descr>
         <descr>
           <p>
             A ListBox can have multiple columns, not only multiple rows.
-          </p><p>
-            When Columns is greater than zero, it specifies the number of columns that are visible without horizontal scrolling.
-            I.e. the width of a single column becomes Width/Columns.
+          </p>
+          <p>
+            When Columns is greater than zero, it specifies the number of columns that are visible without horizontal scrolling. I.e. the width of a single column becomes Width/Columns.
           </p>
         </descr>
       </element>
@@ -2247,9 +2233,11 @@ Assign an new string to replace the selected text.</descr>
         <descr>
           <p>
             Normally a click into the list selects one item, and deselects all other items.
-          </p><p>
+          </p>
+          <p>
             When MultiSelect is True, the user can select/deselect further items with CTRL-click.
-          </p><p>
+          </p>
+          <p>
             When ExtendedSelect also is True, the user can SHIFT-click on an item, to select all items between this and the last selected item.
           </p>
         </descr>
@@ -2376,8 +2364,10 @@ Assign an new string to replace the selected text.</descr>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Sorted">
         <short>Determines whether the list entries are sorted.</short>
-        <descr>Setting this property to True enforces ascending alphanumeric case-insensitive sorting of the list.
-          When True, new entries are added in sort order, not to the end of the list.
+        <descr>
+          <p>
+            Setting this property to True enforces ascending alphanumeric case-insensitive sorting of items in the list. When True, new entries are added in sort order, not to the end of the list.
+          </p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -2401,11 +2391,12 @@ Assign an new string to replace the selected text.</descr>
       <element name="TListBox">
         <short>A scrollable list of strings.</short>
         <descr>
-          <p>The strings are stored in the <var>Items</var> list.
+          <p>
+            The strings are stored in the <var>Items</var> list.
           </p>
-          <p>At design time a click on the ellipsis (...) next to the <var>Items</var> entry in the Object Inspector
-            opens an string-list editor, in which the individual text-strings for the list items can be entered or edited.
-            The editor also allows the entries to be sorted alphabetically in normal or reverse order.</p>
+          <p>
+            At design time a click on the ellipsis (...) next to the <var>Items</var> entry in the Object Inspector opens an string-list editor, in which the individual text-strings for the list items can be entered or edited. The editor also allows the entries to be sorted alphabetically in normal or reverse order.
+          </p>
         </descr>
         <seealso>
           <link id="TComboBox"/>
@@ -2430,9 +2421,14 @@ Assign an new string to replace the selected text.</descr>
       <element name="TListBox.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
       <element name="TListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items"/>
-      <element name="TListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight"><short>Get or set the height of a single item</short><descr>Works on Windows.
-Implemented on Gtk2, but some Gtk versions ignores it.
-Qt and Carbon have not implemented it.</descr>
+      <element name="TListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
+        <short>Get or set the height of a single item</short>
+        <descr>
+          <p>
+            Works on Windows. Implemented on Gtk2, but some Gtk versions ignores it. Qt and Carbon have not implemented it.
+          </p>
+        </descr>
+        <notes><note>Is this still the case?</note></notes>
       </element>
       <element name="TListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect"/>
       <element name="TListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
@@ -2479,13 +2475,14 @@ Qt and Carbon have not implemented it.</descr>
       <element name="TCustomEdit">
         <short>The base class for controls presenting editable text.</short>
         <descr>
-          <p>This class implements various visual attributes of the control and its contained text,
-            as well as simple editing and clipboard operations.
+          <p>
+            This class implements various visual attributes of the control and its contained text, as well as simple editing and clipboard operations.
           </p>
-          <p>Text attributes (bold, italic...) are <b>not</b> supported.
+          <p>
+            Text attributes (bold, italic...) are <b>not</b> supported.
           </p>
         </descr>
-      <notes><note>see TSynEdit...?</note>
+        <notes><note>see TSynEdit...?</note>
         </notes>
       </element>
       <!-- variable Visibility: private -->
@@ -2571,7 +2568,10 @@ Qt and Carbon have not implemented it.</descr>
       <element name="TCustomEdit.DoEnter">
         <short>Invokes the OnEnter handler, then selects the entire text when AutoSelect is True.
         </short>
-        <descr>This special handling is required when the control is entered by keystrokes, not by a mouse click.
+        <descr>
+          <p>
+            This special handling is required when the control is entered by keystrokes, not by a mouse click.
+          </p>
         </descr>
         <errors/>
         <seealso>

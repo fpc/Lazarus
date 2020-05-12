@@ -3332,7 +3332,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDragManagerDefault"/>
         </seealso>
       </element>
       <element name="TDragManager.CanStartDragging.Result">
@@ -3362,69 +3361,6 @@
           The threshold amount for mouse movement before delayed dragging starts (default is 5 pixels)
         </short>
         <seealso/>
-      </element>
-
-      <element name="TDragManagerDefault" link="TDragManager">
-        <short>The default implementation of TDragManager</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TDragManagerDefault.FDockSites"/>
-      <element name="TDragManagerDefault.FPerformer"/>
-      <element name="TDragManagerDefault.FStartPosition"/>
-      <element name="TDragManagerDefault.FThresholdValue"/>
-      <element name="TDragManagerDefault.FWaitForTreshold"/>
-      <element name="TDragManagerDefault.FInDragStop"/>
-
-      <element name="TDragManagerDefault.KeyUp" link="TDragManager.KeyUp"/>
-      <element name="TDragManagerDefault.KeyDown" link="TDragManager.KeyDown"/>
-      <element name="TDragManagerDefault.CaptureChanged" link="TDragManager.CaptureChanged"/>
-      <element name="TDragManagerDefault.MouseMove" link="TDragManager.MouseMove"/>
-      <element name="TDragManagerDefault.MouseUp" link="TDragManager.MouseUp"/>
-      <element name="TDragManagerDefault.MouseDown" link="TDragManager.MouseDown"/>
-      <element name="TDragManagerDefault.Notification" link="#RTL.Classes.TComponent.Notification"/>
-
-      <element name="TDragManagerDefault.Create">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TDragManagerDefault.Create.TheOwner">
-        <short></short>
-      </element>
-      <element name="TDragManagerDefault.Destroy">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TDragManagerDefault.IsDragging" link="TDragManager.IsDragging"/>
-      <element name="TDragManagerDefault.IsDragging.Result" link="TDragManager.IsDragging.Result"/>
-      <element name="TDragManagerDefault.Dragging" link="TDragManager.Dragging"/>
-      <element name="TDragManagerDefault.Dragging.Result" link="TDragManager.Dragging.Result"/>
-      <element name="TDragManagerDefault.RegisterDocksite" link="TDragManager.Dragging.RegisterDockSite"/>
-      <element name="TDragManagerDefault.RegisterDocksite.SIte" link="TDragManager.Dragging.RegisterDockSite.Site"/>
-      <element name="TDragManagerDefault.DragStart" link="TDragManager.DragStart"/>
-      <element name="TDragManagerDefault.DragStart.AControl" link="TDragManager.DragStart.AControl"/>
-      <element name="TDragManagerDefault.DragStart.AImmediate" link="TDragManager.DragStart.AImmediate"/>
-      <element name="TDragManagerDefault.DragStart.AThreshold" link="TDragManager.DragStart.AThreshold"/>
-      <element name="TDragManagerDefault.DragStart.StartFromCurrentMouse" link="TDragManager.DragStart.StartFromCurrentMouse"/>
-      <element name="TDragManagerDefault.DragMove" link="TDragManager.DragMove"/>
-      <element name="TDragManagerDefault.DragMove.APosition" link="TDragManager.DragMove.APosition"/>
-      <element name="TDragManagerDefault.DragStop" link="TDragManager.DragStop"/>
-      <element name="TDragManagerDefault.DragStop.ADropped" link="TDragManager.DragStop.ADropped"/>
-      <element name="TDragManagerDefault.CanStartDragging" link="TDragManager.CanStartDragging"/>
-      <element name="TDragManagerDefault.CanStartDragging.Result" link="TDragManager.CanStartDragging.Result"/>
-      <element name="TDragManagerDefault.CanStartDragging.Site" link="TDragManager.CanStartDragging.Site"/>
-      <element name="TDragManagerDefault.CanStartDragging.AThreshold" link="TDragManager.CanStartDragging.AThreshold"/>
-      <element name="TDragManagerDefault.CanStartDragging.X" link="TDragManager.CanStartDragging.X"/>
-      <element name="TDragManagerDefault.CanStartDragging.Y" link="TDragManager.CanStartDragging.Y"/>
-
-      <element name="TDragManagerDefault.StartPosition">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
       </element>
 
       <element name="DragManager" link="TDragManager">

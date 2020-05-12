@@ -4944,7 +4944,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomPanel.ControlStyle"/>
+          <link id="#LCL.Controls.TControl.ControlStyle"/>
           <link id="#LCL.Controls.TWinControl.ParentBackground"/>
         </seealso>
       </element>
