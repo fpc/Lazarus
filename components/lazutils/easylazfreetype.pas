@@ -821,36 +821,45 @@ begin
   if not IntersectRect(Rect,Rect,glyphBounds) then exit(False);
 
   case quality of
-    grqMonochrome: begin
-                      tx := rect.right-rect.left;
-                      mono := TFreeTypeMonochromeMap.Create(ARasterizer,tx,rect.bottom-rect.top);
-                      result := mono.RenderGlyph(self,x-rect.left,y-rect.top);
-                      if result then
-                      begin
-                        getmem(buf, tx);
-                        for yb := mono.Height-1 downto 0 do
-                        begin
-                          mono.ScanMoveTo(0,yb);
-                          pdest := pbyte(buf);
-                          for xb := tx-1 downto 0 do
-                          begin
-                            if mono.ScanNextPixel then
-                              pdest^ := $ff
-                            else
-                              pdest^ := 0;
-                            inc(pdest);
-                          end;
-                          OnRender(rect.Left,rect.top+yb,tx,buf);
-                        end;
-                        freemem(buf);
-                      end;
-                      mono.Free;
-                   end;
-    grqLowQuality: begin
-                     ARasterizer.Set_Raster_Palette(RegularGray5);
-                     result := TT_Render_Directly_Glyph_Gray(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender, ARasterizer) = TT_Err_Ok;
-                   end;
-    grqHighQuality: result := TT_Render_Directly_Glyph_HQ(FGlyphData, round((x-rect.left)*64), round((rect.bottom-y)*64), rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top, OnRender, ARasterizer) = TT_Err_Ok;
+    grqMonochrome:
+      begin
+        tx := rect.right-rect.left;
+        mono := TFreeTypeMonochromeMap.Create(ARasterizer,tx,rect.bottom-rect.top);
+        result := mono.RenderGlyph(self,x-rect.left,y-rect.top);
+        if result then
+        begin
+          getmem(buf, tx);
+          for yb := mono.Height-1 downto 0 do
+          begin
+            mono.ScanMoveTo(0,yb);
+            pdest := pbyte(buf);
+            for xb := tx-1 downto 0 do
+            begin
+              if mono.ScanNextPixel then
+                pdest^ := $ff
+              else
+                pdest^ := 0;
+              inc(pdest);
+            end;
+            OnRender(rect.Left,rect.top+yb,tx,buf);
+          end;
+          freemem(buf);
+        end;
+        mono.Free;
+      end;
+    grqLowQuality:
+      begin
+        ARasterizer.Set_Raster_Palette(RegularGray5);
+        result := TT_Render_Directly_Glyph_Gray(FGlyphData,
+                    round((x-rect.left)*64), round((rect.bottom-y)*64),
+                    rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top,
+                    OnRender, ARasterizer) = TT_Err_Ok;
+      end;
+    grqHighQuality:
+      result := TT_Render_Directly_Glyph_HQ(FGlyphData,
+                  round((x-rect.left)*64), round((rect.bottom-y)*64),
+                  rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top,
+                  OnRender, ARasterizer) = TT_Err_Ok;
   else
     result := false;
   end;
@@ -1281,15 +1290,13 @@ begin
     end;
 
     if prop.os2^.version <> $ffff then
-    begin
       if prop.os2^.sTypoLineGap > FLargeLineGapValue then
         FLargeLineGapValue := prop.os2^.sTypoLineGap;
-    end;
 
     if prop.os2^.version >= 2 then
-                                  FCapHeight:=prop.os2^.sCapHeight
-                              else
-                                  FCapHeight:=FAscentValue;
+      FCapHeight:=prop.os2^.sCapHeight
+    else
+      FCapHeight:=FAscentValue;
 
     FAscentValue /= prop.header^.units_per_EM;
     FDescentValue /= -prop.header^.units_per_EM;
