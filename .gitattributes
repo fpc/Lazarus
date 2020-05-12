@@ -1006,6 +1006,7 @@ components/codetools/tests/moduletests/fdt_classhelper.pas svneol=native#text/pl
 components/codetools/tests/moduletests/fdt_classof.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_for_in.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_generics.pas svneol=native#text/plain
+components/codetools/tests/moduletests/fdt_generics_guesstype.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_guesstype1.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_nestedclasses.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_objccategory.pas svneol=native#text/plain
