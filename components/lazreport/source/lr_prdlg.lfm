@@ -229,7 +229,6 @@ object frPrintForm: TfrPrintForm
       OnChange = CB1Click
       OnClick = CB1Click
       OnDrawItem = CB1DrawItem
-      ReadOnly = True
       Style = csOwnerDrawFixed
       TabOrder = 1
     end
