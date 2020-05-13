@@ -3315,10 +3315,16 @@ begin
   inherited CreateWnd;
 end;
 
+procedure TCustomTreeView.Click;
+begin
+  if FMouseDownNodeSelected then
+    inherited;
+end;
+
 procedure TCustomTreeView.DblClick;
 begin
   if FMouseDownNodeSelected then
-    inherited DblClick;
+    inherited;
 end;
 
 procedure TCustomTreeView.InitializeWnd;

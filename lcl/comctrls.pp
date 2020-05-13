@@ -3518,7 +3518,10 @@ type
     procedure Change(Node: TTreeNode); virtual;
     procedure Collapse(Node: TTreeNode); virtual;
     procedure CreateWnd; override;
+    procedure Click; override;
     procedure DblClick; override;
+    //procedure TripleClick; override;  - Are these needed?
+    //procedure QuadClick; override;
     procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); virtual;
