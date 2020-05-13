@@ -6,16 +6,10 @@
   for details about the license.
  *****************************************************************************
 
-  Bug list :
-
- - Characters parts may not be well translated, for example i with accent.
- - Encoding is ok for ASCII but is mixed up for extended characters
-
  to do :
 
  - multiple font loading
  - font face cache
- - font style
  - text rotation
 }
 unit EasyLazFreeType;
@@ -57,6 +51,10 @@ const
 type
   TFreeTypeGlyph = class;
   TFreeTypeFont = class;
+  TFreeTypeKerning = record
+    Kerning, Minimum: TPointF;
+    Found: boolean;
+  end;
 
   EFreeType = class(Exception);
 
@@ -228,6 +226,7 @@ type
     FOwnedStream: boolean;
     FPointSize: single;
     FHinted: boolean;
+    FKerningEnabled, FKerningFallbackEnabled: boolean;
     FStyleStr: string;
     FWidthFactor: single;
     FClearType: boolean;
@@ -241,6 +240,8 @@ type
     function GetGlyph(Index: integer): TFreeTypeGlyph;
     function GetGlyphCount: integer;
     function GetInformation(AIndex: TFreeTypeInformation): string;
+    function GetGlyphKerning(AGlyphLeft, AGlyphRight: integer): TFreeTypeKerning;
+    function GetCharKerning(AUnicodeCharLeft, AUnicodeCharRight: integer): TFreeTypeKerning;
     function GetPixelSize: single;
     function GetVersionNumber: string;
     procedure SetDPI(const AValue: integer);
@@ -273,6 +274,7 @@ type
     FCharMap: TT_CharMap;
     FCharmapOk, FCharmapSymbol: boolean;
     FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue, FCapHeight: single;
+    FUnitsPerEM: TT_UShort;
     procedure FaceChanged;
     function GetClearType: boolean; override;
     procedure SetClearType(const AValue: boolean); override;
@@ -312,8 +314,14 @@ type
     property CapHeight: single read GetCapHeight;
     property Glyph[Index: integer]: TFreeTypeGlyph read GetGlyph;
     property GlyphCount: integer read GetGlyphCount;
+    property CharKerning[AUnicodeCharLeft, AUnicodeCharRight: integer]: TFreeTypeKerning read GetCharKerning;
+    property GlyphKerning[AGlyphLeft, AGlyphRight: integer]: TFreeTypeKerning read GetGlyphKerning;
     property CharIndex[AUnicodeChar: integer]: integer read GetCharIndex;
     property Hinted: boolean read FHinted write SetHinted;
+    { Kerning brings closer certain letters that fit together }
+    property KerningEnabled: boolean read FKerningEnabled write FKerningEnabled;
+    { When enabled, if the kerning is not found between two letters, alternate codes are tried }
+    property KerningFallbackEnabled: boolean read FKerningFallbackEnabled write FKerningFallbackEnabled;
     property WidthFactor: single read FWidthFactor write SetWidthFactor;
     property LineFullHeight: single read GetLineFullHeight write SetLineFullHeight;
     property Information[AIndex: TFreeTypeInformation]: string read GetInformation;
@@ -1054,6 +1062,20 @@ begin
 end;
 {$pop}
 
+function TFreeTypeFont.GetGlyphKerning(AGlyphLeft, AGlyphRight: integer): TFreeTypeKerning;
+var
+  kerningInfo: TT_KerningInfo;
+  factor: single;
+begin
+  kerningInfo := TT_Get_KerningInfo(FFace, AGlyphLeft, AGlyphRight);
+  factor := SizeInPixels/FUnitsPerEM;
+  result.Kerning.x := kerningInfo.kerning_x*factor;
+  result.Kerning.y := kerningInfo.kerning_y*factor;
+  result.Minimum.x := kerningInfo.minimum_x*factor;
+  result.Minimum.y := kerningInfo.minimum_y*factor;
+  result.Found := kerningInfo.found;
+end;
+
 function TFreeTypeFont.GetLineFullHeight: single;
 begin
   CheckInstance;
@@ -1230,7 +1252,7 @@ end;
 
 procedure TFreeTypeFont.UpdateInstance;
 var
-    errorNum: TT_Error;
+  errorNum: TT_Error;
 begin
   DiscardInstance;
 
@@ -1272,6 +1294,7 @@ begin
     FDescentValue := prop.horizontal^.descender;
     FLineGapValue:= prop.horizontal^.line_gap;
     FLargeLineGapValue:= FLineGapValue;
+    FUnitsPerEM := prop.header^.units_per_EM;
 
     if (FAscentValue = 0) and (FDescentValue = 0) then
     begin
@@ -1298,11 +1321,11 @@ begin
     else
       FCapHeight:=FAscentValue;
 
-    FAscentValue /= prop.header^.units_per_EM;
-    FDescentValue /= -prop.header^.units_per_EM;
-    FLineGapValue /= prop.header^.units_per_EM;
-    FLargeLineGapValue /= prop.header^.units_per_EM;
-    FCapHeight /= prop.header^.units_per_EM;
+    FAscentValue /= FUnitsPerEM;
+    FDescentValue /= -FUnitsPerEM;
+    FLineGapValue /= FUnitsPerEM;
+    FLargeLineGapValue /= FUnitsPerEM;
+    FCapHeight /= FUnitsPerEM;
 
     if FLargeLineGapValue = 0 then
       FLargeLineGapValue := (FAscentValue+FDescentValue)*0.1;
@@ -1313,6 +1336,7 @@ begin
     FDescentValue := 0.5;
     FLineGapValue := 0;
     FLargeLineGapValue:= 0;
+    FUnitsPerEM   := 1;
   end;
 end;
 
@@ -1467,6 +1491,8 @@ begin
   FGlyphTable := TAvlTree.Create;
   FGlyphTable.OnCompare := @GlyphTableOnCompare;
   FHinted := true;
+  FKerningEnabled:= true;
+  FKerningFallbackEnabled:= true;
   FWidthFactor := 1;
   FClearType := false;
   FStyleStr:= 'Regular';
@@ -1499,6 +1525,7 @@ var
   left,charcode,charlen: integer;
   idx: integer;
   g: TFreeTypeGlyph;
+  prevCharcode, glyphIndex: integer;
 begin
   if not CheckInstance then exit;
   if AText = '' then exit;
@@ -1515,15 +1542,19 @@ begin
   RenderTextDecoration(AText,x,y,ARect,OnRender);
   pstr := @AText[1];
   left := length(AText);
+  prevCharcode := -1;
   while left > 0 do
   begin
     charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
-    g := Glyph[CharIndex[charcode]];
+    glyphIndex := CharIndex[charcode];
+    g := Glyph[glyphIndex];
     if g <> nil then
     with g do
     begin
+      if KerningEnabled and (prevCharcode <> -1) then
+        x += GetCharKerning(prevCharcode, charcode).Kerning.x;
       if Hinted then
        RenderDirectly(x,round(y),ARect,OnRender,quality,FClearType)
       else
@@ -1532,6 +1563,7 @@ begin
         x += Advance/3
       else
         x += Advance;
+      prevCharcode := charcode;
     end;
   end;
 end;
@@ -1578,6 +1610,7 @@ var
   maxWidth,w: single;
   idx: integer;
   g: TFreeTypeGlyph;
+  prevCharcode, glyphIndex: integer;
 begin
   result := 0;
   if not CheckInstance then exit;
@@ -1600,19 +1633,24 @@ begin
 
   pstr := @AText[1];
   left := length(AText);
+  prevCharcode := -1;
   while left > 0 do
   begin
     charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
-    g := Glyph[CharIndex[charcode]];
+    glyphIndex := CharIndex[charcode];
+    g := Glyph[glyphIndex];
     if g <> nil then
     with g do
     begin
+      if KerningEnabled and (prevCharcode <> -1) then
+        result += GetCharKerning(prevCharcode, charcode).Kerning.x;
       if FClearType then
         result += Advance/3
       else
         result += Advance;
+      prevCharcode := charcode;
     end;
   end;
   if maxWidth > result then
@@ -1663,8 +1701,10 @@ function TFreeTypeFont.CharsWidth(AText: string): ArrayOfSingle;
 var
   pstr: pchar;
   left,charcode,charlen: integer;
-  resultIndex,i: integer;
+  resultIndex: integer;
   w: single;
+  prevCharcode,glyphIndex: integer;
+  g: TFreeTypeGlyph;
 begin
   if AText = '' then
   begin
@@ -1675,26 +1715,34 @@ begin
   left := length(AText);
   setlength(result, UTF8Length(AText));
   resultIndex := 0;
+  prevCharcode := -1;
   while left > 0 do
   begin
     charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
 
-    with Glyph[CharIndex[charcode]] do
+    glyphIndex := CharIndex[charcode];
+    g := Glyph[glyphIndex];
+    if g <> nil then
+    with g do
     begin
       if FClearType then
         w := Advance/3
       else
         w := Advance;
-    end;
+      if KerningEnabled and (prevCharcode <> -1) and (resultIndex > 0) then
+        result[resultIndex-1] += GetCharKerning(prevCharcode, charcode).Kerning.x;
+      prevCharcode := charcode;
+    end else
+      w := 0;
 
-    for i := 1 to charlen do
-    begin
-      result[resultIndex] := w;
-      inc(resultIndex);
-    end;
+    if resultIndex >= length(result) then
+      setlength(result, resultIndex+1);
+    result[resultIndex] := w;
+    inc(resultIndex);
   end;
+  setlength(result, resultIndex);
 end;
 
 function TFreeTypeFont.CharsPosition(AText: string): ArrayOfCharPosition;
@@ -1731,6 +1779,7 @@ var
   Found: boolean;
   StrLineEnding: string; // a string version of LineEnding, don't remove or else wont compile in UNIXes
   g: TFreeTypeGlyph;
+  prevCharcode, glyphIndex: integer;
 begin
   result := nil;
   if not CheckInstance then exit;
@@ -1753,6 +1802,7 @@ begin
   yTopRel := -Ascent;
   yBottomRel := Descent;
   h := LineFullHeight;
+  prevCharcode := -1;
   while left > 0 do
   begin
     if (left > length(StrLineEnding)) and (pstr^ = StrLineEnding[1]) then
@@ -1784,13 +1834,15 @@ begin
         y += h;
         curX := 0;
         resultLineStart := resultIndex;
+        prevCharcode := -1;
         if left <= 0 then break;
       end;
     end;
     charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
-    g := Glyph[CharIndex[charcode]];
+    glyphIndex := CharIndex[charcode];
+    g := Glyph[glyphIndex];
     if g <> nil then
     with g do
     begin
@@ -1798,8 +1850,13 @@ begin
         w := Advance/3
       else
         w := Advance;
+      if KerningEnabled and (prevCharcode <> -1) then
+        curX += GetCharKerning(prevCharcode, charcode).Kerning.x;
+      prevCharcode := charcode
     end else
       w := 0;
+    if resultIndex >= length(result) then
+      setlength(result, resultIndex+1);
     with result[resultIndex] do
     begin
       x := curX;
@@ -1811,6 +1868,8 @@ begin
     inc(resultIndex);
     curX += w;
   end;
+  if resultIndex >= length(result) then
+    setlength(result, resultIndex+1);
   with result[resultIndex] do
   begin
     x := curX;
@@ -1820,6 +1879,7 @@ begin
     yBottom := y+yBottomRel;
   end;
   inc(resultIndex);
+  setlength(result, resultIndex);
   ApplyHorizAlign;
 
   if ftaBottom in AAlign then
@@ -1907,6 +1967,244 @@ begin
     LoadFace;
   end;
   result := FFaceLoaded;
+end;
+
+function TFreeTypeFont.GetCharKerning(AUnicodeCharLeft, AUnicodeCharRight: integer): TFreeTypeKerning;
+const
+  UpperCaseKerningLeft = 'FPTVWY';
+  UpperCaseKerningRight = 'TVWY';
+  LowerCaseKerningLeftA = 'bcehmnops';
+  LowerCaseKerningRightA = 'cdegoqs';
+  LowerCaseKerningLeftU = 'gkqrvwxyz';
+  LowerCaseKerningRightU = 'mnprvwxyz';
+  LowerCaseKerningLeftACircumflex = 'ĉêôŝ';
+  LowerCaseKerningRightACircumflex = 'ĉêĝôŝ';
+  LowerCaseKerningLeftUCircumflex = 'ĝŵŷẑ';
+  LowerCaseKerningRightUCircumflex = 'ŵŷẑ';
+  LowerCaseKerningLeftADiaresis = 'ëö';
+  LowerCaseKerningRightADiaresis = 'ëö';
+  LowerCaseKerningLeftUDiaresis = 'ẅẍÿ';
+  LowerCaseKerningRightUDiaresis = 'ẅẍÿ';
+  LowerCaseKerningLeftAAcute = 'ćéḿńóṕś';
+  LowerCaseKerningRightAAcute = 'ćéǵóś';
+  LowerCaseKerningLeftUAcute = 'ǵŕẃýź';
+  LowerCaseKerningRightUAcute = 'ḿńṕŕẃýź';
+  LowerCaseKerningLeftAGrave = 'èǹò';
+  LowerCaseKerningRightAGrave = 'èò';
+  LowerCaseKerningLeftUGrave = 'ẁỳ';
+  LowerCaseKerningRightUGrave = 'ǹẁỳ';
+type
+  TKerningFallbackInfo = record
+    u: integer;      //composed charcode
+    fb: integer;     //fallback code
+  end;
+const
+  KerningFallbackInfo : array[0..195] of TKerningFallbackInfo = (
+  (u:$C0; fb:$41), (u:$C1; fb:$41), (u:$C2; fb:$41), (u:$C3; fb:$41), (u:$C4; fb:$41),
+  (u:$C5; fb:$41), (u:$C7; fb:$43), (u:$C8; fb:$45), (u:$C9; fb:$45), (u:$CA; fb:$45),
+  (u:$CB; fb:$45), (u:$CC; fb:$49), (u:$CD; fb:$49), (u:$CE; fb:$49), (u:$CF; fb:$49),
+  (u:$D1; fb:$4E), (u:$D2; fb:$4F), (u:$D3; fb:$4F), (u:$D4; fb:$4F), (u:$D5; fb:$4F),
+  (u:$D6; fb:$4F), (u:$D9; fb:$55), (u:$DA; fb:$55), (u:$DB; fb:$55), (u:$DC; fb:$55),
+  (u:$DD; fb:$59), (u:$100; fb:$41), (u:$102; fb:$41), (u:$104; fb:$41),
+  (u:$106; fb:$43), (u:$108; fb:$43), (u:$10A; fb:$43), (u:$10C; fb:$43),
+  (u:$10E; fb:$44), (u:$112; fb:$45), (u:$114; fb:$45), (u:$116; fb:$45),
+  (u:$118; fb:$45), (u:$11A; fb:$45), (u:$11C; fb:$47), (u:$11E; fb:$47),
+  (u:$120; fb:$47), (u:$122; fb:$47), (u:$124; fb:$48), (u:$128; fb:$49),
+  (u:$12A; fb:$49), (u:$12C; fb:$49), (u:$12E; fb:$49), (u:$130; fb:$49),
+  (u:$134; fb:$4A), (u:$136; fb:$4B), (u:$139; fb:$4C), (u:$13B; fb:$4C),
+  (u:$13D; fb:$4C), (u:$143; fb:$4E), (u:$145; fb:$4E), (u:$147; fb:$4E),
+  (u:$14C; fb:$4F), (u:$14E; fb:$4F), (u:$150; fb:$4F), (u:$154; fb:$52),
+  (u:$156; fb:$52), (u:$158; fb:$52), (u:$15A; fb:$53), (u:$15C; fb:$53),
+  (u:$15E; fb:$53), (u:$160; fb:$53), (u:$162; fb:$54), (u:$164; fb:$54),
+  (u:$168; fb:$55), (u:$16A; fb:$55), (u:$16C; fb:$55), (u:$16E; fb:$55),
+  (u:$170; fb:$55), (u:$172; fb:$55), (u:$174; fb:$57), (u:$176; fb:$59),
+  (u:$178; fb:$59), (u:$179; fb:$5A), (u:$17B; fb:$5A), (u:$17D; fb:$5A),
+  (u:$1CD; fb:$41), (u:$1CF; fb:$49), (u:$1D1; fb:$4F), (u:$1D3; fb:$55),
+  (u:$1E2; fb:$C6), (u:$1E6; fb:$47), (u:$1E8; fb:$4B), (u:$1EA; fb:$4F),
+  (u:$1F4; fb:$47), (u:$1F8; fb:$4E), (u:$1FC; fb:$C6), (u:$200; fb:$41),
+  (u:$202; fb:$41), (u:$204; fb:$45), (u:$206; fb:$45), (u:$208; fb:$49),
+  (u:$20A; fb:$49), (u:$20C; fb:$4F), (u:$20E; fb:$4F), (u:$210; fb:$52),
+  (u:$212; fb:$52), (u:$214; fb:$55), (u:$216; fb:$55), (u:$218; fb:$53),
+  (u:$21A; fb:$54), (u:$21E; fb:$48), (u:$226; fb:$41), (u:$228; fb:$45),
+  (u:$22E; fb:$4F), (u:$232; fb:$59), (u:$38F; fb:$3A9), (u:$403; fb:$413),
+  (u:$476; fb:$474), (u:$4EA; fb:$4E8), (u:$1E00; fb:$41), (u:$1E02; fb:$42),
+  (u:$1E04; fb:$42), (u:$1E06; fb:$42), (u:$1E08; fb:$C7), (u:$1E0A; fb:$44),
+  (u:$1E0C; fb:$44), (u:$1E0E; fb:$44), (u:$1E10; fb:$44), (u:$1E12; fb:$44),
+  (u:$1E18; fb:$45), (u:$1E1A; fb:$45), (u:$1E1E; fb:$46), (u:$1E20; fb:$47),
+  (u:$1E22; fb:$48), (u:$1E24; fb:$48), (u:$1E26; fb:$48), (u:$1E28; fb:$48),
+  (u:$1E2A; fb:$48), (u:$1E2C; fb:$49), (u:$1E30; fb:$4B), (u:$1E32; fb:$4B),
+  (u:$1E34; fb:$4B), (u:$1E36; fb:$4C), (u:$1E3A; fb:$4C), (u:$1E3C; fb:$4C),
+  (u:$1E3E; fb:$4D), (u:$1E40; fb:$4D), (u:$1E42; fb:$4D), (u:$1E44; fb:$4E),
+  (u:$1E46; fb:$4E), (u:$1E48; fb:$4E), (u:$1E4A; fb:$4E), (u:$1E54; fb:$50),
+  (u:$1E56; fb:$50), (u:$1E58; fb:$52), (u:$1E5A; fb:$52), (u:$1E5E; fb:$52),
+  (u:$1E60; fb:$53), (u:$1E62; fb:$53), (u:$1E6A; fb:$54), (u:$1E6C; fb:$54),
+  (u:$1E6E; fb:$54), (u:$1E70; fb:$54), (u:$1E72; fb:$55), (u:$1E74; fb:$55),
+  (u:$1E76; fb:$55), (u:$1E7C; fb:$56), (u:$1E7E; fb:$56), (u:$1E80; fb:$57),
+  (u:$1E82; fb:$57), (u:$1E84; fb:$57), (u:$1E86; fb:$57), (u:$1E88; fb:$57),
+  (u:$1E8A; fb:$58), (u:$1E8C; fb:$58), (u:$1E8E; fb:$59), (u:$1E90; fb:$5A),
+  (u:$1E92; fb:$5A), (u:$1E94; fb:$5A), (u:$1EA0; fb:$41), (u:$1EA2; fb:$41),
+  (u:$1EB8; fb:$45), (u:$1EBA; fb:$45), (u:$1EBC; fb:$45), (u:$1EC8; fb:$49),
+  (u:$1ECA; fb:$49), (u:$1ECC; fb:$4F), (u:$1ECE; fb:$4F), (u:$1EE4; fb:$55),
+  (u:$1EE6; fb:$55), (u:$1EF2; fb:$59), (u:$1EF4; fb:$59), (u:$1EF6; fb:$59),
+  (u:$1EF8; fb:$59), (u:$1F68; fb:$3A9), (u:$1F69; fb:$3A9), (u:$1FFA; fb:$3A9),
+  (u:$1FFC; fb:$3A9), (u:$2126; fb:$3A9), (u:$212A; fb:$4B));
+
+  function FindFallback(var ACode: integer): boolean;
+  var
+    minIdx, maxIdx, midIdx: Integer;
+  begin
+    minIdx := low(KerningFallbackInfo);
+    maxIdx := high(KerningFallbackInfo);
+    while minIdx < maxIdx do
+    begin
+      midIdx := (minIdx+maxIdx) shr 1;
+      if ACode > KerningFallbackInfo[midIdx].u then
+        minIdx := midIdx+1
+      else
+        maxIdx := midIdx;
+    end;
+    if KerningFallbackInfo[minIdx].u = ACode then
+    begin
+      ACode := KerningFallbackInfo[minIdx].fb;
+      if ACode = $C7 {C WITH CEDILLA} then ACode := ord('C');
+      result := true;
+    end
+    else result := false;
+  end;
+var
+  glyphLeft, glyphRight: integer;
+  isFallback: Boolean;
+  leftUTF8, rightUTF8: String;
+begin
+  glyphLeft := CharIndex[AUnicodeCharLeft];
+  glyphRight := CharIndex[AUnicodeCharRight];
+  result := GetGlyphKerning(glyphLeft, glyphRight);
+  if not result.Found and KerningFallbackEnabled then
+  begin
+    //try to find glyphs without accents
+    isFallback := false;
+    if FindFallback(AUnicodeCharLeft) then
+    begin
+      glyphLeft := CharIndex[AUnicodeCharLeft];
+      isFallback := true;
+    end;
+    if FindFallback(AUnicodeCharRight) then
+    begin
+      glyphRight := CharIndex[AUnicodeCharRight];
+      isFallback := true;
+    end;
+    if isFallback then
+    begin
+      result := GetGlyphKerning(glyphLeft, glyphRight);
+      if result.Found then exit;
+    end;
+
+    //try to find equivalence for kernings that were not forseen by the font (ex: AE, Vs)
+    if AUnicodeCharRight = $C6 {AE} then
+    begin
+      AUnicodeCharRight := ord('A');
+      glyphRight := CharIndex[AUnicodeCharRight];
+      result := GetGlyphKerning(glyphLeft, glyphRight);
+      if result.Found then exit;
+    end else
+    if AUnicodeCharRight = $152 {OE} then
+    begin
+      AUnicodeCharRight := ord('O');
+      glyphRight := CharIndex[AUnicodeCharRight];
+      result := GetGlyphKerning(glyphLeft, glyphRight);
+      if result.Found then exit;
+    end;
+
+    if (AUnicodeCharLeft < 128) and (AUnicodeCharRight < 128) then
+    begin
+      if (pos(chr(AUnicodeCharLeft), UpperCaseKerningLeft) <> 0) and
+         (pos(chr(AUnicodeCharRight), LowerCaseKerningRightA) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, ord('a')));
+
+      if (pos(chr(AUnicodeCharLeft), LowerCaseKerningLeftA) <> 0) and
+         (pos(chr(AUnicodeCharRight), UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning(ord('a'), AUnicodeCharRight));
+
+      if (pos(chr(AUnicodeCharLeft), UpperCaseKerningLeft) <> 0) and
+         (pos(chr(AUnicodeCharRight), LowerCaseKerningRightU) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, ord('u')));
+
+      if (pos(chr(AUnicodeCharLeft), LowerCaseKerningLeftU) <> 0) and
+         (pos(chr(AUnicodeCharRight), UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning(ord('u'), AUnicodeCharRight));
+    end else
+    begin
+      leftUTF8 := UnicodeToUTF8(AUnicodeCharLeft);
+      rightUTF8 := UnicodeToUTF8(AUnicodeCharRight);
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightACircumflex) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $E2));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftACircumflex) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($E2, AUnicodeCharRight));
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightUCircumflex) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $FB));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftUCircumflex) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($FB, AUnicodeCharRight));
+
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightADiaresis) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $E4));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftADiaresis) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($E4, AUnicodeCharRight));
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightUDiaresis) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $FC));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftUDiaresis) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($FC, AUnicodeCharRight));
+
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightAAcute) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $E1));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftAAcute) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($E1, AUnicodeCharRight));
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightUAcute) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $FA));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftUAcute) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($FA, AUnicodeCharRight));
+
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightAGrave) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $E0));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftAGrave) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($E0, AUnicodeCharRight));
+
+      if (pos(leftUTF8, UpperCaseKerningLeft) <> 0) and
+         (pos(rightUTF8, LowerCaseKerningRightUGrave) <> 0) then
+         exit(GetCharKerning(AUnicodeCharLeft, $F9));
+
+      if (pos(leftUTF8, LowerCaseKerningLeftUGrave) <> 0) and
+         (pos(rightUTF8, UpperCaseKerningRight) <> 0) then
+         exit(GetCharKerning($F9, AUnicodeCharRight));
+    end;
+  end;
 end;
 
 function TFreeTypeFont.CheckInstance: boolean;

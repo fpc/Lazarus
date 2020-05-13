@@ -36,7 +36,7 @@ type
 
   TT_Fixed  = LongInt;  (* Signed Fixed 16.16 Float *)
 
-  TT_FWord  = Integer;  (* Distance in FUnits *)
+  TT_FWord  = SmallInt; (* Distance in FUnits *)
   TT_UFWord = Word;     (* Unsigned Distance  *)
 
   TT_F2Dot14 = Integer; (* signed fixed float 2.14 used for *)
@@ -94,6 +94,15 @@ type
 
     xMin, yMin : TT_Pos;
     xMax, yMax : TT_Pos;
+  end;
+
+  (******************************************************)
+  (*  kerning info between two glyphs                   *)
+  (*                                                    *)
+  TT_KerningInfo = record
+    kerning_x, kerning_y: TT_FWord;
+    minimum_x, minimum_y: TT_FWord;
+    found: boolean;
   end;
 
   (******************************************************)

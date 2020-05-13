@@ -481,6 +481,7 @@ type
 
             instances : TCache;
             glyphs    : TCache;
+            kernings  : TObject;
             (* various caches for this face's child objects *)
 
             extension : Pointer;
@@ -1755,6 +1756,8 @@ const
 
     Cache_Destroy( face^.instances );
     Cache_Destroy( face^.glyphs    );
+    face^.kernings.Free;
+    face^.kernings := nil;
 
     (* freeing the tables directory *)
     Free( face^.dirTables );

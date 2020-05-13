@@ -3486,6 +3486,7 @@ components/lazutils/tterror.pas svneol=native#text/pascal
 components/lazutils/ttfile.pas svneol=native#text/pascal
 components/lazutils/ttgload.pas svneol=native#text/pascal
 components/lazutils/ttinterp.pas svneol=native#text/pascal
+components/lazutils/ttkern.pas svneol=native#text/pascal
 components/lazutils/ttload.pas svneol=native#text/pascal
 components/lazutils/ttmemory.pas svneol=native#text/pascal
 components/lazutils/ttobjs.pas svneol=native#text/pascal

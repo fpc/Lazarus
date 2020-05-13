@@ -351,6 +351,12 @@ const
                                 nbPhantomPoints : integer = 0 ) : TT_Error;
 
   (*****************************************************************)
+  (*  Get the kerning between two glyph                            *)
+  (*                                                               *)
+  function TT_Get_KerningInfo( _Face: TT_Face;
+                           glyph_left, glyph_right: Word) : TT_KerningInfo;
+
+  (*****************************************************************)
   (*  Create a new glyph outline                                   *)
   (*                                                               *)
   function TT_New_Outline( n_points   : integer;
@@ -467,6 +473,7 @@ uses
   TTObjs,
   TTLoad,
   TTGLoad,
+  TTKern,
   TTRaster;
 
   (*****************************************************************)
@@ -1379,6 +1386,23 @@ uses
     end;
 
     TT_Get_Outline_BBox := TT_Err_Ok;
+  end;
+
+  (*****************************************************************)
+  (*  Get the kerning between two glyph                            *)
+  (*                                                               *)
+  function TT_Get_KerningInfo( _Face: TT_Face;
+                           glyph_left, glyph_right: Word) : TT_KerningInfo;
+  var
+    p: PFace;
+  begin
+    p := PFace(_Face.z);
+    if p^.kernings = nil then
+    begin
+      p^.kernings := TKerningTables.Create;
+      LoadKerningTables(p, TKerningTables(p^.kernings));
+    end;
+    result := TKerningTables(p^.kernings).GetKerning(glyph_left, glyph_right);
   end;
 
   (*****************************************************************)
