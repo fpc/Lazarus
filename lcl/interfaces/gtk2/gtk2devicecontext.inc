@@ -552,14 +552,18 @@ begin
         if AWindow = nil then
         begin
           W := gtk_widget_get_parent(AWidget);
-          //we are forcing window creation but not for GtkNotebook
-          //see issue #18754 and #20126
-          //Zeljko:This part should be NOT BE REMOVED since TToolbar, TFrame
-          //TGroupBox etc...depend on this. eg.TToolbar will lock
-          //mouse without realizing clientWidget.Also if THintWindow is
-          //visible it crashes sometimes. SO JUST NOTEBOOK !
-          if (W <> nil) and not GTK_IS_NOTEBOOK(W) then
-            gtk_widget_realize(ClientWidget);
+          if (W <> nil) and not GTK_WIDGET_VISIBLE(W) then
+          begin
+            //debugln(['TGtkDeviceContext.SetWidget gtk-class=',GetWidgetClassName(W),' lcl-obj=',DbgSName(GetLCLObject(W))]);
+            //we are forcing window creation but not for GtkNotebook
+            //see issue #18754 and #20126
+            //Zeljko:This part should be NOT BE REMOVED since TToolbar, TFrame
+            //TGroupBox etc...depend on this. eg.TToolbar will lock
+            //mouse without realizing clientWidget.Also if THintWindow is
+            //visible it crashes sometimes. SO JUST NOTEBOOK !
+            if not GTK_IS_NOTEBOOK(W) then
+              gtk_widget_realize(ClientWidget);
+          end;
 
           AWindow := GetControlWindow(ClientWidget);
           // Don't raise an exception. Not all operations needs drawable. For example font metrics:
