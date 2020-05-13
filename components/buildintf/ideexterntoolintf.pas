@@ -1606,10 +1606,11 @@ begin
   fItems:=TFPList.Create;
   if ExternalToolList=nil then begin
     ExternalToolList:=Self;
-    DebugLn(['TExternalToolsBase.Create: Setting ExternalToolList to ', ExternalToolList]);
+    //DebugLn(['TExternalToolsBase.Create: Setting ExternalToolList to ', ExternalToolList]);
   end
-  else
-    DebugLn(['TExternalToolsBase.Create: ExternalToolList ', ExternalToolList, ' is already set.']);
+  else begin
+    //DebugLn(['TExternalToolsBase.Create: ExternalToolList ', ExternalToolList, ' is already set.']);
+  end;
 end;
 
 destructor TExternalToolsBase.Destroy;
@@ -1617,11 +1618,12 @@ begin
   inherited Destroy;
   FreeAndNil(fItems);
   if ExternalToolList=Self then begin
-    DebugLn(['TExternalToolsBase.Destroy: Resetting ExternalToolList, was ', ExternalToolList]);
+    //DebugLn(['TExternalToolsBase.Destroy: Resetting ExternalToolList, was ', ExternalToolList]);
     ExternalToolList:=nil;
   end
-  else
-    DebugLn(['TExternalToolsBase.Destroy: ExternalToolList ', ExternalToolList, ' differs from Self.']);
+  else begin
+    //DebugLn(['TExternalToolsBase.Destroy: ExternalToolList ', ExternalToolList, ' differs from Self.']);
+  end;
 end;
 
 procedure TExternalToolsBase.ConsistencyCheck;
