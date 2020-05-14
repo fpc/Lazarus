@@ -873,7 +873,7 @@ end;
 procedure TSynRefCountedDict.CheckWordEnd(MatchEnd: PChar; MatchIdx: Integer;
   var IsMatch: Boolean; var StopSeach: Boolean);
 begin
-  IsMatch := not ((MatchEnd+1)^ in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
+  IsMatch := not ((MatchEnd)^ in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
 end;
 
 constructor TSynRefCountedDict.Create;
