@@ -253,9 +253,8 @@ type
     FLogPhysConvertor :TSynLogicalPhysicalConvertor;
     FLogPhysConvertorTmp :TSynLogicalPhysicalConvertor; // used by none buffered lines
   protected
-    FIsUtf8: Boolean;
-    function  GetIsUtf8 : Boolean; virtual;
-    procedure SetIsUtf8(const AValue : Boolean); virtual;
+    function  GetIsUtf8 : Boolean; virtual; abstract;
+    procedure SetIsUtf8(const AValue : Boolean); virtual; abstract;
 
     function GetExpandedString(Index: integer): string; virtual; abstract;
     function GetLengthOfLongestLine: integer; virtual; abstract;
@@ -1081,16 +1080,6 @@ end;
 function TSynEditStrings.GetDisplayView: TLazSynDisplayView;
 begin
   Result := nil;
-end;
-
-function TSynEditStrings.GetIsUtf8 : Boolean;
-begin
-  Result := FIsUtf8;
-end;
-
-procedure TSynEditStrings.SetIsUtf8(const AValue : Boolean);
-begin
-  FIsUtf8 := AValue;
 end;
 
 procedure TSynEditStrings.SetTextStr(const Value : string);

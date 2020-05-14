@@ -158,6 +158,7 @@ type
     FIsUndoing, FIsRedoing: Boolean;
     FIsInDecPaintLock: Boolean;
 
+    FIsUtf8: Boolean;
     FModified: Boolean;
     FTextChangeStamp: int64;
 
@@ -168,6 +169,8 @@ type
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
     procedure SetModified(const AValue: Boolean);
   protected
+    function  GetIsUtf8 : Boolean;  override;
+    procedure SetIsUtf8(const AValue : Boolean);  override;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
     function GetTextChangeStamp: int64; override;
@@ -1091,6 +1094,16 @@ begin
     FRedoList.MarkTopAsUnmodified;
   end;
   SendNotification(senrModifiedChanged, Self);
+end;
+
+function TSynEditStringList.GetIsUtf8: Boolean;
+begin
+  Result := FIsUtf8;
+end;
+
+procedure TSynEditStringList.SetIsUtf8(const AValue: Boolean);
+begin
+  FIsUtf8 := AValue;
 end;
 
 procedure TSynEditStringList.SendCachedNotify;
