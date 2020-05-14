@@ -248,6 +248,7 @@ type
     FUserRegsChanged: boolean;
     FExceptionSignal: cint;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
+    FHasExited: Boolean;
     FIsSteppingBreakPoint: boolean;
     FDidResetInstructionPointer: Boolean;
     FHasThreadState: boolean;
@@ -471,6 +472,10 @@ end;
 function TDbgLinuxThread.RequestInternalPause: Boolean;
 begin
   Result := False;
+  if FHasExited then begin
+    DebugLn(DBG_VERBOSE, ['PauseRequest for exited Thread ', ID]);
+    exit;
+  end;
   if FInternalPauseRequested or FIsPaused then
     exit;
 
@@ -492,6 +497,10 @@ function TDbgLinuxThread.CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
 begin
   //Assert(not FIsPaused, 'Got WaitStatus while already paused');
   //assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
+  if FHasExited then begin
+    DebugLn(DBG_VERBOSE, ['Received double exit for Thread ', ID]);
+    exit(False);
+  end;
   Result := FIsPaused;
   DebugLn(DBG_VERBOSE and (Result), ['Warning: Thread already paused', ID]);
   if Result then
@@ -517,8 +526,7 @@ begin
 
   else
   if wifexited(AWaitedStatus) and (ID <> Process.ProcessID) then begin
-    Process.RemoveThread(ID); // Done, no postpone
-    Self.Free;
+    FHasExited := True;
   end
 
   else
@@ -1198,7 +1206,7 @@ function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       exit;
 
     if not FThreadMap.GetData(PID, AThread) then
-        AThread := nil;
+      AThread := nil;
     DebugLn(DBG_VERBOSE, ['Got SIGNAL for thread: ', pid, ' Status: ',WaitStatus, ' Found thread:', AThread <> nil]);
   end;
 
@@ -1353,6 +1361,8 @@ begin
             then
               FPostponedSignals.AddSignal(PID, WaitStatus);
           end;
+          if ThreadToPause.FIsPaused or ThreadToPause.FHasExited then
+            break;
 
           DebugLn(DBG_VERBOSE and (ThreadToPause.FInternalPauseRequested), ['Re-Request Internal pause for ', ThreadToPause.ID]);
           ThreadToPause.FInternalPauseRequested:=false;
@@ -1372,6 +1382,13 @@ begin
     {$IFDEF DebuglnLinuxDebugEvents}
     debuglnexit('<<');
     {$ENDIF}
+  end;
+
+  for TDbgThread(ThreadToPause) in FThreadMap do begin
+    if ThreadToPause.FHasExited then begin
+    Process.RemoveThread(ThreadToPause.ID); // TODO: postpone ?
+    ThreadToPause.Free;
+    end;
   end;
 
   {$IFDEF DebuglnLinuxDebugEvents}
