@@ -82,6 +82,7 @@ object DataFrame: TDataFrame
         00FF008000FF008000FF008000FF008000FF008000FF008000FF008000FF0080
         00FF008000FF0000000000000000000000000000000000000000
       }
+      OnClick = DoExport
     end
     object FCodeSB: TSpeedButton
       Left = 145
@@ -141,6 +142,7 @@ object DataFrame: TDataFrame
         0000FF0000FFFFFFFFFFFFFFFFFFFF0000FF0000FF0000FFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFF7C81808D92910000
       }
+      OnClick = DoCode
     end
   end
   object FDBGrid: TDBGrid
@@ -156,7 +158,7 @@ object DataFrame: TDataFrame
     TabOrder = 1
   end
   object FDataSource: TDataSource
-    left = 41
-    top = 36
+    Left = 41
+    Top = 36
   end
 end
