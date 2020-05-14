@@ -246,7 +246,7 @@ begin
      NewName:=ExtractFileName(FEFile.FileName);
      FLastName:=NewName;
      // Strip off known extensions
-     if (IndexText(ExtractFileExt(NewName),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
+     if (IndexStr(LowerCase(ExtractFileExt(NewName)),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
        FCodeOptions.UnitName:=ChangeFileExt(NewName,'')
      else
        FCodeOptions.UnitName:=NewName;
