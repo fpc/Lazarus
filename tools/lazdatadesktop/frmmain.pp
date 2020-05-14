@@ -575,17 +575,14 @@ begin
     MaybeRegisterConnectionStringCallback('TSQLDBMySql5DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBMySql51DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBMySql55DDEngine',@GetSQLConnectionDlg);
-{$ifdef HAVEMYSQL5657CONN}
     MaybeRegisterConnectionStringCallback('TSQLDBMySql56DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBMySql57DDEngine',@GetSQLConnectionDlg);
-{$ENDIF}
     MaybeRegisterConnectionStringCallback('TSQLDBODBCDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBFBDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBSQLite3DDEngine',@GetSQLConnectionDlg);
-{$IFDEF HAVEMSSQLCONN}
     MaybeRegisterConnectionStringCallback('TSQLDBMSSQLDDEngine',@GetSQLConnectionDlg);
-{$ENDIF}
+
   finally
     L.free;
   end;
@@ -693,6 +690,7 @@ Var
 
 begin
   LVConnections.Items.Clear;
+  FNRecentConnections.DeleteChildren;
   For I:=0 to FRecentConnections.Count-1 do
     begin
     RC:=FRecentConnections[i];
@@ -1814,6 +1812,7 @@ begin
   Result.Parent:=PCDD;
   Result.Frame.Description:=AName;
   Result.ImageIndex:=18;
+  Result.Caption:=aName;
   PCDD.ActivePage:=Result;
 end;
 
