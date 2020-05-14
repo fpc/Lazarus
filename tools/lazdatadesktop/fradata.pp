@@ -24,7 +24,6 @@ type
   private
     { private declarations }
     FTableName : String;
-    FDataset : TDataset;
     function GetDisplayMemoText: Boolean;
     procedure SetDisplayMemoText(AValue: Boolean);
   public
@@ -69,6 +68,7 @@ procedure TDataFrame.DoCode(Sender : TObject);
 begin
   CreateCode;
 end;
+
 
 function TDataFrame.GetDisplayMemoText: Boolean;
 begin
