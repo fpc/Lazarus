@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, EditBtn, ComCtrls, RTTIGrids, CheckLst, fpddcodegen, Buttons,
-  ActnList, ButtonPanel, ldd_consts;
+  ActnList, ButtonPanel, ldd_consts, SynEdit, SynHighlighterPas;
 
 type
 
@@ -34,6 +34,9 @@ type
     Splitter1: TSplitter;
     GFieldProps: TTIPropertyGrid;
     GCodeOptions: TTIPropertyGrid;
+    sePreview: TSynEdit;
+    SHPreview: TSynFreePascalSyn;
+    TSPreview: TTabSheet;
     TSFields: TTabSheet;
     TSOptions: TTabSheet;
     procedure CLBFieldsClick(Sender: TObject);
@@ -41,11 +44,14 @@ type
     procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ADownExecute(Sender: TObject);
     procedure AUpExecute(Sender: TObject);
+    procedure FEFileEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure PCConfChange(Sender: TObject);
     procedure Splitter1Moved(Sender: TObject);
   private
     { private declarations }
+    FLastName : String; // Last Unit name assigned
     FFieldmap : TFieldPropDefs;
     FGen: TDDCustomCodeGenerator;
     FCodeOptions : TCodeGeneratorOptions;
@@ -62,6 +68,7 @@ type
     procedure SetFileName(const AValue: String);
     procedure SetGen(const AValue: TDDCustomCodeGenerator);
     procedure SetShowResult(const AValue: Boolean);
+    procedure ShowPreview;
     procedure ShowSelectedField;
   public
     { public declarations }
@@ -76,7 +83,7 @@ var
 
 implementation
 
-uses typinfo,lcltype;
+uses strutils, typinfo,lcltype;
 
 {$R *.lfm}
 
@@ -225,6 +232,27 @@ begin
   MoveFieldUp;
 end;
 
+procedure TBaseConfigGeneratorForm.FEFileEditingDone(Sender: TObject);
+
+Var
+  OldName,NewName : string;
+
+begin
+  OldName:=FGen.CodeOptions.UnitName;
+  if (OldName='') or
+     SameText(OldName,'Unit1') or
+     SameText(OldName,FLastname) then
+     begin
+     NewName:=ExtractFileName(FEFile.FileName);
+     FLastName:=NewName;
+     // Strip off known extensions
+     if (IndexText(ExtractFileExt(FileName),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
+       FGen.CodeOptions.UnitName:=ChangeFileExt(NewName,'')
+     else
+       FGen.CodeOptions.UnitName:=NewName;
+     end;
+end;
+
 procedure TBaseConfigGeneratorForm.FormCreate(Sender: TObject);
 begin
   //
@@ -243,6 +271,33 @@ procedure TBaseConfigGeneratorForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FFieldMap);
   FreeAndNil(FCodeOPtions);
+end;
+
+procedure TBaseConfigGeneratorForm.ShowPreview;
+
+Var
+  CG : TDDCustomCodeGenerator;
+
+begin
+  CG:=TDDCustomCodeGeneratorClass(FGen.ClassType).Create(Self);
+  try
+    sePreview.Lines.BeginUpdate;
+    sePreview.Lines.Clear;
+    CG.CodeOptions.Assign(FCodeOptions);
+    CG.Fields.Assign(FGen.Fields);
+    CG.GenerateCode(sePreview.Lines);
+  finally
+    sePreview.Lines.EndUpdate;
+    CG.Free;
+  end;
+end;
+
+
+procedure TBaseConfigGeneratorForm.PCConfChange(Sender: TObject);
+
+begin
+  if (PCConf.ActivePage=tsPreview) then
+    ShowPreview;
 end;
 
 procedure TBaseConfigGeneratorForm.Splitter1Moved(Sender: TObject);
