@@ -238,7 +238,7 @@ Var
   OldName,NewName : string;
 
 begin
-  OldName:=FGen.CodeOptions.UnitName;
+  OldName:=FCodeOptions.UnitName;
   if (OldName='') or
      SameText(OldName,'Unit1') or
      SameText(OldName,FLastname) then
@@ -246,10 +246,10 @@ begin
      NewName:=ExtractFileName(FEFile.FileName);
      FLastName:=NewName;
      // Strip off known extensions
-     if (IndexText(ExtractFileExt(FileName),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
-       FGen.CodeOptions.UnitName:=ChangeFileExt(NewName,'')
+     if (IndexText(ExtractFileExt(NewName),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
+       FCodeOptions.UnitName:=ChangeFileExt(NewName,'')
      else
-       FGen.CodeOptions.UnitName:=NewName;
+       FCodeOptions.UnitName:=NewName;
      end;
 end;
 
