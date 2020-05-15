@@ -44,6 +44,7 @@ type
     FSortObjectMembers,
     FCompact,
     FNewObject,
+    FShowRest,
     FSaveFormatted: Boolean;
   end;
 
@@ -122,6 +123,7 @@ type
     MenuItem13: TMenuItem;
     MenuItem14: TMenuItem;
     MenuItem15: TMenuItem;
+    MIShowRest: TMenuItem;
     MISaveFormatted: TMenuItem;
     MSepFavourites: TMenuItem;
     MFavourites: TMenuItem;
@@ -177,7 +179,7 @@ type
     TBOpen: TToolButton;
     TBSave: TToolButton;
     ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    tbDeleteValue: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     TBNEwNull: TToolButton;
@@ -233,6 +235,7 @@ type
     procedure MIdocumentClick(Sender: TObject);
     procedure MIQuoteStringsClick(Sender: TObject);
     procedure MISaveFormattedClick(Sender: TObject);
+    procedure MIShowRestClick(Sender: TObject);
     procedure MISortMembersClick(Sender: TObject);
     procedure MIStrictClick(Sender: TObject);
     procedure PCJSONCloseTabClicked(Sender: TObject);
@@ -243,6 +246,7 @@ type
     procedure PSMainStoredValues6Restore(Sender: TStoredValue; var Value: TStoredType);
     procedure PSMainStoredValues7Restore(Sender: TStoredValue; var Value: TStoredType);
     procedure PSMainStoredValues8Restore(Sender: TStoredValue; var Value: TStoredType);
+    procedure PSMainStoredValues9Restore(Sender: TStoredValue; var Value: TStoredType);
     procedure TBShowRestClick(Sender: TObject);
     procedure TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
     procedure TVJSONEditing(Sender: TObject; Node: TTreeNode;
@@ -527,12 +531,25 @@ begin
   FOptions.FSaveFormatted:=StrToIntDef(Value,0)=1;
 end;
 
+procedure TMainForm.PSMainStoredValues9Restore(Sender: TStoredValue; var Value: TStoredType);
+begin
+  FOptions.FShowRest:=StrToIntDef(Value,0)=1;
+  if FOptions.FShowRest then
+    begin
+    MIShowRest.Checked:=True;
+    TBShowRest.Down:=True;
+    TBShowRestClick(Self);
+    end;
+end;
+
 procedure TMainForm.TBShowRestClick(Sender: TObject);
 begin
   if TBShowRest.Down then
     ShowRestPanel
   else
     HideRestPanel;
+  MIShowRest.Checked:=TBShowRest.Down;
+  PSMain.StoredValue['ShowRest']:=IntToStr(Ord(TBShowRest.Down));
 end;
 
 procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
@@ -1607,6 +1624,12 @@ begin
   FOptions.FSaveFormatted :=(Sender as TMenuItem).Checked;
   PSMain.StoredValue['SaveFormatted']:=IntToStr(Ord(FOptions.FSaveFormatted));
   ShowJSONDocument;
+end;
+
+procedure TMainForm.MIShowRestClick(Sender: TObject);
+begin
+  TBShowRest.Down:=Not TBShowRest.Down;
+  TBShowRest.Click;
 end;
 
 procedure TMainForm.MISortMembersClick(Sender: TObject);
