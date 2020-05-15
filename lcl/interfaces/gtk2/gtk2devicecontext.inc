@@ -518,7 +518,7 @@ procedure TGtkDeviceContext.SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
 
 var
   ClientWidget: PGtkWidget;
-  W: PGtkWidget;
+  W, TopLvlW: PGtkWidget;
 begin
   if FWidget <> nil then
     RaiseWidgetAlreadySet;
@@ -552,7 +552,8 @@ begin
         if AWindow = nil then
         begin
           W := gtk_widget_get_parent(AWidget);
-          if (W <> nil) and not GTK_WIDGET_VISIBLE(W) then
+          TopLvlW := gtk_widget_get_toplevel(AWidget);
+          if (W <> nil) and GTK_IS_WINDOW(TopLvlW) then
           begin
             //debugln(['TGtkDeviceContext.SetWidget gtk-class=',GetWidgetClassName(W),' lcl-obj=',DbgSName(GetLCLObject(W))]);
             //we are forcing window creation but not for GtkNotebook
