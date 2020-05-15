@@ -1222,7 +1222,11 @@ begin
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;
   //DebugLn(['TPascalReaderTool.MoveCursorToFirstProcSpecifier ',ProcNode.DescAsString,' StartPos=',CleanPosToStr(ProcNode.StartPos)]);
-  if (ProcNode.LastChild<>nil) and (ProcNode.LastChild.Desc=ctnIdentifier) then
+  if (ProcNode.LastChild<>nil)
+  and (
+    (ProcNode.LastChild.Desc=ctnIdentifier)
+    or (ProcNode.LastChild.Desc=ctnSpecialize)
+  ) then
   begin
     // jump behind function result type
     MoveCursorToCleanPos(ProcNode.LastChild.EndPos);
@@ -1598,6 +1602,8 @@ function TPascalReaderTool.ExtractNextTypeRef(Add: boolean;
 begin
   Result:=false;
   ExtractNextAtom(Add,Attr);
+  if (Scanner.CompilerMode in [cmOBJFPC]) and UpAtomIs('SPECIALIZE') then
+    ExtractNextAtom(Add,Attr);
   if not AtomIsIdentifier then exit;
   ExtractNextAtom(Add,Attr);
   repeat
