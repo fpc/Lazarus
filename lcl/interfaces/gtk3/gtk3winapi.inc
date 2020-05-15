@@ -413,11 +413,14 @@ end;
 
 function TGtk3WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.CreateEllipticRgn not implemented ...');
-  {$ENDIF}
-  Result := inherited CreateEllipticRgn(X1, Y1, X2, Y2);
+  Result:=HRGN(TGtk3Region.CreateEllipse(X1,Y1,X2,Y2));
 end;
+
+function TGtk3WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nW, nH: Integer): HRGN;
+begin
+  Result:=HRGN(TGtk3Region.Create(X1,Y1,X2,Y2,nW,nH));
+end;
+
 
 function TGtk3WidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
@@ -3892,10 +3895,12 @@ end;
 function TGtk3WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean
   ): longint;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetWindowRgn not implemented ...');
-  {$ENDIF}
-  Result:=inherited SetWindowRgn(hWnd, hRgn, bRedraw);
+  gtk_widget_shape_combine_region (
+     TGtk3Widget(hWnd).Widget,
+     TGtk3Region(hRgn).Handle);
+  if bRedraw then
+    TGtk3Widget(hWnd).Widget^.realize;
+  Result:=1;
 end;
 
 function TGtk3WidgetSet.ShowCaret(hWnd: HWND): Boolean;

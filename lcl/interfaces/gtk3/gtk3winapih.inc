@@ -56,6 +56,7 @@ function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) :
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC({%H-}DC: HDC): HDC; override;
 function CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
+function CreateRoundRectRgn(X1, Y1, X2, Y2, nW, nH: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;

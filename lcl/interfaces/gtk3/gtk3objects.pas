@@ -142,6 +142,8 @@ type
     property Handle: Pcairo_region_t read FHandle write FHandle;
     constructor Create(CreateHandle: Boolean); virtual; overload;
     constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
+    constructor Create(X1,Y1,X2,Y2,nW,nH: Integer); virtual; overload;
+    constructor CreateEllipse(X1,Y1,X2,Y2: Integer); virtual; overload;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy; override;
@@ -482,6 +484,89 @@ begin
   ARect.width := x2 - x1;
   ARect.height := y2 - y1;
   FHandle := cairo_region_create_rectangle(@ARect);
+end;
+
+constructor TGtk3Region.Create(X1,Y1,X2,Y2,nW,nH: Integer);
+var
+  ASurface: pcairo_surface_t;
+  cr:Pcairo_t;
+  rr:double;
+  w,h:integer;
+begin
+  inherited Create;
+  FHandle := nil;
+  w:=x2-x1;
+  h:=y2-y1;
+  rr:=nW/2;
+
+  ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+  cr:=cairo_create(ASurface);
+  try
+    cairo_new_path(cr);
+
+    cairo_move_to(cr,x1,y2-rr);
+    cairo_line_to(cr,x1,y1+rr);
+    cairo_arc(cr,x1 + rr, y1 + rr, rr, pi, 3*pi/2);
+    cairo_line_to(cr,x2-rr,y1);
+    cairo_arc(cr,x2 - rr, y1 + rr, rr, 3*pi/2, 0);
+    cairo_line_to(cr,x2,y2-rr);
+    cairo_arc(cr,x2 - rr, y2 - rr, rr, 0, pi/2);
+    cairo_line_to(cr,x1-rr,y2);
+    cairo_arc(cr,x1 + rr, y2 - rr, rr, pi/2, pi);
+
+    cairo_close_path(cr);
+    cairo_set_source_rgba(cr,1,1,1,1);
+    cairo_fill_preserve(cr);
+
+    FHandle := gdk_cairo_region_create_from_surface(ASurface);
+  finally
+    cairo_destroy(cr);
+    cairo_surface_destroy(ASurface);
+  end;
+end;
+
+constructor TGtk3Region.CreateEllipse(X1,Y1,X2,Y2: Integer);
+var
+  ASurface: pcairo_surface_t;
+  cr:Pcairo_t;
+  rr:double;
+  w,h:integer;
+  save_matrix:cairo_matrix_t;
+begin
+  inherited Create;
+  FHandle := nil;
+  w:=x2-x1;
+  h:=y2-y1;
+
+  ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+  cr:=cairo_create(ASurface);
+  try
+    cairo_save(cr);
+    try
+      cairo_get_matrix(cr, @save_matrix);
+      cairo_translate (cr, x1 + w / 2.0 + PixelOffset, y1 + h / 2.0 + PixelOffset);
+      cairo_scale (cr, w / 2.0, h / 2.0);
+      cairo_new_path(cr);
+      cairo_arc
+          (
+            (*cr =*) cr,
+            (*xc =*) 0,
+            (*yc =*) 0,
+            (*radius =*) 1,
+            (*angle1 =*) 0,
+            (*angle2 =*) 2 * Pi
+          );
+      cairo_close_path(cr);
+      cairo_set_source_rgba(cr,1,1,1,1);
+      cairo_fill_preserve(cr);
+    finally
+      cairo_restore(cr);
+    end;
+    FHandle := gdk_cairo_region_create_from_surface(ASurface);
+  finally
+    cairo_destroy(cr);
+    cairo_surface_destroy(ASurface);
+  end;
 end;
 
 function TGtk3Region.Select(ACtx: TGtk3DeviceContext): TGtk3ContextObject;
