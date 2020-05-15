@@ -211,6 +211,7 @@ type
     procedure OpenRecentDatadict(Sender: TObject);
     procedure LVDictsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MIDataDictClick(Sender: TObject);
+    procedure DoCloseTabClick(Sender: TObject);
     procedure PMAllPopup(Sender: TObject);
     procedure SaveAsExecute(Sender: TObject);
     procedure TVAllDblClick(Sender: TObject);
@@ -224,8 +225,11 @@ type
     procedure AddRecentConnectionList(RC: TRecentConnection; AssumeNew: Boolean);
     procedure AddRecentConnectionTree(RC: TRecentConnection; AssumeNew: Boolean);
     procedure CheckParams;
+    function CloseConnectionEditor(aTab: TConnectionEditor): TModalResult;
     function CloseCurrentConnection: TModalResult;
     function CloseCurrentTab(AddCancelClose: Boolean = False): TModalResult;
+    function CloseDataEditor(DD: TDataDictEditor; AddCancelClose: Boolean): TModalResult;
+    function CloseTab(aTab : TTabsheet; AddCancelClose: Boolean = False): TModalResult;
     procedure DeleteRecentConnection;
     procedure DeleteRecentDataDict;
     procedure DoShowNewConnectionTypes(ParentMenu: TMenuItem);
@@ -1304,41 +1308,57 @@ begin
     Result:=CloseCurrentTab(True)<>mrCancel;
 end;
 
+
 function TMainForm.CloseCurrentTab(AddCancelClose: Boolean): TModalResult;
 
 begin
-  If (CurrentEditor<>Nil) then
-    Result:=CloseCurrentEditor(AddCancelClose)
-  else if (CurrentConnection<>Nil) then
-    begin
-    CloseCurrentConnection;
+  Result:=CloseTab(PCItems.ActivePage,AddCancelClose);
+end;
+
+function TMainForm.CloseTab(aTab : TTabsheet; AddCancelClose: Boolean = False): TModalResult;
+
+begin
+  If (aTab is TDataDictEditor) then
+    Result:=CloseDataEditor(aTab as TDataDictEditor,AddCancelClose)
+  else if (aTab is TConnectionEditor) then
+    Result:=CloseConnectionEditor(aTab as TConnectionEditor)
+  else
     Result:=mrOK;
-    end;
+end;
+
+function TMainForm.CloseConnectionEditor(aTab : TConnectionEditor): TModalResult;
+
+begin
+  aTab.Frame.DisConnect;
+  Application.ReleaseComponent(aTab);
+  aTab.Free;
+  Result:=mrOK;
 end;
 
 function TMainForm.CloseCurrentConnection: TModalResult;
 
-Var
-  CE : TConnectionEditor;
-
 begin
-  CE:=CurrentConnection;
-  CE.Frame.DisConnect;
-  Application.ReleaseComponent(CE);
-  CE.Free;
-  Result:=mrOK;
+  if CurrentConnection<>Nil then
+    Result:=CloseConnectionEditor(CurrentConnection)
+  else
+    Result:=mrOK;
 end;
+
 
 function TMainForm.CloseCurrentEditor(AddCancelClose: Boolean): TModalResult;
 
+begin
+  Result:=CloseDataEditor(CurrentEditor,AddCancelClose);
+end;
+
+function TMainForm.CloseDataEditor(DD : TDataDictEditor;AddCancelClose: Boolean): TModalResult;
+
 Var
-  DD : TDataDictEditor;
   Msg : String;
   DDF : TRecentDataDict;
 
 begin
   Result:=mrYes;
-  DD:=CurrentEditor;
   If (DD=Nil) then
     Exit;
   If DD.Modified then
@@ -1588,6 +1608,12 @@ begin
   MIDataDict.Items[0].Clear;
   ShowImportRecentconnections;
   ShowDDImports;
+end;
+
+procedure TMainForm.DoCloseTabClick(Sender: TObject);
+
+begin
+  CloseTab(Sender as TTabSheet,True);
 end;
 
 procedure TMainForm.PMAllPopup(Sender: TObject);

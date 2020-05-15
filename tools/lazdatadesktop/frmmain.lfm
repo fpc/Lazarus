@@ -261,6 +261,8 @@ object MainForm: TMainForm
     Align = alRight
     Images = ILMain
     TabOrder = 3
+    OnCloseTabClicked = DoCloseTabClick
+    Options = [nboShowCloseButtons, nboKeyboardTabSwitch]
   end
   object SRecent: TSplitter
     Left = 458
