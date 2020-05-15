@@ -401,6 +401,10 @@ msgstr "Merkkijonot lainausmerkkeihin"
 msgid "Save Formatted JSON"
 msgstr ""
 
+#: tmainform.mishowrest.caption
+msgid "Show REST panel"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Lajittele oliojäsenet"

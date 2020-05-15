@@ -408,6 +408,10 @@ msgstr "Szövegértékek idézőjelben"
 msgid "Save Formatted JSON"
 msgstr "Formázott JSON mentése"
 
+#: tmainform.mishowrest.caption
+msgid "Show REST panel"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Objektum-tagok rendezése"

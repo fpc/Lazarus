@@ -412,6 +412,10 @@ msgstr "引用字符串值"
 msgid "Save Formatted JSON"
 msgstr ""
 
+#: tmainform.mishowrest.caption
+msgid "Show REST panel"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "排序对象成员"

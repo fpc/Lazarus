@@ -407,6 +407,10 @@ msgstr "Citar valores \"string\""
 msgid "Save Formatted JSON"
 msgstr "Salvar JSON formatado"
 
+#: tmainform.mishowrest.caption
+msgid "Show REST panel"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Ordenar membros objeto"

@@ -410,6 +410,10 @@ msgstr "Брати в лапки рядкові значення"
 msgid "Save Formatted JSON"
 msgstr "Зберегти форматований JSON"
 
+#: tmainform.mishowrest.caption
+msgid "Show REST panel"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Сортувати елементи об'єкта"
