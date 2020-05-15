@@ -6886,7 +6886,7 @@ end;
 procedure TfrBand.DrawPageBreak;
 var
   i, j, k, ty: Integer;
-  newDy, oldy, olddy, aMaxy: Integer;
+  newDy, oldy, olddy, aMaxy, newDy1: Integer;
   t: TfrView;
   Flag: Boolean;
   PgArr: array of integer;
@@ -6924,6 +6924,7 @@ begin
 
     // space left of each column after headers and footers
     newDy := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy - y - 2;
+    newDy1 := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy    - 2;
 
     for i := 0 to Objects.Count - 1 do
     begin
@@ -6945,7 +6946,7 @@ begin
 
         // roughly, how many columns we will need?
         k := ((t.y+t.dy) div newDy) + 2; // +2 = 1 for probable remainder + 1 extra
-        if  k > Length(pgArr) then
+        if k > Length(pgArr) then
           SetLength(pgArr, k);
       end;
     end;
@@ -6954,7 +6955,8 @@ begin
     // the granularity of "min height", some use as much space as "lines" fit
     for j:=0 to Length(pgArr)-1 do
     begin
-
+      if j>0 then
+        newDy := newDy1;
       pgArr[j] := newDy;
 
       for i := 0 to Objects.Count - 1 do
