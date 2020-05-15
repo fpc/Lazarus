@@ -442,7 +442,7 @@ var
 begin
   if not CheckHandle(ACustomComboBox, Self, 'SetStyle') then Exit;
 
-  TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(ACustomComboBox.ReadOnly);
+  TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(ACustomComboBox.Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable]);
   sz:=TCarbonComboBox(ACustomComboBox.Handle).GetPreferredSize;
   ACustomComboBox.Constraints.SetInterfaceConstraints(0,0,0,sz.Y);
 end;

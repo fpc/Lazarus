@@ -678,7 +678,7 @@ var
   CFString: CFStringRef;
   TmpSpec: EventTypeSpec;
 begin
-  FReadOnly := (LCLObject as TCustomComboBox).ReadOnly;
+  FReadOnly := (LCLObject as TCustomComboBox).Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable];
   FLastDroppedDown := False;
   
   if FReadOnly then
