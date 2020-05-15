@@ -844,7 +844,8 @@ type
     function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
       out Context: TFindContext): boolean;
     function FindElementTypeOfArrayType(ArrayNode: TCodeTreeNode;
-      out ExprType: TExpressionType; AliasType: PFindContext): boolean;
+      out ExprType: TExpressionType; AliasType: PFindContext;
+      ParentParams: TFindDeclarationParams = nil): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function CheckModifierEnumeratorCurrent({%H-}Params: TFindDeclarationParams;
@@ -12734,7 +12735,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
             begin
               AliasType:=CleanFindContext;
               if SubExprType.Context.Tool.FindElementTypeOfArrayType(
-                                      SubExprType.Context.Node,ExprType,@AliasType)
+                                    SubExprType.Context.Node,ExprType,@AliasType,Params)
               then begin
                 Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
               end;
@@ -13131,7 +13132,7 @@ end;
 
 function TFindDeclarationTool.FindElementTypeOfArrayType(
   ArrayNode: TCodeTreeNode; out ExprType: TExpressionType;
-  AliasType: PFindContext): boolean;
+  AliasType: PFindContext; ParentParams: TFindDeclarationParams): boolean;
 var
   Params: TFindDeclarationParams;
   p: LongInt;
@@ -13142,27 +13143,36 @@ begin
   if (ArrayNode=nil) then exit;
   if (ArrayNode.Desc<>ctnOpenArrayType) and (ArrayNode.Desc<>ctnRangedArrayType)
   then exit;
-  MoveCursorToNodeStart(ArrayNode);
-  ReadNextAtom; // array
-  if not UpAtomIs('ARRAY') then exit;
-  ReadNextAtom; // of
-  if CurPos.Flag=cafEdgedBracketOpen then begin
-    ReadTilBracketClose(true);
-    ReadNextAtom;
-  end;
-  if not UpAtomIs('OF') then exit;
-  ReadNextAtom;
-  if not AtomIsIdentifier then exit;
-  Params:=TFindDeclarationParams.Create;
-  try
-    Params.Flags:=fdfDefaultForExpressions;
-    Params.ContextNode:=ArrayNode;
-    p:=CurPos.StartPos;
-    Params.SetIdentifier(Self,@Src[p],nil);
-    ExprType:=FindExpressionResultType(Params,p,-1,AliasType);
+  if (ArrayNode.Parent <> nil)
+  and (ArrayNode.Parent.Desc = ctnGenericType)
+  and (ParentParams <> nil) then begin
+    ExprType.Desc := xtContext;
+    ExprType.Context.Node := ParentParams.GenParamValueMappings.SpecializeParamsNode.FirstChild;
+    ExprType.Context.Tool := ParentParams.GenParamValueMappings.SpecializeParamsTool;
     Result:=true;
-  finally
-    Params.Free;
+  end else begin
+    MoveCursorToNodeStart(ArrayNode);
+    ReadNextAtom; // array
+    if not UpAtomIs('ARRAY') then exit;
+    ReadNextAtom; // of
+    if CurPos.Flag=cafEdgedBracketOpen then begin
+      ReadTilBracketClose(true);
+      ReadNextAtom;
+    end;
+    if not UpAtomIs('OF') then exit;
+    ReadNextAtom;
+    if not AtomIsIdentifier then exit;
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=fdfDefaultForExpressions;
+      Params.ContextNode:=ArrayNode;
+      p:=CurPos.StartPos;
+      Params.SetIdentifier(Self,@Src[p],nil);
+      ExprType:=FindExpressionResultType(Params,p,-1,AliasType);
+      Result:=true;
+    finally
+      Params.Free;
+    end;
   end;
 end;
 
