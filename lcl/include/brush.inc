@@ -192,7 +192,8 @@ begin
     BrushResourceCache.Lock;
     try
       CacheItem := BrushResourceCache.FindItem(FReference.Handle);
-      if CacheItem <> nil then
+      // ReferenceCount can be 0 in some situation (DLL under Windows 7). Issue #37072.
+      if ( CacheItem <> nil ) and ( CacheItem.ReferenceCount>0 ) then
         CacheItem.DecreaseRefCount;
       FBrushHandleCached := False;
     finally
