@@ -3317,13 +3317,25 @@ end;
 
 procedure TCustomTreeView.Click;
 begin
-  if FMouseDownNodeSelected then
+  if not FMouseDownOnFoldingSign then
     inherited;
 end;
 
 procedure TCustomTreeView.DblClick;
 begin
-  if FMouseDownNodeSelected then
+  if not FMouseDownOnFoldingSign then
+    inherited;
+end;
+
+procedure TCustomTreeView.TripleClick;
+begin
+  if not FMouseDownOnFoldingSign then
+    inherited;
+end;
+
+procedure TCustomTreeView.QuadClick;
+begin
+  if not FMouseDownOnFoldingSign then
     inherited;
 end;
 
@@ -5566,7 +5578,7 @@ function TCustomTreeView.MouseDownNode(X, Y: Integer): TTreeNode;
 begin
   Result := GetNodeAt(X, Y);
   // Update the NodeSelected flag.
-  FMouseDownNodeSelected := (Result<>nil) and
+  FMouseDownNodeSelected := Assigned(Result) and
     (Result.Selected or ((tvoAllowMultiselect in Options) and Result.MultiSelected));
 end;
 
@@ -5608,18 +5620,20 @@ begin
   //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
   CursorNode := MouseDownNode(X, Y);
 
+  //Flag is used for DblClick/TripleClick/QuadClick, so set it before testing ShiftState
+  FMouseDownOnFoldingSign :=
+    Assigned(CursorNode) and CursorNode.HasChildren and ShowButtons and
+    (LogicalX >= CursorNode.DisplayExpandSignLeft) and
+    (LogicalX < CursorNode.DisplayExpandSignRight);
+
   //change selection on left click
   if (Button = mbLeft) and//left click
      (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
      (CursorNode <> nil) then
   begin
-    if CursorNode.HasChildren and ShowButtons and
-       (LogicalX >= CursorNode.DisplayExpandSignLeft) and
-       (LogicalX < CursorNode.DisplayExpandSignRight) then
-    begin
+    if FMouseDownOnFoldingSign then
       // mousedown occured on expand sign -> expand/collapse
-      CursorNode.Expanded := not CursorNode.Expanded;
-    end
+      CursorNode.Expanded := not CursorNode.Expanded
     else if LogicalX >= CursorNode.DisplayStateIconLeft then
     begin
       // mousedown occured in text or icon -> select node and begin drag operation

@@ -3341,6 +3341,7 @@ type
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
     FMouseDownPos: TPoint;
     FMouseDownNodeSelected: Boolean;
+    FMouseDownOnFoldingSign: Boolean;
     FMultiSelectStyle: TMultiSelectStyle;
     FHotTrackColor: TColor;
     FDisabledFontColor: TColor;
@@ -3520,8 +3521,8 @@ type
     procedure CreateWnd; override;
     procedure Click; override;
     procedure DblClick; override;
-    //procedure TripleClick; override;  - Are these needed?
-    //procedure QuadClick; override;
+    procedure TripleClick; override;
+    procedure QuadClick; override;
     procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); virtual;
