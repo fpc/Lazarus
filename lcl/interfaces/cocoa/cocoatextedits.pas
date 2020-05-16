@@ -401,6 +401,7 @@ type
     decimalPlaces: Integer;
 
     avoidChangeEvent: Integer;
+    anyChange: Boolean;
 
     //Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
@@ -411,6 +412,7 @@ type
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     procedure textDidChange(notification: NSNotification); override;
+    procedure textDidEndEditing(notification: NSNotification); override;
     // lcl
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -2013,15 +2015,42 @@ begin
 end;
 
 procedure TCocoaSpinEdit.textDidChange(notification: NSNotification);
+var
+  w : NSWindow;
 begin
-  inc(avoidChangeEvent);
-  try
+  w := Self.window;
+  if Assigned(w)
+      and (w.firstResponder.isKindOfClass(NSTextView))
+      and (NSObject(NSTextView(w.firstResponder).delegate) = self) // is focused
+  then
+  begin
+    anyChange:=true;
+    updateStepper; // just update float value, keep text as is!
+    if (callback <> nil) and (avoidChangeEvent=0) then
+      callback.SendOnTextChanged();
+  end
+  else
+  begin
+    // not focused
+    inc(avoidChangeEvent);
+    try
+      updateStepper;
+      StepperChanged(nil); // and refresh self
+      inherited textDidChange(notification);
+    finally
+      dec(avoidChangeEvent);
+    end;
+  end;
+end;
+
+procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
+begin
+  if anyChange then
+  begin
     updateStepper;
     StepperChanged(nil); // and refresh self
-    inherited textDidChange(notification);
-  finally
-    dec(avoidChangeEvent);
   end;
+  inherited textDidEndEditing(notification);
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
