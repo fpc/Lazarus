@@ -29,7 +29,8 @@ type
                                baoUseBrowserApp,     // Use browser app object
                                baoUseBrowserConsole, // use browserconsole unit to display Writeln()
                                baoStartServer,       // Start simple server
-                               baoUseURL             // Use this URL to run/show project in browser
+                               baoUseURL,            // Use this URL to run/show project in browser
+                               baoShowException      // let RTL show uncaught exceptions
                                );
   TBrowserApplicationOptions = set of TBrowserApplicationOption;
 
@@ -337,6 +338,7 @@ begin
       UseBrowserConsole:=CO(baoUseBrowserConsole);
       StartHTTPServer:=CO(baoStartServer);
       UseRunOnReady:=CO(baoRunOnReady);
+      ShowUncaughtExceptions:=CO(baoShowException);
       // We allocate the new port in all cases.
       ServerPort:=GetNextPort;
       URL:='';
@@ -351,6 +353,7 @@ begin
         SO(UseBrowserConsole,baoUseBrowserConsole);
         SO(StartHTTPServer,baoStartServer);
         SO(UseRunOnReady,baoRunOnReady);
+        SO(ShowUncaughtExceptions,baoShowException);
         DebugLN(['Start server:', CO(baoStartServer)]);
         if CO(baoStartServer) then
           begin
@@ -424,10 +427,14 @@ begin
   Content:='';
   if baoUseBrowserConsole in Options then
     Content:=ConsoleDiv;
-  if baoRunOnReady in Options then
-    RunScript:='window.addEventListener("load", rtl.run);'+LineEnding
+  if baoShowException in Options then
+    Runscript:='rtl.showUncaughtExceptions=true;'+LineEnding+'  ';
   else
-    RunScript:='rtl.run();'+LineEnding;
+    RunScript:='';
+  if baoRunOnReady in Options then
+    RunScript:=Runscript+'window.addEventListener("load", rtl.run);'+LineEnding
+  else
+    RunScript:=Runscript+'rtl.run();'+LineEnding;
   HTMLSource:=Format(TemplateHTMLSource,[aFileName,RunScript,Content]);
   HTMLFile.SetSourceText(HTMLSource);
   Result:=HTMLFile;

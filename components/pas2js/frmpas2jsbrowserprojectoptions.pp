@@ -21,6 +21,7 @@ type
     CBServerURL: TComboBox;
     CBMaintainPage: TCheckBox;
     CBRunOnReady: TCheckBox;
+    cbShowUncaughtExceptions: TCheckBox;
     RBUseURL: TRadioButton;
     RBStartServerAt: TRadioButton;
     SEPort: TSpinEdit;
@@ -43,6 +44,7 @@ type
     property StartHTTPServer : Boolean Index 4 read GetB Write SetB;
     property UseURL : Boolean Index 5 read GetB Write SetB;
     property UseRunOnReady : Boolean Index 6 read GetB Write SetB;
+    property ShowUncaughtExceptions : Boolean Index 7 read GetB Write SetB;
     Property ServerPort : Word Read GetServerPort Write SetServerPort;
     Property URL : String Read GetURL Write SetURL;
   end;
@@ -121,6 +123,7 @@ begin
     4 : Result:=RBStartServerAt.Checked;
     5 : Result:=RBUseURL.Checked;
     6 : Result:=CBRunOnReady.Checked;
+    7 : Result:=cbShowUncaughtExceptions.Checked;
   else
     Result:=False;
   end;
@@ -157,6 +160,7 @@ begin
         CBUseHTTPServer.Checked:=true
       end;
     6 : CBRunOnReady.Checked:=Avalue;
+    7 : cbShowUncaughtExceptions.Checked:=aValue;
   end;
 end;
 
