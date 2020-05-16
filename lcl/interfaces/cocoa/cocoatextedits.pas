@@ -2049,6 +2049,7 @@ begin
   begin
     updateStepper;
     StepperChanged(nil); // and refresh self
+    anyChange := false;
   end;
   inherited textDidEndEditing(notification);
 end;
