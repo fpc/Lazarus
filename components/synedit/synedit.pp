@@ -1902,7 +1902,7 @@ begin
   if not Assigned(FTextArea) then
     Result := -1
   else
-    Result := FFoldedLinesView.ViewPosToTextIndex(FTextArea.TopLine) + 1;
+    Result := FFoldedLinesView.ViewToTextIndex(ToIdx(FTextArea.TopLine)) + 1;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -4740,7 +4740,7 @@ begin
 
   if not HandleAllocated then
     Include(fStateFlags, sfExplicitTopLine);
-  NewTopView := FFoldedLinesView.TextIndexToViewPos(Value-1);
+  NewTopView := ToPos(FFoldedLinesView.TextToViewIndex(ToIdx(Value)));
   if NewTopView <> TopView then begin
     TopView := NewTopView;
   end;
@@ -6822,22 +6822,22 @@ begin
         end;
       ecEditorTop, ecSelEditorTop:
         begin
-          FCaret.LineCharPos := Point(1, FFoldedLinesView.ViewPosToTextIndex(1)+1);
+          FCaret.LineCharPos := Point(1, ToPos(FFoldedLinesView.ViewToTextIndex(0)));
         end;
       ecEditorBottom, ecSelEditorBottom:
         begin
-          CaretNew := Point(1, FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1);
+          CaretNew := Point(1, ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.Count))));
           if (CaretNew.Y > 0) then
             CaretNew.X := Length(FTheLinesView[CaretNew.Y - 1]) + 1;
           FCaret.LineCharPos := CaretNew;
         end;
       ecColSelEditorTop:
         begin
-          FCaret.LinePos := FFoldedLinesView.ViewPosToTextIndex(1)+1;
+          FCaret.LinePos := ToPos(FFoldedLinesView.ViewToTextIndex(0));
         end;
       ecColSelEditorBottom:
         begin
-          FCaret.LinePos := FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1;
+          FCaret.LinePos := ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.Count)));
         end;
 
 // goto special line / column position
@@ -8388,7 +8388,7 @@ begin
         if not(eoScrollPastEol in fOptions) then begin
           // move to begin of next line
           NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, +1);
-          if NewCaret.Y <= FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1 then begin
+          if NewCaret.Y <= ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.Count))) then begin
             NewCaret.X := 1;
             FCaret.LineBytePos := NewCaret;
           end;

@@ -438,9 +438,9 @@ type
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
-    function TextIndexToViewPos(aTextIndex : Integer) : Integer;    (* Convert TextIndex (0-based) to ViewPos (1-based) *)
+    function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx;    (* Convert TextIndex (0-based) to ViewPos (1-based) *)
     function TextIndexToScreenLine(aTextIndex : Integer) : Integer; (* Convert TextIndex (0-based) to Screen (0-based) *)
-    function ViewPosToTextIndex(aViewPos : Integer) : Integer;      (* Convert ViewPos (1-based) to TextIndex (0-based) *)
+    function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx;      (* Convert ViewPos (1-based) to TextIndex (0-based) *)
     function ScreenLineToTextIndex(aLine : Integer) : Integer;      (* Convert Screen (0-based) to TextIndex (0-based) *)
 
     function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
@@ -738,7 +738,7 @@ begin
     FFoldView.MarkupInfoHiddenCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
   end;
 
-  inherited SetHighlighterTokensLine(FFoldView.ViewPosToTextIndex(ALine + 1), ARealLine);
+  inherited SetHighlighterTokensLine(FFoldView.ViewToTextIndex(ALine), ARealLine);
 end;
 
 function TLazSynDisplayFold.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
@@ -839,18 +839,18 @@ function TLazSynDisplayFold.TextToViewIndex(AIndex: TLineIdx): TLineRange;
 begin
   Result := inherited TextToViewIndex(AIndex);
   if Result.Top = Result.Bottom then begin
-    Result.Top    := FFoldView.TextIndexToViewPos(Result.Top) - 1;
+    Result.Top    := FFoldView.TextToViewIndex(Result.Top);
     Result.Bottom := Result.Top;
   end
   else begin;
-    Result.Top    := FFoldView.TextIndexToViewPos(Result.Top) - 1;
-    Result.Bottom := FFoldView.TextIndexToViewPos(Result.Bottom) - 1;
+    Result.Top    := FFoldView.TextToViewIndex(Result.Top);
+    Result.Bottom := FFoldView.TextToViewIndex(Result.Bottom);
   end;
 end;
 
 function TLazSynDisplayFold.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
 begin
-  Result := FFoldView.ViewPosToTextIndex(inherited ViewToTextIndex(AIndex)+1);
+  Result := FFoldView.ViewToTextIndex(inherited ViewToTextIndex(AIndex));
 end;
 
 { TSynEditFoldExportStream }
@@ -3148,7 +3148,7 @@ end;
 
 //procedure TSynEditFoldedView.LinesInsertedAtViewPos(AStartPos, ALineCount : Integer; SkipFixFolding : Boolean);
 //begin
-//  LinesInsertedAtTextIndex(ViewPosToTextIndex(AStartPos), ALineCount, SkipFixFolding);
+//  LinesInsertedAtTextIndex(ViewToTextIndex(ToIdx(AStartPos)), ALineCount, SkipFixFolding);
 //end;
 
 procedure TSynEditFoldedView.LinesDeletedAtTextIndex(AStartIndex, ALineCount, ABytePos: Integer; SkipFixFolding : Boolean);
@@ -3165,33 +3165,33 @@ end;
 
 //procedure TSynEditFoldedView.LinesDeletedAtViewPos(AStartPos, ALineCount : Integer; SkipFixFolding : Boolean);
 //begin
-//  LinesDeletedAtTextIndex(ViewPosToTextIndex(AStartPos), ALineCount, SkipFixFolding);
+//  LinesDeletedAtTextIndex(ViewToTextIndex(ToIdx(AStartPos)), ALineCount, SkipFixFolding);
 //end;
 
-function TSynEditFoldedView.TextIndexToViewPos(aTextIndex : Integer) : Integer;
+function TSynEditFoldedView.TextToViewIndex(aTextIndex: TLineIdx): TLineIdx;
 var
   n: TSynTextFoldAVLNode;
 begin
   n := fFoldTree.FindFoldForLine(aTextIndex + 1);
   if n.IsInFold then
-    Result := n.StartLine - 1 - n.FoldedBefore
+    Result := ToIdx(n.StartLine) - 1 - n.FoldedBefore
   else
-    Result := aTextIndex + 1 - n.FoldedBefore;
+    Result := aTextIndex - n.FoldedBefore;
 end;
 
 function TSynEditFoldedView.TextIndexToScreenLine(aTextIndex : Integer) : Integer;
 begin
-  Result := TextIndexToViewPos(aTextIndex) - TopLine;
+  Result := TextToViewIndex(aTextIndex) - TopLine + 1;
 end;
 
-function TSynEditFoldedView.ViewPosToTextIndex(aViewPos : Integer) : Integer;
+function TSynEditFoldedView.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
-  result := aViewPos - 1 + fFoldTree.FindFoldForFoldedLine(aViewPos).FoldedBefore;
+  result := aViewIndex + fFoldTree.FindFoldForFoldedLine(ToPos(aViewIndex)).FoldedBefore;
 end;
 
 function TSynEditFoldedView.ScreenLineToTextIndex(aLine : Integer) : Integer;
 begin
-  Result := ViewPosToTextIndex(aLine + TopLine);
+  Result := ViewToTextIndex(aLine + TopLine - 1);
 end;
 
 function TSynEditFoldedView.TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;
@@ -3202,7 +3202,7 @@ begin
   node := fFoldTree.FindFoldForLine(aTextIndex+1, True);
   result := aTextIndex;
   if LineOffset < 0 then begin
-    boundary := Max(0, ViewPosToTextIndex(1));
+    boundary := Max(0, ViewToTextIndex(0));
     if node.IsInFold
     then node := node.Prev
     else node := fFoldTree.FindLastFold;

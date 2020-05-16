@@ -1819,7 +1819,7 @@ end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
 begin
-  Result := TextView.TextIndexToViewPos(aTextIndex - 1);
+  Result := ToPos(TextView.TextToViewIndex(ToIdx(aTextIndex)));
 end;
 
 {$IFDEF WinIME}
@@ -2824,8 +2824,8 @@ begin
   end;
 
 
-  HasFolds := FoldView.TextIndexToViewPos(y2) - FoldView.TextIndexToViewPos(y1) <> y2 - y1;
-  //debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
+  HasFolds := FoldView.TextToViewIndex(y2) - FoldView.TextToViewIndex(y1) <> y2 - y1;
+  //debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextToViewIndex(y1), ' VP2=',FoldView.TextToViewIndex(y2)]);
 
   FProv := FoldView.FoldProvider;
   Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;

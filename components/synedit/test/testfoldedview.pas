@@ -14,7 +14,7 @@ uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
   LCLProc, SynEdit, SynHighlighterPas, SynEditFoldedView,
   SynEditHighlighterFoldBase, SynGutterCodeFolding, SynEditKeyCmds,
-  SynEditTypes;
+  SynEditTypes, SynEditMiscProcs;
 
 type
 
@@ -163,10 +163,10 @@ begin
   i := 0;
   while i < high(AExpectedPairs)-1 do begin
     AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') ',
-                 AExpectedPairs[i+1], FoldedView.TextIndexToViewPos(AExpectedPairs[i]));
+                 AExpectedPairs[i+1], ToPos(FoldedView.TextToViewIndex(AExpectedPairs[i])));
     if ADoReverse then
       AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
-                 AExpectedPairs[i], FoldedView.ViewPosToTextIndex(AExpectedPairs[i+1]));
+                 AExpectedPairs[i], FoldedView.ViewToTextIndex(ToIdx(AExpectedPairs[i+1])));
     inc(i, 2);
   end;
 end;
@@ -178,10 +178,10 @@ begin
   i := 0;
   while i < high(AExpectedPairs)-1 do begin
     AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+')',
-                 AExpectedPairs[i+1], FoldedView.ViewPosToTextIndex(AExpectedPairs[i]));
+                 AExpectedPairs[i+1], FoldedView.ViewToTextIndex(ToIdx(AExpectedPairs[i])));
     if ADoReverse then
       AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') [R]',
-                 AExpectedPairs[i], FoldedView.TextIndexToViewPos(AExpectedPairs[i+1]));
+                 AExpectedPairs[i], ToPos(FoldedView.TextToViewIndex(AExpectedPairs[i+1])));
     inc(i, 2);
   end;
 end;

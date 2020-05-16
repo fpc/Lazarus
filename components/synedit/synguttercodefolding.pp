@@ -158,7 +158,7 @@ begin
   tmp2 := FoldView.FoldType[AScreenLine-1];
   FIsFoldHidePreviousLine := False;
 
-  if (AScreenLine = 0) and (FoldView.TextIndexToViewPos(FoldView.TextIndex[0]) = 1) and
+  if (AScreenLine = 0) and (FoldView.TextToViewIndex(FoldView.TextIndex[0]) = 0) and
      (cfCollapsedHide in tmp2)
   then begin
     Result := cfCollapsedHide;
