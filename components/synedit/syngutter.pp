@@ -99,18 +99,15 @@ type
 
   { TLazSynGutterArea }
 
-  TLazSynGutterArea = class(TLazSynSurface)
+  TLazSynGutterArea = class(TLazSynSurfaceWithText)
   private
     FGutter: TSynGutter;
-    FTextArea: TLazSynTextArea;
     function GetTextBounds: TRect;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
-    procedure SetTextArea(const ATextArea: TLazSynTextArea); virtual;
   public
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
     procedure Assign(Src: TLazSynSurface); override;
-    property TextArea: TLazSynTextArea read FTextArea write SetTextArea;
     property Gutter: TSynGutter read FGutter write FGutter;
     property TextBounds: TRect read GetTextBounds;
   end;
@@ -160,15 +157,9 @@ begin
     InvalidateRect(Handle, @rcInval, FALSE);
 end;
 
-procedure TLazSynGutterArea.SetTextArea(const ATextArea: TLazSynTextArea);
-begin
-  FTextArea := ATextArea;
-end;
-
 procedure TLazSynGutterArea.Assign(Src: TLazSynSurface);
 begin
   inherited Assign(Src);
-  FTextArea := TLazSynGutterArea(Src).FTextArea;
   FGutter := TLazSynGutterArea(Src).FGutter;
 end;
 

@@ -96,7 +96,7 @@ type
     procedure TextSizeChanged(Sender: TObject);
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
-    procedure SetTextArea(const ATextArea: TLazSynTextArea); override;
+    procedure SetTextArea(ATextArea: TLazSynTextArea); override;
   end;
 
   { TSourceLazSynSurfaceManager }
@@ -108,8 +108,8 @@ type
     FTopLineCount: Integer;
     procedure SetTopLineCount(AValue: Integer);
   protected
-    function GetLeftGutterArea: TLazSynSurface; override;
-    function GetRightGutterArea: TLazSynSurface; override;
+    function GetLeftGutterArea: TLazSynSurfaceWithText; override;
+    function GetRightGutterArea: TLazSynSurfaceWithText; override;
     function GetTextArea: TLazSynTextArea; override;
   protected
     procedure SetBackgroundColor(AValue: TColor); override;
@@ -1250,8 +1250,7 @@ begin
   Gutter.Paint(ACanvas, Self, AClip, 0, -1);
 end;
 
-procedure TSourceLazSynSurfaceGutter.SetTextArea(
-  const ATextArea: TLazSynTextArea);
+procedure TSourceLazSynSurfaceGutter.SetTextArea(ATextArea: TLazSynTextArea);
 begin
   inherited SetTextArea(ATextArea);
   ATextArea.AddTextSizeChangeHandler(@TextSizeChanged);
@@ -1271,12 +1270,12 @@ begin
   BoundsChanged;
 end;
 
-function TSourceLazSynSurfaceManager.GetLeftGutterArea: TLazSynSurface;
+function TSourceLazSynSurfaceManager.GetLeftGutterArea: TLazSynSurfaceWithText;
 begin
   Result := FOriginalManager.LeftGutterArea;
 end;
 
-function TSourceLazSynSurfaceManager.GetRightGutterArea: TLazSynSurface;
+function TSourceLazSynSurfaceManager.GetRightGutterArea: TLazSynSurfaceWithText;
 begin
   Result := FOriginalManager.RightGutterArea;
 end;

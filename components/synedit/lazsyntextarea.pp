@@ -190,24 +190,36 @@ type
     property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
   end;
 
+  { TLazSynSurfaceWithText }
+
+  TLazSynSurfaceWithText = class(TLazSynSurface)
+  private
+    FTextArea: TLazSynTextArea;
+  protected
+    procedure SetTextArea(AValue: TLazSynTextArea); virtual;
+    function GetTextArea: TLazSynTextArea; virtual;
+  public
+    procedure Assign(Src: TLazSynSurface); override;
+    property TextArea: TLazSynTextArea read GetTextArea write SetTextArea;
+  end;
+
   { TLazSynSurfaceManager }
 
-  TLazSynSurfaceManager = class(TLazSynSurface)
+  TLazSynSurfaceManager = class(TLazSynSurfaceWithText)
   private
-    FLeftGutterArea: TLazSynSurface;
+    FLeftGutterArea: TLazSynSurfaceWithText;
     FLeftGutterWidth: integer;
-    FRightGutterArea: TLazSynSurface;
+    FRightGutterArea: TLazSynSurfaceWithText;
     FRightGutterWidth: integer;
-    FTextArea: TLazSynTextArea;
-    procedure SetLeftGutterArea(AValue: TLazSynSurface);
+    procedure SetLeftGutterArea(AValue: TLazSynSurfaceWithText);
     procedure SetLeftGutterWidth(AValue: integer);
-    procedure SetRightGutterArea(AValue: TLazSynSurface);
+    procedure SetRightGutterArea(AValue: TLazSynSurfaceWithText);
     procedure SetRightGutterWidth(AValue: integer);
-    procedure SetTextArea(AValue: TLazSynTextArea);
   protected
-    function GetLeftGutterArea: TLazSynSurface; virtual;
-    function GetRightGutterArea: TLazSynSurface; virtual;
-    function GetTextArea: TLazSynTextArea; virtual;
+    function GetLeftGutterArea: TLazSynSurfaceWithText; virtual;
+    function GetRightGutterArea: TLazSynSurfaceWithText; virtual;
+    procedure SetTextArea(AValue: TLazSynTextArea); override;
+    function  GetTextArea: TLazSynTextArea; override;
   protected
     procedure SetBackgroundColor(AValue: TColor); virtual;
     procedure SetExtraCharSpacing(AValue: integer); virtual;
@@ -229,9 +241,8 @@ type
     procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
     procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
 
-    property TextArea:        TLazSynTextArea read GetTextArea        write SetTextArea;
-    property LeftGutterArea:  TLazSynSurface  read GetLeftGutterArea  write SetLeftGutterArea;
-    property RightGutterArea: TLazSynSurface  read GetRightGutterArea write SetRightGutterArea;
+    property LeftGutterArea:  TLazSynSurfaceWithText read GetLeftGutterArea  write SetLeftGutterArea;
+    property RightGutterArea: TLazSynSurfaceWithText read GetRightGutterArea write SetRightGutterArea;
     property LeftGutterWidth:  integer read FLeftGutterWidth  write SetLeftGutterWidth;
     property RightGutterWidth: integer read FRightGutterWidth write SetRightGutterWidth;
   public
@@ -960,6 +971,24 @@ begin
   end; // while True
 end;
 
+{ TLazSynSurfaceWithText }
+
+procedure TLazSynSurfaceWithText.SetTextArea(AValue: TLazSynTextArea);
+begin
+  FTextArea := AValue;
+end;
+
+function TLazSynSurfaceWithText.GetTextArea: TLazSynTextArea;
+begin
+  Result := FTextArea;
+end;
+
+procedure TLazSynSurfaceWithText.Assign(Src: TLazSynSurface);
+begin
+  inherited Assign(Src);
+  FTextArea := TLazSynSurfaceWithText(Src).FTextArea;
+end;
+
 { TLazSynSurfaceManager }
 
 procedure TLazSynSurfaceManager.SetLeftGutterWidth(AValue: integer);
@@ -989,19 +1018,20 @@ begin
   FTextArea.RightEdgeVisible := AValue;
 end;
 
-procedure TLazSynSurfaceManager.SetLeftGutterArea(AValue: TLazSynSurface);
+procedure TLazSynSurfaceManager.SetLeftGutterArea(AValue: TLazSynSurfaceWithText);
 begin
   if FLeftGutterArea = AValue then Exit;
   FLeftGutterArea := AValue;
   FLeftGutterArea.DisplayView := DisplayView;
+  FLeftGutterArea.TextArea := FTextArea;
 end;
 
-function TLazSynSurfaceManager.GetLeftGutterArea: TLazSynSurface;
+function TLazSynSurfaceManager.GetLeftGutterArea: TLazSynSurfaceWithText;
 begin
   Result := FLeftGutterArea;
 end;
 
-function TLazSynSurfaceManager.GetRightGutterArea: TLazSynSurface;
+function TLazSynSurfaceManager.GetRightGutterArea: TLazSynSurfaceWithText;
 begin
   Result := FRightGutterArea;
 end;
@@ -1031,11 +1061,12 @@ begin
   FTextArea.ForegroundColor := AValue;
 end;
 
-procedure TLazSynSurfaceManager.SetRightGutterArea(AValue: TLazSynSurface);
+procedure TLazSynSurfaceManager.SetRightGutterArea(AValue: TLazSynSurfaceWithText);
 begin
   if FRightGutterArea = AValue then Exit;
   FRightGutterArea := AValue;
   FRightGutterArea.DisplayView := DisplayView;
+  FLeftGutterArea.TextArea := FTextArea;
 end;
 
 procedure TLazSynSurfaceManager.SetRightGutterWidth(AValue: integer);
@@ -1050,6 +1081,10 @@ begin
   if FTextArea = AValue then Exit;
   FTextArea := AValue;
   FTextArea.DisplayView := DisplayView;
+  if FLeftGutterArea <> nil then
+    FLeftGutterArea.TextArea := FTextArea;
+  if FRightGutterArea <> nil then
+    FRightGutterArea.TextArea := FTextArea;
 end;
 
 procedure TLazSynSurfaceManager.SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
