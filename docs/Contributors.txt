@@ -243,5 +243,6 @@ Zeljan Rikalo
 Zheng Jian Ping aka "robsean" - Simplified Chinese translation
 Žilvinas Ledas
 Zoë Peterson
+Zoltanleo
 
 #and special thanks to the FPC team.

@@ -54,7 +54,8 @@ type
     estWhileDoBeginEnd,
     estRepeatUntil,
     estWith,
-    estPascalComment
+    estPascalComment,
+    estRegionArea
     );
     
   { TEncloseSelectionDialog }
@@ -94,6 +95,7 @@ begin
     estRepeatUntil: Result:='Repeat..Until |';
     estWith: Result:='With | do begin..end';
     estPascalComment: Result:='{..}';
+    estRegionArea: Result:='{$REGION ''|''}..{$ENDREGION}';
   else
     RaiseGDBException('EncloseSelectionTypeDescription');
   end;
@@ -159,6 +161,11 @@ begin
       Template:='{'+LineEnding
                +'  |<selection>'+LineEnding
                +'}'+LineEnding;
+
+    estRegionArea:
+      Template:='{$REGION ''|''}'+LineEnding
+               +'  <selection>'+LineEnding
+               +'{$ENDREGION}'+LineEnding;
 
   else
     RaiseGDBException('GetEnclosedSelectionParams');
