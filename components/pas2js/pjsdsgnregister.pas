@@ -428,7 +428,7 @@ begin
   if baoUseBrowserConsole in Options then
     Content:=ConsoleDiv;
   if baoShowException in Options then
-    Runscript:='rtl.showUncaughtExceptions=true;'+LineEnding+'  ';
+    Runscript:='rtl.showUncaughtExceptions=true;'+LineEnding+'  '
   else
     RunScript:='';
   if baoRunOnReady in Options then
