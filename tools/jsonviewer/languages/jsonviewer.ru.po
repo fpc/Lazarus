@@ -410,7 +410,7 @@ msgstr "Сохранять форматированный JSON"
 
 #: tmainform.mishowrest.caption
 msgid "Show REST panel"
-msgstr ""
+msgstr "Показывать панель REST"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
