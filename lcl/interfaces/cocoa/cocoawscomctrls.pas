@@ -189,6 +189,7 @@ type
     //class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
     //carbon//class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
     //carbon//class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
@@ -1544,6 +1545,19 @@ begin
   end;
   lVisibleRows := lTableLV.rowsInRect(lTableLV.visibleRect());
   Result := lVisibleRows.length;
+end;
+
+class procedure TCocoaWSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if AIsSet then
+    lTableLV.selectAll(lTableLV);
+  else
+    lTableLV.deselectAll(lTableLV);
 end;
 
 class procedure TCocoaWSCustomListView.SetDefaultItemHeight(
