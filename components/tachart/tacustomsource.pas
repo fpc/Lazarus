@@ -1583,7 +1583,7 @@ var
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.b.Y then begin
+      if not IsNaN(Y) and (Y = Extent.b.Y) then begin
         if XCount > 0 then
           exit(GetX(AIndex))
         else
@@ -1598,7 +1598,7 @@ var
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.a.Y then begin
+      if not IsNaN(Y) and (Y = Extent.a.Y) then begin
         if XCount > 0 then
           exit(GetX(AIndex))
         else
