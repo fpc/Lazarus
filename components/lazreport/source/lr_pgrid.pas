@@ -32,8 +32,13 @@ type
     ColumnWidth: Integer;
   end;
 
+  TColumnInfoArr = Array of  TColumnInfo;
+
   TSetupColumnEvent=procedure(Sender:TFrPrintGrid; const Column: TColumn;
     var PrintColumn:boolean; var ColumnWidth:Integer) of object;
+
+  TFinalSetupEvent=procedure(Sender:TFrPrintGrid; var FReport  : TfrReport;
+     var FColumnsInfo : TColumnInfoArr ) of object;
 
   { TfrPrintGrid }
 
@@ -42,6 +47,7 @@ type
     FDBGrid               : TCustomDBGrid;
     FOnGetValue: TDetailEvent;
     FOnSetUpColumn: TSetupColumnEvent;
+    FOnFinalSetup         : TFinalSetupEvent;
     FPrinterIndex         : Integer;
     FReport               : TfrReport;
     FReportDataSet        : TfrDBDataSet;
@@ -53,7 +59,7 @@ type
     FCaption              : String;
     FShowCaption          : Boolean;
     FDataSet              : TDataset;
-    FColumnsInfo          : array of TColumnInfo;
+    FColumnsInfo          : TColumnInfoArr;
     FTemplate             : string;
 
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
@@ -86,6 +92,8 @@ type
     property ShowProgress : Boolean read fShowProgress write fShowProgress default false;
     property OnSetupColumn: TSetupColumnEvent read FOnSetUpColumn write FOnSetupColumn;
     property OnGetValue: TDetailEvent read FOnGetValue write FOnGetValue;
+    property OnFinalSetup: TFinalSetupEvent read FOnFinalSetup write FOnFinalSetup;
+
  end;
 
 
@@ -370,6 +378,9 @@ begin
          FReport.ChangePrinter(Printer.PrinterIndex, FPrinterIndex);
          FReport.PrepareReport;
        end;
+
+      if Assigned( OnFinalSetup ) then
+        OnFinalSetup( Self, FReport, FColumnsInfo  );
 
       FReport.ShowReport;
     finally
