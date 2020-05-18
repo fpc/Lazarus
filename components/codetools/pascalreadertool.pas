@@ -838,7 +838,7 @@ function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;
 var
   ParamsNode: TCodeTreeNode;
   ParamNode: TCodeTreeNode;
-  First: Boolean;
+  Params: String;
 begin
   Result:='';
   while Node<>nil do begin
@@ -856,22 +856,19 @@ begin
           // extract generic type param names
           if WithGenericParams then begin
             ParamsNode:=Node.FirstChild.NextBrother;
-            First:=true;
+            Params:='';
             while ParamsNode<>nil do begin
               if ParamsNode.Desc=ctnGenericParams then begin
-                Result:='>'+Result;
                 ParamNode:=ParamsNode.FirstChild;
                 while ParamNode<>nil do begin
                   if ParamNode.Desc=ctnGenericParameter then begin
-                    if First then
-                      First:=false
-                    else
-                      Result:=','+Result;
-                    Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
+                    if Params<>'' then
+                      Params:=Params+',';
+                    Params:=Params+GetIdentifier(@Src[ParamNode.StartPos]);
                   end;
                   ParamNode:=ParamNode.NextBrother;
                 end;
-                Result:='<'+Result;
+                Result:='<'+Params+'>'+Result;
               end;
               ParamsNode:=ParamsNode.NextBrother;
             end;
