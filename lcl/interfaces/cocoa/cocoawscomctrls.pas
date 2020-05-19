@@ -1555,7 +1555,7 @@ var
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   if AIsSet then
-    lTableLV.selectAll(lTableLV);
+    lTableLV.selectAll(lTableLV)
   else
     lTableLV.deselectAll(lTableLV);
 end;
