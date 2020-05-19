@@ -109,7 +109,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..36] of shortstring =(
+  FPCOperatingSystemNames: array[1..37] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -122,6 +122,7 @@ const
      'beos',
      'embedded',
      'emx',
+     'freertos',
      'gba',
      'go32v2',
      'haiku',
@@ -141,7 +142,7 @@ const
      'wdosx',
      'wii'
     );
-  FPCOperatingSystemCaptions: array[1..36] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..37] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -153,6 +154,7 @@ const
      'Embedded',
      'emx',
      'FreeBSD',
+     'FreeRTOS',
      'GBA',
      'Go32v2',
      'Haiku',
@@ -186,7 +188,7 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..13] of shortstring =(
+  FPCProcessorNames: array[1..14] of shortstring =(
       'aarch64',
       'arm',
       'avr',
@@ -199,7 +201,8 @@ const
       'powerpc',
       'powerpc64',
       'sparc',
-      'x86_64'
+      'x86_64',
+      'xtensa'
     );
   FPCSyntaxModes: array[1..6] of shortstring = (
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
@@ -3742,6 +3745,8 @@ begin
     Result:=Result+'ia64'
   else if SysUtils.CompareText(TargetCPU,'aarch64')=0 then
     Result:=Result+'aarch64'
+  else if SysUtils.CompareText(TargetCPU,'xtensa')=0 then
+    Result:=Result+'xtensa'
   else
     Result:='fpc';
   Result:=Result+ExeExt;
@@ -3853,6 +3858,12 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('CFV4');
   end;
 
+  procedure Xtensa;
+  begin
+    aList.Add('lx106');
+    aList.Add('lx6');
+  end;
+
 begin
   case TargetCPU of
     'arm'    : Arm;
@@ -3866,6 +3877,7 @@ begin
     'mipsel','mips' : Mips;
     'jvm'    : ;
     'aarch64'  : ;
+    'xtensa' : Xtensa;
   end;
 end;
 
@@ -7217,7 +7229,7 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
       controllerunitstr: string[20];
     end;
   const
-    ControllerTypes: array[0..606] of TControllerType =
+    ControllerTypes: array[0..608] of TControllerType =
      ((controllertypestr:'';                  controllerunitstr:''),
       (controllertypestr:'LPC810M021FN8';     controllerunitstr:'LPC8xx'),
       (controllertypestr:'LPC811M001JDH16';   controllerunitstr:'LPC8xx'),
@@ -7827,7 +7839,10 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
       (controllertypestr:'ATMEGA1284PXPLAINED'; controllerunitstr:'ATMEGA1284P'),
       (controllertypestr:'ATMEGA4809XPRO';    controllerunitstr:'ATMEGA4809'),
       (controllertypestr:'ATTINY817XPRO';     controllerunitstr:'ATTINY817'),
-      (controllertypestr:'ATTINY3217XPRO';    controllerunitstr:'ATTINY3217'));
+      (controllertypestr:'ATTINY3217XPRO';    controllerunitstr:'ATTINY3217'),
+      // xtensa controllers
+      (controllertypestr:'ESP8266';           controllerunitstr:'ESP8266'),
+      (controllertypestr:'ESP32';             controllerunitstr:'ESP32'));
 
   var
     i: integer;
