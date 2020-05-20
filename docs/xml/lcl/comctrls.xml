@@ -19351,6 +19351,44 @@
         <seealso/>
       </element>
 
+      <element name="TCustomTreeView.Click" link="#LCL.Controls.TControl.Click">
+        <descr>
+          <p>
+            <var>Click</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been selected using a mouse down event. No actions are performed in the method when a tree node has not been selected using the mouse.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Click"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomTreeView.DblClick" link="#LCL.Controls.TControl.DblClick">
+        <descr>
+          <p>
+            <var>DblClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been double clicked using the mouse. No actions are performed in the method when a tree node has not been selected and a double click event occurs.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.DblClick"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomTreeView.TripleClick" link="#LCL.Controls.TControl.TripleClick">
+        <short></short>
+        <descr></descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.TripleClick"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomTreeView.QuadClick" link="#LCL.Controls.TControl.QuadClick">
+        <short></short>
+        <descr></descr>
+        <seealso>
+          <link id="#LCL.Controls.TControl.QuadClick"/>
+        </seealso>
+      </element>
+
       <element name="TCustomTreeView.Delete">
         <short>
           <var>Delete</var> - remove the specified node from the tree structure (software emulation of the <var>OnDeletion</var> event)
