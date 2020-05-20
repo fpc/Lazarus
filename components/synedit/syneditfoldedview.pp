@@ -397,11 +397,11 @@ type
     FDisplayView: TLazSynDisplayFold;
     FFoldChangedHandlerList: TFoldChangedHandlerList;
 
-    function GetCount : integer;
+    function GetViewedCount : integer;
     function GetDisplayView: TLazSynDisplayView;
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
     function GetHighLighter: TSynCustomHighlighter;
-    function GetLines(index : Integer) : String;
+    function GetViewedLines(index : Integer) : String;
     function GetDisplayNumber(index : Integer) : Integer;
     function GetTextIndex(index : Integer) : Integer;
     function GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
@@ -448,8 +448,8 @@ type
 
     property BlockSelection: TSynEditSelection write SetBlockSelection;
     // Attributes for Visible-Lines-On-screen
-    property Lines[index : Integer] : String            (* Lines on screen / 0 = TopLine *)
-      read GetLines; default;
+    property ViewedLines[index : Integer] : String            (* Lines on screen / 0 = TopLine *)
+      read GetViewedLines;
     property DisplayNumber[index : Integer] : Integer   (* LineNumber for display in Gutter / result is 1-based *)
       read GetDisplayNumber;
     property FoldType[index : Integer] : TSynEditFoldLineCapabilities (* FoldIcon / State *)
@@ -467,7 +467,7 @@ type
     property LinesInWindow : integer                    (* Fully Visible lines in Window; There may be one half visible line *)
       read fLinesInWindow write SetLinesInWindow;
 
-    property Count : integer read GetCount;             (* refers to visible (unfolded) lines *)
+    property ViewedCount : integer read GetViewedCount;             (* refers to visible (unfolded) lines *)
 
     property MarkupInfoFoldedCode: TSynSelectedColor read FMarkupInfoFoldedCode;
     property MarkupInfoFoldedCodeLine: TSynSelectedColor read FMarkupInfoFoldedCodeLine;
@@ -832,7 +832,7 @@ end;
 
 function TLazSynDisplayFold.GetLinesCount: Integer;
 begin
-  Result := FFoldView.Count;
+  Result := FFoldView.ViewedCount;
 end;
 
 function TLazSynDisplayFold.TextToViewIndex(AIndex: TLineIdx): TLineRange;
@@ -3260,7 +3260,7 @@ begin
 end;
 
 (* Count *)
-function TSynEditFoldedView.GetCount : integer;
+function TSynEditFoldedView.GetViewedCount : integer;
 begin
   Result := fLines.Count - fFoldTree.FindLastFold.FoldedBefore;
 end;
@@ -3400,7 +3400,7 @@ begin
 end;
 
 (* Lines *)
-function TSynEditFoldedView.GetLines(index : Integer) : String;
+function TSynEditFoldedView.GetViewedLines(index : Integer) : String;
 begin
   if (index < -1) or (index > fLinesInWindow + 1) then
     exit(fLines[ScreenLineToTextIndex(Index)]);
