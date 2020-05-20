@@ -1951,7 +1951,7 @@ end;
 
 function TGtk3Widget.IsWidgetOk: Boolean;
 begin
-  Result := (FWidget <> nil) and Gtk3IsWidget(FWidget);
+  Result := Gtk3IsWidget(FWidget);
 end;
 
 function TGtk3Widget.IsIconic: Boolean;
