@@ -203,6 +203,7 @@ type
   private
     FValue: String;
     FValueDone: Boolean;
+    function GetDynamicCodePage(Addr: TFpDbgMemLocation; out Codepage: TSystemCodePage): Boolean;
   protected
     function IsValidTypeCast: Boolean; override;
     procedure Reset; override;
@@ -1103,8 +1104,10 @@ var
   t, t2: TFpSymbol;
   LowBound, HighBound, i: Int64;
   Addr, Addr2: TFpDbgMemLocation;
-  WResult: UnicodeString;
+  WResult: AnsiString;
+  RResult: RawByteString;
   AttrData: TDwarfAttribData;
+  Codepage: TSystemCodePage;
 begin
   if FValueDone then
     exit(FValue);
@@ -1169,24 +1172,49 @@ begin
       WResult := '';
       SetLastError(MemManager.LastError);
     end;
+
     Result := WResult;
   end else begin
-    SetLength(Result, HighBound-LowBound+1);
+    SetLength(RResult, HighBound-LowBound+1);
 
-    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
+    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @RResult[1]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
+    end else begin
+      if GetDynamicCodePage(Addr, Codepage) then
+        SetCodePage(RResult, Codepage, False);
+      Result := RResult;
     end;
   end;
 
   FValue := Result;
-
 end;
 
 function TFpValueDwarfV3FreePascalString.GetAsWideString: WideString;
 begin
   // todo: widestring, but currently that is encoded as PWideChar
   Result := GetAsString;
+end;
+
+function TFpValueDwarfV3FreePascalString.GetDynamicCodePage(Addr: TFpDbgMemLocation; out
+  Codepage: TSystemCodePage): Boolean;
+var
+  CodepageOffset: SmallInt;
+begin
+  // Only call this function for non-empty strings!
+  Result := False;
+
+  // Only AnsiStrings in fpc 3.0.0 and higher have a dynamic codepage.
+  if (TypeInfo.Kind = skString) and (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030000) then begin
+    // Too bad the debug-information does not deliver this information. So we
+    // use these hardcoded information, and hope that FPC does not change and
+    // we never reach this point for a compilationunit that is not compiled by
+    // fpc.
+    CodepageOffset := AddressSize * 3;
+    Addr.Address := Addr.Address - CodepageOffset;
+    if MemManager.ReadMemory(Addr, SizeVal(2), @Codepage) then
+      Result := True;
+  end;
 end;
 
 initialization
