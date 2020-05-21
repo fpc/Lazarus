@@ -110,7 +110,7 @@ type
     procedure UpdateLineText(LogY: Integer);
     procedure IncViewChangeStamp;
   protected
-    procedure SetSynStrings(AValue: TSynEditStrings); override;
+    procedure SetManager(AManager: TSynTextViewsManager); override;
     function  GetViewChangeStamp: int64; override;
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
@@ -1032,18 +1032,18 @@ begin
   {$POP}
 end;
 
-procedure TSynEditStringTrimmingList.SetSynStrings(AValue: TSynEditStrings);
+procedure TSynEditStringTrimmingList.SetManager(AManager: TSynTextViewsManager);
 begin
-  if NextLines <> nil then begin
-    NextLines.RemoveChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.RemoveChangeHandler(senrLineChange, @LinesChanged);
-    NextLines.RemoveNotifyHandler(senrCleared, @ListCleared);
+  if Manager <> nil then begin
+    RemoveChangeHandler(senrLineCount, @LineCountChanged);
+    RemoveChangeHandler(senrLineChange, @LinesChanged);
+    RemoveNotifyHandler(senrCleared, @ListCleared);
   end;
-  inherited SetSynStrings(AValue);
-  if NextLines <> nil then begin
-    NextLines.AddChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.AddChangeHandler(senrLineChange, @LinesChanged);
-    NextLines.AddNotifyHandler(senrCleared, @ListCleared);
+  inherited SetManager(AManager);
+  if Manager <> nil then begin
+    AddChangeHandler(senrLineCount, @LineCountChanged);
+    AddChangeHandler(senrLineChange, @LinesChanged);
+    AddNotifyHandler(senrCleared, @ListCleared);
   end;
 end;
 

@@ -66,6 +66,7 @@ type
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
   protected
+    procedure SetManager(AManager: TSynTextViewsManager); override;
     procedure SetSynStrings(AValue: TSynEditStrings); override;
     function GetViewChangeStamp: int64; override;
     function  GetTabWidth : integer;
@@ -325,18 +326,25 @@ begin
   end;
 end;
 
+procedure TSynEditStringTabExpander.SetManager(AManager: TSynTextViewsManager);
+begin
+  if Manager <> nil then begin
+    RemoveChangeHandler(senrLineChange, @LineTextChanged);
+    RemoveChangeHandler(senrLineCount, @LineCountChanged);
+    RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+  end;
+  inherited SetManager(AManager);
+  if Manager <> nil then begin
+    AddChangeHandler(senrLineCount, @LineCountChanged);
+    AddChangeHandler(senrLineChange, @LineTextChanged);
+    AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+  end;
+end;
+
 procedure TSynEditStringTabExpander.SetSynStrings(AValue: TSynEditStrings);
 begin
-  if NextLines <> nil then begin
-    NextLines.RemoveChangeHandler(senrLineChange, @LineTextChanged);
-    NextLines.RemoveChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
-  end;
   inherited SetSynStrings(AValue);
   if NextLines <> nil then begin
-    NextLines.AddChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.AddChangeHandler(senrLineChange, @LineTextChanged);
-    NextLines.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
     if FTabData = nil then
       TextBufferChanged(nil);
   end;

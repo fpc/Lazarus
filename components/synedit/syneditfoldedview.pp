@@ -410,6 +410,7 @@ type
     procedure SetLinesInWindow(const AValue : integer);
     procedure DoFoldChanged(AnIndex: Integer);
   protected
+    procedure SetManager(AManager: TSynTextViewsManager); override;
     procedure SetSynStrings(AValue: TSynEditStrings); override;
     function GetViewedLines(index : Integer) : String; override;
     function GetViewedCount: integer; override;
@@ -3323,20 +3324,25 @@ begin
   FFoldChangedHandlerList.CallFoldChangedEvents(AnIndex);
 end;
 
+procedure TSynEditFoldedView.SetManager(AManager: TSynTextViewsManager);
+begin
+  if Manager <> nil then begin
+    RemoveChangeHandler(senrLineCount, @LineCountChanged);
+    RemoveNotifyHandler(senrCleared, @LinesCleared);
+    RemoveEditHandler(@LineEdited);
+  end;
+  inherited SetManager(AManager);
+  if Manager <> nil then begin
+    AddChangeHandler(senrLineCount, @LineCountChanged);
+    AddNotifyHandler(senrCleared, @LinesCleared);
+    AddEditHandler(@LineEdited);
+  end;
+end;
+
 procedure TSynEditFoldedView.SetSynStrings(AValue: TSynEditStrings);
 begin
-  if NextLines <> nil then begin
-    NextLines.RemoveChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.RemoveNotifyHandler(senrCleared, @LinesCleared);
-    NextLines.RemoveEditHandler(@LineEdited);
-  end;
   inherited SetSynStrings(AValue);
   FFoldProvider.FLines := AValue;
-  if NextLines <> nil then begin
-    NextLines.AddChangeHandler(senrLineCount, @LineCountChanged);
-    NextLines.AddNotifyHandler(senrCleared, @LinesCleared);
-    NextLines.AddEditHandler(@LineEdited);
-  end;
 end;
 
 procedure TSynEditFoldedView.DoBlockSelChanged(Sender: TObject);

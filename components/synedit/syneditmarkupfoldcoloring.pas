@@ -172,7 +172,7 @@ type
   protected
     // Notifications about Changes to the text
     procedure DoTextChanged({%H-}pStartLine, pEndLine, {%H-}pCountDiff: Integer); override; // 1 based
-    procedure SetLines(const pValue: TSynEditStrings); override;
+    procedure SetLines(const pValue: TSynEditStringsLinked); override;
     procedure HighlightChanged(pSender: TSynEditStrings; pIndex, pCount: Integer);
     procedure DoEnabledChanged(pSender: TObject); override;
     procedure ColorChanged(pMarkup: TObject);
@@ -1175,9 +1175,10 @@ begin
 
 end;
 
-procedure TSynEditMarkupFoldColors.SetLines(const pValue: TSynEditStrings);
+procedure TSynEditMarkupFoldColors.SetLines(const pValue: TSynEditStringsLinked
+  );
 var
-  old: TSynEditStrings;
+  old: TSynEditStringsLinked;
 begin
   if Lines <> nil then
     Lines.Ranges[Self] := nil;

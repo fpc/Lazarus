@@ -53,7 +53,7 @@ type
     procedure UpdateSynCursor(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
     var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
   protected
-    procedure SetLines(const AValue : TSynEditStrings); override;
+    procedure SetLines(const AValue : TSynEditStringsLinked); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoEnabledChanged(Sender: TObject); override;
   public
@@ -260,7 +260,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.SetLines(const AValue: TSynEditStrings);
+procedure TSynEditMarkupCtrlMouseLink.SetLines(
+  const AValue: TSynEditStringsLinked);
 begin
   inherited SetLines(AValue);
   if Lines <> nil then begin;

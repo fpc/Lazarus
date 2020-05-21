@@ -539,8 +539,8 @@ type
     FSysCharWidthLinesView: TSynEditStringSystemWidthChars;
     {$ENDIF}
     FTabbedLinesView:  TSynEditStringTabExpander;
-    FTheLinesView: TSynEditStrings;
-    FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
+    FTheLinesView: TSynEditStringsLinked;
+    FLines: TSynEditStringListBase;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
 
     fExtraCharSpacing: integer;
@@ -794,7 +794,6 @@ type
     function  IsMarkListShared: Boolean;
     procedure RecreateMarkList;
     procedure DestroyMarkList;
-    procedure RemoveHandlers(ALines: TSynEditStrings = nil);
     procedure ExtraLineCharsChanged(Sender: TObject);
     procedure InternalBeginUndoBlock(aList: TSynEditUndoList = nil); // includes paintlock
     procedure InternalEndUndoBlock(aList: TSynEditUndoList = nil);
@@ -874,7 +873,7 @@ type
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetLines: TStrings; override;
-    function GetViewedTextBuffer: TSynEditStrings; override;
+    function GetViewedTextBuffer: TSynEditStringsLinked; override;
     function GetFoldedTextBuffer: TObject; override;
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;
@@ -1394,12 +1393,12 @@ type
 
   TSynEditMarkListInternal = class(TSynEditMarkList)
   private
-    function GetLinesView: TSynEditStrings;
-    procedure SetLinesView(const AValue: TSynEditStrings);
+    function GetLinesView: TSynEditStringsLinked;
+    procedure SetLinesView(const AValue: TSynEditStringsLinked);
   protected
     procedure AddOwnerEdit(AEdit: TSynEditBase);
     procedure RemoveOwnerEdit(AEdit: TSynEditBase);
-    property LinesView: TSynEditStrings read GetLinesView write SetLinesView;
+    property LinesView: TSynEditStringsLinked read GetLinesView write SetLinesView;
   end;
 
   TSynStatusChangedHandlerList = Class(TSynFilteredMethodList)
@@ -2073,7 +2072,7 @@ end;
 
 procedure TCustomSynEdit.DoTopViewChanged(Sender: TObject);
 begin
-  FTheLinesView := TSynEditStrings(Sender);
+  FTheLinesView := TSynEditStringsLinked(Sender);
   if FPaintArea <> nil then // maybe change order of creation
     FPaintArea.DisplayView := FTheLinesView.DisplayView;
 end;
@@ -2156,7 +2155,7 @@ begin
   FOldWidth := -1;
   FOldHeight := -1;
 
-  with TSynEditStringList(fLines) do begin
+  with FTheLinesView do begin
     AddChangeHandler(senrLineCount, @LineCountChanged);
     AddChangeHandler(senrLineChange, @LineTextChanged);
     AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
@@ -2570,7 +2569,6 @@ begin
     FreeAndNil(fHookedCommandHandlers);
   end;
 
-  RemoveHandlers;
   FLeftGutter.UnRegisterChangeHandler(@GutterChanged);
   FLeftGutter.UnRegisterResizeHandler(@GutterResized);
   FRightGutter.UnRegisterChangeHandler(@GutterChanged);
@@ -2738,7 +2736,7 @@ begin
   Result := FTrimmedLinesView.TrimType;
 end;
 
-function TCustomSynEdit.GetViewedTextBuffer: TSynEditStrings;
+function TCustomSynEdit.GetViewedTextBuffer: TSynEditStringsLinked;
 begin
   Result := FTheLinesView;
 end;
@@ -5879,24 +5877,6 @@ begin
   TSynEditStringList(FLines).AttachSynEdit(Self);
   TSynTextViewsManagerInternal(FTextViewsManager).TextBuffer := FLines;
 
-  // Todo: Todo Refactor all classes with events, so they an be told to re-attach
-  NewBuffer.CopyHanlders(OldBuffer, self);
-  LView := FTheLinesView;
-  while (LView is TSynEditStringsLinked) and (LView <> FLines) do begin
-    NewBuffer.CopyHanlders(OldBuffer, LView);
-    LView := TSynEditStringsLinked(LView).NextLines;
-  end;
-  //NewBuffer.CopyHanlders(OldBuffer, FMarkList);
-  NewBuffer.CopyHanlders(OldBuffer, FCaret);
-  NewBuffer.CopyHanlders(OldBuffer, FInternalCaret);
-  NewBuffer.CopyHanlders(OldBuffer, FBlockSelection);
-  NewBuffer.CopyHanlders(OldBuffer, FInternalBlockSelection);
-  NewBuffer.CopyHanlders(OldBuffer, fMarkupManager);
-  for i := 0 to fMarkupManager.Count - 1 do
-    NewBuffer.CopyHanlders(OldBuffer, fMarkupManager.Markup[i]);
-  for i := 0 to FPlugins.Count - 1 do
-    NewBuffer.CopyHanlders(OldBuffer, Plugin[i]);
-
   FUndoList := NewBuffer.UndoList;
   FRedoList := NewBuffer.RedoList;
 
@@ -5912,7 +5892,6 @@ begin
   if FHighlighter <> nil then
     FHighlighter.AttachToLines(FLines);
 
-  RemoveHandlers(OldBuffer);
   OldBuffer.DetachSynEdit(Self);
   FLines.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
   OldBuffer.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
@@ -6009,30 +5988,6 @@ begin
     exit;
 
   ChangeTextBuffer(TSynEditStringList.Create);
-end;
-
-procedure TCustomSynEdit.RemoveHandlers(ALines: TSynEditStrings = nil);
-var
-  LView: TSynEditStrings;
-  i: Integer;
-begin
-  if not assigned(ALines) then
-    ALines := FLines;
-
-  // Todo: aggregated objects, should be responsible themself
-  TSynEditStringList(ALines).RemoveHanlders(self);
-  LView := FTheLinesView;
-  while (LView is TSynEditStringsLinked) and (LView <> ALines) do begin
-    TSynEditStringList(ALines).RemoveHanlders(LView);
-    LView := TSynEditStringsLinked(LView).NextLines;
-  end;
-  TSynEditStringList(ALines).RemoveHanlders(FCaret);
-  TSynEditStringList(ALines).RemoveHanlders(FInternalCaret);
-  TSynEditStringList(ALines).RemoveHanlders(FBlockSelection);
-  TSynEditStringList(ALines).RemoveHanlders(FInternalBlockSelection);
-  TSynEditStringList(ALines).RemoveHanlders(fMarkupManager);
-  for i := 0 to fMarkupManager.Count - 1 do
-    TSynEditStringList(ALines).RemoveHanlders(fMarkupManager.Markup[i]);
 end;
 
 procedure TCustomSynEdit.ExtraLineCharsChanged(Sender: TObject);
@@ -10232,14 +10187,17 @@ end;
 
 { TSynEditMarkListInternal }
 
-function TSynEditMarkListInternal.GetLinesView: TSynEditStrings;
+function TSynEditMarkListInternal.GetLinesView: TSynEditStringsLinked;
 begin
   Result := FLines;
 end;
 
-procedure TSynEditMarkListInternal.SetLinesView(const AValue: TSynEditStrings);
+procedure TSynEditMarkListInternal.SetLinesView(
+  const AValue: TSynEditStringsLinked);
 begin
+  FLines.RemoveEditHandler(@DoLinesEdited);
   FLines := AValue;
+  FLines.AddEditHandler(@DoLinesEdited);
 end;
 
 procedure TSynEditMarkListInternal.AddOwnerEdit(AEdit: TSynEditBase);

@@ -228,7 +228,7 @@ type
   private
     function GetMarkLine(LineNum: Integer): TSynEditMarkLine;
   protected
-    FLines: TSynEditStrings;
+    FLines: TSynEditStringsLinked;
     FOwnerList: TFPList;
     FMarkLines: TSynEditMarkLineList;
     fOnChange: TNotifyEvent;
@@ -242,7 +242,7 @@ type
                             aLineBrkCnt: Integer; aText: String);
     function HasOwnerEdit(AEdit: TSynEditBase): Boolean;
   public
-    constructor Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
+    constructor Create(AOwner: TSynEditBase; ALines: TSynEditStringsLinked);
     destructor  Destroy; override;
     {$IFDEF SynDebug}
     procedure   Debug;
@@ -863,7 +863,8 @@ begin
     l.Clear(True);
 end;
 
-constructor TSynEditMarkList.Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
+constructor TSynEditMarkList.Create(AOwner: TSynEditBase;
+  ALines: TSynEditStringsLinked);
 begin
   FOwnerList := TFPList.Create;
   FOwnerList.Add(AOwner);

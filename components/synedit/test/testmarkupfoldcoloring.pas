@@ -266,7 +266,7 @@ begin
   SynEdit.TopLine := ATopLine;
   Markup := TSynEditMarkupFoldColors.Create(SynEdit);
   SynEdit.MarkupMgr.AddMarkUp(Markup);
-  Markup.Lines := SynEdit.TextBuffer;
+  Markup.Lines := SynEdit.ViewedTextBuffer;
   Markup.InvalidateLinesMethod:=@CaptureTestInvalidateLines;
   Markup.Color[0].Foreground := 1;
   Markup.Color[1].Foreground := 2;

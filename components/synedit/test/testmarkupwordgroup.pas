@@ -48,7 +48,7 @@ procedure TTestMarkupWordGroup.ReCreateEdit;
 begin
   inherited ReCreateEdit;
   Markup := TMarkupWordGroupAccess.Create(SynEdit);
-  Markup.Lines := SynEdit.TextBuffer;
+  Markup.Lines := SynEdit.ViewedTextBuffer;
   Markup.Highlighter := SynEdit.Highlighter;
 end;
 

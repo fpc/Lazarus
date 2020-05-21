@@ -76,15 +76,15 @@ procedure TSynGutterLineNumber.Init;
 begin
   inherited Init;
   FTextDrawer := Gutter.TextDrawer;
-  TSynEditStringList(TextBuffer).AddChangeHandler(senrLineCount, @LineCountChanged);
-  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
+  ViewedTextBuffer.AddChangeHandler(senrLineCount, @LineCountChanged);
+  ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   FTextDrawer.RegisterOnFontChangeHandler(@FontChanged);
   LineCountchanged(nil, 0, 0);
 end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
-  TSynEditStringList(TextBuffer).RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHanlders(self);
   FTextDrawer.UnRegisterOnFontChangeHandler(@FontChanged);
   inherited Destroy;
 end;
@@ -195,9 +195,6 @@ end;
 
 procedure TSynGutterLineNumber.BufferChanged(Sender: TObject);
 begin
-  TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddChangeHandler(senrLineCount, @LineCountChanged);
-  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   LineCountChanged(nil, 0, 0);
 end;
 

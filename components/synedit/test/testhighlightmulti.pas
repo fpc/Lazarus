@@ -903,7 +903,7 @@ var
     FreeAndNil(MultiHl);
   end;
 begin
-  TSynEditStringList(SynEdit.TextBuffer).AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  SynEdit.ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   {%region Issue 0022745}
     PushBaseName('Insert at end, create new section at end');   // Issue 0022745
     SynEdit.ClearAll;

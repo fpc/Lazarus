@@ -137,7 +137,7 @@ type
 
   { TSynEditStringList }
 
-  TSynEditStringList = class(TSynEditStrings)
+  TSynEditStringList = class(TSynEditStringListBase)
   private
     FList: TSynEditStringMemory;
     FDisplayView: TLazSynDisplayBuffer;
@@ -209,10 +209,11 @@ type
 
     function GetDisplayView: TLazSynDisplayView; override;
 
-    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
+    procedure AddManagedHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
-    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
+    procedure RemoveManagedHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
+    procedure RemoveManagedHanlders(AOwner: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -240,7 +241,6 @@ type
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
     procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
-    procedure RemoveHanlders(AOwner: TObject);
     procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
@@ -1217,12 +1217,14 @@ begin
       Flags[Index] := Flags[Index] + [sfSaved];
 end;
 
-procedure TSynEditStringList.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+procedure TSynEditStringList.AddManagedHandler(AReason: TSynEditNotifyReason;
+  AHandler: TMethod);
 begin
   FNotifyLists[AReason].Add(AHandler);
 end;
 
-procedure TSynEditStringList.RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+procedure TSynEditStringList.RemoveManagedHandler(AReason: TSynEditNotifyReason;
+  AHandler: TMethod);
 begin
   FNotifyLists[AReason].Remove(AHandler);
 end;
@@ -1235,7 +1237,7 @@ begin
     FNotifyLists[i].AddCopyFrom(OtherLines.FNotifyLists[i], AOwner);
 end;
 
-procedure TSynEditStringList.RemoveHanlders(AOwner: TObject);
+procedure TSynEditStringList.RemoveManagedHanlders(AOwner: TObject);
 var
   i: TSynEditNotifyReason;
 begin

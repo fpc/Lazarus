@@ -284,12 +284,6 @@ type
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); virtual; abstract;
 
     function GetDisplayView: TLazSynDisplayView; virtual;
-
-    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); virtual; abstract;
-    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); virtual; abstract;
-
   public
     constructor Create;
     destructor Destroy; override;
@@ -302,22 +296,6 @@ type
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
 
-    procedure AddModifiedHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLinesModifiedEvent);
-    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent);
-    procedure AddNotifyHandler(AReason: TSynEditNotifyReason;
-                AHandler: TNotifyEvent);
-
-    procedure RemoveModifiedHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLinesModifiedEvent);
-    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent);
-    procedure RemoveNotifyHandler(AReason: TSynEditNotifyReason;
-                AHandler: TNotifyEvent);
-
-    procedure AddEditHandler(AHandler: TStringListLineEditEvent);
-    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract;
@@ -330,16 +308,16 @@ type
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
-                              AFlags: LPosFlags = []): Integer; virtual; abstract;
+                              AFlags: LPosFlags = []): Integer; virtual; abstract; overload;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
                               AFlags: LPosFlags = []): Boolean; virtual; abstract;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  AFlags: LPosFlags = []): Integer; virtual; abstract;
+                                  AFlags: LPosFlags = []): Integer; virtual; abstract; overload;
 
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
-                              AllowPastEOL: Boolean): Integer; // deprecated;
+                              AllowPastEOL: Boolean): Integer; overload; // deprecated;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean; AllowPastEOL: Boolean = False): Integer; // deprecated;
+                                  ANext: Boolean; AllowPastEOL: Boolean = False): Integer; overload; // deprecated;
     // CharWidths
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
@@ -391,10 +369,13 @@ type
     property DisplayView: TLazSynDisplayView read GetDisplayView;
   end;
 
+  TSynTextViewsManager = class;
+
   { TSynEditStringsLinked }
 
   TSynEditStringsLinked = class(TSynEditStrings)
   private
+    FManager: TSynTextViewsManager;
     fSynStrings: TSynEditStrings;
   protected
     procedure SetSynStrings(AValue: TSynEditStrings); virtual;
@@ -438,6 +419,12 @@ type
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
 
     function GetDisplayView: TLazSynDisplayView; override;
+
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+
+    procedure SetManager(AManager: TSynTextViewsManager); virtual;
+    property Manager: TSynTextViewsManager read FManager;
   public
     function Add(const S: string): integer; override;
     procedure AddStrings(AStrings: TStrings); override;
@@ -449,10 +436,6 @@ type
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
 
-    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); override;
-    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
@@ -462,16 +445,35 @@ type
                 ASender: TObject); override;
    procedure FlushNotificationCache; override;
 
+    procedure AddModifiedHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLinesModifiedEvent);
+    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent);
+    procedure AddNotifyHandler(AReason: TSynEditNotifyReason;
+                AHandler: TNotifyEvent);
+
+    procedure RemoveModifiedHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLinesModifiedEvent);
+    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLineCountEvent);
+    procedure RemoveNotifyHandler(AReason: TSynEditNotifyReason;
+                AHandler: TNotifyEvent);
+
+    procedure AddEditHandler(AHandler: TStringListLineEditEvent);
+    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
+
+    procedure RemoveHanlders(AOwner: TObject);
+
     //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
-                              AFlags: LPosFlags = []): Integer; override;
+                              AFlags: LPosFlags = []): Integer; override; overload;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
                               AFlags: LPosFlags = []): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  AFlags: LPosFlags = []): Integer; override;
+                                  AFlags: LPosFlags = []): Integer; override; overload;
 
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;
@@ -488,6 +490,13 @@ type
     procedure EditRedo(Item: TSynEditUndoItem); override;
   end;
 
+  TSynEditStringListBase = class(TSynEditStrings)
+  protected
+    procedure AddManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
+    procedure RemoveManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
+    procedure RemoveManagedHanlders(AOwner: TObject); virtual; abstract;
+  end;
+
   { TSynTextViewsManager }
 
   TSynEditStringsLinkedClass = class of TSynEditStringsLinked;
@@ -495,16 +504,20 @@ type
   TSynTextViewsManager = class
   private
     FTextViewsList : TList;
-    FTextBuffer: TSynEditStrings;
+    FTextBuffer: TSynEditStringListBase;
     FTopViewChangedCallback: TNotifyEvent;
+    FNotifyLists: Array [TSynEditNotifyReason] of TMethodList;
     function GetSynTextView(Index: integer): TSynEditStringsLinked;
     function GetSynTextViewByClass(Index: TSynEditStringsLinkedClass): TSynEditStringsLinked;
     procedure ReconnectViews;
-    procedure SetTextBuffer(AValue: TSynEditStrings);
+    procedure SetTextBuffer(AValue: TSynEditStringListBase);
   protected
-    property TextBuffer: TSynEditStrings read FTextBuffer write SetTextBuffer;
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
+    procedure RemoveHanlders(AOwner: TObject);
+    property TextBuffer: TSynEditStringListBase read FTextBuffer write SetTextBuffer;
   public
-    constructor Create(ATextBuffer: TSynEditStrings; ATopViewChangedCallback: TNotifyEvent);
+    constructor Create(ATextBuffer: TSynEditStringListBase; ATopViewChangedCallback: TNotifyEvent);
     destructor Destroy; override;
 
     Procedure AddTextView(aTextView : TSynEditStringsLinked; AsFirst: Boolean = False);
@@ -1022,58 +1035,6 @@ begin
   Result := (FSenderUpdateCount > 0) or (UpdateCount > 0);
 end;
 
-procedure TSynEditStrings.AddModifiedHandler(AReason: TSynEditNotifyReason;
-  AHandler: TStringListLinesModifiedEvent);
-begin
-  assert(AReason in [senrLinesModified], 'AddModifiedHandler');
-  AddGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.AddChangeHandler(AReason: TSynEditNotifyReason;
-  AHandler: TStringListLineCountEvent);
-begin
-  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'AddChangeHandler');
-  AddGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.AddNotifyHandler(AReason: TSynEditNotifyReason;
-  AHandler: TNotifyEvent);
-begin
-  assert(AReason in [senrCleared..senrEndUndoRedo], 'AddNotifyHandler');
-  AddGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.RemoveModifiedHandler(AReason: TSynEditNotifyReason;
-  AHandler: TStringListLinesModifiedEvent);
-begin
-  assert(AReason in [senrLinesModified], 'RemoveModifiedHandler');
-  RemoveGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.RemoveChangeHandler(AReason: TSynEditNotifyReason;
-  AHandler: TStringListLineCountEvent);
-begin
-  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'RemoveChangeHandler');
-  RemoveGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.RemoveNotifyHandler(AReason: TSynEditNotifyReason;
-  AHandler: TNotifyEvent);
-begin
-  assert(AReason in [senrCleared..senrEndUndoRedo], 'RemoveNotifyHandler');
-  RemoveGenericHandler(AReason, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.AddEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  AddGenericHandler(senrEditAction, TMethod(AHandler));
-end;
-
-procedure TSynEditStrings.RemoveEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  RemoveGenericHandler(senrEditAction, TMethod(AHandler));
-end;
-
 procedure TSynEditStrings.SendHighlightChanged(aIndex, aCount: Integer);
 begin
   SendNotification(senrHighlightChanged, Self, aIndex, aCount);
@@ -1380,16 +1341,6 @@ begin
   Result := fSynStrings.GetCurUndoList;
 end;
 
-procedure TSynEditStringsLinked.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
-begin
-  fSynStrings.AddGenericHandler(AReason, AHandler);
-end;
-
-procedure TSynEditStringsLinked.RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
-begin
-  fSynStrings.RemoveGenericHandler(AReason, AHandler);
-end;
-
 // Count
 function TSynEditStringsLinked.GetCount: integer;
 begin
@@ -1449,6 +1400,23 @@ end;
 function TSynEditStringsLinked.GetDisplayView: TLazSynDisplayView;
 begin
   Result := fSynStrings.GetDisplayView;
+end;
+
+procedure TSynEditStringsLinked.AddGenericHandler(
+  AReason: TSynEditNotifyReason; AHandler: TMethod);
+begin
+  Manager.AddGenericHandler(AReason, AHandler);
+end;
+
+procedure TSynEditStringsLinked.RemoveGenericHandler(
+  AReason: TSynEditNotifyReason; AHandler: TMethod);
+begin
+  Manager.RemoveGenericHandler(AReason, AHandler);
+end;
+
+procedure TSynEditStringsLinked.SetManager(AManager: TSynTextViewsManager);
+begin
+  FManager := AManager;
 end;
 
 procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);
@@ -1520,6 +1488,65 @@ end;
 procedure TSynEditStringsLinked.FlushNotificationCache;
 begin
   fSynStrings.FlushNotificationCache;
+end;
+
+procedure TSynEditStringsLinked.AddModifiedHandler(
+  AReason: TSynEditNotifyReason; AHandler: TStringListLinesModifiedEvent);
+begin
+  assert(AReason in [senrLinesModified], 'AddModifiedHandler');
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.AddChangeHandler(AReason: TSynEditNotifyReason;
+  AHandler: TStringListLineCountEvent);
+begin
+  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'AddChangeHandler');
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.AddNotifyHandler(AReason: TSynEditNotifyReason;
+  AHandler: TNotifyEvent);
+begin
+  assert(AReason in [senrCleared..senrEndUndoRedo], 'AddNotifyHandler');
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveModifiedHandler(
+  AReason: TSynEditNotifyReason; AHandler: TStringListLinesModifiedEvent);
+begin
+  assert(AReason in [senrLinesModified], 'RemoveModifiedHandler');
+  RemoveGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveChangeHandler(
+  AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+begin
+  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'RemoveChangeHandler');
+  RemoveGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveNotifyHandler(
+  AReason: TSynEditNotifyReason; AHandler: TNotifyEvent);
+begin
+  assert(AReason in [senrCleared..senrEndUndoRedo], 'RemoveNotifyHandler');
+  RemoveGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.AddEditHandler(
+  AHandler: TStringListLineEditEvent);
+begin
+  AddGenericHandler(senrEditAction, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveEditHandler(
+  AHandler: TStringListLineEditEvent);
+begin
+  RemoveGenericHandler(senrEditAction, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveHanlders(AOwner: TObject);
+begin
+  Manager.RemoveHanlders(AOwner);
 end;
 
 function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
@@ -1594,6 +1621,8 @@ var
   i: Integer;
   dsp: TLazSynDisplayView;
 begin
+  if FTextViewsList.Count = 0 then
+    exit;
   SynTextView[0].NextLines := FTextBuffer;
   dsp := FTextBuffer.DisplayView;
 
@@ -1608,26 +1637,71 @@ begin
   FTopViewChangedCallback(SynTextView[Count-1]);
 end;
 
-procedure TSynTextViewsManager.SetTextBuffer(AValue: TSynEditStrings);
+procedure TSynTextViewsManager.SetTextBuffer(AValue: TSynEditStringListBase);
+var
+  r: TSynEditNotifyReason;
+  i: Integer;
 begin
+  if FTextBuffer <> nil then begin
+    for r in TSynEditNotifyReason do
+      for i := 0 to FNotifyLists[r].Count - 1 do
+        FTextBuffer.RemoveManagedHandler(r, FNotifyLists[r][i]);
+  end;
   if FTextBuffer = AValue then Exit;
   FTextBuffer := AValue;
-  ReconnectViews;
+  if FTextBuffer <> nil then begin
+    for r in TSynEditNotifyReason do
+      for i := 0 to FNotifyLists[r].Count - 1 do
+        FTextBuffer.AddManagedHandler(r, FNotifyLists[r][i]);
+    ReconnectViews;
+  end;
 end;
 
-constructor TSynTextViewsManager.Create(ATextBuffer: TSynEditStrings;
-  ATopViewChangedCallback: TNotifyEvent);
+procedure TSynTextViewsManager.AddGenericHandler(AReason: TSynEditNotifyReason;
+  AHandler: TMethod);
 begin
-  FTextBuffer := ATextBuffer;
+  FNotifyLists[AReason].Add(AHandler);
+  if FTextBuffer <> nil then
+    FTextBuffer.AddManagedHandler(AReason, AHandler);
+end;
+
+procedure TSynTextViewsManager.RemoveGenericHandler(
+  AReason: TSynEditNotifyReason; AHandler: TMethod);
+begin
+  FNotifyLists[AReason].Remove(AHandler);
+  if FTextBuffer <> nil then
+    FTextBuffer.RemoveManagedHandler(AReason, AHandler);
+end;
+
+procedure TSynTextViewsManager.RemoveHanlders(AOwner: TObject);
+var
+  i: TSynEditNotifyReason;
+begin
+  for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FNotifyLists[i].RemoveAllMethodsOfObject(AOwner);
+  if FTextBuffer <> nil then
+    FTextBuffer.RemoveManagedHanlders(AOwner);
+end;
+
+constructor TSynTextViewsManager.Create(ATextBuffer: TSynEditStringListBase;
+  ATopViewChangedCallback: TNotifyEvent);
+var
+  r: TSynEditNotifyReason;
+begin
+  for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FNotifyLists[r] := TMethodList.Create;
   FTopViewChangedCallback := ATopViewChangedCallback;
   FTextViewsList := TList.Create;
+  TextBuffer := ATextBuffer;
 end;
 
 destructor TSynTextViewsManager.Destroy;
 var
   i: Integer;
+  r: TSynEditNotifyReason;
 begin
   // Destroy in reverse order / keep NextLines valid for each inner
+  TextBuffer := nil;
   i := Count - 1;
   while i >= 0 do begin
     TSynEditStringsLinked(FTextViewsList[i]).Free;
@@ -1635,12 +1709,16 @@ begin
     i := Count - 1;
   end;
   FTextViewsList.Free;
+  for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FNotifyLists[r].Destroy;
   inherited Destroy;
 end;
 
 procedure TSynTextViewsManager.AddTextView(aTextView: TSynEditStringsLinked;
   AsFirst: Boolean);
 begin
+  assert(aTextView.Manager=nil, 'TSynTextViewsManager.AddTextView: aTextView.Manager=nil');
+  aTextView.SetManager(Self);
   if AsFirst then
     FTextViewsList.Insert(0, aTextView)
   else
@@ -1651,6 +1729,8 @@ end;
 procedure TSynTextViewsManager.AddTextView(aTextView: TSynEditStringsLinked;
   AIndex: Integer);
 begin
+  assert(aTextView.Manager=nil, 'TSynTextViewsManager.AddTextView: aTextView.Manager=nil');
+  aTextView.SetManager(Self);
   FTextViewsList.Insert(AIndex, aTextView);
   ReconnectViews;
 end;
@@ -1660,6 +1740,8 @@ procedure TSynTextViewsManager.AddTextView(
 var
   i: Integer;
 begin
+  assert(aTextView.Manager=nil, 'TSynTextViewsManager.AddTextView: aTextView.Manager=nil');
+  aTextView.SetManager(Self);
   i := FTextViewsList.IndexOf(AnAfter);
   if i >= 0 then
     FTextViewsList.Insert(i + 1, aTextView)

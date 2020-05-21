@@ -63,21 +63,21 @@ type
   private
     function GetLocked: Boolean;
   protected
-    FLines: TSynEditStrings;
+    FLines: TSynEditStringsLinked;
     FOnChangeList: TMethodList;
     FLockCount: Integer;
-    procedure SetLines(const AValue: TSynEditStrings); virtual;
+    procedure SetLines(const AValue: TSynEditStringsLinked); virtual;
     procedure DoLock; virtual;
     Procedure DoUnlock; virtual;
   public
     constructor Create;
-    constructor Create(Lines: TSynEditStrings);
+    constructor Create(Lines: TSynEditStringsLinked);
     destructor Destroy; override;
     procedure AddChangeHandler(AHandler: TNotifyEvent);
     procedure RemoveChangeHandler(AHandler: TNotifyEvent);
     procedure Lock;
     Procedure Unlock;
-    property  Lines: TSynEditStrings read FLines write SetLines;
+    property  Lines: TSynEditStringsLinked read FLines write SetLines;
     property Locked: Boolean read GetLocked;
   end;
 
@@ -165,7 +165,7 @@ type
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
   public
-    constructor Create(ALines: TSynEditStrings; aActOnLineChanges: Boolean);
+    constructor Create(ALines: TSynEditStringsLinked; aActOnLineChanges: Boolean);
     destructor Destroy; override;
     procedure AssignFrom(Src: TSynEditSelection);
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar; AReplace: Boolean = False; ASetTextSelected: Boolean = False);
@@ -219,7 +219,7 @@ type
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
 
-    property FoldedView: TObject read FFoldedView write FFoldedView; experimental; // until FoldedView becomes a TSynEditStrings
+    property FoldedView: TObject read FFoldedView write FFoldedView; experimental; // until FoldedView becomes a TSynEditStringsLinked
   end;
 
   { TSynEditCaret }
@@ -336,7 +336,7 @@ type
 
     procedure DoLock; override;
     Procedure DoUnlock; override;
-    procedure SetLines(const AValue: TSynEditStrings); override;
+    procedure SetLines(const AValue: TSynEditStringsLinked); override;
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
   public
@@ -873,7 +873,7 @@ begin
   Result := FLockCount > 0;
 end;
 
-procedure TSynEditPointBase.SetLines(const AValue: TSynEditStrings);
+procedure TSynEditPointBase.SetLines(const AValue: TSynEditStringsLinked);
 begin
   FLines := AValue;
 end;
@@ -891,7 +891,7 @@ begin
   FOnChangeList := TMethodList.Create;
 end;
 
-constructor TSynEditPointBase.Create(Lines : TSynEditStrings);
+constructor TSynEditPointBase.Create(Lines : TSynEditStringsLinked);
 begin
   Create;
   FLines := Lines;
@@ -990,7 +990,7 @@ begin
   FOldLinePos := FLinePos;
 end;
 
-procedure TSynEditCaret.SetLines(const AValue: TSynEditStrings);
+procedure TSynEditCaret.SetLines(const AValue: TSynEditStringsLinked);
 begin
   if FLines = AValue then exit;
   // Do not check flag. It will be cleared in Assign
@@ -1010,8 +1010,8 @@ begin
   FLines.AddEditHandler(@DoLinesEdited);
 end;
 
-procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
-  aLineBrkCnt: Integer; aText: String);
+procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
+  aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
   // Todo: refactor / this is a copy from selection
   function AdjustPoint(aPoint: Tpoint): TPoint; inline;
   begin
@@ -1480,7 +1480,7 @@ end;
 
 { TSynEditSelection }
 
-constructor TSynEditSelection.Create(ALines : TSynEditStrings; aActOnLineChanges: Boolean);
+constructor TSynEditSelection.Create(ALines : TSynEditStringsLinked; aActOnLineChanges: Boolean);
 begin
   Inherited Create(ALines);
   FOnBeforeSetSelText := TSynBeforeSetSelTextList.Create;
@@ -1787,7 +1787,8 @@ begin
   StartLineBytePos := FCaret.LineBytePos;
 end;
 
-procedure TSynEditSelection.LineChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+procedure TSynEditSelection.LineChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
 var
   i, i2: Integer;
 begin
@@ -1805,8 +1806,8 @@ begin
   end;
 end;
 
-procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
-  aLineBrkCnt: Integer; aText: String);
+procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
+  aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
 
   function AdjustPoint(aPoint: Tpoint; AIsStart: Boolean): TPoint; //inline;
   begin

@@ -42,16 +42,16 @@ type
   TSynPluginSyncroEditLowerLineCache = class
   private
     FCaseSensitive: boolean;
-    FLines: TSynEditStrings;
+    FLines: TSynEditStringsLinked;
     FLower: Array of TSynPluginSyncroEditLowerLineCacheEntry;
     function GetLowLine(aIndex: Integer): String;
-    procedure SetLines(const AValue: TSynEditStrings);
+    procedure SetLines(const AValue: TSynEditStringsLinked);
   protected
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
   public
     destructor Destroy; override;
     procedure Clear;
-    property Lines: TSynEditStrings read FLines write SetLines;
+    property Lines: TSynEditStringsLinked read FLines write SetLines;
     property LowLines[aIndex: Integer]: String read GetLowLine; default;
   end;
 
@@ -361,7 +361,8 @@ begin
   FLower[0].LineText  := Result;
 end;
 
-procedure TSynPluginSyncroEditLowerLineCache.SetLines(const AValue: TSynEditStrings);
+procedure TSynPluginSyncroEditLowerLineCache.SetLines(
+  const AValue: TSynEditStringsLinked);
 begin
   Clear;
   if FLines <> nil then begin

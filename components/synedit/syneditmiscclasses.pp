@@ -106,14 +106,14 @@ type
     function GetLines: TStrings; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
-    function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
+    function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
     function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
     function GetPaintArea: TLazSynSurface; virtual; abstract; // TLazSynSurfaceManager
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
-    property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property ViewedTextBuffer: TSynEditStringsLinked read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList) No uncommited (trailing/trimmable) spaces
     property WordBreaker: TSynWordBreaker read FWordBreaker;
   public
@@ -135,12 +135,12 @@ type
     function GetScreenCaret: TSynEditScreenCaret;
     function GetSelectionObj: TSynEditSelection;
     function GetTextBuffer: TSynEditStrings;
-    function GetViewedTextBuffer: TSynEditStrings;
+    function GetViewedTextBuffer: TSynEditStringsLinked;
     function GetWordBreaker: TSynWordBreaker;
   protected
     property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
-    property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property ViewedTextBuffer: TSynEditStringsLinked read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList)
     property CaretObj: TSynEditCaret read GetCaretObj;
     property ScreenCaret: TSynEditScreenCaret read GetScreenCaret; // TODO: should not be exposed
@@ -620,7 +620,7 @@ implementation
 
 { TSynEditFriend }
 
-function TSynEditFriend.GetViewedTextBuffer: TSynEditStrings;
+function TSynEditFriend.GetViewedTextBuffer: TSynEditStringsLinked;
 begin
   Result := FFriendEdit.ViewedTextBuffer;
 end;

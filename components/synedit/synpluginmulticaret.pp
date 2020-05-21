@@ -230,7 +230,6 @@ type
     procedure DoEditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure DoAfterDecPaintLock(Sender: TObject); virtual;
     procedure DoBeforeIncPaintLock(Sender: TObject); virtual;
-    procedure DoBufferChanged(Sender: TObject); virtual;
     procedure SetColor(AValue: TColor);
     property TextArea: TLazSynTextArea read GetTextArea;
     function CreateVisual: TSynPluginMultiCaretVisual; virtual;
@@ -358,7 +357,6 @@ type
 
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure DoEditorAdded(AValue: TCustomSynEdit); override;
-    procedure DoBufferChanged(Sender: TObject); override;
 
     procedure DoAfterDecPaintLock(Sender: TObject); override;
     procedure DoIncForeignPaintLock(Sender: TObject);
@@ -1749,16 +1747,6 @@ begin
   //
 end;
 
-procedure TSynPluginMultiCaretBase.DoBufferChanged(Sender: TObject);
-begin
-  TSynEditStrings(Sender).RemoveNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);
-  TSynEditStrings(Sender).RemoveNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
-  TSynEditStrings(Sender).RemoveEditHandler(@DoLinesEdited);
-  ViewedTextBuffer.AddEditHandler(@DoLinesEdited);
-  ViewedTextBuffer.AddNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
-  ViewedTextBuffer.AddNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);
-end;
-
 procedure TSynPluginMultiCaretBase.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   inherited DoEditorRemoving(AValue);
@@ -1772,14 +1760,12 @@ begin
     ViewedTextBuffer.RemoveNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);
     ViewedTextBuffer.RemoveNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
     ViewedTextBuffer.RemoveEditHandler(@DoLinesEdited);
-    ViewedTextBuffer.RemoveNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
   end;
 end;
 
 procedure TSynPluginMultiCaretBase.DoEditorAdded(AValue: TCustomSynEdit);
 begin
   if Editor <> nil then begin
-    ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
     ViewedTextBuffer.AddEditHandler(@DoLinesEdited);
     ViewedTextBuffer.AddNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
     ViewedTextBuffer.AddNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);
@@ -2143,17 +2129,6 @@ begin
     ViewedTextBuffer.AddNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
     ViewedTextBuffer.AddNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
   end;
-end;
-
-procedure TSynCustomPluginMultiCaret.DoBufferChanged(Sender: TObject);
-begin
-  inherited DoBufferChanged(Sender);
-  TSynEditStrings(Sender).RemoveNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
-  TSynEditStrings(Sender).RemoveNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
-  TSynEditStrings(Sender).UndoList.UnregisterUpdateCaretUndo(@UpdateCaretForUndo);
-  ViewedTextBuffer.UndoList.RegisterUpdateCaretUndo(@UpdateCaretForUndo);
-  ViewedTextBuffer.AddNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
-  ViewedTextBuffer.AddNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
 end;
 
 procedure TSynCustomPluginMultiCaret.DoAfterDecPaintLock(Sender: TObject);
