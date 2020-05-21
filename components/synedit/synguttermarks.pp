@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, Controls, ImgList,
-  math, SynGutterBase, SynEditMiscClasses, SynEditMarks;
+  math, SynGutterBase, SynEditMiscClasses, SynEditMarks, LazSynEditText,
+  SynEditMiscProcs;
 
 type
 
@@ -144,12 +145,16 @@ var
   MLine: TSynEditMarkLine;
   MarkRect: TRect;
   LastMarkIsBookmark: Boolean;
+  iRange: TLineRange;
 begin
   Result := False;
   aFirstCustomColumnIdx := 0;
   if FBookMarkOpt.DrawBookmarksFirst then
     aFirstCustomColumnIdx := 1;
-  j := FoldView.TextIndex[aScreenLine];
+  aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
+  j := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
+  if aScreenLine <> iRange.Top then
+    exit;
   if (j < 0) or (j >= TCustomSynEdit(SynEdit).Lines.Count) then
     exit;
   MLine := TCustomSynEdit(SynEdit).Marks.Line[j + 1];

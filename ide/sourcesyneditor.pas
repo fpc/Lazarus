@@ -2282,6 +2282,7 @@ procedure TIDESynGutterMarks.PaintLine(aScreenLine: Integer; Canvas: TCanvas; AC
 var
   aGutterOffs, TxtIdx: Integer;
   HasAnyMark: Boolean;
+  iRange: TLineRange;
 
   procedure DrawDebugMark(Line: Integer);
   var
@@ -2310,7 +2311,10 @@ begin
   CheckTextBuffer;
   aGutterOffs := 0;
   HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
-  TxtIdx := FoldView.TextIndex[aScreenLine];
+  aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
+  TxtIdx:= ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
+  if aScreenLine <> iRange.Top then
+    exit;
   if (TxtIdx < 0) or (TxtIdx >= TSynEdit(SynEdit).Lines.Count) then
     exit;
   if (not HasAnyMark) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and

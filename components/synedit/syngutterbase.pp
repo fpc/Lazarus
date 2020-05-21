@@ -11,7 +11,8 @@ uses
   // LazUtils
   LazMethodList,
   // SynEdit
-  SynEditMarks, SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds, SynEditFoldedView;
+  SynEditMarks, SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds,
+  LazSynTextArea;
 
 type
 
@@ -28,6 +29,7 @@ type
 
   TSynGutterBase = class(TPersistent)
   private
+    FGutterArea: TLazSynSurfaceWithText;
     FGutterPartList: TSynGutterPartListBase;
     FSide: TSynGutterSide;
     FSynEdit: TSynEditBase;
@@ -70,6 +72,7 @@ type
     function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
     procedure Clear;
     function GetOwner: TPersistent; override;
+    property GutterArea: TLazSynSurfaceWithText read FGutterArea write FGutterArea;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
@@ -165,7 +168,7 @@ type
     FOnChange: TNotifyEvent;
     FOnGutterClick: TGutterClickEvent;
     FMouseActions: TSynEditMouseInternalActions;
-    function GetFoldView: TSynEditFoldedView;
+    function GetGutterArea: TLazSynSurfaceWithText;
     function GetGutterParts: TSynGutterPartListBase;
     function GetMouseActions: TSynEditMouseActions;
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
@@ -188,7 +191,7 @@ type
     property GutterParts: TSynGutterPartListBase read GetGutterParts;
     property Gutter: TSynGutterBase read FGutter;
     property SynEdit:TSynEditBase read FSynEdit;
-    property FoldView: TSynEditFoldedView read GetFoldView;
+    property GutterArea: TLazSynSurfaceWithText read GetGutterArea;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -580,9 +583,9 @@ begin
   Result := FMouseActions.UserActions;
 end;
 
-function TSynGutterPartBase.GetFoldView: TSynEditFoldedView;
+function TSynGutterPartBase.GetGutterArea: TLazSynSurfaceWithText;
 begin
-  Result := TSynEditFoldedView(FoldedTextBuffer);
+  Result := Gutter.GutterArea;
 end;
 
 procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynSelectedColor);

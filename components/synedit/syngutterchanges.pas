@@ -5,7 +5,8 @@ unit SynGutterChanges;
 interface
 
 uses
-  Classes, FPCanvas, Graphics, LCLType, LCLIntf, SynGutterBase;
+  Classes, FPCanvas, Graphics, LCLType, LCLIntf, SynGutterBase,
+  SynEditMiscProcs, LazSynEditText;
 
 type
   { TSynGutterChanges }
@@ -75,7 +76,7 @@ end;
 procedure TSynGutterChanges.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 var
   i, c, iLine: integer;
-  LineHeight: Integer;
+  LineHeight, t: Integer;
   rcLine: TRect;
   AliasMode: TAntialiasingMode;
 begin
@@ -83,6 +84,7 @@ begin
 
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   c := TCustomSynEdit(SynEdit).Lines.Count;
+  t := ToIdx(GutterArea.TextArea.TopLine);
 
   if MarkupInfo.Background <> clNone then
   begin
@@ -98,9 +100,9 @@ begin
   rcLine := AClip;
   rcLine.Bottom := AClip.Top;
   rcLine.Left := rcLine.Left + Width div 2;
-  for i := FirstLine to LastLine do
+  for i := t + FirstLine to t + LastLine do
   begin
-    iLine := FoldView.TextIndex[i];
+    iLine := ViewedTextBuffer.DisplayView.ViewToTextIndex(i);
     if (iLine < 0) or (iLine >= c) then break;
     // next line rect
     rcLine.Top := rcLine.Bottom;

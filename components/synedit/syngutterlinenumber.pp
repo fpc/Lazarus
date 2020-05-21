@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, SynTextDrawer, SynEditMouseCmds, SynEditTextBuffer, LazSynEditText;
+  SynEditMiscProcs, SynTextDrawer, SynEditMouseCmds, SynEditTextBuffer,
+  LazSynEditText, SynEditTypes;
 
 type
 
@@ -228,12 +229,15 @@ var
   dc: HDC;
   ShowDot: boolean;
   LineHeight: Integer;
+  IRange: TLineRange;
+  t: TLinePos;
 
 begin
   if not Visible then exit;
 
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   c := TCustomSynEdit(SynEdit).Lines.Count;
+  t := ToIdx(GutterArea.TextArea.TopLine);
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
@@ -258,10 +262,10 @@ begin
     // prepare the rect initially
     rcLine := AClip;
     rcLine.Bottom := AClip.Top;
-    for i := FirstLine to LastLine do
+    for i := t + FirstLine to t + LastLine do
     begin
-      iLine := FoldView.DisplayNumber[i];
-      if (iLine < 0) or (iLine > c) then break;
+      iLine := ToPos(ViewedTextBuffer.DisplayView.ViewToTextIndexEx(i, IRange));
+      if (iLine < 1) or (iLine > c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
       // Must show a dot instead of line number if
@@ -273,6 +277,8 @@ begin
       // Get the formatted line number or dot
       s := FormatLineNumber(iLine, ShowDot);
       Inc(rcLine.Bottom, LineHeight);
+      if i <> IRange.Top then
+        s := '';
       // erase the background and draw the line number string in one go
       fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
         PChar(Pointer(S)),Length(S));

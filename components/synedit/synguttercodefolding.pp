@@ -80,6 +80,7 @@ type
     FReversePopMenuOrder: Boolean;
     FPpiPenWidth: Integer;
     procedure FPopUpOnPopup(Sender: TObject);
+    function GetFoldView: TSynEditFoldedView;
     function GetMouseActionsCollapsed: TSynEditMouseActions;
     function GetMouseActionsExpanded: TSynEditMouseActions;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
@@ -97,6 +98,7 @@ type
     procedure PopClicked(Sender: TObject);
     function CreateMouseActions: TSynEditMouseInternalActions; override;
     procedure SetWidth(const AValue: integer); override;
+    property FoldView: TSynEditFoldedView read GetFoldView;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -203,6 +205,11 @@ begin
   MonitorPPI := Screen.MonitorFromPoint(FPopUp.PopupPoint).PixelsPerInch;
   if (FPopUpImageList.Count=0) or (FPopUpImageList.InitPPI<>MonitorPPI) then
     InitPopUpImageList(MonitorPPI);
+end;
+
+function TSynGutterCodeFolding.GetFoldView: TSynEditFoldedView;
+begin
+  Result := TSynEditFoldedView(FoldedTextBuffer);
 end;
 
 function TSynGutterCodeFolding.IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;

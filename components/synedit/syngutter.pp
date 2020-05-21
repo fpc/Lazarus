@@ -29,6 +29,7 @@ type
     function CreatePartList: TSynGutterPartListBase; override;
     procedure CreateDefaultGutterParts; virtual;
     function CreateMouseActions: TSynEditMouseInternalActions; override;
+    property GutterArea;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide;
                       ATextDrawer: TheTextDrawer);
@@ -103,12 +104,13 @@ type
   private
     FGutter: TSynGutter;
     function GetTextBounds: TRect;
+    procedure SetGutter(AValue: TSynGutter);
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
   public
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
     procedure Assign(Src: TLazSynSurface); override;
-    property Gutter: TSynGutter read FGutter write FGutter;
+    property Gutter: TSynGutter read FGutter write SetGutter;
     property TextBounds: TRect read GetTextBounds;
   end;
 
@@ -121,6 +123,16 @@ uses
 function TLazSynGutterArea.GetTextBounds: TRect;
 begin
   Result := TextArea.TextBounds;
+end;
+
+procedure TLazSynGutterArea.SetGutter(AValue: TSynGutter);
+begin
+  if FGutter = AValue then Exit;
+  if FGutter <> nil then
+    FGutter.GutterArea := nil;
+  FGutter := AValue;
+  if FGutter <> nil then
+    FGutter.GutterArea := Self;
 end;
 
 procedure TLazSynGutterArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
