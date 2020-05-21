@@ -13,16 +13,17 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, FileProcs, DefineTemplates, LinkScanner,
-  CodeCache, TestGlobals, LazLogger, LazFileUtils, LazUTF8, fpcunit,
-  testregistry;
+  CodeCache, ExprEval, TestGlobals, LazLogger, LazFileUtils, LazUTF8, fpcunit,
+  testregistry, TestFindDeclaration;
 
 type
 
   { TCustomTestPas2js }
 
-  TCustomTestPas2js = class(TTestCase)
+  TCustomTestPas2js = class(TCustomTestFindDeclaration)
   private
     FAutoSearchPas2js: boolean;
+    FBaseDir: string;
     FCode: TCodeBuffer;
     FPas2jsFilename: string;
     FUnitSetCache: TFPCUnitSetCache;
@@ -36,15 +37,16 @@ type
     procedure Add(const s: string);
     procedure Add(Args: array of const);
     function FindPas2js: string;
-    function StartProgram: boolean; virtual;
+    function StartProgram: boolean; override;
     procedure ParseModule; virtual;
     procedure WriteSource(CleanPos: integer; Tool: TCodeTool);
     procedure WriteSource(const CursorPos: TCodeXYPosition);
     property AutoSearchPas2js: boolean read FAutoSearchPas2js write FAutoSearchPas2js;
     property Code: TCodeBuffer read FCode;
-    property Pas2jsFilename: string read FPas2jsFilename write FPas2jsFilename;
+    property Pas2jsFilename: string read FPas2jsFilename write FPas2jsFilename; // compiler filename
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write FUnitSetCache;
     property VirtualDirDefines: TDefineTemplate read FVirtualDirDefines write FVirtualDirDefines;
+    property BaseDir: string read FBaseDir write FBaseDir;
   end;
 
   { TTestPas2js }
@@ -53,6 +55,7 @@ type
   published
     procedure TestPas2js_ReadSettings;
     procedure TestPas2js_FindDeclaration;
+    procedure TestPas2js_FindDeclaration_AWait;
   end;
 
 implementation
@@ -63,6 +66,7 @@ procedure TCustomTestPas2js.SetUp;
 var
   CurUnitSet: TFPCUnitSetCache;
   UnitSetID: String;
+  CompilerDefines: TDefineTemplate;
 begin
   inherited SetUp;
   if (Pas2jsFilename='') and AutoSearchPas2js then begin
@@ -83,10 +87,12 @@ begin
       VirtualDirDefines:=TDefineTemplate.Create(
         'VirtualDirPas2js', 'set pas2js as compiler for virtual directory',
         '',VirtualDirectory,da_Directory);
-      VirtualDirDefines.AddChild(TDefineTemplate.Create('UnitSet','UnitSet identifier',
-                      UnitSetMacroName,UnitSetID,da_DefineRecurse));
-      CodeToolBoss.DefineTree.Add(VirtualDirDefines);
+      VirtualDirDefines.AddChild(TDefineTemplate.Create('Reset','','','',da_UndefineAll));
+      // create template for Pas2js settings
+      CompilerDefines:=CreateFPCTemplate(UnitSetCache,nil);
+      VirtualDirDefines.AddChild(CompilerDefines);
     end;
+    CodeToolBoss.DefineTree.Add(VirtualDirDefines);
 
     // check
     CurUnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
@@ -94,6 +100,11 @@ begin
       Fail('CodeToolBoss.GetUnitSetForDirectory=nil');
     if CurUnitSet<>UnitSetCache then
       AssertEquals('UnitSet VirtualDirectory should be pas2js',UnitSetID,CurUnitSet.GetUnitSetID);
+
+    if CodeToolBoss.GetPascalCompilerForDirectory('')<>pcPas2js then
+      AssertEquals('VirtualDirectory compiler should be pas2js',
+        PascalCompilerNames[pcPas2js],
+        PascalCompilerNames[CodeToolBoss.GetPascalCompilerForDirectory('')]);
   end;
   FCode:=CodeToolBoss.CreateFile('test1.pas');
 end;
@@ -129,6 +140,7 @@ constructor TCustomTestPas2js.Create;
 begin
   inherited Create;
   FAutoSearchPas2js:=true;
+  FBaseDir:='pas2js';
 end;
 
 procedure TCustomTestPas2js.Add(const s: string);
@@ -239,6 +251,32 @@ begin
   '']);
   ParseModule;
   //FindDeclarations(Code);
+end;
+
+procedure TTestPas2js.TestPas2js_FindDeclaration_AWait;
+begin
+  if not StartProgram then exit;
+  Add([
+  '{$modeswitch externalclass}',
+  'type',
+  '  TJSPromise = class external name ''Promise''',
+  '  end;',
+  'function Crawl(d: double = 1.3): word; ',
+  'begin',
+  'end;',
+  'function Run(d: double): word; async;',
+  'var',
+  '  p: TJSPromise;',
+  'begin',
+  '  Result:=await(word,p{declaration:Run.p});',
+  '  Result:=await(1);',
+  '  Result:=await(Crawl{declaration:Crawl});',
+  '  Result:=await(Crawl{declaration:Crawl}(4.5));',
+  'end;',
+  'begin',
+  '  Run{declaration:run}(3);',
+  'end.']);
+  FindDeclarations(Code);
 end;
 
 initialization

@@ -5274,7 +5274,9 @@ function TDefineTree.GetDirDefinesForVirtualDirectory: TDirectoryDefines;
 begin
   DoPrepareTree;
   if FVirtualDirCache=nil then begin
-    //DebugLn('################ TDefineTree.GetDirDefinesForVirtualDirectory');
+    {$IFDEF VerboseDefineCache}
+    DebugLn('################ TDefineTree.GetDirDefinesForVirtualDirectory');
+    {$ENDIF}
     FVirtualDirCache:=TDirectoryDefines.Create;
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin

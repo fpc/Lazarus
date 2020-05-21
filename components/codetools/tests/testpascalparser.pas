@@ -30,7 +30,7 @@ type
     procedure Add(const s: string);
     procedure Add(Args: array of const);
     procedure StartUnit;
-    procedure StartProgram;
+    function StartProgram: boolean; virtual;
     procedure ParseModule;
     procedure CheckParseError(const CursorPos: TCodeXYPosition; Msg: string);
     procedure WriteSource(CleanPos: integer; Tool: TCodeTool);
@@ -110,8 +110,9 @@ begin
   Add('');
 end;
 
-procedure TCustomTestPascalParser.StartProgram;
+function TCustomTestPascalParser.StartProgram: boolean;
 begin
+  Result:=true;
   Add('program test1;');
   Add('');
   Add('{$mode objfpc}{$H+}');

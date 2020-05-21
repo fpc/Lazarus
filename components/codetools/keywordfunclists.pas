@@ -871,6 +871,7 @@ begin
   with IsKeyWordMethodSpecifier do begin
     Add('ABSTRACT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // often used for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -907,6 +908,7 @@ begin
   with IsKeyWordProcedureSpecifier do begin
     Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -973,6 +975,7 @@ begin
   KeyWordLists.Add(IsKeyWordProcedureAnonymousSpecifier);
   with IsKeyWordProcedureAnonymousSpecifier do begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
     Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -997,6 +1000,7 @@ begin
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VECTORCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // Note: 'inline' and 'is nested' are not a calling specifiers
   end;
