@@ -358,8 +358,9 @@ type
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetLinesCount: Integer; override;
 
-    function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
-    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
+    function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; override;
+    function ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx; override;
+    function ViewToTextIndexEx(AViewIndex: TLineIdx; out AViewRange: TLineRange): TLineIdx; override;
   end;
 
   { TSynTextFoldedView
@@ -832,10 +833,10 @@ begin
   Result := FFoldView.ViewedCount;
 end;
 
-function TLazSynDisplayFold.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+function TLazSynDisplayFold.TextToViewIndex(ATextIndex: TLineIdx): TLineRange;
 begin
 // TODO: inherited AFTER fold mapping?
-  Result := inherited TextToViewIndex(AIndex);
+  Result := inherited TextToViewIndex(ATextIndex);
   if Result.Top = Result.Bottom then begin
     Result.Top    := FFoldView.InternTextToViewIndex(Result.Top);
     Result.Bottom := Result.Top;
@@ -846,9 +847,15 @@ begin
   end;
 end;
 
-function TLazSynDisplayFold.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+function TLazSynDisplayFold.ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx;
 begin
-  Result := FFoldView.InternViewToTextIndex(inherited ViewToTextIndex(AIndex));
+  Result := FFoldView.InternViewToTextIndex(inherited ViewToTextIndex(AViewIndex));
+end;
+
+function TLazSynDisplayFold.ViewToTextIndexEx(AViewIndex: TLineIdx; out
+  AViewRange: TLineRange): TLineIdx;
+begin
+  Result := FFoldView.InternViewToTextIndex(inherited ViewToTextIndexEx(AViewIndex, AViewRange));
 end;
 
 { TSynEditFoldExportStream }

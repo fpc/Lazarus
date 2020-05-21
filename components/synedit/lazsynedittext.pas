@@ -218,10 +218,9 @@ type
     function GetLinesCount: Integer; virtual;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; virtual;
 
-    function TextToViewIndex(AIndex: TLineIdx): TLineRange; virtual;
-    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; virtual;
-    //function ViewToTextIndexEx(AIndex: TLineIdx; out AScreenRange: TLineRange): TLineIdx;
-    // todo: gutter info
+    function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; virtual;
+    function ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx; virtual;
+    function ViewToTextIndexEx(AViewIndex: TLineIdx; out AViewRange: TLineRange): TLineIdx; virtual;
   end;
 
   { TLazSynDisplayViewEx }
@@ -622,14 +621,20 @@ begin
     Result.Color := clNone;
 end;
 
-function TLazSynDisplayView.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+function TLazSynDisplayView.TextToViewIndex(ATextIndex: TLineIdx): TLineRange;
 begin
-  Result := NextView.TextToViewIndex(AIndex);
+  Result := NextView.TextToViewIndex(ATextIndex);
 end;
 
-function TLazSynDisplayView.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+function TLazSynDisplayView.ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx;
 begin
-  Result := NextView.ViewToTextIndex(AIndex);
+  Result := NextView.ViewToTextIndex(AViewIndex);
+end;
+
+function TLazSynDisplayView.ViewToTextIndexEx(AViewIndex: TLineIdx; out
+  AViewRange: TLineRange): TLineIdx;
+begin
+  Result := NextView.ViewToTextIndexEx(AViewIndex, AViewRange);
 end;
 
 { TSynLogicalPhysicalConvertor }

@@ -131,8 +131,9 @@ type
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
     function GetLinesCount: Integer; override;
 
-    function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
-    function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
+    function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; override;
+    function ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx; override;
+    function ViewToTextIndexEx(AViewIndex: TLineIdx; out AViewRange: TLineRange): TLineIdx; override;
   end;
 
   { TSynEditStringList }
@@ -414,15 +415,23 @@ begin
   Result := FBuffer.Count;
 end;
 
-function TLazSynDisplayBuffer.TextToViewIndex(AIndex: TLineIdx): TLineRange;
+function TLazSynDisplayBuffer.TextToViewIndex(ATextIndex: TLineIdx): TLineRange;
 begin
-  Result.Top := AIndex;
-  Result.Bottom := AIndex;
+  Result.Top := ATextIndex;
+  Result.Bottom := ATextIndex;
 end;
 
-function TLazSynDisplayBuffer.ViewToTextIndex(AIndex: TLineIdx): TLineIdx;
+function TLazSynDisplayBuffer.ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx;
 begin
-  Result := AIndex;
+  Result := AViewIndex;
+end;
+
+function TLazSynDisplayBuffer.ViewToTextIndexEx(AViewIndex: TLineIdx; out
+  AViewRange: TLineRange): TLineIdx;
+begin
+  Result := AViewIndex;
+  AViewRange.Top := AViewIndex;
+  AViewRange.Bottom := AViewIndex;
 end;
 
 { TSynEditUndoTxtInsert }
