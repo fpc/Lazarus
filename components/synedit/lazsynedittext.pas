@@ -262,6 +262,9 @@ type
     function GetTextChangeStamp: int64; virtual; abstract;
     function GetViewChangeStamp: int64; virtual;
 
+    function GetViewedCount: Integer; virtual;
+    function GetViewedLines(Index: integer): string; virtual;
+
     function GetIsInEditAction: Boolean; virtual; abstract;
     procedure IncIsInEditAction; virtual; abstract;
     procedure DecIsInEditAction; virtual; abstract;
@@ -349,6 +352,9 @@ type
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer; virtual; //deprecated;
     property LogPhysConvertor :TSynLogicalPhysicalConvertor read FLogPhysConvertor;
+
+    function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; virtual;
+    function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
   public
     // Currently Lines are physical
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
@@ -376,8 +382,10 @@ type
   public
     property TextChangeStamp: int64 read GetTextChangeStamp;
     property ViewChangeStamp: int64 read GetViewChangeStamp; // tabs-size, trailing-spaces, ...
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
+    property ExpandedStrings[Index: integer]: string read GetExpandedString; deprecated;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
+    property ViewedLines[Index: integer]: string read GetViewedLines;
+    property ViewedCount: Integer read GetViewedCount;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
   public
     property DisplayView: TLazSynDisplayView read GetDisplayView;
@@ -398,6 +406,9 @@ type
 
     function GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
+
+    function GetViewedCount: Integer; override;
+    function GetViewedLines(Index: integer): string; override;
 
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
@@ -463,6 +474,10 @@ type
                               AFlags: LPosFlags = []): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
                                   AFlags: LPosFlags = []): Integer; override;
+
+    function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;
+    function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;
+
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
@@ -1082,6 +1097,16 @@ begin
   Result := nil;
 end;
 
+function TSynEditStrings.GetViewedCount: Integer;
+begin
+  Result := Count;
+end;
+
+function TSynEditStrings.GetViewedLines(Index: integer): string;
+begin
+  Result := Strings[Index];
+end;
+
 procedure TSynEditStrings.SetTextStr(const Value : string);
 var
   StartPos: PChar;
@@ -1178,6 +1203,16 @@ begin
 
   FLogPhysConvertorTmp.SetWidthsForLine(-9, CharWidths);
   Result := FLogPhysConvertorTmp.PhysicalToLogical(-9 , PhysicalPos);
+end;
+
+function TSynEditStrings.TextToViewIndex(aTextIndex: TLineIdx): TLineIdx;
+begin
+  Result := aTextIndex;
+end;
+
+function TSynEditStrings.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
+begin
+  Result := aViewIndex;
 end;
 
 { TSynEditStringsLinked }
@@ -1293,6 +1328,16 @@ end;
 procedure TSynEditStringsLinked.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
 begin
   fSynStrings.Ranges[Index] := ARange;
+end;
+
+function TSynEditStringsLinked.GetViewedCount: Integer;
+begin
+  Result := fSynStrings.ViewedCount;
+end;
+
+function TSynEditStringsLinked.GetViewedLines(Index: integer): string;
+begin
+  Result := fSynStrings.ViewedLines[Index];
 end;
 
 function TSynEditStringsLinked.GetExpandedString(Index: integer): string;
@@ -1478,6 +1523,16 @@ function TSynEditStringsLinked.LogicPosAdjustToChar(const ALine: String; ALogica
   AFlags: LPosFlags): Integer;
 begin
   Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, AFlags);
+end;
+
+function TSynEditStringsLinked.TextToViewIndex(aTextIndex: TLineIdx): TLineIdx;
+begin
+  Result := fSynStrings.TextToViewIndex(aTextIndex);
+end;
+
+function TSynEditStringsLinked.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
+begin
+  Result := fSynStrings.ViewToTextIndex(aViewIndex);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;
