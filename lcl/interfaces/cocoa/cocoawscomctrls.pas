@@ -2064,6 +2064,8 @@ begin
   lSlider.setMinValue(ATrackBar.Min);
   lSlider.setIntValue(ATrackBar.Position);
   lSlider.intval := ATrackBar.Position;
+  lSlider.setContinuous(true);
+  lSlider.setAltIncrementValue(1); // forcing the slider to switch by 1 by the keyboard
 
   // Ticks
   if ATrackBar.TickStyle = tsAuto then
@@ -2097,8 +2099,6 @@ begin
 
   lSlider.lclSetManTickDraw(ATrackBar.TickStyle = tsManual);
 
-  //for some reason Option(Alt)+Drag doesn't work at all
-  //lSlider.setAltIncrementValue(ATrackBar.PageSize);
   lSlider.setNumberOfTickMarks(lTickCount);
 
   if ATrackBar.TickMarks = tmTopLeft then

@@ -327,8 +327,6 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     //
-    procedure keyDown(event: NSEvent); override;
-    //
     procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
     procedure sliderAction(sender: id); message 'sliderAction:';
     // mouse
@@ -1430,22 +1428,6 @@ procedure TCocoaSlider.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
-end;
-
-procedure TCocoaSlider.keyDown(event: NSEvent);
-var
-  KeyCode: word;
-begin
-  KeyCode := Event.keyCode;
-  case KeyCode of
-    kVK_UpArrow    : SnapToInteger(1);
-    kVK_DownArrow  : SnapToInteger(-1);
-    kVK_LeftArrow  : SnapToInteger(-1);
-    kVK_RightArrow : SnapToInteger(1);
-  else
-    // If this isn't done callback.KeyEvent will cause arrow left/right to change control
-    inherited keyDown(event);
-  end;
 end;
 
 procedure TCocoaSlider.SnapToInteger(AExtraFactor: Integer);
