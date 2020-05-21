@@ -377,6 +377,12 @@ type
   private
     FManager: TSynTextViewsManager;
     fSynStrings: TSynEditStrings;
+    fSynStringsEditing,
+    fSynStringsState,
+    fSynStringsLogPos,
+    fSynStringsPhys,
+    fSynStringsXYMap,
+    fSynStringsNotify: TSynEditStrings;
   protected
     procedure SetSynStrings(AValue: TSynEditStrings); virtual;
 
@@ -1250,28 +1256,115 @@ end;
 
 procedure TSynEditStringsLinked.SetIsUndoing(const AValue: Boolean);
 begin
-  fSynStrings.IsUndoing := AValue;
+  fSynStringsState.IsUndoing := AValue;
 end;
 
 function TSynEditStringsLinked.GetIsUndoing: Boolean;
 begin
-  Result := fSynStrings.IsUndoing;
+  Result := fSynStringsState.IsUndoing;
 end;
 
 procedure TSynEditStringsLinked.SetIsRedoing(const AValue: Boolean);
 begin
-  fSynStrings.IsRedoing := AValue;
+  fSynStringsState.IsRedoing := AValue;
 end;
 
 function TSynEditStringsLinked.GetIsRedoing: Boolean;
 begin
-  Result := fSynStrings.IsRedoing;
+  Result := fSynStringsState.IsRedoing;
 end;
 
 procedure TSynEditStringsLinked.SetSynStrings(AValue: TSynEditStrings);
 begin
-  if fSynStrings = AValue then Exit;
   fSynStrings := AValue;
+
+  if fSynStrings = nil then begin
+    fSynStringsEditing := fSynStrings;
+    fSynStringsState := fSynStrings;
+    fSynStringsLogPos := fSynStrings;
+    fSynStringsXYMap := fSynStrings;
+    fSynStringsNotify := fSynStrings;
+
+    exit;
+  end;
+
+  // Fast forward some methods
+  if (TMethod(@fSynStrings.EditInsert).Code      = Pointer(@TSynEditStringsLinked.EditInsert)) and
+     (TMethod(@fSynStrings.EditDelete).Code      = Pointer(@TSynEditStringsLinked.EditDelete)) and
+     (TMethod(@fSynStrings.EditReplace).Code     = Pointer(@TSynEditStringsLinked.EditReplace)) and
+     (TMethod(@fSynStrings.EditLineBreak).Code   = Pointer(@TSynEditStringsLinked.EditLineBreak)) and
+     (TMethod(@fSynStrings.EditLineJoin).Code    = Pointer(@TSynEditStringsLinked.EditLineJoin)) and
+     (TMethod(@fSynStrings.EditLinesInsert).Code = Pointer(@TSynEditStringsLinked.EditLinesInsert)) and
+     (TMethod(@fSynStrings.EditLinesDelete).Code = Pointer(@TSynEditStringsLinked.EditLinesDelete)) and
+     (TMethod(@fSynStrings.EditUndo).Code        = Pointer(@TSynEditStringsLinked.EditUndo)) and
+     (TMethod(@fSynStrings.EditRedo).Code        = Pointer(@TSynEditStringsLinked.EditRedo))
+  then
+    fSynStringsEditing := TSynEditStringsLinked(fSynStrings).fSynStringsEditing // forward directly to next view with edit actions
+  else
+    fSynStringsEditing := fSynStrings;
+
+  // Methods that are usually only implemented by the real text-buffer
+  if (TMethod(@fSynStrings.GetIsInEditAction).Code  = Pointer(@TSynEditStringsLinked.GetIsInEditAction)) and
+     (TMethod(@fSynStrings.IncIsInEditAction).Code  = Pointer(@TSynEditStringsLinked.IncIsInEditAction)) and
+     (TMethod(@fSynStrings.DecIsInEditAction).Code  = Pointer(@TSynEditStringsLinked.DecIsInEditAction)) and
+     (TMethod(@fSynStrings.GetTextChangeStamp).Code = Pointer(@TSynEditStringsLinked.GetTextChangeStamp)) and
+     (TMethod(@fSynStrings.GetUndoList).Code        = Pointer(@TSynEditStringsLinked.GetUndoList)) and
+     (TMethod(@fSynStrings.GetRedoList).Code        = Pointer(@TSynEditStringsLinked.GetRedoList)) and
+     (TMethod(@fSynStrings.GetCurUndoList).Code     = Pointer(@TSynEditStringsLinked.GetCurUndoList)) and
+     (TMethod(@fSynStrings.SetIsUndoing).Code       = Pointer(@TSynEditStringsLinked.SetIsUndoing)) and
+     (TMethod(@fSynStrings.GetIsUndoing).Code       = Pointer(@TSynEditStringsLinked.GetIsUndoing)) and
+     (TMethod(@fSynStrings.SetIsRedoing).Code       = Pointer(@TSynEditStringsLinked.SetIsRedoing)) and
+     (TMethod(@fSynStrings.GetIsRedoing).Code       = Pointer(@TSynEditStringsLinked.GetIsRedoing)) and
+     (TMethod(@fSynStrings.SetUpdateState).Code     = Pointer(@TSynEditStringsLinked.SetUpdateState)) and
+     // ...Range / GetCount => may get groups of their own
+     (TMethod(@fSynStrings.GetRange).Code           = Pointer(@TSynEditStringsLinked.GetRange)) and
+     (TMethod(@fSynStrings.PutRange).Code           = Pointer(@TSynEditStringsLinked.PutRange)) and
+     (TMethod(@fSynStrings.GetCount).Code           = Pointer(@TSynEditStringsLinked.GetCount))
+  then
+    fSynStringsState := TSynEditStringsLinked(fSynStrings).fSynStringsState
+  else
+    fSynStringsState := fSynStrings;
+
+//    GetCount
+
+  if (TMethod(@fSynStrings.LogicPosAddChars).Code     = Pointer(@TSynEditStringsLinked.LogicPosAddChars)) and
+     (TMethod(@fSynStrings.LogicPosIsAtChar).Code     = Pointer(@TSynEditStringsLinked.LogicPosIsAtChar)) and
+     (TMethod(@fSynStrings.LogicPosAdjustToChar).Code = Pointer(@TSynEditStringsLinked.LogicPosAdjustToChar))
+  then
+    fSynStringsLogPos := TSynEditStringsLinked(fSynStrings).fSynStringsLogPos
+  else
+    fSynStringsLogPos := fSynStrings;
+
+  if (TMethod(@fSynStrings.DoGetPhysicalCharWidths).Code      = Pointer(@TSynEditStringsLinked.DoGetPhysicalCharWidths))
+  then
+    fSynStringsPhys := TSynEditStringsLinked(fSynStrings).fSynStringsPhys
+  else
+    fSynStringsPhys := fSynStrings;
+
+
+  if (TMethod(@fSynStrings.ViewToTextIndex).Code      = Pointer(@TSynEditStringsLinked.ViewToTextIndex)) and
+     (TMethod(@fSynStrings.TextToViewIndex).Code      = Pointer(@TSynEditStringsLinked.TextToViewIndex))
+  then
+    fSynStringsXYMap := TSynEditStringsLinked(fSynStrings).fSynStringsXYMap
+  else
+    fSynStringsXYMap := fSynStrings;
+
+//    GetCapacity
+//    SetCapacity
+//    Get
+//    GetObject
+//    Put
+//    PutObject
+
+  if (TMethod(@fSynStrings.IgnoreSendNotification).Code = Pointer(@TSynEditStringsLinked.IgnoreSendNotification)) and
+     (TMethod(@fSynStrings.SendNotification).Code       = Pointer(@TSynEditStringsLinked.SendNotification)) and
+     (TMethod(@fSynStrings.SendNotification).Code       = Pointer(@TSynEditStringsLinked.SendNotification)) and
+     (TMethod(@fSynStrings.SendNotification).Code       = Pointer(@TSynEditStringsLinked.SendNotification)) and
+     (TMethod(@fSynStrings.FlushNotificationCache).Code = Pointer(@TSynEditStringsLinked.FlushNotificationCache))
+  then
+    fSynStringsNotify := TSynEditStringsLinked(fSynStrings).fSynStringsNotify
+  else
+    fSynStringsNotify := fSynStrings;
 end;
 
 function TSynEditStringsLinked.GetIsUtf8: Boolean;
@@ -1287,7 +1380,7 @@ end;
 
 function TSynEditStringsLinked.GetTextChangeStamp: int64;
 begin
-  Result := fSynStrings.GetTextChangeStamp;
+  Result := fSynStringsState.GetTextChangeStamp;
 end;
 
 function TSynEditStringsLinked.GetViewChangeStamp: int64;
@@ -1298,12 +1391,12 @@ end;
 //Ranges
 function TSynEditStringsLinked.GetRange(Index: Pointer): TSynManagedStorageMem;
 begin
-  Result:= fSynStrings.Ranges[Index];
+  Result:= fSynStringsState.Ranges[Index];
 end;
 
 procedure TSynEditStringsLinked.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
 begin
-  fSynStrings.Ranges[Index] := ARange;
+  fSynStringsState.Ranges[Index] := ARange;
 end;
 
 function TSynEditStringsLinked.GetViewedCount: Integer;
@@ -1328,17 +1421,17 @@ end;
 
 function TSynEditStringsLinked.GetRedoList: TSynEditUndoList;
 begin
-  Result := fSynStrings.GetRedoList;
+  Result := fSynStringsState.GetRedoList;
 end;
 
 function TSynEditStringsLinked.GetUndoList: TSynEditUndoList;
 begin
-  Result := fSynStrings.GetUndoList;
+  Result := fSynStringsState.GetUndoList;
 end;
 
 function TSynEditStringsLinked.GetCurUndoList: TSynEditUndoList;
 begin
-  Result := fSynStrings.GetCurUndoList;
+  Result := fSynStringsState.GetCurUndoList;
 end;
 
 // Count
@@ -1386,15 +1479,15 @@ procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean; Sender: TObjec
 begin
   // Update/check "FSenderUpdateCount" in linked lists too (avoid extra locking/unlocking)
   if Updating then
-    fSynStrings.BeginUpdate(Sender)
+    fSynStringsState.BeginUpdate(Sender)
   else
-    fSynStrings.EndUpdate(Sender);
+    fSynStringsState.EndUpdate(Sender);
 end;
 
 procedure TSynEditStringsLinked.DoGetPhysicalCharWidths(Line: PChar;
   LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
 begin
-  fSynStrings.DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
+  fSynStringsPhys.DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
 end;
 
 function TSynEditStringsLinked.GetDisplayView: TLazSynDisplayView;
@@ -1421,73 +1514,73 @@ end;
 
 procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);
 begin
-  fSynStrings.EditInsert(LogX, LogY, AText);
+  fSynStringsEditing.EditInsert(LogX, LogY, AText);
 end;
 
 function TSynEditStringsLinked.EditDelete(LogX, LogY, ByteLen: Integer): String;
 begin
-  Result := fSynStrings.EditDelete(LogX, LogY, ByteLen);
+  Result := fSynStringsEditing.EditDelete(LogX, LogY, ByteLen);
 end;
 
 function TSynEditStringsLinked.EditReplace(LogX, LogY, ByteLen: Integer;
   AText: String): String;
 begin
-  Result:=fSynStrings.EditReplace(LogX, LogY, ByteLen, AText);
+  Result:=fSynStringsEditing.EditReplace(LogX, LogY, ByteLen, AText);
 end;
 
 procedure TSynEditStringsLinked.EditLineBreak(LogX, LogY: Integer);
 begin
-  fSynStrings.EditLineBreak(LogX, LogY);
+  fSynStringsEditing.EditLineBreak(LogX, LogY);
 end;
 
 procedure TSynEditStringsLinked.EditLineJoin(LogY: Integer;
   FillText: String = '');
 begin
-  fSynStrings.EditLineJoin(LogY, FillText);
+  fSynStringsEditing.EditLineJoin(LogY, FillText);
 end;
 
 procedure TSynEditStringsLinked.EditLinesInsert(LogY, ACount: Integer; AText: String = '');
 begin
-  fSynStrings.EditLinesInsert(LogY, ACount, AText);
+  fSynStringsEditing.EditLinesInsert(LogY, ACount, AText);
 end;
 
 procedure TSynEditStringsLinked.EditLinesDelete(LogY, ACount: Integer);
 begin
-  fSynStrings.EditLinesDelete(LogY, ACount);
+  fSynStringsEditing.EditLinesDelete(LogY, ACount);
 end;
 
 procedure TSynEditStringsLinked.EditUndo(Item: TSynEditUndoItem);
 begin
-  fSynStrings.EditUndo(Item);
+  fSynStringsEditing.EditUndo(Item);
 end;
 
 procedure TSynEditStringsLinked.EditRedo(Item: TSynEditUndoItem);
 begin
-  fSynStrings.EditRedo(Item);
+  fSynStringsEditing.EditRedo(Item);
 end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TSynEditStrings; aIndex, aCount: Integer);
 begin
-  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount);
+  fSynStringsNotify.SendNotification(AReason, ASender, aIndex, aCount);
 end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TSynEditStrings; aIndex, aCount: Integer;
   aBytePos: Integer; aLen: Integer; aTxt: String);
 begin
-  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount, aBytePos, aLen, aTxt);
+  fSynStringsNotify.SendNotification(AReason, ASender, aIndex, aCount, aBytePos, aLen, aTxt);
 end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TObject);
 begin
-  fSynStrings.SendNotification(AReason, ASender);
+  fSynStringsNotify.SendNotification(AReason, ASender);
 end;
 
 procedure TSynEditStringsLinked.FlushNotificationCache;
 begin
-  fSynStrings.FlushNotificationCache;
+  fSynStringsNotify.FlushNotificationCache;
 end;
 
 procedure TSynEditStringsLinked.AddModifiedHandler(
@@ -1552,50 +1645,50 @@ end;
 function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
   ACount: integer; AFlags: LPosFlags): Integer;
 begin
-  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount, AFlags);
+  Result := fSynStringsLogPos.LogicPosAddChars(ALine, ALogicalPos, ACount, AFlags);
 end;
 
 function TSynEditStringsLinked.LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
   AFlags: LPosFlags): Boolean;
 begin
-  Result := fSynStrings.LogicPosIsAtChar(ALine, ALogicalPos, AFlags);
+  Result := fSynStringsLogPos.LogicPosIsAtChar(ALine, ALogicalPos, AFlags);
 end;
 
 function TSynEditStringsLinked.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
   AFlags: LPosFlags): Integer;
 begin
-  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, AFlags);
+  Result := fSynStringsLogPos.LogicPosAdjustToChar(ALine, ALogicalPos, AFlags);
 end;
 
 function TSynEditStringsLinked.TextToViewIndex(aTextIndex: TLineIdx): TLineIdx;
 begin
-  Result := fSynStrings.TextToViewIndex(aTextIndex);
+  Result := fSynStringsXYMap.TextToViewIndex(aTextIndex);
 end;
 
 function TSynEditStringsLinked.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
-  Result := fSynStrings.ViewToTextIndex(aViewIndex);
+  Result := fSynStringsXYMap.ViewToTextIndex(aViewIndex);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;
   IncIgnore: Boolean);
 begin
-  fSynStrings.IgnoreSendNotification(AReason, IncIgnore);
+  fSynStringsNotify.IgnoreSendNotification(AReason, IncIgnore);
 end;
 
 function TSynEditStringsLinked.GetIsInEditAction: Boolean;
 begin
-  Result := fSynStrings.GetIsInEditAction;
+  Result := fSynStringsState.GetIsInEditAction;
 end;
 
 procedure TSynEditStringsLinked.IncIsInEditAction;
 begin
-  fSynStrings.IncIsInEditAction;
+  fSynStringsState.IncIsInEditAction;
 end;
 
 procedure TSynEditStringsLinked.DecIsInEditAction;
 begin
-  fSynStrings.DecIsInEditAction;
+  fSynStringsState.DecIsInEditAction;
 end;
 
 { TSynTextViewsManager }
