@@ -490,14 +490,12 @@ begin
   FEditingDone := Key = VK_RETURN;
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
-  PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
+  if Style = csSimple then
+    PreventDropDown := Key in [VK_RETURN, VK_ESCAPE]
+  else
+    PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
   if PreventDropDown then
   begin
-    // Prevent execution of DefaultAction (Delphi compatibility) except for
-    // style csSimple. There DroppedDown is always true (Delphi compatible).
-    // Tab key should work further and shouldn't be deleted. Issue #32559
-    if DroppedDown and not (Style = csSimple) then
-      Key := VK_UNKNOWN;
     DroppedDown := False;
   end;
   // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
