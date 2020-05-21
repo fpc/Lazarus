@@ -923,7 +923,7 @@ type
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
     procedure SetSelStart(const Value: integer);
-    property TextView : TSynEditFoldedView read FFoldedLinesView;
+    property TextView : TSynEditStringsLinked read FTheLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream; AForceColumnMode: Boolean = False): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
@@ -1908,7 +1908,7 @@ begin
   if not Assigned(FTextArea) then
     Result := -1
   else
-    Result := FFoldedLinesView.ViewToTextIndex(ToIdx(FTextArea.TopLine)) + 1;
+    Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopLine)) + 1;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -1975,7 +1975,7 @@ function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean
 // ScreenRow is 0-base
 // result is 1-based
 begin
-  Result := FFoldedLinesView.ScreenLineToTextIndex(ScreenRow)+1;
+  Result := ToPos(FTheLinesView.ViewToTextIndex(ToIdx(TopView + ScreenRow)));
   if LimitToLines and (Result >= Lines.Count) then
     Result := Lines.Count;
 //  DebugLn(['=== SrceenRow TO Row   In:',ScreenRow,'  out:',Result, ' topline=',TopLine, '  view topline=',FFoldedLinesView.TopLine]);
@@ -1987,7 +1987,7 @@ function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // 0 to LinesInWindow for visible lines (incl last partial visble line)
 // and returns LinesInWindow+1 for lines below visible screen
 begin
-  Result := FFoldedLinesView.TextIndexToScreenLine(PhysicalRow-1);
+  Result := ToPos(FTheLinesView.TextToViewIndex(ToIdx(PhysicalRow))) - TopView;
   if Result < -1 then Result := -1;
   if Result > LinesInWindow+1 then Result := LinesInWindow+1;
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
@@ -3869,7 +3869,7 @@ begin
       else
         TopView := TopView + fScrollDeltaY;
       if fScrollDeltaY > 0
-      then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
+      then Y := ToPos(FTheLinesView.ViewToTextIndex(TopView + LinesInWindow))
       else Y := TopLine;  // scrolling up
       if Y < 1   // past end of file
       then y := FCaret.LinePos;
@@ -4723,7 +4723,7 @@ end;
 
 function TCustomSynEdit.CurrentMaxTopView: Integer;
 begin
-  Result := FFoldedLinesView.ViewedCount;
+  Result := FTheLinesView.ViewedCount;
   if not(eoScrollPastEof in Options) then
     Result := Result + 1 - Max(0, LinesInWindow);
   Result := Max(Result, 1);
@@ -4741,7 +4741,7 @@ begin
 
   if not HandleAllocated then
     Include(fStateFlags, sfExplicitTopLine);
-  NewTopView := ToPos(FFoldedLinesView.TextToViewIndex(ToIdx(Value)));
+  NewTopView := ToPos(FTheLinesView.TextToViewIndex(ToIdx(Value)));
   if NewTopView <> TopView then begin
     TopView := NewTopView;
   end;
@@ -4917,7 +4917,7 @@ begin
     //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
 
     // Vertical
-    ScrollInfo.nMax := FFoldedLinesView.ViewedCount+1;
+    ScrollInfo.nMax := FTheLinesView.ViewedCount+1;
     if (eoScrollPastEof in Options) then
       Inc(ScrollInfo.nMax, LinesInWindow - 1);
     if ((fScrollBars in [ssBoth, ssVertical]) or
@@ -5143,7 +5143,7 @@ begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP: TopView := 1;
-    SB_BOTTOM: TopView := FFoldedLinesView.ViewedCount;
+    SB_BOTTOM: TopView := FTheLinesView.ViewedCount;
       // Scrolls one line up / down
     SB_LINEDOWN: TopView := TopView + 1;
     SB_LINEUP: TopView := TopView - 1;
@@ -6778,22 +6778,22 @@ begin
         end;
       ecEditorTop, ecSelEditorTop:
         begin
-          FCaret.LineCharPos := Point(1, ToPos(FFoldedLinesView.ViewToTextIndex(0)));
+          FCaret.LineCharPos := Point(1, ToPos(FTheLinesView.ViewToTextIndex(0)));
         end;
       ecEditorBottom, ecSelEditorBottom:
         begin
-          CaretNew := Point(1, ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.ViewedCount))));
+          CaretNew := Point(1, ToPos(FTheLinesView.ViewToTextIndex(ToIdx(FTheLinesView.ViewedCount))));
           if (CaretNew.Y > 0) then
             CaretNew.X := Length(FTheLinesView[CaretNew.Y - 1]) + 1;
           FCaret.LineCharPos := CaretNew;
         end;
       ecColSelEditorTop:
         begin
-          FCaret.LinePos := ToPos(FFoldedLinesView.ViewToTextIndex(0));
+          FCaret.LinePos := ToPos(FTheLinesView.ViewToTextIndex(0));
         end;
       ecColSelEditorBottom:
         begin
-          FCaret.LinePos := ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.ViewedCount)));
+          FCaret.LinePos := ToPos(FTheLinesView.ViewToTextIndex(ToIdx(FTheLinesView.ViewedCount)));
         end;
 
 // goto special line / column position
@@ -8344,7 +8344,7 @@ begin
         if not(eoScrollPastEol in fOptions) then begin
           // move to begin of next line
           NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, +1);
-          if NewCaret.Y <= ToPos(FFoldedLinesView.ViewToTextIndex(ToIdx(FFoldedLinesView.ViewedCount))) then begin
+          if NewCaret.Y <= ToPos(FTheLinesView.ViewToTextIndex(ToIdx(FTheLinesView.ViewedCount))) then begin
             NewCaret.X := 1;
             FCaret.LineBytePos := NewCaret;
           end;

@@ -243,6 +243,7 @@ type
     FCaretStamp: Int64;
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
+    FFoldView: TSynEditFoldedView;
     FTopInfoNestList: TLazSynEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
@@ -1453,10 +1454,10 @@ var
     end;
   NodeFoldType: TPascalCodeFoldBlockType;
 begin
-  if (not FShowTopInfo) or (not HandleAllocated) or (TextView.HighLighter = nil) then exit;
-  if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
+  if (not FShowTopInfo) or (not HandleAllocated) or (FFoldView.HighLighter = nil) then exit;
+  if FSrcSynCaretChangedLock or not(FFoldView.HighLighter is TSynPasSyn) then exit;
 
-  if TextView.HighLighter.NeedScan then begin
+  if FFoldView.HighLighter.NeedScan then begin
     FSrcSynCaretChangedNeeded := True;
     exit;
   end;
@@ -1748,6 +1749,7 @@ var
   MarkupFoldColors: TSynEditMarkupFoldColors;
 begin
   inherited Create(AOwner);
+  FFoldView := TSynEditFoldedView(TextViewsManager.SynTextViewByClass[TSynEditFoldedView]);
   FCaretColor := clNone;
   FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);

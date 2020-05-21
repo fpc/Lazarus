@@ -301,7 +301,8 @@ end;
 procedure TTestFoldedView.ReCreateEdit;
 begin
   inherited ReCreateEdit;
-  FoldedView := SynEdit.TextView;
+  //FoldedView := SynEdit.TextView;
+  FoldedView := TSynEditFoldedView(SynEdit.TextViewsManager.SynTextViewByClass[TSynEditFoldedView]);
   if DoAllowScrollPastEof then SynEdit.Options := SynEdit.Options + [eoScrollPastEof];
   EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
 end;
