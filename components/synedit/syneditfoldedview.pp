@@ -298,7 +298,6 @@ type
     FHighlighter: TSynCustomFoldHighlighter;
     FLines : TSynEditStrings;
     FSelection: TSynEditSelection;
-    FFoldTree : TSynTextFoldAVLTree;
     FNestedFoldsList: TLazSynEditNestedFoldsList;
     function GetFoldsAvailable: Boolean;
     function GetHighLighterWithLines: TSynCustomFoldHighlighter;
@@ -310,7 +309,7 @@ type
   protected
     property HighLighterWithLines: TSynCustomFoldHighlighter read GetHighLighterWithLines;
   public
-    constructor Create(AFoldTree : TSynTextFoldAVLTree);
+    //constructor Create;
     destructor Destroy; override;
 
     // Info about Folds opening on ALineIdx
@@ -2957,11 +2956,6 @@ begin
   FNestedFoldsList.Lines := FLines;
 end;
 
-constructor TSynEditFoldProvider.Create(AFoldTree: TSynTextFoldAVLTree);
-begin
-  FFoldTree := AFoldTree;
-end;
-
 destructor TSynEditFoldProvider.Destroy;
 begin
   inherited Destroy;
@@ -3088,7 +3082,7 @@ begin
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
-  FFoldProvider := TSynEditFoldProvider.Create(fFoldTree);
+  FFoldProvider := TSynEditFoldProvider.Create;
   // TODO: if NextLineChanges, update FFoldProvider //     DoSynStringsChanged
   FDisplayView := TLazSynDisplayFold.Create(Self);
   FFoldChangedHandlerList := TFoldChangedHandlerList.Create;
