@@ -743,6 +743,12 @@ begin
   GtkWindow := {%H-}PGtkWindow(AForm.Handle);
   if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then
   begin
+    LastMouse.Button := 0;
+    LastMouse.ClickCount := 0;
+    LastMouse.Down := False;
+    LastMouse.MousePos := Point(0, 0);
+    LastMouse.Time := 0;
+    LastMouse.WinControl := nil;
     gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
     gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
     gtk_window_set_type_hint({%H-}PGtkWindow(AForm.Handle),
