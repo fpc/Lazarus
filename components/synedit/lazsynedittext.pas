@@ -395,9 +395,9 @@ type
 
   TSynEditStringsLinked = class(TSynEditStrings)
   private
-    procedure SetSynStrings(AValue: TSynEditStrings);
-  protected
     fSynStrings: TSynEditStrings;
+  protected
+    procedure SetSynStrings(AValue: TSynEditStrings); virtual;
 
     function  GetIsUtf8 : Boolean;  override;
     procedure SetIsUtf8(const AValue : Boolean);  override;
@@ -439,8 +439,6 @@ type
 
     function GetDisplayView: TLazSynDisplayView; override;
   public
-    constructor Create(ASynStringSource: TSynEditStrings);
-
     function Add(const S: string): integer; override;
     procedure AddStrings(AStrings: TStrings); override;
     procedure Clear; override;
@@ -490,6 +488,33 @@ type
     procedure EditRedo(Item: TSynEditUndoItem); override;
   end;
 
+  { TSynTextViewsManager }
+
+  TSynEditStringsLinkedClass = class of TSynEditStringsLinked;
+
+  TSynTextViewsManager = class
+  private
+    FTextViewsList : TList;
+    FTextBuffer: TSynEditStrings;
+    FTopViewChangedCallback: TNotifyEvent;
+    function GetSynTextView(Index: integer): TSynEditStringsLinked;
+    function GetSynTextViewByClass(Index: TSynEditStringsLinkedClass): TSynEditStringsLinked;
+    procedure ReconnectViews;
+    procedure SetTextBuffer(AValue: TSynEditStrings);
+  protected
+    property TextBuffer: TSynEditStrings read FTextBuffer write SetTextBuffer;
+  public
+    constructor Create(ATextBuffer: TSynEditStrings; ATopViewChangedCallback: TNotifyEvent);
+    destructor Destroy; override;
+
+    Procedure AddTextView(aTextView : TSynEditStringsLinked; AsFirst: Boolean = False);
+    Procedure AddTextView(aTextView : TSynEditStringsLinked; AIndex: Integer);
+    Procedure AddTextView(aTextView : TSynEditStringsLinked; AnAfter: TSynEditStringsLinked);
+    Procedure RemoveSynTextView(aTextView : TSynEditStringsLinked; aDestroy: Boolean = False);
+    function Count: Integer;
+    property SynTextView[Index: integer]: TSynEditStringsLinked read GetSynTextView;
+    property SynTextViewByClass[Index: TSynEditStringsLinkedClass]: TSynEditStringsLinked read GetSynTextViewByClass;
+  end;
 
 implementation
 
@@ -1217,12 +1242,6 @@ end;
 
 { TSynEditStringsLinked }
 
-constructor TSynEditStringsLinked.Create(ASynStringSource: TSynEditStrings);
-begin
-  fSynStrings := ASynStringSource;
-  Inherited Create;
-end;
-
 function TSynEditStringsLinked.Add(const S: string): integer;
 begin
   Result := fSynStrings.Add(S);
@@ -1292,11 +1311,6 @@ procedure TSynEditStringsLinked.SetSynStrings(AValue: TSynEditStrings);
 begin
   if fSynStrings = AValue then Exit;
   fSynStrings := AValue;
-  if DisplayView <> nil then begin
-    if fSynStrings = nil
-    then DisplayView.NextView := nil
-    else DisplayView.NextView := fSynStrings.DisplayView;
-  end;
 end;
 
 function TSynEditStringsLinked.GetIsUtf8: Boolean;
@@ -1306,7 +1320,8 @@ end;
 
 procedure TSynEditStringsLinked.SetIsUtf8(const AValue: Boolean);
 begin
-  FSynStrings.IsUtf8 := AValue;
+  if FSynStrings <> nil then
+    FSynStrings.IsUtf8 := AValue;
 end;
 
 function TSynEditStringsLinked.GetTextChangeStamp: int64;
@@ -1554,6 +1569,122 @@ end;
 procedure TSynEditStringsLinked.DecIsInEditAction;
 begin
   fSynStrings.DecIsInEditAction;
+end;
+
+{ TSynTextViewsManager }
+
+function TSynTextViewsManager.GetSynTextView(Index: integer): TSynEditStringsLinked;
+begin
+  Result := TSynEditStringsLinked(FTextViewsList[Index]);
+end;
+
+function TSynTextViewsManager.GetSynTextViewByClass(
+  Index: TSynEditStringsLinkedClass): TSynEditStringsLinked;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to FTextViewsList.Count-1 do
+    if TSynEditStringsLinked(FTextViewsList[i]).ClassType = Index then
+      exit(TSynEditStringsLinked(FTextViewsList[i]));
+end;
+
+procedure TSynTextViewsManager.ReconnectViews;
+var
+  i: Integer;
+  dsp: TLazSynDisplayView;
+begin
+  SynTextView[0].NextLines := FTextBuffer;
+  dsp := FTextBuffer.DisplayView;
+
+  for i := 1 to FTextViewsList.Count-1 do begin
+    SynTextView[i].NextLines := SynTextView[i-1];
+
+    if (SynTextView[i].DisplayView <> dsp) then begin
+      SynTextView[i].DisplayView.NextView := dsp;
+      dsp := SynTextView[i].DisplayView.NextView;
+    end;
+  end;
+  FTopViewChangedCallback(SynTextView[Count-1]);
+end;
+
+procedure TSynTextViewsManager.SetTextBuffer(AValue: TSynEditStrings);
+begin
+  if FTextBuffer = AValue then Exit;
+  FTextBuffer := AValue;
+  ReconnectViews;
+end;
+
+constructor TSynTextViewsManager.Create(ATextBuffer: TSynEditStrings;
+  ATopViewChangedCallback: TNotifyEvent);
+begin
+  FTextBuffer := ATextBuffer;
+  FTopViewChangedCallback := ATopViewChangedCallback;
+  FTextViewsList := TList.Create;
+end;
+
+destructor TSynTextViewsManager.Destroy;
+var
+  i: Integer;
+begin
+  // Destroy in reverse order / keep NextLines valid for each inner
+  i := Count - 1;
+  while i >= 0 do begin
+    TSynEditStringsLinked(FTextViewsList[i]).Free;
+    FTextViewsList.Delete(i);
+    i := Count - 1;
+  end;
+  FTextViewsList.Free;
+  inherited Destroy;
+end;
+
+procedure TSynTextViewsManager.AddTextView(aTextView: TSynEditStringsLinked;
+  AsFirst: Boolean);
+begin
+  if AsFirst then
+    FTextViewsList.Insert(0, aTextView)
+  else
+    FTextViewsList.Add(aTextView);
+  ReconnectViews;
+end;
+
+procedure TSynTextViewsManager.AddTextView(aTextView: TSynEditStringsLinked;
+  AIndex: Integer);
+begin
+  FTextViewsList.Insert(AIndex, aTextView);
+  ReconnectViews;
+end;
+
+procedure TSynTextViewsManager.AddTextView(
+  aTextView: TSynEditStringsLinked; AnAfter: TSynEditStringsLinked);
+var
+  i: Integer;
+begin
+  i := FTextViewsList.IndexOf(AnAfter);
+  if i >= 0 then
+    FTextViewsList.Insert(i + 1, aTextView)
+  else
+    FTextViewsList.Add(aTextView);
+  ReconnectViews;
+end;
+
+procedure TSynTextViewsManager.RemoveSynTextView(aTextView: TSynEditStringsLinked;
+  aDestroy: Boolean);
+var
+  i: Integer;
+begin
+  i := FTextViewsList.IndexOf(aTextView);
+  if i >= 0 then begin
+    if aDestroy then
+      TSynEditStringsLinked(FTextViewsList[i]).Free;
+    FTextViewsList.Delete(i);
+    ReconnectViews
+  end;
+end;
+
+function TSynTextViewsManager.Count: Integer;
+begin
+  Result := FTextViewsList.Count;
 end;
 
 end.

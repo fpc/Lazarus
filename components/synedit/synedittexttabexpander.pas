@@ -66,6 +66,7 @@ type
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
   protected
+    procedure SetSynStrings(AValue: TSynEditStrings); override;
     function GetViewChangeStamp: int64; override;
     function  GetTabWidth : integer;
     procedure SetTabWidth(const AValue : integer);
@@ -73,7 +74,7 @@ type
     function  GetLengthOfLongestLine: integer; override;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   public
-    constructor Create(ASynStringSource: TSynEditStrings);
+    constructor Create;
     destructor Destroy; override;
 
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -134,34 +135,28 @@ end;
 
 { TSynEditStringTabExpander }
 
-constructor TSynEditStringTabExpander.Create(ASynStringSource: TSynEditStrings);
+constructor TSynEditStringTabExpander.Create;
 begin
   FIndexOfLongestLine := -1;
   FFirstUnknownLongestLine := -1;
   FLastUnknownLongestLine := -1;
-  inherited Create(ASynStringSource);
-  TextBufferChanged(nil);
+  inherited Create;
   TabWidth := 8;
-  fSynStrings.AddChangeHandler(senrLineCount, @LineCountChanged);
-  fSynStrings.AddChangeHandler(senrLineChange, @LineTextChanged);
-  fSynStrings.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
 end;
 
 destructor TSynEditStringTabExpander.Destroy;
 var
   Data: TSynEditStringTabData;
 begin
-  Data := TSynEditStringTabData(fSynStrings.Ranges[Self]);
+  Data := TSynEditStringTabData(NextLines.Ranges[Self]);
   if Assigned(Data) then begin
     Data.DecRefCount;
     if Data.RefCount = 0 then begin
-      fSynStrings.Ranges[Self] := nil;
+      NextLines.Ranges[Self] := nil;
       Data.Free;
     end;
   end;
-  fSynStrings.RemoveChangeHandler(senrLineChange, @LineTextChanged);
-  fSynStrings.RemoveChangeHandler(senrLineCount, @LineCountChanged);
-  fSynStrings.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+  NextLines := nil;
   inherited Destroy;
 end;
 
@@ -171,8 +166,6 @@ begin
 end;
 
 procedure TSynEditStringTabExpander.SetTabWidth(const AValue: integer);
-var
-  i: integer;
 begin
   if FTabWidth = AValue then exit;
 
@@ -184,9 +177,6 @@ begin
   FIndexOfLongestLine := -1;
   FFirstUnknownLongestLine := -1;
   FLastUnknownLongestLine := -1;
-  for i := 0 to Count - 1 do
-    if not(FTabData[i] >= NO_TAB_IN_LINE_OFFSET) then
-      FTabData[i] := LINE_LEN_UNKNOWN;
 end;
 
 function TSynEditStringTabExpander.GetViewChangeStamp: int64;
@@ -200,6 +190,7 @@ end;
 procedure TSynEditStringTabExpander.TextBufferChanged(Sender: TObject);
 var
   Data: TSynEditStringTabData;
+  i: integer;
 begin
   // Using self, instead as class, to register tab-width-data
   // other shared edits can have different tab-width
@@ -222,6 +213,9 @@ begin
   if FTabData = nil then begin
     FTabData := TSynEditStringTabData.Create;
     NextLines.Ranges[Self] := FTabData;
+    for i := 0 to Count - 1 do
+      if not(FTabData[i] >= NO_TAB_IN_LINE_OFFSET) then
+        FTabData[i] := LINE_LEN_UNKNOWN;
   end
   else
     FTabData.IncRefCount;
@@ -278,7 +272,7 @@ var
   i, j, l: Integer;
 begin
 // this is only used by trimmer.lengthOfLongestLine / which is not called, if a tab module is present
-  Line := fSynStrings[Index];
+  Line := NextLines[Index];
   if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
     Result := Line;
     // xxx wrong double width // none latin ...
@@ -312,7 +306,7 @@ var
   CharWidths: TPhysicalCharWidths;
   i: Integer;
 begin
-  Line := fSynStrings[Index];
+  Line := NextLines[Index];
   if (Line = '') then begin
     Result := 0;
     FTabData[Index] := Result + NO_TAB_IN_LINE_OFFSET;
@@ -331,11 +325,28 @@ begin
   end;
 end;
 
+procedure TSynEditStringTabExpander.SetSynStrings(AValue: TSynEditStrings);
+begin
+  if NextLines <> nil then begin
+    NextLines.RemoveChangeHandler(senrLineChange, @LineTextChanged);
+    NextLines.RemoveChangeHandler(senrLineCount, @LineCountChanged);
+    NextLines.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+  end;
+  inherited SetSynStrings(AValue);
+  if NextLines <> nil then begin
+    NextLines.AddChangeHandler(senrLineCount, @LineCountChanged);
+    NextLines.AddChangeHandler(senrLineChange, @LineTextChanged);
+    NextLines.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+    if FTabData = nil then
+      TextBufferChanged(nil);
+  end;
+end;
+
 function TSynEditStringTabExpander.GetExpandedString(Index: integer): string;
 begin
   if (Index >= 0) and (Index < Count) then begin
     if FTabData[Index] >= NO_TAB_IN_LINE_OFFSET then
-      Result := fSynStrings[Index]
+      Result := NextLines[Index]
     else
       Result := ExpandedString(Index);
   end else
@@ -415,7 +426,7 @@ begin
       if j = LINE_LEN_UNKNOWN then begin
         // embedd a copy of ExpandedStringLength
         // allows one to re-use CharWidths
-        Line := NextLines.GetPChar(i,LineLen); // fSynStrings[i];
+        Line := NextLines.GetPChar(i,LineLen); // NextLines[i];
         j := 0;
         if (LineLen = 0) then begin
           FTabData[i] := j + NO_TAB_IN_LINE_OFFSET;

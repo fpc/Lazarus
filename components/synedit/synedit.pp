@@ -531,6 +531,7 @@ type
     FFoldedLinesView:  TSynEditFoldedView;
     FShareOptions: TSynEditorShareOptions;
     FVisibleSpecialChars: TSynVisibleSpecialChars;
+    FTextViewsManager: TSynTextViewsManager;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FBidiChrLinesView: TSynEditStringBidiChars;
@@ -541,8 +542,6 @@ type
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
-    FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
-    FDisplayView: TLazSynDisplayView;
 
     fExtraCharSpacing: integer;
     fMaxLeftChar: Integer; // 1024
@@ -629,6 +628,7 @@ type
     FOnMouseLink: TSynMouseLinkEvent;
     FPendingFoldState: String;
 
+    procedure DoTopViewChanged(Sender: TObject);
     procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
@@ -1171,6 +1171,8 @@ type
     property Markup[Index: integer]: TSynEditMarkup read GetMarkup;
     property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup read GetMarkupByClass;
     property TrimSpaceType: TSynEditStringTrimmingType read GetTrimSpaceType write SetTrimSpaceType;
+
+    property TextViewsManager: TSynTextViewsManager read FTextViewsManager; experimental; // Only use to Add/remove views
   public
     // Caret
     procedure SetCaretTypeSize(AType: TSynCaretType;AWidth, AHeight, AXOffs, AYOffs: Integer);
@@ -1382,6 +1384,11 @@ const
   GutterTextDist = 2; //Pixel
 
 type
+
+  TSynTextViewsManagerInternal = class(TSynTextViewsManager)
+  public
+    property TextBuffer;
+  end;
 
   { TSynEditMarkListInternal }
 
@@ -2064,6 +2071,13 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.DoTopViewChanged(Sender: TObject);
+begin
+  FTheLinesView := TSynEditStrings(Sender);
+  if FPaintArea <> nil then // maybe change order of creation
+    FPaintArea.DisplayView := FTheLinesView.DisplayView;
+end;
+
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2096,44 +2110,42 @@ begin
   FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterSystem;
   {$endif}
 
-  // Create the lines/views
-  FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
+  FTextViewsManager := TSynTextViewsManagerInternal.Create(FLines, @DoTopViewChanged);
 
-  FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
-                                                            (FTrimmedLinesView);
+  // Create the lines/views
+  FTrimmedLinesView := TSynEditStringTrimmingList.Create(fCaret);
+  FTextViewsManager.AddTextView(FTrimmedLinesView);
+
+  FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create();
+  FTextViewsManager.AddTextView(FDoubleWidthChrLinesView);
 
   {$IFDEF WithSynExperimentalCharWidth}
   //FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FDoubleWidthChrLinesView, Self.Canvas);
-  FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FTrimmedLinesView, Self.Canvas);
+  FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(Self.Canvas);
+  FTextViewsManager.AddTextView(FSysCharWidthLinesView);
 
-  FBidiChrLinesView := TSynEditStringBidiChars.Create(FSysCharWidthLinesView);
-  FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
+  FBidiChrLinesView := TSynEditStringBidiChars.Create();
+  FTextViewsManager.AddTextView(FBidiChrLinesView);
+
+  FTabbedLinesView := TSynEditStringTabExpander.Create();
+  FTextViewsManager.AddTextView(FTabbedLinesView);
   {$ELSE}
 
   {$IFnDEF WithOutSynBiDi}
-  FBidiChrLinesView := TSynEditStringBidiChars.Create(FDoubleWidthChrLinesView);
+  FBidiChrLinesView := TSynEditStringBidiChars.Create();
+  FTextViewsManager.AddTextView(FBidiChrLinesView);
   {$ENDIF}
 
   // ftab, currently has LengthOfLongestLine, therefore must be after DoubleWidthChar
-  {$IFnDEF WithOutSynBiDi }
-  FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
-  {$ELSE}
-  FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
-  {$ENDIF}
+  FTabbedLinesView := TSynEditStringTabExpander.Create();
+  FTextViewsManager.AddTextView(FTabbedLinesView);
 
   {$ENDIF} // WithSynExperimentalCharWidth
 
-  // Pointer to the First/Lowest View
-  // TODO: this should be Folded...
-  FTheLinesView := FTabbedLinesView;
-  FTopLinesView := FTrimmedLinesView;
-
-  FFoldedLinesView := TSynEditFoldedView.Create(FTheLinesView, fCaret);
+  FFoldedLinesView := TSynEditFoldedView.Create(fCaret);
   FFoldedLinesView.OnFoldChanged := @FoldChanged;
   FFoldedLinesView.OnLineInvalidate := @InvalidateGutterLines;
-  FFoldedLinesView.DisplayView.NextView := FTheLinesView.DisplayView;
-
-  FDisplayView := FFoldedLinesView.DisplayView;
+  FTextViewsManager.AddTextView(FFoldedLinesView);
 
   // External Accessor
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
@@ -2281,7 +2293,7 @@ begin
   FPaintArea.TextArea := FTextArea;
   FPaintArea.LeftGutterArea := FLeftGutterArea;
   FPaintArea.RightGutterArea := FRightGutterArea;
-  FPaintArea.DisplayView := FDisplayView;
+  FPaintArea.DisplayView := FTheLinesView.DisplayView;
 
   Color := clWhite;
   Font.Assign(fFontDummy);
@@ -2595,19 +2607,10 @@ begin
   FreeAndNil(fFontDummy);
   DestroyMarkList; // before detach from FLines
   FreeAndNil(FWordBreaker);
-  FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
   FreeAndNil(FBlockSelection);
   FreeAndNil(FStrings);
-  FreeAndNil(FTabbedLinesView);
-  FreeAndNil(FTrimmedLinesView); // has reference to caret
-  {$IFnDEF WithOutSynBiDi}
-  FreeAndNil(FBidiChrLinesView);
-  {$ENDIF}
-  {$IFDEF WithSynExperimentalCharWidth}
-  FreeAndNil(FSysCharWidthLinesView);
-  {$ENDIF}
-  FreeAndNil(FDoubleWidthChrLinesView);
+  FreeAndNil(FTextViewsManager);
   TSynEditStringList(FLines).DetachSynEdit(Self);
   if TSynEditStringList(FLines).AttachedSynEditCount = 0 then
     FreeAndNil(fLines);
@@ -5874,7 +5877,7 @@ begin
 
   Flines := NewBuffer;
   TSynEditStringList(FLines).AttachSynEdit(Self);
-  TSynEditStringsLinked(FTopLinesView).NextLines := FLines;
+  TSynTextViewsManagerInternal(FTextViewsManager).TextBuffer := FLines;
 
   // Todo: Todo Refactor all classes with events, so they an be told to re-attach
   NewBuffer.CopyHanlders(OldBuffer, self);
@@ -5883,7 +5886,6 @@ begin
     NewBuffer.CopyHanlders(OldBuffer, LView);
     LView := TSynEditStringsLinked(LView).NextLines;
   end;
-  NewBuffer.CopyHanlders(OldBuffer, FFoldedLinesView);
   //NewBuffer.CopyHanlders(OldBuffer, FMarkList);
   NewBuffer.CopyHanlders(OldBuffer, FCaret);
   NewBuffer.CopyHanlders(OldBuffer, FInternalCaret);
@@ -6024,7 +6026,6 @@ begin
     TSynEditStringList(ALines).RemoveHanlders(LView);
     LView := TSynEditStringsLinked(LView).NextLines;
   end;
-  TSynEditStringList(ALines).RemoveHanlders(FFoldedLinesView);
   TSynEditStringList(ALines).RemoveHanlders(FCaret);
   TSynEditStringList(ALines).RemoveHanlders(FInternalCaret);
   TSynEditStringList(ALines).RemoveHanlders(FBlockSelection);

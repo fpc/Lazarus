@@ -57,7 +57,7 @@ type
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   {$endif}
   public
-    constructor Create(ASynStringSource: TSynEditStrings; AHandleOwner: TCanvas);
+    constructor Create(AHandleOwner: TCanvas);
     property HandleOwner: TCanvas read FHandleOwner;
     property CharWidth:   Integer read FCharWidth write FCharWidth;
     property TextDrawer: TheTextDrawer read fTextDrawer write fTextDrawer;
@@ -72,10 +72,9 @@ var
 
 { TSynEditStringSystemWidthChars }
 
-constructor TSynEditStringSystemWidthChars.Create(ASynStringSource: TSynEditStrings;
-  AHandleOwner: TCanvas);
+constructor TSynEditStringSystemWidthChars.Create(AHandleOwner: TCanvas);
 begin
-  inherited Create(ASynStringSource);
+  inherited Create;
   FHandleOwner := AHandleOwner;
 end;
 

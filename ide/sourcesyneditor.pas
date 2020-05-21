@@ -124,6 +124,7 @@ type
     procedure SetHighlighter(AValue: TSynCustomHighlighter); override;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+    procedure DoDisplayViewChanged; override;
     procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
@@ -1350,6 +1351,11 @@ procedure TSourceLazSynSurfaceManager.DoPaint(ACanvas: TCanvas; AClip: TRect);
 begin
   FOriginalManager.Paint(ACanvas, AClip);
   FExtraManager.Paint(ACanvas, AClip);
+end;
+
+procedure TSourceLazSynSurfaceManager.DoDisplayViewChanged;
+begin
+  FOriginalManager.DisplayView := DisplayView;
 end;
 
 procedure TSourceLazSynSurfaceManager.BoundsChanged;
