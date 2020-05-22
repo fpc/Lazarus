@@ -8456,6 +8456,15 @@ images/icons/lazarus_orange.ico -text
 images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
+images/items/datamodule_designer.png -text svneol=unset#image/png
+images/items/datamodule_designer_150.png -text svneol=unset#image/png
+images/items/datamodule_designer_200.png -text svneol=unset#image/png
+images/items/form_designer.png -text svneol=unset#image/png
+images/items/form_designer_150.png -text svneol=unset#image/png
+images/items/form_designer_200.png -text svneol=unset#image/png
+images/items/frame_designer.png -text svneol=unset#image/png
+images/items/frame_designer_150.png -text svneol=unset#image/png
+images/items/frame_designer_200.png -text svneol=unset#image/png
 images/items/item_character.png -text svneol=unset#image/png
 images/items/item_character_150.png -text svneol=unset#image/png
 images/items/item_character_200.png -text svneol=unset#image/png

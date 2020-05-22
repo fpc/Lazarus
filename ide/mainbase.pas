@@ -89,6 +89,7 @@ type
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
     procedure SetDisplayState(AValue: TDisplayState);
+    procedure UpdateWindowMenu;
   protected
     FNeedUpdateHighlighters: boolean;
 
@@ -133,8 +134,6 @@ type
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
     procedure mnuBuildModeClicked(Sender: TObject); virtual; abstract;
-
-    procedure UpdateWindowMenu;
 
   public
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; virtual; abstract;
@@ -1520,17 +1519,82 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-procedure TMainIDEBase.UpdateWindowMenu;
+function GetIconIndex(AForm: TWinControl): Integer;
+begin
+  if csDesigning in AForm.ComponentState then             // in designer
+    case AForm.ClassName of
+      'TFrameProxyDesignerForm':
+        Exit(IDEImages.GetImageIndex('frame_designer'));      // frame
+      'TNonControlProxyDesignerForm':
+        Exit(IDEImages.GetImageIndex('datamodule_designer')); // datamodule
+    else
+      Exit(IDEImages.GetImageIndex('form_designer'));         // own form class (TForm1, TForm2, etc.)
+    end;
 
-  function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem;
-  begin
-    Result := RegisterIDEMenuCommand(ASection,'Window'+IntToStr(Index)+ASection.Name,'');
-    Result.CreateMenuItem;
+  with MainIDEBar do
+  case AForm.ClassName of
+    'TCharacterMapDialog':     Exit(-1);                      // for future icon
+    'TObjectInspectorDlg':     Exit(itmViewInspector.ImageIndex);
+    'TSourceNotebook':         Exit(itmViewSourceEditor.ImageIndex);
+    'TMessagesView':           Exit(itmViewMessage.ImageIndex);
+    'TCodeExplorerView':       Exit(itmViewCodeExplorer.ImageIndex);
+    'TFPDocEditor':            Exit(-1);                      // for future icon
+    'TCodeBrowserView':        Exit(itmViewCodeBrowser.ImageIndex);
+    'TUnitDependenciesWindow': Exit(-1);                      // for future icon
+    'TRestrictionBrowserView': Exit(itmViewRestrictionBrowser.ImageIndex);
+    'TComponentListForm':      Exit(itmViewComponents.ImageIndex);
+    'TJumpHistoryViewWin':     Exit(itmJumpHistory.ImageIndex);
+    'TMacroListView':          Exit(-1);                      // for future icon
+    'TTabOrderDialog':         Exit(itmViewTabOrder.ImageIndex);
+    'TSearchResultsView':      Exit(itmViewSearchResults.ImageIndex);
+    'TWatchesDlg':             Exit(itmViewWatches.ImageIndex);
+    'TBreakPointsDlg':         Exit(itmViewBreakPoints.ImageIndex);
+    'TLocalsDlg':              Exit(-1);                      // for future icon
+    'TRegistersDlg':           Exit(-1);                      // for future icon
+    'TCallStackDlg':           Exit(itmViewCallStack.ImageIndex);
+    'TThreadsDlg':             Exit(-1);                      // for future icon
+    'TAssemblerDlg':           Exit(-1);                      // for future icon
+    'TDbgEventsForm':          Exit(-1);                      // for future icon
+    'THistoryDialog':          Exit(-1);                      // for future icon
+    'TDbgOutputForm':          Exit(itmViewDebugOutput.ImageIndex);
+    'TProjectInspectorForm':   Exit(itmProjectInspector.ImageIndex);
+    'TPkgGraphExplorerDlg':    Exit(itmPkgPkgGraph.ImageIndex);
+    'TPackageEditorForm':      Exit(IDEImages.GetImageIndex('item_package'));
+    'TDSFieldsEditorFrm':               Exit(-1);             // for future icon
+    'TDBGridColumnsPropertyEditorForm': Exit(-1);             // for future icon
+    'TActionListEditor':                Exit(-1);             // for future icon
+    'TCollectionPropertyEditorForm':    Exit(-1);             // for future icon
+    'TSeriesEditorForm':                Exit(-1);             // for future icon
+    // In packages, may not be installed:
+    'TProjectGroupEditorForm': Exit(IDEImages.GetImageIndex('pg_item'));
+    'THeapTrcViewForm':        Exit(-1);                      // for future icon
+    'TIDETodoWindow':          Exit(IDEImages.GetImageIndex('menu_view_todo'));
+    'TAnchorDesigner':         Exit(IDEImages.GetImageIndex('menu_view_anchor_editor'));
+  else
+    Exit(-1);
   end;
+end;
 
+function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem;
+begin
+  Result := RegisterIDEMenuCommand(ASection,'Window'+IntToStr(Index)+ASection.Name,'');
+  Result.CreateMenuItem;
+end;
+
+procedure InitMenuItem(AMenuItem: TIDEMenuItem; AForm: TCustomForm; AIcon: Integer);
+begin
+  AMenuItem.ImageIndex := AIcon;
+  if EnvironmentOptions.Desktop.IDENameForDesignedFormList and IsFormDesign(AForm) then
+    AMenuItem.Caption := AForm.Name
+  else
+    AMenuItem.Caption := AForm.Caption;
+  AMenuItem.UserTag := {%H-}PtrUInt(AForm);
+end;
+
+procedure TMainIDEBase.UpdateWindowMenu;
 var
   WindowsList: TFPList;
-  i, EditorIndex, ItemCountProject, ItemCountOther: Integer;
+  i, EditorIndex, ItemCountProject, ItemCountOther, IconInd: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
   EdList: TStringList;
@@ -1553,8 +1617,8 @@ begin
     WindowsList.Add(MainIDEBar);
   {$ENDIF}
   // add special IDE windows
-  for i:=0 to Screen.FormCount-1 do begin
-    AForm:=Screen.Forms[i];
+  for i := 0 to Screen.FormCount-1 do begin
+    AForm := Screen.Forms[i];
     //debugln(['TMainIDEBase.UpdateWindowMenu ',DbgSName(AForm),' Vis=',AForm.IsVisible,' Des=',DbgSName(AForm.Designer)]);
     if (AForm=MainIDEBar) or (AForm=SplashForm) or IsFormDesign(AForm)
     or (WindowsList.IndexOf(AForm)>=0) then
@@ -1568,33 +1632,24 @@ begin
     WindowsList.Add(AForm);
   end;
   // add designer forms and datamodule forms
-  for i:=0 to Screen.FormCount-1 do begin
-    AForm:=Screen.Forms[i];
+  for i := 0 to Screen.FormCount-1 do begin
+    AForm := Screen.Forms[i];
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
   // create menuitems for all windows
-  for i:=0 to WindowsList.Count-1 do
+  for i := 0 to WindowsList.Count-1 do
   begin
+    IconInd := GetIconIndex(TWinControl(WindowsList[i]));
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
-    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
-    and IsFormDesign(TWinControl(WindowsList[i])) then
-      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
-    else
-      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    InitMenuItem(CurMenuItem, TCustomForm(WindowsList[i]), IconInd);
     CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
-    CurMenuItem.UserTag := {%H-}PtrUInt(WindowsList[i]);
-    CurMenuItem.OnClick:=@mnuWindowItemClick;
+    CurMenuItem.OnClick := @mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
-    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
-    and IsFormDesign(TWinControl(WindowsList[i])) then
-      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
-    else
-      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
-    CurMenuItem.UserTag := {%H-}PtrUInt(WindowsList[i]);
-    CurMenuItem.OnClick:=@mnuCenterWindowItemClick;
+    InitMenuItem(CurMenuItem, TCustomForm(WindowsList[i]), IconInd);
+    CurMenuItem.OnClick := @mnuCenterWindowItemClick;
   end;
   //create source page menuitems
   itmTabListProject.Visible := False;

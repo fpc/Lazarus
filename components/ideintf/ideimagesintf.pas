@@ -47,7 +47,8 @@ type
     function GetImages_24: TLCLGlyphs;
 
     class function CreateBitmapFromRes(const ImageName: string): TCustomBitmap;
-    class function CreateBestBitmapForScalingFromRes(const ImageName: string; const aDefScale: Integer; out aBitmap: TCustomBitmap): Integer;
+    class function CreateBestBitmapForScalingFromRes(const ImageName: string;
+      const aDefScale: Integer; out aBitmap: TCustomBitmap): Integer;
   public
     destructor Destroy; override;
 
@@ -245,9 +246,8 @@ begin
     Result := CreateBitmapFromResourceName(HInstance, ImageName);
 end;
 
-class function TIDEImages.CreateBestBitmapForScalingFromRes(
-  const ImageName: string; const aDefScale: Integer; out aBitmap: TCustomBitmap
-  ): Integer;
+class function TIDEImages.CreateBestBitmapForScalingFromRes(const ImageName: string;
+  const aDefScale: Integer; out aBitmap: TCustomBitmap): Integer;
 begin
   aBitmap := nil;
   Result := aDefScale;
@@ -274,14 +274,12 @@ begin
   Result := CreateImage(ImageName, ImageSize);
 end;
 
-function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String
-  ): Integer;
+function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
 begin
   Result := GetImageIndex(ImageName, ImageSize);
 end;
 
-function TIDEImages.GetImageIndex(ImageName: String; ImageSize: Integer
-  ): Integer;
+function TIDEImages.GetImageIndex(ImageName: String; ImageSize: Integer): Integer;
 var
   List: TLCLGlyphs;
 begin

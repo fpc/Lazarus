@@ -456,6 +456,15 @@ designer/size_200.png
 designer/tab_order.png
 designer/tab_order_150.png
 designer/tab_order_200.png
+items/datamodule_designer.png
+items/datamodule_designer_150.png
+items/datamodule_designer_200.png
+items/form_designer.png
+items/form_designer_150.png
+items/form_designer_200.png
+items/frame_designer.png
+items/frame_designer_150.png
+items/frame_designer_200.png
 items/item_character.png
 items/item_character_150.png
 items/item_character_200.png
