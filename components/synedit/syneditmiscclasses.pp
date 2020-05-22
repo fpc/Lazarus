@@ -523,6 +523,8 @@ type
   { TSynSizedDifferentialAVLNode }
 
   TSynSizedDifferentialAVLNode = Class
+  private
+    procedure SetLeftSizeSum(AValue: Integer);
   protected
     (* AVL Tree structure *)
     FParent, FLeft, FRight : TSynSizedDifferentialAVLNode;    (* AVL Links *)
@@ -539,7 +541,7 @@ type
     FSize: Integer;
     FLeftSizeSum: Integer;
 
-    property LeftSizeSum: Integer read FLeftSizeSum;
+    property LeftSizeSum: Integer read FLeftSizeSum write SetLeftSizeSum;
     {$IFDEF SynDebug}
     function Debug: String; virtual;
     {$ENDIF}
@@ -563,6 +565,7 @@ type
 
     procedure AdjustLeftCount(AValue : Integer);
     procedure AdjustParentLeftCount(AValue : Integer);
+    procedure AdjustPosition(AValue : Integer); // Must not change order with prev/next node
 
     function Precessor: TSynSizedDifferentialAVLNode;
     function Successor: TSynSizedDifferentialAVLNode;
@@ -2209,6 +2212,13 @@ end;
 
 { TSynSizedDifferentialAVLNode }
 
+procedure TSynSizedDifferentialAVLNode.SetLeftSizeSum(AValue: Integer);
+begin
+  if FLeftSizeSum = AValue then Exit;
+  FLeftSizeSum := AValue;
+  AdjustParentLeftCount(AValue - FLeftSizeSum);
+end;
+
 {$IFDEF SynDebug}
 function TSynSizedDifferentialAVLNode.Debug: String;
 begin
@@ -2309,6 +2319,15 @@ begin
     node := pnode;
     pnode := node.FParent;
   end;
+end;
+
+procedure TSynSizedDifferentialAVLNode.AdjustPosition(AValue: Integer);
+begin
+  FPositionOffset := FPositionOffset + AValue;
+  if FRight <> nil then
+    FRight.FPositionOffset := FRight.FPositionOffset - AValue;;
+  if FLeft <> nil then
+    FLeft.FPositionOffset := FLeft.FPositionOffset - AValue;;
 end;
 
 function TSynSizedDifferentialAVLNode.GetSizesBeforeSum: Integer;
@@ -2933,7 +2952,7 @@ function TSynSizedDifferentialAVLTree.First(out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
 begin
   Result := FRoot;
-  aStartPosition := 0;
+  aStartPosition := FRootOffset;
   aSizesBeforeSum := 0;
   if Result = nil then
     exit;
@@ -2949,7 +2968,7 @@ function TSynSizedDifferentialAVLTree.Last(out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
 begin
   Result := FRoot;
-  aStartPosition := 0;
+  aStartPosition := FRootOffset;
   aSizesBeforeSum := 0;
   if Result = nil then
     exit;
@@ -2966,7 +2985,7 @@ function TSynSizedDifferentialAVLTree.FindNodeAtLeftSize(ALeftSum: INteger; out
   aStartPosition, aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
 begin
   Result := FRoot;
-  aStartPosition := 0;
+  aStartPosition := FRootOffset;
   aSizesBeforeSum := 0;
   if Result = nil then
     exit;
