@@ -5015,6 +5015,7 @@ begin
 
   s:=s+''+e;
   s:=s+'    // copy the compiled file, so the IDE knows how the package was compiled'+e;
+  s:=s+'    P.Sources.AddSrc('''+ExtractFileName(FPmakeCompiledFilename)+''');'+e;
   s:=s+'    P.InstallFiles.Add('''+ExtractFileName(FPmakeCompiledFilename)+''',AllOSes,''$(unitinstalldir)'');'+e;
 
   s:=s+''+e;
