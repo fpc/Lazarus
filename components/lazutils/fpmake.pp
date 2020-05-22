@@ -4,7 +4,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 03-02-19
+   This file was generated on 22-05-20
 }
 
 {$ifndef ALLPACKAGES} 
@@ -19,19 +19,24 @@ procedure add_LazUtils(const ADirectory: string);
 var
   P : TPackage;
   T : TTarget;
+  D : TDependency;
 
 begin
   with Installer do
     begin
     P:=AddPackage('lazutils');
-    P.Version:='1.0';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
 
+    P.Author:='Lazarus Team';
+    P.License:='Modified LGPL-2';
+    P.Description:='Useful units for Lazarus packages.';
+
     P.Flags.Add('LazarusDsgnPkg');
 
-    P.Dependencies.Add('fcl-image');
-    P.Dependencies.Add('fcl');
+    D := P.Dependencies.Add('fcl-image');
+    D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -41,85 +46,107 @@ begin
     P.Options.Add('-vewnhibq');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('lazutils.pas');
-    t.Dependencies.AddUnit('AvgLvlTree');
-    t.Dependencies.AddUnit('DynamicArray');
-    t.Dependencies.AddUnit('DynHashArray');
-    t.Dependencies.AddUnit('DynQueue');
-    t.Dependencies.AddUnit('EasyLazFreeType');
-    t.Dependencies.AddUnit('ExtendedStrings');
-    t.Dependencies.AddUnit('FileUtil');
-    t.Dependencies.AddUnit('FPCAdds');
-    t.Dependencies.AddUnit('Laz2_DOM');
-    t.Dependencies.AddUnit('Laz2_XMLCfg');
-    t.Dependencies.AddUnit('laz2_XMLRead');
-    t.Dependencies.AddUnit('laz2_xmlutils');
-    t.Dependencies.AddUnit('laz2_XMLWrite');
-    t.Dependencies.AddUnit('laz2_xpath');
-    t.Dependencies.AddUnit('Laz_DOM');
-    t.Dependencies.AddUnit('Laz_XMLCfg');
-    t.Dependencies.AddUnit('Laz_XMLRead');
-    t.Dependencies.AddUnit('Laz_XMLStreaming');
-    t.Dependencies.AddUnit('Laz_XMLWrite');
-    t.Dependencies.AddUnit('LazClasses');
-    t.Dependencies.AddUnit('lazCollections');
-    t.Dependencies.AddUnit('LazConfigStorage');
-    t.Dependencies.AddUnit('LazDbgLog');
-    t.Dependencies.AddUnit('lazfglhash');
-    t.Dependencies.AddUnit('LazFileCache');
-    t.Dependencies.AddUnit('LazFileUtils');
-    t.Dependencies.AddUnit('LazFreeType');
-    t.Dependencies.AddUnit('LazFreeTypeFontCollection');
-    t.Dependencies.AddUnit('LazFreeTypeFPImageDrawer');
-    t.Dependencies.AddUnit('LazLinkedList');
-    t.Dependencies.AddUnit('LazListClasses');
-    t.Dependencies.AddUnit('LazLogger');
-    t.Dependencies.AddUnit('LazLoggerBase');
-    t.Dependencies.AddUnit('LazLoggerDummy');
-    t.Dependencies.AddUnit('LazLoggerProfiling');
-    t.Dependencies.AddUnit('LazMethodList');
-    t.Dependencies.AddUnit('LazUnicode');
-    t.Dependencies.AddUnit('LazUTF16');
-    t.Dependencies.AddUnit('LazUTF8');
-    t.Dependencies.AddUnit('LazUTF8Classes');
-    t.Dependencies.AddUnit('LazSysUtils');
-    t.Dependencies.AddUnit('LazUtilities');
-    t.Dependencies.AddUnit('LazUtilsStrConsts');
-    t.Dependencies.AddUnit('LConvEncoding');
-    t.Dependencies.AddUnit('lcsvutils');
-    t.Dependencies.AddUnit('LookupStringList');
-    t.Dependencies.AddUnit('Maps');
-    t.Dependencies.AddUnit('Masks');
-    t.Dependencies.AddUnit('PasWString');
-    t.Dependencies.AddUnit('StringHashList');
-    t.Dependencies.AddUnit('TextStrings');
-    t.Dependencies.AddUnit('Translations');
-    t.Dependencies.AddUnit('TTCache');
-    t.Dependencies.AddUnit('TTCalc');
-    t.Dependencies.AddUnit('TTCMap');
-    t.Dependencies.AddUnit('TTDebug');
-    t.Dependencies.AddUnit('TTError');
-    t.Dependencies.AddUnit('TTFile');
-    t.Dependencies.AddUnit('TTGLoad');
-    t.Dependencies.AddUnit('TTInterp');
-    t.Dependencies.AddUnit('TTLoad');
-    t.Dependencies.AddUnit('TTMemory');
-    t.Dependencies.AddUnit('TTObjs');
-    t.Dependencies.AddUnit('TTProfile');
-    t.Dependencies.AddUnit('TTRASTER');
-    t.Dependencies.AddUnit('TTTables');
-    t.Dependencies.AddUnit('TTTypes');
-    t.Dependencies.AddUnit('UTF8Process');
-    t.Dependencies.AddUnit('HTML2TextRender');
-    t.Dependencies.AddUnit('Laz_AVL_Tree');
-    t.Dependencies.AddUnit('CompWriterPas');
-    t.Dependencies.AddUnit('LazPasReadUtil');
-    t.Dependencies.AddUnit('IntegerList');
-    t.Dependencies.AddUnit('LazVersion');
-    t.Dependencies.AddUnit('UITypes');
-    t.Dependencies.AddUnit('GraphType');
-    t.Dependencies.AddUnit('LazTracer');
-    t.Dependencies.AddUnit('LazStringUtils');
-    t.Dependencies.AddUnit('LazUTF8SysUtils');
+    D := T.Dependencies.AddInclude('LazLoggerImpl.inc');
+    D := T.Dependencies.AddInclude('LazLoggerIntf.inc');
+    D := T.Dependencies.AddInclude('asiancodepagefunctions.inc');
+    D := T.Dependencies.AddInclude('asiancodepages.inc');
+    D := T.Dependencies.AddUnit('AvgLvlTree');
+    D := T.Dependencies.AddUnit('DynamicArray');
+    D := T.Dependencies.AddUnit('DynHashArray');
+    D := T.Dependencies.AddUnit('DynQueue');
+    D := T.Dependencies.AddUnit('EasyLazFreeType');
+    D := T.Dependencies.AddUnit('ExtendedStrings');
+    D := T.Dependencies.AddUnit('FileUtil');
+    D := T.Dependencies.AddInclude('fileutil.inc');
+    D := T.Dependencies.AddUnit('FPCAdds');
+    D := T.Dependencies.AddUnit('Laz2_DOM');
+    D := T.Dependencies.AddInclude('laz2_names.inc');
+    D := T.Dependencies.AddUnit('Laz2_XMLCfg');
+    D := T.Dependencies.AddUnit('laz2_XMLRead');
+    D := T.Dependencies.AddUnit('laz2_xmlutils');
+    D := T.Dependencies.AddUnit('laz2_XMLWrite');
+    D := T.Dependencies.AddUnit('laz2_xpath');
+    D := T.Dependencies.AddUnit('Laz_DOM');
+    D := T.Dependencies.AddUnit('Laz_XMLCfg');
+    D := T.Dependencies.AddUnit('Laz_XMLRead');
+    D := T.Dependencies.AddUnit('Laz_XMLStreaming');
+    D := T.Dependencies.AddUnit('Laz_XMLWrite');
+    D := T.Dependencies.AddUnit('LazClasses');
+    D := T.Dependencies.AddUnit('lazCollections');
+    D := T.Dependencies.AddUnit('LazConfigStorage');
+    D := T.Dependencies.AddUnit('LazDbgLog');
+    D := T.Dependencies.AddUnit('lazfglhash');
+    D := T.Dependencies.AddUnit('LazFileCache');
+    D := T.Dependencies.AddUnit('LazFileUtils');
+    D := T.Dependencies.AddInclude('lazfileutils.inc');
+    D := T.Dependencies.AddUnit('LazFreeType');
+    D := T.Dependencies.AddUnit('LazFreeTypeFontCollection');
+    D := T.Dependencies.AddUnit('LazFreeTypeFPImageDrawer');
+    D := T.Dependencies.AddUnit('LazLinkedList');
+    D := T.Dependencies.AddUnit('LazListClasses');
+    D := T.Dependencies.AddUnit('LazLogger');
+    D := T.Dependencies.AddUnit('LazLoggerBase');
+    D := T.Dependencies.AddUnit('LazLoggerDummy');
+    D := T.Dependencies.AddUnit('LazLoggerProfiling');
+    D := T.Dependencies.AddUnit('LazMethodList');
+    D := T.Dependencies.AddUnit('LazUnicode');
+    D := T.Dependencies.AddUnit('LazUTF16');
+    D := T.Dependencies.AddUnit('LazUTF8');
+    D := T.Dependencies.AddUnit('LazUTF8Classes');
+    D := T.Dependencies.AddUnit('LazSysUtils');
+    D := T.Dependencies.AddUnit('LazUtilities');
+    D := T.Dependencies.AddInclude('lazutils_defines.inc');
+    D := T.Dependencies.AddUnit('LazUtilsStrConsts');
+    D := T.Dependencies.AddUnit('LConvEncoding');
+    D := T.Dependencies.AddUnit('lcsvutils');
+    D := T.Dependencies.AddUnit('LookupStringList');
+    D := T.Dependencies.AddUnit('Maps');
+    D := T.Dependencies.AddUnit('Masks');
+    D := T.Dependencies.AddUnit('PasWString');
+    D := T.Dependencies.AddUnit('StringHashList');
+    D := T.Dependencies.AddUnit('TextStrings');
+    D := T.Dependencies.AddUnit('Translations');
+    D := T.Dependencies.AddUnit('TTCache');
+    D := T.Dependencies.AddUnit('TTCalc');
+    D := T.Dependencies.AddInclude('ttcalc1.inc');
+    D := T.Dependencies.AddInclude('ttcalc2.inc');
+    D := T.Dependencies.AddInclude('ttcalc3.inc');
+    D := T.Dependencies.AddInclude('ttcalc4.inc');
+    D := T.Dependencies.AddUnit('TTCMap');
+    D := T.Dependencies.AddInclude('ttconfig.inc');
+    D := T.Dependencies.AddUnit('TTDebug');
+    D := T.Dependencies.AddUnit('TTError');
+    D := T.Dependencies.AddUnit('TTFile');
+    D := T.Dependencies.AddUnit('TTGLoad');
+    D := T.Dependencies.AddUnit('TTInterp');
+    D := T.Dependencies.AddUnit('TTLoad');
+    D := T.Dependencies.AddUnit('TTMemory');
+    D := T.Dependencies.AddUnit('TTObjs');
+    D := T.Dependencies.AddUnit('TTProfile');
+    D := T.Dependencies.AddUnit('TTRASTER');
+    D := T.Dependencies.AddInclude('ttraster_sweep.inc');
+    D := T.Dependencies.AddUnit('TTTables');
+    D := T.Dependencies.AddUnit('TTTypes');
+    D := T.Dependencies.AddInclude('unixfileutil.inc');
+    D := T.Dependencies.AddInclude('unixlazfileutils.inc');
+    D := T.Dependencies.AddInclude('unixlazutf8.inc');
+    D := T.Dependencies.AddUnit('UTF8Process');
+    D := T.Dependencies.AddInclude('winfileutil.inc');
+    D := T.Dependencies.AddInclude('winlazfileutils.inc');
+    D := T.Dependencies.AddInclude('winlazutf8.inc');
+    D := T.Dependencies.AddUnit('HTML2TextRender');
+    D := T.Dependencies.AddUnit('Laz_AVL_Tree');
+    D := T.Dependencies.AddUnit('CompWriterPas');
+    D := T.Dependencies.AddUnit('LazPasReadUtil');
+    D := T.Dependencies.AddUnit('IntegerList');
+    D := T.Dependencies.AddUnit('LazVersion');
+    D := T.Dependencies.AddUnit('UITypes');
+    D := T.Dependencies.AddUnit('GraphType');
+    D := T.Dependencies.AddUnit('LazTracer');
+    D := T.Dependencies.AddUnit('LazStringUtils');
+    D := T.Dependencies.AddUnit('LazUTF8SysUtils');
+    D := T.Dependencies.AddUnit('ObjectLists');
+    D := T.Dependencies.AddUnit('TTKern');
     T := P.Targets.AddImplicitUnit('avglvltree.pas');
     T := P.Targets.AddImplicitUnit('dynamicarray.pas');
     T := P.Targets.AddImplicitUnit('dynhasharray.pp');
@@ -199,8 +226,11 @@ begin
     T := P.Targets.AddImplicitUnit('laztracer.pas');
     T := P.Targets.AddImplicitUnit('lazstringutils.pas');
     T := P.Targets.AddImplicitUnit('lazutf8sysutils.pas');
+    T := P.Targets.AddImplicitUnit('objectlists.pas');
+    T := P.Targets.AddImplicitUnit('ttkern.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
+    P.Sources.AddSrc('LazUtils.compiled');
     P.InstallFiles.Add('LazUtils.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
