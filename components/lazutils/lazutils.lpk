@@ -17,7 +17,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="103">
+    <Files Count="104">
       <Item1>
         <Filename Value="LazLoggerImpl.inc"/>
         <Type Value="Include"/>
@@ -430,6 +430,10 @@
         <Filename Value="objectlists.pas"/>
         <UnitName Value="ObjectLists"/>
       </Item103>
+      <Item104>
+        <Filename Value="ttkern.pas"/>
+        <UnitName Value="TTKern"/>
+      </Item104>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
