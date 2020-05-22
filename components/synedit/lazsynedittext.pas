@@ -52,6 +52,7 @@ type
                            senrLineChange,       // Lines modified (also triggered by senrEditAction)
                            senrLinesModified, //TStringListLinesModifiedEvent: Send once in "EndUpdate". Modified, inserted or deleted
                            senrHighlightChanged, // used by Highlighter (invalidate and fold checks needed)
+                           senrLineMappingChanged, // folds added/removed - virtual X/Y changed. (ACount is not used)
                            // TStringListLineEditEvent
                            senrEditAction,       // EditInsert, EditDelete, EditLineBreak, ...
                            // TNotifyEvent
@@ -297,12 +298,12 @@ type
 
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract; overload;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer; aLen: Integer; aTxt: String); virtual; abstract;
+                aBytePos: Integer; aLen: Integer; aTxt: String); virtual; abstract; overload;
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TObject); virtual; abstract;
+                ASender: TObject); virtual; abstract; overload;
    procedure FlushNotificationCache; virtual; abstract;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
@@ -442,12 +443,12 @@ type
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
 
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); override; overload;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer; aLen: Integer; aTxt: String); override;
+                aBytePos: Integer; aLen: Integer; aTxt: String); override; overload;
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TObject); override;
+                ASender: TObject); override; overload;
    procedure FlushNotificationCache; override;
 
     procedure AddModifiedHandler(AReason: TSynEditNotifyReason;
@@ -1598,7 +1599,7 @@ end;
 procedure TSynEditStringsLinked.AddChangeHandler(AReason: TSynEditNotifyReason;
   AHandler: TStringListLineCountEvent);
 begin
-  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'AddChangeHandler');
+  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged, senrLineMappingChanged], 'AddChangeHandler');
   AddGenericHandler(AReason, TMethod(AHandler));
 end;
 
@@ -1619,7 +1620,7 @@ end;
 procedure TSynEditStringsLinked.RemoveChangeHandler(
   AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
 begin
-  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged], 'RemoveChangeHandler');
+  assert(AReason in [senrLineCount, senrLineChange, senrHighlightChanged, senrLineMappingChanged], 'RemoveChangeHandler');
   RemoveGenericHandler(AReason, TMethod(AHandler));
 end;
 

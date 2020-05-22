@@ -1610,7 +1610,6 @@ begin
     m := TSourceSynEditMarkupHighlightAllMulti.Create(self);
     if PaintLock > 0 then
       m.IncPaintLock;
-    m.FoldView := TSynEditFoldedView(FoldedTextBuffer);
     if Highlighter <> nil then
       m.WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars;
     FUserWordsList.Add(m);
@@ -2245,10 +2244,8 @@ begin
           Priority := 20;
         with TSynGutterLOvProviderModifiedLines.Create(Providers) do
           Priority := 9;
-        with TSynGutterLOvProviderCurrentPage.Create(Providers) do begin
+        with TSynGutterLOvProviderCurrentPage.Create(Providers) do
           Priority := 1;
-          FoldedTextBuffer := TSynEditFoldedView(TIDESynEditor(Self.SynEdit).FoldedTextBuffer);
-        end;
         with TIDESynGutterLOvProviderPascal.Create(Providers) do
           Priority := 0;
       end;

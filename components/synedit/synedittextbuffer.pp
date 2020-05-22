@@ -589,7 +589,7 @@ begin
 
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason)
   do case r of
-    senrLineCount, senrLineChange, senrHighlightChanged:
+    senrLineCount, senrLineChange, senrHighlightChanged, senrLineMappingChanged:
       FNotifyLists[r] := TLineRangeNotificationList.Create;
     senrLinesModified:
       FNotifyLists[r] := TLinesModifiedNotificationList.Create;
@@ -1467,7 +1467,7 @@ procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
 var
   i, oldcount, overlap: Integer;
 begin
-  assert(AReason in [senrLineChange, senrLineCount, senrLinesModified, senrHighlightChanged], 'Correct SendNotification');
+  assert(AReason in [senrLineChange, senrLineCount, senrLinesModified, senrHighlightChanged, senrLineMappingChanged], 'Correct SendNotification');
   if FIgnoreSendNotification[AReason] > 0 then exit;
 
   if IsUpdating and (AReason in [senrLineChange, senrLineCount]) then begin

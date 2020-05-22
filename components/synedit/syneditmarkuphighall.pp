@@ -32,8 +32,9 @@ uses
   // LazUtils
   LazClasses, LazUTF8, LazMethodList,
   // SynEdit
-  SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses, SynEditHighlighter,
-  SynEditPointClasses, SynEditMiscProcs, SynEditFoldedView, SynEditTextBase;
+  SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
+  SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs, SynEditFoldedView,
+  SynEditTextBase, LazSynEditText;
 
 type
 
@@ -121,7 +122,6 @@ type
 
   TSynEditMarkupHighlightAllBase = class(TSynEditMarkupHighlightMatches)
   private
-    FFoldView: TSynEditFoldedView;
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
 
@@ -131,13 +131,13 @@ type
     FHideSingleMatch: Boolean;
 
     function GetMatchCount: Integer;
-    procedure SetFoldView(AValue: TSynEditFoldedView);
     procedure SetHideSingleMatch(AValue: Boolean);
-    procedure DoFoldChanged(aLine: Integer);
+    procedure DoFoldChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
 
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
   protected
+    procedure SetLines(const AValue: TSynEditStringsLinked); override;
     function  HasSearchData: Boolean; virtual; abstract;
     function HasDisplayAbleMatches: Boolean; override;
     function  SearchStringMaxLines: Integer; virtual; abstract;
@@ -167,8 +167,6 @@ type
     Procedure Invalidate(SkipPaint: Boolean = False);
     Procedure InvalidateLines(AFirstLine: Integer = 0; ALastLine: Integer = 0; SkipPaint: Boolean = False);
     Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1);
-
-    property FoldView: TSynEditFoldedView read FFoldView write SetFoldView;
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
   end;
@@ -1942,7 +1940,8 @@ end;
 
 destructor TSynEditMarkupHighlightAllBase.Destroy;
 begin
-  FoldView := nil;
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrLineMappingChanged, @DoFoldChanged);
   inherited Destroy;
 end;
 
@@ -1984,19 +1983,6 @@ begin
   Result := fMatches.Count;
 end;
 
-procedure TSynEditMarkupHighlightAllBase.SetFoldView(AValue: TSynEditFoldedView);
-begin
-  if FFoldView = AValue then Exit;
-
-  if FFoldView <> nil then
-    FFoldView.RemoveFoldChangedHandler(@DoFoldChanged);
-
-  FFoldView := AValue;
-
-  if FFoldView <> nil then
-    FFoldView.AddFoldChangedHandler(@DoFoldChanged);
-end;
-
 procedure TSynEditMarkupHighlightAllBase.SetHideSingleMatch(AValue: Boolean);
 begin
   if FHideSingleMatch = AValue then Exit;
@@ -2009,9 +1995,10 @@ begin
       SendLineInvalidation; // Show the existing match
 end;
 
-procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(aLine: Integer);
+procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
 begin
-  InvalidateLines(aLine+1, MaxInt, True);
+  InvalidateLines(aIndex+1, MaxInt, True);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.ValidateMatches(SkipPaint: Boolean);
@@ -2450,6 +2437,16 @@ begin
   MaybeExtendForHideSingle;
   FinishValidate;
   //finally  DebugLnExit(['  < ValidateMatches Cnt=',FMatches.Count, '  <<< # ', dbgs(FStartPoint), ' - ', dbgs(FSearchedEnd)]); end;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.SetLines(
+  const AValue: TSynEditStringsLinked);
+begin
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrLineMappingChanged, @DoFoldChanged);
+  inherited SetLines(AValue);
+  if Lines <> nil then
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoFoldChanged);
 end;
 
 function TSynEditMarkupHighlightAllBase.HasDisplayAbleMatches: Boolean;

@@ -202,19 +202,16 @@ type
   TSynGutterLOvProviderCurrentPage = class(TSynGutterLineOverviewProvider)
   private
     FCurTopLine, FCurBottomLine: Integer;
-    FFoldedTextBuffer: TSynEditFoldedView;
     FPixelTopLine, FPixelBottomLine: Integer;
-    procedure SetFoldedTextBuffer(AValue: TSynEditFoldedView);
   protected
     procedure SynStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
-    procedure FoldChanged(aLine: Integer);
+    procedure FoldChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer); override;
     procedure ReCalc; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
-    property FoldedTextBuffer: TSynEditFoldedView read FFoldedTextBuffer write SetFoldedTextBuffer;
   end;
 
   { TSynGutterLOvProviderModifiedLines }
@@ -952,21 +949,10 @@ end;
 
 { TSynGutterLOvProviderCurrentPage }
 
-procedure TSynGutterLOvProviderCurrentPage.FoldChanged(aLine: Integer);
+procedure TSynGutterLOvProviderCurrentPage.FoldChanged(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
 begin
   SynStatusChanged(nil, []);
-end;
-
-procedure TSynGutterLOvProviderCurrentPage.SetFoldedTextBuffer(AValue: TSynEditFoldedView);
-begin
-  if FFoldedTextBuffer <> nil then
-    FFoldedTextBuffer.RemoveFoldChangedHandler(@FoldChanged);
-
-  if FFoldedTextBuffer = AValue then Exit;
-  FFoldedTextBuffer := AValue;
-
-  if FFoldedTextBuffer <> nil then
-    FFoldedTextBuffer.AddFoldChangedHandler(@FoldChanged);
 end;
 
 procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
@@ -1004,6 +990,7 @@ begin
   inherited;
   FColor := 0;
   Color := $C0C0C0;
+  ViewedTextBuffer.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
   TCustomSynEdit(SynEdit).RegisterStatusChangedHandler(@SynStatusChanged,
                                                  [scTopLine, scLinesInWindow]);
 end;
@@ -1011,6 +998,7 @@ end;
 destructor TSynGutterLOvProviderCurrentPage.Destroy;
 begin
   TCustomSynEdit(SynEdit).UnRegisterStatusChangedHandler(@SynStatusChanged);
+  ViewedTextBuffer.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
   inherited;
 end;
 

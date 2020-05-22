@@ -890,7 +890,7 @@ type
     procedure SizeOrFontChanged(bFont: boolean);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure ListCleared(Sender: TObject);
-    procedure FoldChanged(Index: integer);
+    procedure FoldChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
     function  GetTopView : Integer;
     procedure SetTopView(AValue : Integer);
     procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
@@ -2151,9 +2151,9 @@ begin
   {$ENDIF} // WithSynExperimentalCharWidth
 
   FFoldedLinesView := TSynEditFoldedView.Create(fCaret);
-  FFoldedLinesView.OnFoldChanged := @FoldChanged;
-  FFoldedLinesView.OnLineInvalidate := @InvalidateGutterLines;
   FTextViewsManager.AddTextView(FFoldedLinesView);
+  FFoldedLinesView.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
+  FFoldedLinesView.OnLineInvalidate := @InvalidateGutterLines;
 
   // External Accessor
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
@@ -2236,9 +2236,7 @@ begin
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
   fMarkupHighCaret.Selection := FBlockSelection;
-  fMarkupHighCaret.FoldView := FFoldedLinesView;
   fMarkupHighAll   := TSynEditMarkupHighlightAll.Create(self);
-  fMarkupHighAll.FoldView := FFoldedLinesView;
   fMarkupBracket   := TSynEditMarkupBracket.Create(self);
   fMarkupWordGroup := TSynEditMarkupWordGroup.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
@@ -5364,11 +5362,12 @@ begin
   StatusChanged(scTextCleared);
 end;
 
-procedure TCustomSynEdit.FoldChanged(Index : integer);
+procedure TCustomSynEdit.FoldChanged(Sender: TSynEditStrings; aIndex,
+  aCount: Integer);
 var
   i: Integer;
 begin
-  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', Index, ' TopView=', TopView, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', aIndex, ' TopView=', TopView, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
   TopView := TopView;
   i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
   if i > 0 then begin
@@ -5379,10 +5378,10 @@ begin
   if eoAlwaysVisibleCaret in fOptions2 then
     MoveCaretToVisibleArea;
   UpdateScrollBars;
-  if Index + 1 > Max(1, ScreenRowToRow(LinesInWindow + 1)) then exit;
-  if Index + 1 < TopLine then Index := TopLine - 1;
-  InvalidateLines(Index + 1, -1);
-  InvalidateGutterLines(Index + 1, -1);
+  if aIndex + 1 > Max(1, ScreenRowToRow(LinesInWindow + 1)) then exit;
+  if aIndex + 1 < TopLine then aIndex := TopLine - 1;
+  InvalidateLines(aIndex + 1, -1);
+  InvalidateGutterLines(aIndex + 1, -1);
 end;
 
 procedure TCustomSynEdit.SetTopView(AValue : Integer);

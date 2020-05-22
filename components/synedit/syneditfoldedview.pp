@@ -388,13 +388,11 @@ type
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
     fFoldTypeList : Array of TSynEditFoldLineMapInfo;
-    fOnFoldChanged : TFoldChangedEvent;
     fLockCount : Integer;
     fNeedFixFrom, fNeedFixMinEnd : Integer;
     FFlags: TSynEditFoldedViewFlags;
     FInTopLineChanged: Boolean;
     FDisplayView: TLazSynDisplayFold;
-    FFoldChangedHandlerList: TFoldChangedHandlerList;
 
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
     function GetHighLighter: TSynCustomHighlighter;
@@ -533,16 +531,11 @@ type
     function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
     function ExpandedLineForBlockAtLine(ALine : Integer; HalfExpanded: Boolean = True) : Integer;
 
-    procedure AddFoldChangedHandler(AHandler: TFoldChangedEvent);
-    procedure RemoveFoldChangedHandler(AHandler: TFoldChangedEvent);
-
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 
     function  IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
 
-    property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
-      read fOnFoldChanged write fOnFoldChanged;
     property OnLineInvalidate: TInvalidateLineProc(* reports 1-based line *) {TODO: synedit expects 0 based }
       read FOnLineInvalidate write FOnLineInvalidate;
     property HighLighter: TSynCustomHighlighter read GetHighLighter
@@ -3092,7 +3085,6 @@ begin
   FFoldProvider := TSynEditFoldProvider.Create;
   // TODO: if NextLineChanges, update FFoldProvider //     DoSynStringsChanged
   FDisplayView := TLazSynDisplayFold.Create(Self);
-  FFoldChangedHandlerList := TFoldChangedHandlerList.Create;
 
   FMarkupInfoFoldedCode := TSynSelectedColor.Create;
   FMarkupInfoFoldedCode.Background := clNone;
@@ -3115,7 +3107,6 @@ begin
   NextLines := nil;
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
-  FreeAndNil(FFoldChangedHandlerList);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -3320,9 +3311,7 @@ end;
 
 procedure TSynEditFoldedView.DoFoldChanged(AnIndex: Integer);
 begin
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(AnIndex);
-  FFoldChangedHandlerList.CallFoldChangedEvents(AnIndex);
+  SendNotification(senrLineMappingChanged, Self, AnIndex, 0);
 end;
 
 procedure TSynEditFoldedView.SetManager(AManager: TSynTextViewsManager);
@@ -4474,17 +4463,6 @@ begin
   end;
   if (hl.FoldBlockEndLevel(i) > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
-end;
-
-procedure TSynEditFoldedView.AddFoldChangedHandler(AHandler: TFoldChangedEvent);
-begin
-  FFoldChangedHandlerList.Add(TMethod(AHandler));
-end;
-
-procedure TSynEditFoldedView.RemoveFoldChangedHandler(
-  AHandler: TFoldChangedEvent);
-begin
-  FFoldChangedHandlerList.Remove(TMethod(AHandler));
 end;
 
 function TSynEditFoldedView.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
