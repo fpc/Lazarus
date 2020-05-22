@@ -333,6 +333,8 @@ type
 
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; virtual;
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
+
+    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;  (* Add/Sub to/from TextIndex (0-based) skipping invisible (folded) *)
   public
     // Currently Lines are physical
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
@@ -1211,6 +1213,12 @@ end;
 function TSynEditStrings.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
   Result := aViewIndex;
+end;
+
+function TSynEditStrings.AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx;
+  LineOffset: Integer): TLineIdx;
+begin
+  Result := aTextIndex + LineOffset;
 end;
 
 { TSynEditStringsLinked }

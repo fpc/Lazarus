@@ -407,6 +407,7 @@ type
     procedure SetTopTextIndex(const AIndex : integer);
     procedure SetLinesInWindow(const AValue : integer);
     procedure DoFoldChanged(AnIndex: Integer);
+    function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
   protected
     procedure SetManager(AManager: TSynTextViewsManager); override;
     procedure SetSynStrings(AValue: TSynEditStrings); override;
@@ -445,8 +446,7 @@ type
     function TextIndexToScreenLine(aTextIndex : Integer) : Integer; (* Convert TextIndex (0-based) to Screen (0-based) *)
     function ScreenLineToTextIndex(aLine : Integer) : Integer;      (* Convert Screen (0-based) to TextIndex (0-based) *)
 
-    function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
-    function TextPosAddLines(aTextpos, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextPos (1-based) skipping folded *)
+    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override; (* Add/Sub to/from TextPos (1-based) skipping folded *)
 
     property BlockSelection: TSynEditSelection write SetBlockSelection;
     // Attributes for Visible-Lines-On-screen
@@ -3228,9 +3228,12 @@ begin
   end;
 end;
 
-function TSynEditFoldedView.TextPosAddLines(aTextpos, LineOffset : Integer) : Integer;
+function TSynEditFoldedView.AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx;
+  LineOffset: Integer): TLineIdx;
 begin
-  Result := TextIndexAddLines(aTextpos-1, LineOffset)+1;
+  //TODO: Modify LineOffset then call inherited;
+  Result := TextIndexAddLines(aTextIndex, LineOffset);
+//  Result := inherited AddVisibleOffsetToTextIndex(aTextIndex, LineOffset);
 end;
 
 procedure TSynEditFoldedView.Lock;

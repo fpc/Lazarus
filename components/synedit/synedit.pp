@@ -2192,7 +2192,6 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   FBlockSelection.AddChangeHandler(@DoBlockSelectionChanged);
-  FBlockSelection.{%H-}FoldedView := FFoldedLinesView;
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := @InvalidateLines;
@@ -6541,7 +6540,7 @@ begin
         if CaretY < TopLine then
           TopLine := CaretY
         else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
-          TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
+          TopLine := ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(CaretY), -Max(0, LinesInWindow-1)))
         else
           TopView := TopView;                                                       //mh 2000-10-19
       end;
@@ -8340,7 +8339,7 @@ begin
       if DX < 0 then begin
         if (FCaret.LinePos > 1) and not(eoScrollPastEol in fOptions) then begin
           // move to end of prev line
-          NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, -1);
+          NewCaret.Y:= ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(FCaret.LinePos), -1));
           if NewCaret.Y <> FCaret.LinePos then begin
             s:=FTheLinesView[NewCaret.Y-1];
             NewCaret.X := length(s) + 1;
@@ -8351,7 +8350,7 @@ begin
       else begin
         if not(eoScrollPastEol in fOptions) then begin
           // move to begin of next line
-          NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, +1);
+          NewCaret.Y:= ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(FCaret.LinePos), +1));
           if NewCaret.Y <= ToPos(FTheLinesView.ViewToTextIndex(ToIdx(FTheLinesView.ViewedCount))) then begin
             NewCaret.X := 1;
             FCaret.LineBytePos := NewCaret;
@@ -8372,7 +8371,7 @@ var
 begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
-  NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, DY);
+  NewCaret.Y:=ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(NewCaret.Y), DY));
   DoIncPaintLock(Self); // No editing is taking place
   FCaret.LinePos := NewCaret.Y;
   DoDecPaintLock(Self);
@@ -8395,10 +8394,10 @@ begin
 
   if MakeSelectionVisible then begin
     //l1 := FBlockSelection.FirstLineBytePos;;
-    LBottomLine := FFoldedLinesView.TextPosAddLines(TopLine, LinesInWindow);
+    LBottomLine := ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(TopLine), LinesInWindow));
 
     LCaretFirst := CaretY;
-    LCaretLast := Max(1, FFoldedLinesView.TextPosAddLines(CaretY, 1-LinesInWindow));  // Will have caret on last visible line
+    LCaretLast := Max(1, ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(CaretY), 1-LinesInWindow)));  // Will have caret on last visible line
 
     l1 := Min(LCaretFirst, FBlockSelection.FirstLineBytePos.y);
     l2 := Max(LCaretFirst, FBlockSelection.LastLineBytePos.y);
@@ -8414,7 +8413,7 @@ begin
       // Scrolling down, LastLine = L2
       TopLine := Max(LCaretLast,
                  Min(LCaretFirst,
-                     FFoldedLinesView.TextPosAddLines(L2, 1-LinesInWindow)
+                     ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(L2), 1-LinesInWindow))
                     ));
     end
     else begin
@@ -8428,7 +8427,7 @@ begin
       if l2 > LBottomLine then
         TopLine := Max(LCaretLast,
                    Min(LCaretFirst,
-                       FFoldedLinesView.TextPosAddLines(L2, 1-LinesInWindow)
+                       ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(L2), 1-LinesInWindow))
                       ));
     end;
   end;

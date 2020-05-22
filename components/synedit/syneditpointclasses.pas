@@ -103,7 +103,6 @@ type
 
   TSynEditSelection = class(TSynEditPointBase)
   private
-    FFoldedView: TObject;
     FOnBeforeSetSelText: TSynBeforeSetSelTextList;
     FAutoExtend: Boolean;
     FCaret: TSynEditCaret;
@@ -218,8 +217,6 @@ type
     property  AutoExtend: Boolean read FAutoExtend write SetAutoExtend;
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
-
-    property FoldedView: TObject read FFoldedView write FFoldedView; experimental; // until FoldedView becomes a TSynEditStringsLinked
   end;
 
   { TSynEditCaret }
@@ -2321,7 +2318,7 @@ begin
     Value.y := MinMax(Value.y, 1, Max(fLines.Count, 1));
 
     // ensure folded block at bottom line is in selection
-    if (ActiveSelectionMode = smLine) and (FFoldedView <> nil) and
+    if (ActiveSelectionMode = smLine) and (FLines <> nil) and
        (FAutoExtend or FStickyAutoExtend)
     then begin
       if ( (FStartLinePos > Value.y) or
@@ -2329,10 +2326,10 @@ begin
          ) and
          (not SelAvail)
       then
-        FStartLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FStartLinePos, 1) - 1
+        FStartLinePos := ToPos(FLines.AddVisibleOffsetToTextIndex(ToIdx(FStartLinePos), 1)) - 1
       else
       if (Value.y < fLines.Count) then
-        Value.y := TSynEditFoldedView(FFoldedView).TextPosAddLines(Value.y, 1) - 1;
+        Value.y := ToPos(FLines.AddVisibleOffsetToTextIndex(ToIdx(Value.y), 1)) - 1;
     end;
 
     if (FCaret = nil) or FCaret.AllowPastEOL then
@@ -2403,9 +2400,9 @@ begin
     // only when selection is new (WasAvail = False)
     if SelAvail and (FAutoExtend or FStickyAutoExtend) then begin
       if IsBackwardSel then
-        FStartLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FStartLinePos, 1) - 1
+        FStartLinePos := ToPos(FLines.AddVisibleOffsetToTextIndex(ToIdx(FStartLinePos), 1)) - 1
       else
-        FEndLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FEndLinePos, 1) - 1;
+        FEndLinePos := ToPos(FLines.AddVisibleOffsetToTextIndex(ToIdx(FEndLinePos), 1)) - 1;
     end;
     FInvalidateLinesMethod(Min(FStartLinePos, FEndLinePos),
                            Max(FStartLinePos, FEndLinePos) );
