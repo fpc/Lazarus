@@ -2073,8 +2073,17 @@ end;
 procedure TCustomSynEdit.DoTopViewChanged(Sender: TObject);
 begin
   FTheLinesView := TSynEditStringsLinked(Sender);
-  if FPaintArea <> nil then // maybe change order of creation
-    FPaintArea.DisplayView := FTheLinesView.DisplayView;
+
+  if FPaintArea = nil then
+    exit; // In SynEdit.Create
+
+  FPaintArea.DisplayView := FTheLinesView.DisplayView;
+  FCaret.Lines := FTheLinesView;
+  FInternalCaret.Lines := FTheLinesView;
+  FBlockSelection.Lines := FTheLinesView;
+  FInternalBlockSelection.Lines := FTheLinesView;
+  FMarkupManager.Lines := FTheLinesView;
+  FTextArea.TheLinesView := FTheLinesView;
 end;
 
 constructor TCustomSynEdit.Create(AOwner: TComponent);
