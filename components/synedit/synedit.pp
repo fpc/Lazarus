@@ -218,7 +218,7 @@ type
   TSynEditTextFlags = set of TSynEditTextFlag;
 
   TSynStateFlag = (sfCaretChanged, sfHideCursor,
-    sfEnsureCursorPos, sfEnsureCursorPosAtResize,
+    sfEnsureCursorPos, sfEnsureCursorPosAtResize, sfEnsureCursorPosForEditRight, sfEnsureCursorPosForEditLeft,
     sfExplicitTopLine, sfExplicitLeftChar,  // when doing EnsureCursorPos keep top/Left, if they where set explicitly after the caret (only applies before handle creation)
     sfPreventScrollAfterSelect,
     sfIgnoreNextChar, sfPainting, sfHasPainted, sfHasScrolled,
@@ -466,6 +466,63 @@ type
     swbWordSmart // begin or end of word with smart gaps (1 char)
   );
 
+  { TSynScrollOnEditOptions }
+
+  TSynScrollOnEditOptions = class(TPersistent)
+  private
+    FKeepBorderDistance: integer;
+    FKeepBorderDistancePercent: integer;
+    FOnChange: TNotifyEvent;
+    FScrollExtraColumns: integer;
+    FScrollExtraMax: integer;
+    FScrollExtraPercent: integer;
+    procedure SetKeepBorderDistance(AValue: integer);
+    procedure SetKeepBorderDistancePercent(AValue: integer);
+    procedure SetScrollExtraColumns(AValue: integer);
+    procedure SetScrollExtraMax(AValue: integer);
+    procedure SetScrollExtraPercent(AValue: integer);
+  protected
+    FCurrentDistance: integer;
+    FCurrentColumns: integer;
+    procedure Assign(Source: TPersistent); override;
+  public
+    constructor Create;
+    procedure SetDefaults; virtual;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+
+    property KeepBorderDistance: integer read FKeepBorderDistance write SetKeepBorderDistance;
+    property KeepBorderDistancePercent: integer read FKeepBorderDistancePercent write SetKeepBorderDistancePercent;
+    property ScrollExtraColumns: integer read FScrollExtraColumns write SetScrollExtraColumns;
+    property ScrollExtraPercent: integer read FScrollExtraPercent write SetScrollExtraPercent;
+    property ScrollExtraMax: integer read FScrollExtraMax write SetScrollExtraMax;
+  end;
+
+  { TSynScrollOnEditLeftOptions }
+
+  TSynScrollOnEditLeftOptions = class(TSynScrollOnEditOptions)
+  public
+    procedure SetDefaults; override;
+  published
+    property KeepBorderDistance        default  2;
+    property KeepBorderDistancePercent default  0;
+    property ScrollExtraColumns        default  5;
+    property ScrollExtraPercent        default 10;
+    property ScrollExtraMax            default 20;
+  end;
+
+  { TSynScrollOnEditRightOptions }
+
+  TSynScrollOnEditRightOptions = class(TSynScrollOnEditOptions)
+  public
+    procedure SetDefaults; override;
+  published
+    property KeepBorderDistance        default  0;
+    property KeepBorderDistancePercent default  0;
+    property ScrollExtraColumns        default 10;
+    property ScrollExtraPercent        default 25;
+    property ScrollExtraMax            default 20;
+  end;
+
   { TCustomSynEdit }
 
   TCustomSynEdit = class(TSynEditBase)
@@ -498,6 +555,8 @@ type
   protected
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
+    FScrollOnEditLeftOptions: TSynScrollOnEditOptions;
+    FScrollOnEditRightOptions: TSynScrollOnEditOptions;
     FTextCursor, FOffTextCursor, FOverrideCursor: TCursor;
     FBlockIndent: integer;
     FBlockTabIndent: integer;
@@ -629,6 +688,8 @@ type
     FPendingFoldState: String;
 
     procedure DoTopViewChanged(Sender: TObject);
+    procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
+    procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
     procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
@@ -782,6 +843,7 @@ type
     procedure SetWordBlock(Value: TPoint);
     procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
+    procedure RecalcScrollOnEdit(Sender: TObject);
     procedure RecalcCharsAndLinesInWin(CheckCaret: Boolean);
     procedure StatusChangedEx(Sender: TObject; Changes: TSynStatusChanges);
     procedure StatusChanged(AChanges: TSynStatusChanges);
@@ -1154,6 +1216,9 @@ type
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar default 1024;
     property TopLine: Integer read GetTopLine write SetTopLine;
 
+    property ScrollOnEditLeftOptions: TSynScrollOnEditOptions read FScrollOnEditLeftOptions write SetScrollOnEditLeftOptions;
+    property ScrollOnEditRightOptions: TSynScrollOnEditOptions read FScrollOnEditRightOptions write SetScrollOnEditRightOptions;
+
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     property Modified: Boolean read GetModified write SetModified;
     property PaintLock: Integer read fPaintLock;
@@ -1341,6 +1406,8 @@ type
     property RightEdgeColor;
     property ScrollBars;
     property SelectedColor;
+    property ScrollOnEditLeftOptions;
+    property ScrollOnEditRightOptions;
     property IncrementColor;
     property HighlightAllColor;
     property BracketHighlightStyle;
@@ -1767,6 +1834,90 @@ begin
   end;
 end;
 
+{ TSynScrollOnEditOptions }
+
+procedure TSynScrollOnEditOptions.SetKeepBorderDistance(AValue: integer);
+begin
+  if FKeepBorderDistance = AValue then Exit;
+  AValue := MinMax(AValue, 0, 1000);
+  FKeepBorderDistance := AValue;
+end;
+
+procedure TSynScrollOnEditOptions.SetKeepBorderDistancePercent(AValue: integer);
+begin
+  if FKeepBorderDistancePercent = AValue then Exit;
+  AValue := MinMax(AValue, 0, 100);
+  FKeepBorderDistancePercent := AValue;
+end;
+
+procedure TSynScrollOnEditOptions.SetScrollExtraColumns(AValue: integer);
+begin
+  if FScrollExtraColumns = AValue then Exit;
+  AValue := MinMax(AValue, 0, 1000);
+  FScrollExtraColumns := AValue;
+end;
+
+procedure TSynScrollOnEditOptions.SetScrollExtraMax(AValue: integer);
+begin
+  if FScrollExtraMax = AValue then Exit;
+  AValue := MinMax(AValue, 0, 1000);
+  FScrollExtraMax := AValue;
+end;
+
+procedure TSynScrollOnEditOptions.SetScrollExtraPercent(AValue: integer);
+begin
+  if FScrollExtraPercent = AValue then Exit;
+  AValue := MinMax(AValue, 0, 100);
+  FScrollExtraPercent := AValue;
+end;
+
+procedure TSynScrollOnEditOptions.Assign(Source: TPersistent);
+begin
+  if not(Source is TSynScrollOnEditOptions) then
+    exit;
+  FKeepBorderDistance        := TSynScrollOnEditOptions(Source).FKeepBorderDistance;
+  FKeepBorderDistancePercent := TSynScrollOnEditOptions(Source).FKeepBorderDistancePercent;
+  FScrollExtraColumns        := TSynScrollOnEditOptions(Source).FScrollExtraColumns;
+  FScrollExtraMax            := TSynScrollOnEditOptions(Source).FScrollExtraMax;
+  FScrollExtraPercent        := TSynScrollOnEditOptions(Source).FScrollExtraPercent;
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+constructor TSynScrollOnEditOptions.Create;
+begin
+  inherited Create;
+  SetDefaults;
+end;
+
+procedure TSynScrollOnEditOptions.SetDefaults;
+begin
+  //
+end;
+
+{ TSynScrollOnEditLeftOptions }
+
+procedure TSynScrollOnEditLeftOptions.SetDefaults;
+begin
+  inherited SetDefaults;
+  FKeepBorderDistance        := 2;
+  FKeepBorderDistancePercent := 0;
+  FScrollExtraColumns        := 5;
+  FScrollExtraMax            := 10;
+  FScrollExtraPercent        := 20;
+end;
+
+{ TSynScrollOnEditRightOptions }
+
+procedure TSynScrollOnEditRightOptions.SetDefaults;
+begin
+  FKeepBorderDistance        := 0;
+  FKeepBorderDistancePercent := 0;
+  FScrollExtraColumns        := 10;
+  FScrollExtraMax            := 25;
+  FScrollExtraPercent        := 30;
+end;
+
 { TCustomSynEdit }
 
 procedure TCustomSynEdit.AquirePrimarySelection;
@@ -2086,6 +2237,20 @@ begin
   FTextArea.TheLinesView := FTheLinesView;
 end;
 
+procedure TCustomSynEdit.SetScrollOnEditLeftOptions(
+  AValue: TSynScrollOnEditOptions);
+begin
+  FScrollOnEditLeftOptions.Assign(AValue);
+  RecalcScrollOnEdit(nil);
+end;
+
+procedure TCustomSynEdit.SetScrollOnEditRightOptions(
+  AValue: TSynScrollOnEditOptions);
+begin
+  FScrollOnEditRightOptions.Assign(AValue);
+  RecalcScrollOnEdit(nil);
+end;
+
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2200,6 +2365,10 @@ begin
   FFoldedLinesView.BlockSelection := FBlockSelection;
 
   FWordBreaker := TSynWordBreaker.Create;
+  FScrollOnEditLeftOptions  := TSynScrollOnEditLeftOptions.Create;
+  FScrollOnEditLeftOptions.OnChange := @RecalcScrollOnEdit;
+  FScrollOnEditRightOptions := TSynScrollOnEditRightOptions.Create;
+  FScrollOnEditRightOptions.OnChange := @RecalcScrollOnEdit;
 
   RecreateMarkList;
 
@@ -2632,6 +2801,9 @@ begin
   FreeAndNil(FKeyPressEventList);
   FreeAndNil(FQueryMouseCursorList);
   FreeAndNil(FUtf8KeyPressEventList);
+  FreeAndNil(FScrollOnEditLeftOptions);
+  FreeAndNil(FScrollOnEditRightOptions);
+
   inherited Destroy;
 end;
 
@@ -6527,10 +6699,25 @@ begin
           ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
           ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
           ' LeftChar='+dbgs(LeftChar), '');}
-        if MinX < LeftChar then
-          LeftChar := MinX
-        else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
-          LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
+        MaxX := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars);
+        if (sfEnsureCursorPosForEditLeft in fStateFlags) then
+          dec(MinX, FScrollOnEditLeftOptions.FCurrentDistance)
+        else
+        if (sfEnsureCursorPosForEditRight in fStateFlags) then
+          inc(MaxX, FScrollOnEditRightOptions.FCurrentDistance);
+
+        if MinX < LeftChar then begin
+          if sfEnsureCursorPosForEditLeft in fStateFlags then
+            MinX := Min(MinX,
+                        PhysCaretXY.X - FScrollOnEditLeftOptions.FCurrentColumns);
+          LeftChar := MinX;
+        end
+        else if LeftChar < MaxX then begin
+          if sfEnsureCursorPosForEditRight in fStateFlags then
+            MaxX := Max(MaxX,
+                        PhysCaretXY.X + FScrollOnEditRightOptions.FCurrentColumns - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars));
+          LeftChar := MaxX;
+        end
         else
           LeftChar := LeftChar;                                                     //mh 2000-10-19
       end;
@@ -6545,7 +6732,7 @@ begin
           TopView := TopView;                                                       //mh 2000-10-19
       end;
     end;
-    Exclude(fStateFlags, sfPreventScrollAfterSelect);
+    fStateFlags := fStateFlags - [sfPreventScrollAfterSelect, sfEnsureCursorPosForEditRight, sfEnsureCursorPosForEditLeft];
   finally
     DoDecPaintLock(Self);
     //{BUG21996} DebugLnExit(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
@@ -6889,6 +7076,7 @@ begin
                 LogCounter :=  GetCharLen(Temp, LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, LogCounter);
               FCaret.BytePos := LogCaretXY.X;
+              Include(fStateFlags, sfEnsureCursorPosForEditLeft);
             end;
           end;
         end;
@@ -7038,8 +7226,7 @@ begin
 
               //CaretX := CaretX + 1;
               FCaret.BytePos := LogCaretXY.X + length(AChar);
-              if CaretX >= LeftChar + CharsInWindow then
-                LeftChar := LeftChar + Min(25, CharsInWindow - 1);
+              Include(fStateFlags, sfEnsureCursorPosForEditRight);
             finally
               FCaret.DecForceAdjustToNextChar;
               FCaret.DecForcePastEOL;
@@ -8275,6 +8462,39 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.RecalcScrollOnEdit(Sender: TObject);
+begin
+  FScrollOnEditLeftOptions.FCurrentDistance := Min(Max(
+      FScrollOnEditLeftOptions.KeepBorderDistance,
+      CharsInWindow * FScrollOnEditLeftOptions.KeepBorderDistancePercent div 100
+    ),
+    Max(0, CharsInWindow - 1) div 2
+  );
+  FScrollOnEditLeftOptions.FCurrentColumns := Min(Min(Max(
+      FScrollOnEditLeftOptions.ScrollExtraColumns,
+      CharsInWindow * FScrollOnEditLeftOptions.ScrollExtraPercent div 100
+    ),
+    FScrollOnEditLeftOptions.ScrollExtraMax
+    ),
+    Max(0, CharsInWindow - 1) div 2
+  );
+
+  FScrollOnEditRightOptions.FCurrentDistance := Min(Max(
+      FScrollOnEditRightOptions.KeepBorderDistance,
+      CharsInWindow * FScrollOnEditRightOptions.KeepBorderDistancePercent div 100
+    ),
+    Max(0, CharsInWindow - 1) div 2
+  );
+  FScrollOnEditRightOptions.FCurrentColumns := Min(Min(Max(
+      FScrollOnEditRightOptions.ScrollExtraColumns,
+      CharsInWindow * FScrollOnEditRightOptions.ScrollExtraPercent div 100
+    ),
+    FScrollOnEditRightOptions.ScrollExtraMax
+    ),
+    Max(0, CharsInWindow - 1) div 2
+  );
+end;
+
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
   l, r: Integer;
@@ -8321,6 +8541,8 @@ begin
       if not (eoScrollPastEof in Options) then
         TopView := TopView;
     end;
+
+    RecalcScrollOnEdit(nil);
   finally
     DecStatusChangeLock;
   end;
@@ -8569,6 +8791,7 @@ begin
       FCaret.IncAutoMoveOnEdit;
       FTheLinesView.EditInsert(FCaret.BytePos, FCaret.LinePos, Spaces);
       FCaret.DecAutoMoveOnEdit;
+      Include(fStateFlags, sfEnsureCursorPosForEditRight);
     end;
   finally
     InternalEndUndoBlock;
