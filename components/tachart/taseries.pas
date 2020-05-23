@@ -1938,6 +1938,16 @@ var
   zero: Double;
   ext, ext2: TDoubleRect;
 
+  { Replaces y=NaN at first level by zero if StackedNaN is ReplaceByZero }
+  procedure FixNaN;
+  var
+    i: Integer;
+  begin
+    if FStackedNaN = snReplaceByZero then
+      for i := 0 to High(FGraphPoints) do
+        if IsNaN(FGraphPoints[i].Y) then FGraphPoints[i].Y := 0.0;
+  end;
+
   procedure CollectMissingItem(AIndex: Integer);
   begin
     missing[numMissing] := AIndex;
@@ -1957,15 +1967,12 @@ var
       if IsNaN(item^.X) then
         CollectMissingItem(i)
       else
-      if FBanded and IsNaN(item^.Y) then
+      if IsNaN(item^.Y) and ((FStackedNaN = snDoNotDraw) or FBanded) then
         CollectMissingItem(i)
       else
       if FStacked and (FStackedNaN = snDoNotDraw) then
-        if IsNaN(item^.Y) then
-          CollectMissingItem(i)
-        else
-          for j := 0 to Source.YCount-2 do
-            if IsNaN(item^.YList[j]) then CollectMissingItem(i);
+        for j := 0 to Source.YCount - 2 do
+          if IsNaN(item^.YList[j]) then CollectMissingItem(i);
     end;
     SetLength(missing, numMissing);
   end;
@@ -2218,6 +2225,7 @@ begin
   PrepareGraphPoints(ext, true);
   if Length(FGraphPoints) = 0 then
     exit;
+  FixNaN;
 
   if UseZeroLevel then
     zero := AxisToGraphY(ZeroLevel)
