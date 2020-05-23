@@ -122,11 +122,23 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgwinclasses.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgWinClasses"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="AllOSes/TargetOSes">
+            <_AllOSes Value="False"/>
+            <_TargetOSes Value="win32,win64"/>
+          </_FPMake>
+        </CustomOptions>
       </Item>
       <Item>
         <Filename Value="fpdbgdarwinclasses.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgDarwinClasses"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="AllOSes/TargetOSes">
+            <_AllOSes Value="False"/>
+            <_TargetOSes Value="darwin"/>
+          </_FPMake>
+        </CustomOptions>
       </Item>
       <Item>
         <Filename Value="fpdmemorytools.pas"/>
@@ -164,11 +176,23 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbglinuxclasses.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgLinuxClasses"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="AllOSes/TargetOSes">
+            <_AllOSes Value="False"/>
+            <_TargetOSes Value="linux"/>
+          </_FPMake>
+        </CustomOptions>
       </Item>
       <Item>
         <Filename Value="fpdbglinuxextra.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgLinuxExtra"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="AllOSes/TargetOSes">
+            <_AllOSes Value="False"/>
+            <_TargetOSes Value="linux"/>
+          </_FPMake>
+        </CustomOptions>
       </Item>
       <Item>
         <Filename Value="fpdbgavrclasses.pas"/>
@@ -186,8 +210,17 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgcommon.pas"/>
         <UnitName Value="FpDbgCommon"/>
       </Item>
+      <Item>
+        <Filename Value="fpimgreaderwinpetypes.pas"/>
+        <UnitName Value="FpImgReaderWinPETypes"/>
+      </Item>
     </Files>
+    <CompatibilityMode Value="False"/>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="fcl-net"/>
+        <DependencyType Value="FPMake"/>
+      </Item>
       <Item>
         <PackageName Value="DebuggerIntf"/>
       </Item>

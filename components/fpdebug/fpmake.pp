@@ -35,6 +35,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('fcl-net');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('lclbase');
     D := P.Dependencies.Add('fcl');
@@ -69,7 +70,9 @@ begin
     D := T.Dependencies.AddUnit('FpPascalBuilder');
     D := T.Dependencies.AddUnit('FpDbgInfo');
     D := T.Dependencies.AddUnit('FpDbgWinClasses');
+    D.OSes := [win32,win64];
     D := T.Dependencies.AddUnit('FpDbgDarwinClasses');
+    D.OSes := [darwin];
     D := T.Dependencies.AddUnit('FpdMemoryTools');
     D := T.Dependencies.AddUnit('FpErrorMessages');
     D := T.Dependencies.AddUnit('FPDbgController');
@@ -79,11 +82,14 @@ begin
     D := T.Dependencies.AddUnit('fpDbgSymTableContext');
     D := T.Dependencies.AddUnit('fpDbgSymTable');
     D := T.Dependencies.AddUnit('FpDbgLinuxClasses');
+    D.OSes := [linux];
     D := T.Dependencies.AddUnit('FpDbgLinuxExtra');
+    D.OSes := [linux];
     D := T.Dependencies.AddUnit('FpDbgAvrClasses');
     D := T.Dependencies.AddUnit('FpDbgDisasAvr');
     D := T.Dependencies.AddUnit('FpDbgRsp');
     D := T.Dependencies.AddUnit('FpDbgCommon');
+    D := T.Dependencies.AddUnit('FpImgReaderWinPETypes');
     T := P.Targets.AddImplicitUnit('fpdbgclasses.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdisasx86.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdwarf.pas');
@@ -104,7 +110,9 @@ begin
     T := P.Targets.AddImplicitUnit('fppascalbuilder.pas');
     T := P.Targets.AddImplicitUnit('fpdbginfo.pas');
     T := P.Targets.AddImplicitUnit('fpdbgwinclasses.pas');
+    T.OSes := [win32,win64];
     T := P.Targets.AddImplicitUnit('fpdbgdarwinclasses.pas');
+    T.OSes := [darwin];
     T := P.Targets.AddImplicitUnit('fpdmemorytools.pas');
     T := P.Targets.AddImplicitUnit('fperrormessages.pas');
     T := P.Targets.AddImplicitUnit('fpdbgcontroller.pas');
@@ -114,11 +122,14 @@ begin
     T := P.Targets.AddImplicitUnit('fpdbgsymtablecontext.pas');
     T := P.Targets.AddImplicitUnit('fpdbgsymtable.pas');
     T := P.Targets.AddImplicitUnit('fpdbglinuxclasses.pas');
+    T.OSes := [linux];
     T := P.Targets.AddImplicitUnit('fpdbglinuxextra.pas');
+    T.OSes := [linux];
     T := P.Targets.AddImplicitUnit('fpdbgavrclasses.pas');
     T := P.Targets.AddImplicitUnit('fpdbgdisasavr.pp');
     T := P.Targets.AddImplicitUnit('fpdbgrsp.pas');
     T := P.Targets.AddImplicitUnit('fpdbgcommon.pas');
+    T := P.Targets.AddImplicitUnit('fpimgreaderwinpetypes.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('fpdebug.compiled');
