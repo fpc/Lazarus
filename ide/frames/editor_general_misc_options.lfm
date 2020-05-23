@@ -1,14 +1,14 @@
 object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
   Left = 0
-  Height = 232
+  Height = 397
   Top = 0
   Width = 460
-  ClientHeight = 232
+  ClientHeight = 397
   ClientWidth = 460
   TabOrder = 0
   Visible = False
-  DesignLeft = 138
-  DesignTop = 138
+  DesignLeft = 225
+  DesignTop = 65
   object EditorTrimSpaceTypeLabel: TLabel
     AnchorSideLeft.Control = EditorTrimSpaceTypeComboBox
     AnchorSideLeft.Side = asrBottom
@@ -17,7 +17,7 @@ object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     Left = 156
     Height = 15
     Top = 29
-    Width = 141
+    Width = 137
     BorderSpacing.Left = 6
     Caption = 'EditorTrimSpaceTypeLabel'
     ParentColor = False
@@ -62,5 +62,355 @@ object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     ItemHeight = 15
     Style = csDropDownList
     TabOrder = 1
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DBRigthScroll
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 75
+    Top = 75
+    Width = 448
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 3
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 75
+    ClientWidth = 448
+    TabOrder = 2
+    object Panel2: TPanel
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 229
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 229
+      TabOrder = 0
+      object lbLeftDist: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 50
+        Caption = 'lbLeftDist'
+        ParentColor = False
+      end
+      object edLeftDist: TSpinEdit
+        Left = 159
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel3: TPanel
+      Left = 235
+      Height = 23
+      Top = 0
+      Width = 213
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 213
+      TabOrder = 1
+      object lbLeftDistP: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 57
+        Caption = 'lbLeftDistP'
+        ParentColor = False
+      end
+      object edLeftDistP: TSpinEdit
+        Left = 143
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel4: TPanel
+      Left = 0
+      Height = 23
+      Top = 26
+      Width = 229
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 229
+      TabOrder = 2
+      object lbLeftAdd: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 52
+        Caption = 'lbLeftAdd'
+        ParentColor = False
+      end
+      object edLeftAdd: TSpinEdit
+        Left = 159
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object PnlLeftAddP: TPanel
+      Left = 235
+      Height = 23
+      Top = 26
+      Width = 213
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 213
+      TabOrder = 3
+      object lbLeftAddP: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 59
+        Caption = 'lbLeftAddP'
+        ParentColor = False
+      end
+      object edLeftAddP: TSpinEdit
+        Left = 143
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel6: TPanel
+      Left = 0
+      Height = 23
+      Top = 52
+      Width = 229
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 229
+      TabOrder = 4
+      object lbLeftAddMax: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 75
+        Caption = 'lbLeftAddMax'
+        ParentColor = False
+      end
+      object edLeftAddMax: TSpinEdit
+        Left = 159
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+  end
+  object DBRigthScroll: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EditorTrimSpaceTypeComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 54
+    Width = 448
+    Caption = 'DBLeftScroll'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object DBLeftScroll: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 156
+    Width = 448
+    Caption = 'DBRightScroll'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Panel7: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DBLeftScroll
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 75
+    Top = 177
+    Width = 448
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 3
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 75
+    ClientWidth = 448
+    TabOrder = 3
+    object Panel8: TPanel
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 240
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 240
+      TabOrder = 0
+      object lbRightDist: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 58
+        Caption = 'lbRightDist'
+        ParentColor = False
+      end
+      object edRightDist: TSpinEdit
+        Left = 170
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel9: TPanel
+      Left = 246
+      Height = 23
+      Top = 0
+      Width = 202
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 202
+      TabOrder = 1
+      object lbRightDistP: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 65
+        Caption = 'lbRightDistP'
+        ParentColor = False
+      end
+      object edRightDistP: TSpinEdit
+        Left = 132
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel10: TPanel
+      Left = 0
+      Height = 23
+      Top = 26
+      Width = 240
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 240
+      TabOrder = 2
+      object lbRightAdd: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 60
+        Caption = 'lbRightAdd'
+        ParentColor = False
+      end
+      object edRightAdd: TSpinEdit
+        Left = 170
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel11: TPanel
+      Left = 246
+      Height = 23
+      Top = 26
+      Width = 202
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 202
+      TabOrder = 3
+      object lbRightAddP: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 67
+        Caption = 'lbRightAddP'
+        ParentColor = False
+      end
+      object edRightAddP: TSpinEdit
+        Left = 132
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
+    object Panel12: TPanel
+      Left = 0
+      Height = 23
+      Top = 52
+      Width = 240
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 240
+      TabOrder = 4
+      object lbRightAddMax: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 83
+        Caption = 'lbRightAddMax'
+        ParentColor = False
+      end
+      object edRightAddMax: TSpinEdit
+        Left = 170
+        Height = 23
+        Top = 0
+        Width = 70
+        Align = alRight
+        TabOrder = 0
+      end
+    end
   end
 end

@@ -32,11 +32,11 @@ interface
 
 uses
   // LCL
-  LCLProc, StdCtrls, ExtCtrls,
+  LCLProc, StdCtrls, ExtCtrls, Spin,
   // SynEdit
   SynEdit, SynEditTextTrimmer,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, DividerBevel, CheckBoxThemed,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options;
 
@@ -44,9 +44,42 @@ type
   { TEditorGeneralMiscOptionsFrame }
 
   TEditorGeneralMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
+    DBRigthScroll: TDividerBevel;
+    DBLeftScroll: TDividerBevel;
     EditorTrimSpaceTypeComboBox: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
     EditorTrimSpaceTypeLabel: TLabel;
+    lbLeftDist: TLabel;
+    lbLeftDistP: TLabel;
+    lbLeftAdd: TLabel;
+    lbLeftAddP: TLabel;
+    lbLeftAddMax: TLabel;
+    lbRightDist: TLabel;
+    lbRightDistP: TLabel;
+    lbRightAdd: TLabel;
+    lbRightAddP: TLabel;
+    lbRightAddMax: TLabel;
+    Panel1: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    edLeftDist: TSpinEdit;
+    edLeftDistP: TSpinEdit;
+    edLeftAdd: TSpinEdit;
+    edLeftAddP: TSpinEdit;
+    edLeftAddMax: TSpinEdit;
+    edRightDist: TSpinEdit;
+    edRightDistP: TSpinEdit;
+    edRightAdd: TSpinEdit;
+    edRightAddP: TSpinEdit;
+    edRightAddMax: TSpinEdit;
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; {%H-}Index: integer);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -97,6 +130,19 @@ begin
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeCaretMove);
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypePosOnly);
   EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
+
+  DBLeftScroll.Caption := lisDynPkgAutoScrollOnDeletePa;
+  lbLeftDist.Caption   := lisDynPkgTriggerOnMinCharsVis;
+  lbLeftDistP.Caption  := lisDynPkgTriggerOnMinCharsOfW;
+  lbLeftAdd.Caption    := lisDynPkgAmountToScrollIn;
+  lbLeftAddP.Caption   := lisDynPkgAmountToScrollIn2;
+  lbLeftAddMax.Caption := lisDynPkgAmountToScrollInMax;
+  DBRigthScroll.Caption := lisDynPkgAutoScrollOnTypePast;
+  lbRightDist.Caption   := lisDynPkgTriggerOnMinCharsVis;
+  lbRightDistP.Caption  := lisDynPkgTriggerOnMinCharsOfW;
+  lbRightAdd.Caption    := lisDynPkgAmountToScrollIn;
+  lbRightAddP.Caption   := lisDynPkgAmountToScrollIn2;
+  lbRightAddMax.Caption := lisDynPkgAmountToScrollInMax;
 end;
 
 procedure TEditorGeneralMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -114,6 +160,21 @@ begin
       {$IFDEF WinIME}
       Checked[5] := UseMinimumIme;
       {$ENDIF}
+
+      with ScrollOnEditLeftOptions do begin
+        edLeftDist.Value   := KeepBorderDistance;
+        edLeftDistP.Value  := KeepBorderDistancePercent;
+        edLeftAdd.Value    := ScrollExtraColumns;
+        edLeftAddP.Value   := ScrollExtraPercent;
+        edLeftAddMax.Value := ScrollExtraMax;
+      end;
+      with ScrollOnEditRightOptions do begin
+        edRightDist.Value   := KeepBorderDistance;
+        edRightDistP.Value  := KeepBorderDistancePercent;
+        edRightAdd.Value    := ScrollExtraColumns;
+        edRightAddP.Value   := ScrollExtraPercent;
+        edRightAddMax.Value := ScrollExtraMax;
+      end;
     end;
     EditorTrimSpaceTypeComboBox.ItemIndex := ord(TrimSpaceType);
   end;
@@ -145,6 +206,21 @@ begin
     {$IFDEF WinIME}
     UseMinimumIme := EditorOptionsGroupBox.Checked[5];
     {$ENDIF}
+
+      with ScrollOnEditLeftOptions do begin
+        KeepBorderDistance := edLeftDist.Value;
+        KeepBorderDistancePercent := edLeftDistP.Value;
+        ScrollExtraColumns := edLeftAdd.Value;
+        ScrollExtraPercent := edLeftAddP.Value;
+        ScrollExtraMax := edLeftAddMax.Value;
+      end;
+      with ScrollOnEditRightOptions do begin
+        KeepBorderDistance := edRightDist.Value;
+        KeepBorderDistancePercent := edRightDistP.Value;
+        ScrollExtraColumns := edRightAdd.Value;
+        ScrollExtraPercent := edRightAddP.Value;
+        ScrollExtraMax := edRightAddMax.Value;
+      end;
   end;
 end;
 

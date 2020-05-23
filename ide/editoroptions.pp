@@ -1416,6 +1416,8 @@ type
     FPasExtendedKeywordsMode: Boolean;
     FHideSingleTabInWindow: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
+    FScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions;
+    FScrollOnEditRightOptions: TSynScrollOnEditRightOptions;
     FTopInfoView: boolean;
     {$IFDEF WinIME}
     FUseMinimumIme: Boolean;
@@ -1809,6 +1811,10 @@ type
     property StringBreakEnabled: Boolean read FStringBreakEnabled write FStringBreakEnabled;
     property StringBreakAppend: String read FStringBreakAppend write FStringBreakAppend;
     property StringBreakPrefix: String read FStringBreakPrefix write FStringBreakPrefix;
+
+    // Scroll
+    property ScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions read FScrollOnEditLeftOptions write FScrollOnEditLeftOptions;
+    property ScrollOnEditRightOptions: TSynScrollOnEditRightOptions read FScrollOnEditRightOptions write FScrollOnEditRightOptions;
   end;
 
 var
@@ -4626,6 +4632,8 @@ var
 begin
   inherited Create;
   InitLocale;
+  FScrollOnEditLeftOptions := TSynScrollOnEditLeftOptions.Create;
+  FScrollOnEditRightOptions := TSynScrollOnEditRightOptions.Create;
 
   ConfFileName := AppendPathDelim(GetPrimaryConfigPath) + EditOptsConfFileName;
   CopySecondaryConfigFile(EditOptsConfFileName);
@@ -4676,6 +4684,8 @@ begin
   FUserMouseSettings.Free;
   FTempMouseSettings.Free;
   FreeAndNil(FDefaultValues);
+  FreeAndNil(FScrollOnEditLeftOptions);
+  FreeAndNil(FScrollOnEditRightOptions);
   inherited Destroy;
 end;
 
@@ -6116,6 +6126,9 @@ begin
       ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
       ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
     end;
+
+    ASynEdit.ScrollOnEditLeftOptions.Assign(ScrollOnEditLeftOptions);
+    ASynEdit.ScrollOnEditRightOptions.Assign(ScrollOnEditRightOptions);
   finally
     ASynEdit.EndUpdate;
   end;

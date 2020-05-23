@@ -6631,6 +6631,13 @@ resourcestring
   lisDebugOptionsFrmDebuggerBackend = 'Debugger Backend:';
   lisDebugOptionsFrmUseIDEDebugger = '-- Use IDE default Debugger --';
   lisDebugOptionsFrmUnknownDebuggerBacke = 'Unknown Debugger backend "%s"';
+  lisDynPkgAutoScrollOnDeletePa = 'Auto Scroll on delete past left border';
+  lisDynPkgAutoScrollOnTypePast = 'Auto Scroll on type past right border';
+  lisDynPkgTriggerOnMinCharsVis = 'Trigger on min chars visible';
+  lisDynPkgTriggerOnMinCharsOfW = 'Trigger on min chars (% of width)';
+  lisDynPkgAmountToScrollIn = 'Amount to scroll in';
+  lisDynPkgAmountToScrollIn2 = 'Amount to scroll in (%)';
+  lisDynPkgAmountToScrollInMax = 'Amount to scroll in (Max)';
 
 implementation
 
