@@ -71,13 +71,15 @@ type
     property PrinterIndex: Integer read FPrinterIndex write SetPrinterIndex;
   end;
   
-var
-  Prn: TfrPrinter;
+function  Prn : TfrPrinter;
 
 const
   MAX_TYP_KNOWN = 118;
 
 implementation
+
+var
+  GlobalPrn: TfrPrinter = nil;
 
 type
   TPaperInfo = record
@@ -362,6 +364,25 @@ const
 //      http://source.winehq.org/source/include/wingdi.h#L2927
 //
 {$ENDIF}
+
+
+
+function Prn: TfrPrinter;
+begin
+if Assigned( GlobalPrn ) then
+  Exit( GlobalPrn );
+
+  GlobalPrn := TfrPrinter.Create;
+  try
+    GlobalPrn.Printer:=Printer;
+  except
+    on E: Exception do begin
+      debugln('lazreport: unit lr_prntr: ',E.Message);
+    end;
+  end;
+  Exit( GlobalPrn );
+end;
+
 
 {----------------------------------------------------------------------------}
 constructor TfrPrinter.Create;
@@ -1245,16 +1266,9 @@ end;
 {----------------------------------------------------------------------------}
 
 initialization
-  Prn := TfrPrinter.Create;
-  try
-    Prn.Printer:=Printer;
-  except
-    on E: Exception do begin
-      debugln('lazreport: unit lr_prntr: ',E.Message);
-    end;
-  end;
 
 finalization
-  Prn.Free;
+  if Assigned( GlobalPrn ) then
+    GlobalPrn.Free;
 
 end.
