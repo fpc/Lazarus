@@ -848,10 +848,12 @@ begin
   FLastDesignedHeightToScroll:=DesignedHeightToScroll;
   pBG.OnPaint := nil;
   pBG.SendToBack;
+  FDesignedForm.BeginUpdate;
 end;
 
 procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
 begin
+  FDesignedForm.EndUpdate;
   pBG.OnPaint := pBGPaint;
 end;
 
