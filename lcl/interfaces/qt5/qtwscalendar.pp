@@ -41,6 +41,7 @@ type
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ADisplaySettings: TDisplaySettings); override;
+    class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
   end;
 
 
@@ -114,8 +115,31 @@ begin
 
   QtCalendar.BeginUpdate;
   QtCalendar.SetDisplaySettings(HHdrFmt, VHdrFmt, SelMode,
-   dsShowHeadings in ADisplaySettings, dsShowWeekNumbers in ADisplaySettings,
-   dsStartMonday in ADisplaySettings);
+   dsShowHeadings in ADisplaySettings, dsShowWeekNumbers in ADisplaySettings);
+  QtCalendar.EndUpdate;
+end;
+
+class procedure TQtWSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar;
+  const ADayOfWeek: TCalDayOfWeek);
+var
+  QtCalendar: TQtCalendar;
+  H: QLocaleH;
+  dow: QtDayOfWeek;
+begin
+  QtCalendar := TQtCalendar(ACalendar.Handle);
+
+  if ADayOfWeek = dowDefault then begin
+    H := QLocale_Create();
+    try
+      dow := QLocale_firstDayOfWeek(H);
+    finally
+      QLocale_Destroy(H);
+    end;
+  end else
+    dow := QtDayOfWeek(ord(ADayOfWeek) + 1);
+
+  QtCalendar.BeginUpdate;
+  QtCalendar.SetFirstDayOfWeek(dow);
   QtCalendar.EndUpdate;
 end;
 

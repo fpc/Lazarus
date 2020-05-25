@@ -283,9 +283,10 @@ begin
   if (dsShowWeekNumbers in ADisplaySettings) then
     num := Num  + (1 shl 3);
 
+  {
   if (dsStartMonday in ADisplaySettings) then
     num := Num  + (1 shl 4);
-
+  }
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
   gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
 end;

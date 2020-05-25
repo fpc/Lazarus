@@ -1865,9 +1865,8 @@ type
       const AHHdrFmt: QCalendarWidgetHorizontalHeaderFormat;
       const AVHdrFmt: QCalendarWidgetVerticalHeaderFormat;
       const ASelMode: QCalendarWidgetSelectionMode;
-      const ANavBarVisible: Boolean; const AGridVisible: Boolean;
-      const AStartMonday: Boolean
-      );
+      const ANavBarVisible: Boolean; const AGridVisible: Boolean);
+    procedure SetFirstDayOfWeek(const ADayOfWeek: QtDayOfWeek);
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
     procedure SignalSelectionChanged; cdecl;
@@ -17796,18 +17795,19 @@ procedure TQtCalendar.SetDisplaySettings(
       const AHHdrFmt: QCalendarWidgetHorizontalHeaderFormat;
       const AVHdrFmt: QCalendarWidgetVerticalHeaderFormat;
       const ASelMode: QCalendarWidgetSelectionMode;
-      const ANavBarVisible: Boolean; const AGridVisible: Boolean;
-      const AStartMonday: Boolean);
+      const ANavBarVisible: Boolean; const AGridVisible: Boolean);
+//      const AStartMonday: Boolean);
 begin
   QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(Widget), AHHdrFmt);
   QCalendarWidget_setNavigationBarVisible(QCalendarWidgetH(Widget), ANavBarVisible);
   QCalendarWidget_setVerticalHeaderFormat(QCalendarWidgetH(Widget), AVHdrFmt);
   QCalendarWidget_setGridVisible(QCalendarWidgetH(Widget), AGridVisible);
-  if AStartMonday then
-    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(Widget), QtMonday)
-  else
-    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(Widget), QtSunday);
   QCalendarWidget_setSelectionMode(QCalendarWidgetH(Widget), ASelMode);
+end;
+
+procedure TQtCalendar.SetFirstDayOfWeek(const ADayOfWeek: QtDayOfWeek);
+begin
+  QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(Widget), ADayOfWeek);
 end;
 
 function TQtCalendar.DeliverDayChanged(ADate: QDateH): boolean;

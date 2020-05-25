@@ -51,6 +51,7 @@ type
     class function GetCurrentView(const ACalendar: TCustomCalendar): TCalendarView; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
+    class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
   end;
 
 
@@ -220,6 +221,21 @@ begin
   else
     Style := Style and not MCS_WEEKNUMBERS;
   SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
+end;
+
+class procedure TWin32WSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek);
+var
+  dow: LongInt;
+  tmp: array[0..1] of widechar;
+begin
+  if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetFirstDayOfWeek') then
+    Exit;
+  if ADayOfWeek = dowDefault then begin
+    GetLocaleInfoW(LOCALE_USER_DEFAULT, LOCALE_IFIRSTDAYOFWEEK, PWideChar(tmp), SizeOf(tmp));
+    dow := StrToInt(tmp[0]);
+  end else
+    dow := ord(ADayOfWeek);
+  MonthCal_SetFirstDayOfWeek(ACalendar.Handle, dow);
 end;
 
 end.

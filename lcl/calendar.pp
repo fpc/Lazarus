@@ -37,10 +37,10 @@ type
     dsShowHeadings,
     dsShowDayNames,
     dsNoMonthChange,
-    dsShowWeekNumbers,
-    dsStartMonday
+    dsShowWeekNumbers
   );
   TDisplaySettings = set of TDisplaySetting;
+
 const
   DefaultDisplaySettings = [dsShowHeadings, dsShowDayNames];
 
@@ -65,6 +65,11 @@ type
     cvCentury // grid with decades of one century
   );
 
+  TCalDayOfWeek = (
+    dowMonday, dowTuesday, dowWednesday, dowThursday,
+    dowFriday, dowSaturday, dowSunday, dowDefault
+  );
+
   EInvalidDate = class(Exception);
 
   { TCustomCalendar }
@@ -74,6 +79,7 @@ type
     FDateAsString : String;
     FDate: TDateTime; // last valid date
     FDisplaySettings : TDisplaySettings;
+    FFirstDayOfWeek: TCalDayOfWeek;
     FOnChange: TNotifyEvent;
     FDayChanged: TNotifyEvent;
     FMonthChanged: TNotifyEvent;
@@ -87,6 +93,7 @@ type
     procedure SetDisplaySettings(const AValue: TDisplaySettings);
     function GetDate: String;
     procedure SetDate(const AValue: String);
+    procedure SetFirstDayOfWeek(const AValue: TCalDayOfWeek);
   protected
     class procedure WSRegisterClass; override;
     procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
@@ -105,6 +112,7 @@ type
     property DateTime: TDateTime read GetDateTime write SetDateTime;
     property DisplaySettings: TDisplaySettings read GetDisplaySettings
       write SetDisplaySettings default DefaultDisplaySettings;
+    property FirstDayOfWeek: TCalDayOfWeek read FFirstDayOfWeek write SetFirstDayOfWeek default dowDefault;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
@@ -123,6 +131,7 @@ type
     property DateTime;
     property DisplaySettings;
     property DoubleBuffered;
+    property FirstDayOfWeek;
     property Hint;
     property OnChange;
     property OnChangeBounds;
@@ -177,6 +186,7 @@ begin
   fCompStyle := csCalendar;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
   FDisplaySettings := DefaultDisplaySettings;
+  FFirstDayOfWeek := dowDefault;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;
 end;
@@ -283,6 +293,13 @@ begin
   SetProps;
 end;
 
+procedure TCustomCalendar.SetFirstDayOfWeek(const AValue: TCalDayOfWeek);
+begin
+  if AValue = FFirstDayOfWeek then exit;
+  FFirstDayOfWeek := AValue;
+  SetProps;
+end;
+
 procedure TCustomCalendar.GetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -305,6 +322,7 @@ begin
     {$ENDIF}
     TWSCustomCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
     TWSCustomCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
+    TWSCustomCalendarClass(WidgetSetClass).SetFirstDayOfWeek(Self, FFirstDayOfWeek);
   end
   else
     FPropsChanged := True;

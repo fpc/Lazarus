@@ -53,6 +53,8 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); virtual;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
       const ADisplaySettings: TDisplaySettings); virtual;
+    class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar;
+      const ADayOfWeek: TCalDayOfWeek); virtual;
   end;
   TWSCustomCalendarClass = class of TWSCustomCalendar;
 
@@ -87,6 +89,11 @@ end;
 
 class procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
+begin
+end;
+
+class procedure TWSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar;
+  const ADayOfWeek: TCalDayOfWeek);
 begin
 end;
 

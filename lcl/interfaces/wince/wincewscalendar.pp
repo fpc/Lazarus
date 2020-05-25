@@ -43,6 +43,7 @@ type
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
+    class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
   end;
 
 implementation
@@ -152,6 +153,11 @@ begin
    else
      Style := Style and not MCS_WEEKNUMBERS;
    SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
+end;
+
+class procedure TWinCEWSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek);
+begin
+  // MonthCal_SetFirstDayOfWeek not supported by WinCE
 end;
 
 end.

@@ -290,10 +290,10 @@ begin
 
   if (dsShowWeekNumbers in ADisplaySettings) then
     num := Num or $08;
-
+  {
   if (dsStartMonday in ADisplaySettings) then
     num := Num or $20;
-
+  }
   TGtk3Calendar(ACalendar.Handle).setDisplayOptions(TGtkCalendarDisplayOptions(num));
 end;
 
