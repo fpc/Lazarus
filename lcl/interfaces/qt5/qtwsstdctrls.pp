@@ -1644,8 +1644,7 @@ begin
     ACombo := QComboBox_create(nil);
     try
       QWidget_setFont(ACombo, ComboBox.getFont);
-      QComboBox_setEditable(ACombo,
-        not (ACustomComboBox.Style in [csDropDownList,csOwnerDrawFixed,csOwnerDrawVariable]));
+      QComboBox_setEditable(ACombo, not ACustomComboBox.Style.HasEditBox);
       AText := 'Mtjx';
       AItems := QStringList_create(PWideString(@AText));
       QComboBox_addItems(ACombo, AItems);

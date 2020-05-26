@@ -19,6 +19,7 @@ unit StdCtrls;
 
 {$mode objfpc}{$H+}
 {$I lcl_defines.inc}
+{$modeswitch typehelpers}
 
 interface
 
@@ -256,6 +257,11 @@ type
     csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
     csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
   );
+
+  TComboBoxStyleHelper = type helper for TComboBoxStyle
+  public
+    function HasEditBox: Boolean;
+  end;
 
   TOwnerDrawState = LCLType.TOwnerDrawState;
 

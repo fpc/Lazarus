@@ -1116,4 +1116,21 @@ begin
     inherited;
 end;
 
+{ TComboBoxStyleHelper }
+
+function TComboBoxStyleHelper.HasEditBox: Boolean;
+const
+  ArrHasEditBox: array[TComboBoxStyle] of Boolean = (
+    True,  // csDropDown,         // like an TEdit plus a button to drop down the list, default
+    True,  // csSimple,           // like an TEdit plus a TListBox
+    False, // csDropDownList,     // like TLabel plus a button to drop down the list
+    False, // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
+    False, // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
+    True,  // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
+    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+  );
+begin
+  Result := ArrHasEditBox[Self];
+end;
+
 // included by stdctrls.pp

@@ -364,11 +364,11 @@ procedure TWinCEComboBoxStringList.Clear;
 var
   SaveText: String;
 begin
-  if TCustomComboBox(FSender).Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if not TCustomComboBox(FSender).Style.HasEditBox then
     SaveText := TCustomComboBox(FSender).Text;
   inherited;
   UpdateComboHeight;
-  if TCustomComboBox(FSender).Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if not TCustomComboBox(FSender).Style.HasEditBox then
     TCustomComboBox(FSender).Text := SaveText;
 end;
 
