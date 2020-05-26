@@ -1117,13 +1117,13 @@ end;
 function TComboBoxStyleHelper.HasEditBox: Boolean;
 const
   ArrHasEditBox: array[TComboBoxStyle] of Boolean = (
-    True,  // csDropDown,         // like an TEdit plus a button to drop down the list, default
-    True,  // csSimple,           // like an TEdit plus a TListBox
-    False, // csDropDownList,     // like TLabel plus a button to drop down the list
-    False, // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
-    False, // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
-    True,  // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
-    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+    True,  // csDropDown
+    True,  // csSimple
+    False, // csDropDownList
+    False, // csOwnerDrawFixed
+    False, // csOwnerDrawVariable
+    True,  // csOwnerDrawEditableFixed
+    True   // csOwnerDrawEditableVariable
   );
 begin
   Result := ArrHasEditBox[Self];
@@ -1132,13 +1132,13 @@ end;
 function TComboBoxStyleHelper.IsOwnerDrawn: Boolean;
 const
   ArrIsOwnerDrawn: array[TComboBoxStyle] of Boolean = (
-    False, // csDropDown,         // like an TEdit plus a button to drop down the list, default
-    False, // csSimple,           // like an TEdit plus a TListBox
-    False, // csDropDownList,     // like TLabel plus a button to drop down the list
-    True,  // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
-    True,  // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
-    True,  // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
-    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+    False, // csDropDown
+    False, // csSimple
+    False, // csDropDownList
+    True,  // csOwnerDrawFixed
+    True,  // csOwnerDrawVariable
+    True,  // csOwnerDrawEditableFixed
+    True   // csOwnerDrawEditableVariable
   );
 begin
   Result := ArrIsOwnerDrawn[Self];
@@ -1147,16 +1147,38 @@ end;
 function TComboBoxStyleHelper.IsVariable: Boolean;
 const
   ArrIsVariable: array[TComboBoxStyle] of Boolean = (
-    False, // csDropDown,         // like an TEdit plus a button to drop down the list, default
-    False, // csSimple,           // like an TEdit plus a TListBox
-    False, // csDropDownList,     // like TLabel plus a button to drop down the list
-    False, // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
-    True,  // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
-    False, // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
-    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+    False, // csDropDown
+    False, // csSimple
+    False, // csDropDownList
+    False, // csOwnerDrawFixed
+    True,  // csOwnerDrawVariable
+    False, // csOwnerDrawEditableFixed
+    True   // csOwnerDrawEditableVariable
   );
 begin
   Result := ArrIsVariable[Self];
+end;
+
+function TComboBoxStyleHelper.SetEditBox(const AHasEditBox: Boolean): TComboBoxStyle;
+const
+  ArrSetEditBox: array[Boolean, TComboBoxStyle] of TComboBoxStyle = (
+   (csDropDownList,              // csDropDown
+    csDropDownList,              // csSimple
+    csDropDownList,              // csDropDownList
+    csOwnerDrawFixed,            // csOwnerDrawFixed
+    csOwnerDrawVariable,         // csOwnerDrawVariable
+    csOwnerDrawFixed,            // csOwnerDrawEditableFixed
+    csOwnerDrawVariable),        // csOwnerDrawEditableVariable
+   (csDropDown,                  // csDropDown
+    csSimple,                    // csSimple
+    csDropDown,                  // csDropDownList
+    csOwnerDrawEditableFixed,    // csOwnerDrawFixed
+    csOwnerDrawEditableVariable, // csOwnerDrawVariable
+    csOwnerDrawEditableFixed,    // csOwnerDrawEditableFixed
+    csOwnerDrawEditableVariable) // csOwnerDrawEditableVariable
+  );
+begin
+  Result := ArrSetEditBox[AHasEditBox, Self];
 end;
 
 // included by stdctrls.pp

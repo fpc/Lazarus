@@ -261,6 +261,7 @@ type
   TComboBoxStyleHelper = type helper for TComboBoxStyle
   public
     function HasEditBox: Boolean;
+    function SetEditBox(const AHasEditBox: Boolean): TComboBoxStyle; // return a style with/without editbox according to the current style
     function IsOwnerDrawn: Boolean;
     function IsVariable: Boolean;
   end;
