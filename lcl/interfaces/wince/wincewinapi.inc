@@ -2238,7 +2238,7 @@ begin
           Dec(Height, 2*Windows.GetSystemMetrics(SM_CYBORDER));
         end;
       {$ELSE}
-        if (Style and and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
+        if (Style and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
         begin
           // thick, sizing border
           // add twice, top+bottom border
