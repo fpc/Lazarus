@@ -460,6 +460,8 @@ begin
         DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], True, False);
         ImageList_AddMasked(ButtonImageList.himl, NewBitmap, GetSysColor(COLOR_BTNFACE));
       end;
+      if NewBitmap <> 0 then
+        DeleteObject(NewBitmap);
     end
     else
     begin
@@ -476,8 +478,8 @@ begin
       DeleteObject(OldBitmap);
   end;
   DeleteDC(hdcNewBitmap);
-  if NewBitmap <> 0 then
-      DeleteObject(NewBitmap);
+ { if NewBitmap <> 0 then
+      DeleteObject(NewBitmap);}
   ReleaseDC(BitBtnHandle, BitBtnDC);
   BitBtn.Invalidate;
 end;
@@ -489,6 +491,7 @@ var
   Control: TWinControl;
   ButtonImageList: BUTTON_IMAGELIST;
   ImageList: HIMAGELIST;
+  OldBitmap: HBITMAP;
   LMessage: TLMessage;
 begin
   Info := GetWin32WindowInfo(Window);
@@ -514,6 +517,11 @@ begin
             Windows.SendMessage(Window, BCM_SETIMAGELIST, 0, Windows.LPARAM(@ButtonImageList));
             ImageList_Destroy(ImageList);
           end;
+        end else
+        begin
+          OldBitmap := HBITMAP(Windows.SendMessage(Window, BM_GETIMAGE, IMAGE_BITMAP, 0));
+          if OldBitmap <> 0 then
+            DeleteObject(OldBitmap);
         end;
         Result := WindowProc(Window, Msg, WParam, LParam);
       end;
