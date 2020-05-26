@@ -1559,7 +1559,7 @@ begin
   g_object_set_data(G_OBJECT(renderer), 'widgetinfo', AWidgetInfo);
   gtk_cell_layout_clear(PGtkCellLayout(AWidget));
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
-  if not (ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]) then
+  if not ACustomComboBox.Style.IsOwnerDrawn then
     gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
   gtk_cell_layout_set_cell_data_func(PGtkCellLayout(AWidget), renderer,
     @LCLIntfCellRenderer_CellDataFunc, AWidgetInfo, nil);
@@ -2009,17 +2009,7 @@ var
 begin
   WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle));
   p := WidgetInfo^.CoreWidget;
-  case NewStyle of
-    csDropDown,
-    csSimple,
-    csOwnerDrawEditableFixed,
-    csOwnerDrawEditableVariable:
-      NeedEntry := True;
-    csDropDownList,
-    csOwnerDrawFixed,
-    csOwnerDrawVariable:
-      NeedEntry := False;
-  end;
+  NeedEntry := NewStyle.HasEditBox;
   if gtk_is_combo_box_entry(p) = NeedEntry then Exit;
   ReCreateCombo(ACustomComboBox, NeedEntry, WidgetInfo);
 end;
@@ -2141,7 +2131,6 @@ var
   ACustomComboBox: TCustomComboBox;
   ItemList: TGtkListStoreStringList;
   LCLIndex: PLongint;
-  NeedEntry: Boolean;
 begin
   ACustomComboBox := TCustomComboBox(AWinControl);
 
@@ -2154,18 +2143,7 @@ begin
 
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
 
-  case ACustomComboBox.Style of
-    csDropDown,
-    csSimple,
-    csOwnerDrawEditableFixed,
-    csOwnerDrawEditableVariable:
-      NeedEntry := True;
-    csDropDownList,
-    csOwnerDrawFixed,
-    csOwnerDrawVariable:
-      NeedEntry := False;
-  end;
-  if NeedEntry then
+  if ACustomComboBox.Style.HasEditBox then
     ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0)
   else
     ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));

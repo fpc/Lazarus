@@ -1372,7 +1372,7 @@ begin
       if ((lWinControl is TCustomListbox) and
             (TCustomListBox(lWinControl).Style <> lbStandard)) or
          ((lWinControl is TCustomCombobox) and
-          (TCustomCombobox(lWinControl).Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]))
+             TCustomCombobox(lWinControl).Style.IsOwnerDrawn)
       then
       begin
         if PDrawItemStruct(LParam)^.itemID <> dword(-1) then

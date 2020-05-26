@@ -261,6 +261,8 @@ type
   TComboBoxStyleHelper = type helper for TComboBoxStyle
   public
     function HasEditBox: Boolean;
+    function IsOwnerDrawn: Boolean;
+    function IsVariable: Boolean;
   end;
 
   TOwnerDrawState = LCLType.TOwnerDrawState;

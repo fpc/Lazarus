@@ -31,7 +31,7 @@ var
   i: Integer;
 begin
   // combo that has edit control may have unreliable itemindex like bug 20950
-  if Style <> csDropDownList then
+  if Style.HasEditBox then
     ItemIndex := Items.IndexOf(Text);
   i := ItemIndex;
   if i <> -1 then
@@ -87,7 +87,7 @@ end;
 
 procedure TDBLookupComboBox.DoOnSelect;
 begin
-  if Style=csDropDownList then
+  if not Style.HasEditBox then
     UpdateRecord;
   inherited DoOnSelect;
 end;

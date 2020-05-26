@@ -120,7 +120,7 @@ begin
     if TCustomListbox(AWinControl).Style < lbOwnerDrawFixed then
       exit;
   if AWinControl is TCustomCombobox then
-    if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then
+    if not TCustomCombobox(AWinControl).Style.IsVariable then
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
@@ -255,7 +255,7 @@ begin
       if TCustomListbox(AWinControl).Style = lbStandard then
         exit;
     if AWinControl is TCustomCombobox then
-      if TCustomCombobox(AWinControl).Style < csOwnerDrawFixed then
+      if not TCustomCombobox(AWinControl).Style.IsOwnerDrawn then
         exit;
 
     // get itemindex and area
@@ -438,7 +438,7 @@ begin
 
   if (WidgetInfo <> nil) and
     (WidgetInfo^.LCLObject is TCustomComboBox) and
-    (TCustomComboBox(WidgetInfo^.LCLObject).Style = csDropDownList) and
+    not (TCustomComboBox(WidgetInfo^.LCLObject).Style.HasEditBox) and
     not (TCustomComboBox(WidgetInfo^.LCLObject).DroppedDown) then
   begin
     Value.g_type := G_TYPE_UINT;

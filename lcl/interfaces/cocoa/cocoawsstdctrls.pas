@@ -496,13 +496,12 @@ end;
 
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 begin
-  Result := AStyle in [csOwnerDrawFixed, csOwnerDrawVariable,
-    csOwnerDrawEditableFixed, csOwnerDrawEditableVariable];
+  Result := AStyle.IsOwnerDrawn;
 end;
 
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 begin
-  Result := AStyle in [csOwnerDrawVariable, csOwnerDrawEditableVariable];
+  Result := AStyle.IsVariable;
 end;
 
 procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);

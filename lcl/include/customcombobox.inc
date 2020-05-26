@@ -92,8 +92,7 @@ begin
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    if (Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable])
-    and (FItemHeight > 0) then
+    if Style.IsOwnerDrawn and (FItemHeight > 0) then
       ItemHeight := Round(ItemHeight * AYProportion);
   end;
 end;
@@ -126,7 +125,7 @@ procedure TCustomComboBox.DoEnter;
 begin
   inherited DoEnter;
   //AutoSelect when DoEnter is fired by keyboard
-  if (Style = csDropDownList) then Exit;//Non editable style
+  if not Style.HasEditBox then Exit;//Non editable style
   if (FAutoSelect and not (csLButtonDown in ControlState)) then
   begin
    SelectAll;
@@ -543,7 +542,7 @@ begin
   //SelectAll when hitting return key for AutoSelect feature
   if (Key = VK_RETURN) then
   begin
-    if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
+    if ((cbactEnabled in FAutoCompleteText) and Style.HasEditBox) then
     begin
       // Only happens with alpha-numeric keys and return key and editable Style
       SelectAll;
@@ -555,7 +554,7 @@ begin
     end;
   end
   else
-  if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
+  if ((cbactEnabled in FAutoCompleteText) and Style.HasEditBox) then
   begin
     //Only happens with alpha-numeric keys and return key and editable Style
     //DebugLn(['TCustomComboBox.KeyUp ',Key,' ',IsEditableTextKey(Key)]);
@@ -670,9 +669,7 @@ function TCustomComboBox.GetItemHeight: Integer;
 begin
   // FItemHeight is not initialized at class creating. we can, but with what value?
   // so, if it still uninitialized (=0), then we ask widgetset
-  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable,
-                 csOwnerDrawEditableFixed, csOwnerDrawEditableVariable])
-  and (FItemHeight > 0) or not HandleAllocated then
+  if FStyle.IsOwnerDrawn and (FItemHeight > 0) or not HandleAllocated then
     Result := FItemHeight
   else
   begin
@@ -708,8 +705,7 @@ begin
   FItemHeight := AValue;
   if not HandleAllocated then
     exit;
-  if Style in [csOwnerDrawFixed, csOwnerDrawVariable,
-               csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if Style.IsOwnerDrawn then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemHeight(Self, FItemHeight);
 end;
 
@@ -1040,7 +1036,7 @@ begin
       AHeight := FItemHeight
     else
       AHeight := ItemHeight;
-    if FStyle in [csOwnerDrawVariable, csOwnerDrawEditableVariable] then
+    if FStyle.IsVariable then
       MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then
       ItemHeight := AHeight;
@@ -1131,6 +1127,36 @@ const
   );
 begin
   Result := ArrHasEditBox[Self];
+end;
+
+function TComboBoxStyleHelper.IsOwnerDrawn: Boolean;
+const
+  ArrIsOwnerDrawn: array[TComboBoxStyle] of Boolean = (
+    False, // csDropDown,         // like an TEdit plus a button to drop down the list, default
+    False, // csSimple,           // like an TEdit plus a TListBox
+    False, // csDropDownList,     // like TLabel plus a button to drop down the list
+    True,  // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
+    True,  // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
+    True,  // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
+    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+  );
+begin
+  Result := ArrIsOwnerDrawn[Self];
+end;
+
+function TComboBoxStyleHelper.IsVariable: Boolean;
+const
+  ArrIsVariable: array[TComboBoxStyle] of Boolean = (
+    False, // csDropDown,         // like an TEdit plus a button to drop down the list, default
+    False, // csSimple,           // like an TEdit plus a TListBox
+    False, // csDropDownList,     // like TLabel plus a button to drop down the list
+    False, // csOwnerDrawFixed,   // like csDropDownList, but custom drawn
+    True,  // csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
+    False, // csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
+    True   // csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
+  );
+begin
+  Result := ArrIsVariable[Self];
 end;
 
 // included by stdctrls.pp

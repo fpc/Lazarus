@@ -796,10 +796,8 @@ end;
 class procedure TCDWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle = csDropDown);
-  TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
-                                                   [csOwnerDrawFixed,
-                                                    csOwnerDrawVariable];
+  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle.HasEditBox);
+  TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle.IsOwnerDrawn;
   // TODO: implement styles: csSimple
   inherited SetStyle(ACustomComboBox, NewStyle);
 end;

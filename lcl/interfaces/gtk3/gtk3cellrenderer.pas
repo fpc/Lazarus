@@ -168,7 +168,7 @@ begin
     if TCustomListbox(AWinControl).Style < lbOwnerDrawFixed then
       exit;
   if AWinControl is TCustomCombobox then
-    if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then
+    if not TCustomCombobox(AWinControl).Style.IsVariable then
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
@@ -272,7 +272,7 @@ begin
     if TCustomListbox(AWinControl).Style < lbOwnerDrawFixed then
       exit;
   if AWinControl is TCustomCombobox then
-    if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then
+    if not TCustomCombobox(AWinControl).Style.IsVariable then
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
@@ -322,7 +322,7 @@ begin
     if TCustomListbox(AWinControl).Style < lbOwnerDrawFixed then
       exit;
   if AWinControl is TCustomCombobox then
-    if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then
+    if not TCustomCombobox(AWinControl).Style.IsVariable then
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
@@ -487,7 +487,7 @@ begin
       if TCustomListbox(AWinControl).Style = lbStandard then
         exit;
     if AWinControl is TCustomCombobox then
-      if TCustomCombobox(AWinControl).Style < csOwnerDrawFixed then
+      if not TCustomCombobox(AWinControl).Style.IsOwnerDrawn then
         exit;
 
     ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
@@ -673,7 +673,7 @@ begin
   // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil,' Time=',TimeToStr(Now)]);
 
   if (wtComboBox in TGtk3Widget(Data).WidgetType) and
-    (TCustomComboBox(TGtk3Widget(Data).LCLObject).Style = csDropDownList) and
+    not (TCustomComboBox(TGtk3Widget(Data).LCLObject).Style.HasEditBox) and
     not (TCustomComboBox(TGtk3Widget(Data).LCLObject).DroppedDown) then
   begin
     Value.g_type := G_TYPE_UINT;

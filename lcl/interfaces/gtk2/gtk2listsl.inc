@@ -69,7 +69,7 @@ begin
     if TCustomListbox(LCLList.Owner).Style = lbStandard then
       exit;
   if LclList.Owner is TCustomCombobox then
-    if TCustomCombobox(LclList.Owner).Style < csOwnerDrawFixed then
+    if not TCustomCombobox(LclList.Owner).Style.IsOwnerDrawn then
       exit;
 
   // get itemindex and area

@@ -1168,21 +1168,19 @@ var
   GtkCombo: PGtkCombo;
 begin
   GtkCombo := GTK_COMBO(Pointer(ACustomComboBox.Handle));
-  case ACustomComboBox.Style of
-    csDropDownList :
-      begin
-        // do not set ok_if_empty = true, otherwise it can hang focus
-        gtk_combo_set_value_in_list(GtkCombo,GdkTrue,GdkTrue);
-        gtk_combo_set_use_arrows_always(GtkCombo,GdkTrue);
-        gtk_combo_set_case_sensitive(GtkCombo,GdkFalse);
-      end;
-    else
-      begin
-        // do not set ok_if_empty = true, otherwise it can hang focus
-        gtk_combo_set_value_in_list(GtkCombo,GdkFalse,GdkTrue);
-        gtk_combo_set_use_arrows_always(GtkCombo,GdkFalse);
-        gtk_combo_set_case_sensitive(GtkCombo,GdkTrue);
-      end;
+  if not ACustomComboBox.Style.HasEditBox then
+  begin
+    // do not set ok_if_empty = true, otherwise it can hang focus
+    gtk_combo_set_value_in_list(GtkCombo,GdkTrue,GdkTrue);
+    gtk_combo_set_use_arrows_always(GtkCombo,GdkTrue);
+    gtk_combo_set_case_sensitive(GtkCombo,GdkFalse);
+  end
+  else
+  begin
+    // do not set ok_if_empty = true, otherwise it can hang focus
+    gtk_combo_set_value_in_list(GtkCombo,GdkFalse,GdkTrue);
+    gtk_combo_set_use_arrows_always(GtkCombo,GdkFalse);
+    gtk_combo_set_case_sensitive(GtkCombo,GdkTrue);
   end;
 end;
 

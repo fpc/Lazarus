@@ -6221,8 +6221,6 @@ begin
     g_object_set_data(PGObject(Result), GtkListItemLCLListTag, ItemList);
 
     PGtkComboBox(Result)^.set_entry_text_column(0);
-    if ACombo.Style = csDropDownList then
-      PGtkEditable(PGtkComboBox(Result)^.get_child)^.set_editable(False);
     // do not allow combo button to get focus, entry should take focus
     if PGtkComboBox(Result)^.priv3^.button <> nil then
       PGtkComboBox(Result)^.priv3^.button^.set_can_focus(False);
@@ -6250,7 +6248,7 @@ begin
 
     gtk_cell_layout_clear(PGtkCellLayout(FCentralWidget));
     gtk_cell_layout_pack_start(PGtkCellLayout(FCentralWidget), renderer, True);
-    if not (ACombo.Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]) then
+    if not ACombo.Style.IsOwnerDrawn then
       gtk_cell_layout_set_attributes(PGtkCellLayout(FCentralWidget), renderer, ['text', 0, nil]);
     gtk_cell_layout_set_cell_data_func(PGtkCellLayout(FCentralWidget), renderer,
       @LCLIntfCellRenderer_CellDataFunc, Self, nil);
