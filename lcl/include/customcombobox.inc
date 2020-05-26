@@ -45,7 +45,7 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
   TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, FDropDownCount);
 
-  if FSelStart <> FSelLength then
+  if FSelLength<>0 then
   begin
     ASelStart:= FSelStart;
     ASelLength:= FSelLength;
