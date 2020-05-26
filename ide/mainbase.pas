@@ -1584,10 +1584,19 @@ end;
 procedure InitMenuItem(AMenuItem: TIDEMenuItem; AForm: TCustomForm; AIcon: Integer);
 begin
   AMenuItem.ImageIndex := AIcon;
-  if EnvironmentOptions.Desktop.IDENameForDesignedFormList and IsFormDesign(AForm) then
-    AMenuItem.Caption := AForm.Name
+  if not IsFormDesign(AForm) then
+    AMenuItem.Caption := AForm.Caption
   else
-    AMenuItem.Caption := AForm.Caption;
+    case AForm.ClassName of
+      'TFrameProxyDesignerForm',         // frame
+      'TNonControlProxyDesignerForm':    // datamodule
+          AMenuItem.Caption := AForm.Caption;
+    else                                 // form
+      if EnvironmentOptions.Desktop.IDENameForDesignedFormList then
+        AMenuItem.Caption := AForm.Name
+      else
+        AMenuItem.Caption := AForm.Caption;
+    end;
   AMenuItem.UserTag := {%H-}PtrUInt(AForm);
 end;
 
