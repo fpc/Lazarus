@@ -6210,12 +6210,12 @@ begin
   FWidgetType := FWidgetType + [wtTreeModel, wtComboBox];
   ACombo := TCustomComboBox(LCLObject);
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
-  if ACombo.Style in [csDropDown, csSimple] then
+  if ACombo.Style.HasEditBox then
     Result := PGtkWidget(TGtkComboBox.new_with_model_and_entry(PGtkTreeModel(ListStore)))
   else
     Result := PGtkWidget(TGtkComboBox.new_with_model(PGtkTreeModel(ListStore)));
 
-  if ACombo.Style in [csDropDown, csSimple] then
+  if ACombo.Style.HasEditBox then
   begin
     ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkComboBox(Result)^.get_model), 0, LCLObject);
     g_object_set_data(PGObject(Result), GtkListItemLCLListTag, ItemList);

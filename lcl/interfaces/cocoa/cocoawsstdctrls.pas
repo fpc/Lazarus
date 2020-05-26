@@ -486,7 +486,7 @@ end;
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 begin
-  Result := AStyle in [csDropDownList, csOwnerDrawFixed,  csOwnerDrawVariable];
+  Result := not AStyle.HasEditBox;
 end;
 
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;

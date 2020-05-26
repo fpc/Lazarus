@@ -247,7 +247,7 @@ end;
 procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if Style.HasEditBox then
   begin
     EditingDone;
     FEditingDone := False;
@@ -297,7 +297,7 @@ end;
 function TCustomComboBox.GetSelText: string;
 begin
   //debugln('TCustomComboBox.GetSelText ');
-  if FStyle in [csDropDown, csSimple] then
+  if FStyle.HasEditBox then
     Result:= UTF8Copy(Text, SelStart + 1, SelLength)
   else
     Result:= '';
@@ -316,7 +316,7 @@ var
   OldSelStart: integer;
 begin
   //debugln('TCustomComboBox.SetSelText ',Val);
-  if FStyle in [csDropDown, csSimple] then
+  if FStyle.HasEditBox then
   begin
     OldText := Text;
     OldSelStart := SelStart;
@@ -397,7 +397,7 @@ var
   CurText: String;
 begin
   //debugln('TCustomComboBox.SelectAll ');
-  if (FStyle in [csDropDown, csSimple]) then
+  if FStyle.HasEditBox then
   begin
     CurText := Text;
     if (CurText <> '') then

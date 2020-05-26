@@ -391,7 +391,7 @@ var
   SaveText: String;
   SavePos, SaveLen: Integer;
 begin
-  if TCustomComboBox(FSender).Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if TCustomComboBox(FSender).Style.HasEditBox then
   begin
     SaveText := TCustomComboBox(FSender).Text;
     SavePos := TCustomComboBox(FSender).SelStart;
@@ -399,7 +399,7 @@ begin
   end;
   inherited;
   UpdateComboHeight;
-  if TCustomComboBox(FSender).Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  if TCustomComboBox(FSender).Style.HasEditBox then
   begin
     TCustomComboBox(FSender).Text := SaveText;
     TCustomComboBox(FSender).SelStart := SavePos;

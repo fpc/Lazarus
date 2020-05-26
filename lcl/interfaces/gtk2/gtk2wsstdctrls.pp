@@ -1687,7 +1687,7 @@ begin
   else
     InputObject := AGtkObject;
 
-  if TCustomComboBox(AWinControl).Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable] then
+  if not TCustomComboBox(AWinControl).Style.HasEditBox then
   begin
     // Just a combobox without a edit should handle its own keys. Issue #32458
     Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, InputObject, AWinControl);
@@ -1711,7 +1711,7 @@ begin
 
   // And now the same for the Button in the combo
   if AButton<>nil then begin
-    if TCustomComboBox(AWinControl).Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable] then
+    if not TCustomComboBox(AWinControl).Style.HasEditBox then
     begin
       // Just a combobox without a edit should handle its own keys. Issue #32458
       Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, AButton, AWinControl);

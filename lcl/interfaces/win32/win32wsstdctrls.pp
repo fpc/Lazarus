@@ -1110,7 +1110,7 @@ var
 begin
   if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
   begin
-    Editable := (ACustomComboBox.Style in [csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]);
+    Editable := (ACustomComboBox.Style.HasEditBox);
     if Editable then
     begin
       if not GetText(ACustomComboBox, aText) then

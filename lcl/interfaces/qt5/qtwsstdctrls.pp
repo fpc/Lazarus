@@ -1583,7 +1583,7 @@ end;
 class procedure TQtWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle in [csDropDown, csSimple, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]);
+  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle.HasEditBox);
   TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
                                                    [csOwnerDrawFixed,
                                                     csOwnerDrawVariable,
@@ -1644,7 +1644,7 @@ begin
     ACombo := QComboBox_create(nil);
     try
       QWidget_setFont(ACombo, ComboBox.getFont);
-      QComboBox_setEditable(ACombo, not ACustomComboBox.Style.HasEditBox);
+      QComboBox_setEditable(ACombo, ACustomComboBox.Style.HasEditBox);
       AText := 'Mtjx';
       AItems := QStringList_create(PWideString(@AText));
       QComboBox_addItems(ACombo, AItems);
