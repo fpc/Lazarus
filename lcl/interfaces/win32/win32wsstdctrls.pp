@@ -1141,6 +1141,8 @@ end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
+  if not ACustomComboBox.Style.HasEditBox then
+    Exit;
   SendMessage(ACustomComboBox.Handle, CB_SETEDITSEL, 0, MakeLParam(NewStart, NewStart));
 end;
 
@@ -1149,6 +1151,8 @@ var
   startpos, endpos: integer;
   winhandle: HWND;
 begin
+  if not ACustomComboBox.Style.HasEditBox then
+    Exit;
   winhandle := ACustomComboBox.Handle;
   SendMessage(winhandle, CB_GETEDITSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
   endpos := startpos + NewLength;
