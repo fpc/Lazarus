@@ -3634,6 +3634,7 @@ type
     procedure EraseBackground(DC: HDC); override;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
+    function GetNodeWithExpandSignAt(X, Y: Integer): TTreeNode;
     procedure GetInsertMarkAt(X, Y: Integer; out AnInsertMarkNode: TTreeNode;
                               out AnInsertMarkType: TTreeViewInsertMarkType);
     procedure SetInsertMark(AnInsertMarkNode: TTreeNode;

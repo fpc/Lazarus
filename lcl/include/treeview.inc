@@ -3974,15 +3974,30 @@ begin
 end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
+var
+  b: Boolean;
 begin
   Result := GetNodeAtY(Y);
   if Result = nil then Exit;
-  if (not (tvoRowSelect in Options) and
-      ((X < Result.DisplayStateIconLeft) or (X >= Result.DisplayTextRight)))
-    or
-     ((tvoRowSelect in Options) and     // row select
-      ((X < BorderWidth) or (X >= ClientWidth - BorderWidth)))
-  then
+  if tvoRowSelect in Options then       // row select
+    b := (X < BorderWidth) or (X >= ClientWidth - BorderWidth)
+  else
+    b := (X < Result.DisplayStateIconLeft) or (X >= Result.DisplayTextRight);
+  if b then
+    Result := nil;
+end;
+
+function TCustomTreeView.GetNodeWithExpandSignAt(X, Y: Integer): TTreeNode;
+var
+  b: Boolean;
+begin
+  Result := GetNodeAtY(Y);
+  if Result = nil then Exit;
+  if tvoRowSelect in Options then       // row select
+    b := (X < BorderWidth) or (X >= ClientWidth - BorderWidth)
+  else                                  // need to include DisplayExpandSignLeft
+    b := (X < Result.DisplayExpandSignLeft) or (X >= Result.DisplayTextRight);
+  if b then
     Result := nil;
 end;
 
@@ -5632,7 +5647,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
-  CursorNode := GetNodeAt(LogicalX, Y);
+  CursorNode := GetNodeWithExpandSignAt(LogicalX, Y);
   CursorNdSelected := NodeIsSelected(CursorNode);
 
   //Flag is used for DblClick/TripleClick/QuadClick, so set it before testing ShiftState
@@ -5642,15 +5657,14 @@ begin
     (LogicalX < CursorNode.DisplayExpandSignRight);
 
   //change selection on left click
-  if (Button = mbLeft) and//left click
-     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+  if (Button = mbLeft) and //left click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and //single or first of a multi click
      (CursorNode <> nil) then
   begin
     if FMouseDownOnFoldingSign then
       // mousedown occured on expand sign -> expand/collapse
       CursorNode.Expanded := not CursorNode.Expanded
-    else if (LogicalX >= CursorNode.DisplayStateIconLeft) or
-            (tvoRowSelect in Options) then
+    else if (LogicalX >= CursorNode.DisplayStateIconLeft) or (tvoRowSelect in Options) then
     begin
       // mousedown occured in text or icon -> select node and begin drag operation
       {$IFDEF VerboseDrag}
