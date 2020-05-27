@@ -205,44 +205,32 @@ procedure Register;
 
 resourcestring
   rsCGIApplicati = 'CGI Application';
-  rsCGIApplicati2 = 'CGI Application%sA CGI (Common Gateway Interface) '
-    +'program in Free Pascal using webmodules. The program source is '
-    +'automatically maintained by Lazarus.';
+  rsCGIApplicati2 = 'A CGI (Common Gateway Interface) program in Free Pascal using webmodules.';
   rsCustomCGIApp = 'Custom CGI Application';
-  rsCustomCGIApp2 = 'Custom CGI Application%sA CGI (Common Gateway Interface) '
-    +'program in Free Pascal. The program source is automatically maintained '
-    +'by Lazarus.';
+  rsCustomCGIApp2 = 'A CGI (Common Gateway Interface) program in Free Pascal.';
   rsWebModule = 'Web Module';
-  rsWEBModuleADa = 'WEB Module%sA datamodule for WEB (HTTP) applications.';
+  rsWEBModuleADa = 'A datamodule for WEB (HTTP) applications.';
   rsHTMLWebModul = 'HTML Web Module';
-  rsHTMLWEBModul2 = 'HTML WEB Module%sA Web datamodule for producing strict '
-    +'HTML.';
+  rsHTMLWEBModul2 = 'A Web datamodule for producing strict HTML.';
   rsApacheModule = 'Apache Module';
-  rsApacheModule2 = 'Apache module%sAn Apache loadable module in Free Pascal '
-    +'using webmodules. The main library file is automatically maintained by '
-    +'Lazarus.';
+  rsApacheModule2 = 'An Apache loadable module in Free Pascal using webmodules. '
+    +'The main library file is automatically maintained by Lazarus.';
   rsCustomFastCG = 'Custom FastCGI Application';
-  rsCustomFastCG2 = 'Custom FastCGI Application%sA FastCGI (Common Gateway '
-    +'Interface) program in Free Pascal. The program source is automatically '
-    +'maintained by Lazarus.';
+  rsCustomFastCG2 = 'A FastCGI (Common Gateway Interface) program in Free Pascal.';
   rsFastCGIAppli = 'FastCGI Application';
-  rsFastCGIAppli2 = 'FastCGI Application%sA FastCGI (Common Gateway '
-    +'Interface) program in Free Pascal using webmodules. The program source '
-    +'is automatically maintained by Lazarus.';
+  rsFastCGIAppli2 = 'FastCGI Application%sA FastCGI (Common Gateway Interface) '
+    +'program in Free Pascal using webmodules.';
   rsWebDataProvi = 'Web DataProvider Module';
-  rsWEBDataProvi2 = 'WEB DataProvider Module%sA datamodule to handle data '
-    +'requests for WEB (HTTP) applications using WebDataProvider components.';
+  rsWEBDataProvi2 = 'A datamodule to handle data requests for WEB (HTTP) '
+    +'applications using WebDataProvider components.';
   rsWebJSONRPCMo = 'Web JSON-RPC Module';
-  rsWEBJSONRPCMo2 = 'WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC '
-    +'requests in WEB (HTTP) applications using TJSONRPCHandler components.';
+  rsWEBJSONRPCMo2 = 'A datamodule to dispatch JSON-RPC requests in WEB (HTTP) '
+    +'applications using TJSONRPCHandler components.';
   rsWebExtDirect = 'Web Ext.Direct Module';
-  rsWEBExtDirect2 = 'WEB Ext.Direct Module%sA datamodule to dispatch Ext.'
-    +'Direct requests in WEB (HTTP) applications using TJSONRPCHandler '
-    +'components.';
+  rsWEBExtDirect2 = 'A datamodule to dispatch Ext.Direct requests in WEB (HTTP) '
+    +'applications using TJSONRPCHandler components.';
   rsHTTPAppli = 'HTTP server Application';
-  rsHTTPAppli2 = 'HTTP server Application. Complete HTTP Server '
-    +'program in Free Pascal using webmodules. The program source '
-    +'is automatically maintained by Lazarus.';
+  rsHTTPAppli2 = 'Complete HTTP Server program in Free Pascal using webmodules.';
 
 implementation
 
@@ -366,7 +354,7 @@ end;
 
 function TCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsCGIApplicati2, [#13#13]);
+  Result:=rsCGIApplicati2;
 end;
 
 function TCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -432,7 +420,7 @@ end;
 
 function TCustomCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsCustomCGIApp2, [#13#13]);
+  Result:=rsCustomCGIApp2;
 end;
 
 function TCustomCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -531,7 +519,7 @@ end;
 
 function TFileDescWebDataModule.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsWEBModuleADa, [#13]);
+  Result:=rsWEBModuleADa;
 end;
 
 function TFileDescWebDataModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
@@ -568,7 +556,7 @@ end;
 
 function TFileDescHTMLModule.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsHTMLWEBModul2, [#13]);
+  Result:=rsHTMLWEBModul2;
 end;
 
 function TFileDescHTMLModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
@@ -595,7 +583,7 @@ end;
 
 function TApacheApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsApacheModule2, [#13#13]);
+  Result:=rsApacheModule2;
 end;
 
 function TApacheApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -686,11 +674,10 @@ end;
 
 function TCustomFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsCustomFastCG2, [#13#13]);
+  Result:=rsCustomFastCG2;
 end;
 
-function TCustomFCGIApplicationDescriptor.InitProject(AProject: TLazProject
-  ): TModalResult;
+function TCustomFCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: String;
@@ -769,11 +756,10 @@ end;
 
 function TFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsFastCGIAppli2, [#13#13]);
+  Result:=rsFastCGIAppli2;
 end;
 
-function TFCGIApplicationDescriptor.InitProject(AProject: TLazProject
-  ): TModalResult;
+function TFCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: String;
@@ -956,7 +942,7 @@ end;
 
 function TFileDescWebProviderDataModule.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsWEBDataProvi2, [#13]);
+  Result:=rsWEBDataProvi2;
 end;
 
 function TFileDescWebProviderDataModule.GetImplementationSource(const Filename,
@@ -993,7 +979,7 @@ end;
 
 function TFileDescWebJSONRPCModule.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsWEBJSONRPCMo2, [#13]);
+  Result:=rsWEBJSONRPCMo2;
 end;
 
 function TFileDescWebJSONRPCModule.GetImplementationSource(const Filename,
@@ -1052,7 +1038,7 @@ end;
 
 function TFileDescExtDirectModule.GetLocalizedDescription: string;
 begin
-  Result:=Format(rsWEBExtDirect2, [#13]);
+  Result:=rsWEBExtDirect2;
 end;
 
 function TFileDescExtDirectModule.GetImplementationSource(const Filename,
@@ -1190,8 +1176,7 @@ begin
   Result:=inherited GetLocalizedDescription;
 end;
 
-function TJSFileDescriptor.GetResourceSource(const ResourceName: string
-  ): string;
+function TJSFileDescriptor.GetResourceSource(const ResourceName: string): string;
 begin
   Result:=inherited GetResourceSource(ResourceName);
 end;

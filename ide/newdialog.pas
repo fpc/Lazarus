@@ -405,7 +405,8 @@ begin
     end else
     begin
       aNewItemTemplate := TNewIDEItemTemplate(ANode.Data);
-      Desc := aNewItemTemplate.Description;
+      Desc := aNewItemTemplate.LocalizedName + LineEnding+LineEnding
+             +aNewItemTemplate.Description;
       if aNewItemTemplate is TNewItemProjectFile then
       begin
         if TNewItemProjectFile(aNewItemTemplate).Descriptor is TFileDescInheritedComponent

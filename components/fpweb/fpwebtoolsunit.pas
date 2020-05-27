@@ -773,8 +773,7 @@ begin
   Result:=SHtmlFileDesc;
 end;
 
-function THtmlFileDescriptor.GetResourceSource(const ResourceName: string
-  ): string;
+function THtmlFileDescriptor.GetResourceSource(const ResourceName: string): string;
 begin
   Result:='';
 end;
@@ -819,8 +818,7 @@ begin
   Result:=SJSFileDesc;
 end;
 
-function TJSFileDescriptor.GetResourceSource(const ResourceName: string
-  ): string;
+function TJSFileDescriptor.GetResourceSource(const ResourceName: string): string;
 begin
   Result:='';
 end;
@@ -859,8 +857,7 @@ begin
   Result:=SCSSFileDesc;
 end;
 
-function TCSSFileDescriptor.GetResourceSource(const ResourceName: string
-  ): string;
+function TCSSFileDescriptor.GetResourceSource(const ResourceName: string): string;
 begin
   Result:='';
 end;

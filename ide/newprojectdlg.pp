@@ -31,9 +31,15 @@ unit NewProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, Controls, Project, Buttons, ButtonPanel,
-  StdCtrls, ProjectIntf, ExtCtrls, ComCtrls, LazarusIDEStrConsts,
-  IDEHelpIntf, IDEImagesIntf;
+  Classes, SysUtils,
+  // LCL
+  Forms, Graphics, Controls, Buttons, ButtonPanel, StdCtrls, ExtCtrls, ComCtrls,
+  // BuildIntf
+  ProjectIntf,
+  // IdeIntf
+  IDEHelpIntf, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, Project;
 
 type
 
@@ -97,7 +103,8 @@ begin
   if Assigned(ANode) and Assigned(ANode.Data) then
   begin
     FProjectDescriptor:=TProjectDescriptor(ANode.Data);
-    HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
+    HelpLabel.Caption:=FProjectDescriptor.GetLocalizedName + LineEnding+LineEnding
+                      +FProjectDescriptor.GetLocalizedDescription;
     ButtonPanel.OKButton.Enabled:=true;
   end
   else
