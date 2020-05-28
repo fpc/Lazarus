@@ -470,16 +470,17 @@ begin
     Windows.SendMessage(BitBtnHandle, BCM_SETIMAGELIST, 0, LPARAM(@ButtonImageList));
   end else
   begin
+    //unthemed
     OldBitmap := HBITMAP(Windows.SendMessage(BitBtnHandle, BM_GETIMAGE, IMAGE_BITMAP, 0));
     if NewBitmap <> 0 then
       DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], False, False);
     Windows.SendMessage(BitBtnHandle, BM_SETIMAGE, IMAGE_BITMAP, LPARAM(NewBitmap));
     if OldBitmap <> 0 then
       DeleteObject(OldBitmap);
+    //Don't do a DeleteObject(NewBitmap) here: if you do, there will be no glyph and caption on the button.
+    //We release the bitmap upon WM_Destroy. Issue #0037105
   end;
   DeleteDC(hdcNewBitmap);
- { if NewBitmap <> 0 then
-      DeleteObject(NewBitmap);}
   ReleaseDC(BitBtnHandle, BitBtnDC);
   BitBtn.Invalidate;
 end;
@@ -519,6 +520,7 @@ begin
           end;
         end else
         begin
+          //unthemed BitBtn
           OldBitmap := HBITMAP(Windows.SendMessage(Window, BM_GETIMAGE, IMAGE_BITMAP, 0));
           if OldBitmap <> 0 then
             DeleteObject(OldBitmap);
