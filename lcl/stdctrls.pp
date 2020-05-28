@@ -299,6 +299,7 @@ type
     FOnGetItems: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
+    FReadOnly: Boolean;
     FSelLength: integer;
     FSelStart: integer;
     FSorted: boolean;
@@ -314,6 +315,7 @@ type
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
+    procedure SetReadOnly(const AValue: Boolean);
     procedure UpdateSorted;
     procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
@@ -411,6 +413,7 @@ type
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property SelLength: integer read GetSelLength write SetSelLength;// UTF-8 length
     property SelStart: integer read GetSelStart write SetSelStart;// UTF-8 position
     property SelText: String read GetSelText write SetSelText;
@@ -486,6 +489,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property Style;
