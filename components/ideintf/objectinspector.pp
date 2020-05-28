@@ -4851,8 +4851,6 @@ begin
       if FSelection.Count=0 then
         Exit;
     end;
-    // ToDo: Clear filter only if a selected node is hidden (Visible=False)
-    CompFilterEdit.Filter:='';
     if ASelection<>nil then
       FSelection.Assign(ASelection)
     else
