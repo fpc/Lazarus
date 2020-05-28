@@ -20,12 +20,14 @@ msgid "InstantFPC script"
 msgstr "InstantFPC scenarijus"
 
 #: instantfpcregisterlaz.rssinglefilefr
-#, object-pascal-format
-msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+#, fuzzy, badformat
+#| msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgid "Single file Free Pascal program executed by InstantFPC."
 msgstr "%s%sVieno failo Free Pascal programa, kurią vykdo InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilepr
-#, object-pascal-format
-msgid "%s%sSingle file program using InstantFPC to compile and execute"
+#, fuzzy, badformat
+#| msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgid "Single file program using InstantFPC to compile and execute."
 msgstr "%s%sVieno failo programa, naudojanti InstantFPC kompiliavimui ir vykdymui"
 

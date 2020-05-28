@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: instantfpcregisterlaz.rsinstantfpcpr
 msgid "InstantFPC program"
@@ -18,12 +20,10 @@ msgid "InstantFPC script"
 msgstr "Сценарий InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilefr
-#, object-pascal-format
-msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
-msgstr "%s%sПрограмма Free Pascal в одном файле, исполняемая посредством InstantFPC"
+msgid "Single file Free Pascal program executed by InstantFPC."
+msgstr "Программа Free Pascal в одном файле, исполняемая посредством InstantFPC."
 
 #: instantfpcregisterlaz.rssinglefilepr
-#, object-pascal-format
-msgid "%s%sSingle file program using InstantFPC to compile and execute"
-msgstr "%s%sПрограмма в одном файле, использующая InstantFPC для компиляции и исполнения"
+msgid "Single file program using InstantFPC to compile and execute."
+msgstr "Программа в одном файле, использующая InstantFPC для компиляции и исполнения."
 

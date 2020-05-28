@@ -33,9 +33,9 @@ type
 
 resourcestring
   rsInstantFPCPr = 'InstantFPC program';
-  rsSingleFileFr = 'Single file Free Pascal program executed by InstantFPC';
+  rsSingleFileFr = 'Single file Free Pascal program executed by InstantFPC.';
   rsInstantFPCSc = 'InstantFPC script';
-  rsSingleFilePr = 'Single file program using InstantFPC to compile and execute';
+  rsSingleFilePr = 'Single file program using InstantFPC to compile and execute.';
 
 const
   FileDescNameInstantFPC : string = rsInstantFPCPr;
