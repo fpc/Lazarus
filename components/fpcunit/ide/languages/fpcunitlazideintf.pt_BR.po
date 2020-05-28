@@ -14,8 +14,9 @@ msgid "FPCUnit Console Test Application"
 msgstr "Aplicação Console Teste \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-#, object-pascal-format
-msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
 msgstr "Aplicação Console Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\" em modo console.%sO fonte do programa é mantido automaticamente pelo Lazarus."
 
 #: fpcunitlazideintf.sfpcuntestapp
@@ -23,8 +24,9 @@ msgid "FPCUnit Test Application"
 msgstr "Aplicação Teste \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-#, object-pascal-format
-msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
 msgstr "Aplicação Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\".%sO fonte do programa é mantido automaticamente pelo Lazarus."
 
 #: fpcunitlazideintf.sfpcuntestcase
@@ -32,8 +34,9 @@ msgid "FPCUnit Test Case"
 msgstr "Testes Unitários \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
-#, object-pascal-format
-msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
 msgstr "Testes Unitários \"FPCUnit\"%sUma unidade contendo um teste unitário \"FPCUnit\""
 
 #: fpcunitlazideintf.swriteyourowntest

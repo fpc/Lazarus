@@ -17,8 +17,9 @@ msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit控制台测试应用程序"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-#, object-pascal-format
-msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
 msgstr "FPCUnit控制台测试应用程序%s一个应用程序在控制台模式中来运行FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
 
 #: fpcunitlazideintf.sfpcuntestapp
@@ -26,8 +27,9 @@ msgid "FPCUnit Test Application"
 msgstr "FPCUnit测试应用程序"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-#, object-pascal-format
-msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
 msgstr "FPCUnit测试应用程序%s一个应用程序来运行 FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
 
 #: fpcunitlazideintf.sfpcuntestcase
@@ -35,8 +37,9 @@ msgid "FPCUnit Test Case"
 msgstr "FPCUnit Test Case"
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
-#, object-pascal-format
-msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
 msgstr "FPCUnit Test Case%s一个unit含有一个FPCUnit Test Case."
 
 #: fpcunitlazideintf.swriteyourowntest

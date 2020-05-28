@@ -6,8 +6,7 @@ msgid "FPCUnit Console Test Application"
 msgstr ""
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-#, object-pascal-format
-msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
 msgstr ""
 
 #: fpcunitlazideintf.sfpcuntestapp
@@ -15,8 +14,7 @@ msgid "FPCUnit Test Application"
 msgstr ""
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-#, object-pascal-format
-msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
 msgstr ""
 
 #: fpcunitlazideintf.sfpcuntestcase
@@ -24,8 +22,7 @@ msgid "FPCUnit Test Case"
 msgstr ""
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
-#, object-pascal-format
-msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
 msgstr ""
 
 #: fpcunitlazideintf.swriteyourowntest
