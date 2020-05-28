@@ -16,8 +16,9 @@ msgid "Apache Module"
 msgstr "Apache modul"
 
 #: weblazideintf.rsapachemodule2
-#, object-pascal-format
-msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Apache modul%sEgy az Apache által betölthető modul Free Pascal-ban webmodulok használatával. A fő fügvénytár forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rscgiapplicati
@@ -25,8 +26,9 @@ msgid "CGI Application"
 msgstr "CGI alkalmazás"
 
 #: weblazideintf.rscgiapplicati2
-#, object-pascal-format
-msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rscustomcgiapp
@@ -34,8 +36,9 @@ msgid "Custom CGI Application"
 msgstr "Egyéni CGI alkalmazás"
 
 #: weblazideintf.rscustomcgiapp2
-#, object-pascal-format
-msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
 msgstr "Egyéni CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rscustomfastcg
@@ -43,8 +46,9 @@ msgid "Custom FastCGI Application"
 msgstr "Egyéni FastCGI alkalmazás"
 
 #: weblazideintf.rscustomfastcg2
-#, object-pascal-format
-msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
 msgstr "Egyéni FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rsfastcgiappli
@@ -52,8 +56,9 @@ msgid "FastCGI Application"
 msgstr "FastCGI alkalmazás"
 
 #: weblazideintf.rsfastcgiappli2
-#, object-pascal-format
-msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+#, fuzzy, badformat
+#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rshtmlwebmodul
@@ -61,8 +66,9 @@ msgid "HTML Web Module"
 msgstr "HTTP web modul"
 
 #: weblazideintf.rshtmlwebmodul2
-#, object-pascal-format
-msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+#, fuzzy, badformat
+#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgid "A Web datamodule for producing strict HTML."
 msgstr "HTML WEB modul%sEgy web adatmodul szigorú HTML létrehozására."
 
 #: weblazideintf.rshttpappli
@@ -70,7 +76,9 @@ msgid "HTTP server Application"
 msgstr "HTTP kiszolgáló alkalmazás"
 
 #: weblazideintf.rshttpappli2
-msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+#, fuzzy
+#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "HTTP kiszolgáló alkalmazás. Teljes HTTP kiszolgáló program Free Pascal-ban webmodulok használatával. Az program forráskódját a Lazarus automatikusan karbantartja."
 
 #: weblazideintf.rswebdataprovi
@@ -78,8 +86,9 @@ msgid "Web DataProvider Module"
 msgstr "Web adatszolgáltató modul"
 
 #: weblazideintf.rswebdataprovi2
-#, object-pascal-format
-msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+#, fuzzy, badformat
+#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr "WEB adatszolgáltató modul%sEgy adatmodul WEB (HTTP) alkalmazások számára az adatkérések kezelésére WebDataProvider komponensek haszálatával."
 
 #: weblazideintf.rswebextdirect
@@ -87,8 +96,9 @@ msgid "Web Ext.Direct Module"
 msgstr "Web Ext.Direct modul"
 
 #: weblazideintf.rswebextdirect2
-#, object-pascal-format
-msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+#, fuzzy, badformat
+#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Web Ext.Direct modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban az Ext.Direct kéréseket kezeli TJSONRPCHandler komponensek használatával."
 
 #: weblazideintf.rswebjsonrpcmo
@@ -96,8 +106,9 @@ msgid "Web JSON-RPC Module"
 msgstr "Web JSON-RPC modul"
 
 #: weblazideintf.rswebjsonrpcmo2
-#, object-pascal-format
-msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+#, fuzzy, badformat
+#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Web JSON-RPC modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban a JSON-RPC kéréseket kezeli TJSONRPCHandler komponensek használatával."
 
 #: weblazideintf.rswebmodule
@@ -105,7 +116,8 @@ msgid "Web Module"
 msgstr "Web modul"
 
 #: weblazideintf.rswebmoduleada
-#, object-pascal-format
-msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+#, fuzzy, badformat
+#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgid "A datamodule for WEB (HTTP) applications."
 msgstr "Web modul%sEgy adatmodul WEB (HTTP) alkalmazások számára."
 

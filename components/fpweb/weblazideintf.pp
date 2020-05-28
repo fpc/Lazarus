@@ -218,7 +218,7 @@ resourcestring
   rsCustomFastCG = 'Custom FastCGI Application';
   rsCustomFastCG2 = 'A FastCGI (Common Gateway Interface) program in Free Pascal.';
   rsFastCGIAppli = 'FastCGI Application';
-  rsFastCGIAppli2 = 'FastCGI Application%sA FastCGI (Common Gateway Interface) '
+  rsFastCGIAppli2 = 'A FastCGI (Common Gateway Interface) '
     +'program in Free Pascal using webmodules.';
   rsWebDataProvi = 'Web DataProvider Module';
   rsWEBDataProvi2 = 'A datamodule to handle data requests for WEB (HTTP) '
