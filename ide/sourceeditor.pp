@@ -272,6 +272,8 @@ type
     procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -5111,6 +5113,7 @@ Begin
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
+      OnMouseUp := @EditorMouseUp;
       OnClickLink := Manager.OnClickLink;
       OnMouseLink := Manager.OnMouseLink;
       OnKeyDown := @EditorKeyDown;
@@ -5661,6 +5664,16 @@ begin
   CheckActiveWindow;
   if Assigned(OnMouseDown) then
     OnMouseDown(Sender, Button, Shift, X,Y);
+
+  if (Manager <> nil) then
+    Manager.FChangeNotifyLists[semEditorMouseDown].CallNotifyEvents(Self);
+end;
+
+procedure TSourceEditor.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (Manager <> nil) then
+    Manager.FChangeNotifyLists[semEditorMouseUp].CallNotifyEvents(Self);
 end;
 
 procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word;

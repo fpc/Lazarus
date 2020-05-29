@@ -257,7 +257,9 @@ type
     semEditorCreate,    // Called after a new editor was created and added to list
     semEditorDestroy,   // Called when an Editor is destroyed / after it is removed fron the list of editors
     semEditorActivate,  // Editor is ActiveEditor
-    semEditorStatus     // any status change of the editor (Caret, Selection, topline, ...)
+    semEditorStatus,    // any status change of the editor (Caret, Selection, topline, ...)
+    semEditorMouseDown,
+    semEditorMouseUp
   );
 
   TSemSelectionMode = (
