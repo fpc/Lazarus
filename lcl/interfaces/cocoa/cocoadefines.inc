@@ -33,3 +33,29 @@
 // the call stays there until, LCL application is terminated
 {$define COCOALOOPHIJACK}
 {$endif}
+
+{$ifdef COCOALOOPOVERRIDE}
+  // The proper switching modal dialogs depends on NSApp.isRunning method
+  // The method returns true (on macOS 10.15 and later), only with "run" method
+  // called direclty.
+  // (there's an internal flag, that's defines the value of the property)
+  // Since LCL needs the direct control over the event loop (with Loopoverride)
+  // it canot call the inherited NSapp.run. (or the control is lossed to Cocoa)
+  //
+  // Instead, CocoaWS can set isRunning property to true, in TWO ways
+  //   1) (COCOAPPRUNNING_OVERRIDEPROPERTY)
+  //      override isRunning method and return TRUE when wanted
+  //   2) (COCOAPPRUNNING_SETINTPROPERTY)
+  //      using KeyValue APIs set the internal property
+  // Either method is not entirely good, but it makes modal switching work.
+  //
+  // The actual problem (of not having isRunning set to true), is the following:
+  // 1) Create a window.
+  // 2) Show a modal dialog.
+  // 3) Close the modal window
+  // 4) the focus stays in the closed and hidden modal window...
+  // with NSApp.isRunning, the focus goes back to the previously active window
+
+  {$define COCOAPPRUNNING_OVERRIDEPROPERTY}
+  {.$define COCOAPPRUNNING_SETINTPROPERTY}
+{$endif}

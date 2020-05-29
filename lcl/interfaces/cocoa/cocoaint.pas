@@ -86,6 +86,9 @@ type
     modals : NSMutableDictionary;
     inputclient : TCocoaInputClient;
     inputctx    : NSTextInputContext;
+    {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
+    Stopped : Boolean;
+    {$endif}
 
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}
@@ -96,6 +99,10 @@ type
 
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
     procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
+    {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
+    function isRunning: Boolean; override;
+    procedure stop(sender: id); override;
+    {$endif}
   end;
 
   { TModalSession }
@@ -445,6 +452,9 @@ end;
 {$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
+  {$ifdef COCOAPPRUNNING_SETINTPROPERTY}
+  setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
+  {$endif}
   aloop();
 end;
 {$endif}
@@ -676,6 +686,18 @@ begin
   {$endif}
 end;
 
+{$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
+function TCocoaApplication.isRunning: Boolean;
+begin
+  Result:=not Stopped;
+end;
+
+procedure TCocoaApplication.stop(sender: id);
+begin
+  Stopped := true;
+  inherited stop(sender);
+end;
+{$endif}
 
 procedure InternalInit;
 begin
