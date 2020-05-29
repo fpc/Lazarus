@@ -5,7 +5,13 @@ unit fpWebToolsUnit;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf, LCLType;
+  Classes, SysUtils,
+  // LCL
+  LCLType, LResources, Forms, Controls, Dialogs,
+  // BuildIntf
+  ProjectIntf, NewItemIntf,
+  // IdeIntf
+  MenuIntf, SrcEditorIntf, IDECommands;
 
 type
 
@@ -88,7 +94,6 @@ procedure ProcHTMLTextHeader3(Sender: TObject);
 procedure ProcHTMLTextHeader4(Sender: TObject);
 procedure ProcHTMLTextHeader5(Sender: TObject);
 
-
 procedure ProcHTMLForm(Sender: TObject);
 procedure ProcHTMLSelect(Sender: TObject);
 procedure ProcHTMLSelectOptions(Sender: TObject);
@@ -102,14 +107,13 @@ procedure ProcHTMLInputResetTag(Sender: TObject);
 procedure ProcHTMLFormFieldSet(Sender: TObject);
 procedure ProcHTMLFormLegend(Sender: TObject);
 
-
 procedure ProcOtherInsertFileName(Sender: TObject);
 
 procedure InsertTextToCurEditor(const S:string);
+
 implementation
 
-uses LResources, NewItemIntf, Forms, Controls, IDECommands,
-  MenuIntf, SrcEditorIntf, Dialogs,
+uses
   //HTML
   fpWebNewHTMLFileUnit, fpWebStrConsts, fpWebNewHtmlTableUnit,
   fpwebNewHTMLListUnit, fpwebNewHtmlTagTRUnit, fpwebNewHTMLFormUnit,
@@ -140,7 +144,6 @@ var
   CmdHTMLTextAlignJustify : TIDECommand;
   //Span text
 
-
   CmdHTMLTable : TIDECommand;
   CmdHTMLList : TIDECommand;
 
@@ -163,8 +166,6 @@ var
   CmdHTMLTextStyleH4 : TIDECommand;
   CmdHTMLTextStyleH5 : TIDECommand;
 
-
-
   CmdHTMLFrom             : TIDECommand;
   CmdHTMLFormSelect       : TIDECommand;
   CmdHTMLFormSelectOpt    : TIDECommand;
@@ -177,7 +178,6 @@ var
   CmdHTMLInputReset       : TIDECommand;
   CmdHTMLFormFieldSet     : TIDECommand;
   CmdHTMLFormLegend       : TIDECommand;
-
 
   CmdOtherInsFileName : TIDECommand;
 
@@ -358,7 +358,6 @@ begin
 end;
 
 Procedure InsertHTMLSnippet(Const AText : String);
-
 begin
   if Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
     With SourceEditorManagerIntf.ActiveEditor do
@@ -366,13 +365,11 @@ begin
 end;
 
 Function CheckEditor : Boolean;
-
 begin
   Result:=Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveEditor);
 end;
 
 Procedure InsertHTMLTag(Const ATag : String; Const AAttribute : String = '');
-
 begin
   If CheckEditor then
     With SourceEditorManagerIntf.ActiveEditor do
@@ -383,7 +380,6 @@ begin
 end;
 
 function ShowEditInputTagForm(const ATagType:string; const ADefValue:string = ''):string;
-
 begin
   If Not CheckEditor then Exit;
   With TFpwebNewHTMLInputForm.Create(Application) do
@@ -434,7 +430,6 @@ procedure ProcHTMLTextHeader5(Sender: TObject);
 begin
   InsertHTMLTag('H5');
 end;
-
 
 procedure ProcHTMLTextBold(Sender: TObject);
 begin
@@ -663,7 +658,6 @@ begin
 end;
 
 procedure ProcHTMLRadioButton(Sender: TObject);
-
 begin
   ShowEditInputTagForm('radio');
 end;
@@ -874,7 +868,5 @@ begin
   //
 end;
 
-initialization
-  {$I fpWeb_images.inc}
 end.
 
