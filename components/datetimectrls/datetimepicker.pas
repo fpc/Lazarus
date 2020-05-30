@@ -52,7 +52,7 @@ uses
 const
   { We will deal with the NullDate value the special way. It will be especially
     useful for dealing with null values from database. }
-  NullDate = TDateTime(Math.MaxDouble);
+  NullDate = TDateTime(1.7e+308);
 
   { The biggest date a user can enter. }
   TheBiggestDate = TDateTime(2958465.0); // 31. dec. 9999.
