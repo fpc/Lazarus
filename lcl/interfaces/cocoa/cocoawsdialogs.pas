@@ -876,7 +876,7 @@ begin
   begin
     setDialogFilter(indexOfSelectedItem);
     if Assigned(Owner) then
-      Owner.IntfFileTypeChanged(lastSelectedItemIndex);
+      Owner.IntfFileTypeChanged(indexOfSelectedItem+1);
   end;
   lastSelectedItemIndex := indexOfSelectedItem;
 end;
