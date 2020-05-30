@@ -426,6 +426,31 @@ begin
         LMessage.Result := 0;
         Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
       end;
+
+    // WM_SETFONT and WM_SIZE were added due to csSimple issue #37129
+    WM_SETFONT:
+      begin
+        Result := WindowProc(Window, Msg, WParam, LParam);
+        WindowInfo := GetWin32WIndowInfo(Window);
+        if TCustomComBoBox(WindowInfo^.WinControl).Style = csSimple then
+          with WindowInfo^.WinControl do
+          begin {LCL is blocking the size change so we trick it}
+            SendMessage(Window,CB_SETDROPPEDWIDTH, WIdth, 0);
+            MoveWindow(Handle, left, Top, Width, Height-1, False); {Trick the No size lock}
+            MoveWindow(Handle, Left, Top, Width, Height+1, False);{ Won't change otherwise}
+          end;
+        Exit;
+      end;
+    WM_SIZE: { Added for csSimple border painting with the list in view}
+       begin
+         Result := WindowProc(Window, Msg, WParam, LParam); //call original firt;
+         WindowInfo := GetWin32WindowInfo(Window);
+         if TCustomcombobox(WindowInfo^.WinControl).Style = csSimple then
+         begin
+           InvalidateRect(WindowInfo^.WinControl.Handle, nil, true); {border does not paint properly otherwise}
+         end;
+         Exit;
+       end;
   end;
   // normal processing
   Result := WindowProc(Window, Msg, WParam, LParam);
@@ -975,6 +1000,14 @@ begin
     pSubClassName := LCLComboboxClsName;
     SubClassWndProc := @ComboBoxWindowProc;
   end;
+
+  // issue #37129: Fix static listbox of style csSimple when height is changed (like in Delphi)
+  if (CBS_SIMPLE and Params.flags) <> 0 Then
+  begin
+    Params.Flags := Params.Flags or CBS_NOINTEGRALHEIGHT;
+    Include(TWinControlAccess(AWinControl).FWinControlFlags, wcfEraseBackground);
+  end;
+
   // create window
   FinishCreateWindow(AWinControl, Params, False, True);
 
