@@ -775,6 +775,7 @@ properties</short>
       <element name="TCustomComboBox.FOnGetItems"/>
       <element name="TCustomComboBox.FOnMeasureItem"/>
       <element name="TCustomComboBox.FOnSelect"/>
+      <element name="TCustomComboBox.FReadOnly"/>
       <element name="TCustomComboBox.FSelLength"/>
       <element name="TCustomComboBox.FSelStart"/>
       <element name="TCustomComboBox.FSorted"/>
@@ -1466,6 +1467,20 @@ properties</short>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <!-- property Visibility: public -->
+      <element name="TCustomComboBox.ReadOnly">
+        <short>Disallows entry of free text into ComboBox edit field.</short>
+        <descr>When True, the text can be changed only by selecting an item from the comboBox items list.
+          When False the text can be changed by free form entry.
+          
+          Changing the property value doesn't affect the style in any manner. 
+          Changing the style doesn't affect the property as well. 
+          For some styles (such as csDropDownList) the property might have no effect at all and is ignored.</descr>
+        <seealso><link id="TCustomComboBox.AutoComplete"/>
+        </seealso>
+        <seealso><link id="TCustomComboBox.Style"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
         <short>The number of selected UTF-8 characters in the edit box.</short>
         <descr>
@@ -1547,6 +1562,7 @@ Assign an new string to replace the selected text.</descr>
           </p>
         </descr>
         <seealso>
+          <link id="TCustomComboBox.ReadOnly"/>
           <link id="TCustomComboBox.Style"/>
           <link id="TCustomComboBox.AutoComplete"/>
           <link id="TCustomComboBox.Text"/>
@@ -1636,6 +1652,7 @@ Assign an new string to replace the selected text.</descr>
       <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly"/>
       <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted"/>
       <element name="TComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>

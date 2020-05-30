@@ -90,6 +90,7 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
 
@@ -1587,6 +1588,17 @@ begin
   TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle.IsOwnerDrawn;
   // TODO: implement styles: csSimple
   inherited SetStyle(ACustomComboBox, NewStyle);
+end;
+
+class procedure TQtWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean);
+var
+  LineEdit : TQtLineEdit;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetReadOnly') then
+    Exit;
+  LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
+  if LineEdit <> nil then
+    LineEdit.setReadOnly(NewReadOnly);
 end;
 
 {------------------------------------------------------------------------------

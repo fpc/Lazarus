@@ -86,8 +86,9 @@ type
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
-    {class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
+    {class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
@@ -1852,6 +1853,27 @@ begin
   end
   else
     TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetStyle(
+  const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+begin
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+    Exit;
+  RecreateWnd(ACustomComboBox);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetReadOnly(
+  const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean);
+var
+  box : NSComboBox;
+begin
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+    Exit;
+  if not (NSObject(ACustomComboBox.Handle).isKindOfClass(NSComboBox)) then Exit;
+  box := NSComboBox(ACustomComboBox.Handle);
+  box.setEditable(not NewReadOnly);
+  box.setSelectable_(1);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetDropDownCount(const ACustomComboBox:

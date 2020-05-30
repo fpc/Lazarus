@@ -99,6 +99,7 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -1089,6 +1090,20 @@ end;
 class procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
   RecreateWnd(ACustomComboBox);
+end;
+
+class procedure TWin32WSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+var
+  Info: TComboboxInfo;
+begin
+  if not ACustomComboBox.HandleAllocated then
+    Exit;
+
+  Info.cbSize := SizeOf(Info);
+  Win32Extra.GetComboBoxInfo(ACustomComboBox.Handle, @Info);
+  if (info.hwndItem<>0) and (info.hwndItem<>INVALID_HANDLE_VALUE) then
+    SendMessage(info.hwndItem, EM_SETREADONLY, WParam(NewReadOnly), 0);
 end;
 
 class function TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;

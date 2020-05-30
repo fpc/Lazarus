@@ -42,6 +42,7 @@ begin
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
+  TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
   TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, FDropDownCount);
 
@@ -1078,6 +1079,16 @@ begin
         CloseUp;
       end;
   end;
+end;
+
+procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
+begin
+  if FReadOnly = AValue then
+    Exit;
+  FReadOnly := AValue;
+  if (not HandleAllocated) or (csLoading in ComponentState) then
+    Exit;
+  TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
 end;
 
 {------------------------------------------------------------------------------
