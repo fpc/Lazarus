@@ -59,3 +59,14 @@
   {$define COCOAPPRUNNING_OVERRIDEPROPERTY}
   {.$define COCOAPPRUNNING_SETINTPROPERTY}
 {$endif}
+
+// COCOA_NATIVEACTIVATION allows to prevent COCOA_ACTIVATION_REORDER
+{$ifndef COCOA_NATIVEACTIVATION}
+// The order of the windows needs to be restored, when the application
+// is reactivated. This is due to the LCL modality used.
+//
+// However, resorting windows is impacting 10.15 File Dialogs.
+// File Dialogs are duplicated with an external application.
+// The File Dialog is loosing its accessory view (file type selection).
+{$define COCOA_ACTIVATION_REORDER}
+{$endif}
