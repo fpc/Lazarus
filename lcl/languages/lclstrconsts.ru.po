@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-04-16 16:14+0300\n"
+"PO-Revision-Date: 2020-06-01 01:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -733,7 +733,7 @@ msgstr "Индекс списка вне диапазона (%d)"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
-msgstr ""
+msgstr "Формат файла:"
 
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
