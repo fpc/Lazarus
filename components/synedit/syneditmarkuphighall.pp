@@ -33,7 +33,7 @@ uses
   LazClasses, LazUTF8, LazMethodList,
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
-  SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs, SynEditFoldedView,
+  SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
   SynEditTextBase, LazSynEditText;
 
 type

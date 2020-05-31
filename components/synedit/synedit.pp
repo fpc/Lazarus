@@ -484,9 +484,9 @@ type
   protected
     FCurrentDistance: integer;
     FCurrentColumns: integer;
-    procedure Assign(Source: TPersistent); override;
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
     procedure SetDefaults; virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
 
@@ -6039,8 +6039,6 @@ end;
 procedure TCustomSynEdit.ChangeTextBuffer(NewBuffer: TSynEditStringList);
 var
   OldBuffer: TSynEditStringList;
-  LView: TSynEditStrings;
-  i: Integer;
 begin
   FLines.SendNotification(senrTextBufferChanging, FLines); // Send the old buffer
   DestroyMarkList;

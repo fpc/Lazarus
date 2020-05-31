@@ -11,8 +11,7 @@ interface
 uses
   windows, imm, Classes, SysUtils, Controls, LazLoggerBase, LCLType, LazUTF8, Graphics,
   SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
-  SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText, SynEditTextBase,
-  SynEditMiscProcs;
+  SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText, SynEditTextBase;
 
 {$IFDEF WINCE} {$IF (FPC_FULLVERSION < 20700)}
 function ImmSetCompositionFontA(_himc:HIMC; lplf:LPLOGFONT):BOOL; external ImmDLL name 'ImmSetCompositionFontA';
