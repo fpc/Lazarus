@@ -738,6 +738,10 @@ msgstr "Limoen"
 msgid "List index exceeds bounds (%d)"
 msgstr "Lijst index overschreidt grenzen (%d)"
 
+#: lclstrconsts.rsmacosfileformat
+msgid "File Format:"
+msgstr ""
+
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
 msgid "Hide %s"

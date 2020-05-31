@@ -96,6 +96,7 @@ resourceString
   rsMacOSMenuQuit = 'Quit %s';
   rsMacOSMenuServices = 'Services';
   rsMacOSMenuShowAll = 'Show All';
+  rsMacOSFileFormat = 'File Format:'; // used of FileDialog
 
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'

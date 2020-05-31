@@ -731,6 +731,10 @@ msgstr "Vert citron"
 msgid "List index exceeds bounds (%d)"
 msgstr "Index de liste hors limites (%d)"
 
+#: lclstrconsts.rsmacosfileformat
+msgid "File Format:"
+msgstr ""
+
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
 msgid "Hide %s"
