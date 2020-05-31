@@ -25,14 +25,14 @@ interface
 
 uses
   // RTL,FCL
-  MacOSAll, CocoaAll, Classes,
+  CocoaAll, Classes,
   // LCL
   Controls, StrUtils, SysUtils, Forms, Dialogs, Graphics, Masks,
-  LCLType, LMessages, LCLProc,
+  LCLType, LCLProc, LCLStrConsts,
   // Widgetset
-  WSForms, WSLCLClasses, WSProc, WSDialogs, LCLMessageGlue,
+  WSForms, WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects
+  CocoaUtils, CocoaGDIObjects
   ,Cocoa_Extra, CocoaWSMenus;
 
 type
@@ -146,6 +146,8 @@ uses
 procedure UpdateOptions(src: TOpenDialog; dst: NSSavePanel);
 begin
   dst.setShowsHiddenFiles( ofForceShowHidden in src.Options );
+  if (dst.respondsToSelector(objcselector('setShowsTagField:'))) then
+    dst.setShowsTagField(false);
 end;
 
 procedure UpdateOptions(src: TFileDialog; dst: NSSavePanel);
@@ -308,8 +310,9 @@ var
     lText.setEditable(False);
     lText.setSelectable(False);
     {$endif}
-    lTextStr := NSStringUTF8('Format:');
+    lTextStr := NSStringUTF8(rsMacOSFileFormat);
     lText.setStringValue(lTextStr);
+    lText.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(NSRegularControlSize)));
     lText.sizeToFit;
 
     // Combobox
@@ -419,6 +422,8 @@ begin
     openDlg := nil;
   end;
 
+  saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
+
   callback:=TOpenSaveDelegate.alloc;
   callback.autorelease;
   callback.FileDialog := FileDialog;
@@ -450,6 +455,7 @@ begin
 
 
     // release everything
+    saveDlg.release;
     LocalPool.Release;
   finally
     ToggleAppMenu(true);
