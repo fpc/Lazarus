@@ -307,6 +307,13 @@ const
   NSSquareStatusItemLength = -2;
 {$endif}
 
+type
+  NSSavePanelFix = objccategory external (NSSavePanel)
+    // available in 10.9+
+    procedure setShowsTagField(AShow: LCLObjCBoolean); message 'setShowsTagField:';
+    function showsTagField: LCLObjCBoolean; message 'showsTagField';
+  end;
+
 implementation
 
 function NSNormalWindowLevel: NSInteger;
