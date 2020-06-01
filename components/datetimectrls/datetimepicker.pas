@@ -3490,11 +3490,17 @@ begin
       Finished := True;
 
     if (not Finished) and (GetSelectedText <> S) then begin
-      if (not FUserChangedText) and DateIsNull then
-        if FSelectedTextPart <= 3 then
-          DateTime := SysUtils.Date
-        else
-          DateTime := SysUtils.Now;
+      if (not FUserChangedText) and DateIsNull then begin
+        Inc(FSkipChangeInUpdateDate); // do not call Change here
+        try
+          if FSelectedTextPart <= 3 then
+            DateTime := SysUtils.Date
+          else
+            DateTime := SysUtils.Now;
+        finally
+          Dec(FSkipChangeInUpdateDate);
+        end;
+      end;
 
       if (not FLeadingZeros) and (FSelectedTextPart <= 4) then
         while (Length(S) > 1) and (S[1] = '0') do
