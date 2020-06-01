@@ -58,7 +58,7 @@ end;
 
 function ShowHideTabPage(TabControlHandle: HWnd; Showing: boolean): integer;
 const
-  ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER, SWP_SHOWWINDOW);
+  ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER or SWP_NOREDRAW, SWP_SHOWWINDOW);
 var
   TabControl: TCustomTabControl;
   PageIndex: Integer;
