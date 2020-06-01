@@ -651,11 +651,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   ALeft, ATop, ARight, ABottom, angle1, angle2
+  Params:   ALeft, ATop, ARight, ABottom, Angle, AngleLength
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  The angles Angle and AngleLength are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
@@ -772,11 +772,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer
+  Params:   x1, y1, x2, y2, StartAngle16Deg, Angle16DegLength: Integer
   Returns:  Nothing
 
   Use RadialPie to draw a filled pie-shaped wedge on the canvas.
-  The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree.
+  The angles StartAngle16Deg and Angle16DegLength are 1/16th of a degree.
   For example, a full circle equals 5760 (16*360).
   Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
