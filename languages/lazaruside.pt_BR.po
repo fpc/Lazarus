@@ -9119,31 +9119,31 @@ msgstr "Unidade duplicada \"%s\" em \"%s\""
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
-msgstr ""
+msgstr "Quantidade para rolagem"
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin2
 msgid "Amount to scroll in (%)"
-msgstr ""
+msgstr "Quantidade para rolagem (%)"
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollinmax
 msgid "Amount to scroll in (Max)"
-msgstr ""
+msgstr "Quantidade para rolagem (Max)"
 
 #: lazarusidestrconsts.lisdynpkgautoscrollondeletepa
 msgid "Auto Scroll on delete past left border"
-msgstr ""
+msgstr "Auto rolagem ao excluir além da borda esquerda"
 
 #: lazarusidestrconsts.lisdynpkgautoscrollontypepast
 msgid "Auto Scroll on type past right border"
-msgstr ""
+msgstr "Auto rolagem ao digitar além da borda direita"
 
 #: lazarusidestrconsts.lisdynpkgtriggeronmincharsofw
 msgid "Trigger on min chars (% of width)"
-msgstr ""
+msgstr "Gatilho mínimo em caracteres (% largura)"
 
 #: lazarusidestrconsts.lisdynpkgtriggeronmincharsvis
 msgid "Trigger on min chars visible"
-msgstr ""
+msgstr "Gatilho mínimo em caracteres visíveis"
 
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
@@ -20166,7 +20166,7 @@ msgstr "%s unidade %s no pacote %s"
 #: lazarusidestrconsts.lisunitmustsavebeforeinherit
 #, object-pascal-format
 msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr ""
+msgstr "Unidade \"%s\" deve ser salva antes que possa ser herdada. Salvar agora?"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
@@ -21965,7 +21965,7 @@ msgstr "Colar"
 
 #: lazarusidestrconsts.srkmecpasteascolumns
 msgid "Paste (as Columns)"
-msgstr ""
+msgstr "Colar (como colunas)"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"

@@ -733,7 +733,7 @@ msgstr "Índice lista excede o limite (%d)"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
-msgstr ""
+msgstr "Formato do arquivo:"
 
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format

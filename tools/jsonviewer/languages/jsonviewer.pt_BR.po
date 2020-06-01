@@ -149,7 +149,7 @@ msgstr "Sufixo tipo de propriedade"
 
 #: tcreatecodeform.letoplevelclassname.caption
 msgid "Toplevel class name"
-msgstr ""
+msgstr "Nome da classe de nível superior"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
@@ -409,7 +409,7 @@ msgstr "Salvar JSON formatado"
 
 #: tmainform.mishowrest.caption
 msgid "Show REST panel"
-msgstr ""
+msgstr "Exibir painel REST"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"

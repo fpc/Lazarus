@@ -13,28 +13,28 @@ msgstr ""
 
 #: sqldbstrconst.lrsgeneratesqlstatements
 msgid "Edit/Generate SQL statements"
-msgstr ""
+msgstr "Editar/Gerar declarações SQL"
 
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
 msgid "Dataset not open: %s"
-msgstr ""
+msgstr "\"Dataset\" não está aberto: %s"
 
 #: sqldbstrconst.lrssqlgenselect
 msgid "You must select fields to be updated and key fields."
-msgstr ""
+msgstr "Você deve selecionar campos para serem atualizados e campos-chave."
 
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
-msgstr ""
+msgstr "Editar SQL ..."
 
 #: sqldbstrconst.seditupdatesql
 msgid "Edit all SQL statements"
-msgstr ""
+msgstr "Editar todas as declarações SQL"
 
 #: sqldbstrconst.serrconnectionnotassigned
 msgid "Database not assigned. Assign Database first."
-msgstr ""
+msgstr "Banco de dados não atribuído. Atribuir primeiro."
 
 #: sqldbstrconst.sfirebirddatabases
 msgid "Firebird databases"
@@ -42,7 +42,7 @@ msgstr "Bancos de dados \"Firebird\""
 
 #: sqldbstrconst.sgenerateupdatesql
 msgid "Generate update SQL"
-msgstr ""
+msgstr "Gerar SQL de atualização"
 
 #: sqldbstrconst.sinterbasedatabases
 msgid "Interbase databases"

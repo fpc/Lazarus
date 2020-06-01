@@ -300,39 +300,39 @@ msgstr "Definir valor"
 
 #: objinspstrconsts.lrsbufdsfilters
 msgid "XML data files|*.xml;Binary data files|*.dat"
-msgstr ""
+msgstr "Arquivo de dados XML|*.xml;Arquivos de dados binários|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "Copiar dados de outro \"dataset\""
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "Criar \"dataset\""
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "\"Dataset\" já está ativo, fechar primeiro."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "Carregar dados de arquivo"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr ""
+msgstr "Nenhum \"dataset\" disponível de onde copiar dados."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr ""
+msgstr "Selecionar um arquivo para salvar dados"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "Salvar dados para arquivo"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr ""
+msgstr "Selecionar um arquivo com dados para carregar no \"dataset\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"

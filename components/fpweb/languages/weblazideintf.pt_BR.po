@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,108 +16,86 @@ msgid "Apache Module"
 msgstr "Módulo Apache"
 
 #: weblazideintf.rsapachemodule2
-#, fuzzy, badformat
-#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
-msgstr "Módulo Apache%sUm módulo Apache carregável no Free Pascal usando módulos web. O arquivo biblioteca principal é mantido automaticamente pelo Lazarus."
+msgstr "Um módulo Apache carregável no Free Pascal usando módulos web. O arquivo biblioteca principal é mantido automaticamente pelo Lazarus."
 
 #: weblazideintf.rscgiapplicati
 msgid "CGI Application"
 msgstr "Aplicação CGI"
 
 #: weblazideintf.rscgiapplicati2
-#, fuzzy, badformat
-#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Aplicação CGI%sUm programa CGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Um programa CGI (Common Gateway Interface) em Free Pascal usando módulos web."
 
 #: weblazideintf.rscustomcgiapp
 msgid "Custom CGI Application"
 msgstr "Aplicação CGI personalizada"
 
 #: weblazideintf.rscustomcgiapp2
-#, fuzzy, badformat
-#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Aplicação CGI personalizada%sUm programa CGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Um programa CGI (Common Gateway Interface) em Free Pascal."
 
 #: weblazideintf.rscustomfastcg
 msgid "Custom FastCGI Application"
 msgstr "Aplicação FastCGI personalizada"
 
 #: weblazideintf.rscustomfastcg2
-#, fuzzy, badformat
-#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Aplicação FastCGI personalizada%sUm programa FastCGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Um programa FastCGI (Common Gateway Interface) em Free Pascal."
 
 #: weblazideintf.rsfastcgiappli
 msgid "FastCGI Application"
 msgstr "Aplicação FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
-#, fuzzy, badformat
-#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Aplicação FastCGI%sUm programa FastCGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Um programa FastCGI (Common Gateway Interface) em Free Pascal usando módulos web."
 
 #: weblazideintf.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "Módulo Web HTML"
 
 #: weblazideintf.rshtmlwebmodul2
-#, fuzzy, badformat
-#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgid "A Web datamodule for producing strict HTML."
-msgstr "Módulo Web HTML%sUm módulo de dados Web para geração HTML."
+msgstr "Um módulo de dados Web para geração HTML."
 
 #: weblazideintf.rshttpappli
 msgid "HTTP server Application"
 msgstr "Aplicação servidora HTTP"
 
 #: weblazideintf.rshttpappli2
-#, fuzzy
-#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
-msgstr "Aplicação servidora HTTP. Programa servidor HTTP completo em Free Pascal usando módulos web. O código fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Programa servidor HTTP completo em Free Pascal usando módulos web."
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"
 msgstr "Módulo Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
-#, fuzzy, badformat
-#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr "Módulo Web Dataprovider%sUm módulo de dados para lidar com requisições de dados para aplicações WEB (HTTP) usando componentes WebDataProvider."
+msgstr "Um módulo de dados para lidar com requisições de dados para aplicações WEB (HTTP) usando componentes WebDataProvider."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"
 msgstr "Módulo Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
-#, fuzzy, badformat
-#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Módulo Web Ext.Direct%sUm módulo de dados para despachar requisições Ext.Direct em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
+msgstr "Um módulo de dados para despachar requisições Ext.Direct em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
 
 #: weblazideintf.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
 msgstr "Módulo Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
-#, fuzzy, badformat
-#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Módulo Web JSON-RPC%sUm módulo de dados para despachar requisições JSON-RPC em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
+msgstr "Um módulo de dados para despachar requisições JSON-RPC em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"
 msgstr "Módulo Web"
 
 #: weblazideintf.rswebmoduleada
-#, fuzzy, badformat
-#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgid "A datamodule for WEB (HTTP) applications."
-msgstr "Módulo Web%sUm módulo de dados para aplicações Web (HTTP)."
+msgstr "Um módulo de dados para aplicações Web (HTTP)."
 

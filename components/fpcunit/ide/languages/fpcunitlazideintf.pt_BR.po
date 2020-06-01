@@ -4,40 +4,36 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: fpcunitlazideintf.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
 msgstr "Aplicação Console Teste \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-#, fuzzy, badformat
-#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases in console mode."
-msgstr "Aplicação Console Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\" em modo console.%sO fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Uma aplicação para executar testes unitários \"FPCUnit\" em modo console."
 
 #: fpcunitlazideintf.sfpcuntestapp
 msgid "FPCUnit Test Application"
 msgstr "Aplicação Teste \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-#, fuzzy, badformat
-#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases."
-msgstr "Aplicação Teste \"FPCUnit\"%sUma aplicação para executar testes unitários \"FPCUnit\".%sO fonte do programa é mantido automaticamente pelo Lazarus."
+msgstr "Uma aplicação para executar testes unitários \"FPCUnit\"."
 
 #: fpcunitlazideintf.sfpcuntestcase
 msgid "FPCUnit Test Case"
 msgstr "Testes Unitários \"FPCUnit\""
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
-#, fuzzy, badformat
-#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgid "A unit containing a FPCUnit Test Case."
-msgstr "Testes Unitários \"FPCUnit\"%sUma unidade contendo um teste unitário \"FPCUnit\""
+msgstr "Uma unidade contendo um teste unitário \"FPCUnit\""
 
 #: fpcunitlazideintf.swriteyourowntest
 msgid "Write your own test"
