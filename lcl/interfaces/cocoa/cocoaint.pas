@@ -100,7 +100,7 @@ type
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
     procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
-    function isRunning: Boolean; override;
+    function isRunning: {$if FPC_FULLVERSION >= 30200}objc.ObjCBOOL{$else}Boolean{$endif}; override;
     procedure stop(sender: id); override;
     {$endif}
   end;
@@ -687,7 +687,7 @@ begin
 end;
 
 {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
-function TCocoaApplication.isRunning: Boolean;
+function TCocoaApplication.isRunning: {$if FPC_FULLVERSION >= 30200}objc.ObjCBOOL{$else}Boolean{$endif};
 begin
   Result:=not Stopped;
 end;
