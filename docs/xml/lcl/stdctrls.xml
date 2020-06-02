@@ -695,6 +695,54 @@ properties</short>
       <element name="TComboBoxStyle.csOwnerDrawVariable">
         <short>The drop-down list elements are owner drawn and have an individual height.</short>
       </element>
+
+      <element name="TComboBoxStyleHelper">
+        <short>Helper for the TComboBoxStyle type</short>
+        <descr>
+          TComboBoxStyleHelper is a type helper for TComboBoxStyle.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TComboBoxStyleHelper.HasEditBox">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboBoxStyleHelper.HasEditBox.Result">
+        <short></short>
+      </element>
+
+      <element name="TComboBoxStyleHelper.SetEditBox">
+        <short>Returns a style with/without edit box according to the current style</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboBoxStyleHelper.SetEditBox.Result">
+        <short></short>
+      </element>
+      <element name="TComboBoxStyleHelper.SetEditBox.AHasEditBox">
+        <short></short>
+      </element>
+
+      <element name="TComboBoxStyleHelper.IsOwnerDrawn">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboBoxStyleHelper.IsOwnerDrawn.Result">
+        <short></short>
+      </element>
+
+      <element name="TComboBoxStyleHelper.IsVariable">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TComboBoxStyleHelper.IsVariable.Result">
+        <short></short>
+      </element>
+
       <!-- alias type Visibility: default -->
       <element name="TOwnerDrawState" link="lcltype.TOwnerDrawState"/>
       <!-- procedure type Visibility: default -->
