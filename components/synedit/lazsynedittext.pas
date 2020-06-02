@@ -486,6 +486,8 @@ type
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;
 
+    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override;
+  public
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
@@ -1682,6 +1684,12 @@ end;
 function TSynEditStringsLinked.ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
   Result := fSynStringsXYMap.ViewToTextIndex(aViewIndex);
+end;
+
+function TSynEditStringsLinked.AddVisibleOffsetToTextIndex(
+  aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx;
+begin
+  Result := fSynStrings.AddVisibleOffsetToTextIndex(aTextIndex, LineOffset);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;
