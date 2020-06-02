@@ -2852,13 +2852,18 @@ function TCustomSynEdit.CaretXPix: Integer;
 var
   p: TPoint;
 begin
-  p := Point(CaretX, CaretY);
-  Result := RowColumnToPixels(p).X;
+  p := FCaret.ViewedLineCharPos;
+  p.y := p.y - TopView + 1;
+  Result := ScreenXYToPixels(p).X;
 end;
 
 function TCustomSynEdit.CaretYPix: Integer;
+var
+  p: TPoint;
 begin
-  Result := RowColumnToPixels(Point(1, CaretY)).Y;
+  p := FCaret.ViewedLineCharPos;
+  p.y := p.y - TopView + 1;
+  Result := ScreenXYToPixels(p).Y;
 end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
@@ -5049,7 +5054,7 @@ end;
 
 procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
 var
-  x, y: Integer;
+  p: TPoint;
 begin
   if ( (PaintLock <> 0) and not IgnorePaintLock ) or (not HandleAllocated)
   then begin
@@ -5059,9 +5064,9 @@ begin
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
 
-    x := CaretXPix;
-    y := CaretYPix;
-    FScreenCaret.DisplayPos := Point(x, y);
+    p := FCaret.ViewedLineCharPos;
+    p.y := p.y - TopView + 1;
+    FScreenCaret.DisplayPos := ScreenXYToPixels(p);
   end;
 end;
 
