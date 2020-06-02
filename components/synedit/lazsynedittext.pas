@@ -335,6 +335,11 @@ type
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
 
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;  (* Add/Sub to/from TextIndex (0-based) skipping invisible (folded) *)
+    (* Convert between TextBuffer and ViewedText
+       X/Y are all 1-based
+    *)
+    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; virtual;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual;
   public
     // Currently Lines are physical
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
@@ -487,6 +492,9 @@ type
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;
 
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override;
+
+    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; override;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
   public
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -1223,6 +1231,16 @@ begin
   Result := aTextIndex + LineOffset;
 end;
 
+function TSynEditStrings.ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint;
+begin
+  Result := APhysViewXY;
+end;
+
+function TSynEditStrings.TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint;
+begin
+  Result := APhysTextXY;
+end;
+
 { TSynEditStringsLinked }
 
 function TSynEditStringsLinked.Add(const S: string): integer;
@@ -1359,7 +1377,9 @@ begin
 
 
   if (TMethod(@fSynStrings.ViewToTextIndex).Code      = Pointer(@TSynEditStringsLinked.ViewToTextIndex)) and
-     (TMethod(@fSynStrings.TextToViewIndex).Code      = Pointer(@TSynEditStringsLinked.TextToViewIndex))
+     (TMethod(@fSynStrings.TextToViewIndex).Code      = Pointer(@TSynEditStringsLinked.TextToViewIndex)) and
+     (TMethod(@fSynStrings.ViewXYToTextXY).Code       = Pointer(@TSynEditStringsLinked.ViewXYToTextXY)) and
+     (TMethod(@fSynStrings.TextXYToViewXY).Code       = Pointer(@TSynEditStringsLinked.TextXYToViewXY))
   then
     fSynStringsXYMap := TSynEditStringsLinked(fSynStrings).fSynStringsXYMap
   else
@@ -1690,6 +1710,18 @@ function TSynEditStringsLinked.AddVisibleOffsetToTextIndex(
   aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx;
 begin
   Result := fSynStrings.AddVisibleOffsetToTextIndex(aTextIndex, LineOffset);
+end;
+
+function TSynEditStringsLinked.ViewXYToTextXY(APhysViewXY: TPhysPoint
+  ): TPhysPoint;
+begin
+  Result := fSynStringsXYMap.ViewXYToTextXY(APhysViewXY);
+end;
+
+function TSynEditStringsLinked.TextXYToViewXY(APhysTextXY: TPhysPoint
+  ): TPhysPoint;
+begin
+  Result := fSynStringsXYMap.TextXYToViewXY(APhysTextXY);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;

@@ -1133,8 +1133,14 @@ type
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     //
-    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
-    function RowToScreenRow(PhysicalRow: integer): integer;
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; deprecated 'use ScreenXYToTextXY';
+    function RowToScreenRow(PhysicalRow: integer): integer; deprecated 'use TextXYToScreenXY';
+    (* ScreenXY:
+       First visible (scrolled in) screen line is 1
+       First column is 1 => column does not take scrolling into account
+    *)
+    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint;
+    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -2142,6 +2148,21 @@ begin
   if Result < -1 then Result := -1;
   if Result > LinesInWindow+1 then Result := LinesInWindow+1;
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
+end;
+
+function TCustomSynEdit.ScreenXYToTextXY(AScreenXY: TPhysPoint;
+  LimitToLines: Boolean): TPhysPoint;
+begin
+  AScreenXY.y := AScreenXY.y + ToIdx(TopView);
+  Result := FTheLinesView.ViewXYToTextXY(AScreenXY);
+  if LimitToLines and (Result.y > Lines.Count) then
+    Result.y := Lines.Count;
+end;
+
+function TCustomSynEdit.TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint;
+begin
+  Result := FTheLinesView.TextXYToViewXY(APhysTextXY);
+  Result.y := Result.y - ToIdx(TopView);
 end;
 
 function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
