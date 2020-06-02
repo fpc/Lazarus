@@ -120,6 +120,9 @@ type
     FAltStartLinePos, FAltStartBytePos: Integer; // 1 based // Alternate, for min selection
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
+    FViewedFirstStartLineCharPos: TPoint; // 1 based
+    FViewedLastEndLineCharPos: TPoint; // 1 based
+    FFLags: set of (sbViewedFirstPosValid, sbViewedLastPosValid, sbHasLineMapHandler);
     FLeftCharPos: Integer;
     FRightCharPos: Integer;
     FPersistent: Boolean;
@@ -132,6 +135,8 @@ type
     FLastCarePos: TPoint;
     FStickyAutoExtend: Boolean;
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
+    procedure DoLinesMappingChanged(Sender: TSynEditStrings; aIndex,
+      aCount: Integer);
     function GetColumnEndBytePos(ALinePos: Integer): integer;
     function GetColumnStartBytePos(ALinePos: Integer): integer;
     function  GetFirstLineBytePos: TPoint;
@@ -139,6 +144,8 @@ type
     function GetLastLineHasSelection: Boolean;
     function GetColumnLeftCharPos: Integer;
     function GetColumnRightCharPos: Integer;
+    function GetViewedFirstLineCharPos: TPoint;
+    function GetViewedLastLineCharPos: TPoint;
     procedure SetAutoExtend(AValue: Boolean);
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
@@ -202,6 +209,8 @@ type
     // First and Last Pos are ordered according to the text flow (LTR)
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
+    property  ViewedFirstLineCharPos: TPoint read GetViewedFirstLineCharPos;
+    property  ViewedLastLineCharPos: TPoint read GetViewedLastLineCharPos;
     // For column mode selection: Phys-Char pos of left and right side. (Start/End could each be either left or right)
     property  ColumnLeftCharPos: Integer read GetColumnLeftCharPos;
     property  ColumnRightCharPos: Integer read GetColumnRightCharPos;
@@ -222,7 +231,8 @@ type
   { TSynEditCaret }
 
   TSynEditCaretFlag = (
-      scCharPosValid, scBytePosValid
+      scCharPosValid, scBytePosValid, scViewedPosValid,
+      scHasLineMapHandler
     );
   TSynEditCaretFlags = set of TSynEditCaretFlag;
 
@@ -245,13 +255,17 @@ type
     FLinePos: Integer;     // 1 based
     FCharPos: Integer;     // 1 based
     FBytePos, FBytePosOffset: Integer;     // 1 based
+    FViewedLineCharPos: TPoint;
 
+    procedure DoLinesMappingChanged(Sender: TSynEditStrings; aIndex,
+      aCount: Integer);
     function  GetBytePos: Integer;
     function  GetBytePosOffset: Integer;
     function  GetCharPos: Integer;
     function GetFullLogicalPos: TLogCaretPoint;
     function  GetLineBytePos: TPoint;
     function  GetLineCharPos: TPoint;
+    function  GetViewedLineCharPos: TPoint;
     procedure SetBytePos(AValue: Integer);
     procedure SetBytePosOffset(AValue: Integer);
     procedure SetCharPos(AValue: Integer);
@@ -289,6 +303,7 @@ type
     property BytePosOffset: Integer read GetBytePosOffset write SetBytePosOffset;
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property FullLogicalPos: TLogCaretPoint read GetFullLogicalPos write SetFullLogicalPos;
+    property ViewedLineCharPos: TPoint read GetViewedLineCharPos;
 
     property LineText: string read GetLineText write SetLineText;
   end;
@@ -642,6 +657,12 @@ begin
   Result := FBytePos;
 end;
 
+procedure TSynEditBaseCaret.DoLinesMappingChanged(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
+begin
+  Exclude(FFlags, scViewedPosValid);
+end;
+
 function TSynEditBaseCaret.GetBytePosOffset: Integer;
 begin
   ValidateBytePos;
@@ -672,6 +693,18 @@ function TSynEditBaseCaret.GetLineCharPos: TPoint;
 begin
   ValidateCharPos;
   Result := Point(FCharPos, FLinePos);
+end;
+
+function TSynEditBaseCaret.GetViewedLineCharPos: TPoint;
+begin
+  if not(scViewedPosValid in FFlags) then
+    FViewedLineCharPos := Lines.TextXYToViewXY(LineCharPos);
+  include(FFlags, scViewedPosValid);
+  Result := FViewedLineCharPos;
+  if scHasLineMapHandler in FFlags then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, scHasLineMapHandler);
+  end;
 end;
 
 procedure TSynEditBaseCaret.SetBytePos(AValue: Integer);
@@ -768,17 +801,17 @@ begin
     exit;
 
   if not (scuNoInvalidate in UpdFlags) then
-    Exclude(FFlags, scBytePosValid);
+    FFlags := FFlags - [scBytePosValid, scViewedPosValid];
   Include(FFlags, scCharPosValid);
 
   if NewLine < 1 then begin
     NewLine := 1;
-    Exclude(FFlags, scBytePosValid);
+    FFlags := FFlags - [scBytePosValid, scViewedPosValid];
   end;
 
   if NewCharPos < 1 then begin
     NewCharPos := 1;
-    Exclude(FFlags, scBytePosValid);
+    FFlags := FFlags - [scBytePosValid, scViewedPosValid];
   end;
 
   FCharPos := NewCharPos;
@@ -794,17 +827,17 @@ begin
     exit;
 
   if not (scuNoInvalidate in UpdFlags) then
-    Exclude(FFlags, scCharPosValid);
+    FFlags := FFlags - [scCharPosValid, scViewedPosValid];
   Include(FFlags, scBytePosValid);
 
   if NewLine < 1 then begin
     NewLine := 1;
-    Exclude(FFlags, scCharPosValid);
+    FFlags := FFlags - [scCharPosValid, scViewedPosValid];
   end;
 
   if NewBytePos < 1 then begin
     NewBytePos := 1;
-    Exclude(FFlags, scCharPosValid);
+    FFlags := FFlags - [scCharPosValid, scViewedPosValid];
   end;
 
   FBytePos       := NewBytePos;
@@ -829,6 +862,7 @@ begin
   FBytePos       := Src.FBytePos;
   FBytePosOffset := Src.FBytePosOffset;
   FFlags         := Src.FFlags;
+  Exclude(FFlags, scViewedPosValid); // Or check that an senrLineMappingChanged handler exists
   SetLines(Src.FLines);
 end;
 
@@ -853,7 +887,7 @@ begin
   if not (scBytePosValid in FFlags) then
     Invalidate
   else
-    Exclude(FFlags, scCharPosValid);
+    FFlags := FFlags - [scCharPosValid, scViewedPosValid];
 end;
 
 function TSynEditBaseCaret.IsAtLineChar(aPoint: TPoint): Boolean;
@@ -2463,6 +2497,12 @@ begin
   if Result <> BytePos then debugln(['Selection needed byte adjustment  Line=', Line, ' BytePos=', BytePos, ' Result=', Result]);
 end;
 
+procedure TSynEditSelection.DoLinesMappingChanged(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
+begin
+  FFlags := FFLags - [sbViewedFirstPosValid, sbViewedLastPosValid];
+end;
+
 function TSynEditSelection.GetColumnEndBytePos(ALinePos: Integer): integer;
 begin
   FInternalCaret.Invalidate;
@@ -2524,6 +2564,35 @@ begin
       SwapInt(FLeftCharPos, FRightCharPos);
   end;
   Result := FRightCharPos;
+end;
+
+function TSynEditSelection.GetViewedFirstLineCharPos: TPoint;
+begin
+  if not(sbViewedFirstPosValid in FFlags) then
+    FViewedFirstStartLineCharPos := Lines.TextXYToViewXY(
+      Lines.LogicalToPhysicalPos(FirstLineBytePos)
+    );
+
+  include(FFlags, sbViewedFirstPosValid);
+  Result := FViewedFirstStartLineCharPos;
+  if sbHasLineMapHandler in FFlags then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, sbHasLineMapHandler);
+  end;
+end;
+
+function TSynEditSelection.GetViewedLastLineCharPos: TPoint;
+begin
+  if not(sbViewedLastPosValid in FFlags) then
+    FViewedLastEndLineCharPos := Lines.TextXYToViewXY(
+      Lines.LogicalToPhysicalPos(LastLineBytePos)
+    );
+  include(FFlags, sbViewedLastPosValid);
+  Result := FViewedLastEndLineCharPos;
+  if sbHasLineMapHandler in FFlags then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, sbHasLineMapHandler);
+  end;
 end;
 
 procedure TSynEditSelection.SetAutoExtend(AValue: Boolean);
