@@ -6689,14 +6689,14 @@ begin
   try
     // Make sure X is visible
     //DebugLn('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
-    PhysCaretXY:=CaretXY;
+    PhysCaretXY:=FCaret.ViewedLineCharPos;
     // try to make the current selection visible as well
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
     // sfMouseSelecting: ignore block while selecting by mouse
     if SelAvail and not(sfMouseSelecting in fStateFlags) then begin
-      PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
-      PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
+      PhysBlockBeginXY:=FBlockSelection.ViewedFirstLineCharPos;
+      PhysBlockEndXY  :=FBlockSelection.ViewedLastLineCharPos;
       if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
       or (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then begin
         if (FBlockSelection.ActiveSelectionMode <> smColumn) and
@@ -6743,10 +6743,11 @@ begin
       if not (sfExplicitTopLine in fStateFlags) then begin
         //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
         // Make sure Y is visible
-        if CaretY < TopLine then
-          TopLine := CaretY
-        else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
-          TopLine := ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(CaretY), -Max(0, LinesInWindow-1)))
+        if PhysCaretXY.Y < TopView then
+          TopView := PhysCaretXY.Y
+        else if PhysCaretXY.Y > TopView + Max(0, LinesInWindow-1)
+        then
+          TopView := PhysCaretXY.Y - Max(0, LinesInWindow-1)
         else
           TopView := TopView;                                                       //mh 2000-10-19
       end;
