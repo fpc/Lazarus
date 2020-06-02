@@ -266,6 +266,7 @@ type
     procedure ValidateBytePos;
     procedure ValidateCharPos;
 
+    procedure InternalEmptyLinesSetPos(NewCharPos: Integer; UpdFlags: TSynEditCaretUpdateFlags); virtual;
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
                                      UpdFlags: TSynEditCaretUpdateFlags); virtual;
     procedure InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
@@ -326,6 +327,7 @@ type
 
     procedure RegisterLinesEditedHandler;
   protected
+    procedure InternalEmptyLinesSetPos(NewCharPos: Integer; UpdFlags: TSynEditCaretUpdateFlags); override;
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
                                      UpdFlags: TSynEditCaretUpdateFlags); override;
     procedure InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
@@ -745,6 +747,18 @@ begin
   FCharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos-1, FBytePos, FBytePosOffset);
 end;
 
+procedure TSynEditBaseCaret.InternalEmptyLinesSetPos(NewCharPos: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+begin
+  if NewCharPos < 1 then
+    NewCharPos := 1;
+
+  FLinePos := 1;
+  FBytePos := NewCharPos;
+  FCharPos := NewCharPos;
+  FFlags := FFlags + [scBytePosValid, scCharPosValid];
+end;
+
 procedure TSynEditBaseCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
   UpdFlags: TSynEditCaretUpdateFlags);
 begin
@@ -1107,6 +1121,25 @@ begin
     Result := MaxInt;
 end;
 
+procedure TSynEditCaret.InternalEmptyLinesSetPos(NewCharPos: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+var
+  MaxPhysX: Integer;
+begin
+  assert(Lines.Count = 0, 'TSynEditCaret.InternalEmptyLinesSetPos: Lines.Count = 0');
+  if (NewCharPos > 1) and (FAllowPastEOL or (FForcePastEOL > 0))
+  then MaxPhysX := GetMaxLeftPastEOL
+  else MaxPhysX := 1;
+  if NewCharPos > MaxPhysX then
+    NewCharPos := MaxPhysX;
+
+  inherited InternalEmptyLinesSetPos(NewCharPos, UpdFlags);
+
+  if (scuChangedX in UpdFlags) then begin
+    FLastCharPos := FCharPos;
+  end;
+end;
+
 procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
   UpdFlags: TSynEditCaretUpdateFlags);
 var
@@ -1128,23 +1161,18 @@ begin
       exit;
     end;
 
+    if NewLine < 1 then begin
+      NewLine := 1;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end
+    else
     if NewLine > FLines.Count then begin
       NewLine := FLines.Count;
       Exclude(UpdFlags, scuNoInvalidate);
     end;
 
-    if NewLine < 1 then begin // Only allowed, if Lines.Count = 0
-      NewLine := 1;
-      if (NewCharPos > 1) and (FAllowPastEOL or (FForcePastEOL > 0))
-      then MaxPhysX := GetMaxLeftPastEOL
-      else MaxPhysX := 1;
-
-      if NewCharPos > MaxPhysX then
-        NewCharPos := MaxPhysX;
-
-      NewLogCharPos := NewCharPos;
-      Offs := 0;
-      Exclude(UpdFlags, scuNoInvalidate);
+    if FLines.Count = 0 then begin // Only allowed, if Lines.Count = 0
+      InternalEmptyLinesSetPos(NewCharPos, UpdFlags);
     end else begin
       if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
         NewLogCharPos := Lines.LogPhysConvertor.PhysicalToLogical(NewLine-1, NewCharPos, Offs, cspDefault, [lpfAdjustToNextChar])
@@ -1180,18 +1208,17 @@ begin
         end;
       end;
 
+      if NewCharPos < 1 then begin
+        NewCharPos := 1;
+        Exclude(UpdFlags, scuNoInvalidate);
+      end;
+
+      inherited InternalSetLineCharPos(NewLine, NewCharPos, UpdFlags);
+      inherited InternalSetLineByterPos(NewLine, NewLogCharPos, Offs, [scuNoInvalidate, scuChangedX]);
+
+      if (scuChangedX in UpdFlags) or (not FKeepCaretX) then
+        FLastCharPos := FCharPos;
     end;
-
-    if NewCharPos < 1 then begin
-      NewCharPos := 1;
-      Exclude(UpdFlags, scuNoInvalidate);
-    end;
-
-    inherited InternalSetLineCharPos(NewLine, NewCharPos, UpdFlags);
-    inherited InternalSetLineByterPos(NewLine, NewLogCharPos, Offs, [scuNoInvalidate, scuChangedX]);
-
-    if (scuChangedX in UpdFlags) or (not FKeepCaretX) then
-      FLastCharPos := FCharPos;
   finally
     Unlock;
   end;
@@ -1221,23 +1248,18 @@ begin
       exit;
     end;
 
+    if NewLine < 1 then begin
+      NewLine := 1;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end
+    else
     if NewLine > FLines.Count then begin
       NewLine := FLines.Count;
       Exclude(UpdFlags, scuNoInvalidate);
     end;
 
-    if NewLine < 1 then begin // Only allowed, if Lines.Count = 0
-      L := '';
-      NewLine := 1;
-      LogEolPos := 1;
-      if (NewBytePos > 1) and (FAllowPastEOL or (FForcePastEOL > 0))
-      then MaxPhysX := GetMaxLeftPastEOL
-      else MaxPhysX := 1;
-      if NewBytePos > MaxPhysX then
-        NewBytePos := MaxPhysX;
-      NewByteOffs := 0;
-      NewCharPos := NewBytePos;
-      Exclude(UpdFlags, scuNoInvalidate);
+    if FLines.Count = 0 then begin // Only allowed, if Lines.Count = 0
+      InternalEmptyLinesSetPos(NewBytePos, UpdFlags);
     end else begin
       L := Lines[NewLine - 1];
       LogEolPos := length(L)+1;
@@ -1267,18 +1289,17 @@ begin
         end;
       end;
 
+      if NewBytePos < 1 then begin
+        NewBytePos := 1;
+        Exclude(UpdFlags, scuNoInvalidate);
+      end;
+
+      inherited InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs, UpdFlags);
+      inherited InternalSetLineCharPos(NewLine, NewCharPos, [scuNoInvalidate, scuChangedX]);
+
+      if (scuChangedX in UpdFlags) and FKeepCaretX then
+        FLastCharPos := FCharPos;
     end;
-
-    if NewBytePos < 1 then begin
-      NewBytePos := 1;
-      Exclude(UpdFlags, scuNoInvalidate);
-    end;
-
-    inherited InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs, UpdFlags);
-    inherited InternalSetLineCharPos(NewLine, NewCharPos, [scuNoInvalidate, scuChangedX]);
-
-    if (scuChangedX in UpdFlags) and FKeepCaretX then
-      FLastCharPos := FCharPos;
   finally
     Unlock;
   end;
