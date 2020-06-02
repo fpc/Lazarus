@@ -1491,7 +1491,7 @@ begin
   if AFilterByExtent then begin
     with AExtent do
       if IsRotated then
-        axisExtent := DoubleInterval(GraphToAxisY(a.Y), GraphToAxisY(b.Y))
+        axisExtent := DoubleInterval(GraphToAxisX(a.Y), GraphToAxisX(b.Y))
       else
         axisExtent := DoubleInterval(GraphToAxisX(a.X), GraphToAxisX(b.X));
     Source.FindBounds(axisExtent.FStart, axisExtent.FEnd, FLoBound, FUpBound);
