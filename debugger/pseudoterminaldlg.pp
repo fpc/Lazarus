@@ -757,7 +757,7 @@ begin
 (* "interesting" behavior once the amount of text causes it to start scrolling  *)
 (* so having an intermediate that can be inspected might be useful.             *)
 
-  TextEndsInEOL := (AText <> '') and (AText[Length(AText)-1] in [#10]);
+  TextEndsInEOL := (AText <> '') and (AText[Length(AText)] in [#10]);
   buffer := TStringList.Create;
   try
     buffer.Text := AText;     (* Decides what line breaks it wants to swallow   *)
