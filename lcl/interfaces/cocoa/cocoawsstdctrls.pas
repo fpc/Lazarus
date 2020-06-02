@@ -166,7 +166,6 @@ type
     FTextView: TCocoaTextView;
   public
     class procedure GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
-    class function GetLinesCount(const s: AnsiString): Integer;
   protected
     function GetTextStr: string; override;
     procedure SetTextStr(const Value: string); override;
@@ -1227,19 +1226,22 @@ begin
   Offset:=i;
 end;
 
-class function TCocoaMemoStrings.GetLinesCount(const s: AnsiString): Integer;
-var
-  ofs : Integer;
-begin
-  Result:=0;
-  ofs:=0;
-  GetLineStart(s, -1, ofs, Result);
-end;
-
 function TCocoaMemoStrings.GetCount:Integer;
+var
+  s      : NSString;
+  i      : LongWord;
+  strLen : LongWord;
 begin
-  Result:=GetLinesCount(GetTextStr);
-  inc(Result);
+  s := FTextView.string_;
+  // it's a very nice example for Apple's docs
+  // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
+  strLen := s.length;
+  i := 0;
+  Result := 0;
+  while (i < strLen) do begin
+    i := NSMaxRange(s.lineRangeForRange(NSMakeRange(i, 0)));
+    inc(Result);
+  end;
 end;
 
 function TCocoaMemoStrings.Get(Index:Integer):string;
