@@ -340,7 +340,6 @@ type
     procedure HideHint;
     procedure HintMouseDown(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftState; X, Y: Integer);
-
     procedure IncreaseChangeStep;
     function GridIsUpdating: boolean;
 
@@ -446,7 +445,6 @@ type
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseLeave; override;
 
-
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
@@ -472,7 +470,7 @@ type
     function GetRowByPath(const PropPath: string): TOIPropertyGridRow;
     function GridHeight: integer;
     function RealDefaultItemHeight: integer;
-    function MouseToIndex(y: integer; MustExist: boolean):integer;
+    function MouseToIndex(y: integer; MustExist: boolean): integer;
     function PropertyPath(Index: integer):string;
     function PropertyPath(Row: TOIPropertyGridRow):string;
     function TopMax: integer;
@@ -1368,20 +1366,15 @@ function TOICustomPropertyGrid.ConsistencyCheck: integer;
 var
   i: integer;
 begin
-  for i:=0 to FRows.Count-1 do begin
-    if Rows[i]=nil then begin
-      Result:=-1;
-      exit;
-    end;
-    if Rows[i].Index<>i then begin
-      Result:=-2;
-      exit;
-    end;
+  for i:=0 to FRows.Count-1 do
+  begin
+    if Rows[i]=nil then
+      Exit(-1);
+    if Rows[i].Index<>i then
+      Exit(-2);
     Result:=Rows[i].ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);
-      exit;
-    end;
+    if Result<>0 then
+      Exit(Result-100);
   end;
   Result:=0;
 end;
@@ -1449,18 +1442,16 @@ end;
 
 function TOICustomPropertyGrid.PropertyPath(Index:integer):string;
 begin
-  if (Index>=0) and (Index<FRows.Count) then begin
-    Result:=PropertyPath(Rows[Index]);
-  end else
+  if (Index>=0) and (Index<FRows.Count) then
+    Result:=PropertyPath(Rows[Index])
+  else
     Result:='';
 end;
 
 function TOICustomPropertyGrid.PropertyPath(Row: TOIPropertyGridRow): string;
 begin
-  if Row=nil then begin
-    Result:='';
-    exit;
-  end;
+  if Row=nil then
+    Exit('');
   Result:=Row.Name;
   Row:=Row.Parent;
   while Row<>nil do begin
@@ -1592,10 +1583,9 @@ begin
   if CompEditDsg<>nil then begin
     SetLength(OldUndoValues, Editor.PropCount);
     prpInfo := Editor.GetPropInfo;
-    if prpInfo<>nil then begin
+    if prpInfo<>nil then
       for i := 0 to Editor.PropCount - 1 do
         OldUndoValues[i] := GetPropValue(Editor,i);
-    end;
   end;
 
   OldChangeStep:=fChangeStep;
@@ -1800,8 +1790,9 @@ begin
   if (Button=mbLeft) then begin
     if (Shift=[ssCtrl,ssLeft]) then
       DoCallEdit(oiqeShowValue)
-    else if (FFirstClickTime<>0) and (GetTickCount <= FFirstClickTime + GetDoubleClickTime)
-      and (not ValueComboBox.DroppedDown) then
+    else
+    if (FFirstClickTime<>0) and (GetTickCount <= FFirstClickTime + GetDoubleClickTime)
+    and (not ValueComboBox.DroppedDown) then
     begin
       FFirstClickTime:=0;
       ToggleRow;
@@ -2171,7 +2162,8 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
-var NewRow:TOIPropertyGridRow;
+var
+  NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
   if not EditorFilter(PropEditor) then
@@ -2179,10 +2171,9 @@ begin
     // if some elements of a set is not being shown then free their editor
     // to avoid memory leaks; sine only visible editors will be cleared.
     if PropEditor.ClassType = TSetElementPropertyEditor then
-        PropEditor.Free;
+      PropEditor.Free;
     Exit;
   end;
-
 
   if PropEditor is TClassPropertyEditor then
   begin
@@ -2250,27 +2241,29 @@ begin
   Result:=true;
 end;
 
-function TOICustomPropertyGrid.MouseToIndex(y: integer; MustExist: boolean
-  ): integer;
+function TOICustomPropertyGrid.MouseToIndex(y: integer; MustExist: boolean): integer;
 var l,r,m:integer;
 begin
   l:=0;
   r:=FRows.Count-1;
   inc(y,FTopY);
-  while (l<=r) do begin
+  while (l<=r) do
+  begin
     m:=(l+r) shr 1;
-    if Rows[m].Top>y then begin
-      r:=m-1;
-    end else if Rows[m].Bottom<=y then begin
-      l:=m+1;
-    end else begin
-      Result:=m;  exit;
-    end;
+    if Rows[m].Top>y then
+      r:=m-1
+    else if Rows[m].Bottom<=y then
+      l:=m+1
+    else
+      Exit(m);
   end;
   if (MustExist=false) and (FRows.Count>0) then begin
-    if y<0 then Result:=0
-    else Result:=FRows.Count-1;
-  end else Result:=-1;
+    if y<0 then
+      Result:=0
+    else
+      Result:=FRows.Count-1;
+  end else
+    Result:=-1;
 end;
 
 function TOICustomPropertyGrid.GetActiveRow: TOIPropertyGridRow;
@@ -2383,9 +2376,8 @@ begin
 
   if Button=mbLeft then begin
     FFirstClickTime:=GetTickCount;
-    if Cursor=crHSplit then begin
-      FDragging:=true;
-    end
+    if Cursor=crHSplit then
+      FDragging:=true
     else
     begin
       Index:=MouseToIndex(Y,false);
@@ -2425,7 +2417,7 @@ begin
   inherited MouseLeave;
 end;
 
-procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
+procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState; X,Y:integer);
 var
   TheHint: String;
   HintType: TPropEditHint;
@@ -2450,25 +2442,22 @@ var
   end;
 
 var
-  SplitDistance:integer;
-  Index, TextLeft: Integer;
+  SplitDistance, Index, TextLeft: Integer;
 begin
   inherited MouseMove(Shift,X,Y);
   SplitDistance:=X-SplitterX;
   if FDragging then begin
     HideHint;
-    if ssLeft in Shift then begin
-      SplitterX:=SplitterX+SplitDistance;
-    end else begin
+    if ssLeft in Shift then
+      SplitterX:=SplitterX+SplitDistance
+    else
       EndDragSplitter;
-    end;
   end
   else begin
-    if (abs(SplitDistance)<=2) then begin
-      Cursor:=crHSplit;
-    end else begin
+    if (abs(SplitDistance)<=2) then
+      Cursor:=crHSplit
+    else
       Cursor:=crDefault;
-    end;
 
     if ssLeft in Shift then
     begin
@@ -2650,7 +2639,8 @@ end;
 
 procedure TOICustomPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
 begin
-  if (Key<>VK_UNKNOWN) and Assigned(OnKeyUp) then OnKeyUp(Self,Key,Shift);
+  if (Key<>VK_UNKNOWN) and Assigned(OnKeyUp) then
+    OnKeyUp(Self,Key,Shift);
 end;
 
 procedure TOICustomPropertyGrid.DoTabKey;
@@ -2865,9 +2855,7 @@ begin
   if ItemIndex>=0 then
   begin
     RRect := RowRect(ItemIndex);
-    {.$ifdef LCLGtk2}
     InflateRect(RRect, 0, 1);
-    {.$endif}
     EditCompRect := RRect;
 
     if Layout = oilHorizontal then
@@ -3122,9 +3110,7 @@ begin
 
   with Canvas do
   begin
-    // frames
-
-    if Layout = oilHorizontal then
+    if Layout = oilHorizontal then          // frames
     begin
       // Row Divider
       if DrawHorzGridLines then
