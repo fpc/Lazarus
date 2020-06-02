@@ -13,12 +13,10 @@ var
 begin
   // Android uses this
   if Assigned(OpenURLWidgetsetImplementation) then
-  begin
-    Result := OpenURLWidgetsetImplementation(AURL);
-    Exit;
-  end;
+    Exit(OpenURLWidgetsetImplementation(AURL));
 
-  Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
+  Result := FindDefaultBrowser(ABrowser, AParams) and
+            FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
   if not Result then
     Exit;
   RunCmdFromPath(ABrowser,Format(AParams, [AURL]));
@@ -31,13 +29,11 @@ var
 begin
   // Android uses this
   if Assigned(OpenDocumentWidgetsetImplementation) then
-  begin
-    Result := OpenDocumentWidgetsetImplementation(APath);
-    Exit;
-  end;
+    Exit(OpenDocumentWidgetsetImplementation(APath));
 
   Result := True;
-  if not FileExistsUTF8(APath) then exit(false);
+  if not (FileExistsUTF8(APath) or DirectoryExistsUTF8(APath)) then
+    Exit(false);
 
   lApp:=FindFilenameOfCmd('xdg-open'); // Portland OSDL/FreeDesktop standard on Linux
   if lApp='' then
