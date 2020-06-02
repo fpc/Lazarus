@@ -1128,8 +1128,8 @@ type
 
     // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
-    // RowColumnToPixels: Physical coords
-    function RowColumnToPixels(RowCol: TPoint): TPoint;
+    function ScreenXYToPixels(RowCol: TPhysPoint): TPoint; // converts screen position (1,1) based
+    function RowColumnToPixels(RowCol: TPoint): TPoint; // deprecated 'use ScreenXYToPixels(TextXYToScreenXY(point))';
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     //
@@ -2119,8 +2119,8 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinate
 // to Caret position (physical position, (1,1) based)
 // To get the text/logical position use PixelsToLogicalPos
 begin
-  Result := FTextArea.PixelsToRowColumn(Pixels, aFlags);
-  Result := Point(Result.X, ScreenRowToRow(Result.Y, scmLimitToLines in aFlags));
+  Result := YToPos(FTextArea.PixelsToRowColumn(Pixels, aFlags));
+  Result := ScreenXYToTextXY(Result, scmLimitToLines in aFlags);
 end;
 
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
@@ -2165,12 +2165,17 @@ begin
   Result.y := Result.y - ToIdx(TopView);
 end;
 
-function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
+function TCustomSynEdit.ScreenXYToPixels(RowCol: TPhysPoint): TPoint;
 // converts screen position (1,1) based
 // to client area coordinate (0,0 based on canvas)
 begin
-  RowCol.Y := RowToScreenRow(RowCol.Y);
+  dec(RowCol.y); // x is 1 based, as LeftChar will be subtracted.....
   Result := FTextArea.RowColumnToPixels(RowCol);
+end;
+
+function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
+begin
+  Result := ScreenXYToPixels(TextXYToScreenXY(RowCol));
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);

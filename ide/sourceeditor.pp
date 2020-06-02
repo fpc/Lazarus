@@ -5783,7 +5783,7 @@ end;
 
 function TSourceEditor.ScreenToPixelPosition(const Position: TPoint): TPoint;
 begin
-  Result:=FEditor.RowColumnToPixels(Position);
+  Result:=FEditor.ScreenXYToPixels(FEditor.TextXYToScreenXY(Position));
 end;
 
 function TSourceEditor.LineCount: Integer;

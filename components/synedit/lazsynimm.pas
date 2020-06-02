@@ -580,7 +580,9 @@ begin
           dec(i);
         end;
         p1.x := x + i + 1;
-        p1 := FriendEdit.ClientToScreen(TCustomSynEdit(FriendEdit).RowColumnToPixels(ViewedTextBuffer.LogicalToPhysicalPos(p1)));
+        p1 := FriendEdit.ClientToScreen(TCustomSynEdit(FriendEdit)
+                        .ScreenXYToTextXY(TSynEdit(FriendEdit).TextXYToScreenXY(p1)));
+//        RowColumnToPixels(ViewedTextBuffer.LogicalToPhysicalPos(p1)));
 
         cp^.pt.y := p1.y;
         cp^.pt.x :=  p1.x;
