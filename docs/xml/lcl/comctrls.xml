@@ -17931,24 +17931,6 @@
           <p>
             <var>TTreeViewOption</var> - enumerated type containing the permissible values for Options in TreeViews.
           </p>
-          <pre>
-            tvoAllowMultiselect,
-            tvoAutoExpand,
-            tvoAutoInsertMark,
-            tvoAutoItemHeight,
-            tvoHideSelection,
-            tvoHotTrack,
-            tvoKeepCollapsedNodes,
-            tvoReadOnly,
-            tvoRightClickSelect,
-            tvoRowSelect,
-            tvoShowButtons,
-            tvoShowLines,
-            tvoShowRoot,
-            tvoShowSeparators,
-            tvoToolTips,
-            tvoNoDoubleClickExpand
-          </pre>
         </descr>
         <seealso/>
       </element>
@@ -18021,6 +18003,15 @@
         <short>
           Show tooltip (hint) for a tree-item when the item is too long to fit by width and mouse is over it. Same as ToolTips property.
         </short>
+      </element>
+      <element name="TTreeViewOption.tvoNoDoubleClickExpand">
+        <short>Prevents toggling the expanded state for the treeview item when it is double clicked</short>
+      </element>
+      <element name="TTreeViewOption.tvoThemedDraw">
+        <short>Treeview item is drawn using settings from theme services</short>
+      </element>
+      <element name="TTreeViewOption.tvoEmptySpaceUnselect">
+        <short>Indicates if empty space can be be drawn below unselected items in the treeview</short>
       </element>
 
       <element name="TTreeViewOptions">
@@ -18454,6 +18445,18 @@
         <seealso/>
       </element>
       <element name="TCustomTreeView.ImageListChange.Sender">
+        <short/>
+      </element>
+
+      <element name="TCustomTreeView.NodeIsSelected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomTreeView.NodeIsSelected.Result">
+        <short/>
+      </element>
+      <element name="TCustomTreeView.NodeIsSelected.ANode">
         <short/>
       </element>
 
@@ -19221,6 +19224,21 @@
         <short/>
       </element>
       <element name="TCustomTreeView.GetNodeAtY.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomTreeView.GetNodeWithExpandSign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomTreeView.GetNodeWithExpandSign.Result">
+        <short/>
+      </element>
+      <element name="TCustomTreeView.GetNodeWithExpandSign.X">
+        <short/>
+      </element>
+      <element name="TCustomTreeView.GetNodeWithExpandSign.Y">
         <short/>
       </element>
 
