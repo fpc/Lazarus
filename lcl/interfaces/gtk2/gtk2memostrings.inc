@@ -202,10 +202,8 @@ StartIter,
 EndIter: TGtkTextIter;
 begin
   gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
-  if Index = Count-1 then begin
-    gtk_text_iter_backward_char(@StartIter);
+  if Index = Count-1 then
     gtk_text_buffer_get_end_iter(FGtkBuf, @EndIter)
-  end
   else
     gtk_text_buffer_get_iter_at_line(FGtkBuf, @EndIter, Index+1);
   gtk_text_buffer_delete(FGtkBuf, @StartIter, @EndIter);
