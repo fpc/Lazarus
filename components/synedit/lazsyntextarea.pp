@@ -1,7 +1,7 @@
 unit LazSynTextArea;
 
 {$mode objfpc}{$H+}
-{ $INLINE OFF}
+{$INLINE OFF}
 
 interface
 
@@ -629,7 +629,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     while (ALogicIdx < FCharWidthsLen) and (ALogicIdx < FCurLineByteLen) and (pcw and PCWFlagRTL <> 0) do begin
       inc(RtlRunPhysWidth, j);
 
-      if j <> 0 then begin
+      if (j <> 0) and (FCurViewToken.TokenStart <> nil) then begin
         c := (FCurViewToken.TokenStart + i)^;
         if c = #9  then begin
           HasTabs := True;
@@ -698,7 +698,9 @@ begin
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
     if not Result then begin
-      ATokenInfo.StartPos           := FCurViewScannerPos;
+      ATokenInfo.StartPos      := FCurViewScannerPos;
+      ATokenInfo.RtlInfo.IsRtl := False;
+      ATokenInfo.NextRtlInfo.IsRtl := False;
       if FCurViewToken.TokenAttr <> nil then begin
         InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FCurViewCurTokenStartPos);
         ATokenInfo.Attr := FCurViewAttr;
