@@ -48,7 +48,7 @@ type
   public
     constructor Create(ATrimer: TSynEditStringTrimmingList);
     procedure FinishHighlighterTokens; override;
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
@@ -321,11 +321,15 @@ begin
   FTempLineStringForPChar := '';
 end;
 
-procedure TLazSynDisplayTrim.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+procedure TLazSynDisplayTrim.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer);
 begin
   CurrentTokenLine := ALine;
   FAtLineStart := True;
-  inherited SetHighlighterTokensLine(ALine, ARealLine);
+  if (CurrentTokenHighlighter = nil) and (FTrimer.Spaces(CurrentTokenLine) <> '') then begin
+    ALineByteLen := Length(FTrimer[CurrentTokenLine]);
+  end;
+  inherited SetHighlighterTokensLine(ALine, ARealLine, AStartBytePos, ALineByteLen);
 end;
 
 function TLazSynDisplayTrim.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;

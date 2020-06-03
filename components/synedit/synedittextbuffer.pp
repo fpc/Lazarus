@@ -126,7 +126,7 @@ type
     FAtLineStart: Boolean;
   public
     constructor Create(ABuffer: TSynEditStringList);
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
     function GetLinesCount: Integer; override;
@@ -363,10 +363,13 @@ begin
   FBuffer := ABuffer;
 end;
 
-procedure TLazSynDisplayBuffer.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+procedure TLazSynDisplayBuffer.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer);
 begin
   CurrentTokenLine := ALine;
   ARealLine := ALine;
+  AStartBytePos := 1;
+  ALineByteLen := Length(FBuffer[ARealLine]);
   FAtLineStart := True;
 end;
 

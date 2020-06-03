@@ -215,7 +215,7 @@ type
     property NextView: TLazSynDisplayView read FNextView write FNextView;
   public
     procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); virtual;
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); virtual;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); virtual;
     procedure FinishHighlighterTokens; virtual;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
     function GetLinesCount: Integer; virtual;
@@ -630,10 +630,12 @@ begin
     FNextView.InitHighlighterTokens(AHighlighter);
 end;
 
-procedure TLazSynDisplayView.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+procedure TLazSynDisplayView.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer);
 begin
+  //AStartBytePos := 1;
   if assigned(FNextView) then
-    FNextView.SetHighlighterTokensLine(ALine, ARealLine);
+    FNextView.SetHighlighterTokensLine(ALine, ARealLine, AStartBytePos, ALineByteLen);
 end;
 
 procedure TLazSynDisplayView.FinishHighlighterTokens;

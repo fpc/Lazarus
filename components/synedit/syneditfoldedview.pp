@@ -354,7 +354,7 @@ type
   public
     constructor Create(AFoldView: TSynEditFoldedView);
     destructor Destroy; override;
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetLinesCount: Integer; override;
 
@@ -718,7 +718,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer);
 begin
   FLineState := 0;
   CurrentTokenLine := ALine;
@@ -735,7 +736,7 @@ begin
     FFoldView.MarkupInfoHiddenCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
   end;
 
-  inherited SetHighlighterTokensLine(FFoldView.InternViewToTextIndex(ALine), ARealLine);
+  inherited SetHighlighterTokensLine(FFoldView.InternViewToTextIndex(ALine), ARealLine, AStartBytePos, ALineByteLen);
 end;
 
 function TLazSynDisplayFold.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;

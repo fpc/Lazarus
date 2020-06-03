@@ -57,6 +57,7 @@ type
     FCharWidths: TPhysicalCharWidths;
     FCharWidthsLen: Integer;
     FCurTxtLineIdx : Integer;
+    FCurLineByteLen: Integer;
 
     // Fields for GetNextHighlighterTokenFromView
     // Info about the token (from highlighter)
@@ -310,13 +311,16 @@ end;
 
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
   ARealLine: TLineIdx);
+var
+  LogLeftPos: Integer;
 begin
-  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine);
+  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, LogLeftPos, FCurLineByteLen);
   FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
   FCharWidthsLen := Length(FCharWidths);
+  FCurLineByteLen := FCurLineByteLen + LogLeftPos - 1;
 
   FCurViewToken.TokenLength     := 0;
-  FCurViewScannerPos.Logical   := 1;
+  FCurViewScannerPos.Logical   := LogLeftPos;
   FCurViewScannerPos.Physical  := 1;
   FCurViewScannerPos.Offset    := 0;
   FCurViewScannerPhysCharPos  := 1;
@@ -495,7 +499,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 
   function GetCharWidthData(AIdx: Integer): TPhysicalCharWidth; inline;
   begin
-    if AIdx >= FCharWidthsLen
+    if (AIdx >= FCharWidthsLen) or (AIdx >= FCurLineByteLen)
     then Result := 1
     else Result := FCharWidths[AIdx];
   end;
@@ -590,7 +594,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       repeat
         inc(ALogicIdx);
       until (ALogicIdx >= ALogicEnd) or
-            (ALogicIdx >= FCharWidthsLen) or ((FCharWidths[ALogicIdx] and PCWMask) <> 0);
+              (ALogicIdx >= FCharWidthsLen) or ((FCharWidths[ALogicIdx] and PCWMask) <> 0);
 
       pcw := GetCharWidthData(ALogicIdx);
       j := pcw and PCWMask;
@@ -622,7 +626,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     j := (pcw and PCWMask);
     // must go over token bounds
     //while (ALogicIdx < ALogicEnd) and (pcw and PCWFlagRTL <> 0) do begin
-    while (ALogicIdx < FCharWidthsLen) and (pcw and PCWFlagRTL <> 0) do begin
+    while (ALogicIdx < FCharWidthsLen) and (ALogicIdx < FCurLineByteLen) and (pcw and PCWFlagRTL <> 0) do begin
       inc(RtlRunPhysWidth, j);
 
       if j <> 0 then begin
@@ -641,7 +645,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       repeat
         inc(ALogicIdx);
         inc(i);
-      until //(ALogicIdx >= ALogicEnd) or
+      until (ALogicIdx >= FCurLineByteLen) or
             (ALogicIdx >= FCharWidthsLen) or ((FCharWidths[ALogicIdx] and PCWMask) <> 0);
 
       pcw := GetCharWidthData(ALogicIdx);
