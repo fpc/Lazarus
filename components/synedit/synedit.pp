@@ -4032,7 +4032,7 @@ end;
 
 procedure TCustomSynEdit.ScrollTimerHandler(Sender: TObject);
 var
-  C: TPoint;
+  ViewedCaret: TPoint;
   CurMousePos: TPoint;
   X, Y: Integer;
 begin
@@ -4044,7 +4044,9 @@ begin
     CurMousePos:=Point(0,0);
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
-    C := PixelsToLogicalPos(CurMousePos);
+    // PixelsToViewedXY
+    ViewedCaret := YToPos(FTextArea.PixelsToRowColumn(CurMousePos, []));
+    ViewedCaret.y := ViewedCaret.y + ToIdx(TopView);
 
     // recalculate scroll deltas
     if CurMousePos.X < FTextArea.Bounds.Left then
@@ -4068,7 +4070,7 @@ begin
       X := LeftChar;
       if fScrollDeltaX > 0 then  // scrolling right?
         Inc(X, CharsInWindow);
-      FCaret.LineCharPos := Point(X, C.Y);
+      FCaret.ViewedLineCharPos := Point(X, ViewedCaret.Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(LogicalCaretXY);
     end;
@@ -4078,11 +4080,11 @@ begin
       else
         TopView := TopView + fScrollDeltaY;
       if fScrollDeltaY > 0
-      then Y := ToPos(FTheLinesView.ViewToTextIndex(TopView + LinesInWindow))
-      else Y := TopLine;  // scrolling up
+      then Y := TopView + LinesInWindow
+      else Y := TopView;  // scrolling up
       if Y < 1   // past end of file
-      then y := FCaret.LinePos;
-      FCaret.LineCharPos := Point(C.X, Y);
+      then y := FCaret.ViewedLinePos;
+      FCaret.ViewedLineCharPos := Point(ViewedCaret.X, Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(LogicalCaretXY);
     end;
