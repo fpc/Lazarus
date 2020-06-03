@@ -1014,7 +1014,7 @@ function TDbgLinuxProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread): bo
 begin
   RemoveAllBreakPoints;
 
-  fpPTrace(PTRACE_DETACH, AThread.ID, nil, pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
+  fpPTrace(PTRACE_DETACH, AThread.ID, nil, pointer(TDbgLinuxThread(AThread).FExceptionSignal));
   Result := True;
 end;
 
@@ -1073,7 +1073,7 @@ begin
           {$IFDEF DebuglnLinuxDebugEvents}
           Debugln(['Single-stepping other TID: ', ThreadToContinue.ID]);
           {$ENDIF}
-          fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(ThreadToContinue).FExceptionSignal)));
+          fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(TDbgLinuxThread(ThreadToContinue).FExceptionSignal));
 
           TDbgLinuxThread(ThreadToContinue).ResetPauseStates;
           ThreadToContinue.FIsPaused := True;
@@ -1115,7 +1115,7 @@ begin
     {$IFDEF DebuglnLinuxDebugEvents}
     Debugln(['Single-stepping current']);
     {$ENDIF}
-    fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
+    fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal));
     TDbgLinuxThread(AThread).ResetPauseStates;
     Result := CheckNoError;
     exit;
@@ -1132,7 +1132,7 @@ begin
       {$IFDEF DebuglnLinuxDebugEvents}
       Debugln(['RUN other TID: ', ThreadToContinue.ID]);
       {$ENDIF}
-      fpPTrace(PTRACE_CONT, ThreadToContinue.ID, pointer(1), pointer(wstopsig(ThreadToContinue.FExceptionSignal)));
+      fpPTrace(PTRACE_CONT, ThreadToContinue.ID, pointer(1), pointer(ThreadToContinue.FExceptionSignal));
       CheckNoError; // only log
       ThreadToContinue.ResetPauseStates;
     end;
@@ -1146,9 +1146,9 @@ begin
     Debugln(['RUN ']);
     {$ENDIF}
     if AThread.NextIsSingleStep then
-      fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)))
+      fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal))
     else
-      fpPTrace(PTRACE_CONT, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
+      fpPTrace(PTRACE_CONT, AThread.ID, pointer(1), pointer((TDbgLinuxThread(AThread).FExceptionSignal)));
     TDbgLinuxThread(AThread).ResetPauseStates;
     Result := CheckNoError;
   end;
