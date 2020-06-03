@@ -414,6 +414,9 @@ type
     function GetViewedLines(index : Integer) : String; override;
     function GetViewedCount: integer; override;
     function GetDisplayView: TLazSynDisplayView; override;
+    procedure InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+      AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
+      ALogPhysConvertor: TSynLogicalPhysicalConvertor); override;
     procedure DoBlockSelChanged(Sender: TObject);
     Procedure CalculateMaps;
     function  FoldNodeAtTextIndex(AStartIndex, ColIndex: Integer): TSynTextFoldAVLNode; (* Returns xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
@@ -3282,6 +3285,15 @@ end;
 function TSynEditFoldedView.GetDisplayView: TLazSynDisplayView;
 begin
   Result := FDisplayView;
+end;
+
+procedure TSynEditFoldedView.InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+  AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
+  ALogPhysConvertor: TSynLogicalPhysicalConvertor);
+begin
+  AViewedXY.y := ToPos(InternViewToTextIndex(ToIdx(AViewedXY.y)));
+  inherited InternalGetInfoForViewedXY(AViewedXY, AFlags, AViewedXYInfo,
+    ALogPhysConvertor);
 end;
 
 function TSynEditFoldedView.GetFoldClasifications(index : Integer): TFoldNodeClassifications;

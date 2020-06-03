@@ -58,6 +58,8 @@ type
 
   TLinePos = type integer; // 1..high(Integer);
   TLineIdx = type integer; // 0..high(Integer);
+  IntPos = type integer; // 1..high(Integer);
+  IntIdx = type integer; // 0..high(Integer);
 
   TLogPoint = Types.TPoint;
   TPhysPoint = Types.TPoint;

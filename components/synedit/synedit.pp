@@ -789,7 +789,7 @@ type
     function IsPointInSelection(Value: TPoint): boolean;
     procedure LockUndo;
     procedure MoveCaretHorz(DX: integer);
-    procedure MoveCaretVert(DY: integer);
+    procedure MoveCaretVert(DY: integer; UseScreenLine: Boolean = False);
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
     procedure ScanRanges(ATextChanged: Boolean = True);
@@ -6974,11 +6974,11 @@ begin
 // vertical caret movement or selection
       ecUp, ecSelUp, ecColSelUp:
         begin
-          MoveCaretVert(-1);
+          MoveCaretVert(-1, (Command = ecUp) or (Command = ecSelUp) );
         end;
       ecDown, ecSelDown, ecColSelDown:
         begin
-          MoveCaretVert(1);
+          MoveCaretVert(1, (Command = ecDown) or (Command = ecSelDown));
         end;
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown, ecColSelPageUp, ecColSelPageDown:
         begin
@@ -6990,7 +6990,10 @@ begin
           if (Command in [ecPageUp, ecSelPageUp, ecColSelPageUp]) then
             counter := -counter;
           TopView := TopView + counter;
-          MoveCaretVert(counter);
+          MoveCaretVert(counter,
+            (Command = ecPageUp) or (Command = ecSelPageUp) or
+            (Command = ecPageDown) or (Command = ecSelPageDown)
+          );
         end;
       ecPageTop, ecSelPageTop, ecColSelPageTop:
         begin
@@ -8615,17 +8618,20 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.MoveCaretVert(DY: integer);
+procedure TCustomSynEdit.MoveCaretVert(DY: integer; UseScreenLine: Boolean);
 // moves Caret vertical DY unfolded lines
 var
   NewCaret: TPoint;
-  OldCaret: TPoint;
 begin
-  OldCaret:=CaretXY;
-  NewCaret:=OldCaret;
-  NewCaret.Y:=ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(NewCaret.Y), DY));
   DoIncPaintLock(Self); // No editing is taking place
-  FCaret.LinePos := NewCaret.Y;
+  if UseScreenLine then begin
+    FCaret.ViewedLinePos := FCaret.ViewedLinePos + DY;
+  end
+  else begin
+    NewCaret:=CaretXY;
+    NewCaret.Y:=ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(NewCaret.Y), DY));
+    FCaret.LinePos := NewCaret.Y;
+  end;
   DoDecPaintLock(Self);
 end;
 
