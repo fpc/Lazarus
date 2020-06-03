@@ -127,7 +127,6 @@ type
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property Updating: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
-    property Items;
     function ItemsAsStrings: TStrings;
   end;
 
@@ -1316,7 +1315,7 @@ begin
   //enter a new file entry
   if not Assigned(Node) then
     begin
-    Node := Items.Add(Node, MatchPos.FileName);
+    Node := Items.Add(Nil, MatchPos.FileName);
     fFilenameToNode.Add(Node);
     end;
 
@@ -1333,28 +1332,26 @@ begin
   inherited Create(AOwner);
   ReadOnly := True;
   fSearchObject:= TLazSearch.Create;
+  fUpdateStrings:= TStringList.Create;
+  fFilenameToNode:=TAvlTree.Create(@CompareTVNodeTextAsFilename);
   fUpdating:= false;
   fUpdateCount:= 0;
-  fUpdateStrings:= TStringList.Create;
   FSearchInListPhrases := '';
   fFiltered := False;
-  fFilenameToNode:=TAvlTree.Create(@CompareTVNodeTextAsFilename);
 end;//Create
 
 Destructor TLazSearchResultTV.Destroy;
 begin
-  fFilenameToNode.Free;
   if Assigned(fSearchObject) then
     FreeAndNil(fSearchObject);
   //if UpdateStrings is empty, the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
     FreeObjectsTN(Items);
-  if Assigned(fUpdateStrings) then
-  begin
-    FreeObjects(fUpdateStrings);
-    FreeAndNil(fUpdateStrings);
-  end;
+  fFilenameToNode.Free;
+  Assert(Assigned(fUpdateStrings), 'fUpdateStrings = Nil');
+  FreeObjects(fUpdateStrings);
+  FreeAndNil(fUpdateStrings);
   inherited Destroy;
 end;//Destroy
 
@@ -1478,10 +1475,8 @@ var i: Integer;
 begin
   if (slItems.Count <= 0) then Exit;
   for i:=0 to slItems.Count-1 do
-  begin
     if Assigned(slItems.Objects[i]) then
       slItems.Objects[i].Free;
-  end;//End for-loop
 end;
 
 function TLazSearchResultTV.BeautifyLine(const Filename: string; X, Y: integer;
