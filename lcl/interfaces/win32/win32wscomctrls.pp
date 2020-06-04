@@ -302,6 +302,8 @@ var
 begin
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Parent := TWin32WidgetSet(WidgetSet).AppHandle;
+  if ( Parent=0 ) and IsLibrary and Assigned( Screen.ActiveForm ) then
+    Parent := Screen.ActiveForm.Handle;
   PreferredSizeStatusBar := CreateWindowExW(0, STATUSCLASSNAMEW,
     nil, Flags,
     0, 0, 0, 0, Parent, 0, HInstance, nil);
