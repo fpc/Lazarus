@@ -712,10 +712,6 @@ function TSynEditBaseCaret.GetViewedLineCharPos: TPoint;
 begin
   ValidateViewedPos;
   Result := FViewedLineCharPos;
-  if scHasLineMapHandler in FFlags then begin
-    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
-    Include(FFlags, scHasLineMapHandler);
-  end;
 end;
 
 function TSynEditBaseCaret.GetViewedLinePos: TLinePos;
@@ -827,6 +823,11 @@ begin
 
   include(FFlags, scViewedPosValid);
   FViewedLineCharPos := Lines.TextXYToViewXY(LineCharPos);
+
+  if not(scHasLineMapHandler in FFlags) then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, scHasLineMapHandler);
+  end;
 end;
 
 procedure TSynEditBaseCaret.InternalEmptyLinesSetPos(NewCharPos: Integer;
@@ -841,6 +842,11 @@ begin
   FViewedLineCharPos.y := 1;
   FViewedLineCharPos.x := NewCharPos;
   FFlags := FFlags + [scBytePosValid, scCharPosValid, scViewedPosValid];
+
+  if not(scHasLineMapHandler in FFlags) then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, scHasLineMapHandler);
+  end;
 end;
 
 procedure TSynEditBaseCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
@@ -919,6 +925,11 @@ begin
   end;
 
   FViewedLineCharPos := Point(NewCharPos, NewLine);
+
+  if not(scHasLineMapHandler in FFlags) then begin
+    Lines.AddChangeHandler(senrLineMappingChanged, @DoLinesMappingChanged);
+    Include(FFlags, scHasLineMapHandler);
+  end;
 end;
 
 constructor TSynEditBaseCaret.Create;
