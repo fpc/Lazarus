@@ -4578,90 +4578,63 @@ If the file is not of the right format, an exception will be generated.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCanvas.Arc">
-        <short>
-          Use <var>Arc</var>   to draw an elliptically curved line with the current Pen
-        </short>
-        <descr>
-          <p>
-            Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.
-          </p>
-        </descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.x">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.angle1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.angle2">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
+
       <element name="TCanvas.Arc">
           <short>
             Use <var>Arc</var>  to draw an elliptically curved line with the current Pen
           </short>
           <descr>
             <p>
-              Use Arc to draw an elliptically curved line with the current Pen.
+              Use <var>Arc</var> to draw an elliptically curved line with the current Pen. Arc is re-introduced in TCanvas to provide additional overloads for the method found in the platform-specific LCL interface object. Parameter values passed to the overloaded methods are in turn passed to the widgetset class for the plaltform.
             </p>
             <p>
-              The angles angle1 and angle2 are 1/16th of a degree. For example, a full  circle equals 5760 (16*360).
+              <var>ALeft</var>, <var>ATop</var>, <var>ABottom</var>, and <var>ARight</var> represent the canvas bounds in which the drawing operation is performed.
             </p>
             <p>
-              Positive values of <var>Angle</var> and <var>AngleLength</var> mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+              One variant of the method provides the <var>Angle16Deg</var> and <var>Angle16DegLength</var> arguments.
+            </p>
+            <p>
+              Angle16Deg contains the central angle which defines the direction for the arc endpoint. Positive values indicate a counter-clockwise direction.Zero degrees lies at the 3 o&apos;clock position. These value is expressed in 1/16ths of a degree. For example, a full  circle equals 5760 (16*360) increments.
+            </p>
+            <p>
+              Angle16DegLength contains the arc length used to determine the over-all circumference of the circle for with the arc is a segment.
+            </p>
+            <p>
+              Another variant provides the <var>SX</var>, <var>SY</var> and <var>EX</var>, <var>EY</var>  arguments representing the starting and ending radial points between which the Arc is drawn.
             </p>
           </descr>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.x">
-        <short/>
+      <element name="TCanvas.Arc.ALeft">
+        <short>Left boundary for the canvas</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.y">
-        <short/>
+      <element name="TCanvas.Arc.ATop">
+        <short>Top boundary for the canvas</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.width">
-        <short/>
+      <element name="TCanvas.Arc.ARight">
+        <short>Right boundary for the canvas</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.Arc.height">
-        <short/>
+      <element name="TCanvas.Arc.ABottom">
+        <short>Bottom boundary for the canvas</short>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="TCanvas.Arc.Angle16Deg">
+        <short>Angle for the arc segment in 1/16ths of a degree</short>
+      </element>
+      <element name="TCanvas.Arc.Angle16DegLength">
+        <short>Arc length</short>
+      </element>
       <element name="TCanvas.Arc.SX">
-        <short/>
+        <short>Horizontal coordinate for the the starting radial point in the arc</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.SY">
-        <short/>
+        <short>Vertical coordinate for the the starting radial point in the arc</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.EX">
-        <short/>
+        <short>Horizontal coordinate for the the ending radial point in the arc</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.Arc.EY">
-        <short/>
+        <short>Vertical coordinate for the the ending radial point in the arc</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCanvas.BrushCopy">
         <short/>
@@ -5080,88 +5053,43 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TCanvas.MoveTo.Y1">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
+
       <element name="TCanvas.RadialPie">
         <short>
-          <var>RadialPie</var> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
+          <var>RadialPie</var> draws a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions
+        </short>
+        <descr>
+          <p>Use Pie to draw a filled pie-shaped wedge on the canvas.</p>
+          <p>
+            The angles StartAngle16Deg and Angle16DegLength are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+          </p>
+          <p>
+            Positive values in StartAngle16Deg means counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o&apos;clock position.
+          </p>
+        </descr>
         <seealso>
           <link id="TCanvas.Pie"/>
         </seealso>
-        <short>
-          <var>RadialPie</var> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
-        <descr>
-          <p>Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer</p>
-          <p>Use Pie to draw a filled pie-shaped wedge on the canvas.</p>
-          <p>The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree. For example, a full circle equals 5760 (16*360).</p>
-          <p>Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.</p>
-        </descr>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.x">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.Height">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.StartAngle16Deg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.EndAngle16Deg">
+      <element name="TCanvas.RadialPie.Angle16DegLength">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCanvas.RadialPie">
-        <short>
-          <var>RadialPie</var> uses <var>Pie</var>    to draw a filled pie-shaped wedge on the canvas
-        </short>
-        <descr>
-          Uses <var>Pie</var> to draw a filled pie-shaped wedge on the canvas.<br/> The angles <var>StartAngle16Deg</var> and <var>EndAngle16Deg</var> are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
-        </descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.x">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.sx">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.sy">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.ex">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.RadialPie.ey">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
+
       <element name="TCanvas.Pie">
         <short>
           <var>Pie</var>  draws a filled Pie-shaped wedge on the canvas</short>
