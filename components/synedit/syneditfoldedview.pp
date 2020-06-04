@@ -3291,10 +3291,15 @@ end;
 procedure TSynEditFoldedView.InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
   AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
   ALogPhysConvertor: TSynLogicalPhysicalConvertor);
+var
+  OldY: LongInt;
 begin
+  OldY := AViewedXY.y;
   AViewedXY.y := ToPos(InternViewToTextIndex(ToIdx(AViewedXY.y)));
+  OldY := OldY - AViewedXY.y;
   inherited InternalGetInfoForViewedXY(AViewedXY, AFlags, AViewedXYInfo,
     ALogPhysConvertor);
+  AViewedXYInfo.CorrectedViewedXY.y := AViewedXYInfo.CorrectedViewedXY.y + OldY;
 end;
 
 function TSynEditFoldedView.GetFoldClasifications(index : Integer): TFoldNodeClassifications;
