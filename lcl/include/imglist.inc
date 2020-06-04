@@ -1969,6 +1969,7 @@ var
 begin
   for I := Low(TOverlay) to High(TOverlay) do
     FOverlays[I] := -1;
+  FHasOverlays := false;
 end;
 
 procedure TCustomImageList.CreateDefaultResolution;
