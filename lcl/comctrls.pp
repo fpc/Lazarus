@@ -733,6 +733,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
+    function GetPopupMenu: TPopupMenu; override;
     class procedure WSRegisterClass; override;
   end;
   TNoteBookStringsTabControlClass = class of TNoteBookStringsTabControl;
@@ -909,6 +910,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property Options;
     property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint;
