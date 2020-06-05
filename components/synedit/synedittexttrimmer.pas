@@ -330,6 +330,7 @@ begin
     ALineByteLen := Length(FTrimer[CurrentTokenLine]);
   end;
   inherited SetHighlighterTokensLine(ALine, ARealLine, AStartBytePos, ALineByteLen);
+  ALineByteLen := ALineByteLen + length(FTrimer.Spaces(ALine));
 end;
 
 function TLazSynDisplayTrim.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;

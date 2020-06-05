@@ -1855,12 +1855,17 @@ begin
   SynTextView[0].NextLines := FTextBuffer;
   dsp := FTextBuffer.DisplayView;
 
+  if SynTextView[0].DisplayView <> dsp then begin
+    SynTextView[0].DisplayView.NextView := dsp;
+    dsp := SynTextView[0].DisplayView;
+  end;
+
   for i := 1 to FTextViewsList.Count-1 do begin
     SynTextView[i].NextLines := SynTextView[i-1];
 
     if (SynTextView[i].DisplayView <> dsp) then begin
       SynTextView[i].DisplayView.NextView := dsp;
-      dsp := SynTextView[i].DisplayView.NextView;
+      dsp := SynTextView[i].DisplayView;
     end;
   end;
   FTopViewChangedCallback(SynTextView[Count-1]);
