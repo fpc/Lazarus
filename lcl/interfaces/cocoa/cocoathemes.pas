@@ -968,7 +968,7 @@ begin
   useBezel := false;
   if Details.Element = teToolBar then
   begin
-    BtnType := NSOnOffButton;
+    BtnType := NSToggleButton;  // it usesd to be NSOnOffButton, but NSOnOffButton is not transparent.
     BezelStyle := BezelToolBar;
     useBezel := true;
   end else if Details.Element = teButton then
