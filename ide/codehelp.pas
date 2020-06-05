@@ -944,7 +944,7 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
       MemStream:=TMemoryStream.Create;
       MemStream.Write(s[1],length(s));
       MemStream.Position:=0;
-      ReadXMLFragment(AParentNode,MemStream);
+      ReadXMLFragment(AParentNode,MemStream, [xrfPreserveWhiteSpace]);
     finally
       MemStream.Free;
     end;
