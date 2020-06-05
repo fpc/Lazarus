@@ -38,7 +38,7 @@ uses
   LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType, LCLProc,
   // Synedit
-  SynEdit, SynHighlighterXML,
+  SynEdit, SynHighlighterXML, SynEditFoldedView, SynEditWrappedView,
   // codetools
   FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment,
   // IDEIntf
@@ -248,6 +248,15 @@ begin
 end;
 
 procedure TFPDocEditor.FormCreate(Sender: TObject);
+  procedure UpdateSynEdit(ASynEd: TSynEdit);
+  var
+    fld: TSynEditFoldedView;
+  begin
+    fld := TSynEditFoldedView(ASynEd.TextViewsManager.SynTextViewByClass[TSynEditFoldedView]);
+    if fld <> nil then
+      fld.FoldProvider.Enabled := False;
+    TLazSynEditLineWrapPlugin.Create(ASynEd);
+  end;
 begin
   Caption := lisCodeHelpMainFormCaption;
 
@@ -306,6 +315,11 @@ begin
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorMouseUp, @DoEditorMouseUp);
+
+  UpdateSynEdit(TopicDescrSynEdit);
+  UpdateSynEdit(DescrSynEdit);
+  UpdateSynEdit(ErrorsSynEdit);
+  UpdateSynEdit(SeeAlsoSynEdit);
 
   FollowCursor:=true;
   IdleConnected:=true;
