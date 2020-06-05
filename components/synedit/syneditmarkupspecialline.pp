@@ -65,6 +65,8 @@ type
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
+    function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
+      const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
     function RealEnabled: Boolean; override;
 
     procedure InvalidateLineHighlight;
@@ -207,6 +209,16 @@ procedure TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const aRow: Inte
 begin
   ANextLog := -1;
   ANextPhys := -1; // always valid for the whole line
+end;
+
+function TSynEditMarkupSpecialLine.GetMarkupAttributeAtWrapEnd(
+  const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound
+  ): TSynSelectedColor;
+begin
+  Result := nil;
+  MarkupInfo.SetFrameBoundsPhys(1, MaxInt);
+  if FSpecialLine then
+    Result := MarkupInfo;
 end;
 
 procedure TSynEditMarkupSpecialLine.InvalidateLineHighlight;

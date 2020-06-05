@@ -64,6 +64,7 @@ type
     FCurViewToken: TLazSynDisplayTokenInfo;
     FCurViewCurTokenStartPos: TLazSynDisplayTokenBound; // Start bound of the HL token
     FCurViewAttr: TSynSelectedColorMergeResult;
+    FWrapEndBound: TLazSynDisplayTokenBound;
     // Scanner Pos
     FCurViewScannerPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     FCurViewScannerPhysCharPos: Integer;           // 1 based - Full char bound (Before FCurViewScannerPos.Physical (PaintStart))
@@ -78,7 +79,7 @@ type
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
-    FCurMarkupState: (cmPreInit, cmLine, cmPastEOL);
+    FCurMarkupState: (cmPreInit, cmLine, cmPastEOL, cmPastWrapEnd);
     FMarkupTokenAttr: TSynSelectedColorMergeResult;
     procedure InitCurMarkup;
   public
@@ -340,6 +341,20 @@ begin
   if FCurMarkupState = cmPreInit then
     InitCurMarkup;
 
+  if (FCurLineByteLen < FCharWidthsLen) and (FCurViewScannerPos.Logical > FCurLineByteLen)
+  then begin
+    if FCurMarkupState <> cmPastWrapEnd then begin
+      assert(FCurViewScannerPos.Logical = FCurLineByteLen + 1, 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx: FCurViewScannerPos.Logical = FCurLineByteLen + 1');
+      FCurMarkupState := cmPastWrapEnd;
+      FWrapEndBound := FCurViewScannerPos;
+    end;
+  end;
+
+  if (FCurMarkupState = cmPastWrapEnd) then begin
+    FNextMarkupPhysPos := MaxInt;
+    FNextMarkupLogPos := MaxInt;
+  end
+  else
   if (FNextMarkupPhysPos < 0) or
      (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
      ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
@@ -356,14 +371,19 @@ begin
       FNextMarkupLogPos := MaxInt;
   end;
 
+  if (FCurMarkupState <> cmPastWrapEnd) and (FCurLineByteLen < FCharWidthsLen) and
+     (FNextMarkupLogPos > FCurLineByteLen + 1)
+  then
+    FNextMarkupLogPos := FCurLineByteLen + 1; // stop at WrapEnd / EOL // tokens should have a bound there anyway
+
   ATokenInfo.Attr := nil;
-  if FCurMarkupState = cmPastEOL
+  if FCurMarkupState in [cmPastEOL, cmPastWrapEnd]
   then Result := False
   else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
-  if (not Result) then begin
+  if not Result then begin
     // the first run StartPos is set by GetNextHighlighterTokenFromView
-    if FCurMarkupState = cmPastEOL then begin
+    if FCurMarkupState in [cmPastEOL, cmPastWrapEnd] then begin
       ATokenInfo.StartPos   := FCurMarkupNextStart
     end
     else
@@ -372,7 +392,8 @@ begin
       ATokenInfo.StartPos.Physical := FFirstCol;
     end;
 
-    FCurMarkupState := cmPastEOL;
+    if (FCurMarkupState <> cmPastWrapEnd) then
+      FCurMarkupState := cmPastEOL;
 
     Result := (ATokenInfo.StartPos.Physical < FLastCol);
     if not Result then
@@ -433,8 +454,12 @@ begin
     FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos;
   end;
 
-  fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
-    ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
+  if FCurMarkupState = cmPastWrapEnd then
+    fMarkupManager.MergeMarkupAttributeAtWrapEnd(FCurTxtLineIdx + 1,
+      FWrapEndBound, FMarkupTokenAttr)
+  else
+    fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
+      ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
   FMarkupTokenAttr.ProcessMergeInfo;
 
 

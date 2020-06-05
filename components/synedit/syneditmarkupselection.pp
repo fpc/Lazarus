@@ -59,6 +59,8 @@ type
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
+    function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
+      const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
@@ -210,6 +212,16 @@ begin
   //  then
   //    Result := MarkupInfo;
   //end;
+end;
+
+function TSynEditMarkupSelection.GetMarkupAttributeAtWrapEnd(
+  const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound
+  ): TSynSelectedColor;
+begin
+  result := nil;
+
+  if (nSelStart <= aWrapCol.Logical) and ((nSelEnd > aWrapCol.Logical) or (nSelEnd < 0)) then
+    Result := MarkupInfo;
 end;
 
 procedure TSynEditMarkupSelection.GetNextMarkupColAfterRowCol(const aRow: Integer;

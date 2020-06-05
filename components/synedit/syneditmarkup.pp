@@ -116,6 +116,14 @@ type
                                            const AnRtlInfo: TLazSynDisplayRtlInfo;
                                            AMarkup: TSynSelectedColorMergeResult); virtual;
 
+    function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
+                                         const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; virtual;
+                                         // experimental; // params may still change
+    procedure MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
+                                           const aWrapCol: TLazSynDisplayTokenBound;
+                                           AMarkup: TSynSelectedColorMergeResult); virtual;
+                                           // experimental; // params may still change
+
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); virtual; // 1 based
     Procedure TempDisable;
@@ -182,6 +190,10 @@ type
                                            const aStartCol, AEndCol :TLazSynDisplayTokenBound;
                                            const AnRtlInfo: TLazSynDisplayRtlInfo;
                                            AMarkup: TSynSelectedColorMergeResult); override;
+
+    procedure MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
+      const aWrapCol: TLazSynDisplayTokenBound;
+      AMarkup: TSynSelectedColorMergeResult); override;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); override; // lines are 1 based
@@ -449,6 +461,23 @@ begin
     AMarkup.Merge(c, aStartCol, AEndCol);
 end;
 
+function TSynEditMarkup.GetMarkupAttributeAtWrapEnd(const aRow: Integer;
+  const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor;
+begin
+  Result := nil;
+end;
+
+procedure TSynEditMarkup.MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
+  const aWrapCol: TLazSynDisplayTokenBound;
+  AMarkup: TSynSelectedColorMergeResult);
+var
+  c: TSynSelectedColor;
+begin
+  c := GetMarkupAttributeAtWrapEnd(aRow, aWrapCol);
+  if assigned(c) then
+    AMarkup.Merge(c);
+end;
+
 procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer);
 begin
   DoTextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff);
@@ -598,6 +627,19 @@ begin
     if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).MergeMarkupAttributeAtRowCol
         (aRow, aStartCol, AEndCol, AnRtlInfo, AMarkup);
+  end;
+end;
+
+procedure TSynEditMarkupManager.MergeMarkupAttributeAtWrapEnd(
+  const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound;
+  AMarkup: TSynSelectedColorMergeResult);
+var
+  i : integer;
+begin
+  for i := 0 to fMarkUpList.Count-1 do begin
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
+      TSynEditMarkup(fMarkUpList[i]).MergeMarkupAttributeAtWrapEnd
+        (aRow, aWrapCol, AMarkup);
   end;
 end;
 
