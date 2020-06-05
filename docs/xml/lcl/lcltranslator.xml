@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
@@ -7,226 +7,345 @@
     ====================================================================
     -->
     <module name="LCLTranslator">
-      <short></short>
-      <descr></descr>
+      <short>
+        Performs string translation in the Lazarus IDE and LCL
+      </short>
+      <descr>
+        <p>
+          <var>lcltranslator.pas</var> contains classes and routines used to perform translation for strings used in Lazarus IDE and LCL (Lazarus Component Library). It searches for .po (Portable Object) and/or .mo (Machine Object) files used to perform I18n internationalization and L10n localization. The .po/.mo files are stored in the <b>languages</b> or <b>locale</b> directories. To access translation files from an alternate location, use the LResources unit and the LRSMoFile variable directly.
+        </p>
+        <p>
+          To enable string  translation, use this unit in your application and check the <b>Enable i18n</b> option in the <b>Project &gt; Project Options &gt; i18n</b> screen. You will need to call the SetDefaultLang routine in your code to activate the translation facility. If you want translation to be performed automatically, use the DefaultTranslator unit instead.
+        </p>
+        <p>
+          This unit also translates LCL string constants in the <file>lclstrconsts</file> file using files in the directory where program translation files are stored.
+        </p>
+        <p>
+          For more information, see the Lazarus Wiki article:
+        </p>
+        <p>
+          <url href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">Creating Multi-Language Applications</url>
+        </p>
+      </descr>
 
-      <!-- class Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="TypInfo"/>
+      <element name="GetText"/>
+      <element name="LResources"/>
+      <element name="Forms"/>
+      <element name="LCLType"/>
+      <element name="LazLoggerBase"/>
+      <element name="Translations"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUTF8"/>
+
       <element name="TUpdateTranslator">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Performs string translations for persistent objects
+        </short>
+        <descr>
+          <p>
+            <var>TUpdateTranslator</var> is a TAbstractTranslator descendant used to perform string translations for persistent objects. TUpdateTranslator provides the UpdateTranslation method which updates any translatable  properties in Lazarus resources.
+          </p>
+          <p>
+            TUpdateTranslator is used as the ancestor for the TDefaultTranslator and TPOTranslator classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="LResources.TAbstractTranslator"/>
+          <link id="TDefaultTranslator"/>
+          <link id="TPOTranslator"/>
+        </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
-      <element name="TUpdateTranslator.FStackPath">
-        <short></short>
+      <element name="TUpdateTranslator.FStackPath"/>
+
+      <element name="TUpdateTranslator.IntUpdateTranslation" link="TUpdateTranslator.UpdateTranslation">
+        <short>
+          Performs action required to update string translations for persistent objects using RTTI
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TUpdateTranslator.IntUpdateTranslation">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: private -->
       <element name="TUpdateTranslator.IntUpdateTranslation.AnInstance">
-        <short></short>
+        <short>Persistent object updated in the method</short>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TUpdateTranslator.UpdateTranslation">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>Updates string translations for persistent objects</short>
+        <descr>
+          <p>
+            <var>UpdateTranslation</var> is procedure used to translate string properties in the specified persistent object instance. UpdateTranslation uses RTTI (Run Time Type Information) to update the value for translatable properties in Lazarus resources. This requires properties to be a TPersistent descendant with RTTI enabled, and have a setter (write access) procedure. Strings, Classes, Components and the sub-Components are handled in the method.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TUpdateTranslator.UpdateTranslation.AnInstance">
-        <short></short>
+        <short>Persistent object updated in the method</short>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TDefaultTranslator">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Performs string translations using a .mo file (Machine Object)
+        </short>
+        <descr>
+          <p>
+            <var>TDefaultTranslator</var> is a <var>TUpdateTranslator</var> descendant used to translate string properties using the values defined in a .mo (<b>Machine Object</b>) file. A .mo file is the binary format used for translation resources created for the <b>GNU gettext</b> program. TDefaultTranslator implements the abstract TranslateStringProperty method defined in the ancestor class.
+          </p>
+          <p>
+            Use TPOTranslator to translate string properties using the .po (<b>Portable Object</b>) file format.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TUpdateTranslator"/>
+          <link id="TPOTranslator"/>
+        </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
-      <element name="TDefaultTranslator.FMOFile">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDefaultTranslator.FMOFile"/>
 
-      <!-- constructor Visibility: public -->
       <element name="TDefaultTranslator.Create">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor. Create initializes and stores a TMOFile instance using the file name specified in the MOFileName parameter. Create calls UTF8ToSys to convert any UTF-8-encoded values in MOFileName to the default encoding used for the platform or OS.
+           </p>
+        </descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TDefaultTranslator.Create.MOFileName">
-        <short></short>
+        <short>.mo file used in the class instance</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TDefaultTranslator.Destroy">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to an internal TMOFile member are freed prior to calling the inherited destructor.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TDefaultTranslator.TranslateStringProperty">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Gets the translated value for the specified property
+        </short>
+        <descr>
+          <p>
+            <var>TranslateStringProperty</var> is a procedure used to get the translated value for the specified property from the .mo file used in the class instance.
+          </p>
+          <p>
+            Sender is the class instance requesting the translation action.
+          </p>
+          <p>
+            Instance is the TPersistent object instance affected in the method.
+          </p>
+          <p>
+            PropInfo contains the RTTI property information needed to update the property value.
+          </p>
+          <p>
+            TranslateStringProperty uses the internal TMOFile instance created in the constructor to get the translated value for the property name. The translated string value is stored in the Content argument and returned to the caller. The property value is actually updated in the caller.
+          </p>
+          <p>
+            No actions are performed in the method if a .mo file was not found with the required file name.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TDefaultTranslator.TranslateStringProperty.Sender">
-        <short></short>
+        <short>Class instance calling the method</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TDefaultTranslator.TranslateStringProperty.Instance">
-        <short></short>
+        <short>Persistent object with properties affected in the method</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TDefaultTranslator.TranslateStringProperty.PropInfo">
-        <short></short>
+        <short>RTTI Property information</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TDefaultTranslator.TranslateStringProperty.Content">
-        <short></short>
+        <short>Value for the translated string property</short>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TPOTranslator">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Performs string translations using a .po (Portable Object) file
+        </short>
+        <descr>
+          <p>
+            <var>TPOTranslator</var> is a <var>TUpdateTranslator</var> descendant used to translate string properties using the values defined in a .po (<b>Portable Object</b>) file. A .po file is the text format used for translation resources created for the <b>GNU gettext</b> program. TPOTranslator  implements the abstract TranslateStringProperty method defined in the ancestor class.
+          </p>
+          <p>
+            Use TDefaultTranslator to translate string properties using the .mo (<b>Machine Object</b>) file format.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TUpdateTranslator"/>
+          <link id="TDefaultTranslator"/>
+        </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
-      <element name="TPOTranslator.FPOFile">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TPOTranslator.FPOFile"/>
 
-      <!-- constructor Visibility: public -->
       <element name="TPOTranslator.Create">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the overloaded constructor for the class instance. Both variant call the inherited constructor to initialize the class instance. The overloaded variants allow use of a file name or a <var>TPOFile</var> instance in the class. TPOTranslator contains an internal TPOFile member which is used to access the translated string values.
+          </p>
+          <p>
+            POFileName contains the file name which constains the translated values for strings. A TPOFile instance is created for the specified file name.
+          </p>
+          <p>
+            aPOFile is the TPPOFile class instance which contains the translated values for strings.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TPOTranslator.Create.POFileName">
-        <short></short>
+        <short>.po file name to use for translated string values</short>
       </element>
       <element name="TPOTranslator.Create.aPOFile">
-        <short></short>
+        <short>.po file to use for translated string values</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TPOTranslator.Destroy">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the internal TPOFile member in the class instance are freed. Destroy calls the inherited destructor.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TPOTranslator.TranslateStringProperty">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Gets the translated value for the specified property
+        </short>
+        <descr>
+          <p>
+            <var>TranslateStringProperty</var> is a procedure used to get the translated value for the specified property from the .po file used in the class instance.
+          </p>
+          <p>
+            Sender is the class instance requesting the translation action.
+          </p>
+          <p>
+            Instance is the TPersistent object instance affected in the method.
+          </p>
+          <p>
+            PropInfo contains the RTTI property information needed to update the property value.
+          </p>
+          <p>
+            TranslateStringProperty uses the internal TPOFile instance created in the constructor to get the translated value for the property. The translated string value is stored in the Content argument and returned to the caller. The property value is actually updated in the caller.
+          </p>
+          <p>
+            No actions are performed in the method if a .po file was not found with the required file name.
+          </p>
+        </descr>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TPOTranslator.TranslateStringProperty.Sender">
-        <short></short>
+        <short>Class instance calling the method</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TPOTranslator.TranslateStringProperty.Instance">
-        <short></short>
+        <short>Persistent object with properties affected in the method</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TPOTranslator.TranslateStringProperty.PropInfo">
-        <short></short>
+        <short>RTTI Property information</short>
       </element>
-
-      <!-- argument Visibility: public -->
       <element name="TPOTranslator.TranslateStringProperty.Content">
-        <short></short>
+        <short>Value for the translated string property</short>
       </element>
 
       <element name="TranslateLCLResourceStrings">
-        <short></short>
-        <descr></descr>
+        <short>Translates resource strings in <file>LCLStrConsts</file> to the specified language</short>
+        <descr>
+          <p>
+            <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts</file> unit to the language identifier specified in the Lang argument.
+          </p>
+          <p>
+            Dir is an optional path where .PO or .MO files can be found with the translated values for string constants.
+          </p>
+          <p>
+            TranslateLCLResourceStrings calls FindLocaleFileName to locate the .PO or .MO file. Preference is given to the .PO variant. If it is locate in the speciifed path, the TranslateUnitResourceStrings routine is called to tranlate constants from the LCLStrConts unit.
+          </p>
+          <p>
+            If a .PO file is not found, FindLocaleFileName is called to locate a .MO file used for translation. When found, the TranslateResourceStrings routine is called to translate string using the .MO file in the specified path.
+          </p>
+          <p>
+            The return value contains the name of the .PO or .MO file used to translate string constants, or an empty string when a file is not found in the path specified in Dir.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TranslateLCLResourceStrings.Lang">
-        <short></short>
+        <short>Language identifer for the translated constants</short>
       </element>
       <element name="TranslateLCLResourceStrings.Dir">
-        <short></short>
+        <short>Path to the .MO or .PO file used for the translation</short>
       </element>
       <element name="TranslateLCLResourceStrings.Result">
-        <short></short>
+        <short>File name used for the translation, or an empty when translation is not available</short>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="SetDefaultLang">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>
+          Sets the default language used for string translations
+        </short>
+        <descr>
+          <p>
+            <var>SetDefaultLang</var> is a procedure used to the set the default language used for string translations.
+          </p>
+          <p>
+            <var>Lang</var> contains the Language ID to use for translated strings. Lang contains a language identifier defined in ISO 639, at:
+            <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">
+              ISO 639 - Codes for the Representation of Names of Languages
+            </url>
+          </p>
+          <p>
+            The default value for the parameter is an empty string (<b>''</b>), and indicates that strings are not translated.
+          </p>
+          <p>
+            <var>Dir</var> contains the directory name where .po/.mo files are stored. The default value is an empty string (<b>''</b>), and indicates that the default directories are used for translation files.
+          </p>
+          <p>
+            <var>LocaleFileName</var> contain the localization file used for for strings. This file handles variations in grammar and spelling that occur in local dialects for a language. It contains a value like 'zh_cn' or 'pt_br'. The default value is an empty string (<b>''</b>), and indicates that localization is not preformed for resource strings.
+          </p>
+          <p>
+            <var>ForceUpdate</var> indicates if an immediate update to to the User Interface is performed when translations are loaded. Set ForceUpdate to False when SetDefaultLang is called from the initialization section for a unit. The default value is True.
+          </p>
+          <p>
+            SetDefaultLang ensures that Language ID and Locale Codes are valid, and .po/.mo exist for the specified names before they are applied. SetDefaultLang calls the FindLocaleFileName function to get the file name used for translation resources. .po files are applied when they exist. Otherwise, .mo file are used to get the translated string values. LCL resource string constants are also translated when the default language code is assigned.
+          </p>
+          <p>
+            When ForceUpdate contains <b>True</b>, string properties used in Forms, Data Modules, Controls, Components and Persistent objects are translated. This action is performed for items with  RTTI (Run Time Type Information) and includes a setter (write access) procedure. TUpdateTranslator is used to perform the update to user interface elements.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPOTranslator"/>
+          <link id="TDefaultTranslator"/>
+          <link id="TUpdateTranslator"/>
+          <link id="GetDefaultLang"/>
+        </seealso>
       </element>
-
-
-      <!-- argument Visibility: default -->
       <element name="SetDefaultLang.Lang">
-        <short></short>
+        <short>
+          Language ID to use for translated strings
+        </short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="SetDefaultLang.Dir">
-        <short></short>
+        <short>Directory name with translation files</short>
       </element>
-
       <element name="SetDefaultLang.LocaleFileName">
-        <short></short>
+        <short>Locale code for the localization file</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="SetDefaultLang.ForceUpdate">
-        <short></short>
+        <short>Indicates if the UI should be updated immediately</short>
       </element>
-
       <element name="SetDefaultLang.Result">
-        <short></short>
+        <short>Default language code in use</short>
       </element>
 
       <element name="GetDefaultLang">
@@ -241,6 +360,5 @@
 
     </module>
     <!-- LCLTranslator -->
-
   </package>
 </fpdoc-descriptions>

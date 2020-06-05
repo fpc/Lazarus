@@ -1,71 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
+    <!--
+    ====================================================================
+      DefaultTranslator
+    ====================================================================
+    -->
+    <module name="DefaultTranslator">
+      <short>
+        Performs string translations using the language selected for the project
+      </short>
+      <descr>
+        <p>
+          <file>defaulttranslator.pas</file> performs string translations using the default I18n and L10n translation facilities in the Lazarus IDE and LCL. This unit does not contain any code other than the initialization section in the unit. It calls the SetDefaultLang routine to specify that the default language identifier for the project is used.
+        </p>
+        <p>
+          To enable automatic string translation, use this unit in your application and check the <b>Enable i18n</b> option in the <b>Project &gt; Project Options &gt; i18n</b> screen. If you want translation to be performed using a specific language identifier, use the <file>LCLTranslator</file> unit instead.
+        </p>
+        <p>
+          For more information, see the Lazarus Wiki article:
+          <url href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">Creating Multi-Language Applications</url>
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    DefaultTranslator
-  ====================================================================
--->
+      <element name="LCLTranslator"/>
 
-<module name="DefaultTranslator">
-<short/>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LResources">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GetText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="typinfo">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- DefaultTranslator -->
-</package>
+    </module>
+    <!-- DefaultTranslator -->
+  </package>
 </fpdoc-descriptions>

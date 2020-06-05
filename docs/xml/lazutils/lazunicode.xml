@@ -244,7 +244,7 @@
             Raises an assertion error if the number of bytes in aCount is 0 (zero). Raised with the message 'TUnicodeEnumeratorBase.UpdateCurrent: aCount=0'.
           </p>
           <p>
-            Raises an assertion error if the length of bytes copied to Current is different that the valuer in aCount. Raised with the message 'TUnicodeEnumeratorBase.UpdateCurrent: Length(fCurrent)&lt;&gt;aCount.')'.
+            Raises an assertion error if the length of bytes copied to Current is different that the value in aCount. Raised with the message 'TUnicodeEnumeratorBase.UpdateCurrent: Length(fCurrent)&lt;&gt;aCount.')'.
           </p>
         </errors>
       </element>
