@@ -22,30 +22,30 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
+      <Modes>
+        <Mode Name="default">
           <local>
             <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
           </local>
-        </Mode0>
+        </Mode>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="5">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="SynEdit"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="FPCUnitTestRunner"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item5>
+      </Item>
     </RequiredPackages>
     <Units>
       <Unit>
@@ -162,6 +162,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynMultiCaret"/>
       </Unit>
+      <Unit>
+        <Filename Value="testwordwrap.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestWordWrap"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -195,16 +200,16 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>

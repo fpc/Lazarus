@@ -81,6 +81,7 @@ type
   protected
     procedure ReCreateEdit;
     procedure SetSynEditHeight(Lines: Integer; PartLinePixel: Integer = 3);
+    procedure SetSynEditWidth(Chars: Integer; PartCharPixel: Integer = 2);
     procedure SetLines(Lines: Array of String);
     (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
     // Locical Caret
@@ -617,6 +618,13 @@ procedure TTestBase.SetSynEditHeight(Lines: Integer; PartLinePixel: Integer);
 begin
   FSynEdit.Height := FSynEdit.LineHeight * Lines + PartLinePixel +
     (FSynEdit.Height - FSynEdit.ClientHeight);
+end;
+
+procedure TTestBase.SetSynEditWidth(Chars: Integer; PartCharPixel: Integer);
+begin
+  FSynEdit.Width := FSynEdit.CharWidth * Chars + PartCharPixel +
+    (FSynEdit.Width - (FSynEdit.TextArea.Right - FSynEdit.TextArea.Left));
+  AssertEquals('SetSynEditWidth', Chars, SynEdit.CharsInWindow);
 end;
 
 procedure TTestBase.SetLines(Lines: array of String);

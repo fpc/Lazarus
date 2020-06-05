@@ -9,7 +9,7 @@ uses
   TestHighlightPas, TestHighlightXml, TestHighlightMulti, TestMarkupwordGroup,
   TestMarkupHighAll, TestFoldedView, TestSynSharedEdits, TestHighlighterLfm,
   TestNestedFoldsList, TestMarkupIfDef, testPaintColorMerging,
-  TestMarkupFoldColoring;
+  TestMarkupFoldColoring, TestWordWrap;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
 

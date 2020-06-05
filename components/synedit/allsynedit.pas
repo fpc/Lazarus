@@ -31,7 +31,8 @@ uses
   LazSynTextArea, SynTextDrawer, SynEditMarkupGutterMark, SynHighlighterBat, 
   SynHighlighterIni, SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, 
   SynEditTextSystemCharWidth, SynEditMarkupIfDef, SynPluginMultiCaret, 
-  synhighlighterpike, SynEditMarkupFoldColoring, LazarusPackageIntf;
+  synhighlighterpike, SynEditMarkupFoldColoring, SynEditViewedLineMap, 
+  SynEditWrappedView, LazarusPackageIntf;
 
 implementation
 
