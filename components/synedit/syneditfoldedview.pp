@@ -295,6 +295,7 @@ type
 
   TSynEditFoldProvider = class
   private
+    FEnabled: boolean;
     FHighlighter: TSynCustomFoldHighlighter;
     FLines : TSynEditStrings;
     FSelection: TSynEditSelection;
@@ -309,7 +310,7 @@ type
   protected
     property HighLighterWithLines: TSynCustomFoldHighlighter read GetHighLighterWithLines;
   public
-    //constructor Create;
+    constructor Create;
     destructor Destroy; override;
 
     // Info about Folds opening on ALineIdx
@@ -331,6 +332,7 @@ type
     property HighLighter: TSynCustomFoldHighlighter read FHighlighter write SetHighLighter;
     property FoldsAvailable: Boolean read GetFoldsAvailable;
     property NestedFoldsList: TLazSynEditNestedFoldsList read GetNestedFoldsList;
+    property Enabled: boolean read FEnabled write FEnabled;
   end;
 
   { TFoldChangedHandlerList }
@@ -2887,6 +2889,8 @@ var
   c: Integer;
 begin
   Result := [];
+  if not FEnabled then
+    exit;
   if (FSelection <> nil) and (FSelection.SelAvail) then begin
     if (FSelection.FirstLineBytePos.Y < ALineIdx+1) and
        (FSelection.LastLineBytePos.Y  > ALineIdx+1)
@@ -2936,8 +2940,10 @@ end;
 
 function TSynEditFoldProvider.GetFoldsAvailable: Boolean;
 begin
-  Result := (FHighlighter <> nil) or
-            ((FSelection <> nil) and FSelection.SelAvail);
+  Result := FEnabled and (
+              (FHighlighter <> nil) or
+              ((FSelection <> nil) and FSelection.SelAvail)
+            );
 end;
 
 function TSynEditFoldProvider.GetHighLighterWithLines: TSynCustomFoldHighlighter;
@@ -2963,6 +2969,12 @@ begin
   FNestedFoldsList.Lines := FLines;
 end;
 
+constructor TSynEditFoldProvider.Create;
+begin
+  FEnabled := True;
+  inherited Create;
+end;
+
 destructor TSynEditFoldProvider.Destroy;
 begin
   inherited Destroy;
@@ -2971,6 +2983,9 @@ end;
 
 function TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
 begin
+  if not FEnabled then
+    exit(0);
+
   if (FHighlighter = nil) or (ALineIdx < 0) then begin
     if (AType=0) and (FSelection <> nil) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then exit(1);
     exit(0);
