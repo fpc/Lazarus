@@ -10,7 +10,7 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
   ClientHeight = 212
   ClientWidth = 605
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
@@ -64,6 +64,7 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
         'Memo1'
       )
       ReadOnly = True
+      ScrollBars = ssAutoVertical
       TabOrder = 0
       Visible = False
     end
