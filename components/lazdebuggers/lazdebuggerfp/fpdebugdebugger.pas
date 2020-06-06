@@ -202,6 +202,9 @@ type
     FWatchEvalList: TFPList; // Schedule
     FWatchAsyncQueued: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
+    FStartupCommand: TDBGCommand;
+    FStartuRunToFile: string;
+    FStartuRunToLine: LongInt;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
@@ -274,6 +277,7 @@ type
     procedure DoOnIdle;
     procedure DoState(const OldState: TDBGState); override;
     function GetIsIdle: Boolean; override;
+    function GetCommands: TDBGCommands; override;
   protected
     // Helper vars to run in debug-thread
     FCallStackEntryListThread: TDbgThread;
@@ -2245,14 +2249,14 @@ begin
     bplReRaise,
     bplRtlUnwind, bplStepOut]);
 
-  if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcStepOverInstr{, dcStepIntoInstr}] then
+  if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
     EnableBreaks([bplReRaise]);
   if ACommand in [dcStepOut] then
     EnableBreaks([bplFpcSpecific]);
 
   case st of
     esStoppedAtRaise: begin
-      if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo] then begin
+      if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo] then begin
         FState := esStepToFinally;
         ACommand := dcRun;
         EnableBreaks([bplPopExcept, bplCatches, bplFpcSpecific]);
@@ -2784,6 +2788,8 @@ begin
 end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
+var
+  addr: TDBGPtrArray;
 begin
   // This will trigger setting the breakpoints,
   // may also trigger the evaluation of the callstack or disassembler.
@@ -2793,6 +2799,22 @@ begin
 
   if assigned(OnConsoleOutput) then
     FConsoleOutputThread := TFpWaitForConsoleOutputThread.Create(self);
+
+  case FStartupCommand of
+    dcRunTo: begin
+      &continue := False;
+      if FDbgController.CurrentProcess.DbgInfo.HasInfo then begin
+        addr:=nil;
+        if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(FStartuRunToFile, FStartuRunToLine, addr)
+        then begin
+          &continue := true;
+          FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
+        end;
+      end;
+      if not &continue then
+        EnterPause(GetLocation);
+    end;
+  end;
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
@@ -2808,7 +2830,7 @@ begin
   if assigned(FDbgController) then
     FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 
-  if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcJumpto,
+  if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto,
       dcStepOverInstr, dcStepIntoInstr, dcAttach]) and
      not assigned(FDbgController.MainProcess)
   then
@@ -2851,6 +2873,11 @@ begin
     SetState(dsInit);
     // TODO: any step commond should run to "main" or "pascalmain"
     // Currently disabled in TFpDebugDebugger.GetSupportedCommands
+    FStartupCommand := ACommand;
+    if ACommand = dcRunTo then begin
+      FStartuRunToFile := AnsiString(AParams[0].VAnsiString);
+      FStartuRunToLine := AParams[1].VInteger;
+    end;
     StartDebugLoop;
     exit;
   end;
@@ -2893,6 +2920,21 @@ begin
         Result := FDbgController.Pause;
       end;
     dcStepTo:
+      begin
+        result := false;
+        if FDbgController.CurrentProcess.DbgInfo.HasInfo then
+          begin
+          addr:=nil;
+          if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr)
+          then begin
+            result := true;
+            FDbgController.InitializeCommand(TDbgControllerStepToCmd.Create(FDbgController, AnsiString(AParams[0].VAnsiString), AParams[1].VInteger));
+            SetState(dsRun);
+            StartDebugLoop;
+            end;
+          end;
+      end;
+    dcRunTo:
       begin
         result := false;
         if FDbgController.CurrentProcess.DbgInfo.HasInfo then
@@ -3423,15 +3465,20 @@ begin
   Result := TFpDebugDebuggerProperties.Create;
 end;
 
+function TFpDebugDebugger.GetCommands: TDBGCommands;
+begin
+  Result := inherited GetCommands;
+  if State = dsStop then
+    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
+end;
+
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcStepTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput
+           dcStepTo, dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput
            {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
            {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
           ];
-  if State = dsStop then
-    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 initialization
