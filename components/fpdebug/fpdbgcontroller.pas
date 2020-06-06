@@ -12,7 +12,7 @@ uses
   LazLoggerBase, LazClasses,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgDisasX86,
-  FpDbgClasses, FpDbgInfo;
+  FpDbgClasses, FpDbgInfo, FpDbgDwarf;
 
 type
 
@@ -120,7 +120,8 @@ type
   protected
     procedure Init; override;
     procedure UpdateThreadStepInfoAfterStepOut(ANextOnlyStopOnStartLine: Boolean);
-    function HasSteppedAwayFromOriginLine(ANextOnlyStopOnStartLine: Boolean): boolean; // Call only, if in original frame (or updated frame)
+    function HasReachedEndLineForStep: boolean; virtual;
+    function HasReachedEndLineOrSteppedOut(ANextOnlyStopOnStartLine: Boolean): boolean; // Call only, if in original frame (or updated frame)
 
     procedure StoreWasAtJumpInstruction;
     function  IsAtJumpPad: Boolean;
@@ -182,6 +183,23 @@ type
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
     constructor Create(AController: TDbgController; ALocation: TDBGPtrArray);
+  end;
+
+  { TDbgControllerStepToCmd }
+
+  TDbgControllerStepToCmd = class(TDbgControllerLineStepBaseCmd)
+  private
+    FTargetFilename: String;
+    FTargetLineNumber: Integer;
+    FTargetExists: Boolean;
+    FStoreStepStartAddr, FStoreStepEndAddr: TDBGPtr;
+  protected
+    procedure Init; override;
+    function HasReachedEndLineForStep: boolean; override;
+    procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
+    procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+  public
+    constructor Create(AController: TDbgController; ATargetFilename: String; ATargetLineNumber: Integer);
   end;
 
   { TDbgController }
@@ -556,28 +574,10 @@ begin
   FStepInfoUpdatedForStepOut := True;
 end;
 
-function TDbgControllerLineStepBaseCmd.HasSteppedAwayFromOriginLine(
-  ANextOnlyStopOnStartLine: Boolean): boolean;
+function TDbgControllerLineStepBaseCmd.HasReachedEndLineForStep: boolean;
 var
   CompRes: TFPDCompareStepInfo;
 begin
-  Result := IsSteppedOut;
-  if Result then begin
-    Result := (not ANextOnlyStopOnStartLine);
-    if Result then
-      exit;
-
-    // If stepped out, do not step out again
-    Result := NextInstruction.IsLeaveStackFrame or NextInstruction.IsReturnInstruction;
-    if Result then
-      exit;
-
-    if FStepInfoUnavailAfterStepOut then begin
-      Result := FController.FCurrentThread.IsAtStartOfLine;
-      exit;
-    end;
-  end;
-
   CompRes := FThread.CompareStepInfo;
 
   if CompRes in [dcsiSameLine, dcsiZeroLine] then begin
@@ -599,6 +599,29 @@ begin
   end;
 
   Result := True;
+end;
+
+function TDbgControllerLineStepBaseCmd.HasReachedEndLineOrSteppedOut(
+  ANextOnlyStopOnStartLine: Boolean): boolean;
+begin
+  Result := IsSteppedOut;
+  if Result then begin
+    Result := (not ANextOnlyStopOnStartLine);
+    if Result then
+      exit;
+
+    // If stepped out, do not step out again
+    Result := NextInstruction.IsLeaveStackFrame or NextInstruction.IsReturnInstruction;
+    if Result then
+      exit;
+
+    if FStepInfoUnavailAfterStepOut then begin
+      Result := FController.FCurrentThread.IsAtStartOfLine;
+      exit;
+    end;
+  end;
+
+  Result := HasReachedEndLineForStep;
 end;
 
 procedure TDbgControllerLineStepBaseCmd.StoreWasAtJumpInstruction;
@@ -667,7 +690,7 @@ begin
   assert((FHiddenBreakpoint<>nil) xor (FState=siSteppingCurrent), 'TDbgControllerStepIntoLineCmd.DoResolveEvent: (FHiddenBreakpoint<>nil) xor (FState=siSteppingCurrent)');
 
   if (FState = siSteppingCurrent) then begin
-    Finished := HasSteppedAwayFromOriginLine(True);
+    Finished := HasReachedEndLineOrSteppedOut(True);
     if Finished then
       Finished := not IsAtJumpPad;
   end
@@ -742,7 +765,7 @@ begin
     Finished := False;
   end
   else begin
-    Finished := HasSteppedAwayFromOriginLine(True);
+    Finished := HasReachedEndLineOrSteppedOut(True);
     if Finished then
       Finished := not IsAtJumpPad;
   end;
@@ -852,7 +875,7 @@ begin
     if FHiddenBreakpoint <> nil then
       Finished := False
     else
-      Finished := HasSteppedAwayFromOriginLine(FController.NextOnlyStopOnStartLine);
+      Finished := HasReachedEndLineOrSteppedOut(FController.NextOnlyStopOnStartLine);
   end;
 
   if Finished then
@@ -886,11 +909,98 @@ end;
 procedure TDbgControllerRunToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  Finished := (AnEvent<>deInternalContinue);
+  Finished := (FHiddenBreakpoint = nil) or FHiddenBreakpoint.HasLocation(FThread.GetInstructionPointerRegisterValue);
   if Finished then begin
     RemoveHiddenBreak;
     AnEvent := deFinishedStep;
   end;
+end;
+
+{ TDbgControllerStepToCmd }
+
+procedure TDbgControllerStepToCmd.Init;
+var
+  r: TDBGPtrArray;
+begin
+//  FThread.StoreStepInfo;
+  FTargetExists := FProcess.DbgInfo.GetLineAddresses(FTargetFilename, FTargetLineNumber, r);
+  FTargetExists := FTargetExists and (Length(r) > 0);
+  FStepInfoUnavailAfterStepOut := True; // always check for IsAtStartOfLine
+  inherited Init;
+end;
+
+function TDbgControllerStepToCmd.HasReachedEndLineForStep: boolean;
+var
+  AnAddr: TDBGPtr;
+  sym: TFpSymbol;
+begin
+  Result := False;
+  AnAddr := FThread.GetInstructionPointerRegisterValue;
+  if (AnAddr >= FStoreStepStartAddr) and (AnAddr < FStoreStepEndAddr) then
+    exit;
+
+  sym := FProcess.FindProcSymbol(AnAddr);
+  if not assigned(sym) then
+    exit;
+
+  if sym is TFpSymbolDwarfDataProc then begin
+    FStoreStepStartAddr := TFpSymbolDwarfDataProc(sym).LineStartAddress;
+    FStoreStepEndAddr := TFpSymbolDwarfDataProc(sym).LineEndAddress;
+  end
+  else begin
+    FStoreStepStartAddr := AnAddr;
+    FStoreStepEndAddr := AnAddr;
+  end;
+
+  Result := (sym.Line = FTargetLineNumber) and (ExtractFileName(sym.FileName) = FTargetFilename);
+
+  sym.ReleaseReference;
+end;
+
+procedure TDbgControllerStepToCmd.DoResolveEvent(var AnEvent: TFPDEvent;
+  AnEventThread: TDbgThread; out Finished: boolean);
+begin
+//  UpdateThreadStepInfoAfterStepOut(True);
+  if IsAtOrOutOfHiddenBreakFrame then
+      RemoveHiddenBreak;
+
+  if not FTargetExists then begin
+    Finished := True; // should not even have been started
+  end
+  else
+  if FHiddenBreakpoint <> nil then begin
+    Finished := False;
+  end
+  else begin
+    Finished := HasReachedEndLineOrSteppedOut(True);
+    //if Finished then
+    //  Finished := not IsAtJumpPad;
+  end;
+
+  if Finished then
+    AnEvent := deFinishedStep
+  else
+  if AnEvent in [deFinishedStep] then
+    AnEvent:=deInternalContinue;
+end;
+
+procedure TDbgControllerStepToCmd.InternalContinue(AProcess: TDbgProcess;
+  AThread: TDbgThread);
+begin
+  assert(FProcess=AProcess, 'TDbgControllerStepToCmd.DoContinue: FProcess=AProcess');
+  CheckForCallAndSetBreak;
+
+  if FHiddenBreakpoint = nil then
+    StoreWasAtJumpInstruction;
+  CallProcessContinue(FHiddenBreakpoint = nil);
+end;
+
+constructor TDbgControllerStepToCmd.Create(AController: TDbgController;
+  ATargetFilename: String; ATargetLineNumber: Integer);
+begin
+  FTargetFilename   := ExtractFileName(ATargetFilename);
+  FTargetLineNumber := ATargetLineNumber;
+  inherited Create(AController, False);
 end;
 
 
