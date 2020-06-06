@@ -300,7 +300,7 @@ type
     procedure DisconnectFromFPDServer;
   protected
     // Overrides of TDebuggerIntf methods.
-    function GetSupportedCommands: TDBGCommands; override;
+    class function GetSupportedCommands: TDBGCommands; override;
     // Handle Notifications received from the FPDebug-server
     procedure HandleNotification(ANotification: TJSONObject);
     // Handle log-messages received from the FPDebug-server
@@ -1244,7 +1244,7 @@ begin
     end;
 end;
 
-function TFPDServerDebugger.GetSupportedCommands: TDBGCommands;
+class function TFPDServerDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepOverInstr, dcStepIntoInstr, dcStop, dcEvaluate];
 end;

@@ -362,7 +362,7 @@ type
     function  GetTargetWidth: Byte; override;
 
     function GetIsIdle: Boolean; override;
-    function  GetSupportedCommands: TDBGCommands; override;
+    class function  GetSupportedCommands: TDBGCommands; override;
     //function  GetCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand;
               const AParams: array of const;
@@ -2985,7 +2985,7 @@ begin
   Result := FInIdle or ( (CommandQueue.Count = 0) and (CommandQueue.RunningCommand = nil) );
 end;
 
-function TLldbDebugger.GetSupportedCommands: TDBGCommands;
+class function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
              dcStepOverInstr, dcStepIntoInstr, dcPause, dcEnvironment];

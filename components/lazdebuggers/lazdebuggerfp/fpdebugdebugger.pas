@@ -319,7 +319,7 @@ type
     class function NeedsExePath: boolean; override;
     class function RequiredCompilerOpts({%H-}ATargetCPU, {%H-}ATargetOS: String): TDebugCompilerRequirements; override;
     class function CreateProperties: TDebuggerProperties; override;
-    function  GetSupportedCommands: TDBGCommands; override;
+    class function  GetSupportedCommands: TDBGCommands; override;
   end;
 
   { TFpLineInfo }
@@ -3472,7 +3472,7 @@ begin
     Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
-function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
+class function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
            dcStepTo, dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput

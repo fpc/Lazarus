@@ -2072,67 +2072,63 @@ var
   CanRun: Boolean;
   SrcEdit: TSourceEditorInterface;
   AnUnitInfo: TUnitInfo;
+  AvailCommands: TDBGCommands;
+  CurState: TDBGState;
 begin
   if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting) then exit;
 
-  if FDebugger = nil then
-    InitDebugger(); // make sure we get the supported commands
-  DebuggerIsValid:=(FDebugger<>nil) and (MainIDE.ToolStatus in [itNone, itDebugger]);
+  if FDebugger <> nil then begin
+    AvailCommands := FDebugger.Commands;
+    CurState := FDebugger.State;
+  end
+  else begin
+    AvailCommands := GetDebuggerClass.SupportedCommandsFor(dsStop);
+    CurState := dsStop;
+  end;
+  DebuggerIsValid:=(MainIDE.ToolStatus in [itNone, itDebugger]);
   MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     CanRun:=false;
-    if Project1<>nil then
+    if (Project1<>nil) and DebuggerIsValid then
       CanRun:=( (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) ) or
               ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
                  ((Project1.RunParameterOptions.GetActiveMode<>nil) and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename<>'')))
                and (pfRunnable in Project1.Flags)
               );
     // Run
-    itmRunMenuRun.Enabled := CanRun and (not DebuggerIsValid
-            or (dcRun in FDebugger.Commands));
+    itmRunMenuRun.Enabled          := CanRun and (dcRun in AvailCommands);
     // Pause
-    itmRunMenuPause.Enabled := CanRun and DebuggerIsValid
-            and ((dcPause in FDebugger.Commands) or FAutoContinueTimer.Enabled);
+    itmRunMenuPause.Enabled        := CanRun and ((dcPause in AvailCommands) or FAutoContinueTimer.Enabled);
     // Show execution point
-    itmRunMenuShowExecutionPoint.Enabled := CanRun and DebuggerIsValid
-            and (FDebugger.State = dsPause);
+    itmRunMenuShowExecutionPoint.Enabled := CanRun and (CurState = dsPause);
     // Step into
-    itmRunMenuStepInto.Enabled := CanRun and (not DebuggerIsValid
-            or (dcStepInto in FDebugger.Commands));
+    itmRunMenuStepInto.Enabled     := CanRun and (dcStepInto in AvailCommands);
     // Step over
-    itmRunMenuStepOver.Enabled := CanRun and (not DebuggerIsValid
-            or (dcStepOver in FDebugger.Commands));
+    itmRunMenuStepOver.Enabled     := CanRun and (dcStepOver in AvailCommands);
     // Step out
-    itmRunMenuStepOut.Enabled := CanRun and DebuggerIsValid
-            and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
+    itmRunMenuStepOut.Enabled      := CanRun and (dcStepOut in AvailCommands) and (CurState = dsPause);
     // Step to cursor
-    itmRunMenuStepToCursor.Enabled := CanRun and DebuggerIsValid
-            and (dcStepTo in FDebugger.Commands);
+    itmRunMenuStepToCursor.Enabled := CanRun and (dcStepTo in AvailCommands);
     // Run to cursor
-    itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
-            and (dcRunTo in FDebugger.Commands);
+    itmRunMenuRunToCursor.Enabled  := CanRun and (dcRunTo in AvailCommands);
     // Stop
-    itmRunMenuStop.Enabled := CanRun and DebuggerIsValid and (MainIDE.ToolStatus = itDebugger) and
-      (FDebugger.State in [dsPause, dsInternalPause, dsInit, dsRun, dsError]);
+    itmRunMenuStop.Enabled         := CanRun and (MainIDE.ToolStatus = itDebugger) and
+      (CurState in [dsPause, dsInternalPause, dsInit, dsRun, dsError]);
 
     //Attach / Detach
-    itmRunMenuAttach.Enabled := (not DebuggerIsValid) or (dcAttach in FDebugger.Commands);
-    itmRunMenuDetach.Enabled := (DebuggerIsValid)    and (dcDetach in FDebugger.Commands);
+    itmRunMenuAttach.Enabled          := DebuggerIsValid and (dcAttach in AvailCommands);
+    itmRunMenuDetach.Enabled          := DebuggerIsValid and (dcDetach in AvailCommands);
 
     // Evaluate
-    itmRunMenuEvaluate.Enabled := CanRun and DebuggerIsValid
-            and (dcEvaluate in FDebugger.Commands);
+    itmRunMenuEvaluate.Enabled        := CanRun and (dcEvaluate in AvailCommands);
     // Evaluate / modify
-    SrcEditMenuEvaluateModify.Enabled := CanRun and DebuggerIsValid
-            and (dcEvaluate in FDebugger.Commands);
+    SrcEditMenuEvaluateModify.Enabled := CanRun and (dcEvaluate in AvailCommands);
     // Inspect
-    SrcEditMenuInspect.Enabled := CanRun and DebuggerIsValid
-            and (dcEvaluate in FDebugger.Commands);
-    itmRunMenuInspect.Enabled := CanRun and DebuggerIsValid
-            and (dcEvaluate in FDebugger.Commands);
+    SrcEditMenuInspect.Enabled        := CanRun and (dcEvaluate in AvailCommands);
+    itmRunMenuInspect.Enabled         := CanRun and (dcEvaluate in AvailCommands);
     // Add watch
-    itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
+    itmRunMenuAddWatch.Enabled        := True; // always allow to add a watch
 
     // Add Breakpoint
     itmRunMenuAddBpSource.Enabled := True;
@@ -3093,12 +3089,6 @@ var
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
-  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
-  then begin
-    Result := mrAbort;
-    Exit;
-  end;
-
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -3106,8 +3096,6 @@ begin
     Result := mrAbort;
     Exit;
   end;
-
-  Result := mrCancel;
 
   MainIDE.GetCurrentUnitInfo(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
@@ -3122,6 +3110,7 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
+  FStepping:=True;
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   TSourceEditor(ActiveSrcEdit).EditorComponent.CaretY);
 

@@ -1891,7 +1891,7 @@ type
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands; virtual;
-    function  GetSupportedCommands: TDBGCommands; virtual;
+    class function  GetSupportedCommands: TDBGCommands; virtual;
     function  GetTargetWidth: Byte; virtual;
     function  GetWaiting: Boolean; virtual;
     function  GetIsIdle: Boolean; virtual;
@@ -1986,6 +1986,7 @@ type
     property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
+    class function SupportedCommandsFor(AState: TDBGState): TDBGCommands;
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     //property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
@@ -5954,6 +5955,11 @@ begin
   FDestroyNotificationList[AReason].Remove(TMethod(AnEvent));
 end;
 
+class function TDebuggerIntf.SupportedCommandsFor(AState: TDBGState): TDBGCommands;
+begin
+  Result := COMMANDMAP[AState] * GetSupportedCommands;
+end;
+
 procedure TDebuggerIntf.Done;
 begin
   SetState(dsNone);
@@ -6160,7 +6166,7 @@ begin
   ReqCmd(ACommand, AParams, dummy);
 end;
 
-function TDebuggerIntf.GetSupportedCommands: TDBGCommands;
+class function TDebuggerIntf.GetSupportedCommands: TDBGCommands;
 begin
   Result := [];
 end;

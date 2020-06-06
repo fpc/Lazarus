@@ -1014,7 +1014,7 @@ type
     function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateThreads: TThreadsSupplier; override;
-    function  GetSupportedCommands: TDBGCommands; override;
+    class function  GetSupportedCommands: TDBGCommands; override;
     function  GetCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
@@ -9738,7 +9738,7 @@ begin
   Result := True;
 end;
 
-function TGDBMIDebuggerBase.GetSupportedCommands: TDBGCommands;
+class function TGDBMIDebuggerBase.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
              dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcRunTo, dcAttach, dcDetach, dcJumpto,

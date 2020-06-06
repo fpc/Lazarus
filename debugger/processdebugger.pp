@@ -53,7 +53,7 @@ type
     function  ProcessRun: Boolean;
     function  ProcessStop: Boolean;
   protected
-    function  GetSupportedCommands: TDBGCommands; override;
+    class function  GetSupportedCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const;
       const {%H-}ACallback: TMethod): Boolean; override;
   public
@@ -156,7 +156,7 @@ begin
   Result := True;
 end;
 
-function TProcessDebugger.GetSupportedCommands: TDBGCommands;
+class function TProcessDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcEnvironment]
 end;
