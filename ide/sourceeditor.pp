@@ -248,6 +248,10 @@ type
                                // when text is inserted/deleted
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FLastIfDefNodeScannerStep: integer;
+    FCodeCompletionState: record
+      State: (ccsReady, ccsCancelled, ccsDot, ccsOnTyping, ccsOnTypingScheduled);
+      LastTokenStartPos: TPoint;
+    end;
 
     FSyncroLockCount: Integer;
     FPageName: string;
@@ -462,7 +466,10 @@ type
     procedure MoveToWindow(AWindowIndex: Integer); override;
     procedure CopyToWindow(AWindowIndex: Integer); override;
 
+    function GetCodeAttributeName(LogXY: TPoint): String;
+
     // used to get the word at the mouse cursor
+    function CurrentWordLogStartOrCaret: TPoint;
     function GetWordFromCaret(const ACaretPos: TPoint): String;
     function GetWordAtCurrentCaret: String;
     function GetOperandFromCaret(const ACaretPos: TPoint): String;
@@ -2135,6 +2142,8 @@ begin
     FAutoHideHintTimer.Enabled := False;
   if AutoStartCompletionBoxTimer<>nil then
     AutoStartCompletionBoxTimer.Enabled:=false;
+  if FManager.ActiveEditor.FCodeCompletionState.State in [ccsDot, ccsOnTyping] then
+    FManager.ActiveEditor.FCodeCompletionState.State := ccsReady;
   if FAutoShown then
     HideHint;
 end;
@@ -2389,6 +2398,11 @@ begin
   end;
   //debugln(GetStackTrace(true));
   {$ENDIF}
+
+  with Manager.ActiveEditor do begin
+    FCodeCompletionState.LastTokenStartPos := CurrentWordLogStartOrCaret;
+    FCodeCompletionState.State := ccsCancelled;
+  end;
 end;
 
 procedure TSourceEditCompletion.ccComplete(var Value: string;
@@ -2516,10 +2530,12 @@ Begin
   Manager.DeactivateCompletionForm;
 
   //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
+  Manager.ActiveEditor.FCodeCompletionState.State := ccsReady;
   if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
   begin
     SourceCompletionCaretXY:=Editor.LogicalCaretXY;
     AutoStartCompletionBoxTimer.AutoEnabled:=true;
+    Manager.ActiveEditor.FCodeCompletionState.State := ccsDot;
   end
   else if prototypeAdded and EditorOpts.AutoDisplayFunctionPrototypes then
   begin
@@ -3876,13 +3892,16 @@ procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // define extra actions here
 // for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
 var
-  AddChar: Boolean;
-  s: String;
-  i: Integer;
+  AddChar, IsIdent, ok: Boolean;
+  s, AttrName: String;
+  i, WordStart, WordEnd: Integer;
+  p: TPoint;
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
   FSharedValues.SetActiveSharedEditor(Self);
   AutoStartCompletionBoxTimer.AutoEnabled:=false;
+  if FCodeCompletionState.State in [ccsDot, ccsOnTyping] then
+    FCodeCompletionState.State := ccsReady;
 
   if (Command=ecChar) and (AChar=#27) then begin
     // close hint windows
@@ -3969,19 +3988,62 @@ begin
   ecChar:
     begin
       AddChar:=true;
+      IsIdent:=FEditor.IsIdentChar(aChar);
       //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',AutoStartCompletionBoxTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
       if (aChar=' ') and AutoCompleteChar(aChar,AddChar,acoSpace) then begin
         // completed
       end
-      else if (not FEditor.IsIdentChar(aChar))
+      else
+      if (not IsIdent)
       and AutoCompleteChar(aChar,AddChar,acoWordEnd) then begin
         // completed
-      end else if CodeToolsOpts.IdentComplAutoStartAfterPoint then begin
-        // store caret position to detect caret changes
+      end
+      else
+      if CodeToolsOpts.IdentComplAutoInvokeOnType and
+         ( IsIdent or (AChar='.') )
+      then begin
+        // store caret position to detect caret changes // add the char
+        p := FEditor.LogicalCaretXY;
+        SourceCompletionCaretXY:=p;
+        inc(SourceCompletionCaretXY.x,length(AChar));
+
+        AttrName := GetCodeAttributeName(p);
+        ok := (AttrName <> SYNS_XML_AttrComment) and
+              (AttrName <> SYNS_XML_AttrDirective) and
+              (AttrName <> SYNS_XML_AttrString);
+        if ok then begin
+          if AChar = '.' then begin
+            ok := CodeToolsOpts.IdentComplAutoStartAfterPoint;
+          end
+          else
+          if (CodeToolsOpts.IdentComplOnTypeMinLength > 1) or CodeToolsOpts.IdentComplOnTypeOnlyWordEnd
+          then begin
+            FEditor.GetWordBoundsAtRowCol(p, WordStart, WordEnd);
+            ok := (p.x <= WordEnd) and  // inside word
+                  ((not CodeToolsOpts.IdentComplOnTypeOnlyWordEnd) or (p.x = WordEnd)) and  // at word end?
+                  ((WordEnd-WordStart+1) >= CodeToolsOpts.IdentComplOnTypeMinLength);
+          end;
+        end;
+
+        if ok then begin
+          if CodeToolsOpts.IdentComplOnTypeUseTimer then begin
+            AutoStartCompletionBoxTimer.AutoEnabled:=true;
+            FCodeCompletionState.State := ccsOnTyping;
+          end
+          else begin
+            FCodeCompletionState.State := ccsOnTypingScheduled;
+          end;
+        end;
+      end
+      else
+      if CodeToolsOpts.IdentComplAutoStartAfterPoint and
+         (AChar='.')
+      then begin
+        // store caret position to detect caret changes // add the char
         SourceCompletionCaretXY:=FEditor.LogicalCaretXY;
-        // add the char
         inc(SourceCompletionCaretXY.x,length(AChar));
         AutoStartCompletionBoxTimer.AutoEnabled:=true;
+        FCodeCompletionState.State := ccsDot;
       end;
       //DebugLn(['TSourceEditor.ProcessCommand ecChar AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
@@ -4138,8 +4200,15 @@ procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
 var Handled: boolean;
 begin
   Handled:=true;
-  case Command of
 
+  if (Command <> ecCompleteCode) and (Command <> ecCompleteCodeInteractive) and
+     (FCodeCompletionState.State = ccsCancelled)
+  then begin
+    if CompareCaret(FCodeCompletionState.LastTokenStartPos, CurrentWordLogStartOrCaret) <> 0 then
+      FCodeCompletionState.State := ccsReady;
+  end;
+
+  case Command of
   ecNone: ;
 
   ecChar:
@@ -4149,6 +4218,11 @@ begin
       if EditorOpts.AutoDisplayFunctionPrototypes then
          if (aChar = '(') or (aChar = ',') then
             SourceNotebook.StartShowCodeContext(False);
+
+      if FCodeCompletionState.State = ccsOnTypingScheduled then begin
+        FCodeCompletionState.State := ccsOnTyping;
+        StartIdentCompletionBox(false,false);
+      end;
     end;
 
   else
@@ -5195,7 +5269,9 @@ begin
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
 
-  Completion.AutoUseSingleIdent := CanAutoComplete and CodeToolsOpts.IdentComplAutoUseSingleIdent;
+  Completion.AutoUseSingleIdent := CanAutoComplete and
+    (FCodeCompletionState.State = ccsDot) and
+    CodeToolsOpts.IdentComplAutoUseSingleIdent;
   Completion.Execute(TextS2, CompletionRect);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox END Completion.TheForm.Visible=',Completion.TheForm.Visible]);
@@ -5834,6 +5910,16 @@ begin
   FEditor.Lines:=AValue;
 end;
 
+function TSourceEditor.CurrentWordLogStartOrCaret: TPoint;
+var
+  StartX, EndX: integer;
+begin
+  Result := FEditor.LogicalCaretXY;
+  FEditor.GetWordBoundsAtRowCol(Result, StartX, EndX);
+  if (Result.x >= StartX) and (Result.x <= EndX) then
+    Result.x := StartX;
+end;
+
 function TSourceEditor.GetProjectFile: TLazProjectFile;
 begin
   Result:=LazarusIDE.GetProjectFileForProjectEditor(Self);
@@ -6116,6 +6202,19 @@ end;
 procedure TSourceEditor.CopyToWindow(AWindowIndex: Integer);
 begin
   SourceNotebook.CopyEditor(PageIndex, AWindowIndex, -1)
+end;
+
+function TSourceEditor.GetCodeAttributeName(LogXY: TPoint): String;
+var
+  Token: string;
+  Attri: TSynHighlighterAttributes;
+begin
+    Result := '';
+    if EditorComponent.GetHighlighterAttriAtRowCol(LogXY,Token,Attri)
+    and (Attri<>nil) then
+    begin
+      Result := Attri.StoredName;
+    end;
 end;
 
 procedure TSourceEditor.LineInfoNotificationChange(const ASender: TObject; const ASource: String);
@@ -11042,25 +11141,15 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
   function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
   var
     SrcEdit: TSourceEditor;
-    Token: string;
-    Attri: TSynHighlighterAttributes;
   begin
-
     Result := False;
 
     SrcEdit := ActiveEditor;
     if SrcEdit = nil then exit;
 
-    Token:='';
-    Attri:=nil;
     dec(XY.X);
-    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(XY,Token,Attri)
-    and (Attri<>nil) then
-    begin
-      CodeAttri := Attri.StoredName;
-      Result := True;
-    end;
-
+    CodeAttri := SrcEdit.GetCodeAttributeName(XY);
+    Result := CodeAttri <> '';
   end;
 
   function CheckStartIdentCompletion: boolean;
@@ -11069,7 +11158,6 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     LogCaret: TPoint;
     SrcEdit: TSourceEditor;
     CodeAttribute: String;
-    aChar: Char;
   begin
     Result := false;
     SrcEdit := ActiveEditor;
@@ -11083,7 +11171,8 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
 
     // check if last character is a point
     if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
-    or (Line[LogCaret.X-1]<>'.') then
+    or ((SrcEdit.FCodeCompletionState.State = ccsDot) and (Line[LogCaret.X-1]<>'.'))
+    then
       exit;
 
     if not CheckCodeAttribute(LogCaret, CodeAttribute) then

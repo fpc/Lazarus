@@ -66,6 +66,9 @@ type
     FFilename: string;
     FIdentComplAddDo: Boolean;
     FIdentComplAddParameterBrackets: boolean;
+    FIdentComplOnTypeMinLength: Integer;
+    FIdentComplOnTypeOnlyWordEnd: boolean;
+    FIdentComplOnTypeUseTimer: boolean;
     FIdentComplReplaceIdentifier: boolean;
     FIdentComplJumpToError: boolean;
     FIdentComplShowHelp: boolean;
@@ -121,6 +124,7 @@ type
     // identifier completion
     FIdentComplAddSemicolon: Boolean;
     FIdentComplAddAssignOperator: Boolean;
+    FIdentComplAutoInvokeOnType: boolean;
     FIdentComplAutoStartAfterPoint: boolean;
     FIdentComplAutoUseSingleIdent: boolean;
     FIdentComplUseContainsFilter: Boolean;
@@ -251,6 +255,14 @@ type
     property IdentComplAddAssignOperator: Boolean read FIdentComplAddAssignOperator
                                              write FIdentComplAddAssignOperator;
     property IdentComplAddDo: Boolean read FIdentComplAddDo write FIdentComplAddDo;
+    property IdentComplAutoInvokeOnType: boolean read FIdentComplAutoInvokeOnType
+                                           write FIdentComplAutoInvokeOnType;
+    property IdentComplOnTypeUseTimer: boolean read FIdentComplOnTypeUseTimer
+                                           write FIdentComplOnTypeUseTimer;
+    property IdentComplOnTypeOnlyWordEnd: boolean read FIdentComplOnTypeOnlyWordEnd
+                                           write FIdentComplOnTypeOnlyWordEnd;
+    property IdentComplOnTypeMinLength: Integer read FIdentComplOnTypeMinLength
+                                           write FIdentComplOnTypeMinLength;
     property IdentComplAutoStartAfterPoint: boolean read FIdentComplAutoStartAfterPoint
                                            write FIdentComplAutoStartAfterPoint;
     property IdentComplAutoUseSingleIdent: boolean read FIdentComplAutoUseSingleIdent
@@ -571,6 +583,14 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AddAssignOperator',true);
     FIdentComplAddDo:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AddDo',true);
+    FIdentComplAutoInvokeOnType:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AutoInvokeOnType',False);
+    FIdentComplOnTypeUseTimer:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/OnTypeUseTimer',true);
+    FIdentComplOnTypeOnlyWordEnd:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/OnTypeOnlyWordEnd',true);
+    FIdentComplOnTypeMinLength:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/OnTypeMinLength',2);
     FIdentComplAutoStartAfterPoint:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
     FIdentComplAutoUseSingleIdent:=XMLConfig.GetValue(
@@ -748,6 +768,14 @@ begin
       FIdentComplAddAssignOperator,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddDo',
       FIdentComplAddDo,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoInvokeOnType',
+      FIdentComplAutoInvokeOnType,False);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/OnTypeUseTimer',
+      FIdentComplOnTypeUseTimer,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/OnTypeOnlyWordEnd',
+      FIdentComplOnTypeOnlyWordEnd,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/OnTypeMinLength',
+      FIdentComplOnTypeMinLength,2);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',
       FIdentComplAutoStartAfterPoint,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',
@@ -907,6 +935,10 @@ begin
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
     FIdentComplAddDo:=CodeToolsOpts.FIdentComplAddDo;
+    FIdentComplAutoInvokeOnType:=CodeToolsOpts.FIdentComplAutoInvokeOnType;
+    FIdentComplOnTypeUseTimer:=CodeToolsOpts.FIdentComplOnTypeUseTimer;
+    FIdentComplOnTypeOnlyWordEnd:=CodeToolsOpts.FIdentComplOnTypeOnlyWordEnd;
+    FIdentComplOnTypeMinLength:=CodeToolsOpts.FIdentComplOnTypeMinLength;
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
     FIdentComplAutoUseSingleIdent:=CodeToolsOpts.FIdentComplAutoUseSingleIdent;
     FIdentComplUseContainsFilter:=CodeToolsOpts.FIdentComplUseContainsFilter;
@@ -975,6 +1007,10 @@ begin
   FIdentComplAddSemicolon:=true;
   FIdentComplAddAssignOperator:=true;
   FIdentComplAddDo:=true;
+  FIdentComplAutoInvokeOnType:=False;
+  FIdentComplOnTypeUseTimer:=true;
+  FIdentComplOnTypeOnlyWordEnd:=true;
+  FIdentComplOnTypeMinLength:=2;
   FIdentComplAutoStartAfterPoint:=true;
   FIdentComplAutoUseSingleIdent:=true;
   FIdentComplUseContainsFilter:=true;
@@ -1062,6 +1098,10 @@ begin
     and (FIdentComplAddSemicolon=CodeToolsOpts.FIdentComplAddSemicolon)
     and (FIdentComplAddAssignOperator=CodeToolsOpts.FIdentComplAddAssignOperator)
     and (FIdentComplAddDo=CodeToolsOpts.FIdentComplAddDo)
+    and (FIdentComplAutoInvokeOnType=CodeToolsOpts.FIdentComplAutoInvokeOnType)
+    and (FIdentComplOnTypeUseTimer=CodeToolsOpts.FIdentComplOnTypeUseTimer)
+    and (FIdentComplOnTypeOnlyWordEnd=CodeToolsOpts.FIdentComplOnTypeOnlyWordEnd)
+    and (FIdentComplOnTypeMinLength=CodeToolsOpts.FIdentComplOnTypeMinLength)
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
     and (FIdentComplAutoUseSingleIdent=CodeToolsOpts.FIdentComplAutoUseSingleIdent)
     and (FIdentComplUseContainsFilter=CodeToolsOpts.FIdentComplUseContainsFilter)

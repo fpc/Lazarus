@@ -5962,6 +5962,10 @@ resourcestring
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisIdCOpening = 'Opening';
+  lisAutomaticallyInvokeOnType = 'Automatically invoke on typing';
+  lisAutomaticallyInvokeOnTypeUseTimer = 'Use completion box delay';
+  lisAutomaticallyInvokeOnTypeOnlyWordEnd = 'Only complete when at end of word';
+  lisAutomaticallyInvokeOnTypeMinLength = 'Only complete if word is longer or equal';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAutomaticallyUseSinglePossibleIdent = 'Automatically use single possible identifier';
   lisWhenThereIsOnlyOnePossibleCompletionItemUseItImmed = 'When there is only '

@@ -27,7 +27,7 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, StdCtrls,
+  Forms, StdCtrls, Spin,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -41,12 +41,15 @@ type
 
   TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
     ICAddWordsComboBox: TComboBox;
+    ICAutoOnTypeUseTimer: TCheckBox;
+    ICAutoOnTypeOnlyWordEnd: TCheckBox;
     ICContainsFilterCheckBox: TCheckBox;
     ICAddDoCheckBox: TCheckBox;
     ICAutoAddParameterBracketsCheckBox: TCheckBox;
     ICIncludeCodeTemplatesCheckBox: TCheckBox;
     ICMiscDividerBevel: TDividerBevel;
     ICOpenDividerBevel: TDividerBevel;
+    ICAutoInvokeOnTypeCheckBox: TCheckBox;
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
     ICAddSemicolonCheckBox: TCheckBox;
@@ -62,6 +65,8 @@ type
     ICSortForScopeCheckBox: TCheckBox;
     ICUseIconsInCompletionBoxCheckBox: TCheckBox;
     ICIncludeWordsLabel: TLabel;
+    ICAutoOnTypeMinLengthLbl: TLabel;
+    ICAutoOnTypeMinLength: TSpinEdit;
   private
   public
     function GetTitle: String; override;
@@ -86,6 +91,10 @@ procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
   ICOpenDividerBevel.Caption:=lisIdCOpening;
+  ICAutoInvokeOnTypeCheckBox.Caption:=lisAutomaticallyInvokeOnType;
+  ICAutoOnTypeUseTimer.Caption:=lisAutomaticallyInvokeOnTypeUseTimer;
+  ICAutoOnTypeOnlyWordEnd.Caption:=lisAutomaticallyInvokeOnTypeOnlyWordEnd;
+  ICAutoOnTypeMinLengthLbl.Caption:=lisAutomaticallyInvokeOnTypeMinLength;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICAutoUseSingleIdent.Caption:=lisAutomaticallyUseSinglePossibleIdent;
   ICAutoUseSingleIdent.Hint:=
@@ -131,6 +140,10 @@ begin
     ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
     ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
     ICAddDoCheckBox.Checked := IdentComplAddDo;
+    ICAutoInvokeOnTypeCheckBox.Checked := IdentComplAutoInvokeOnType;
+    ICAutoOnTypeUseTimer.Checked := IdentComplOnTypeUseTimer;
+    ICAutoOnTypeOnlyWordEnd.Checked := IdentComplOnTypeOnlyWordEnd;
+    ICAutoOnTypeMinLength.Value := IdentComplOnTypeMinLength;
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
     ICAutoUseSingleIdent.Checked := IdentComplAutoUseSingleIdent;
     ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
@@ -159,6 +172,10 @@ begin
     IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;
     IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
     IdentComplAddDo := ICAddDoCheckBox.Checked;
+    IdentComplAutoInvokeOnType := ICAutoInvokeOnTypeCheckBox.Checked;
+    IdentComplOnTypeUseTimer := ICAutoOnTypeUseTimer.Checked;
+    IdentComplOnTypeOnlyWordEnd := ICAutoOnTypeOnlyWordEnd.Checked;
+    IdentComplOnTypeMinLength := ICAutoOnTypeMinLength.Value;
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
     IdentComplAutoUseSingleIdent := ICAutoUseSingleIdent.Checked;
     IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
