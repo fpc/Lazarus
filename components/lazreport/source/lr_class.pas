@@ -3812,13 +3812,18 @@ var
   WCanvas: TCanvas;
   aword: string;
 
-  procedure OutLine(const str: String);
+  // Using UnicodeString in OutLine() and WrapLine() is an ugly hack.
+  // It only supports UCS-2 and does not support combining codepoints.
+  // The procedures should be written for UTF-8 properly. See issues #34871 and #37170.
+  // Anyway this is better than supporting plain ASCII.
+  procedure OutLine(const str: UnicodeString);
   var
     n, w: Word;
   begin
     n := Length(str);
     if (n > 0) and (str[n] = #1) then
-      w := WCanvas.TextWidth(Copy(str, 1, n - 1)) else
+      w := WCanvas.TextWidth(Copy(str, 1, n - 1))
+    else
       w := WCanvas.TextWidth(str);
     {$IFDEF DebugLR_detail}
     debugLn('Outline: str="%s" w/=%d w%%=%d',[copy(str,1,12),w div 256, w mod 256]);
@@ -3829,7 +3834,7 @@ var
       maxWidth := dx - InternalGapX - InternalGapX;
   end;
 
-  procedure WrapLine(const s: String);
+  procedure WrapLine(const s: UnicodeString);
   var
     i, cur, beg, last, len: Integer;
     WasBreak, CRLF, IsCR: Boolean;
