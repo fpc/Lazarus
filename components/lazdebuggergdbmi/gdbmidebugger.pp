@@ -9383,15 +9383,21 @@ end;
 
 procedure TGDBMIDebuggerBase.GDBEvaluateCommandCancelled(Sender: TObject);
 begin
-  TGDBMIDebuggerCommandEvaluate(Sender).Callback(Self, False, '', nil);
+  if TGDBMIDebuggerCommandEvaluate(Sender).Callback<> nil then
+    TGDBMIDebuggerCommandEvaluate(Sender).Callback(Self, False, '', nil);
+  TGDBMIDebuggerCommandEvaluate(Sender).Callback := nil;
 end;
 
 procedure TGDBMIDebuggerBase.GDBEvaluateCommandExecuted(Sender: TObject);
 begin
   if TGDBMIDebuggerCommandEvaluate(Sender).EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
   then FreeAndNil(TGDBMIDebuggerCommandEvaluate(Sender).FTypeInfo);
-  with TGDBMIDebuggerCommandEvaluate(Sender) do
-    Callback(Self, True, TextValue, TypeInfo);
+
+  with TGDBMIDebuggerCommandEvaluate(Sender) do begin
+    if Callback<> nil then
+      Callback(Self, True, TextValue, TypeInfo);
+    Callback := nil;
+  end;
 end;
 
 function TGDBMIDebuggerBase.GDBEvaluate(const AExpression: String;
