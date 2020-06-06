@@ -390,6 +390,7 @@ type
     ( ectNone,
       ectContinue,         // -exec-continue
       ectRun,              // -exec-run
+      ectRunTo,            // run to temup breakpoint [Source, Line]
       ectStepTo,            // -exec-until [Source, Line]
       ectStepOver,         // -exec-next
       ectStepOut,          // -exec-finish
@@ -958,6 +959,7 @@ type
     function  GDBStepOverInstr: Boolean;
     function  GDBStepIntoInstr: Boolean;
     function  GDBStepOut: Boolean;
+    function  GDBStepTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const {%H-}ASource: String; const {%H-}ALine: Integer): Boolean;
     function  GDBAttach(AProcessID: String): Boolean;
@@ -1167,6 +1169,7 @@ const
     ( '',                        // ectNone
       '-exec-continue',           // ectContinue,
       '-exec-run',                // ectRun,
+      '-exec-continue',           // ectRunTo,
       '-exec-until',              // ectStepTo,  // [Source, Line]
       '-exec-next',               // ectStepOver,
       '-exec-finish',             // ectStepOut,
@@ -1179,6 +1182,7 @@ const
     ( '',                        // ectNone
       'continue',           // ectContinue,
       'run',                // ectRun,
+      'continue',           // ectRunTo,
       'until',              // ectStepTo,  // [Source, Line]
       'next',               // ectStepOver,
       'finish',             // ectStepOut,
@@ -7184,7 +7188,7 @@ var
 
     // should be srRaiseExcept;
     case FExecType of
-      ectContinue, ectRun:
+      ectContinue, ectRun, ectRunTo:
         begin
           FCurrentExecCmd := ectContinue;
           FCurrentExecArg := '';
@@ -7390,6 +7394,7 @@ var
   ContinueExecution, ContinueStep: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
+  ResultList: TGDBMINameValueList;
 begin
   Result := True;
   FCanKillNow := False;
@@ -7404,6 +7409,34 @@ begin
   ContinueStep := False; // A step command was interupted, and is continued on breakpoint
   FStepBreakPoint := -1;
   RunMode := rmNormal;
+
+  if FExecType = ectRunTo then begin
+    FContext.ThreadContext := ccUseGlobal;
+    FTheDebugger.QueueExecuteLock; // force queue
+    try
+      FTheDebugger.FInstructionQueue.InvalidateThredAndFrame;
+      if (not ExecuteCommand('-break-insert "\"%s\":%d"', [FRunToSrc, FRunToLine], R, [cfNoStackContext])) or
+         (R.State = dsError)
+      then
+      if (not ExecuteCommand('-break-insert "\"%s\":%d"', [FRunToSrc, FRunToLine], R, [cfNoStackContext])) or
+         (R.State = dsError)
+      then begin
+        Result := False;
+        exit;
+      end;
+    finally
+      FTheDebugger.QueueExecuteUnlock;
+    end;
+
+    ResultList := TGDBMINameValueList.Create(R);
+    ResultList.SetPath('bkpt');
+    FStepBreakPoint := StrToIntDef(ResultList.Values['number'], -1);
+    ResultList.Free;
+    if FStepBreakPoint < 0 then begin
+      Result := False;
+      exit;
+    end;
+  end;
 
   if (FExecType in [ectStepOver, ectStepInto, ectStepOut]) and
      (FTheDebugger.FStoppedReason = srRaiseExcept)
@@ -7540,15 +7573,16 @@ begin
   inherited Create(AOwner);
   FQueueRunLevel := 0; // Execommands are only allowed at level 0
   FCanKillNow := False;
-  FDidKillNow := False;;
+  FDidKillNow := False;
   FNextExecQueued := False;
   FExecType := ExecType;
   FCurrentExecCmd := ExecType;
   FCurrentExecArg := '';
-  if FCurrentExecCmd = ectStepTo then begin
+  if FCurrentExecCmd in [ectStepTo, ectRunTo] then begin
     FRunToSrc := AnsiString(Args[0].VAnsiString);
     FRunToLine := Args[1].VInteger;
-    FCurrentExecArg := Format(' %s:%d', [FRunToSrc, FRunToLine]);
+    if FCurrentExecCmd = ectStepTo then
+      FCurrentExecArg := Format(' %s:%d', [FRunToSrc, FRunToLine]);
   end;
 end;
 
@@ -9467,7 +9501,7 @@ begin
   end;
 end;
 
-function TGDBMIDebuggerBase.GDBRunTo(const ASource: String;
+function TGDBMIDebuggerBase.GDBStepTo(const ASource: String;
   const ALine: Integer): Boolean;
 begin
   Result := False;
@@ -9485,6 +9519,25 @@ begin
     end;
   end;
 
+end;
+
+function TGDBMIDebuggerBase.GDBRunTo(const ASource: String; const ALine: Integer
+  ): Boolean;
+begin
+  Result := False;
+  case State of
+    dsStop: begin
+      Result := StartDebugging(TGDBMIDebuggerCommandExecute.Create(Self, ectRunTo, [ASource, ALine]));
+    end;
+    dsPause: begin
+      CancelBeforeRun;
+      QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectRunTo, [ASource, ALine]));
+      Result := True;
+    end;
+    dsIdle: begin
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to runto in idle state');
+    end;
+  end;
 end;
 
 function TGDBMIDebuggerBase.GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
@@ -9673,7 +9726,7 @@ end;
 function TGDBMIDebuggerBase.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
-             dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcAttach, dcDetach, dcJumpto,
+             dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcRunTo, dcAttach, dcDetach, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble
              {$IFDEF DBG_ENABLE_TERMINAL}, dcSendConsoleInput{$ENDIF}
@@ -9892,7 +9945,8 @@ begin
       dcStepOver:    Result := GDBStepOver;
       dcStepInto:    Result := GDBStepInto;
       dcStepOut:     Result := GDBStepOut;
-      dcStepTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcStepTo:      Result := GDBStepTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
       dcDetach:      Result := GDBDetach;
