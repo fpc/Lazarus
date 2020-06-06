@@ -11039,15 +11039,37 @@ end;
 
 procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
 
+  function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
+  var
+    SrcEdit: TSourceEditor;
+    Token: string;
+    Attri: TSynHighlighterAttributes;
+  begin
+
+    Result := False;
+
+    SrcEdit := ActiveEditor;
+    if SrcEdit = nil then exit;
+
+    Token:='';
+    Attri:=nil;
+    dec(XY.X);
+    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(XY,Token,Attri)
+    and (Attri<>nil) then
+    begin
+      CodeAttri := Attri.StoredName;
+      Result := True;
+    end;
+
+  end;
+
   function CheckStartIdentCompletion: boolean;
   var
     Line: String;
     LogCaret: TPoint;
-    p: Integer;
-    InStringConstant: Boolean;
     SrcEdit: TSourceEditor;
-    Token: string;
-    Attri: TSynHighlighterAttributes;
+    CodeAttribute: String;
+    aChar: Char;
   begin
     Result := false;
     SrcEdit := ActiveEditor;
@@ -11064,29 +11086,17 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     or (Line[LogCaret.X-1]<>'.') then
       exit;
 
+    if not CheckCodeAttribute(LogCaret, CodeAttribute) then
+      Exit;
+
+    if (CodeAttribute = SYNS_XML_AttrComment) or
+       (CodeAttribute = SYNS_XML_AttrString)
+    then
+      Exit;
+
     // check if range operator '..'
     if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
       exit; // this is a double point ..
-
-    // check if in a string constant
-    p:=1;
-    InStringConstant:=false;
-    while (p<LogCaret.X) and (p<=length(Line)) do begin
-      if Line[p]='''' then
-        InStringConstant:=not InStringConstant;
-      inc(p);
-    end;
-    if InStringConstant then exit;
-
-    // check if in a comment
-    Token:='';
-    Attri:=nil;
-    dec(LogCaret.X);
-    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
-    and (Attri<>nil) and (Attri.StoredName=SYNS_XML_AttrComment) then
-    begin
-      exit;
-    end;
 
     // invoke identifier completion
     SrcEdit.StartIdentCompletionBox(false,false);
