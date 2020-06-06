@@ -94,7 +94,7 @@ type
 
 
   TGDBMICallback = procedure(const AResult: TGDBMIExecResult; const ATag: PtrInt) of object;
-  TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
+  TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsInternalCont, pwsExternal);
 
   TGDBMITargetFlag = (
     tfHasSymbols,     // Debug symbols are present
@@ -952,7 +952,7 @@ type
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
     procedure GDBModifyDone(const {%H-}AResult: TGDBMIExecResult; const {%H-}ATag: PtrInt);
     function  GDBRun: Boolean;
-    function  GDBPause(const AInternal: Boolean): Boolean;
+    function  GDBPause(const AInternal: Boolean; const AContinueCmd: Boolean = False): Boolean;
     function  GDBStop: Boolean;
     function  GDBStepOver: Boolean;
     function  GDBStepInto: Boolean;
@@ -3341,7 +3341,7 @@ begin
   end;
   FDidKillNow := True;
   if StoppedParams <> ''
-  then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+  then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState in [pwsInternal, pwsInternalCont]);
   FTheDebugger.FPauseWaitState := pwsNone;
 
   ExecuteCommand('kill', [cfNoThreadContext], 1500);
@@ -6266,8 +6266,10 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
     {$ENDIF}
+    if SigInt and (FTheDebugger.PauseWaitState = pwsInternalCont) then
+      Result := True;
 
-    if not AIgnoreSigIntState  // not pwsInternal
+    if not AIgnoreSigIntState  // not pwsInternal / pwsInternalCont
     or not SigInt
     then begin
       // user-requested pause OR other signal (not sigint)
@@ -7515,7 +7517,7 @@ begin
 
       ContinueStep := False;
       if StoppedParams <> ''
-      then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+      then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState in [pwsInternal, pwsInternalCont]);
 
       // FFpcSpecificHandlerCallFin was either hit, or the handler was exited
       FTheDebugger.FFpcSpecificHandlerCallFin.Clear(Self);
@@ -7535,6 +7537,10 @@ begin
           FTheDebugger.QueueExecuteLock; // force queue
           FTheDebugger.QueueCommand(NextExecCmdObj, DebuggerState = dsInternalPause); // TODO: ForceQueue, only until better means of queue control... (allow snapshot to run)
           FTheDebugger.QueueExecuteUnlock;
+        end
+        else
+        if FTheDebugger.PauseWaitState = pwsInternalCont then begin
+          FTheDebugger.RunQueue;
         end;
       end;
 
@@ -7550,7 +7556,7 @@ begin
     FTheDebugger.FMainAddrBreak.Clear(Self);
 
     if (not ContinueExecution) and (DebuggerState = dsRun) and
-       (FTheDebugger.PauseWaitState <> pwsInternal)
+       not (FTheDebugger.PauseWaitState in [pwsInternal, pwsInternalCont])
     then begin
       // Handle the unforeseen
       if (StoppedParams <> '')
@@ -8133,7 +8139,7 @@ begin
 
   // Need to interupt debugger
   if Debugger.State = dsRun
-  then TGDBMIDebuggerBase(Debugger).GDBPause(True);
+  then TGDBMIDebuggerBase(Debugger).GDBPause(True, True);
 
   FGetLineSymbolsCmdObj := TGDBMIDebuggerCommandLineSymbolInfo.Create(TGDBMIDebuggerBase(Debugger), ASource);
   FGetLineSymbolsCmdObj.OnExecuted := @DoGetLineSymbolsFinished;
@@ -9043,7 +9049,7 @@ begin
       if  FCommandQueue.Count = 0
       then begin
         if  (FInExecuteCount = 0)                        // not in Recursive call
-        and (FPauseWaitState = pwsInternal)
+        and (FPauseWaitState in [pwsInternal, pwsInternalCont])
         and (State = dsRun)
         then begin
           // reset state
@@ -9364,7 +9370,7 @@ begin
   Result := True;
 
   if State = dsRun
-  then GDBPause(True);
+  then GDBPause(True, True);
   if ASet then
   begin
     S := EscapeGDBCommand(AVariable);
@@ -9464,7 +9470,8 @@ begin
   Result := True;
 end;
 
-function TGDBMIDebuggerBase.GDBPause(const AInternal: Boolean): Boolean;
+function TGDBMIDebuggerBase.GDBPause(const AInternal: Boolean;
+  const AContinueCmd: Boolean): Boolean;
 begin
   if FInProcessStopped then exit;
 
@@ -9474,8 +9481,10 @@ begin
 
   if AInternal
   then begin
-    if FPauseWaitState = pwsNone
-    then FPauseWaitState := pwsInternal;
+    if FPauseWaitState = pwsNone then
+      if AContinueCmd
+      then FPauseWaitState := pwsInternalCont
+      else FPauseWaitState := pwsInternal;
   end
   else FPauseWaitState := pwsExternal;
 
@@ -10634,7 +10643,7 @@ begin
   TGDBMIDebuggerBase(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
-  then TGDBMIDebuggerBase(Debugger).GDBPause(True);
+  then TGDBMIDebuggerBase(Debugger).GDBPause(True, True);
 end;
 
 procedure TGDBMIBreakPoint.DoCommandDestroyed(Sender: TObject);
@@ -10741,7 +10750,7 @@ begin
   SetHitCount(0);
 
   if Debugger.State = dsRun
-  then TGDBMIDebuggerBase(Debugger).GDBPause(True);
+  then TGDBMIDebuggerBase(Debugger).GDBPause(True, True);
 end;
 
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
@@ -10837,7 +10846,7 @@ begin
   TGDBMIDebuggerBase(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
-  then TGDBMIDebuggerBase(Debugger).GDBPause(True);
+  then TGDBMIDebuggerBase(Debugger).GDBPause(True, True);
 end;
 
 {%endregion   ^^^^^  BreakPoints  ^^^^^  }
