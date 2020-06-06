@@ -67,6 +67,7 @@ type
     dcStepInto,
     dcStepOut,
     dcStepTo,
+    dcRunTo,
     dcJumpto,
     dcAttach,
     dcDetach,
@@ -1945,6 +1946,7 @@ type
     procedure StepIntoInstr;
     procedure StepOut;
     procedure StepTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
+    procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
     procedure Attach(AProcessID: String);
     procedure Detach;
@@ -2069,11 +2071,11 @@ const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
   {dsIdle } [dcEnvironment],
-  {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
+  {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr, dcRunTo,
              dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcStepTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
+             dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
              dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput {, dcSendSignal}],
   {dsInternalPause} // same as run, so not really used
             [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput{, dcSendSignal}],
@@ -6237,6 +6239,11 @@ end;
 procedure TDebuggerIntf.StepTo(const ASource: String; const ALine: Integer);
 begin
   ReqCmd(dcStepTo, [ASource, ALine]);
+end;
+
+procedure TDebuggerIntf.RunTo(const ASource: String; const ALine: Integer);
+begin
+  ReqCmd(dcRunTo, [ASource, ALine]);
 end;
 
 procedure TDebuggerIntf.SetDebuggerEnvironment (const AValue: TStrings );

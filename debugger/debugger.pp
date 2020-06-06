@@ -1735,6 +1735,7 @@ const
     'StepInto',
     'StepOut',
     'StepTo',
+    'RunTo',
     'Jumpto',
     'Attach',
     'Detach',

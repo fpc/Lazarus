@@ -224,6 +224,7 @@ type
     function DoStepOverInstrProject: TModalResult; override;
     function DoStepOutProject: TModalResult; override;
     function DoStepToCursor: TModalResult; override;
+    function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
     procedure DoSendConsoleInput(AText: String); override;
@@ -2057,6 +2058,7 @@ procedure TDebugManager.SetupSourceMenuShortCuts;
 begin
   SrcEditMenuToggleBreakpoint.Command:=GetCommand(ecToggleBreakPoint);
   SrcEditMenuStepToCursor.Command:=GetCommand(ecStepToCursor);
+  SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
   SrcEditMenuEvaluateModify.Command:=GetCommand(ecEvaluate);
   SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
   SrcEditMenuAddWatchPointAtCursor.Command:=GetCommand(ecAddBpDataWatch);
@@ -2102,9 +2104,12 @@ begin
     // Step out
     itmRunMenuStepOut.Enabled := CanRun and DebuggerIsValid
             and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
-    // Run to cursor
+    // Step to cursor
     itmRunMenuStepToCursor.Enabled := CanRun and DebuggerIsValid
             and (dcStepTo in FDebugger.Commands);
+    // Run to cursor
+    itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
+            and (dcRunTo in FDebugger.Commands);
     // Stop
     itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
 
@@ -2758,7 +2763,8 @@ begin
                            else DoStepOverProject;
                          end;
     ecStepOut:           DoStepOutProject;
-    ecStepToCursor:       DoStepToCursor;
+    ecStepToCursor:      DoStepToCursor;
+    ecRunToCursor:       DoRunToCursor;
     ecStopProgram:       DoStopProject;
     ecResetDebugger:     ResetDebugger;
     ecToggleCallStack:   DoToggleCallStack;
@@ -3075,6 +3081,47 @@ begin
 {$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoStepToCursor D');
 {$endif}
+  Result := mrOK;
+end;
+
+function TDebugManager.DoRunToCursor: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditorInterface;
+  ActiveUnitInfo: TUnitInfo;
+  UnitFilename: string;
+begin
+  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  if (MainIDE.DoInitProjectRun <> mrOK)
+  or (MainIDE.ToolStatus <> itDebugger)
+  or (FDebugger = nil) or Destroying
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  Result := mrCancel;
+
+  MainIDE.GetCurrentUnitInfo(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
+  then begin
+    IDEMessageDialog(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
+      [mbCancel]);
+    Result := mrCancel;
+    Exit;
+  end;
+
+  if not ActiveUnitInfo.Source.IsVirtual
+  then UnitFilename:=ActiveUnitInfo.Filename
+  else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
+
+  FDebugger.RunTo(ExtractFilename(UnitFilename),
+                  TSourceEditor(ActiveSrcEdit).EditorComponent.CaretY);
+
   Result := mrOK;
 end;
 

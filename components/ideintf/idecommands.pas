@@ -278,6 +278,8 @@ const
   ecStopProgram             = ecFirstLazarus + 415;
   ecResetDebugger           = ecFirstLazarus + 416;
   ecRunParameters           = ecFirstLazarus + 417;
+  ecRunToCursor             = ecFirstLazarus + 418;
+
   ecBuildFile               = ecFirstLazarus + 431;
   ecRunFile                 = ecFirstLazarus + 432;
   ecConfigBuildFile         = ecFirstLazarus + 433;
@@ -1933,7 +1935,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..322] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..323] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2152,6 +2154,7 @@ const
     (Value: ecStepInto;                               Name: 'ecStepInto'),
     (Value: ecStepOver;                               Name: 'ecStepOver'),
     (Value: ecStepToCursor;                            Name: 'ecStepToCursor'),
+    (Value: ecRunToCursor;                            Name: 'ecRunToCursor'),
     (Value: ecStopProgram;                            Name: 'ecStopProgram'),
     (Value: ecResetDebugger;                          Name: 'ecResetDebugger'),
     (Value: ecRunParameters;                          Name: 'ecRunParameters'),

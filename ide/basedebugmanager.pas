@@ -165,6 +165,7 @@ type
     function DoStepIntoInstrProject: TModalResult; virtual; abstract;
     function DoStepOverInstrProject: TModalResult; virtual; abstract;
     function DoStepToCursor: TModalResult; virtual; abstract;
+    function DoRunToCursor: TModalResult; virtual; abstract;
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;
     procedure DoSendConsoleInput(AText: String); virtual; abstract;

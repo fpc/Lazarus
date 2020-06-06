@@ -1036,6 +1036,7 @@
         <Filename Value="fpdoceditwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="FPDocEditWindow"/>
       </Unit167>
       <Unit168>
         <Filename Value="unitinfodlg.pp"/>
@@ -1191,6 +1192,7 @@
       <Unit197>
         <Filename Value="codehelp.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CodeHelp"/>
       </Unit197>
       <Unit198>
         <Filename Value="diffdialog.pas"/>
@@ -1234,6 +1236,7 @@
         <ComponentName Value="IDEOptionsDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEOptionsDlg"/>
       </Unit205>
       <Unit206>
         <Filename Value="findunitdlg.pas"/>

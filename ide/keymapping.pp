@@ -705,6 +705,7 @@ begin
     ecAttach                  : Result:= srkmecAttach;
     ecDetach                  : Result:= srkmecDetach;
     ecStepToCursor             : Result:= lisMenuStepToCursor;
+    ecRunToCursor             : Result:= lisMenuRunToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
     ecResetDebugger           : Result:= srkmecResetDebugger;
     ecRunParameters           : Result:= srkmecRunParameters;
@@ -3169,6 +3170,7 @@ begin
   AddDefault(C, 'Step over context', lisMenuStepOverContext, ecStepOverContext);
   AddDefault(C, 'Step out', n(lisMenuStepOut), ecStepOut);
   AddDefault(C, 'Step to cursor line', n(lisMenuStepToCursor), ecStepToCursor);
+  AddDefault(C, 'Run to cursor line', n(lisMenuRunToCursor), ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);

@@ -1376,6 +1376,7 @@ var
     // debugging
     SrcEditMenuToggleBreakpoint: TIDEMenuCommand;
     SrcEditMenuStepToCursor: TIDEMenuCommand;
+    SrcEditMenuRunToCursor: TIDEMenuCommand;
     SrcEditMenuEvaluateModify: TIDEMenuCommand;
     SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
     SrcEditMenuAddWatchPointAtCursor: TIDEMenuCommand;
@@ -1738,6 +1739,8 @@ begin
       SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuStepToCursor:=RegisterIDEMenuCommand(AParent,
           'Run to cursor', lisMenuStepToCursor, nil, nil, nil, 'menu_step_cursor');
+      SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
+          'Run to cursor', lisMenuRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
           'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
   {%endregion}
