@@ -4008,7 +4008,8 @@ begin
         inc(SourceCompletionCaretXY.x,length(AChar));
 
         AttrName := GetCodeAttributeName(p);
-        ok := (AttrName <> SYNS_XML_AttrComment) and
+        ok := (FEditor.MultiCaret.CaretsCount = 0) and
+              (AttrName <> SYNS_XML_AttrComment) and
               (AttrName <> SYNS_XML_AttrDirective) and
               (AttrName <> SYNS_XML_AttrString);
         if ok then begin

@@ -240,7 +240,6 @@ type
     procedure RemoveCaret(Index: Integer);
     procedure UpdateCaretsPos;
     procedure ClearCarets;
-    function  CaretsCount: Integer;
     procedure DoCleared; virtual;
 
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
@@ -254,6 +253,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function  CaretsCount: Integer;
     procedure SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight, AXOffs, AYOffs: Integer; AFlags: TSynCustomCaretSizeFlags);
     property Color: TColor read FColor write SetColor;
     property RestoreSingleCaretPainter: Boolean read FRestoreSingleCaretPainter write FRestoreSingleCaretPainter;
