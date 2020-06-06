@@ -2518,7 +2518,7 @@ Begin
   //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
   if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
   begin
-    SourceCompletionCaretXY:=Editor.CaretXY;
+    SourceCompletionCaretXY:=Editor.LogicalCaretXY;
     AutoStartCompletionBoxTimer.AutoEnabled:=true;
   end
   else if prototypeAdded and EditorOpts.AutoDisplayFunctionPrototypes then
@@ -3978,7 +3978,7 @@ begin
         // completed
       end else if CodeToolsOpts.IdentComplAutoStartAfterPoint then begin
         // store caret position to detect caret changes
-        SourceCompletionCaretXY:=FEditor.CaretXY;
+        SourceCompletionCaretXY:=FEditor.LogicalCaretXY;
         // add the char
         inc(SourceCompletionCaretXY.x,length(AChar));
         AutoStartCompletionBoxTimer.AutoEnabled:=true;
@@ -11117,7 +11117,7 @@ begin
   AutoStartCompletionBoxTimer.AutoEnabled:=false;
   TempEditor := ActiveEditor;
   if (TempEditor <> nil) and TempEditor.EditorComponent.Focused and
-     (ComparePoints(TempEditor.EditorComponent.CaretXY, SourceCompletionCaretXY) = 0)
+     (ComparePoints(TempEditor.EditorComponent.LogicalCaretXY, SourceCompletionCaretXY) = 0)
   then begin
     if CheckStartIdentCompletion then begin
     end
