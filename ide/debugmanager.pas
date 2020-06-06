@@ -2075,7 +2075,9 @@ var
 begin
   if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting) then exit;
 
-  DebuggerIsValid:=(FDebugger<>nil) and (MainIDE.ToolStatus=itDebugger);
+  if FDebugger = nil then
+    InitDebugger(); // make sure we get the supported commands
+  DebuggerIsValid:=(FDebugger<>nil) and (MainIDE.ToolStatus in [itNone, itDebugger]);
   MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
@@ -2088,7 +2090,7 @@ begin
               );
     // Run
     itmRunMenuRun.Enabled := CanRun and (not DebuggerIsValid
-            or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
+            or (dcRun in FDebugger.Commands));
     // Pause
     itmRunMenuPause.Enabled := CanRun and DebuggerIsValid
             and ((dcPause in FDebugger.Commands) or FAutoContinueTimer.Enabled);
@@ -2097,10 +2099,10 @@ begin
             and (FDebugger.State = dsPause);
     // Step into
     itmRunMenuStepInto.Enabled := CanRun and (not DebuggerIsValid
-            or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle));
+            or (dcStepInto in FDebugger.Commands));
     // Step over
     itmRunMenuStepOver.Enabled := CanRun and (not DebuggerIsValid
-            or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
+            or (dcStepOver in FDebugger.Commands));
     // Step out
     itmRunMenuStepOut.Enabled := CanRun and DebuggerIsValid
             and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
@@ -2111,7 +2113,8 @@ begin
     itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
             and (dcRunTo in FDebugger.Commands);
     // Stop
-    itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
+    itmRunMenuStop.Enabled := CanRun and DebuggerIsValid and (MainIDE.ToolStatus = itDebugger) and
+      (FDebugger.State in [dsPause, dsInternalPause, dsInit, dsRun, dsError]);
 
     //Attach / Detach
     itmRunMenuAttach.Enabled := (not DebuggerIsValid) or (dcAttach in FDebugger.Commands);
@@ -2147,7 +2150,7 @@ procedure TDebugManager.UpdateToolStatus;
 const
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
   //dsNone, dsIdle, dsStop,     dsPause,    dsInternalPause, dsInit,     dsRun,      dsError,    dsDestroying
-    itNone, itNone, itDebugger, itDebugger, itDebugger,      itDebugger, itDebugger, itNone, itNone
+    itNone, itNone, itNone, itDebugger, itDebugger,      itDebugger, itDebugger, itNone, itNone
   );
 begin
   // Next may call ResetDebugger, then FDebugger is gone
@@ -2428,7 +2431,7 @@ begin
     exit;
   end;
 
-  if Destroying then Exit;
+  if Destroying or (Project1 = nil) then Exit;
   if not(difInitForAttach in AFlags) then begin
     if (Project1.MainUnitID < 0) then Exit;
     if not GetLaunchPathAndExe(LaunchingCmdLine, LaunchingApplication, LaunchingParams) then

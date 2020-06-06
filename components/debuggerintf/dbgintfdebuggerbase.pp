@@ -2070,9 +2070,10 @@ var
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
-  {dsIdle } [dcEnvironment],
+  {dsIdle } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr, dcRunTo,
+             dcAttach, dcBreak, dcWatch, {dcEvaluate,} dcEnvironment],
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr, dcRunTo,
-             dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
+             dcAttach, dcBreak, dcWatch, {dcEvaluate,} dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
              dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
