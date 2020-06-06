@@ -465,6 +465,7 @@ var
   CallAutoFree: Boolean;
 begin
   // Note: in lazbuild ProcessStopped sets FThread:=nil, so SetThread is not called.
+  CallAutoFree:=false;
   EnterCriticalSection;
   try
     if FThread=AValue then Exit;
@@ -1372,13 +1373,20 @@ end;
 { TExternalToolThread }
 
 procedure TExternalToolThread.SetTool(AValue: TExternalTool);
+var
+  OldTool: TExternalTool;
 begin
   if FTool=AValue then Exit;
-  if FTool<>nil then
-    FTool.Thread:=nil;
-  FTool:=AValue;
-  if FTool<>nil then
-    FTool.Thread:=Self;
+  OldTool:=FTool;
+  FTool:=nil;
+  if OldTool<>nil then
+    OldTool.Thread:=nil;
+  if AValue<>nil then
+    begin
+    FTool:=AValue;
+    if FTool<>nil then
+      FTool.Thread:=Self;
+    end;
 end;
 
 procedure TExternalToolThread.Execute;
