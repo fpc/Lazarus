@@ -1986,7 +1986,7 @@ type
     property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
-    class function SupportedCommandsFor(AState: TDBGState): TDBGCommands;
+    class function SupportedCommandsFor(AState: TDBGState): TDBGCommands; virtual;
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     //property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc

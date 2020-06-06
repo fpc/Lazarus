@@ -320,6 +320,7 @@ type
     class function RequiredCompilerOpts({%H-}ATargetCPU, {%H-}ATargetOS: String): TDebugCompilerRequirements; override;
     class function CreateProperties: TDebuggerProperties; override;
     class function  GetSupportedCommands: TDBGCommands; override;
+    class function SupportedCommandsFor(AState: TDBGState): TDBGCommands; override;
   end;
 
   { TFpLineInfo }
@@ -3479,6 +3480,14 @@ begin
            {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
            {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
           ];
+end;
+
+class function TFpDebugDebugger.SupportedCommandsFor(AState: TDBGState
+  ): TDBGCommands;
+begin
+  Result := inherited SupportedCommandsFor(AState);
+  if AState = dsStop then
+    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 initialization
