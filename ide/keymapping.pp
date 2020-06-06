@@ -704,7 +704,7 @@ begin
     ecStepOut                 : Result:= lisMenuStepOut;
     ecAttach                  : Result:= srkmecAttach;
     ecDetach                  : Result:= srkmecDetach;
-    ecRunToCursor             : Result:= lisMenuRunToCursor;
+    ecStepToCursor             : Result:= lisMenuStepToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
     ecResetDebugger           : Result:= srkmecResetDebugger;
     ecRunParameters           : Result:= srkmecRunParameters;
@@ -1366,7 +1366,7 @@ begin
   ecStepIntoInstr:       SetSingle(VK_F7,[ssAlt]);
   ecStepOverInstr:       SetSingle(VK_F8,[ssAlt]);
   ecStepOut:             SetSingle(VK_F8,[ssShift]);
-  ecRunToCursor:         SetSingle(VK_F4,[]);
+  ecStepToCursor:         SetSingle(VK_F4,[]);
   ecStopProgram:         SetSingle(VK_F2,[XCtrl]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecRunParameters:       SetSingle(VK_UNKNOWN,[]);
@@ -1811,7 +1811,7 @@ begin
   ecStepIntoInstr:       SetSingle(VK_F7,[ssAlt]);
   ecStepOverInstr:       SetSingle(VK_F8,[ssAlt]);
   ecStepOut:             SetSingle(VK_F8,[ssShift]);
-  ecRunToCursor:         SetSingle(VK_F4,[]);
+  ecStepToCursor:         SetSingle(VK_F4,[]);
   ecStopProgram:         SetSingle(VK_F2,[ssCtrl]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecRunParameters:       SetSingle(VK_UNKNOWN,[]);
@@ -2443,7 +2443,7 @@ begin
   ecStepInto:            SetSingle(VK_R,[ssMeta,ssAlt]);
   ecStepOver:            SetSingle(VK_R,[ssMeta,ssShift]);
   ecStepOut:             SetSingle(VK_T,[ssMeta,ssShift]);
-  ecRunToCursor:         SetSingle(VK_UNKNOWN,[]);
+  ecStepToCursor:         SetSingle(VK_UNKNOWN,[]);
   ecStopProgram:         SetSingle(VK_RETURN,[ssShift,ssMeta]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecRunParameters:       SetSingle(VK_UNKNOWN,[]);
@@ -2604,7 +2604,7 @@ begin
   ecStepInto:            SetSingle(VK_F7,[],          VK_F7,[ssMeta]);
   ecStepOver:            SetSingle(VK_F8,[],          VK_F8,[ssMeta]);
   ecStepOut:             SetSingle(VK_F8,[ssShift],   VK_F8,[ssShift,ssMeta]);
-  ecRunToCursor:         SetSingle(VK_F4,[],          VK_F4,[ssMeta]);
+  ecStepToCursor:         SetSingle(VK_F4,[],          VK_F4,[ssMeta]);
   ecStopProgram:         SetSingle(VK_F2,[ssCtrl],    VK_F2,[ssCtrl,ssMeta]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecRunParameters:       SetSingle(VK_UNKNOWN,[]);
@@ -3168,7 +3168,7 @@ begin
   AddDefault(C, 'Step into context', lisMenuStepIntoContext, ecStepIntoContext);
   AddDefault(C, 'Step over context', lisMenuStepOverContext, ecStepOverContext);
   AddDefault(C, 'Step out', n(lisMenuStepOut), ecStepOut);
-  AddDefault(C, 'Run to cursor', n(lisMenuRunToCursor), ecRunToCursor);
+  AddDefault(C, 'Step to cursor line', n(lisMenuStepToCursor), ecStepToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);

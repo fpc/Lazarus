@@ -66,7 +66,7 @@ type
     dcStepOver,
     dcStepInto,
     dcStepOut,
-    dcRunTo,
+    dcStepTo,
     dcJumpto,
     dcAttach,
     dcDetach,
@@ -1944,7 +1944,7 @@ type
     procedure StepOverInstr;
     procedure StepIntoInstr;
     procedure StepOut;
-    procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
+    procedure StepTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
     procedure Attach(AProcessID: String);
     procedure Detach;
@@ -2073,7 +2073,7 @@ const
              dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
+             dcStepOut, dcStepTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
              dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput {, dcSendSignal}],
   {dsInternalPause} // same as run, so not really used
             [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput{, dcSendSignal}],
@@ -6234,9 +6234,9 @@ begin
   ReqCmd(dcRun, []);
 end;
 
-procedure TDebuggerIntf.RunTo(const ASource: String; const ALine: Integer);
+procedure TDebuggerIntf.StepTo(const ASource: String; const ALine: Integer);
 begin
-  ReqCmd(dcRunTo, [ASource, ALine]);
+  ReqCmd(dcStepTo, [ASource, ALine]);
 end;
 
 procedure TDebuggerIntf.SetDebuggerEnvironment (const AValue: TStrings );

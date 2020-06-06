@@ -297,7 +297,7 @@ type
         itmRunMenuStepInto: TIDEMenuCommand;
         itmRunMenuStepOver: TIDEMenuCommand;
         itmRunMenuStepOut: TIDEMenuCommand;
-        itmRunMenuRunToCursor: TIDEMenuCommand;
+        itmRunMenuStepToCursor: TIDEMenuCommand;
         itmRunMenuStop: TIDEMenuCommand;
         itmRunMenuAttach: TIDEMenuCommand;
         itmRunMenuDetach: TIDEMenuCommand;

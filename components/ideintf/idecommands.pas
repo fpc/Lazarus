@@ -274,7 +274,7 @@ const
   ecPause                   = ecFirstLazarus + 411;
   ecStepInto                = ecFirstLazarus + 412;
   ecStepOver                = ecFirstLazarus + 413;
-  ecRunToCursor             = ecFirstLazarus + 414;
+  ecStepToCursor             = ecFirstLazarus + 414;
   ecStopProgram             = ecFirstLazarus + 415;
   ecResetDebugger           = ecFirstLazarus + 416;
   ecRunParameters           = ecFirstLazarus + 417;
@@ -2151,7 +2151,7 @@ const
     (Value: ecPause;                                  Name: 'ecPause'),
     (Value: ecStepInto;                               Name: 'ecStepInto'),
     (Value: ecStepOver;                               Name: 'ecStepOver'),
-    (Value: ecRunToCursor;                            Name: 'ecRunToCursor'),
+    (Value: ecStepToCursor;                            Name: 'ecStepToCursor'),
     (Value: ecStopProgram;                            Name: 'ecStopProgram'),
     (Value: ecResetDebugger;                          Name: 'ecResetDebugger'),
     (Value: ecRunParameters;                          Name: 'ecRunParameters'),

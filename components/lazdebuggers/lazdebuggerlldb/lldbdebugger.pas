@@ -2989,7 +2989,7 @@ function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
              dcStepOverInstr, dcStepIntoInstr, dcPause, dcEnvironment];
-//  Result := [dcRunTo, dcAttach, dcDetach, dcJumpto,
+//  Result := [dcStepTo, dcAttach, dcDetach, dcJumpto,
 //             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
 //             dcSetStackFrame, dcDisassemble
 //            ];
@@ -3018,7 +3018,7 @@ begin
                        Result := LldbEvaluate(String(AParams[0].VAnsiString),
                          EvalFlags, TDBGEvaluateResultCallback(ACallback));
                      end;
-//      dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+//      dcStepTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
 //      dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
 //      dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
 //      dcDetach:      Result := GDBDetach;

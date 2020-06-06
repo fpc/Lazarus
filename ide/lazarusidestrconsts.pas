@@ -529,7 +529,7 @@ resourcestring
   lisMenuStepIntoContext = 'Step Into (Context)';
   lisMenuStepOverContext = 'Step Over (Context)';
   lisMenuStepOut = 'Step O&ut';
-  lisMenuRunToCursor = 'Step over to &Cursor';
+  lisMenuStepToCursor = 'Step over to &Cursor';
   lisKMStopProgram = 'Stop Program';
   lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
   lisSuspiciousUnitPath = 'Suspicious unit path';

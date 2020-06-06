@@ -2245,14 +2245,14 @@ begin
     bplReRaise,
     bplRtlUnwind, bplStepOut]);
 
-  if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
+  if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcStepOverInstr{, dcStepIntoInstr}] then
     EnableBreaks([bplReRaise]);
   if ACommand in [dcStepOut] then
     EnableBreaks([bplFpcSpecific]);
 
   case st of
     esStoppedAtRaise: begin
-      if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcRunTo] then begin
+      if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo] then begin
         FState := esStepToFinally;
         ACommand := dcRun;
         EnableBreaks([bplPopExcept, bplCatches, bplFpcSpecific]);
@@ -2808,7 +2808,7 @@ begin
   if assigned(FDbgController) then
     FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 
-  if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto,
+  if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcJumpto,
       dcStepOverInstr, dcStepIntoInstr, dcAttach]) and
      not assigned(FDbgController.MainProcess)
   then
@@ -2892,7 +2892,7 @@ begin
       begin
         Result := FDbgController.Pause;
       end;
-    dcRunTo:
+    dcStepTo:
       begin
         result := false;
         if FDbgController.CurrentProcess.DbgInfo.HasInfo then
@@ -3426,7 +3426,7 @@ end;
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput
+           dcStepTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput
            {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
            {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
           ];

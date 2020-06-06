@@ -390,7 +390,7 @@ type
     ( ectNone,
       ectContinue,         // -exec-continue
       ectRun,              // -exec-run
-      ectRunTo,            // -exec-until [Source, Line]
+      ectStepTo,            // -exec-until [Source, Line]
       ectStepOver,         // -exec-next
       ectStepOut,          // -exec-finish
       ectStepInto,         // -exec-step
@@ -1167,7 +1167,7 @@ const
     ( '',                        // ectNone
       '-exec-continue',           // ectContinue,
       '-exec-run',                // ectRun,
-      '-exec-until',              // ectRunTo,  // [Source, Line]
+      '-exec-until',              // ectStepTo,  // [Source, Line]
       '-exec-next',               // ectStepOver,
       '-exec-finish',             // ectStepOut,
       '-exec-step',               // ectStepInto,
@@ -1179,7 +1179,7 @@ const
     ( '',                        // ectNone
       'continue',           // ectContinue,
       'run',                // ectRun,
-      'until',              // ectRunTo,  // [Source, Line]
+      'until',              // ectStepTo,  // [Source, Line]
       'next',               // ectStepOver,
       'finish',             // ectStepOut,
       'step',               // ectStepInto,
@@ -7143,7 +7143,7 @@ var
           exit;
         end;
       srRaiseExcept:
-        if (FExecType in [ectStepOver, ectStepOverInstruction, ectStepOut, ectStepInto])  // ectRunTo
+        if (FExecType in [ectStepOver, ectStepOverInstruction, ectStepOut, ectStepInto])  // ectStepTo
         then begin
           EnablePopCatches;
           EnableFpcSpecificHandler;
@@ -7190,7 +7190,7 @@ var
           FCurrentExecArg := '';
           Result := True;
         end;
-      ectRunTo:  // check if we are at correct location
+      ectStepTo:  // check if we are at correct location
         begin
           // TODO: check, if the current function was left
           Result := not(
@@ -7290,7 +7290,7 @@ var
     s: String;
   begin
     Result := False;
-    if AnExecCmd in [ectStepOut, ectReturn {, ectRunTo}] then begin
+    if AnExecCmd in [ectStepOut, ectReturn {, ectStepTo}] then begin
       FContext.ThreadContext := ccUseLocal;
       FContext.StackContext := ccUseLocal;
       FContext.StackFrame := 0;
@@ -7417,7 +7417,7 @@ begin
   else
     CheckWin64StepOverFinally; // Finally is in a subroutine, and may need step into
 
-  if (FExecType in [ectRunTo, ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
+  if (FExecType in [ectStepTo, ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) and
      (ieRaiseBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints)
   then
     FTheDebugger.FReRaiseBreak.EnableOrSetByAddr(Self, True)
@@ -7545,7 +7545,7 @@ begin
   FExecType := ExecType;
   FCurrentExecCmd := ExecType;
   FCurrentExecArg := '';
-  if FCurrentExecCmd = ectRunTo then begin
+  if FCurrentExecCmd = ectStepTo then begin
     FRunToSrc := AnsiString(Args[0].VAnsiString);
     FRunToLine := Args[1].VInteger;
     FCurrentExecArg := Format(' %s:%d', [FRunToSrc, FRunToLine]);
@@ -9477,7 +9477,7 @@ begin
     end;
     dsPause: begin
       CancelBeforeRun;
-      QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectRunTo, [ASource, ALine]));
+      QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepTo, [ASource, ALine]));
       Result := True;
     end;
     dsIdle: begin
@@ -9673,7 +9673,7 @@ end;
 function TGDBMIDebuggerBase.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
-             dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcAttach, dcDetach, dcJumpto,
+             dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcAttach, dcDetach, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble
              {$IFDEF DBG_ENABLE_TERMINAL}, dcSendConsoleInput{$ENDIF}
@@ -9892,7 +9892,7 @@ begin
       dcStepOver:    Result := GDBStepOver;
       dcStepInto:    Result := GDBStepInto;
       dcStepOut:     Result := GDBStepOut;
-      dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcStepTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
       dcDetach:      Result := GDBDetach;

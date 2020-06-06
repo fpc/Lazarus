@@ -223,7 +223,7 @@ type
     function DoStepIntoInstrProject: TModalResult; override;
     function DoStepOverInstrProject: TModalResult; override;
     function DoStepOutProject: TModalResult; override;
-    function DoRunToCursor: TModalResult; override;
+    function DoStepToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
     procedure DoSendConsoleInput(AText: String); override;
@@ -1349,7 +1349,7 @@ begin
   // All conmmands
   // -------------------
   // dcRun, dcPause, dcStop, dcStepOver, dcStepInto,  dcStepOverInstrcution, dcStepIntoInstrcution,
-  // dcRunTo, dcJumpto, dcBreak, dcWatch
+  // dcStepTo, dcJumpto, dcBreak, dcWatch
   // -------------------
 
   UpdateButtonsAndMenuItems;
@@ -2056,7 +2056,7 @@ end;
 procedure TDebugManager.SetupSourceMenuShortCuts;
 begin
   SrcEditMenuToggleBreakpoint.Command:=GetCommand(ecToggleBreakPoint);
-  SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
+  SrcEditMenuStepToCursor.Command:=GetCommand(ecStepToCursor);
   SrcEditMenuEvaluateModify.Command:=GetCommand(ecEvaluate);
   SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
   SrcEditMenuAddWatchPointAtCursor.Command:=GetCommand(ecAddBpDataWatch);
@@ -2103,8 +2103,8 @@ begin
     itmRunMenuStepOut.Enabled := CanRun and DebuggerIsValid
             and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
     // Run to cursor
-    itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
-            and (dcRunTo in FDebugger.Commands);
+    itmRunMenuStepToCursor.Enabled := CanRun and DebuggerIsValid
+            and (dcStepTo in FDebugger.Commands);
     // Stop
     itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
 
@@ -2758,7 +2758,7 @@ begin
                            else DoStepOverProject;
                          end;
     ecStepOut:           DoStepOutProject;
-    ecRunToCursor:       DoRunToCursor;
+    ecStepToCursor:       DoStepToCursor;
     ecStopProgram:       DoStopProject;
     ecResetDebugger:     ResetDebugger;
     ecToggleCallStack:   DoToggleCallStack;
@@ -3025,16 +3025,16 @@ begin
   end;
 end;
 
-function TDebugManager.DoRunToCursor: TModalResult;
+function TDebugManager.DoStepToCursor: TModalResult;
 var
   ActiveSrcEdit: TSourceEditorInterface;
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
 {$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoRunToCursor A');
+  DebugLn('TDebugManager.DoStepToCursor A');
 {$endif}
-  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
+  if (FDebugger = nil) or not(dcStepTo in FDebugger.Commands)
   then begin
     Result := mrAbort;
     Exit;
@@ -3048,7 +3048,7 @@ begin
     Exit;
   end;
 {$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoRunToCursor B');
+  DebugLn('TDebugManager.DoStepToCursor B');
 {$endif}
 
   Result := mrCancel;
@@ -3067,13 +3067,13 @@ begin
   else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
 {$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoRunToCursor C');
+  DebugLn('TDebugManager.DoStepToCursor C');
 {$endif}
-  FDebugger.RunTo(ExtractFilename(UnitFilename),
+  FDebugger.StepTo(ExtractFilename(UnitFilename),
                   TSourceEditor(ActiveSrcEdit).EditorComponent.CaretY);
 
 {$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoRunToCursor D');
+  DebugLn('TDebugManager.DoStepToCursor D');
 {$endif}
   Result := mrOK;
 end;
