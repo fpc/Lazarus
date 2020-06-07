@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-08 01:14+0300\n"
+"PO-Revision-Date: 2020-06-08 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5060,7 +5060,7 @@ msgstr "Автоматически вызывать после ввода точ
 
 #: lazarusidestrconsts.lisautomaticallyinvokeontype
 msgid "Automatically invoke on typing"
-msgstr "Автоматически вызывать при печати"
+msgstr "Автоматически вызывать при наборе текста"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeontypeminlength
 msgid "Only complete if word is longer or equal"
