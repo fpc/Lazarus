@@ -4002,7 +4002,8 @@ begin
       end
       else
       if CodeToolsOpts.IdentComplAutoInvokeOnType and
-         ( IsIdent or (AChar='.') )
+         ( IsIdent or (AChar='.') ) and
+         (ActiveEditorMacro = nil)
       then begin
         // store caret position to detect caret changes // add the char
         p := FEditor.LogicalCaretXY;
@@ -4041,7 +4042,7 @@ begin
       end
       else
       if CodeToolsOpts.IdentComplAutoStartAfterPoint and
-         (AChar='.')
+         (AChar='.') and (ActiveEditorMacro = nil)
       then begin
         // store caret position to detect caret changes // add the char
         SourceCompletionCaretXY:=FEditor.LogicalCaretXY;
