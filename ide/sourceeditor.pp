@@ -2142,7 +2142,9 @@ begin
     FAutoHideHintTimer.Enabled := False;
   if AutoStartCompletionBoxTimer<>nil then
     AutoStartCompletionBoxTimer.Enabled:=false;
-  if FManager.ActiveEditor.FCodeCompletionState.State in [ccsDot, ccsOnTyping] then
+  if (FManager.ActiveEditor <> nil) and
+     (FManager.ActiveEditor.FCodeCompletionState.State in [ccsDot, ccsOnTyping])
+  then
     FManager.ActiveEditor.FCodeCompletionState.State := ccsReady;
   if FAutoShown then
     HideHint;
