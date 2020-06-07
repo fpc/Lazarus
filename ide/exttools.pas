@@ -296,7 +296,7 @@ begin
   try
     if Tools<>nil then
       TExternalTools(Tools).RemoveRunningTool(Self);
-    Thread.Synchronize(Thread,@NotifyHandlerStopped);
+    TThread.Synchronize(nil,@NotifyHandlerStopped);
   finally
     fThread:=nil;
   end;
@@ -518,13 +518,19 @@ begin
 end;
 
 destructor TExternalTool.Destroy;
+var
+  OldThread: TExternalToolThread;
 begin
   //debugln(['TExternalTool.Destroy ',Title]);
   EnterCriticalSection;
   try
     FStage:=etsDestroying;
     if Thread is TExternalToolThread then
-      TExternalToolThread(Thread).Tool:=nil;
+    begin
+      OldThread:=TExternalToolThread(Thread);
+      fThread:=nil;
+      OldThread.Tool:=nil;
+    end;
     FreeAndNil(FProcess);
     FreeAndNil(FWorkerOutput);
     FreeAndNil(fExecuteBefore);
