@@ -5372,6 +5372,22 @@ msgstr ""
 msgid "Automatically invoke after point"
 msgstr "הפעל אוטומטית אחרי נקודה"
 
+#: lazarusidestrconsts.lisautomaticallyinvokeontype
+msgid "Automatically invoke on typing"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeminlength
+msgid "Only complete if word is longer or equal"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeonlywordend
+msgid "Only complete when at end of word"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeusetimer
+msgid "Use completion box delay"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
 msgstr "שבירת שורה"
@@ -14610,7 +14626,8 @@ msgstr "הרץ פרמטרים ..."
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
 #| msgid "Run to &Cursor"
-msgid "Step over to &Cursor"
+msgctxt "lazarusidestrconsts.lismenuruntocursor"
+msgid "Run to Cursor"
 msgstr "רוץ עד לסמן"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
@@ -14763,6 +14780,11 @@ msgstr "צעד מעבר להוראה"
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr "צעד מעבר להוראה"
+
+#: lazarusidestrconsts.lismenusteptocursor
+msgctxt "lazarusidestrconsts.lismenusteptocursor"
+msgid "Step over to &Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 #, fuzzy

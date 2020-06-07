@@ -5079,6 +5079,22 @@ msgstr "não completar a seleção"
 msgid "Automatically invoke after point"
 msgstr "Auto invocar após ponto"
 
+#: lazarusidestrconsts.lisautomaticallyinvokeontype
+msgid "Automatically invoke on typing"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeminlength
+msgid "Only complete if word is longer or equal"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeonlywordend
+msgid "Only complete when at end of word"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeontypeusetimer
+msgid "Use completion box delay"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
 msgstr "quebra de linha"
@@ -13851,7 +13867,10 @@ msgid "Run &Parameters ..."
 msgstr "&Parâmetros de execução ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Step over to &Cursor"
+#, fuzzy
+#| msgid "Step over to &Cursor"
+msgctxt "lazarusidestrconsts.lismenuruntocursor"
+msgid "Run to Cursor"
 msgstr "Executar até o &cursor"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
@@ -13968,6 +13987,11 @@ msgstr "Passar sobre instrução"
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step Over Instruction"
 msgstr "Passar sobre instrução"
+
+#: lazarusidestrconsts.lismenusteptocursor
+msgctxt "lazarusidestrconsts.lismenusteptocursor"
+msgid "Step over to &Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
