@@ -5857,7 +5857,7 @@ procedure QWindow_cursor(handle: QWindowH; retval: QCursorH); cdecl; external Qt
 procedure QWindow_setCursor(handle: QWindowH; AnonParam1: QCursorH); cdecl; external Qt5PasLib name 'QWindow_setCursor';
 procedure QWindow_unsetCursor(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_unsetCursor';
 function QWindow_focusObject(handle: QWindowH): QObjectH; cdecl; external Qt5PasLib name 'QWindow_focusObject';
-function QWindow_fromWinID(id: PtrUInt): QWindowH; cdecl; external Qt5PasLib name 'QWindow_fromWinId';
+function QWindow_fromWinID(id: PtrUInt): QWindowH; cdecl; external Qt5PasLib name 'QWindow_fromWinID';
 procedure QWindow_requestActivate(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_requestActivate';
 procedure QWindow_setVisible(handle: QWindowH; visible: boolean); cdecl; external Qt5PasLib name 'QWindow_setVisible';
 procedure QWindow_show(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_show';
