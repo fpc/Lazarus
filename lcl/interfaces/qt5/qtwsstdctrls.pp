@@ -26,9 +26,9 @@ uses
   qt5,
   qtprivate, qtwidgets, qtproc, QtWsControls,
   // RTL
-  math,
+  Classes, Types, SysUtils, math,
   // LCL
-  Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
+  StdCtrls, Controls, Forms, LCLType,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses;
 

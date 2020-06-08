@@ -22,10 +22,12 @@ interface
 {$I qtdefines.inc}
 
 uses
-  InterfaceBase,
+  // Bindings
   qt5,
-  GraphType,
-  LazUTF8;
+  // LazUtils
+  GraphType, LazUTF8,
+  // LCL
+  InterfaceBase;
 
 const
   EVE_IO_READ  = 1;
