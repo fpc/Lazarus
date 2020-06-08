@@ -541,15 +541,19 @@ begin
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
-var i: integer;
+var
+  i: integer;
   Dir: string;
 begin
   DirectoryName:=AppendPathDelim(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
     if DirectoryName[i] in AllowDirectorySeparators then begin
+      // optimize paths like \foo\\bar\\foobar
+      while (i<length(DirectoryName)) and (DirectoryName[i+1] in AllowDirectorySeparators) do
+        Delete(DirectoryName,i+1,1);
       Dir:=copy(DirectoryName,1,i-1);
-      if not DirPathExists(Dir) then begin
+      if (Dir<>'') and not DirPathExists(Dir) then begin
         Result:=CreateDirUTF8(Dir);
         if not Result then exit;
       end;
@@ -558,7 +562,6 @@ begin
   end;
   Result:=true;
 end;
-
 
 function FileIsText(const AFilename: string): boolean;
 var
