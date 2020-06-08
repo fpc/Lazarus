@@ -26,13 +26,13 @@ type
 procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer;
   const AData: Pointer);
 var
-  SelectItem: Boolean;
+  SelectedItem: Boolean;
 begin
   if MultiSelect then
-    SelectItem := PCustomListBoxItemRecord(AData)^.Selected
+    SelectedItem := PCustomListBoxItemRecord(AData)^.Selected
   else
-    SelectItem := FItemIndex = AIndex;
-  if SelectItem then
+    SelectedItem := FItemIndex = AIndex;
+  if SelectedItem then
   begin
     LockSelectionChange;
     SendItemSelected(AIndex, True);
@@ -166,7 +166,7 @@ begin
   UnlockSelectionChange;
 end;
 
-procedure TCustomListbox.DestroyWnd;
+procedure TCustomListBox.DestroyWnd;
 begin
   inherited;
   if FCanvas <> nil then
@@ -725,14 +725,23 @@ var
 begin
   if MultiSelect then
   begin
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := true;
+    TWSCustomListBoxClass(WidgetSetClass).SelectRange(Self, 0, Items.Count-1, True);
     DoSelectionChange(false);
   end else
   begin
     i := ItemIndex;
     if (i>=0) and (i<Count) then
       Selected[i] := true;
+  end;
+end;
+
+procedure TCustomListBox.SelectRange(ALow, AHigh: integer; ASelected: boolean);
+begin
+  if (ALow<0) or (AHigh>=Items.Count) then Exit;
+  if MultiSelect then
+  begin
+    TWSCustomListBoxClass(WidgetSetClass).SelectRange(Self, ALow, AHigh, ASelected);
+    DoSelectionChange(false);
   end;
 end;
 

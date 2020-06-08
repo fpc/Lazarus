@@ -113,7 +113,12 @@ type
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
-    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox;
+      AIndex: integer; ASelected: boolean); override;
+    { ToDo
+    class procedure SelectRange(const ACustomListBox: TCustomListBox;
+      ALow, AHigh: integer; ASelected: boolean); override;
+    }
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -557,7 +562,13 @@ begin
   else
     SetItemIndex(ACustomListBox, -1);
 end;
-
+{
+class procedure SelectRange(const ACustomListBox: TCustomListBox;
+  ALow, AHigh: integer; ASelected: boolean); override;
+begin
+  ToDo: Send message LB_SELITEMRANGE
+end;
+}
 class procedure TWinCEWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;

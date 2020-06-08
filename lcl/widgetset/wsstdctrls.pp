@@ -119,7 +119,10 @@ type
     class procedure FreeStrings(var AStrings: TStrings); virtual;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
 
-    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox;
+      AIndex: integer; ASelected: boolean); virtual;
+    class procedure SelectRange(const ACustomListBox: TCustomListBox;
+      ALow, AHigh: integer; ASelected: boolean); virtual;
 
     class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); virtual;
@@ -357,8 +360,18 @@ begin
   Result := 0;
 end;
 
-class procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+class procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
+  AIndex: integer; ASelected: boolean);
 begin
+end;
+
+class procedure TWSCustomListBox.SelectRange(const ACustomListBox: TCustomListBox;
+  ALow, AHigh: integer; ASelected: boolean);
+var
+  i: Integer;
+begin  // A default implementation. A widgetset can override it with a better one.
+  for i := ALow to AHigh - 1 do
+    SelectItem(ACustomListBox, i, ASelected);
 end;
 
 class procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);

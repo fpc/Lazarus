@@ -603,6 +603,7 @@ type
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll; virtual;
+    procedure SelectRange(ALow, AHigh: integer; ASelected: boolean); virtual;
     procedure DeleteSelected; virtual;
     procedure UnlockSelectionChange;
   public
