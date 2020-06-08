@@ -139,6 +139,7 @@ type
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
   end;
 
   { TCocoaWSCustomControl }
@@ -1848,6 +1849,31 @@ class procedure TCocoaWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   if AWinControl.HandleAllocated then
      NSObject(AWinControl.Handle).lclInvalidate;
+end;
+
+class procedure TCocoaWSWinControl.PaintTo(const AWinControl: TWinControl;
+  ADC: HDC; X, Y: Integer);
+var
+  bc : TCocoaBitmapContext;
+  v  : NSView;
+  b  : NSBitmapImageRep;
+  obj : NSObject;
+  f  : NSRect;
+begin
+  if not (TObject(ADC) is TCocoaBitmapContext) then Exit;
+  if not NSObject(AWinControl.Handle).isKindOfClass(NSView) then Exit;
+  bc := TCocoaBitmapContext(ADC);
+  v := NSView(AWinControl.Handle);
+  f := v.frame;
+  f.origin.x := 0;
+  f.origin.y := 0;
+
+  b := v.bitmapImageRepForCachingDisplayInRect(f);
+
+  v.cacheDisplayInRect_toBitmapImageRep(f, b);
+  bc.DrawImageRep(
+    NSMakeRect(0,0, f.size.width, f.size.height),
+    f, b);
 end;
 
 { TCocoaWSCustomControl }
