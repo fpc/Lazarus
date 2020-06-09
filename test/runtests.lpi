@@ -68,7 +68,7 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
@@ -76,11 +76,14 @@
         <PackageName Value="FCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="fpcunitconsolerunner"/>
+        <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="fpcunitconsolerunner"/>
       </Item4>
+      <Item5>
+        <PackageName Value="lazmouseandkeyinput"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="13">
       <Unit0>

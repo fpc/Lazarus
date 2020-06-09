@@ -21,11 +21,14 @@ program runtests;
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
   Classes, consoletestrunner,
   testglobals, testunits, dom,
   {Unit needed to set the LCL version and widget set name}
-  LCLVersion, InterfaceBase, LCLPlatformDef, Interfaces, TestLazXML,
-  TestAvgLvlTree, TestLConvEncoding, testlazfileutils;
+  LCLVersion, InterfaceBase, LCLPlatformDef, lazmouseandkeyinput, Interfaces,
+  TestLazXML, TestAvgLvlTree, TestLConvEncoding, testlazfileutils;
   
 type
 
@@ -37,7 +40,7 @@ type
     FMachine: string;
   protected
     procedure AppendLongOpts; override;
-    procedure ParseOptions; override;
+    function ParseOptions: Boolean; override;
     procedure WriteCustomHelp; override;
 
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
@@ -54,9 +57,9 @@ begin
   LongOpts.Add('submitter:');
 end;
 
-procedure TLazTestRunner.ParseOptions;
+function TLazTestRunner.ParseOptions: Boolean;
 begin
-  inherited ParseOptions;
+  Result := inherited ParseOptions;
   if HasOption('compiler') then
     Compiler := GetOptionValue('compiler');
   if HasOption('pcp') then

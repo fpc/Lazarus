@@ -67,7 +67,7 @@ begin
   AssertEquals('Pen Style is not equal', PenStyle, ExtPen^.elpPenStyle);
   AssertEquals('Pen Width is not equal', PenWidth, ExtPen^.elpWidth);
   AssertEquals('Pen Color is not equal', lb.lbColor, ExtPen^.elpColor);
-  AssertEquals('Pen Hatch is not equal', lb.lbHatch, ExtPen^.elpHatch);
+  AssertEquals('Pen Hatch is not equal', lb.lbHatch, QWord(ExtPen^.elpHatch));
   AssertEquals('Pen Brush Style is not equal', lb.lbStyle, ExtPen^.elpBrushStyle);
   AssertEquals('Pen Dashes Count is not equal', Length(Dashes), ExtPen^.elpNumEntries);
   AssertTrue('Pen Dashes are not equal', CompareDWord(Dashes[0], ExtPen^.elpStyleEntry[0], ExtPen^.elpNumEntries)=0);

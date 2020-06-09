@@ -119,7 +119,7 @@ begin
   begin
     ID1 := 1 shl 32; AInt:=10;
     Add(ID1, AInt);
-    AssertEquals('Wrong ID1', $100000000, ID1);
+    AssertEquals('Wrong ID1', QWord($100000000), ID1);
     ID2 := 2 shl 32; AInt:=20;
     Add(ID2, AInt);
     ID3 := 3 shl 32; AInt:=30;

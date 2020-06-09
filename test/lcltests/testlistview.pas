@@ -545,8 +545,10 @@ begin
   FTestMouseInput.Up(FButton, FShiftUp, FUpPos.x, FupPos.y);
   WaitForMain;
 
+  {$IFDEF WINDOWS}
   FTestMouseInput.UnApplyKey([ssShift, ssCtrl]);
   WaitForMain;
+  {$ENDIF}
 
   for i := 0 to length(FClick2Pos) - 1 do begin
     FTestMouseInput.Down(FClick2Pos[i].btn, [], FClick2Pos[i].x, FClick2Pos[i].y);
