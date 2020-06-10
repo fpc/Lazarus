@@ -368,10 +368,17 @@ end;
 class procedure TWSCustomListBox.SelectRange(const ACustomListBox: TCustomListBox;
   ALow, AHigh: integer; ASelected: boolean);
 var
-  i: Integer;
+  OldTopIndex, i: Integer;
 begin  // A default implementation. A widgetset can override it with a better one.
-  for i := ALow to AHigh - 1 do
-    SelectItem(ACustomListBox, i, ASelected);
+  OldTopIndex := ACustomListBox.TopIndex; //prevent scrolling to last Item selected on Windows, Issue #0036929
+  ACustomListBox.Items.BeginUpdate; //prevent visual update when selecting large ranges on Windows, Issue #0036929
+  try
+    for i := ALow to AHigh do
+      SelectItem(ACustomListBox, i, ASelected);
+    ACustomListBox.TopIndex := OldTopIndex;
+  finally
+    ACustomListBox.Items.EndUpdate;
+  end;
 end;
 
 class procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
