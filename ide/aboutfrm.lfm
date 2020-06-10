@@ -240,12 +240,13 @@ object AboutForm: TAboutForm
     object CopyToClipboardButton: TSpeedButton
       AnchorSideLeft.Control = ButtonPanel
       AnchorSideTop.Control = CloseButton
-      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Control = CloseButton
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 26
-      Top = 12
-      Width = 26
+      Height = 29
+      Top = 11
+      Width = 30
+      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
       OnClick = CopyToClipboardButtonClick
     end
