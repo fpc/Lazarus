@@ -3828,7 +3828,7 @@ var
     {$IFDEF DebugLR_detail}
     debugLn('Outline: str="%s" w/=%d w%%=%d',[copy(str,1,12),w div 256, w mod 256]);
     {$ENDIF}
-    SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
+    SMemo.Add(Utf8Encode(str) + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
     if Angle=0 then
       maxWidth := dx - InternalGapX - InternalGapX;
