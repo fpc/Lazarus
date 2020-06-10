@@ -3841,6 +3841,29 @@
         <seealso/>
       </element>
 
+      <element name="TNoteBookStringsTabControl.GetPopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+        <short>
+          Gets the value for the PopupMenu property
+        </short>
+        <descr>
+          <p>
+            <var>GetPopupMenu</var> is an overridden <var>TPopupMenu</var> function which implements the read access specifier for the <var>PopupMenu</var> property. The return value contains the TPopupMenu instance from the <var>Parent</var> control when it is derived from TTabControl and <var>Options</var> contains the value <var>nboHidePageListPopup</var>. Otherwise, the inherited method in <var>TControl</var> is called to get the popup menu instance for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Menus.TPopupMenu"/>
+          <link id="#LCL.Controls.TControl.GetPopupMenu"/>
+          <link id="#LCL.Controls.TControl.PopupMenu"/>
+          <link id="#LCL.Controls.TControl.Parent"/>
+          <link id="TTabControl"/>
+          <link id="TPageControl.Options"/>
+          <link id="CTabControlOption.nboHidePageListPopup"/>
+        </seealso>
+      </element>
+      <element name="TNoteBookStringsTabControl.GetPopupMenu.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TNoteBookStringsTabControl.WSRegisterClass">
         <short/>
         <descr/>

@@ -408,30 +408,30 @@
         <short>Path and file name to use in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ForceDirectory">
         <short>
           Creates the specified directory if it does not already exist
         </short>
         <descr>
           <p>
-            <var>ForceDirectory</var>  is a Boolean function which creates the specified directory if it does not already exist. ForceDirectory ensures that a trailing path delimiter exists in DirectoryName prior to checking the file system. Each directory in the specified path is examined in the function using DirPathExists.  ForceDirectory calls CreateDirUTF8 if a directory does not exist, and may exit with a return value of False if directory creation is not successful.
+            <var>ForceDirectory</var>  is a Boolean function which creates the specified directory if it does not already exist. ForceDirectory ensures that a trailing path delimiter exists in <var>DirectoryName</var> prior to checking the file system. Duplicate adjacent path delimiters (like '//foo//bar/foobar/' or '\\foo\\bar\foobar\') are removed prior to checking the directory path.
           </p>
           <p>
-            The return value is True if all directories in the path information already exist, or are successfully created in the function.
+            Each directory in the specified path is validated by calling <var>DirPathExists</var>. ForceDirectory calls <var>CreateDirUTF8</var> if a directory does not exist, and may exit with a return value of <b>False</b> if directory creation is not successful.
+          </p>
+          <p>
+            The return value is <b>True</b> if all directories in the path information already exist, or are successfully created in the function.
           </p>
         </descr>
         <seealso>
           <link id="ForceDirectoriesUTF8"/>
+          <link id="DirPathExists"/>
+          <link id="CreateDirUtf8"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ForceDirectory.Result">
         <short>Returns True if directory exists or if it was successfully created</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ForceDirectory.DirectoryName">
         <short>Path information for the operation</short>
       </element>
