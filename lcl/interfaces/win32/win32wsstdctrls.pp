@@ -135,10 +135,8 @@ type
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox;
       AIndex: integer; ASelected: boolean); override;
-    { ToDo
     class procedure SelectRange(const ACustomListBox: TCustomListBox;
       ALow, AHigh: integer; ASelected: boolean); override;
-    }
 
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
@@ -914,13 +912,25 @@ begin
   else
     SetItemIndex(ACustomListBox, -1);
 end;
-{
-class procedure SelectRange(const ACustomListBox: TCustomListBox;
-  ALow, AHigh: integer; ASelected: boolean); override;
+
+class procedure TWin32WSCustomListBox.SelectRange(const ACustomListBox: TCustomListBox;
+  ALow, AHigh: integer; ASelected: boolean);
+var
+  AHandle: HWND;
+  ARange: LONG;
 begin
-  ToDo: Send message LB_SELITEMRANGE
+  //https://docs.microsoft.com/en-us/windows/win32/controls/lb-selitemrange
+  if (AHigh > $FFFF) then
+    inherited SelectRange(ACustomListBox, ALow, AHigh, ASelected)
+  else
+  begin
+    AHandle := ACustomListBox.Handle;
+    ARange := Windows.MakeLong(ALow, AHigh);
+    Windows.SendMessage(AHandle, LB_SELITEMRANGE, Windows.WParam(ASelected), Windows.LParam(ARange));
+  end;
+
 end;
-}
+
 class procedure TWin32WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;
