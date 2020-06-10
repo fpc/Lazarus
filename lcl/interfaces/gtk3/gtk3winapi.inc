@@ -2038,6 +2038,34 @@ begin
     Usage);
 end;
 
+function TGtk3WidgetSet.GetDpiForMonitor(hmonitor: HMONITOR;
+  dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+var
+  w,w_mm,h,h_mm:gint;
+  rr:double;
+  pscr:PGdkScreen;
+begin
+  (*  MONITOR_DPI_TYPE = (
+    MDT_EFFECTIVE_DPI = 0,
+    MDT_ANGULAR_DPI = 1,
+    MDT_RAW_DPI = 2,
+    MDT_DEFAULT = MDT_EFFECTIVE_DPI);
+  TMonitorDpiType = MONITOR_DPI_TYPE;
+  *)
+  pscr:=TGdkScreen.get_default;
+  w:=pscr^.get_width;
+  w_mm:=pscr^.get_width_mm;
+  h:=pscr^.get_height;
+  h_mm:=pscr^.get_height_mm;
+
+  dpiX:=round(25.4*w/w_mm);
+  dpiY:=round(25.4*h/h_mm);
+
+  rr:=TGdkScreen.get_default^.get_resolution();
+  Result:=0;
+  //Result:=inherited GetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY);
+end;
+
 function TGtk3WidgetSet.GetFocus: HWND;
 var
   i: Integer;
@@ -3044,6 +3072,17 @@ begin
   if Gtk3IsWidget(Dialog) then
     gtk_widget_destroy(Dialog);
   Result:= ADialogResult;
+end;
+
+function TGtk3WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord
+  ): HMONITOR;
+var
+  pscr:PGdkScreen;
+  nmon:gint;
+begin
+  pscr:=TGdkScreen.get_default;
+  nmon:=pscr^.get_monitor_at_point(ptScreenCoords.X,ptScreenCoords.Y);
+  Result:=HMONITOR(nmon+1);
 end;
 
 function TGtk3WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint

@@ -121,6 +121,7 @@ function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
+function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;override;
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
 function GetForegroundWindow: HWND; override;
@@ -165,6 +166,7 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 
 function MessageBox({%H-}hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;

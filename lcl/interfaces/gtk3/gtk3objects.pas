@@ -1508,7 +1508,7 @@ begin
   FCanRelease := False;
   FOwnsCairo := True;
   FCurrentTextColor := clBlack;
-  AWindow^.get_geometry(@x, @y, @w, @h);
+  //AWindow^.get_geometry(@x, @y, @w, @h);
   // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
   Widget := gdk_cairo_create(AWindow);
   // gdk_cairo_set_source_pixbuf(Widget, ParentPixmap, 0, 0);
