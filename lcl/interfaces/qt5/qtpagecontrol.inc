@@ -539,7 +539,12 @@ end;
 
 class procedure TQtWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
-  TQtTabWidget(ATabControl.Handle).setTabsClosable(nboShowCloseButtons in ATabControl.Options);
-  TQtTabWidget(ATabControl.Handle).SwitchTabsByKeyboard := nboKeyboardTabSwitch in ATabControl.Options;
+  if not WSCheckHandleAllocated(ATabControl, 'UpdateProperties') then
+    Exit;
+  if TQtWidget(ATabControl.Handle).ChildOfComplexWidget <> ccwTTabControl then
+  begin
+    TQtTabWidget(ATabControl.Handle).setTabsClosable(nboShowCloseButtons in ATabControl.Options);
+    TQtTabWidget(ATabControl.Handle).SwitchTabsByKeyboard := nboKeyboardTabSwitch in ATabControl.Options;
+  end;
 end;
 
