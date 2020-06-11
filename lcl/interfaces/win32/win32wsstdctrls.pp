@@ -1680,13 +1680,18 @@ begin
     WM_PAINT:
       begin
         WindowInfo := GetWin32WindowInfo(Window);
-        if ThemeServices.ThemesEnabled and Assigned(WindowInfo) and (WindowInfo^.WinControl is TCustomStaticText)
-        and not TCustomStaticText(WindowInfo^.WinControl).Enabled then
+        // Workaround for disabled StaticText not being grayed at designtime
+        if ThemeServices.ThemesEnabled and Assigned(WindowInfo) and
+           (WindowInfo^.WinControl is TCustomStaticText)
+           and not TCustomStaticText(WindowInfo^.WinControl).Enabled then
         begin
           Result := WindowProc(Window, Msg, WParam, LParam);
           StaticText := TCustomStaticText(WindowInfo^.WinControl);
+          if not (csDesigning in StaticText.ComponentState) then
+            exit;
+
           DC := GetDC(Window);
-          SetBkColor(DC, GetSysColor(COLOR_BTNFACE));
+          SetBkMode(DC, TRANSPARENT);
           SetTextColor(DC, GetSysColor(COLOR_GRAYTEXT));
           SelectObject(DC, StaticText.Font.Reference.Handle);
           Flags := 0;
