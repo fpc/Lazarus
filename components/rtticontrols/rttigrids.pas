@@ -1015,7 +1015,7 @@ begin
         NewEditor:=nil;
         try
           EditorClass:=TPropertyEditorClass(GridProperty.Editor.ClassType);
-          NewEditor:=EditorClass.Create(nil,1);
+          NewEditor:=EditorClass.Create(FHeaderPropHook,1);
           NewEditor.SetPropEntry(0,CurObject,GridProperty.PropInfo);
           NewEditor.Initialize;
           aPropEditor := NewEditor;
