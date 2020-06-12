@@ -214,6 +214,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpimgreaderwinpetypes.pas"/>
         <UnitName Value="FpImgReaderWinPETypes"/>
       </Item>
+      <Item>
+        <Filename Value="fpdbghardcodedfreepascalinfo.pas"/>
+        <UnitName Value="fpdbghardcodedfreepascalinfo"/>
+      </Item>
     </Files>
     <CompatibilityMode Value="False"/>
     <RequiredPkgs>

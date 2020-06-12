@@ -1466,6 +1466,7 @@ components/fpdebug/fpdbgdwarfconst.pas svneol=native#text/pascal
 components/fpdebug/fpdbgdwarfdataclasses.pas svneol=native#text/pascal
 components/fpdebug/fpdbgdwarffreepascal.pas svneol=native#text/pascal
 components/fpdebug/fpdbgdwarfverboseprinter.pas svneol=native#text/pascal
+components/fpdebug/fpdbghardcodedfreepascalinfo.pas svneol=native#text/pascal
 components/fpdebug/fpdbginfo.pas svneol=native#text/pascal
 components/fpdebug/fpdbglinuxclasses.pas svneol=native#text/plain
 components/fpdebug/fpdbglinuxextra.pas svneol=native#text/plain

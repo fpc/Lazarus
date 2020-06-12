@@ -9,15 +9,23 @@ unit FpDbgInfo;
     Holds the Value of a Symbol according to its type.
 
   TFpSymbol should not hold any Data, except for information that is in the
-  debug info (dwarf/stabs).
+  debug info (dwarf/stabs/hardcoded/other..?).
+
+  TFpSymbol however, might expose methods which can be used to obtain relevant
+  data.
+
   All Data read from the target must be in TFpValue.
-  Target adta includes Address (can be indirect via ref or pointer, Size and
+  Target data includes Address (can be indirect via ref or pointer, Size and
   Boundaries (Sub range / Array).
 
   This means that TFpSymbol (stType or stValue) should be re-usable. There can
   be multiple TFpValue for each TFpSymbol. (even for stValue, as in an
   Array the Symbol itself is repeated / Array of record: the same member occurs
   over and over)
+
+  On the other hand, one generic TFpValue class should be used to access all
+  kinds of TFpSymbol. In practice this is not possible, but it is something to
+  strive for.
 
   ---
   A Variable value in the target typically consists of:

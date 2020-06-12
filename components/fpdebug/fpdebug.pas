@@ -13,7 +13,7 @@ uses
   macho, FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, 
   FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, FpDbgDwarfDataClasses, 
   FpDbgDwarfFreePascal, fpDbgSymTableContext, fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, 
-  FpDbgRsp, FpDbgCommon, FpImgReaderWinPETypes, LazarusPackageIntf;
+  FpDbgRsp, FpDbgCommon, FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, LazarusPackageIntf;
 
 implementation
 
