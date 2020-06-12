@@ -5657,16 +5657,6 @@ components/turbopower_ipro/languages/ipconst.pt_BR.po svneol=native#text/plain
 components/turbopower_ipro/languages/ipconst.ru.po svneol=native#text/plain
 components/turbopower_ipro/languages/ipconst.uk.po svneol=native#text/plain
 components/turbopower_ipro/languages/ipconst.zh_CN.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.de.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.fr.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.hu.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.it.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.lt.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.pot svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.pt_BR.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.ru.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.uk.po svneol=native#text/plain
-components/turbopower_ipro/languages/iphtmlpv.zh_CN.po svneol=native#text/plain
 components/turbopower_ipro/make_icons.bat svneol=native#text/plain
 components/turbopower_ipro/tipfiledataprovider.png -text svneol=unset#image/png
 components/turbopower_ipro/tipfiledataprovider_150.png -text

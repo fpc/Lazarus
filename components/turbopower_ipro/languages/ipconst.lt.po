@@ -115,6 +115,46 @@ msgstr "Klaidingas paveikslo formatas"
 msgid "Unknown request type \"%s\""
 msgstr "Nežinomas užklausos tipas „%s“"
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Užverti"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr "Priderinti visą"
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr "Aukštis"
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr "Plotis"
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "iš"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Lapas:"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Spausdinti"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Spaudinio peržiūra"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "Parinkti spausdintuvą…"
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Mastelis:"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

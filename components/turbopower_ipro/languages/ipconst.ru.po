@@ -114,6 +114,46 @@ msgstr "Неверный формат изображения"
 msgid "Unknown request type \"%s\""
 msgstr "Неизвестный тип запроса  \"%s\""
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Закрыть"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr "Уместить"
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr "Высота"
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr "Ширина"
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "из"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Страница:"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Печать"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Предварительный просмотр"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "Выбрать принтер ..."
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Масштаб:"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

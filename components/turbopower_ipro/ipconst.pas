@@ -43,6 +43,18 @@ const
 
 resourcestring
 
+  { Print Preview form}
+  rsIpHTMLPreviewPrintPreview = 'Print preview';
+  rsIpHTMLPreviewPrint = 'Print';
+  rsIpHTMLPreviewZoom = 'Zoom:';
+  rsIpHTMLPreviewClose = 'Close';
+  rsIpHTMLPreviewFitAll = 'Fit all';
+  rsIpHTMLPreviewFitWidth = 'Width';
+  rsIpHTMLPreviewFitHeight = 'Height';
+  rsIpHTMLPreviewPage = 'Page:';
+  rsIpHTMLPreviewOf = 'of';
+  rsIpHTMLPreviewSelectPrinter = 'Select printer ...';
+
   { General IPRO Errors }
   SWinSockErr = 'WinSock Error (%d): %s, on API ''%s''';
   SRasErr = 'Ras Error (%d): on API ''%s''';

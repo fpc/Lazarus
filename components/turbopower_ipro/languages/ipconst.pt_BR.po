@@ -114,6 +114,46 @@ msgstr "Formato figura inválido"
 msgid "Unknown request type \"%s\""
 msgstr "Tipo requisição desconhecido \"%s\""
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Fechar"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr "Encaixar tudo"
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr "Altura"
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr "Largura"
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "de"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Página:"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Imprimir"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Visualizar Impressão"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "Selecionar impressora ..."
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Zoom:"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

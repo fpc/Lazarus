@@ -115,6 +115,46 @@ msgstr "无效的图像格式"
 msgid "Unknown request type \"%s\""
 msgstr "未知的请求类型\"%s\""
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "关闭"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "of(...的)"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "页:"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "打印"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "打印预览"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "选择打印机..."
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "放大:"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

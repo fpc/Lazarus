@@ -48,19 +48,7 @@ uses
   Windows,
   {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Spin, IpHtml;
-
-resourcestring
-  rsIpHTMLPreviewPrintPreview = 'Print preview';
-  rsIpHTMLPreviewPrint = 'Print';
-  rsIpHTMLPreviewZoom = 'Zoom:';
-  rsIpHTMLPreviewClose = 'Close';
-  rsIpHTMLPreviewFitAll = 'Fit all';
-  rsIpHTMLPreviewFitWidth = 'Width';
-  rsIpHTMLPreviewFitHeight = 'Height';
-  rsIpHTMLPreviewPage = 'Page:';
-  rsIpHTMLPreviewOf = 'of';
-  rsIpHTMLPreviewSelectPrinter = 'Select printer ...';
+  StdCtrls, ExtCtrls, Spin, IpHtml, IpConst;
 
 type
 

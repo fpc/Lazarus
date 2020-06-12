@@ -116,6 +116,46 @@ msgstr "Format d'image incorrect"
 msgid "Unknown request type \"%s\""
 msgstr "Type de requête inconnue : \"%s\""
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Fermer"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr "Tout ajuster"
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr "Hauteur"
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr "Largeur"
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "de"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Page :"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Imprimer"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Aperçu avant impression"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "Choisir une imprimante..."
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Zoom :"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

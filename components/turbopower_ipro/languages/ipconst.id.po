@@ -112,6 +112,46 @@ msgstr "Format gambar tidak benar"
 msgid "Unknown request type \"%s\""
 msgstr "Tipe permintaan \"%s\" tidak dikenal"
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr ""
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr ""
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"

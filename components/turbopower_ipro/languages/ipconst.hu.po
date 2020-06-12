@@ -114,6 +114,46 @@ msgstr "Érvénytelen képformátum"
 msgid "Unknown request type \"%s\""
 msgstr "A kérés típusa ismeretlen: \"%s\""
 
+#: ipconst.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Bezárás"
+
+#: ipconst.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr "Helykitöltés"
+
+#: ipconst.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr "Magasság"
+
+#: ipconst.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr "Szélesség"
+
+#: ipconst.rsiphtmlpreviewof
+msgid "of"
+msgstr "/"
+
+#: ipconst.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Oldal:"
+
+#: ipconst.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: ipconst.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Nyomtatási kép"
+
+#: ipconst.rsiphtmlpreviewselectprinter
+msgid "Select printer ..."
+msgstr "Nyomtató választása..."
+
+#: ipconst.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Nagyítás:"
+
 #: ipconst.saccessprocerr
 #, object-pascal-format
 msgid "Win32 error loading '%s' pointer: %s"
