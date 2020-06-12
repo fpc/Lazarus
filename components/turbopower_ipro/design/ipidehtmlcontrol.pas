@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls, Menus,
-  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf;
+  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf, ObjInspStrConsts;
 
 type
   TLazIPHtmlControl = class;
@@ -86,10 +86,6 @@ procedure Register;
 
 implementation
 
-resourcestring
-  ipdCopy = '&Copy';
-  ipdSelectAll = 'Select &all';
-
 procedure Register;
 begin
   CreateIDEHTMLControl:=@IPCreateLazIDEHTMLControl;
@@ -142,13 +138,13 @@ begin
   AutoPopup := True;
 
   FCopy := TMenuItem.Create(Owner);
-  FCopy.Caption := ipdCopy;
+  FCopy.Caption := oiStdActEditCopyHeadLine;
   FCopy.ShortCut := ShortCut(ord('C'), [ssCtrl]);
   FCopy.OnClick  := @DoCopy;
   Items.Add(FCopy);
 
   FSelectAll := TMenuItem.Create(Owner);
-  FSelectAll.Caption := ipdSelectAll;
+  FSelectAll.Caption := oiStdActEditSelectAllHeadLine;
   FSelectAll.ShortCut := ShortCut(ord('A'), [ssCtrl]);
   FSelectAll.OnClick   := @DoSelectAll;
   Items.Add(FSelectAll);
