@@ -1,10 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2019.
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-09-20 21:04+0200\n"
-"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2020-06-10 21:16+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -109,7 +110,7 @@ msgstr "очікується ідентифікатор класу"
 
 #: codetoolsstrconsts.ctsclassnodewithoutparentnode
 msgid "class node without parent node"
-msgstr "опис класу без предка"
+msgstr "вузол класу без предка"
 
 #: codetoolsstrconsts.ctsclassnotfound
 #, object-pascal-format
@@ -497,7 +498,7 @@ msgstr "знайдено некоректний визначник %s"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
-msgstr "слово implementation не знайдено"
+msgstr "вузол implementation не знайдено"
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
@@ -676,7 +677,7 @@ msgstr "не знайдене тіло нової процедури"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "не знайдено контекстний елемент біля курсору"
+msgstr "не знайдено контекстного вузла біля курсора"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"

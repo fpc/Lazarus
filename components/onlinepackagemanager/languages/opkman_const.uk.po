@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2020-03-29 00:47+0200\n"
+"PO-Revision-Date: 2020-06-10 20:59+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -1020,12 +1020,12 @@ msgstr "Зовнішнє посилання (JSON)"
 #: opkman_const.rsmainfrm_vsttext_externaldeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externaldeps"
 msgid "External dependencies"
-msgstr ""
+msgstr "Зовнішні залежності"
 
 #: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externalmetapackagedeps"
 msgid "External dependencies for metapackage"
-msgstr ""
+msgstr "Зовнішні залежності метапакунка"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1066,20 +1066,18 @@ msgid "License"
 msgstr "Ліцензія"
 
 #: opkman_const.rsmainfrm_vsttext_open
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open"
 msgid "Open"
 msgstr "Відкрити"
 
 #: opkman_const.rsmainfrm_vsttext_open_error
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
 msgid "Cannot open package file."
 msgstr "Неможливо відкрити файл пакунка."
 
 #: opkman_const.rsmainfrm_vsttext_open_notfound
 msgid "Package file not found."
-msgstr ""
+msgstr "Файл пакунка не знайдено."
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"

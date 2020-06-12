@@ -1,17 +1,18 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-04 15:21+0200\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2020-06-10 21:12+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -28,18 +29,21 @@ msgid ""
 "Is it a valid source file?\n"
 "The rest of the file has been skipped."
 msgstr ""
+"Помилка пошуку елементів ToDo у файлі %0:s.\n"
+"Це справді правильний сирцевий файл?\n"
+"Решту файла пропущено."
 
 #: todoliststrconsts.excinvalidparsestate
 msgid "Invalid parse state."
-msgstr ""
+msgstr "Помилковий стан розбору."
 
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
-msgstr ""
+msgstr "Використати альтернативні позначки"
 
 #: todoliststrconsts.lisalternatetokenshint
 msgid "Standard token is #todo etc. Alternate is without the #"
-msgstr ""
+msgstr "Стандартні позначки - #todo тощо. Альтернативні - без #"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -47,31 +51,31 @@ msgstr "Вставити макрос"
 
 #: todoliststrconsts.lisfilteritem0
 msgid "All"
-msgstr ""
+msgstr "Всі"
 
 #: todoliststrconsts.lisfilteritem1
 msgid "ToDo Only"
-msgstr ""
+msgstr "Лише ToDo"
 
 #: todoliststrconsts.lisfilteritem2
 msgid "Done Only"
-msgstr ""
+msgstr "Лише Done"
 
 #: todoliststrconsts.lisfilteritem3
 msgid "Note Only"
-msgstr ""
+msgstr "Лише Note"
 
 #: todoliststrconsts.lisfilteritem4
 msgid "ToDo & Done"
-msgstr ""
+msgstr "ToDo і Done"
 
 #: todoliststrconsts.lisfilteritem5
 msgid "ToDo & Note"
-msgstr ""
+msgstr "ToDo і Note"
 
 #: todoliststrconsts.lisfilteritem6
 msgid "Done & Note"
-msgstr ""
+msgstr "Done і Note"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
@@ -96,11 +100,11 @@ msgstr "Текст"
 
 #: todoliststrconsts.lisshowwhat
 msgid "Show"
-msgstr ""
+msgstr "Показати"
 
 #: todoliststrconsts.lisshowwhathint
 msgid "Select which ToDo types to list"
-msgstr ""
+msgstr "Виберіть, які типи ToDo показати"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
@@ -112,10 +116,8 @@ msgid "Add units in source editor"
 msgstr "Додати модулі в редактор коду"
 
 #: todoliststrconsts.listddinserttodo
-#, fuzzy
-#| msgid "Insert ToDo"
 msgid "Insert a ToDo/Done/Note"
-msgstr "Вставити ToDo"
+msgstr "Вставити ToDo/Done/Note"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -171,11 +173,11 @@ msgstr "Пріоритет"
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: todoliststrconsts.listodotodotype
 msgid "ToDo type"
-msgstr ""
+msgstr "Тип ToDo"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
@@ -195,5 +197,5 @@ msgstr "Перегляд списку ToDo"
 
 #: todoliststrconsts.rsexporttodoit
 msgid "Export ToDo items to CSV"
-msgstr ""
+msgstr "Експортувати елементи ToDo до CSV"
 

@@ -1,11 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-12-24 09:53+0200\n"
-"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2020-06-10 21:40+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -736,7 +736,7 @@ msgstr "Індекс списку поза діапазоном (%d)"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
-msgstr ""
+msgstr "Формат файла:"
 
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
@@ -957,7 +957,7 @@ msgstr "Пурпуровий"
 
 #: lclstrconsts.rsqtoptiondisableaccurateframe
 msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt, Qt5 and Gtk2 interfaces and used mostly by GetWindowRect()."
-msgstr ""
+msgstr "-disableaccurateframe, вимикає повністю точну рамку вікна під X11. Ця функція реалізована для інтерфейсів Qt, Qt5 та Gtk2 та використовується здебільшого GetWindowRect()."
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."

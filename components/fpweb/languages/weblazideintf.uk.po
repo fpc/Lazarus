@@ -1,125 +1,104 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2020.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-23 23:22+0200\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2020-06-10 20:48+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: weblazideintf.rsapachemodule
 msgid "Apache Module"
 msgstr "Модуль Apache"
 
 #: weblazideintf.rsapachemodule2
-#, fuzzy, badformat
-#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
-msgstr "Модуль Apache%sЗавантажуваний модуль Apache на Free Pascal з використанням веб-модулів. Початковий код бібліотеки автоматично підтримується  Lazarus."
+msgstr "Завантажуваний модуль Apache на Free Pascal з використанням вебмодулів. Головний файл бібліотеки автоматично підтримується в Lazarus."
 
 #: weblazideintf.rscgiapplicati
 msgid "CGI Application"
 msgstr "Програма CGI"
 
 #: weblazideintf.rscgiapplicati2
-#, fuzzy, badformat
-#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Програма CGI%sПрограма CGI (Common Gateway Interface) на Free Pascal з використанням веб-модулів. Початковий код програми автоматично підтримується Lazarus."
+msgstr "Програма CGI (Common Gateway Interface) на Free Pascal з використанням вебмодулів"
 
 #: weblazideintf.rscustomcgiapp
 msgid "Custom CGI Application"
 msgstr "Користувацька програма CGI"
 
 #: weblazideintf.rscustomcgiapp2
-#, fuzzy, badformat
-#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Користувацька програма CGI%sПрограма CGI (Common Gateway Interface) на Free Pascal. Початковий код програми автоматично підтримується Lazarus."
+msgstr "Програма CGI (Common Gateway Interface) на Free Pascal."
 
 #: weblazideintf.rscustomfastcg
 msgid "Custom FastCGI Application"
 msgstr "Користувацька програма FastCGI"
 
 #: weblazideintf.rscustomfastcg2
-#, fuzzy, badformat
-#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Користувацька програма FastCGI%sПрограма FastCGI (Common Gateway Interface) на Free Pascal. Початковий код програми автоматично підтримується Lazarus."
+msgstr "Програма FastCGI (Common Gateway Interface) на Free Pascal."
 
 #: weblazideintf.rsfastcgiappli
 msgid "FastCGI Application"
 msgstr "Програма FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
-#, fuzzy, badformat
-#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Програма FastCGI%sПрограма FastCGI (Common Gateway Interface) на Free Pascal з використанням веб-модулів. Початковий код програми автоматично підтримується Lazarus."
+msgstr "Програма FastCGI (Common Gateway Interface) на Free Pascal з використанням вебмодулів."
 
 #: weblazideintf.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "Модуль HTML Web"
 
 #: weblazideintf.rshtmlwebmodul2
-#, fuzzy, badformat
-#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgid "A Web datamodule for producing strict HTML."
-msgstr "Веб-модуль HTML%sМодуль даних веб для створення суворого HTML."
+msgstr "Модуль вебданих для створення строгого HTML."
 
 #: weblazideintf.rshttpappli
 msgid "HTTP server Application"
 msgstr "Застосунок сервера HTTP"
 
 #: weblazideintf.rshttpappli2
-#, fuzzy
-#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
-msgstr "Застосунок сервера HTTP. Повна програма HTTP-сервера на Free Pascal з використанням веб-модулів. Сирці програми автоматично підтримуються Lazarus."
+msgstr "Повна програма HTTP-сервера на Free Pascal з використанням вебмодулів."
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"
 msgstr "Модуль Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
-#, fuzzy, badformat
-#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr "Модуль WEB DataProvider%sМодуль даних для керування запитами даних для WEB (HTTP) застосунків, які використовують компоненти WebDataProvider."
+msgstr "Модуль даних для керування запитами даних для WEB (HTTP)-застосунків з використанням компонентів WebDataProvider."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"
 msgstr "Модуль Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
-#, fuzzy, badformat
-#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Модуль WEB Ext.Direct%sМодуль даних для керування запитами Ext.Direct у WEB (HTTP)-застосунках, які використовують компоненти TJSONRPCHandler."
+msgstr "Модуль даних для керування запитами Ext.Direct у WEB (HTTP)-застосунках з використанням компонентів TJSONRPCHandler."
 
 #: weblazideintf.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
 msgstr "Модуль Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
-#, fuzzy, badformat
-#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Модуль WEB JSON-RPC%sМодуль даних для керування запитами JSON-RPC у WEB (HTTP)-застосунках, які використовують компоненти TJSONRPCHandler."
+msgstr "Модуль даних для керування запитами JSON-RPC у WEB (HTTP)-застосунках з використанням компонентів TJSONRPCHandler."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"
 msgstr "Веб-модуль"
 
 #: weblazideintf.rswebmoduleada
-#, fuzzy, badformat
-#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgid "A datamodule for WEB (HTTP) applications."
-msgstr "Веб-модуль%sМодуль даних для програм веб (HTTP)."
+msgstr "Модуль даних для WEB (HTTP)-застосунків."
 
