@@ -45,12 +45,8 @@ uses
 
 const
   InternetProfessionalVersion = 1.15;
-
-resourcestring
-  sLongVersion = 'Version %.2f';
   sShortVersion = 'v%.2f';
 
-const
   IpMsgBase = WM_USER + $0E90;
 
   CM_IPASYNCRESULT      = IpMsgBase + 0;
