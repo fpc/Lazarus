@@ -37,7 +37,7 @@ uses
   // LazUtils
   LazFileUtils, LazLoggerBase, UITypes,
   // IdeIntf
-  IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
+  IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
   // IDE
   MainBase, BasePkgManager, PackageDefs, Project, CompilerOptions, EnvironmentOpts,
   TransferMacros, BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg,
@@ -51,7 +51,6 @@ type
     btnCreateDefaultModes: TButton;
     BuildModesStringGrid: TStringGrid;
     RenameButton: TButton;
-    ImageList1: TImageList;
     BuildModesPopupMenu: TPopupMenu;
     ButtonPanel1: TButtonPanel;
     NoteLabel: TLabel;
@@ -429,16 +428,12 @@ begin
   FillBuildModesGrid;
   UpdateBuildModeButtons;
 
-  ImageList1.AddResourceName(HInstance, 'laz_add');
-  ImageList1.AddResourceName(HInstance, 'laz_delete');
-  ImageList1.AddResourceName(HInstance, 'arrow_up');
-  ImageList1.AddResourceName(HInstance, 'arrow_down');
-  ImageList1.AddResourceName(HInstance, 'menu_tool_diff');
-  ToolButtonAdd.ImageIndex:=0;
-  ToolButtonDelete.ImageIndex:=1;
-  ToolButtonMoveUp.ImageIndex:=2;
-  ToolButtonMoveDown.ImageIndex:=3;
-  ToolButtonDiff.ImageIndex:=4;
+  Toolbar1.Images := IDEImages.Images_16;
+  ToolButtonAdd.ImageIndex := IDEImages.LoadImage('laz_add', 16);
+  ToolButtonDelete.ImageIndex := IDEImages.LoadImage('laz_delete', 16);
+  ToolButtonMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up', 16);
+  ToolButtonMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down', 16);
+  ToolButtonDiff.ImageIndex := IDEImages.LoadImage('menu_tool_diff', 16);
   RenameButton.Caption:=lisBtnRename;
 end;
 
