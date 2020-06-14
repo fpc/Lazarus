@@ -7541,6 +7541,7 @@ begin
         else
         if FTheDebugger.PauseWaitState = pwsInternalCont then begin
           FTheDebugger.RunQueue;
+          FTheDebugger.FPauseWaitState := pwsNone;
         end;
       end;
 
