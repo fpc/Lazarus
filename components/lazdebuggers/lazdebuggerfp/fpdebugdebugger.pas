@@ -2597,8 +2597,11 @@ function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
 var
   AnErr: TFpError;
 begin
-  TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(AnAddr,
-    FMemManager, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
+  Result := '';
+  if (FDbgController.CurrentProcess <> nil) then
+    TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(FDbgController.CurrentProcess.DbgInfo)
+    .GetInstanceClassNameFromPVmt
+      (AnAddr, FMemManager, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
 end;
 
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;

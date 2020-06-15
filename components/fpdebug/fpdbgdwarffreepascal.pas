@@ -27,6 +27,8 @@ type
   public
     class function GetInstanceForCompUnit(ACU: TDwarfCompilationUnit): TFpSymbolDwarfClassMap; override;
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
+
+    class function GetInstanceForDbgInfo(ADbgInfo: TDbgInfo):TFpDwarfFreePascalSymbolClassMap;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
@@ -34,6 +36,10 @@ type
       ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
+
+    function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
+      AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer;
+      out AClassName: String; out AnError: TFpError): boolean;
   end;
 
   { TFpDwarfFreePascalSymbolClassMapDwarf2 }
@@ -129,13 +135,13 @@ type
   TFpSymbolDwarfFreePascalTypeStructure = class(TFpSymbolDwarfTypeStructure)
   protected
     procedure KindNeeded; override;
-  public
-    function GetInstanceClassName(AValueObj: TFpValue; out
-      AClassName: String): boolean; override;
     //function GetInstanceClass(AValueObj: TFpValueDwarf): TFpSymbolDwarf; override;
     class function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
       AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer;
       out AClassName: String; out AnError: TFpError): boolean;
+  public
+    function GetInstanceClassName(AValueObj: TFpValue; out
+      AClassName: String): boolean; override;
   end;
 
   (* *** Record vs ShortString *** *)
@@ -298,6 +304,37 @@ begin
   Result := pos('free pascal', s) > 0;
 end;
 
+var
+  LastInfo: TDbgInfo = nil;
+  FoundMap: TFpDwarfFreePascalSymbolClassMap = nil;
+
+class function TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(
+  ADbgInfo: TDbgInfo): TFpDwarfFreePascalSymbolClassMap;
+var
+  i: Integer;
+begin
+  if ADbgInfo <> LastInfo then begin
+    FoundMap := nil;
+    LastInfo := nil;
+  end;
+
+  Result := FoundMap;
+  if LastInfo <> nil then
+    exit;
+
+  if not (ADbgInfo is TFpDwarfInfo) then
+    exit;
+
+  for i := 0 to TFpDwarfInfo(ADbgInfo).CompilationUnitsCount - 1 do
+    if TFpDwarfInfo(ADbgInfo).CompilationUnits[i].DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap
+    then begin
+      FoundMap := TFpDwarfFreePascalSymbolClassMap(TFpDwarfInfo(ADbgInfo).CompilationUnits[i]);
+    end;
+
+  Result := FoundMap;
+  LastInfo := ADbgInfo;
+end;
+
 constructor TFpDwarfFreePascalSymbolClassMap.Create(ACU: TDwarfCompilationUnit;
   AHelperData: Pointer);
 begin
@@ -322,6 +359,14 @@ function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: 
   AnAddress: TDBGPtr; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
 begin
   Result := TFpDwarfFreePascalAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
+end;
+
+function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
+  APVmt: TDbgPtr; AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer; out
+  AClassName: String; out AnError: TFpError): boolean;
+begin
+  TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
+    AMemManager, ASizeOfAddr, AClassName, AnError);
 end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf2 }
