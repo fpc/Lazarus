@@ -991,8 +991,6 @@ var
 
 var
   CastName: String;
-  ClassAddr, CNameAddr: TFpDbgMemLocation;
-  NameLen: QWord;
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1057,26 +1055,16 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
     if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
     then begin
-      CastName := '';
-      if FMemManager.ReadAddress(ResValue.DataAddress, SizeVal(Ctx.SizeOfAddress), ClassAddr) then begin
-        ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
-        if FMemManager.ReadAddress(ClassAddr, SizeVal(Ctx.SizeOfAddress), CNameAddr) then begin
-          if (FMemManager.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
-            if NameLen > 0 then begin
-              SetLength(CastName, NameLen);
-              CNameAddr.Address := CNameAddr.Address + 1;
-              FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
-              PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
-              PasExpr2.ResultValue;
-              if PasExpr2.Valid then begin
-                PasExpr.Free;
-                PasExpr := PasExpr2;
-                ResValue := PasExpr.ResultValue;
-              end
-              else
-                PasExpr2.Free;
-            end;
-        end;
+      if ResValue.GetInstanceClassName(CastName) then begin
+        PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+        PasExpr2.ResultValue;
+        if PasExpr2.Valid then begin
+          PasExpr.Free;
+          PasExpr := PasExpr2;
+          ResValue := PasExpr.ResultValue;
+        end
+        else
+          PasExpr2.Free;
       end;
     end;
 

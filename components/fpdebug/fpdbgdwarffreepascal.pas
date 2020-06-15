@@ -129,6 +129,13 @@ type
   TFpSymbolDwarfFreePascalTypeStructure = class(TFpSymbolDwarfTypeStructure)
   protected
     procedure KindNeeded; override;
+  public
+    function GetInstanceClassName(AValueObj: TFpValue; out
+      AClassName: String): boolean; override;
+    //function GetInstanceClass(AValueObj: TFpValueDwarf): TFpSymbolDwarf; override;
+    class function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
+      AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer;
+      out AClassName: String; out AnError: TFpError): boolean;
   end;
 
   (* *** Record vs ShortString *** *)
@@ -757,6 +764,65 @@ begin
     else
       SetKind(skRecord);  // could be skObject(?) or skInterface   // fix in TFpSymbolDwarfFreePascalTypePointer.KindNeeded
   end;
+end;
+
+function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassName(
+  AValueObj: TFpValue; out AClassName: String): boolean;
+var
+  AnErr: TFpError;
+begin
+  Result := AValueObj is TFpValueDwarf;
+  if not Result then
+    exit;
+  Result := GetInstanceClassNameFromPVmt(LocToAddrOrNil(AValueObj.DataAddress),
+    TFpValueDwarf(AValueObj).MemManager, TFpValueDwarf(AValueObj).Context.SizeOfAddress, AClassName, AnErr);
+  if not Result then
+    SetLastError(AValueObj, AnErr);
+end;
+
+class function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt
+  (APVmt: TDbgPtr; AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer; out
+  AClassName: String; out AnError: TFpError): boolean;
+var
+  VmtAddr, ClassNameAddr: TFpDbgMemLocation;
+  NameLen: QWord;
+begin
+  Result := False;
+  AnError := NoError;
+  AClassName := '';
+  if not AMemManager.ReadAddress(TargetLoc(APVmt), SizeVal(ASizeOfAddr), VmtAddr) then begin
+    AnError := AMemManager.LastError;
+    exit;
+  end;
+  if not IsReadableMem(VmtAddr) then begin
+    AnError := CreateError(fpErrCanNotReadMemAtAddr, [VmtAddr.Address]);
+    exit;
+  end;
+  {$PUSH}{$Q-}
+  VmtAddr.Address := VmtAddr.Address + TDBGPtr(3 * ASizeOfAddr);
+  {$POP}
+
+  if not AMemManager.ReadAddress(VmtAddr, SizeVal(ASizeOfAddr), ClassNameAddr) then begin
+    AnError := AMemManager.LastError;
+    exit;
+  end;
+  if not IsReadableMem(ClassNameAddr) then begin
+    AnError := CreateError(fpErrCanNotReadMemAtAddr, [ClassNameAddr.Address]);
+    exit;
+  end;
+  if not AMemManager.ReadUnsignedInt(ClassNameAddr, SizeVal(1), NameLen) then begin
+    AnError := AMemManager.LastError;
+    exit;
+  end;
+  if NameLen = 0 then begin
+    AnError := CreateError(fpErrAnyError, ['No name found']);
+    exit;
+  end;
+  SetLength(AClassName, NameLen);
+  ClassNameAddr.Address := ClassNameAddr.Address + 1;
+  Result := AMemManager.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AClassName[1]);
+  if not Result then
+    AnError := AMemManager.LastError;
 end;
 
 { TFpValueDwarfV2FreePascalShortString }

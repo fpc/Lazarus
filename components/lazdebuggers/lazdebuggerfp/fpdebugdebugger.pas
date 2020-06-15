@@ -2337,8 +2337,6 @@ var
   StackFrame, ThreadId: Integer;
   ResValue: TFpValue;
   CastName, ResText2: String;
-  ClassAddr, CNameAddr: TFpDbgMemLocation;
-  NameLen: QWord;
 begin
   Result := False;
   AResText := '';
@@ -2395,28 +2393,16 @@ begin
 
       if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
       then begin
-        CastName := '';
-        if FMemManager.ReadAddress(ResValue.DataAddress, SizeVal(AContext.SizeOfAddress), ClassAddr) then begin
-          {$PUSH}{$Q-}
-          ClassAddr.Address := ClassAddr.Address + TDBGPtr(3 * AContext.SizeOfAddress);
-          {$POP}
-          if FMemManager.ReadAddress(ClassAddr, SizeVal(AContext.SizeOfAddress), CNameAddr) then begin
-            if (FMemManager.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
-              if NameLen > 0 then begin
-                SetLength(CastName, NameLen);
-                CNameAddr.Address := CNameAddr.Address + 1;
-                FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
-                PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', AContext);
-                PasExpr2.ResultValue;
-                if PasExpr2.Valid then begin
-                  APasExpr.Free;
-                  APasExpr := PasExpr2;
-                  ResValue := APasExpr.ResultValue;
-                end
-                else
-                  PasExpr2.Free;
-              end;
-          end;
+        if ResValue.GetInstanceClassName(CastName) then begin
+          PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', AContext);
+          PasExpr2.ResultValue;
+          if PasExpr2.Valid then begin
+            APasExpr.Free;
+            APasExpr := PasExpr2;
+            ResValue := APasExpr.ResultValue;
+          end
+          else
+            PasExpr2.Free;
         end;
       end;
 
@@ -2609,22 +2595,10 @@ end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
 var
-  VMTAddr: TDBGPtr;
-  ClassNameAddr: TDBGPtr;
-  b: byte;
+  AnErr: TFpError;
 begin
-  Result := '';
-  // Read address of the vmt
-  ReadAddress(AnAddr, VMTAddr);
-  if VMTAddr = 0 then
-    exit;
-  ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
-  if ClassNameAddr = 0 then
-    exit;
-  // read classname (as shortstring)
-  ReadData(ClassNameAddr, 1, b);
-  setlength(result,b);
-  ReadData(ClassNameAddr+1, b, result[1]);
+  TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(AnAddr,
+    FMemManager, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
 end;
 
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;

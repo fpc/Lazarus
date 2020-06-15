@@ -175,6 +175,9 @@ type
     // memdump
   public
     function GetTypeCastedValue(ADataVal: TFpValue): TFpValue; virtual; // only if Symbol is a type
+
+    function GetInstanceClassName(out AClassName: String): boolean; virtual;
+
 // base class? Or Member includes member from base
     (* Member:
        * skClass, skStructure:
@@ -419,6 +422,8 @@ type
     //
     property Flags: TDbgSymbolFlags read GetFlags;
     property Parent: TFpSymbol read GetParent; deprecated;
+    function GetInstanceClassName(AValueObj: TFpValue; out AClassName: String): boolean; virtual;
+
     // for Subranges  // Type-Symbols only?
     // TODO: flag bounds as cardinal if needed
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
@@ -460,6 +465,7 @@ type
     function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
   public
+    function GetInstanceClassName(AValueObj: TFpValue; out AClassName: String): boolean; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound, AHighBound: Int64): Boolean; override;
     function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
     function GetValueHighBound(AValueObj: TFpValue; out AHighBound: Int64): Boolean; override;
@@ -612,6 +618,16 @@ function TFpValue.GetTypeCastedValue(ADataVal: TFpValue): TFpValue;
 begin
   assert(False, 'TFpValue.GetTypeCastedValue: False');
   Result := nil;
+end;
+
+function TFpValue.GetInstanceClassName(out AClassName: String): boolean;
+var
+  ti: TFpSymbol;
+begin
+  ti := TypeInfo;
+  Result := ti <> nil;
+  if Result then
+    Result := ti.GetInstanceClassName(Self, AClassName);
 end;
 
 function TFpValue.GetTypeInfo: TFpSymbol;
@@ -959,6 +975,13 @@ function TFpSymbol.ReadSize(const AValueObj: TFpValue; out
   ASize: TFpDbgValueSize): Boolean;
 begin
   Result := DoReadSize(AValueObj, ASize);
+end;
+
+function TFpSymbol.GetInstanceClassName(AValueObj: TFpValue; out
+  AClassName: String): boolean;
+begin
+  AClassName := '';
+  Result := False;
 end;
 
 function TFpSymbol.GetValueBounds(AValueObj: TFpValue; out ALowBound,
@@ -1311,6 +1334,18 @@ begin
     Result := p.OrdinalValue
   else
     Result := 0;  //  Result := inherited GetOrdinalValue;
+end;
+
+function TFpSymbolForwarder.GetInstanceClassName(AValueObj: TFpValue; out
+  AClassName: String): boolean;
+var
+  p: TFpSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.GetInstanceClassName(AValueObj, AClassName)
+  else
+    Result := inherited GetInstanceClassName(AValueObj, AClassName);
 end;
 
 function TFpSymbolForwarder.GetValueBounds(AValueObj: TFpValue; out
