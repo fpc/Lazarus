@@ -654,7 +654,6 @@ type
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
-    function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
     function ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
@@ -3210,11 +3209,6 @@ begin
 
   Result := Proc.CreateContext(AThreadId, AStackFrame, Self);
   Proc.ReleaseReference;
-end;
-
-function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
-begin
-  result := FindContext(1, 0, AAddress);
 end;
 
 function TFpDwarfInfo.ContextFromProc(AThreadId, AStackFrame: Integer;

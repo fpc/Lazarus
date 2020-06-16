@@ -551,7 +551,6 @@ public
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
-    function  FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; deprecated 'use FindContext(thread,stack)';
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; inline;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
@@ -1683,12 +1682,6 @@ begin
 
   if Result = nil then
     Result := TFpDbgInfoSimpleContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
-end;
-
-function TDbgProcess.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
-begin
-  Result := FDbgInfo.FindContext(AAddress);
-  // SymbolTableInfo.FindContext()
 end;
 
 function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext;

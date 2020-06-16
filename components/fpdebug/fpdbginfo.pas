@@ -522,7 +522,6 @@ type
        TODO: for now address may be needed, as stack decoding is not done yet
     *)
     function FindContext(AThreadId, AStackFrame: Integer; {%H-}AAddress: TDbgPtr = 0): TFpDbgInfoContext; virtual;
-    function FindContext({%H-}AAddress: TDbgPtr): TFpDbgInfoContext; virtual; deprecated 'use FindContext(thread,stack,address)';
     function ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
@@ -1487,11 +1486,6 @@ function TDbgInfo.FindContext(AThreadId, AStackFrame: Integer;
   AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
   Result := nil;;
-end;
-
-function TDbgInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
-begin
-  Result := nil;
 end;
 
 function TDbgInfo.ContextFromProc(AThreadId, AStackFrame: Integer;
