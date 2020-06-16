@@ -1215,7 +1215,7 @@ var
   t, t2: TFpSymbol;
   LowBound, HighBound, i: Int64;
   Addr, Addr2: TFpDbgMemLocation;
-  WResult: AnsiString;
+  WResult: WideString;
   RResult: RawByteString;
   AttrData: TDwarfAttribData;
   Codepage: TSystemCodePage;
