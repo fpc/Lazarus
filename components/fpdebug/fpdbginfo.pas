@@ -486,6 +486,25 @@ type
     property MemManager: TFpDbgMemManager read GetMemManager;
   end;
 
+  { TFpDbgInfoSimpleContext }
+
+  TFpDbgInfoSimpleContext = class(TFpDbgInfoContext)
+  private
+    FMemManager: TFpDbgMemManager;
+    FAddress: TDbgPtr;
+    FThreadId: Integer;
+    FStackFrame: Integer;
+    FSizeOfAddr: Integer;
+  protected
+    function GetMemManager: TFpDbgMemManager; override;
+    function GetAddress: TDbgPtr; override;
+    function GetThreadId: Integer; override;
+    function GetStackFrame: Integer; override;
+    function GetSizeOfAddress: Integer; override;
+  public
+    constructor Create(AMemManager: TFpDbgMemManager; AnAddress: TDbgPtr; AnSizeOfAddr, AThreadId: Integer; AStackFrame: Integer);
+  end;
+
   { TDbgInfo }
 
   TDbgInfo = class(TObject)
@@ -947,6 +966,42 @@ end;
 function TFpDbgInfoContext.FindSymbol(const AName: String): TFpValue;
 begin
   Result := nil;
+end;
+
+function TFpDbgInfoSimpleContext.GetMemManager: TFpDbgMemManager;
+begin
+  Result := FMemManager;
+end;
+
+function TFpDbgInfoSimpleContext.GetAddress: TDbgPtr;
+begin
+  Result := fAddress;
+end;
+
+function TFpDbgInfoSimpleContext.GetThreadId: Integer;
+begin
+  Result := fThreadId;
+end;
+
+function TFpDbgInfoSimpleContext.GetStackFrame: Integer;
+begin
+  Result := fStackFrame;
+end;
+
+function TFpDbgInfoSimpleContext.GetSizeOfAddress: Integer;
+begin
+  Result := FSizeOfAddr;
+end;
+
+constructor TFpDbgInfoSimpleContext.Create(AMemManager: TFpDbgMemManager;
+  AnAddress: TDbgPtr; AnSizeOfAddr, AThreadId: Integer; AStackFrame: Integer);
+begin
+  AddReference;
+  FMemManager := AMemManager;
+  FAddress := AnAddress;
+  FSizeOfAddr := AnSizeOfAddr;
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
 end;
 
 { TFpSymbol }

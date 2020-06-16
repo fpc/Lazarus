@@ -1680,6 +1680,9 @@ begin
     exit;
   Result := FDbgInfo.FindContext(AThreadId, AStackFrame, Addr);
   // SymbolTableInfo.FindContext()
+
+  if Result = nil then
+    Result := TFpDbgInfoSimpleContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
 end;
 
 function TDbgProcess.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
