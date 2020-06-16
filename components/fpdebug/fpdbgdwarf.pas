@@ -2810,8 +2810,13 @@ begin
 end;
 
 function TFpValueDwarfArray.DoGetOrdering(out ARowMajor: Boolean): Boolean;
+var
+  ti: TFpSymbolDwarfType;
 begin
-  Result := TFpSymbolDwarfTypeArray(TypeInfo).DoReadOrdering(Self, ARowMajor);
+  ti := TypeInfo;
+  while ti is TFpSymbolDwarfTypeModifierBase do
+    ti := ti.NestedTypeInfo;
+  Result := TFpSymbolDwarfTypeArray(ti).DoReadOrdering(Self, ARowMajor);
 end;
 
 function TFpValueDwarfArray.DoGetStride(out AStride: TFpDbgValueSize): Boolean;

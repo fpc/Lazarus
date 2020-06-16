@@ -328,7 +328,7 @@ begin
   for i := 0 to TFpDwarfInfo(ADbgInfo).CompilationUnitsCount - 1 do
     if TFpDwarfInfo(ADbgInfo).CompilationUnits[i].DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap
     then begin
-      FoundMap := TFpDwarfFreePascalSymbolClassMap(TFpDwarfInfo(ADbgInfo).CompilationUnits[i]);
+      FoundMap := TFpDwarfFreePascalSymbolClassMap(TFpDwarfInfo(ADbgInfo).CompilationUnits[i].DwarfSymbolClassMap);
     end;
 
   Result := FoundMap;
@@ -1049,7 +1049,7 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetStride(out AStride: TFpDbgValueSize
   ): Boolean;
 begin
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
   then
     Result := inherited DoGetStride(AStride)
   else
@@ -1059,7 +1059,7 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetMainStride(out
   AStride: TFpDbgValueSize): Boolean;
 begin
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
   then
     Result := inherited DoGetMainStride(AStride)
   else
@@ -1069,7 +1069,7 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetDimStride(AnIndex: integer; out
   AStride: TFpDbgValueSize): Boolean;
 begin
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
   then
     Result := inherited DoGetDimStride(AnIndex, AStride)
   else
