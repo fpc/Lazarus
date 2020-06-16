@@ -480,6 +480,8 @@ type
                                  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; virtual; abstract;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
+    function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
+                                    AInfoEntry: TDwarfInformationEntry): TDbgDwarfSymbolBase; virtual; abstract;
   end;
   TFpSymbolDwarfClassMapClass = class of TFpSymbolDwarfClassMap;
 
@@ -650,6 +652,7 @@ type
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
+    function FindDwarfUnitSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
@@ -3200,15 +3203,26 @@ end;
 function TFpDwarfInfo.FindContext(AThreadId, AStackFrame: Integer;
   AAddress: TDbgPtr): TFpDbgInfoContext;
 var
-  Proc: TDbgDwarfSymbolBase;
+  Proc, UnitSym: TDbgDwarfSymbolBase;
 begin
   Result := nil;
   Proc := FindDwarfProcSymbol(AAddress);  // TFpSymbolDwarfDataProc
-  if Proc = nil then
+  if Proc <> nil then begin
+    Result := Proc.CreateContext(AThreadId, AStackFrame, Self);
+    Proc.ReleaseReference;
     exit;
+  end;
 
-  Result := Proc.CreateContext(AThreadId, AStackFrame, Self);
-  Proc.ReleaseReference;
+  UnitSym := FindDwarfUnitSymbol(AAddress);
+  if UnitSym <> nil then begin
+    Result := UnitSym.CreateContext(AThreadId, AStackFrame, Self);
+    UnitSym.ReleaseReference;
+    exit;
+  end;
+
+  if CompilationUnitsCount > 0 then
+    Result := CompilationUnits[0].DwarfSymbolClassMap.CreateContext
+      (AThreadId, AStackFrame, AAddress, nil, Self);
 end;
 
 function TFpDwarfInfo.ContextFromProc(AThreadId, AStackFrame: Integer;
@@ -3302,6 +3316,31 @@ begin
     finally
       Iter.Free;
     end;
+  end;
+end;
+
+function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
+  ): TDbgDwarfSymbolBase;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  MinMaxSet: boolean;
+  Scope: TDwarfScopeInfo;
+begin
+  Result := nil;
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    if not CU.Valid then Continue;
+    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
+    if (not MinMaxSet) or ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
+    then Continue;
+
+    if not CU.LocateEntry(DW_TAG_compile_unit, Scope) then
+      break;
+
+    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, TDwarfInformationEntry.Create(CU, Scope));
+    break;
   end;
 end;
 

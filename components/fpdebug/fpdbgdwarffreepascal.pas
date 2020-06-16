@@ -468,6 +468,10 @@ var
   d, i: Integer;
   ParentFpSym: TFpSymbolDwarf;
 begin
+  Result := False;
+  if not(Symbol is TFpSymbolDwarfDataProc) then
+    exit;
+
   if Dwarf.TargetInfo.bitness = b64 then begin
     RegFP := RegFp64;
     RegPc := RegPc64;
@@ -476,7 +480,6 @@ begin
     RegFP := RegFp32;
     RegPc := RegPc32;
   end;
-  Result := False;
   if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
     ADbgValue := GetSelfParameter;
     if ADbgValue <> nil then begin

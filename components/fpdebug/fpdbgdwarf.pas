@@ -49,8 +49,9 @@ unit FpDbgDwarf;
 interface
 
 uses
-  Classes, SysUtils, types, math, FpDbgInfo, FpDbgDwarfDataClasses, FpdMemoryTools, FpErrorMessages,
-  FpDbgUtil, FpDbgDwarfConst, DbgIntfBaseTypes, LazUTF8, LazLoggerBase, LazClasses;
+  Classes, SysUtils, types, math, FpDbgInfo, FpDbgDwarfDataClasses,
+  FpdMemoryTools, FpErrorMessages, FpDbgUtil, FpDbgDwarfConst, FpDbgCommon,
+  DbgIntfBaseTypes, LazUTF8, LazLoggerBase, LazClasses;
 
 type
   TFpDwarfInfo = FpDbgDwarfDataClasses.TFpDwarfInfo;
@@ -71,16 +72,18 @@ type
       TDbgPtr; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
+    function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
+      AInfoEntry: TDwarfInformationEntry): TDbgDwarfSymbolBase; override;
   end;
 
   TFpValueDwarf = class;
-  TFpSymbolDwarfDataProc = class;
+  TFpSymbolDwarf = class;
 
   { TFpDwarfInfoAddressContext }
 
   TFpDwarfInfoAddressContext = class(TFpDbgInfoContext)
   private
-    FSymbol: TFpSymbolDwarfDataProc;
+    FSymbol: TFpSymbolDwarf;
     FSelfParameter: TFpValueDwarf;
     FAddress: TDBGPtr;
     FThreadId, FStackFrame: Integer;
@@ -94,7 +97,7 @@ type
     function GetSizeOfAddress: Integer; override;
     function GetMemManager: TFpDbgMemManager; override;
 
-    property Symbol: TFpSymbolDwarfDataProc read FSymbol;
+    property Symbol: TFpSymbolDwarf read FSymbol;
     property Dwarf: TFpDwarfInfo read FDwarf;
     property Address: TDBGPtr read FAddress write FAddress;
     property ThreadId: Integer read FThreadId write FThreadId;
@@ -117,7 +120,6 @@ type
     function FindSymbol(const AName: String): TFpValue; override;
   end;
 
-  TFpSymbolDwarf = class;
   TFpSymbolDwarfType = class;
   TFpSymbolDwarfData = class;
   TFpSymbolDwarfDataClass = class of TFpSymbolDwarfData;
@@ -979,6 +981,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
   public
     destructor Destroy; override;
+    function CreateContext(AThreadId, AStackFrame: Integer; ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext; override;
   end;
 {%endregion Symbol objects }
 
@@ -1110,6 +1113,13 @@ begin
   Result := TFpSymbolDwarfDataProc.Create(ACompilationUnit, AInfo, AAddress);
 end;
 
+function TFpDwarfDefaultSymbolClassMap.CreateUnitSymbol(
+  ACompilationUnit: TDwarfCompilationUnit; AInfoEntry: TDwarfInformationEntry
+  ): TDbgDwarfSymbolBase;
+begin
+  Result := TFpSymbolDwarfUnit.Create(ACompilationUnit.UnitName, AInfoEntry);
+end;
+
 { TDbgDwarfInfoAddressContext }
 
 function TFpDwarfInfoAddressContext.GetSymbolAtAddress: TFpSymbol;
@@ -1140,8 +1150,18 @@ end;
 
 function TFpDwarfInfoAddressContext.GetSizeOfAddress: Integer;
 begin
-  assert(FSymbol is TFpSymbolDwarf, 'TDbgDwarfInfoAddressContext.GetSizeOfAddress');
-  Result := TFpSymbolDwarf(FSymbol).CompilationUnit.AddressSize;
+  if Symbol = nil then begin
+    if FDwarf.CompilationUnitsCount > 0 then
+      Result := FDwarf.CompilationUnits[0].AddressSize
+    else
+      case FDwarf.TargetInfo.bitness of
+        bNone: Result := 0;
+        b32:   Result := 4;
+        b64:   Result := 8;
+      end;
+  end
+  else
+    Result := TFpSymbolDwarf(FSymbol).CompilationUnit.AddressSize;
 end;
 
 function TFpDwarfInfoAddressContext.GetMemManager: TFpDbgMemManager;
@@ -1174,6 +1194,8 @@ end;
 function TFpDwarfInfoAddressContext.GetSelfParameter: TFpValueDwarf;
 begin
   Result := FSelfParameter;
+  if not(Symbol is TFpSymbolDwarfDataProc) then
+    exit;
   if Result <> nil then
     exit;
   Result := TFpSymbolDwarfDataProc(FSymbol).GetSelfParameter(FAddress);
@@ -1234,7 +1256,7 @@ begin
     end;
   end;
 
-  if FoundInfoEntry <> nil then begin;
+  if FoundInfoEntry <> nil then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));
     FoundInfoEntry.ReleaseReference;
   end;
@@ -1299,6 +1321,8 @@ function TFpDwarfInfoAddressContext.FindLocalSymbol(const AName: String; PNameUp
 begin
   Result := False;
   ADbgValue := nil;
+  if not(Symbol is TFpSymbolDwarfDataProc) then
+    exit;
   if not InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then
     exit;
   if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
@@ -1312,15 +1336,16 @@ end;
 constructor TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame: Integer;
   AnAddress: TDbgPtr; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
 begin
-  assert(ASymbol is TFpSymbolDwarfDataProc, 'TFpDwarfInfoAddressContext.Create: ASymbol is TFpSymbolDwarfDataProc');
+  assert((ASymbol=nil) or (ASymbol is TFpSymbolDwarf), 'TFpDwarfInfoAddressContext.Create: (ASymbol=nil) or (ASymbol is TFpSymbolDwarf)');
   inherited Create;
   AddReference;
   FAddress := AnAddress;
   FThreadId := AThreadId;
   FStackFrame := AStackFrame;
   FDwarf   := ADwarf;
-  FSymbol  := TFpSymbolDwarfDataProc(ASymbol);
-  FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
+  FSymbol  := TFpSymbolDwarf(ASymbol);
+  if FSymbol <> nil then
+    FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
 end;
 
 destructor TFpDwarfInfoAddressContext.Destroy;
@@ -1343,18 +1368,30 @@ var
   PNameUpper, PNameLower: PChar;
 begin
   Result := nil;
-  if (FSymbol = nil) or not(FSymbol is TFpSymbolDwarfDataProc) or (AName = '') then
+  //if (FSymbol = nil) or not(FSymbol is TFpSymbolDwarfDataProc) or (AName = '') then
+  if (AName = '') then
     exit;
 
-  SubRoutine := TFpSymbolDwarfDataProc(FSymbol);
+  if FSymbol is TFpSymbolDwarfDataProc then
+    SubRoutine := TFpSymbolDwarfDataProc(FSymbol)
+  else
+    SubRoutine := nil;
   NameUpper := UTF8UpperCase(AName);
   NameLower := UTF8LowerCase(AName);
   PNameUpper := @NameUpper[1];
   PNameLower := @NameLower[1];
 
+  if Symbol = nil then begin
+    FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, nil, Result);
+    ApplyContext(Result);
+    if Result = nil then
+      Result := inherited FindSymbol(AName);
+    exit;
+  end;
+
   try
-    CU := SubRoutine.CompilationUnit;
-    InfoEntry := SubRoutine.InformationEntry.Clone;
+    CU := Symbol.CompilationUnit;
+    InfoEntry := Symbol.InformationEntry.Clone;
 
     while InfoEntry.HasValidScope do begin
       //debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
@@ -1374,7 +1411,7 @@ begin
       if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
         if (CompareUtf8BothCase(PNameUpper, PNameLower, InfoName)) then begin
-          // TODO: this is a pascal sperific search order? Or not?
+          // TODO: this is a pascal specific search order? Or not?
           // If this is a type with a pointer or ref, need to find the pointer or ref.
           InfoEntry.GoParent;
           if InfoEntry.HasValidScope and
@@ -1402,7 +1439,7 @@ begin
       end
 
       else
-      if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
+      if (SubRoutine <> nil) and (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
         if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
           exit;        // TODO: check error
         end;
@@ -1434,6 +1471,8 @@ begin
     assert((Result = nil) or (Result is TFpValueDwarfBase), 'TDbgDwarfInfoAddressContext.FindSymbol: (Result = nil) or (Result is TFpValueDwarfBase)');
     ApplyContext(Result);
   end;
+  if Result = nil then
+    Result := inherited FindSymbol(AName);
 end;
 
 { TFpValueDwarfTypeDefinition }
@@ -5501,6 +5540,13 @@ destructor TFpSymbolDwarfUnit.Destroy;
 begin
   ReleaseRefAndNil(FLastChildByName);
   inherited Destroy;
+end;
+
+function TFpSymbolDwarfUnit.CreateContext(AThreadId, AStackFrame: Integer;
+  ADwarfInfo: TFpDwarfInfo): TFpDbgInfoContext;
+begin
+  Result := CompilationUnit.DwarfSymbolClassMap.CreateContext
+    (AThreadId, AStackFrame, Address.Address, Self, ADwarfInfo);
 end;
 
 initialization
