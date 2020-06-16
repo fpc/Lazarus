@@ -1285,7 +1285,17 @@ begin
     end;
 
     Result := WResult;
-  end else begin
+  end else
+  if Addr.Address = Address.Address + 1 then begin
+    // shortstring
+    SetLength(Result, HighBound-LowBound+1);
+
+    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+    end;
+  end
+  else begin
     SetLength(RResult, HighBound-LowBound+1);
 
     if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @RResult[1]) then begin
