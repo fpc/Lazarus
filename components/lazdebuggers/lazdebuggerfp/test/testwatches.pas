@@ -1592,9 +1592,11 @@ procedure TTestWatches.TestWatchesTypeCast;
 
     function SignedIntAnd(AVal: Int64; AMask: Qword): Int64;
     begin
+      {$PUSH}{$Q-}{$R-}
       Result := AVal and AMask;
       if (Result and (AMask xor (AMask >> 1))) <> 0 then
         Result := Result or (not AMask);
+      {$POP}
     end;
   const
     UIntConvert: array[0..3] of record TypeName: String; Mask: qword; end = (
