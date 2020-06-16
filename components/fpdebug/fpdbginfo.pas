@@ -491,11 +491,12 @@ type
   TDbgInfo = class(TObject)
   private
     FHasInfo: Boolean;
+    FMemManager: TFpDbgMemManager;
   protected
     FTargetInfo: TTargetDescriptor;
     procedure SetHasInfo;
   public
-    constructor Create({%H-}ALoaderList: TDbgImageLoaderList); virtual;
+    constructor Create({%H-}ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); virtual;
     (* Context should be searched by Thread, and StackFrame. The Address can be
        derived from this.
        However a different Address may be froced.
@@ -510,6 +511,7 @@ type
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
+    property MemManager: TFpDbgMemManager read FMemManager;
   end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
@@ -1419,8 +1421,10 @@ end;
 
 { TDbgInfo }
 
-constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList);
+constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList;
+  AMemManager: TFpDbgMemManager);
 begin
+  FMemManager := AMemManager;
   inherited Create;
 end;
 

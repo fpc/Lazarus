@@ -2491,7 +2491,6 @@ end;
 
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
 begin
-  TFpDwarfInfo(FDbgController.CurrentProcess.DbgInfo).MemManager := FMemManager;
   if LineInfo <> nil then begin
     TFpLineInfo(LineInfo).DebugInfoChanged;
   end;
@@ -3336,7 +3335,7 @@ begin
   FMemReader := TFpDbgMemReader.Create(self);
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
-  FDbgController := TDbgController.Create;
+  FDbgController := TDbgController.Create(FMemManager);
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
   FDbgController.OnHitBreakpointEvent:=@FDbgControllerHitBreakpointEvent;
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;

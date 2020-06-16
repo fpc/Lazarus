@@ -378,6 +378,7 @@ type
 
   TDbgInstance = class(TObject)
   private
+    FMemManager: TFpDbgMemManager;
     FMode: TFPDMode;
     FFileName: String;
     FProcess: TDbgProcess;
@@ -408,6 +409,7 @@ type
     property SymbolTableInfo: TFpSymbolInfo read FSymbolTableInfo;
     property Mode: TFPDMode read FMode;
     property PointerSize: Integer read GetPointerSize;
+    property MemManager: TFpDbgMemManager read FMemManager;
   end;
 
   { TDbgLibrary }
@@ -528,10 +530,10 @@ type
 public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses): TDbgProcess; virtual;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess; virtual;
+      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; virtual;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; virtual;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); virtual;
+    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); virtual;
     destructor Destroy; override;
     function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
@@ -1434,6 +1436,7 @@ end;
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
+  FMemManager := AProcess.MemManager;
   FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
@@ -1464,9 +1467,9 @@ begin
     FMode:=dm64
   else
     FMode:=dm32;
-  FDbgInfo := TFpDwarfInfo.Create(FLoaderList);
+  FDbgInfo := TFpDwarfInfo.Create(FLoaderList, MemManager);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList);
+  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager);
 end;
 
 procedure TDbgInstance.SetFileName(const AValue: String);
@@ -1549,7 +1552,8 @@ begin
 end;
 
 constructor TDbgProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
+  );
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -1557,6 +1561,7 @@ const
 //  MAP_ID_SIZE = itu4;
   {.$ENDIF}
 begin
+  FMemManager := AMemManager;
   FProcessID := AProcessID;
   FThreadID := AThreadID;
   FOSDbgClasses := AnOsClasses;
@@ -1961,14 +1966,15 @@ end;
 
 class function TDbgProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager): TDbgProcess;
 begin
   DebugLn(DBG_VERBOSE, 'Debug support is not available for this platform.');
   result := nil;
 end;
 
 class function TDbgProcess.AttachToInstance(AFileName: string; APid: Integer;
-  AnOsClasses: TOSDbgClasses): TDbgProcess;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
 begin
   DebugLn(DBG_VERBOSE, 'Attach not supported');
   Result := nil;

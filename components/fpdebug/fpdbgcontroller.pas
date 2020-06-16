@@ -12,7 +12,7 @@ uses
   LazLoggerBase, LazClasses,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgDisasX86,
-  FpDbgClasses, FpDbgInfo, FpDbgDwarf;
+  FpDbgClasses, FpDbgInfo, FpDbgDwarf, FpdMemoryTools;
 
 type
 
@@ -206,6 +206,7 @@ type
 
   TDbgController = class
   private
+    FMemManager: TFpDbgMemManager;
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
@@ -244,7 +245,7 @@ type
     FCommand, FCommandToBeFreed: TDbgControllerCmd;
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
-    constructor Create; virtual;
+    constructor Create(AMemManager: TFpDbgMemManager); virtual;
     destructor Destroy; override;
     (* InitializeCommand: set new command
        Not called if command is replaced by OnThreadProcessLoopCycleEvent  *)
@@ -263,6 +264,7 @@ type
     procedure SendEvents(out continue: boolean);
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
+    property MemManager: TFpDbgMemManager read FMemManager;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1162,9 +1164,9 @@ begin
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
   if AttachToPid <> 0 then
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses)
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager)
   else
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses);
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
@@ -1548,8 +1550,9 @@ begin
   Result := FProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
 end;
 
-constructor TDbgController.Create;
+constructor TDbgController.Create(AMemManager: TFpDbgMemManager);
 begin
+  FMemManager := AMemManager;
   FParams := TStringList.Create;
   FEnvironment := TStringList.Create;
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));

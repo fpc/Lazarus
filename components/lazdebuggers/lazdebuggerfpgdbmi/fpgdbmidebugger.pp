@@ -768,8 +768,7 @@ begin
 {$ENDIF}
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
 
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
-  FDwarfInfo.MemManager := FMemManager;
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
   FDwarfInfo.LoadCompilationUnits;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;

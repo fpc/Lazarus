@@ -21,7 +21,7 @@ uses
   FpDbgUtil,
   UTF8Process,
   LazLoggerBase, Maps,
-  FpDbgCommon;
+  FpDbgCommon, FpdMemoryTools;
 
 type
   user_regs_struct64 = record
@@ -295,11 +295,11 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
       ): TDbgProcess; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -743,11 +743,11 @@ begin
 end;
 
 constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager);
 begin
   FMasterPtyFd:=-1;
   FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses);
+  inherited Create(AName, AProcessID, AThreadID, AnOsClasses, AMemManager);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
@@ -759,7 +759,7 @@ end;
 
 class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -808,7 +808,7 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AnOsClasses);
+    result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AnOsClasses, AMemManager);
     TDbgLinuxProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgLinuxProcess(result).FProcProcess := AProcess;
   except
@@ -826,12 +826,12 @@ begin
 end;
 
 class function TDbgLinuxProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
 begin
   Result := nil;
   fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE));
 
-  result := TDbgLinuxProcess.Create(AFileName, APid, 0, AnOsClasses);
+  result := TDbgLinuxProcess.Create(AFileName, APid, 0, AnOsClasses, AMemManager);
 
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;

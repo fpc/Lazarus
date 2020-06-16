@@ -645,14 +645,13 @@ type
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
-    FMemManager: TFpDbgMemManager;
     FFiles: array of TDwarfDebugFile;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
   public
-    constructor Create(ALoaderList: TDbgImageLoaderList); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
@@ -666,7 +665,6 @@ type
     function PointerFromRVA(ARVA: QWord): Pointer;
     function CompilationUnitsCount: Integer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
-    property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
 
     property ImageBase: QWord read FImageBase;
   end;
@@ -3161,13 +3159,14 @@ end;
 
 { TFpDwarfInfo }
 
-constructor TFpDwarfInfo.Create(ALoaderList: TDbgImageLoaderList);
+constructor TFpDwarfInfo.Create(ALoaderList: TDbgImageLoaderList;
+  AMemManager: TFpDbgMemManager);
 var
   Section: TDwarfSection;
   p: PDbgImageSection;
   i: Integer;
 begin
-  inherited Create(ALoaderList);
+  inherited Create(ALoaderList, AMemManager);
   FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
   FImageBase := ALoaderList.ImageBase;

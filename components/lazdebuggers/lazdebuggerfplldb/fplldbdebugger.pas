@@ -327,8 +327,7 @@ begin
       exit;
 
 
-    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
-    FDwarfInfo.MemManager := FMemManager;
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
     if Terminated then
       exit;
 
@@ -1191,8 +1190,7 @@ begin
     FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
     FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
 
-    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
-    FDwarfInfo.MemManager := FMemManager;
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
     FDwarfInfo.LoadCompilationUnits;
 
     if FDwarfInfo.TargetInfo.bitness = b64 then

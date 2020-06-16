@@ -898,7 +898,7 @@ var
     ImageLoader := TDbgImageLoader.Create(AFileName);
     ImageLoaderList := TDbgImageLoaderList.Create(True);
     ImageLoader.AddToLoaderList(ImageLoaderList);
-    DwarfInfo := TFpDwarfInfo.Create(ImageLoaderList);
+    DwarfInfo := TFpDwarfInfo.Create(ImageLoaderList, nil);
     DwarfInfo.LoadCompilationUnits;
   end;
 

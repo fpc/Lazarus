@@ -22,7 +22,7 @@ uses
   FpDbgUtil,
   UTF8Process,
   LazLoggerBase,
-  FpDbgCommon;
+  FpDbgCommon, FpdMemoryTools;
 
 type
   x86_thread_state32_t = record
@@ -146,9 +146,9 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -620,14 +620,14 @@ begin
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager);
 var
   aKernResult: kern_return_t;
 begin
   inherited Create(AName, AProcessID, AThreadID, AnOsClasses);
 
   GetDebugAccessRights;
-  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
+  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort, AMemmanager);
   if aKernResult <> KERN_SUCCESS then
     begin
     debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
@@ -642,7 +642,7 @@ end;
 
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -699,7 +699,7 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AnOsClasses);
+    result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AnOsClasses, AMemManager);
     TDbgDarwinProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
     TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;

@@ -18,7 +18,7 @@ uses
   FpDbgLoader,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   LazLoggerBase, Maps,
-  FpDbgRsp, FpDbgCommon;
+  FpDbgRsp, FpDbgCommon, FpdMemoryTools;
 
 const
   // RSP commands
@@ -101,16 +101,16 @@ type
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
 
     // Not supported, returns false
     //class function AttachToInstance(AFileName: string; APid: Integer
     //  ): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
 
     class function isSupported(target: TTargetDescriptor): boolean; override;
 
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses); override;
+    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
 
     // FOR AVR target AAddress could be program or data (SRAM) memory (or EEPROM)
@@ -517,9 +517,10 @@ begin
 end;
 
 constructor TDbgAvrProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses);
+  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
+  );
 begin
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses);
+  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
 end;
 
 destructor TDbgAvrProcess.Destroy;
@@ -531,7 +532,8 @@ end;
 
 class function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager): TDbgProcess;
 var
   AnExecutabeFilename: string;
   dbg: TDbgAvrProcess;
@@ -551,7 +553,7 @@ begin
     Exit;
   end;
 
-  dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses);
+  dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses, AMemManager);
   try
     dbg.FConnection := TRspConnection.Create(HostName, Port);
     dbg.FConnection.RegisterCacheSize := RegArrayLength;
@@ -569,7 +571,8 @@ begin
 end;
 
 class function TDbgAvrProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses): TDbgProcess;
+  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
+  ): TDbgProcess;
 begin
   result := nil;
 end;

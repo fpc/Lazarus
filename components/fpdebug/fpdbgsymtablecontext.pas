@@ -49,7 +49,7 @@ type
     FSymbolList: TfpSymbolList;
     FContext: TFpSymbolContext;
   public
-    constructor Create(ALoaderList: TDbgImageLoaderList); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
@@ -120,12 +120,13 @@ end;
 
 { TFpSymbolInfo }
 
-constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList);
+constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
+  AMemManager: TFpDbgMemManager);
 
 var
   i: Integer;
 begin
-  inherited Create(ALoaderList);
+  inherited Create(ALoaderList, AMemManager);
   FContext := TFpSymbolContext.Create(self);
 
   FSymbolList := TfpSymbolList.Create;
