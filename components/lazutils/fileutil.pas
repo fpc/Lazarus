@@ -77,12 +77,23 @@ function ReadFileToString(const Filename: string): string;
 type
   TSearchFileInPathFlag = (
     sffDontSearchInBasePath, // do not search in BasePath, search only in SearchPath.
-    sffSearchLoUpCase
+    sffSearchLoUpCase,
+    sffFile, // must be file, not directory
+    sffExecutable, // file must be executable
+    sffDequoteSearchPath // ansi dequote
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
+const
+  sffFindProgramInPath = [
+    {$IFDEF Unix}sffDontSearchInBasePath,{$ENDIF}
+    {$IFDEF Windows}sffDequoteSearchPath,{$ENDIF}
+    sffFile,
+    sffExecutable
+    ];
 
-function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string; Flags: TSearchFileInPathFlags): string; overload;
+function SearchFileInPath(const Filename, BasePath: string;
+  SearchPath: string; const Delimiter: string;
+  Flags: TSearchFileInPathFlags): string; overload;
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
 function FindDiskFilename(const Filename: string): string;
