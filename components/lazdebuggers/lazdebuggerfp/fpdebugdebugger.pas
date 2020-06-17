@@ -122,7 +122,7 @@ type
   private
   type
     TBreakPointLoc = (
-      bplRaise, bplReRaise, // bplBreakError, bplRunError,
+      bplRaise, bplReRaise, bplBreakError, bplRunError,
       bplPopExcept, bplCatches,
       bplRtlUnwind, bplFpcSpecific,
       bplSehW64Finally, bplSehW64Except,
@@ -229,6 +229,10 @@ type
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
+    // HandleBreakError: Default handler for range-check etc
+    procedure HandleBreakError(var continue: boolean);
+    // HandleRunError: Software called RuntimeError
+    procedure HandleRunError(var continue: boolean);
     procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
     procedure EnterPause(ALocationAddr: TDBGLocationRec; AnInternalPause: Boolean = False);
@@ -1888,8 +1892,8 @@ procedure TFpDebugExceptionStepping.DoProcessLoaded;
 begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.SetSoftwareExceptionBreakpoint FPC_RAISEEXCEPTION' ]);
   FBreakPoints[bplRaise]         := FDebugger.AddBreak('FPC_RAISEEXCEPTION');
-  //FBreakPoints[bplBreakError]    := FDebugger.AddBreak('FPC_BREAK_ERROR');
-  //FBreakPoints[bplRunError]      := FDebugger.AddBreak('FPC_RUNERROR');
+  FBreakPoints[bplBreakError]    := FDebugger.AddBreak('FPC_BREAK_ERROR');
+  FBreakPoints[bplRunError]      := FDebugger.AddBreak('FPC_RUNERROR');
   FBreakPoints[bplReRaise]       := FDebugger.AddBreak('FPC_RERAISE', nil,            False);
   FBreakPoints[bplPopExcept]     := FDebugger.AddBreak('FPC_POPADDRSTACK', nil,       False);
   FBreakPoints[bplCatches]       := FDebugger.AddBreak('FPC_CATCHES', nil,            False);
@@ -2233,6 +2237,20 @@ begin
   if BreakPoint = FBreakPoints[bplRaise] then begin
     debugln(FPDBG_COMMANDS, ['@ bplRaise']);
     DoExceptionRaised(&continue);
+  end
+  else
+  if BreakPoint = FBreakPoints[bplBreakError] then begin
+    debugln(FPDBG_COMMANDS, ['@ bplBreakError']);
+    FDebugger.HandleBreakError(&continue);
+    if not &continue then
+      FState := esNone;
+  end
+  else
+  if BreakPoint = FBreakPoints[bplRunError] then begin
+    debugln(FPDBG_COMMANDS, ['@ bplRunError']);
+    FDebugger.HandleRunError(&continue);
+    if not &continue then
+      FState := esNone;
   end
   else
     Result := False;
@@ -2652,6 +2670,72 @@ begin
   end;
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
+end;
+
+procedure TFpDebugDebugger.HandleBreakError(var continue: boolean);
+var
+  ErrNo: QWord;
+  ExceptIP: TDBGPtr;
+  ExceptName: string;
+  ExceptItem: TBaseException;
+  ExceptionLocation: TDBGLocationRec;
+begin
+  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
+    SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
+  then
+    ExceptIP := 0;
+  ExceptionLocation:=GetLocationRec(ExceptIP);
+
+  if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(LongInt)), ErrNo, FDbgController.DefaultContext)
+  then
+    ExceptName := Format('RunError(%d)', [ErrNo])
+  else
+    ExceptName := 'RunError(unknown)';
+
+  ExceptItem := Exceptions.Find(ExceptName);
+  if (ExceptItem <> nil) and (ExceptItem.Enabled)
+  then begin
+    continue := True;
+    exit;
+  end;
+
+  DoException(deRunError, ExceptName, ExceptionLocation, '', continue);
+
+  if not &continue then begin
+    EnterPause(ExceptionLocation);
+  end;
+end;
+
+procedure TFpDebugDebugger.HandleRunError(var continue: boolean);
+var
+  ErrNo: QWord;
+  ExceptName: string;
+  ExceptItem: TBaseException;
+  ExceptionLocation: TDBGLocationRec;
+begin
+  // NO Addr / No Frame
+  ExceptionLocation:=GetLocationRec;
+
+  if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(Word)), ErrNo, FDbgController.DefaultContext)
+  then
+    ExceptName := Format('RunError(%d)', [ErrNo])
+  else
+    ExceptName := 'RunError(unknown)';
+
+  ExceptItem := Exceptions.Find(ExceptName);
+  if (ExceptItem <> nil) and (ExceptItem.Enabled)
+  then begin
+    continue := True;
+    exit;
+  end;
+
+  DoException(deRunError, ExceptName, ExceptionLocation, '', continue);
+
+  if not &continue then begin
+    EnterPause(ExceptionLocation);
+  end;
 end;
 
 procedure TFpDebugDebugger.FreeDebugThread;
