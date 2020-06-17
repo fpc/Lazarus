@@ -13,14 +13,13 @@ object CalendarPopupForm: TCalendarPopupForm
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   PopupMode = pmAuto
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object Calendar: TCalendar
     Left = 0
     Height = 160
     Top = 0
     Width = 176
     AutoSize = True
-    BorderSpacing.Around = 1
     DateTime = 38823
     OnDblClick = CalendarDblClick
     OnKeyDown = CalendarKeyDown
