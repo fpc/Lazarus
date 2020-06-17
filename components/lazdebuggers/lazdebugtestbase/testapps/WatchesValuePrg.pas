@@ -47,6 +47,7 @@ type
 
 var
   BreakDummy: PtrUInt;
+  PByteDummy: PByte;
   p: Pointer;
   InterfacedObject, InterfacedObject2: TInterfacedObject;
 
@@ -432,6 +433,7 @@ begin
   BreakDummy := ord(gcCharStatArray[1]);
   BreakDummy := ord(gcWCharStatArray[1]);
   p := nil;
+  PByteDummy := nil;
   SomeFunc1(1,1,1,1);
   SomeProc1();
   dummy1 := nil;
