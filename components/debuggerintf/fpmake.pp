@@ -4,7 +4,7 @@
 
    fpmake.pp for DebuggerIntf 0.1
 
-   This file was generated on 22-05-20
+   This file was generated on 17-06-20
 }
 
 {$ifndef ALLPACKAGES} 
@@ -52,11 +52,13 @@ begin
     D := T.Dependencies.AddUnit('DbgIntfMiscClasses');
     D := T.Dependencies.AddUnit('IDEMiniLibC');
     D := T.Dependencies.AddUnit('DbgIntfPseudoTerminal');
+    D := T.Dependencies.AddUnit('DbgIntfCommonStrings');
     T := P.Targets.AddImplicitUnit('dbgintfbasetypes.pas');
     T := P.Targets.AddImplicitUnit('dbgintfdebuggerbase.pp');
     T := P.Targets.AddImplicitUnit('dbgintfmiscclasses.pas');
     T := P.Targets.AddImplicitUnit('ideminilibc.pas');
     T := P.Targets.AddImplicitUnit('dbgintfpseudoterminal.pas');
+    T := P.Targets.AddImplicitUnit('dbgintfcommonstrings.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('DebuggerIntf.compiled');
