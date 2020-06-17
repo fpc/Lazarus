@@ -469,6 +469,7 @@ type
   protected
     // NameNeeded //  "^TPointedTo"
     procedure TypeInfoNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
   public
     constructor Create(const APointedTo: TFpSymbol; AContext: TFpDbgInfoContext; APointerLevels: Integer);
     constructor Create(const APointedTo: TFpSymbol; AContext: TFpDbgInfoContext);
@@ -521,6 +522,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetTypeInfo: TFpSymbol; override;
     function GetAsCardinal: QWord; override;
+    function GetAddress: TFpDbgMemLocation; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpValue; override;
   public
@@ -667,6 +669,11 @@ begin
   else begin
     SetLastError(CreateError(fpErrAnyError, ['']));
   end;
+end;
+
+function TFpPasParserValueCastToPointer.GetAddress: TFpDbgMemLocation;
+begin
+  Result := FValue.Address;
 end;
 
 function TFpPasParserValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
@@ -955,6 +962,8 @@ var
 begin
   if (AIndex = 0) or (FValue = nil) then begin
     Result := FValue;
+    if Result <> nil then
+      Result.AddReference;
     exit;
   end;
 
@@ -1041,6 +1050,13 @@ begin
   t := TPasParserSymbolPointer.Create(FPointedTo, FContext, FPointerLevels-1);
   SetTypeInfo(t);
   t.ReleaseReference;
+end;
+
+function TPasParserSymbolPointer.DoReadSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
+begin
+  ASize := SizeVal(FContext.SizeOfAddress);
+  Result := True;
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpSymbol;
@@ -1141,7 +1157,10 @@ begin
 
           ti := TmpVal.TypeInfo;
           if (ti <> nil) then ti := ti.TypeInfo;
-          IsPChar := (ti <> nil) and (ti.Kind in [skChar]) and (Offs > 0);
+          IsPChar := (ti <> nil) and (ti.Kind in [skChar]) and (Offs > 0) and
+                     (not(TmpVal is TFpPasParserValueAddressOf)) and
+                     (not(TmpVal is TFpPasParserValueCastToPointer)) and
+                     (not(TmpVal is TFpPasParserValueMakeReftype));
           if IsPChar then FExpression.FHasPCharIndexAccess := True;
           if IsPChar and FExpression.FixPCharIndexAccess then begin
             // fix for string in dwarf 2
@@ -2721,7 +2740,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
       Idx := -Idx;
     end;
     TmpVal := APointerVal.Member[Idx];
-    if IsError(APointerVal.LastError) then begin
+    if IsError(APointerVal.LastError) or (TmpVal = nil) then begin
       SetError('Error dereferencing'); // TODO: set correct error
       exit;
     end;

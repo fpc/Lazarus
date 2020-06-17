@@ -1897,6 +1897,24 @@ begin
     t.Add('^byte(0)', '^byte(0)',  wePointerAddr(nil,    '^Byte'));
     t.Add('^byte($0)', '^byte($0)',  wePointerAddr(nil,    '^Byte'));
 
+    t.Add('^^^char(gvInstance1)^[3][0]',         '^^^char(gvInstance1)^[3][0]',   weChar(#7)); // TCLass1 / len=7
+    t.Add('^^^char(gvInstance1)^[3][1]',         '^^^char(gvInstance1)^[3][1]',   weChar('T')); // TCLass1
+    t.Add('^^^char(gvInstance1)^[3][2]',         '^^^char(gvInstance1)^[3][2]',   weChar('C'));
+    t.Add('^^^char(gvInstance1)^[3][3]',         '^^^char(gvInstance1)^[3][3]',   weChar('l'));
+    t.Add('^^^char(gvInstance1)^[3]^',           '^^^char(gvInstance1)^[3]^',    weChar(#7)); // TCLass1 / len=7
+    t.Add('(^^^char(gvInstance1)^[3])^',         '(^^^char(gvInstance1)^[3])^',  weChar(#7)); // TCLass1 / len=7
+    t.Add('(^^^char(gvInstance1)^[3]+0)^',       '(^^^char(gvInstance1)^[3]+0)^',   weChar(#7)); // TCLass1 / len=7
+    t.Add('(^^^char(gvInstance1)^[3]+1)^',       '(^^^char(gvInstance1)^[3]+1)^',   weChar('T')); // TCLass1
+
+    t.Add('((^^^char(gvInstance1)^)+3)^^',       '((^^^char(gvInstance1)^)+3)^^',   weChar(#7));
+    t.Add('((^^^char(gvInstance1)^)+3)[0]^',     '((^^^char(gvInstance1)^)+3)[0]^',   weChar(#7));
+    t.Add('((^^^char(gvInstance1)^)+3)^[0]',     '((^^^char(gvInstance1)^)+3)^[0]',   weChar(#7));
+    t.Add('((^^^char(gvInstance1)^)+3)[0][0]',   '((^^^char(gvInstance1)^)+3)[0][0]',   weChar(#7));
+    t.Add('(((^^^char(gvInstance1)^)+3)^+1)^',   '(((^^^char(gvInstance1)^)+3)^+1)^',   weChar('T'));
+    t.Add('(((^^^char(gvInstance1)^)+3)[0]+1)^', '(((^^^char(gvInstance1)^)+3)[0]+1)^',   weChar('T'));
+    t.Add('((^^^char(gvInstance1)^)+3)^[1]',     '((^^^char(gvInstance1)^)+3)^[1]',   weChar('T'));
+    t.Add('((^^^char(gvInstance1)^)+3)[0][1]',   '((^^^char(gvInstance1)^)+3)[0][1]',   weChar('T'));
+
     AddWatchesConv(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatchesConv(t, 'glob var',   'gv', 001, 'B');
 
