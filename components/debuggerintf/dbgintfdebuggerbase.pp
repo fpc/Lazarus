@@ -50,7 +50,7 @@ uses
   // LazUtils
   LazClasses, LazLoggerBase, LazFileUtils, LazStringUtils, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal, DbgIntfCommonStrings;
 
 const
   DebuggerIntfVersion = 0;
@@ -1855,6 +1855,7 @@ type
     FReleaseLock: Integer;
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
+    function GetRunErrorText(ARunError: Integer): string;
     //function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand;
@@ -1975,6 +1976,7 @@ type
                                            write SetDebuggerEnvironment;         // The environment passed to the debugger process
     property Environment: TStrings read FEnvironment write SetEnvironment;       // The environment passed to the debuggee
     property Exceptions: TBaseExceptions read FExceptions write FExceptions;      // A list of exceptions we should ignore
+    property RunErrorText [ARunError: Integer]: string read GetRunErrorText;
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
@@ -6074,6 +6076,68 @@ begin
     end;
   end;
   FCurEnvironment.Assign(FEnvironment);
+end;
+
+function TDebuggerIntf.GetRunErrorText(ARunError: Integer): string;
+begin
+  Result := '';
+  case ARunError of
+      1: Result := rsRunErrorInvalidFunctionNumber;
+      2: Result := rsRunErrorFileNotFound;
+      3: Result := rsRunErrorPathNotFound;
+      4: Result := rsRunErrorTooManyOpenFiles;
+      5: Result := rsRunErrorFileAccessDenied;
+      6: Result := rsRunErrorInvalidFileHandle;
+     12: Result := rsRunErrorInvalidFileAccessCode;
+     15: Result := rsRunErrorInvalidDriveNumber;
+     16: Result := rsRunErrorCannotRemoveCurrentDirect;
+     17: Result := rsRunErrorCannotRenameAcrossDrives;
+    100: Result := rsRunErrorDiskReadError;
+    101: Result := rsRunErrorDiskWriteError;
+    102: Result := rsRunErrorFileNotAssigned;
+    103: Result := rsRunErrorFileNotOpen;
+    104: Result := rsRunErrorFileNotOpenForInput;
+    105: Result := rsRunErrorFileNotOpenForOutput;
+    106: Result := rsRunErrorInvalidNumericFormat;
+    107: Result := rsRunErrorInvalidEnumeration;
+    150: Result := rsRunErrorDiskIsWriteProtected;
+    151: Result := rsRunErrorBadDriveRequestStructLeng;
+    152: Result := rsRunErrorDriveNotReady;
+    154: Result := rsRunErrorCRCErrorInData;
+    156: Result := rsRunErrorDiskSeekError;
+    157: Result := rsRunErrorUnknownMediaType;
+    158: Result := rsRunErrorSectorNotFound;
+    159: Result := rsRunErrorPrinterOutOfPaper;
+    160: Result := rsRunErrorDeviceWriteFault;
+    161: Result := rsRunErrorDeviceReadFault;
+    162: Result := rsRunErrorHardwareFailure;
+    200: Result := rsRunErrorDivisionByZero;
+    201: Result := rsRunErrorRangeCheckError;
+    202: Result := rsRunErrorStackOverflowError;
+    203: Result := rsRunErrorHeapOverflowError;
+    204: Result := rsRunErrorInvalidPointerOperation;
+    205: Result := rsRunErrorFloatingPointOverflow;
+    206: Result := rsRunErrorFloatingPointUnderflow;
+    207: Result := rsRunErrorInvalidFloatingPointOpera;
+    210: Result := rsRunErrorObjectNotInitialized;
+    211: Result := rsRunErrorCallToAbstractMethod;
+    212: Result := rsRunErrorStreamRegistrationError;
+    213: Result := rsRunErrorCollectionIndexOutOfRange;
+    214: Result := rsRunErrorCollectionOverflowError;
+    215: Result := rsRunErrorArithmeticOverflowError;
+    216: Result := rsRunErrorGeneralProtectionFault;
+    217: Result := rsRunErrorUnhandledExceptionOccurre;
+    218: Result := rsRunErrorInvalidValueSpecified;
+    219: Result := rsRunErrorInvalidTypecast;
+    222: Result := rsRunErrorVariantDispatchError;
+    223: Result := rsRunErrorVariantArrayCreate;
+    224: Result := rsRunErrorVariantIsNotAnArray;
+    225: Result := rsRunErrorVarArrayBoundsCheckError;
+    227: Result := rsRunErrorAssertionFailedError;
+    229: Result := rsRunErrorSafecallErrorCheck;
+    231: Result := rsRunErrorExceptionStackCorrupted;
+    232: Result := rsRunErrorThreadsNotSupported;
+  end;
 end;
 
 function TDebuggerIntf.GetPseudoTerminal: TPseudoTerminal;

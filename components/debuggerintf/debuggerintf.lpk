@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="DebuggerIntf"/>
     <Type Value="RunAndDesignTime"/>
@@ -27,7 +27,7 @@
 Provides an interface to add debuggers to the IDE"/>
     <License Value="GPL-2"/>
     <Version Minor="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="dbgintfbasetypes.pas"/>
         <UnitName Value="DbgIntfBaseTypes"/>
@@ -46,8 +46,12 @@ Provides an interface to add debuggers to the IDE"/>
       </Item4>
       <Item5>
         <Filename Value="dbgintfpseudoterminal.pas"/>
-        <UnitName Value="dbgintfpseudoterminal"/>
+        <UnitName Value="DbgIntfPseudoTerminal"/>
       </Item5>
+      <Item6>
+        <Filename Value="dbgintfcommonstrings.pas"/>
+        <UnitName Value="DbgIntfCommonStrings"/>
+      </Item6>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

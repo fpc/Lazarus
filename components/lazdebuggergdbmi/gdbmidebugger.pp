@@ -6186,7 +6186,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    FTheDebugger.DoException(deRunError, ExceptName, Location, '', CanContinue);
+    FTheDebugger.DoException(deRunError, ExceptName, Location, FTheDebugger.RunErrorText[ErrorNo], CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -6226,7 +6226,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    FTheDebugger.DoException(deRunError, ExceptName, Location, '', CanContinue);
+    FTheDebugger.DoException(deRunError, ExceptName, Location, FTheDebugger.RunErrorText[ErrorNo], CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')

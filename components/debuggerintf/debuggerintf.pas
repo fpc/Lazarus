@@ -9,7 +9,7 @@ interface
 
 uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, IDEMiniLibC, 
-  DbgIntfPseudoTerminal, LazarusPackageIntf;
+  DbgIntfPseudoTerminal, DbgIntfCommonStrings, LazarusPackageIntf;
 
 implementation
 

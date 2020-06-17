@@ -927,7 +927,7 @@ const
       exit;
     end;
 
-    Debugger.DoException(deRunError, ExceptName, Debugger.FCurrentLocation, '', CanContinue);
+    Debugger.DoException(deRunError, ExceptName, Debugger.FCurrentLocation, Debugger.RunErrorText[ErrNo], CanContinue);
     if CanContinue
     then begin
       FState := crStoppedRaise;

@@ -2700,7 +2700,7 @@ begin
     exit;
   end;
 
-  DoException(deRunError, ExceptName, ExceptionLocation, '', continue);
+  DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 
   if not &continue then begin
     EnterPause(ExceptionLocation);
@@ -2731,7 +2731,7 @@ begin
     exit;
   end;
 
-  DoException(deRunError, ExceptName, ExceptionLocation, '', continue);
+  DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 
   if not &continue then begin
     EnterPause(ExceptionLocation);

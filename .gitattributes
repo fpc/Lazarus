@@ -1290,6 +1290,7 @@ components/debuggerintf/Makefile svneol=native#text/plain
 components/debuggerintf/Makefile.compiled svneol=native#text/plain
 components/debuggerintf/Makefile.fpc svneol=native#text/plain
 components/debuggerintf/dbgintfbasetypes.pas svneol=native#text/pascal
+components/debuggerintf/dbgintfcommonstrings.pas svneol=native#text/pascal
 components/debuggerintf/dbgintfdebuggerbase.pp svneol=native#text/pascal
 components/debuggerintf/dbgintfmiscclasses.pas svneol=native#text/pascal
 components/debuggerintf/dbgintfpseudoterminal.pas svneol=native#text/pascal
