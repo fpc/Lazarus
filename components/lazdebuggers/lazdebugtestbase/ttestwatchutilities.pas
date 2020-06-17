@@ -38,6 +38,7 @@ type
 
      ehExpectNotFound,
      ehExpectError,       // watch is invalid (less specific, than not found / maybe invalid expression ?)
+     ehExpectErrorText,   // watch is invalid // still test for Expected test
 
      ehNotImplemented,     // The debugger is known to fail this test // same as ehIgnAll
      ehNotImplementedKind, // skSimple...
@@ -286,6 +287,7 @@ type
 
 
 function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String=''): TWatchExpectationResult;
+function weMatchErr(AExpVal: String): TWatchExpectationResult;
 
 function weInteger(AExpVal: Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
 function weCardinal(AExpVal: QWord; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
@@ -405,6 +407,15 @@ begin
   Result.ExpResultKind := rkMatch;
   Result.ExpSymKind := ASymKind;
   Result.ExpTextData := AExpVal;
+end;
+
+function weMatchErr(AExpVal: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkMatch;
+  Result.ExpSymKind := skNone;
+  Result.ExpTextData := AExpVal;
+  Result.AddFlag(ehExpectErrorText);
 end;
 
 function weInteger(AExpVal: Int64; ATypeName: String; ASize: Integer
@@ -1257,6 +1268,11 @@ begin
       if ehExpectError in ehf then begin
 //TODO
         Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
+        exit;
+      end;
+      if ehExpectErrorText in ehf then begin
+        Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
+        Result := CheckData(Context, AnIgnoreRsn);
         exit;
       end;
       if ehExpectNotFound in ehf then begin

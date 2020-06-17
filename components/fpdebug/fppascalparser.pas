@@ -2119,6 +2119,7 @@ end;
 function TFpPascalExpressionPart.DoGetResultValue: TFpValue;
 begin
   Result := nil;
+  SetError('Can not evaluate: "'+GetText+'"');
 end;
 
 procedure TFpPascalExpressionPart.ResetEvaluation;

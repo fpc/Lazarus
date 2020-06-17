@@ -22,6 +22,7 @@ type
     procedure TestWatchesAddressOf;
     procedure TestWatchesTypeCast;
     procedure TestWatchesExpression;
+    procedure TestWatchesErrors;
   end;
 
 implementation
@@ -29,7 +30,7 @@ implementation
 var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue,
   ControlTestWatchAddressOf, ControlTestWatchTypeCast,
-  ControlTestExpression: Pointer;
+  ControlTestExpression, ControlTestErrors: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint);
 begin
@@ -2185,6 +2186,62 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesErrors;
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestErrors) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.Pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+    t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    //BrkFoo         := Debugger.SetBreakPoint(Src, 'Foo');
+    //BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
+    //BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    RunToPause(BrkPrg);
+
+    t.Clear;
+    // Constant values
+    //t.Add('', '^char(1)^+[1]',   weMatchErr('Can not evaluate: "\[1\]"'));
+    t.Add('', '^char(1)^+[1]',   weMatchErr('Can not evaluate: "\['));
+
+
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+
+
+  finally
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
@@ -2194,6 +2251,8 @@ initialization
   ControlTestWatchAddressOf := TestControlRegisterTest('AddressOf', ControlTestWatch);
   ControlTestWatchTypeCast  := TestControlRegisterTest('TypeCast', ControlTestWatch);
   ControlTestExpression     := TestControlRegisterTest('Expression', ControlTestWatch);
+  ControlTestErrors         := TestControlRegisterTest('Errors', ControlTestWatch);
 
 end.
+
 
