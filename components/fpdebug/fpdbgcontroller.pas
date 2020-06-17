@@ -207,6 +207,7 @@ type
   TDbgController = class
   private
     FMemManager: TFpDbgMemManager;
+    FDefaultContext: TFpDbgAddressContext;
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
@@ -231,6 +232,7 @@ type
     FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
     function GetCurrentThreadId: Integer;
+    function GetDefaultContext: TFpDbgAddressContext;
     procedure SetCurrentThreadId(AValue: Integer);
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
@@ -265,6 +267,7 @@ type
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property DefaultContext: TFpDbgAddressContext read GetDefaultContext; // CurrentThread, TopStackFrame
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1062,6 +1065,19 @@ begin
   Result := FCurrentThread.ID;
 end;
 
+function TDbgController.GetDefaultContext: TFpDbgAddressContext;
+begin
+  if FDefaultContext = nil then begin
+    FDefaultContext := TFpDbgInfoSimpleContext.Create(MemManager,
+      FCurrentThread.GetInstructionPointerRegisterValue,
+      DBGPTRSIZE[CurrentProcess.Mode],
+      CurrentThread.ID,
+      0
+      );
+  end;
+  Result := FDefaultContext;
+end;
+
 procedure TDbgController.SetCurrentThreadId(AValue: Integer);
 var
   ExistingThread: TDbgThread;
@@ -1081,6 +1097,8 @@ var
   it: TMapIterator;
   p: TDbgProcess;
 begin
+  ReleaseRefAndNil(FDefaultContext);
+
   if FCommand <> nil then begin
     FCommand.FProcess := nil;
     FCommand.FThread := nil;
@@ -1265,6 +1283,7 @@ begin
     FOnThreadBeforeProcessLoop(Self);
 
   repeat
+    ReleaseRefAndNil(FDefaultContext);
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then begin
       // IF there is a pause-request, we will hit a deCreateProcess.
       // No need to indicate FRunning

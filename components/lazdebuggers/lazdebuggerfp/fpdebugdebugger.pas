@@ -2622,30 +2622,21 @@ end;
 procedure TFpDebugDebugger.HandleSoftwareException(out
   AnExceptionLocation: TDBGLocationRec; var continue: boolean);
 var
-  AnExceptionObjectLocation: TDBGPtr;
+  AnExceptionObjectLocation, ExceptIP: TDBGPtr;
   ExceptionClass: string;
   ExceptionMessage: string;
-  RegDxDwarfIndex, RegFirstArg: Cardinal;
   ExceptItem: TBaseException;
 begin
-  // Using regvar:
-  // In all their wisdom, people decided to give the (r)dx register dwarf index
-  // 1 on for x86_64 and index 2 for i386.
-  if FDbgController.CurrentProcess.Mode=dm32 then begin
-    RegDxDwarfIndex:=2;
-    RegFirstArg := 0; // AX
-  end else begin
-    RegDxDwarfIndex:=1;
-    {$IFDEF windows}
-    // Must be Win64
-    RegFirstArg := 2; // RCX
-    {$ELSE}
-    RegFirstArg := 5; // RDI
-    {$ENDIF}
-  end;
+  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
+    SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
+  then
+    ExceptIP := 0;
+  AnExceptionLocation:=GetLocationRec(ExceptIP);
 
-  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
-  AnExceptionObjectLocation:=FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegFirstArg).NumValue;
+  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(AnExceptionObjectLocation)), AnExceptionObjectLocation, FDbgController.DefaultContext)
+  then
+    AnExceptionObjectLocation := 0;
   ExceptionClass := '';
   ExceptionMessage := '';
   if AnExceptionObjectLocation <> 0 then begin
@@ -2659,7 +2650,6 @@ begin
     continue := True;
     exit;
   end;
-
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 end;

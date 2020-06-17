@@ -153,6 +153,7 @@ type
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
+    function CallParamDefaultLocation(AParamIdx: Integer): TFpDbgMemLocation; override;
 
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
     function GetConsoleOutput: string; override;
@@ -763,6 +764,23 @@ begin
     end;
 
   result := true;
+end;
+
+function TDbgDarwinProcess.CallParamDefaultLocation(AParamIdx: Integer
+  ): TFpDbgMemLocation;
+begin
+  case Mode of
+    dm32: case AParamIdx of
+        0: Result := RegisterLoc(0); // EAX
+        1: Result := RegisterLoc(2); // EDX
+        2: Result := RegisterLoc(1); // ECX
+      end;
+    dm64: case AParamIdx of
+        0: Result := RegisterLoc(5); // RDI
+        1: Result := RegisterLoc(4); // RSI
+        2: Result := RegisterLoc(1); // RDX
+      end;
+  end;
 end;
 
 function TDbgDarwinProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;

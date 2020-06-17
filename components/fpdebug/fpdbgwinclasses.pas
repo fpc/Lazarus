@@ -184,6 +184,7 @@ type
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; override;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; override;
+    function CallParamDefaultLocation(AParamIdx: Integer): TFpDbgMemLocation; override;
 
     procedure Interrupt; // required by app/fpd
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
@@ -543,6 +544,24 @@ begin
   then Buf[BytesRead] := #0
   else Buf[AMaxSize] := #0;
   AData := PWChar(@Buf[0]);
+end;
+
+function TDbgWinProcess.CallParamDefaultLocation(AParamIdx: Integer
+  ): TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
+  case Mode of
+    dm32: case AParamIdx of
+        0: Result := RegisterLoc(0); // EAX
+        1: Result := RegisterLoc(2); // EDX
+        2: Result := RegisterLoc(1); // ECX
+      end;
+    dm64: case AParamIdx of
+        0: Result := RegisterLoc(2); // RCX
+        1: Result := RegisterLoc(1); // RDX
+        2: Result := RegisterLoc(8); // R8
+      end;
+  end;
 end;
 
 procedure TDbgWinProcess.Interrupt;

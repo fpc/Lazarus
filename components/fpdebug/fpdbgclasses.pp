@@ -569,6 +569,8 @@ public
     function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
+    // Get the default location for parameters in default calling mode // Note functions may take result as argument
+    function CallParamDefaultLocation(AParamIdx: Integer): TFpDbgMemLocation; virtual;
 
     //function LocationIsBreakInstructionCode(const ALocation: TDBGPtr): Boolean; // excludes TempRemoved
     procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr);
@@ -1775,6 +1777,12 @@ end;
 function TDbgProcess.ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean;
 begin
   result := false;
+end;
+
+function TDbgProcess.CallParamDefaultLocation(AParamIdx: Integer
+  ): TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
 end;
 
 function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
