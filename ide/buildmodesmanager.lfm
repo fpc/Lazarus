@@ -12,11 +12,11 @@ object BuildModesForm: TBuildModesForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 316
+    Height = 26
+    Top = 322
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -36,7 +36,7 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 28
-    Top = 39
+    Top = 37
     Width = 154
     Align = alNone
     BorderSpacing.Top = 6
@@ -46,7 +46,6 @@ object BuildModesForm: TBuildModesForm
     EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
-    Images = ImageList1
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
@@ -101,9 +100,9 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrCenter
     Left = 166
-    Height = 17
-    Top = 45
-    Width = 66
+    Height = 15
+    Top = 44
+    Width = 55
     BorderSpacing.Left = 6
     Caption = 'NoteLabel'
     Font.Color = clMaroon
@@ -116,8 +115,8 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 242
-    Top = 73
+    Height = 244
+    Top = 71
     Width = 602
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
@@ -160,9 +159,9 @@ object BuildModesForm: TBuildModesForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 27
+    Height = 25
     Top = 6
-    Width = 183
+    Width = 166
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -176,10 +175,10 @@ object BuildModesForm: TBuildModesForm
     AnchorSideTop.Control = btnCreateDefaultModes
     AnchorSideRight.Control = BuildModesStringGrid
     AnchorSideRight.Side = asrBottom
-    Left = 536
+    Left = 539
     Height = 25
     Top = 6
-    Width = 72
+    Width = 69
     Anchors = [akTop, akRight]
     AutoSize = True
     Caption = '&Rename'
@@ -189,9 +188,5 @@ object BuildModesForm: TBuildModesForm
   object BuildModesPopupMenu: TPopupMenu
     left = 168
     top = 260
-  end
-  object ImageList1: TImageList
-    left = 240
-    top = 280
   end
 end
