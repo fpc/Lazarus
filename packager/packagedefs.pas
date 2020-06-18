@@ -2863,7 +2863,7 @@ var
       Include(FFlags,lpfCompatibilityMode);
     end else
     begin
-      if XMLConfig.GetValue(ThePath+'CompatibilityMode/Value',true) then
+      if XMLConfig.GetValue(ThePath+'CompatibilityMode/Value',false) then
         Include(FFlags,lpfCompatibilityMode)
       else
         Exclude(FFlags,lpfCompatibilityMode);
@@ -2968,7 +2968,7 @@ var
     XMLConfig.SetDeleteValue(ThePath+'AutoIncrementVersionOnBuild/Value',
       AutoIncrementVersionOnBuild,true);
     XMLConfig.SetDeleteValue(ThePath+'CompatibilityMode/Value',
-      UseLegacyLists,true);
+      UseLegacyLists,false);
   end;
 
 begin
