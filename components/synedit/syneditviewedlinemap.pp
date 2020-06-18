@@ -942,8 +942,8 @@ end;
 
 destructor TSynLineMapAVLTree.Destroy;
 begin
-  FInvalidEntryList.Destroy;
   inherited Destroy;
+  FInvalidEntryList.Destroy;
 end;
 
 procedure TSynLineMapAVLTree.Clear;
