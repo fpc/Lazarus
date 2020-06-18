@@ -214,7 +214,7 @@ type
     FExceptionStepper: TFpDebugExceptionStepping;
     FConsoleOutputThread: TThread;
     // Helper vars to run in debug-thread
-    FCacheLine: cardinal;
+    FCacheLine, FCacheBytesRead: cardinal;
     FCacheFileName: string;
     FCacheLib: TDbgLibrary;
     FCacheBreakpoint: TFpDbgBreakpoint;
@@ -295,6 +295,7 @@ type
     procedure DoAddBreakLocation;
     procedure DoAddBWatch;
     procedure DoReadData;
+    procedure DoReadPartialData;
     procedure DoPrepareCallStackEntryList;
     procedure DoFreeBreakpoint;
     procedure DoFindContext;
@@ -308,6 +309,7 @@ type
                       AScope: TDBGWatchPointScope): TFpDbgBreakpoint;
     procedure FreeBreakpoint(const ABreakpoint: TFpDbgBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
+    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
@@ -495,7 +497,9 @@ type
     function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; override;
   public
     constructor create(AFpDebugDebuger: TFpDebugDebugger);
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override; overload;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer;
+      out ABytesRead: Cardinal): Boolean; override; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
       AContext: TFpDbgAddressContext): Boolean; override;
@@ -839,6 +843,12 @@ end;
 function TFpDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TFpDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
+  ADest: Pointer; out ABytesRead: Cardinal): Boolean;
+begin
+  result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^, ABytesRead);
 end;
 
 function TFpDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
@@ -3206,6 +3216,11 @@ begin
   FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^);
 end;
 
+procedure TFpDebugDebugger.DoReadPartialData;
+begin
+  FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^, FCacheBytesRead);
+end;
+
 procedure TFpDebugDebugger.DoPrepareCallStackEntryList;
 begin
   FCallStackEntryListThread.PrepareCallStackEntryList(FCallStackEntryListFrameRequired);
@@ -3330,6 +3345,24 @@ begin
   end
   else
     result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
+end;
+
+function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr;
+  const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean;
+begin
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheLocation := AAdress;
+    FCacheLine:=ASize;
+    FCachePointer := @AData;
+    FCacheBoolean := False;
+    FCacheBytesRead := 0;
+    ExecuteInDebugThread(@DoReadPartialData);
+    result := FCacheBoolean;
+    ABytesRead := FCacheBytesRead;
+  end
+  else
+    result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData, ABytesRead);
 end;
 
 function TFpDebugDebugger.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;

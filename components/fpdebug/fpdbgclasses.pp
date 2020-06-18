@@ -127,7 +127,8 @@ type
     function GetDbgProcess: TDbgProcess; virtual; abstract;
     function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; virtual;
   public
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override; overload;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean; override; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
@@ -1181,6 +1182,12 @@ end;
 function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
+  ADest: Pointer; out ABytesRead: Cardinal): Boolean;
+begin
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^, ABytesRead);
 end;
 
 function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;

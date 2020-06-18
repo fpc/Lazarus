@@ -2075,7 +2075,7 @@ end;
 function TFpValueDwarfPointer.GetAsString: AnsiString;
 var
   t: TFpSymbol;
-  i: Integer;
+  i: Cardinal;
   Size: TFpDbgValueSize;
 begin
   Result := '';
@@ -2096,13 +2096,14 @@ begin
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
     SetLength(Result, 2000);
     i := 2000;
-    while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1])) do
-      i := i div 2;
-    if i = 0 then begin
+
+    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
       exit;
     end;
+
+    i := MemManager.PartialReadResultLenght;
     SetLength(Result,i);
     i := pos(#0, Result);
     if i > 0 then
@@ -2115,7 +2116,7 @@ end;
 function TFpValueDwarfPointer.GetAsWideString: WideString;
 var
   t: TFpSymbol;
-  i: Integer;
+  i: Cardinal;
 begin
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
@@ -2123,13 +2124,14 @@ begin
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
     SetLength(Result, 2000);
     i := 4000; // 2000 * 16 bit
-    while (i > 0) and (not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1])) do
-      i := i div 2;
-    if i = 0 then begin
+
+    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
       exit;
     end;
+
+    i := MemManager.PartialReadResultLenght;
     SetLength(Result, i div 2);
     i := pos(#0, Result);
     if i > 0 then

@@ -78,9 +78,13 @@ type
   end;
 
 
+  { TFpDbgMemReaderBase }
+
   TFpDbgMemReaderBase = class
   public
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract; overload;
+    // inherited Memreaders should implement partial size ReadMemory, and forward it to the TDbgProcess class
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean; virtual; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
     // ReadRegister may need TargetMemConvertor
     // Register with reduced size are treated as unsigned
@@ -225,7 +229,8 @@ type
     function AddCacheEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase; virtual;
     procedure RemoveCache(ACache: TFpDbgMemCacheBase); virtual;
 
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; overload;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; ABytesRead: Cardinal): Boolean; virtual; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual;
   end;
 
@@ -258,7 +263,9 @@ type
     destructor Destroy; override;
 
     function HasMemory(AnAddress: TDbgPtr; ASize: Cardinal): Boolean;
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override; overload;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer;
+      ABytesRead: Cardinal): Boolean; override; overload;
 
     function AddCache(AnAddress: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase;
       override;
@@ -280,6 +287,9 @@ type
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
 
+  TFpDbgMemManagerFlag = (mmfPartialRead);
+  TFpDbgMemManagerFlags = set of TFpDbgMemManagerFlag;
+
   { TFpDbgMemManager }
 
   TFpDbgMemManager = class
@@ -290,6 +300,7 @@ type
     FDefaultContext: TFpDbgAddressContext;
     FLastError: TFpError;
     FMemReader: TFpDbgMemReaderBase;
+    FPartialReadResultLenght: QWord;
     FTmpMem: array[0..(TMP_MEM_SIZE div 8)+1] of qword; // MUST have at least ONE extra byte
     FTargetMemConvertor: TFpDbgMemConvertor;
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
@@ -298,7 +309,8 @@ type
   protected
     function ReadMemory(AReadDataType: TFpDbgMemReadDataType;
       const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
-      const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext
+      const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext;
+      const AFlags: TFpDbgMemManagerFlags = []
     ): Boolean;
   public
     procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
@@ -310,7 +322,8 @@ type
     procedure ClearLastError;
 
     function ReadMemory(const ASourceLocation: TFpDbgMemLocation; const ASize: TFpDbgValueSize;
-                        const ADest: Pointer; AContext: TFpDbgAddressContext = nil
+                        const ADest: Pointer; AContext: TFpDbgAddressContext = nil;
+                        const AFlags: TFpDbgMemManagerFlags = []
                        ): Boolean; inline;
     function ReadMemoryEx(const ASourceLocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: TFpDbgValueSize; ADest: Pointer; AContext: TFpDbgAddressContext = nil): Boolean;
     (* ReadRegister needs a Context, to get the thread/stackframe
@@ -359,6 +372,7 @@ type
 
     property TargetMemConvertor: TFpDbgMemConvertor read FTargetMemConvertor;
     property SelfMemConvertor: TFpDbgMemConvertor read FSelfMemConvertor;
+    property PartialReadResultLenght: QWord read FPartialReadResultLenght;
     property LastError: TFpError read FLastError;
     property DefaultContext: TFpDbgAddressContext read FDefaultContext write FDefaultContext;
   end;
@@ -762,6 +776,41 @@ begin
   WriteStr(Result, AReadDataType);
 end;
 
+{ TFpDbgMemReaderBase }
+
+function TFpDbgMemReaderBase.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
+  ADest: Pointer; out ABytesRead: Cardinal): Boolean;
+var
+  SizeRemaining, sz: Cardinal;
+  Offs: Integer;
+begin
+  ABytesRead := ASize;
+  Result := ReadMemory(AnAddress, ASize, ADest);
+  if Result then
+    exit;
+
+  SizeRemaining := ASize;
+  Offs := 0;
+  ABytesRead := 0;
+
+  while SizeRemaining > 0 do begin
+    Result := False;
+    sz := SizeRemaining;
+    while (not Result) and (sz > 1) do begin
+      sz := sz div 2;
+      Result := ReadMemory(AnAddress, sz, Pointer(PByte(ADest) + Offs));
+    end;
+    if not Result then
+      break;
+
+    ABytesRead := ABytesRead + sz;
+    Offs := Offs + sz;
+    SizeRemaining := SizeRemaining - sz;
+  end;
+
+  Result := ABytesRead > 0;
+end;
+
 { TFpDbgMemConvertorLittleEndian }
 
 function TFpDbgMemConvertorLittleEndian.PrepareTargetRead(
@@ -937,6 +986,12 @@ begin
   Result := FMemReader.ReadMemory(AnAddress, ASize, ADest);
 end;
 
+function TFpDbgMemCacheManagerBase.ReadMemory(AnAddress: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer; ABytesRead: Cardinal): Boolean;
+begin
+  Result := FMemReader.ReadMemory(AnAddress, ASize, ADest, ABytesRead);
+end;
+
 function TFpDbgMemCacheManagerBase.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 begin
@@ -1061,6 +1116,30 @@ begin
   Result := inherited ReadMemory(AnAddress, ASize, ADest);
 end;
 
+function TFpDbgMemCacheManagerSimple.ReadMemory(AnAddress: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer; ABytesRead: Cardinal): Boolean;
+var
+  Node: TAVLTreeNode;
+begin
+  Node := FCaches.FindNearestKey(@AnAddress, @CompareKey);
+  if Node = nil then
+    exit(inherited ReadMemory(AnAddress, ASize, ADest, ABytesRead));
+
+  if TFpDbgMemCacheSimple(Node.Data).CacheAddress > AnAddress then
+    Node := Node.Precessor;;
+  if Node = nil then
+    exit(inherited ReadMemory(AnAddress, ASize, ADest, ABytesRead));
+
+  // TODO: Allow to cache partial mem reads
+  if TFpDbgMemCacheSimple(Node.Data).ContainsMemory(AnAddress, ASize) then begin
+    ABytesRead := ASize;
+    Result := TFpDbgMemCacheSimple(Node.Data).ReadMemory(AnAddress, ASize, ADest);
+    exit;
+  end;
+
+  Result := inherited ReadMemory(AnAddress, ASize, ADest, ABytesRead);
+end;
+
 function TFpDbgMemCacheManagerSimple.AddCache(AnAddress: TDbgPtr;
   ASize: Cardinal): TFpDbgMemCacheBase;
 begin
@@ -1115,8 +1194,8 @@ end;
 
 function TFpDbgMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType;
   const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
-  const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext
-  ): Boolean;
+  const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgAddressContext;
+  const AFlags: TFpDbgMemManagerFlags): Boolean;
 var
   ConvData: TFpDbgMemConvData;
   ReadData, ReadData2: Pointer;
@@ -1125,6 +1204,7 @@ var
   SourceReadSize, SourceFullSize: QWord;
 begin
   Result := False;
+  FPartialReadResultLenght := SizeToFullBytes(ASourceSize);
   DebugLn(FPDBG_VERBOSE_MEM, ['$ReadMem: ', dbgs(AReadDataType),' ', dbgs(ASourceLocation), ' ', dbgs(ASourceSize), ' Dest ', ADestSize]);
   if (ASourceLocation.MType in [mlfInvalid, mlfUninitialized]) or
      (ASourceSize <= 0)
@@ -1190,7 +1270,10 @@ begin
             if SourceReadSize <= ConvData.DestSize then begin
               // full read to ADest
               ReadData := ADest;
-              Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ADest);
+              if mmfPartialRead in AFlags then
+                Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ADest, FPartialReadResultLenght)
+              else
+                Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ADest);
             end
             else
             if SourceReadSize <= TMP_MEM_SIZE then begin
@@ -1198,6 +1281,7 @@ begin
               // This is the ONLY read that has ReadData <> ADest
               // *** FinishTargetRead must copy the data ***
               ReadData := @FTmpMem[0];
+              // TODO: partial reads for bit shifting?
               Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, SourceReadSize, ReadData);
             end
             else begin
@@ -1207,6 +1291,7 @@ begin
               assert(BitOffset <> 0, 'TFpDbgMemManager.ReadMemory: BitOffset <> 0');
               ReadData := ADest;
               ReadData2 := @FTmpMem[0];
+              // TODO: partial reads for bit shifting?
               Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address, ConvData.DestSize, ADest);
               if Result then
                 Result := CacheManager.ReadMemory(ConvData.SourceLocation.Address + ConvData.DestSize, SourceReadSize - ConvData.DestSize, ReadData2);
@@ -1354,9 +1439,9 @@ end;
 
 function TFpDbgMemManager.ReadMemory(const ASourceLocation: TFpDbgMemLocation;
   const ASize: TFpDbgValueSize; const ADest: Pointer;
-  AContext: TFpDbgAddressContext): Boolean;
+  AContext: TFpDbgAddressContext; const AFlags: TFpDbgMemManagerFlags): Boolean;
 begin
-  Result := ReadMemory(rdtRawRead, ASourceLocation, ASize, ADest, ASize.Size, AContext);
+  Result := ReadMemory(rdtRawRead, ASourceLocation, ASize, ADest, ASize.Size, AContext, AFlags);
 end;
 
 function TFpDbgMemManager.ReadMemoryEx(
