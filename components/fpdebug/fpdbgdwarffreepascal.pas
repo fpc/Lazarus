@@ -1327,6 +1327,8 @@ var
 begin
   // Only call this function for non-empty strings!
   Result := False;
+  if not IsTargetNotNil(Addr) then
+    exit;
 
   // Only AnsiStrings in fpc 3.0.0 and higher have a dynamic codepage.
   if (TypeInfo.Kind = skString) and (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030000) then begin
