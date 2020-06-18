@@ -1502,6 +1502,11 @@ begin
     AddCompilerProcedure('Write','Args:Arguments');
     AddCompilerProcedure('WriteLn','Args:Arguments');
     AddCompilerProcedure('WriteStr','var S:String;Args:Arguments');
+    if Scanner.PascalCompiler=pcPas2js then begin
+      AddCompilerFunction('Str','const X[:Width[:Decimals]]','string');
+      AddCompilerFunction('AWait','const Expr: T','T');
+      AddCompilerFunction('AWait','aType; p: TJSPromise','aType');
+    end;
   end;
 
   if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) and
