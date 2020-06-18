@@ -81,6 +81,9 @@ type
   { TFpDbgMemReaderBase }
 
   TFpDbgMemReaderBase = class
+  protected
+    // ReadMemoryPartial: workaround for subclasses that do not support partial mem read
+    function ReadMemoryPartial(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean;
   public
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract; overload;
     // inherited Memreaders should implement partial size ReadMemory, and forward it to the TDbgProcess class
@@ -780,6 +783,12 @@ end;
 
 function TFpDbgMemReaderBase.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer; out ABytesRead: Cardinal): Boolean;
+begin
+  ReadMemoryPartial(AnAddress, ASize, ADest, ABytesRead);
+end;
+
+function TFpDbgMemReaderBase.ReadMemoryPartial(AnAddress: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean;
 var
   SizeRemaining, sz: Cardinal;
   Offs: Integer;
@@ -805,6 +814,7 @@ begin
 
     ABytesRead := ABytesRead + sz;
     Offs := Offs + sz;
+    AnAddress := AnAddress + sz;
     SizeRemaining := SizeRemaining - sz;
   end;
 

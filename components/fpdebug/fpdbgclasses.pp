@@ -1733,6 +1733,7 @@ function TDbgProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal;
 var
   SizeRemaining, sz: Cardinal;
   Offs: Integer;
+  APartAddr: TDBGPtr;
 begin
   // subclasses can do better implementation if checking for error reasons, such as part_read
   APartSize := ASize;
@@ -1742,6 +1743,7 @@ begin
 
   SizeRemaining := ASize;
   Offs := 0;
+  APartAddr := AAdress;
   APartSize := 0;
 
   while SizeRemaining > 0 do begin
@@ -1749,13 +1751,14 @@ begin
     sz := SizeRemaining;
     while (not Result) and (sz > 1) do begin
       sz := sz div 2;
-      Result := ReadData(AAdress, sz, (@AData + Offs)^);
+      Result := ReadData(APartAddr, sz, (@AData + Offs)^);
     end;
     if not Result then
       break;
 
     APartSize := APartSize + sz;
     Offs := Offs + sz;
+    APartAddr := APartAddr + sz;
     SizeRemaining := SizeRemaining - sz;
   end;
 
