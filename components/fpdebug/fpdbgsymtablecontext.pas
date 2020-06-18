@@ -48,8 +48,10 @@ type
   private
     FSymbolList: TfpSymbolList;
     FContext: TFpSymbolContext;
+    FLibName: String;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String);
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
@@ -136,6 +138,13 @@ begin
     SetHasInfo;
 end;
 
+constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
+  AMemManager: TFpDbgMemManager; ALibName: String);
+begin
+  FLibName := ALibName;
+  Create(ALoaderList, AMemManager);
+end;
+
 destructor TFpSymbolInfo.Destroy;
 begin
   FSymbolList.Free;
@@ -163,16 +172,37 @@ end;
 
 function TFpSymbolInfo.FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol;
 var
-  i: integer;
+  CheckRange: Boolean;
+  i, NearestIdx: integer;
+  a, NearestAddr: TDBGPtr;
+  NPreFix: String;
 begin
+  NPreFix := '';
+  if FLibName <> '' then
+    NPreFix := FLibName+':';
+  CheckRange :=
+    (FSymbolList.HighAddr > FSymbolList.LowAddr) and
+    (AnAdress >= FSymbolList.LowAddr) and
+    (AnAdress < FSymbolList.HighAddr);
+  NearestIdx := -1;
+  NearestAddr := 0;
+
   Result := nil;
   i := FSymbolList.Count - 1;
   while i >= 0 do begin
-    if FSymbolList.Data[i] = AnAdress then begin
-      Result := TFpSymbolTableProc.Create(FSymbolList.Keys[i], FSymbolList.Data[i]);
+    a := FSymbolList.Data[i];
+    if a = AnAdress then begin
+      Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[i], FSymbolList.Data[i]);
       exit;
     end;
+    if CheckRange and (a <= AnAdress) and (a > NearestAddr)  then begin
+      NearestIdx := i;
+      NearestAddr := a;
+    end;
     dec(i);
+  end;
+  if NearestIdx >= 0 then begin
+    Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[NearestIdx], FSymbolList.Data[NearestIdx]);
   end;
 end;
 

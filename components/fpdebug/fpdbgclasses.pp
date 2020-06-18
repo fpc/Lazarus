@@ -38,11 +38,9 @@ unit FpDbgClasses;
 interface
 
 uses
-  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader,
-  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
-  DbgIntfDebuggerBase,
-  FpPascalBuilder,
-  fpDbgSymTableContext,
+  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader, FpDbgInfo,
+  FpdMemoryTools, LazLoggerBase, LazClasses, LazFileUtils, DbgIntfBaseTypes,
+  fgl, DbgIntfDebuggerBase, FpPascalBuilder, fpDbgSymTableContext,
   FpDbgDwarfDataClasses, FpDbgCommon;
 
 type
@@ -1072,10 +1070,19 @@ end;
 function TDbgCallstackEntry.GetFunctionName: string;
 var
   Symbol: TFpSymbol;
+  offs: TDBGPtr;
 begin
   Symbol := GetProcSymbol;
-  if assigned(Symbol) then
-    result := Symbol.Name
+  if assigned(Symbol) then begin
+    if Symbol is TFpSymbolTableProc then begin
+      if AnAddress > Symbol.Address.Address then
+        result := Format('%s+%d', [Symbol.Name, AnAddress - Symbol.Address.Address])
+      else
+        result := Symbol.Name;
+    end
+    else
+      result := Symbol.Name;
+  end
   else
     result := '';
 end;
@@ -1470,7 +1477,10 @@ begin
     FMode:=dm32;
   FDbgInfo := TFpDwarfInfo.Create(FLoaderList, MemManager);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager);
+  if self is TDbgProcess then
+    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager)
+  else
+    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager, ExtractFileNameOnly(FFileName));
 end;
 
 procedure TDbgInstance.SetFileName(const AValue: String);

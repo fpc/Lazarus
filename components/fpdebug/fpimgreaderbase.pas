@@ -89,6 +89,7 @@ type
   TDbgImageReader = class(TObject) // executable parser
   private
     FImageBase: QWord;
+    FImageSize: QWord;
     FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
@@ -99,6 +100,7 @@ type
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
+    procedure SetImageSize(ASize: QWord);
     procedure AddReaderError(AnError: String);
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
@@ -109,6 +111,7 @@ type
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
 
     property ImageBase: QWord read FImageBase;
+    property ImageSize: QWord read FImageSize;
 
     property TargetInfo: TTargetDescriptor read FTargetInfo;
 
@@ -333,6 +336,11 @@ end;
 procedure TDbgImageReader.SetImageBase(ABase: QWord);
 begin
   FImageBase := ABase;
+end;
+
+procedure TDbgImageReader.SetImageSize(ASize: QWord);
+begin
+  FImageSize := ASize;
 end;
 
 procedure TDbgImageReader.AddReaderError(AnError: String);

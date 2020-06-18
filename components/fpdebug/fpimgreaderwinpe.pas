@@ -132,6 +132,7 @@ var
   SymbolCount: integer;
   SymbolName: AnsiString;
 begin
+  AfpSymbolInfo.SetAddressBounds(ImageBase, ImageBase+ImageSize);
   p := Section[_symbol];
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
@@ -187,6 +188,7 @@ begin
   if LoadedTargetImageAddr = 0 then
     exit;
 
+  SetImageBase(LoadedTargetImageAddr);
   FFileLoader.LoadMemory(0, 1, hBase); // size does not matter, only obtain address
   if (hBase = nil) or (hBase^.e_magic <> IMAGE_DOS_SIGNATURE) then
     exit;
@@ -202,6 +204,7 @@ begin
       PIMAGE_EXPORT_DIRECTORY(PtrUInt(header64^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
     );
     ExportSize := header64^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
+    SetImageSize(header64^.OptionalHeader.SizeOfImage);
   end
   else begin
     header32 := PImageNtHeaders32(PByte(hBase) + hBase^.e_lfanew);
@@ -214,7 +217,9 @@ begin
       PIMAGE_EXPORT_DIRECTORY(PtrUInt(header32^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
     );
     ExportSize := header32^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
+    SetImageSize(header32^.OptionalHeader.SizeOfImage);
   end;
+  AfpSymbolInfo.SetAddressBounds(ImageBase, ImageBase+ImageSize);
 
   if (ExportSect = nil) or (ExportSect^.AddressOfNames = 0) or (ExportSize = 0) then
     exit;
@@ -381,9 +386,13 @@ begin
     FTargetInfo.Bitness := bNone;
   end;
 
-  if FTargetInfo.Bitness = b64
-  then SetImageBase(NtHeaders.W64.OptionalHeader.ImageBase)
-  else SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
+  if FTargetInfo.Bitness = b64 then begin
+    SetImageBase(NtHeaders.W64.OptionalHeader.ImageBase);
+    SetImageSize(NtHeaders.W64.OptionalHeader.SizeOfImage);
+  end else begin
+    SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
+    SetImageSize(NtHeaders.W32.OptionalHeader.SizeOfImage);
+  end;
   FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
   SectionMax := FFileLoader.LoadMemory(
     DosHeader.e_lfanew +
