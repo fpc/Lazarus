@@ -11,11 +11,12 @@ begin
 end;
 
 const
-  PredefinedBrowserStrings: array[1..10] of String = (
+  PredefinedBrowserStrings: array[1..11] of String = (
     'xdg-open',
     'htmlview',
     'firefox',
     'mozilla',
+    'google-chrome',
     'galeon',
     'konqueror',
     'safari',
