@@ -27,36 +27,40 @@
 Provides an interface to add debuggers to the IDE"/>
     <License Value="GPL-2"/>
     <Version Minor="1"/>
-    <Files Count="6">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="dbgintfbasetypes.pas"/>
         <UnitName Value="DbgIntfBaseTypes"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="dbgintfdebuggerbase.pp"/>
         <UnitName Value="DbgIntfDebuggerBase"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="dbgintfmiscclasses.pas"/>
         <UnitName Value="DbgIntfMiscClasses"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="ideminilibc.pas"/>
         <UnitName Value="IDEMiniLibC"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <Filename Value="dbgintfpseudoterminal.pas"/>
         <UnitName Value="DbgIntfPseudoTerminal"/>
-      </Item5>
-      <Item6>
+      </Item>
+      <Item>
         <Filename Value="dbgintfcommonstrings.pas"/>
         <UnitName Value="DbgIntfCommonStrings"/>
-      </Item6>
+      </Item>
     </Files>
-    <RequiredPkgs Count="1">
-      <Item1>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="LCLBase"/>
-      </Item1>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

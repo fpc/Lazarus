@@ -1,0 +1,223 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
+msgid "Arithmetic overflow error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorassertionfailederror
+msgid "Assertion failed error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
+msgid "Bad drive request struct length"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
+msgid "Call to abstract method"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
+msgid "Cannot remove current directory"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcannotrenameacrossdrives
+msgid "Cannot rename across drives"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
+msgid "Collection index out of range"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
+msgid "Collection overflow error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorcrcerrorindata
+msgid "CRC error in data"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordevicereadfault
+msgid "Device read fault"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordevicewritefault
+msgid "Device write fault"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordiskiswriteprotected
+msgid "Disk is write-protected"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordiskreaderror
+msgid "Disk read error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordiskseekerror
+msgid "Disk seek error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordiskwriteerror
+msgid "Disk write error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordivisionbyzero
+msgid "Division by zero"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrordrivenotready
+msgid "Drive not ready"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
+msgid "Exception stack corrupted"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfileaccessdenied
+msgid "File access denied"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfilenotassigned
+msgid "File not assigned"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopen
+msgid "File not open"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
+msgid "File not open for input"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforoutput
+msgid "File not open for output"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
+msgid "Floating point overflow"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
+msgid "Floating point underflow"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
+msgid "General Protection fault"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorhardwarefailure
+msgid "Hardware failure"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorheapoverflowerror
+msgid "Heap overflow error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvaliddrivenumber
+msgid "Invalid drive number"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidenumeration
+msgid "Invalid enumeration"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfileaccesscode
+msgid "Invalid file access code"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfilehandle
+msgid "Invalid file handle"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
+msgid "Invalid floating point operation"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
+msgid "Invalid function number"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidnumericformat
+msgid "Invalid numeric format"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidpointeroperation
+msgid "Invalid pointer operation"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidtypecast
+msgid "Invalid typecast"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
+msgid "Invalid value specified"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorobjectnotinitialized
+msgid "Object not initialized"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorpathnotfound
+msgid "Path not found"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
+msgid "Printer out of paper"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorrangecheckerror
+msgid "Range check error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorsafecallerrorcheck
+msgid "Safecall error check"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorsectornotfound
+msgid "Sector Not Found"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorstackoverflowerror
+msgid "Stack overflow error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorstreamregistrationerror
+msgid "Stream registration error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
+msgid "Threads not supported"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
+msgid "Too many open files"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
+msgid "Unhandled exception occurred"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorunknownmediatype
+msgid "Unknown media type"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
+msgid "Var Array Bounds check error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorvariantarraycreate
+msgid "Variant array create"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorvariantdispatcherror
+msgid "Variant dispatch error"
+msgstr ""
+
+#: dbgintfcommonstrings.rsrunerrorvariantisnotanarray
+msgid "Variant is not an array"
+msgstr ""
+

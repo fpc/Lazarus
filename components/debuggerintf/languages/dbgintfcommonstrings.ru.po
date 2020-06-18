@@ -1,0 +1,233 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
+msgid "Arithmetic overflow error"
+msgstr "Ошибка арифметического переполнения"
+
+#: dbgintfcommonstrings.rsrunerrorassertionfailederror
+msgid "Assertion failed error"
+msgstr "Ошибка проверки Assert"
+
+#: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
+msgid "Bad drive request struct length"
+msgstr "Некорректная длина данных для запроса диска"
+
+#: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
+msgid "Call to abstract method"
+msgstr "Вызов абстрактного метода"
+
+#: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
+msgid "Cannot remove current directory"
+msgstr "Невозможно удалить текущий каталог"
+
+#: dbgintfcommonstrings.rsrunerrorcannotrenameacrossdrives
+msgid "Cannot rename across drives"
+msgstr "Невозможно выполнить переименование между дисками"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
+msgid "Collection index out of range"
+msgstr "Индекс коллекции вне диапазона"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
+msgid "Collection overflow error"
+msgstr "Ошибка переполнения коллекции"
+
+#: dbgintfcommonstrings.rsrunerrorcrcerrorindata
+msgid "CRC error in data"
+msgstr "Ошибка CRC в данных"
+
+#: dbgintfcommonstrings.rsrunerrordevicereadfault
+msgid "Device read fault"
+msgstr "Ошибка чтения из устройства"
+
+#: dbgintfcommonstrings.rsrunerrordevicewritefault
+msgid "Device write fault"
+msgstr "Ошибка записи в устройство"
+
+#: dbgintfcommonstrings.rsrunerrordiskiswriteprotected
+msgid "Disk is write-protected"
+msgstr "Диск защищён от записи"
+
+#: dbgintfcommonstrings.rsrunerrordiskreaderror
+msgid "Disk read error"
+msgstr "Ошибка чтения диска"
+
+#: dbgintfcommonstrings.rsrunerrordiskseekerror
+msgid "Disk seek error"
+msgstr "Ошибка поиска по диску"
+
+#: dbgintfcommonstrings.rsrunerrordiskwriteerror
+msgid "Disk write error"
+msgstr "Ошибка записи на диск"
+
+#: dbgintfcommonstrings.rsrunerrordivisionbyzero
+msgid "Division by zero"
+msgstr "Деление на ноль"
+
+#: dbgintfcommonstrings.rsrunerrordrivenotready
+msgid "Drive not ready"
+msgstr "Диск не готов"
+
+#: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
+msgid "Exception stack corrupted"
+msgstr "Стек исключения повреждён"
+
+#: dbgintfcommonstrings.rsrunerrorfileaccessdenied
+msgid "File access denied"
+msgstr "Доступ к файлу запрещён"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotassigned
+msgid "File not assigned"
+msgstr "Файл не присвоен"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotfound
+msgid "File not found"
+msgstr "Файл не найден"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopen
+msgid "File not open"
+msgstr "Файл не открыт"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
+msgid "File not open for input"
+msgstr "Файл не открыт для ввода"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforoutput
+msgid "File not open for output"
+msgstr "Файл не открыт для вывода"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
+msgid "Floating point overflow"
+msgstr "Переполнение числа с плавающей точкой"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
+msgid "Floating point underflow"
+msgstr "Потеря значимости числа с плавающей точкой"
+
+#: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
+msgid "General Protection fault"
+msgstr "Общая ошибка защиты"
+
+#: dbgintfcommonstrings.rsrunerrorhardwarefailure
+msgid "Hardware failure"
+msgstr "Отказ аппаратного обеспечения"
+
+#: dbgintfcommonstrings.rsrunerrorheapoverflowerror
+msgid "Heap overflow error"
+msgstr "Ошибка переполнения кучи"
+
+#: dbgintfcommonstrings.rsrunerrorinvaliddrivenumber
+msgid "Invalid drive number"
+msgstr "Неверный номер диска"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidenumeration
+msgid "Invalid enumeration"
+msgstr "Неверное перечисление"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfileaccesscode
+msgid "Invalid file access code"
+msgstr "Неверный код доступа к файлу"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfilehandle
+msgid "Invalid file handle"
+msgstr "Неверный дескриптор файла"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
+msgid "Invalid floating point operation"
+msgstr "Некорректная операция с плавающей точкой"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
+msgid "Invalid function number"
+msgstr "Неверный номер функции"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidnumericformat
+msgid "Invalid numeric format"
+msgstr "Неверный числовой формат"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidpointeroperation
+msgid "Invalid pointer operation"
+msgstr "Некорректная операция с указателями"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidtypecast
+msgid "Invalid typecast"
+msgstr "Некорректное приведение типов"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
+msgid "Invalid value specified"
+msgstr "Указано неверное значение"
+
+#: dbgintfcommonstrings.rsrunerrorobjectnotinitialized
+msgid "Object not initialized"
+msgstr "Объект не инициализирован"
+
+#: dbgintfcommonstrings.rsrunerrorpathnotfound
+msgid "Path not found"
+msgstr "Путь не найден"
+
+#: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
+msgid "Printer out of paper"
+msgstr "Закончилась бумага в принтере"
+
+#: dbgintfcommonstrings.rsrunerrorrangecheckerror
+msgid "Range check error"
+msgstr "Ошибка проверки диапазона"
+
+#: dbgintfcommonstrings.rsrunerrorsafecallerrorcheck
+msgid "Safecall error check"
+msgstr "Ошибка проверки Safecall"
+
+#: dbgintfcommonstrings.rsrunerrorsectornotfound
+msgid "Sector Not Found"
+msgstr "Сектор не найден"
+
+#: dbgintfcommonstrings.rsrunerrorstackoverflowerror
+msgid "Stack overflow error"
+msgstr "Ошибка переполнения стека"
+
+#: dbgintfcommonstrings.rsrunerrorstreamregistrationerror
+msgid "Stream registration error"
+msgstr "Ошибка регистрации потока"
+
+#: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
+msgid "Threads not supported"
+msgstr "Потоки исполнения не поддерживаются"
+
+#: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
+msgid "Too many open files"
+msgstr "Слишком много открытых файлов"
+
+#: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
+msgid "Unhandled exception occurred"
+msgstr "Произошло необработанное исключение"
+
+#: dbgintfcommonstrings.rsrunerrorunknownmediatype
+msgid "Unknown media type"
+msgstr "Неизвестный тип носителя"
+
+#: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
+msgid "Var Array Bounds check error"
+msgstr "Ошибка проверки границ динамического массива"
+
+#: dbgintfcommonstrings.rsrunerrorvariantarraycreate
+msgid "Variant array create"
+msgstr "Ошибка создания массива Variant"
+
+#: dbgintfcommonstrings.rsrunerrorvariantdispatcherror
+msgid "Variant dispatch error"
+msgstr "Ошибка обработки Variant"
+
+#: dbgintfcommonstrings.rsrunerrorvariantisnotanarray
+msgid "Variant is not an array"
+msgstr "Variant не является массивом"
+
