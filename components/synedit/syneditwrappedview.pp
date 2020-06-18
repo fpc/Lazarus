@@ -1501,7 +1501,6 @@ begin
           inc(PhysWidthPtr);
           inc(Result);
           dec(AMaxWidth, CurCharPhysWidth);
-          CurCharPhysWidth := PhysWidthPtr^ and PCWMask;
         end
         else begin
           ALine := nil; // break outer loop
@@ -1539,7 +1538,6 @@ begin
         inc(PhysWidthPtr);
         inc(Result);
         dec(AMaxWidth, CurCharPhysWidth);
-        CurCharPhysWidth := PhysWidthPtr^ and PCWMask;
       end
       else
         break;
