@@ -1504,18 +1504,19 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
         if FMemManager.ReadAddress(ClassAddr, SizeVal(Ctx.SizeOfAddress), CNameAddr) then begin
           if (FMemManager.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
             if NameLen > 0 then begin
-              SetLength(CastName, NameLen);
-              CNameAddr.Address := CNameAddr.Address + 1;
-              FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
-              PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
-              PasExpr2.ResultValue;
-              if PasExpr2.Valid then begin
-                PasExpr.Free;
-                PasExpr := PasExpr2;
-                ResValue := PasExpr.ResultValue;
-              end
-              else
-                PasExpr2.Free;
+              if FMemManager.SetLength(CastName, NameLen) then begin
+                CNameAddr.Address := CNameAddr.Address + 1;
+                FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
+                PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+                PasExpr2.ResultValue;
+                if PasExpr2.Valid then begin
+                  PasExpr.Free;
+                  PasExpr := PasExpr2;
+                  ResValue := PasExpr.ResultValue;
+                end
+                else
+                  PasExpr2.Free;
+              end;
             end;
         end;
       end;

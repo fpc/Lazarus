@@ -2094,8 +2094,14 @@ begin
     Result := GetAsWideString
   else
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    SetLength(Result, 2000);
-    i := 2000;
+    i := max(1000, MemManager.MemLimits.MaxNullStringSearchLen);
+    if i > MemManager.MemLimits.MaxMemReadSize then
+      i := MemManager.MemLimits.MaxMemReadSize;
+    if not MemManager.SetLength(Result, i) then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+      exit;
+    end;
 
     if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
       Result := '';
@@ -2122,8 +2128,14 @@ begin
   if (t <> nil) then t := t.TypeInfo;
   // skWideChar ???
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    SetLength(Result, 2000);
-    i := 4000; // 2000 * 16 bit
+    i := max(1000, MemManager.MemLimits.MaxNullStringSearchLen) * 2;
+    if i > MemManager.MemLimits.MaxMemReadSize then
+      i := MemManager.MemLimits.MaxMemReadSize;
+    if not MemManager.SetLength(Result, i div 2) then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+      exit;
+    end;
 
     if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
       Result := '';
@@ -2770,14 +2782,9 @@ begin
     exit;
   t2 := t.NestedSymbol[0]; // IndexType[0];
   if t2.GetValueBounds(self, LowBound, HighBound) then begin
-    if (HighBound < LowBound) then
+    if (HighBound < LowBound) or (HighBound - LowBound >= maxLongint) then
       exit(0); // empty array // TODO: error
-    // TODO: XXXXX Dynamic max limit
-    {$PUSH}{$Q-}
-    if QWord(HighBound - LowBound) > 3000 then
-      HighBound := LowBound + 3000;
-    Result := Integer(HighBound - LowBound + 1);
-    {$POP}
+    Result := HighBound - LowBound + 1;
   end;
 end;
 

@@ -29,6 +29,7 @@ resourcestring
   // 100 memreader error
   MsgfpInternalErrfpErrFailedReadMem              = 'Internal error: Failed to read data from memory';
   MsgfpInternalErrCanNotReadInvalidMem            = 'Internal error: Missing data location';
+  MsgfpErrReadMemSizeLimit                        = 'Memory read size exceeds limit';
   MsgfpErrCanNotReadMemAtAddr             = 'Failed to read Mem at Address $%1:x';
   MsgfpErrFailedReadRegiseter             = 'Failed to read data from register';
   // 200 LocationParser
@@ -59,8 +60,9 @@ const
   // 100 memreader error
   fpInternalErrFailedReadMem        = TFpErrorCode(100);
   fpInternalErrCanNotReadInvalidMem = TFpErrorCode(101);
-  fpErrCanNotReadMemAtAddr          = TFpErrorCode(102);
-  fpErrFailedReadRegister           = TFpErrorCode(103);
+  fpErrReadMemSizeLimit             = TFpErrorCode(102);
+  fpErrCanNotReadMemAtAddr          = TFpErrorCode(103);
+  fpErrFailedReadRegister           = TFpErrorCode(104);
 
   // 200 LocationParser
   fpErrLocationParser                 = TFpErrorCode(200);
@@ -194,6 +196,7 @@ begin
     fpErrTypeHasNoIndex: Result := MsgfpErrTypeHasNoIndex;
 
     fpInternalErrCanNotReadInvalidMem: Result := MsgfpInternalErrCanNotReadInvalidMem;
+    fpErrReadMemSizeLimit:             Result := MsgfpErrReadMemSizeLimit;
     fpInternalErrFailedReadMem:        Result := MsgfpInternalErrfpErrFailedReadMem;
     fpErrCanNotReadMemAtAddr:          Result := MsgfpErrCanNotReadMemAtAddr;
     fpErrFailedReadRegister:           Result := MsgfpErrFailedReadRegiseter;

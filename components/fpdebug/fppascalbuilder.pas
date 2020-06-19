@@ -1034,6 +1034,12 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       exit;
     end;
 
+    if not MemManager.CheckDataSize(SizeToFullBytes(AValue.DataSize)) then begin
+      APrintedValue := ErrorHandler.ErrorAsString(MemManager.LastError);
+      Result := True;
+      exit;
+    end;
+
     if (MemManager <> nil) and (MemManager.CacheManager <> nil) then
       Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, SizeToFullBytes(AValue.DataSize))
     else
@@ -1149,6 +1155,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     end;
 
     Cnt := AValue.MemberCount;
+    if (FMemManager.MemLimits.MaxArrayLen > 0) and (Cnt > FMemManager.MemLimits.MaxArrayLen) then
+      Cnt := FMemManager.MemLimits.MaxArrayLen;
+
     FullCnt := Cnt;
     if (Cnt = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
       APrintedValue := 'nil';
@@ -1214,7 +1223,10 @@ begin
       if MemSize <= 0 then MemSize := 256;
 
       if IsTargetAddr(MemAddr) then begin
-        SetLength(MemDest, MemSize);
+        if not MemManager.SetLength(MemDest, MemSize) then begin
+          APrintedValue := ErrorHandler.ErrorAsString(MemManager.LastError);
+        end
+        else
         if FMemManager.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[0]) then begin
           APrintedValue := IntToHex(MemAddr.Address, AnAddressSize*2)+ ':' + LineEnding;
           for i := 0 to high(MemDest) do begin

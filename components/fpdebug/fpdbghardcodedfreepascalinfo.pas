@@ -487,8 +487,10 @@ begin
       Exit;
       end;
     SizeInBytes := SizeToFullBytes(Size);
-    SetLength(Result, SizeInBytes);
-    Context.MemManager.ReadMemory(DataAddress, Size, @Result[1], Context);
+    if not Context.MemManager.SetLength(Result, SizeInBytes) then
+      Result := ''
+    else
+      Context.MemManager.ReadMemory(DataAddress, Size, @Result[1], Context);
     end
   else
     Result := '';

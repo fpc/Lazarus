@@ -866,7 +866,11 @@ begin
     AnError := CreateError(fpErrAnyError, ['No name found']);
     exit;
   end;
-  SetLength(AClassName, NameLen);
+  if not AMemManager.SetLength(AClassName, NameLen) then begin
+    AnError := AMemManager.LastError;
+    exit;
+  end;
+
   ClassNameAddr.Address := ClassNameAddr.Address + 1;
   Result := AMemManager.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AClassName[1]);
   if not Result then
@@ -929,11 +933,14 @@ begin
     exit('');
   end;
 
+  if not MemManager.SetLength(Result, len) then begin
+    SetLastError(MemManager.LastError);
+    exit;
+  end;
+
   StSym := TFpValueDwarf(GetInternMemberByName('st'));
   assert(StSym is TFpValueDwarf, 'StSym is TFpValueDwarf');
 
-
-  SetLength(Result, len);
   if len > 0 then
     if not MemManager.ReadMemory(StSym.DataAddress, SizeVal(len), @Result[1]) then begin
       Result := ''; // TODO: error
@@ -1011,15 +1018,12 @@ begin
           TFpValueDwarf(val).Context := Context;
           h := Val.AsInteger;
           val.ReleaseReference;
-          if h >= 0 then begin
-          {$PUSH}{$Q-}
-            if QWord(h) > 5000 - 1 then
-              h := 5000 - 1;
-          {$POP}
-          Result := h + 1;
+          if (h >= 0) and (h < maxLongint) then begin
+            Result := h + 1;
           end
           else
             Result := 0;
+// TODO h < -1  => Error
           Info.ReleaseReference;
           UpperBoundSym.ReleaseReference;
           exit;
@@ -1034,9 +1038,10 @@ begin
     if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
       exit(0); // dyn array, but bad data
     Addr.Address := Addr.Address - AddressSize;
-    //debugln(['TFpValueDwarfArray.GetMemberCount  XXXXXXXXXXXXXXX dwarf 2 read len']);
     if MemManager.ReadSignedInt(Addr, SizeVal(AddressSize), h) then begin
-      Result := Integer(h)+1;
+// TODO h < -1  => Error
+      if (h >= 0) and (h < maxLongint) then
+        Result := h+1;
       exit;
     end
     else
@@ -1273,15 +1278,19 @@ begin
   if HighBound < LowBound then
     exit; // empty string
 
-  // TODO: XXXXX Dynamic max limit
-  {$PUSH}{$Q-}
-  if QWord(HighBound - LowBound) > 5000 then
-    HighBound := LowBound + 5000;
-  {$POP}
+  if MemManager.MemLimits.MaxStringLen > 0 then begin
+    {$PUSH}{$Q-}
+    if QWord(HighBound - LowBound) > MemManager.MemLimits.MaxStringLen then
+      HighBound := LowBound + MemManager.MemLimits.MaxStringLen;
+    {$POP}
+  end;
 
   if t.Kind = skWideString then begin
-    SetLength(WResult, HighBound-LowBound+1);
-
+    if not MemManager.SetLength(WResult, HighBound-LowBound+1) then begin
+      WResult := '';
+      SetLastError(MemManager.LastError);
+    end
+    else
     if not MemManager.ReadMemory(Addr, SizeVal((HighBound-LowBound+1)*2), @WResult[1]) then begin
       WResult := '';
       SetLastError(MemManager.LastError);
@@ -1291,16 +1300,22 @@ begin
   end else
   if Addr.Address = Address.Address + 1 then begin
     // shortstring
-    SetLength(Result, HighBound-LowBound+1);
-
+    if not MemManager.SetLength(Result, HighBound-LowBound+1) then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+    end
+    else
     if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
     end;
   end
   else begin
-    SetLength(RResult, HighBound-LowBound+1);
-
+    if not MemManager.SetLength(RResult, HighBound-LowBound+1) then begin
+      Result := '';
+      SetLastError(MemManager.LastError);
+    end
+    else
     if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @RResult[1]) then begin
       Result := '';
       SetLastError(MemManager.LastError);

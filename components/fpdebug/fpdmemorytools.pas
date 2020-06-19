@@ -275,6 +275,23 @@ type
     procedure RemoveCache(ACache: TFpDbgMemCacheBase); override;
   end;
 
+  { TFpDbgMemLimits }
+
+  TFpDbgMemLimits = class
+  private
+    FMaxArrayLen: QWord;
+    FMaxMemReadSize: QWord;
+    FMaxNullStringSearchLen: QWord;
+    FMaxStringLen: QWord;
+    procedure SetMaxMemReadSize(AValue: QWord);
+  public
+    constructor Create;
+    property MaxMemReadSize: QWord read FMaxMemReadSize write SetMaxMemReadSize;
+    property MaxStringLen: QWord read FMaxStringLen write FMaxStringLen;
+    property MaxArrayLen: QWord read FMaxArrayLen write FMaxArrayLen;
+    property MaxNullStringSearchLen: QWord read FMaxNullStringSearchLen write FMaxNullStringSearchLen;
+  end;
+
   (* TFpDbgMemManager
    * allows to to pretend reading from the target, by using its own memory, or
        a constant.
@@ -293,6 +310,8 @@ type
   TFpDbgMemManagerFlag = (mmfPartialRead);
   TFpDbgMemManagerFlags = set of TFpDbgMemManagerFlag;
 
+  TByteDynArray = array of Byte;
+
   { TFpDbgMemManager }
 
   TFpDbgMemManager = class
@@ -302,6 +321,7 @@ type
     FCacheManager: TFpDbgMemCacheManagerBase;
     FDefaultContext: TFpDbgAddressContext;
     FLastError: TFpError;
+    FMemLimits: TFpDbgMemLimits;
     FMemReader: TFpDbgMemReaderBase;
     FPartialReadResultLenght: QWord;
     FTmpMem: array[0..(TMP_MEM_SIZE div 8)+1] of qword; // MUST have at least ONE extra byte
@@ -373,11 +393,18 @@ type
     //                         out AValue: Extended;
     //                         AnOpts: TFpDbgMemReadOptions; AContext: TFpDbgAddressContext = nil): Boolean;
 
+    function SetLength(var ADest: TByteDynArray; ALength: Int64): Boolean; overload;
+    function SetLength(var ADest: RawByteString; ALength: Int64): Boolean; overload;
+    function SetLength(var ADest: AnsiString; ALength: Int64): Boolean; overload;
+    function SetLength(var ADest: WideString; ALength: Int64): Boolean; overload;
+    function CheckDataSize(ASize: Int64): Boolean;
+
     property TargetMemConvertor: TFpDbgMemConvertor read FTargetMemConvertor;
     property SelfMemConvertor: TFpDbgMemConvertor read FSelfMemConvertor;
     property PartialReadResultLenght: QWord read FPartialReadResultLenght;
     property LastError: TFpError read FLastError;
     property DefaultContext: TFpDbgAddressContext read FDefaultContext write FDefaultContext;
+    property MemLimits: TFpDbgMemLimits read FMemLimits;
   end;
 
 function NilLoc: TFpDbgMemLocation; inline;
@@ -777,6 +804,24 @@ end;
 function dbgs(const AReadDataType: TFpDbgMemReadDataType): String;
 begin
   WriteStr(Result, AReadDataType);
+end;
+
+{ TFpDbgMemLimits }
+
+procedure TFpDbgMemLimits.SetMaxMemReadSize(AValue: QWord);
+begin
+  if (AValue <> 0) and (AValue < 1024) then
+    AValue := 1024;
+  if FMaxMemReadSize = AValue then Exit;
+  FMaxMemReadSize := AValue;
+end;
+
+constructor TFpDbgMemLimits.Create;
+begin
+  FMaxMemReadSize := 512 * 1024 * 1024; // Do not try allocating more than 0.5 GB by default
+  FMaxArrayLen    := 10000;
+  FMaxStringLen   := 100 * 1024;
+  FMaxNullStringSearchLen := 20 * 1024;
 end;
 
 { TFpDbgMemReaderBase }
@@ -1216,6 +1261,10 @@ begin
   Result := False;
   FPartialReadResultLenght := SizeToFullBytes(ASourceSize);
   DebugLn(FPDBG_VERBOSE_MEM, ['$ReadMem: ', dbgs(AReadDataType),' ', dbgs(ASourceLocation), ' ', dbgs(ASourceSize), ' Dest ', ADestSize]);
+
+  // To late for an error, Dest-mem is already allocated
+  assert((FMemLimits.MaxMemReadSize = 0) or (SizeToFullBytes(ASourceSize) <= FMemLimits.MaxMemReadSize), 'TFpDbgMemManager.ReadMemory: (FMemLimits.MaxMemReadSize = 0) or (SizeToFullBytes(ASourceSize) <= FMemLimits.MaxMemReadSize)');
+
   if (ASourceLocation.MType in [mlfInvalid, mlfUninitialized]) or
      (ASourceSize <= 0)
   then begin
@@ -1423,6 +1472,7 @@ end;
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase;
   AMemConvertor: TFpDbgMemConvertor);
 begin
+  FMemLimits := TFpDbgMemLimits.Create;
   FMemReader := AMemReader;
   FTargetMemConvertor := AMemConvertor;
   FSelfMemConvertor := AMemConvertor;
@@ -1431,6 +1481,7 @@ end;
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor,
   ASelfMemConvertor: TFpDbgMemConvertor);
 begin
+  FMemLimits := TFpDbgMemLimits.Create;
   FMemReader := AMemReader;
   FTargetMemConvertor := ATargenMemConvertor;
   FSelfMemConvertor := ASelfMemConvertor;
@@ -1440,6 +1491,7 @@ destructor TFpDbgMemManager.Destroy;
 begin
   SetCacheManager(nil);
   inherited Destroy;
+  FMemLimits.Free;
 end;
 
 procedure TFpDbgMemManager.ClearLastError;
@@ -1541,7 +1593,7 @@ function TFpDbgMemManager.ReadSet(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize; out AValue: TBytes; AContext: TFpDbgAddressContext
   ): Boolean;
 begin
-  SetLength(AValue, SizeToFullBytes(ASize));
+  System.SetLength(AValue, SizeToFullBytes(ASize));
   Result := ASize > 0;
   if Result then
     Result := ReadMemory(rdtSet, ALocation, ASize, @AValue[0], Length(AValue), AContext);
@@ -1552,6 +1604,64 @@ function TFpDbgMemManager.ReadFloat(const ALocation: TFpDbgMemLocation;
   ): Boolean;
 begin
   Result := ReadMemory(rdtfloat, ALocation, ASize, @AValue, (SizeOf(AValue)), AContext);
+end;
+
+function TFpDbgMemManager.SetLength(var ADest: TByteDynArray; ALength: Int64
+  ): Boolean;
+begin
+  Result := False;
+  if (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) then begin
+    FLastError := CreateError(fpErrReadMemSizeLimit);
+    exit;
+  end;
+  Result := True;
+  System.SetLength(ADest, ALength);
+end;
+
+function TFpDbgMemManager.SetLength(var ADest: RawByteString; ALength: Int64
+  ): Boolean;
+begin
+  Result := False;
+  if (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) then begin
+    FLastError := CreateError(fpErrReadMemSizeLimit);
+    exit;
+  end;
+  Result := True;
+  System.SetLength(ADest, ALength);
+end;
+
+function TFpDbgMemManager.SetLength(var ADest: AnsiString; ALength: Int64
+  ): Boolean;
+begin
+  Result := False;
+  if (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) then begin
+    FLastError := CreateError(fpErrReadMemSizeLimit);
+    exit;
+  end;
+  Result := True;
+  System.SetLength(ADest, ALength);
+end;
+
+function TFpDbgMemManager.SetLength(var ADest: WideString; ALength: Int64
+  ): Boolean;
+begin
+  Result := False;
+  if (FMemLimits.MaxMemReadSize > 0) and (ALength * 2 > FMemLimits.MaxMemReadSize) then begin
+    FLastError := CreateError(fpErrReadMemSizeLimit);
+    exit;
+  end;
+  Result := True;
+  System.SetLength(ADest, ALength);
+end;
+
+function TFpDbgMemManager.CheckDataSize(ASize: Int64): Boolean;
+begin
+  Result := False;
+  if (FMemLimits.MaxMemReadSize > 0) and (ASize > FMemLimits.MaxMemReadSize) then begin
+    FLastError := CreateError(fpErrReadMemSizeLimit);
+    exit;
+  end;
+  Result := True;
 end;
 
 initialization
