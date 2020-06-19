@@ -588,6 +588,8 @@ type
     function GetTypeInfo: TFpSymbol; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpValue; override;
+    function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
   public
     constructor Create(AValue: TFpValue; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
@@ -923,6 +925,8 @@ end;
 function TFpPasParserValueAddressOf.GetFieldFlags: TFpValueFieldFlags;
 begin
     Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress];
+    if FValue.Kind in [skChar] then
+      Result := Result + FValue.FieldFlags * [svfString, svfWideString];
 end;
 
 function TFpPasParserValueAddressOf.GetAsInteger: Int64;
@@ -996,6 +1000,16 @@ begin
   end
   else
     Result := Tmp;
+end;
+
+function TFpPasParserValueAddressOf.GetAsString: AnsiString;
+begin
+  Result := FValue.AsString;
+end;
+
+function TFpPasParserValueAddressOf.GetAsWideString: WideString;
+begin
+  Result := FValue.AsWideString;
 end;
 
 constructor TFpPasParserValueAddressOf.Create(AValue: TFpValue;

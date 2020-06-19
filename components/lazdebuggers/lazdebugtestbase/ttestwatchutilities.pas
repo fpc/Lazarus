@@ -1612,14 +1612,15 @@ begin
         tn := '.*';
       if (tn <> '') then begin
         if (Expect.ExpTextData = '') and
-           FTest.Matches('^'+tn+'\(nil\)', v)
+           FTest.Matches('^'+tn+'\(nil\)', v) or
+           FTest.Matches('^nil$', v)  // new format, no typename
         then
           v := ''''''
         else
         if FTest.Matches('^'+tn+'\(\$[0-9a-fA-F]+\) ', v) then
           delete(v, 1, pos(') ', v)+1)
         else
-        if FTest.Matches('^\$[0-9a-fA-F]+ ', v) then
+        if FTest.Matches('^\$[0-9a-fA-F]+(\^:)? ', v) then
           delete(v, 1, pos(' ', v));
       end
       else begin
@@ -1670,6 +1671,13 @@ begin
       tn := '.*';
 
     e := '(\$[0-9a-fA-F]*|nil)';
+
+    if (tn <> '') and
+       (Length(Expect.ExpSubResults) = 1) and
+       (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) and
+       (not FTest.Matches(tn+'\(', AContext.WatchVal.Value))
+    then
+      tn := ''; // char pointer to not (always?) include the type
     if tn <> '' then
       e := tn+'\('+e+'\)';
     e := '^'+e;

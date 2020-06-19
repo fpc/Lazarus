@@ -1465,6 +1465,7 @@ end;
   var
     i, Thread: Integer;
     v1, v2: String;
+    p: SizeInt;
   begin
     AssertTrue('Same count', t1.Count = t2.Count);
     t1.EvaluateWatches;
@@ -1477,6 +1478,13 @@ end;
       // check, if v2 has the derefed value at the end
       if (length(v1) < Length(v2)) and (pos(') ', v2) = Length(v1)) then
         v2 := copy(v2, 1, Length(v1));
+
+      // v1 may have a single deref value at the end
+      if (length(v1) <> Length(v2)) and (pos('^: ', v1) = pos('^: ', v2)) then begin
+        p := pos('^: ', v1);
+        v1 := copy(v1, 1, p);
+        v2 := copy(v2, 1, p);
+      end;
 
       TestEquals(t1.Tests[i]^.TstTestName + ': ' + t1.Tests[i]^.TstWatch.Expression + ' <> ' + t2.Tests[i]^.TstWatch.Expression,
         v1, v2);
@@ -1733,16 +1741,16 @@ procedure TTestWatches.TestWatchesTypeCast;
 StartIdx := t.Count; // tlConst => Only eval the watch. No tests
       val := t2.Tests[0]^.TstWatch.Values[Thread, 0].Value;
       t.Add(AName+' Int', 'PtrUInt('+p+'Instance1'+e+')',   weCardinal(StrToQWordDef(val, qword(-7)), 'PtrUInt', -1));
-      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',            weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1('+val+')',                            weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1(Pointer('+p+'Instance1_Int'+e+'))',   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1(Pointer('+val+'))',                   weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',            weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+val+')',                            weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+p+'Instance1_Int'+e+'))',   weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+val+'))',                   weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
 
       val := t2.Tests[1]^.TstWatch.Values[Thread, 0].Value;
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(@'+p+'Instance1'+e+')^',           weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1('+val+')^',                        weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer(@'+p+'Instance1'+e+'))^',  weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer('+val+'))^',               weMatch('FAnsi *=[ $0-9A-F()]*'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(@'+p+'Instance1'+e+')^',           weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1('+val+')^',                        weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer(@'+p+'Instance1'+e+'))^',  weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer('+val+'))^',               weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
 
 
       val := t2.Tests[2]^.TstWatch.Values[Thread, 0].Value;

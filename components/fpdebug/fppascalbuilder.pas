@@ -739,15 +739,28 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         end;
     end;
 
-    if s <> '' then
-      APrintedValue := s + '(' + APrintedValue + ')';
 
-    if ADisplayFormat = wdfPointer then exit; // no data
-    if svfString in AValue.FieldFlags then
-      APrintedValue := APrintedValue + ' ' + QuoteText(AValue.AsString)
+    if ADisplayFormat = wdfPointer then begin
+      if s <> '' then
+        APrintedValue := s + '(' + APrintedValue + ')';
+      exit; // no data
+    end;
+
+    (* In Dwarf 2 Strings are Pchar => do not add the typename.
+       TODO: In Dwarf 3 this should be true pchar, maybe add typename?
+    *)
+    if svfString in AValue.FieldFlags then begin
+      if v <> 0 then
+        APrintedValue := APrintedValue + '^: ' + QuoteText(AValue.AsString);
+    end
     else
-    if svfWideString in AValue.FieldFlags then
-      APrintedValue := APrintedValue + ' ' + QuoteWideText(AValue.AsWideString);
+    if svfWideString in AValue.FieldFlags then begin
+      if v <> 0 then
+        APrintedValue := APrintedValue + '^: ' + QuoteWideText(AValue.AsWideString)
+    end
+    else
+    if s <> '' then
+      APrintedValue := s + '(' + APrintedValue + ')'; // no typeinfo for strings/pchar
 
     Result := True;
   end;
