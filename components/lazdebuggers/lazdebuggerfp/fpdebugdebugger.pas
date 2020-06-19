@@ -2419,7 +2419,8 @@ begin
         exit;
       end;
 
-      if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
+      if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and
+         (not IsError(ResValue.LastError)) and (defClassAutoCast in EvalFlags)
       then begin
         if ResValue.GetInstanceClassName(CastName) then begin
           PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', AContext);
@@ -2431,6 +2432,10 @@ begin
           end
           else
             PasExpr2.Free;
+        end
+        else begin
+          ResValue.ResetError; // in case GetInstanceClassName did set an error
+          // TODO: indicate that typecasting to instance failed
         end;
       end;
 
@@ -2441,7 +2446,7 @@ begin
         Res := FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
 
       // PCHAR/String
-      if APasExpr.HasPCharIndexAccess then begin
+      if APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
       // TODO: Only dwarf 2
         APasExpr.FixPCharIndexAccess := True;
         APasExpr.ResetEvaluation;

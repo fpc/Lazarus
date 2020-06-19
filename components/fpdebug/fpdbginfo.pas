@@ -207,6 +207,7 @@ type
     property ParentTypeInfo: TFpSymbol read GetParentTypeInfo; // For members, the class in which this member is declared
 
     property LastError: TFpError read GetLastError;
+    procedure ResetError;
   end;
 
   { TFpValueConstNumber }
@@ -648,6 +649,11 @@ begin
   Result := ti <> nil;
   if Result then
     Result := ti.GetInstanceClassName(Self, AClassName);
+end;
+
+procedure TFpValue.ResetError;
+begin
+  FLastError := NoError;
 end;
 
 function TFpValue.GetTypeInfo: TFpSymbol;
