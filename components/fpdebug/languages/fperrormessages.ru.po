@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: fperrormessages.msgfperraddressisnil
+msgid "Cannot access data, Address is NIL"
+msgstr "Невозможно получить доступ к данным, так как адрес равен NIL"
+
+#: fperrormessages.msgfperranyerror
+#, object-pascal-format
+msgid "%1:s"
+msgstr "%1:s"
+
+#: fperrormessages.msgfperrcannotdereferencetype
+#, object-pascal-format
+msgid "Cannot dereference Expression \"%1:s\""
+msgstr "Невозможно разыменовать выражение \"%1:s\""
+
+#: fperrormessages.msgfperrcannotreadmemataddr
+#, object-pascal-format
+msgid "Failed to read Mem at Address $%1:x"
+msgstr "Не удалось прочитать память по адресу $%1:x"
+
+#: fperrormessages.msgfperrfailedreadregiseter
+msgid "Failed to read data from register"
+msgstr "Не удалось прочитать данные из регистра"
+
+#: fperrormessages.msgfperrinvalidnumber
+#, object-pascal-format
+msgid "Cannot parse number: %1:s"
+msgstr "Невозможно проанализировать число: %1:s"
+
+#: fperrormessages.msgfperrlocationparser
+msgid "Internal Error: Cannot calculate location."
+msgstr "Внутренняя ошибка: невозможно вычислить расположение."
+
+#: fperrormessages.msgfperrlocationparserinit
+msgid "Internal Error: Cannot calculate location (Init)."
+msgstr "Внутренняя ошибка: невозможно вычислить расположение (инициализация)."
+
+#: fperrormessages.msgfperrlocationparsermemread
+#, object-pascal-format
+msgid "%1:s (while calculating location)"
+msgstr "%1:s (при вычислении расположения)"
+
+#: fperrormessages.msgfperrlocationparserminstack
+msgid "Not enough elements on stack."
+msgstr "Недостаточно элементов стека."
+
+#: fperrormessages.msgfperrlocationparsernoaddressonstack
+msgid "Not an address on stack"
+msgstr "Значение не является адресом в стеке"
+
+#: fperrormessages.msgfperrnomemberwithname
+#, object-pascal-format
+msgid "Member not found: %1:s"
+msgstr "Элемент не найден: %1:s"
+
+#: fperrormessages.msgfperrorbadfloatsize
+msgid "Unsupported float value: Unknown precision"
+msgstr "Вещественное значение не поддерживается: неизвестная точность"
+
+#: fperrormessages.msgfperrornotastructure
+#, object-pascal-format
+msgid "Cannot get member \"%1:s\" from non-structured type: %2:s"
+msgstr "Невозможно получить элемент \"%1:s\" из неструктурного типа: %2:s"
+
+#: fperrormessages.msgfperrpasparserinvalidexpression
+msgid "Invalid Expression"
+msgstr "Неверное выражение"
+
+#: fperrormessages.msgfperrpasparsermissingexpraftercomma
+#, object-pascal-format
+msgid "Expected Expression after Comma, but found closing bracket %1:s"
+msgstr "После запятой ожидалось выражение, но найдена закрывающая скобка %1:s"
+
+#: fperrormessages.msgfperrpasparsermissingindexexpression
+#, object-pascal-format
+msgid "Expected Expression but found closing bracket: %1:s"
+msgstr "Ожидалось выражение, но найдена закрывающая скобка %1:s"
+
+#: fperrormessages.msgfperrpasparserunexpectedtoken
+#, object-pascal-format
+msgid "Unexpected token '%1:s' at pos %2:d"
+msgstr "Неизвестный элемент '%1:s' в позиции %2:d"
+
+#: fperrormessages.msgfperrreadmemsizelimit
+msgid "Memory read size exceeds limit"
+msgstr "Размер читаемой памяти превышает разрешённый"
+
+#: fperrormessages.msgfperrsymbolnotfound
+#, object-pascal-format
+msgid "Identifier not found: \"%1:s\""
+msgstr "Идентификатор не найден: \"%1:s\""
+
+#: fperrormessages.msgfperrtypehasnoindex
+#, object-pascal-format
+msgid "Cannot access indexed element in expression %1:s"
+msgstr "Невозможно получить доступ к элементу по индексу в выражении %1:s"
+
+#: fperrormessages.msgfpinternalerrcannotreadinvalidmem
+msgid "Internal error: Missing data location"
+msgstr "Внутренняя ошибка: неизвестно расположение данных"
+
+#: fperrormessages.msgfpinternalerrfperrfailedreadmem
+msgid "Internal error: Failed to read data from memory"
+msgstr "Внутренняя ошибка: не удалось прочитать данные из памяти"
+

@@ -1,0 +1,107 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: fperrormessages.msgfperraddressisnil
+msgid "Cannot access data, Address is NIL"
+msgstr ""
+
+#: fperrormessages.msgfperranyerror
+#, object-pascal-format
+msgid "%1:s"
+msgstr ""
+
+#: fperrormessages.msgfperrcannotdereferencetype
+#, object-pascal-format
+msgid "Cannot dereference Expression \"%1:s\""
+msgstr ""
+
+#: fperrormessages.msgfperrcannotreadmemataddr
+#, object-pascal-format
+msgid "Failed to read Mem at Address $%1:x"
+msgstr ""
+
+#: fperrormessages.msgfperrfailedreadregiseter
+msgid "Failed to read data from register"
+msgstr ""
+
+#: fperrormessages.msgfperrinvalidnumber
+#, object-pascal-format
+msgid "Cannot parse number: %1:s"
+msgstr ""
+
+#: fperrormessages.msgfperrlocationparser
+msgid "Internal Error: Cannot calculate location."
+msgstr ""
+
+#: fperrormessages.msgfperrlocationparserinit
+msgid "Internal Error: Cannot calculate location (Init)."
+msgstr ""
+
+#: fperrormessages.msgfperrlocationparsermemread
+#, object-pascal-format
+msgid "%1:s (while calculating location)"
+msgstr ""
+
+#: fperrormessages.msgfperrlocationparserminstack
+msgid "Not enough elements on stack."
+msgstr ""
+
+#: fperrormessages.msgfperrlocationparsernoaddressonstack
+msgid "Not an address on stack"
+msgstr ""
+
+#: fperrormessages.msgfperrnomemberwithname
+#, object-pascal-format
+msgid "Member not found: %1:s"
+msgstr ""
+
+#: fperrormessages.msgfperrorbadfloatsize
+msgid "Unsupported float value: Unknown precision"
+msgstr ""
+
+#: fperrormessages.msgfperrornotastructure
+#, object-pascal-format
+msgid "Cannot get member \"%1:s\" from non-structured type: %2:s"
+msgstr ""
+
+#: fperrormessages.msgfperrpasparserinvalidexpression
+msgid "Invalid Expression"
+msgstr ""
+
+#: fperrormessages.msgfperrpasparsermissingexpraftercomma
+#, object-pascal-format
+msgid "Expected Expression after Comma, but found closing bracket %1:s"
+msgstr ""
+
+#: fperrormessages.msgfperrpasparsermissingindexexpression
+#, object-pascal-format
+msgid "Expected Expression but found closing bracket: %1:s"
+msgstr ""
+
+#: fperrormessages.msgfperrpasparserunexpectedtoken
+#, object-pascal-format
+msgid "Unexpected token '%1:s' at pos %2:d"
+msgstr ""
+
+#: fperrormessages.msgfperrreadmemsizelimit
+msgid "Memory read size exceeds limit"
+msgstr ""
+
+#: fperrormessages.msgfperrsymbolnotfound
+#, object-pascal-format
+msgid "Identifier not found: \"%1:s\""
+msgstr ""
+
+#: fperrormessages.msgfperrtypehasnoindex
+#, object-pascal-format
+msgid "Cannot access indexed element in expression %1:s"
+msgstr ""
+
+#: fperrormessages.msgfpinternalerrcannotreadinvalidmem
+msgid "Internal error: Missing data location"
+msgstr ""
+
+#: fperrormessages.msgfpinternalerrfperrfailedreadmem
+msgid "Internal error: Failed to read data from memory"
+msgstr ""
+

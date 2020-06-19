@@ -15,17 +15,17 @@ resourcestring
   MsgfpErrAnyError                        = '%1:s';
   MsgfpErrSymbolNotFound                  = 'Identifier not found: "%1:s"';
   MsgfpErrNoMemberWithName                = 'Member not found: %1:s';
-  MsgfpErrorNotAStructure                 = 'Cannot get member "%1:s" from none structure type: %2:s';
-  MsgfpErrorBadFloatSize                  = 'Unsupported float value: Unknown precission';
+  MsgfpErrorNotAStructure                 = 'Cannot get member "%1:s" from non-structured type: %2:s';
+  MsgfpErrorBadFloatSize                  = 'Unsupported float value: Unknown precision';
   MsgfpErrAddressIsNil                    = 'Cannot access data, Address is NIL';
 
   MsgfpErrPasParserInvalidExpression      = 'Invalid Expression';
   MsgfpErrPasParserUnexpectedToken        = 'Unexpected token ''%1:s'' at pos %2:d';
   MsgfpErrPasParserMissingExprAfterComma  = 'Expected Expression after Comma, but found closing bracket %1:s';
   MsgfpErrPasParserMissingIndexExpression = 'Expected Expression but found closing bracket: %1:s';
-  MsgfpErrInvalidNumber                   = 'Can''t parse number: %1:s';
-  MsgfpErrCannotDereferenceType           = 'Can not dereference Expression "%1:s"';
-  MsgfpErrTypeHasNoIndex                  = 'Not a type or Array. Cannot access indexed element on expression %1:s';
+  MsgfpErrInvalidNumber                   = 'Cannot parse number: %1:s';
+  MsgfpErrCannotDereferenceType           = 'Cannot dereference Expression "%1:s"';
+  MsgfpErrTypeHasNoIndex                  = 'Cannot access indexed element in expression %1:s';
   // 100 memreader error
   MsgfpInternalErrfpErrFailedReadMem              = 'Internal error: Failed to read data from memory';
   MsgfpInternalErrCanNotReadInvalidMem            = 'Internal error: Missing data location';
@@ -33,9 +33,9 @@ resourcestring
   MsgfpErrCanNotReadMemAtAddr             = 'Failed to read Mem at Address $%1:x';
   MsgfpErrFailedReadRegiseter             = 'Failed to read data from register';
   // 200 LocationParser
-  MsgfpErrLocationParser                  = 'Internal Error: Can not calculate location.';
+  MsgfpErrLocationParser                  = 'Internal Error: Cannot calculate location.';
   MsgfpErrLocationParserMemRead           = '%1:s (while calculating location)';          // Pass on nested error
-  MsgfpErrLocationParserInit              = 'Internal Error: Can not calculate location. (Init)';
+  MsgfpErrLocationParserInit              = 'Internal Error: Cannot calculate location (Init).';
   MsgfpErrLocationParserMinStack          = 'Not enough elements on stack.';             // internally used
   MsgfpErrLocationParserNoAddressOnStack  = 'Not an address on stack';           // internally used
 

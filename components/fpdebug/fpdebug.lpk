@@ -219,7 +219,10 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="fpdbghardcodedfreepascalinfo"/>
       </Item>
     </Files>
-    <CompatibilityMode Value="False"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs>
       <Item>
         <PackageName Value="fcl-net"/>
