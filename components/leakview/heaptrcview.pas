@@ -302,8 +302,6 @@ begin
 end;
 
 procedure THeapTrcViewForm.ClearItems;
-var
-  i : integer;
 begin
   fItems.Clear;
 end;
