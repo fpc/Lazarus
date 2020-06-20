@@ -270,6 +270,11 @@ type
     var AText: String; var AMode: TSemSelectionMode; ALogStartPos: TPoint;
     var AnAction: TSemCopyPasteAction) of object;
 
+  TSemBeautyFlag = (
+    sembfNotBreakDots
+    );
+  TSemBeautyFlags = set of TSemBeautyFlag;
+
   { TSourceEditorManagerInterface }
 
   TSourceEditorManagerInterface = class(TComponent)
@@ -319,7 +324,7 @@ type
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions
-    function Beautify(const Src: string): string; virtual; abstract;
+    function Beautify(const Src: string; const Flags: TSemBeautyFlags = []): string; virtual; abstract;
   protected
     // Completion Plugins
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
