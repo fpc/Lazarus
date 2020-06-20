@@ -52,7 +52,7 @@ uses
   LCLProc, Forms, Controls, Dialogs,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
-  LinkScanner, CodeToolManager, CodeCache, CodeTree, FileProcs,
+  LinkScanner, CodeToolManager, CodeCache, CodeTree, FileProcs, StdCodeTools,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
   LazLoggerBase, LazUTF8, Laz2_XMLCfg, Maps,
@@ -3622,7 +3622,7 @@ begin
   begin
     s:=AnUnit.GetUsesUnitName;
     if s<>'' then // add unit to uses section
-      CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(MainUnitInfo.Source,s,'',true);
+      CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(MainUnitInfo.Source,s,'',[aufLast]);
   end;
   EndUpdate;
   UnitModified(AnUnit);

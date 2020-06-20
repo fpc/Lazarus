@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, LazLoggerBase, fpcunit, testregistry,
-  CodeToolManager, StdCodeTools, CodeCache, LinkScanner;
+  CodeToolManager, StdCodeTools, CodeCache, LinkScanner, SourceChanger;
 
 type
 
@@ -32,12 +32,19 @@ type
   private
     procedure DoTestAddUnitWarn(Title: string; Src, Expected: array of string;
       WarnID, Comment: string; TurnOn: boolean);
+    procedure DoTestAddUnitToMainUses(NewUnitName, NewUnitInFilename,
+      UsesSrc, ExpectedUsesSrc: string; const Flags: TAddUsesFlags);
   published
     procedure TestCTStdFindBlockStart;
-    procedure TestCTRemoveUnitFromAllUsesSections;
-    procedure TestCTAddUnitWarnProgram;
-    procedure TestCTAddUnitWarnProgramNoName;
-    procedure TestCTAddUnitWarnUnit;
+    procedure TestCTUses_AddUses_Start;
+    procedure TestCTUses_AddUses_Append;
+    procedure TestCTUses_AddUses_AppendKeepSpaces;
+    procedure TestCTUses_AddUses_AppendKeepComment; // ToDo
+    procedure TestCTUses_AddUses_Append_DottedNoBreak;
+    procedure TestCTUses_RemoveFromAllUsesSections;
+    procedure TestCTAddWarn5025_Program;
+    procedure TestCTAddWarn5025_ProgramNoName;
+    procedure TestCTAddWarn5025_Unit;
   end;
 
 implementation
@@ -222,6 +229,35 @@ begin
   CheckDiff(Title,s,Code.Source);
 end;
 
+procedure TTestCTStdCodetools.DoTestAddUnitToMainUses(NewUnitName, NewUnitInFilename, UsesSrc, ExpectedUsesSrc: string;
+  const Flags: TAddUsesFlags);
+var
+  Header: String;
+  Footer: String;
+  Code: TCodeBuffer;
+  Src: String;
+begin
+  Header:='program TestStdCodeTools;'+LineEnding;
+  Footer:=LineEnding
+    +'begin'+LineEnding
+    +'end.'+LineEnding;
+  Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+  Code.Source:=Header+UsesSrc+Footer;
+  if not CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(Code,NewUnitName,NewUnitInFilename,Flags) then
+  begin
+    AssertEquals('AddUnitToMainUsesSectionIfNeeded failed: '+CodeToolBoss.ErrorMessage,true,false);
+  end else begin
+    Src:=Code.Source;
+    AssertEquals('AddUnitToMainUsesSectionIfNeeded altered header: ',Header,LeftStr(Src,length(Header)));
+    System.Delete(Src,1,length(Header));
+    AssertEquals('AddUnitToMainUsesSectionIfNeeded altered footer: ',Footer,RightStr(Src,length(Footer)));
+    System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
+    if ExpectedUsesSrc<>Src then
+      debugln(Code.Source);
+    AssertEquals('AddUnitToMainUsesSectionIfNeeded: ',ExpectedUsesSrc,Src);
+  end;
+end;
+
 procedure TTestCTStdCodetools.TestCTStdFindBlockStart;
 var
   Code: TCodeBuffer;
@@ -278,12 +314,69 @@ begin
   Test('begin,try,finally,|end,end','try1','try1finally');
 end;
 
-procedure TTestCTStdCodetools.TestCTRemoveUnitFromAllUsesSections;
+procedure TTestCTStdCodetools.TestCTUses_AddUses_Start;
+begin
+  DoTestAddUnitToMainUses('Foo','',
+    '',
+    LineEnding+'uses Foo;'+LineEnding,
+   []);
+end;
+
+procedure TTestCTStdCodetools.TestCTUses_AddUses_Append;
+begin
+  DoTestAddUnitToMainUses('Foo','',
+    'uses Abc;'+LineEnding,
+    'uses Abc, Foo;'+LineEnding,
+   []);
+end;
+
+procedure TTestCTStdCodetools.TestCTUses_AddUses_AppendKeepSpaces;
+begin
+  DoTestAddUnitToMainUses('Foo','',
+    'uses Go,    Bla;'+LineEnding,
+    'uses Go,    Bla, Foo;'+LineEnding,
+   []);
+end;
+
+procedure TTestCTStdCodetools.TestCTUses_AddUses_AppendKeepComment;
+begin
+  exit;
+
+  DoTestAddUnitToMainUses('Foo','',
+    'uses Go, {Comment} Bla;'+LineEnding,
+    'uses Go, {Comment} Bla, Foo;'+LineEnding,
+   []);
+end;
+
+procedure TTestCTStdCodetools.TestCTUses_AddUses_Append_DottedNoBreak;
+var
+  Beauty: TBeautifyCodeOptions;
+  OldLineLength: Integer;
+  OldDoNotSplitLineInFront: TAtomTypes;
+begin
+  Beauty:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
+  OldLineLength:=Beauty.LineLength;
+  OldDoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront;
+  try
+    Beauty.LineLength:=35;
+    Beauty.DoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront+[atPoint];// test that atPoint has no effect
+    DoTestAddUnitToMainUses('System.SysUtils','',
+      'uses System.Classes;'+LineEnding,
+      'uses System.Classes,'+LineEnding
+      +'  System.SysUtils;'+LineEnding,
+     []);
+  finally
+    Beauty.LineLength:=OldLineLength;
+    Beauty.DoNotSplitLineInFront:=OldDoNotSplitLineInFront;
+  end;
+end;
+
+procedure TTestCTStdCodetools.TestCTUses_RemoveFromAllUsesSections;
 
   function GetSource(UsesSrc: string): string;
   begin
     Result:='program TestStdCodeTools;'+LineEnding
-      +UsesSrc
+      +UsesSrc;
   end;
 
   procedure Test(RemoveUnit, UsesSrc, ExpectedUsesSrc: string);
@@ -293,7 +386,7 @@ procedure TTestCTStdCodetools.TestCTRemoveUnitFromAllUsesSections;
     Code: TCodeBuffer;
     Src: String;
   begin
-    Header:='program TestStdCodeTools;'+LineEnding;
+    Header:=GetSource('');
     Footer:=LineEnding
       +'begin'+LineEnding
       +'end.'+LineEnding;
@@ -369,7 +462,7 @@ begin
   );
 end;
 
-procedure TTestCTStdCodetools.TestCTAddUnitWarnProgram;
+procedure TTestCTStdCodetools.TestCTAddWarn5025_Program;
 begin
   DoTestAddUnitWarn(
   'TestCTAddUnitWarn',
@@ -382,7 +475,7 @@ begin
   ,'end.'],'5025','',false);
 end;
 
-procedure TTestCTStdCodetools.TestCTAddUnitWarnProgramNoName;
+procedure TTestCTStdCodetools.TestCTAddWarn5025_ProgramNoName;
 begin
   DoTestAddUnitWarn(
   'TestCTAddUnitWarn',
@@ -393,7 +486,7 @@ begin
   ,'end.'],'5025','',false);
 end;
 
-procedure TTestCTStdCodetools.TestCTAddUnitWarnUnit;
+procedure TTestCTStdCodetools.TestCTAddWarn5025_Unit;
 begin
   DoTestAddUnitWarn(
   'TestCTAddUnitWarn',

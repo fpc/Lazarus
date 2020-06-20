@@ -72,6 +72,11 @@ type
   end;
 
   TUsesSection = (usMain, usImplementation);
+  TAddUsesFlag = (
+    aufLast,
+    aufNotCheckSpecialUnit
+    );
+  TAddUsesFlags = set of TAddUsesFlag;
 
   TOnFindDefinePropertyForContext = procedure(Sender: TObject;
     const ClassContext, AncestorClassContext: TFindContext;
@@ -112,18 +117,14 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function AddUnitToUsesSection(UsesNode: TCodeTreeNode;
           const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+          SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags = []): boolean;
     function AddUnitToSpecificUsesSection(UsesSection: TUsesSection;
           const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+          SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags = []): boolean;
     function AddUnitToMainUsesSection(const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+          SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags = []): boolean;
     function AddUnitToImplementationUsesSection(const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+          SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags = []): boolean;
     function UnitExistsInUsesSection(UsesSection: TUsesSection;
           const AnUnitName: string): boolean;
     function UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
@@ -632,8 +633,7 @@ end;
 
 function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
   const NewUnitName, NewUnitInFile: string;
-  SourceChangeCache: TSourceChangeCache; AsLast: boolean;
-  CheckSpecialUnits: boolean): boolean;
+  SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags): boolean;
 const
   SpecialUnits: array[1..5] of string = (
     'cmem',
@@ -732,7 +732,7 @@ var
   UsesInsertPolicy: TUsesInsertPolicy;
   Prio: LongInt;
   FirstNormalUsesNode: TCodeTreeNode;
-  InsertPosFound: Boolean;
+  InsertPosFound, CheckSpecialUnits: Boolean;
 begin
   Result:=false;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection)
@@ -746,9 +746,10 @@ begin
 
   Prio:=SpecialUnitPriority(PChar(NewUnitName));
   UsesInsertPolicy:=Beauty.UsesInsertPolicy;
-  if AsLast then
+  if aufLast in Flags then
     UsesInsertPolicy:=uipLast;
   InsertPosFound:=false;
+  CheckSpecialUnits:=not (aufNotCheckSpecialUnit in Flags);
   if CheckSpecialUnits and (Prio<=High(SpecialUnits)) then begin
     // this is a special unit, insert at the beginning
     InsertBehind:=false;
@@ -940,23 +941,23 @@ end;
 
 function TStandardCodeTool.AddUnitToMainUsesSection(const NewUnitName,
   NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
-  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
+  const Flags: TAddUsesFlags): boolean;
 begin
-  Result:=AddUnitToSpecificUsesSection(usMain, NewUnitName, NewUnitInFile, SourceChangeCache,
-    AsLast, CheckSpecialUnits);
+  Result:=AddUnitToSpecificUsesSection(usMain, NewUnitName, NewUnitInFile,
+                                       SourceChangeCache, Flags);
 end;
 
-function TStandardCodeTool.AddUnitToImplementationUsesSection(const NewUnitName,
-  NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
-  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
+function TStandardCodeTool.AddUnitToImplementationUsesSection(
+  const NewUnitName, NewUnitInFile: string;
+  SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags): boolean;
 begin
-  Result:=AddUnitToSpecificUsesSection(usImplementation, NewUnitName, NewUnitInFile, SourceChangeCache,
-    AsLast, CheckSpecialUnits);
+  Result:=AddUnitToSpecificUsesSection(usImplementation,
+                          NewUnitName, NewUnitInFile, SourceChangeCache, Flags);
 end;
 
-function TStandardCodeTool.AddUnitToSpecificUsesSection(UsesSection: TUsesSection;
-  const NewUnitName, NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
-  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
+function TStandardCodeTool.AddUnitToSpecificUsesSection(
+  UsesSection: TUsesSection; const NewUnitName, NewUnitInFile: string;
+  SourceChangeCache: TSourceChangeCache; const Flags: TAddUsesFlags): boolean;
 var
   UsesNode, OtherUsesNode, SectionNode, Node: TCodeTreeNode;
   NewUsesTerm: string;
@@ -1001,7 +1002,7 @@ begin
       if not (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk))
       then begin
         if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
-                                    SourceChangeCache,AsLast,CheckSpecialUnits)
+                                    SourceChangeCache,Flags)
         then
           exit;
       end;
