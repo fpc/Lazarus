@@ -352,14 +352,16 @@ procedure TTestCTStdCodetools.TestCTUses_AddUses_Append_DottedNoBreak;
 var
   Beauty: TBeautifyCodeOptions;
   OldLineLength: Integer;
-  OldDoNotSplitLineInFront: TAtomTypes;
+  OldDoNotSplitLineInFront, OldDoNotSplitLineAfter: TAtomTypes;
 begin
   Beauty:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
   OldLineLength:=Beauty.LineLength;
   OldDoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront;
+  OldDoNotSplitLineAfter:=Beauty.DoNotSplitLineAfter;
   try
     Beauty.LineLength:=35;
-    Beauty.DoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront+[atPoint];// test that atPoint has no effect
+    Beauty.DoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront-[atPoint];// test that atPoint has no effect
+    Beauty.DoNotSplitLineAfter:=Beauty.DoNotSplitLineAfter-[atPoint];// test that atPoint has no effect
     DoTestAddUnitToMainUses('System.SysUtils','',
       'uses System.Classes;'+LineEnding,
       'uses System.Classes,'+LineEnding
@@ -368,6 +370,7 @@ begin
   finally
     Beauty.LineLength:=OldLineLength;
     Beauty.DoNotSplitLineInFront:=OldDoNotSplitLineInFront;
+    Beauty.DoNotSplitLineAfter:=OldDoNotSplitLineAfter;
   end;
 end;
 
