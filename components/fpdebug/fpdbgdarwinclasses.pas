@@ -625,10 +625,10 @@ constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
 var
   aKernResult: kern_return_t;
 begin
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses);
+  inherited Create(AName, AProcessID, AThreadID, AnOsClasses{$IF FPC_FULLVERSION<30100}, AMemManager{$ENDIF});
 
   GetDebugAccessRights;
-  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort, AMemmanager);
+  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort{$IF FPC_FULLVERSION>30100}, AMemmanager{$ENDIF});
   if aKernResult <> KERN_SUCCESS then
     begin
     debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
