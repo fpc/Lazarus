@@ -59,7 +59,7 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
-  SynEditMarkupFoldColoring,
+  SynEditMarkupFoldColoring, SynEditTextTabExpander,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -1778,7 +1778,7 @@ begin
   GetCaretObj.AddChangeHandler(@SrcSynCaretChanged);
 
   FTopInfoDisplay := TSourceLazSynTopInfoView.Create;
-  FTopInfoDisplay.NextView := ViewedTextBuffer.DisplayView;
+  FTopInfoDisplay.NextView := TextViewsManager.SynTextViewByClass[TSynEditStringTabExpander].DisplayView;
   TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
 //  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
