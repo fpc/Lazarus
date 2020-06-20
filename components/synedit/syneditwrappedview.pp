@@ -127,6 +127,7 @@ type
     FSynEditWrappedPlugin :TLazSynEditLineWrapPlugin;
 
     procedure UpdateViewedSizeDifference;
+    procedure MaybeJoinWithSibling;
   protected
     function GetFirstInvalidLine: Integer; override;
     function GetFirstInvalidEndLine: Integer; override;
@@ -1106,6 +1107,66 @@ begin
   UpdateNodeSize(FSynWordWrapLineMap.ViewedRealCountDifference);
 end;
 
+procedure TSynWordWrapIndexPage.MaybeJoinWithSibling;
+var
+  dummy, NextLineOffs, PrevLineOffs, NextLineDist, PrevLineDist: Integer;
+  NextPage, PrevPage: TSynEditLineMapPage;
+begin
+  if (FSynWordWrapLineMap.FirstInvalidLine < 0) and
+     (RealCount <= Tree.PageJoinSize)
+  then begin
+    NextLineOffs := 0;
+    dummy := 0;
+    NextPage := Successor(NextLineOffs, dummy);
+    if NextPage <> nil then begin
+      assert(NextLineOffs > RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: NextLineOffs > RealEndLine');
+      NextLineDist := NextLineOffs - RealEndLine + NextPage.RealStartLine;
+      if (NextPage.RealCount > Tree.PageJoinSize) or
+         (NextLineDist > Tree.PageJoinDistance) or
+         (NextPage.FirstInvalidLine >= 0) or
+         (not NextPage.CanExtendStartTo(-NextLineOffs + RealStartLine, True))
+      then
+        NextLineOffs := 0;
+    end
+    else
+      NextLineOffs := 0;
+
+    PrevLineOffs := 0;
+    dummy := 0;
+    PrevPage := Precessor(PrevLineOffs, dummy);
+    if PrevPage <> nil then begin
+      PrevLineOffs := -PrevLineOffs;
+      assert(PrevLineOffs > PrevPage.RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: -PrevLineOffs > PrevPage.RealEndLine');
+      PrevLineDist := PrevLineOffs + RealStartLine - PrevPage.RealEndLine;
+      if (PrevPage.RealCount > Tree.PageJoinSize) or
+         (PrevLineDist> Tree.PageJoinDistance) or
+         (PrevPage.FirstInvalidLine >= 0) or
+         (not PrevPage.CanExtendEndTo(PrevLineOffs + RealEndLine, True))
+      then
+        PrevLineOffs := 0;
+    end
+    else
+      PrevLineOffs := 0;
+
+  if (NextLineOffs > 0) and
+     ( (PrevLineOffs = 0) or (PrevLineDist > NextLineDist) )
+  then begin
+    MoveLinesAtEndTo(NextPage, 0, NextLineOffs);
+    //FSynWordWrapLineMap.MoveLinesAtEndTo(TSynWordWrapIndexPage(ADestPage).FSynWordWrapLineMap, ASourceStartLine, ACount);
+    Tree.FreeNode(Self);
+    NextPage.AdjustPosition(-NextLineOffs);
+  end
+  else
+  if (PrevLineOffs > 0)
+  then begin
+    MoveLinesAtStartTo(PrevPage, PrevLineOffs-1, PrevLineOffs);
+    Tree.FreeNode(Self);
+  end;
+
+
+  end;
+end;
+
 function TSynWordWrapIndexPage.GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;
 begin
   Result := FSynWordWrapLineMap.GetWrappedOffsetFor(ARealOffset);
@@ -1215,7 +1276,12 @@ var
 begin
   assert(AStartLine >= 0, 'TSynWordWrapIndexPage.AdjustForLinesInserted: AStartLine >= 0');
 
-  if (AStartLine <= RealStartLine) or (AStartLine > RealEndLine) then begin
+  rs := RealStartLine;
+  re := RealEndLine;
+
+  if (AStartLine <= rs) or (AStartLine > re) or
+     (re - rs + 1 + ALineCount <= Tree.PageSplitSize)
+  then begin
     InsertLinesAtOffset(AStartLine, ALineCount);
     if AStartLine = 0 then
       AdjustPosition(-ALineCount);
@@ -1227,8 +1293,6 @@ begin
   *)
   assert(RealCount > 0, 'TSynWordWrapIndexPage.InsertLines: RealCount > 0');
 
-  rs := RealStartLine;
-  re := RealEndLine;
   if AStartLine > rs + (re-rs) div 2 then begin
     // try split to next
     LineOffs := 0;
@@ -1302,6 +1366,7 @@ procedure TSynWordWrapIndexPage.AdjustForLinesDeleted(AStartLine,
   ALineCount: IntIdx; ABytePos: Integer);
 begin
   DeleteLinesAtOffset(AStartLine, ALineCount);
+  MaybeJoinWithSibling;
 end;
 
 procedure TSynWordWrapIndexPage.InsertLinesAtOffset(ALineOffset,
@@ -1337,6 +1402,7 @@ end;
 procedure TSynWordWrapIndexPage.EndValidate;
 begin
   FSynWordWrapLineMap.EndValidate;
+  MaybeJoinWithSibling;
 end;
 
 procedure TSynWordWrapIndexPage.ValidateLine(ALineOffset, AWrappCount: Integer);

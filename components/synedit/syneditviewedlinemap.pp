@@ -176,8 +176,6 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function NextNodeForValidation: TSynEditLineMapPageHolder;
   protected
     function CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode; override;
-    procedure FreeNode(ANode: TSynEditLineMapPage);
-    procedure RemoveNode(ANode: TSynEditLineMapPage);
   public
     (* Find Page by real Line *)
     function FirstPage: TSynEditLineMapPageHolder;
@@ -194,6 +192,9 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     procedure Clear; override;
     procedure DebugDump;
     property PageCreatorProc: TLineMapPageCreatorProc read FPageCreatorProc write FPageCreatorProc;
+
+    procedure FreeNode(ANode: TSynEditLineMapPage); inline;
+    procedure RemoveNode(ANode: TSynEditLineMapPage); reintroduce; inline;
 
     property Root: TSynSizedDifferentialAVLNode read FRoot write FRoot;
     property RootOffset : Integer read FRootOffset write FRootOffset;
@@ -216,7 +217,7 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint): TPhysPoint; inline;
 
     property PageSplitSize: Integer read FPageSplitSize;
-    //property PageJoinSize: Integer read FPageJoinSize;
+    property PageJoinSize: Integer read FPageJoinSize;
     property PageJoinDistance: Integer read FPageJoinDistance;
   end;
 
@@ -1056,6 +1057,7 @@ begin
       exit;
     end;
     FCurrentValidatingNode.Page.EndValidate;
+    FCurrentValidatingNode.ClearData;
   end;
 
   Result := FInvalidEntryList.FFirstEntry <> nil;
@@ -1098,8 +1100,8 @@ begin
   RealStart := FCurrentValidatingNode.RealStartLine;
   RealEnd := FCurrentValidatingNode.RealEndLine;
 
-  if ( (ALineIdx >= RealEnd   - FPageSplitSize) and  // max extended start
-       (ALineIdx <= RealStart + FPageSplitSize)      // max extended end
+  if ( (ALineIdx > RealEnd   - FPageSplitSize) and  // max extended start
+       (ALineIdx < RealStart + FPageSplitSize)      // max extended end
      ) or
      (AWrappCount = 1)
   then begin

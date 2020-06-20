@@ -81,13 +81,14 @@ type
   TTestWordWrapPluginBase = class(TTestBase)
   private
     procedure ClearCaret;
+    function GetTreeNodeHolder(AIndex: Integer): TSynEditLineMapPageHolder;
     procedure SetCaret(SourcePt: TPointType; APos: TPoint);
     procedure TestCaret(AName: String; SourcePt, ExpPt: TPointType; AnExp: TPoint;
       AnExpOffs: Integer = -1);
   protected
     FWordWrap: TLazSynEditLineWrapPlugin;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TPoint); overload;
-    procedure AddLines(AFirstLineIdx, ACount, ALen: Integer; AnID: String; SkipBeginUpdate: Boolean = False);
+    procedure AddLines(AFirstLineIdx, ACount, ALen: Integer; AnID: String; SkipBeginUpdate: Boolean = False; AReplaceExisting: Boolean = False);
     procedure InternalCheckLine(AName: String; dsp: TLazSynDisplayView; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLine(AName: String; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLines(AName: String; AStartLine: TLineIdx; AExpTextStart: array of String; NoTrim: Boolean = False);
@@ -98,6 +99,10 @@ type
     procedure CheckXyMap(AName: String; APoints: TPointSpecs;
       ATestCommands: array of TCommandAndPointSpecs);
 
+    function  TreeNodeCount: integer;
+    property TreeNodeHolder[AIndex: Integer]: TSynEditLineMapPageHolder read GetTreeNodeHolder;
+
+    procedure ReCreateEdit(ADispWidth: Integer);
     procedure SetUp; override;
     procedure TearDown; override;
   end;
@@ -105,6 +110,7 @@ type
   TTestWordWrapPlugin = class(TTestWordWrapPluginBase)
   published
     procedure TestEditorWrap;
+    procedure TestWrapSplitJoin;
     procedure TestEditorEdit;
   end;
 
@@ -1198,6 +1204,17 @@ begin
   SynEdit.CaretXY := Point(1,1);
 end;
 
+function TTestWordWrapPluginBase.GetTreeNodeHolder(AIndex: Integer
+  ): TSynEditLineMapPageHolder;
+begin
+  Result := FWordWrap.FLineMapView.Tree.FirstPage;
+  while (AIndex > 0) and Result.HasPage do begin
+    dec(AIndex);
+    Result := Result.Next;
+  end;
+
+end;
+
 procedure TTestWordWrapPluginBase.SetCaret(SourcePt: TPointType; APos: TPoint);
 begin
   case SourcePt of
@@ -1234,7 +1251,8 @@ begin
 end;
 
 procedure TTestWordWrapPluginBase.AddLines(AFirstLineIdx, ACount,
-  ALen: Integer; AnID: String; SkipBeginUpdate: Boolean);
+  ALen: Integer; AnID: String; SkipBeginUpdate: Boolean;
+  AReplaceExisting: Boolean);
 var
   i, j: Integer;
   l: String;
@@ -1248,7 +1266,10 @@ begin
       inc(j);
     end;
     l := copy(l, 1, ALen);
-    SynEdit.Lines.Insert(AFirstLineIdx + i, l);
+    if AReplaceExisting then
+      SynEdit.Lines[AFirstLineIdx + i] := l
+    else
+      SynEdit.Lines.Insert(AFirstLineIdx + i, l);
   end;
   if not SkipBeginUpdate then SynEdit.EndUpdate;
 end;
@@ -1446,6 +1467,25 @@ begin
       end;
     end;
   end;
+end;
+
+function TTestWordWrapPluginBase.TreeNodeCount: integer;
+var
+  n: TSynEditLineMapPageHolder;
+begin
+  Result := 0;
+  n := FWordWrap.FLineMapView.Tree.FirstPage;
+  while n.HasPage do begin
+    inc(Result);
+    n := n.Next;
+  end;
+end;
+
+procedure TTestWordWrapPluginBase.ReCreateEdit(ADispWidth: Integer);
+begin
+  TearDown;
+  SetUp;
+  SetSynEditWidth(ADispWidth);
 end;
 
 procedure TTestWordWrapPluginBase.SetUp;
@@ -1690,6 +1730,183 @@ begin
   CheckLine('', 2, 'A_1_0');
 
 // '		'
+
+end;
+
+procedure TTestWordWrapPlugin.TestWrapSplitJoin;
+  procedure AddLineTestCount(AName: String; ALineIdx, ACount, ALen: Integer; AExpCount: Integer);
+  begin
+    AddLines(ALineIdx, ACount, ALen, 'A');
+    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, ACount, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+  end;
+  procedure AddLineTestCount(AName: String; ALineIdx, ALen: Integer; AExpCount: Integer);
+  begin
+    AddLineTestCount(AName, ALineIdx, 1, ALen, AExpCount);
+  end;
+
+  procedure ChangeLineTestCount(AName: String; ALineIdx, ALen: Integer; AExpCount: Integer);
+  begin
+    AddLines(ALineIdx, 1, ALen, 'A', False, True);
+    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+  end;
+  procedure ChangeLineTestCount(AName: String; ALineIdx, ANodeIdx, ALen: Integer; AExpCount: Integer);
+  var
+    n: TSynEditLineMapPageHolder;
+  begin
+    n := TreeNodeHolder[ANodeIdx];
+    if ALineIdx >= 0
+    then AddLines(n.RealStartLine + ALineIdx, 1, ALen, 'A', False, True)
+    else AddLines(n.RealEndLine + 1 + ALineIdx, 1, ALen, 'A', False, True);
+    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+  end;
+
+  procedure DelLineTestCount(AName: String; ALineIdx: Integer; AExpCount: Integer);
+  begin
+    if ALineIdx < 0
+    then SynEdit.Lines.Delete(SynEdit.Lines.Count + 1 + ALineIdx)
+    else SynEdit.Lines.Delete(ALineIdx);
+    AssertEquals(Format('%s : After DEL Line at %d  Len %d', [AName, ALineIdx]), AExpCount, TreeNodeCount);
+  end;
+  procedure DelLineTestCount(AName: String; ANodeIdx, ALineIdx: Integer; AExpCount: Integer);
+  var
+    n: TSynEditLineMapPageHolder;
+  begin
+    n := TreeNodeHolder[ANodeIdx];
+    if ALineIdx < 0
+    then SynEdit.Lines.Delete(n.RealEndLine + 1 + ALineIdx)
+    else SynEdit.Lines.Delete(n.RealStartLine + ALineIdx);
+    AssertEquals(Format('%s : After DEL Line at %d  Len %d', [AName, ALineIdx]), AExpCount, TreeNodeCount);
+  end;
+
+var
+  t: TSynLineMapAVLTree;
+  n1, n2: TSynEditLineMapPageHolder;
+  i: Integer;
+begin
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJoinDistance]);
+
+  AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
+  AddLineTestCount('insert start: split - 1', 0, 18,    1);
+  AddLineTestCount('insert start: split - 0', 0, 18,    1);
+  AddLineTestCount('insert start: split + 1', 0, 18,    2);
+  AddLineTestCount('insert start: split + 2', 0, 18,    2);
+
+
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
+  AddLineTestCount('insert end: split - 1', SynEdit.Lines.Count, 18,    1);
+  AddLineTestCount('insert end: split - 0', SynEdit.Lines.Count, 18,    1);
+  AddLineTestCount('insert end: split + 1', SynEdit.Lines.Count, 18,    2);
+  AddLineTestCount('insert end: split + 2', SynEdit.Lines.Count, 18,    2);
+
+
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
+  AddLineTestCount('insert @10: split - 1', 10, 18,    1);
+  AddLineTestCount('insert @10: split - 0', 10, 18,    1);
+  AddLineTestCount('insert @10: split + 1', 10, 18,    2);
+  AddLineTestCount('insert @10: split + 2', 10, 18,    2);
+
+
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  i := t.PageSplitSize - 2;
+  AddLineTestCount('new: split - 2', 0,  i, 18,    1);
+  AddLineTestCount('new: split - 2', i, 10,  1,    1);
+  ChangeLineTestCount('update end: split - 1', i, 18,   1);   inc(i);
+  ChangeLineTestCount('update end: split - 0', i, 18,   1);   inc(i);
+  ChangeLineTestCount('update end: split + 1', i, 18,   2);   inc(i);
+  ChangeLineTestCount('update end: split + 2', i, 18,   2);   inc(i);
+
+
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  i := 9;
+  AddLineTestCount('new: split - 2', 0,  t.PageSplitSize - 2, 18,    1);
+  AddLineTestCount('new: split - 2', 0, 10,  1,    1);
+  ChangeLineTestCount('update start: split - 1', i, 18,   1);   dec(i);
+  ChangeLineTestCount('update start: split - 0', i, 18,   1);   dec(i);
+  ChangeLineTestCount('update start: split + 1', i, 18,   2);   dec(i);
+  ChangeLineTestCount('update start: split + 2', i, 18,   2);   dec(i);
+
+
+
+  ///////////////////
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
+
+
+  n1 := TreeNodeHolder[0];
+  while n1.RealCount > t.PageJoinSize + 1 do
+    SynEdit.Lines.Delete(n1.RealStartLine + 2);
+  AssertEquals('insert start: split + 2', 2, TreeNodeCount);
+
+  n2 := TreeNodeHolder[1];
+  while n2.RealCount > t.PageJoinSize + 1 do
+    SynEdit.Lines.Delete(n2.RealStartLine + 2);
+  AssertEquals('insert start: split + 2', 2, TreeNodeCount);
+
+  SynEdit.Lines.Delete(1);
+  SynEdit.Lines.Delete(SynEdit.Lines.Count - 2);
+
+  AssertEquals('insert start: split + 2', 1, TreeNodeCount);
+
+
+
+
+
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
+
+
+  n1 := TreeNodeHolder[0];
+  while n1.RealCount > t.PageJoinSize + 1 do
+    ChangeLineTestCount('edit n1 start', 0,0,  1,   2);
+  n2 := TreeNodeHolder[1];
+  while n2.RealCount > t.PageJoinSize + 1 do
+    ChangeLineTestCount('edit n2 end', -1,1,  1,   2);
+
+  ChangeLineTestCount('edit n1 start',  0,0,  1,   2);
+  ChangeLineTestCount('edit n2 end  ', -1,1,  1,   1);
+
+
+
+
+  // do not join
+  ReCreateEdit(10);
+  SynEdit.Options := [];
+  t := FWordWrap.FLineMapView.Tree;
+  AddLineTestCount('new: split * 2 - 2', 0,  t.PageSplitSize * 2 - 2, 18,    2);
+
+
+  n1 := TreeNodeHolder[0];
+  while n1.RealCount > t.PageJoinSize + 1 do
+    ChangeLineTestCount('edit n1 end', -1,0,  1,   2);
+  n2 := TreeNodeHolder[1];
+  while n2.RealCount > t.PageJoinSize + 1 do
+    ChangeLineTestCount('edit n2 start', 0,1,  1,   2);
+
+  ChangeLineTestCount('edit n1 start', -1,0,  1,   2);
+  ChangeLineTestCount('edit n2 end  ',  0,1,  1,   2);
+  ChangeLineTestCount('edit n1 start', -1,0,  1,   2);
+  ChangeLineTestCount('edit n2 end  ',  0,1,  1,   2);
+  ChangeLineTestCount('edit n1 start', -1,0,  1,   2);
+  ChangeLineTestCount('edit n2 end  ',  0,1,  1,   2);
+
+
 
 end;
 
