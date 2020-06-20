@@ -1122,7 +1122,7 @@ type
     procedure ClearExecutionMarks;
     procedure FillExecutionMarks;
     procedure ReloadEditorOptions;
-    function Beautify(const Src: string): string; override;
+    function Beautify(const Src: string; const Flags: TSemBeautyFlags = []): string; override;
     // find / replace text
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
@@ -10383,20 +10383,36 @@ begin
   end;
 end;
 
-function TSourceEditorManager.Beautify(const Src: string): string;
+function TSourceEditorManager.Beautify(const Src: string;
+  const Flags: TSemBeautyFlags): string;
 var
   NewIndent, NewTabWidth: Integer;
+  Beauty: TBeautifyCodeOptions;
+  OldDoNotSplitLineInFront, OldDoNotSplitLineAfter: TAtomTypes;
 begin
-  Result:=CodeToolBoss.Beautifier.BeautifyStatement(Src,2,[bcfDoNotIndentFirstLine]);
+  Beauty:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
+  OldDoNotSplitLineInFront:=Beauty.DoNotSplitLineInFront;
+  OldDoNotSplitLineAfter:=Beauty.DoNotSplitLineAfter;
+  try
+    if sembfNotBreakDots in Flags then
+    begin
+      Include(Beauty.DoNotSplitLineInFront,atPoint);
+      Include(Beauty.DoNotSplitLineAfter,atPoint);
+    end;
+    Result:=CodeToolBoss.Beautifier.BeautifyStatement(Src,2,[bcfDoNotIndentFirstLine]);
 
-  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
-  or (EditorOpts.BlockTabIndent=0) then
-    NewTabWidth:=0
-  else
-    NewTabWidth:=EditorOpts.TabWidth;
-  NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
+    if (eoTabsToSpaces in EditorOpts.SynEditOptions)
+    or (EditorOpts.BlockTabIndent=0) then
+      NewTabWidth:=0
+    else
+      NewTabWidth:=EditorOpts.TabWidth;
+    NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
 
-  Result:=BasicCodeTools.ReIndent(Result,2,0,NewIndent,NewTabWidth);
+    Result:=BasicCodeTools.ReIndent(Result,2,0,NewIndent,NewTabWidth);
+  finally
+    Beauty.DoNotSplitLineInFront:=OldDoNotSplitLineInFront;
+    Beauty.DoNotSplitLineAfter:=OldDoNotSplitLineAfter;
+  end;
 end;
 
 procedure TSourceEditorManager.FindClicked(Sender: TObject);

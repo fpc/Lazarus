@@ -247,7 +247,7 @@ type
     procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); virtual; abstract;
   end;
 
-  TsemChangeReason = (
+  TSemChangeReason = (
     semWindowCreate,    // Called after creation of a Window
     semWindowDestroy,   // Called after removal of a Window
     semWindowActivate,  // Window is now ActiveSourceWindow (does not vave to be focused)
@@ -276,6 +276,11 @@ type
   TSemCopyPasteEvent = procedure(Sender: TSourceEditorInterface;
     var AText: String; var AMode: TSemSelectionMode; ALogStartPos: TPoint;
     var AnAction: TSemCopyPasteAction) of object;
+
+  TSemBeautyFlag = (
+    sembfNotBreakDots
+    );
+  TSemBeautyFlags = set of TSemBeautyFlag;
 
   { TSourceEditorManagerInterface }
 
@@ -326,7 +331,7 @@ type
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions
-    function Beautify(const Src: string): string; virtual; abstract;
+    function Beautify(const Src: string; const Flags: TSemBeautyFlags = []): string; virtual; abstract;
   protected
     // Completion Plugins
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;

@@ -2124,7 +2124,7 @@ begin
       NewUnitInfo.ComponentResourceName:='';
     end;
     Src:=NewFileDescriptor.CreateSource(NewUnitInfo.Filename,NewUnitName,NewUnitInfo.ComponentName);
-    Src:=SourceEditorManager.Beautify(Src);
+    Src:=SourceEditorManager.Beautify(Src,[sembfNotBreakDots]);
     //debugln(['NewFile ',dbgtext(Src)]);
     Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Src,0);
     NewUnitInfo.Source.Source:=Src;
