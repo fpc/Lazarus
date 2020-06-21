@@ -39,7 +39,8 @@ uses
   fpmkunit,
   fprepos,
   pkgoptions,
-  laz_pkgrepos;
+  laz_pkgrepos,
+  fppkg_const;
 
 type
 
@@ -82,22 +83,6 @@ var
 implementation
 
 {$R *.lfm}
-
-resourcestring
-  SInstalled = 'Installed';
-  SAvailable = 'Available';
-  SUnknown   = 'Unknown';
-  SAuthor    = 'Author';
-  SLicense   = 'License';
-  SHomepage  = 'Homepage';
-  SDownload  = 'Download';
-  SFilename  = 'Filename';
-  SEmail     = 'Email';
-  SOS        = 'OS';
-  SCPU       = 'CPU';
-  SSupport   = 'Support';
-  SKeywords  = 'Keywords';
-  SCategory  = 'Category';
 
 { TPkgDetailsForm }
 

@@ -12,6 +12,28 @@ msgstr ""
 "Language: pl\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: fppkg_const.lisfppkgbuildmethodboth
+msgid "Both"
+msgstr ""
+
+#: fppkg_const.lisfppkgbuildmethodfpmake
+msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
+msgid "FPMake"
+msgstr ""
+
+#: fppkg_const.lisfppkgbuildmethodlazarus
+msgid "Lazbuild"
+msgstr ""
+
+#: fppkg_const.lisfppkgpckoptsbuildmethod
+msgid "Supported build methods"
+msgstr ""
+
+#: fppkg_const.lisfppkgpckoptstitle
+msgctxt "fppkg_const.lisfppkgpckoptstitle"
+msgid "Fppkg"
+msgstr ""
+
 #: fppkg_const.rsaboutform
 msgid "About form"
 msgstr ""
@@ -57,6 +79,7 @@ msgid "fpmake compiler config"
 msgstr ""
 
 #: fppkg_const.rsfppkgenvironmentoptions
+msgctxt "fppkg_const.rsfppkgenvironmentoptions"
 msgid "Fppkg"
 msgstr ""
 
@@ -106,6 +129,7 @@ msgid "Options"
 msgstr "Opcje"
 
 #: fppkg_const.rspackagefileoptionstitle
+msgctxt "fppkg_const.rspackagefileoptionstitle"
 msgid "FPMake"
 msgstr ""
 
@@ -119,5 +143,61 @@ msgstr "Zdalne repozytorium"
 
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
+msgstr ""
+
+#: fppkg_const.sauthor
+msgid "Author"
+msgstr ""
+
+#: fppkg_const.savailable
+msgid "Available"
+msgstr ""
+
+#: fppkg_const.scategory
+msgid "Category"
+msgstr ""
+
+#: fppkg_const.scpu
+msgid "CPU"
+msgstr ""
+
+#: fppkg_const.sdownload
+msgid "Download"
+msgstr ""
+
+#: fppkg_const.semail
+msgid "Email"
+msgstr ""
+
+#: fppkg_const.sfilename
+msgid "Filename"
+msgstr ""
+
+#: fppkg_const.shomepage
+msgid "Homepage"
+msgstr ""
+
+#: fppkg_const.sinstalled
+msgid "Installed"
+msgstr ""
+
+#: fppkg_const.skeywords
+msgid "Keywords"
+msgstr ""
+
+#: fppkg_const.slicense
+msgid "License"
+msgstr ""
+
+#: fppkg_const.sos
+msgid "OS"
+msgstr ""
+
+#: fppkg_const.ssupport
+msgid "Support"
+msgstr ""
+
+#: fppkg_const.sunknown
+msgid "Unknown"
 msgstr ""
 

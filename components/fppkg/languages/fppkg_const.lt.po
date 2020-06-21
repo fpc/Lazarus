@@ -12,6 +12,28 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
+#: fppkg_const.lisfppkgbuildmethodboth
+msgid "Both"
+msgstr ""
+
+#: fppkg_const.lisfppkgbuildmethodfpmake
+msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
+msgid "FPMake"
+msgstr ""
+
+#: fppkg_const.lisfppkgbuildmethodlazarus
+msgid "Lazbuild"
+msgstr ""
+
+#: fppkg_const.lisfppkgpckoptsbuildmethod
+msgid "Supported build methods"
+msgstr ""
+
+#: fppkg_const.lisfppkgpckoptstitle
+msgctxt "fppkg_const.lisfppkgpckoptstitle"
+msgid "Fppkg"
+msgstr ""
+
 #: fppkg_const.rsaboutform
 msgid "About form"
 msgstr "Forma „Apie“"
@@ -57,6 +79,7 @@ msgid "fpmake compiler config"
 msgstr "Kompiliatoriaus „fpmake“ parinktys"
 
 #: fppkg_const.rsfppkgenvironmentoptions
+msgctxt "fppkg_const.rsfppkgenvironmentoptions"
 msgid "Fppkg"
 msgstr ""
 
@@ -106,6 +129,7 @@ msgid "Options"
 msgstr "Parinktys"
 
 #: fppkg_const.rspackagefileoptionstitle
+msgctxt "fppkg_const.rspackagefileoptionstitle"
 msgid "FPMake"
 msgstr ""
 
@@ -120,4 +144,60 @@ msgstr "Nuotolinė saugykla"
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
 msgstr "Rodyti „Fppkg“ paketų tvarkytuvę"
+
+#: fppkg_const.sauthor
+msgid "Author"
+msgstr ""
+
+#: fppkg_const.savailable
+msgid "Available"
+msgstr ""
+
+#: fppkg_const.scategory
+msgid "Category"
+msgstr ""
+
+#: fppkg_const.scpu
+msgid "CPU"
+msgstr ""
+
+#: fppkg_const.sdownload
+msgid "Download"
+msgstr ""
+
+#: fppkg_const.semail
+msgid "Email"
+msgstr ""
+
+#: fppkg_const.sfilename
+msgid "Filename"
+msgstr ""
+
+#: fppkg_const.shomepage
+msgid "Homepage"
+msgstr ""
+
+#: fppkg_const.sinstalled
+msgid "Installed"
+msgstr ""
+
+#: fppkg_const.skeywords
+msgid "Keywords"
+msgstr ""
+
+#: fppkg_const.slicense
+msgid "License"
+msgstr ""
+
+#: fppkg_const.sos
+msgid "OS"
+msgstr ""
+
+#: fppkg_const.ssupport
+msgid "Support"
+msgstr ""
+
+#: fppkg_const.sunknown
+msgid "Unknown"
+msgstr ""
 

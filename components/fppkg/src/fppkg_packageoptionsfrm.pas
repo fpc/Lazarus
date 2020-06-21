@@ -17,7 +17,8 @@ uses
   PackageIntf,
   IDEOptEditorIntf,
   IDEOptionsIntf, SynEdit,
-  fppkg_packagevariant;
+  fppkg_packagevariant,
+  fppkg_const;
 
 type
 
@@ -104,14 +105,6 @@ var
 
 
 {$R *.lfm}
-
-resourcestring
-  lisFppkgPckOptsTitle = 'Fppkg';
-  lisFppkgPckOptsBuildMethod = 'Supported build methods';
-  lisFppkgBuildMethodFPMake = 'FPMake';
-  lisFppkgBuildMethodLazarus = 'Lazbuild';
-  lisFppkgBuildMethodBoth = 'Both';
-
 
 { TFppkgPackageOptionsFrm }
 

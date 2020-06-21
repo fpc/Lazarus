@@ -67,6 +67,27 @@ resourcestring
   rsFppkgEnvironmentOptionsCaption = 'Compilation';
   rsPackageFileOptionsTitle = 'FPMake';
 
+  SInstalled = 'Installed';
+  SAvailable = 'Available';
+  SUnknown   = 'Unknown';
+  SAuthor    = 'Author';
+  SLicense   = 'License';
+  SHomepage  = 'Homepage';
+  SDownload  = 'Download';
+  SFilename  = 'Filename';
+  SEmail     = 'Email';
+  SOS        = 'OS';
+  SCPU       = 'CPU';
+  SSupport   = 'Support';
+  SKeywords  = 'Keywords';
+  SCategory  = 'Category';
+
+  lisFppkgPckOptsTitle = 'Fppkg';
+  lisFppkgPckOptsBuildMethod = 'Supported build methods';
+  lisFppkgBuildMethodFPMake = 'FPMake';
+  lisFppkgBuildMethodLazarus = 'Lazbuild';
+  lisFppkgBuildMethodBoth = 'Both';
+
 implementation
 
 end.

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="fppkgpackagemanager"/>
     <Type Value="DesignTime"/>
@@ -16,7 +16,7 @@
         <CustomOptions Value="-dLazarusIDEPackage"/>
       </Other>
     </CompilerOptions>
-    <Description Value="A packagemanager based on FPC's fppkg"/>
+    <Description Value="A packagemanager based on FPC&apos;s fppkg"/>
     <License Value="GPL"/>
     <Version Minor="1"/>
     <Files Count="16">
@@ -87,9 +87,11 @@
         <UnitName Value="fppkg_initializeoptionsfrm"/>
       </Item16>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="..\languages"/>
+      <EnableI18NForLFM Value="True"/>
     </i18n>
     <RequiredPkgs Count="4">
       <Item1>

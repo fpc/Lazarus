@@ -121,7 +121,6 @@ type
     procedure miExitClick(Sender: TObject);
     procedure miSelectClick(Sender: TObject);
     procedure miUnselectClick(Sender: TObject);
-    procedure PanelClick(Sender: TObject);
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SupportCheckGroupItemClick(Sender: TObject; Index: integer);
@@ -551,11 +550,6 @@ begin
   for i := 0 to PackageListView.Items.Count - 1 do
     if PackageListView.Items[i].Selected then
       PackageListView.Items[i].Checked := False;
-end;
-
-procedure TFppkgForm.PanelClick(Sender: TObject);
-begin
-
 end;
 
 procedure TFppkgForm.SearchButtonClick(Sender: TObject);
