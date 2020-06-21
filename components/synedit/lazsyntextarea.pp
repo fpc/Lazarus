@@ -1163,18 +1163,22 @@ end;
 procedure TLazSynSurfaceManager.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 var
   rcInval: TRect;
+  ViewedRange: TLineRange;
 begin
   rcInval := Bounds;
-  if (FirstTextLine >= 0) then
+  if (FirstTextLine >= 0) then begin
+    ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextArea.TextBounds.Top,
-                       TextArea.TextBounds.Top
-                       + (DisplayView.TextToViewIndex(FirstTextLine).Top
+                       TextArea.TextBounds.Top + (ViewedRange.Top
                           - TextArea.TopLine + 1) * TextArea.LineHeight);
-  if (LastTextLine >= 0) then
+  end;
+  if (LastTextLine >= 0) then begin
+    if LastTextLine <> FirstTextLine then
+      ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
-                          TextArea.TextBounds.Top
-                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom
+                          TextArea.TextBounds.Top + (ViewedRange.Bottom
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
+  end;
 
   {$IFDEF VerboseSynEditInvalidate}
   DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
@@ -1360,18 +1364,20 @@ end;
 procedure TLazSynTextArea.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
 var
   rcInval: TRect;
+  ViewedRange: TLineRange;
 begin
   rcInval := Bounds;
-  if (FirstTextLine >= 0) then
+  if (FirstTextLine >= 0) then begin
+    ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextBounds.Top,
-                       TextBounds.Top
-                       + (DisplayView.TextToViewIndex(FirstTextLine).Top
-                          - TopLine + 1) * LineHeight);
-  if (LastTextLine >= 0) then
+                       TextBounds.Top + (ViewedRange.Top - TopLine + 1) * LineHeight);
+  end;
+  if (LastTextLine >= 0) then begin
+    if LastTextLine <> FirstTextLine then
+      ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextBounds.Bottom,
-                          TextBounds.Top
-                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom
-                             - TopLine + 2)  * LineHeight);
+                          TextBounds.Top + (ViewedRange.Bottom - TopLine + 2)  * LineHeight);
+  end;
 
   {$IFDEF VerboseSynEditInvalidate}
   DebugLn(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
