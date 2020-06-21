@@ -3071,8 +3071,6 @@ begin
 end;
 
 procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);   // Todo: move to gutter
-var
-  TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then begin
@@ -3086,17 +3084,15 @@ begin
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateGutterLines(-1, -1);
     end else begin
-      // pretend we haven't scrolled
-      TopFoldLine := FFoldedLinesView.TopLine;
-      if FOldTopView <> TopView then
-        FFoldedLinesView.TopLine := FOldTopView;
-
       if (LastLine <> -1) and (LastLine < FirstLine) then
         SwapInt(FirstLine, LastLine);
 
+      if FPaintLock > 0 then begin
+        // pretend we haven't scrolled
+        FirstLine := FirstLine - (FOldTopView - TopView);
+        LastLine  := LastLine - (FOldTopView - TopView);
+      end;
       FPaintArea.InvalidateGutterLines(FirstLine-1, LastLine-1);
-
-      FFoldedLinesView.TopLine := TopFoldLine;
     end;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self)]);
@@ -3105,8 +3101,6 @@ begin
 end;
 
 procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
-var
-  TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then begin
@@ -3116,17 +3110,15 @@ begin
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateTextLines(-1, -1);
     end else begin
-      // pretend we haven't scrolled
-      TopFoldLine := FFoldedLinesView.TopLine;
-      if FOldTopView <> TopView then
-        FFoldedLinesView.TopLine := FOldTopView;
-
       if (LastLine <> -1) and (LastLine < FirstLine) then
         SwapInt(FirstLine, LastLine);
 
+      if FPaintLock > 0 then begin
+        // pretend we haven't scrolled
+        FirstLine := FirstLine - (FOldTopView - TopView);
+        LastLine  := LastLine - (FOldTopView - TopView);
+      end;
       FPaintArea.InvalidateTextLines(FirstLine-1, LastLine-1);
-
-      FFoldedLinesView.TopLine := TopFoldLine;
     end;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self)]);
@@ -5614,6 +5606,8 @@ begin
   FFoldedLinesView.TopLine := AValue;
 
   if FTextArea.TopLine <> AValue then begin
+    if FPaintLock = 0 then
+      FOldTopView := TopView;
     FTextArea.TopLine := AValue;
     UpdateScrollBars;
     // call MarkupMgr before ScrollAfterTopLineChanged, in case we aren't in a PaintLock
