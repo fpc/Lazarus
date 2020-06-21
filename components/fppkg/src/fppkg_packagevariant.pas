@@ -92,7 +92,7 @@ function TFppkgNamedItemList.FindItemByName(AName: string): T;
 var
   i: Integer;
 begin
-  Result := Nil;
+  Result := T(Nil);
   for i := 0 to Count -1 do
     begin
     if SameText(Items[I].Name, AName) then
