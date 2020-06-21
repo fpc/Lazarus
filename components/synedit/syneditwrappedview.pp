@@ -1109,7 +1109,7 @@ end;
 
 procedure TSynWordWrapIndexPage.MaybeJoinWithSibling;
 var
-  dummy, NextLineOffs, PrevLineOffs, NextLineDist, PrevLineDist: Integer;
+  dummy, NextLineOffs, PrevLineOffs, NextLineDist, PrevLineDist, c: Integer;
   NextPage, PrevPage: TSynEditLineMapPage;
 begin
   if (FSynWordWrapLineMap.FirstInvalidLine < 0) and
@@ -1121,10 +1121,13 @@ begin
     if NextPage <> nil then begin
       assert(NextLineOffs > RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: NextLineOffs > RealEndLine');
       NextLineDist := NextLineOffs - RealEndLine + NextPage.RealStartLine;
-      if (NextPage.RealCount > Tree.PageJoinSize) or
-         (NextLineDist > Tree.PageJoinDistance) or
-         (NextPage.FirstInvalidLine >= 0) or
-         (not NextPage.CanExtendStartTo(-NextLineOffs + RealStartLine, True))
+      c := NextPage.RealCount;
+      if (c <> 0) and (
+           (c > Tree.PageJoinSize) or
+           (NextLineDist > Tree.PageJoinDistance) or
+           (NextPage.FirstInvalidLine >= 0) or
+           (not NextPage.CanExtendStartTo(-NextLineOffs + RealStartLine, True))
+         )
       then
         NextLineOffs := 0;
     end
@@ -1138,10 +1141,13 @@ begin
       PrevLineOffs := -PrevLineOffs;
       assert(PrevLineOffs > PrevPage.RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: -PrevLineOffs > PrevPage.RealEndLine');
       PrevLineDist := PrevLineOffs + RealStartLine - PrevPage.RealEndLine;
-      if (PrevPage.RealCount > Tree.PageJoinSize) or
-         (PrevLineDist> Tree.PageJoinDistance) or
-         (PrevPage.FirstInvalidLine >= 0) or
-         (not PrevPage.CanExtendEndTo(PrevLineOffs + RealEndLine, True))
+      c := PrevPage.RealCount;
+      if (c <> 0) and (
+          (c > Tree.PageJoinSize) or
+          (PrevLineDist> Tree.PageJoinDistance) or
+          (PrevPage.FirstInvalidLine >= 0) or
+          (not PrevPage.CanExtendEndTo(PrevLineOffs + RealEndLine, True))
+         )
       then
         PrevLineOffs := 0;
     end
