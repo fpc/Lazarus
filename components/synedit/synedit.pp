@@ -129,8 +129,7 @@ uses
   SynEditTextTrimmer, SynEditTextTabExpander, SynEditTextDoubleWidthChars,
   SynEditFoldedView,
   // Gutter
-  SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
-  SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
+  SynGutterBase, SynGutter,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
   SynEditTextBidiChars;
 
@@ -1448,6 +1447,10 @@ type
 procedure Register;
 
 implementation
+
+uses
+  // units needed in Register procedure
+  SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview;
 
 var
   LOG_SynMouseEvents: PLazLoggerLogGroup;

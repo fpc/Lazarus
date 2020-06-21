@@ -647,9 +647,6 @@ type
 
 implementation
 
-uses
-  SynEditFoldedView;
-
 { TSynBeforeSetSelTextList }
 
 procedure TSynBeforeSetSelTextList.CallBeforeSetSelTextHandlers(Sender: TObject;
