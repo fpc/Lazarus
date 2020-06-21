@@ -4245,13 +4245,11 @@ function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
   ): Integer;
 // iLine is 1 based
 begin
-  Result:=iLine;
+  Result := FTheLinesView.TextToViewIndex(ToIdx(iLine));
   if Down then
-    while (Result<FTheLinesView.Count) and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
-      inc(Result)
+    Result := ToPos(FTheLinesView.ViewToTextIndex(Result+1))
   else
-    while (Result>1) and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
-      dec(Result);
+    Result := ToPos(FTheLinesView.ViewToTextIndex(Result));
 end;
 
 function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
@@ -4940,10 +4938,8 @@ var
   NewTopView: Integer;
 begin
   // TODO : Above hidden line only if folded, if hidden then use below
-  if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
+  if not FTheLinesView.IsTextIdxVisible(ToIdx(Value)) then
     Value := FindNextUnfoldedLine(Value, False);
-  if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
-    Value := FindNextUnfoldedLine(Value, True);
 
   if not HandleAllocated then
     Include(fStateFlags, sfExplicitTopLine);
@@ -7038,7 +7034,7 @@ begin
             ecSmartWordLeft, ecSelSmartWordLeft: CaretNew := PrevWordLogicalPos(swbWordSmart);
             else                                 CaretNew := PrevWordLogicalPos;
           end;
-          if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
+          if not FTheLinesView.IsTextIdxVisible(ToIdx(CaretNew.Y)) then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
             CaretNew := Point(1 + Length(FTheLinesView[CY-1]), CY);
           end;
@@ -7054,7 +7050,7 @@ begin
             ecSmartWordRight, ecSelSmartWordRight: CaretNew := NextWordLogicalPos(swbWordSmart);
             else                                   CaretNew := NextWordLogicalPos;
           end;
-          if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
+          if not FTheLinesView.IsTextIdxVisible(ToIdx(CaretNew.Y)) then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
           FCaret.LineBytePos := CaretNew;
         end;

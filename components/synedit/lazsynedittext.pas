@@ -358,6 +358,7 @@ type
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
 
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;  (* Add/Sub to/from TextIndex (0-based) skipping invisible (folded) *)
+    function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; virtual;
     procedure GetInfoForViewedXY(AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
     // ViewedToPhysAndLog
     (* Convert between TextBuffer and ViewedText
@@ -521,6 +522,7 @@ type
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;
 
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override;
+    function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; override;
     // ViewedToPhysAndLog
     (* Convert between TextBuffer and ViewedText
        X/Y are all 1-based
@@ -1298,6 +1300,11 @@ begin
   Result := aTextIndex + LineOffset;
 end;
 
+function TSynEditStrings.IsTextIdxVisible(aTextIndex: TLineIdx): Boolean;
+begin
+  Result := True;
+end;
+
 procedure TSynEditStrings.GetInfoForViewedXY(AViewedXY: TPhysPoint;
   AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
 begin
@@ -1792,6 +1799,11 @@ function TSynEditStringsLinked.AddVisibleOffsetToTextIndex(
   aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx;
 begin
   Result := fSynStrings.AddVisibleOffsetToTextIndex(aTextIndex, LineOffset);
+end;
+
+function TSynEditStringsLinked.IsTextIdxVisible(aTextIndex: TLineIdx): Boolean;
+begin
+  Result := fSynStrings.IsTextIdxVisible(aTextIndex);
 end;
 
 function TSynEditStringsLinked.ViewXYToTextXY(APhysViewXY: TPhysPoint
