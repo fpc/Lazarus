@@ -964,7 +964,9 @@ var
 
 begin
   Result := False;
-  if (Debugger = nil) or not(Debugger.State = dsPause) then
+  if (Debugger = nil) or not(Debugger.State = dsPause) or
+     (TFpLldbDebugger(Debugger).FDwarfInfo = nil)
+  then
     exit;
 
   Sym:=nil;
