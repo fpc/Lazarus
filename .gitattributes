@@ -1562,6 +1562,7 @@ components/fppkg/src/fppkg_details.pas svneol=native#text/plain
 components/fppkg/src/fppkg_environmentoptions.lfm svneol=native#text/plain
 components/fppkg/src/fppkg_environmentoptions.pas svneol=native#text/pascal
 components/fppkg/src/fppkg_initializeoptionsfrm.lfm svneol=native#text/plain
+components/fppkg/src/fppkg_initializeoptionsfrm.lrj svneol=native#text/plain
 components/fppkg/src/fppkg_initializeoptionsfrm.pas svneol=native#text/pascal
 components/fppkg/src/fppkg_interface.pas svneol=native#text/pascal
 components/fppkg/src/fppkg_lpk.pas svneol=native#text/plain
