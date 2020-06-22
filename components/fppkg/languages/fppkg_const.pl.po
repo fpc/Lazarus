@@ -145,6 +145,46 @@ msgstr "Zdalne repozytorium"
 msgid "Show Fppkg Package Manager"
 msgstr ""
 
+#: fppkg_const.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr ""
+
+#: fppkg_const.sactbuildpackages
+msgid "build package(s)"
+msgstr ""
+
+#: fppkg_const.sactcleanpackages
+msgid "clean package(s)"
+msgstr ""
+
+#: fppkg_const.sactcompilepackages
+msgid "compile packages"
+msgstr ""
+
+#: fppkg_const.sactdownloadpackages
+msgid "download packages"
+msgstr ""
+
+#: fppkg_const.sactfixbroken
+msgid "fix broken packages"
+msgstr ""
+
+#: fppkg_const.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr ""
+
+#: fppkg_const.sactinstallpackages
+msgid "install package(s)"
+msgstr ""
+
+#: fppkg_const.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr ""
+
+#: fppkg_const.sactupdate
+msgid "update repository"
+msgstr ""
+
 #: fppkg_const.sauthor
 msgid "Author"
 msgstr ""
@@ -169,6 +209,14 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+#: fppkg_const.serractionfailed
+#, object-pascal-format
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s"
+msgstr ""
+
 #: fppkg_const.sfilename
 msgid "Filename"
 msgstr ""
@@ -187,6 +235,15 @@ msgstr ""
 
 #: fppkg_const.slicense
 msgid "License"
+msgstr ""
+
+#: fppkg_const.smsgactionsucceeded
+#, object-pascal-format
+msgid "%s succeeded."
+msgstr ""
+
+#: fppkg_const.smsgfppkgrunning
+msgid "A prior command is still in progress."
 msgstr ""
 
 #: fppkg_const.sos

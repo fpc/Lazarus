@@ -88,6 +88,20 @@ resourcestring
   lisFppkgBuildMethodLazarus = 'Lazbuild';
   lisFppkgBuildMethodBoth = 'Both';
 
+  SErrActionFailed    = 'Failed to %s: ' + sLineBreak + sLineBreak + '%s';
+  SMsgActionSucceeded = '%s succeeded.';
+  SMsgFppkgRunning    = 'A prior command is still in progress.';
+  SActFixBroken       = 'fix broken packages';
+  SActCleanPackages   = 'clean package(s)';
+  SActCompilePackages = 'compile packages';
+  SActDownloadPackages= 'download packages';
+  SActArchivePackages = 'create archive(s) for package(s)';
+  SActBuildPackages   = 'build package(s)';
+  SActInstallPackages = 'install package(s)';
+  SActUnInstPackages  = 'uninstall package(s)';
+  SActUpdate          = 'update repository';
+  SActInitializeFppkg = 'initialize fppkg';
+
 implementation
 
 end.

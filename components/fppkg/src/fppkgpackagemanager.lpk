@@ -91,7 +91,6 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="..\languages"/>
-      <EnableI18NForLFM Value="True"/>
     </i18n>
     <RequiredPkgs Count="4">
       <Item1>

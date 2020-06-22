@@ -9,28 +9,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: fppkg_const.lisfppkgbuildmethodboth
 msgid "Both"
-msgstr ""
+msgstr "Оба"
 
 #: fppkg_const.lisfppkgbuildmethodfpmake
-#, fuzzy
 msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
 msgid "FPMake"
 msgstr "FPMake"
 
 #: fppkg_const.lisfppkgbuildmethodlazarus
 msgid "Lazbuild"
-msgstr ""
+msgstr "Lazbuild"
 
 #: fppkg_const.lisfppkgpckoptsbuildmethod
 msgid "Supported build methods"
-msgstr ""
+msgstr "Поддерживаемые методы сборки"
 
 #: fppkg_const.lisfppkgpckoptstitle
-#, fuzzy
 msgctxt "fppkg_const.lisfppkgpckoptstitle"
 msgid "Fppkg"
 msgstr "Fppkg"
@@ -146,59 +144,119 @@ msgstr "Удалённый репозиторий"
 msgid "Show Fppkg Package Manager"
 msgstr "Показать диспетчер пакетов Fppkg"
 
+#: fppkg_const.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr "создание архивов для пакетов"
+
+#: fppkg_const.sactbuildpackages
+msgid "build package(s)"
+msgstr "сборка пакетов"
+
+#: fppkg_const.sactcleanpackages
+msgid "clean package(s)"
+msgstr "очистка пакетов"
+
+#: fppkg_const.sactcompilepackages
+msgid "compile packages"
+msgstr "компиляция пакетов"
+
+#: fppkg_const.sactdownloadpackages
+msgid "download packages"
+msgstr "загрузка пакетов"
+
+#: fppkg_const.sactfixbroken
+msgid "fix broken packages"
+msgstr "исправление проблемных пакетов"
+
+#: fppkg_const.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr "инициализация fppkg"
+
+#: fppkg_const.sactinstallpackages
+msgid "install package(s)"
+msgstr "установка пакетов"
+
+#: fppkg_const.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr "удаление пакетов"
+
+#: fppkg_const.sactupdate
+msgid "update repository"
+msgstr "обновление репозитория"
+
 #: fppkg_const.sauthor
 msgid "Author"
-msgstr ""
+msgstr "Автор"
 
 #: fppkg_const.savailable
 msgid "Available"
-msgstr ""
+msgstr "Доступен"
 
 #: fppkg_const.scategory
 msgid "Category"
-msgstr ""
+msgstr "Категория"
 
 #: fppkg_const.scpu
 msgid "CPU"
-msgstr ""
+msgstr "Процессор"
 
 #: fppkg_const.sdownload
 msgid "Download"
-msgstr ""
+msgstr "Загрузка"
 
 #: fppkg_const.semail
 msgid "Email"
+msgstr "Электронная почта"
+
+#: fppkg_const.serractionfailed
+#, object-pascal-format
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s"
 msgstr ""
+"Ошибка при выполнении действия \"%s\": \n"
+"\n"
+"%s"
 
 #: fppkg_const.sfilename
 msgid "Filename"
-msgstr ""
+msgstr "Имя файла"
 
 #: fppkg_const.shomepage
 msgid "Homepage"
-msgstr ""
+msgstr "Домашняя страница"
 
 #: fppkg_const.sinstalled
 msgid "Installed"
-msgstr ""
+msgstr "Установлен"
 
 #: fppkg_const.skeywords
 msgid "Keywords"
-msgstr ""
+msgstr "Ключевые слова"
 
 #: fppkg_const.slicense
 msgid "License"
-msgstr ""
+msgstr "Лицензия"
+
+#: fppkg_const.smsgactionsucceeded
+#, object-pascal-format
+msgid "%s succeeded."
+msgstr "Действие \"%s\" успешно завершено."
+
+#: fppkg_const.smsgfppkgrunning
+msgid "A prior command is still in progress."
+msgstr "Предыдущая команда всё ещё исполняется."
 
 #: fppkg_const.sos
 msgid "OS"
-msgstr ""
+msgstr "ОС"
 
 #: fppkg_const.ssupport
 msgid "Support"
-msgstr ""
+msgstr "Поддержка"
 
 #: fppkg_const.sunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестно"
 
