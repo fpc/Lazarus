@@ -2658,7 +2658,7 @@ begin
     FMarkupManager.IncPaintLock;
   end;
   inc(FPaintLock);
-  FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanRanges, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FBlockSelection.Lock;
   FCaret.Lock;
@@ -2696,7 +2696,9 @@ begin
     end;
 
     // When fixed FCaret, FBlockSelection, FTrimmedLinesView can move here
-    FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
+    FFoldedLinesView.UnLock;  // after ScanRanges, but before UpdateCaret
+   // must be last => May call MoveCaretToVisibleArea, which must only happen
+   // after unfold
 
     Dec(FPaintLock);
     if (FPaintLock = 0) and HandleAllocated then begin
@@ -7678,17 +7680,11 @@ begin
   aList.OnNeedCaretUndo := @GetCaretUndo;
   aList.BeginBlock;
   IncPaintLock;
-  FFoldedLinesView.Lock;
 end;
 
 procedure TCustomSynEdit.InternalEndUndoBlock(aList: TSynEditUndoList);
 begin
   if aList = nil then aList := fUndoList;
-  // Write all trimming info to the end of the undo block,
-  // so it will be undone first, and other UndoItems do see the expected spaces
-  FFoldedLinesView.UnLock;
-   // must be last => May call MoveCaretToVisibleArea, which must only happen
-   // after unfold
   DecPaintLock;
   aList.EndBlock; // Todo: Doing this after DecPaintLock, can cause duplicate calls to StatusChanged(scModified)
   {$IFDEF SynUndoDebugBeginEnd}
@@ -7704,7 +7700,6 @@ begin
   {$ENDIF}
   fUndoList.OnNeedCaretUndo := @GetCaretUndo;
   fUndoList.BeginBlock;
-  ////FFoldedLinesView.Lock;
   //FTrimmedLinesView.Lock;
 end;
 
