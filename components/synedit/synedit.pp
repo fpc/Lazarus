@@ -943,9 +943,6 @@ type
     procedure FontChanged(Sender: TObject); override;
     function GetReadOnly: boolean; virtual;
     procedure HighlighterAttrChanged(Sender: TObject);
-    // note: FirstLine and LastLine don't need to be in correct order
-    procedure InvalidateGutterLines(FirstLine, LastLine: integer);
-    procedure InvalidateLines(FirstLine, LastLine: integer);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure SizeOrFontChanged(bFont: boolean);
@@ -1105,6 +1102,8 @@ type
     function IsLinkable(Y, X1, X2: Integer): Boolean;
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
+    procedure InvalidateGutterLines(FirstLine, LastLine: integer); // Currently invalidates full line => that may change
+    procedure InvalidateLines(FirstLine, LastLine: integer);
 
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
@@ -2344,10 +2343,9 @@ begin
 
   {$ENDIF} // WithSynExperimentalCharWidth
 
-  FFoldedLinesView := TSynEditFoldedView.Create(fCaret);
+  FFoldedLinesView := TSynEditFoldedView.Create(Self, fCaret);
   FTextViewsManager.AddTextView(FFoldedLinesView);
   FFoldedLinesView.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
-  FFoldedLinesView.OnLineInvalidate := @InvalidateGutterLines;
 
   // External Accessor
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
@@ -5566,8 +5564,9 @@ var
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', aIndex, ' TopView=', TopView, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
   TopView := TopView;
-  i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
-  if i > 0 then begin
+  if (not FTheLinesView.IsTextIdxVisible(ToIdx(CaretY))) and (FTheLinesView.ViewedCount > 0) then begin
+    i := Max(0, FTheLinesView.TextToViewIndex(ToIdx(CaretY)));
+    i := ToPos(FTheLinesView.ViewToTextIndex(i)); // unfolded line, above the fold
     SetCaretXY(Point(1, i));
     UpdateCaret;
   end

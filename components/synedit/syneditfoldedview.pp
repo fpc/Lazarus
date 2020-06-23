@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Graphics,
+  LCLProc, Graphics, LCLType,
   // LazUtils
   LazLoggerBase, LazMethodList,
   // SynEdit
@@ -378,6 +378,7 @@ type
 
   TSynEditFoldedView = class(TSynEditStringsLinked)
   private
+    FOwner: TSynEditBase;
     fCaret: TSynEditCaret;
     FBlockSelection: TSynEditSelection;
     FFoldProvider: TSynEditFoldProvider;
@@ -385,7 +386,6 @@ type
     FMarkupInfoFoldedCode: TSynSelectedColor;
     FMarkupInfoFoldedCodeLine: TSynSelectedColor;
     FMarkupInfoHiddenCodeLine: TSynSelectedColor;
-    FOnLineInvalidate: TInvalidateLineProc;
     fTopLine : Integer;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
@@ -439,7 +439,7 @@ type
     //                                SkipFixFolding : Boolean = False);
     property FoldTree: TSynTextFoldAVLTree read fFoldTree;
   public
-    constructor Create(ACaret: TSynEditCaret);
+    constructor Create(AOwner: TSynEditBase; ACaret: TSynEditCaret);
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
@@ -545,8 +545,6 @@ type
     function  IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
 
-    property OnLineInvalidate: TInvalidateLineProc(* reports 1-based line *) {TODO: synedit expects 0 based }
-      read FOnLineInvalidate write FOnLineInvalidate;
     property HighLighter: TSynCustomHighlighter read GetHighLighter
                                                 write SetHighLighter;
     property FoldProvider: TSynEditFoldProvider read FFoldProvider;
@@ -555,6 +553,8 @@ type
 function dbgs(AClassification: TFoldNodeClassification): String; overload;
 
 implementation
+
+uses SynEdit;
 
 //var
 //  SYN_FOLD_DEBUG: PLazLoggerLogGroup;
@@ -3097,8 +3097,10 @@ end;
 
 { TSynEditFoldedView }
 
-constructor TSynEditFoldedView.Create(ACaret: TSynEditCaret);
+constructor TSynEditFoldedView.Create(AOwner: TSynEditBase;
+  ACaret: TSynEditCaret);
 begin
+  FOwner := AOwner;
   inherited Create;
   fTopLine := 0;
   fLinesInWindow := -1;
@@ -3469,8 +3471,8 @@ begin
     fFoldTypeList[i].Capability := NewCapability;
     fFoldTypeList[i].Classifications := NewClassifications;
   end;
-  if (not FInTopLineChanged) and assigned(FOnLineInvalidate) and (FirstChanged > 0) then
-    FOnLineInvalidate(FirstChanged, LastChanged + 1);
+  if (not FInTopLineChanged) and (FirstChanged > 0) then
+    TSynEdit(FOwner).InvalidateGutterLines(FirstChanged, LastChanged + 1);
 end;
 
 (* Lines *)
