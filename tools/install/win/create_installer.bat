@@ -154,7 +154,7 @@ call build-fpc.bat
 :: INSTALL_BINDIR is set by build-fpc.bat
 %SVN% export -q %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
-mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
+mv -f %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
 :: copy from 32 bit, missing in 64bit
