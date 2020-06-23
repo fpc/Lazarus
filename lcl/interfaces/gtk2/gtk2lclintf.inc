@@ -896,6 +896,8 @@ var
       idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
       idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
       idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
+    else
+      Result:=AnID;
     end;
   end;
 
@@ -1044,7 +1046,10 @@ begin
         BtnID := -1;
         BtnResult:=DlgBtn.ModalResult;
         if (BtnResult>=Low(ButtonResults)) and (BtnResult<=High(ButtonResults)) then
-          BtnID := ButtonResults[DlgBtn.ModalResult];
+          BtnID := ButtonResults[DlgBtn.ModalResult]
+        else
+          BtnID := DlgBtn.ModalResult;
+
         if (BtnIdx=CancelID) then
           g_object_set_data(PGObject(Dialog), 'modal_result', {%H-}Pointer(PtrInt(DlgBtn.ModalResult)));
 
@@ -1057,7 +1062,8 @@ begin
 
         if DefaultID = BtnIdx then
         begin
-          gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(BtnID));
+          gtk_dialog_set_default_response(PGtkDialog(Dialog),  BtnID);
+          gtk_widget_grab_focus(PgtkWidget(Btn));
           X := DlgBtn.ModalResult;
           if CancelID<0 then
             g_object_set_data(PGObject(Dialog), 'modal_result',
