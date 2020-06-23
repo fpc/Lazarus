@@ -910,11 +910,13 @@ end;
 
 function IsEditableTextKey(Key: Word): Boolean;
 begin
- Result := (((Key >= VK_A) and (Key <= VK_Z)) or
-            ((Key >= VK_NUMPAD0) and (Key <= VK_DIVIDE)) or
-            ((Key >= VK_0) and (Key <= VK_9)) or
-            ((Key >= 186) and (Key <= 192)) or
-            ((Key >= 219) and (Key <= 222)));
+  Result := Key in [
+      VK_A..VK_Z,
+      VK_0..VK_9,
+      VK_NUMPAD0..VK_DIVIDE,
+      VK_OEM_1..VK_OEM_3,
+      VK_OEM_4..VK_OEM_7
+  ];
 end;
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam
