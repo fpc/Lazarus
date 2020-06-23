@@ -1205,9 +1205,9 @@ type
                                        ): TPoint; virtual; // Returns Logical
     //code fold
     procedure CodeFoldAction(iLine: integer); deprecated;
-    procedure UnfoldAll;
-    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
-    property FoldState: String read GetFoldState write SetFoldState;
+    procedure UnfoldAll; deprecated;
+    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False); deprecated;
+    property FoldState: String read GetFoldState write SetFoldState; deprecated;
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
@@ -7573,29 +7573,6 @@ begin
       ecLineSelect:
         begin
           DefaultSelectionMode := SEL_MODE[Command];
-        end;
-      EcFoldLevel1..EcFoldLevel9:
-        begin
-          FoldAll(Command - EcFoldLevel1);
-          FCaret.Touch;
-        end;
-      EcFoldLevel0:
-        begin
-          UnfoldAll;
-          FCaret.Touch;
-        end;
-      EcFoldCurrent:
-        begin
-          CY := FFoldedLinesView.ExpandedLineForBlockAtLine(CaretY);
-          if CY > 0 then begin
-            FFoldedLinesView.FoldAtTextIndex(CY-1);
-            SetCaretXY(Point(1, CY));
-          end;
-        end;
-      EcUnFoldCurrent:
-        begin
-          FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
-          FCaret.Touch;
         end;
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;

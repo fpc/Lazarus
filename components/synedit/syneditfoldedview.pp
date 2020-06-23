@@ -52,7 +52,8 @@ uses
   LazLoggerBase, LazMethodList,
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs,
-  SynEditPointClasses, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditPointClasses, SynEditHighlighter, SynEditHighlighterFoldBase,
+  SynEditKeyCmds;
 
 type
 
@@ -402,6 +403,9 @@ type
     function GetTextIndex(index : Integer) : Integer;
     function GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
     function IsFolded(index : integer) : Boolean;  // TextIndex
+    procedure ProcessMySynCommand(Sender: TObject; AfterProcessing: boolean;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
     procedure SetBlockSelection(const AValue: TSynEditSelection);
     procedure SetHighLighter(AValue: TSynCustomHighlighter);
     procedure SetTopLine(const ALine : integer);
@@ -3125,10 +3129,14 @@ begin
   FMarkupInfoHiddenCodeLine.Background := clNone;
   FMarkupInfoHiddenCodeLine.Foreground := clNone;
   FMarkupInfoHiddenCodeLine.FrameColor := clNone;
+
+  TSynEdit(FOwner).RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
+
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
+  TSynEdit(FOwner).UnregisterCommandHandler(@ProcessMySynCommand);
   NextLines := nil;
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
@@ -3506,6 +3514,48 @@ end;
 function TSynEditFoldedView.IsFolded(index : integer) : Boolean;
 begin
   Result := fFoldTree.FindFoldForLine(index+1).IsInFold;
+end;
+
+procedure TSynEditFoldedView.ProcessMySynCommand(Sender: TObject;
+  AfterProcessing: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+var
+  CY: Integer;
+begin
+  if Handled then
+    exit;
+
+  case Command of
+    EcFoldLevel1..EcFoldLevel9:
+      begin
+        FoldAll(Command - EcFoldLevel1);
+        FCaret.Touch;
+        Handled := True;
+      end;
+    EcFoldLevel0:
+      begin
+        UnfoldAll;
+        FCaret.Touch;
+        Handled := True;
+      end;
+    EcFoldCurrent:
+      begin
+        CY := ExpandedLineForBlockAtLine(FCaret.LinePos);
+        if CY > 0 then begin
+          FoldAtTextIndex(CY-1);
+          FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
+          FCaret.LineCharPos:= Point(1, CY);
+        end;
+        Handled := True;
+      end;
+    EcUnFoldCurrent:
+      begin
+        UnFoldAtTextIndex(FCaret.LinePos-1);
+        FCaret.Touch;
+        Handled := True;
+      end;
+  end;
 end;
 
 procedure TSynEditFoldedView.SetBlockSelection(const AValue: TSynEditSelection);
