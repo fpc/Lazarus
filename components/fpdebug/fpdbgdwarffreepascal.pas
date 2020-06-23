@@ -1354,7 +1354,7 @@ begin
     CodepageOffset := AddressSize * 3;
     Addr.Address := Addr.Address - CodepageOffset;
     if MemManager.ReadMemory(Addr, SizeVal(2), @Codepage) then
-      Result := True;
+      Result := CodePageToCodePageName(Codepage) <> '';
   end;
 end;
 
