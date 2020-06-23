@@ -4247,7 +4247,7 @@ function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
   ): Integer;
 // iLine is 1 based
 begin
-  Result := FTheLinesView.TextToViewIndex(ToIdx(iLine));
+  Result := Max(0, FTheLinesView.TextToViewIndex(ToIdx(iLine)));
   if Down then
     Result := ToPos(FTheLinesView.ViewToTextIndex(Result+1))
   else
