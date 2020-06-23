@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,24 +13,22 @@ msgstr ""
 
 #: fppkg_const.lisfppkgbuildmethodboth
 msgid "Both"
-msgstr ""
+msgstr "Ambos"
 
 #: fppkg_const.lisfppkgbuildmethodfpmake
-#, fuzzy
 msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
 msgid "FPMake"
 msgstr "FPMake"
 
 #: fppkg_const.lisfppkgbuildmethodlazarus
 msgid "Lazbuild"
-msgstr ""
+msgstr "Lazbuild"
 
 #: fppkg_const.lisfppkgpckoptsbuildmethod
 msgid "Supported build methods"
-msgstr ""
+msgstr "Métodos de construção suportados"
 
 #: fppkg_const.lisfppkgpckoptstitle
-#, fuzzy
 msgctxt "fppkg_const.lisfppkgpckoptstitle"
 msgid "Fppkg"
 msgstr "Fppkg"
@@ -188,27 +186,27 @@ msgstr ""
 
 #: fppkg_const.sauthor
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: fppkg_const.savailable
 msgid "Available"
-msgstr ""
+msgstr "Disponível"
 
 #: fppkg_const.scategory
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #: fppkg_const.scpu
 msgid "CPU"
-msgstr ""
+msgstr "CPU"
 
 #: fppkg_const.sdownload
 msgid "Download"
-msgstr ""
+msgstr "Download"
 
 #: fppkg_const.semail
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: fppkg_const.serractionfailed
 #, object-pascal-format
@@ -220,23 +218,23 @@ msgstr ""
 
 #: fppkg_const.sfilename
 msgid "Filename"
-msgstr ""
+msgstr "Nome de arquivo"
 
 #: fppkg_const.shomepage
 msgid "Homepage"
-msgstr ""
+msgstr "Homepage"
 
 #: fppkg_const.sinstalled
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: fppkg_const.skeywords
 msgid "Keywords"
-msgstr ""
+msgstr "Palavras-chave"
 
 #: fppkg_const.slicense
 msgid "License"
-msgstr ""
+msgstr "Licença"
 
 #: fppkg_const.smsgactionsucceeded
 #, object-pascal-format
@@ -249,13 +247,13 @@ msgstr ""
 
 #: fppkg_const.sos
 msgid "OS"
-msgstr ""
+msgstr "SO"
 
 #: fppkg_const.ssupport
 msgid "Support"
-msgstr ""
+msgstr "Suporte"
 
 #: fppkg_const.sunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
