@@ -2344,7 +2344,6 @@ begin
   {$ENDIF} // WithSynExperimentalCharWidth
 
   FFoldedLinesView := TSynEditFoldedView.Create(Self, fCaret);
-  FTextViewsManager.AddTextView(FFoldedLinesView);
   FFoldedLinesView.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
 
   // External Accessor
@@ -2388,8 +2387,6 @@ begin
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   // No need for caret, on interanl block
-
-  FFoldedLinesView.BlockSelection := FBlockSelection;
 
   FWordBreaker := TSynWordBreaker.Create;
   FScrollOnEditLeftOptions  := TSynScrollOnEditLeftOptions.Create;
@@ -2756,7 +2753,6 @@ begin
   SurrenderPrimarySelection;
   Highlighter := nil;
   Beautifier:=nil;
-  FFoldedLinesView.BlockSelection := nil;
 
   if fPlugins <> nil then begin
     p := FPlugins;
