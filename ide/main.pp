@@ -3912,6 +3912,7 @@ begin
         if rfSuccessOnTrigger in AFlags then
           exit(true);
       end;
+  else
   end;
   Result := ToolStatus = itNone;
 end;
@@ -5018,7 +5019,7 @@ begin
       IDEOptionsDialog.Caption := ACaption;
     if Length(AOptionsFilter) = 0 then
     begin
-      SetLength(OptionsFilter, 1);
+      SetLength(OptionsFilter{%H-}, 1);
       if AEditor <> nil then
         OptionsFilter[0] := AEditor.SupportedOptionsClass
       else
@@ -6125,6 +6126,7 @@ begin
       case DisplayState of
       dsSource: DisplayState:=dsInspector;
       dsForm: DisplayState:=dsInspector2;
+      else
       end;
     end;
   end;
@@ -8692,6 +8694,7 @@ begin
       else
         NewCaption := Format(lisRunning, [NewCaption]);
     end;
+  else
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
@@ -12103,6 +12106,7 @@ begin
 //    jhaBack : if (CursorPoint<>nil) and (JumpHistory[DestIndex].IsSimilar(CursorPoint))
 //        then dec(DestIndex);
     jhaViewWindow : DestIndex := JumpHistoryViewWin.SelectedIndex;
+  else
   end;
 
   while (DestIndex>=0) and (DestIndex<JumpHistory.Count) do begin
@@ -12464,10 +12468,11 @@ begin
     Exit;
   LOwner := LastControl.Owner;
   if LOwner is TOICustomPropertyGrid then
-  case DisplayState of
+    case DisplayState of
     dsSource: DisplayState:=dsInspector;
     dsForm: DisplayState:=dsInspector2;
-  end;
+    else
+    end;
 end;
 
 procedure TMainIDE.HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
@@ -12514,6 +12519,7 @@ begin
   case DisplayState of
     dsSource: DisplayState := dsInspector;
     dsForm: DisplayState := dsInspector2;
+  else
   end;
 end;
 
@@ -13821,6 +13827,7 @@ begin
           // ToDo: call designer
         end;
       end;
+  else
   end;
 end;
 
