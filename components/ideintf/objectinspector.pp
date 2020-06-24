@@ -1580,7 +1580,7 @@ begin
   isExcept := false;
   Editor:=CurRow.Editor;
   prpInfo := nil;
-  if CompEditDsg<>nil then begin
+  if (CompEditDsg<>nil) and (paRevertable in Editor.GetAttributes) then begin
     SetLength(OldUndoValues, Editor.PropCount);
     prpInfo := Editor.GetPropInfo;
     if prpInfo<>nil then
@@ -1611,7 +1611,7 @@ begin
     end;
 
     // add Undo action
-    if (not isExcept) and (CompEditDsg<>nil) then
+    if (not isExcept) and (CompEditDsg<>nil) and (paRevertable in Editor.GetAttributes) then
     begin
       for i := 0 to Editor.PropCount - 1 do
       begin
