@@ -239,13 +239,26 @@ procedure TCategoriesFrm.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
 var
   Data1: PData;
   Data2: PData;
+  Str1, Str2: String;
+  Int1, Int2: Integer;
 begin
   Data1 := Sender.GetNodeData(Node1);
   Data2 := Sender.GetNodeData(Node2);
   if Column = 0 then
   begin
     if Data1^.FType = Data2^.FType then
-      Result := CompareText(Data1^.FName, Data2^.FName)
+    begin
+      Str1 := Data1^.FName;
+      Str1 := StringReplace(Str1, '.', '', [rfReplaceAll]);
+      Int1 := StrToIntDef(Str1, -1);
+      Str2 := Data2^.FName;
+      Str2 := StringReplace(Str1, '.', '', [rfReplaceAll]);
+      Int2 := StrToIntDef(Str2, -1);
+      if (Int1 <> -1) and (Int2 <> -1) then
+        Result := Int2 - Int1
+      else
+        Result := CompareText(Data1^.FName, Data2^.FName)
+    end
     else if Data1^.FType > Data2^.FType then
       Result := 1
     else if Data1^.FType < Data2^.FType then
