@@ -1866,6 +1866,13 @@ begin
     Result := RegionType(D);
     //DebugLn('TGtk2WidgetSet.CombineRgn B Mode=',dbgs(fnCombineMode),
     //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
+    if (Result = NullRegion) and
+      ((RegionType(S1) <> NullRegion) or ((RegionType(S2) <> NullRegion))) then
+    begin
+      DeleteObject(Dest);
+      Dest := CreateEmptyRegion;
+      Result := RegionType(D);
+    end;
   end;
 end;
 
@@ -7535,28 +7542,20 @@ end;
 function TGtk2WidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
   SavedDevCtx: TGtkDeviceContext;
-  ClipRegionChanged: Boolean;
 begin
   if not IsValidDC(DC) then Exit(False);
   if SavedDC <= 0 then Exit(False);
-
   repeat
     SavedDevCtx := DevCtx.SavedContext;
     Dec(SavedDC);
 
     // TODO copy bitmap too
-
-    ClipRegionChanged := DevCtx.ClipRegion <> SavedDevCtx.ClipRegion;
-    
     // clear the GDIObjects in pSavedDC, so they are not freed by DeleteDC
     Result := DevCtx.CopyDataFrom(SavedDevCtx, True, True, True);
     DevCtx.SavedContext := SavedDevCtx.SavedContext;
     SavedDevCtx.SavedContext := nil;
-
-    if ClipRegionChanged then
-      DevCtx.SelectRegion;
+    DevCtx.SelectRegion;
 
     // free saved DC
     DeleteDC(HDC(SavedDevCtx));
