@@ -1086,7 +1086,7 @@ const
     idButtonYesToAll);
 
 var
-  Btn: PGtkButton;
+  Btn,btn_def: PGtkButton;
   BtnId: Longint;
   Dialog: PGtkMessageDialog;
   ADialogResult: Integer;
@@ -1162,6 +1162,8 @@ var
       idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
       idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
       idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
+    else
+      Result:=AnID;
     end;
   end;
 begin
@@ -1228,17 +1230,17 @@ begin
     end;
   end;
   MainList := gtk_container_get_children(PGtkContainer(Dialog^.get_action_area));
-  ChildList := MainList;
-  BtnIdx := 0;
-  n := 0;
-  while ChildList <> nil do
+  ChildList:=g_list_last(MainList);
+  BtnIdx:=0;
+  btn_def:=nil;
+  while Assigned(ChildList) do
   begin
     if (ChildList^.Data <> nil) then
     begin
       if g_type_check_instance_is_a(ChildList^.Data, gtk_button_get_type) then
       begin
         Btn := PGtkButton(ChildList^.Data);
-
+       // writeln('btn[',BtnIdx,'] ',Btn^.get_label);
         BtnID := -1;
         dbtn:=Buttons[BtnIdx];
         BtnResult:=dbtn.ModalResult;
@@ -1256,6 +1258,11 @@ begin
         if DefaultNdx = BtnIdx then
         begin
           gtk_dialog_set_default_response(Dialog, ResponseID(BtnID));
+          btn_def:=btn;
+          gtk_widget_grab_default(btn);
+          gtk_widget_grab_focus(btn);
+          gtk_widget_set_can_default(btn_def,TRUE);
+          gtk_window_set_default(dialog, btn_def);
           g_object_set_data(PGObject(Dialog), 'modal_result',
             {%H-}Pointer(PtrInt(BtnID)));
         end;
@@ -1263,8 +1270,7 @@ begin
         inc(BtnIdx);
       end;
     end;
-    inc(n);
-    ChildList := g_list_nth(MainList, n);
+    ChildList:=ChildList^.prev;
   end;
   if MainList <> nil then
     g_list_free(MainList);
