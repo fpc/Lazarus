@@ -3128,14 +3128,14 @@ begin
   FMarkupInfoHiddenCodeLine.Foreground := clNone;
   FMarkupInfoHiddenCodeLine.FrameColor := clNone;
 
-  TSynEdit(FOwner).RegisterStatusChangedHandler(@DoBlockSelChanged, [scSelection]);
-  TSynEdit(FOwner).RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
-  TSynEdit(FOwner).TextViewsManager.AddTextView(Self);
+  TCustomSynEdit(FOwner).RegisterStatusChangedHandler(@DoBlockSelChanged, [scSelection]);
+  TCustomSynEdit(FOwner).RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
+  TCustomSynEdit(FOwner).TextViewsManager.AddTextView(Self);
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
-  TSynEdit(FOwner).UnregisterCommandHandler(@ProcessMySynCommand);
+  TCustomSynEdit(FOwner).UnregisterCommandHandler(@ProcessMySynCommand);
   NextLines := nil;
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
