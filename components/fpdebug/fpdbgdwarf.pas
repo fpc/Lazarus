@@ -410,7 +410,8 @@ type
     FEvalFlags: set of (efMemberSizeDone, efMemberSizeUnavail,
                         efStrideDone, efStrideUnavail,
                         efMainStrideDone, efMainStrideUnavail,
-                        efRowMajorDone, efRowMajorUnavail);
+                        efRowMajorDone, efRowMajorUnavail,
+                        efBoundsDone, efBoundsUnavail);
     FAddrObj: TFpValueDwarfConstAddress;
     FArraySymbol: TFpSymbolDwarfTypeArray;
     FLastMember: TFpValueDwarf;
@@ -418,6 +419,8 @@ type
     FMemberSize: TFpDbgValueSize;
     FStride, FMainStride: TFpDbgValueSize;
     FStrides: array of bitpacked record Stride: TFpDbgValueSize; Done, Unavail: Boolean; end; // nested idx
+    FBounds: array of array[0..1] of int64;
+    procedure DoGetBounds; virtual;
   protected
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
@@ -427,6 +430,9 @@ type
     function GetMemberEx(const AIndex: array of Int64): TFpValue; override;
     function GetMemberCount: Integer; override;
     function GetMemberCountEx(const AIndex: array of Int64): Integer; override;
+    function GetHasBounds: Boolean; override;
+    function GetOrdLowBound: Int64; override;
+    function GetOrdHighBound: Int64; override;
     function GetIndexType(AIndex: Integer): TFpSymbol; override;
     function GetIndexTypeCount: Integer; override;
     function IsValidTypeCast: Boolean; override;
@@ -2772,36 +2778,37 @@ begin
 end;
 
 function TFpValueDwarfArray.GetMemberCount: Integer;
-var
-  t, t2: TFpSymbol;
-  LowBound, HighBound: int64;
 begin
   Result := 0;
-  t := TypeInfo;
-  if t.NestedSymbolCount < 1 then // IndexTypeCount;
-    exit;
-  t2 := t.NestedSymbol[0]; // IndexType[0];
-  if t2.GetValueBounds(self, LowBound, HighBound) then begin
-    if (HighBound < LowBound) or (HighBound - LowBound >= maxLongint) then
-      exit(0); // empty array // TODO: error
-    Result := HighBound - LowBound + 1;
-  end;
+  if not (efBoundsDone in FEvalFlags) then
+    DoGetBounds;
+  if (efBoundsUnavail in FEvalFlags) then
+    Exit;
+  if Abs(FBounds[0][1]-FBounds[0][0]) >= MaxLongint then
+    Exit(0); // TODO: error
+  Result := FBounds[0][1]-FBounds[0][0] + 1;
+  if Result < 0 then
+    Exit(0); // TODO: error
 end;
 
 function TFpValueDwarfArray.GetMemberCountEx(const AIndex: array of Int64
   ): Integer;
 var
-  t: TFpSymbol;
-  lb, hb: Int64;
+  i: SizeInt;
 begin
   Result := 0;
-  t := TypeInfo;
-  if length(AIndex) >= t.NestedSymbolCount then
-    exit;
-  t := t.NestedSymbol[length(AIndex)];
-  if not t.GetValueBounds(nil, lb, hb) then
-    exit;
-  Result := hb - lb + 1;
+  if not (efBoundsDone in FEvalFlags) then
+    DoGetBounds;
+  if (efBoundsUnavail in FEvalFlags) then
+    Exit;
+  i := Length(AIndex);
+  if i > High(FBounds) then
+    Exit;
+  if Abs(FBounds[i][1]-FBounds[i][0]) >= MaxLongint then
+    Exit(0); // TODO: error
+  Result := FBounds[i][1]-FBounds[i][0] + 1;
+  if Result < 0 then
+    Exit(0); // TODO: error
 end;
 
 function TFpValueDwarfArray.GetIndexType(AIndex: Integer): TFpSymbol;
@@ -3020,6 +3027,57 @@ begin
     FStrides[AnIndex].Unavail := not Result;
   end;
   AStride := FStrides[AnIndex].Stride;
+end;
+
+function TFpValueDwarfArray.GetOrdHighBound: Int64;
+begin
+  if not (efBoundsDone in FEvalFlags) then
+    DoGetBounds;
+  if Length(FBounds) > 0 then
+    Result := FBounds[0][1]
+  else
+    Result := Inherited GetOrdLowBound;
+end;
+
+function TFpValueDwarfArray.GetOrdLowBound: Int64;
+begin
+  if not (efBoundsDone in FEvalFlags) then
+    DoGetBounds;
+  if Length(FBounds) > 0 then
+    Result := FBounds[0][0]
+  else
+    Result := Inherited GetOrdLowBound;
+end;
+
+procedure TFpValueDwarfArray.DoGetBounds;
+var
+  t: TFpSymbol;
+  c: Int64;
+  i: Int64;
+begin
+  if not (efBoundsDone in FEvalFlags) then begin
+    Include(FEvalFlags, efBoundsDone);
+    t := TypeInfo;
+    c := t.NestedSymbolCount;
+    if c < 1 then begin
+      Include(FEvalFlags, efBoundsUnavail);
+      exit;
+      end;
+    SetLength(FBounds, c);
+    for i := 0 to c -1 do begin
+      t := t.NestedSymbol[i];
+      if not t.GetValueBounds(self, FBounds[i][0], FBounds[i][1]) then
+        Include(FEvalFlags, efBoundsUnavail)
+    end;
+  end;
+end;
+
+function TFpValueDwarfArray.GetHasBounds: Boolean;
+begin
+  if not (efBoundsDone in FEvalFlags) then
+    DoGetBounds;
+  Result := not (efBoundsUnavail in FEvalFlags)
+    and (FBounds[0][1]>0); // Empty array has no bounds
 end;
 
 { TDbgDwarfIdentifier }
