@@ -757,7 +757,7 @@ begin
   SaveToOptionsMode(NewMode);
   ReloadModesComboBox;
   SelectMode(NewName);
-  fLastSelectedMode := NewMode;
+  ModesComboBoxChange(ModesComboBox);
 end;
 
 procedure TRunParamsOptsDlg.PreviewMultilineCheckBoxChange(Sender: TObject);
