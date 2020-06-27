@@ -38,6 +38,7 @@ Known Issues:
 unit SynEditMiscClasses;
 
 {$I synedit.inc}
+{$INLINE off}
 
 interface
 
@@ -3039,7 +3040,8 @@ var
   function CreateRoot: TSynSizedDifferentialAVLNode; inline;
   begin
     Result := CreateNode(APosition);
-    Result.FPositionOffset := APosition;
+    if Result <> nil then
+      Result.FPositionOffset := APosition;
     SetRoot(Result);
   end;
 
@@ -3072,7 +3074,8 @@ begin
   if (Result = nil) then begin
     if (AMode = afmCreate) then begin
       Result := CreateRoot;
-      aStartPosition := aStartPosition + Result.FPositionOffset;
+      if Result <> nil then
+        aStartPosition := aStartPosition + Result.FPositionOffset;
     end;
     exit;
   end;
