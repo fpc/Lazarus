@@ -3559,12 +3559,15 @@ begin
 end;
 
 function TEnvironmentOptions.CurrentDebuggerClass(TheProject: TLazProject): TDebuggerClass;
+var
+  Cfg: TDebuggerPropertiesConfig;
 begin
   LoadDebuggerProperties;
 
   Result := nil;
-  if CurrentDebuggerPropertiesConfigEx(TheProject) <> nil then
-    Result := CurrentDebuggerPropertiesConfigEx(TheProject).DebuggerClass;
+  Cfg := CurrentDebuggerPropertiesConfigEx(TheProject);
+  if  Cfg<> nil then
+    Result := Cfg.DebuggerClass;
 end;
 
 function TEnvironmentOptions.GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;

@@ -7236,6 +7236,7 @@ var
   DebugClass: TDebuggerClass;
   ARunMode: TRunParamsOptionsMode;
   ReqOpts: TDebugCompilerRequirements;
+  Handled: Boolean;
 begin
   if ToolStatus <> itNone
   then begin
@@ -7249,6 +7250,13 @@ begin
   // Check if this project is runnable
   if Project1=nil then exit(mrCancel);
 
+  // call handler
+  Handled:=false;
+  Result := DoCallRunDebugInit(Handled);
+  if Handled or (Result<>mrOk) then
+    exit;
+
+  // check if project is runnable
   ARunMode := Project1.RunParameterOptions.GetActiveMode;
   if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
             ((ARunMode<>nil) and (ARunMode.HostApplicationFilename<>'')))
@@ -7366,14 +7374,12 @@ begin
     Result:=mrCancel;
     Handled:=false;
     Result := DoCallRunDebug(Handled);
-    if Handled then
+    if Handled or (Result<>mrOk) then
       exit;
   finally
     if Result<>mrOk then
       ToolStatus:=itNone;
   end;
-  if Result<>mrOk then
-    exit;
 
   Result := DebugBoss.StartDebugging;
 
