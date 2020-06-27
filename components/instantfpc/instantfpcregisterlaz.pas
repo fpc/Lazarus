@@ -38,8 +38,8 @@ resourcestring
   rsSingleFilePr = 'Single file program using InstantFPC to compile and execute.';
 
 const
-  FileDescNameInstantFPC : string = rsInstantFPCPr;
-  ProjDescNameInstantFPCProject : string = 'InstantFPC project';
+  FileDescNameInstantFPC : string = 'InstantFPC program'; // do not localize
+  ProjDescNameInstantFPCProject : string = 'InstantFPC project'; // do not localize
 
 procedure Register;
 
