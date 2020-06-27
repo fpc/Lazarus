@@ -316,7 +316,7 @@ begin
   else
     APopUp.Items.Clear;
 
-  c := FoldView.OpenFoldCount(ALine-1);
+  c := Min(100, FoldView.OpenFoldCount(ALine-1));
   if c > 0 then begin
     SetLength(FMenuInf,c);
     for i := c-1 downto 0 do begin
