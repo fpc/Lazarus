@@ -561,7 +561,6 @@ type
     FNotifyLists: Array [TSynEditNotifyReason] of TMethodList;
     function GetSynTextView(Index: integer): TSynEditStringsLinked;
     function GetSynTextViewByClass(Index: TSynEditStringsLinkedClass): TSynEditStringsLinked;
-    procedure ReconnectViews;
     procedure SetTextBuffer(AValue: TSynEditStringListBase);
   protected
     procedure AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
@@ -571,11 +570,13 @@ type
   public
     constructor Create(ATextBuffer: TSynEditStringListBase; ATopViewChangedCallback: TNotifyEvent);
     destructor Destroy; override;
+    procedure ReconnectViews;
 
     Procedure AddTextView(aTextView : TSynEditStringsLinked; AsFirst: Boolean = False);
     Procedure AddTextView(aTextView : TSynEditStringsLinked; AIndex: Integer);
     Procedure AddTextView(aTextView : TSynEditStringsLinked; AnAfter: TSynEditStringsLinked);
     Procedure RemoveSynTextView(aTextView : TSynEditStringsLinked; aDestroy: Boolean = False);
+    function IndexOf(aTextView : TSynEditStringsLinked): integer;
     function Count: Integer;
     property SynTextView[Index: integer]: TSynEditStringsLinked read GetSynTextView;
     property SynTextViewByClass[Index: TSynEditStringsLinkedClass]: TSynEditStringsLinked read GetSynTextViewByClass;
@@ -2008,6 +2009,14 @@ begin
     FTextViewsList.Delete(i);
     ReconnectViews
   end;
+end;
+
+function TSynTextViewsManager.IndexOf(aTextView: TSynEditStringsLinked
+  ): integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (aTextView <> TSynEditStringsLinked(FTextViewsList[Result])) do
+    dec(Result);
 end;
 
 function TSynTextViewsManager.Count: Integer;

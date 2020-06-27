@@ -1491,6 +1491,7 @@ procedure TSynEditLineMappingView.SetDisplayView(
 begin
   FDisplayFiew.Free;
   FDisplayFiew := ADisplayView;
+  Manager.ReconnectViews;
 end;
 
 function TSynEditLineMappingView.GetLengthOfLongestLine: integer;

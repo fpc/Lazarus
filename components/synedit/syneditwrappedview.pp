@@ -1763,12 +1763,15 @@ begin
   FLineMapView := TSynEditLineMappingView(TSynEdit(Editor).TextViewsManager.SynTextViewByClass[TSynEditLineMappingView]);
   if FLineMapView = nil then begin
     FLineMapView := TSynEditLineMappingView.Create;
-    FLineMapView.SetDisplayView(TLazSynDisplayWordWrap.Create(FLineMapView, Self));
     TSynEdit(Editor).TextViewsManager.AddTextView(FLineMapView);
-  end;
-  if FLineMapView.PageMapCreator <> nil then
+  end
+  else
+  if (not(FLineMapView.DisplayView is TLazSynDisplayLineMapping)) or
+     (FLineMapView.PageMapCreator <> nil)
+  then
     raise Exception.Create('Conflicting Plugin detected');
 
+  FLineMapView.SetDisplayView(TLazSynDisplayWordWrap.Create(FLineMapView, Self));
   FLineMapView.PageMapCreator := @CreatePageMapNode;
   FLineMapView.WrapInfoForViewedXYProc := @GetWrapInfoForViewedXY;
   FLineMapView.AddLinesChangedHandler(@DoLinesChanged);
