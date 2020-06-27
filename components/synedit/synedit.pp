@@ -4222,16 +4222,18 @@ end;
 
 procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 // iLine is 1 based as parameter
+var
+  ScrY: Integer;
 begin
   if (iLine<=0) or (iLine>FTheLinesView.Count) then exit;
-  dec(iLine);
-//DebugLn(['****** FoldAction at ',iLine,' scrline=',FFoldedLinesView.TextIndexToScreenLine(iLine), ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]],  '  view topline=',FFoldedLinesView.TopLine  ]);
-  if FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]
+  ScrY := ToIdx(TextXYToScreenXY(Point(1, iLine)).y);
+//DebugLn(['****** FoldAction at ',iLine,' scrline=',ScrY, ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[ScrY]],  '  view topline=',FFoldedLinesView.TopLine  ]);
+  if FFoldedLinesView.FoldType[ScrY]
      * [cfCollapsedFold, cfCollapsedHide] <> []
   then
     FFoldedLinesView.UnFoldAtTextIndex(iLine)
   else
-  if FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]
+  if FFoldedLinesView.FoldType[ScrY]
      * [cfFoldStart] <> []
   then
     FFoldedLinesView.FoldAtTextIndex(iLine);

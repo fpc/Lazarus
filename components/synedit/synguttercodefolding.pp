@@ -159,8 +159,7 @@ begin
   tmp := FoldView.FoldType[AScreenLine];
   tmp2 := FoldView.FoldType[AScreenLine-1];
   FIsFoldHidePreviousLine := False;
-
-  if (AScreenLine = 0) and (FoldView.TextToViewIndex(FoldView.TextIndex[0]) = 0) and
+  if (AScreenLine = 0) and (ToIdx(GutterArea.TextArea.TopLine) = 0) and
      (cfCollapsedHide in tmp2)
   then begin
     Result := cfCollapsedHide;
@@ -433,9 +432,11 @@ function TSynGutterCodeFolding.MaybeHandleMouseAction(var AnInfo: TSynEditMouseA
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 var
   tmp: TSynEditFoldLineCapability;
+  ScrLine: Integer;
 begin
   Result := False;
-  tmp := FoldTypeForLine(FoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1));
+  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopLine);
+  tmp := FoldTypeForLine(ScrLine);
   case tmp of
     cfCollapsedFold, cfCollapsedHide:
       Result := HandleActionProc(FMouseActionsCollapsed.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
@@ -459,13 +460,15 @@ begin
   ACommand := AnAction.Command;
   if (ACommand = emcNone) then exit;
   line := AnInfo.NewCaret.LinePos;
-  ScrLine := FoldView.TextIndexToScreenLine(Line-1);
+
+  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopLine);
+
   KeepVisible := 1;
   if FoldTypeForLine(ScrLine) = cfHideStart then KeepVisible := 0;
 
   if (FoldTypeForLine(ScrLine) = cfCollapsedHide) then begin
     if IsFoldHidePreviousLine(ScrLine) then
-      line := FoldView.TextIndex[ScrLine-1] + 1;
+      line := ToPos(ViewedTextBuffer.DisplayView.ViewToTextIndex(ScrLine - 1 + ToIdx(GutterArea.TextArea.TopLine)));
     inc(line);
     KeepVisible := 0;
   end
