@@ -3052,8 +3052,8 @@ end;
 procedure TFpValueDwarfArray.DoGetBounds;
 var
   t: TFpSymbol;
-  c: Int64;
-  i: Int64;
+  c: Integer;
+  i: Integer;
 begin
   if not (efBoundsDone in FEvalFlags) then begin
     Include(FEvalFlags, efBoundsDone);
