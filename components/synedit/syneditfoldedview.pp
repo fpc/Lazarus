@@ -24,7 +24,6 @@ of this file under either the MPL or the GPL.
 unit SynEditFoldedView;
 
 {$mode objfpc}{$H+}
-{$coperators on}
 {$IFDEF CPUPOWERPC} {$INLINE OFF} {$ENDIF} (* Workaround for bug 12576 (fpc) see bugs.freepascal.org/view.php?id=12576 *)
 
 {$IFOPT C+}
@@ -57,7 +56,12 @@ uses
 
 type
 
-  TFoldNodeClassification = (fncInvalid, fncHighlighter, fncHighlighterEx, fncBlockSelection);
+  TFoldNodeClassification = (
+    fncInvalid,
+    fncHighlighter,     // Fold provided by HL
+    fncHighlighterEx,   // Fold originally provided by HL, but no longer exists in HL (text edited)
+    fncBlockSelection
+  );
   TFoldNodeClassifications = set of TFoldNodeClassification;
 
   { TSynTextFoldAVLNodeData }
@@ -2968,7 +2972,8 @@ procedure TSynEditFoldProvider.SetLines(AValue: TSynEditStrings);
 begin
   if FLines = AValue then Exit;
   FLines := AValue;
-  FNestedFoldsList.Lines := FLines;
+  if FNestedFoldsList <> nil then
+    FNestedFoldsList.Lines := FLines;
 end;
 
 constructor TSynEditFoldProvider.Create;

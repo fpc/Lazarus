@@ -2692,8 +2692,14 @@ begin
 
     // When fixed FCaret, FBlockSelection, FTrimmedLinesView can move here
     FFoldedLinesView.UnLock;  // after ScanRanges, but before UpdateCaret
-   // must be last => May call MoveCaretToVisibleArea, which must only happen
-   // after unfold
+    (* FFoldedLinesView.UnLock
+       Any unfold (caused by caret move) will be done (deferred) in UnLock.
+       UpdateCaret may call MoveCaretToVisibleArea (which depends on what is folded)
+       Therefore UnLock must be called before UpdateCaret
+
+       Caret.Unlock must be done before UpdateCaret, because it sends the events
+         to FFoldedLinesView which triggers any unfold.
+    *)
 
     Dec(FPaintLock);
     if (FPaintLock = 0) and HandleAllocated then begin
