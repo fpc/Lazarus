@@ -3279,7 +3279,8 @@ type
     tvoShowSeparators,
     tvoToolTips,
     tvoNoDoubleClickExpand,
-    tvoThemedDraw
+    tvoThemedDraw,
+    tvoEmptySpaceUnselect
     );
   TTreeViewOptions = set of TTreeViewOption;
 
@@ -3332,7 +3333,6 @@ type
     FMaxLvl: integer; // maximum level of all nodes
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
     FMouseDownPos: TPoint;
-    FMouseDownNodeSelected: Boolean;
     FMouseDownOnFoldingSign: Boolean;
     FMultiSelectStyle: TMultiSelectStyle;
     FHotTrackColor: TColor;
@@ -3416,7 +3416,7 @@ type
     function IsStoredBackgroundColor: Boolean;
     procedure HintMouseLeave(Sender: TObject);
     procedure ImageListChange(Sender: TObject);
-    function MouseDownNode(X, Y: Integer): TTreeNode;
+    function NodeIsSelected(aNode: TTreeNode): Boolean;
     procedure OnChangeTimer(Sender: TObject);
     procedure SetAutoExpand(Value: Boolean);
     procedure SetBackgroundColor(Value: TColor);
@@ -3624,6 +3624,7 @@ type
     procedure EraseBackground(DC: HDC); override;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
+    function GetNodeWithExpandSignAt(X, Y: Integer): TTreeNode;
     procedure GetInsertMarkAt(X, Y: Integer; out AnInsertMarkNode: TTreeNode;
                               out AnInsertMarkType: TTreeViewInsertMarkType);
     procedure SetInsertMark(AnInsertMarkNode: TTreeNode;

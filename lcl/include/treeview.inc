@@ -2793,7 +2793,7 @@ begin
     end;
 
     //select again
-    bGoNext := (FirstNode.Index <= Node.Index);
+    bGoNext := (FirstNode.AbsoluteIndex <= Node.AbsoluteIndex);
     I := FirstNode;
     I.MultiSelected:=True;
     while (I<>Node) do
@@ -3856,6 +3856,7 @@ procedure TCustomTreeView.SetMultiSelect(const AValue: Boolean);
 begin
   if MultiSelect <> AValue then
   begin
+    ClearSelection;
     if AValue then
       Include(FOptions,tvoAllowMultiselect)
     else
@@ -3968,16 +3969,35 @@ begin
 end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
+var
+  b: Boolean;
 begin
-  if (X >= BorderWidth) and (X < ClientWidth - BorderWidth) then
-    Result := GetNodeAtY(Y)
+  Result := GetNodeAtY(Y);
+  if Result = nil then Exit;
+  if tvoRowSelect in Options then       // row select
+    b := (X < BorderWidth) or (X >= ClientWidth - BorderWidth)
   else
+    b := (X < Result.DisplayStateIconLeft) or (X >= Result.DisplayTextRight);
+  if b then
+    Result := nil;
+end;
+
+function TCustomTreeView.GetNodeWithExpandSignAt(X, Y: Integer): TTreeNode;
+var
+  b: Boolean;
+begin
+  Result := GetNodeAtY(Y);
+  if Result = nil then Exit;
+  if tvoRowSelect in Options then       // row select
+    b := (X < BorderWidth) or (X >= ClientWidth - BorderWidth)
+  else                                  // need to include DisplayExpandSignLeft
+    b := (X < Result.DisplayExpandSignLeft) or (X >= Result.DisplayTextRight);
+  if b then
     Result := nil;
 end;
 
 procedure TCustomTreeView.GetInsertMarkAt(X, Y: Integer;
-  out AnInsertMarkNode: TTreeNode; out AnInsertMarkType: TTreeViewInsertMarkType
-  );
+  out AnInsertMarkNode: TTreeNode; out AnInsertMarkType: TTreeViewInsertMarkType);
 var
   ANode: TTreeNode;
   NodeRect: TRect;
@@ -5558,18 +5578,17 @@ begin
   Result := FIndent >= 0;
 end;
 
-function TCustomTreeView.MouseDownNode(X, Y: Integer): TTreeNode;
+function TCustomTreeView.NodeIsSelected(aNode: TTreeNode): Boolean;
 begin
-  Result := GetNodeAt(X, Y);
-  // Update the NodeSelected flag.
-  FMouseDownNodeSelected := Assigned(Result) and
-    (Result.Selected or ((tvoAllowMultiselect in Options) and Result.MultiSelected));
+  Result := Assigned(aNode) and
+    (aNode.Selected or ((tvoAllowMultiselect in Options) and aNode.MultiSelected));
 end;
 
 procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   CursorNode: TTreeNode;
+  CursorNdSelected: Boolean;
   LogicalX: Integer;
 begin
   {$IFDEF VerboseDrag}
@@ -5578,23 +5597,33 @@ begin
   FMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
 
-  CursorNode := MouseDownNode(X, Y);
+  CursorNode := GetNodeAt(X, Y);
+  CursorNdSelected := NodeIsSelected(CursorNode);
   LogicalX:=X;
 
   //change selection on right click
-  if (Button = mbRight) and RightClickSelect and//right click
-     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
-     not AllowMultiSelectWithCtrl(Shift) and//only when CTRL is not pressed
-     (CursorNode <> nil) and
-     (LogicalX >= CursorNode.DisplayStateIconLeft)//only after expand sign
+  if (Button = mbRight) and RightClickSelect and //right click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and //single or first of a multi click
+     not AllowMultiSelectWithCtrl(Shift) and //only when CTRL is not pressed
+     (CursorNode <> nil)
   then
   begin
+    if not (tvoRowSelect in Options) and
+       (tvoEmptySpaceUnselect in Options) and
+       (LogicalX >= CursorNode.DisplayStateIconLeft) and
+       (LogicalX > CursorNode.DisplayTextRight) then
+      ClearSelection
+    else
     if not (tvoAllowMultiselect in Options) then
       Selected := CursorNode
     else
-    if not FMouseDownNodeSelected then
+    if not CursorNdSelected then
       Items.SelectOnlyThis(CursorNode);
-  end;
+  end
+  else // empty space below last node
+  if (Button = mbRight) and RightClickSelect and (CursorNode = nil) and
+     (tvoEmptySpaceUnselect in Options) then
+    ClearSelection;
 
   if not Focused and CanFocus then
     SetFocus;
@@ -5602,7 +5631,8 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
-  CursorNode := MouseDownNode(X, Y);
+  CursorNode := GetNodeWithExpandSignAt(LogicalX, Y);
+  CursorNdSelected := NodeIsSelected(CursorNode);
 
   //Flag is used for DblClick/TripleClick/QuadClick, so set it before testing ShiftState
   FMouseDownOnFoldingSign :=
@@ -5611,14 +5641,14 @@ begin
     (LogicalX < CursorNode.DisplayExpandSignRight);
 
   //change selection on left click
-  if (Button = mbLeft) and//left click
-     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+  if (Button = mbLeft) and //left click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and //single or first of a multi click
      (CursorNode <> nil) then
   begin
     if FMouseDownOnFoldingSign then
       // mousedown occured on expand sign -> expand/collapse
       CursorNode.Expanded := not CursorNode.Expanded
-    else if LogicalX >= CursorNode.DisplayStateIconLeft then
+    else if (LogicalX >= CursorNode.DisplayStateIconLeft) or (tvoRowSelect in Options) then
     begin
       // mousedown occured in text or icon -> select node and begin drag operation
       {$IFDEF VerboseDrag}
@@ -5649,18 +5679,24 @@ begin
         end
         else
         begin
-          if not FMouseDownNodeSelected then
+          if not CursorNdSelected then
             Items.SelectOnlyThis(CursorNode)
           else
             Include(FStates, tvsSingleSelectOnMouseUp);
         end;
       end;
-    end;
+    end
+    else if tvoEmptySpaceUnselect in Options then
+      ClearSelection;
   end
   else// multi click
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
   and (Button = mbLeft) and (CursorNode<>nil) then
-    CursorNode.Expanded := not CursorNode.Expanded;
+    CursorNode.Expanded := not CursorNode.Expanded
+  else  // empty space below last node
+  if (Button = mbLeft) and (CursorNode = nil) and (tvoEmptySpaceUnselect in Options) and
+     not AllowMultiSelectWithShift(Shift) and not AllowMultiSelectWithCtrl(Shift) then
+    ClearSelection;
 end;
 
 procedure TCustomTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
