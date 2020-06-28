@@ -146,43 +146,43 @@ msgstr "Exibir gerenciador de pacotes Fppkg"
 
 #: fppkg_const.sactarchivepackages
 msgid "create archive(s) for package(s)"
-msgstr ""
+msgstr "criar arquivo(s) para pacote(s)"
 
 #: fppkg_const.sactbuildpackages
 msgid "build package(s)"
-msgstr ""
+msgstr "construir pacote(s)"
 
 #: fppkg_const.sactcleanpackages
 msgid "clean package(s)"
-msgstr ""
+msgstr "limpar pacote(s)"
 
 #: fppkg_const.sactcompilepackages
 msgid "compile packages"
-msgstr ""
+msgstr "compilar pacotes"
 
 #: fppkg_const.sactdownloadpackages
 msgid "download packages"
-msgstr ""
+msgstr "descarregar pacotes"
 
 #: fppkg_const.sactfixbroken
 msgid "fix broken packages"
-msgstr ""
+msgstr "corrigir pacotes quebrados"
 
 #: fppkg_const.sactinitializefppkg
 msgid "initialize fppkg"
-msgstr ""
+msgstr "inicializar fppkg"
 
 #: fppkg_const.sactinstallpackages
 msgid "install package(s)"
-msgstr ""
+msgstr "instalar pacote(s)"
 
 #: fppkg_const.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "desinstalar pacote(s)"
 
 #: fppkg_const.sactupdate
 msgid "update repository"
-msgstr ""
+msgstr "atualizar repositório"
 
 #: fppkg_const.sauthor
 msgid "Author"
@@ -215,6 +215,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Falha em %s: \n"
+"\n"
+"%s"
 
 #: fppkg_const.sfilename
 msgid "Filename"
@@ -239,11 +242,11 @@ msgstr "Licença"
 #: fppkg_const.smsgactionsucceeded
 #, object-pascal-format
 msgid "%s succeeded."
-msgstr ""
+msgstr "%s bem-sucedido."
 
 #: fppkg_const.smsgfppkgrunning
 msgid "A prior command is still in progress."
-msgstr ""
+msgstr "Um comando anterior ainda está em progresso."
 
 #: fppkg_const.sos
 msgid "OS"
