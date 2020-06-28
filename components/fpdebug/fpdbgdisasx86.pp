@@ -3728,10 +3728,34 @@ begin
     AnIsOutsideFrame := True;
     exit;
   end;
+
   if AData^ = $C3 then begin // ret
     AnIsOutsideFrame := True;
     exit;
   end;
+
+  if AData^ in [$50..$54, $56..$57] then begin // push
+    while (ADataLen > 1) and (AData^ in [$50..$57]) do begin
+      inc(AData);
+      dec(ADataLen);
+    end;
+    if AData^ = $55 then begin // push ebp
+      AnIsOutsideFrame := True;
+      exit;
+    end;
+    //48 8D A4 24 50FBFFFF         lea rsp,[rsp-$000004B0]
+    //48 8D 64 24 C0               lea rsp,[rsp-$40]
+    //but NOT  48 8D A4 24 B040000         lea rsp,[rsp+$000004B0]
+    if (ADataLen >= 4) and (AData[0] = $48) and (AData[1] = $8D) and (AData[3] = $24) and (
+         (                     (AData[2] = $64) and ((AData[4] and $80) <> 0) ) or
+         ( (ADataLen >= 8) and (AData[2] = $A4) and ((AData[7] and $80) <> 0) )
+       )
+    then begin // mov rbp,rsp // AFTER push ebp
+      AnIsOutsideFrame := True;
+      exit;
+    end;
+  end;
+
   //if (ADataLen >= 2) and (AData[0] = $89) and (AData[1] = $E5) // 32 bit mov ebp, esp
   if (ADataLen >= 3) and (AData[0] = $48) and (AData[1] = $89) and (AData[2] = $E5)
   then begin // mov rbp,rsp // AFTER push ebp
