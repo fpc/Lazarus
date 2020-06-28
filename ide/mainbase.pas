@@ -1787,25 +1787,13 @@ procedure TMainIDEBase.UpdateWindowMenu;
 
   function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem;
   begin
-    if ASection.Count > Index then
-      Result := ASection.Items[Index]
-    else
-    begin
-      Result := RegisterIDEMenuCommand(ASection,'Window'+IntToStr(Index)+ASection.Name,'');
-      Result.CreateMenuItem;
-    end;
-  end;
-
-  procedure ClearMenuItem(ARemainCount: Integer; ASection: TIDEMenuSection);
-  begin
-    with ASection do
-      while Count > ARemainCount do
-        Items[Count-1].Free;
+    Result := RegisterIDEMenuCommand(ASection,'Window'+IntToStr(Index)+ASection.Name,'');
+    Result.CreateMenuItem;
   end;
 
 var
   WindowsList: TFPList;
-  i, j, ItemCount, ItemCountProject, ItemCountOther: Integer;
+  i, EditorIndex, ItemCountProject, ItemCountOther: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
   EdList: TStringList;
@@ -1814,7 +1802,9 @@ var
   aSection: TIDEMenuSection;
   s: String;
 begin
-  //DebugLn('TMainIDEBase.UpdateWindowMenu: enter');
+  itmWindowLists.Clear;
+  itmCenterWindowLists.Clear;
+
   WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
   for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
@@ -1847,7 +1837,6 @@ begin
       WindowsList.Add(AForm);
   end;
   // create menuitems for all windows
-  ItemCount := WindowsList.Count;
   for i:=0 to WindowsList.Count-1 do
   begin
     // in the 'bring to front' list
@@ -1875,7 +1864,10 @@ begin
   itmTabListOther.Visible := False;
   itmTabListProject.Checked := False;
   itmTabListOther.Checked := False;
+
+  itmTabListProject.Clear;
   itmTabListPackage.Clear;
+  itmTabListOther.Clear;
 
   if SourceEditorManager.SourceEditorCount > 0 then begin
     ItemCountProject := 0;
@@ -1893,8 +1885,8 @@ begin
     end;
     for i := 0 to EdList.Count - 1 do
     begin
-      j := PtrUInt(EdList.Objects[i]);
-      EditorCur := SourceEditorManager.SourceEditors[j];
+      EditorIndex := PtrUInt(EdList.Objects[i]);
+      EditorCur := SourceEditorManager.SourceEditors[EditorIndex];
       if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then begin
         aSection := itmTabListProject;
         CurMenuItem := GetMenuItem(ItemCountProject, aSection);
@@ -1917,8 +1909,6 @@ begin
       aSection.Visible := True;
       if EditorCur.SharedEditorCount > 1 then
         CurMenuItem.Caption := EditorCur.PageName + ' ('+TForm(EditorCur.Owner).Caption+')'
-        //CurMenuItem.Caption := EditorCur.PageName
-        //  + ' ('+IntToStr(1+SourceEditorManager.IndexOfSourceWindow(TSourceEditorWindowInterface(EditorCur.Owner)))+')'
       else
         CurMenuItem.Caption := EditorCur.PageName;
       if CurMenuItem.MenuItem <> nil then
@@ -1926,11 +1916,10 @@ begin
       if (SourceEditorManager.ActiveEditor = EditorCur) and (aSection.MenuItem <> nil) then
         aSection.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
-      CurMenuItem.Tag := j;
+      CurMenuItem.Tag := EditorIndex;
     end;
     EdList.Free;
-    ClearMenuItem(ItemCountProject, itmTabListProject);
-    ClearMenuItem(ItemCountOther, itmTabListOther);
+
     for i := 0 to itmTabListPackage.Count - 1 do begin
       if itmTabListPackage.Items[i] is TIDEMenuSection then begin
         aSection := itmTabListPackage.Items[i] as TIDEMenuSection;
@@ -1944,9 +1933,6 @@ begin
     if itmTabListOther.TopSeparator <> nil then
       itmTabListOther.TopSeparator.Visible := False;
   end;
-  // remove unused menuitems
-  ClearMenuItem(ItemCount, itmWindowLists);
-  ClearMenuItem(ItemCount, itmCenterWindowLists);
   WindowsList.Free;           // clean up
 end;
 
