@@ -727,7 +727,8 @@ begin
   NeedProcTerminate:=false;
   EnterCriticalSection;
   try
-    DebugLn(['TExternalTool.DoTerminate ',Title,', Terminated=',Terminated,', Stage=',dbgs(Stage)]);
+    if ConsoleVerbosity>0 then
+      DebugLn(['Info: (lazarus) TExternalTool.DoTerminate ',Title,', Terminated=',Terminated,', Stage=',dbgs(Stage)]);
     if Terminated then exit;
     if Stage=etsStopped then exit;
 
@@ -744,7 +745,8 @@ begin
     LeaveCriticalSection;
   end;
   if NeedProcTerminate and (Process<>nil) then begin
-    DebugLn([' TExternalTool.DoTerminate ',Title,'. Terminating the process.']);
+    if ConsoleVerbosity>0 then
+      DebugLn(['Info: (lazarus) TExternalTool.DoTerminate ',Title,'. Terminating the process.']);
     Process.Terminate(AbortedExitCode);
   end;
 end;
