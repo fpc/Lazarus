@@ -2654,6 +2654,11 @@ begin
         OutSideFrame := False;
     end;
     LastFrameBase := FrameBase;
+
+    if (not OutSideFrame) and (NextIdx = 1) and (AnEntry.ProcSymbol <> nil) then begin
+      OutSideFrame := Address = LocToAddrOrNil(AnEntry.ProcSymbol.Address); // the top frame must be outside frame, if it is at entrypoint / needed for exceptions
+    end;
+
     if OutSideFrame then begin
       if not Process.ReadData(StackPtr, Size, Address) or (Address = 0) then Break;
       {$PUSH}{$R-}{$Q-}
