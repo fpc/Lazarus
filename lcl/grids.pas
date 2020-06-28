@@ -34,7 +34,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, TypInfo, Math, FPCanvas, HtmlDefs,
+  Classes, SysUtils, Types, TypInfo, Math, FPCanvas, HtmlDefs, StrUtils,
   // LCL
   LCLStrConsts, LCLType, LCLIntf, Controls, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
@@ -11629,6 +11629,7 @@ begin
   end;
 end;
 
+
 procedure TCustomStringGrid.SelectionSetHTML(TheHTML, TheText: String);
 var
   bStartCol, bStartRow, bCol, bRow: Integer;
@@ -11638,28 +11639,42 @@ var
   bCellData, bTagEnd: Boolean;
   bStr, bEndStr: PChar;
 
-  function ReplaceEntities(cSt: string): string;
+  function ReplaceEntities(const cSt: string): string;
   var
-    o,a,b: pchar;
     dName: widestring;
     dEntity: WideChar;
+    pAmp, pSemi, pStart: Integer;
   begin
+    //debugln(['ReplaceEntities: cSt=',cSt]);
+    Result := '';
+    if (cSt = '') then
+      Exit;
+    pStart := 1;
     while true do begin
-      result := cSt;
-      if cSt = '' then
-        break;
-      o := @cSt[1];
-      a := strscan(o, '&');
-      if a = nil then
-        break;
-      b := strscan(a + 1, ';');
-      if b = nil then
-        break;
-      dName := UTF8Decode(copy(cSt, a - o + 2, b - a - 1));
+      //debugln(['  pStart=',pStart]);
+      pAmp := PosEx('&', cSt, pStart);
+      if (pAmp > 0) then
+        pSemi := PosEx(';', cSt, pAmp);
+      if ((pAmp and pSemi) = 0) then  begin
+        //debugln('  pAmp or pSemi = 0');
+        Result := Result + Copy(cSt, pStart, MaxInt);
+        Exit;
+      end;
+      //debugln(['  pAmp=',pAmp,', pSemi=',pSemi]);
+      dName := Utf8Decode(Copy(cSt, pAmp + 1, pSemi - pAmp - 1));
+      //debugln(['  dName=',Utf8Encode(dName)]);
+      Result := Result + Copy(cSt, pStart, pAmp - pStart);
+      pStart := pSemi + 1;
+
       dEntity := ' ';
       if ResolveHTMLEntityReference(dName, dEntity) then begin
-        system.delete(cSt, a - o + 1, b - a + 1);
-        system.insert(UTF8Encode(dEntity), cSt, a - o + 1);
+        //debugln(['dEntity=',Utf8Encode(dEntity)]);
+        result := result + Utf8Encode(dEntity);
+      end
+      else begin
+        //illegal html entity
+        //debugln('  illegal html entity: replace with "?"');
+        Result := Result + '?';
       end;
     end;
   end;
