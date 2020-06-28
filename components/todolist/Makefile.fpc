@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for ToDoListLaz 1.0.2
+#   Makefile.fpc for ToDoListLaz 1.0.3
 #
-#   This file was generated on 22-3-20
+#   This file was generated on 28-6-20
 
 [package]
 name=todolistlaz
-version=1.0.2
+version=1.0.3
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
