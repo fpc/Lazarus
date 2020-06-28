@@ -1969,15 +1969,14 @@ begin
           or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
 end;
 
+function BeautifySrc(const s: string): string;
+begin
+  Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(s,0);
+end;
+
 function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
   NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
-
-  function BeautifySrc(const s: string): string;
-  begin
-    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(s,0);
-  end;
-
 var
   NewUnitInfo: TUnitInfo;
   NewSrcEdit: TSourceEditor;
@@ -2198,7 +2197,7 @@ begin
           LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
           CodeToolBoss.CreateFile(LRSFilename);
         end;
-        if (NewUnitInfo.Component<>nil)
+        if (NewUnitInfo.Component is TCustomForm)
         and NewFileDescriptor.UseCreateFormStatements
         and NewUnitInfo.IsPartOfProject
         and AProject.AutoCreateForms
@@ -4437,15 +4436,14 @@ begin
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
-  if UseCreateFormStatements and
-     NewUnitInfo.IsPartOfProject and
-     Project1.AutoCreateForms and
-     (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+  if UseCreateFormStatements and (NewComponent is TCustomForm)
+  and NewUnitInfo.IsPartOfProject
+  and Project1.AutoCreateForms
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
   begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
   end;
-
   Result:=mrOk;
 end;
 
