@@ -1066,7 +1066,7 @@ end;
 
 function GetControlText(AHandle: HWND): string;
 var
-  TextLen: dword;
+  TextLen: longint;
   WideBuffer: WideString;
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);
