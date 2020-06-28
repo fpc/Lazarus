@@ -745,10 +745,6 @@ const
      end;
 
    Context_Load( exec, instance );
-   if instance^.GS.instruct_control and 2 <> 0 then
-     exec^.GS := Default_GraphicsState
-   else
-     exec^.GS := instance^.GS;
 
    glyph^.outline.high_precision := ( instance^.metrics.y_ppem < 24 );
 
@@ -924,6 +920,11 @@ const
            if new_flags and TT_Load_Debug <> 0 then
              if load_top > 0 then
                new_flags := new_flags and not TT_Load_Debug;
+
+           if instance^.GS.instruct_control and 2 <> 0 then
+             exec^.GS := Default_GraphicsState
+           else
+             exec^.GS := instance^.GS;
 
            if Load_Simple_Glyph(
                        ftstream,
