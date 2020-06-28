@@ -1556,6 +1556,7 @@ var
   i: Integer;
   ARegisterValue: TRegisterValue;
   thr: TDbgThread;
+  frm: TDbgCallstackEntry;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause, dsStop]) then
     exit;
@@ -1564,7 +1565,22 @@ begin
     ARegisters.DataValidity:=ddsError;
     exit;
   end;
-  ARegisterList :=  thr.RegisterValueList;
+
+  ARegisterList := nil;
+  if ARegisters.StackFrame = 0 then begin
+    ARegisterList :=  thr.RegisterValueList;
+  end
+  else begin
+    frm := thr.CallStackEntryList[ARegisters.StackFrame];
+    if frm <> nil then
+      ARegisterList := frm.RegisterValueList;
+  end;
+
+  if ARegisterList = nil then begin
+    ARegisters.DataValidity:=ddsError;
+    exit;
+  end;
+
   for i := 0 to ARegisterList.Count-1 do
     begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
