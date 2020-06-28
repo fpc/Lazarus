@@ -141,8 +141,15 @@ var
   temp: Int64;
 begin
   temp := int64(a)*int64(b);
-  if temp >= 0 then temp += c shr 1
-    else temp -= c shr 1;
+  if c < 0 then
+  begin
+    c := -c;
+    temp := -temp;
+  end;
+  if temp >= 0 then
+    temp += c shr 1
+  else
+    temp -= c shr 1;
   result := temp div c;
 end;
 
