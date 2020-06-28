@@ -69,7 +69,7 @@ end;
   end;
 {$ELSEIF defined(freebsd) or defined(darwin)}
 type
-  PSysCtl = {$IF FPC_FULLVERSION>30300}pcint{$ELSE}pchar{$ENDIF};
+  PSysCtl = {$IF FPC_FULLVERSION>=30200}pcint{$ELSE}pchar{$ENDIF};
 var
   mib: array[0..1] of cint;
   len: csize_t;
