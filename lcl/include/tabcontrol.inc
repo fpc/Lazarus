@@ -198,6 +198,14 @@ begin
     TTabControl(Parent).OnMouseLeave(Parent);
 end;
 
+function TNoteBookStringsTabControl.GetPopupMenu: TPopupMenu;
+begin
+  if (Parent is TTabControl) and (nboHidePageListPopup in Self.Options) then
+    Result:=TTabControl(Parent).PopupMenu
+  else
+    Result:=inherited GetPopupMenu;
+end;
+
 class procedure TNoteBookStringsTabControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
