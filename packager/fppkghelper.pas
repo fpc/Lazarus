@@ -6,11 +6,11 @@ interface
 
 uses
   Classes,
-  SysUtils,
+  SysUtils
   {$IFNDEF VER3_0}
-  pkgFppkg,
+  , pkgFppkg, fprepos
   {$ENDIF VER3_0}
-  fprepos;
+  ;
 
 type
 
@@ -101,6 +101,7 @@ begin
     end;
 {$ELSE }
   Result := True;
+  if PackageName='' then ;
 {$ENDIF VER3_0}
 end;
 
@@ -121,6 +122,7 @@ begin
       end;
     end;
 {$ENDIF VER3_0}
+  if AList=nil then ;
 end;
 
 finalization

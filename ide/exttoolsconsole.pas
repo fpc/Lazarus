@@ -229,6 +229,7 @@ end;
 function TExternalToolsConsole.GetIDEObject(ToolData: TIDEExternalToolData): TObject;
 begin
   raise Exception.Create('TExternalToolsConsole.GetIDEObject: Should not happen!');
+  Result:=ToolData;
 end;
 
 procedure TExternalToolsConsole.HandleMesages;
