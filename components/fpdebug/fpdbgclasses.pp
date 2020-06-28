@@ -201,6 +201,7 @@ type
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
+    function  FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
     function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
@@ -2679,6 +2680,46 @@ begin
     CodeReadErrCnt := 0;
     If (NextIdx > MAX_FRAMES) then
       break;
+  end;
+end;
+
+function TDbgThread.FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr;
+  AMaxFrameToSearch: Integer; AStartFrame: integer): Integer;
+var
+  RegFP: Integer;
+  AFrame: TDbgCallstackEntry;
+  ARegister: TDbgRegisterValue;
+  fp, prev_fp: TDBGPtr;
+begin
+  if Process.Mode = dm64 then
+    RegFP := 6
+  else
+    RegFP := 5;
+
+  Result := AStartFrame;
+  prev_fp := high(prev_fp);
+  while Result <= AMaxFrameToSearch do begin
+    PrepareCallStackEntryList(Result+1);
+    if CallStackEntryList.Count <= Result then
+      exit(-1);
+
+    AFrame := CallStackEntryList[Result];
+    if AFrame = nil then
+      exit(-1);
+    ARegister := AFrame.RegisterValueList.FindRegisterByDwarfIndex(RegFP);
+    if ARegister = nil then
+      exit(-1);
+
+    fp := ARegister.NumValue;
+
+    if fp = AFrameBasePointer then
+      exit;
+
+    if (fp > prev_fp) or (fp < AStartFrame) then
+      exit(-1);
+
+    prev_fp := fp;
+    inc(Result);
   end;
 end;
 

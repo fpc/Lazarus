@@ -301,6 +301,7 @@ type
     procedure DoFindContext;
     procedure DoGetParamsAsString;
     procedure DoChangeCurrentThreadId;
+    procedure DoSetStackFrameForBasePtr;
     //
     function AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
@@ -312,6 +313,7 @@ type
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
+    procedure SetStackFrameForBasePtr(ABasePtr: TDBGPtr);
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
     function GetParamsAsString(AStackEntry: TDbgCallstackEntry; APrettyPrinter: TFpPascalPrettyPrinter): string; inline;
 
@@ -385,6 +387,8 @@ type
   private
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FReqList: TCallstackAsyncRequestList;
+    FInitialFrame: Integer;
+    FThreadForInitialFrame: Integer;
   protected
     function  FpDebugger: TFpDebugDebugger;
     procedure DoStateLeavePause; override;
@@ -982,6 +986,8 @@ end;
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
   FReqList.Clear;
+  FInitialFrame := 0;
+  FThreadForInitialFrame := 0;
   if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
      (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess <> nil)
   then
@@ -1054,7 +1060,13 @@ end;
 
 procedure TFPCallStackSupplier.RequestCurrent(ACallstack: TCallStackBase);
 begin
-  ACallstack.CurrentIndex := 0;
+  if (FThreadForInitialFrame <> 0) and (FThreadForInitialFrame = ACallstack.ThreadId) then begin
+    ACallstack.CurrentIndex := FInitialFrame;
+    FInitialFrame := 0;
+    FThreadForInitialFrame := 0;
+  end
+  else
+    ACallstack.CurrentIndex := 0;
   ACallstack.SetCurrentValidity(ddsValid);
 end;
 
@@ -2655,7 +2667,7 @@ end;
 procedure TFpDebugDebugger.HandleSoftwareException(out
   AnExceptionLocation: TDBGLocationRec; var continue: boolean);
 var
-  AnExceptionObjectLocation, ExceptIP: TDBGPtr;
+  AnExceptionObjectLocation, ExceptIP, ExceptFramePtr: TDBGPtr;
   ExceptionClass: string;
   ExceptionMessage: string;
   ExceptItem: TBaseException;
@@ -2685,12 +2697,19 @@ begin
   end;
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
+
+  if not &continue then begin
+    if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
+      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr, FDbgController.DefaultContext)
+    then
+      SetStackFrameForBasePtr(ExceptFramePtr);
+  end;
 end;
 
 procedure TFpDebugDebugger.HandleBreakError(var continue: boolean);
 var
   ErrNo: QWord;
-  ExceptIP: TDBGPtr;
+  ExceptIP, ExceptFramePtr: TDBGPtr;
   ExceptName: string;
   ExceptItem: TBaseException;
   ExceptionLocation: TDBGLocationRec;
@@ -2718,6 +2737,11 @@ begin
   DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 
   if not &continue then begin
+    if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
+      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr, FDbgController.DefaultContext)
+    then
+      SetStackFrameForBasePtr(ExceptFramePtr);
+
     EnterPause(ExceptionLocation);
   end;
 end;
@@ -3253,6 +3277,11 @@ begin
   then Threads.CurrentThreads.CurrentThreadId := FNewThreadId;
 end;
 
+procedure TFpDebugDebugger.DoSetStackFrameForBasePtr;
+begin
+  FCacheStackFrame := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(FCacheLocation, 30, 1);
+end;
+
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
   ): TFpDbgBreakpoint;
 begin
@@ -3407,6 +3436,27 @@ begin
   end
   else
     AThread.PrepareCallStackEntryList(AFrameRequired);
+end;
+
+procedure TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr);
+var
+  f: Integer;
+begin
+  if FDbgController.CurrentThread = nil then
+    exit;
+  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
+  begin
+    FCacheLocation:=ABasePtr;
+    ExecuteInDebugThread(@DoSetStackFrameForBasePtr);
+    f := FCacheStackFrame;
+  end
+  else
+    f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
+
+  if f > 0 then begin
+    TFPCallStackSupplier(CallStack).FThreadForInitialFrame := FDbgController.CurrentThread.ID;
+    TFPCallStackSupplier(CallStack).FInitialFrame := f;
+  end;
 end;
 
 function TFpDebugDebugger.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;

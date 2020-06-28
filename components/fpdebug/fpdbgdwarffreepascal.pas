@@ -533,6 +533,7 @@ begin
     exit;
   end;
 
+  // TODO: FindCallStackEntryByBasePointer, once all evaluates run in thread.
   i := StackFrame + 1;
   SearchCtx := TFpDwarfFreePascalAddressContext.Create(ThreadId, i, 0, Symbol, Dwarf);
 
