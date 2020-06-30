@@ -6156,8 +6156,8 @@ begin
           begin
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0);
             DesignerProcs.ScaleNonVisual(DsgControl, DsgControl.DesignTimePPI, Screen.PixelsPerInch);
+            DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           end;
-          DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
         {$IF (FPC_FULLVERSION >= 30003)} // TDataModule.DesignPPI was added in FPC 3.0.3
