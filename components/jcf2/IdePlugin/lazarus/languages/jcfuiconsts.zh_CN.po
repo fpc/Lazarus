@@ -631,7 +631,7 @@ msgstr ""
 
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
-msgstr ""
+msgstr "在uses后(After uses)"
 
 #: jcfuiconsts.lisreturnsconverttocarriagereturn
 msgid "Convert to Carriage Return (UNIX)"

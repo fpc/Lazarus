@@ -435,7 +435,7 @@ msgstr "要求标识符,但是%s找到"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
-msgstr ""
+msgstr "意外的文件结尾(要求标识符)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
 #, object-pascal-format
@@ -722,7 +722,7 @@ msgstr "要求运算符,但是%s找到 "
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "意外的文件结尾(要求运算符)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 #, object-pascal-format
@@ -905,7 +905,7 @@ msgstr "未定义"
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr ""
+msgstr "意外的源代码结尾"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 #, object-pascal-format

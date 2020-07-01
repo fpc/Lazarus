@@ -329,7 +329,7 @@ msgstr "H2PasTool"
 
 #: h2passtrconsts.h2picreateanincludefileinsteadofaunit
 msgid "-i  Create an include file instead of a unit"
-msgstr ""
+msgstr "-i  创建一个include文件 而不是/代替 一个unit"
 
 #: h2passtrconsts.h2pincludedby
 msgid "Included by:"
@@ -475,7 +475,7 @@ msgstr "移除包含路径"
 
 #: h2passtrconsts.h2premovecexternclines
 msgid "Remove C++ 'extern \"C\"' lines"
-msgstr ""
+msgstr "移除C++ ' 外来的''C'' '行"
 
 #: h2passtrconsts.h2premovedoublesemicolons
 msgid "Remove double semicolons"

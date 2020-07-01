@@ -18,7 +18,7 @@ msgstr "关于FastReport"
 
 #: lr_const.saggregatecategory
 msgid "Aggregate"
-msgstr ""
+msgstr "Aggregate(总计的)"
 
 #: lr_const.sallfiles
 msgid "All files"
@@ -162,7 +162,7 @@ msgstr ""
 
 #: lr_const.sbandtypesformcapt
 msgid "Insert new band"
-msgstr ""
+msgstr "插入新band"
 
 #: lr_const.sbarcodeerror
 msgid "Error in barcode"
@@ -498,7 +498,7 @@ msgstr ""
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr ""
+msgstr "LOWERCASE(<String>)/转换 <String> 符号为小写字母."
 
 #: lr_const.sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
@@ -550,7 +550,7 @@ msgstr ""
 
 #: lr_const.sdescriptionstopreport
 msgid "STOPREPORT/Terminate report creation."
-msgstr ""
+msgstr "STOPREPORT/结束报告创建."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
@@ -558,11 +558,11 @@ msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr ""
+msgstr "STRTODATE(<String>)/转换<String>为日期."
 
 #: lr_const.sdescriptionstrtotime
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr ""
+msgstr "STRTOTIME(<String>)/转换<String>为时间."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
@@ -574,7 +574,7 @@ msgstr ""
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr ""
+msgstr "UPPERCASE(<String>)/转换 <String>符号为大写字母."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
@@ -632,7 +632,7 @@ msgstr "英寸(&I)"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "使用内置(inplace)编辑器"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -971,19 +971,19 @@ msgstr "[None]"
 
 #: lr_const.sformat21
 msgid "1234,5"
-msgstr ""
+msgstr "1234,5"
 
 #: lr_const.sformat22
 msgid "1234,50"
-msgstr ""
+msgstr "1234,50"
 
 #: lr_const.sformat23
 msgid "1 234,5"
-msgstr ""
+msgstr "1 234,5"
 
 #: lr_const.sformat24
 msgid "1 234,50"
-msgstr ""
+msgstr "1 234,50"
 
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
@@ -992,19 +992,19 @@ msgstr "自定义"
 
 #: lr_const.sformat31
 msgid "11.15.98"
-msgstr ""
+msgstr "11.15.98(98年11月15日)"
 
 #: lr_const.sformat32
 msgid "11.15.1998"
-msgstr ""
+msgstr "11.15.1998(1998年11月15日)"
 
 #: lr_const.sformat33
 msgid "15 nov 1998"
-msgstr ""
+msgstr "15 nov (11月) 1998"
 
 #: lr_const.sformat34
 msgid "15 november 1998"
-msgstr ""
+msgstr "15 november (11月) 1998"
 
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
@@ -1013,15 +1013,15 @@ msgstr "自定义"
 
 #: lr_const.sformat41
 msgid "02:43:35"
-msgstr ""
+msgstr "02:43:35"
 
 #: lr_const.sformat42
 msgid "2:43:35"
-msgstr ""
+msgstr "2:43:35"
 
 #: lr_const.sformat43
 msgid "02:43"
-msgstr ""
+msgstr "02:43"
 
 #: lr_const.sformat44
 msgid "2:43"
@@ -1067,7 +1067,7 @@ msgstr "数据查看器"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "你已经有一个TfrDesigner组件"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1580,7 +1580,7 @@ msgstr "状态"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr ""
+msgstr "隐藏0值"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1690,7 +1690,7 @@ msgstr "安置(Placement)"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr ""
+msgstr "垂直(&v)"
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
@@ -1719,7 +1719,7 @@ msgstr "无效报告格式"
 #: lr_const.sinvalidvariablename
 #, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
-msgstr ""
+msgstr "\"%s\"不是一个有效的变量名称."
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
@@ -1802,7 +1802,7 @@ msgstr "其他"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
-msgstr ""
+msgstr "处理页:"
 
 #: lr_const.spageprinting
 msgid "Printing page:"
@@ -1814,7 +1814,7 @@ msgstr "信纸, 8 1/2 x 11\""
 
 #: lr_const.spaper10
 msgid "A4 small sheet, 210 x 297 mm"
-msgstr ""
+msgstr "A4 small sheet(小纸), 210 x 297 mm"
 
 #: lr_const.spaper100
 msgid "DMPAPER_PENV_5 110X220"
@@ -1858,7 +1858,7 @@ msgstr ""
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
-msgstr ""
+msgstr "A5 148 x 210 mm"
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
@@ -1898,7 +1898,7 @@ msgstr ""
 
 #: lr_const.spaper12
 msgid "B4 250 x 354 mm"
-msgstr ""
+msgstr "B4 250 x 354 mm"
 
 #: lr_const.spaper13
 msgid "B5 182 x 257 mm"
@@ -1914,11 +1914,11 @@ msgstr ""
 
 #: lr_const.spaper16
 msgid "10 x 14\""
-msgstr ""
+msgstr "10 x 14\""
 
 #: lr_const.spaper17
 msgid "11 x 17\""
-msgstr ""
+msgstr "11 x 17\""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
@@ -1926,7 +1926,7 @@ msgstr ""
 
 #: lr_const.spaper19
 msgid "9 Envelope, 3 7/8 x 8 7/8\""
-msgstr ""
+msgstr "9 Envelope(信封), 3 7/8 x 8 7/8\""
 
 #: lr_const.spaper2
 msgid "Letter small, 8 1/2 x 11\""
@@ -1934,19 +1934,19 @@ msgstr ""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr ""
+msgstr "#10 Envelope(信封), 4 1/8  x 9 1/2\""
 
 #: lr_const.spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr ""
+msgstr "#11 Envelope(信封), 4 1/2 x 10 3/8\""
 
 #: lr_const.spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr ""
+msgstr "#12 Envelope(信封), 4 3/4 x 11\""
 
 #: lr_const.spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr ""
+msgstr "#14 Envelope(信封), 5 x 11 1/2\""
 
 #: lr_const.spaper24
 msgid "C Sheet, 17 x 22\""
@@ -1967,35 +1967,35 @@ msgstr ""
 
 #: lr_const.spaper27
 msgid "DL Envelope, 110 x 220 mm"
-msgstr ""
+msgstr "DL Envelope(信封), 110 x 220 mm"
 
 #: lr_const.spaper28
 msgid "C5 Envelope, 162 x 229 mm"
-msgstr ""
+msgstr "C5 Envelope(信封), 162 x 229 mm"
 
 #: lr_const.spaper29
 msgid "C3 Envelope,  324 x 458 mm"
-msgstr ""
+msgstr "C3 Envelope(信封),  324 x 458 mm"
 
 #: lr_const.spaper3
 msgid "Tabloid, 11 x 17\""
-msgstr ""
+msgstr "Tabloid(小型包), 11 x 17\""
 
 #: lr_const.spaper30
 msgid "C4 Envelope,  229 x 324 mm"
-msgstr ""
+msgstr "C4 Envelope(信封),  229 x 324 mm"
 
 #: lr_const.spaper31
 msgid "C6 Envelope,  114 x 162 mm"
-msgstr ""
+msgstr "C6 Envelope(信封),  114 x 162 mm"
 
 #: lr_const.spaper32
 msgid "C65 Envelope, 114 x 229 mm"
-msgstr ""
+msgstr "C65 Envelope(信封), 114 x 229 mm"
 
 #: lr_const.spaper33
 msgid "B4 Envelope,  250 x 353 mm"
-msgstr ""
+msgstr "B4 Envelope(信封),  250 x 353 mm"
 
 #: lr_const.spaper34
 msgid "B5 Envelope,  176 x 250 mm"
@@ -2007,7 +2007,7 @@ msgstr ""
 
 #: lr_const.spaper36
 msgid "Italy Envelope, 110 x 230 mm"
-msgstr ""
+msgstr "意大利 Envelope(信封), 110 x 230 mm"
 
 #: lr_const.spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -2015,7 +2015,7 @@ msgstr ""
 
 #: lr_const.spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr ""
+msgstr "6 3/4 Envelope(信封), 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
@@ -2035,23 +2035,23 @@ msgstr ""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
-msgstr ""
+msgstr "B4 (ISO) 250 x 353 mm"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
-msgstr ""
+msgstr "日本明信片100 x 148 mm"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
-msgstr ""
+msgstr "9 x 11\""
 
 #: lr_const.spaper45
 msgid "10 x 11\""
-msgstr ""
+msgstr "10 x 11\""
 
 #: lr_const.spaper46
 msgid "15 x 11\""
-msgstr ""
+msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
@@ -2075,15 +2075,15 @@ msgstr ""
 
 #: lr_const.spaper53
 msgid "A4 Extra 9.27 x 12.69\""
-msgstr ""
+msgstr "A4 Extra(特大的) 9.27 x 12.69\""
 
 #: lr_const.spaper54
 msgid "Letter Transverse 8/275 x 11\""
-msgstr ""
+msgstr "信函 横向 8/275 x 11\""
 
 #: lr_const.spaper55
 msgid "A4 Transverse 210 x 297 mm"
-msgstr ""
+msgstr "A4 横向 210 x 297 mm"
 
 #: lr_const.spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
@@ -2103,15 +2103,15 @@ msgstr ""
 
 #: lr_const.spaper6
 msgid "Statement, 5 1/2 x 8 1/2\""
-msgstr ""
+msgstr "Statement(报表), 5 1/2 x 8 1/2\""
 
 #: lr_const.spaper60
 msgid "A4 Plus 210 x 330 mm"
-msgstr ""
+msgstr "A4 Plus(附加的) 210 x 330 mm"
 
 #: lr_const.spaper61
 msgid "A5 Transverse 148 x 210 mm"
-msgstr ""
+msgstr "A5 横向 148 x 210 mm"
 
 #: lr_const.spaper62
 msgid "B5 (JIS) Transverse 182 x 257 mm"
@@ -2119,11 +2119,11 @@ msgstr ""
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
-msgstr ""
+msgstr "A3 Extra(特大的) 322 x 445 mm"
 
 #: lr_const.spaper64
 msgid "A5 Extra 174 x 235 mm"
-msgstr ""
+msgstr "A5 Extra(特大的) 174 x 235 mm"
 
 #: lr_const.spaper65
 msgid "B5 (ISO) Extra 201 x 276 mm"
@@ -2135,11 +2135,11 @@ msgstr "A2 420 x 594mm"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
-msgstr ""
+msgstr "A3 横向 297 x 420 mm"
 
 #: lr_const.spaper68
 msgid "A3 Extra Transverse 322 x 445 mm"
-msgstr ""
+msgstr "A3 Extra Transverse(特大的横向) 322 x 445 mm"
 
 #: lr_const.spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
@@ -2320,7 +2320,7 @@ msgstr ""
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "布局次序"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2503,7 +2503,7 @@ msgstr "属性"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr ""
+msgstr "打印 假如细节是空的"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"

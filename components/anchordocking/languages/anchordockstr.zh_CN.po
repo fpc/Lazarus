@@ -212,7 +212,7 @@ msgstr ""
 #: anchordockstr.adrsnotsupportedhasparent
 #, object-pascal-format
 msgid "Not supported: %s has parent %s"
-msgstr ""
+msgstr "不被支持:%s有父类%s"
 
 #: anchordockstr.adrsquit
 #, object-pascal-format

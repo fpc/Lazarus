@@ -165,7 +165,7 @@ msgstr "按钮文本"
 
 #: lclstrconsts.rscalculator
 msgid "Calculator"
-msgstr "计算器"
+msgstr "Calculator"
 
 #: lclstrconsts.rscancelrecordhint
 msgctxt "lclstrconsts.rscancelrecordhint"
@@ -322,11 +322,11 @@ msgstr "文件不可写"
 
 #: lclstrconsts.rsfdfilesaveas
 msgid "Save file as"
-msgstr "保存文件为"
+msgstr "Save file as"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "打开存在的文件"
+msgstr "Open existing file"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
@@ -343,7 +343,7 @@ msgstr "路径\"%s\"不存在."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
-msgstr "选择目录"
+msgstr "Select Directory"
 
 #: lclstrconsts.rsfileinfofilenotfound
 #, object-pascal-format
@@ -361,7 +361,7 @@ msgstr "(过滤器)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
-msgstr "查找"
+msgstr "Find"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
@@ -765,7 +765,7 @@ msgstr "褐红"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
-msgstr "取消"
+msgstr "放弃"
 
 #: lclstrconsts.rsmball
 msgid "&All"
@@ -774,7 +774,7 @@ msgstr "所有(&A)"
 #: lclstrconsts.rsmbcancel
 msgctxt "lclstrconsts.rsmbcancel"
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancel"
 
 #: lclstrconsts.rsmbclose
 msgid "&Close"
@@ -798,7 +798,7 @@ msgstr "没有所有(No to all)"
 
 #: lclstrconsts.rsmbok
 msgid "&OK"
-msgstr "确定(&O)"
+msgstr "&OK"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
@@ -905,7 +905,7 @@ msgstr "橄榄绿色"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
-msgstr "选择日期"
+msgstr "Select a date"
 
 #: lclstrconsts.rspixmap
 msgid "Pixmap"
@@ -1068,7 +1068,7 @@ msgstr "刷新"
 
 #: lclstrconsts.rsreplace
 msgid "Replace"
-msgstr "替换"
+msgstr "Replace"
 
 #: lclstrconsts.rsreplaceall
 msgid "Replace all"
@@ -1090,11 +1090,11 @@ msgstr "滚动条属性超出范围"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"
-msgstr "选择颜色"
+msgstr "Select color"
 
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
-msgstr "选择字体"
+msgstr "Select a font"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
@@ -1181,17 +1181,17 @@ msgstr ""
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 #, object-pascal-format
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr ""
+msgstr "警告:这里有%d 剩余的信息在队列中!我将释放它们"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 #, object-pascal-format
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr ""
+msgstr "警告:这里有%d 剩余的TimerInfo结构 在队列中!我将释放它们"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr ""
+msgstr "警告:这里有%d剩余的未移除的LM_PAINT/LM_GtkPAINT信息链接."
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
@@ -1211,15 +1211,15 @@ msgstr "警告:"
 
 #: lclstrconsts.rswindowcolorcaption
 msgid "Window"
-msgstr "窗体"
+msgstr "窗口"
 
 #: lclstrconsts.rswindowframecolorcaption
 msgid "Window Frame"
-msgstr "窗体框架(Frame)"
+msgstr "窗口框架(Frame)"
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
-msgstr "窗体文本"
+msgstr "窗口文本"
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
@@ -1268,7 +1268,7 @@ msgstr ""
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
-msgstr ""
+msgstr "菜单索引超出范围"
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
@@ -1302,7 +1302,7 @@ msgstr "下"
 #: lclstrconsts.smkcend
 msgctxt "lclstrconsts.smkcend"
 msgid "End"
-msgstr ""
+msgstr "End(结束)"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"

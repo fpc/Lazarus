@@ -119,7 +119,7 @@ msgstr "版本"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column2_text
 msgid "Force notify"
-msgstr ""
+msgstr "强制通知"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column3_text
 msgid "Internal version"
@@ -131,7 +131,7 @@ msgstr "不能创建JSON对于更新!错误消息:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
-msgstr "链接到包zip文件:q"
+msgstr "链接到包zip文件:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
@@ -632,7 +632,7 @@ msgstr "检查/不检查包"
 
 #: opkman_const.rsmainfrm_cbfilterby_hint
 msgid "Filter package list by:"
-msgstr ""
+msgstr "过滤器包列表(Filter package list by):"
 
 #: opkman_const.rsmainfrm_edfilter_hint
 msgid "Type filter text"
@@ -855,11 +855,16 @@ msgid "%s packages deleted!"
 msgstr "%s包删除!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "%sAre you sure you wish to uninstall the checked packages?\n"
+#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
+"%s你确定希望卸载被核对的软件包(checked packages)?\n"
+"请注意:为了更改生效 你必须重新构建IDE.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 #, object-pascal-format
@@ -1050,12 +1055,10 @@ msgid "External link (JSON)"
 msgstr "外部链接 (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_externaldeps
-msgctxt "opkman_const.rsmainfrm_vsttext_externaldeps"
 msgid "External dependencies"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
-msgctxt "opkman_const.rsmainfrm_vsttext_externalmetapackagedeps"
 msgid "External dependencies for metapackage"
 msgstr ""
 
@@ -1081,7 +1084,7 @@ msgstr "是"
 
 #: opkman_const.rsmainfrm_vsttext_install2
 msgid "Partially"
-msgstr ""
+msgstr "部分地(Partially)"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_lazcompatibility"
@@ -1131,7 +1134,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory11
 msgid "Labels"
-msgstr ""
+msgstr "标签(Labels)"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory12
 msgid "LazIDEPlugins"
@@ -1139,11 +1142,11 @@ msgstr "LazIDEPlugins(插件)"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory13
 msgid "List and Combo Boxes"
-msgstr ""
+msgstr "列表和组合框"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory14
 msgid "ListViews and TreeViews"
-msgstr ""
+msgstr "列表视图(ListViews)和 树视图 (TreeViews)"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory15
 msgid "Menus"
@@ -1266,7 +1269,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
-msgstr "包状态(status)"
+msgstr "包状态"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype
 msgctxt "opkman_const.rsmainfrm_vsttext_packagetype"
@@ -1456,7 +1459,7 @@ msgstr "使用代理"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr ""
+msgstr "最近添加的软件包，在安装后显示正常图标"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
@@ -1482,7 +1485,7 @@ msgstr ""
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr ""
+msgstr "提取/安装存储库软件包的文件家"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
@@ -1550,7 +1553,7 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr ""
+msgstr "最近添加的软件包,在多少天内显示不同的图标(天数):"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"

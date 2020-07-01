@@ -190,12 +190,12 @@ msgstr "执行SQL"
 #: lazdatadeskstr.sexecutingsqlstatement
 #, object-pascal-format
 msgid "%s : Executing SQL statement:"
-msgstr ""
+msgstr "%s : 执行SQL声明(statement):"
 
 #: lazdatadeskstr.sexecutingsqlstatementcount
 #, object-pascal-format
 msgid "%s : Executing script SQL statement nr. %d:"
-msgstr ""
+msgstr "%s : 执行脚本SQL声明(statement) nr. %d:"
 
 #: lazdatadeskstr.sexecutiontime
 #, object-pascal-format
@@ -472,7 +472,7 @@ msgstr "连接"
 
 #: lazdatadeskstr.sld_connectionsdictionaries
 msgid "Connections/Dictionaries"
-msgstr ""
+msgstr "连接/字典(Connections/Dictionaries)"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 #, object-pascal-format, fuzzy, badformat
@@ -652,7 +652,7 @@ msgstr "开始新字典"
 
 #: lazdatadeskstr.sld_succesconnecting
 msgid "Connection established successfully!"
-msgstr ""
+msgstr "连接建立成功!"
 
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
@@ -847,12 +847,12 @@ msgstr ""
 
 #: lazdatadeskstr.sretrystatement
 msgid "Retry the statement"
-msgstr ""
+msgstr "重试该声明(statement)"
 
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
-msgstr ""
+msgstr "查询成功地执行:%d行受到影响."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -897,7 +897,7 @@ msgstr "SQL错误代码:%d"
 #: lazdatadeskstr.ssqlexecutedok
 #, object-pascal-format
 msgid "%s : Statement executed succesfully."
-msgstr ""
+msgstr "%s : 声明(Statement)成功地执行."
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"

@@ -101,7 +101,7 @@ msgstr "列:"
 
 #: objinspstrconsts.cgdisable
 msgid "Popup to disable/enable items"
-msgstr ""
+msgstr "弹出到禁用/启用项目"
 
 #: objinspstrconsts.clbadd
 msgid "Add new Item"
@@ -148,7 +148,7 @@ msgstr "删除所有"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "获取标签(Labels)"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
@@ -164,7 +164,7 @@ msgstr ""
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr ""
+msgstr "计算(Calculated)(&C)"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -215,11 +215,11 @@ msgstr "Key字段:(&K)"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "查找(&L)"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "查找定义"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
@@ -277,15 +277,15 @@ msgstr "添加值"
 
 #: objinspstrconsts.liiselse
 msgid "Else"
-msgstr ""
+msgstr "Else(否则)"
 
 #: objinspstrconsts.liiselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf(否则如果)"
 
 #: objinspstrconsts.liisif
 msgid "If"
-msgstr ""
+msgstr "If(如果)"
 
 #: objinspstrconsts.liisifdef
 msgid "IfDef"
@@ -520,11 +520,11 @@ msgstr "创建新字段并添加在当前位置"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "当前父类(parent)"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "当前父类(parents)"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -627,11 +627,11 @@ msgstr "插入页名称"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
-msgstr ""
+msgstr "Int64"
 
 #: objinspstrconsts.oisinteger
 msgid "Integer"
-msgstr ""
+msgstr "Integer(整形)"
 
 #: objinspstrconsts.oisinterface
 msgid "Interface"
@@ -648,12 +648,12 @@ msgstr "无效属性值"
 #: objinspstrconsts.oisisnotavalidmethodname
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
-msgstr ""
+msgstr "\"%s\"不是一个有效的方法名称."
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format
 msgid "%u items selected"
-msgstr ""
+msgstr "%u 项目被选择"
 
 #: objinspstrconsts.oisjumptodeclarationof
 #, object-pascal-format
@@ -845,11 +845,11 @@ msgstr "选择所有字段"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "选择控件(control)"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "选择控件(controls)"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
@@ -1281,7 +1281,7 @@ msgstr ""
 
 #: objinspstrconsts.oisword
 msgid "Word"
-msgstr ""
+msgstr "(Word)字"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
@@ -1406,7 +1406,7 @@ msgstr "清理(&C)"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Crop(产量)"
 
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"

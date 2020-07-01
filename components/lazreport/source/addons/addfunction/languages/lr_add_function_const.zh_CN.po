@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -26,11 +26,11 @@ msgstr "CHR(<Code>)/返回ASCII码符号<Code>."
 
 #: lr_add_function_const.sdescriptioncomparestr
 msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
-msgstr ""
+msgstr "COMPARESTR(<String1>,<String2>)/比较两个字符串.返回这两个字符串开始不同的位置 ,假如这两个字符串相等则返回0"
 
 #: lr_add_function_const.sdescriptioncreatedate
 msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
-msgstr ""
+msgstr "CREATEDATE(<String>)/转换<String>字符串为含有日期的用于SQL分句的字符串.为使用这个函数,使处于要求日期格式的字符串到TfrAddFunctionLibrary.FormatDate属性."
 
 #: lr_add_function_const.sdescriptioncreatenum
 msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
@@ -50,7 +50,7 @@ msgstr "DATETOSTR(<Date>)/转换日期<Date>为字符串 返回结果."
 
 #: lr_add_function_const.sdescriptiondayspermonth
 msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
-msgstr "DAYSPERMONTH(<Year>,<Month>)/返回日期在所给月 <Month>年<Year>."
+msgstr "DAYSPERMONTH(<Year>,<Month>)/返回日期在所给月<Month>年<Year>."
 
 #: lr_add_function_const.sdescriptiondelete
 msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
@@ -70,7 +70,7 @@ msgstr ""
 
 #: lr_add_function_const.sdescriptionfirstdayofprevmonth
 msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
-msgstr ""
+msgstr "FIRSTDAYOFPREVMONTH(<Date>)/返回前一个月的第一天的日期(last)Date>."
 
 #: lr_add_function_const.sdescriptionincdate
 msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
@@ -118,7 +118,7 @@ msgstr "LASTDAYOFPREVMONTH(<Date>)/返回前一个月的最后一天的日期(la
 
 #: lr_add_function_const.sdescriptionleftcopy
 msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
-msgstr ""
+msgstr "LEFTCOPY(<String>,<Count>)/复制符号<Count>从字符串 <String>在字符串的结尾开始的数量 "
 
 #: lr_add_function_const.sdescriptionnpos
 msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
@@ -142,11 +142,11 @@ msgstr ""
 
 #: lr_add_function_const.sdescriptionreplicate
 msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
-msgstr ""
+msgstr "REPLICATE(<Symbol>,<Length>)/返回字符串和包括的符号<Symbol>的长度 <Length> ."
 
 #: lr_add_function_const.sdescriptionrightcopy
 msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
-msgstr ""
+msgstr "RIGHTCOPY(<String>,<Count>)/复制符号<Count>从字符串 <String>在字符串的结尾开始的数量 "
 
 #: lr_add_function_const.sdescriptionstrtodatedef
 msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
@@ -174,7 +174,7 @@ msgstr "SWAP(<var var1>,<var var2>)/交换变量var1和var2."
 
 #: lr_add_function_const.sdescriptiontimetostr
 msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
-msgstr "TIMETOSTR(<Time>)/转换时间<Time>为字符串 返回结果."
+msgstr "TIMETOSTR(<Time>)/转换时间<Time>为字符串 并 返回结果."
 
 #: lr_add_function_const.sdescriptiontrimleft
 msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
@@ -198,7 +198,7 @@ msgstr "VALIDINT(<String>)/返回True假如<String>是有效的整型值."
 
 #: lr_add_function_const.sdescriptionwordcount
 msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
-msgstr "WORDCOUNT(<String>,<Delimiters>)/返回字符串中单词的编号<String>.<Delimiters>是字分隔符的列表."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/返回字符串中字的数量<String>.<Delimiters>是字分隔符的列表."
 
 #: lr_add_function_const.sdescriptionwordposition
 msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."

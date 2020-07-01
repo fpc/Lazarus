@@ -322,7 +322,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "Rpl comment(注释)"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
