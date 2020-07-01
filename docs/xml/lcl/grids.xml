@@ -20,6 +20,7 @@
       <element name="Math"/>
       <element name="FPCanvas"/>
       <element name="HtmlDefs"/>
+      <element name="StrUtils"/>
       <element name="LCLStrConsts"/>
       <element name="LCLType"/>
       <element name="LCLIntf"/>
@@ -13233,7 +13234,25 @@
 
       <element name="TCustomStringGrid.SelectionSetHTML">
         <short>Sets the value for the current Selection to the specified HTML content</short>
-        <descr></descr>
+        <descr>
+          <p>
+            Extracts text for rows and columns in the grid from the tagged content in TheHTML. Recognizes and converts the following HTML tags:
+          </p>
+          <ul>
+            <li>BR</li>
+            <li>TR</li>
+            <li>TD</li>
+          </ul>
+          <p>
+            Converts HTML numeric character entities to their UTF-8-encoded equivalent. Unrecognized entities are converted to a Question Mark character (?).
+          </p>
+          <p>
+            Calls DoCellProcess to paste the values extracted from the HTML content. The value in TheText is used when TheHTML does not contain valid HTML that can be handled in the method. Cells and Rows affected in the method are assigned as the current Selection in the grid control prior to exit.
+          </p>
+          <p>
+            Used in the DoPasteFromClipboard method when the clipboard supports the HTML format.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomStringGrid.SelectionSetHTML.TheHTML">

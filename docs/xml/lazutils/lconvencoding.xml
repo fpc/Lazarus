@@ -1,1407 +1,1210 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    LConvEncoding
-  ====================================================================
--->
-
-<module name="LConvEncoding">
-<short></short>
-<descr>
-</descr>
-
-<!-- constant Visibility: default -->
-<element name="EncodingUTF8">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EncodingAnsi">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EncodingUTF8BOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EncodingUCS2LE">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EncodingUCS2BE">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UTF8BOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UTF16BEBOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UTF16LEBOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UTF32BEBOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UTF32LEBOM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GuessEncoding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GuessEncoding.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GuessEncoding.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ConvertEncoding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ConvertEncoding.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ConvertEncoding.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ConvertEncoding.FromEncoding">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ConvertEncoding.ToEncoding">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetDefaultTextEncoding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetDefaultTextEncoding.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetConsoleTextEncoding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetConsoleTextEncoding.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="NormalizeEncoding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="NormalizeEncoding.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="NormalizeEncoding.Encoding">
-<short></short>
-</element>
-
-<!-- function type Visibility: default -->
-<element name="TConvertEncodingFunction">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TConvertEncodingFunction.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TConvertEncodingFunction.s">
-<short></short>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TCharToUTF8Table">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function type Visibility: default -->
-<element name="TUnicodeToCharID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TUnicodeToCharID.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TUnicodeToCharID.Unicode">
-<short></short>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="ConvertAnsiToUTF8">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="ConvertUTF8ToAnsi">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8BOMToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8BOMToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8BOMToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ISO_8859_1ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ISO_8859_1ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ISO_8859_1ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ISO_8859_2ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ISO_8859_2ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ISO_8859_2ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1250ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1250ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1250ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1251ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1251ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1251ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1252ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1252ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1252ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1253ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1253ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1253ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1254ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1254ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1254ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1255ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1255ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1255ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1256ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1256ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1256ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1257ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1257ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1257ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP1258ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP1258ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP1258ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP437ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP437ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP437ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP850ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP850ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP850ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP852ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP852ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP852ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP866ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP866ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP866ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP874ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP874ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP874ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="KOI8ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="KOI8ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="KOI8ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="SingleByteToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="SingleByteToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SingleByteToUTF8.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SingleByteToUTF8.Table">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UCS2LEToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UCS2LEToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UCS2LEToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UCS2BEToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UCS2BEToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UCS2BEToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToUTF8BOM">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToUTF8BOM.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToUTF8BOM.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToISO_8859_1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToISO_8859_1.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToISO_8859_1.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToISO_8859_2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToISO_8859_2.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToISO_8859_2.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1250">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1250.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1250.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1251">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1251.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1251.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1252">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1252.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1252.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1253">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1253.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1253.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1254">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1254.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1254.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1255">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1255.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1255.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1256">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1256.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1256.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1257">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1257.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1257.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP1258">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP1258.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP1258.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP437">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP437.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP437.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP850">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP850.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP850.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP852">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP852.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP852.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP866">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP866.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP866.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP874">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP874.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP874.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToKOI8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToKOI8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToKOI8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToSingleByte">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToSingleByte.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToSingleByte.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToSingleByte.UTF8CharConvFunc">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToUCS2LE">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToUCS2LE.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToUCS2LE.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToUCS2BE">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToUCS2BE.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToUCS2BE.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP936ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP936ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP936ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP950ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP950ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP950ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP949ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP949ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP949ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CP932ToUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CP932ToUTF8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CP932ToUTF8.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="SingleByteToUTF8Ex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="SingleByteToUTF8Ex.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SingleByteToUTF8Ex.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SingleByteToUTF8Ex.CodeP">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP936">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP936.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP936.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP950">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP950.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP950.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP949">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP949.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP949.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToCP932">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToCP932.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToCP932.s">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="UTF8ToSingleByteEx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="UTF8ToSingleByteEx.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToSingleByteEx.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="UTF8ToSingleByteEx.UTF8CharConvFunc">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="GetSupportedEncodings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GetSupportedEncodings.List">
-<short></short>
-</element>
-
-</module> <!-- LConvEncoding -->
-
-</package>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LConvEncoding
+    ====================================================================
+    -->
+    <module name="LConvEncoding">
+      <short>
+        Used to perform conversions between Unicode and System Code Page encodings
+      </short>
+      <descr>
+        <p>
+          <file>lconvencoding.pas</file> provides types, variable, constants, and routines used to perform conversions to and from Unicode and /or System Code Page encodings. Functions in this unit are thread-safe.
+        </p>
+        <p>
+          For environments where the RTL uses UTF-8 encoding, the UseSystemCPConv compiler define is enabled to include System Code Page conversions.
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="SysUtils"/>
+      <element name="Classes"/>
+      <element name="Dos"/>
+      <element name="LazUTF8"/>
+      <element name="iconvenc"/>
+
+      <element name="TConvertEncodingErrorMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TConvertEncodingErrorMode.ceemSkip">
+        <short/>
+      </element>
+      <element name="TConvertEncodingErrorMode.ceemException">
+        <short/>
+      </element>
+      <element name="TConvertEncodingErrorMode.ceemReplace">
+        <short/>
+      </element>
+      <element name="TConvertEncodingErrorMode.ceemReturnEmpty">
+        <short/>
+      </element>
+
+      //Global variable which controls behaviour of encoding conversion error, in 3 places:
+      ConvertEncodingErrorMode: TConvertEncodingErrorMode = ceemSkip;
+
+      <element name="ConvertEncodingErrorMode">
+        <short/>
+        <descr>
+          <p>
+            Global variable which controls the behaviour of encoding conversion errors for the following:
+          </p>
+          <ul>
+            <li>UTF8 to single byte encoding</li>
+            <li>DBCS (Asian) encoding to UTF8</li>
+            <li>UTF8 to DBCS</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="EncodingUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingAnsi">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingUTF8BOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingUCS2LE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingUCS2BE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1250">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1251">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1252">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1253">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1254">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1255">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1256">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1257">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP1258">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP437">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP850">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP852">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP866">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP874">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP932">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP936">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP949">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCP950">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPMac">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPKOI8R">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPKOI8U">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPKOI8RU">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPIso1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPIso2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EncodingCPIso15">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="UTF8BOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF16BEBOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF16LEBOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF32BEBOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF32LEBOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="GuessEncoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GuessEncoding.Result">
+        <short/>
+      </element>
+      <element name="GuessEncoding.s">
+        <short/>
+      </element>
+
+      <element name="ConvertEncodingFromUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ConvertEncodingFromUTF8.Result">
+        <short/>
+      </element>
+      <element name="ConvertEncodingFromUTF8.s">
+        <short/>
+      </element>
+      <element name="ConvertEncodingFromUTF8.ToEncoding">
+        <short/>
+      </element>
+      <element name="ConvertEncodingFromUTF8.Encoded">
+        <short/>
+      </element>
+      <element name="ConvertEncodingFromUTF8.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="ConvertEncodingToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ConvertEncodingToUTF8.Result">
+        <short/>
+      </element>
+      <element name="ConvertEncodingToUTF8.s">
+        <short/>
+      </element>
+      <element name="ConvertEncodingToUTF8.FromEncoding">
+        <short/>
+      </element>
+      <element name="ConvertEncodingToUTF8.Encoded">
+        <short/>
+      </element>
+
+      <element name="ConvertEncoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ConvertEncoding.Result">
+        <short/>
+      </element>
+      <element name="ConvertEncoding.s">
+        <short/>
+      </element>
+      <element name="ConvertEncoding.FromEncoding">
+        <short/>
+      </element>
+      <element name="ConvertEncoding.ToEncoding">
+        <short/>
+      </element>
+      <element name="ConvertEncoding.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="GetDefaultTextEncoding">
+        <short/>
+        <descr>
+          This routine should obtain the encoding utilized by AnsiString in the RTL.
+        </descr>
+        <seealso/>
+      </element>
+      <element name="GetDefaultTextEncoding.Result">
+        <short/>
+      </element>
+
+      <element name="GetConsoleTextEncoding">
+        <short/>
+        <descr>
+          <p>
+            This routine returns the console text encoding, which might be different from the normal system encoding in some Windows systems. See
+            <url href="http://mantis.freepascal.org/view.php?id=20552">http://mantis.freepascal.org/view.php?id=20552</url>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="GetConsoleTextEncoding.Result">
+        <short/>
+      </element>
+
+      <element name="NormalizeEncoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="NormalizeEncoding.Result">
+        <short/>
+      </element>
+      <element name="NormalizeEncoding.Encoding">
+        <short/>
+      </element>
+
+      <element name="TConvertEncodingFunction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TConvertEncodingFunction.Result">
+        <short/>
+      </element>
+      <element name="TConvertEncodingFunction.s">
+        <short/>
+      </element>
+
+      <element name="TConvertUTF8ToEncodingFunc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TConvertUTF8ToEncodingFunc.Result">
+        <short/>
+      </element>
+      <element name="TConvertUTF8ToEncodingFunc.s">
+        <short/>
+      </element>
+      <element name="TConvertUTF8ToEncodingFunc.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="TCharToUTF8Table">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TUnicodeToCharID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TUnicodeToCharID.Result">
+        <short/>
+      </element>
+      <element name="TUnicodeToCharID.Unicode">
+        <short/>
+      </element>
+
+      <element name="ConvertAnsiToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ConvertUTF8ToAnsi">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="UTF8BOMToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8BOMToUTF8.Result">
+        <short/>
+      </element>
+      <element name="UTF8BOMToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="ISO_8859_1ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_1ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="ISO_8859_1ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="ISO_8859_2ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_2ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="ISO_8859_2ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1250ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1250ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1250ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1251ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1251ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1251ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1252ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1252ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1252ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1253ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1253ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1253ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1254ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1254ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1254ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1255ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1255ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1255ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1256ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1256ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1256ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1257ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1257ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1257ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP1258ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP1258ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP1258ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP437ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP437ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP437ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP850ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP850ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP850ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP852ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP852ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP852ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP866ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP866ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP866ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP874ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP874ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP874ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="KOI8RToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="KOI8RToUTF8.Result">
+        <short/>
+      </element>
+      <element name="KOI8RToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="MacintoshToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="MacintoshToUTF8.Result">
+        <short/>
+      </element>
+      <element name="MacintoshToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="SingleByteToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SingleByteToUTF8.Result">
+        <short/>
+      </element>
+      <element name="SingleByteToUTF8.s">
+        <short/>
+      </element>
+      <element name="SingleByteToUTF8.Table">
+        <short/>
+      </element>
+
+      <element name="UCS2LEToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UCS2LEToUTF8.Result">
+        <short/>
+      </element>
+      <element name="UCS2LEToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="UCS2BEToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UCS2BEToUTF8.Result">
+        <short/>
+      </element>
+      <element name="UCS2BEToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="UTF8ToUTF8BOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToUTF8BOM.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToUTF8BOM.s">
+        <short/>
+      </element>
+
+      <element name="UTF8ToISO_8859_1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToISO_8859_1.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToISO_8859_1.s">
+        <short/>
+      </element>
+      <element name="UTF8ToISO_8859_1.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToISO_8859_2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToISO_8859_2.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToISO_8859_2.s">
+        <short/>
+      </element>
+      <element name="UTF8ToISO_8859_2.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1250">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1250.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1250.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1250.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1251">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1251.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1251.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1251.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1252">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1252.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1252.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1252.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1253">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1253.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1253.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1253.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1254">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1254.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1254.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1254.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1255">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1255.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1255.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1255.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1256">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1256.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1256.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1256.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1257">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1257.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1257.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1257.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP1258">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP1258.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1258.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP1258.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP437">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP437.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP437.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP437.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP850">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP850.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP850.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP850.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP852">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP852.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP852.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP852.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP866">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP866.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP866.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP866.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP874">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP874.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP874.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP874.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToKOI8R">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToKOI8R.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8R.s">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8R.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToKOI8U">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToKOI8U.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8U.s">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8U.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToKOI8RU">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToKOI8RU.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8RU.s">
+        <short/>
+      </element>
+      <element name="UTF8ToKOI8RU.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToMacintosh">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToMacintosh.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToMacintosh.s">
+        <short/>
+      </element>
+      <element name="UTF8ToMacintosh.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToSingleByte">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToSingleByte.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToSingleByte.s">
+        <short/>
+      </element>
+      <element name="UTF8ToSingleByte.UTF8CharConvFunc">
+        <short/>
+      </element>
+
+      <element name="UTF8ToUCS2LE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToUCS2LE.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToUCS2LE.s">
+        <short/>
+      </element>
+
+      <element name="UTF8ToUCS2BE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToUCS2BE.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToUCS2BE.s">
+        <short/>
+      </element>
+
+      <element name="CP932ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP932ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP932ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP936ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP936ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP936ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP949ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP949ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP949ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="CP950ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CP950ToUTF8.Result">
+        <short/>
+      </element>
+      <element name="CP950ToUTF8.s">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP932">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP932.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP932.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP932.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP936">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP936.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP936.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP936.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP949">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP949.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP949.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP949.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToCP950">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToCP950.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToCP950.s">
+        <short/>
+      </element>
+      <element name="UTF8ToCP950.SetTargetCodePage">
+        <short/>
+      </element>
+
+      <element name="UTF8ToDBCS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8ToDBCS.Result">
+        <short/>
+      </element>
+      <element name="UTF8ToDBCS.s">
+        <short/>
+      </element>
+      <element name="UTF8ToDBCS.UTF8CharConvFunc">
+        <short/>
+      </element>
+
+      <element name="GetSupportedEncodings">
+        <short>Fills the specified string list with supported encoding names for the platform</short>
+        <descr>
+          <p>
+            <var>GetSupportedEncodings</var> is a procedure used to get the names for the supported encodings on the platform or operating system. GetSupportedEncodings adds each of the encoding names to <var>List</var>; it does <b>NOT</b> removing any existing content in the string list.
+          </p>
+          <p>
+            GetSupportedEncodings stores the following values in List:
+          </p>
+          <ul>
+            <li>'UTF-8'</li>
+            <li>'UTF-8BOM'</li>
+            <li>'Ansi'</li>
+            <li>'ISO-8859-1'</li>
+            <li>'ISO-8859-2'</li>
+            <li>'ISO-8859-15'</li>
+            <li>'KOI8-R'</li>
+            <li>'KOI8-U'</li>
+            <li>'KOI8-RU'</li>
+            <li>'Macintosh'</li>
+            <li>'UCS-2LE'</li>
+            <li>'UCS-2BE'</li>
+          </ul>
+          <p>
+            The uppercase variants of the following constants are also added to the list:
+          </p>
+          <ul>
+            <li>EncodingCP1250</li>
+            <li>EncodingCP1251</li>
+            <li>EncodingCP1252</li>
+            <li>EncodingCP1253</li>
+            <li>EncodingCP1254</li>
+            <li>EncodingCP1255</li>
+            <li>EncodingCP1256</li>
+            <li>EncodingCP1257</li>
+            <li>EncodingCP1258</li>
+            <li>EncodingCP437</li>
+            <li>EncodingCP850</li>
+            <li>EncodingCP852</li>
+            <li>EncodingCP866</li>
+            <li>EncodingCP874</li>
+          </ul>
+          <p>
+            For platforms that support Asian code pages, the following encoding names are added to the list:
+          </p>
+          <ul>
+            <li>EncodingCP932</li>
+            <li>EncodingCP936</li>
+            <li>EncodingCP950</li>
+            <li>EncodingCP949</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="GetSupportedEncodings.List">
+        <short>String list where supported encoding names are added</short>
+      </element>
+
+    </module>
+    <!-- LConvEncoding -->
+  </package>
 </fpdoc-descriptions>

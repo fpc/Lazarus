@@ -364,6 +364,9 @@
       <element name="TSearchFileInPathFlag.sffExecutable">
         <short/>
       </element>
+      <element name="TSearchFileInPathFlag.sffDequoteSearchPath">
+        <short/>
+      </element>
 
       <element name="TSearchFileInPathFlags">
         <short/>
