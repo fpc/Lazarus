@@ -3485,7 +3485,7 @@ begin
     fFoldTypeList[i].Classifications := NewClassifications;
   end;
   if (not FInTopLineChanged) and (FirstChanged > 0) then
-    TSynEdit(FOwner).InvalidateGutterLines(FirstChanged, LastChanged + 1);
+    TCustomSynEdit(FOwner).InvalidateGutterLines(FirstChanged, LastChanged + 1);
 end;
 
 (* Lines *)
