@@ -101,7 +101,7 @@ end;
 constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 begin
   FSections := TStringList.Create;
-  FSections.Sorted := True;
+  FSections.Sorted := False;  // need sections in original order / Symbols use "SectionNumber"
   //FSections.Duplicates := dupError;
   FSections.CaseSensitive := False;
 
@@ -131,6 +131,8 @@ var
   i,j: integer;
   SymbolCount: integer;
   SymbolName: AnsiString;
+  SectNumber, SectCount: Integer;
+  SectRVA: QWord;
 begin
   AfpSymbolInfo.SetAddressBounds(ImageBase, ImageBase+ImageSize);
   p := Section[_symbol];
@@ -140,6 +142,7 @@ begin
     SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
     SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TImageSymbol);
+    SectCount := FSections.Count;
     {$PUSH}{$R-} // SymbolArr may be more than maxSmallInt
     for i := 0 to SymbolCount-1 do
     begin
@@ -159,7 +162,12 @@ begin
             end;
           end;
         end;
-        AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr^[i].Value+ImageBase+FCodeBase));
+        SectNumber := integer(SymbolArr^[i].SectionNumber) - 1;
+        if (SectNumber >= 0) and (SectNumber < SectCount) then
+          SectRVA := PDbgImageSectionEx(FSections.Objects[SectNumber])^.Sect.VirtualAddress
+        else
+          SectRVA := 0;
+        AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr^[i].Value+ImageBase+SectRVA));
       end
     end;
     {$POP}
