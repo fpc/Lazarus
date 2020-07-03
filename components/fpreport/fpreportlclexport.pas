@@ -444,7 +444,7 @@ procedure TFPReportExportCanvas.RenderFrame(const ABand: TFPReportCustomBand; co
   const APos: TFPReportPoint; const AWidth, AHeight: TFPReportUnits);
 
 begin
-  RenderFrame(AFrame,CoordToRect(APos,AWidth,AHeight), RGBtoBGR(ABand.Frame.BackgroundColor));
+  RenderFrame(AFrame,CoordToRect(APos,AWidth,AHeight), ABand.Frame.BackgroundColor);
 end;
 
 Type
