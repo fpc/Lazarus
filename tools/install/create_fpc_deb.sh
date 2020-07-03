@@ -223,6 +223,10 @@ if [ "$PackageName" = "fpc-laz" ]; then
   make clean all ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
   mkdir -p $DebianInstallDir
   make install INSTALL_PREFIX=$DebianInstallDir ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+
+  # remove pas2jslib.so as debian require the version in its filename
+  rm -f $DebianInstallDir/lib/libpas2jslib.so
+
   if test -z "$BINUTILSPREFIX"
   then
     # need up to date samplecfg that chains cross compiler additions
