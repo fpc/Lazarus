@@ -313,7 +313,8 @@ type
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
-    procedure SetStackFrameForBasePtr(ABasePtr: TDBGPtr);
+    function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
+      CurAddr: TDBGPtr = 0): TDBGPtr;
     function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
     function GetParamsAsString(AStackEntry: TDbgCallstackEntry; APrettyPrinter: TFpPascalPrettyPrinter): string; inline;
 
@@ -2718,7 +2719,9 @@ begin
     if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
       SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr, FDbgController.DefaultContext)
     then
-      SetStackFrameForBasePtr(ExceptFramePtr);
+      ExceptIP := SetStackFrameForBasePtr(ExceptFramePtr, True, ExceptIP);
+      if ExceptIP <> 0 then
+          AnExceptionLocation:=GetLocationRec(ExceptIP); // Assert was corrected
   end;
 end;
 
@@ -3295,6 +3298,7 @@ end;
 
 procedure TFpDebugDebugger.DoSetStackFrameForBasePtr;
 begin
+  FDbgController.CurrentThread.PrepareCallStackEntryList(7);
   FCacheStackFrame := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(FCacheLocation, 30, 1);
 end;
 
@@ -3454,10 +3458,16 @@ begin
     AThread.PrepareCallStackEntryList(AFrameRequired);
 end;
 
-procedure TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr);
+function TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr;
+  ASearchAssert: boolean; CurAddr: TDBGPtr): TDBGPtr;
+const
+  SYS_ASSERT_NAME = 'SYSUTILS_$$_ASSERT'; // AssertErrorHandler, in case the assert is hidden in the stack
 var
-  f: Integer;
+  f, i: Integer;
+  CList: TDbgCallstackEntryList;
+  P: TFpSymbol;
 begin
+  Result := 0;
   if FDbgController.CurrentThread = nil then
     exit;
   if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
@@ -3466,8 +3476,30 @@ begin
     ExecuteInDebugThread(@DoSetStackFrameForBasePtr);
     f := FCacheStackFrame;
   end
-  else
+  else begin
+    FDbgController.CurrentThread.PrepareCallStackEntryList(7);
     f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
+  end;
+
+  if (f < 0) and ASearchAssert then begin
+    // stack is already prepared / exe in thread not needed
+    i := 1;
+    CList := FDbgController.CurrentThread.CallStackEntryList;
+    while i <= min(4, CList.Count-3) do begin
+      P := CList[i].ProcSymbol;
+      if (P <> nil) and
+         ( (P.Name = 'FPC_ASSERT') or (P.Name = 'fpc_assert') or
+           (P.Name = 'ASSERT') or (P.Name = 'assert') or
+           (UpperCase(copy(P.Name, 1, length(SYS_ASSERT_NAME))) = SYS_ASSERT_NAME) ) and
+         (CList[i+2].AnAddress = CurAddr)  // assert gets wrong addr too.
+      then begin
+        f := i+1;
+        Result := CList[i+1].AnAddress - 1;
+        break;
+      end;
+      inc(i);
+    end;
+  end;
 
   if f > 0 then begin
     TFPCallStackSupplier(CallStack).FThreadForInitialFrame := FDbgController.CurrentThread.ID;
