@@ -111,7 +111,7 @@ begin
   if i > -1 then
   begin
     val := Default(TFpDbgMemLocation);
-    val.Address:=FFpSymbolInfo.FSymbolList.Data[i];
+    val.Address:=FFpSymbolInfo.FSymbolList.DataPtr[i]^.Addr;
     val.MType:=mlfTargetMem;
     result := TFpValueConstAddress.Create(val);
   end
@@ -165,7 +165,7 @@ var
 begin
   i := FSymbolList.IndexOf(AName);
   if i >= 0 then
-    Result := TFpSymbolTableProc.Create(AName, FSymbolList.Data[i])
+    Result := TFpSymbolTableProc.Create(AName, FSymbolList.DataPtr[i]^.Addr)
   else
     result := nil;
 end;
@@ -176,6 +176,7 @@ var
   i, NearestIdx: integer;
   a, NearestAddr: TDBGPtr;
   NPreFix: String;
+  d: PfpLinkerSymbol;
 begin
   NPreFix := '';
   if FLibName <> '' then
@@ -190,19 +191,22 @@ begin
   Result := nil;
   i := FSymbolList.Count - 1;
   while i >= 0 do begin
-    a := FSymbolList.Data[i];
-    if a = AnAdress then begin
-      Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[i], FSymbolList.Data[i]);
+    d := FSymbolList.DataPtr[i];
+    a := d^.Addr;
+    if (a = AnAdress) then begin
+      Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[i], a);
       exit;
     end;
-    if CheckRange and (a <= AnAdress) and (a > NearestAddr)  then begin
+    if CheckRange and (a <= AnAdress) and (a > NearestAddr) and
+       ( (d^.SectionEnd = 0) or (AnAdress <= d^.SectionEnd) )
+    then begin
       NearestIdx := i;
       NearestAddr := a;
     end;
     dec(i);
   end;
   if NearestIdx >= 0 then begin
-    Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[NearestIdx], FSymbolList.Data[NearestIdx]);
+    Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[NearestIdx], FSymbolList.DataPtr[NearestIdx]^.Addr);
   end;
 end;
 
