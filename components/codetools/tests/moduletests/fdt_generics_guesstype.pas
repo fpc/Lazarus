@@ -111,6 +111,8 @@ type
   TOL3 = TOL2;
   TOL4 = class(TOL2);
 
+  generic TArray<T> = array of T;
+  
 var
   OL_P1_1: TOL_P1_1;
   OL_P1_2: TOL_P1_2;
@@ -124,6 +126,7 @@ var
   OL2: TOL2;
   OL3: TOL3;
   OL4: TOL4;
+  A: specialize TArray<TObj>;
 
 begin
   for o_p1_1{guesstype:TObj} in OL_P1_1 do ;
@@ -138,6 +141,7 @@ begin
   for o2{guesstype:TObj} in OL2 do ;
   for o3{guesstype:TObj} in OL3 do ;
   for o4{guesstype:TObj} in OL4 do ;
+  for i{guesstype:TObj} in A do;
 end.
 
 
