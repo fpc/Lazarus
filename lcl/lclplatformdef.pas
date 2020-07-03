@@ -68,7 +68,7 @@ const
     'qt5',
     'fpGUI (alpha)',
     'NoGUI',
-    'cocoa (beta)',
+    'cocoa',
     'customdrawn (alpha)',
     'MUI'
     );
