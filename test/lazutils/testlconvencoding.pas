@@ -66,6 +66,9 @@ begin
   Test(EncodingCP1256);
   Test(EncodingCP1257);
   Test(EncodingCP1258);
+  Test(EncodingCPKOI8R);
+  Test(EncodingCPKOI8U);
+  Test(EncodingCPKOI8RU);
 end;
 
 initialization
