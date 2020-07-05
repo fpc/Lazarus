@@ -124,7 +124,7 @@ procedure TContentsFiller.AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode
 var
   NewNode: TContentTreeNode;
   X: Integer;
-  txt: string;
+  txt, URL: string;
 begin
   if fStop^ then Exit;
   txt := AItem.KeyWord;
@@ -136,7 +136,17 @@ begin
     // Add new child node
     fLastNode := AParentNode;
     NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
-    NewNode.Url := FixURL('/'+AItem.Local);
+    URL:='';
+    for x:=0 to AItem.SubItemcount-1 do
+    begin
+      URL:=AItem.SubItem[x].URL;
+      if URL<>'' then
+        break;
+      URL:=AItem.SubItem[x].Local;
+      if URL<>'' then
+        break;
+    end;
+    NewNode.Url := FixURL('/'+URL);
     NewNode.Data := fChm;
     if fTreeView.Images <> nil then
     begin
