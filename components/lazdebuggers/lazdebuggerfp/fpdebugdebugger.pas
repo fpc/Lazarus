@@ -52,6 +52,55 @@ type
     property LoopIsRunnig: LongBool read GetLoopIsRunnig;
   end;
 
+  { TFpDebugDebuggerPropertiesMemLimits }
+
+  TFpDebugDebuggerPropertiesMemLimits = class(TPersistent)
+  private
+  const
+    DEF_MaxMemReadSize              = 512*1024*1024;
+    DEF_MaxStringLen                = 10000;
+    DEF_MaxArrayLen                 = 100*1024;
+    DEF_MaxNullStringSearchLen      = 10000;
+    DEF_MaxStackStringLen           = 512;
+    DEF_MaxStackArrayLen            = 64;
+    DEF_MaxStackNullStringSearchLen = 512;
+  private
+    FMaxArrayLen: QWord;
+    FMaxMemReadSize: QWord;
+    FMaxNullStringSearchLen: QWord;
+    FMaxStackArrayLen: QWord;
+    FMaxStackNullStringSearchLen: QWord;
+    FMaxStackStringLen: QWord;
+    FMaxStringLen: QWord;
+    function MaxArrayLenIsStored: Boolean;
+    function MaxMemReadSizeIsStored: Boolean;
+    function MaxNullStringSearchLenIsStored: Boolean;
+    function MaxStackArrayLenIsStored: Boolean;
+    function MaxStackNullStringSearchLenIsStored: Boolean;
+    function MaxStackStringLenIsStored: Boolean;
+    function MaxStringLenIsStored: Boolean;
+    procedure SetMaxArrayLen(AValue: QWord);
+    procedure SetMaxMemReadSize(AValue: QWord);
+    procedure SetMaxNullStringSearchLen(AValue: QWord);
+    procedure SetMaxStackArrayLen(AValue: QWord);
+    procedure SetMaxStackNullStringSearchLen(AValue: QWord);
+    procedure SetMaxStackStringLen(AValue: QWord);
+    procedure SetMaxStringLen(AValue: QWord);
+  public
+    constructor Create;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property MaxMemReadSize: QWord read FMaxMemReadSize write SetMaxMemReadSize stored MaxMemReadSizeIsStored default DEF_MaxMemReadSize;
+
+    property MaxStringLen:           QWord read FMaxStringLen write SetMaxStringLen stored MaxStringLenIsStored default DEF_MaxStringLen;
+    property MaxArrayLen:            QWord read FMaxArrayLen write SetMaxArrayLen  stored MaxArrayLenIsStored default DEF_MaxArrayLen;
+    property MaxNullStringSearchLen: QWord read FMaxNullStringSearchLen write SetMaxNullStringSearchLen stored MaxNullStringSearchLenIsStored default DEF_MaxNullStringSearchLen;
+
+    property MaxStackStringLen:           QWord read FMaxStackStringLen write SetMaxStackStringLen stored MaxStackStringLenIsStored default DEF_MaxStackStringLen;
+    property MaxStackArrayLen:            QWord read FMaxStackArrayLen write SetMaxStackArrayLen stored MaxStackArrayLenIsStored default DEF_MaxStackArrayLen;
+    property MaxStackNullStringSearchLen: QWord read FMaxStackNullStringSearchLen write SetMaxStackNullStringSearchLen stored MaxStackNullStringSearchLenIsStored default DEF_MaxStackNullStringSearchLen;
+  end;
+
   { TFpDebugDebuggerProperties }
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
@@ -60,22 +109,12 @@ type
     {$ifdef windows}
     FForceNewConsole: boolean;
     {$endif windows}
-
-    FMaxArrayLen: QWord;
-    FMaxMemReadSize: QWord;
-    FMaxNullStringSearchLen: QWord;
-    FMaxStackArrayLen: QWord;
-    FMaxStackNullStringSearchLen: QWord;
-    FMaxStackStringLen: QWord;
-    FMaxStringLen: QWord;
+    FMemLimits: TFpDebugDebuggerPropertiesMemLimits;
     FNextOnlyStopOnStartLine: boolean;
-    procedure SetMaxMemReadSize(AValue: QWord);
-    procedure SetMaxNullStringSearchLen(AValue: QWord);
-    procedure SetMaxStackNullStringSearchLen(AValue: QWord);
-    procedure SetMaxStackStringLen(AValue: QWord);
-    procedure SetMaxStringLen(AValue: QWord);
+    procedure SetMemLimits(AValue: TFpDebugDebuggerPropertiesMemLimits);
   public
     constructor Create; override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     {$ifdef unix}
   published
@@ -87,14 +126,7 @@ type
     property ForceNewConsole: boolean read FForceNewConsole write FForceNewConsole default True;
     {$endif windows}
 
-    property MaxMemReadSize: QWord read FMaxMemReadSize write SetMaxMemReadSize default 512*1024*1024;
-    property MaxStringLen:           QWord read FMaxStringLen write SetMaxStringLen default 10000;
-    property MaxArrayLen:            QWord read FMaxArrayLen write FMaxArrayLen  default 100*1024;
-    property MaxNullStringSearchLen: QWord read FMaxNullStringSearchLen write SetMaxNullStringSearchLen default 20*1024;
-
-    property MaxStackStringLen:           QWord read FMaxStackStringLen write SetMaxStackStringLen default 512;
-    property MaxStackArrayLen:            QWord read FMaxStackArrayLen write FMaxStackArrayLen default 64;
-    property MaxStackNullStringSearchLen: QWord read FMaxStackNullStringSearchLen write SetMaxStackNullStringSearchLen default 512;
+    property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
   end;
 
   { TDbgControllerStepOverOrFinallyCmd
@@ -774,9 +806,9 @@ begin
   Changed;
 end;
 
-{ TFpDebugDebuggerProperties }
+{ TFpDebugDebuggerPropertiesMemLimits }
 
-procedure TFpDebugDebuggerProperties.SetMaxMemReadSize(AValue: QWord);
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxMemReadSize(AValue: QWord);
 begin
   if (AValue <> 0) and (AValue < MINIMUM_MEMREAD_LIMIT) then
     AValue := MINIMUM_MEMREAD_LIMIT;
@@ -785,11 +817,56 @@ begin
 
   MaxStringLen                := MaxStringLen;
   MaxNullStringSearchLen      := MaxNullStringSearchLen;
+  MaxArrayLen                 := MaxArrayLen;
   MaxStackStringLen           := MaxStackStringLen;
   MaxStackNullStringSearchLen := MaxStackNullStringSearchLen;
+  MaxStackArrayLen            := MaxStackArrayLen;
 end;
 
-procedure TFpDebugDebuggerProperties.SetMaxNullStringSearchLen(AValue: QWord);
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxArrayLen(AValue: QWord);
+begin
+  if (AValue > FMaxMemReadSize) then
+    AValue := FMaxMemReadSize;
+  if FMaxArrayLen = AValue then Exit;
+  FMaxArrayLen := AValue;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxArrayLenIsStored: Boolean;
+begin
+  Result := FMaxArrayLen <> DEF_MaxArrayLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxMemReadSizeIsStored: Boolean;
+begin
+  Result := FMaxMemReadSize <> DEF_MaxMemReadSize;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxNullStringSearchLenIsStored: Boolean;
+begin
+  Result := FMaxNullStringSearchLen <> DEF_MaxNullStringSearchLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxStackArrayLenIsStored: Boolean;
+begin
+  Result := FMaxStackArrayLen <> DEF_MaxStackArrayLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxStackNullStringSearchLenIsStored: Boolean;
+begin
+  Result := FMaxStackNullStringSearchLen <> DEF_MaxStackNullStringSearchLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxStackStringLenIsStored: Boolean;
+begin
+  Result := FMaxStackStringLen <> DEF_MaxStackStringLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxStringLenIsStored: Boolean;
+begin
+  Result := FMaxStringLen <> DEF_MaxStringLen;
+end;
+
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxNullStringSearchLen(AValue: QWord);
 begin
   if (AValue > FMaxStringLen) then
     AValue := FMaxStringLen;
@@ -799,8 +876,16 @@ begin
   FMaxNullStringSearchLen := AValue;
 end;
 
-procedure TFpDebugDebuggerProperties.SetMaxStackNullStringSearchLen(
-  AValue: QWord);
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxStackArrayLen(AValue: QWord
+  );
+begin
+  if (AValue > FMaxMemReadSize) then
+    AValue := FMaxMemReadSize;
+  if FMaxStackArrayLen = AValue then Exit;
+  FMaxStackArrayLen := AValue;
+end;
+
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxStackNullStringSearchLen(AValue: QWord);
 begin
   if (AValue > FMaxStackStringLen) then
     AValue := FMaxStackStringLen;
@@ -810,20 +895,54 @@ begin
   FMaxStackNullStringSearchLen := AValue;
 end;
 
-procedure TFpDebugDebuggerProperties.SetMaxStackStringLen(AValue: QWord);
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxStackStringLen(AValue: QWord);
 begin
   if (AValue > FMaxMemReadSize) then
     AValue := FMaxMemReadSize;
   if FMaxStackStringLen = AValue then Exit;
   FMaxStackStringLen := AValue;
+  MaxStackNullStringSearchLen      := MaxStackNullStringSearchLen;
 end;
 
-procedure TFpDebugDebuggerProperties.SetMaxStringLen(AValue: QWord);
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxStringLen(AValue: QWord);
 begin
   if (AValue > FMaxMemReadSize) then
     AValue := FMaxMemReadSize;
   if FMaxStringLen = AValue then Exit;
   FMaxStringLen := AValue;
+  MaxNullStringSearchLen      := MaxNullStringSearchLen;
+end;
+
+constructor TFpDebugDebuggerPropertiesMemLimits.Create;
+begin
+  inherited Create;
+  FMaxMemReadSize             := DEF_MaxMemReadSize;
+  FMaxStringLen               := DEF_MaxStringLen;
+  FMaxArrayLen                := DEF_MaxArrayLen;
+  FMaxNullStringSearchLen     := DEF_MaxNullStringSearchLen ;
+  FMaxStackStringLen          := DEF_MaxStackStringLen;
+  FMaxStackArrayLen           := DEF_MaxStackArrayLen;
+  FMaxStackNullStringSearchLen:= DEF_MaxStackNullStringSearchLen;
+end;
+
+procedure TFpDebugDebuggerPropertiesMemLimits.Assign(Source: TPersistent);
+begin
+  if Source is TFpDebugDebuggerPropertiesMemLimits then begin
+    FMaxMemReadSize             := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxMemReadSize;
+    FMaxStringLen               := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStringLen;
+    FMaxArrayLen                := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxArrayLen;
+    FMaxNullStringSearchLen     := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxNullStringSearchLen;
+    FMaxStackStringLen          := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackStringLen;
+    FMaxStackArrayLen           := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackArrayLen;
+    FMaxStackNullStringSearchLen:= TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackNullStringSearchLen;
+  end;
+end;
+
+{ TFpDebugDebuggerProperties }
+
+procedure TFpDebugDebuggerProperties.SetMemLimits(AValue: TFpDebugDebuggerPropertiesMemLimits);
+begin
+  FMemLimits.Assign(AValue);
 end;
 
 constructor TFpDebugDebuggerProperties.Create;
@@ -833,13 +952,13 @@ begin
   {$ifdef windows}
   FForceNewConsole            := True;
   {$endif windows}
-  FMaxMemReadSize             := 512*1024*1024;
-  FMaxStringLen               := 10000;
-  FMaxArrayLen                := 100*1024;
-  FMaxNullStringSearchLen     := 20*1024;
-  FMaxStackStringLen          := 512;
-  FMaxStackArrayLen           := 64;
-  FMaxStackNullStringSearchLen:= 512;
+  FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
+end;
+
+destructor TFpDebugDebuggerProperties.Destroy;
+begin
+  inherited Destroy;
+  FMemLimits.Free;
 end;
 
 procedure TFpDebugDebuggerProperties.Assign(Source: TPersistent);
@@ -851,13 +970,7 @@ begin
     {$ifdef windows}
     FForceNewConsole:=TFpDebugDebuggerProperties(Source).FForceNewConsole;
     {$endif windows}
-    FMaxMemReadSize             := TFpDebugDebuggerProperties(Source).FMaxMemReadSize;
-    FMaxStringLen               := TFpDebugDebuggerProperties(Source).FMaxStringLen;
-    FMaxArrayLen                := TFpDebugDebuggerProperties(Source).FMaxArrayLen;
-    FMaxNullStringSearchLen     := TFpDebugDebuggerProperties(Source).FMaxNullStringSearchLen;
-    FMaxStackStringLen          := TFpDebugDebuggerProperties(Source).FMaxStackStringLen;
-    FMaxStackArrayLen           := TFpDebugDebuggerProperties(Source).FMaxStackArrayLen;
-    FMaxStackNullStringSearchLen:= TFpDebugDebuggerProperties(Source).FMaxStackNullStringSearchLen;
+    FMemLimits.Assign(TFpDebugDebuggerProperties(Source).MemLimits);
   end;
 end;
 
@@ -3613,9 +3726,9 @@ end;
 function TFpDebugDebugger.GetParamsAsString(AStackEntry: TDbgCallstackEntry;
   APrettyPrinter: TFpPascalPrettyPrinter): string;
 begin
-  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MaxStackArrayLen;
-  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MaxStackStringLen;
-  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MaxStackNullStringSearchLen;
+  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStackArrayLen;
+  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStackStringLen;
+  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStackNullStringSearchLen;
 
   if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
   begin
@@ -3628,9 +3741,9 @@ begin
   else
     Result := AStackEntry.GetParamsAsString(APrettyPrinter);
 
-  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MaxArrayLen;
-  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MaxStringLen;
-  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MaxNullStringSearchLen;
+  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxArrayLen;
+  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStringLen;
+  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxNullStringSearchLen;
 end;
 
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
@@ -3642,10 +3755,10 @@ begin
   FMemReader := TFpDbgMemReader.Create(self);
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
-  FMemManager.MemLimits.MaxMemReadSize := TFpDebugDebuggerProperties(GetProperties).MaxMemReadSize;
-  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MaxArrayLen;
-  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MaxStringLen;
-  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MaxNullStringSearchLen;
+  FMemManager.MemLimits.MaxMemReadSize := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxMemReadSize;
+  FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxArrayLen;
+  FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStringLen;
+  FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxNullStringSearchLen;
   FDbgController := TDbgController.Create(FMemManager);
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
   FDbgController.OnHitBreakpointEvent:=@FDbgControllerHitBreakpointEvent;
