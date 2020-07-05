@@ -104,13 +104,14 @@ type
 
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
+    function  GetValue(const APath: String; ADefault: Int64): Int64;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
     function  GetExtendedValue(const APath: String;
                                const ADefault: extended): extended;
     procedure SetValue(const APath, AValue: String);
     procedure SetDeleteValue(const APath, AValue, DefValue: String);
-    procedure SetValue(const APath: String; AValue: Integer);
-    procedure SetDeleteValue(const APath: String; AValue, DefValue: Integer);
+    procedure SetValue(const APath: String; AValue: Int64);
+    procedure SetDeleteValue(const APath: String; AValue, DefValue: Int64);
     procedure SetValue(const APath: String; AValue: Boolean);
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Boolean);
     procedure GetValue(const APath: String; out ARect: TRect;
@@ -393,6 +394,11 @@ begin
   Result := StrToIntDef(GetValue(APath, ''),ADefault);
 end;
 
+function TXMLConfig.GetValue(const APath: String; ADefault: Int64): Int64;
+begin
+  Result := StrToInt64Def(GetValue(APath, ''),ADefault);
+end;
+
 procedure TXMLConfig.GetValue(const APath: String; out ARect: TRect;
   const ADefault: TRect);
 begin
@@ -488,13 +494,13 @@ begin
     SetValue(APath,AValue);
 end;
 
-procedure TXMLConfig.SetValue(const APath: String; AValue: Integer);
+procedure TXMLConfig.SetValue(const APath: String; AValue: Int64);
 begin
   SetValue(APath, IntToStr(AValue));
 end;
 
-procedure TXMLConfig.SetDeleteValue(const APath: String; AValue,
-  DefValue: Integer);
+procedure TXMLConfig.SetDeleteValue(const APath: String; AValue, DefValue: Int64
+  );
 begin
   if AValue=DefValue then
     DeleteValue(APath)
@@ -904,7 +910,7 @@ type
 var
   i: Integer;
   PropType: PTypeInfo;
-  Value, DefValue: LongInt;
+  Value, DefValue: Int64;
   Ident: String;
   IntToIdentFn: TIntToIdent;
   SetType: Pointer;
@@ -927,7 +933,7 @@ begin
     exit;
 
   case PropType^.Kind of
-    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
+    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkInt64, tkQWord:
       begin
         Value := GetOrdProp(Instance, PropInfo);
         if (DefInstance <> nil) then
@@ -946,6 +952,8 @@ begin
                 else
                   SetValue(Path, Value); // Integer has to be written just as number
               end;
+            tkInt64,tkQWord:
+              SetValue(Path, Value); // Integer has to be written just as number
             tkChar:
               SetValue(Path, Chr(Value));
             tkWChar:
@@ -955,7 +963,7 @@ begin
                 SetType := GetTypeData(PropType)^.CompType;
                 Ident := '';
                 for i := 0 to 31 do
-                  if (i in tset(Value)) then begin
+                  if (i in tset(Integer(Value))) then begin
                     if Ident <> '' then Ident := Ident + ',';
                     Ident := Ident + GetEnumName(PTypeInfo(SetType), i);
                   end;
@@ -1044,7 +1052,8 @@ type
 var
   i, j: Integer;
   PropType: PTypeInfo;
-  Value, DefValue: LongInt;
+  Value, DefValue: Int64;
+  IntValue: Integer;
   Ident, s: String;
   IdentToIntFn: TIdentToInt;
   SetType: Pointer;
@@ -1069,7 +1078,7 @@ begin
     DefInstance := Instance;
 
   case PropType^.Kind of
-    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
+    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkInt64, tkQWord:
       begin
         DefValue := GetOrdProp(DefInstance, PropInfo);
         case PropType^.Kind of
@@ -1077,9 +1086,17 @@ begin
             begin                      // Check if this integer has a string identifier
               Ident := GetValue(Path, IntToStr(DefValue));
               IdentToIntFn := FindIdentToInt(PPropInfo(PropInfo)^.PropType);
-              if TryStrToInt(Ident, Value) then
-                SetOrdProp(Instance, PropInfo, Value)
-              else if Assigned(IdentToIntFn) and IdentToIntFn(Ident, Value) then
+              if TryStrToInt(Ident, IntValue) then
+                SetOrdProp(Instance, PropInfo, IntValue)
+              else if Assigned(IdentToIntFn) and IdentToIntFn(Ident, IntValue) then
+                SetOrdProp(Instance, PropInfo, IntValue)
+              else
+                SetOrdProp(Instance, PropInfo, DefValue)
+            end;
+          tkInt64,tkQWord:
+            begin                      // Check if this integer has a string identifier
+              Ident := GetValue(Path, IntToStr(DefValue));
+              if TryStrToInt64(Ident, Value) then
                 SetOrdProp(Instance, PropInfo, Value)
               else
                 SetOrdProp(Instance, PropInfo, DefValue)
@@ -1099,9 +1116,9 @@ begin
               SetType := GetTypeData(PropType)^.CompType;
               Ident := GetValue(Path, '-');
               If Ident = '-' then
-                Value := DefValue
+                IntValue := DefValue
               else begin
-                Value := 0;
+                IntValue := 0;
                 while length(Ident) > 0 do begin
                   i := Pos(',', Ident);
                   if i < 1 then
@@ -1110,14 +1127,14 @@ begin
                   Ident := copy(Ident, i+1, length(Ident));
                   j := GetEnumValue(PTypeInfo(SetType), s);
                   if j <> -1 then
-                    include(tset(Value), j)
+                    include(tset(IntValue), j)
                   else Begin
-                    Value := DefValue;
+                    IntValue := DefValue;
                     break;
                   end;
                 end;
               end;
-              SetOrdProp(Instance, PropInfo, Value);
+              SetOrdProp(Instance, PropInfo, IntValue);
             end;
           tkEnumeration:
             begin
