@@ -101,6 +101,11 @@ type
     property MaxStackNullStringSearchLen: QWord read FMaxStackNullStringSearchLen write SetMaxStackNullStringSearchLen stored MaxStackNullStringSearchLenIsStored default DEF_MaxStackNullStringSearchLen;
   end;
 
+  TFpInt3DebugBreakOption = (
+    dboIgnoreAll //, dboIgnoreDLL, dboIgnoreNtdllNoneDebug, dboIgnoreNtdllDebug
+  );
+  TFpInt3DebugBreakOptions = set of TFpInt3DebugBreakOption;
+
   { TFpDebugDebuggerProperties }
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
@@ -109,6 +114,7 @@ type
     {$ifdef windows}
     FForceNewConsole: boolean;
     {$endif windows}
+    FHandleDebugBreakInstruction: TFpInt3DebugBreakOptions;
     FMemLimits: TFpDebugDebuggerPropertiesMemLimits;
     FNextOnlyStopOnStartLine: boolean;
     procedure SetMemLimits(AValue: TFpDebugDebuggerPropertiesMemLimits);
@@ -127,6 +133,7 @@ type
     {$endif windows}
 
     property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
+    property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
   end;
 
   { TDbgControllerStepOverOrFinallyCmd
@@ -954,6 +961,7 @@ begin
   FForceNewConsole            := True;
   {$endif windows}
   FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
+  FHandleDebugBreakInstruction := [dboIgnoreAll];
 end;
 
 destructor TFpDebugDebuggerProperties.Destroy;
@@ -972,6 +980,7 @@ begin
     FForceNewConsole:=TFpDebugDebuggerProperties(Source).FForceNewConsole;
     {$endif windows}
     FMemLimits.Assign(TFpDebugDebuggerProperties(Source).MemLimits);
+    FHandleDebugBreakInstruction:=TFpDebugDebuggerProperties(Source).FHandleDebugBreakInstruction;
   end;
 end;
 
@@ -3018,55 +3027,67 @@ var
   ALocationAddr: TDBGLocationRec;
   Context: TFpDbgInfoContext;
   PasExpr: TFpPascalExpression;
+  Opts: TFpInt3DebugBreakOptions;
+  StackEntry: TDbgCallstackEntry;
+  s: String;
 begin
   // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
   if AnEventType = deBreakpoint then
     if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
       exit;
 
-  if assigned(Breakpoint) then
-    begin
-      ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
-      if ABreakPoint <> nil then begin
+  if assigned(Breakpoint) then begin
+    ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+    if ABreakPoint <> nil then begin
 
-        // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
-        if ABreakPoint.Expression <> '' then begin
-          Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
-          if Context <> nil then begin
-            PasExpr := nil;
-            try
-              PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
-              PasExpr.ResultValue; // trigger full validation
-              if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
-                 (not PasExpr.ResultValue.AsBool) // false => do not pause
-              then
-                &continue := True;
-            finally
-              PasExpr.Free;
-              Context.ReleaseReference;
-            end;
-
-            if &continue then
-              exit;
+      // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
+      if ABreakPoint.Expression <> '' then begin
+        Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
+        if Context <> nil then begin
+          PasExpr := nil;
+          try
+            PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
+            PasExpr.ResultValue; // trigger full validation
+            if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
+               (not PasExpr.ResultValue.AsBool) // false => do not pause
+            then
+              &continue := True;
+          finally
+            PasExpr.Free;
+            Context.ReleaseReference;
           end;
+
+          if &continue then
+            exit;
         end;
+      end;
 
-        ALocationAddr := GetLocation;
-        if Assigned(EventLogHandler) then
-          EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
+      ALocationAddr := GetLocation;
+      if Assigned(EventLogHandler) then
+        EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
 
-        if assigned(ABreakPoint) then
-          ABreakPoint.Hit(&continue);
+      if assigned(ABreakPoint) then
+        ABreakPoint.Hit(&continue);
 
-        if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
-          // For message use location(Address - 1)
-          OnFeedback(self,
-              Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
-                     [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
-              '', ftInformation, [frOk]);
-        end;
-      end
+      if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
+        // For message use location(Address - 1)
+        OnFeedback(self,
+            Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
+                   [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
+            '', ftInformation, [frOk]);
+      end;
     end
+  end
+  else
+  if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
+    &continue:=true;
+    Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
+    if not (dboIgnoreAll in Opts) then begin
+      &continue:=False;
+    end;
+    if  continue then
+      exit;
+  end
   else if (AnEventType = deInternalContinue) and FQuickPause then
     begin
       SetState(dsInternalPause);

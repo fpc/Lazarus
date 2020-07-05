@@ -321,9 +321,11 @@ type
            => OnHitBreakpointEvent(Continue, nil, deFinishedStep, False);
 
       2) BreakPoint/WatchPoint/HardcodedBreakPoint was hit.
-         - Up to TWO calls may be made. (A 4th call for "pause-request" may also happen)
+         - Up to THREE calls may be made. (A 4th call for "pause-request" may also happen)
          - The value for "continue" after each call will be be kept, and passed
            to each subsequent call.
+         * For a hardcoded-BreakPoint (int3)
+           => OnHitBreakpointEvent(Continue, nil, deHardCodedBreakpoint, True_If_More_events);
          * For a WatchPoint
            => OnHitBreakpointEvent(Continue, WatchPoint, deBreakpoint, True_If_More_events);
          * For a BreakPoint
@@ -1453,6 +1455,7 @@ begin
            b := FCurrentProcess.GetAndClearPauseRequested;
            AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or
                     ( (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) ) or
+                    ( (FCurrentThread <> nil) and FCurrentThread.PausedAtHardcodeBreakPoint) or
                     (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1));
          end;
 {        deLoadLibrary :
@@ -1541,11 +1544,14 @@ begin
         end;
         continue:=false;
       end;
-    deBreakpoint:
+    deBreakpoint, deHardCodedBreakpoint:
       begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
         if assigned(OnHitBreakpointEvent) then begin
           continue := False;
+          if (FCurrentThread <> nil) and (FCurrentThread.PausedAtHardcodeBreakPoint) then
+            OnHitBreakpointEvent(continue, nil, deHardCodedBreakpoint, (CurWatch <> nil) or (FCurrentProcess.CurrentBreakpoint <> nil));
+
           if (CurWatch <> nil) then
             OnHitBreakpointEvent(continue, CurWatch, deBreakpoint, (FCurrentProcess.CurrentBreakpoint <> nil));
 
