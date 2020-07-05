@@ -166,7 +166,8 @@ type
     procedure FreeConsoleOutputThread;
   protected
     // Handlers for the FController-events
-    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
+    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
+      AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
     procedure FControllerProcessExitEvent(ExitCode: DWord);
     procedure FControllerCreateProcessEvent(var continue: boolean);
     procedure FControllerDebugInfoLoaded(Sender: TObject);
@@ -434,7 +435,7 @@ begin
 end;
 
 procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean;
-  const Breakpoint: TFpDbgBreakpoint);
+  const Breakpoint: TFpDbgBreakpoint; AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
 var
   ADebugEvent: TFpDebugEvent;
   AnId: Integer;

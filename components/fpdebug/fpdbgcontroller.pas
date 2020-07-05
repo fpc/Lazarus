@@ -20,7 +20,8 @@ type
   TDbgControllerCmd = class;
 
   TOnCreateProcessEvent = procedure(var continue: boolean) of object;
-  TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpDbgBreakpoint) of object;
+  TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
+    AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
   TOnLibraryLoadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
@@ -290,6 +291,52 @@ type
     property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
 
     property OnCreateProcessEvent: TOnCreateProcessEvent read FOnCreateProcessEvent write FOnCreateProcessEvent;
+    (* OnHitBreakpointEvent(
+         var continue: boolean;   // Passed in value always defaults to false.
+                                  // Returned value indicated, if the debugger should continue running.
+                                  // I.e., the current Command (e.g. Stepping) will be kept for continuation, if possible.
+                                  // Returned value may be ignored (treated as "False") where indicated.
+         const Breakpoint: TFpDbgBreakpoint; // Break or Watch, if avail
+         AnEventType: TFPDEvent;             // reason: See below
+         AMoreHitEventsPending: Boolean      // The debugger stopped for more than one reason.
+                                             // There will be further calls to OnHitBreakpointEvent
+                                             // This will NOT be set for the final "pause-requested" event.
+      )
+      will be called as follows.
+
+      Currently only ONE watchpoint, and only ONE breakpoint can be reported.
+      This may change.
+
+      1) Step In/Over/Out ended.
+         - Up to THREE calls may be made. (A 4th call for "pause-request" may also happen)
+         - The value for "continue" will be ignored.
+           (The value of "continue" from the final call will however affect,
+            if a call for "pause-request" is made)
+         * If the step ended at a breakpoint and/or triggered a watchpoint
+           additional calls are made upfront.
+           The debugger should handle the break/watchpoint, but not yet pause.
+           => OnHitBreakpointEvent(Continue, WatchPoint, deFinishedStep, True);
+           => OnHitBreakpointEvent(Continue, BreakPoint, deFinishedStep, True);
+         * ALWAYS for the ended step
+           => OnHitBreakpointEvent(Continue, nil, deFinishedStep, False);
+
+      2) BreakPoint/WatchPoint/HardcodedBreakPoint was hit.
+         - Up to TWO calls may be made. (A 4th call for "pause-request" may also happen)
+         - The value for "continue" after each call will be be kept, and passed
+           to each subsequent call.
+         * For a WatchPoint
+           => OnHitBreakpointEvent(Continue, WatchPoint, deBreakpoint, True_If_More_events);
+         * For a BreakPoint
+           => OnHitBreakpointEvent(Continue, BreakPoint, deBreakpoint, False);
+
+      3) If there was a pause request (TDbgController.Pause).
+         This call to OnHitBreakpointEvent can happen after any event.
+         That is this can happen, after a step or breakpoint was reported according to
+           the above details. But it can also happen after an exceptedion or other event.
+           (except deExitProcess).
+         This call will only be made, if any prior call returned "continue = true".
+         => OnHitBreakpointEvent(Continue, nil, deInternalContinue, False);
+    *)
     property OnHitBreakpointEvent: TOnHitBreakpointEvent read FOnHitBreakpointEvent write FOnHitBreakpointEvent;
     property OnProcessExitEvent: TOnProcessExitEvent read FOnProcessExitEvent write FOnProcessExitEvent;
     property OnExceptionEvent: TOnExceptionEvent read FOnExceptionEvent write FOnExceptionEvent;
@@ -1481,16 +1528,15 @@ begin
         if assigned(OnHitBreakpointEvent) then begin
           // if there is a breakpoint at the stepping end, execute its actions
           continue:=false;
-          if (CurWatch <> nil) and assigned(OnHitBreakpointEvent) then
-            OnHitBreakpointEvent(continue, CurWatch);
+          if (CurWatch <> nil) then
+            OnHitBreakpointEvent(continue, CurWatch, deFinishedStep, True);
+
           continue:=false;
           if assigned(FCurrentProcess.CurrentBreakpoint) then
-            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint, deFinishedStep, True);
 
-          // TODO: dedicated event to set pause and location
-          // ensure state = dsPause and location is set
           continue:=false;
-          OnHitBreakpointEvent(continue, nil);
+          OnHitBreakpointEvent(continue, nil, deFinishedStep, False);
           HasPauseRequest := False;
         end;
         continue:=false;
@@ -1498,12 +1544,14 @@ begin
     deBreakpoint:
       begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
-        continue := (FCurrentProcess.CurrentBreakpoint = nil) and (CurWatch = nil);
-        if (not continue) and assigned(OnHitBreakpointEvent) then begin
+        if assigned(OnHitBreakpointEvent) then begin
+          continue := False;
           if (CurWatch <> nil) then
-            OnHitBreakpointEvent(continue, CurWatch);
+            OnHitBreakpointEvent(continue, CurWatch, deBreakpoint, (FCurrentProcess.CurrentBreakpoint <> nil));
+
           if assigned(FCurrentProcess.CurrentBreakpoint) then
-            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+            OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint, deBreakpoint, False);
+
           if not continue then
             HasPauseRequest := False;
         end;
@@ -1554,7 +1602,7 @@ begin
   if HasPauseRequest then begin
     continue := False;
     if assigned(OnHitBreakpointEvent) then
-      OnHitBreakpointEvent(continue, nil);
+      OnHitBreakpointEvent(continue, nil, deInternalContinue, False);
   end;
 
   if (not &continue) and (FCommand <> nil) then begin

@@ -261,7 +261,7 @@ type
     FStartuRunToLine: LongInt;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
-    FQuickPause: boolean;
+    FQuickPause, FPauseForEvent: boolean;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
@@ -288,7 +288,8 @@ type
     // HandleRunError: Software called RuntimeError
     procedure HandleRunError(var continue: boolean);
     procedure FreeDebugThread;
-    procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
+    procedure FDbgControllerHitBreakpointEvent(var continue: boolean;
+      const Breakpoint: TFpDbgBreakpoint; AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
     procedure EnterPause(ALocationAddr: TDBGLocationRec; AnInternalPause: Boolean = False);
     procedure RunInternalPauseTasks;
     procedure FDbgControllerCreateProcessEvent(var {%H-}continue: boolean);
@@ -3010,15 +3011,18 @@ begin
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
-  var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
+  var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
+  AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
 var
   ABreakPoint: TDBGBreakPoint;
   ALocationAddr: TDBGLocationRec;
   Context: TFpDbgInfoContext;
   PasExpr: TFpPascalExpression;
 begin
-  if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
-    exit;
+  // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
+  if AnEventType = deBreakpoint then
+    if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
+      exit;
 
   if assigned(Breakpoint) then
     begin
@@ -3063,7 +3067,7 @@ begin
         end;
       end
     end
-  else if FQuickPause then
+  else if (AnEventType = deInternalContinue) and FQuickPause then
     begin
       SetState(dsInternalPause);
       &continue:=true;
@@ -3071,12 +3075,22 @@ begin
     end
   else
     // Debugger returned after a step/next/step-out etc..
+  if not AMoreHitEventsPending then
     ALocationAddr := GetLocation;
 
-  EnterPause(ALocationAddr, &continue);
 
-  if &continue then
-    RunInternalPauseTasks;
+  if not continue then
+    FPauseForEvent := True;
+
+  if not AMoreHitEventsPending then begin
+    FQuickPause := False;
+    &continue := not FPauseForEvent; // Only continue, if ALL events did say to continue
+
+    EnterPause(ALocationAddr, &continue);
+
+    if &continue then
+      RunInternalPauseTasks;
+  end;
 end;
 
 procedure TFpDebugDebugger.EnterPause(ALocationAddr: TDBGLocationRec;
@@ -3360,9 +3374,10 @@ begin
     then
       Threads.CurrentThreads.CurrentThreadId := FDbgController.CurrentThreadId;
 
+    FPauseForEvent := False;
     FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
 
-    FQuickPause:=false; // TODO: there may be other events: deInternalContinue, deLoadLibrary...
+    FQuickPause:=false;
 
     if Cont then
       begin

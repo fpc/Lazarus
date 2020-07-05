@@ -54,7 +54,8 @@ type
     procedure ShowCode;
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
-    procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
+    procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
+      AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
     procedure GControllerProcessExitEvent(ExitCode: DWord);
     procedure GControllerDebugInfoLoaded(Sender: TObject);
   protected
@@ -223,7 +224,8 @@ begin
   continue:=false;
 end;
 
-procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint);
+procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
+  AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
 begin
   if assigned(Breakpoint) then
     writeln(Format(sBreakpointReached, ['' {FormatAddress(Breakpoint.Location)}]))
