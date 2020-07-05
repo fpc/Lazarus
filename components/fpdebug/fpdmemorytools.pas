@@ -28,6 +28,9 @@ uses
   Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages, LazClasses,
   Laz_AVL_Tree, LazLoggerBase;
 
+const
+  MINIMUM_MEMREAD_LIMIT = 1024;
+
 type
 
   TBitAddr = 0..63; // 0-7 for mem read // 0-63 for register read
@@ -810,8 +813,8 @@ end;
 
 procedure TFpDbgMemLimits.SetMaxMemReadSize(AValue: QWord);
 begin
-  if (AValue <> 0) and (AValue < 1024) then
-    AValue := 1024;
+  if (AValue <> 0) and (AValue < MINIMUM_MEMREAD_LIMIT) then
+    AValue := MINIMUM_MEMREAD_LIMIT;
   if FMaxMemReadSize = AValue then Exit;
   FMaxMemReadSize := AValue;
 end;

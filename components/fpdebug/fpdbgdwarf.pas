@@ -2100,7 +2100,9 @@ begin
     Result := GetAsWideString
   else
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    i := max(1000, MemManager.MemLimits.MaxNullStringSearchLen);
+    i := MemManager.MemLimits.MaxNullStringSearchLen;
+    if i = 0 then
+      i := 32*1024;
     if i > MemManager.MemLimits.MaxMemReadSize then
       i := MemManager.MemLimits.MaxMemReadSize;
     if not MemManager.SetLength(Result, i) then begin
@@ -2134,7 +2136,9 @@ begin
   if (t <> nil) then t := t.TypeInfo;
   // skWideChar ???
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    i := max(1000, MemManager.MemLimits.MaxNullStringSearchLen) * 2;
+    i := MemManager.MemLimits.MaxNullStringSearchLen * 2;
+    if i = 0 then
+      i := 32*1024 * 2;
     if i > MemManager.MemLimits.MaxMemReadSize then
       i := MemManager.MemLimits.MaxMemReadSize;
     if not MemManager.SetLength(Result, i div 2) then begin
