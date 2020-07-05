@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <UseXPManifest Value="True"/>
     </General>
     <i18n>
@@ -55,15 +55,21 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -t 'Lazarus Run Output' -e '$(LazarusDir)\tools\runwait.sh $(TargetCmdLine)'"/>
+        <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -t &apos;Lazarus Run Output&apos; -e &apos;$(LazarusDir)\tools\runwait.sh $(TargetCmdLine)&apos;"/>
         <Display Value="192.168.0.250:0"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -t &apos;Lazarus Run Output&apos; -e &apos;$(LazarusDir)\tools\runwait.sh $(TargetCmdLine)&apos;"/>
+            <Display Value="192.168.0.250:0"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
@@ -90,6 +96,7 @@
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
