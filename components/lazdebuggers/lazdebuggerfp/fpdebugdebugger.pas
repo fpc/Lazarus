@@ -3084,6 +3084,8 @@ begin
     Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
     if not (dboIgnoreAll in Opts) then begin
       &continue:=False;
+      if not AMoreHitEventsPending then
+        ALocationAddr := GetLocation;
     end;
     if  continue then
       exit;
