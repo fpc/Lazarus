@@ -424,6 +424,13 @@ procedure gtkchanged_editbox_delete_text(Widget: PGtkWidget; AStartPos,
 var
   id: gPointer;
 begin
+  // delete key pressed, but nothing is deleted (eg. cursor at the end or empty text)
+  if AStartPos = AEndPos then
+  begin
+    g_signal_stop_emission_by_name(Widget, 'delete-text');
+    Exit;
+  end;
+
   id := g_object_get_data(PGObject(Widget), 'lcl-postpone-changed-signal');
   if id = nil then
   begin
@@ -498,20 +505,8 @@ end;
 
 function gtkchanged_editbox_delete(widget: PGtkWidget;
   AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
-var
-  EntryText: PgChar;
 begin
   Result := CallBackDefaultReturn;
-  if GTK_IS_ENTRY(Widget) then
-  begin
-    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
-    if (PGtkEntry(Widget)^.current_pos = PGtkEntry(Widget)^.selection_bound)
-    and (PGtkEntry(Widget)^.current_pos = UTF8Length(EntryText)) then
-    begin
-      g_signal_stop_emission_by_name(Widget, 'delete-from-cursor');
-      Exit;
-    end;
-  end;
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
