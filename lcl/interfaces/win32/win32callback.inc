@@ -441,18 +441,14 @@ end;
 
 function TWindowProcHelper.GetPopMenuItemObject: TObject;
 var
-  MenuHandle: HMENU;
+  MainMenuHandle: HMENU;
   MenuInfo: MENUITEMINFO;
 begin
   MenuInfo.cbSize := MMenuItemInfoSize;
   MenuInfo.fMask := MIIM_DATA;
 
-  MenuHandle := 0;
-  if Assigned(WindowInfo^.PopupMenu) then
-    MenuHandle := GetMenuParent(HMENU(WParam), WindowInfo^.PopupMenu.Handle);
-  if MenuHandle = 0 then
-    MenuHandle := GetMenuParent(HMENU(WParam), GetMenu(Window));
-  if GetMenuItemInfo(MenuHandle, LOWORD(LParam), true, @MenuInfo) then
+  MainMenuHandle := GetMenuParent(HMENU(WParam), GetMenu(Window));
+  if GetMenuItemInfo(MainMenuHandle, LOWORD(LParam), true, @MenuInfo) then
     Result := TObject(MenuInfo.dwItemData)
   else
     Result := nil;
