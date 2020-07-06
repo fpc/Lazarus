@@ -3433,13 +3433,8 @@ begin
     begin
       if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil)
       then begin
-        {$IFDEF GTK2}
-        ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivateAfter);
-        ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-        {$ELSE}
         ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-        {$ENDIF}
       end else if ALCLObject is TCustomMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else
@@ -3465,27 +3460,11 @@ begin
        else if ALCLObject is TCustomCheckbox then
        begin
          ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
-     {$IFDEF GTK2}
-       // in gtk2 callback signal of SpinEdit is 'value-changed' (in gtk1- 'changed')
-       end else
-       if ALCLObject is TCustomFloatSpinEdit then
-       begin
-         ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_spinbox);
-         ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox);
-     {$ENDIF}
        end else
        begin
          {$IFDEF VerboseTWinControlRealText}
          ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_editbox);
          {$ELSE}
-         {$IFDEF gtk2}
-         if GTK_IS_ENTRY(gObject) then
-         begin
-           ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
-           if (gtk_major_version = 2) and (gtk_minor_version < 17) then
-             ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
-         end;
-         {$ENDIF}
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
          {$ENDIF}
        end;
@@ -3624,10 +3603,6 @@ begin
                             GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(gMouse, 'button-press-event',
                                  @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
-        {$IFDEF Gtk2}
-        ConnectSenderSignal(gMouse, 'scroll-event', @gtkMouseWheelCB,
-                            GDK_BUTTON_PRESS_MASK);
-        {$ENDIF}
       end;
     end;
 
@@ -4010,10 +3985,8 @@ procedure TGtkWidgetSet.DestroyConnectedWidget(Widget: PGtkWidget;
   CheckIfDestroying: boolean);
 var
   FixWidget: PGtkWidget;
-  {$IFNDef GTK2}
   Accelerators: PGSlist;
   AccelEntry : PGtkAccelEntry;
-  {$Endif}
   QueueItem : TGtkMessageQueueItem;
   NextItem  : TGtkMessageQueueItem;
   MsgPtr: PMsg;
@@ -4412,28 +4385,7 @@ begin
 
     if gtk_widget_visible(SenderWidget) then
       exit;
-
     gtk_widget_show(SenderWidget);
-
-    {$IFDEF GTK2}
-    if (ACustomForm <> nil) and 
-       (ACustomForm.Parent = nil) and 
-       (ACustomForm.ParentWindow = 0) then 
-    begin
-      CurWindowState:=ACustomForm.WindowState;
-      if csDesigning in ACustomForm.ComponentState then
-        CurWindowState:=wsNormal;
-      case CurWindowState of
-        wsNormal:
-        begin
-          gtk_window_deiconify(PGtkWindow(SenderWidget));
-          gtk_window_unmaximize(PGtkWindow(SenderWidget));
-        end;
-        wsMaximized: gtk_window_maximize(PGtkWindow(SenderWidget));
-        wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));
-      end;
-    end;
-    {$ENDIF}
   end
   else begin
 
@@ -4442,17 +4394,6 @@ begin
 
     if not gtk_widget_visible(SenderWidget) then
       exit;
-
-    {$IFDEF GTK2}
-    // save previous position
-    if ACustomForm <> nil then
-    begin
-      if (ACustomForm is TForm) and
-        not (ACustomForm.FormStyle in [fsMDIChild, fsSplash])
-        and (ACustomForm.BorderStyle <> bsNone) then
-        SetResizeRequest(SenderWidget);
-    end;
-    {$ENDIF}
 
     gtk_widget_hide(SenderWidget);
 

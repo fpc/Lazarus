@@ -98,16 +98,8 @@ function gtkHideCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkactivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-{$IFDEF GTK2}
-function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkchanged_editbox_backspace( widget: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
-function gtkchanged_editbox_delete(widget: PGtkWidget;
-  AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
-{$ENDIF}
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-
 {$Ifdef GTK1}
 function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;

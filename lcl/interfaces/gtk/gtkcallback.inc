@@ -485,53 +485,6 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-{$IFDEF GTK2}
-function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-begin
-  Result := CallBackDefaultReturn;
-  if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
-  if GTK_IS_SPIN_BUTTON(Widget) then
-    gtk_spin_button_update(PGtkSpinButton(Widget));
-end;
-
-function gtkchanged_editbox_backspace(widget: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
-var
-  GStart, GEnd: gint;
-  Info: PWidgetInfo;
-  EntryText: PgChar;
-begin
-  Result := CallBackDefaultReturn;
-  if GTK_IS_ENTRY(Widget) then
-  begin
-    gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
-    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
-    if (GStart = GEnd) and (GStart > 0) and
-      (UTF8Length(EntryText) = PGtkEntry(Widget)^.text_length) then
-    begin
-      {mark as invalid event for gtkchanged_editbox, so
-       it doesn't update cursor pos or we have a mess.}
-      if (gtk_major_version = 2) and (gtk_minor_version < 17) then
-      begin
-        Info := GetWidgetInfo(Widget, False);
-        include(Info^.Flags, wwiInvalidEvent);
-      end;
-      PGtkEntry(Widget)^.current_pos := GStart - 1;
-    end;
-  end;
-end;
-
-function gtkchanged_editbox_delete(widget: PGtkWidget;
-  AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
-var
- Info: PWidgetInfo;
-begin
-  Result := CallBackDefaultReturn;
-  Info := GetWidgetInfo(Widget, False);
-  include(Info^.Flags, wwiInvalidEvent);
-end;
-{$ENDIF}
-
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
