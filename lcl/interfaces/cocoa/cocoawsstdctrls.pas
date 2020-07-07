@@ -54,6 +54,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TLCLComboboxCallback }
@@ -2072,6 +2073,20 @@ var
 begin
   box := TCocoaGroupBox(AWinControl.Handle);
   box.setTitle(ControlTitleToNSStr(AText));
+end;
+
+class procedure TCocoaWSCustomGroupBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  box: TCocoaGroupBox;
+  fn : NSFont;
+begin
+  if not AWinControl.HandleAllocated then Exit;
+  box := TCocoaGroupBox(AWinControl.Handle);
+  fn := TCocoaFont(AFont.Reference.Handle).Font;
+  if AFont.Size = 0 then
+    fn := NSFont.fontWithDescriptor_size(fn.fontDescriptor, NSFont.smallSystemFontSize);
+  box.setTitleFont(fn);
 end;
 
 { TCocoaWSCustomListBox }
