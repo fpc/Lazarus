@@ -1772,14 +1772,19 @@ begin
   FEndLinePos          := src.FEndLinePos; // 1 based
   FEndBytePos          := src.FEndBytePos; // 1 based
   FPersistent          := src.FPersistent;
+  FFlags := FFLags - [sbViewedFirstPosValid, sbViewedLastPosValid];
 end;
 
 procedure TSynEditSelection.AdjustAfterTrimming;
 begin
-  if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then
+  if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then begin
     FStartBytePos := Length(FLines[FStartLinePos-1]) + 1;
-  if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then
+    FFlags := FFLags - [sbViewedFirstPosValid];
+  end;
+  if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then begin
     FEndBytePos := Length(FLines[FEndLinePos-1]) + 1;
+    FFlags := FFLags - [sbViewedLastPosValid];
+  end;
   // Todo: Call ChangeNotification
 end;
 
@@ -1972,6 +1977,7 @@ procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
     FAltStartBytePos := FStartBytePos;
     FStartLinePos := y;
     FStartBytePos := x;
+    FFlags := FFLags - [sbViewedFirstPosValid];
   end;
 
   procedure FixMinimumSelection;
@@ -2045,11 +2051,15 @@ begin
 
     //AdjustAfterTrimming;
     if (FStartLinePos >= i) and (FStartLinePos <= i2) then
-      if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then
+      if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then begin
         FStartBytePos := Length(FLines[FStartLinePos-1]) + 1;
+        FFlags := FFLags - [sbViewedFirstPosValid];
+      end;
     if (FEndLinePos >= i) and (FEndLinePos <= i2) then
-      if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then
+      if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then begin
         FEndBytePos := Length(FLines[FEndLinePos-1]) + 1;
+        FFlags := FFLags - [sbViewedLastPosValid];
+      end;
   end;
 end;
 
@@ -2515,9 +2525,10 @@ begin
   FHide := False;
   FStartLinePos := Value.Y;
   FStartBytePos := Value.X;
-
   FEndLinePos := Value.Y;
   FEndBytePos := Value.X;
+  FFlags := FFLags - [sbViewedFirstPosValid, sbViewedLastPosValid];
+
   if FCaret <> nil then
     FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
   if WasAvail then
@@ -2541,6 +2552,7 @@ begin
 
       FStartLinePos := Value.Y;
       FStartBytePos := Value.X;
+      FFlags := FFLags - [sbViewedFirstPosValid];
       if FCaret <> nil then
         FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
       FOnChangeList.CallNotifyEvents(self);
@@ -2611,6 +2623,7 @@ begin
           FInvalidateLinesMethod(FEndLinePos, Value.Y);
         FEndLinePos := Value.Y;
         FEndBytePos := Value.X;
+        FFlags := FFLags - [sbViewedLastPosValid];
         if FCaret <> nil then
           FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
         FOnChangeList.CallNotifyEvents(self);
@@ -2853,6 +2866,7 @@ begin
   if IsBackwardSel xor AReverse then begin
     SwapInt(FStartLinePos, FEndLinePos);
     SwapInt(FStartBytePos, FEndBytePos);
+    FFlags := FFLags - [sbViewedFirstPosValid, sbViewedLastPosValid];
   end;
 end;
 
