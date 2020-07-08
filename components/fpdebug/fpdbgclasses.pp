@@ -2732,7 +2732,7 @@ begin
     RegFP := 5;
 
   Result := AStartFrame;
-  prev_fp := high(prev_fp);
+  prev_fp := low(prev_fp);
   while Result <= AMaxFrameToSearch do begin
     PrepareCallStackEntryList(Result+1);
     if CallStackEntryList.Count <= Result then
@@ -2750,7 +2750,7 @@ begin
     if fp = AFrameBasePointer then
       exit;
 
-    if (fp > prev_fp) or (fp < AStartFrame) then
+    if (fp < prev_fp) or (fp > AFrameBasePointer) then
       exit(-1);
 
     prev_fp := fp;
