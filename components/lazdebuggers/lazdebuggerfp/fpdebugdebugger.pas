@@ -279,7 +279,7 @@ type
     FCacheFileName: string;
     FCacheLib: TDbgLibrary;
     FCacheBreakpoint: TFpDbgBreakpoint;
-    FCacheLocation: TDBGPtr;
+    FCacheLocation, FCacheLocation2: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
     FCacheReadWrite: TDBGWatchPointKind;
@@ -3539,7 +3539,10 @@ end;
 procedure TFpDebugDebugger.DoSetStackFrameForBasePtr;
 begin
   FDbgController.CurrentThread.PrepareCallStackEntryList(7);
-  FCacheStackFrame := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(FCacheLocation, 30, 1);
+  if (FCacheLocation = 0) and (FCacheLocation2 <> 0) then
+    FCacheStackFrame := FDbgController.CurrentThread.FindCallStackEntryByInstructionPointer(FCacheLocation2, 15, 1)
+  else
+    FCacheStackFrame := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(FCacheLocation, 30, 1);
 end;
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
@@ -3713,15 +3716,19 @@ begin
   if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
   begin
     FCacheLocation:=ABasePtr;
+    FCacheLocation2:=CurAddr;
     ExecuteInDebugThread(@DoSetStackFrameForBasePtr);
     f := FCacheStackFrame;
   end
   else begin
     FDbgController.CurrentThread.PrepareCallStackEntryList(7);
-    f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
+    if (ABasePtr = 0) and (CurAddr <> 0) then
+      f := FDbgController.CurrentThread.FindCallStackEntryByInstructionPointer(CurAddr, 15, 1)
+    else
+      f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
   end;
 
-  if (f >= 2) and ASearchAssert then begin
+  if (f >= 2) and ASearchAssert and (ABasePtr <> 0) then begin
     // stack is already prepared / exe in thread not needed
     CList := FDbgController.CurrentThread.CallStackEntryList;
     if (CList[f].AnAddress = CurAddr) then begin

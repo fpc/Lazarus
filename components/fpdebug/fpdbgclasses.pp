@@ -216,6 +216,7 @@ type
 
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     function  FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
+    function  FindCallStackEntryByInstructionPointer(AInstructionPointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
     function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
@@ -2754,6 +2755,42 @@ begin
       exit(-1);
 
     prev_fp := fp;
+    inc(Result);
+  end;
+end;
+
+function TDbgThread.FindCallStackEntryByInstructionPointer(
+  AInstructionPointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer
+  ): Integer;
+var
+  RegIP: Integer;
+  AFrame: TDbgCallstackEntry;
+  ARegister: TDbgRegisterValue;
+  ip: TDBGPtr;
+begin
+  if Process.Mode = dm64 then
+    RegIP := 16
+  else
+    RegIP := 8;
+
+  Result := AStartFrame;
+  while Result <= AMaxFrameToSearch do begin
+    PrepareCallStackEntryList(Result+1);
+    if CallStackEntryList.Count <= Result then
+      exit(-1);
+
+    AFrame := CallStackEntryList[Result];
+    if AFrame = nil then
+      exit(-1);
+    ARegister := AFrame.RegisterValueList.FindRegisterByDwarfIndex(RegIP);
+    if ARegister = nil then
+      exit(-1);
+
+    ip := ARegister.NumValue;
+
+    if ip = AInstructionPointer then
+      exit;
+
     inc(Result);
   end;
 end;
