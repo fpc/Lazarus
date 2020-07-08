@@ -629,7 +629,7 @@ begin
         if UrlReq.FileRequest.FileName <> '' then
         begin
           Url := 'file://'+UrlReq.FileRequest.FileName;
-          Res := OpenUrl(URL+'://'+UrlReq.Url)
+          Res := OpenUrl(URL+'://'+UrlReq.Url);
         end
         else
         begin
@@ -833,24 +833,24 @@ end;
 
 procedure THelpForm.StopComms;
 begin
-   if fInputIPC <> nil then
-   begin
-     if fInputIPC.Active then
-       fInputIPC.Active := False;
+  if fInputIPC <> nil then
+  begin
+    if fInputIPC.Active then
+      fInputIPC.Active := False;
 
-     FreeAndNil(fInputIPC);
-     IPCServer := nil;
-     FreeAndNil(fInputIPCTimer);
-   end;
+    FreeAndNil(fInputIPC);
+    IPCServer := nil;
+    FreeAndNil(fInputIPCTimer);
+  end;
 
-   if fOutputIPC <> nil then
-   begin
-     if fOutputIPC.Active then
-       fOutputIPC.Active := False;
+  if fOutputIPC <> nil then
+  begin
+    if fOutputIPC.Active then
+      fOutputIPC.Active := False;
 
-     FreeAndNil(fOutputIPC);
-     IPCClient := nil;
-   end;
+    FreeAndNil(fOutputIPC);
+    IPCClient := nil;
+  end;
 end;
 
 function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
@@ -862,12 +862,12 @@ function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
     Result := Copy(AURL, 1, fPos+2);
   end;
 var
- fURLPrefix: String;
- fContentProvider: TBaseContentProviderClass;
- fRealContentProvider: TBaseContentProviderClass;
- fPage: TContentTab = nil;
- I: Integer;
- fIsNewPage: Boolean = false;
+  fURLPrefix: String;
+  fContentProvider: TBaseContentProviderClass;
+  fRealContentProvider: TBaseContentProviderClass;
+  fPage: TContentTab = nil;
+  I: Integer;
+  fIsNewPage: Boolean = false;
 begin
  Result := Ord(srInvalidURL);
  fURLPrefix := GetURLPrefix;
@@ -889,21 +889,21 @@ begin
  end;
 
  if not fShowSepTabs then
- for I := 0 to PageControl.PageCount-1 do
- begin
-   if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then
+   for I := 0 to PageControl.PageCount-1 do
    begin
-     fPage := TContentTab(PageControl.Pages[I]);
-     if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
+     if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then
      begin
-       PageControl.ActivePage := PageControl.Pages[I];
-       Result := Ord(srSuccess);
-     end
-     else
-       Result := Ord(srInvalidFile);
-     Exit;
+       fPage := TContentTab(PageControl.Pages[I]);
+       if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
+       begin
+         PageControl.ActivePage := PageControl.Pages[I];
+         Result := Ord(srSuccess);
+       end
+       else
+         Result := Ord(srInvalidFile);
+       Exit;
+     end;
    end;
- end;
 
  if fPage = nil then
  begin

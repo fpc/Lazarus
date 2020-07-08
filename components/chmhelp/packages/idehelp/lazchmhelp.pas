@@ -239,10 +239,7 @@ begin
     end;
     {$IFDEF CHMLOADTIMES}
     DebugLn(['CHMLOADTIMES: ',Format('Loading chm files took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
-
     {$ENDIF}
-
-
   finally
     fHelpConnection.EndUpdate;
     CHMFiles.Free;
