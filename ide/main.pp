@@ -4647,7 +4647,10 @@ end;
 
 procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
-  DebugBoss.DoStopProject;
+  if (MainIDE.ToolStatus = itBuilder) then
+    mnuAbortBuildProjectClicked(Sender)
+  else
+    DebugBoss.DoStopProject;
 end;
 
 procedure TMainIDE.mnuAttachDebuggerClicked(Sender: TObject);

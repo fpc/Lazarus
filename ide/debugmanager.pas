@@ -2113,8 +2113,9 @@ begin
     // Run to cursor
     itmRunMenuRunToCursor.Enabled  := CanRun and (dcRunTo in AvailCommands);
     // Stop
-    itmRunMenuStop.Enabled         := CanRun and (MainIDE.ToolStatus = itDebugger) and
-      (CurState in [dsPause, dsInternalPause, dsInit, dsRun, dsError]);
+    itmRunMenuStop.Enabled         := (CanRun and (MainIDE.ToolStatus = itDebugger) and
+      (CurState in [dsPause, dsInternalPause, dsInit, dsRun, dsError])) or
+      (MainIDE.ToolStatus = itBuilder);
 
     //Attach / Detach
     itmRunMenuAttach.Enabled          := DebuggerIsValid and (dcAttach in AvailCommands);
