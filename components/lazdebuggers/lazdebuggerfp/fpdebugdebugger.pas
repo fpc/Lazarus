@@ -3703,7 +3703,7 @@ function TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr;
 const
   SYS_ASSERT_NAME = 'SYSUTILS_$$_ASSERT'; // AssertErrorHandler, in case the assert is hidden in the stack
 var
-  f, i: Integer;
+  f: Integer;
   CList: TDbgCallstackEntryList;
   P: TFpSymbol;
 begin
@@ -3721,23 +3721,19 @@ begin
     f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
   end;
 
-  if (f < 0) and ASearchAssert then begin
+  if (f >= 2) and ASearchAssert then begin
     // stack is already prepared / exe in thread not needed
-    i := 1;
     CList := FDbgController.CurrentThread.CallStackEntryList;
-    while i <= min(4, CList.Count-3) do begin
-      P := CList[i].ProcSymbol;
+    if (CList[f].AnAddress = CurAddr) then begin
+      P := CList[f-2].ProcSymbol;
       if (P <> nil) and
          ( (P.Name = 'FPC_ASSERT') or (P.Name = 'fpc_assert') or
            (P.Name = 'ASSERT') or (P.Name = 'assert') or
-           (UpperCase(copy(P.Name, 1, length(SYS_ASSERT_NAME))) = SYS_ASSERT_NAME) ) and
-         (CList[i+2].AnAddress = CurAddr)  // assert gets wrong addr too.
+           (UpperCase(copy(P.Name, 1, length(SYS_ASSERT_NAME))) = SYS_ASSERT_NAME) )
       then begin
-        f := i+1;
-        Result := CList[i+1].AnAddress - 1;
-        break;
+        dec(f);
+        Result := CList[f].AnAddress - 1;
       end;
-      inc(i);
     end;
   end;
 
