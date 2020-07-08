@@ -31,6 +31,9 @@ uses
   // ChmHelp
   IpHtml, BaseContentProvider, FileContentProvider, ChmDataProvider, lhelpstrconsts;
 
+const
+  DefaultCHMContentTitle = '[unknown]';
+
 type
 
   { TChmContentProvider }
@@ -288,6 +291,8 @@ begin
     if fUpdateURI <> '' then
       DoLoadUri(fUpdateURI);
     fUpdateURI:='';
+    if Title=DefaultCHMContentTitle then
+      UpdateTitle;
   end;
 end;
 
@@ -764,7 +769,7 @@ begin
   NewTitle := '';
   while Item <> nil do
   begin
-    if ITem.Text <> fActiveChmTitle then
+    if Item.Text <> fActiveChmTitle then
     begin
       NewTitle:=NewTitle+Item.Text;
       if (Item.GetNextSibling <> nil)
@@ -778,7 +783,7 @@ begin
     NewTitle := FActiveChmTitle + ' [' + NewTitle + ']'
   else
     NewTitle := FActiveChmTitle;
-  if NewTitle = '' then NewTitle := '[unknown]';
+  if NewTitle = '' then NewTitle := DefaultCHMContentTitle;
   Title := NewTitle;
 end;
 
