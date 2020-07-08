@@ -8,7 +8,7 @@
 interface
 
 uses
-  {$ifdef Windows} Windows, {$endif} Classes, SysUtils, Types;
+  {$ifdef Windows} Windows, {$endif} Classes, SysUtils, LCLType, Types;
 
 const
   TYMED_HGLOBAL = 1;
@@ -102,7 +102,7 @@ type
 
 
   tagFORMATETC                 = Record
-                                  CfFormat :  Word {TCLIPFORMAT};
+                                  CfFormat : TClipboardFormat;
                                   Ptd      : PDVTARGETDEVICE;
                                   dwAspect : DWORD;
                                   lindex   : Long;

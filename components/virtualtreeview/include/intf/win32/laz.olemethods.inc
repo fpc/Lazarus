@@ -284,7 +284,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToClipboard(Format: Word; Source: TVSTTextSourceType): HGLOBAL;
+function TCustomVirtualStringTree.ContentToClipboard(Format: TClipboardFormat; Source: TVSTTextSourceType): HGLOBAL;
 
 // This method constructs a shareable memory object filled with string data in the required format. Supported are:
 // CF_TEXT - plain ANSI text (Unicode text is converted using the user's current locale)
