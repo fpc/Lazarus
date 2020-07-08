@@ -528,13 +528,17 @@ end;
 procedure TWindowProcHelper.SetlWinControl(AValue: TWinControl);
 begin
   if FlWinControl = AValue then Exit;
-  if FlWinControl <> nil then
+  if FlWinControl <> nil then begin
+    FlWinControl.DecLCLRefCount;
     FlWinControl.RemoveHandlerOnBeforeDestruction(@TWindProcNotificationReceiver(@Self).ReceiveDestroyNotify);
+  end;
 
   FlWinControl := AValue;
 
-  if FlWinControl <> nil then
+  if FlWinControl <> nil then begin
     FlWinControl.AddHandlerOnBeforeDestruction(@TWindProcNotificationReceiver(@Self).ReceiveDestroyNotify);
+    FlWinControl.IncLCLRefCount;
+  end;
 end;
 
 procedure TWindowProcHelper.CalcClipRgn(PaintRegion: HRGN);
