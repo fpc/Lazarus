@@ -3742,6 +3742,10 @@ begin
         Result := CList[f].AnAddress - 1;
       end;
     end;
+  end
+  else
+  if (ABasePtr = 0) and (CurAddr <> 0) and (f > 0) then begin
+    Result := CurAddr - 1; // found address on stack, so this is return address
   end;
 
   if f > 0 then begin
