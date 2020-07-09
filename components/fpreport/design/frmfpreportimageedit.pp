@@ -103,9 +103,9 @@ begin
     begin
     CanClose:=(RBFieldName.Checked and (CBFieldName.ItemIndex<>-1))
               or (RBFixedImage.Checked and (IImage.Width<>0) and (IImage.Height<>0));
-    if CanClose then
-      FormToImage;
     end;
+  if CanClose then
+    FormToImage;
 end;
 
 procedure TReportImageEditorForm.BLoadClick(Sender: TObject);
@@ -213,7 +213,6 @@ procedure TReportImageEditorForm.FormToImage;
 Var
   RI : TFPReportImage;
   S : TMemoryStream;
-  R : TFPReaderPNG;
 
 begin
   RI:=TFPReportImage(ReportImage);
@@ -222,16 +221,13 @@ begin
     RI.FieldName:=CBFieldName.Text
   else
     begin
-    R:=Nil;
     S:=TMemoryStream.Create;
     try
       //
       IImage.Picture.SaveToStreamWithFileExt(S,'.png');
       S.Position:=0;
-      R:=TFPReaderPNG.Create;
-      RI.Image.LoadFromStream(S,R);
+      RI.LoadFromStream(S,TFPReaderPNG);
     finally
-      R.Free;
       S.Free;
     end;
     end;
