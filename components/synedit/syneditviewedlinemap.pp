@@ -1300,8 +1300,11 @@ begin
     FCurWrappedLine := AWrappedLine;
   end;
 
-  RealIdx := FCurWrapPage.StartLine +
-    FCurWrapPage.Page.GetOffsetForWrap(AWrappedLine - FCurWrapPage.StartLine - FCurWrapPage.ViewedCountDifferenceBefore, FCurrentWrapSubline);
+  if FCurWrapPage.HasPage then
+    RealIdx := FCurWrapPage.StartLine +
+      FCurWrapPage.Page.GetOffsetForWrap(AWrappedLine - FCurWrapPage.StartLine - FCurWrapPage.ViewedCountDifferenceBefore, FCurrentWrapSubline)
+  else
+   RealIdx := AWrappedLine;
 
   inherited SetHighlighterTokensLine(RealIdx, ARealLine, AStartBytePos, ALineByteLen);
 end;
