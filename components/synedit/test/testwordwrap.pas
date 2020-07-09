@@ -322,7 +322,7 @@ end;
 procedure TTestWordWrap.InitLine(ALine: TSynWordWrapLineMap;
   const AWrapValues: TExpWraps);
 begin
-  ALine.DeleteLinesAtOffset(0, ALine.RealCount + ALine.Offset);
+  ALine.DeleteLinesAtOffset(0, max(ALine.RealCount + ALine.Offset, ALine.LastInvalidLine+1));
   if AWrapValues.len > 0 then begin
     ALine.InsertLinesAtOffset(0, AWrapValues.len);
     ValidateWraps(ALine, AWrapValues);
@@ -982,6 +982,70 @@ begin
   //ALine1.InsertLinesFromPage(ALine2, 0, 6, 3);
   AssertLineForWraps(ATestName, ALine1, w.init([1, 1, 3, 3, 1,   1, 1, 5, 6,   1,1]));
 
+///////////////////////////////////////
+  (* split node at none wrapping lines - ensure the none-wrap "WrappedExtraSums" are stripped *)
+  ATestName := 'Insert at start: empty lines in the middle -> dest 2';
+  InitLine(ALine1, w.init([4, 5]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtEndTo(ALine1, 3, 3);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 3, 4, 5,   1,1]));
+
+  ATestName := 'Insert at start: empty lines in the middle -> dest 1';
+  InitLine(ALine1, w.init([4]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtEndTo(ALine1, 3, 3);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 3, 4,   1,1]));
+
+  ATestName := 'Insert at start: empty lines in the middle -> empty dest';
+  InitLine(ALine1, w.init([]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtEndTo(ALine1, 3, 3);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 3,   1,1]));
+
+  ATestName := 'Insert at start: empty lines in the middle -> dest 2 - with dest offset';
+  InitLine(ALine1, w.init([1, 1, 4, 5]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtEndTo(ALine1, 3, 3);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 3, 1, 1, 4, 5,   1,1]));
+
+  ATestName := 'Insert at start: empty lines in the middle -> dest 2 - with source offset';
+  InitLine(ALine1, w.init([4, 5]));
+  InitLine(ALine2, w.init([1, 1, 2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtEndTo(ALine1, 5, 3);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 3, 4, 5,   1,1]));
+
+
+
+  ATestName := 'Insert at end : empty lines in the middle -> dest 2';
+  InitLine(ALine1, w.init([4, 5]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtStartTo(ALine1, 3, 2);
+  AssertLineForWraps('', ALine1, w.init([4, 5, 2, 1, 1,   1,1]));
+
+  ATestName := 'Insert at end : empty lines in the middle -> dest 1';
+  InitLine(ALine1, w.init([4]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtStartTo(ALine1, 3, 1);
+  AssertLineForWraps('', ALine1, w.init([4, 2, 1, 1,   1,1]));
+
+  ATestName := 'Insert at end : empty lines in the middle -> emyty dest';
+  InitLine(ALine1, w.init([]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtStartTo(ALine1, 3, 0);
+  AssertLineForWraps('', ALine1, w.init([2, 1, 1,   1,1]));
+
+  ATestName := 'Insert at end : empty lines in the middle -> dest 2 - with dest offset';
+  InitLine(ALine1, w.init([1, 1, 4, 5]));
+  InitLine(ALine2, w.init([2, 1, 1, 1, 1, 3]));
+  ALine2.MoveLinesAtStartTo(ALine1, 3, 4);
+  AssertLineForWraps('', ALine1, w.init([1, 1, 4, 5, 2, 1, 1,   1,1]));
+
+  ATestName := 'Insert at end : empty lines in the middle -> dest 2 - with source offset';
+  InitLine(ALine1, w.init([4, 5]));
+  InitLine(ALine2, w.init([1, 1, 2, 1, 1, 1, 1, 2]));
+  ALine2.MoveLinesAtStartTo(ALine1, 5, 2);
+  AssertLineForWraps('', ALine1, w.init([4, 5, 1, 1, 2, 1, 1,   1,1]));
+
 end;
 
 procedure TTestWordWrap.TestWordWrapLineMapMergeInvalidate;
@@ -990,6 +1054,43 @@ var
   ALine1, ALine2: TSynWordWrapLineMap;
   ATestName: String;
   w: TExpWraps;
+
+  procedure DoMoveLinesAtEndTo(const AName: String;
+    const AWrapValues1, AWrapValues2: array of integer; AInvalLine: Integer; const AInvalDest: Boolean;
+    ASourceStartLine, ALineCount: Integer;
+    Exp: array of integer;  ExpInval: Integer
+  );
+  begin
+    InitLine(ALine1, w.init(AWrapValues1));
+    InitLine(ALine2, w.init(AWrapValues2));
+    if AInvalDest then
+      ALine1.InvalidateLines(AInvalLine, AInvalLine)
+    else
+      ALine2.InvalidateLines(AInvalLine, AInvalLine);
+    ALine2.MoveLinesAtEndTo(ALine1, ASourceStartLine, ALineCount);
+    AssertLineForWraps(AName, ALine1, w.init(Exp));
+    AssertEquals(AName+' invalid', ExpInval, ALine1.FirstInvalidLine);
+    AssertEquals(AName+' invalid', ExpInval, ALine1.LastInvalidLine);
+  end;
+
+  procedure DoMoveLinesAtStartTo(const AName: String;
+    const AWrapValues1, AWrapValues2: array of integer; AInvalLine: Integer; const AInvalDest: Boolean;
+    ASourceEndLine, ATargetStartLine: Integer;
+    Exp: array of integer;  ExpInval: Integer
+  );
+  begin
+    InitLine(ALine1, w.init(AWrapValues1));
+    InitLine(ALine2, w.init(AWrapValues2));
+    if AInvalDest then
+      ALine1.InvalidateLines(AInvalLine, AInvalLine)
+    else
+      ALine2.InvalidateLines(AInvalLine, AInvalLine);
+    ALine2.MoveLinesAtStartTo(ALine1, ASourceEndLine, ATargetStartLine);
+    AssertLineForWraps(AName, ALine1, w.init(Exp));
+    AssertEquals(AName+' invalid', ExpInval, ALine1.FirstInvalidLine);
+    AssertEquals(AName+' invalid', ExpInval, ALine1.LastInvalidLine);
+  end;
+
 begin
   ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
   ANode2 := TSynWordWrapIndexPage(FTree.FindPageForLine(100, afmCreate).Page);
@@ -1114,6 +1215,144 @@ begin
   InitLine(ALine2, w.init([]));
   ALine1.MoveLinesAtStartTo(ALine2, 2, 3);
   AssertLineForWraps(ATestName, ALine2, w.init([1, 1, 1,  1, 1, 3,    1,1,1]));
+
+
+///////////////////////////////////////
+  (* split node at none wrapping lines - ensure the none-wrap "WrappedExtraSums" are stripped *)
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 3,  {=>}  [1, 1, 3, 4, 5,   1,1],  4);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 3, {=>}   [1, 1, 3, 4, 5,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   2,  False,    3, 3, {=>}   [1, 1, 3, 4, 5,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   3,  False,    3, 3, {=>}   [1, 1, 3, 4, 5,   1,1],  0);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 3, {=>}   [1, 1, 3, 4, 5,   1,1],  1);
+
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - gap at source end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 4,  {=>}  [1, 1, 3, 1, 4, 5,   1,1],  5);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - gap at source end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 4,  {=>}  [1, 1, 3, 1, 4, 5,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - gap at source end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 4,  {=>}  [1, 1, 3, 1, 4, 5,   1,1],  1);
+
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],      1,  True,    3, 3,  {=>}  [1, 1, 3, 4,   1,1],  4);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],      1,  False,    3, 3, {=>}   [1, 1, 3, 4,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],      3,  False,    3, 3, {=>}   [1, 1, 3, 4,   1,1],  0);
+
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> empty dest',
+    [],  [2, 1, 1, 1, 1, 3],       1,  True,    3, 3,  {=>}  [1, 1, 3,   1,1],  4);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> empty dest',
+    [],  [2, 1, 1, 1, 1, 3],       1,  False,    3, 3, {=>}   [1, 1, 3,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> empty dest',
+    [],  [2, 1, 1, 1, 1, 3],       4,  False,    3, 3, {=>}   [1, 1, 3,   1,1],  1);
+
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1,4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 3,  {=>}  [1, 1, 3, 1,1,4, 5,   1,1],  4);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1,4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,   3, 3,  {=>}  [1, 1, 3, 1,1,4, 5,   1,1], -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1,4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,   3, 3,  {=>}  [1, 1, 3, 1,1,4, 5,   1,1],  1);
+
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1,2, 1, 1, 1, 1, 3],   1,  True,    5, 3,  {=>}  [1, 1, 3, 4, 5,   1,1],  4);
+
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1,2, 1, 1, 1, 1, 3],   1,  False,    5, 3,  {=>}  [1, 1, 3, 4, 5,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1,2, 1, 1, 1, 1, 3],   3,  False,    5, 3,  {=>}  [1, 1, 3, 4, 5,   1,1],  -1);
+  DoMoveLinesAtEndTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1,2, 1, 1, 1, 1, 3],   6,  False,    5, 3,  {=>}  [1, 1, 3, 4, 5,   1,1],  1);
+
+
+
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 2,  {=>}  [4, 5, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 2,  {=>}  [4, 5, 2, 1, 1,   1,1],  3);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 2,  {=>}  [4, 5, 2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - gap at target end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 3,  {=>}  [4, 5, 1,  2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - gap at target end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 3,  {=>}  [4, 5, 1,  2, 1, 1,   1,1],  4);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - gap at target end',
+    [4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 3,  {=>}  [4, 5, 1,  2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 1,  {=>}  [4, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 1,  {=>}  [4, 2, 1, 1,   1,1],  2);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 1',
+    [4],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 1,  {=>}  [4, 2, 1, 1,   1,1],  -1);
+
+
+// empty dest can not have invalid...
+  //DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest',
+  //  [],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 0,  {=>}  [2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest',
+    [],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 0,  {=>}  [2, 1, 1,   1,1],  1);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest',
+    [],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 0,  {=>}  [2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest - gap',
+    [],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 2,  {=>}  [1,1, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest - gap',
+    [],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 2,  {=>}  [1,1, 2, 1, 1,   1,1],  3);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> empty dest- gap',
+    [],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 2,  {=>}  [1,1, 2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 4,  {=>}  [1,1, 4, 5, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 4,  {=>}  [1,1, 4, 5, 2, 1, 1,   1,1],  5);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 4,  {=>}  [1,1, 4, 5, 2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset - gap',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   1,  True,    3, 5,  {=>}  [1,1, 4, 5, 1, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset - gap',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   1,  False,    3, 5,  {=>}  [1,1, 4, 5, 1, 2, 1, 1,   1,1],  6);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with dest offset - gap',
+    [1,1, 4, 5],  [2, 1, 1, 1, 1, 3],   4,  False,    3, 5,  {=>}  [1,1, 4, 5, 1, 2, 1, 1,   1,1],  -1);
+
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1, 2, 1, 1, 1, 1, 3],   1,  True,    5, 2,  {=>}  [4, 5, 1,1, 2, 1, 1,   1,1],  1);
+
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1, 2, 1, 1, 1, 1, 3],   1,  False,    5, 2,  {=>}  [4, 5, 1,1, 2, 1, 1,   1,1],  3);
+  DoMoveLinesAtStartTo('Insert at start: empty lines in the middle -> dest 2 - with source offset',
+    [4, 5],  [1,1, 2, 1, 1, 1, 1, 3],   6,  False,    5, 2,  {=>}  [4, 5, 1,1, 2, 1, 1,   1,1],  -1);
 
 
 end;

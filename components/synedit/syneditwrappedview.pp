@@ -787,6 +787,7 @@ procedure TSynWordWrapLineMap.MoveLinesAtStartTo(ADestPage: TSynWordWrapLineMap;
   ASourceEndLine, ATargetStartLine: Integer);
 var
   MinLineCount, TrgO1: Integer;
+  W: TSynWordWrapLineData;
 begin
   assert(ATargetStartLine >= ADestPage.FWrappedExtraSumsCount + ADestPage.FOffsetAtStart, 'TSynWordWrapLineMap.InsertLinesFromPage: ATargetStartLine > ADestPage.FWrappedExtraSumsCount + ADestPage.FOffsetAtStart');
 
@@ -795,15 +796,22 @@ begin
   if (FWrappedExtraSumsCount = 0) then
     exit;
 
+  ASourceEndLine := ASourceEndLine - Offset;
+  if ASourceEndLine < 0 then
+    exit;
+
+  if (ASourceEndLine > 0) and (ASourceEndLine < FWrappedExtraSumsCount) then begin
+    W := FWrappedExtraSums[ASourceEndLine];
+    while (ASourceEndLine > 0) and
+          (FWrappedExtraSums[ASourceEndLine - 1] = W)
+    do
+      dec(ASourceEndLine);
+  end;
+
   if ADestPage.FWrappedExtraSumsCount = 0 then begin
     // Target page is empty
-    ADestPage.FOffsetAtStart := ATargetStartLine + Min(Offset, ASourceEndLine);
+    ADestPage.FOffsetAtStart := ATargetStartLine + Offset;
     assert(ADestPage.FOffsetAtStart >= 0, 'TSynWordWrapLineMap.MoveLinesAtStartTo: ADestPage.FOffsetAtStart >= 0');
-    ASourceEndLine := ASourceEndLine - Offset;
-    if ASourceEndLine < 0 then begin
-      ADestPage.FOffsetAtStart := 0;
-      exit;
-    end;
 
     MinLineCount := Min(ASourceEndLine+1, FWrappedExtraSumsCount);
     ADestPage.GrowCapacity(MinLineCount);
@@ -815,10 +823,6 @@ begin
     ADestPage.MaybeUpdateViewedSizeDifference;
     exit;
   end;
-
-  ASourceEndLine := ASourceEndLine - Offset;
-  if ASourceEndLine < 0 then
-    exit;
 
   ATargetStartLine  := ATargetStartLine + Offset - ADestPage.FOffsetAtStart;
   MinLineCount := Min(ASourceEndLine+1, FWrappedExtraSumsCount);
@@ -845,6 +849,7 @@ procedure TSynWordWrapLineMap.MoveLinesAtEndTo(ADestPage: TSynWordWrapLineMap;
   ASourceStartLine, ALineCount: Integer);
 var
   OldOffset, SrcO1, SrcO2, MinLineCount: Integer;
+  W: TSynWordWrapLineData;
 begin
   assert(ASourceStartLine-FOffsetAtStart+ALineCount >= FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine+ACount >= FWrappedExtraSumsCount');
 
@@ -875,8 +880,22 @@ begin
   else
     ASourceStartLine := ASourceStartLine - Offset;
 
+
+  if (ASourceStartLine > 0) and (ASourceStartLine < FWrappedExtraSumsCount) then begin
+    SrcO2 := ASourceStartLine;
+    W := FWrappedExtraSums[ASourceStartLine - 1];
+    while (ASourceStartLine < FWrappedExtraSumsCount) and
+          (FWrappedExtraSums[ASourceStartLine] = W)
+    do
+      inc(ASourceStartLine);
+    ALineCount := ALineCount + SrcO2 - ASourceStartLine;
+    ADestPage.FOffsetAtStart := ADestPage.FOffsetAtStart + ASourceStartLine - SrcO2;
+    if ALineCount <= 0 then
+      exit;
+  end;
+
+
   SrcO1 := GetWrappedExtraSumBefore(Min(ASourceStartLine,              FWrappedExtraSumsCount));
-  SrcO2 := GetWrappedExtraSumBefore(Min(ASourceStartLine + ALineCount, FWrappedExtraSumsCount));
   MinLineCount := Max(0, Min(ALineCount, FWrappedExtraSumsCount - ASourceStartLine));
 
   if ADestPage.FWrappedExtraSumsCount = 0 then begin
@@ -894,6 +913,7 @@ begin
     exit;
   end;
 
+  SrcO2 := GetWrappedExtraSumBefore(Min(ASourceStartLine + ALineCount, FWrappedExtraSumsCount));
   ADestPage.GrowCapacity(ADestPage.FWrappedExtraSumsCount + ALineCount + OldOffset);
   WrapInfoMoveUpAndAdjustFromTo(
     @ADestPage.FWrappedExtraSums[0],
@@ -1122,12 +1142,10 @@ begin
       assert(NextLineOffs > RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: NextLineOffs > RealEndLine');
       NextLineDist := NextLineOffs - RealEndLine + NextPage.RealStartLine;
       c := NextPage.RealCount;
-      if (c <> 0) and (
-           (c > Tree.PageJoinSize) or
-           (NextLineDist > Tree.PageJoinDistance) or
-           (NextPage.FirstInvalidLine >= 0) or
-           (not NextPage.CanExtendStartTo(-NextLineOffs + RealStartLine, True))
-         )
+      if ( (c <> 0) and (NextLineDist > Tree.PageJoinDistance) ) or
+         (c > Tree.PageJoinSize) or
+         (NextPage.FirstInvalidLine >= 0) or
+         (not NextPage.CanExtendStartTo(-NextLineOffs + RealStartLine, True))
       then
         NextLineOffs := 0;
     end
@@ -1142,12 +1160,10 @@ begin
       assert(PrevLineOffs > PrevPage.RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: -PrevLineOffs > PrevPage.RealEndLine');
       PrevLineDist := PrevLineOffs + RealStartLine - PrevPage.RealEndLine;
       c := PrevPage.RealCount;
-      if (c <> 0) and (
-          (c > Tree.PageJoinSize) or
-          (PrevLineDist> Tree.PageJoinDistance) or
-          (PrevPage.FirstInvalidLine >= 0) or
-          (not PrevPage.CanExtendEndTo(PrevLineOffs + RealEndLine, True))
-         )
+      if ( (c <> 0) and (PrevLineDist> Tree.PageJoinDistance) ) or
+         (c > Tree.PageJoinSize) or
+         (PrevPage.FirstInvalidLine >= 0) or
+         (not PrevPage.CanExtendEndTo(PrevLineOffs + RealEndLine, True))
       then
         PrevLineOffs := 0;
     end
