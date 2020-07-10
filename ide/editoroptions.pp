@@ -6200,7 +6200,7 @@ end;
 procedure TColorSchemeAttribute.Init;
 begin
   inherited Init;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   FMarkupFoldLineColor := clNone;
   FMarkupFoldLineStyle := slsSolid;
   FMarkupFoldLineAlpha := 0;
@@ -6261,15 +6261,15 @@ begin
       TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;
       TSynHighlighterAttributesModifier(aDest).BackAlpha := Src.BackAlpha;
       TSynHighlighterAttributesModifier(aDest).FrameAlpha := Src.FrameAlpha;
+    end;
 
-      if hafPrior in Src.Features then begin
-        TSynHighlighterAttributesModifier(aDest).ForePriority      := Src.ForePriority;
-        TSynHighlighterAttributesModifier(aDest).BackPriority      := Src.BackPriority;
-        TSynHighlighterAttributesModifier(aDest).FramePriority     := Src.FramePriority;
-        TSynHighlighterAttributesModifier(aDest).BoldPriority      := Src.BoldPriority;
-        TSynHighlighterAttributesModifier(aDest).ItalicPriority    := Src.ItalicPriority;
-        TSynHighlighterAttributesModifier(aDest).UnderlinePriority := Src.UnderlinePriority;
-      end;
+    if hafPrior in Src.Features then begin
+      aDest.ForePriority      := Src.ForePriority;
+      aDest.BackPriority      := Src.BackPriority;
+      aDest.FramePriority     := Src.FramePriority;
+      aDest.BoldPriority      := Src.BoldPriority;
+      aDest.ItalicPriority    := Src.ItalicPriority;
+      aDest.UnderlinePriority := Src.UnderlinePriority;
     end;
 
     if not (aDest is TSynSelectedColor) then begin
@@ -6302,9 +6302,9 @@ procedure TColorSchemeAttribute.Assign(Src: TPersistent);
 begin
   inherited Assign(Src);
 
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   if Src is TSynHighlighterAttributesModifier then
-    FFeatures := FFeatures + [hafAlpha, hafPrior,hafStyleMask];
+    FFeatures := FFeatures + [hafAlpha, hafStyleMask];
 
   if Src is TColorSchemeAttribute then begin
     FGroup := TColorSchemeAttribute(Src).FGroup;

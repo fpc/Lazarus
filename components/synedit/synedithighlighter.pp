@@ -84,13 +84,24 @@ type
     FFrameStyle: TSynLineStyle;
     fStyle: TFontStyles;
     fStyleMask: TFontStyles;
+
+    FBackPriority: integer;
+    FForePriority: integer;
+    FFramePriority: integer;
+    FStylePriority: Array [TFontStyle] of integer;
+
+    function GetStylePriority(AIndex: TFontStyle): integer;
     procedure SetBackground(AValue: TColor);
+    procedure SetBackPriority(AValue: integer);
     procedure SetForeground(AValue: TColor);
+    procedure SetForePriority(AValue: integer);
     procedure SetFrameColor(AValue: TColor);
     procedure SetFrameEdges(AValue: TSynFrameEdges);
+    procedure SetFramePriority(AValue: integer);
     procedure SetFrameStyle(AValue: TSynLineStyle);
     procedure SetStyle(AValue: TFontStyles);
     procedure SetStyleMask(AValue: TFontStyles);
+    procedure SetStylePriority(AIndex: TFontStyle; AValue: integer);
   protected
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); virtual;
     procedure DoClear; virtual;
@@ -101,6 +112,7 @@ type
     constructor Create;
     procedure Clear;
     procedure Assign(aSource: TPersistent); override;
+    procedure SetAllPriorities(APriority: integer);
     procedure BeginUpdate;
     procedure EndUpdate;
   public
@@ -111,6 +123,16 @@ type
     property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges;
     property Style: TFontStyles     read fStyle write SetStyle;
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask;
+
+    property StylePriority[Index: TFontStyle]: integer read GetStylePriority write SetStylePriority;
+
+    property BackPriority: integer read FBackPriority write SetBackPriority;
+    property ForePriority: integer read FForePriority write SetForePriority;
+    property FramePriority: integer read FFramePriority write SetFramePriority;
+    property BoldPriority: integer index fsBold read GetStylePriority write SetStylePriority;
+    property ItalicPriority: integer index fsItalic read GetStylePriority write SetStylePriority;
+    property UnderlinePriority: integer index fsUnderline read GetStylePriority write SetStylePriority;
+    property StrikeOutPriority: integer index fsStrikeOut read GetStylePriority write SetStylePriority;
   end;
 
   { TSynHighlighterAttributes }
@@ -140,6 +162,11 @@ type
     function GetStyleMaskFromInt : integer;
     procedure SetStyleMaskFromInt(const Value : integer);
   protected
+    function GetBackPriorityStored: Boolean; virtual;
+    function GetForePriorityStored: Boolean; virtual;
+    function GetFramePriorityStored: Boolean; virtual;
+    function GetStylePriorityStored(AIndex: TFontStyle): Boolean; virtual;
+
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoChange; override;
   public
@@ -174,6 +201,14 @@ type
     // FStyle = [fsBold], FStyleMask = []        ==> invert fsBold
     // FStyle = [],       FStyleMask = [fsBold]  ==> clear  fsBold
     // FStyle = [fsBold], FStyleMask = [fsBold]  ==> set    fsBold
+
+    property BackPriority stored GetBackPriorityStored;
+    property ForePriority stored GetForePriorityStored;
+    property FramePriority stored GetFramePriorityStored;
+    property BoldPriority stored GetStylePriorityStored;
+    property ItalicPriority stored GetStylePriorityStored;
+    property UnderlinePriority stored GetStylePriorityStored;
+    property StrikeOutPriority stored GetStylePriorityStored;
   end;
 
   { TSynHighlighterAttributesModifier }
@@ -183,10 +218,6 @@ type
     FBackAlpha: byte;
     FForeAlpha: byte;
     FFrameAlpha: byte;
-    FBackPriority: integer;
-    FForePriority: integer;
-    FFramePriority: integer;
-    FStylePriority: Array [TFontStyle] of integer;
 
     FBackAlphaDefault: byte;
     FForeAlphaDefault: byte;
@@ -197,37 +228,23 @@ type
     FStylePriorityDefault: Array [TFontStyle] of integer;
 
     function GetBackAlphaStored: Boolean;
-    function GetBackPriorityStored: Boolean;
     function GetForeAlphaStored: Boolean;
-    function GetForePriorityStored: Boolean;
     function GetFrameAlphaStored: Boolean;
-    function GetFramePriorityStored: Boolean;
-    function GetStylePriorityStored(Index: TFontStyle): Boolean;
 
-    function GetStylePriority(Index: TFontStyle): integer;
     procedure SetBackAlpha(AValue: byte);
-    procedure SetBackPriority(AValue: integer);
     procedure SetForeAlpha(AValue: byte);
-    procedure SetForePriority(AValue: integer);
     procedure SetFrameAlpha(AValue: byte);
-    procedure SetFramePriority(AValue: integer);
-    procedure SetStylePriority(Index: TFontStyle; AValue: integer);
   protected
+    function GetBackPriorityStored: Boolean; override;
+    function GetForePriorityStored: Boolean; override;
+    function GetFramePriorityStored: Boolean; override;
+    function GetStylePriorityStored(Index: TFontStyle): Boolean; override;
+
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoClear; override;
-    procedure InitPriorities;
   public
     procedure InternalSaveDefaultValues; override;
-    procedure SetAllPriorities(APriority: integer);
-    property StylePriority[Index: TFontStyle]: integer read GetStylePriority write SetStylePriority;
   published
-    property BackPriority: integer read FBackPriority write SetBackPriority stored GetBackPriorityStored;
-    property ForePriority: integer read FForePriority write SetForePriority stored GetForePriorityStored;
-    property FramePriority: integer read FFramePriority write SetFramePriority stored GetFramePriorityStored;
-    property BoldPriority: integer index fsBold read GetStylePriority write SetStylePriority stored GetStylePriorityStored;
-    property ItalicPriority: integer index fsItalic read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
-    property UnderlinePriority: integer index fsUnderline read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
-    property StrikeOutPriority: integer index fsStrikeOut read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
     // Alpha = 0 means solid // 1..255 means n of 256
     property BackAlpha: byte read FBackAlpha write SetBackAlpha stored GetBackAlphaStored;
     property ForeAlpha: byte read FForeAlpha write SetForeAlpha stored GetForeAlphaStored;
@@ -488,11 +505,6 @@ const
 
 { TSynHighlighterAttributesModifier }
 
-function TSynHighlighterAttributesModifier.GetStylePriority(Index: TFontStyle): integer;
-begin
-  Result := FStylePriority[Index];
-end;
-
 procedure TSynHighlighterAttributesModifier.SetBackAlpha(AValue: byte);
 begin
   if FBackAlpha = AValue then Exit;
@@ -535,24 +547,10 @@ begin
   Result := FStylePriority[Index] <> FStylePriorityDefault[Index];
 end;
 
-procedure TSynHighlighterAttributesModifier.SetBackPriority(AValue: integer);
-begin
-  if FBackPriority = AValue then Exit;
-  FBackPriority := AValue;
-  Changed;
-end;
-
 procedure TSynHighlighterAttributesModifier.SetForeAlpha(AValue: byte);
 begin
   if FForeAlpha = AValue then Exit;
   FForeAlpha := AValue;
-  Changed;
-end;
-
-procedure TSynHighlighterAttributesModifier.SetForePriority(AValue: integer);
-begin
-  if FForePriority = AValue then Exit;
-  FForePriority := AValue;
   Changed;
 end;
 
@@ -563,21 +561,6 @@ begin
   Changed;
 end;
 
-procedure TSynHighlighterAttributesModifier.SetFramePriority(AValue: integer);
-begin
-  if FFramePriority = AValue then Exit;
-  FFramePriority := AValue;
-  Changed;
-end;
-
-procedure TSynHighlighterAttributesModifier.SetStylePriority(Index: TFontStyle;
-  AValue: integer);
-begin
-  if FStylePriority[Index] = AValue then Exit;
-  FStylePriority[Index] := AValue;
-  Changed;
-end;
-
 procedure TSynHighlighterAttributesModifier.AssignFrom(Src: TLazSynCustomTextAttributes);
 var
   Source: TSynHighlighterAttributesModifier;
@@ -585,16 +568,11 @@ begin
   inherited AssignFrom(Src);
   if Src is TSynHighlighterAttributesModifier then begin
     Source := TSynHighlighterAttributesModifier(Src);
-    ForePriority   := Source.ForePriority;
-    BackPriority   := Source.BackPriority;
-    FramePriority  := Source.FramePriority;
-    FStylePriority := Source.FStylePriority;
     FBackAlpha  := Source.BackAlpha;
     FForeAlpha  := Source.ForeAlpha;
     FFrameAlpha := Source.FrameAlpha;
   end
   else begin
-    InitPriorities;
     FBackAlpha  := 0;
     FForeAlpha  := 0;
     FFrameAlpha := 0;
@@ -604,23 +582,9 @@ end;
 procedure TSynHighlighterAttributesModifier.DoClear;
 begin
   inherited DoClear;
-  InitPriorities;
   FBackAlpha  := 0;
   FForeAlpha  := 0;
   FFrameAlpha := 0;
-end;
-
-procedure TSynHighlighterAttributesModifier.InitPriorities;
-var
-  i: TFontStyle;
-begin
-  BeginUpdate;
-  ForePriority := 0;
-  BackPriority := 0;
-  FramePriority := 0;
-  for i := Low(TFontStyle) to High(TFontStyle) do
-    FStylePriority[i] := 0;
-  EndUpdate;
 end;
 
 procedure TSynHighlighterAttributesModifier.InternalSaveDefaultValues;
@@ -633,19 +597,6 @@ begin
   FBackAlphaDefault     := FBackAlpha;
   FFrameAlphaDefault    := FFrameAlpha;
   FStylePriorityDefault := FStylePriority;
-end;
-
-procedure TSynHighlighterAttributesModifier.SetAllPriorities(APriority: integer);
-var
-  i: TFontStyle;
-begin
-  BeginUpdate;
-  ForePriority := APriority;
-  BackPriority := APriority;
-  FramePriority := APriority;
-  for i := Low(TFontStyle) to High(TFontStyle) do
-    FStylePriority[i] := APriority;
-  EndUpdate;
 end;
 
 {$IFDEF _Gp_MustEnhanceRegistry}
@@ -748,10 +699,30 @@ begin
   Changed;
 end;
 
+function TLazSynCustomTextAttributes.GetStylePriority(AIndex: TFontStyle
+  ): integer;
+begin
+  Result := FStylePriority[AIndex];
+end;
+
+procedure TLazSynCustomTextAttributes.SetBackPriority(AValue: integer);
+begin
+  if FBackPriority = AValue then Exit;
+  FBackPriority := AValue;
+  Changed;
+end;
+
 procedure TLazSynCustomTextAttributes.SetForeground(AValue: TColor);
 begin
   if FForeground = AValue then Exit;
   FForeground := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetForePriority(AValue: integer);
+begin
+  if FForePriority = AValue then Exit;
+  FForePriority := AValue;
   Changed;
 end;
 
@@ -766,6 +737,13 @@ procedure TLazSynCustomTextAttributes.SetFrameEdges(AValue: TSynFrameEdges);
 begin
   if FFrameEdges = AValue then Exit;
   FFrameEdges := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetFramePriority(AValue: integer);
+begin
+  if FFramePriority = AValue then Exit;
+  FFramePriority := AValue;
   Changed;
 end;
 
@@ -790,6 +768,14 @@ begin
   Changed;
 end;
 
+procedure TLazSynCustomTextAttributes.SetStylePriority(AIndex: TFontStyle;
+  AValue: integer);
+begin
+  if FStylePriority[AIndex] = AValue then Exit;
+  FStylePriority[AIndex] := AValue;
+  Changed;
+end;
+
 procedure TLazSynCustomTextAttributes.Changed;
 begin
   FWasChanged := True;
@@ -805,6 +791,8 @@ begin
 end;
 
 procedure TLazSynCustomTextAttributes.DoClear;
+var
+  i: TFontStyle;
 begin
   Background := clNone;
   Foreground := clNone;
@@ -813,6 +801,11 @@ begin
   FrameEdges := sfeAround;
   Style := [];
   StyleMask := [];
+  FForePriority := 0;
+  FBackPriority := 0;
+  FFramePriority := 0;
+  for i := Low(TFontStyle) to High(TFontStyle) do
+    FStylePriority[i] := 0;
 end;
 
 procedure TLazSynCustomTextAttributes.DoChange;
@@ -856,11 +849,28 @@ begin
     FrameEdges := Source.FrameEdges;
     Style      := Source.FStyle;
     StyleMask  := Source.FStyleMask;
+    ForePriority   := Source.ForePriority;
+    BackPriority   := Source.BackPriority;
+    FramePriority  := Source.FramePriority;
+    FStylePriority  := Source.FStylePriority;
     AssignFrom(Source);
     EndUpdate;
   end
   else
     inherited;
+end;
+
+procedure TLazSynCustomTextAttributes.SetAllPriorities(APriority: integer);
+var
+  i: TFontStyle;
+begin
+  BeginUpdate;
+  ForePriority := APriority;
+  BackPriority := APriority;
+  FramePriority := APriority;
+  for i := Low(TFontStyle) to High(TFontStyle) do
+    StylePriority[i] := APriority;
+  EndUpdate;
 end;
 
 procedure TLazSynCustomTextAttributes.BeginUpdate;
@@ -1240,6 +1250,27 @@ begin
   if Value and $2 <> 0 then StyleMask:= StyleMask + [fsItalic];
   if Value and $4 <> 0 then StyleMask:= StyleMask + [fsUnderline];
   if Value and $8 <> 0 then StyleMask:= StyleMask + [fsStrikeout];
+end;
+
+function TSynHighlighterAttributes.GetBackPriorityStored: Boolean;
+begin
+  Result := FBackPriority = 0;
+end;
+
+function TSynHighlighterAttributes.GetForePriorityStored: Boolean;
+begin
+  Result := FForePriority = 0;
+end;
+
+function TSynHighlighterAttributes.GetFramePriorityStored: Boolean;
+begin
+  Result := FFramePriority = 0;
+end;
+
+function TSynHighlighterAttributes.GetStylePriorityStored(AIndex: TFontStyle
+  ): Boolean;
+begin
+  Result := FStylePriority[AIndex] = 0;
 end;
 
 procedure TSynHighlighterAttributes.AssignFrom(Src: TLazSynCustomTextAttributes);
