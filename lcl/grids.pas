@@ -8412,19 +8412,22 @@ var
 begin
   if not EditorLocked and (Editor<>nil) and Editor.Visible then
   begin
-    WasFocused := Editor.Focused;
-    FEditorMode:=False;
+    FEditorMode := False;
     FGridState := gsNormal;
-    {$ifdef dbgGrid}DebugLnEnter('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
-    LockEditor;
-    try
-      DoEditorHide;
-    finally
-      if WasFocused then
-        SetFocus;
-      UnLockEditor;
+    if Editor.Owner<>nil then  // May be nil when the form is closing.
+    begin
+      WasFocused := Editor.Focused;
+      {$ifdef dbgGrid}DebugLnEnter('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
+      LockEditor;
+      try
+        DoEditorHide;
+      finally
+        if WasFocused then
+          SetFocus;
+        UnLockEditor;
+      end;
+      {$ifdef dbgGrid}DebugLnExit('EditorHide END');{$endif}
     end;
-    {$ifdef dbgGrid}DebugLnExit('EditorHide END');{$endif}
   end;
 end;
 
