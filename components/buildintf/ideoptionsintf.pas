@@ -379,9 +379,9 @@ end;
 
 procedure TAbstractIDEOptions.DoAfterRead;
 begin
+  fHandlers[iohAfterRead].CallNotifyEvents(Self);
   if Assigned(FOnAfterRead) then
     FOnAfterRead(Self);
-  fHandlers[iohAfterRead].CallNotifyEvents(Self);
 end;
 
 procedure TAbstractIDEOptions.DoBeforeWrite(Restore: boolean);
@@ -399,11 +399,12 @@ procedure TAbstractIDEOptions.DoAfterWrite(Restore: boolean);
 var
   i: LongInt;
 begin
-  if Assigned(FOnAfterWrite) then
-    FOnAfterWrite(Self,Restore);
   i:=fHandlers[iohAfterWrite].Count;
   while fHandlers[iohAfterWrite].NextDownIndex(i) do
     TIDEOptionsWriteEvent(fHandlers[iohAfterWrite][i])(Self,Restore);
+  // OnAfterWrite event handler may overwrite Self. Call it last.
+  if Assigned(FOnAfterWrite) then
+    FOnAfterWrite(Self,Restore);
 end;
 
 procedure TAbstractIDEOptions.AddHandlerBeforeRead(const Handler: TNotifyEvent;
