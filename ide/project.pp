@@ -512,9 +512,8 @@ type
     FBuildMode: TProjectBuildMode;
     FProject: TProject;
     FCompileReasons: TCompileReasons;
-    procedure InvalidateOptions;
-    procedure AfterWriteExec(Sender: TObject; Restore: boolean);
     procedure BeforeReadExec(Sender: TObject);
+    procedure AfterWriteExec(Sender: TObject; Restore: boolean);
   protected
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
@@ -6177,7 +6176,6 @@ end;
 procedure TProjectCompilerOptions.SetCustomOptions(const AValue: string);
 begin
   if CustomOptions=AValue then exit;
-  InvalidateOptions;
   inherited SetCustomOptions(AValue);
   if IsActive then
     LazProject.DefineTemplates.CustomDefinesChanged;
@@ -6186,56 +6184,48 @@ end;
 procedure TProjectCompilerOptions.SetIncludePaths(const AValue: string);
 begin
   if IncludePath=AValue then exit;
-  InvalidateOptions;
   inherited SetIncludePaths(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetLibraryPaths(const AValue: string);
 begin
   if Libraries=AValue then exit;
-  InvalidateOptions;
   inherited SetLibraryPaths(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetLinkerOptions(const AValue: string);
 begin
   if LinkerOptions=AValue then exit;
-  InvalidateOptions;
   inherited SetLinkerOptions(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetNamespaces(const AValue: string);
 begin
   if Namespaces=AValue then exit;
-  InvalidateOptions;
   inherited SetNamespaces(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetObjectPath(const AValue: string);
 begin
   if ObjectPath=AValue then exit;
-  InvalidateOptions;
   inherited SetObjectPath(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetSrcPath(const AValue: string);
 begin
   if SrcPath=AValue then exit;
-  InvalidateOptions;
   inherited SetSrcPath(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetUnitPaths(const AValue: string);
 begin
   if OtherUnitFiles=AValue then exit;
-  InvalidateOptions;
   inherited SetUnitPaths(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetUnitOutputDir(const AValue: string);
 begin
   if UnitOutputDirectory=AValue then exit;
-  InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
   if IsActive then
     LazProject.DefineTemplates.OutputDirectoryChanged;
@@ -6245,7 +6235,6 @@ procedure TProjectCompilerOptions.SetConditionals(AValue: string);
 begin
   AValue:=UTF8Trim(AValue,[]);
   if Conditionals=AValue then exit;
-  InvalidateOptions;
   inherited SetConditionals(AValue);
 end;
 
@@ -6298,21 +6287,16 @@ begin
     Result:=true;
 end;
 
-procedure TProjectCompilerOptions.InvalidateOptions;
+procedure TProjectCompilerOptions.BeforeReadExec(Sender: TObject);
 begin
-  //if (LazProject=nil) then exit;
+  if LazProject<>nil then
+    LazProject.BackupBuildModes;
 end;
 
-procedure TProjectCompilerOptions.AfterWriteExec(Sender:TObject;Restore:boolean);
+procedure TProjectCompilerOptions.AfterWriteExec(Sender: TObject; Restore: boolean);
 begin
- if Restore and (LazProject<>nil) then
-   LazProject.RestoreBuildModes;
-end;
-
-procedure TProjectCompilerOptions.BeforeReadExec(Sender:TObject);
-begin
- if LazProject<>nil then
-   LazProject.BackupBuildModes;
+  if Restore and (LazProject<>nil) then
+    LazProject.RestoreBuildModes;
 end;
 
 procedure TProjectCompilerOptions.SetAlternativeCompile(const Command: string;
