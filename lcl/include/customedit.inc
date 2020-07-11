@@ -560,13 +560,30 @@ begin
 end;
 
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
+var
+  Temp: TCaption;
 begin
+  Temp:=AValue;
+  {
+  case
+    CharCase of
+      ecNormal: Temp := AValue; //if Text=AValue SetText won't call RealSetText, so no need to check
+      ecUpperCase: begin
+                     Temp := Utf8UpperCase(AValue);
+                     if (Temp = RealGetText) then Exit;
+                   end;
+      ecLowerCase: begin
+                     Temp := Utf8LowerCase(AValue);
+                     if (Temp = RealGetText) then Exit;
+                   end;
+    end;
+  }
   if (FEmulatedTextHintStatus=thsShowing) and (AValue<>'') then
     HideEmulatedTextHint;
 
   FTextChangedByRealSetText := True;
   Modified := False;
-  inherited RealSetText(AValue);
+  inherited RealSetText(Temp);
   FTextChangedByRealSetText := False;
 
   if (FEmulatedTextHintStatus=thsHidden) and CanShowEmulatedTextHint then
