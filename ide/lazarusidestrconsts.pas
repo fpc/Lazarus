@@ -1170,14 +1170,14 @@ resourcestring
        'License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.'
       +'%s'
       +'Lazarus is an IDE to create graphical and console applications '
-      +'with Free Pascal. Free Pascal is Pascal and Object Pascal '
-      +'compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.'
+      +'with Free Pascal. Free Pascal is a Pascal and Object Pascal '
+      +'compiler that runs on Windows, Linux, macOS, FreeBSD and more.'
       +'%s'
       +'Lazarus is the missing part of the puzzle that will allow you to '
-      +'develop programs for all of the above platforms in a Delphi like '
+      +'develop programs for all of the above platforms in a Delphi-like '
       +'environment. The IDE is a RAD tool that includes a form designer.'
       +'%s'
-      +'As Lazarus is growing we need more developers.';
+      +'As Lazarus is growing, we need more developers.';
   lisAboutNoContributors = 'Cannot find contributors list.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
   lisTheUnitAlreadyExists = 'The unit "%s" already exists.';
