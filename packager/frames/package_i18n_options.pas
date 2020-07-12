@@ -10,8 +10,10 @@ uses
   FileUtil,
   // LCL
   Forms, StdCtrls, EditBtn,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, PackageDefs;
 
@@ -52,8 +54,7 @@ procedure TPackageI18NOptionsFrame.POOutDirButtonClick(Sender: TObject);
 var
   NewDirectory: string;
 begin
-  NewDirectory := LazSelectDirectory(lisPOChoosePoFileDirectory,
-    FLazPackage.Directory);
+  NewDirectory := LazSelectDirectory(lisPOChoosePoFileDirectory, FLazPackage.Directory);
   if NewDirectory = '' then
     exit;
   FLazPackage.ShortenFilename(NewDirectory, True);
@@ -101,7 +102,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupPackage, TPackageI18NOptionsFrame,
-    PackageOptionsI18N);
+  RegisterIDEOptionsEditor(GroupPackage, TPackageI18NOptionsFrame, PackageOptionsI18N);
 end.
 
