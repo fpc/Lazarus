@@ -4522,8 +4522,9 @@ msgid "About Lazarus"
 msgstr "Lazarus Hakkında"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, object-pascal-format
-msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, object-pascal-format, fuzzy
+#| msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
 msgstr "Lisans: GPL / LGPL. Lisans ayrıntıları için Lazarus ve Free Pascal kaynaklarına bakınız.%s Lazarus, Free Pascal ile grafiksel ve konsollu uygulamalar oluşturmak için bir IDE'dir. Free Pascal Windows, Linux, Mac OS X, FreeBSD ve daha fazlası üzerinde çalışan Pascal ve Object Pascal derleyicisidir.%s Lazarus, bir Delphi gibi yukarıdaki platformların tümü için programlar geliştirmenize izin verecek yapbozun eksik kısmıdır. ortamı. IDE, bir form tasarımcısı içeren bir RAD aracıdır.%s Lazarus büyüdükçe daha fazla geliştiriciye ihtiyacımız var."
 
 #: lazarusidestrconsts.lisaboutnocontributors

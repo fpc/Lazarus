@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-08 01:29+0300\n"
+"PO-Revision-Date: 2020-07-13 01:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4562,8 +4562,8 @@ msgstr "О проекте Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 #, object-pascal-format
-msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Лицензия: GPL/LGPL. Обратитесь к исходному коду Lazarus и Free Pascal за подробностями.%sLazarus - это IDE для создания графических и консольных приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, работающий под Windows, Linux, Mac OS X, FreeBSD, и другими ОС.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя редактор форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
+msgstr "Лицензия: GPL/LGPL. Обратитесь к исходному коду Lazarus и Free Pascal за подробностями.%sLazarus - это IDE для создания графических и консольных приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, работающий под Windows, Linux, macOS, FreeBSD и другими ОС.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя редактор форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."

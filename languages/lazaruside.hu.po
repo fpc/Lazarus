@@ -4560,8 +4560,9 @@ msgid "About Lazarus"
 msgstr "Lazarus névjegye"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, object-pascal-format
-msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, object-pascal-format, fuzzy
+#| msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
 msgstr "Licenc: GPL/LGPL. Lásd a Lazarus és a Free Pascal forráskódokat a licenc részleteiért.%sA Lazarus egy IDE grafikus és konzolos alkalmazások létrehozására Free Pascal használatával. A Free Pascal egy Pascal és Object Pascal fordító, amely fut Windows-on, Linux-on, Mac OS X-en, FreeBSD-n stb.%sA Lazarus a kirakós hiányzó darabja, mely lehetővé teszi programok fejlesztését az összes fenti platformra egy Delphi-szerű környezetben. Az IDE egy RAD (Rapid Application Development) eszköz mely tartalmaz űrlaptervezőt.%sAhogy a Lazarus növekszik egyre több fejlesztőre van szükségünk."
 
 #: lazarusidestrconsts.lisaboutnocontributors

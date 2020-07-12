@@ -4676,8 +4676,9 @@ msgid "About Lazarus"
 msgstr "Lazarusについて"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, object-pascal-format
-msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, object-pascal-format, fuzzy
+#| msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
 msgstr "ライセンス：GPL/LGPL。ライセンスの詳細は Lazarus および Free Pascal のソースをご覧ください。%sLazarus はグラフィカルな操作ができるアプリケーションを Free Pascal で作成する統合開発環境 (IDE) です。Free Pascal は Pascal および Object Pascal コンパイラで、Windows, Linux, Mac OS X, FreeBSD などで実行できます。%sLazarus はそれらのプラットフォームにおいて Delphi のような環境でプログラムを開発できるようにする、言わば 'パズルの欠けた箇所を埋める部分' です。IDE はフォームデザイナを含む RAD ツールです。%sLazarus の発展には、より多くの開発者の協力を必要としています。"
 
 #: lazarusidestrconsts.lisaboutnocontributors

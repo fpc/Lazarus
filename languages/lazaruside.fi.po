@@ -4566,8 +4566,9 @@ msgid "About Lazarus"
 msgstr "Tietoja Lazaruksesta"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, object-pascal-format
-msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, object-pascal-format, fuzzy
+#| msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
 msgstr "Lisenssi: GPL/LGPL. Katso Lazaruksen ja Free Pascalin lähdekoodeista tarkemmat lisenssit.%sLazarus on IDE, millä voi tehdä graafisia ja komentorivisovelluksia Free Pascal -kielellä. Free Pascal on (Object) Pascal kääntäjä, joka toimii mm. Windows, Linux, Mac OS X, FreeBSD ym. käyttöjärjestelmissä.%sLazarus on puuttuva lenkki, joka sallii ohjelmoinnin kaikille em. alustoille Delphin kaltaisessa ympäristössä. IDE on RAD-työkalu, missä mukana on lomakeiden suunnittelu.%sLazaruksen kasvaessa tarvitsemme lisää kehittäjiä."
 
 #: lazarusidestrconsts.lisaboutnocontributors
