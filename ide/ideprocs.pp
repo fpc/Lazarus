@@ -148,8 +148,7 @@ function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
 
 // Point conversion
 function PointToCfgStr(const Point: TPoint): string;
-procedure CfgStrToPoint(const s: string; var Point: TPoint;
-                        const DefaultPoint: TPoint);
+procedure CfgStrToPoint(const s: string; var Point: TPoint; const DefaultPoint: TPoint);
 
 // environment
 type
@@ -1297,8 +1296,7 @@ begin
   Result:=IntToStr(Point.X)+','+IntToStr(Point.Y);
 end;
 
-procedure CfgStrToPoint(const s: string; var Point: TPoint;
-  const DefaultPoint: TPoint);
+procedure CfgStrToPoint(const s: string; var Point: TPoint; const DefaultPoint: TPoint);
 var
   p: Integer;
 begin
@@ -1310,7 +1308,7 @@ end;
 
 function GetCurrentUserName: string;
 begin
-  Result:=GetEnvironmentVariableUTF8('USER');
+  Result:=GetEnvironmentVariableUTF8({$IFDEF Windows}'USERNAME'{$ELSE}'USER'{$ENDIF});
 end;
 
 function GetCurrentMailAddress: string;
