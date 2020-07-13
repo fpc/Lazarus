@@ -160,7 +160,7 @@ type
   end;
 
 function GetCurrentUserName: string;
-function GetCurrentMailAddress: string;
+function GetCurrentChangeLog: string;
 function GetProgramSearchPath: string;
 
 // miscellaneous
@@ -1311,9 +1311,10 @@ begin
   Result:=GetEnvironmentVariableUTF8({$IFDEF Windows}'USERNAME'{$ELSE}'USER'{$ENDIF});
 end;
 
-function GetCurrentMailAddress: string;
+function GetCurrentChangeLog: string;
 begin
-  Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariableUTF8('HOSTNAME')+'>';
+  Result:='<'+GetCurrentUserName+'@'+
+    GetEnvironmentVariableUTF8({$IFDEF Windows}'COMPUTERNAME'{$ELSE}'HOSTNAME'{$ENDIF})+'>';
 end;
 
 function GetProgramSearchPath: string;

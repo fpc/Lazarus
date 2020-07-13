@@ -4665,7 +4665,7 @@ procedure TSourceEditor.InsertChangeLogEntry;
 var s: string;
 begin
   if ReadOnly then Exit;
-  s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentMailAddress;
+  s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentChangeLog;
   FEditor.InsertTextAtCaret(s);
 end;
 
