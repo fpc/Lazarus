@@ -1308,13 +1308,18 @@ end;
 
 function GetCurrentUserName: string;
 begin
-  Result:=GetEnvironmentVariableUTF8({$IFDEF Windows}'USERNAME'{$ELSE}'USER'{$ENDIF});
+  Result:=GetEnvironmentVariableUTF8({$IFDEF MSWindows}'USERNAME'{$ELSE}'USER'{$ENDIF});
 end;
 
 function GetCurrentChangeLog: string;
 begin
   Result:='<'+GetCurrentUserName+'@'+
-    GetEnvironmentVariableUTF8({$IFDEF Windows}'COMPUTERNAME'{$ELSE}'HOSTNAME'{$ENDIF})+'>';
+  {$IF defined(MSWindows) or defined(HASAMIGA)}
+    GetEnvironmentVariableUTF8('COMPUTERNAME')
+  {$ELSE}
+    GetHostname
+  {$ENDIF}
+    + '>';
 end;
 
 function GetProgramSearchPath: string;
