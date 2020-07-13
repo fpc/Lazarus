@@ -17,7 +17,7 @@ ifeq ($(OS_TARGET),wince)
 LCL_PLATFORM=wince
 else
 ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
+LCL_PLATFORM=cocoa
 else
 ifneq ($(findstring $(OS_TARGET),amiga aros morphos),)
 LCL_PLATFORM=mui

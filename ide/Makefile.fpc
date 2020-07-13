@@ -64,7 +64,7 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
 ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
+LCL_PLATFORM=cocoa
 else
 LCL_PLATFORM=gtk2
 endif
@@ -75,14 +75,6 @@ export LCL_PLATFORM
 DBG_OPTIONS=
 ifeq ($(OS_TARGET),darwin)
 DBG_OPTIONS=-gw
-endif
-
-#
-# LibPaths
-ifeq ($(OS_TARGET),darwin)
-ifneq ($(LCL_PLATFORM),carbon)
-LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
-endif
 endif
 
 #
