@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for OnlinePackageManager 1.0.1.2
 #
-#   This file was generated on 22-3-20
+#   This file was generated on 13-7-20
 
 [package]
 name=onlinepackagemanager
@@ -36,7 +36,7 @@ ifeq ($(OS_TARGET),win64)
 LCL_PLATFORM=win32
 else
 ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
+LCL_PLATFORM=cocoa
 else
 LCL_PLATFORM=gtk2
 endif

@@ -4682,7 +4682,7 @@ begin
   s:=s+'LCL_PLATFORM=win32'+e;
   s:=s+'else'+e;
   s:=s+'ifeq ($(OS_TARGET),darwin)'+e;
-  s:=s+'LCL_PLATFORM=carbon'+e;
+  s:=s+'LCL_PLATFORM=cocoa'+e;
   s:=s+'else'+e;
   s:=s+'LCL_PLATFORM=gtk2'+e;
   s:=s+'endif'+e;

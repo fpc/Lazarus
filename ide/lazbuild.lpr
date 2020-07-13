@@ -844,7 +844,8 @@ var
 
       // create LazBuildApp bundle
       if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-      and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+      and ((MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+        or (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCocoa]))
       then begin
         if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
           Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);

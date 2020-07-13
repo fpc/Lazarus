@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazDebuggerGdbmi 0.1
 #
-#   This file was generated on 22.03.2020
+#   This file was generated on 13-7-20
 
 [package]
 name=lazdebuggergdbmi
@@ -35,7 +35,7 @@ ifeq ($(OS_TARGET),win64)
 LCL_PLATFORM=win32
 else
 ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
+LCL_PLATFORM=cocoa
 else
 LCL_PLATFORM=gtk2
 endif
