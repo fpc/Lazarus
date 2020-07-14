@@ -92,7 +92,7 @@ endif
 [compiler]
 options=-gl -Sic $(LCL_DISABLE_CHECKS) $(DBG_OPTIONS)
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
+unitdir=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../components/freetype/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 includedir=include
 
 [install]
@@ -118,7 +118,7 @@ lcldir=.
 
 help:
 	@$(ECHO)
-	@$(ECHO) " Important: the LCL requires components/lazutils and packager/registration"
+	@$(ECHO) " Important: the LCL requires packager/registration, components/lazutils, and components/freetype"
 	@$(ECHO)
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all          build lclbase and one interface"

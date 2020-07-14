@@ -78,6 +78,9 @@ fpvectorial
 fpweb
   Units that support web server and web client programming.
 
+freetype
+  FreeType font rendering.
+
 h2pas
   Adds graphical interface to the IDE for the h2pas command line tool.
 

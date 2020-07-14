@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="LCLBase"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -12,8 +12,8 @@
         <OtherUnitFiles Value="forms;widgetset"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Conditionals Value="if SrcOS&lt;>'win' then
-  UnitPath := 'nonwin32';"/>
+      <Conditionals Value="if SrcOS&lt;>&apos;win&apos; then
+  UnitPath := &apos;nonwin32&apos;;"/>
       <Other>
         <Verbosity>
           <ShowNotes Value="False"/>
@@ -1181,6 +1181,7 @@
         <UnitName Value="LCLExceptionStackTrace"/>
       </Item287>
     </Files>
+    <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
       <EnableI18N Value="True"/>
@@ -1188,11 +1189,11 @@
     </i18n>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="chm"/>
-        <DependencyType Value="FPMake"/>
+        <PackageName Value="freetype"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="chm"/>
+        <DependencyType Value="FPMake"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
@@ -1206,25 +1207,25 @@
       <_Fppkg Items="CustomCodeCount/CustomCodeItem1/CustomCodeItem2/CustomCodeItem3/CustomCodeItem4/CustomCodeItem5/CustomCodeItem6/CustomCodeItem7/PackageVariants">
         <_CustomCodeCount Value="6"/>
         <_CustomCodeItem1 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('cursors.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;cursors.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem1>
         <_CustomCodeItem2 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('btn_icons.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;btn_icons.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem2>
         <_CustomCodeItem3 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('dialog_icons.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;dialog_icons.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem3>
         <_CustomCodeItem4 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('lcl_grid_images.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;lcl_grid_images.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem4>
         <_CustomCodeItem5 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('lcl_edbtnimg.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;lcl_edbtnimg.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem5>
         <_CustomCodeItem6 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('lcl_dock_images.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;lcl_dock_images.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem6>
         <_CustomCodeItem7 Items="Value">
-          <_Value Value="    P.InstallFiles.Add('lcl_dock_images.res', '$(unitinstalldir)');"/>
+          <_Value Value="    P.InstallFiles.Add(&apos;lcl_dock_images.res&apos;, &apos;$(unitinstalldir)&apos;);"/>
         </_CustomCodeItem7>
         <_PackageVariants Items="Items">
           <_Items Items="Count"/>

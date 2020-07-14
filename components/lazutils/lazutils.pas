@@ -8,22 +8,18 @@ unit LazUtils;
 interface
 
 uses
-  AvgLvlTree, DynamicArray, DynHashArray, DynQueue, EasyLazFreeType, 
-  ExtendedStrings, FileUtil, FPCAdds, Laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, 
-  laz2_xmlutils, laz2_XMLWrite, laz2_xpath, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, 
-  Laz_XMLStreaming, Laz_XMLWrite, LazClasses, lazCollections, 
-  LazConfigStorage, LazDbgLog, lazfglhash, LazFileCache, LazFileUtils, 
-  LazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer, 
-  LazLinkedList, LazListClasses, LazLogger, LazLoggerBase, LazLoggerDummy, 
-  LazLoggerProfiling, LazMethodList, LazUnicode, LazUTF16, LazUTF8, 
-  LazUTF8Classes, LazSysUtils, LazUtilities, LazUtilsStrConsts, LConvEncoding, 
-  lcsvutils, LookupStringList, Maps, Masks, PasWString, StringHashList, 
-  TextStrings, Translations, TTCache, TTCalc, TTCMap, TTDebug, TTError, 
-  TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, 
-  TTTables, TTTypes, UTF8Process, HTML2TextRender, Laz_AVL_Tree, 
-  CompWriterPas, LazPasReadUtil, IntegerList, LazVersion, UITypes, GraphType, 
-  LazTracer, LazStringUtils, LazUTF8SysUtils, ObjectLists, TTKern, 
-  LazarusPackageIntf;
+  AvgLvlTree, DynamicArray, DynHashArray, DynQueue, ExtendedStrings, FileUtil, 
+  FPCAdds, Laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, 
+  laz2_xpath, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, 
+  Laz_XMLWrite, LazClasses, lazCollections, LazConfigStorage, LazDbgLog, 
+  lazfglhash, LazFileCache, LazFileUtils, LazLinkedList, LazListClasses, 
+  LazLogger, LazLoggerBase, LazLoggerDummy, LazLoggerProfiling, LazMethodList, 
+  LazUnicode, LazUTF16, LazUTF8, LazUTF8Classes, LazSysUtils, LazUtilities, 
+  LazUtilsStrConsts, LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, 
+  PasWString, StringHashList, TextStrings, Translations, UTF8Process, 
+  HTML2TextRender, Laz_AVL_Tree, CompWriterPas, LazPasReadUtil, IntegerList, 
+  LazVersion, UITypes, GraphType, LazTracer, LazStringUtils, LazUTF8SysUtils, 
+  ObjectLists, LazarusPackageIntf;
 
 implementation
 

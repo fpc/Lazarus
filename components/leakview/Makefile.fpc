@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for leakview 1.0
 #
-#   This file was generated on 13-7-20
+#   This file was generated on 14-7-20
 
 [package]
 name=leakview
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET) ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET) ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Sgi -O1 -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 
 [target]

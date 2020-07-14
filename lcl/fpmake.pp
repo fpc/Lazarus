@@ -37,6 +37,7 @@ begin
 
     D := P.Dependencies.Add('chm');
     D := P.Dependencies.Add('lazutils');
+    D := P.Dependencies.Add('freetype');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');

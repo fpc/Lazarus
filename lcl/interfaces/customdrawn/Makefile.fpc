@@ -19,6 +19,7 @@ options=-gl $(DBG_OPTIONS)
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+    ../../../components/freetype/lib/$(CPU_TARGET)-$(OS_TARGET) \
     .. .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/customdrawn
 

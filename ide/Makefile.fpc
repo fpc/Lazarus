@@ -88,6 +88,7 @@ DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
   -Fu../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/freetype/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/buildintf/units/$(CPU_TARGET)-$(OS_TARGET) \

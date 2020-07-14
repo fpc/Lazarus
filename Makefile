@@ -3528,7 +3528,7 @@ help:
 	@$(ECHO) "   registration   build package FCL"
 	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
-	@$(ECHO) "   lcl            build package LCLBase and LCL, requires lazutils"
+	@$(ECHO) "   lcl            build package FreeType, LCLBase and LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
 	@$(ECHO) "                  requires LCL with nogui widgetset"
 	@$(ECHO) "   basecomponents build buildintf, lazcontrols, ideintf, synedit, debuggerintf, lazdebuggergdbmi"
@@ -3584,6 +3584,7 @@ lazutils:
 codetools:
 	$(MAKE) -C components/codetools
 lcl:
+	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
 basecomponents:
 	$(MAKE) -C components/buildintf
@@ -3621,6 +3622,7 @@ endif
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration lazutils codetools
+	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
 	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
