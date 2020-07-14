@@ -247,8 +247,7 @@ const
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
     procedure TextChanged; override;
     procedure Change; override;
-    procedure SetCharCase(Value: TEditCharCase);
-    function GetCharCase: TEditCharCase;
+    procedure SetCharCase(Value: TEditCharCase); override;
     procedure SetMaxLength(Value: Integer);
     function GetMaxLength: Integer;
     procedure SetNumbersOnly(Value: Boolean); override;
@@ -273,7 +272,6 @@ const
     property IsMasked: Boolean read GetIsMasked;
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
-    property CharCase: TEditCharCase read GetCharCase write SetCharCase;
     property EditMask: string read FRealMask write SetMask;
   public
     procedure CutToClipBoard; override;
@@ -1693,19 +1691,11 @@ end;
 procedure TCustomMaskEdit.SetCharCase(Value: TEditCharCase);
 begin
   if IsMasked then
-  begin
-    if (GetCharCase <> ecNormal) then inherited CharCase := ecNormal;
-  end
+    inherited SetCharCase(ecNormal)
   else
-  begin
-    inherited CharCase := Value;
-  end;
+    inherited SetCharCase(Value);
 end;
 
-function TCustomMaskEdit.GetCharCase: TEditCharCase;
-begin
-  Result := inherited CharCase;
-end;
 
 procedure TCustomMaskEdit.SetMaxLength(Value: Integer);
 begin

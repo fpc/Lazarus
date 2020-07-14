@@ -764,7 +764,6 @@ type
     procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;
     function GetModified: Boolean;
-    procedure SetCharCase(Value: TEditCharCase);
     procedure SetHideSelection(const AValue: Boolean);
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
@@ -795,6 +794,7 @@ type
     function GetSelText: string; virtual;
     function GetTextHint: TTranslateString; virtual;
     procedure SetCaretPos(const Value: TPoint); virtual;
+    procedure SetCharCase(Value: TEditCharCase); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetNumbersOnly(Value: Boolean); virtual;
     procedure SetReadOnly(Value: Boolean); virtual;
