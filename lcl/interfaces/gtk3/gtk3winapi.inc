@@ -1476,7 +1476,7 @@ begin
     //TODO: APen.setDashPattern
   end;
 
-  APen.Color := lplb.lbColor;
+  APen.Color := TColor(lplb.lbColor);  // ColorToRGB() ?
   APen.LogPen.lopnColor := lplb.lbColor;
   APen.LogPen.lopnStyle := (dwPenStyle and PS_STYLE_MASK) or (dwPenStyle and PS_JOIN_MASK) or (dwPenStyle and PS_ENDCAP_MASK);
   APen.LogPen.lopnWidth.X := dwWidth;
@@ -1485,8 +1485,7 @@ begin
   Result := HPen(APen);
 end;
 
-function TGtk3WidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
-  ): Integer;
+function TGtk3WidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint): Integer;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
   ARect: TGdkRectangle;
@@ -3933,10 +3932,14 @@ end;
 
 function TGtk3WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean
   ): longint;
+var
+  PCR: Pcairo_region_t;
 begin
-  gtk_widget_shape_combine_region (
-     TGtk3Widget(hWnd).Widget,
-     TGtk3Region(hRgn).Handle);
+  if hRgn = 0 then
+    PCR := nil
+  else
+    PCR := TGtk3Region(hRgn).Handle;
+  gtk_widget_shape_combine_region(TGtk3Widget(hWnd).Widget, PCR);
   if bRedraw then
     TGtk3Widget(hWnd).Widget^.realize;
   Result:=1;
