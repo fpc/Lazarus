@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="freetype"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="David Turner, Robert Wilhelm and Werner Lemberg"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="FreeType font rendering."/>
+    <License Value="Modified LGPL-2 or FreeType License"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="easylazfreetype.pas"/>
+        <UnitName Value="EasyLazFreeType"/>
+      </Item>
+      <Item>
+        <Filename Value="lazfreetype.pas"/>
+        <UnitName Value="LazFreeType"/>
+      </Item>
+      <Item>
+        <Filename Value="lazfreetypefontcollection.pas"/>
+        <UnitName Value="LazFreeTypeFontCollection"/>
+      </Item>
+      <Item>
+        <Filename Value="lazfreetypefpimagedrawer.pas"/>
+        <UnitName Value="LazFreeTypeFPImageDrawer"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcache.pas"/>
+        <UnitName Value="TTCache"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcalc.pas"/>
+        <UnitName Value="TTCalc"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcalc1.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcalc2.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcalc3.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcalc4.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="ttcmap.pas"/>
+        <UnitName Value="TTCMap"/>
+      </Item>
+      <Item>
+        <Filename Value="ttconfig.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="ttdebug.pas"/>
+        <UnitName Value="TTDebug"/>
+      </Item>
+      <Item>
+        <Filename Value="tterror.pas"/>
+        <UnitName Value="TTError"/>
+      </Item>
+      <Item>
+        <Filename Value="ttfile.pas"/>
+        <UnitName Value="TTFile"/>
+      </Item>
+      <Item>
+        <Filename Value="ttgload.pas"/>
+        <UnitName Value="TTGLoad"/>
+      </Item>
+      <Item>
+        <Filename Value="ttinterp.pas"/>
+        <UnitName Value="TTInterp"/>
+      </Item>
+      <Item>
+        <Filename Value="ttkern.pas"/>
+        <UnitName Value="TTKern"/>
+      </Item>
+      <Item>
+        <Filename Value="ttload.pas"/>
+        <UnitName Value="TTLoad"/>
+      </Item>
+      <Item>
+        <Filename Value="ttmemory.pas"/>
+        <UnitName Value="TTMemory"/>
+      </Item>
+      <Item>
+        <Filename Value="ttobjs.pas"/>
+        <UnitName Value="TTObjs"/>
+      </Item>
+      <Item>
+        <Filename Value="ttprofile.pas"/>
+        <UnitName Value="TTProfile"/>
+      </Item>
+      <Item>
+        <Filename Value="ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
+      </Item>
+      <Item>
+        <Filename Value="ttraster_sweep.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="tttables.pas"/>
+        <UnitName Value="TTTables"/>
+      </Item>
+      <Item>
+        <Filename Value="tttypes.pas"/>
+        <UnitName Value="TTTypes"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazUtils"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
