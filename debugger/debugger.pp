@@ -5358,7 +5358,7 @@ begin
   while i >= 0 do
   begin
     Result := Items[i];
-    if (AnsiCompareText(Result.Name, GroupName) = 0) and (Ignore <> Result) then
+    if (Ignore <> Result) and (AnsiCompareText(Result.Name, GroupName) = 0) then
       Exit;
     Dec(i);
   end;
