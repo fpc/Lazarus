@@ -275,6 +275,10 @@ msgstr "Quadratsumme der Residuen"
 msgid "Total sum of squares (SST)"
 msgstr "Gesamte Quadratsumme (SST)"
 
+#: tachartstrconsts.rsfittvalue
+msgid "t value"
+msgstr ""
+
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
 msgstr "Varianzverhältnis"

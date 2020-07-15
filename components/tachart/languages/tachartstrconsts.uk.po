@@ -276,6 +276,10 @@ msgstr "Остаточна стандартна похибка"
 msgid "Total sum of squares (SST)"
 msgstr "Загальна сума квадратів (SSE)"
 
+#: tachartstrconsts.rsfittvalue
+msgid "t value"
+msgstr ""
+
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
 msgstr "Коефіцієнт варіації F"

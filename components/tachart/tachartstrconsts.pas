@@ -160,6 +160,7 @@ resourcestring
   rsFitReducedChiSquared = 'Reduced Chi-squared';
   rsFitResidualStandardError = 'Residual standard error';
   rsFitVarianceRatio = 'Variance ratio F';
+  rsFitTValue = 't value';
   rsFitPValue = 'p value';
 
 

@@ -273,6 +273,10 @@ msgstr "Erreur standard résiduelle"
 msgid "Total sum of squares (SST)"
 msgstr "Total de la somme des carrés (SST)"
 
+#: tachartstrconsts.rsfittvalue
+msgid "t value"
+msgstr ""
+
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
 msgstr "Rapport de variance F"

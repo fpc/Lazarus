@@ -105,8 +105,8 @@ type
     function Chi2: Double;
     function DOF: Integer;   // Degrees of freedom
     function F: Double;
-    property N: Integer read fN;
-    property M: Integer read fM;
+    property N: Integer read fN;   // Number of data points
+    property M: Integer read fM;   // Number of fit parameters
     function ReducedChi2: Double;
     function R2: Double;
     function ResidualStdError: Double;
@@ -526,7 +526,7 @@ end;
 procedure TFitStatistics.Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
   ANumFormat: String = '%f');
 const
-  FMT = '%.3f';
+  FMT = '%.3e';
 begin
   AText.Add(rsFitNumObservations + ASeparator + IntToStr(N));
   AText.Add(rsFitNumFitParams + ASeparator + IntToStr(M));
@@ -548,6 +548,8 @@ begin
     Format(IfThen(Fcrit < 1E-3, FMT, ANumFormat), [Fcrit]));
     }
   {$IF FPC_FullVersion >= 30004}
+  AText.Add(rsFitTValue + ASeparator +
+    Format(IfThen(FtValue < 1E-3, '%.3e', ANumFormat), [FtValue]));
   AText.Add(rsFitPValue + ASeparator +
     Format(IfThen(pValue < 1E-3, '%.3e', ANumFormat), [pValue]));
   {$IFEND}

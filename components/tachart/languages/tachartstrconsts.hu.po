@@ -273,6 +273,10 @@ msgstr ""
 msgid "Total sum of squares (SST)"
 msgstr ""
 
+#: tachartstrconsts.rsfittvalue
+msgid "t value"
+msgstr ""
+
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
 msgstr ""

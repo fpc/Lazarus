@@ -273,6 +273,10 @@ msgstr "Остаточное стандартное отклонение"
 msgid "Total sum of squares (SST)"
 msgstr "Полная сумма квадратов (SST)"
 
+#: tachartstrconsts.rsfittvalue
+msgid "t value"
+msgstr ""
+
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
 msgstr "Дисперсионное отношение F"

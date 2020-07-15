@@ -301,6 +301,7 @@ type
     FErrCode: TFitErrCode;
     FFitStatistics: TFitStatistics;
     FConfidenceLevel: Double;
+    FLockFit: Integer;
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
     function GetParamError(AIndex: Integer): Double;
@@ -308,6 +309,7 @@ type
     function GetParam_RawValue(AIndex: Integer): Double;
     function GetParam_tValue(AIndex: Integer): Double;
     function IsFixedParamsStored: Boolean;
+    procedure SetConfidenceLevel(AValue: Double);
     procedure SetDrawFitRangeOnly(AValue: Boolean);
     procedure SetFitEquation(AValue: TFitEquation);
     procedure SetFitRange(AValue: TChartRange);
@@ -337,8 +339,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
+    procedure BeginUpdate;
     function Calculate(AX: Double): Double; virtual;
+    procedure Clear; override;
     procedure Draw(ADrawer: IChartDrawer); override;
+    procedure EndUpdate;
     function ErrorMsg: String;
     procedure ExecFit; virtual;
     function Extent: TDoubleRect; override;
@@ -364,7 +369,7 @@ type
     {$IFEND}
     property Param_tValue[AIndex: Integer]: Double read GetParam_tValue;
     property FitStatistics: TFitStatistics read FFitStatistics;
-    property ConfidenceLevel: Double read FConfidenceLevel write FConfidenceLevel;
+    property ConfidenceLevel: Double read FConfidenceLevel write SetConfidenceLevel;
     property ErrCode: TFitErrCode read FErrCode;
     property State: TFitParamsState read FState;
   published
@@ -1634,6 +1639,12 @@ begin
   FFitRange.SetOwner(ParentChart);
 end;
 
+procedure TFitSeries.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  inc(FLockFit);
+end;
+
 function TFitSeries.Calculate(AX: Double): Double;
 var
   i: Integer;
@@ -1688,6 +1699,12 @@ begin
     AXMin := 0;
     AXMax := Source.Count - 1;
   end;
+end;
+
+procedure TFitSeries.Clear;
+begin
+  inherited;
+  InvalidateFitResults;
 end;
 
 procedure TFitSeries.Assign(ASource: TPersistent);
@@ -1760,6 +1777,14 @@ begin
   finally
     de.Free;
   end;
+end;
+
+procedure TFitSeries.EndUpdate;
+begin
+  inherited EndUpdate;
+  dec(FLockFit);
+  if (FLockFit = 0) and FAutoFit then
+    ExecFit;
 end;
 
 function TFitSeries.EquationText: IFitEquationText;
@@ -1879,7 +1904,7 @@ var
 
 begin
   if (State <> fpsUnknown) or not Active or IsEmpty or (FChart = nil) or
-     ([csLoading, csDestroying] * ComponentState <> [])
+     ([csLoading, csDestroying] * ComponentState <> []) or (FLockFit > 0)
   then
     exit;
   FState := fpsInvalid;
@@ -2240,6 +2265,15 @@ begin
     Result.Free;
     raise;
   end;
+end;
+
+procedure TFitSeries.SetConfidenceLevel(AValue: Double);
+begin
+  if FConfidenceLevel = AValue then exit;
+  FConfidenceLevel := AValue;
+  InvalidateFitResults;
+  if FAutoFit then
+    ExecFit;
 end;
 
 procedure TFitSeries.SetDrawFitRangeOnly(AValue: Boolean);
