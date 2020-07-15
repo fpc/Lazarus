@@ -3682,15 +3682,15 @@ install: installbase
 	$(COPYTREE) components docs doceditor examples lcl test tools $(LAZARUS_INSTALL_DIR)
 	$(COPYTREE) Makefile* *.txt $(LAZARUS_INSTALL_DIR)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
-	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) lazarus$(SRCEXEEXT) startlazarus$(SRCEXEEXT) lazbuild$(SRCEXEEXT) $(LAZARUS_INSTALL_DIR)
 else
-	$(INSTALLEXE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
-	ln -sf ../$(INSTALL_BASEDIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
-	ln -sf ../$(INSTALL_BASEDIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
-	ln -sf ../$(INSTALL_BASEDIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
-	ln -sf ../$(INSTALL_BASEDIR)/tools/lazres $(INSTALL_PREFIX)/bin/lazres
-	ln -sf ../$(INSTALL_BASEDIR)/tools/lrstolfm $(INSTALL_PREFIX)/bin/lrstolfm
-	ln -sf ../$(INSTALL_BASEDIR)/tools/updatepofiles $(INSTALL_PREFIX)/bin/updatepofiles
+	$(INSTALLEXE) lazarus$(SRCEXEEXT) startlazarus$(SRCEXEEXT) lazbuild$(SRCEXEEXT) $(LAZARUS_INSTALL_DIR)
+	ln -sf ../$(INSTALL_BASEDIR)/lazarus$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/lazarus-ide$(SRCEXEEXT)
+	ln -sf ../$(INSTALL_BASEDIR)/startlazarus$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/startlazarus$(SRCEXEEXT)
+	ln -sf ../$(INSTALL_BASEDIR)/lazbuild$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/lazbuild$(SRCEXEEXT)
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lazres$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/lazres$(SRCEXEEXT)
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lrstolfm$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/lrstolfm$(SRCEXEEXT)
+	ln -sf ../$(INSTALL_BASEDIR)/tools/updatepofiles$(SRCEXEEXT) $(INSTALL_PREFIX)/bin/updatepofiles$(SRCEXEEXT)
 	$(MAKE) -C install/man install PREFIX=$(INSTALL_PREFIX) GINSTALL=$(GINSTALL)
 	$(INSTALL) install/lazarus.desktop $(INSTALL_PREFIX)/share/applications/lazarus.desktop
 	$(INSTALL) images/icons/lazarus128x128.png $(INSTALL_PREFIX)/share/pixmaps/lazarus.png
