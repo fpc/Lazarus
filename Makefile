@@ -349,13 +349,18 @@ endif
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=$(IDEVERSION)
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
+ifndef LAZARUS_INSTALL_DIR
 LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
 INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_INSTALL_DIR=C:\lazarus
 endif
 ifneq ($(findstring $(OS_TARGET),freebsd),)
-LAZARUS_INSTALL_DIR=/usr/local/lazarus
+LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/local/lazarus
+endif
+endif
+ifndef INSTALL_MAN_DIR
+INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man
 endif
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 IDEVERSION=$(shell .\tools\install\get_lazarus_version.bat)
