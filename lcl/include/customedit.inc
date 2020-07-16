@@ -563,8 +563,6 @@ procedure TCustomEdit.RealSetText(const AValue: TCaption);
 var
   Temp: TCaption;
 begin
-  Temp:=AValue;
-  {
   case
     CharCase of
       ecNormal: Temp := AValue; //if Text=AValue SetText won't call RealSetText, so no need to check
@@ -577,7 +575,6 @@ begin
                      if (Temp = RealGetText) then Exit;
                    end;
     end;
-  }
   if (FEmulatedTextHintStatus=thsShowing) and (AValue<>'') then
     HideEmulatedTextHint;
 
