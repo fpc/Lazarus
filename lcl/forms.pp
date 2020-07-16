@@ -491,7 +491,7 @@ type
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
     FDelayedEventCtr: Integer;
-    FDelayedWMMove, FDelayedWMSize: Boolean;
+    FDelayedOnChangeBounds, FDelayedOnResize: Boolean;
     FIsFirstOnShow, FIsFirstOnActivate: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
@@ -535,7 +535,6 @@ type
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMHelp(var Message: TLMHelp); message LM_HELP;
-    procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -581,6 +580,8 @@ type
     procedure Resizing(State: TWindowState); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure DoOnResize; override;
+    procedure DoOnChangeBounds; override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SetParent(NewParent: TWinControl); override;
     procedure MoveToDefaultPosition; virtual;

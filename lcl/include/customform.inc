@@ -604,7 +604,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.Activate;
 begin
-  if FIsFirstOnActivate and (WindowState = wsMaximized) then
+  if FIsFirstOnActivate and (WindowState in [wsMaximized, wsFullScreen]) then
     Exit;
   FIsFirstOnActivate := False;
   if Assigned(FOnActivate) then FOnActivate(Self);
@@ -662,22 +662,23 @@ begin
   end;
 
   inherited WMSize(Message);
+end;
 
+procedure TCustomForm.DoOnResize;
+begin
   if not (csDestroying in ComponentState) then
   begin
-    FDelayedWMSize := True;
+    FDelayedOnResize := True;
     Inc(FDelayedEventCtr);
     Application.QueueAsyncCall(@DelayedEvent, 0);
   end;
 end;
 
-procedure TCustomForm.WMMove(var Message: TLMMove);
+procedure TCustomForm.DoOnChangeBounds;
 begin
-  inherited WMMove(Message);
-
   if not (csDestroying in ComponentState) then
   begin
-    FDelayedWMMove := True;
+    FDelayedOnChangeBounds := True;
     Inc(FDelayedEventCtr);
     Application.QueueAsyncCall(@DelayedEvent, 0);
   end;
@@ -692,21 +693,20 @@ begin
   { update restored bounds }
   if WindowState = wsNormal then
     begin
-      if FDelayedWMMove then
+      if FDelayedOnChangeBounds then
         begin
           FRestoredLeft := Left;
           FRestoredTop := Top;
         end;
-      if FDelayedWMSize then
+      if FDelayedOnResize then
         begin
           FRestoredWidth := Width;
           FRestoredHeight := Height;
-          DoOnResize;     // delayed onResize()
         end;
-      DoOnChangeBounds;     // delayed onChangeBounds()
     end;
-  { call onShow() or onActivate() for the first time, after first WMSize }
-  if FDelayedWMSize then
+  { call onShow() or onActivate() for the first time, after first OnResize()
+    and OnChangeBounds() }
+  if FDelayedOnResize and FDelayedOnChangeBounds then
     begin
       if FIsFirstOnShow then
         begin
@@ -720,8 +720,14 @@ begin
             Activate;
         end;
     end;
-  FDelayedWMMove := False;
-  FDelayedWMSize := False;
+  { delayed onResize() }
+  if FDelayedOnResize then
+    inherited DoOnResize;
+  { delayed onChangeBounds() }
+  if FDelayedOnResize or FDelayedOnChangeBounds then
+    inherited DoOnChangeBounds;
+  FDelayedOnChangeBounds := False;
+  FDelayedOnResize := False;
 end;
 
 procedure TCustomForm.WMWindowPosChanged(var Message: TLMWindowPosChanged);
@@ -992,7 +998,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoShow;
 begin
-  if FIsFirstOnShow and (WindowState = wsMaximized) then
+  if FIsFirstOnShow and (WindowState in [wsMaximized, wsFullScreen]) then
     Exit;
   FIsFirstOnShow := False;
   if Assigned(FOnShow) then FOnShow(Self);
@@ -2020,8 +2026,8 @@ end;
 constructor TCustomForm.Create(AOwner: TComponent);
 begin
   FDelayedEventCtr := 0;
-  FDelayedWMMove := False;
-  FDelayedWMSize := False;
+  FDelayedOnChangeBounds := False;
+  FDelayedOnResize := False;
   FIsFirstOnShow := True;
   FIsFirstOnActivate := True;
   GlobalNameSpace.BeginWrite;
