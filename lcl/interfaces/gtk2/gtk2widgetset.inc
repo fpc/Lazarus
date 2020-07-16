@@ -5139,7 +5139,8 @@ begin
       // capturing is always gtkwindow dependent. On showing a new window
       // the gtk will put a new widget on the grab stack.
       // -> release our capture
-      ReleaseMouseCapture;
+      if not ACustomForm.ClassNameIs('TDockImageWindow') then
+        ReleaseMouseCapture;
     end;
 
     if gtk_widget_visible(SenderWidget) then
