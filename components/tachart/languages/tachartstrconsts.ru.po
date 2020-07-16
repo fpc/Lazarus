@@ -255,7 +255,7 @@ msgstr "Количество наблюдений"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr "P-значение"
+msgstr "Значение P"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
@@ -275,7 +275,7 @@ msgstr "Полная сумма квадратов (SST)"
 
 #: tachartstrconsts.rsfittvalue
 msgid "t value"
-msgstr ""
+msgstr "Значение t"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
