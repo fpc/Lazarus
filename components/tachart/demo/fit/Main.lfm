@@ -528,7 +528,8 @@ object frmMain: TfrmMain
             BorderSpacing.Top = 12
             BorderSpacing.Bottom = 8
             Increment = 0.01
-            MaxValue = 1
+            MaxValue = 0.99
+            MinValue = 0.01
             OnChange = edConfLevelChange
             ParentFont = False
             TabOrder = 4
