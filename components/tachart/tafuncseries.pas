@@ -945,7 +945,7 @@ end;
 
 function TBSplineSeries.Calculate(AX: Double): Double;
 var
-  p: array of TDoublePoint;
+  p: array of TDoublePoint = nil;
   startIndex: Integer;
   splineStart: Integer = 0;
   splineEnd: Integer = -2;
@@ -981,8 +981,9 @@ var
   var
     i,n: Integer;
     pp: TDoublePoint;
-    xval, yval: array of ArbFloat;
-    coeff: array of ArbFloat;
+    xval: array of ArbFloat = nil;
+    yval: array of ArbFloat = nil;
+    coeff: array of ArbFloat = nil;
     ok: Integer;
     t: ArbFloat;
   begin
@@ -1055,7 +1056,7 @@ end;
 
 procedure TBSplineSeries.Draw(ADrawer: IChartDrawer);
 var
-  p: array of TDoublePoint;
+  p: array of TDoublePoint = nil;
   startIndex: Integer;
   splineStart: Integer;
   splineEnd: Integer;
@@ -1789,7 +1790,7 @@ end;
 
 function TFitSeries.EquationText: IFitEquationText;
 var
-  basis: Array of string;
+  basis: Array of string = nil;
   i: Integer;
 begin
   if State = fpsValid then begin
@@ -1840,7 +1841,9 @@ var
   procedure TryFit;
   var
     i, j, ns, n: Integer;
-    xv, yv, dy: array of ArbFloat;
+    xv: array of ArbFloat = nil;
+    yv: array of ArbFloat = nil;
+    dy: array of ArbFloat = nil;
     yp, yn: Double;
     fitRes: TFitResults;
     hasErrorBars: Boolean;
@@ -1946,7 +1949,7 @@ function TFitSeries.FitParams: TDoubleDynArray;
 var
   i: Integer;
 begin
-  SetLength(Result, ParamCount);
+  SetLength(Result{%H-}, ParamCount);
   for i := 0 to High(Result) do
     Result[i] := Param[i];
 end;

@@ -1267,7 +1267,7 @@ var
   ext2: TDoubleRect;
   w: Double;
   p: TDoublePoint;
-  heights: TDoubleDynArray;
+  heights: TDoubleDynArray = nil;
 
   procedure BuildBar(x, y1, y2: Double);
   var
@@ -1463,7 +1463,7 @@ var
   cx, cy: Integer;
   w, h: Integer;
   c: TColor;
-  pts: array of TPoint;
+  pts: array of TPoint = nil;
   i, j: Integer;
 begin
   if IsRotated then begin
@@ -1518,7 +1518,7 @@ const
   PYRAMID_3D: array[0..3] of TPoint = ((X:0; Y:0), (X:1; Y:0), (X:1; Y:1), (X:0; Y:1));
 var
   c: TColor;
-  pts: TPointArray;
+  pts: TPointArray = nil;
   i: Integer;
   depth2: Integer;
   w, h: Integer;
@@ -1659,7 +1659,7 @@ var
   graphClickPt: TDoublePoint;
   sp: TDoublePoint;
   ofs, w: Double;
-  heights: TDoubleDynArray;
+  heights: TDoubleDynArray = nil;
   y: Double;
   stackindex: Integer;
 begin
@@ -1930,10 +1930,11 @@ end;
 
 procedure TAreaSeries.Draw(ADrawer: IChartDrawer);
 var
-  pts, basePts: TPointArray;
+  pts: TPointArray = nil;
+  basePts: TPointArray = nil;
   numPts, numBasePts: Integer;
   scaled_depth: Integer;
-  missing: array of Integer;
+  missing: array of Integer = nil;
   numMissing: Integer;
   zero: Double;
   ext, ext2: TDoubleRect;

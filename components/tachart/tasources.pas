@@ -1705,7 +1705,7 @@ procedure TCalculatedChartSource.ExtractItem(AIndex: Integer);
   end;
 
 var
-  t: TDoubleDynArray;
+  t: TDoubleDynArray = nil;
   i: Integer;
 begin
   FItem := Origin[AIndex]^;

@@ -124,7 +124,7 @@ var
   i: Integer;
 begin
   Assert(ANumPts >= 0);
-  SetLength(Result, ANumPts);
+  SetLength(Result{%H-}, ANumPts);
   for i := 0 to ANumPts - 1 do
     Result[i] := APoints[i + AStartIndex];
 end;
@@ -692,7 +692,7 @@ end;
 
 function TesselateRect(const ARect: TRect): TPointArray;
 begin
-  SetLength(Result, 4);
+  SetLength(Result{%H-}, 4);
   with ARect do begin
     Result[0] := TopLeft;
     Result[1] := Point(Left, Bottom);

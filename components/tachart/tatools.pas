@@ -1063,7 +1063,7 @@ function TChartToolset.Dispatch(
   AChart: TChart; AEventId: TChartToolEventId;
   AShift: TShiftState; APoint: TPoint): Boolean;
 var
-  candidates: array of TChartTool;
+  candidates: array of TChartTool = nil;
   candidateCount: Integer;
 
   procedure AddCandidate(AIndex: Integer);

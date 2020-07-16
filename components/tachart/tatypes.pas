@@ -435,7 +435,7 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
 
   procedure DrawByString(const AStr: String);
   var
-    pts: array of TPoint;
+    pts: array of TPoint = nil;
     i: Integer;
     j: Integer = 0;
     notClosed: Boolean;
@@ -461,7 +461,7 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
   const
     INNER = 0.5;
   var
-    p: array of TPoint;
+    p: array of TPoint = nil;
     pt: TDoublePoint;
     phi, sinphi, cosphi, dPhi: Math.float;
     i: Integer;

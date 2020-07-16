@@ -854,7 +854,7 @@ end;
 
 procedure TBroadcaster.Broadcast(ASender: TObject);
 var
-  ListCopy: array of Pointer;
+  ListCopy: array of Pointer = nil;
   Exceptions: TStringList;
   Aborted: Boolean;
   i: Integer;
@@ -1002,7 +1002,7 @@ function TPublishedIntegerSet.AsBooleans(ACount: Integer): TBooleanDynArray;
 var
   i: Integer;
 begin
-  SetLength(Result, ACount);
+  SetLength(Result{%H-}, ACount);
   if ACount = 0 then exit;
   if AllSet then
     FillChar(Result[0], Length(Result), true)

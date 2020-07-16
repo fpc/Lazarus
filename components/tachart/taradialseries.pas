@@ -451,7 +451,7 @@ var
   var
     next_angle: Double;
   begin
-    SetLength(APoints, 0);
+    SetLength(APoints{%H-}, 0);
     next_angle := ASlice.FixedNextAngle;
     CalcArcPoints(ASlice, ASlice.FPrevAngle, next_angle, FRadius, APoints);
     CalcArcPoints(ASlice, ASlice.FPrevAngle, next_angle, innerRadius, APoints);
@@ -470,7 +470,7 @@ var
   procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
   var
     i, numSteps: Integer;
-    p: Array of TPoint;
+    p: Array of TPoint = nil;
     angle1, angle2: Double;
     clr: TColor;
     r: Integer;
@@ -585,7 +585,7 @@ var
   procedure DrawEdge3D(ASlice: TPieSlice; Angle: Double; APart: TSlicePart);
   var
     P1, P2, ofs: TPoint;
-    p: TPointArray;
+    p: TPointArray = nil;
   begin
     ADrawer.SetBrushParams(
       bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
@@ -1035,7 +1035,7 @@ var
   i, j: Integer;
   compareFunc: TAngleFunc;
 begin
-  SetLength(ASlices, Length(FSlices) + 1);
+  SetLength(ASlices{%H-}, Length(FSlices) + 1);
   j := 0;
   for i:=0 to High(FSlices) do begin
     if FSlices[i].Angle >= pi then begin

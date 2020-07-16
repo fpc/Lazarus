@@ -341,7 +341,7 @@ var
   SaveListEpsilon: Double;
   a, b: Double;
   i, j: Integer;
-  points: array of Double;
+  points: array of Double = nil;
 begin
   if ADomain.IntervalCount = 0 then
     exit;
