@@ -8414,7 +8414,7 @@ begin
   begin
     FEditorMode := False;
     FGridState := gsNormal;
-    if Editor.Owner<>nil then  // May be nil when the form is closing.
+    if Editor.Parent<>nil then  // May be nil when the form is closing.
     begin
       WasFocused := Editor.Focused;
       {$ifdef dbgGrid}DebugLnEnter('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
