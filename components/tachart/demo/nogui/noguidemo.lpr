@@ -6,8 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads} cthreads, {$ENDIF}{$ENDIF}
   Interfaces, Classes, tachartlazaruspkg { you can add units after this },
   FPCanvas, FPImage, FPImgCanv,
-  TAGraph, TASeries, TADrawerCanvas, TADrawUtils, TADrawerFPCanvas;
-
+  TAGraph, TASeries, TADrawerFPCanvas in '../../TADrawerFPCanvas.pas', TADrawerCanvas, TADrawUtils;
 const
   {$IFDEF MSWINDOWS}
   FONT_NAME = 'Arial';
