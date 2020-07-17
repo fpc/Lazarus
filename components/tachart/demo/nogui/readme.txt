@@ -2,7 +2,7 @@
 NOTE TO WINDOWS USERS
 -------------------------------------------------------------------------------
 
-When this demo is compiled with FCP 3.2.0 or later it is required to have the 
+When this demo is compiled with FPC 3.2.0 or later it is required to have the 
 freetype.dll in the current directory (or in the system directory).
 
 If not on your system already, you can download a pre-compiled binary of the 
