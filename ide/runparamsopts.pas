@@ -399,9 +399,10 @@ begin
     // NewActiveModeName doesn't have to exist any more
     if Assigned(Find(NewActiveModeName)) then
       ActiveModeName := NewActiveModeName;
-    if (GetActiveMode=nil) and (Count>0) then
-      ActiveModeName := Modes[0].Name;
   end;
+
+  if (GetActiveMode=nil) and (Count>0) then
+    ActiveModeName := Modes[0].Name;
 end;
 
 function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
