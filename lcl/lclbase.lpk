@@ -1189,7 +1189,8 @@
     </i18n>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="freetype"/>
+        <PackageName Value="freetypelaz"/>
+        <MaxVersion Major="1"/>
       </Item1>
       <Item2>
         <PackageName Value="chm"/>

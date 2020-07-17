@@ -1,9 +1,10 @@
 {
    File generated automatically by Lazarus Package Manager
+   Created with the Fppkgpackagemanager package installed
 
-   fpmake.pp for freetype 1.0
+   fpmake.pp for freetypelaz 1.0
 
-   This file was generated on 14.07.2020
+   This file was generated on 17.07.2020
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +14,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_freetype(const ADirectory: string);
+procedure add_freetypelaz(const ADirectory: string);
 
 var
   P : TPackage;
@@ -23,7 +24,7 @@ var
 begin
   with Installer do
     begin
-    P:=AddPackage('freetype');
+    P:=AddPackage('freetypelaz');
     P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
@@ -43,59 +44,64 @@ begin
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
     P.UnitPath.Add('.');
-    T:=P.Targets.AddUnit('freetype.pas');
-    t.Dependencies.AddUnit('easylazfreetype');
-    t.Dependencies.AddUnit('lazfreetype');
-    t.Dependencies.AddUnit('lazfreetypefontcollection');
-    t.Dependencies.AddUnit('lazfreetypefpimagedrawer');
-    t.Dependencies.AddUnit('ttcache');
-    t.Dependencies.AddUnit('ttcalc');
-    t.Dependencies.AddUnit('ttcmap');
-    t.Dependencies.AddUnit('ttdebug');
-    t.Dependencies.AddUnit('tterror');
-    t.Dependencies.AddUnit('ttfile');
-    t.Dependencies.AddUnit('ttgload');
-    t.Dependencies.AddUnit('ttinterp');
-    t.Dependencies.AddUnit('ttkern');
-    t.Dependencies.AddUnit('ttload');
-    t.Dependencies.AddUnit('ttmemory');
-    t.Dependencies.AddUnit('ttobjs');
-    t.Dependencies.AddUnit('ttprofile');
-    t.Dependencies.AddUnit('ttraster');
-    t.Dependencies.AddUnit('tttables');
-    t.Dependencies.AddUnit('tttypes');
-
-    T:=P.Targets.AddUnit('easylazfreetype.pas');
-    T:=P.Targets.AddUnit('lazfreetype.pas');
-    T:=P.Targets.AddUnit('lazfreetypefontcollection.pas');
-    T:=P.Targets.AddUnit('lazfreetypefpimagedrawer.pas');
-    T:=P.Targets.AddUnit('ttcache.pas');
-    T:=P.Targets.AddUnit('ttcalc.pas');
-    T:=P.Targets.AddUnit('ttcmap.pas');
-    T:=P.Targets.AddUnit('ttdebug.pas');
-    T:=P.Targets.AddUnit('tterror.pas');
-    T:=P.Targets.AddUnit('ttfile.pas');
-    T:=P.Targets.AddUnit('ttgload.pas');
-    T:=P.Targets.AddUnit('ttinterp.pas');
-    T:=P.Targets.AddUnit('ttkern.pas');
-    T:=P.Targets.AddUnit('ttload.pas');
-    T:=P.Targets.AddUnit('ttmemory.pas');
-    T:=P.Targets.AddUnit('ttobjs.pas');
-    T:=P.Targets.AddUnit('ttprofile.pas');
-    T:=P.Targets.AddUnit('ttraster.pas');
-    T:=P.Targets.AddUnit('tttables.pas');
-    T:=P.Targets.AddUnit('tttypes.pas');
+    T:=P.Targets.AddUnit('freetypelaz.pas');
+    D := T.Dependencies.AddUnit('EasyLazFreeType');
+    D := T.Dependencies.AddUnit('LazFreeType');
+    D := T.Dependencies.AddUnit('LazFreeTypeFontCollection');
+    D := T.Dependencies.AddUnit('LazFreeTypeFPImageDrawer');
+    D := T.Dependencies.AddUnit('TTCache');
+    D := T.Dependencies.AddUnit('TTCalc');
+    D := T.Dependencies.AddInclude('ttcalc1.inc');
+    D := T.Dependencies.AddInclude('ttcalc2.inc');
+    D := T.Dependencies.AddInclude('ttcalc3.inc');
+    D := T.Dependencies.AddInclude('ttcalc4.inc');
+    D := T.Dependencies.AddUnit('TTCMap');
+    D := T.Dependencies.AddInclude('ttconfig.inc');
+    D := T.Dependencies.AddUnit('TTDebug');
+    D := T.Dependencies.AddUnit('TTError');
+    D := T.Dependencies.AddUnit('TTFile');
+    D := T.Dependencies.AddUnit('TTGLoad');
+    D := T.Dependencies.AddUnit('TTInterp');
+    D := T.Dependencies.AddUnit('TTKern');
+    D := T.Dependencies.AddUnit('TTLoad');
+    D := T.Dependencies.AddUnit('TTMemory');
+    D := T.Dependencies.AddUnit('TTObjs');
+    D := T.Dependencies.AddUnit('TTProfile');
+    D := T.Dependencies.AddUnit('TTRASTER');
+    D := T.Dependencies.AddInclude('ttraster_sweep.inc');
+    D := T.Dependencies.AddUnit('TTTables');
+    D := T.Dependencies.AddUnit('TTTypes');
+    T := P.Targets.AddImplicitUnit('easylazfreetype.pas');
+    T := P.Targets.AddImplicitUnit('lazfreetype.pas');
+    T := P.Targets.AddImplicitUnit('lazfreetypefontcollection.pas');
+    T := P.Targets.AddImplicitUnit('lazfreetypefpimagedrawer.pas');
+    T := P.Targets.AddImplicitUnit('ttcache.pas');
+    T := P.Targets.AddImplicitUnit('ttcalc.pas');
+    T := P.Targets.AddImplicitUnit('ttcmap.pas');
+    T := P.Targets.AddImplicitUnit('ttdebug.pas');
+    T := P.Targets.AddImplicitUnit('tterror.pas');
+    T := P.Targets.AddImplicitUnit('ttfile.pas');
+    T := P.Targets.AddImplicitUnit('ttgload.pas');
+    T := P.Targets.AddImplicitUnit('ttinterp.pas');
+    T := P.Targets.AddImplicitUnit('ttkern.pas');
+    T := P.Targets.AddImplicitUnit('ttload.pas');
+    T := P.Targets.AddImplicitUnit('ttmemory.pas');
+    T := P.Targets.AddImplicitUnit('ttobjs.pas');
+    T := P.Targets.AddImplicitUnit('ttprofile.pas');
+    T := P.Targets.AddImplicitUnit('ttraster.pas');
+    T := P.Targets.AddImplicitUnit('tttables.pas');
+    T := P.Targets.AddImplicitUnit('tttypes.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('freetype.compiled');
-    P.InstallFiles.Add('freetype.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('freetypelaz.compiled');
+    P.InstallFiles.Add('freetypelaz.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_freetype('');
+  add_freetypelaz('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

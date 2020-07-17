@@ -1,11 +1,11 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for freetype 1.0
+#   Makefile.fpc for freetypelaz 1.0
 #
-#   This file was generated on 14.07.2020
+#   This file was generated on 17.07.2020
 
 [package]
-name=freetype
+name=freetypelaz
 version=1.0
 
 [compiler]
@@ -14,7 +14,7 @@ unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TA
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
-units=freetype.pas
+units=freetypelaz.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -53,12 +53,12 @@ endif
 .PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/freetype$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/freetypelaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/freetype.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/freetypelaz.compiled
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) freetype$(PPUEXT) compiled
+all: cleartarget $(COMPILER_UNITTARGETDIR) freetypelaz$(PPUEXT) compiled
 
 distclean: clean
         ${DELTREE} lib/*
