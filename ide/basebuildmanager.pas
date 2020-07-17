@@ -55,6 +55,7 @@ type
     function GetTargetCPU: string; virtual; abstract;
     function GetLCLWidgetType: string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
+    procedure WriteDebug_RunCommandLine; virtual; abstract;
 
     function GetCompilerFilename: string; virtual; abstract;
     function GetFPCompilerFilename: string; virtual; abstract;

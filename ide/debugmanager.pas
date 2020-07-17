@@ -2365,7 +2365,8 @@ begin
       begin
         if not PromptOnError then
           ClearPathAndExe
-        else
+        else begin
+          BuildBoss.WriteDebug_RunCommandLine;
           if IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationBundleDoesNotExists,
               [LaunchingApplication, LineEnding, LineEnding, LineEnding+LineEnding]),
@@ -2375,6 +2376,7 @@ begin
           end
           else
             Exit;
+        end;
       end;
 
       if (NewDebuggerClass = TProcessDebugger) and (LaunchingApplication <> '') then
@@ -2389,6 +2391,7 @@ begin
         if not PromptOnError then
           ClearPathAndExe
         else begin
+          BuildBoss.WriteDebug_RunCommandLine;
           IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
                    [LaunchingApplication, LineEnding, LineEnding+LineEnding]),
@@ -2404,6 +2407,7 @@ begin
       if not PromptOnError then
         ClearPathAndExe
       else begin
+        debugln(['Info: (lazarus) [TDebugManager.GetLaunchPathAndExe] EnvironmentOptions.DebuggerFilename="',EnvironmentOptions.DebuggerFilename,'"']);
         IDEMessageDialog(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro,
             [EnvironmentOptions.DebuggerFilename, LineEnding, LineEnding+LineEnding]),

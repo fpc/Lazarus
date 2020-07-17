@@ -7228,6 +7228,7 @@ begin
 
     SplitCmdLineParams(RunCmdLine,Params);
     if Params.Count=0 then begin
+      MainBuildBoss.WriteDebug_RunCommandLine;
       IDEMessageDialog(lisUnableToRun,
         Format(lisUnableToRun2, ['<project has no target file>']),
         mtError, [mbOK]);
@@ -7249,12 +7250,14 @@ begin
       Process.Executable := '/usr/bin/open';
     end else if not FileIsExecutable(Process.Executable) then
     begin
+      MainBuildBoss.WriteDebug_RunCommandLine;
       if (ARunMode<>nil) and ARunMode.UseLaunchingApplication then
+      begin
         IDEMessageDialog(lisLaunchingApplicationInvalid,
           Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
                  [Process.Executable, LineEnding, LineEnding+LineEnding]),
           mtError, [mbOK])
-      else
+      end else
         IDEMessageDialog(lisUnableToRun,
           Format(lisUnableToRun2, [Process.Executable]),
           mtError, [mbOK]);
@@ -7274,6 +7277,7 @@ begin
 
     if not DirectoryExists(Process.CurrentDirectory) then
     begin
+      MainBuildBoss.WriteDebug_RunCommandLine;
       IDEMessageDialog(lisUnableToRun,
         Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
                [Process.CurrentDirectory, LineEnding]),
