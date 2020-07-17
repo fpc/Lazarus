@@ -460,7 +460,7 @@ type
     function TextIndexToScreenLine(aTextIndex : Integer) : Integer; (* Convert TextIndex (0-based) to Screen (0-based) *)
     function ScreenLineToTextIndex(aLine : Integer) : Integer;      (* Convert Screen (0-based) to TextIndex (0-based) *)
 
-    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override; (* Add/Sub to/from TextPos (1-based) skipping folded *)
+    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override;
     function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; override;
 
     // Attributes for Visible-Lines-On-screen

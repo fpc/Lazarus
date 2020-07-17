@@ -357,7 +357,7 @@ type
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; virtual;
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
 
-    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;  (* Add/Sub to/from TextIndex (0-based) skipping invisible (folded) *)
+    function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;
     function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; virtual;
     procedure GetInfoForViewedXY(AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
     // ViewedToPhysAndLog
