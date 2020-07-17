@@ -2975,10 +2975,12 @@ begin
     exit;
 
   aStartPosition := Result.FPositionOffset;
+  aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
   while Result.FRight <> nil do begin
-    aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum + Result.FSize;
+    aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
     Result := Result.FRight;
     aStartPosition := aStartPosition + Result.FPositionOffset;
+    aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
   end;
 end;
 
