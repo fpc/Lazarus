@@ -24811,7 +24811,8 @@ begin
             if not IsRectEmpty(InnerRect) then
               {$ifdef ThemeSupport}
               {$ifdef Windows}
-                if Theme <> 0 then
+                if (tsUseExplorerTheme in FStates)
+                and (Theme <> 0) then
                 begin
                   // If the node is also hot, its background will be drawn later.
                   if not (toHotTrack in FOptions.FPaintOptions) or (Node <> FCurrentHotNode) or
