@@ -200,6 +200,7 @@ type
     function GetTargetCPU: string; override;
     function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
+    procedure WriteDebug_RunCommandLine; override;
 
     function GetCompilerFilename: string; override;
     function GetFPCompilerFilename: string; override;
@@ -643,6 +644,49 @@ begin
       Result:='';
   end else begin
     if not GlobalMacroList.SubstituteStr(Result) then Result:='';
+  end;
+end;
+
+procedure TBuildManager.WriteDebug_RunCommandLine;
+var
+  AMode: TRunParamsOptionsMode;
+  s, TargetFilename: String;
+begin
+  s:='';
+  if Project1=nil then
+  begin
+    debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] Project1=nil RunCmdLine=[',GetRunCommandLine,']']);
+  end else begin
+    AMode := Project1.RunParameterOptions.GetActiveMode;
+    if AMode<>nil then
+      debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] AMode="',AMode.Name,'" AMode.WorkingDirectory=[',AMode.WorkingDirectory,']'])
+    else
+      debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] AMode=nil']);
+    if (AMode<>nil) and AMode.UseLaunchingApplication then
+    begin
+      s := AMode.LaunchingApplicationPathPlusParams;
+      debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] LaunchingApplicationPathPlusParams=[',s,']']);
+    end;
+
+    if s='' then
+    begin
+      // no launching app
+      debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] no LaunchingApplication']);
+      if (AMode<>nil) then
+      begin
+        s := AMode.CmdLineParams;
+        if s<>'' then
+          debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] AMode.CmdLineParams=[',s,']']);
+      end;
+      TargetFilename := GetTargetFilename;
+      if (TargetFilename <> '')
+      and (TargetFilename[Length(TargetFilename)] in AllowDirectorySeparators) then
+        TargetFilename += ExtractFileNameOnly(
+                       Project1.CompilerOptions.GetDefaultMainSourceFileName);
+
+      debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] TargetFilename=[',TargetFilename,']']);
+    end;
+    debugln(['Note: (lazarus) [TBuildManager.WriteDebug_RunCommandLine] Project1<>nil RunCmdLine=[',GetRunCommandLine,']']);
   end;
 end;
 

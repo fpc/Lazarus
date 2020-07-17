@@ -7461,6 +7461,7 @@ begin
       Process.Executable := '/usr/bin/open';
     end else if not FileIsExecutable(Process.Executable) then
     begin
+      MainBuildBoss.WriteDebug_RunCommandLine;
       if (ARunMode<>nil) and ARunMode.UseLaunchingApplication then
         IDEMessageDialog(lisLaunchingApplicationInvalid,
           Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
@@ -7475,6 +7476,7 @@ begin
 
     if not DirectoryExists(Process.CurrentDirectory) then
     begin
+      MainBuildBoss.WriteDebug_RunCommandLine;
       IDEMessageDialog(lisUnableToRun,
         Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
                [Process.CurrentDirectory, LineEnding]),
