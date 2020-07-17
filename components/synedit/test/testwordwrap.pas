@@ -76,6 +76,24 @@ type
     RunOnlyIf: Boolean;
   end;
 
+  TTestWrapLineInfo = record
+    TextIdx: TLineIdx;
+    ViewedIdx, ViewedTopIdx, ViewedBottomIdx: TLineIdx;
+    SubIdx: Integer;
+    //FirstLogX: Integer;
+    TextStartMatch: String;
+    NoTrim: Boolean;
+  end;
+  TTestViewedLineRangeInfo = array of TTestWrapLineInfo;
+
+  TTripleBool = (tTrue, tFalse, tKeep);
+
+function l(ATxtIdx: TLineIdx; ASubIdx: Integer; AText: String; ANoTrim: Boolean = False): TTestWrapLineInfo;
+function ViewedExp(AFirstViewedIdx: TLineIdx; ALines:
+  array of TTestWrapLineInfo; ANoTrim: TTripleBool = tKeep): TTestViewedLineRangeInfo;
+
+type
+
   { TTestWordWrapPluginBase }
 
   TTestWordWrapPluginBase = class(TTestBase)
@@ -92,12 +110,18 @@ type
     procedure InternalCheckLine(AName: String; dsp: TLazSynDisplayView; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLine(AName: String; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLines(AName: String; AStartLine: TLineIdx; AExpTextStart: array of String; NoTrim: Boolean = False);
+
+    procedure CheckLine(AName: String; AExpLine: TTestWrapLineInfo);
+    procedure CheckLines(AName: String; AExpLines: TTestViewedLineRangeInfo);
+
     procedure CheckXyMap(AName: String; APhysTExtXY, AViewedXY: TPoint; OnlyViewToText: Boolean = False);
     procedure CheckXyMap(AName: String; APhysTExtX, APhysTExtY, AViewedX, AViewedY: integer; OnlyViewToText: Boolean = False);
 
     procedure CheckXyMap(AName: String; APoints: TPointSpecs);
     procedure CheckXyMap(AName: String; APoints: TPointSpecs;
       ATestCommands: array of TCommandAndPointSpecs);
+
+    procedure CheckLineIndexMapping(AName: String; ATextIdx, AViewTopIdx, AViewBottomIdx: TLineIdx);
 
     function  TreeNodeCount: integer;
     property TreeNodeHolder[AIndex: Integer]: TSynEditLineMapPageHolder read GetTreeNodeHolder;
@@ -161,6 +185,46 @@ begin
   SetLength(Result, ATo - AFrom + 1);
   for i := 0 to high(Result) do
     Result[i] := AFrom + i * AIncrease;
+end;
+
+function l(ATxtIdx: TLineIdx; ASubIdx: Integer; AText: String; ANoTrim: Boolean
+  ): TTestWrapLineInfo;
+begin
+  Result.TextIdx := ATxtIdx;
+  Result.SubIdx  := ASubIdx;
+  Result.TextStartMatch := AText;
+  Result.NoTrim  := ANoTrim;
+end;
+
+function ViewedExp(AFirstViewedIdx: TLineIdx;
+  ALines: array of TTestWrapLineInfo; ANoTrim: TTripleBool
+  ): TTestViewedLineRangeInfo;
+var
+  i, j: Integer;
+begin
+  SetLength(Result, Length(ALines));
+  j := 0;
+  for i := 0 to Length(ALines) - 1 do begin
+    if (i > 0) and (ALines[i].SubIdx = 0) then begin
+      while j < i do begin
+        Result[j].ViewedBottomIdx := AFirstViewedIdx - 1;
+        inc(j);
+      end;
+      j := i;
+    end;
+    Result[i] := ALines[i];
+    Result[i].ViewedIdx    := AFirstViewedIdx;
+    Result[i].ViewedTopIdx := AFirstViewedIdx - Result[i].SubIdx;
+    case ANoTrim of
+      tFalse: Result[i].NoTrim := False;
+      tTrue:  Result[i].NoTrim := True;
+    end;
+    inc(AFirstViewedIdx);
+  end;
+  while j < Length(ALines) do begin
+    Result[j].ViewedBottomIdx := AFirstViewedIdx - 1;
+    inc(j);
+  end;
 end;
 
 { TExpWraps }
@@ -1606,6 +1670,23 @@ begin
   end;
 end;
 
+procedure TTestWordWrapPluginBase.CheckLine(AName: String;
+  AExpLine: TTestWrapLineInfo);
+begin
+  CheckLine(AName, AExpLine.ViewedIdx, AExpLine.TextStartMatch, AExpLine.NoTrim);
+end;
+
+procedure TTestWordWrapPluginBase.CheckLines(AName: String;
+  AExpLines: TTestViewedLineRangeInfo);
+var
+  i: Integer;
+begin
+  for i := 0 to length(AExpLines) - 1 do begin
+    CheckLine(Format('%s (%d)', [AName, i]), AExpLines[i]);
+    CheckLineIndexMapping(Format('%s (%d)', [AName, i]), AExpLines[i].TextIdx, AExpLines[i].ViewedTopIdx, AExpLines[i].ViewedBottomIdx);
+  end;
+end;
+
 procedure TTestWordWrapPluginBase.CheckXyMap(AName: String; APhysTExtXY,
   AViewedXY: TPoint; OnlyViewToText: Boolean);
 var
@@ -1708,6 +1789,33 @@ begin
   end;
 end;
 
+procedure TTestWordWrapPluginBase.CheckLineIndexMapping(AName: String;
+  ATextIdx, AViewTopIdx, AViewBottomIdx: TLineIdx);
+var
+  v: TSynEditStringsLinked;
+  i: TLineIdx;
+  dv: TLazSynDisplayView;
+  r: TLineRange;
+begin
+  v := SynEdit.TextViewsManager.SynTextView[SynEdit.TextViewsManager.Count - 1];
+  dv := v.DisplayView;
+
+  AssertEquals(AName + ' TextToViewIndex', AViewTopIdx, v.TextToViewIndex(ATextIdx));
+  for i := AViewTopIdx to AViewBottomIdx do
+    AssertEquals(AName + ' ViewToTextIndex', ATextIdx, v.ViewToTextIndex(i));
+
+  r := dv.TextToViewIndex(ATextIdx);
+  AssertEquals(AName + 'DispView.TextToViewIndex Top', AViewTopIdx, r.Top);
+  AssertEquals(AName + 'DispView.TextToViewIndex Bottom', AViewBottomIdx, r.Bottom);
+  for i := AViewTopIdx to AViewBottomIdx do begin
+    AssertEquals(AName + ' ViewToTextIndex', ATextIdx, dv.ViewToTextIndex(i));
+
+    AssertEquals(AName + ' ViewToTextIndexEx', ATextIdx, dv.ViewToTextIndexEx(i, r));
+    AssertEquals(AName + ' ViewToTextIndexEx Top', AViewTopIdx, r.Top);
+    AssertEquals(AName + ' ViewToTextIndexEx Bottom', AViewBottomIdx, r.Bottom);
+  end;
+end;
+
 function TTestWordWrapPluginBase.TreeNodeCount: integer;
 var
   n: TSynEditLineMapPageHolder;
@@ -1768,6 +1876,19 @@ begin
     'ÜÜÜ',
     '999'
   ], True);
+
+  CheckLines('', ViewedExp(0, [
+    l(0, 0, 'abc def '),
+    l(0, 1, 'ABC DEFG '),
+    l(0, 2, 'XYZ'),
+    l(1, 0, 'A'#9'B'#9'C '),
+    l(1, 1, 'DEF G'#9'H'#9),
+    l(1, 2, #9#9'xy'),
+    l(2, 0, 'äää ööö '),
+    l(2, 1, 'ÄÄÄ ÖÖÖ '),
+    l(2, 2, 'ÜÜÜ'),
+    l(3, 0, '999')
+  ], tTrue));
 
 
   //CheckXyMap('', pt(4,3,   21,1,   21,1); // after "Z" EOL
@@ -1948,7 +2069,10 @@ begin
   end;
 
 
-
+  CheckLineIndexMapping('LineMap 0',   0,   0, 2);
+  CheckLineIndexMapping('LineMap 1',   1,   3, 5);
+  CheckLineIndexMapping('LineMap 2',   2,   6, 8);
+  CheckLineIndexMapping('LineMap 3',   3,   9, 9);
 
 
   SynEdit.ExecuteCommand(ecEditorBottom, '', nil);
