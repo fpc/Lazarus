@@ -1547,7 +1547,13 @@ begin
     deBreakpoint, deHardCodedBreakpoint:
       begin
         // If there is no breakpoint AND no pause-request then this is a deferred, allready handled pause request
-        if assigned(OnHitBreakpointEvent) then begin
+        if assigned(OnHitBreakpointEvent) and (
+          // If no break event of any kind is hit, then pause will be called further down. Keep HasPauseRequest=True
+          ((FCurrentThread <> nil) and (FCurrentThread.PausedAtHardcodeBreakPoint)) or
+          (CurWatch <> nil) or
+          (FCurrentProcess.CurrentBreakpoint <> nil)
+        )
+        then begin
           continue := False;
           if (FCurrentThread <> nil) and (FCurrentThread.PausedAtHardcodeBreakPoint) then
             OnHitBreakpointEvent(continue, nil, deHardCodedBreakpoint, (CurWatch <> nil) or (FCurrentProcess.CurrentBreakpoint <> nil));
@@ -1559,7 +1565,7 @@ begin
             OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint, deBreakpoint, False);
 
           if not continue then
-            HasPauseRequest := False;
+            HasPauseRequest := False; // The debugger will enter Pause, so the internal-pause is handled.
         end;
       end;
     deExitProcess:
