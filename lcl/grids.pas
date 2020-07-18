@@ -7212,7 +7212,8 @@ begin
   {$ifdef dbgGrid}DebugLnEnter('grid.DoEditorHide [',Editor.ClassName,'] INIT');{$endif}
   if gfEditingDone in FGridFlags then begin
     ParentForm := GetParentForm(Self);
-    ParentForm.ActiveControl := self;
+    if Self.CanFocus then
+      ParentForm.ActiveControl := self;
   end;
   Editor.Visible:=False;
   {$ifdef dbgGrid}DebugLnExit('grid.DoEditorHide [',Editor.ClassName,'] END');{$endif}
