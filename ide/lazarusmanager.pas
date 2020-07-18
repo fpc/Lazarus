@@ -368,7 +368,7 @@ begin
         end;
       end;
       {$IFDEF darwin}
-      if FileExistsUTF8(FLazarusPath+'.app') then begin
+      if DirectoryExistsUTF8(FLazarusPath+'.app') then begin
         // start the bundle instead
         FLazarusPath:= FLazarusPath+'.app';// /Contents/MacOS/'+ExtractFileName(FLazarusPath);
       end;
