@@ -36,7 +36,7 @@ uses
   FileUtil, LazFileUtils,
   // OpkMan
   opkman_serializablepackages, opkman_common,
-  {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
+  {$IFDEF FPC320}zipper{$ELSE}opkman_zip{$ENDIF};
 
 type
   TOnProgressEx = procedure(Sender : TObject; const ATotPos, ATotSize: Int64);

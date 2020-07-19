@@ -37,8 +37,8 @@ uses
   // OpkMan
   opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
   opkman_OpenSSLfrm,
-  {$IFDEF FPC311}zipper,{$ELSE}opkman_zip,{$ENDIF}
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+  {$IFDEF FPC320}zipper,{$ELSE}opkman_zip,{$ENDIF}
+  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
 
 const
   OpkVersion = 1;
@@ -251,7 +251,7 @@ begin
   FreeOnTerminate := True;
   OnTerminate := @DoTerminated;
   FHTTPClient := TFPHTTPClient.Create(nil);
-  {$IFDEF FPC311}
+  {$IFDEF FPC320}
   FHTTPClient.IOTimeout := Options.ConTimeOut*1000;
   {$ENDIF}
   if Options.ProxyEnabled then

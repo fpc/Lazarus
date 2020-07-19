@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, fpjson, LazIDEIntf, md5,
   // OpkMan
   opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);

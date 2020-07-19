@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, base64,
   // OpkMan
   opkman_options, opkman_const,
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
 
 type
   TOnUploadProgress = procedure(Sender: TObject; AFileName: String) of object;
