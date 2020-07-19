@@ -36,7 +36,7 @@ type
   // (switching from Boolean to Boolean8), LCL has to adopt
   // either type, depending on FPC version
   LCLObjCBoolean = {$ifdef HASBOOLEAN8}
-                   {$if FPC_FULLVERSION30200}
+                   {$if FPC_FULLVERSION > 30200}
                    ObjCBOOL
                    {$else}
                    Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
