@@ -27,7 +27,7 @@ uses
   // Libs
   MacOSAll, CocoaAll;
 
-{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
+{$if FPC_FULLVERSION>=30200}
 {$define HASBOOLEAN8}
 {$endif}
 
@@ -36,7 +36,11 @@ type
   // (switching from Boolean to Boolean8), LCL has to adopt
   // either type, depending on FPC version
   LCLObjCBoolean = {$ifdef HASBOOLEAN8}
+                   {$if FPC_FULLVERSION30200}
+                   ObjCBOOL
+                   {$else}
                    Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
+                   {$endif}
                    {$else}
                    Boolean   // FPC 3.0.4 and earlier are using "boolean" type
                    {$endif};
