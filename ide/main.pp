@@ -7453,7 +7453,8 @@ begin
     Process.CurrentDirectory := RunWorkingDirectory;
 
     if RunAppBundle
-        and FileExistsUTF8(Process.Executable)
+        and (FileExistsUTF8(Process.Executable)
+        or DirectoryExistsUTF8(Process.Executable))
         and FileExistsUTF8('/usr/bin/open') then
     begin
       // run bundle via open
