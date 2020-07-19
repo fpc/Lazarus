@@ -11,7 +11,11 @@
 // The issue is presumably only for 64-bit platform.
 // The workaround is possible! the issue should be fixed in future
 // release of FPC, but 3.0.4 is the offical supported by LCL.
+{$if FPC_FULLVERSION>=30200}
+{$undef BOOLFIX}
+{$else}
 {$define BOOLFIX}
+{$endif}
 
 
 // Originally LCL-Cocoa would override "run" method and have direct control

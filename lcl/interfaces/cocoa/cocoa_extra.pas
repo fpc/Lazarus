@@ -28,19 +28,15 @@ uses
   MacOSAll, CocoaAll;
 
 {$if FPC_FULLVERSION>=30200}
-{$define HASBOOLEAN8}
+{$define HASObjCBOOL}
 {$endif}
 
 type
   // Due to backwards incompatible changes in FPC sources
   // (switching from Boolean to Boolean8), LCL has to adopt
   // either type, depending on FPC version
-  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
-                   {$if FPC_FULLVERSION > 30200}
+  LCLObjCBoolean = {$ifdef HASObjCBOOL}
                    ObjCBOOL
-                   {$else}
-                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
-                   {$endif}
                    {$else}
                    Boolean   // FPC 3.0.4 and earlier are using "boolean" type
                    {$endif};
@@ -64,6 +60,7 @@ type
                        // even though it's trying to resolve the same problem
                        // for FPC3.0.4. ObjCBool should be removed after the officail
                        // fpc3.2+ release
+  {$endif}
 
   NSMenuItemFix = objccategory external (NSMenuItem)
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
@@ -86,14 +83,17 @@ type
 {$endif}
 
   NSApplicationFix = objccategory external (NSApplication)
+    {$ifdef BOOLFIX}
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
     function nextEventMatchingMask_untilDate_inMode_dequeue_(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: ObjCBool): NSEvent; message 'nextEventMatchingMask:untilDate:inMode:dequeue:';
     procedure postEvent_atStart_(event: NSEvent; flag: ObjCBool); message 'postEvent:atStart:';
+    {$endif}
 
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
+  {$ifdef BOOLFIX}
   NSButtonFix = objccategory external(NSButton)
     procedure setBordered_(flag: ObjCBool); message 'setBordered:';
     procedure setAllowsMixedState_(flag: ObjCBool); message 'setAllowsMixedState:';

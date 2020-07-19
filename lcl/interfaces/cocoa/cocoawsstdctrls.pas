@@ -996,8 +996,13 @@ var
 begin
   field := GetTextField(AWinControl);
   if not Assigned(field) then Exit;
+  {$ifdef BOOLFIX}
   field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
   field.setBezeled_( ObjCBool(ABorderStyle <> bsNone) );
+  {$else}
+  field.setBordered( ABorderStyle <> bsNone );
+  field.setBezeled( ABorderStyle <> bsNone );
+  {$endif}
   UpdateFocusRing(field, ABorderStyle);
 end;
 
@@ -1101,8 +1106,13 @@ begin
     end;
   end;
 
+  {$ifdef BOOLFIX}
   lHandle.setEditable_(ObjCBool(not NewReadOnly));
   lHandle.setSelectable_(1); // allow to select read-only text (LCL compatible)
+  {$ELSE}
+  lHandle.setEditable( not NewReadOnly);
+  lHandle.setSelectable(true); // allow to select read-only text (LCL compatible)
+  {$ENDIF}
 
   if Assigned(ed) then begin
     ed.goingReadOnly := false;
@@ -1876,7 +1886,11 @@ begin
   if not (NSObject(ACustomComboBox.Handle).isKindOfClass(NSComboBox)) then Exit;
   box := NSComboBox(ACustomComboBox.Handle);
   box.setEditable(not NewReadOnly);
+  {$ifdef BOOLFIX}
   box.setSelectable_(1);
+  {$ELSE}
+  box.setSelectable(true);
+  {$endif}
 end;
 
 class procedure TCocoaWSCustomComboBox.SetDropDownCount(const ACustomComboBox:
