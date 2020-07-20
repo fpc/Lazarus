@@ -21,11 +21,30 @@ uses
   // LCL
   Dialogs,
   // LazUtils
-  UITypes,
+  UITypes, LazFileCache,
   // IdeIntf
   LazMsgDialogs;
 
 type
+
+  { TIDEOpenDialog }
+
+  TIDEOpenDialog = class(TOpenDialog)
+  protected
+    function DoExecute: boolean; override;
+  end;
+  TIDEOpenDialogClass = class of TIDEOpenDialog;
+
+  { TIDESaveDialog }
+
+  TIDESaveDialog = class(TSaveDialog)
+  protected
+    function DoExecute: boolean; override;
+  public
+    class function NeedOverwritePrompt: boolean; virtual;
+  end;
+  TIDESaveDialogClass = class of TIDESaveDialog;
+
   TIDESelectDirectory = function(const Title, InitialDir: string): string of object;
   TInitIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
   TStoreIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
@@ -34,6 +53,8 @@ var  // set by the IDE
   LazIDESelectDirectory: TIDESelectDirectory = nil;
   InitIDEFileDialog: TInitIDEFileDialog = nil;
   StoreIDEFileDialog: TStoreIDEFileDialog = nil;
+  IDEOpenDialogClass: TIDEOpenDialogClass = TIDEOpenDialog;
+  IDESaveDialogClass: TIDESaveDialogClass = TIDESaveDialog;
 
 // Wrapper function for LazIDESelectDirectory with a default parameter.
 function LazSelectDirectory(const Title: string; const InitialDir: string = ''): string;
@@ -152,6 +173,25 @@ begin
   Result:=IDEQuestionDialog(aCaption,aMsg,DlgType,NewButtons,HelpKeyword);
 end;
 
+
+function TIDESaveDialog.DoExecute: boolean;
+begin
+  Result:=inherited DoExecute;
+  LazFileCache.InvalidateFileStateCache;
+end;
+
+class function TIDESaveDialog.NeedOverwritePrompt: boolean;
+begin
+  Result:={$if defined(LCLCocoa)}false{$else}true{$endif};
+end;
+
+{ TIDEOpenDialog }
+
+function TIDEOpenDialog.DoExecute: boolean;
+begin
+  Result:=inherited DoExecute;
+  LazFileCache.InvalidateFileStateCache;
+end;
 
 { TIgnoreIDEQuestionItem }
 

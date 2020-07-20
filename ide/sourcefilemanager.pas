@@ -4528,7 +4528,7 @@ end;
 function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
   var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
 var
-  SaveDialog: TSaveDialog;
+  SaveDialog: TIDESaveDialog;
   SrcEdit: TSourceEditor;
   SaveAsFilename, SaveAsFileExt: string;
   NewFilename, NewFileExt: string;
@@ -4570,7 +4570,7 @@ begin
     SaveAsFilename:=LowerCase(SaveAsFilename);
 
   // let user choose a filename
-  SaveDialog:=TSaveDialog.Create(nil);
+  SaveDialog:=IDESaveDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
@@ -4697,7 +4697,9 @@ begin
   end;
 
   // check overwrite existing file
-  if ((not FilenameIsAbsolute(AFilename)) or (CompareFilenames(NewFilename,AFilename)<>0))
+  if IDESaveDialogClass.NeedOverwritePrompt
+      and ((not FilenameIsAbsolute(AFilename))
+          or (CompareFilenames(NewFilename,AFilename)<>0))
   and FileExistsUTF8(NewFilename) then
   begin
     ACaption:=lisOverwriteFile;
@@ -7524,7 +7526,7 @@ function ShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
 var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
-  SaveDialog: TSaveDialog;
+  SaveDialog: TIDESaveDialog;
   NewBuf, OldBuf: TCodeBuffer;
   TitleWasDefault: Boolean;
   NewLPIFilename, NewProgramFN, NewProgramName, AFilename, NewTargetFN: String;
@@ -7539,7 +7541,7 @@ begin
     if Project1.MainUnitInfo = nil then
       UseMainSourceFile := False;
 
-    SaveDialog:=TSaveDialog.Create(nil);
+    SaveDialog:=IDESaveDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       AFilename:='';
@@ -7655,10 +7657,13 @@ begin
     // Note: if user confirms overwriting .lpi do not ask for overwriting .lpr
     if FileExistsUTF8(NewLPIFilename) then
     begin
-      ACaption:=lisOverwriteFile;
-      AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
-      Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
-      if Result=mrCancel then exit;
+      if IDESaveDialogClass.NeedOverwritePrompt then
+      begin
+        ACaption:=lisOverwriteFile;
+        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
+        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
+        if Result=mrCancel then exit;
+      end;
     end
     else
     begin
