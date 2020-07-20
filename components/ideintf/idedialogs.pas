@@ -40,6 +40,8 @@ type
   TIDESaveDialog = class(TSaveDialog)
   protected
     function DoExecute: boolean; override;
+  public
+    class function NeedOverwritePrompt: boolean; virtual;
   end;
   TIDESaveDialogClass = class of TIDESaveDialog;
 
@@ -177,6 +179,11 @@ function TIDESaveDialog.DoExecute: boolean;
 begin
   Result:=inherited DoExecute;
   LazFileCache.InvalidateFileStateCache;
+end;
+
+class function TIDESaveDialog.NeedOverwritePrompt: boolean;
+begin
+  Result:={$if defined(LCLCocoa)}false{$else}true{$endif};
 end;
 
 { TIDEOpenDialog }

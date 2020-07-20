@@ -4624,6 +4624,7 @@ var
   OldUnitName, NewUnitName: string;
   ACaption, AText, APath: string;
   Filter, AllEditorExt, AllFilter: string;
+  NeedOverwritePrompt: Boolean;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
@@ -4787,7 +4788,9 @@ begin
   end;
 
   // check overwrite existing file
-  if ((not FilenameIsAbsolute(AFilename)) or (CompareFilenames(NewFilename,AFilename)<>0))
+  if IDESaveDialogClass.NeedOverwritePrompt
+      and ((not FilenameIsAbsolute(AFilename))
+          or (CompareFilenames(NewFilename,AFilename)<>0))
       and FileExistsUTF8(NewFilename) then
   begin
     ACaption:=lisOverwriteFile;
@@ -7755,10 +7758,13 @@ begin
     // Note: if user confirms overwriting .lpi do not ask for overwriting .lpr
     if FileExistsUTF8(NewLPIFilename) then
     begin
-      ACaption:=lisOverwriteFile;
-      AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
-      Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
-      if Result=mrCancel then exit;
+      if IDESaveDialogClass.NeedOverwritePrompt then
+      begin
+        ACaption:=lisOverwriteFile;
+        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
+        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
+        if Result=mrCancel then exit;
+      end;
     end
     else
     begin
