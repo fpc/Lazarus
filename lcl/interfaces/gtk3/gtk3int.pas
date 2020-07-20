@@ -24,14 +24,14 @@ uses
   {$IFDEF UNIX}
   BaseUnix, Unix,
   {$ENDIF}
-  SysUtils, Classes, types,
+  SysUtils, Classes, types, Math, FPImage,
   // LazUtils
-  LazUTF8, Translations, IntegerList,
+  LazUTF8, IntegerList, GraphType,
   // LCL
-  LCLPlatformDef, InterfaceBase, LCLProc, LCLStrConsts, LCLType, LMessages,
-  Controls, Forms, FPImage, Graphics, GraphUtil, GraphType, IntfGraphics,
-  LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazPangoCairo1, LazGio2,
-  LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs;
+  LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue,
+  Controls, Forms, Graphics, GraphUtil, IntfGraphics,
+  LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazGio2,
+  LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs, gtk3boxes;
 
 type
 
@@ -150,16 +150,9 @@ function Gtk3WidgetFromGtkWidget(const AWidget: PGtkWidget): TGtk3Widget;
 function HwndFromGtkWidget(AWidget: PGtkWidget): HWND;
 
 implementation
-uses
-  Math, LCLMessageGlue,
-  {%H-}Gtk3WSFactory{%H-};
 
-const
-  GTK_RESPONSE_LCL_ALL = -10;
-  GTK_RESPONSE_LCL_YESTOALL = -3; // GTK_RESPONSE_ACCEPT;
-  GTK_RESPONSE_LCL_RETRY = -12;
-  GTK_RESPONSE_LCL_IGNORE = -13;
-  GTK_RESPONSE_LCL_NOTOALL = -14;
+uses
+  {%H-}Gtk3WSFactory{%H-};
 
 {------------------------------------------------------------------------------
   Function: FillStandardDescription

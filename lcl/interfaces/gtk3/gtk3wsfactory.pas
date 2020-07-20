@@ -19,9 +19,8 @@ unit Gtk3WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, Calendar, StdCtrls, Arrow, Spin,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
-  ImgList, PairSplitter, WSLCLClasses;
+  Classes, Controls, ComCtrls, Calendar, StdCtrls, Dialogs, ExtCtrls, ExtDlgs,
+  Buttons, Spin, CheckLst, Forms, Menus, ImgList, PairSplitter, WSLCLClasses;
 
 
 // imglist

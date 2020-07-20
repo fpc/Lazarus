@@ -2961,116 +2961,18 @@ begin
   Result:=true;
 end;
 
-function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
-begin
-  //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(g_object_get_data(PGtkObject(Widget), 'modal_result')));
-  if PInteger(data)^ = 0 then
-    PInteger(data)^:={%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
-  Result:=false;
-end;
-
-function MessageBoxClosed(Widget : PGtkWidget; {%H-}Event : PGdkEvent;
-  data: gPointer) : GBoolean; cdecl;
-var ModalResult : PtrUInt;
-begin
-  { We were requested by window manager to close }
-  if PInteger(data)^ = 0 then begin
-    ModalResult:= {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
-    { Don't allow to close if we don't have a default return value }
-    Result:= (ModalResult = 0);
-    if not Result then PInteger(data)^:= ModalResult
-    else DebugLn('Do not close !!!');
-  end else Result:= false;
-end;
-
 function TGtk3WidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType: Cardinal): integer;
 var
-  Dialog, ALabel : PGtkWidget;
-  ButtonCount, DefButton, ADialogResult : Integer;
-  DialogType : Cardinal;
-  procedure CreateButton(const ALabel : PChar; const RetValue : integer);
-  var AButton : PGtkWidget;
-  begin
-    AButton:= gtk_button_new_with_label(ALabel);
-    Inc(ButtonCount);
-    if ButtonCount = DefButton then begin
-      gtk_window_set_focus(PGtkWindow(Dialog), AButton);
-    end;
-    { If there is the Cancel button, allow the dialog to close }
-    if RetValue = IDCANCEL then begin
-      g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(IDCANCEL));
-    end;
-    g_object_set_data(AButton, 'modal_result',
-                        {%H-}Pointer(PtrInt(RetValue)));
-    g_signal_connect_data(AButton, 'clicked',
-                     TGCallback(@MessageButtonClicked), GPointer(@ADialogResult), nil, 0);
-    gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.get_action_area), AButton);
-  end;
-
+  fact:TGtk3DialogFactory;
 begin
-  ButtonCount:= 0;
-  { Determine which is the default button }
-  DefButton:= ((uType and $00000300) shr 8) + 1;
-  //DebugLn('Trace:Default button is ' + IntToStr(DefButton));
-
-  ADialogResult:= 0;
-  Dialog:= gtk_dialog_new;
-  g_signal_connect_data(Dialog, 'delete-event', TGCallback(@MessageBoxClosed), @ADialogResult, nil, 0);
-  gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
-  ALabel:= gtk_label_new(lpText);
-  gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.get_content_area), ALabel);
-  DialogType:= (uType and $0000000F);
-  if DialogType = MB_OKCANCEL
-  then begin
-    CreateButton(PChar(rsMbOK), IDOK);
-    CreateButton(PChar(rsMbCancel), IDCANCEL);
-  end
-  else begin
-    if DialogType = MB_ABORTRETRYIGNORE
-    then begin
-      CreateButton(PChar(rsMbAbort), IDABORT);
-      CreateButton(PChar(rsMbRetry), IDRETRY);
-      CreateButton(PChar(rsMbIgnore), IDIGNORE);
-    end
-    else begin
-      if DialogType = MB_YESNOCANCEL
-      then begin
-        CreateButton(PChar(rsMbYes), IDYES);
-        CreateButton(PChar(rsMbNo), IDNO);
-        CreateButton(PChar(rsMbCancel), IDCANCEL);
-      end
-      else begin
-        if DialogType = MB_YESNO
-        then begin
-          CreateButton(PChar(rsMbYes), IDYES);
-          CreateButton(PChar(rsMbNo), IDNO);
-        end
-        else begin
-          if DialogType = MB_RETRYCANCEL
-          then begin
-            CreateButton(PChar(rsMbRetry), IDRETRY);
-            CreateButton(PChar(rsMbCancel), IDCANCEL);
-          end
-          else begin
-            { We have no buttons to show. Create the default of OK button }
-            CreateButton(PChar(rsMbOK), IDOK);
-          end;
-        end;
-      end;
-    end;
+  fact:=TGtk3DialogFactory.CreateMsgBox(hWnd,lpText,lpCaption,uType);
+  try
+    fact.run;
+    Result:=fact.lcl_result;
+  finally
+    fact.Free;
   end;
-  gtk_window_set_title(PGtkWindow(Dialog), lpCaption);
-  gtk_window_set_position(PGtkWindow(Dialog), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal(PGtkWindow(Dialog), true);
-  gtk_widget_show_all(Dialog);
-  while ADialogResult = 0 do
-  begin
-    Application.HandleMessage;
-  end;
-  if Gtk3IsWidget(Dialog) then
-    gtk_widget_destroy(Dialog);
-  Result:= ADialogResult;
 end;
 
 function TGtk3WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord
