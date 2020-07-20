@@ -112,7 +112,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, typ, spe, StrUtils,
+  Math, typ, spe,
   TAChartAxis, TATypes, TAChartUtils, TACustomSource, TAFitLib;
 
 const
@@ -314,6 +314,7 @@ end;
 procedure TfrmMain.FitSeriesFitEquationText(ASeries: TFitSeries;
   AEquationText: IFitEquationText);
 begin
+  Unused(ASeries);
   AEquationText.NumFormat('%.5f');
   if cbHTML.Checked then
     AEquationText.TextFormat(tfHtml)
@@ -369,8 +370,9 @@ end;
 procedure TfrmMain.CreateData;
 var
   i, n: Integer;
-  x, y, xmin, xmax, ymin, ymax: Double;
-  xarr, yarr: array of Double;
+  x, y, xmin, xmax: Double;
+  xarr: array of Double = nil;
+  yarr: array of Double = nil;
 begin
   RandSeed := 875876;   // Reproducible noise for testing.
   n := edPointsCount.Value;
@@ -405,8 +407,6 @@ begin
   end;
 
   // Add noise to the y values, and add data to line series.
-  ymin := MinValue(yarr);
-  ymax := MaxValue(yarr);
   FitSeries.BeginUpdate;
   try
     FitSeries.Clear;
@@ -478,7 +478,6 @@ const
   PARAM_NAME: array[0..1] of String = ('a', 'b');
 var
   i: Integer;
-  L: Integer;
   decsep: Char;
   paramName: String;
   confL, confH: Double;
@@ -600,6 +599,7 @@ var
   w: Integer;
   lb: TListBox;
 begin
+  Unused(State);
   lb := Control as TListbox;
   lb.Canvas.FillRect(ARect);
   s := lb.Items[Index];
@@ -650,10 +650,7 @@ var
   L, LC: TStrings;
   x, y, dy: Double;
   i: Integer;
-  p: Integer;
   res: Integer;
-  s: String;
-  delim: Char;
 begin
   if not FileExists(AFileName) then begin
     ShowMessage('File not found.');
