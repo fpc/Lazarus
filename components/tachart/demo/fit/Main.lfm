@@ -3,7 +3,7 @@ object frmMain: TfrmMain
   Height = 543
   Top = 133
   Width = 1026
-  Caption = 'frmMain'
+  Caption = 'Fit demo'
   ClientHeight = 543
   ClientWidth = 1026
   OnCreate = FormCreate

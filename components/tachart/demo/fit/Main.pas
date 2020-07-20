@@ -208,8 +208,18 @@ procedure TfrmMain.cbFitEquationSelect(Sender: TObject);
 var
   eq: TFitEquation;
 begin
+  // Prevent drawing of interval series while fit result is not yet valid
+  // They will be re-activated in FitSeries.OnFitComplete
+  {$IF FPC_FullVersion >= 30004}
+  UpperConfIntervalSeries.Active := false;
+  LowerConfIntervalSeries.Active := false;
+  {$IFEND}
+
+  // Set new kind of fit equation
   eq := TFitEquation(cbFitEquation.ItemIndex);
   FitSeries.FitEquation := eq;
+
+  // Adapt GUI according to new fit equation.
   edFitOrder.Enabled := (eq = fePolynomial);
   lblFitOrder.Enabled := edFitOrder.Enabled;
 
@@ -540,6 +550,11 @@ begin
             LowerConfIntervalSeries.OnCalculate := @FitSeries.GetLowerConfidenceInterval;
             UpperPredIntervalSeries.OnCalculate := @FitSeries.GetUpperPredictionInterval;
             LowerPredIntervalSeries.OnCalculate := @FitSeries.GetLowerPredictionInterval;
+
+            UpperConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
+            LowerConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
+            UpperPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
+            LowerPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
             {$IFEND}
 
             Add('');
