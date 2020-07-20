@@ -4624,7 +4624,6 @@ var
   OldUnitName, NewUnitName: string;
   ACaption, AText, APath: string;
   Filter, AllEditorExt, AllFilter: string;
-  NeedOverwritePrompt: Boolean;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
