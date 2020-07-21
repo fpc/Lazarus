@@ -24713,9 +24713,11 @@ begin
     RowRect := Rect(0, PaintInfo.CellRect.Top, FRangeX, PaintInfo.CellRect.Bottom);
     if (Header.Columns.Count = 0) and (toFullRowSelect in TreeOptions.SelectionOptions) then
       RowRect.Right := Max(ClientWidth, RowRect.Right);
-     if toShowVertGridLines in FOptions.PaintOptions then
-       Dec(RowRect.Right);
-   end;
+    if toShowVertGridLines in FOptions.PaintOptions then
+      Dec(RowRect.Right);
+  end
+  else
+    Theme := 0;
   {$endif}
   {$endif ThemeSupport}
 
@@ -24811,7 +24813,7 @@ begin
             if not IsRectEmpty(InnerRect) then
               {$ifdef ThemeSupport}
               {$ifdef Windows}
-                if (tsUseExplorerTheme in FStates) and (Theme <> 0) then
+                if Theme <> 0 then
                 begin
                   // If the node is also hot, its background will be drawn later.
                   if not (toHotTrack in FOptions.FPaintOptions) or (Node <> FCurrentHotNode) or
