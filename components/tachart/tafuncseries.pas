@@ -1664,10 +1664,11 @@ begin
     feExp:
       Result := Param[0] * Exp(Param[1] * AX);
     fePower:
-      if AX < 0 then
-        Result := SafeNaN
-      else
+      begin
+        if (abs(Param[1]) < 1) and (AX < 0) then
+          exit;
         Result := Param[0] * Power(AX, Param[1]);
+      end;
     feCustom:
       begin
         Result := 0;
@@ -1994,7 +1995,9 @@ begin
   offs := IfThen(IsPrediction, 1, 0);
   with FitStatistics do begin
     x := TransformX(AX);
+    if IsNaN(x) then exit;
     y := Calculate(AX);
+    if IsNaN(y) then exit;
     y := TransformY(y);
     dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(x - xBar) / SSx);
     if IsUpper then
@@ -2377,18 +2380,27 @@ end;
 function TFitSeries.TransformX(AX: Double): Extended;
 begin
   if FitEquation in [fePower] then
-    Result := ln(AX)
-  else
+  begin
+    if AX > 0 then
+      Result := ln(AX)
+    else
+      Result := SafeNaN;
+  end else
     Result := AX;
 end;
 
 function TFitSeries.TransformY(AY: Double): Extended;
 begin
   if FitEquation in [feExp, fePower] then
-    Result := ln(AY)
-  else
+  begin
+    if AY > 0 then
+      Result := ln(AY)
+    else
+      Result := SafeNaN;
+  end else
     Result := AY;
 end;
+
 
 { TCustomColorMapSeries }
 
