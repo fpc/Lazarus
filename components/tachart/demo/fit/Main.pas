@@ -681,6 +681,9 @@ begin
     else
     if pos(#9, L[0]) > 0 then
       LC.Delimiter := #9
+    else
+    if pos(',', L[0]) > 0 then
+      LC.Delimiter := ','
     else begin
       ShowMessage('Unknown or no delimiter.');
       exit;
