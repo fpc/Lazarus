@@ -104,6 +104,7 @@ type
     procedure CreateData;
     procedure OpenFile(const AFileName: string);
     function PrepareFixedParams: String;
+    procedure ShowIntervalSeries(AEnable: Boolean);
   end;
 
 var
@@ -212,10 +213,7 @@ var
 begin
   // Prevent drawing of interval series while fit result is not yet valid
   // They will be re-activated in FitSeries.OnFitComplete
-  {$IF FPC_FullVersion >= 30004}
-  UpperConfIntervalSeries.Active := false;
-  LowerConfIntervalSeries.Active := false;
-  {$IFEND}
+  ShowIntervalSeries(false);
 
   // Set new kind of fit equation
   eq := TFitEquation(cbFitEquation.ItemIndex);
@@ -230,6 +228,7 @@ begin
   case eq of
     fePolynomial:
       begin
+        FitSeries.ParamCount := edFitOrder.Value + 1;
         cbFitParam0Fixed.Caption := 'b0 = ';
         cbFitParam1Fixed.Caption := 'b1 = ';
         edFitParam0.Value := POLY_PARAMS[0];
@@ -268,12 +267,14 @@ end;
 procedure TfrmMain.cbFitParam0FixedChange(Sender: TObject);
 begin
   edFitParam0.Enabled := cbFitParam0Fixed.Checked;
+  ShowIntervalSeries(false);
   FixedParamsChanged(Sender);
 end;
 
 procedure TfrmMain.cbFitParam1FixedChange(Sender: TObject);
 begin
   edFitParam1.Enabled := cbFitParam1Fixed.Checked;
+  ShowIntervalSeries(false);
   FixedParamsChanged(Sender);
 end;
 
@@ -317,6 +318,7 @@ end;
 
 procedure TfrmMain.edConfLevelChange(Sender: TObject);
 begin
+  ShowIntervalSeries(false);
   FitSeries.ConfidenceLevel := edConfLevel.Value;
 end;
 
@@ -338,6 +340,7 @@ end;
 
 procedure TfrmMain.FixedParamsChanged(Sender: TObject);
 begin
+  ShowIntervalSeries(false);
   FitSeries.FixedParams := PrepareFixedParams;
 end;
 
@@ -395,6 +398,9 @@ begin
     exit;
   end;
 
+  // Hide the confidence/prediction intervals series to prevent crashes due to out-dated fit results
+  ShowIntervalSeries(false);
+
   // Calculate test data and store in temporary arrays.
   // This is because noise is relative to the data range in this example.
   xmin := XRANGE[TFitEquation(cbTestFunction.ItemIndex), 0];
@@ -449,6 +455,7 @@ end;
 
 procedure TfrmMain.edFitOrderChange(Sender:TObject);
 begin
+  ShowIntervalSeries(false);
   // Needs one parameter more than degree of fit polynomial.
   FitSeries.ParamCount := edFitOrder.Value + 1;
 end;
@@ -563,11 +570,6 @@ begin
             LowerConfIntervalSeries.OnCalculate := @FitSeries.GetLowerConfidenceInterval;
             UpperPredIntervalSeries.OnCalculate := @FitSeries.GetUpperPredictionInterval;
             LowerPredIntervalSeries.OnCalculate := @FitSeries.GetLowerPredictionInterval;
-
-            UpperConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
-            LowerConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
-            UpperPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
-            LowerPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
             {$IFEND}
 
             Add('');
@@ -593,6 +595,8 @@ begin
               ]));
             end;
             {$IFEND}
+
+            ShowIntervalSeries(true);
           end;
         else
           Add(FitSeries.ErrorMsg);
@@ -735,6 +739,16 @@ begin
     Result := FloatToStr(edFitParam0.Value, fs);
   if cbFitParam1Fixed.Checked then
     Result := Result + ';' + FloatToStr(edFitParam1.Value, fs);
+end;
+
+procedure TfrmMain.ShowIntervalSeries(AEnable: Boolean);
+begin
+  {$IF FPC_FullVersion > 30004}
+  UpperConfIntervalSeries.Active := AEnable and cbShowConfidenceIntervals.Checked;
+  LowerConfIntervalSeries.Active := AEnable and cbShowConfidenceIntervals.Checked;
+  UpperPredIntervalSeries.Active := AEnable and cbShowPredictionIntervals.Checked;
+  LowerPredIntervalSeries.Active := AEnable and cbShowPredictionIntervals.Checked;
+  {$IFEND}
 end;
 
 end.
