@@ -41,7 +41,7 @@ type
     ChartAxisTransformations: TChartAxisTransformations;
     edFitParam0: TFloatSpinEdit;
     edFitParam1: TFloatSpinEdit;
-    GroupBox1: TGroupBox;
+    gbFixedParams: TGroupBox;
     Label1: TLabel;
     lblNoiseY1: TLabel;
     LogarithmAxisTransform: TLogarithmAxisTransform;
@@ -75,6 +75,8 @@ type
     procedure cbCombinedExtentChange(Sender: TObject);
     procedure cbDrawFitRangeOnlyClick(Sender: TObject);
     procedure cbFitEquationSelect(Sender: TObject);
+    procedure cbFitParam0FixedChange(Sender: TObject);
+    procedure cbFitParam1FixedChange(Sender: TObject);
     procedure cbHTMLChange(Sender: TObject);
     procedure cbShowConfidenceIntervalsChange(Sender: TObject);
     procedure cbShowErrorbarsChange(Sender: TObject);
@@ -261,6 +263,18 @@ begin
         edFitParam1.Value := HARMONIC_PARAMS[1];
       end;
   end;
+end;
+
+procedure TfrmMain.cbFitParam0FixedChange(Sender: TObject);
+begin
+  edFitParam0.Enabled := cbFitParam0Fixed.Checked;
+  FixedParamsChanged(Sender);
+end;
+
+procedure TfrmMain.cbFitParam1FixedChange(Sender: TObject);
+begin
+  edFitParam1.Enabled := cbFitParam1Fixed.Checked;
+  FixedParamsChanged(Sender);
 end;
 
 procedure TfrmMain.cbHTMLChange(Sender: TObject);

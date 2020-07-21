@@ -2148,7 +2148,7 @@ begin
   Result := NaN;
   if (FState = fpsValid) and Assigned(FFitStatistics) then begin
     sig2 := FFitStatistics.VarCovar[AIndex, AIndex];
-    if not IsNaN(sig2) then
+    if not IsNaN(sig2) and (sig2 >= 0) then
       Result := sqrt(sig2);
   end;
 end;
