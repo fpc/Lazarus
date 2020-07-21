@@ -98,7 +98,7 @@ type
   public
     constructor Create(aFitResults: TFitResults; aAlpha: Double = 0.05);
     procedure Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
-      ANumFormat: String = '%f');
+      ANumFormat: String = '%f'; AExpFormat: String = '%.3e'; NaNStr: String = 'n/a');
     procedure Report_VarCovar(AText: TSTrings; ANumFormat: String = '%12.6f');
   public
     function AdjR2: Double;
@@ -430,7 +430,10 @@ end;
   parameters. Should be close to 1 ("good" fit). "0" means: "poor" fit }
 function TFitStatistics.AdjR2: Double;
 begin
-  Result := 1.0 - (1.0 - R2) * (N - 1) / DOF;
+  if DOF > 0 then
+    Result := 1.0 - (1.0 - R2) * (N - 1) / DOF
+  else
+    Result := NaN;
 end;
 
 procedure TFitStatistics.CalcTValue;
@@ -524,34 +527,29 @@ begin
 end;
 
 procedure TFitStatistics.Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
-  ANumFormat: String = '%f');
+  ANumFormat: String = '%f'; AExpFormat: String = '%.3e'; NaNStr: String = 'n/a');
 const
-  FMT = '%.3e';
+  PRECISION = 3;
 begin
   AText.Add(rsFitNumObservations + ASeparator + IntToStr(N));
   AText.Add(rsFitNumFitParams + ASeparator + IntToStr(M));
   AText.Add(rsFitDegreesOfFreedom + ASeparator + IntToStr(DOF));
-  AText.Add(rsFitTotalSumOfSquares + ASeparator +
-    Format(IfThen(SST > 1E6, FMT, ANumFormat), [SST]));
-  AText.Add(rsFitRegressionSumOfSquares + ASeparator +
-    Format(IfThen(SST > 1E6, FMT, ANumFormat), [SSR]));
-  AText.Add(rsFitErrorSumOfSquares + ASeparator +
-    Format(ifThen(SST > 1E6, FMT, ANumFormat), [SSE]));
-  AText.Add(rsFitCoefficientOfDetermination + ASeparator + Format(ANumFormat, [R2]));
-  AText.Add(rsFitAdjCoefficientOfDetermination + ASeparator + Format(ANumFormat, [AdjR2]));
-  AText.Add(rsFitChiSquared + ASeparator + Format(ANumFormat, [Chi2]));
-  AText.Add(rsFitReducedChiSquared + ASeparator + Format(ANumFormat, [ReducedChi2]));
-  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [ResidualStdError]));
-  AText.Add(rsFitVarianceRatio + ASeparator + Format(ANumFormat, [F]));
+  AText.Add(rsFitTotalSumOfSquares + ASeparator + FloatToStrEx(SST, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitRegressionSumOfSquares + ASeparator + FloatToStrEx(SSR, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitErrorSumOfSquares + ASeparator + FloatToStrEx(SSE, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitCoefficientOfDetermination + ASeparator + FloatToStrEx(R2, PRECISION, ANumFormat, '', NaNStr));
+  AText.Add(rsFitAdjCoefficientOfDetermination + ASeparator + FloatToStrEx(AdjR2, PRECISION, ANumFormat, '', NaNStr));
+  AText.Add(rsFitChiSquared + ASeparator + FloatToStrEx(Chi2, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitReducedChiSquared + ASeparator + FloatToStrEx(ReducedChi2, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitResidualStandardError + ASeparator + FloatToStrEx(ResidualStdError, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitVarianceRatio + ASeparator + FloatToStrEx(F, PRECISION, ANumFormat, AExpFormat, NaNStr));
   {
   AText.Add(Format('Fcrit(%d, %d)', [M-1, DOF]) + ASeparator +
     Format(IfThen(Fcrit < 1E-3, FMT, ANumFormat), [Fcrit]));
     }
   {$IF FPC_FullVersion >= 30004}
-  AText.Add(rsFitTValue + ASeparator +
-    Format(IfThen(FtValue < 1E-3, '%.3e', ANumFormat), [FtValue]));
-  AText.Add(rsFitPValue + ASeparator +
-    Format(IfThen(pValue < 1E-3, '%.3e', ANumFormat), [pValue]));
+  AText.Add(rsFitTValue + ASeparator + FloatToStrEx(FtValue, PRECISION, ANumFormat, AExpFormat, NaNStr));
+  AText.Add(rsFitPValue + ASeparator + FloatToStrEx(pValue, PRECISION, ANumFormat, AExpFormat, NaNStr));
   {$IFEND}
 end;
 
