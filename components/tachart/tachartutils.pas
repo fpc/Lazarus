@@ -341,6 +341,8 @@ procedure Exchange(var A, B: Double); overload; inline;
 procedure Exchange(var A, B: TDoublePoint); overload; inline;
 procedure Exchange(var A, B: String); overload; inline;
 
+function FloatToStrEx(x: Double; APrecision: Integer; AFormat: String = '%.3g';
+  AExpFormat: String = '%.3e'; NaNStr: String = 'n/a'): String;
 function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject; overload;
@@ -449,6 +451,26 @@ begin
   t := A;
   A := B;
   B := t;
+end;
+
+{ When abs(x) is between 10^-Precision and 10^+Precision the value is formatted
+  with "normal" format AFormat, otherwise with exponential format AExpFormat, }
+function FloatToStrEx(x: Double; APrecision: Integer; AFormat: String = '%.3g';
+  AExpFormat: String = '%.3e'; NaNStr: String = 'n/a'): String;
+var
+  LowerLimit, UpperLimit: Double;
+begin
+  if IsNaN(x) then
+    Result := NaNStr
+  else
+  begin
+    UpperLimit := IntPower(10.0, abs(APrecision));
+    LowerLimit := 1.0 / UpperLimit;
+    if InRange(abs(x), LowerLimit, UpperLimit) or (AExpFormat = '') then
+      Result := Format(AFormat, [x])
+    else
+      Result := Format(AExpFormat, [x]);
+  end;
 end;
 
 function FormatIfNotEmpty(AFormat, AStr: String): String;
