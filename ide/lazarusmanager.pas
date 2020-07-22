@@ -368,7 +368,7 @@ begin
         end;
       end;
       {$IFDEF darwin}
-      if FileExistsUTF8(FLazarusPath+'.app') then begin
+      if DirectoryExistsUTF8(FLazarusPath+'.app') then begin
         // start the bundle instead
         {$IFDEF LCLCocoa}
         FLazarusPath:= FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
@@ -379,6 +379,7 @@ begin
       {$ENDIF}
 
       DebugLn(['Info: (startlazarus) [TLazarusManager.Run] starting ',FLazarusPath,' ...']);
+
       EnvOverrides:=TStringList.Create;
       try
         {$IFDEF Linux}
