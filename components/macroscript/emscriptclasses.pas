@@ -566,14 +566,14 @@ begin
         Obj.LogicalCaretXY := Point(Stack.GetInt(-2), Obj.CaretY);
       end;
     FunctionId_MoveCaretIgnoreEOL: begin  // procedure MoveCaretIgnoreEOL(NewCaret: TPoint);
-        CheckMinParamCount(3, 'TSynEdit.MoveCaretIgnoreEOL');
+        CheckMinParamCount(2, 'TSynEdit.MoveCaretIgnoreEOL');
         Result := GetSynEditFromStack(-1, Obj);
         if not Result then
           exit;
         Obj.MoveCaretIgnoreEOL(GetVarPointFromStack(Stack, -2)^);
       end;
     FunctionId_MoveLogicalCaretIgnoreEOL: begin  // procedure MoveLogicalCaretIgnoreEOL(NewLogCaret: TPoint);
-        CheckMinParamCount(3, 'TSynEdit.MoveLogicalCaretIgnoreEOL');
+        CheckMinParamCount(2, 'TSynEdit.MoveLogicalCaretIgnoreEOL');
         Result := GetSynEditFromStack(-1, Obj);
         if not Result then
           exit;
@@ -1135,10 +1135,10 @@ begin
   begin
     {$IFnDEF PasMacroNativeCalls}
     RegisterPropertyNameHelper('CARETXY', @ExecBasicHandler, Pointer(PropReadId_CaretXY), nil, Pointer(PropWriteId_CaretXY), nil);
-    RegisterPropertyNameHelper('CARETX', @ExecBasicHandler, Pointer(PropReadId_CaretX), nil, Pointer(PropWriteId_CaretY), nil);
+    RegisterPropertyNameHelper('CARETX', @ExecBasicHandler, Pointer(PropReadId_CaretX), nil, Pointer(PropWriteId_CaretX), nil);
     RegisterPropertyNameHelper('CARETY', @ExecBasicHandler, Pointer(PropReadId_CaretY), nil, Pointer(PropWriteId_CaretY), nil);
-    RegisterPropertyNameHelper('LOGICALCARETXY', @ExecBasicHandler, Pointer(PropWriteId_LogicalCaretXY), nil, Pointer(PropWriteId_LogicalCaretXY), nil);
-    RegisterPropertyNameHelper('LOGICALCARETX', @ExecBasicHandler, Pointer(PropWriteId_LogicalCaretX), nil, Pointer(PropWriteId_LogicalCaretX), nil);
+    RegisterPropertyNameHelper('LOGICALCARETXY', @ExecBasicHandler, Pointer(PropReadId_LogicalCaretXY), nil, Pointer(PropWriteId_LogicalCaretXY), nil);
+    RegisterPropertyNameHelper('LOGICALCARETX', @ExecBasicHandler, Pointer(PropReadId_LogicalCaretX), nil, Pointer(PropWriteId_LogicalCaretX), nil);
     RegisterMethodName('MOVECARETIGNOREEOL', @ExecBasicHandler, Pointer(FunctionId_MoveCaretIgnoreEOL), nil);
     RegisterMethodName('MOVELOGICALCARETIGNOREEOL', @ExecBasicHandler, Pointer(FunctionId_MoveLogicalCaretIgnoreEOL), nil);
 
