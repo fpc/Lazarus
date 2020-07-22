@@ -474,8 +474,7 @@ var
   LRSObjectReaderClass: TLRSObjectReaderClass=TLRSObjectReader;
   LRSObjectWriterClass: TLRSObjectWriterClass=TLRSObjectWriter;
 
-function InitResourceComponent(Instance: TComponent;
-  RootAncestor: TClass):Boolean;
+function InitResourceComponent(Instance: TComponent; RootAncestor: TClass): Boolean;
 function InitLazResourceComponent(Instance: TComponent;
                                   RootAncestor: TClass): Boolean;
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
@@ -798,8 +797,7 @@ begin
   end;
 end;
 
-function InitResourceComponent(Instance: TComponent;
-  RootAncestor: TClass):Boolean;
+function InitResourceComponent(Instance: TComponent; RootAncestor: TClass): Boolean;
 begin
   Result := InitLazResourceComponent(Instance, RootAncestor);
 end;
@@ -817,7 +815,7 @@ end;
 {$else}
 begin
   Result := FindResource(HInstance,PChar(ResName),
-    {$if (FPC_FULLVERSION>=20701) and defined(Windows)}Windows.{$endif}RT_RCDATA);
+    {$ifdef Windows}Windows.{$endif}RT_RCDATA);
 end;
 {$endif}
 
@@ -3102,7 +3100,7 @@ begin
 end;
 
 function InitLazResourceComponent(Instance: TComponent;
-  RootAncestor: TClass): Boolean;
+                                  RootAncestor: TClass): Boolean;
 
   function InitComponent(ClassType: TClass): Boolean;
   var
@@ -3113,6 +3111,7 @@ function InitLazResourceComponent(Instance: TComponent;
     FPResource: TFPResourceHandle;
     {$endif}
     ResName: String;
+    GenericInd: Integer;
     Stream: TStream;
     Reader: TReader;
     DestroyDriver: Boolean;
@@ -3127,7 +3126,11 @@ function InitLazResourceComponent(Instance: TComponent;
       
     Stream := nil;
     ResName := ClassType.ClassName;
-    
+    // Generics class name can contain <> and resource files do not support it
+    GenericInd := ResName.IndexOf('<');
+    if GenericInd > 0 then
+      SetLength(ResName, GenericInd);
+
     {$ifdef UseLRS}
     LazResource := LazarusResources.Find(ResName);
     if (LazResource <> nil) and (LazResource.Value <> '') then
@@ -3302,8 +3305,7 @@ begin
   QWord(Result):=Mantissa or (qword(ExponentAndSign) shl 52);
 end;
 
-procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
-  LRSExtended: Pointer);
+procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble, LRSExtended: Pointer);
 // Floats consists of a sign bit, some exponent bits and the mantissa bits
 // A 0 is all bits 0
 // not 0 has always a leading 1, which exponent is stored
