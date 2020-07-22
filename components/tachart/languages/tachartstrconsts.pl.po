@@ -213,6 +213,10 @@ msgstr ""
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr ""
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr ""

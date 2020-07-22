@@ -148,6 +148,7 @@ resourcestring
   rsErrFitNoFitParams = 'No fit parameters specified.';
   rsErrFitSingular = 'Fitting matrix is (nearly) singular.';
   rsErrFitNoBaseFunctions = 'Not enough user-provided base functions.';
+  rsErrNumericalOverflow = 'Numerical overflow.';
   rsFitNumObservations = 'Number of observations';
   rsFitNumFitParams = 'Number of fit parameters';
   rsFitDegreesOfFreedom = 'Degrees of freedom';

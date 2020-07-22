@@ -213,6 +213,10 @@ msgstr "Le nombre de paramètres appropriés ne peut pas être inférieur à 1."
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Le type de résultat d'expression doit être entier ou flottant. On a obtenu \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Séries de cartes de couleurs d'expressions mathématiques"

@@ -1821,6 +1821,7 @@ begin
     fitNoFitParams          : Result := rsErrFitNoFitParams;
     fitSingular             : Result := rsErrFitSingular;
     fitNoBaseFunctions      : Result := rsErrFitNoBaseFunctions;
+    fitOverflow             : Result := rsErrNumericalOverflow;
   else
     raise EChartError.CreateFmt('[%s.ErrorMsg] No message text assigned to error code #%d.',
       [NameOrClassName(self), ord(ErrCode)]);
@@ -1885,25 +1886,30 @@ var
     end;
 
     // Execute the polynomial fit; the degree of the polynomial is np - 1.
-    fitRes := LinearFit(xv, yv, dy, FFitParams);
-    FErrCode := fitRes.ErrCode;
-    if fitRes.ErrCode <> fitOK then
-      exit;
+    try
+      fitRes := LinearFit(xv, yv, dy, FFitParams);
 
-    // Store values of fit parameters.
-    // Note: In case of exponential and power fit equations, the first fitted
-    // parameter is the logarithm of the "real" parameter. It needs to be
-    // transformed back to real units by exp function. This is done by the
-    // getter of the property
-    for i:= 0 to High(FFitParams) do
-      FFitParams[i].Value := fitRes.ParamValues[i];
+      FErrCode := fitRes.ErrCode;
+      if fitRes.ErrCode <> fitOK then
+        exit;
 
-    // Analysis of variance, variance-covariance matrix
-    FFitStatistics.Free;
-    FFitStatistics := TFitStatistics.Create(fitRes, 1 - FConfidenceLevel);
+      // Store values of fit parameters.
+      // Note: In case of exponential and power fit equations, the first fitted
+      // parameter is the logarithm of the "real" parameter. It needs to be
+      // transformed back to real units by exp function. This is done by the
+      // getter of the property
+      for i:= 0 to High(FFitParams) do
+        FFitParams[i].Value := fitRes.ParamValues[i];
 
-    // State of the fit
-    FState := fpsValid;
+     // Analysis of variance, variance-covariance matrix
+      FFitStatistics.Free;
+      FFitStatistics := TFitStatistics.Create(fitRes, 1 - FConfidenceLevel);
+
+      // State of the fit
+      FState := fpsValid;
+    except
+      FErrCode := fitOverflow;
+    end;
   end;
 
 begin

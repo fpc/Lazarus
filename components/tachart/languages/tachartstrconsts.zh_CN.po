@@ -214,6 +214,10 @@ msgstr ""
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "表达式结果类型必须是整型(integer)或浮点型(float).得到\"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "数学表达式彩色图系列"

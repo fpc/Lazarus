@@ -213,6 +213,10 @@ msgstr ""
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "A kifejezés típusának egész vagy lebegőpontos számnak kell lennie. Most \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Színtérkép matematikai kifejezés alapján"

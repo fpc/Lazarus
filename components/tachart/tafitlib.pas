@@ -35,7 +35,8 @@ type
     fitMoreParamsThanValues,   // There are more fitting parameters than data values
     fitNoFitParams,            // No fit parameters specified
     fitSingular,               // Matrix is (nearly) singular
-    fitNoBaseFunctions         // No user-provided base functions
+    fitNoBaseFunctions,        // No user-provided base functions
+    fitOverflow                // Numerical overflow
   );
 
   TFitResults = record
@@ -201,9 +202,6 @@ end;
   - Numerical Recipes, Ch 14, Modelling of data, General linear least squares }
 function LinearFit(const x, y, dy: TArbFloatArray;
   FitParams: TFitParamArray): TFitResults;
-const
-  TOO_LARGE = 1E100;
-  TOO_SMALL = 1.0 / TOO_LARGE;
 var
   alpha: TArbFloatArray = nil;
   beta: TArbFloatArray = nil;
@@ -297,11 +295,6 @@ begin
       kj := k * mfit + j;
       jk := j * mfit + k;
       alpha[kj] := alpha[jk];
-      if not InRange(abs(alpha[kj]), TOO_SMALL, TOO_LARGE) then
-      begin
-        Result.ErrCode := fitSingular;
-        exit;
-      end;
     end;
 
   // Solve equation system

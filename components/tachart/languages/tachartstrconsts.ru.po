@@ -213,6 +213,10 @@ msgstr "Независимых переменных не может быть м�
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Тип результата выражения должен быть целым либо вещественным, но сейчас является \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Диаграмма с картой цветов по математическому выражению"

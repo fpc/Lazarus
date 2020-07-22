@@ -213,6 +213,10 @@ msgstr "O número de parâmetros à preencher não pode ser menor que 1."
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Tipo de resultado da expressão deve ser inteiro ou flutuante. Obtido \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Série Mapa de cor de expressão matemática"

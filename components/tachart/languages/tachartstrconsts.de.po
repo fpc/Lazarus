@@ -215,6 +215,10 @@ msgstr "Die Anzahl der Fitparameter kann nicht kleiner als 1 sein."
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Der Typ des Ausdrucksergebnisses muss integer oder float sein, ist aber \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Math. Funktion (farb-kodiert)"

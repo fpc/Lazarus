@@ -216,6 +216,10 @@ msgstr "Число параметрів апроксимації не може �
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Тип значення виразу повинен бути цілим або дійсним. Отримано \"%s\"."
 
+#: tachartstrconsts.rserrnumericaloverflow
+msgid "Numerical overflow."
+msgstr ""
+
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
 msgstr "Колірна карта"
