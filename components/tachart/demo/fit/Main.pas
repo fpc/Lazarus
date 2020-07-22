@@ -330,12 +330,14 @@ end;
 procedure TfrmMain.FitSeriesFitEquationText(ASeries: TFitSeries;
   AEquationText: IFitEquationText);
 begin
-  Unused(ASeries);
-  AEquationText.NumFormat('%.5f');
-  if cbHTML.Checked then
-    AEquationText.TextFormat(tfHtml)
-  else
-    AEquationText.TextFormat(tfNormal);
+  if ASeries.ErrCode = fitOK then
+  begin
+    AEquationText.NumFormat('%.5f');
+    if cbHTML.Checked then
+      AEquationText.TextFormat(tfHtml)
+    else
+      AEquationText.TextFormat(tfNormal);
+  end;
 end;
 
 procedure TfrmMain.FixedParamsChanged(Sender: TObject);
@@ -475,17 +477,6 @@ begin
   CreateData;
 end;
 
-function MyFormatFloat(x: Double; StdFormat, ExpFormat: String): String;
-begin
-  if IsNaN(x) then
-    Result := 'n/a'
-  else
-  if (abs(x) <= 1E-6) or (abs(x) >= 1E6) then
-    Result := Format(ExpFormat, [x])
-  else
-    Result := Format(StdFormat, [x]);
-end;
-
 procedure TfrmMain.FitCompleteHandler(Sender:TObject);
 const
   {$IF FPC_FullVersion >= 30004}
@@ -495,8 +486,9 @@ const
   MASK = '%-4s %10s %10s %10s';
   {$IFEND}
   EXP_FMT = '%.3e';
-  STD_FMT = '%.5f';
+  STD_FMT = '%.3f';
   PARAM_NAME: array[0..1] of String = ('a', 'b');
+  PRECISION = 3;
 var
   i: Integer;
   decsep: Char;
@@ -528,11 +520,11 @@ begin
               end;
               Add(Format(MASK, [
                 paramName,
-                MyFormatFloat(FitSeries.Param[i], STD_FMT, EXP_FMT),
-                MyFormatFloat(FitSeries.ParamError[i], STD_FMT, EXP_FMT),
-                MyFormatFloat(FitSeries.Param_tValue[i], STD_FMT, EXP_FMT)
+                FloatToStrEx(FitSeries.Param[i], PRECISION, STD_FMT, EXP_FMT),
+                FloatToStrEx(FitSeries.ParamError[i], PRECISION, STD_FMT, EXP_FMT),
+                FloatToStrEx(FitSeries.Param_tValue[i], PRECISION, STD_FMT, EXP_FMT)
                 {$IF FPC_FullVersion >= 30004},
-                MyFormatFloat(FitSeries.Param_pValue[i], STD_FMT, EXP_FMT)
+                FloatToStrEx(FitSeries.Param_pValue[i], PRECISION, STD_FMT, EXP_FMT)
                 {$IFEND}
               ]));
             end;
@@ -550,9 +542,9 @@ begin
               FitSeries.GetConfidenceLimits(i, confL, confH);
               Add(Format(CONF_MASK, [
                 paramName,
-                MyFormatFloat(FitSeries.Param[i], STD_FMT, EXP_FMT),
-                MyFormatFloat(confL, STD_FMT, EXP_FMT),
-                MyFormatFloat(confH, STD_FMT, EXP_FMT)
+                FloatToStrEx(FitSeries.Param[i], PRECISION, STD_FMT, EXP_FMT),
+                FloatToStrEx(confL, PRECISION, STD_FMT, EXP_FMT),
+                FloatToStrEx(confH, PRECISION, STD_FMT, EXP_FMT)
               ]));
             end;
             Add('');
@@ -606,6 +598,10 @@ begin
       DefaultFormatSettings.DecimalSeparator := decsep;
     end;
   end;
+
+  if FitSeries.ErrCode <> fitOK then
+    Chart.Title.Text.Text := FitSeries.ErrorMsg;
+  Chart.Title.Visible := FitSeries.ErrCode <> fitOK;
 end;
 
 procedure TfrmMain.lbResultsDrawItem(Control: TWinControl; Index: Integer;
