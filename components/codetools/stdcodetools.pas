@@ -3114,6 +3114,8 @@ begin
   ReadNextAtom;
   if AtomIsChar('(') then begin
     ReadNextAtom;
+    if UpAtomIs('SPECIALIZE') then
+      ReadNextAtom;
     if AtomIsIdentifier then
       AncestorClassName:=GetAtom;
   end;
