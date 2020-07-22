@@ -14,7 +14,7 @@ msgstr ""
 
 #: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
 msgid "Arithmetic overflow error"
-msgstr "Erro transbordamento aritimético"
+msgstr "Erro transbordamento aritmético"
 
 #: dbgintfcommonstrings.rsrunerrorassertionfailederror
 msgid "Assertion failed error"

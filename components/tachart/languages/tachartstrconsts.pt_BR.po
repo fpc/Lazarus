@@ -215,7 +215,7 @@ msgstr "Tipo de resultado da expressão deve ser inteiro ou flutuante. Obtido \"
 
 #: tachartstrconsts.rserrnumericaloverflow
 msgid "Numerical overflow."
-msgstr ""
+msgstr "Transbordamento numérico."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
@@ -279,7 +279,7 @@ msgstr "Soma total de quadrados (SST)"
 
 #: tachartstrconsts.rsfittvalue
 msgid "t value"
-msgstr ""
+msgstr "valor t"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
