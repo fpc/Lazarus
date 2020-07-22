@@ -765,7 +765,7 @@ begin
         if not Result then
           exit;
         Obj.SetTextBetweenPoints(GetVarPointFromStack(Stack, -2)^, GetVarPointFromStack(Stack, -3)^,
-          Stack.GetAnsiString(-4), TSynEditTextFlags(Stack.GetUInt(-5)),
+          Stack.GetAnsiString(-4), TSynEditTextFlags(GetSetFromStack(Stack, -5)),
           TSynCaretAdjustMode(Stack.GetUInt(-6)), TSynMarksAdjustMode(Stack.GetUInt(-7)),
           TSynSelectionMode(Stack.GetUInt(-8))
         );
