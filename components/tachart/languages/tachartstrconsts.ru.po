@@ -215,7 +215,7 @@ msgstr "Тип результата выражения должен быть ц�
 
 #: tachartstrconsts.rserrnumericaloverflow
 msgid "Numerical overflow."
-msgstr ""
+msgstr "Числовое переполнение."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
