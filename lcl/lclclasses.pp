@@ -1,9 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                               lclclasses.pp                               * 
- *                               -------------                               * 
- *                                                                           *
+ *                               lclclasses.pp                               *
+ *                               -------------                               *
  *                                                                           *
  *****************************************************************************
 
@@ -19,6 +18,8 @@
 unit LCLClasses;
 
 {$mode objfpc}{$H+}
+
+{ Add -dVerboseWSBrunoK switch to compile with $DEFINE VerboseWSBrunoK }
 
 interface
 
@@ -47,7 +48,9 @@ type
     class procedure WSRegisterClass; virtual;
     class function GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass; virtual;
   public
+    {$IFDEF DebugLCLComponents}
     constructor Create(TheOwner: TComponent); override;
+    {$ENDIF}
     destructor Destroy; override;
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
@@ -56,15 +59,13 @@ type
     property LCLRefCount: integer read FLCLRefCount;
     property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
   end;
-  
+
   { TLCLReferenceComponent }
 
   // A base class for all components having a handle
-
   TLCLReferenceComponent = class(TLCLComponent)
   private
     FReferencePtr: PWSReference;
-
     FCreating: Boolean; // Set if we are creating the handle
     function  GetHandle: THandle;
     function  GetReferenceAllocated: Boolean;
@@ -89,33 +90,93 @@ implementation
 uses
   InterfaceBase;
 
+const
+  cWSRegisterOffset : integer = 0; // Offset of WSRegisterClass in class virtual methods
+  cLCLComponentWSReg : CodePointer = nil; // Adress of TLCLComponent.WSRegisterClass
+
+type
+  TLCLComponentClass = class of TLCLComponent;
+
+function WSRegisterLCLComponent: boolean;
+begin
+  RegisterWSComponent(TLCLComponent, TWSLCLComponent);
+  Result := True;
+end;
+
 class procedure TLCLComponent.WSRegisterClass;
+const
+  Registered : boolean = False;
 begin
-  //
+  if Registered then
+    Exit;
+  WSRegisterLCLComponent;
+  Registered := True;
 end;
 
-// This method allows descendents to override the FWidgetSetClass
+procedure UpdateOffset;
+var
+  lWSRegisterProc : CodePointer;
+  lPPtrArray : PPointerArray;
+  I : integer;
+begin
+  cLCLComponentWSReg := @TLCLComponent.WSRegisterClass;
+  lPPtrArray := Pointer(TLCLComponent);
+  I := 0;
+  while lPPtrArray^[i]<>cLCLComponentWSReg do
+    inc(i);
+  cWSRegisterOffset := I * SizeOf(Pointer);
+end;
+
+{ This method allows descendents to override the FWidgetSetClass, handles
+  registration of the component in WSLVLClasses list of components. It is only
+  called if there wasn't a direct or parent hit at the beginining of NewInstance. }
 class function TLCLComponent.GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass;
+var
+  lPSelfWSReg,
+  lPSelfParentWSReg : CodePointer;
+  lClassParent : TLCLComponentClass;
 begin
-  Result := FindWSComponentClass(Self);
-
-  if Result = nil then
-  begin
-    {$IFDEF VerboseLCL}
-    DebugLn(['TLCLComponent.NewInstance WARNING: missing FWidgetSetClass ',ClassName]);
-    {$ENDIF}
-    Result := TWSLCLComponent;
+  if cWSRegisterOffset = 0 then begin
+    UpdateOffset;
+    TLCLComponent.WSRegisterClass;  { Always create the top node ! }
   end;
+
+  WSRegisterClass;
+  Result := FindWSRegistered(Self);
+  if Result <> nil then
+    Exit;
+
+  lClassParent := TLCLComponentClass(ClassParent);
+  lPSelfWSReg := PCodePointer(Pointer(Self) + cWSRegisterOffset)^;
+  lPSelfParentWSReg := PCodePointer(Pointer(lClassParent) + cWSRegisterOffset)^;
+
+  { Self.ComponentClass didn't register itself but the parent should now be registered }
+  repeat
+    if lPSelfWSReg = lPSelfParentWSReg then begin
+      Result := FindWSRegistered(TComponentClass(lClassParent));
+      if Assigned(Result) then
+        Break
+      else
+        { Force creation of intermediate nodes for parent }
+        RegisterWSComponent(TComponentClass(lClassParent), nil, nil, True);
+    end
+    else begin
+      { Force creation of intermediate nodes for Self and a leaf node for Self }
+      RegisterWSComponent(Self, nil, nil, True);
+      Result := FindWSRegistered(Self);
+      Break;
+    end;
+  until False;
 end;
 
+{$IFDEF DebugLCLComponents}
 constructor TLCLComponent.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  {$IFDEF DebugLCLComponents}
   //DebugLn('TLCLComponent.Create ',DbgSName(Self));
   DebugLCLComponents.MarkCreated(Self,DbgSName(Self));
-  {$ENDIF}
 end;
+{$ENDIF}
 
 destructor TLCLComponent.Destroy;
 begin
@@ -135,11 +196,37 @@ begin
 end;
 
 class function TLCLComponent.NewInstance: TObject;
+var
+  lWidgetSetClass: TWSLCLComponentClass;
+  lClassParent : TLCLComponentClass;
 begin
   Result := inherited NewInstance;
-  WSRegisterClass;
 
+  { Test if directly inherits WSRegisterClass from its parent }
+  lClassParent := TLCLComponentClass(ClassParent);
+  if (PCodePointer(Pointer(Self)  + cWSRegisterOffset)^
+     = PCodePointer(Pointer(lClassParent) + cWSRegisterOffset)^)
+  then begin
+    { Retrieve WidgetSetClass from Parent }
+    lWidgetSetClass := FindWSRegistered(lClassParent);
+    if Assigned(lWidgetSetClass) then begin
+      TLCLComponent(Result).FWidgetSetClass := lWidgetSetClass;
+      Exit;
+    end;
+  end
+  else begin
+    { Look if already registered. If true set FWidgetSetClass and exit }
+    lWidgetSetClass := FindWSRegistered(Self);
+    if Assigned(lWidgetSetClass) then begin
+      TLCLComponent(Result).FWidgetSetClass := lWidgetSetClass;
+      {$IFDEF VerboseWSBrunoK} inc(cWSLCLDirectHit); {$ENDIF}
+      Exit;
+    end;
+  end;
+
+  { WSRegisterClass and manage WSLVLClasses list }
   TLCLComponent(Result).FWidgetSetClass := GetWSComponentClass(TLCLComponent(Result));
+  {$IFDEF VerboseWSBrunoK} inc(cWSLCLRegister); {$ENDIF}
 end;
 
 procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);

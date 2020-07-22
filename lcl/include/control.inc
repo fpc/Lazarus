@@ -4264,7 +4264,11 @@ begin
 end;
 
 class procedure TControl.WSRegisterClass;
+const
+  Registered : boolean = False;
 begin
+  if Registered then
+    Exit;
   inherited WSRegisterClass;
   RegisterControl;
   RegisterPropertyToSkip(TControl, 'AlignWithMargins', 'VCL compatibility property', '');
@@ -4276,6 +4280,7 @@ begin
   RegisterPropertyToSkip(TControl, 'ExplicitHeight',   'VCL compatibility property', '');
   RegisterPropertyToSkip(TControl, 'ExplicitTop',      'VCL compatibility property', '');
   RegisterPropertyToSkip(TControl, 'ExplicitWidth',    'VCL compatibility property', '');
+  Registered := True;
 end;
 
 function TControl.GetCursor: TCursor;
