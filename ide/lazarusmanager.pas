@@ -370,17 +370,21 @@ begin
       {$IFDEF darwin}
       if DirectoryExistsUTF8(FLazarusPath+'.app') then begin
         // start the bundle instead
+        {$IFDEF LCLCocoa}
+        FLazarusPath:= FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
+        {$ELSE}
         FLazarusPath:= FLazarusPath+'.app';// /Contents/MacOS/'+ExtractFileName(FLazarusPath);
+        {$ENDIF}
       end;
       {$ENDIF}
 
-      DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
+      DebugLn(['Info: (startlazarus) [TLazarusManager.Run] starting ',FLazarusPath,' ...']);
       EnvOverrides:=TStringList.Create;
       try
         {$IFDEF Linux}
         EnvOverrides.Values['LIBOVERLAY_SCROLLBAR']:='0';
         {$ENDIF}
-        {$IFDEF darwin}
+        {$IFDEF LCLCarbon}
         // "open" process runs a bundle, but doesn't wait for it to finish execution
         // "startlazarus" logic suggests that the Lazarus process would be waited
         // and if the special 99 (ExitCodeRestartLazarus) code is received,
