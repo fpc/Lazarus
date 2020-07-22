@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 21.03.2020
+   This file was generated on 22.07.2020
 }
 
 {$ifndef ALLPACKAGES} 
@@ -24,9 +24,13 @@ begin
   with Installer do
     begin
     P:=AddPackage('ideintf');
-    P.Version:='1.0';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
+
+    P.Author:='Lazarus';
+    P.License:='Modified LGPL2';
+    P.Description:='IDEIntf - the interface units for the Lazarus IDE';
 
     P.Flags.Add('LazarusDsgnPkg');
 
@@ -96,6 +100,9 @@ begin
     t.Dependencies.AddUnit('toolbarintf');
     t.Dependencies.AddUnit('treeviewpropedit');
     t.Dependencies.AddUnit('unitresources');
+    t.Dependencies.AddUnit('bufdatasetdsgn');
+    t.Dependencies.AddUnit('selectdatasetdlg');
+    t.Dependencies.AddUnit('seledits');
 
     T:=P.Targets.AddUnit('actionseditor.pas');
     T:=P.Targets.AddUnit('actionseditorstd.pas');
@@ -149,8 +156,12 @@ begin
     T:=P.Targets.AddUnit('toolbarintf.pas');
     T:=P.Targets.AddUnit('treeviewpropedit.pas');
     T:=P.Targets.AddUnit('unitresources.pas');
+    T:=P.Targets.AddUnit('bufdatasetdsgn.pas');
+    T:=P.Targets.AddUnit('selectdatasetdlg.pas');
+    T:=P.Targets.AddUnit('seledits.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
+    P.Sources.AddSrc('IDEIntf.compiled');
     P.InstallFiles.Add('IDEIntf.compiled',AllOSes,'$(unitinstalldir)');
 
     end;

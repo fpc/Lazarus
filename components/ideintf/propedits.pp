@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils,
+  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils, FGL,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -277,8 +277,7 @@ type
 
   TGetPropEditProc = procedure(Prop: TPropertyEditor) of object;
 
-  TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit,
-       pedsInComboList);
+  TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit, pedsInComboList);
   TPropEditDrawState = set of TPropEditDrawStateType;
   
   TPropEditHint = (
@@ -415,11 +414,11 @@ type
                      read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
   end;
 
-  TPropertyEditorClass=class of TPropertyEditor;
-  
+  TPropertyEditorClass = class of TPropertyEditor;
+  TPropertyEditorList = specialize TFPGObjectList<TPropertyEditor>;
+
 { THiddenPropertyEditor
-  A property editor, to hide a published property. If you can't unpublish it,
-  hide it. }
+  A property editor to hide a published property. If you can't unpublish it, hide it. }
   
   THiddenPropertyEditor = class(TPropertyEditor)
   end;
@@ -1180,6 +1179,39 @@ type
   TDateTimeProperty =       TDateTimePropertyEditor;
 
 
+type
+  TSelectionEditorAttribute = (
+    seaFilterProperties
+  );
+  TSelectionEditorAttributes = set of TSelectionEditorAttribute;
+
+  { TBaseSelectionEditor }
+
+  TBaseSelectionEditor = class
+    constructor Create({%H-}ADesigner: TIDesigner; {%H-}AHook: TPropertyEditorHook); virtual;
+    function GetAttributes: TSelectionEditorAttributes; virtual; abstract;
+    procedure FilterProperties(ASelection: TPersistentSelectionList; AProperties: TPropertyEditorList); virtual; abstract;
+  end;
+
+  TSelectionEditorClass = class of TBaseSelectionEditor;
+
+  TSelectionEditorClassList = specialize TFPGList<TSelectionEditorClass>;
+
+  { TSelectionEditor }
+
+  TSelectionEditor = class(TBaseSelectionEditor)
+  private
+    FDesigner: TIDesigner;
+    FHook: TPropertyEditorHook;
+  public
+    constructor Create(ADesigner: TIDesigner; AHook: TPropertyEditorHook); override;
+    function GetAttributes: TSelectionEditorAttributes; override;
+    procedure FilterProperties({%H-}ASelection: TPersistentSelectionList; {%H-}AProperties: TPropertyEditorList); override;
+    property Designer: TIDesigner read FDesigner;
+    property Hook: TPropertyEditorHook read FHook;
+  end;
+
+
 //==============================================================================
 
 { RegisterPropertyEditor
@@ -1253,8 +1285,13 @@ procedure GetPersistentProperties(AItem: TPersistent;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
   AEditorFilterFunc: TPropertyEditorFilterFunc);
 
-function GetEditorClass(PropInfo:PPropInfo;
-  Obj: TPersistent): TPropertyEditorClass;
+function GetEditorClass(PropInfo:PPropInfo; Obj: TPersistent): TPropertyEditorClass;
+
+//==============================================================================
+
+procedure RegisterSelectionEditor(AComponentClass: TComponentClass; AEditorClass: TSelectionEditorClass);
+procedure GetSelectionEditorClasses(AComponent: TComponent; AEditorList: TSelectionEditorClassList);
+procedure GetSelectionEditorClasses(ASelection: TPersistentSelectionList; AEditorList: TSelectionEditorClassList);
 
 //==============================================================================
 
@@ -1825,6 +1862,35 @@ type
     procedure Gather(Child: TComponent);
   end;
 
+{ TSelectionEditor }
+
+constructor TSelectionEditor.Create(ADesigner: TIDesigner;
+  AHook: TPropertyEditorHook);
+begin
+  inherited Create(ADesigner, AHook);
+  FDesigner := ADesigner;
+  FHook := AHook;
+end;
+
+function TSelectionEditor.GetAttributes: TSelectionEditorAttributes;
+begin
+  Result := [];
+end;
+
+procedure TSelectionEditor.FilterProperties(
+  ASelection: TPersistentSelectionList; AProperties: TPropertyEditorList);
+begin
+
+end;
+
+{ TBaseSelectionEditor }
+
+constructor TBaseSelectionEditor.Create(ADesigner: TIDesigner;
+  AHook: TPropertyEditorHook);
+begin
+
+end;
+
 { TPagesPropertyEditor }
 
 procedure TPagesPropertyEditor.AssignItems(OldItmes, NewItems: TStrings);
@@ -2121,6 +2187,7 @@ const
 var
   PropertyEditorMapperList:TFPList;
   PropertyClassList:TFPList;
+  SelectionEditorClassList:TFPList;
 
 type
   PPropertyClassRec=^TPropertyClassRec;
@@ -2134,6 +2201,12 @@ type
   PPropertyEditorMapperRec=^TPropertyEditorMapperRec;
   TPropertyEditorMapperRec=record
     Mapper:TPropertyEditorMapperFunc;
+  end;
+
+  PSelectionEditorClassRec=^TSelectionEditorClassRec;
+  TSelectionEditorClassRec=record
+    ComponentClass:TComponentClass;
+    EditorClass:TSelectionEditorClass;
   end;
 
 { TPropInfoList }
@@ -2288,6 +2361,69 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure RegisterSelectionEditor(AComponentClass: TComponentClass; AEditorClass: TSelectionEditorClass);
+var
+  p:PSelectionEditorClassRec;
+begin
+  if not Assigned(AComponentClass) or not Assigned(AEditorClass) then
+    Exit;
+  if not Assigned(SelectionEditorClassList) then
+    SelectionEditorClassList:=TFPList.Create;
+  New(p);
+  p^.ComponentClass:=AComponentClass;
+  p^.EditorClass:=AEditorClass;
+  SelectionEditorClassList.Add(p);
+end;
+
+procedure GetSelectionEditorClasses(AComponent: TComponent; AEditorList: TSelectionEditorClassList);
+var
+  i:LongInt;
+begin
+  if not Assigned(AComponent) or not Assigned(AEditorList) then
+    Exit;
+  if not Assigned(SelectionEditorClassList) then
+    Exit;
+  for i:=0 to SelectionEditorClassList.Count-1 do begin
+    with PSelectionEditorClassRec(SelectionEditorClassList[i])^ do begin
+      if AComponent.InheritsFrom(ComponentClass) then
+        AEditorList.Add(EditorClass);
+    end;
+  end;
+end;
+
+procedure GetSelectionEditorClasses(ASelection: TPersistentSelectionList;
+  AEditorList: TSelectionEditorClassList);
+var
+  tmp:TSelectionEditorClassList;
+  i,j:LongInt;
+  sel:TPersistent;
+begin
+  if not Assigned(ASelection) or (ASelection.Count=0) or not Assigned(AEditorList) then
+    Exit;
+
+  tmp:=TSelectionEditorClassList.Create;
+  try
+    for i:=0 to ASelection.Count-1 do begin
+      sel:=ASelection[i];
+      if not (sel is TComponent) then
+        Continue;
+      GetSelectionEditorClasses(TComponent(sel),tmp);
+      { if there are no classes yet, we pick them as is, otherwise we remove all
+        those from the existing list that are not part of the new list }
+      if AEditorList.Count=0 then
+        AEditorList.Assign(tmp)
+      else begin
+        for j:=AEditorList.Count-1 downto 0 do begin
+          if tmp.IndexOf(AEditorList[j])<0 then
+            AEditorList.Delete(j);
+        end;
+      end;
+      tmp.Clear;
+    end;
+  finally
+    tmp.Free;
+  end;
+end;
 
 { GetComponentProperties }
 
@@ -2319,8 +2455,7 @@ begin
   PropertyEditorMapperList.Insert(0,P);
 end;
 
-function GetEditorClass(PropInfo:PPropInfo;
-  Obj:TPersistent): TPropertyEditorClass;
+function GetEditorClass(PropInfo:PPropInfo; Obj:TPersistent): TPropertyEditorClass;
 var
   PropType:PTypeInfo;
   P,C:PPropertyClassRec;
@@ -2401,10 +2536,14 @@ var
   Candidates: TPropInfoList;
   PropLists: TFPList;
   PropEditor: TPropertyEditor;
+  PropEditorList: TPropertyEditorList;
+  SelEditor: TBaseSelectionEditor;
+  SelEditorList: TSelectionEditorClassList;
   EdClass: TPropertyEditorClass;
   PropInfo: PPropInfo;
   AddEditor: Boolean;
   Instance: TPersistent;
+  Designer: TIDesigner;
 begin
   if (ASelection = nil) or (ASelection.Count = 0) then Exit;
   SelCount := ASelection.Count;
@@ -2448,52 +2587,81 @@ begin
       PropEditor.Free;
     end;
 
-    PropLists := TFPList.Create;
+    PropEditorList := TPropertyEditorList.Create(True);
     try
-      PropLists.Count := SelCount;
-      // Create a property info list for each component in the selection
-      for I := 0 to SelCount - 1 do
-        PropLists[i] := TPropInfoList.Create(ASelection[I], AFilter);
+      PropLists := TFPList.Create;
+      try
+        PropLists.Count := SelCount;
+        // Create a property info list for each component in the selection
+        for I := 0 to SelCount - 1 do
+          PropLists[i] := TPropInfoList.Create(ASelection[I], AFilter);
 
-      // Eliminate each property in Candidates that is not in all property lists
-      for I := 0 to SelCount - 1 do
-        Candidates.Intersect(TPropInfoList(PropLists[I]));
+        // Eliminate each property in Candidates that is not in all property lists
+        for I := 0 to SelCount - 1 do
+          Candidates.Intersect(TPropInfoList(PropLists[I]));
 
-      // Eliminate each property in the property list that are not in Candidates
-      for I := 0 to SelCount - 1 do
-        TPropInfoList(PropLists[I]).Intersect(Candidates);
+        // Eliminate each property in the property list that are not in Candidates
+        for I := 0 to SelCount - 1 do
+          TPropInfoList(PropLists[I]).Intersect(Candidates);
 
-      // PropList now has a matrix of PropInfo's.
-      // -> create a property editor for each property
-      for I := 0 to Candidates.Count - 1 do
-      begin
-        EdClass := GetEditorClass(Candidates[I], Instance);
-        if EdClass = nil then Continue;
-        PropEditor := EdClass.Create(AHook, SelCount);
-        AddEditor := True;
-        for J := 0 to SelCount - 1 do
+        // PropList now has a matrix of PropInfo's.
+        // -> create a property editor for each property
+        for I := 0 to Candidates.Count - 1 do
         begin
-          if (ASelection[J].ClassType <> ClassTyp) and
-            (GetEditorClass(TPropInfoList(PropLists[J])[I], ASelection[J])<>EdClass) then
+          EdClass := GetEditorClass(Candidates[I], Instance);
+          if EdClass = nil then Continue;
+          PropEditor := EdClass.Create(AHook, SelCount);
+          AddEditor := True;
+          for J := 0 to SelCount - 1 do
           begin
-            AddEditor := False;
-            Break;
+            if (ASelection[J].ClassType <> ClassTyp) and
+              (GetEditorClass(TPropInfoList(PropLists[J])[I], ASelection[J])<>EdClass) then
+            begin
+              AddEditor := False;
+              Break;
+            end;
+            PropEditor.SetPropEntry(J, ASelection[J], TPropInfoList(PropLists[J])[I]);
           end;
-          PropEditor.SetPropEntry(J, ASelection[J], TPropInfoList(PropLists[J])[I]);
+          if AddEditor then
+          begin
+            PropEditor.Initialize;
+            if not PropEditor.ValueAvailable then AddEditor:=false;
+          end;
+          if AddEditor then
+            PropEditorList.Add(PropEditor)
+          else
+            PropEditor.Free;
         end;
-        if AddEditor then
-        begin
-          PropEditor.Initialize;
-          if not PropEditor.ValueAvailable then AddEditor:=false;
-        end;
-        if AddEditor then
-          AProc(PropEditor)
-        else
-          PropEditor.Free;
+      finally
+        for I := 0 to PropLists.Count - 1 do
+          TPropInfoList(PropLists[I]).Free;
+        PropLists.Free;
       end;
+
+      SelEditorList := TSelectionEditorClassList.Create;
+      try
+        GetSelectionEditorClasses(ASelection, SelEditorList);
+        { is it safe to assume that the whole selection has the same designer? }
+        Designer := FindRootDesigner(ASelection[0]);
+        for I := 0 to SelEditorList.Count - 1 do begin
+          SelEditor := SelEditorList[I].Create(Designer, AHook);
+          try
+            if seaFilterProperties in SelEditor.GetAttributes then
+              SelEditor.FilterProperties(ASelection, PropEditorList);
+          finally
+            SelEditor.Free;
+          end;
+        end;
+      finally
+        SelEditorList.Free;
+      end;
+
+      { no longer free the editors }
+      PropEditorList.FreeObjects := False;
+      for I := 0 to PropEditorList.Count - 1 do
+        AProc(PropEditorList[I]);
     finally
-      for I := 0 to PropLists.Count - 1 do TPropInfoList(PropLists[I]).Free;
-      PropLists.Free;
+      PropEditorList.Free;
     end;
   finally
     Candidates.Free;
@@ -8107,6 +8275,7 @@ var
   i: integer;
   pm: PPropertyEditorMapperRec;
   pc: PPropertyClassRec;
+  sec: PSelectionEditorClassRec;
 begin
   if PropertyEditorMapperList<>nil then begin
     for i:=0 to PropertyEditorMapperList.Count-1 do begin
@@ -8122,6 +8291,14 @@ begin
       Dispose(pc);
     end;
     FreeAndNil(PropertyClassList);
+  end;
+
+  if Assigned(SelectionEditorClassList) then begin
+    for i:=0 to SelectionEditorClassList.Count-1 do begin
+      sec:=PSelectionEditorClassRec(SelectionEditorClassList[i]);
+      Dispose(sec);
+    end;
+    FreeAndNil(SelectionEditorClassList);
   end;
 
   FreeAndNil(ListPropertyEditors);

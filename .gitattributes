@@ -2211,6 +2211,7 @@ components/ideintf/propedits.pp svneol=native#text/pascal
 components/ideintf/propeditutils.pp svneol=native#text/pascal
 components/ideintf/selectdatasetdlg.lfm svneol=native#text/plain
 components/ideintf/selectdatasetdlg.pas svneol=native#text/plain
+components/ideintf/seledits.pas svneol=native#text/pascal
 components/ideintf/srceditorintf.pas svneol=native#text/pascal
 components/ideintf/statusbarpropedit.pp svneol=native#text/pascal
 components/ideintf/stringspropeditdlg.lfm svneol=native#text/plain

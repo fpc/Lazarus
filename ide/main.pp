@@ -82,6 +82,7 @@ uses
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, LazMsgDialogs,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, BaseIDEIntf, LazIDEIntf,
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
+  SelEdits,
   // protocol
   IDEProtocol,
   // compile

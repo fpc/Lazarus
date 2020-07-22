@@ -315,6 +315,10 @@
         <Filename Value="selectdatasetdlg.pas"/>
         <UnitName Value="selectdatasetdlg"/>
       </Item>
+      <Item>
+        <Filename Value="seledits.pas"/>
+        <UnitName Value="SelEdits"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
