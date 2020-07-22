@@ -120,7 +120,10 @@ procedure TCustomDrawFuncHelper.CalcAt(
   AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
 begin
   APt := FMakeDP(AXg, FAxisToGraphYr(FCalc(AXa)));
-  AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
+  if IsNaN(APt) then
+    AIn := false
+  else
+    AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
 end;
 
 procedure TCustomDrawFuncHelper.CalcAxisExtentY(
@@ -217,6 +220,8 @@ var
   inExtent: Boolean;
 begin
   CalcAt(AXg, AXa, p, inExtent);
+  if IsNaN(p) then
+    exit;
   t := p;
   if inExtent and FPrevInExtent then
     FDrawer.LineTo(FChart.GraphToImage(p))
