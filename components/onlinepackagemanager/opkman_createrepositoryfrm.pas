@@ -156,6 +156,8 @@ type
     FDownloadURL: String;
     FSVNURL: String;
     FCommunityDescription: String;
+    FExternalDependencies: String;
+    FOrphanPackage: Integer;
   end;
 
 procedure TCreateRepositoryFrm.FormCreate(Sender: TObject);
@@ -700,6 +702,8 @@ begin
       Data^.FHomePageURL := MetaPackage.HomePageURL;
       Data^.FDownloadURL := MetaPackage.DownloadURL;
       Data^.FCommunityDescription := MetaPackage.CommunityDescription;
+      Data^.FExternalDependencies := MetaPackage.ExternalDependecies;
+      Data^.FOrphanPackage := MetaPackage.OrphanedPackage;
       Data^.FDataType := 1;
       for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
       begin
@@ -813,7 +817,15 @@ var
   Data: PData;
 begin
   Data := FVSTPackages.GetNodeData(Node);
-  ImageIndex := Data^.FDataType;
+  case Data^.FDataType of
+    0: ImageIndex := 0;
+    1: if Data^.FOrphanPackage = 1 then
+         ImageIndex := 36
+       else
+         ImageIndex := 1;
+
+    2: ImageIndex := 0;
+  end;
 end;
 
 procedure TCreateRepositoryFrm.VSTPackagesHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
@@ -926,6 +938,18 @@ begin
          DetailData := FVSTDetails.GetNodeData(DetailNode);
          DetailData^.FCommunityDescription := Data^.FCommunityDescription;
          DetailData^.FDataType := 19;
+         //add ExternalDependencies(DataType = 20)
+         DetailNode := FVSTDetails.AddChild(nil);
+         DetailData := FVSTDetails.GetNodeData(DetailNode);
+         DetailData^.FExternalDependencies := Data^.FExternalDependencies;
+         DetailData^.FDataType := 20;
+         //add OrphanedPackage(DataType = 21)
+         DetailNode := FVSTDetails.AddChild(nil);
+         DetailData := FVSTDetails.GetNodeData(DetailNode);
+         DetailData^.FOrphanPackage := Data^.FOrphanPackage;
+         DetailData^.FDataType := 21;
+
+
        end;
     2: begin
          //add description(DataType = 2)
@@ -1052,6 +1076,17 @@ begin
                   CellText := rsMainFrm_VSTText_CommunityDescription
                 else
                   CellText := DetailData^.FCommunityDescription;
+          20:  if Column = 0 then
+                  CellText := rsMainFrm_VSTText_ExternalDeps
+                else
+                  CellText := DetailData^.FExternalDependencies;
+          21:  if Column = 0 then
+                  CellText := rsMainFrm_VSTText_OrphanedPackage1
+                else
+                  case DetailData^.FOrphanPackage of
+                    0: CellText := rsMainFrm_VSTText_Install0;
+                    1: CellText := rsMainFrm_VSTText_Install1;
+                  end;
          end;
        end;
     2: begin
@@ -1113,7 +1148,12 @@ begin
   if Column = 0 then
   begin
     Data := FVSTDetails.GetNodeData(Node);
-    ImageIndex := Data^.FDataType;
+    case Data^.FDataType of
+      20: ImageIndex := 10;
+      21: ImageIndex := 36;
+      else
+        ImageIndex := Data^.FDataType;
+      end;
   end;
 end;
 

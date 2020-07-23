@@ -173,6 +173,7 @@ type
     FCategory: String;
     FCommunityDescription: String;
     FExternalDependencies: String;
+    FOrphanedPackage: Integer;
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
@@ -217,6 +218,7 @@ type
     property Category: String read FCategory write FCategory;
     property CommunityDescription: String read FCommunityDescription write FCommunityDescription;
     property ExternalDependecies: String read FExternalDependencies write FExternalDependencies;
+    property OrphanedPackage: Integer read FOrphanedPackage write FOrphanedPackage;
     property Checked: Boolean read FChecked write FChecked;
     property RepositoryFileName: String read FRepositoryFileName write FRepositoryFileName;
     property RepositoryFileSize: int64 read FRepositoryFileSize write FRepositoryFileSize;
@@ -859,6 +861,7 @@ begin
     AMetaPackage.Category := PackageData.Get('Category');
     AMetaPackage.CommunityDescription := PackageData.Get('CommunityDescription');
     AMetaPackage.ExternalDependecies := PackageData.Get('ExternalDependecies');
+    AMetaPackage.OrphanedPackage := PackageData.Get('OrphanedPackage');
     AMetaPackage.RepositoryFileName := PackageData.Get('RepositoryFileName');
     AMetaPackage.RepositoryFileSize := PackageData.Get('RepositoryFileSize');
     AMetaPackage.RepositoryFileHash := PackageData.Get('RepositoryFileHash');
@@ -1315,6 +1318,7 @@ begin
     APackageData.Add('Category', AMetaPackage.Category);
     APackageData.Add('CommunityDescription', AMetaPackage.CommunityDescription);
     APackageData.Add('ExternalDependecies', AMetaPackage.ExternalDependecies);
+    APackageData.Add('OrphanedPackage', AMetaPackage.OrphanedPackage);
     APackageData.Add('RepositoryFileName', AMetaPackage.RepositoryFileName);
     APackageData.Add('RepositoryFileSize', AMetaPackage.RepositoryFileSize);
     APackageData.Add('RepositoryFileHash', AMetaPackage.RepositoryFileHash);

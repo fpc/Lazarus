@@ -89,6 +89,8 @@ resourcestring
   rsMainFrm_VSTText_Category = 'Category';
   rsMainFrm_VSTText_CommunityDescription = 'Community description';
   rsMainFrm_VSTText_ExternalDeps = 'External dependencies';
+  rsMainFrm_VSTText_OrphanedPackage1 = 'Orphaned package';
+  rsMainFrm_VSTText_OrphanedPackage2 = 'currently has no active maintainer';
   rsMainFrm_VSTText_RepositoryFilename = 'Repository filename';
   rsMainFrm_VSTText_RepositoryFileSize = 'Repository filesize';
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';

@@ -139,12 +139,12 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     Enabled = False
     Interval = 100
     OnTimer = tmWaitTimer
-    left = 85
-    top = 32
+    Left = 85
+    Top = 32
   end
   object pm: TPopupMenu
-    left = 139
-    top = 37
+    Left = 139
+    Top = 37
     object miRepDetails: TMenuItem
       Caption = 'Repository details'
       OnClick = miRepDetailsClick
@@ -153,7 +153,7 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
   object ODRep: TOpenDialog
     DefaultExt = '.opmrep'
     Filter = '*.opmrep|*.opmrep'
-    left = 85
-    top = 104
+    Left = 85
+    Top = 104
   end
 end

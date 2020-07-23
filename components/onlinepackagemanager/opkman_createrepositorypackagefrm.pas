@@ -50,6 +50,7 @@ type
     bOptions: TButton;
     bSubmit: TButton;
     cbJSONForUpdates: TCheckBox;
+    cbOrphanedPackage: TCheckBox;
     edCategories: TEdit;
     edFPCCompatibility: TEdit;
     edSupportedWidgetset: TEdit;
@@ -99,6 +100,7 @@ type
     procedure bHelpClick(Sender: TObject);
     procedure bOptionsClick(Sender: TObject);
     procedure bSubmitClick(Sender: TObject);
+    procedure cbOrphanedPackageClick(Sender: TObject);
     procedure edDisplayNameKeyPress(Sender: TObject; var Key: char);
     procedure edPackageDirAcceptDirectory(Sender: TObject; Var Value: String);
     procedure edPackageDirButtonClick(Sender: TObject);
@@ -197,6 +199,7 @@ type
     FSVNURL: String;
     FCommunityDescription: String;
     FExternalDependencies: String;
+    FOrphanedPackage: Integer;
   end;
 
 procedure TCreateRepositoryPackagesFrm.FormCreate(Sender: TObject);
@@ -215,7 +218,7 @@ begin
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
   lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
   lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDeps + ':';
-
+  cbOrphanedPackage.Caption := rsMainFrm_VSTText_OrphanedPackage1 + '(' + rsMainFrm_VSTText_OrphanedPackage2 + ')';
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;
   bOptions.Caption := rsCreateRepositoryPackageFrm_bOptions_Caption;
@@ -693,6 +696,22 @@ begin
   fPackageZipper.StartZip(FPackageDir, FPackageFile);
 end;
 
+procedure TCreateRepositoryPackagesFrm.cbOrphanedPackageClick(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PData;
+begin
+  Node := FVSTPackages.GetFirstSelected;
+  if Node = nil then
+    Exit;
+  if FVSTPackages.GetNodeLevel(Node) <> 0 then
+    Exit;
+  Data := FVSTPackages.GetNodeData(Node);
+  Data^.FOrphanedPackage := Ord(cbOrphanedPackage.Checked);
+  FVSTPackages.ReinitNode(Node, False);
+  FVSTPackages.RepaintNode(Node);
+end;
+
 procedure TCreateRepositoryPackagesFrm.edDisplayNameKeyPress(Sender: TObject;
   var Key: char);
 begin
@@ -735,9 +754,22 @@ end;
 procedure TCreateRepositoryPackagesFrm.VSTPackagesGetImageIndex(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
   Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer);
+var
+  Data: PData;
 begin
   if Column = 0 then
-    ImageIndex := IMAGE_INDEX_MAP[FVSTPackages.GetNodeLevel(Node)];
+  begin
+    Data := FVSTPackages.GetNodeData(Node);
+    if FVSTPackages.GetNodeLevel(Node) = 0 then
+    begin
+      if Data^.FOrphanedPackage = 1 then
+        ImageIndex := 36
+      else
+        ImageIndex := 1;
+    end
+    else
+      ImageIndex := IMAGE_INDEX_MAP[FVSTPackages.GetNodeLevel(Node)];
+  end;
 end;
 
 procedure TCreateRepositoryPackagesFrm.SaveExtraInfo(const ANode: PVirtualNode);
@@ -754,6 +786,7 @@ begin
          Data^.FSVNURL := edSVNURL.Text;
          Data^.FCommunityDescription := mComDescr.Text;
          Data^.FExternalDependencies := mExternalDependencies.Text;
+         Data^.FOrphanedPackage := Ord(cbOrphanedPackage.Checked);
        end;
     1: begin
          Data^.FLazCompatibility := edLazCompatibility.Text;
@@ -804,6 +837,7 @@ begin
     edSVNURL.Text := Data^.FSVNURL;
     mComDescr.Text := Data^.FCommunityDescription;
     mExternalDependencies.Text := Data^.FExternalDependencies;
+    cbOrphanedPackage.Checked := Data^.FOrphanedPackage = 1;
   end
   else if Level = 1 then
   begin

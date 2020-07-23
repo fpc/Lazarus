@@ -76,6 +76,7 @@ type
     SVNURL: String;
     CommunityDescription: String;
     ExternalDependencies: String;
+    OrphanedPackage: Integer;
     InstallState: Integer;
     ButtonID: Integer;
     Button: TSpeedButton;
@@ -501,7 +502,13 @@ begin
        Inc(UniqueID);
        GrandChildData^.ButtonID := UniqueID;
        Data^.ExternalDependencies := SerializablePackages.Items[I].ExternalDependecies;
-
+       //add orphaned package(DataType = 21) - added 2020.07.23
+       GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
+       GrandChildData := FVST.GetNodeData(GrandChildNode);
+       GrandChildData^.OrphanedPackage := SerializablePackages.Items[I].OrphanedPackage;
+       GrandChildData^.DataType := 21;
+       Data^.OrphanedPackage := SerializablePackages.Items[I].OrphanedPackage;
     end;
     FVST.SortTree(0, laz.VirtualTrees.sdAscending);
     ExpandEx;
@@ -1476,8 +1483,14 @@ begin
             ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) then
            ImageIndex := 25
          else
-           ImageIndex := 1;
-     20: ImageIndex := 10
+         begin
+           if Data^.OrphanedPackage = 0 then
+             ImageIndex := 1
+           else
+             ImageIndex := 36;
+         end;
+     20: ImageIndex := 10;
+     21: ImageIndex := 36;
      else
         ImageIndex := Data^.DataType
     end;
@@ -1550,7 +1563,8 @@ begin
        17: CellText := rsMainFrm_VSTText_HomePageURL;
        18: CellText := rsMainFrm_VSTText_DownloadURL;
        19: CellText := rsMainFrm_VSTText_CommunityDescription;
-       20: CellText := rsMainFrm_VSTText_ExternalDeps
+       20: CellText := rsMainFrm_VSTText_ExternalDeps;
+       21: CellText := rsMainFrm_VSTText_OrphanedPackage1;
       end;
     end
     else if Column = 1 then
@@ -1654,6 +1668,10 @@ begin
        18: CellText := Data^.DownloadURL;
        19: CellText := GetDisplayString(Data^.CommunityDescription);
        20: CellText := GetDisplayString(Data^.ExternalDependencies);
+       21: case Data^.OrphanedPackage of
+             0: CellText := rsMainFrm_VSTText_Install0;
+             1: CellText := rsMainFrm_VSTText_Install1;
+           end;
       end;
     end
     else if Column = 5 then
