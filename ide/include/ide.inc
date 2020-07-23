@@ -58,5 +58,9 @@
   {$DEFINE EnableRedirectStdErr}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>30100}
+  {$warn 6058 off}
+{$ENDIF}
+
 // end.
 
