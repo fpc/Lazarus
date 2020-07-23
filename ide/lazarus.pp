@@ -67,7 +67,7 @@ uses
   {$I staticpackages.inc}
   {$ENDIF}
   {$IFDEF BigIDE}
-    AllSynEditDsgn, LazControlDsgn, DateTimeCtrlsDsgn,
+    AllSynEditDsgn, DateTimeCtrlsDsgn,
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
     LeakView, MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
     TurboPowerIPro, TurboPowerIProDsgn,

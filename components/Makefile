@@ -1784,9 +1784,9 @@ basecomponents:
 	$(MAKE) -C synedit
 	$(MAKE) -C debuggerintf
 	$(MAKE) -C lazdebuggergdbmi
+	$(MAKE) -C lazcontrols/design
 bigide:
 	$(MAKE) -C synedit/design
-	$(MAKE) -C lazcontrols/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas
 	$(MAKE) -C printers
