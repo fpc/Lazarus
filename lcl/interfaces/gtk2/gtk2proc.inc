@@ -1444,9 +1444,8 @@ begin
   {$ENDIF}
   If RGN = nil then
     Result := ERROR
-  else
-    If gdk_region_empty(RGN) then
-      Result := NULLREGION
+  else if gdk_region_empty(RGN) then
+    Result := NULLREGION
   else begin
     gdk_region_get_clipbox(RGN,@aRect);
     SimpleRGN := gdk_region_rectangle(@aRect);

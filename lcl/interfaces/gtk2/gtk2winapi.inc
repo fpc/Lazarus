@@ -1838,42 +1838,46 @@ begin
               and IsValidGDIObject(Src2);
   if not Continue then begin
     DebugLn('WARNING: [TGtk2WidgetSet.CombineRgn] Invalid HRGN');
-    Result := Error;
-  end
-  else begin
-    S1 := S1Obj^.GDIRegionObject;
-    S2 := S2Obj^.GDIRegionObject;
-    //DebugLn('TGtk2WidgetSet.CombineRgn A fnCombineMode=',Dbgs(fnCombineMode));
-    case fnCombineMode of
-      RGN_AND :
-        D := PGDKRegion(gdk_region_intersect(S1, S2));
-      RGN_COPY :
-        D := gdk_region_copy(S1);
-      RGN_DIFF :
-        D := PGDKRegion(gdk_region_subtract(S1, S2));
-      RGN_OR :
-        D := PGDKRegion(gdk_region_union(S1, S2));
-      RGN_XOR :
-        D := PGDKRegion(gdk_region_xor(S1, S2));
-      else begin
-        Result:= ERROR;
-        D := nil;
-      end;
-    end;
-    if Assigned(DObj^.GDIRegionObject) then
-      gdk_region_destroy(DObj^.GDIRegionObject);
-    DObj^.GDIRegionObject := D;
-    Result := RegionType(D);
-    //DebugLn('TGtk2WidgetSet.CombineRgn B Mode=',dbgs(fnCombineMode),
-    //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
-    if (Result = NullRegion) and
-      ((RegionType(S1) <> NullRegion) or ((RegionType(S2) <> NullRegion))) then
-    begin
-      DeleteObject(Dest);
-      Dest := CreateEmptyRegion;
-      Result := RegionType(D);
+    exit(Error);
+  end;
+  if DObj^.RefCount>1 then
+  begin
+    DebugLn('WARNING: [TGtk2WidgetSet.CombineRgn] Invalid Dest');
+    exit(RegionType(DObj^.GDIRegionObject));
+  end;
+
+  S1 := S1Obj^.GDIRegionObject;
+  S2 := S2Obj^.GDIRegionObject;
+  //DebugLn('TGtk2WidgetSet.CombineRgn A fnCombineMode=',Dbgs(fnCombineMode));
+  case fnCombineMode of
+    RGN_AND :
+      D := PGDKRegion(gdk_region_intersect(S1, S2));
+    RGN_COPY :
+      D := gdk_region_copy(S1);
+    RGN_DIFF :
+      D := PGDKRegion(gdk_region_subtract(S1, S2));
+    RGN_OR :
+      D := PGDKRegion(gdk_region_union(S1, S2));
+    RGN_XOR :
+      D := PGDKRegion(gdk_region_xor(S1, S2));
+    else begin
+      Result:= ERROR;
+      D := nil;
     end;
   end;
+  if Assigned(DObj^.GDIRegionObject) then
+    gdk_region_destroy(DObj^.GDIRegionObject);
+  DObj^.GDIRegionObject := D;
+  Result := RegionType(D);
+  //DebugLn('TGtk2WidgetSet.CombineRgn B Mode=',dbgs(fnCombineMode),
+  //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
+  {if (Result = NullRegion) and
+    ((RegionType(S1) <> NullRegion) or ((RegionType(S2) <> NullRegion))) then
+  begin
+    DeleteObject(Dest);
+    Dest := CreateEmptyRegion;
+    Result := RegionType(Dest);
+  end;}
 end;
 
 {------------------------------------------------------------------------------
