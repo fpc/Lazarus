@@ -1169,6 +1169,14 @@ msgstr "No se puede abrir el archivo del paquete."
 msgid "Package file not found."
 msgstr ""
 
+#: opkman_const.rsmainfrm_vsttext_orphanedpackage1
+msgid "Orphaned package"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_orphanedpackage2
+msgid "currently has no active maintainer"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
 msgstr "Categoría del paquete"

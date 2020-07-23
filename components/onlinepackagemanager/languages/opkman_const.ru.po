@@ -1078,6 +1078,14 @@ msgstr "Невозможно открыть файл пакета."
 msgid "Package file not found."
 msgstr "Файл пакета не найден."
 
+#: opkman_const.rsmainfrm_vsttext_orphanedpackage1
+msgid "Orphaned package"
+msgstr "Пакет бесхозен"
+
+#: opkman_const.rsmainfrm_vsttext_orphanedpackage2
+msgid "currently has no active maintainer"
+msgstr "в настоящий момент не имеет активного сопровождающего"
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
 msgstr "Категория пакета"
