@@ -175,7 +175,7 @@ begin
   if Data^.OrphanedPackage = 0 then
     pnPackageName.Caption := Data^.PackageDisplayName
   else
-    pnPackageName.Caption := Data^.PackageDisplayName + '(' + rsMainFrm_VSTText_OrphanedPackage1 + ' - ' + rsMainFrm_VSTText_OrphanedPackage2  + ')';
+    pnPackageName.Caption := Data^.PackageDisplayName + ' (' + rsMainFrm_VSTText_OrphanedPackage1 + ' - ' + rsMainFrm_VSTText_OrphanedPackage2  + ')';
   CalcHeight(mDescription, Data^.CommunityDescription);
   for I := FFrames.Count - 1  downto 0 do
   begin

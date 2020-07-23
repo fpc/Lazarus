@@ -218,7 +218,7 @@ begin
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
   lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
   lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDeps + ':';
-  cbOrphanedPackage.Caption := rsMainFrm_VSTText_OrphanedPackage1 + '(' + rsMainFrm_VSTText_OrphanedPackage2 + ')';
+  cbOrphanedPackage.Caption := rsMainFrm_VSTText_OrphanedPackage1 + ' (' + rsMainFrm_VSTText_OrphanedPackage2 + ')';
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;
   bOptions.Caption := rsCreateRepositoryPackageFrm_bOptions_Caption;
