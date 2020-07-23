@@ -1811,6 +1811,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 
 var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
+  Specifiers: TKeyWordFunctionList;
 begin
   //DebugLn('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
@@ -1876,14 +1877,15 @@ begin
     ReadNextAtom;
   if (CurPos.StartPos>SrcLen) then
     SaveRaiseException(20170421195010,ctsSemicolonNotFound);
+  if [pphIsMethodDecl,pphIsMethodBody]*ParseAttr<>[] then
+    Specifiers:=IsKeyWordMethodSpecifier
+  else if pphIsType in ParseAttr then
+    Specifiers:=IsKeyWordProcedureTypeSpecifier
+  else
+    Specifiers:=IsKeyWordProcedureSpecifier;
   repeat
     if CurPos.StartPos<=SrcLen then begin
-      if [pphIsMethodDecl,pphIsMethodBody]*ParseAttr<>[] then
-        IsSpecifier:=IsKeyWordMethodSpecifier.DoIdentifier(@Src[CurPos.StartPos])
-      else if pphIsType in ParseAttr then
-        IsSpecifier:=IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos])
-      else
-        IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(
+      IsSpecifier:=Specifiers.DoItCaseInsensitive(
                              Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     end else
       IsSpecifier:=false;

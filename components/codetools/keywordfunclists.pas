@@ -943,6 +943,7 @@ begin
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
     Add('VECTORCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WEAKEXTERNAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WINAPI'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
@@ -969,6 +970,7 @@ begin
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS'           ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CBLOCK'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WINAPI'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordProcedureAnonymousSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureAnonymousSpecifier');
