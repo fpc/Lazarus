@@ -593,7 +593,7 @@
         </short>
         <descr>
           <p>
-            <var>GetValue is</var> an overloaded function used to get the value stored in a DOM node at the path specified in <var>APath</var>. Overloaded variants are provided to return <var>String</var>, <var>Integer</var>, <var>Boolean</var>, and <var>TRect</var> data types.
+            <var>GetValue is</var> an overloaded function used to get the value stored in a DOM node at the path specified in <var>APath</var>. Overloaded variants are provided to return <var>String</var>, <var>Integer</var>, <var>Int64</var>, <var>Boolean</var>, and <var>TRect</var> data types.
           </p>
           <p>
             <var>APath</var> contain the path specifier that represents the hierarchy of elements and attributes in <var>Document</var> where the value is stored. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
@@ -657,7 +657,7 @@
         <short>Sets the value in a DOM node at the specified path</short>
         <descr>
           <p>
-            <var>SetValue</var> is an overloaded procedure used to set the value in the DOM node located at the path specified in <var>APath</var>. <var>AValue</var> contains the content stored in the specified DOM node. Overloaded variants of the method are provided where AValue is either a <var>String</var>, <var>Integer</var>, or <var>Boolean</var> data type. The String variant of the method is called to store the various value types in a DOM node.
+            <var>SetValue</var> is an overloaded procedure used to set the value in the DOM node located at the path specified in <var>APath</var>. <var>AValue</var> contains the content stored in the specified DOM node. Overloaded variants of the method are provided where AValue is either a <var>String</var>, <var>Int64</var>, or <var>Boolean</var> data type. The String variant of the method is called to store the various value types in a DOM node.
           </p>
           <p>
             Use SetExtendedValue to store an Extended data type in a specified DOM node.

@@ -1,375 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lazutils">
-
     <!--
     ====================================================================
       UTF8Process
     ====================================================================
     -->
-
     <module name="UTF8Process">
-      <short>Defines a version of FPC TProcess that allows UTF-8-encoded arguments</short>
-      <descr></descr>
+      <short>Defines a version of the FCL TProcess component that allows UTF-8-encoded arguments</short>
+      <descr/>
 
-      <!-- class Visibility: default -->
-      <element name="TProcessUTF8" link="#fcl.Process.TProcess">
-        <short>
-          Implements a version of FPC TProcess that allows UTF-8-encoded arguments
-        </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FApplicationNameUTF8" link="#fcl.Process.TProcess.ApplicationName">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FCommandLineUTF8"  link="#fcl.Process.TProcess.CommandLine">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FConsoleTitleUTF8"  link="#fcl.Process.TProcess.ConsoleTitle">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FCurrentDirectoryUTF8"  link="#fcl.Process.TProcess.CurrentDirectory">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FDesktopUTF8"  link="#fcl.Process.TProcess.Desktop">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FEnvironmentUTF8"  link="#fcl.Process.TProcess.Environment">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FExecutableUTF8"  link="#fcl.Process.TProcess.Executable">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TProcessUTF8.FParametersUTF8"  link="#fcl.Process.TProcess.Parameters">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetApplicationNameUTF8"   link="#fcl.Process.TProcess.ApplicationName">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetApplicationNameUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetCommandLineUTF8"   link="#fcl.Process.TProcess.CommandLine">
-        <short></short>
-        <descr>
-          <p>
-            SetCommandLineUTF8 is the write access specifier for the CommandLine property.
-	         </p>
-        </descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetCommandLineUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetConsoleTitleUTF8"  link="#fcl.Process.TProcess.ConsoleTitle">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetConsoleTitleUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetCurrentDirectoryUTF8"  link="#fcl.Process.TProcess.CurrentDirectory">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetCurrentDirectoryUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetDesktopUTF8"   link="#fcl.Process.TProcess.Desktop">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetDesktopUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetEnvironmentUTF8"  link="#fcl.Process.TProcess.Environment">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetEnvironmentUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetExecutableUTF8"   link="#fcl.Process.TProcess.Executable">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetExecutableUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.SetParametersUTF8"  link="#fcl.Process.TProcess.Parameters">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.SetParametersUTF8.AValue">
-        <short></short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TProcessUTF8.UpdateEnvironment">
-        <short>
-          Ensure values in Environment and Parameters are updated in the ancestor class
-        </short>
-        <descr>
-          <p>
-            UpdateEnvironment ensures that UTF-8-encoded values in both the Environment and the Parameters properties are converted to system format, and stored in the ancestor class. UpdateEnvironment is used in Execute immediately prior to calling the inherited Execute method.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- constructor Visibility: public -->
-      <element name="TProcessUTF8.Create" link="#fcl.Process.TProcess.Create">
-        <short>
-          Constructor for the class instance
-        </short>
-        <descr>
-          <p>
-            Create is the constructor for the class instance,  Create calls the inherited constructor using AOwner as the owner of the class instance.  Create ensures that resources are allocated for the Environment and Parameters properties.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TProcessUTF8.Create.AOwner">
-        <short>Owner of the class instance</short>
-      </element>
-
-      <!-- destructor Visibility: public -->
-      <element name="TProcessUTF8.Destroy"  link="#fcl.Process.TProcess.Destroy">
-        <short>
-          Destructor for the class instance
-        </short>
-        <descr>
-          <p>
-            Destroy is the destructor for the class instance. Destroy frees resource allocated for the Environment and Parameters properties. Destroy calls the inherited method.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- procedure Visibility: public -->
-      <element name="TProcessUTF8.Execute" link="#fcl.Process.TProcess.Execute">
-        <short>
-          Starts execution of the process
-        </short>
-        <descr>
-          <p>
-            Execute causes the Executable for the process to be started with the Parameters and Environment specified in the respective properties. Execute calls the UpdateEnvironment method to pass the values in Parameters and Environment to the ancestor class. Execute calls the inherited Execute method.
-          </p>
-        </descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.ApplicationName"   link="#fcl.Process.TProcess.ApplicationName">
-        <short>
-        </short>
-        <descr>
-          <!-- Note: deprecated in TProcess 2.5.1-->
-          <remark>
-            Please note that ApplicationName has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1. ApplicationName has been superseded by the Executable and Parameters properties.
-          </remark>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.CommandLine"  link="#fcl.Process.TProcess.CommandLine">
-        <short>
-          Command line with options to execute in the process
-        </short>
-        <descr>
-          <!-- Note: deprecated in TProcess 2.5.1-->
-          <p>
-             Setting the value in CommandLine causes the value in Executable to be updated, and the value in Parameters is cleared and reloaded as necessary.
-          </p>
-          <remark>
-            Please note that CommandLine has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1. To avoid problems with command line options with spaces in them, and the quoting problems that this presents, it has been superseded by the Executable and Parameters properties. Use these properties instead of CommandLine.
-          </remark>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.ConsoleTitle"  link="#fcl.Process.TProcess.ConsoleTitle">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.CurrentDirectory"  link="#fcl.Process.TProcess.CurrentDirectory">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.Desktop"  link="#fcl.Process.TProcess.Desktop">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.Environment"  link="#fcl.Process.TProcess.Environment">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.Executable"  link="#fcl.Process.TProcess.Executable">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: public -->
-      <element name="TProcessUTF8.Parameters"  link="#fcl.Process.TProcess.Parameters">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TProcessUTF8.SetProcessHandle" link="#fcl.Process.TProcess.ProcessHandle">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
-        <short></short>
-      </element>
-
-      <element name="TProcessUTF8.SetThreadHandle" link="#fcl.Process.TProcess.ThreadHandle">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TProcessUTF8.SetThreadHandle.aThreadHandle">
-        <short></short>
-      </element>
-
-      <element name="TProcessUTF8.SetProcessID" link="#fcl.Process.TProcess.ProcessID">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TProcessUTF8.SetProcessID.aProcessID">
-        <short></short>
-    </element>
-
-      <element name="TProcessUTF8.ParseCmdLine">
-        <short>
-          Separates values in CommandLine into the Executable and Parameters properties
-        </short>
-        <descr>
-          <p>
-            ParseCmdLine is used to separate the values in CommandLine into the values used in the Executable and Parameters properties.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TProcessUTF8.ParseCmdLine.CmdLine">
-        <short></short>
-      </element>
-
-      <element name="TProcessUTF8.ParseCmdLine.ReadBackslash">
-        <short></short>
-      </element>
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Process"/>
+      <element name="pipes"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUTF8"/>
+      <element name="LazUtilsStrConsts"/>
 
       <element name="SNoCommandLine">
         <descr>
-          Exception message raised when a process has no executable or command-line
+          <p>
+            Exception message raised when a process has no executable or command-line. Present for the Microsoft Windows platform.
+          </p>
         </descr>
       </element>
 
       <element name="SErrCannotExecute">
         <descr>
-          Exception message raised when a process cannot be created for the executable or command-line
+          <p>
+            Exception message raised when a process cannot be created for the executable or command-line. Present for the Microsoft Windows platform.
+          </p>
         </descr>
       </element>
 
-      <!-- procedure Visibility: default -->
-      <element name="RunCmdFromPath">
+      <element name="TProcessUTF8">
+        <short>Implements a version of the FCL TProcess that allows UTF-8-encoded arguments</short>
+        <descr>
+          <p>
+            <var>TProcessUTF8</var> is a <var>TProcess</var> descendant which implements a version of TProcess that accepts and processes UTF-8-encoded arguments. It includes a <var>ParseCmdLine</var> method used to separate a command line into the <var>Executable</var> name and <var>Parameters</var> used in the class instance.
+          </p>
+          <p>
+            The TProcessUTF8 interface includes additional methods for the Microsoft Windows platform. An overridden <var>Execute</var> method is provided, and protected methods to assign IDs and Handles for the process and its thread. These methods handle Windows-specific nuances required for the CreateProcessW API.  This includes security and thread attributes, pipe creation, and any quoting required for file names or parameters with space characters.
+          </p>
+          <p>
+            TProcessUTF8 is used in the implementation of the Lazarus IDE and related tools like the Debugger, HTML Help viewer, external tools, and the FP Doc Editor. Use TAsyncProcess for a process which receives asynchronous notifications during process execution.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#fcl.process.TProcess"/>
+          <link id="#lcl.asyncprocess.TAsyncProcess"/>
+        </seealso>
+      </element>
+
+      <element name="TProcessUTF8.SetProcessHandle">
+        <short>Updates the process handle for the class instance</short>
+        <descr>
+          <p>
+            Raises an Exception if the ProcessHandle property cannot be set to the value specified in aProcessHandle.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#fcl.process.TProcess.ProcessHandle"/>
+        </seealso>
+      </element>
+      <element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
+        <short>Process handle assigned to the ancestor class</short>
+      </element>
+
+      <element name="TProcessUTF8.SetThreadHandle">
+        <short>Sets ThreadHandle to the specified value</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TProcessUTF8.SetThreadHandle.aThreadHandle">
+        <short>Thread handle assigned to the ancestor class</short>
+      </element>
+
+      <element name="TProcessUTF8.SetProcessID">
+        <short>Sets ProcessID to the specified value</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TProcessUTF8.SetProcessID.aProcessID">
+        <short>Process ID assigned to the ancestor class</short>
+      </element>
+
+      <element name="TProcessUTF8.Execute">
+        <short>Starts execution of the process</short>
+        <descr>
+          <p>
+            <var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is defined only for the Microsoft Windows platforms. Execute handles the nuances of configuring and executing a call to CreateProcessW in the Windows API.
+          </p>
+          <p>
+            The values in <var>ApplicationName</var>, <var>CommandLine</var>, and <var>Executable</var> are checked to ensure that they contain non-empty values. An <var>EProcess</var> exception is raised if any of these properties contain an empty string (<b>''</b>).
+          </p>
+          <p>
+            <var>UTF8Decode</var> is called to convert the property values to Unicode strings, and ultimately the WideStr values passed to CreateProcessW. Additional quoting may be applied to the values when the path to the file or arguments contain a Space character. UTF8Decode is also called for the value in the <var>CurrentDirectory</var> property. <var>StringsToWChars</var> is called to convert values in <var>Environment</var>.
+          </p>
+          <p>
+            Execute initializes the creation flags, process attributes, thread attributes, and start-up information required for the CreateProcessW API call. Values in the <var>Options</var> property determine whether <var>CreatePipes</var> is called for the handles in the start-up information.
+          </p>
+          <p>
+            Execute raises an EProcess exception if the CreateProcessW API call returns <b>False</b>. Otherwise, the values in <var>ProcessID</var>, <var>ProcessHandle</var>, and <var>ThreadHandle</var> are assigned for the current class instance.
+          </p>
+          <p>
+            When Options contains the value <var>poUsePipes</var>, the process will redirect information on the standard input, output, and error handles allocated in start-up information. Use the THandleStream instances used in the Input, Output, and StdErr properties to access values for the API call.
+          </p>
+          <p>
+            Executes sets the value in <var>Running</var> to <b>True</b>, and frees memory allocated to the pointer for the <var>Environment</var> in the process.
+          </p>
+          <p>
+            At run-time,  Execute calls <var>WaitOnExit</var> to detect completion of the process and to set values in the <var>ExitStatus</var> and <var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is included in the Options for the process, and <var>poRunSuspended</var> is <b>not</b> included in the Options. WaitOnExit is never called at design-time to prevent hanging the IDE.
+          </p>
+          <p>
+            Please note: The overridden Execute method in TProcessUTF8 does not call the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TProcessUTF8.ParseCmdLine"/>
+          <link id="#fcl.process.TProcess.Executable"/>
+          <link id="#fcl.process.TProcess.Parameters"/>
+          <link id="#fcl.process.TProcess.CommandLine"/>
+          <link id="#fcl.process.TProcess.Environment"/>
+          <link id="#fcl.process.TProcess.Execute"/>
+          <link id="#fcl.process.TProcess.Options"/>
+          <link id="#fcl.process.TProcess.input"/>
+          <link id="#fcl.process.TProcess.Options"/>
+          <link id="#fcl.process.TProcess.Options"/>
+        </seealso>
+      </element>
+
+      <element name="TProcessUTF8.ParseCmdLine">
         <short>
-          Executes a command found in the current PATH environment
+          Separates values in the CommandLine argument into the Executable and Parameters properties
         </short>
         <descr>
           <p>
-            RunCmdFromPath is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the /bin/ls command with the specified arguments:
+            <var>ParseCmdLine</var> is used to separate the values in the CmdLine argument into the values used for the Executable and Parameters properties.
+          </p>
+          <p>
+            <var>ReadBackSlash</var> indicates if the <b>BackSlash</b> character (<b>\</b>) is used to quote a character value in the command line. The default value for the argument is False.
+          </p>
+          <p>
+            ParseCmdLine creates an internal <var>TStringList</var> instance used to store values returned from the <var>SplitCmdLineParams</var> routine in <file>lazfileutils.pas</file>. The first value in the string list (when present) is stored in the <var>Executable</var> property. The remaining values are stored in the <var>Parameters</var> property.
+          </p>
+          <p>
+            ParseCmdLine is provided as a convenience method. An equivalent operation can be performed using the values in Executable and Parameters properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TProcessUTF8.Executable"/>
+          <link id="TProcessUTF8.Parameters"/>
+          <link id="#lazutils.lazfileutils.SplitCmdLineParams"/>
+        </seealso>
+      </element>
+      <element name="TProcessUTF8.ParseCmdLine.CmdLine">
+        <short>Command line examined and parsed in the method</short>
+      </element>
+      <element name="TProcessUTF8.ParseCmdLine.ReadBackslash">
+        <short>When True, the BackSlash character is used to quote character values</short>
+      </element>
+
+      <element name="RunCmdFromPath">
+        <short>Executes a command found in the current PATH environment</short>
+        <descr>
+          <p>
+            <var>RunCmdFromPath</var> is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the /bin/ls command with the specified arguments:
           </p>
           <code>
             RunCmdFromPath('ls', '-l /home');
@@ -378,7 +177,7 @@
             An exception will be raised if the program file cannot be located, or cannot be executed.
           </p>
           <p>
-            RunCmdFromPath creates an instance of TProcessUTF8 to execute the program using the specified arguments.
+            RunCmdFromPath creates an instance of <var>TProcessUTF8</var> to execute the process. The value in <var>ProgramFilename</var> is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters if it contains a <b>Space</b> (<b>' '</b>) in the path or file name. RunCmdFromPath calls the <var>Execute</var> method to perform the process using the specified arguments.
           </p>
         </descr>
         <errors>
@@ -393,61 +192,71 @@
             </dd>
           </dl>
         </errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TProcessUTF8.Execute"/>
+          <link id="#fcl.process.TProcess.Execute"/>
+          <link id="#fcl.process.TProcess.CommandLine"/>
+          <link id="#fcl.process.TProcess.Executable"/>
+          <link id="#fcl.process.TProcess.Parameters"/>
+          <link id="#fcl.process.TProcess.Environment"/>
+        </seealso>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="RunCmdFromPath.ProgramFilename">
         <short>Name of the program to execute</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="RunCmdFromPath.CmdLineParameters">
         <short>Command line parameters for the process</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FindFilenameOfCmd">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="FindFilenameOfCmd.Result">
-        <short></short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="FindFilenameOfCmd.ProgramFilename">
-        <short></short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="GetSystemThreadCount">
-        <short>
-          Gets a default value for the number of threads on the system
-        </short>
+        <short>Gets the full path for the specified executable file</short>
         <descr>
           <p>
-            GetSystemThreadCount is an Integer function used to get the default value for the number of threads on the system. The implementation for GetSystemThreadCount is platform- and/or OS-specific. For the Windows environment, the total number of processors available (including logical hyperthreaded processors) are returned using the GetProcessAffinityMask API. When GetProcessAffinityMask is unavailable, the total number of processors from GetSystemInfo is used. For UNIX-like environments, either the sysconf or the fpsysctl function is used. For other environments, the value is 1.
+            <var>FindFilenameOfCmd</var> is a <var>String</var> function used to get the full path for the executable file specified in the <var>ProgramFilename</var> argument. FindFilenameOfCmd calls the <var>FilenameIsAbsolute</var> routine to determine if a relative path in ProgramFilename needs to be resolved. <var>FindDefaultExecutablePath</var> is called to search the <b>PATH</b> environment when path information is not used in ProgramFilename.
+          </p>
+          <p>
+            The return value contains the absolute path and file name.  If the file does not exist on the local file system, the return value is an empty string ('').
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lazutils.lazfileutils.FilenameIsAbsolute"/>
+          <link id="#lazutils.lazfileutils.CleanAndExpandFilename"/>
+          <link id="#lazutils.fileutil.FindDefaultExecutablePath"/>
+        </seealso>
+      </element>
+      <element name="FindFilenameOfCmd.Result">
+        <short>Absolute path to the requested program file, or an empty string</short>
+      </element>
+      <element name="FindFilenameOfCmd.ProgramFilename">
+        <short>Program file examined in the method</short>
       </element>
 
+      <element name="GetSystemThreadCount">
+        <short>Gets the number of threads available on the system</short>
+        <descr>
+          <p>
+            <var>GetSystemThreadCount</var> is an <var>Integer</var> function used to get the number of threads on the system. The implementation for GetSystemThreadCount is platform- and/or OS-specific. For the Windows environment, the total number of processors available (including logical hyperthreaded processors) are returned using the GetProcessAffinityMask API. When GetProcessAffinityMask is unavailable, the total number of processors from GetSystemInfo is used. For UNIX-like environments, either the sysconf or the fpsysctl function is used. For other environments, the return value is always <b>1</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
       <element name="GetSystemThreadCount.Result">
-        <short>Default for the number of threads on the system</short>
+        <short>The number of threads on the system</short>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="Register">
-        <short></short>
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is a procedure used to make components in the unit available for use in the Lazarus IDE. Register calls <var>RegisterComponents</var> to make the <var>TProcessUTF8</var> available on the <b>System</b> tab.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TProcessUTF8"/>
+        </seealso>
       </element>
 
     </module>
     <!-- UTF8Process -->
-
   </package>
 </fpdoc-descriptions>

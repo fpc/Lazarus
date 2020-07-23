@@ -4328,15 +4328,6 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetCharCase" link="TCustomEdit.CharCase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomEdit.SetCharCase.Value">
-        <short>New value for the property</short>
-      </element>
-
       <element name="TCustomEdit.SetHideSelection" link="TCustomEdit.HideSelection">
         <short/>
         <descr/>
@@ -4579,11 +4570,11 @@
         </seealso>
       </element>
 
-      <element name="TCustomEdit.EditingDone" link="#lcl.controls.TControl.EditingDone">
-        <short>Enforces the setting in ReadOnly</short>
+      <element name="TCustomEdit.EditingDone">
+        <short>Enforces the setting in the ReadOnly property</short>
         <descr>
           <p>
-            <var>EditingDone</var> is an overriden method in <var>TCustomEdit</var>. It ensures that the inherited method is <b>NOT</b> called when the value in <var>ReadOnly</var> is <b>True</b>. EditingDone is called from the <var>KeyUpAfterInterface</var> method when the <var>VK_RETURN</var> key code handled.
+            <var>EditingDone</var> is an overriden method in <var>TCustomEdit</var>. It ensures that the inherited method is <b>NOT</b> called when the value in <var>ReadOnly</var> is <b>True</b>. EditingDone is called from the <var>KeyUpAfterInterface</var> method when the <var>VK_RETURN</var> key code is handled.
           </p>
         </descr>
         <seealso>
@@ -4592,9 +4583,11 @@
       </element>
 
       <element name="TCustomEdit.GetCaretPos" link="TCustomEdit.CaretPos">
-        <short/>
+        <short>Gets the value for the CaretPos property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.CaretPos"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.GetCaretPos.Result">
         <short>Value for the property</short>
@@ -4611,22 +4604,26 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetReadOnly" link="TCustomEdit.ReadOnly">
-        <short/>
+      <element name="TCustomEdit.GetReadOnly">
+        <short>Gets the value for the ReadOnly property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.ReadOnly"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.GetReadOnly.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetSelLength" link="TCustomEdit.SelLength">
-        <short/>
+      <element name="TCustomEdit.GetSelLength">
+        <short>Gets the value for the SelLength property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.SelLength"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.GetSelLength.Result">
-        <short>The number of selected UTF-8 characters</short>
+        <short>The number of selected UTF-8 characters in the control</short>
       </element>
 
       <element name="TCustomEdit.GetSelStart" link="TCustomEdit.SelStart">
@@ -4654,6 +4651,17 @@
       </element>
       <element name="TCustomEdit.GetTextHint.Result">
         <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomEdit.SetCharCase">
+        <short>Sets the value for the CharCase property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomEdit.CharCase"/>
+        </seealso>
+      </element>
+      <element name="TCustomEdit.SetCharCase.Value">
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomEdit.SetCaretPos" link="TCustomEdit.CaretPos">

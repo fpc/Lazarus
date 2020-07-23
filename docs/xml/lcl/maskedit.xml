@@ -1280,27 +1280,22 @@
             <var>SetCharCase</var> is an overridden procedure used to set the value in the <var>CharCase</var> property.
           </p>
           <p>
-            <var>SetCharCase</var> is modified in TCustomMaskEdit to discard changes to the property when an edit mask has been assigned in the control. The value <var>ecNormal</var> is assigned to the property when <var>IsMasked</var> contains <b>True</b>. It is assumed that case conversions are performed according to the mask specification.
+            <var>SetCharCase</var> is modified in TCustomMaskEdit to ensure that the correct value is used when an edit mask has been assigned in the control. CharCase is set to the value <var>ecNormal</var> when <var>IsMasked</var> contains <b>True</b>. It is assumed that case conversions are performed according to the rules for the edit mask.
           </p>
           <p>
-            When IsMasked is <b>False</b>, the inherited property is set to the content in the <var>Value</var> argument.
+            When IsMasked is <b>False</b>, the property is set to the content in the <var>Value</var> argument.
+          </p>
+          <p>
+            SetCharCase calls the inherited method to store the new value for the property.
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.CharCase"/>
+          <link id="TCustomMaskEdit.IsMasked"/>
+          <link id="#lcl.stdctrls.TCustomEdit.CharCase"/>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.SetCharCase.Value">
         <short>New value for the property</short>
-      </element>
-
-      <element name="TCustomMaskEdit.GetCharCase">
-        <short>Gets the value for the CharCase property</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomMaskEdit.GetCharCase.Result">
-        <short>Value for the property</short>
       </element>
 
       <element name="TCustomMaskEdit.SetMaxLength">
