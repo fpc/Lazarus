@@ -6293,8 +6293,7 @@ begin
       AForm := TCustomForm(AInfo^.LCLObject);
       if not IsFormDesign(AForm) and (AForm.BorderStyle <> bsNone) and
         not (AForm.FormStyle in [fsMDIChild, fsSplash])
-      and (Gtk2WidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)) and
-      not GDK_IS_WINDOW(Widget^.window) then
+      and (Gtk2WidgetSet.GetDummyWidgetFrame <> Rect(0, 0, 0, 0)) then
       begin
         R := AForm.BoundsRect;
         AFrame := Gtk2WidgetSet.GetDummyWidgetFrame;
