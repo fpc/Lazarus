@@ -105,7 +105,8 @@ help:
 	@$(ECHO) "   make clean lazbuild useride"
 	@$(ECHO)
 	@$(ECHO) " Clean up:"
-	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
+	@$(ECHO) "  svn cleanup --remove-unversioned"
+	@$(ECHO) "  If the above is not supported by your svn"
 	@$(ECHO) "  you can use the following command under Linux/OS X:"
 	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
 	@$(ECHO)
