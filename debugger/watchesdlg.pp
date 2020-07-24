@@ -427,10 +427,15 @@ begin
   if (Source is TCustomEdit) then s := TCustomEdit(Source).SelText;
 
   if s <> '' then begin
-    NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
-    NewWatch.DisplayFormat := wdfDefault;
-    NewWatch.EvaluateFlags := [defClassAutoCast];
-    NewWatch.Enabled       := True;
+    DebugBoss.Watches.CurrentWatches.BeginUpdate;
+    try
+      NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
+      NewWatch.DisplayFormat := wdfDefault;
+      NewWatch.EvaluateFlags := [defClassAutoCast];
+      NewWatch.Enabled       := True;
+    finally
+      DebugBoss.Watches.CurrentWatches.EndUpdate;
+    end;
   end;
 end;
 
@@ -456,10 +461,15 @@ begin
     Key := 0;
     s := Clipboard.AsText;
     if s <> '' then begin
-      NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
-      NewWatch.DisplayFormat := wdfDefault;
-      NewWatch.EvaluateFlags := [defClassAutoCast];
-      NewWatch.Enabled       := True;
+      DebugBoss.Watches.CurrentWatches.BeginUpdate;
+      try
+        NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
+        NewWatch.DisplayFormat := wdfDefault;
+        NewWatch.EvaluateFlags := [defClassAutoCast];
+        NewWatch.Enabled       := True;
+      finally
+        DebugBoss.Watches.CurrentWatches.EndUpdate;
+      end;
     end;
 
     exit;

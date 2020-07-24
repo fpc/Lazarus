@@ -82,25 +82,30 @@ const
      wdfStructure, wdfDefault, wdfMemDump, wdfBinary
     );
 begin
-  if FWatch = nil
-  then begin
-    FWatch := DebugBoss.Watches.CurrentWatches.Add(txtExpression.Text);
-  end
-  else begin
-    FWatch.Expression := txtExpression.Text;
+  DebugBoss.Watches.CurrentWatches.BeginUpdate;
+  try
+    if FWatch = nil
+    then begin
+      FWatch := DebugBoss.Watches.CurrentWatches.Add(txtExpression.Text);
+    end
+    else begin
+      FWatch.Expression := txtExpression.Text;
+    end;
+
+    if (rgStyle.ItemIndex >= low(StyleToDispFormat))
+    and (rgStyle.ItemIndex <= High(StyleToDispFormat))
+    then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
+    else FWatch.DisplayFormat := wdfDefault;
+
+    if chkUseInstanceClass.Checked
+    then FWatch.EvaluateFlags := [defClassAutoCast]
+    else FWatch.EvaluateFlags := [];
+    FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
+
+    FWatch.Enabled := chkEnabled.Checked;
+  finally
+    DebugBoss.Watches.CurrentWatches.EndUpdate;
   end;
-
-  if (rgStyle.ItemIndex >= low(StyleToDispFormat))
-  and (rgStyle.ItemIndex <= High(StyleToDispFormat))
-  then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
-  else FWatch.DisplayFormat := wdfDefault;
-
-  if chkUseInstanceClass.Checked
-  then FWatch.EvaluateFlags := [defClassAutoCast]
-  else FWatch.EvaluateFlags := [];
-  FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
-
-  FWatch.Enabled := chkEnabled.Checked;
 end;
 
 procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);

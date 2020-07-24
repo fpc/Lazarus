@@ -1137,14 +1137,19 @@ begin
       WatchVar := SE.GetOperandAtCurrentCaret;
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
-      w := Watches.CurrentWatches.Find(WatchVar);
-      if w = nil
-      then w := Watches.CurrentWatches.Add(WatchVar);
-      if (w <> nil)
-      then begin
-        w.Enabled := True;
-        ViewDebugDialog(ddtWatches, False);
-        Exit;
+      Watches.CurrentWatches.BeginUpdate;
+      try
+        w := Watches.CurrentWatches.Find(WatchVar);
+        if w = nil
+        then w := Watches.CurrentWatches.Add(WatchVar);
+        if (w <> nil)
+        then begin
+          w.Enabled := True;
+          ViewDebugDialog(ddtWatches, False);
+          Exit;
+        end;
+      finally
+        Watches.CurrentWatches.EndUpdate;
       end;
     end;
   end;
