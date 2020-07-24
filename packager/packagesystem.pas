@@ -2235,6 +2235,7 @@ begin
   LoadLazarusBasePackage('LazDebuggerGdbmi');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
+  LoadLazarusBasePackage('LazControlDsgn');
 
   SortAutoInstallDependencies;
 
