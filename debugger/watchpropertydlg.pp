@@ -61,6 +61,7 @@ type
     txtRepCount: TEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure txtExpressionChange(Sender: TObject);
   private
     FWatch: TIdeWatch;
   public
@@ -82,6 +83,8 @@ const
      wdfStructure, wdfDefault, wdfMemDump, wdfBinary
     );
 begin
+  if txtExpression.Text = '' then
+    exit;
   DebugBoss.Watches.CurrentWatches.BeginUpdate;
   try
     if FWatch = nil
@@ -106,6 +109,11 @@ begin
   finally
     DebugBoss.Watches.CurrentWatches.EndUpdate;
   end;
+end;
+
+procedure TWatchPropertyDlg.txtExpressionChange(Sender: TObject);
+begin
+  ButtonPanel.OKButton.Enabled := txtExpression.Text <> '';
 end;
 
 procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
@@ -142,6 +150,7 @@ begin
     chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
     txtRepCount.Text := IntToStr(FWatch.RepeatCount);
   end;
+  txtExpressionChange(nil);
 
   lblDigits.Enabled := False;
   txtDigits.Enabled := False;

@@ -378,6 +378,8 @@ var
   Watch: TCurrentWatch;
 begin
   S := cmbExpression.Text;
+  if s = '' then
+    exit;
   if DebugBoss.Watches.CurrentWatches.Find(S) = nil
   then begin
     DebugBoss.Watches.CurrentWatches.BeginUpdate;
