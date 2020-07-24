@@ -2357,7 +2357,8 @@ begin
        or (PackageName='debuggerintf')
        or (PackageName='lazdebuggergdbmi')
        or (PackageName='codetools')
-       or (PackageName='lazcontrols');
+       or (PackageName='lazcontrols')
+       or (PackageName='lazcontroldsgn');
 end;
 
 procedure TLazPackageGraph.FreeAutoInstallDependencies;

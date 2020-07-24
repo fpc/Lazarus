@@ -3596,6 +3596,7 @@ basecomponents:
 	$(MAKE) -C components/synedit
 	$(MAKE) -C components/ideintf
 	$(MAKE) -C components/lazdebuggergdbmi
+	$(MAKE) -C components/lazcontrols/design
 bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
