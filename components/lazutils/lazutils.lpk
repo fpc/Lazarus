@@ -43,10 +43,6 @@
         <Type Value="Include"/>
       </Item>
       <Item>
-        <Filename Value="asiancodepages.inc"/>
-        <Type Value="Include"/>
-      </Item>
-      <Item>
         <Filename Value="avglvltree.pas"/>
         <UnitName Value="AvgLvlTree"/>
       </Item>
@@ -329,6 +325,14 @@
       <Item>
         <Filename Value="objectlists.pas"/>
         <UnitName Value="ObjectLists"/>
+      </Item>
+      <Item>
+        <Filename Value="codepagesasian.pas"/>
+        <UnitName Value="CodepagesAsian"/>
+      </Item>
+      <Item>
+        <Filename Value="codepagescommon.pas"/>
+        <UnitName Value="CodepagesCommon"/>
       </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

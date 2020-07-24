@@ -28,7 +28,8 @@ interface
 {$ifdef UseLCPConv}{$undef UseSystemCPConv}{$endif}
 
 uses
-  SysUtils, Classes, dos, LazUTF8
+  SysUtils, Classes, dos, LazUTF8, CodepagesCommon
+  {$IFnDEF DisableAsianCodePages},CodepagesAsian{$ENDIF}
   {$IFDEF EnableIconvEnc},iconvenc{$ENDIF};
 
 type
@@ -114,7 +115,7 @@ type
   {$else}
   TConvertUTF8ToEncodingFunc = function(const s: string): string;
   {$endif}
-  TCharToUTF8Table = array[char] of PChar;
+  TCharToUTF8Table = CodepagesCommon.TCharToUTF8Table;
   TUnicodeToCharID = function(Unicode: cardinal): integer;
 var
   ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
@@ -230,12 +231,44 @@ var
   EncodingValid: boolean = false;
   DefaultTextEncoding: string = EncodingAnsi;
 
+function SearchTable(CodePageArr: array of word; id: cardinal): word;
+var
+  idMid: integer;
+  idLow, idHigh: integer;
+begin
+  idLow  := 0;
+  idHigh := High(CodePageArr);
+  while (idLow <= idHigh) do
+  begin
+    if idLow = idHigh then
+    begin
+      if CodePageArr[idLow] = id then
+      begin
+        Result := idLow;
+      end
+      else
+      begin
+        Result := 0;
+      end;
+      Exit;
+    end;
+    idMid := (idLow + idHigh) div 2;
+    if CodePageArr[idMid] = id then
+    begin
+      Result := idMid;
+      Exit;
+    end;
+    if CodePageArr[idMid] > id then
+      idHigh := idMid - 1;
+    if CodePageArr[idMid] < id then
+      idLow := idMid + 1;
+  end;
+  Result := 0;
+end;
+
 {$IFnDEF DisableAsianCodePages}
-{$include asiancodepages.inc}
 {$include asiancodepagefunctions.inc}
 {$ENDIF}
-
-{$include commoncodepages.inc}
 
 {$IFDEF Windows}
 // AConsole - If false, it is the general system encoding,

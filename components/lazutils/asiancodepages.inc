@@ -1,4 +1,4 @@
-{%MainUnit ../lconvencoding.pp}
+{%MainUnit codepagesasian.pas}
 
 {
  *****************************************************************************
@@ -18777,40 +18777,5 @@ $FF8A,$FF8B,$FF8C,$FF8D,$FF8E,$FF8F,$FF90,$FF91,$FF92,$FF93,$FF94,$FF95,$FF96,
 $FF97,$FF98,$FF99,$FF9A,$FF9B,$FF9C,$FF9D,$FF9E,$FF9F,$FFE0,$FFE1,$FFE2,$FFE2,
 $FFE2,$FFE3,$FFE4,$FFE4,$FFE5);
 {$endif}
-
-function SearchTable(CodePageArr: array of word; id: cardinal): word;
-var
-  idMid: integer;
-  idLow, idHigh: integer;
-begin
-  idLow  := 0;
-  idHigh := High(CodePageArr);
-  while (idLow <= idHigh) do
-  begin
-    if idLow = idHigh then
-    begin
-      if CodePageArr[idLow] = id then
-      begin
-        Result := idLow;
-      end
-      else
-      begin
-        Result := 0;
-      end;
-      Exit;
-    end;
-    idMid := (idLow + idHigh) div 2;
-    if CodePageArr[idMid] = id then
-    begin
-      Result := idMid;
-      Exit;
-    end;
-    if CodePageArr[idMid] > id then
-      idHigh := idMid - 1;
-    if CodePageArr[idMid] < id then
-      idLow := idMid + 1;
-  end;
-  Result := 0;
-end;
 
 

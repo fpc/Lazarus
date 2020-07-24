@@ -1,4 +1,4 @@
-{%MainUnit ../lconvencoding.pp}
+{%MainUnit codepagescommon.pas}
 
 {
  *****************************************************************************
@@ -10,6 +10,9 @@
 
   Common Unicode Conversion Tables
 }
+
+type
+  TCharToUTF8Table = array[char] of PChar;
 
 const
   ArrayISO_8859_1ToUTF8: TCharToUTF8Table = (

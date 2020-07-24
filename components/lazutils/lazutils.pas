@@ -19,7 +19,7 @@ uses
   PasWString, StringHashList, TextStrings, Translations, UTF8Process, 
   HTML2TextRender, Laz_AVL_Tree, CompWriterPas, LazPasReadUtil, IntegerList, 
   LazVersion, UITypes, GraphType, LazTracer, LazStringUtils, LazUTF8SysUtils, 
-  ObjectLists, LazarusPackageIntf;
+  ObjectLists, CodepagesAsian, CodepagesCommon, LazarusPackageIntf;
 
 implementation
 
