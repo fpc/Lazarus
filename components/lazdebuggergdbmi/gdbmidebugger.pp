@@ -13402,7 +13402,7 @@ begin
 
     S := StripExprNewlines(FExpression);
 
-    if S = '' then Exit(false);
+    if S = '' then Exit(True);
 
     {$IFDEF DBG_WITH_GDB_WATCHES}
     (* This code is experimental. No support will be provided.
