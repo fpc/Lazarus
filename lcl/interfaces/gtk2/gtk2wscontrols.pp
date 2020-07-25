@@ -699,9 +699,9 @@ begin
         if AFixedWidthHeight then
           max_height := AForm.Height;
 
-      if AForm.Constraints.MaxHeight = 0 then
+      if not AFixedWidthHeight and (AForm.Constraints.MaxHeight = 0) then
         max_height := 32767;
-      if AForm.Constraints.MaxWidth = 0 then
+      if not AFixedWidthHeight and (AForm.Constraints.MaxWidth = 0) then
         max_width := 32767;
 
       base_width := AForm.Width;
