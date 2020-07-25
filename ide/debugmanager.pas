@@ -1135,7 +1135,7 @@ begin
       WatchVar := SE.Selection
     else
       WatchVar := SE.GetOperandAtCurrentCaret;
-    if (WatchVar <> '') and SE.EditorComponent.Focused then
+    if (WatchVar <> '') and (SE.SourceNotebook.Active or SE.EditorComponent.Focused) then
     begin
       Watches.CurrentWatches.BeginUpdate;
       try
