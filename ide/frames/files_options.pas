@@ -109,6 +109,7 @@ type
     function CheckMake: boolean;
     function CheckFPCMsgFile: boolean;
   public
+    constructor Create(AOwner: TComponent); override;
     function Check: Boolean; override;
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -127,31 +128,46 @@ implementation
 procedure TFilesOptionsFrame.FilesButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
-  AFilename: string;
+  lDirText : string;
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lDirNameF : string;
 begin
-  OpenDialog:=IDEOpenDialogClass.Create(nil);
+  OpenDialog := IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Options := OpenDialog.Options+[ofPathMustExist];
     // set title
-    if Sender=CompilerPathButton then
-      OpenDialog.Title:=Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename])
-    else if Sender=MakePathButton then
-      OpenDialog.Title:=lisChooseMakeExecutable
+    if Sender = CompilerPathButton then begin
+      OpenDialog.Title := Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename]);
+      lDirText := CompilerPathComboBox.Text;
+    end
+    else if Sender=MakePathButton then begin
+      OpenDialog.Title := lisChooseMakeExecutable;
+      lDirText := MakePathComboBox.Text;
+    end
     else
       exit;
 
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+    lDirName := EnvironmentOptions.GetParsedValue(eopCompilerFilename, lDirText);
+    lExpandedName := CleanAndExpandFilename(lDirName);
+    lDirName := GetValidDirectoryAndFilename(lDirName, {out} lDirNameF);
+    OpenDialog.InitialDir := lDirName;
+    OpenDialog.FileName := lDirNameF;
 
-      if Sender=CompilerPathButton then begin
-        // check compiler filename
-        SetComboBoxText(CompilerPathComboBox,AFilename,cstFilename);
-        CheckCompiler([mbOk]);
-      end else if Sender=MakePathButton then begin
-        // check make filename
-        SetComboBoxText(MakePathComboBox,AFilename,cstFilename);
-        CheckMake;
+    if OpenDialog.Execute then begin
+      lDirNameF := CleanAndExpandFilename(OpenDialog.Filename);
+      if UpperCase(lExpandedName) <> UpperCase(lDirNameF) then begin // Changed ?
+        lDirText := lDirNameF;
+        if Sender=CompilerPathButton then begin
+          // check compiler filename
+          SetComboBoxText(CompilerPathComboBox,lDirText,cstFilename);
+          CheckCompiler([mbOk]);
+        end
+        else if Sender = MakePathButton then begin
+          // check make filename
+          SetComboBoxText(MakePathComboBox,lDirText,cstFilename);
+          CheckMake;
+        end;
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -185,39 +201,67 @@ end;
 procedure TFilesOptionsFrame.DirectoriesButtonClick(Sender: TObject);
 var
   OpenDialog: TSelectDirectoryDialog;
-  ADirectoryName: string;
+  lDirText : string;
+  lExpandedName: string;
+  lDirName, lDirNameF: string;
 begin
-  OpenDialog:=TSelectDirectoryDialog.Create(nil);
+  OpenDialog := TSelectDirectoryDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Options := OpenDialog.Options+[ofPathMustExist];
     // set title
-    if Sender=LazarusDirButton then
-      OpenDialog.Title:=lisChooseLazarusSourceDirectory
-    else if Sender=FPCSourceDirButton then
-      OpenDialog.Title:=lisChooseFPCSourceDir
-    else if Sender=TestBuildDirButton then
-      OpenDialog.Title:=lisChooseTestBuildDir
+    if Sender = LazarusDirButton then begin
+      OpenDialog.Title := lisChooseLazarusSourceDirectory;
+      lDirText := LazarusDirComboBox.Text;
+    end
+    else if Sender = FPCSourceDirButton then begin
+      OpenDialog.Title := lisChooseFPCSourceDir;
+      lDirText := FPCSourceDirComboBox.Text;
+    end
+    else if Sender=TestBuildDirButton then begin
+      OpenDialog.Title := lisChooseTestBuildDir;
+      lDirText := TestBuildDirComboBox.Text;
+    end
     else
       exit;
 
+    if lDirText = '' then
+      lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, '')
+    else
+      lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, lDirText);
+
+    lExpandedName := CleanAndExpandDirectory(lDirName);
+    lDirName := GetValidDirectoryAndFilename(lDirName, lDirNameF);
+    {
+    if lDirNameF = '' then begin
+      lDirName := ExtractFilePath(lDirName);
+      lDirNameF := ExtractFileName(lDirName);
+    end;
+    }
+
+    OpenDialog.InitialDir := IncludeTrailingBackslash(lDirName);
+    OpenDialog.FileName := lDirNameF;
+
     if OpenDialog.Execute then begin
-      ADirectoryName:=CleanAndExpandDirectory(OpenDialog.Filename);
-
-      if Sender=LazarusDirButton then begin
-        // check lazarus directory
-        SetComboBoxText(LazarusDirComboBox,ADirectoryName,cstFilename);
-        CheckLazarusDir([mbOk]);
-      end else if Sender=FPCSourceDirButton then begin
-        // check fpc source directory
-        SetComboBoxText(FPCSourceDirComboBox,ADirectoryName,cstFilename);
-        CheckFPCSourceDir([mbOK]);
-      end else if Sender=TestBuildDirButton then begin
-        // check test directory
-        SetComboBoxText(TestBuildDirComboBox,ADirectoryName,cstFilename);
-        CheckTestDir;
+      lDirName := CleanAndExpandDirectory(OpenDialog.Filename);
+      if UpperCase(lDirName)<>UpperCase(lExpandedName) then begin
+        lDirText := lDirName;
+        if Sender = LazarusDirButton then begin
+          // check lazarus directory
+          SetComboBoxText(LazarusDirComboBox,lDirText,cstFilename);
+          CheckLazarusDir([mbOk]);
+        end
+        else if Sender = FPCSourceDirButton then begin
+          // check fpc source directory
+          SetComboBoxText(FPCSourceDirComboBox,lDirText,cstFilename);
+          CheckFPCSourceDir([mbOK]);
+        end
+        else if Sender = TestBuildDirButton then begin
+          // check test directory
+          SetComboBoxText(TestBuildDirComboBox,lDirText,cstFilename);
+          CheckTestDir;
+        end;
       end;
-
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -574,6 +618,11 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+constructor TFilesOptionsFrame.Create(AOwner: TComponent); // ~bk to be removed
+begin
+  inherited Create(AOwner);
 end;
 
 class function TFilesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

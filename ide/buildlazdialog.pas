@@ -57,8 +57,8 @@ uses
   // Codetools
   CodeToolManager, DefineTemplates,
   // IDEIntf
-  LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf, IDEExternToolIntf,
+  LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  PackageIntf, IDEExternToolIntf, IDEDialogs, IDEUtils,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, DialogProcs,
   MainBar, EnvironmentOpts,
@@ -1145,17 +1145,29 @@ end;
 
 procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
 var
-  AFilename: String;
   DirDialog: TSelectDirectoryDialog;
+  lExpandedName: string;
+  lDirName, lDirNameF: string;
 begin
   DirDialog:=TSelectDirectoryDialog.Create(nil);
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
     DirDialog.Title:=lisLazBuildABOChooseOutputDir+'(lazarus'+
                       GetExecutableExt(fProfiles.Current.FPCTargetOS)+')';
+
+    { Setup directory path }
+    lDirName:=EnvironmentOptions.GetParsedValue(eopLazarusDirectory, TargetDirectoryComboBox.Text);
+    lExpandedName:=CleanAndExpandDirectory(lDirName);
+    lDirName:=GetValidDirectoryAndFilename(lDirName, lDirNameF);
+
+    DirDialog.InitialDir:=IncludeTrailingBackslash(lDirName);
+    DirDialog.FileName:=lDirNameF;
+
     if DirDialog.Execute then begin
-      AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
-      TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
+      lDirName:=CleanAndExpandDirectory(DirDialog.Filename);
+      { ~bk Here I wanted to keeep Macros but it doesn't seem to work
+      if UpperCase(lDirName)<>UpperCase(lExpandedName) then }
+      TargetDirectoryComboBox.AddHistoryItem(lDirName,10,true,true);
     end;
   finally
     DirDialog.Free;

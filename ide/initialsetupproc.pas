@@ -48,7 +48,8 @@ type
     sddqWrongMinorVersion,
     sddqWrongVersion,
     sddqIncomplete,
-    sddqCompatible
+    sddqCompatible,
+    sddqMakeNotWithFpc  // Make not in the same directory as compiler
     );
 
   TSDFileInfo = class
@@ -902,7 +903,7 @@ begin
     if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
       Note:=Format(lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu, [
         ExtractFilename(AFilename)]);
-      Result:=sddqIncomplete;
+      Result:=sddqMakeNotWithFpc;
       exit;
     end;
   end;
@@ -934,7 +935,7 @@ function SearchMakeExeCandidates(StopIfFits: boolean): TSDFileInfoList;
       List:=TSDFileInfoList.create(true);
     Item:=List.AddNewItem(RealFilename, AFilename);
     Item.Quality:=CheckMakeExeQuality(RealFilename, Item.Note);
-    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+    Result:=(Item.Quality=sddqCompatible) or ((Item.Quality=sddqMakeNotWithFpc) and StopIfFits);
   end;
 
 var

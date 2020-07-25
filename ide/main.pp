@@ -1394,6 +1394,8 @@ begin
 end;
 
 procedure TMainIDE.SetupInteractive;
+const
+  BOOL_RESULT: array[Boolean] of String = ('False', 'True');
 var
   CfgCache: TPCTargetConfigCache;
   OldLazDir: String;
@@ -1404,7 +1406,6 @@ begin
   {$IFDEF DebugSearchFPCSrcThread}
   ShowSetupDialog:=true;
   {$ENDIF}
-
   // check lazarus directory
   if (not ShowSetupDialog)
   and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
@@ -1435,6 +1436,14 @@ begin
     end;
   end;
 
+  // check 'make' utility
+  if (not ShowSetupDialog)
+  and not (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note) in [sddqCompatible, sddqMakeNotWithFpc])
+  then begin
+    debugln(['Warning: (lazarus) incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
+    ShowSetupDialog:=true;
+  end;
+
   // check debugger
   if (not ShowSetupDialog) then begin
     // PackageBoss is not yet loaded...
@@ -1452,14 +1461,6 @@ begin
       debugln(['Warning: (lazarus) missing GDB exe ',EnvironmentOptions.GetParsedLazarusDirectory,' ',Note]);
       ShowSetupDialog:=true;
     end;
-  end;
-
-  // check 'make' utility
-  if (not ShowSetupDialog)
-  and (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note)<>sddqCompatible)
-  then begin
-    debugln(['Warning: (lazarus) incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
-    ShowSetupDialog:=true;
   end;
 
   ConfigFile:=EnvironmentOptions.GetParsedFppkgConfig;

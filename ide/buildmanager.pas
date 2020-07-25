@@ -245,7 +245,7 @@ type
                              ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
     procedure SetBuildTargetProject1; override; overload;
     procedure SetBuildTargetProject1(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources = smsfsBackground); overload;
-    procedure SetBuildTargetIDE; override;
+    procedure SetBuildTargetIDE(aQuiet: boolean = false); override;
     function BuildTargetIDEIsDefault: boolean; override;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
@@ -2924,7 +2924,7 @@ begin
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
 
-procedure TBuildManager.SetBuildTargetIDE;
+procedure TBuildManager.SetBuildTargetIDE(aQuiet: boolean);
 var
   NewTargetOS: String;
   NewTargetCPU: String;
@@ -2939,7 +2939,7 @@ begin
   end;
   if ConsoleVerbosity>=1 then
     debugln(['Hint: (lazarus) [TBuildManager.SetBuildTargetIDE] OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,aQuiet);
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;

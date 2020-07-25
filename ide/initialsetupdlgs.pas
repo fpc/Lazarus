@@ -50,7 +50,7 @@ uses
   FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazStringUtils, LazFileCache,
   LazLoggerBase,
   // IdeIntf
-  MacroDefIntf, IDEDialogs, IDEImagesIntf,
+  MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
@@ -135,6 +135,7 @@ type
     FppkgWriteConfigButton: TButton;
     procedure CompilerBrowseButtonClick(Sender: TObject);
     procedure CompilerComboBoxChange(Sender: TObject);
+    procedure CompilerComboBoxExit(Sender: TObject);
     procedure DebuggerBrowseButtonClick(Sender: TObject);
     procedure DebuggerComboBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -175,24 +176,27 @@ type
     procedure UpdateCaptions;
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
+    function SelectDirectory(aTitle: string; aPathFileName: string;
+                             aEnvOptParseType: TEnvOptParseType): string; overload;
     procedure StartFPCSrcThread;
     procedure UpdateLazarusDirCandidates;
     procedure UpdateCompilerFilenameCandidates;
     procedure UpdateFPCSrcDirCandidates;
     procedure UpdateFPCSrcDirCandidate(aFPCSrcDirInfo: TSDFileInfo);
-    procedure UpdateMakeExeCandidates;
+    procedure UpdateMakeExeCandidates(aStopIfFits: boolean = False);
     procedure UpdateDebuggerCandidates;
     procedure UpdateFppkgCandidates;
     procedure FillComboboxWithFileInfoList(ABox: TComboBox; List: TSDFileInfoList;
        ItemIndex: integer = 0);
     procedure SetIdleConnected(const AValue: boolean);
     procedure UpdateLazDirNote;
-    procedure UpdateCompilerNote;
+    procedure UpdateCompilerNote(aQuiet: boolean = False);
     procedure UpdateFPCSrcDirNote;
     procedure UpdateMakeExeNote;
     procedure UpdateDebuggerNote;
     procedure UpdateFppkgNote;
     function FirstErrorNode: TTreeNode;
+    function FirstWarningNode: TTreeNode;
     function GetFirstCandidate(Candidates: TSDFileInfoList;
       MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
     function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
@@ -553,32 +557,51 @@ end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
 begin
-  UpdateCompilerNote;
+  UpdateCompilerNote({Quiet} True);
+  UpdateFPCSrcDirNote;
+end;
+
+procedure TInitialSetupDialog.CompilerComboBoxExit(Sender: TObject);
+begin
+  UpdateCompilerNote({Quiet} False);
   UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.DebuggerBrowseButtonClick(Sender: TObject);
 var
-  Filename: String;
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lFileName: string;
+  lTitle: string;
+  lChanged: boolean=False;
   Dlg: TIDEOpenDialog;
   Filter: String;
 begin
   Dlg:=IDEOpenDialogClass.Create(nil);
   try
-    Filename:='gdb'+GetExecutableExt;
-    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
-    Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
-    if ExtractFileExt(Filename)<>'' then
-      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
-    Dlg.Filter:=Filter;
-    if not Dlg.Execute then exit;
-    Filename:=Dlg.FileName;
+    lTitle := 'gdb'+GetExecutableExt;
+    Dlg.Title := SimpleFormat(lisSelectPathTo, [lTitle]);
+    lExpandedName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, DebuggerComboBox.Text);
+    lDirName := GetValidDirectory(lExpandedName, {out} lFileName);
+    Dlg.Options := Dlg.Options+[ofFileMustExist];
+    if lFileName='' then
+      lFileName := lTitle;
+    Filter := dlgFilterAll+'|'+GetAllFilesMask;
+    if ExtractFileExt(lFileName)<>'' then
+      Filter := dlgFilterExecutable+'|*'+ExtractFileExt(lFileName)+'|'+Filter;
+    Dlg.Filter := Filter;
+    Dlg.InitialDir := lDirName;
+    Dlg.FileName := lFileName;
+    if not Dlg.Execute then
+      exit;
+    lFileName := CleanAndExpandFilename(Dlg.Filename);
+    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
   finally
     Dlg.Free;
   end;
-  DebuggerComboBox.Text:=Filename;
-  UpdateDebuggerNote;
+  if lChanged then begin // Avoid loosing $(macros)
+    DebuggerComboBox.Text := lFileName;
+    UpdateDebuggerNote;
+  end;
 end;
 
 procedure TInitialSetupDialog.DebuggerComboBoxChange(Sender: TObject);
@@ -588,26 +611,39 @@ end;
 
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
 var
-  Filename: String;
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lFileName: string;
+  lTitle: string;
+  lChanged: boolean=False;
   Dlg: TIDEOpenDialog;
   Filter: String;
 begin
-  Dlg:=IDEOpenDialogClass.Create(nil);
+  Dlg := IDEOpenDialogClass.Create(nil);
   try
-    Filename:='fpc'+GetExecutableExt;
-    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
-    Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
-    if ExtractFileExt(Filename)<>'' then
-      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
-    Dlg.Filter:=Filter;
-    if not Dlg.Execute then exit;
-    Filename:=Dlg.FileName;
+    lTitle := 'fpc'+GetExecutableExt;
+    Dlg.Title := SimpleFormat(lisSelectPathTo, [lTitle]);
+    lExpandedName := EnvironmentOptions.GetParsedValue(eopCompilerFilename, CompilerComboBox.Text);
+    lDirName := GetValidDirectory(lExpandedName, {out} lFileName);
+    Dlg.Options := Dlg.Options+[ofFileMustExist];
+    if lFileName='' then
+      lFileName := lTitle;
+    Filter := dlgFilterAll+'|'+GetAllFilesMask;
+    if ExtractFileExt(lFileName)<>'' then
+      Filter := dlgFilterExecutable+'|*'+ExtractFileExt(lFileName)+'|'+Filter;
+    Dlg.Filter := Filter;
+    Dlg.InitialDir := lDirName;
+    Dlg.FileName := lFileName;
+    if not Dlg.Execute then
+      exit;
+    lFileName := CleanAndExpandFilename(Dlg.Filename);
+    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
   finally
     Dlg.Free;
   end;
-  CompilerComboBox.Text:=Filename;
-  UpdateCompilerNote;
+  if lChanged then begin // Avoid loosing $(macros)
+    CompilerComboBox.Text := lFileName;
+    UpdateCompilerNote;
+  end;
 end;
 
 procedure TInitialSetupDialog.FormDestroy(Sender: TObject);
@@ -628,8 +664,9 @@ procedure TInitialSetupDialog.FPCSrcDirBrowseButtonClick(Sender: TObject);
 var
   Dir: String;
 begin
-  Dir:=SelectDirectory(lisSelectFPCSourceDirectory);
-  if Dir='' then exit;
+  Dir:=SelectDirectory(lisSelectFPCSourceDirectory, FPCSrcDirComboBox.Text,eopFPCSourceDirectory);
+  if Dir='' then
+    exit;
   FPCSrcDirComboBox.Text:=Dir;
   UpdateFPCSrcDirNote;
 end;
@@ -643,8 +680,9 @@ procedure TInitialSetupDialog.LazDirBrowseButtonClick(Sender: TObject);
 var
   Dir: String;
 begin
-  Dir:=SelectDirectory(lisSelectLazarusSourceDirectory);
-  if Dir='' then exit;
+  Dir:=SelectDirectory(lisSelectLazarusSourceDirectory,LazDirComboBox.Text,eopLazarusDirectory);
+  if Dir='' then
+    exit;
   LazDirComboBox.Text:=Dir;
   UpdateLazDirNote;
 end;
@@ -656,26 +694,40 @@ end;
 
 procedure TInitialSetupDialog.MakeExeBrowseButtonClick(Sender: TObject);
 var
-  Filename: String;
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lFileName: string;
+  lTitle: string;
+  lChanged: boolean=False;
   Dlg: TIDEOpenDialog;
   Filter: String;
+
 begin
-  Dlg:=IDEOpenDialogClass.Create(nil);
+  Dlg := IDEOpenDialogClass.Create(nil);
   try
-    Filename:='make'+GetExecutableExt;
-    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
-    Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
-    if ExtractFileExt(Filename)<>'' then
-      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
-    Dlg.Filter:=Filter;
-    if not Dlg.Execute then exit;
-    Filename:=Dlg.FileName;
+    lTitle := 'make'+GetExecutableExt;
+    Dlg.Title := SimpleFormat(lisSelectPathTo, [lTitle]);
+    lExpandedName := EnvironmentOptions.GetParsedValue(eopMakeFilename, MakeExeComboBox.Text);
+    lDirName := GetValidDirectory(lExpandedName, {out} lFileName);
+    Dlg.Options := Dlg.Options+[ofFileMustExist];
+    if lFileName='' then
+      lFileName := lTitle;
+    Filter := dlgFilterAll+'|'+GetAllFilesMask;
+    if ExtractFileExt(lFileName)<>'' then
+      Filter := dlgFilterExecutable+'|*'+ExtractFileExt(lFileName)+'|'+Filter;
+    Dlg.Filter := Filter;
+    Dlg.InitialDir := lDirName;
+    Dlg.FileName := lFileName;
+    if not Dlg.Execute then
+      exit;
+    lFileName := CleanAndExpandFilename(Dlg.Filename);
+    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
   finally
     Dlg.Free;
   end;
-  MakeExeComboBox.Text:=Filename;
-  UpdateMakeExeNote;
+  if lChanged then begin // Avoid loosing $(macros)
+    MakeExeComboBox.Text := lFileName;
+    UpdateMakeExeNote;
+  end;
 end;
 
 procedure TInitialSetupDialog.MakeExeComboBoxChange(Sender: TObject);
@@ -890,6 +942,47 @@ begin
   end;
 end;
 
+function TInitialSetupDialog.SelectDirectory(aTitle: string;
+  aPathFileName: string; aEnvOptParseType: TEnvOptParseType): string;
+var
+  DirDlg: TSelectDirectoryDialog;
+  lCurDirName: string;
+  lDirPath: string;
+  lDirName: string;
+begin
+  Result := '';
+  if aPathFileName='' then
+    case aEnvOptParseType of
+      eopLazarusDirectory: lDirPath := EnvironmentOptions.GetParsedLazarusDirectory;
+      eopFPCSourceDirectory: lDirPath := EnvironmentOptions.GetParsedFPCSourceDirectory;
+    end
+  else
+    lDirPath := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, aPathFileName);
+  lCurDirName := CleanAndExpandFilename(ExcludeTrailingBackSlash(lDirPath));
+  lDirPath := GetValidDirectoryAndFilename(lCurDirName, {out} lDirName);
+  { ~bk
+  if lDirName = '' then begin
+     lDirName := ExtractFileName(lDirPath);
+     lDirPath := ExtractFilePath(lDirPath);
+  end;
+  }
+  lDirPath := ExcludeTrailingBackSlash(lDirPath);
+  DirDlg := TSelectDirectoryDialog.Create(nil);
+  try
+    DirDlg.Title := aTitle;
+    DirDlg.InitialDir := lDirPath;
+    DirDlg.FileName := lDirName;
+    DirDlg.Options := DirDlg.Options + [ofPathMustExist]; // ~bk, ofFileMustExist];
+    if DirDlg.Execute then begin
+      lDirName := CleanAndExpandFilename(DirDlg.FileName);
+      if UpperCase(lCurDirName)<>UpperCase(lDirName) then
+        Result := lDirName;
+    end;
+  finally
+    DirDlg.Free;
+  end;
+end;
+
 procedure TInitialSetupDialog.StartFPCSrcThread;
 begin
   fSearchFpcSourceThread:=TSearchFpcSourceThread.Create(Self);
@@ -943,12 +1036,12 @@ begin
   FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
 end;
 
-procedure TInitialSetupDialog.UpdateMakeExeCandidates;
+procedure TInitialSetupDialog.UpdateMakeExeCandidates(aStopIfFits: boolean);
 var
   Files: TSDFileInfoList;
 begin
   Exclude(FFlags,sdfMakeExeFilenameNeedsUpdate);
-  Files:=SearchMakeExeCandidates(false);
+  Files:=SearchMakeExeCandidates(aStopIfFits);
   FreeAndNil(FCandidates[sddtMakeExeFileName]);
   FCandidates[sddtMakeExeFileName]:=Files;
   FillComboboxWithFileInfoList(MakeExeComboBox,Files);
@@ -1032,7 +1125,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TInitialSetupDialog.UpdateCompilerNote;
+procedure TInitialSetupDialog.UpdateCompilerNote(aQuiet: boolean);
 var
   CurCaption, ParsedC, Note, s: String;
   Quality: TSDFilenameQuality;
@@ -1055,7 +1148,7 @@ begin
     CfgCache.CompilerDate:=0; // force update
     if CfgCache.NeedsUpdate then
       CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename);
-    BuildBoss.SetBuildTargetIDE;
+    BuildBoss.SetBuildTargetIDE(aQuiet);
   end;
   case Quality of
   sddqInvalid: s:=lisError;
@@ -1188,6 +1281,19 @@ begin
     Result:=PropertiesTreeView.Items.TopLvlItems[i];
     if Result.ImageIndex=ImgIDError then exit;
   end;
+  Result:=FirstWarningNode;
+end;
+
+function TInitialSetupDialog.FirstWarningNode: TTreeNode;
+var
+  i: Integer;
+begin
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDWarning then
+      exit;
+  end;
   Result:=nil;
 end;
 
@@ -1212,6 +1318,8 @@ begin
   else if Quality=sddqWrongMinorVersion then
     Result:=ImgIDWarning
   else if Quality=sddqIncomplete then
+    Result:=ImgIDWarning
+  else if Quality=sddqMakeNotWithFpc then
     Result:=ImgIDWarning
   else
     Result:=ImgIDError;
@@ -1257,6 +1365,7 @@ var
 begin
   IsFirstStart:=not FileExistsCached(EnvironmentOptions.Filename);
   if not IsFirstStart then begin
+    IsFirstStart:= False;
     PrimaryFilename:=EnvironmentOptions.Filename;
     SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ExtractFilename(PrimaryFilename);
     if FileExistsUTF8(PrimaryFilename)
@@ -1276,11 +1385,13 @@ begin
         on E: Exception do
           debugln(['TInitialSetupDialog.Init unable to read "'+SecondaryFilename+'": '+E.Message]);
       end;
-      IsFirstStart:=PrimaryEnvs.Text=SecondaryEnvs.Text;
+      // IsFirstStart:=PrimaryEnvs.Text=SecondaryEnvs.Text;
       PrimaryEnvs.Free;
       SecondaryEnvs.Free;
     end;
-  end;
+  end
+  else
+    IsFirstStart := True;
   //debugln(['TInitialSetupDialog.Init IsFirstStart=',IsFirstStart,' ',EnvironmentOptions.Filename]);
 
   // Lazarus directory
@@ -1348,7 +1459,7 @@ begin
   UpdateFPCSrcDirNote;
 
   // Make executable
-  UpdateMakeExeCandidates;
+  UpdateMakeExeCandidates({aStopIfFits} True);
   if IsFirstStart
   or (EnvironmentOptions.MakeFilename='')
   or (not FileExistsCached(EnvironmentOptions.GetParsedMakeFilename)) then
@@ -1512,20 +1623,42 @@ begin
   FillComboboxWithFileInfoList(FppkgComboBox,Files,-1);
 end;
 
+
 procedure TInitialSetupDialog.FppkgBrowseButtonClick(Sender: TObject);
 var
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lFileName: string;
+  lTitle: string;
+  lChanged: boolean=False;
   Dlg: TIDEOpenDialog;
+  Filter: String;
 begin
   Dlg:=IDEOpenDialogClass.Create(nil);
   try
-    Dlg.Title:=SimpleFormat(lisSelectPathTo, ['fppkg.cfg']);
-    Dlg.Options:=Dlg.Options+[ofPathMustExist];
-    if not Dlg.Execute then exit;
-    FppkgComboBox.Text:=Dlg.FileName;
+    lTitle:='fppkg.cfg';
+    Dlg.Title:=SimpleFormat(lisSelectPathTo, [lTitle]);
+    lExpandedName:=EnvironmentOptions.GetParsedValue(eopFppkgConfigFile, FppkgComboBox.Text);
+    lDirName := GetValidDirectory(lExpandedName, {out} lFileName);
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    if lFileName='' then
+      lFileName:=lTitle;
+    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
+    if ExtractFileExt(lFileName)<>'' then
+      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(lFileName)+'|'+Filter;
+    Dlg.Filter:=Filter;
+    Dlg.InitialDir:=lDirName;
+    Dlg.FileName:=lFileName;
+    if not Dlg.Execute then
+      exit;
+    lFileName:=CleanAndExpandFilename(Dlg.Filename);
+    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
   finally
     Dlg.Free;
   end;
-  UpdateFppkgNote;
+  if lChanged then begin // Avoid loosing $(macros)
+    FppkgComboBox.Text:=lFileName;
+    UpdateFppkgNote;
+  end;
 end;
 
 procedure TInitialSetupDialog.FppkgWriteConfigButtonClick(Sender: TObject);

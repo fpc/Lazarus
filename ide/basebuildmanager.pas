@@ -46,7 +46,7 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTargetProject1; virtual; abstract;
-    procedure SetBuildTargetIDE; virtual; abstract;
+    procedure SetBuildTargetIDE(aQuiet: boolean = false); virtual; abstract;
     function BuildTargetIDEIsDefault: boolean; virtual; abstract;
 
     function GetBuildMacroOverride(const MacroName: string): string; virtual; abstract;

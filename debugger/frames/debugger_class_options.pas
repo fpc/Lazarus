@@ -155,6 +155,9 @@ procedure TDebuggerClassOptionsFrame.cmdOpenDebuggerPathClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   AFilename, ParsedFName: string;
+  lDirText : string;
+  lExpandedName: string; // Expanded name before Dialog
+  lDirName, lDirNameF : string;
 begin
   if FSelectedDbgPropertiesConfig = nil then
     exit;
@@ -165,6 +168,12 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseDebuggerExecutable;
 
+    lDirName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, lDirText);
+    lExpandedName := CleanAndExpandFilename(lDirName);
+    lDirName := GetValidDirectory(lDirName, {out} lDirNameF);
+    OpenDialog.InitialDir := lDirName;
+    OpenDialog.FileName := lDirNameF;
+
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       ParsedFName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, AFilename);
@@ -173,10 +182,11 @@ begin
       if CheckExecutable(FSelectedDbgPropertiesConfig.DebuggerFilename, ParsedFName,
         lisEnvOptDlgInvalidDebuggerFilename,
         lisEnvOptDlgInvalidDebuggerFilenameMsg)
-      then begin
-        SetComboBoxText(cmbDebuggerPath,AFilename,cstFilename);
-        FSelectedDbgPropertiesConfig.DebuggerFilename := AFilename;
-      end;
+      then
+        if UpperCase(lExpandedName)<>UpperCase(AFilename) then begin // Changed ?
+          SetComboBoxText(cmbDebuggerPath,AFilename,cstFilename);
+          FSelectedDbgPropertiesConfig.DebuggerFilename := AFilename;
+        end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
