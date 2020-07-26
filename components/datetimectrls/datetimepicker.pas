@@ -236,14 +236,7 @@ type
     procedure SetTrailingSeparator(const AValue: Boolean);
     procedure SetUseDefaultSeparators(const AValue: Boolean);
 
-    function GetHour: Word;
-    function GetMiliSec: Word;
-    function GetMinute: Word;
-    function GetSecond: Word;
     procedure RecalculateTextSizesIfNeeded;
-    function GetDay: Word;
-    function GetMonth: Word;
-    function GetYear: Word;
     function GetHMSMs(const NowIfNull: Boolean = False): THMSMs;
     function GetYYYYMMDD(const TodayIfNull: Boolean = False;
                                const WithCorrection: Boolean = False): TYMD;
@@ -1257,26 +1250,6 @@ begin
   end;
 end;
 
-function TCustomDateTimePicker.GetHour: Word;
-begin
-  Result := GetHMSMs.Hour;
-end;
-
-function TCustomDateTimePicker.GetMiliSec: Word;
-begin
-  Result := GetHMSMs.MiliSec;
-end;
-
-function TCustomDateTimePicker.GetMinute: Word;
-begin
-  Result := GetHMSMs.Minute;
-end;
-
-function TCustomDateTimePicker.GetSecond: Word;
-begin
-  Result := GetHMSMs.Second;
-end;
-
 { RecalculateTextSizesIfNeeded
  --------------------------------
   In this procedure we measure text and store the values in the following
@@ -1396,21 +1369,6 @@ begin
     FTextHeight := Canvas.GetTextHeight('0123456789' + S);
 
   end;
-end;
-
-function TCustomDateTimePicker.GetDay: Word;
-begin
-  Result := GetYYYYMMDD.Day;
-end;
-
-function TCustomDateTimePicker.GetMonth: Word;
-begin
-  Result := GetYYYYMMDD.Month;
-end;
-
-function TCustomDateTimePicker.GetYear: Word;
-begin
-  Result := GetYYYYMMDD.Year;
 end;
 
 function TCustomDateTimePicker.GetHMSMs(const NowIfNull: Boolean): THMSMs;
@@ -1603,7 +1561,7 @@ begin
       S := Trim(GetSelectedText);
 
       if FSelectedTextPart = 8 then begin
-        W := GetHour;
+        W := GetHMSMs().Hour;
         if upCase(S[1]) = 'A' then begin
           if W >= 12 then
             Dec(W, 12);
@@ -1643,7 +1601,7 @@ begin
           dtpHour:
             begin
               if (FTimeFormat = tf12) then begin
-                if GetHour < 12 then begin
+                if GetHMSMs().Hour < 12 then begin
                   if W = 12 then
                     SetHour(0)
                   else
