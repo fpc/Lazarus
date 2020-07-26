@@ -36,6 +36,7 @@ uses
   ExtCtrls, StdCtrls, Dialogs,
   // LazControls
   TreeFilterEdit,
+  LazControlDsgn, // move this to lazarus.lpr
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
   ProjectIntf, IDEImagesIntf,

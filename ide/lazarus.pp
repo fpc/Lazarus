@@ -62,7 +62,6 @@ uses
   Splash,
   Main,
   AboutFrm,
-  LazControlDsgn,
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
