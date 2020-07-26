@@ -142,28 +142,29 @@ end;
 
 procedure TGtkMessageQueue.Lock;
 begin
-    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   if InterlockedIncrement(fLock)=1 then
     EnterCriticalsection(FCritSec);
-    {$ELSE}
+  {$ELSE}
   if GetCurrentThreadId = MainThreadID then
-    g_main_context_acquire(FMainContext)
+    repeat
+    until g_main_context_acquire(FMainContext)  // This can return False.
   else
     EnterCriticalsection(FCritSec);
-    {$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TGtkMessageQueue.UnLock;
 begin
-    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
+  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   if InterlockedDecrement(fLock)=0 then
     LeaveCriticalsection(FCritSec);
-    {$ELSE}
+  {$ELSE}
   if GetCurrentThreadId = MainThreadID then
     g_main_context_release(FMainContext)
   else
     LeaveCriticalsection(FCritSec)
-    {$ENDIF}
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
