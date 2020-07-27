@@ -14491,9 +14491,11 @@ begin
   end;
 
   {$ifdef ThemeSupport}
-  //  if Theme <> 0 then
-  //    CloseThemeData(Theme);
+  {$ifdef Windows}
+    if tsUseThemes in FStates then
+      CloseThemeData(Theme);
   {$endif}
+  {$endif ThemeSupport}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24715,9 +24717,7 @@ begin
       RowRect.Right := Max(ClientWidth, RowRect.Right);
     if toShowVertGridLines in FOptions.PaintOptions then
       Dec(RowRect.Right);
-  end
-  else
-    Theme := 0;
+   end;
   {$endif}
   {$endif ThemeSupport}
 
@@ -24813,7 +24813,7 @@ begin
             if not IsRectEmpty(InnerRect) then
               {$ifdef ThemeSupport}
               {$ifdef Windows}
-                if Theme <> 0 then
+                if tsUseExplorerTheme in FStates then
                 begin
                   // If the node is also hot, its background will be drawn later.
                   if not (toHotTrack in FOptions.FPaintOptions) or (Node <> FCurrentHotNode) or
@@ -24834,7 +24834,7 @@ begin
 
     {$ifdef ThemeSupport}
     {$ifdef Windows}
-      if (Theme <> 0) and (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) and
+      if (tsUseExplorerTheme in FStates) and (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) and
          ((Column = FCurrentHotColumn) or (toFullRowSelect in FOptions.FSelectionOptions)) then
         DrawBackground(IfThen((vsSelected in Node.States) and not (toAlwaysHideSelection in FOptions.FPaintOptions),
                               TREIS_HOTSELECTED, TREIS_HOT));
@@ -24859,7 +24859,7 @@ begin
         {$ifdef ThemeSupport}
         {$ifdef Windows}
           if not (toExtendedFocus in FOptions.FSelectionOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
-            (Theme <> 0) then
+            (tsUseExplorerTheme in FStates) then
             FocusRect := RowRect
           else
         {$endif}
@@ -24894,11 +24894,10 @@ begin
     end;
   end;
   {$ifdef ThemeSupport}
-  //todo
-  {
-  if Theme <> 0 then
+  {$ifdef Windows}
+  if tsUseExplorerTheme in FStates then
     CloseThemeData(Theme);
-  }
+  {$endif}
   {$endif ThemeSupport}
 end;
 
