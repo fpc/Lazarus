@@ -149,6 +149,8 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function RealStartLine: Integer; // Offset
     function RealEndLine: Integer; // Offset + RealCount - 1;
 
+    function GetLineForForWrap(AWrapLine: TLineIdx; out AWrapOffset: TLineIdx): TLineIdx;
+
     function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint): TPhysPoint;
     function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint): TPhysPoint;
 
@@ -802,6 +804,19 @@ begin
   Result := FStartLine + FData.RealEndLine;
 end;
 
+function TSynEditLineMapPageHolder.GetLineForForWrap(AWrapLine: TLineIdx; out
+  AWrapOffset: TLineIdx): TLineIdx;
+begin
+  if (not HasPage) or (StartLine + ViewedCountDifferenceBefore > AWrapLine) then begin
+    // no wrapped line before AWrapLine;
+    Result := AWrapLine;
+    AWrapOffset := 0;
+    exit;
+  end;
+
+  Result := StartLine + Page.GetOffsetForWrap(AWrapLine - StartLine - ViewedCountDifferenceBefore, AWrapOffset);
+end;
+
 function TSynEditLineMapPageHolder.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint
   ): TPhysPoint;
 begin
@@ -1243,21 +1258,8 @@ var
   pg: TSynEditLineMapPageHolder;
 begin
   pg := FindPageForWrap(AWrapLine);
-  if not pg.HasPage then begin
-    Result := 0;
-    AWrapOffset := 0;
-    exit;
-  end;
-
-  if pg.StartLine + pg.ViewedCountDifferenceBefore > AWrapLine then begin
-    // no wrapped line before AWrapLine;
-    Result := AWrapLine;
-    AWrapOffset := 0;
-    exit;
-  end;
-
   // TODO: this may be the next node.
-  Result := pg.StartLine + pg.Page.GetOffsetForWrap(AWrapLine - pg.StartLine - pg.ViewedCountDifferenceBefore, AWrapOffset);
+  Result := pg.GetLineForForWrap(AWrapLine, AWrapOffset);
 end;
 
 function TSynLineMapAVLTree.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint
