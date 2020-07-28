@@ -1140,7 +1140,7 @@ begin
     NextPage := Successor(NextLineOffs, dummy);
     if NextPage <> nil then begin
       assert(NextLineOffs > RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: NextLineOffs > RealEndLine');
-      NextLineDist := NextLineOffs - RealEndLine + NextPage.RealStartLine;
+      NextLineDist := NextLineOffs - (RealEndLine+1) + NextPage.RealStartLine;
       c := NextPage.RealCount;
       if ( (c <> 0) and (NextLineDist > Tree.PageJoinDistance) ) or
          (c > Tree.PageJoinSize) or
@@ -1158,7 +1158,7 @@ begin
     if PrevPage <> nil then begin
       PrevLineOffs := -PrevLineOffs;
       assert(PrevLineOffs > PrevPage.RealEndLine, 'TSynWordWrapIndexPage.MaybeJoinWithSibling: -PrevLineOffs > PrevPage.RealEndLine');
-      PrevLineDist := PrevLineOffs + RealStartLine - PrevPage.RealEndLine;
+      PrevLineDist := PrevLineOffs + RealStartLine - (PrevPage.RealEndLine+1);
       c := PrevPage.RealCount;
       if ( (c <> 0) and (PrevLineDist> Tree.PageJoinDistance) ) or
          (c > Tree.PageJoinSize) or
@@ -1174,17 +1174,15 @@ begin
      ( (PrevLineOffs = 0) or (PrevLineDist > NextLineDist) )
   then begin
     MoveLinesAtEndTo(NextPage, 0, NextLineOffs);
-    //FSynWordWrapLineMap.MoveLinesAtEndTo(TSynWordWrapIndexPage(ADestPage).FSynWordWrapLineMap, ASourceStartLine, ACount);
     Tree.FreeNode(Self);
     NextPage.AdjustPosition(-NextLineOffs);
   end
   else
   if (PrevLineOffs > 0)
   then begin
-    MoveLinesAtStartTo(PrevPage, PrevLineOffs-1, PrevLineOffs);
+    MoveLinesAtStartTo(PrevPage, RealEndLine, PrevLineOffs);
     Tree.FreeNode(Self);
   end;
-
 
   end;
 end;

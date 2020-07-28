@@ -20,7 +20,8 @@ type
     len: Integer;
     function Init(const a: array of integer): TExpWraps;
     procedure SetCapacity(l: Integer);
-    procedure Fill(AFrom, ATo: integer; AIncrease: Integer = 1);
+    procedure InitFill(AFrom, ATo: integer; AIncrease: Integer = 1);
+    procedure FillRange(AStartIdx, ACount, AFromVal: integer; AIncrease: Integer = 1);
     procedure Join(const a: TExpWraps; AInsertPos: Integer = -1);
     procedure Join(const a: array of integer; AInsertPos: Integer = -1);
     procedure SpliceArray(ADelFrom, ADelCount: integer);
@@ -71,6 +72,7 @@ type
     procedure TestWordWrapLineMapValidate;
     procedure TestWordWrapLineMapMerge;
     procedure TestWordWrapLineMapMergeInvalidate;
+    procedure TestWordWrapJoinWithSibling;
 
     procedure TestWordWrapTreeInsertThenDelete;
     procedure TestWordWrapTreeDeleteThenInsert;
@@ -311,7 +313,7 @@ begin
     SetLength(w, l*2);
 end;
 
-procedure TExpWraps.Fill(AFrom, ATo: integer; AIncrease: Integer);
+procedure TExpWraps.InitFill(AFrom, ATo: integer; AIncrease: Integer);
 var
   p: PLongInt;
   i: Integer;
@@ -324,6 +326,25 @@ begin
     inc(p);
     inc(AFrom, AIncrease);
   end;
+end;
+
+procedure TExpWraps.FillRange(AStartIdx, ACount, AFromVal: integer;
+  AIncrease: Integer);
+var
+  p: PLongInt;
+  i: Integer;
+begin
+  if len < AStartIdx + ACount then
+    len := AStartIdx + ACount;
+  SetCapacity(len);
+
+  p := @w[AStartIdx];
+  for i := 0 to ACount - 1 do begin
+    p^ := AFromVal;
+    inc(p);
+    inc(AFromVal, AIncrease);
+  end;
+
 end;
 
 procedure TExpWraps.Join(const a: TExpWraps; AInsertPos: Integer);
@@ -1496,6 +1517,90 @@ begin
 
 end;
 
+procedure TTestWordWrap.TestWordWrapJoinWithSibling;
+var
+  CurWraps: TExpWraps;
+
+  procedure DoTestAssert(AName: String; ExpNodeCnt: Integer);
+  begin
+    //debugln(AName); FTree.DebugDump ;
+    AssertTreeForWraps(AName + ' Wrap', CurWraps);
+    AssertEquals(AName + ' Cnt ', ExpNodeCnt, TreeNodeCount);
+  end;
+
+  procedure DoTestInit(AName: String; AFromVal, ALineCount, AnIncrease, ExpNodeCnt: Integer);
+  begin
+    FTree.Clear;
+    CurWraps.InitFill(AFromVal, AFromVal+ALineCount-1, AnIncrease); // 4 pages
+    FTree.AdjustForLinesInserted(0, ALineCount, 0);
+    ValidateTreeWraps(CurWraps);
+
+    DoTestAssert(Format('%s (Init %d, %d) Wrap', [AName, AFromVal, ALineCount]), ExpNodeCnt);
+  end;
+
+  procedure DoTestChgWrp(AName: String; AStartLine, ALineCount, AFromVal, AnIncrease, ExpNodeCnt: Integer);
+  begin
+    CurWraps.FillRange(AStartLine, ALineCount, AFromVal, AnIncrease);
+    FTree.InvalidateLines(AStartLine, AStartLine + ALineCount - 1);
+    ValidateTreeWraps(CurWraps);
+
+    DoTestAssert(Format('%s (Changed %d, %d) Wrap', [AName, AStartLine, ALineCount]), ExpNodeCnt);
+  end;
+
+  procedure DoTestDelete(AName: String; AStartLine, ALineCount, ExpNodeCnt: Integer);
+  begin
+    FTree.AdjustForLinesDeleted(AStartLine, ALineCount,0);
+    CurWraps.SpliceArray(AStartLine, ALineCount);
+
+    DoTestAssert(Format('%s (Deleted %d, %d) Wrap', [AName, AStartLine, ALineCount]), ExpNodeCnt);
+  end;
+
+var
+  OffsetAtStart, OffsetAtEnd, Node1Del, Node2Del, FinalNodeCount: Integer;
+  N: String;
+begin
+  (* After "DoTestInit" each node should be filled to the max.
+     So the test knows where each node begins
+  *)
+  FTree := CreateTree(10, 30, 4); // APageJoinSize, APageSplitSize, APageJoinDistance
+
+  For OffsetAtStart := 0 to 3 do
+  For OffsetAtEnd := 0 to 3 do  // RealEnd = NextNode.Startline-1 - x
+  For Node1Del := 18 to 25 do
+  For Node2Del := 18 to 25 do
+  begin
+    N := Format('Start: %d  End: %d  Del1: %d Del2: %d', [OffsetAtStart, OffsetAtEnd, Node1Del, Node2Del]);
+
+    FinalNodeCount := 3;
+    if (OffsetAtStart + OffsetAtEnd > 4) or   //  APageJoinDistance not met
+       (Node1Del + OffsetAtEnd < 20) or (Node2Del + OffsetAtStart < 20)
+    then
+      FinalNodeCount := 4;
+
+    DoTestInit  (N, 10, 4*30, 1,    4);  // Create 4 full nodes
+
+    if OffsetAtStart > 0 then
+      DoTestChgWrp(N, 90,              OffsetAtStart, 1, 0,   4);  // At Start of Last node
+    if OffsetAtEnd > 0 then
+      DoTestChgWrp(N, 90-OffsetAtEnd,  OffsetAtEnd,   1, 0,   4);  // At End of 2nd-Last node
+
+    DoTestDelete(N, 60,          Node1Del,         4);
+    DoTestDelete(N, 95-Node1Del, Node2Del,         FinalNodeCount);
+
+    // Delete from 2nd node before 1st node
+    DoTestInit  (N, 10, 4*30, 1,    4);  // Create 4 full nodes
+
+    if OffsetAtStart > 0 then
+      DoTestChgWrp(N, 90,              OffsetAtStart, 1, 0,   4);  // At Start of Last node
+    if OffsetAtEnd > 0 then
+      DoTestChgWrp(N, 90-OffsetAtEnd,  OffsetAtEnd,   1, 0,   4);  // At End of 2nd-Last node
+
+    DoTestDelete(N, 95, Node2Del,         4);
+    DoTestDelete(N, 60, Node1Del,         FinalNodeCount);
+
+  end;
+end;
+
 
 procedure TTestWordWrap.TestWordWrapTreeInsertThenDelete;
 var
@@ -1512,7 +1617,7 @@ begin
     FTree.Clear;
 
     // init
-    CurWraps.Fill(10, 10+26);
+    CurWraps.InitFill(10, 10+26);
     FTree.AdjustForLinesInserted(0, 27, 0);
     ValidateTreeWraps(CurWraps);
     //FTree.DebugDump;
@@ -1551,7 +1656,7 @@ begin
     FTree.Clear;
 
     // init
-    CurWraps.Fill(10, 10+26);
+    CurWraps.InitFill(10, 10+26);
     FTree.AdjustForLinesInserted(0, 27, 0);
     ValidateTreeWraps(CurWraps);
     //FTree.DebugDump;

@@ -902,11 +902,11 @@ begin
   TmpPage := FindPageForLine(AStartLine, afmPrev);
   if not TmpPage.HasPage then begin
     TmpPage := FirstPage;
-    if TmpPage.HasPage then begin
-      d := TmpPage.StartLine - CurLine;
-      CurLine := CurLine + d;
-      CountRemaining := CountRemaining - d;
-    end;
+    if not TmpPage.HasPage then
+      exit;
+    d := TmpPage.StartLine - CurLine;
+    CurLine := CurLine + d;
+    CountRemaining := CountRemaining - d;
   end;
 
   if TmpPage.StartLine < AStartLine then begin // keep some
@@ -931,14 +931,15 @@ begin
     FirstTmpPage.AdjustForLinesDeleted(CurLine, CountRemaining, ABytePos);
   end;
 
-  if TmpPage.HasPage and (LineAfter - TmpPage.StartLine > 0) then begin
-    TmpPage.AdjustForLinesDeleted(TmpPage.StartLine, LineAfter - TmpPage.StartLine, 0);
-    TmpPage.AdjustPosition(AStartLine - TmpPage.StartLine);
+  d := LineAfter - TmpPage.StartLine;
+  if TmpPage.HasPage and (d > 0) then begin
+    TmpPage.AdjustPosition(AStartLine - TmpPage.StartLine); // Only happens if "AStartLine - TmpPage.StartLine" is negative;
+    inherited AdjustForLinesDeleted(AStartLine, ALineCount);
+
+    TmpPage.AdjustForLinesDeleted(TmpPage.StartLine, d, 0);
   end
   else
-    TmpPage.ClearData;
-
-  inherited AdjustForLinesDeleted(AStartLine, ALineCount);
+    inherited AdjustForLinesDeleted(AStartLine, ALineCount);
 end;
 
 constructor TSynLineMapAVLTree.Create;
@@ -1465,7 +1466,8 @@ procedure TSynEditLineMappingView.InternalGetInfoForViewedXY(
 var
   FirstViewedX: IntPos;
 begin
-  WrapInfoForViewedXYProc(AViewedXY, AFlags, FirstViewedX, ALogPhysConvertor);
+  if FWrapInfoForViewedXYProc <> nil then
+    WrapInfoForViewedXYProc(AViewedXY, AFlags, FirstViewedX, ALogPhysConvertor);
 
   inherited InternalGetInfoForViewedXY(AViewedXY, AFlags, AViewedXYInfo,
     ALogPhysConvertor);
