@@ -593,7 +593,7 @@ begin
     WrapInfoCopyFromTo(
       @FWrappedExtraSums[i],
       @FWrappedExtraSums[0],
-      FWrappedExtraSumsCount);
+      FWrappedExtraSumsCount-i);
     FOffsetAtStart := FOffsetAtStart + i;
     FWrappedExtraSumsCount := FWrappedExtraSumsCount - i;
   end;
