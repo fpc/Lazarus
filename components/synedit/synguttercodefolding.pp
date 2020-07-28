@@ -336,10 +336,10 @@ begin
       if inf.OpenCount > 1 then
         s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
 
-      if inf.FNode.IsInFold then begin
+      if inf.IsFold then begin
         m := AddPopUpItem(format('%4d %s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]));
         m.Tag := i;
-        if inf.FNode.IsHide then
+        if inf.IsHide then
           m.ImageIndex := 3
         else
           m.ImageIndex := 1;

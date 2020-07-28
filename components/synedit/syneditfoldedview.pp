@@ -252,7 +252,7 @@ type
 
   TFoldViewNodeInfo = record
     HNode: TSynFoldNodeInfo;    // Highlighter Node
-    FNode: TSynTextFoldAVLNode; // AvlFoldNode
+    IsFold, IsHide: Boolean;
     Text, Keyword: String;
     LineNum, ColIndex: Integer;
     OpenCount: Integer; // Highlighter-Nodes opening on this line (limited to the FoldGroup requested)
@@ -4434,6 +4434,7 @@ var
   EndLvl, CurLvl: Array of integer;
   i, c, t, n, o: Integer;
   nd: TSynFoldNodeInfo;
+  FN: TSynTextFoldAVLNode;
 
   procedure GetEndLvl(l: Integer);
   var i: integer;
@@ -4525,7 +4526,9 @@ begin
     Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
   Result.LineNum := aStartIndex + 1;
   Result.ColIndex := n;
-  Result.FNode := FoldNodeAtTextIndex(aStartIndex, n);
+  FN := FoldNodeAtTextIndex(aStartIndex, n);
+  Result.IsFold := FN.IsInFold;
+  Result.IsHide := fn.IsHide;
 end;
 
 function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer;
