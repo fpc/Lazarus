@@ -1256,7 +1256,7 @@ begin
   if ClipRegion <> nil then
   begin
     RGNType := RegionType(ClipRegion^.GDIRegionObject);
-    if (RGNType <> ERROR) and (RGNType <> NULLREGION) then
+    if RGNType <> ERROR then
       gdk_gc_set_clip_region(FGC,  ClipRegion^.GDIRegionObject);
   end;
 

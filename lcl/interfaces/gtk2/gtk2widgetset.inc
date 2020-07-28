@@ -6047,19 +6047,9 @@ end;
 function TGtk2WidgetSet.CreateEmptyRegion: hRGN;
 var
   GObject: PGdiObject;
-  R: TGDKRectangle;
-  RegionObj: PGdkRegion;
-  RRGN: PGDKRegion;
 begin
   GObject := NewGDIObject(gdiRegion);
-  R.x := -1;
-  R.y := -1;
-  R.width := 1;
-  R.height := 1;
-  RRGN := gdk_region_new;
-  RegionObj := PGdkRegion(gdk_region_union_with_rect(RRGN,@R));
-  GObject^.GDIRegionObject := RegionObj;
-  gdk_region_destroy(RRGN);
+  GObject^.GDIRegionObject := gdk_region_new;
   Result := HRGN({%H-}PtrUInt(GObject));
   //DebugLn('TGtk2WidgetSet.CreateEmptyRgn A RGN=',DbgS(Result));
 end;

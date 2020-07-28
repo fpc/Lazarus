@@ -1394,8 +1394,6 @@ begin
 end;
 
 procedure TMainIDE.SetupInteractive;
-const
-  BOOL_RESULT: array[Boolean] of String = ('False', 'True');
 var
   CfgCache: TPCTargetConfigCache;
   OldLazDir: String;

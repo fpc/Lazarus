@@ -1871,13 +1871,6 @@ begin
   Result := RegionType(D);
   //DebugLn('TGtk2WidgetSet.CombineRgn B Mode=',dbgs(fnCombineMode),
   //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
-  {if (Result = NullRegion) and
-    ((RegionType(S1) <> NullRegion) or ((RegionType(S2) <> NullRegion))) then
-  begin
-    DeleteObject(Dest);
-    Dest := CreateEmptyRegion;
-    Result := RegionType(Dest);
-  end;}
 end;
 
 {------------------------------------------------------------------------------
