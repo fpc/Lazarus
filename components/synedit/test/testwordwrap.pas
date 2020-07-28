@@ -26,9 +26,20 @@ type
     procedure SpliceArray(ADelFrom, ADelCount: integer);
   end;
 
+  { TTestWordWrapBase }
+
+  TTestWordWrapBase = class(TTestBase)
+  protected
+    function TheTree: TSynLineMapAVLTree; virtual; abstract;
+    function  TreeNodeCount: integer;
+    procedure CheckTree(AName: String); virtual;
+    procedure CheckTree(AName: String; ANode: TSynEditLineMapPage; ANodeLine: TLineIdx; AMinLine, AMaxLine: TLineIdx);
+
+  end;
+
   { TTestWordWrap }
 
-  TTestWordWrap = class(TTestBase)
+  TTestWordWrap = class(TTestWordWrapBase)
   private
     FTree: TSynLineMapAVLTree;
     procedure AssertRealToWrapOffsets(const AName: String; ALine: TSynWordWrapLineMap;
@@ -49,6 +60,8 @@ type
 
     function CreateTree(APageJoinSize, APageSplitSize, APageJoinDistance: Integer): TSynLineMapAVLTree;
   protected
+    function TheTree: TSynLineMapAVLTree; override;
+
     procedure SetUp; override;
     procedure TearDown; override;
   published
@@ -96,7 +109,7 @@ type
 
   { TTestWordWrapPluginBase }
 
-  TTestWordWrapPluginBase = class(TTestBase)
+  TTestWordWrapPluginBase = class(TTestWordWrapBase)
   private
     procedure ClearCaret;
     function GetTreeNodeHolder(AIndex: Integer): TSynEditLineMapPageHolder;
@@ -123,7 +136,7 @@ type
 
     procedure CheckLineIndexMapping(AName: String; ATextIdx, AViewTopIdx, AViewBottomIdx: TLineIdx);
 
-    function  TreeNodeCount: integer;
+    function TheTree: TSynLineMapAVLTree; override;
     property TreeNodeHolder[AIndex: Integer]: TSynEditLineMapPageHolder read GetTreeNodeHolder;
 
     procedure ReCreateEdit(ADispWidth: Integer);
@@ -224,6 +237,59 @@ begin
   while j < Length(ALines) do begin
     Result[j].ViewedBottomIdx := AFirstViewedIdx - 1;
     inc(j);
+  end;
+end;
+
+{ TTestWordWrapBase }
+
+function TTestWordWrapBase.TreeNodeCount: integer;
+var
+  n: TSynEditLineMapPageHolder;
+begin
+  Result := 0;
+  n := TheTree.FirstPage;
+  while n.HasPage do begin
+    inc(Result);
+    n := n.Next;
+  end;
+end;
+
+procedure TTestWordWrapBase.CheckTree(AName: String);
+var
+  n: TSynEditLineMapPageHolder;
+begin
+  if TheTree = nil then
+    AssertTrue(AName, False);
+  n := TheTree.FirstPage;
+  if n.HasPage then
+    CheckTree(AName, n.Page, n.StartLine, 0, MaxInt);
+end;
+
+procedure TTestWordWrapBase.CheckTree(AName: String;
+  ANode: TSynEditLineMapPage; ANodeLine: TLineIdx; AMinLine, AMaxLine: TLineIdx
+  );
+var
+  n: TSynEditLineMapPage;
+  dummy, i, EndLine: Integer;
+  nl: TLineIdx;
+begin
+  nl := ANodeLine;
+  n := ANode.Precessor(nl, dummy);
+  while n <> nil do begin
+    ANode := n;
+    ANodeLine := nl;
+    n := ANode.Precessor(nl, dummy);
+  end;
+
+  i := 0;
+  while ANode <> nil do begin
+    AssertTrue(Format('%s(%d): MinLine', [AName, i]), ANodeLine >= AMinLine);
+    EndLine := ANodeLine + Max(0, ANode.RealEndLine);
+    AssertTrue(Format('%s(%d): EndLine', [AName, i]), EndLine <= AMaxLine);
+
+    AMinLine := EndLine + 1;
+    ANode := ANode.Successor(ANodeLine, dummy);
+    inc(i);
   end;
 end;
 
@@ -381,6 +447,8 @@ begin
       inc(TestWrapToReal);
     end;
   end;
+
+  CheckTree(AName+'TreeCheck');
 end;
 
 procedure TTestWordWrap.InitLine(ALine: TSynWordWrapLineMap;
@@ -467,6 +535,8 @@ begin
       sub
     );
   end;
+
+  CheckTree(AName+'TreeCheck');
 end;
 
 function TTestWordWrap.CreateTree(APageJoinSize, APageSplitSize,
@@ -474,6 +544,11 @@ function TTestWordWrap.CreateTree(APageJoinSize, APageSplitSize,
 begin
   Result := TSynLineMapAVLTree.Create(APageJoinSize, APageSplitSize, APageJoinDistance);
   Result.PageCreatorProc := @OnPageNeeded;
+end;
+
+function TTestWordWrap.TheTree: TSynLineMapAVLTree;
+begin
+  Result := FTree;
 end;
 
 procedure TTestWordWrap.SetUp;
@@ -1680,10 +1755,16 @@ procedure TTestWordWrapPluginBase.CheckLines(AName: String;
   AExpLines: TTestViewedLineRangeInfo);
 var
   i: Integer;
+  n: TSynEditLineMapPageHolder;
 begin
   for i := 0 to length(AExpLines) - 1 do begin
     CheckLine(Format('%s (%d)', [AName, i]), AExpLines[i]);
     CheckLineIndexMapping(Format('%s (%d)', [AName, i]), AExpLines[i].TextIdx, AExpLines[i].ViewedTopIdx, AExpLines[i].ViewedBottomIdx);
+  end;
+  if TheTree <> nil then begin
+    n := TheTree.FirstPage;
+    if n.HasPage then
+      CheckTree(AName+' (TreeCheck)', n.Page, n.StartLine, 0, SynEdit.Lines.Count-1);
   end;
 end;
 
@@ -1816,16 +1897,12 @@ begin
   end;
 end;
 
-function TTestWordWrapPluginBase.TreeNodeCount: integer;
-var
-  n: TSynEditLineMapPageHolder;
+function TTestWordWrapPluginBase.TheTree: TSynLineMapAVLTree;
 begin
-  Result := 0;
-  n := FWordWrap.FLineMapView.Tree.FirstPage;
-  while n.HasPage do begin
-    inc(Result);
-    n := n.Next;
-  end;
+  Result := nil;
+  if FWordWrap = nil then
+    exit;
+  Result := FWordWrap.FLineMapView.Tree;
 end;
 
 procedure TTestWordWrapPluginBase.ReCreateEdit(ADispWidth: Integer);
