@@ -77,10 +77,9 @@ type
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
 function IsWSComponentInheritsFrom(const AComponent: TComponentClass;
   InheritFromClass: TWSLCLComponentClass): Boolean;
-procedure RegisterWSComponent(const AComponent: TComponentClass;
-                              const AWSComponent: TWSLCLComponentClass;
-                              const AWSPrivate: TWSPrivateClass = nil;
-                              const ANewRegistration: Boolean = False);
+procedure RegisterWSComponent(AComponent: TComponentClass;
+  AWSComponent: TWSLCLComponentClass; AWSPrivate: TWSPrivateClass = nil);
+procedure RegisterNewWSComp(AComponent: TComponentClass);
 // Only for non-TComponent based objects
 function GetWSLazAccessibleObject: TWSObjectClass;
 procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
@@ -472,12 +471,9 @@ begin
     Result := WSClassesList[idx];
 end;
 
-// ANewRegistration - If true, VClass is not created during runtime,
-// but instead normal, Object Pascal class creation is used
-procedure RegisterWSComponent(const AComponent: TComponentClass;
-  const AWSComponent: TWSLCLComponentClass;
-  const AWSPrivate: TWSPrivateClass = nil;
-  const ANewRegistration: Boolean = False);
+// Create VClass at runtime
+procedure RegisterWSComponent(AComponent: TComponentClass;
+  AWSComponent: TWSLCLComponentClass; AWSPrivate: TWSPrivateClass = nil);
 
   procedure UpdateChildren(const ANode: PClassNode; AOldPrivate: TClass);
   var
@@ -505,17 +501,12 @@ var
 begin
   if not Assigned(WSClassesList) then
     DoInitialization;
-  Node := GetPClassNode(AComponent, AWSComponent, ANewRegistration, True);
+  Node := GetPClassNode(AComponent, AWSComponent, False, True);
   if Node = nil then // No node created
     Exit;
-
-  if ANewRegistration then
-    Exit;
-
   { If AWSComponent specified but node already exists, nothing more to do. }
   if Assigned(AWSComponent) and (Node^.WSClass = AWSComponent) then
     Exit;
-
   Node^.WSClass := AWSComponent;
 
   // childclasses "inherit" the private from their parent
@@ -533,6 +524,13 @@ begin
 
   // Since child classes may depend on us, recreate them
   UpdateChildren(Node, OldPrivate);
+end;
+
+// Do not create VClass at runtime but use normal Object Pascal class creation.
+procedure RegisterNewWSComp(AComponent: TComponentClass);
+begin
+  Assert(Assigned(WSClassesList), 'RegisterNewWSComp: WSClassesList=Nil');
+  GetPClassNode(AComponent, Nil, True, True);
 end;
 
 function GetWSLazAccessibleObject: TWSObjectClass;

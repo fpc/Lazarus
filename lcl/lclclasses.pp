@@ -158,11 +158,11 @@ begin
         Break
       else
         { Force creation of intermediate nodes for parent }
-        RegisterWSComponent(TComponentClass(lClassParent), nil, nil, True);
+        RegisterNewWSComp(TComponentClass(lClassParent));
     end
     else begin
       { Force creation of intermediate nodes for Self and a leaf node for Self }
-      RegisterWSComponent(Self, nil, nil, True);
+      RegisterNewWSComp(Self);
       Result := FindWSRegistered(Self);
       Break;
     end;
