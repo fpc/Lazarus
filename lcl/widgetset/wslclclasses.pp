@@ -404,82 +404,80 @@ begin
   PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
 end;
 
+{ Get PClass node is recursive, we want to detect if a new node may be an
+  unregistered intermediate in the ancestor class tree }
+function GetPClassNode(AClass: TClass; AWSComponent: TWSLCLComponentClass;
+                       aParentGet: boolean; aLeaf: boolean): PClassNode;
+var
+  idx: Integer;
+  OldCount: integer;
+  lParentNode : PClassNode;
+  lClassNode : TClassNode; { A temp local node to fake normal processing
+                             of a node that won't be stored aParentGet = 0
+                             and TWSLCLComponentClass = nil }
+  lInsertNode : boolean;   { Indicator that New(Result) has been requested }
+begin
+  if (AClass = nil) or not (AClass.InheritsFrom(TLCLComponent)) then
+    Exit(nil);
+
+  if not WSClassesList.Search(AClass, idx) then
+  begin
+    lInsertNode := aParentGet or Assigned(AWSComponent);
+    if lInsertNode then
+      New(Result)
+    else
+      Result := @lClassNode;
+    Result^.LCLClass := TComponentClass(AClass);
+    Result^.WSClass := nil;
+    Result^.VClass := nil;
+    Result^.VClassName := '';
+    Result^.VClassNew := aParentGet;
+    Result^.Child := nil;
+    lParentNode := GetPClassNode(AClass.ClassParent, AWSComponent, True, False);
+    Result^.Parent := lParentNode;
+    { Unregistered Intermediate nodes are patched with the parent information }
+    if aParentGet then
+    begin
+      Result^.WSClass := lParentNode^.WSClass;
+      Result^.VClass := lParentNode^.VClass;
+      PPointer(Result^.VClass + vmtWSPrivate)^ := PPointer(lParentNode^.VClass + vmtWSPrivate)^;
+      // Build a VClassName
+      if aLeaf then        { Node that has an empty WSRegisterClass procedure }
+        Result^.VClassName := '(L)' + Result^.WSClass.ClassName
+      else                 { Internal node needed for tree consistency }
+        Result^.VClassName := '(I)' + Result^.WSClass.ClassName
+    end;
+    if lParentNode = nil then
+    begin
+      Result^.Sibling := nil;
+      if aLeaf then
+        Result^.VClassName := '(ROOT)' + AClass.ClassName;
+    end
+    else if lInsertNode then
+    begin
+      Result^.Sibling := lParentNode^.Child;
+      lParentNode^.Child := Result;
+    end
+    else
+      Result^.Sibling := nil;
+    if lInsertNode then
+    begin
+      WSClassesList.Search(aClass, idx);
+      WSClassesList.Insert(idx, Result);
+    end
+    else
+      Result := nil;
+  end
+  else
+    Result := WSClassesList[idx];
+end;
+
 // ANewRegistration - If true, VClass is not created during runtime,
 // but instead normal, Object Pascal class creation is used
 procedure RegisterWSComponent(const AComponent: TComponentClass;
   const AWSComponent: TWSLCLComponentClass;
   const AWSPrivate: TWSPrivateClass = nil;
   const ANewRegistration: Boolean = False);
-
-  { Get note is recursive, we want to detect if a new node may be an
-    un registered intermediate in the enacestor class tree }
-  function GetNode(const AClass: TClass; aParentGet: boolean; aLeaf: boolean): PClassNode;
-  var
-    idx: Integer;
-    OldCount: integer;
-    lParentNode : PClassNode;
-    lClassNode : TClassNode; { A temp local node to fake normal processing
-                               of a node that won't be stored aParentGet = 0
-                               and TWSLCLComponentClass = nil }
-    lInsertNode : boolean;   { Indicator that New(Result) has been requested }
-  begin
-    if (AClass = nil) or not (AClass.InheritsFrom(TLCLComponent)) then
-      Exit(nil);
-
-    if not WSClassesList.Search(AClass, idx) then begin
-      if not aParentGet and (AWSComponent = nil) then begin
-        lInsertNode := False;
-        Result := @lClassNode;
-      end
-      else begin
-        lInsertNode := True;
-        New(Result);
-      end;
-      Result^.LCLClass := TComponentClass(AClass);
-      Result^.WSClass := nil;
-      Result^.VClass := nil;
-      Result^.VClassName := '';
-      Result^.VClassNew := aParentGet;
-      Result^.Child := nil;
-      lParentNode := GetNode(AClass.ClassParent, True, False);
-      Result^.Parent := lParentNode;
-      { Unregistered Intermediate nodes are patched with the parent information }
-      if aParentGet then begin
-        Result^.WSClass := lParentNode^.WSClass;
-        Result^.VClass := lParentNode^.VClass;
-        PPointer(Result^.VClass + vmtWSPrivate)^ := PPointer(lParentNode^.VClass + vmtWSPrivate)^;
-        // Build a VClassName
-        if aLeaf then
-          { Node that has an empty WSRegisterClass procedure }
-          Result^.VClassName := '(L)' + Result^.WSClass.ClassName
-        else
-          { Internal node needed for tree consistency }
-          Result^.VClassName := '(I)' + Result^.WSClass.ClassName
-      end;
-      if lParentNode = nil then begin
-        Result^.Sibling := nil;
-        if aLeaf then
-          Result^.VClassName := '(ROOT)' + AClass.ClassName
-      end
-      else begin
-        if lInsertNode then begin
-          Result^.Sibling := lParentNode^.Child;
-          lParentNode^.Child := Result;
-        end
-        else
-          Result^.Sibling := nil;
-      end;
-      if lInsertNode then begin
-        WSClassesList.Search(aClass, idx);
-        WSClassesList.Insert(idx, Result);
-      end
-      else
-        Result := nil;
-    end
-    else begin
-      Result := WSClassesList[idx];
-    end;
-  end;
 
   procedure UpdateChildren(const ANode: PClassNode; AOldPrivate: TClass);
   var
@@ -507,7 +505,7 @@ var
 begin
   if not Assigned(WSClassesList) then
     DoInitialization;
-  Node := GetNode(AComponent, False or ANewRegistration, True);
+  Node := GetPClassNode(AComponent, AWSComponent, ANewRegistration, True);
   if Node = nil then // No node created
     Exit;
 
