@@ -505,6 +505,8 @@ var
   OldPrivate: TClass;
   idx: Integer;
 begin
+  if not Assigned(WSClassesList) then
+    DoInitialization;
   Node := GetNode(AComponent, False or ANewRegistration, True);
   if Node = nil then // No node created
     Exit;
