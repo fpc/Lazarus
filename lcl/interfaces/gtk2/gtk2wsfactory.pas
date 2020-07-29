@@ -320,7 +320,6 @@ end;
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
 //  RegisterWSComponent(TEdit, TGtk2WSEdit);
-  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit, TGtkPrivateEntry); { GTK1 }
   RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   Result := True;
 end;
