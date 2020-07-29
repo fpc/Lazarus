@@ -466,7 +466,6 @@ end;
 //ExtDlgs
 function RegisterPreviewFileControl: Boolean; alias : 'WSRegisterPreviewFileControl';
 begin
-  // RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl); { GTK1 }
   RegisterWSComponent(TPreviewFileControl, TGtk3WSPreviewFileControl);
   Result := True;
 end;
@@ -568,7 +567,6 @@ end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-//  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid); { GTK1 }
 //  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
   Result := False;
 end;
