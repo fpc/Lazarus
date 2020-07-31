@@ -88,6 +88,7 @@ type
       AlignInfo: TAlignInfo); override;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
@@ -236,7 +237,6 @@ begin
       FButtons[btn].Glyph.Assign(FGlyphs[btn]);
     end
     else begin
-      FGlyphs[btn].Assign(FButtons[btn].Glyph);
       FButtons[btn].Glyph.Assign(nil);
     end;
   end;
@@ -480,6 +480,12 @@ begin
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetShowBevel'){$ENDIF};
   end;
+end;
+
+procedure TCustomButtonPanel.Loaded;
+begin
+  inherited;
+  DoShowGlyphs;
 end;
 
 procedure TCustomButtonPanel.Notification(AComponent: TComponent;
