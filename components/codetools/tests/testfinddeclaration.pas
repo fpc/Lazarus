@@ -23,7 +23,7 @@
 }
 unit TestFindDeclaration;
 
-{$mode objfpc}{$H+}
+{$i runtestscodetools.inc}
 
 {off $define VerboseFindDeclarationTests}
 
@@ -35,7 +35,7 @@ uses
   FileProcs, LazFileUtils, LazLogger,
   CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, TestPascalParser;
+  IdentCompletionTool, DefineTemplates, TestPascalParser;
 
 const
   MarkDecl = '#'; // a declaration, must be unique
@@ -106,6 +106,7 @@ type
     procedure TestFindDeclaration_AnonymProc_ExprDot;
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
+    procedure TestFindDeclaration_UnitSearch_CurrentDir;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -1043,6 +1044,45 @@ begin
   '  Fly{declaration:fly}(4);',
   'end.']);
   FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_UnitSearch_CurrentDir;
+var
+  Unit1A, Unit1B: TCodeBuffer;
+  DefTemp: TDefineTemplate;
+begin
+  Unit1A:=CodeToolBoss.CreateFile('unit1.pas');
+  Unit1A.Source:=
+    'unit unit1;'+sLineBreak
+    +'interface'+sLineBreak
+    +'var r: word;'+sLineBreak
+    +'implementation'+sLineBreak
+    +'end.';
+  Unit1B:=CodeToolBoss.CreateFile('sub'+PathDelim+'unit1.pas');
+  Unit1B.Source:=
+    'unit unit1;'+sLineBreak
+    +'interface'+sLineBreak
+    +'implementation'+sLineBreak
+    +'end.';
+
+  DefTemp:=TDefineTemplate.Create('unitpath','add sub',UnitPathMacroName,'sub',da_Define);
+  try
+    StartProgram;
+    Add([
+    'uses unit1;',
+    'begin',
+    '  r{declaration:unit1.r}:=3;',
+    'end.']);
+    CodeToolBoss.DefineTree.Add(DefTemp);
+
+    debugln(['AAA1 TTestFindDeclaration.TestFindDeclaration_UnitSearch_CurrentDir ',CodeToolBoss.GetUnitPathForDirectory('')]);
+
+    FindDeclarations(Code);
+  finally
+    Unit1A.IsDeleted:=true;
+    Unit1B.IsDeleted:=true;
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(DefTemp);
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

@@ -7,7 +7,7 @@
 }
 unit TestPascalParser;
 
-{$mode objfpc}{$H+}
+{$i runtestscodetools.inc}
 
 interface
 

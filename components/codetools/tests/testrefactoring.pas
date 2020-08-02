@@ -5,7 +5,7 @@
 }
 unit TestRefactoring;
 
-{$mode objfpc}{$H+}
+{$i runtestscodetools.inc}
 
 interface
 
@@ -56,7 +56,7 @@ begin
     AssertEquals('Parse error: ','',CodeToolBoss.ErrorMessage);
   // collect all With-Blocks
   Node:=Tool.Tree.Root;
-  SetLength(ListOfWiths,0);
+  SetLength(ListOfWiths{%H-},0);
   while Node<>nil do begin
     if Node.Desc=ctnWithVariable then begin
       Tool.CleanPosToCaret(Node.StartPos,CodeXYPos);
