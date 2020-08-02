@@ -959,7 +959,7 @@ begin
   begin
     inherited mouseDown(event);
     // the text selection is handled withing mouseDown
-    if Assigned(callback) then
+    if Assigned(callback) and isSelectable  then
       callback.MouseUpDownEvent(event, True);
   end;
 end;

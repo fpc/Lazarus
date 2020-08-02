@@ -63,6 +63,9 @@ type
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
     ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
 
+    lastMouseDownUp: NSTimeInterval; // the last processed mouse Event
+    lastMouseWithForce: Boolean;
+
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
@@ -944,6 +947,19 @@ begin
     FIsEventRouting:=false;
     exit;
   end;
+
+  // The following check prevents the same event to be handled twice
+  // Because of the compositive nature of cocoa.
+  // For example NSTextField (TEdit) may contains NSTextView and BOTH
+  // will signal mouseDown when the field is selected by mouse the first time.
+  // In this case only 1 mouseDown should be passed to LCL
+  if (lastMouseDownUp = Event.timestamp) then begin
+    if not AForceAsMouseUp then Exit; // the same mouse event from a composite child
+    if lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
+  end;
+  lastMouseDownUp := Event.timestamp;
+  lastMouseWithForce := AForceAsMouseUp;
+
 
   FillChar(Msg, SizeOf(Msg), #0);
 
