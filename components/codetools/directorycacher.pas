@@ -1277,6 +1277,11 @@ begin
       if Directory='' then begin
         // virtual directory => search virtual unit
         Result:=Pool.FindVirtualUnit(AUnitName);
+      end else begin
+        // search in current directory
+        Result:=FindUnitSource(AUnitName,AnyCase);
+        if Result<>'' then
+          Result:=Directory+Result;
       end;
       if Result='' then begin
         // search in search path
