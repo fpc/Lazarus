@@ -84,6 +84,7 @@ type
   strict private
     FDefaultListener: TListener;
     FDefaultSource: TIntervalChartSource;
+    FSourceExchangeXY: Boolean;
     FStripes: TChartStyles;
     procedure SetStripes(AValue: TChartStyles);
   strict protected
@@ -95,6 +96,8 @@ type
       ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
       AValues: TChartValueTextArray): Integer;
     property DefaultSource: TIntervalChartSource read FDefaultSource;
+    property SourceExchangeXY: Boolean
+      read FSourceExchangeXY write FSourceExchangeXY default false;
     property Stripes: TChartStyles read FStripes write SetStripes;
   end;
 
@@ -138,6 +141,7 @@ type
     property Range: TChartRange read FRange write SetRange;
     property RotationCenter;
     property Source: TCustomChartSource read FSource write SetSource;
+    property SourceExchangeXY;
     property Stripes;
     property Style default smsValue;
     property TextFormat;
