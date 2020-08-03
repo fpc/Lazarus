@@ -509,6 +509,7 @@ var
   cb    : ICommonCallback;
   obj   : TObject;
   cbobj : TLCLCommonCallback;
+  ed : NSText;
 begin
   ContextMenuHandled := false;
   FillChar(MsgContext, SizeOf(MsgContext), #0);
@@ -526,6 +527,19 @@ begin
     begin
       Trg := cb.GetTarget;
       Res := LCLMessageGlue.DeliverMessage(Trg, MsgContext);
+      if (Res = 0) and (Rcp.isKindOfClass(NSView)) then
+      begin
+        if Assigned(NSView(Rcp).menuForEvent(Event)) then
+          Break; // Cocoa has it's own menu for the control
+
+        if Rcp.isKindOfClass(NSControl) then
+        begin
+          ed := NSControl(Rcp).currentEditor;
+          if Assigned(ed) and Assigned(ed.menuForEvent(Event)) then
+            Break; // Cocoa has it's own menu for the editor of the control
+        end;
+      end;
+
       // not processed, need to find parent
       if Res = 0 then
       begin
