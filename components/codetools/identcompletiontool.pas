@@ -1488,8 +1488,16 @@ begin
     AddCompilerFunction('Seg','var X','LongInt');
     AddCompilerProcedure('SetLength','var S:String;NewLength:Integer');
     AddCompilerProcedure('SetLength','var A:Array;NewLength:Integer');
-    if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then
+    if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then begin
       AddCompilerProcedure('SetString','out S:RawByteString;Buf:PAnsiChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:AnsiString;Buf:PAnsiChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:AnsiString;Buf:PWideChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:ShortString;Buf:PChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:UnicodeString;Buf:PUnicodeChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:UnicodeString;Buf:PChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:WideString;Buf:PWideChar;Len:SizeInt');
+      AddCompilerProcedure('SetString','out S:WideString;Buf:PChar;Len:SizeInt');
+    end;
     AddCompilerFunction('SizeOf','Identifier','Integer');
     AddCompilerFunction('Slice','var A:Array;Count:Integer','Array');
     AddCompilerProcedure('Str','const X[:Width[:Decimals]];var S:String');
