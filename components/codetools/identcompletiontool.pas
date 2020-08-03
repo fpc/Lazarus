@@ -3275,13 +3275,13 @@ var
       AddCompilerProc('SetLength','var A:Array;NewLength:Integer');
       if Scanner.Values.IsDefined('FPC_HAS_CPSTRING') then begin
         AddCompilerProc('SetString','out S:RawByteString;Buf:PAnsiChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:AnsiString;Buf:PAnsiChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:AnsiString;Buf:PWideChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:ShortString;Buf:PChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:UnicodeString;Buf:PUnicodeChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:UnicodeString;Buf:PChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:WideString;Buf:PWideChar;Len:SizeInt');
-        AddCompilerProcedure('SetString','out S:WideString;Buf:PChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:AnsiString;Buf:PAnsiChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:AnsiString;Buf:PWideChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:ShortString;Buf:PChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:UnicodeString;Buf:PUnicodeChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:UnicodeString;Buf:PChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:WideString;Buf:PWideChar;Len:SizeInt');
+        AddCompilerProc('SetString','out S:WideString;Buf:PChar;Len:SizeInt');
       end;
       AddCompilerProc('SizeOf','Identifier','Integer');
       AddCompilerProc('Slice','var A:Array;Count:Integer','Array');
