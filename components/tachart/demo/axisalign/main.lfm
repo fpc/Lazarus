@@ -445,11 +445,9 @@ object Form1: TForm1
     PointsNumber = 10
     RandSeed = 1952997387
     XMax = 1
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 264
-    top = 272
+    Left = 264
+    Top = 272
   end
   object RandomChartSource2: TRandomChartSource
     PointsNumber = 20
@@ -457,8 +455,7 @@ object Form1: TForm1
     XMax = 1000
     XMin = -1000
     YMax = 1000000
-    YMin = 0
-    left = 392
-    top = 272
+    Left = 392
+    Top = 272
   end
 end

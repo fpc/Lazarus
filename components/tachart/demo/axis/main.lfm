@@ -1,19 +1,19 @@
 object Form1: TForm1
   Left = 343
-  Height = 430
+  Height = 413
   Top = 184
-  Width = 533
+  Width = 566
   Caption = 'TAChart axis demo'
-  ClientHeight = 430
-  ClientWidth = 533
+  ClientHeight = 413
+  ClientWidth = 566
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
-    Height = 430
+    Height = 413
     Top = 0
-    Width = 533
+    Width = 566
     ActivePage = tsCustomMarks
     Align = alClient
     TabIndex = 0
@@ -21,13 +21,13 @@ object Form1: TForm1
     Options = [nboKeyboardTabSwitch]
     object tsCustomMarks: TTabSheet
       Caption = 'Customized marks'
-      ClientHeight = 402
-      ClientWidth = 525
+      ClientHeight = 385
+      ClientWidth = 558
       object ChartCustomMarks: TChart
         Left = 0
-        Height = 402
+        Height = 385
         Top = 0
-        Width = 525
+        Width = 558
         AxisList = <        
           item
             TickLength = 0
@@ -92,13 +92,13 @@ object Form1: TForm1
     end
     object tsAxisGroup: TTabSheet
       Caption = 'Axis groups'
-      ClientHeight = 402
-      ClientWidth = 525
+      ClientHeight = 385
+      ClientWidth = 558
       object ChartAxisGroup: TChart
         Left = 0
-        Height = 402
+        Height = 385
         Top = 0
-        Width = 525
+        Width = 558
         AxisList = <        
           item
             Grid.Visible = False
@@ -127,13 +127,13 @@ object Form1: TForm1
     end
     object tsSubmarks: TTabSheet
       Caption = 'Submarks'
-      ClientHeight = 402
-      ClientWidth = 525
+      ClientHeight = 385
+      ClientWidth = 558
       object ChartSubmarks: TChart
         Left = 0
-        Height = 402
+        Height = 385
         Top = 0
-        Width = 525
+        Width = 558
         AxisList = <        
           item
             TickLength = 6
@@ -195,13 +195,13 @@ object Form1: TForm1
     end
     object tsDateTime: TTabSheet
       Caption = 'Date and time'
-      ClientHeight = 402
-      ClientWidth = 525
+      ClientHeight = 385
+      ClientWidth = 558
       object ChartDateTime: TChart
         Left = 0
-        Height = 368
+        Height = 350
         Top = 0
-        Width = 525
+        Width = 558
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -235,20 +235,28 @@ object Form1: TForm1
         end
       end
       object Panel1: TPanel
+        AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 34
-        Top = 368
-        Width = 525
+        Height = 35
+        Top = 350
+        Width = 558
         Align = alBottom
+        AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 34
-        ClientWidth = 525
+        ClientHeight = 35
+        ClientWidth = 558
         TabOrder = 1
         object CbSuppressPrevUnit: TCheckBox
-          Left = 11
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 8
           Height = 19
           Top = 8
           Width = 139
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           Caption = 'Suppress previous unit'
           Checked = True
           OnChange = CbSuppressPrevUnitChange
@@ -256,19 +264,29 @@ object Form1: TForm1
           TabOrder = 0
         end
         object CbAlternateFormat: TCheckBox
-          Left = 195
+          AnchorSideLeft.Control = CbSuppressPrevUnit
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 163
           Height = 19
           Top = 8
           Width = 145
+          BorderSpacing.Left = 16
           Caption = 'Alternate format strings'
           OnChange = CbAlternateFormatChange
           TabOrder = 1
         end
         object Label1: TLabel
-          Left = 393
+          AnchorSideLeft.Control = CbAlternateFormat
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 332
           Height = 15
           Top = 10
           Width = 34
+          BorderSpacing.Left = 24
           Caption = 'Label1'
           ParentColor = False
         end
@@ -384,18 +402,19 @@ object Form1: TForm1
     end
     object tsPosition: TTabSheet
       Caption = 'Position'
-      ClientHeight = 402
-      ClientWidth = 525
+      ClientHeight = 385
+      ClientWidth = 558
       object ChartPosition: TChart
         Left = 0
-        Height = 402
+        Height = 385
         Top = 0
-        Width = 384
+        Width = 389
         AxisList = <        
           item
             Grid.Visible = False
             Intervals.Tolerance = 1
             AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Position = 50
             Title.LabelBrush.Style = bsClear
@@ -405,6 +424,7 @@ object Form1: TForm1
             Intervals.Tolerance = 1
             Alignment = calBottom
             AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Position = 50
             Title.LabelBrush.Style = bsClear
@@ -452,24 +472,26 @@ object Form1: TForm1
         end
       end
       object pnlPosition: TPanel
-        Left = 384
-        Height = 402
+        Left = 389
+        Height = 385
         Top = 0
-        Width = 141
+        Width = 169
         Align = alRight
-        ClientHeight = 402
-        ClientWidth = 141
+        BevelOuter = bvNone
+        ClientHeight = 385
+        ClientWidth = 169
         TabOrder = 1
         object gbPositionX: TGroupBox
-          Left = 1
+          Left = 0
           Height = 124
-          Top = 1
-          Width = 139
+          Top = 0
+          Width = 163
           Align = alTop
           AutoSize = True
+          BorderSpacing.Right = 6
           Caption = ' X axis '
           ClientHeight = 104
-          ClientWidth = 135
+          ClientWidth = 159
           TabOrder = 0
           object seXPosition: TSpinEdit
             AnchorSideLeft.Control = lblPositionX
@@ -480,7 +502,7 @@ object Form1: TForm1
             Left = 62
             Height = 23
             Top = 0
-            Width = 65
+            Width = 89
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 8
             BorderSpacing.Right = 8
@@ -561,7 +583,7 @@ object Form1: TForm1
             Left = 62
             Height = 23
             Top = 27
-            Width = 65
+            Width = 89
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 4
             ItemHeight = 15
@@ -579,16 +601,17 @@ object Form1: TForm1
           end
         end
         object gbPositionY: TGroupBox
-          Left = 1
+          Left = 0
           Height = 124
-          Top = 133
-          Width = 139
+          Top = 132
+          Width = 163
           Align = alTop
           AutoSize = True
           BorderSpacing.Top = 8
+          BorderSpacing.Right = 6
           Caption = ' Y axis '
           ClientHeight = 104
-          ClientWidth = 135
+          ClientWidth = 159
           TabOrder = 1
           object lblPositionY: TLabel
             AnchorSideLeft.Control = gbPositionY
@@ -624,7 +647,7 @@ object Form1: TForm1
             Left = 62
             Height = 23
             Top = 0
-            Width = 65
+            Width = 89
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 8
             BorderSpacing.Right = 8
@@ -669,7 +692,7 @@ object Form1: TForm1
             Left = 62
             Height = 23
             Top = 27
-            Width = 65
+            Width = 89
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 4
             ItemHeight = 15
@@ -698,6 +721,71 @@ object Form1: TForm1
         end
       end
     end
+    object TabSheet1: TTabSheet
+      Caption = 'Rotated'
+      ClientHeight = 385
+      ClientWidth = 558
+      object ChartRotated: TChart
+        Left = 0
+        Height = 349
+        Top = 0
+        Width = 558
+        AxisList = <        
+          item
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Alignment = calBottom
+            Marks.Format = '%2:s'
+            Marks.LabelBrush.Style = bsClear
+            Marks.Source = lcsRotatedSeries
+            Marks.Style = smsLabel
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        object ChartRotatedBarSeries: TBarSeries
+          BarBrush.Color = clRed
+          Source = lcsRotatedSeries
+          Styles = ChartStyles1
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 36
+        Top = 349
+        Width = 558
+        Align = alBottom
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 36
+        ClientWidth = 558
+        TabOrder = 1
+        object cbRotated: TCheckBox
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Panel2
+          AnchorSideTop.Side = asrCenter
+          Left = 8
+          Height = 19
+          Top = 9
+          Width = 61
+          BorderSpacing.Around = 8
+          Caption = 'Rotated'
+          OnChange = cbRotatedChange
+          TabOrder = 0
+        end
+      end
+    end
   end
   object lcsMarks: TListChartSource
     DataPoints.Strings = (
@@ -708,17 +796,15 @@ object Form1: TForm1
       '5|37000|?|May'
       '6|22000|?|June'
     )
-    left = 216
-    top = 164
+    Left = 216
+    Top = 164
   end
   object rcsDates: TRandomChartSource
     RandSeed = 1079653020
-    XMax = 0
-    XMin = 0
     YMax = 50
     YMin = 5
-    left = 216
-    top = 216
+    Left = 216
+    Top = 216
   end
   object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
     Params.Count = 10
@@ -726,12 +812,12 @@ object Form1: TForm1
     Params.MinLength = 20
     Params.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
     OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
-    left = 248
-    top = 320
+    Left = 248
+    Top = 320
   end
   object ChartToolsetDateTime: TChartToolset
-    left = 448
-    top = 320
+    Left = 448
+    Top = 320
     object ChartToolset1ZoomIn: TZoomClickTool
       Shift = [ssLeft]
       ZoomFactor = 4
@@ -746,20 +832,20 @@ object Form1: TForm1
   object udcsMain: TUserDefinedChartSource
     OnGetChartDataItem = udcsMainGetChartDataItem
     PointsNumber = 10
-    left = 344
-    top = 72
+    Left = 344
+    Top = 72
   end
   object udcsSub: TUserDefinedChartSource
     OnGetChartDataItem = udcsSubGetChartDataItem
     PointsNumber = 50
-    left = 344
-    top = 116
+    Left = 344
+    Top = 116
   end
   object udcsGraph: TUserDefinedChartSource
     OnGetChartDataItem = udcsGraphGetChartDataItem
     PointsNumber = 100
-    left = 352
-    top = 184
+    Left = 352
+    Top = 184
   end
   object csStripes: TChartStyles
     Styles = <    
@@ -771,7 +857,33 @@ object Form1: TForm1
         Brush.Color = 12319483
         UsePen = False
       end>
-    left = 304
-    top = 176
+    Left = 304
+    Top = 176
+  end
+  object lcsRotatedSeries: TListChartSource
+    DataPoints.Strings = (
+      '1|104|53|62|?|A'
+      '2|243|47|51|?|B'
+      '3|405|51|26|?|C'
+      '4|156|68|28|?|D'
+      '5|364|16|35|?|E'
+    )
+    YCount = 3
+    Left = 468
+    Top = 35
+  end
+  object ChartStyles1: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clRed
+      end    
+      item
+        Brush.Color = clYellow
+      end    
+      item
+        Brush.Color = clGreen
+      end>
+    Left = 468
+    Top = 88
   end
 end

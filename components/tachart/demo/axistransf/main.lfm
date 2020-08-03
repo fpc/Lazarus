@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 434
     Top = 0
     Width = 533
-    ActivePage = tsUser
+    ActivePage = tsLinear
     Align = alClient
-    TabIndex = 4
+    TabIndex = 0
     TabOrder = 0
     object tsLinear: TTabSheet
       Caption = 'Linear'
@@ -24,7 +24,7 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartT: TChart
         Left = 0
-        Height = 379
+        Height = 371
         Top = 0
         Width = 525
         AxisList = <        
@@ -102,25 +102,26 @@ object Form1: TForm1
       end
       object pnlAutoControls: TPanel
         Left = 0
-        Height = 27
-        Top = 379
+        Height = 35
+        Top = 371
         Width = 525
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 27
+        ClientHeight = 35
         ClientWidth = 525
         TabOrder = 1
         object cbAuto: TCheckBox
           AnchorSideLeft.Control = pnlAutoControls
           AnchorSideTop.Control = pnlAutoControls
-          Left = 4
+          AnchorSideTop.Side = asrCenter
+          Left = 8
           Height = 19
-          Top = 4
+          Top = 8
           Width = 75
-          BorderSpacing.Left = 4
-          BorderSpacing.Top = 4
-          BorderSpacing.Bottom = 4
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           Caption = 'Auto scale'
           OnChange = cbAutoChange
           TabOrder = 0
@@ -133,7 +134,7 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartIndependent: TChart
         Left = 0
-        Height = 351
+        Height = 347
         Top = 0
         Width = 525
         AxisList = <        
@@ -192,14 +193,14 @@ object Form1: TForm1
       end
       object pnlIndependentControls: TPanel
         Left = 4
-        Height = 47
-        Top = 355
+        Height = 51
+        Top = 351
         Width = 517
         Align = alBottom
         AutoSize = True
         BorderSpacing.Around = 4
         BevelOuter = bvNone
-        ClientHeight = 47
+        ClientHeight = 51
         ClientWidth = 517
         TabOrder = 1
         object fseIndependent1: TFloatSpinEdit
@@ -209,7 +210,7 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           Left = 63
           Height = 23
-          Top = 12
+          Top = 14
           Width = 70
           BorderSpacing.Left = 8
           Increment = 0.1
@@ -226,7 +227,7 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           Left = 196
           Height = 23
-          Top = 12
+          Top = 14
           Width = 70
           BorderSpacing.Left = 8
           Increment = 0.1
@@ -242,7 +243,7 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           Left = 16
           Height = 15
-          Top = 16
+          Top = 18
           Width = 39
           BorderSpacing.Left = 16
           Caption = 'Scale 1'
@@ -258,7 +259,7 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           Left = 149
           Height = 15
-          Top = 16
+          Top = 18
           Width = 39
           BorderSpacing.Left = 16
           Caption = 'Scale 2'
@@ -269,16 +270,17 @@ object Form1: TForm1
         end
         object rgSyncAxisMarks: TRadioGroup
           AnchorSideRight.Side = asrBottom
-          Left = 336
-          Height = 47
+          Left = 324
+          Height = 51
           Top = 0
-          Width = 181
+          Width = 193
           Align = alRight
           AutoFill = True
           AutoSize = True
           BorderSpacing.InnerBorder = 4
           Caption = ' Synchronize marks '
-          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.LeftRightSpacing = 12
+          ChildSizing.TopBottomSpacing = 2
           ChildSizing.HorizontalSpacing = 10
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
@@ -286,8 +288,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 27
-          ClientWidth = 177
+          ClientHeight = 31
+          ClientWidth = 189
           Columns = 3
           ItemIndex = 1
           Items.Strings = (
@@ -306,7 +308,7 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartLog: TChart
         Left = 0
-        Height = 375
+        Height = 367
         Top = 0
         Width = 525
         AxisList = <        
@@ -385,16 +387,16 @@ object Form1: TForm1
         end
       end
       object pnlLogControls: TPanel
-        Left = 4
+        Left = 8
         Height = 23
-        Top = 379
-        Width = 517
+        Top = 375
+        Width = 509
         Align = alBottom
         AutoSize = True
-        BorderSpacing.Around = 4
+        BorderSpacing.Around = 8
         BevelOuter = bvNone
         ClientHeight = 23
-        ClientWidth = 517
+        ClientWidth = 509
         TabOrder = 1
         object cbLog: TCheckBox
           AnchorSideLeft.Control = pnlLogControls
@@ -443,8 +445,8 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartCumulNormDistr: TChart
         Left = 0
-        Height = 340
-        Top = 66
+        Height = 324
+        Top = 82
         Width = 525
         AxisList = <        
           item
@@ -504,35 +506,37 @@ object Form1: TForm1
       end
       object pnCumulNormDistr: TPanel
         Left = 0
-        Height = 66
+        Height = 82
         Top = 0
         Width = 525
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 66
+        ClientHeight = 82
         ClientWidth = 525
         TabOrder = 1
         object rgRandDistr: TRadioGroup
-          Left = 4
-          Height = 58
-          Top = 4
+          AnchorSideLeft.Control = pnCumulNormDistr
+          AnchorSideTop.Control = pnCumulNormDistr
+          Left = 8
+          Height = 66
+          Top = 8
           Width = 175
-          Align = alLeft
           AutoFill = True
           AutoSize = True
-          BorderSpacing.Left = 4
-          BorderSpacing.Top = 4
-          BorderSpacing.Bottom = 4
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           Caption = ' Random number generation '
           ChildSizing.LeftRightSpacing = 12
+          ChildSizing.TopBottomSpacing = 4
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 38
+          ClientHeight = 46
           ClientWidth = 171
           ItemIndex = 1
           Items.Strings = (
@@ -547,7 +551,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = lblDataCount
           AnchorSideTop.Control = edDataCount
           AnchorSideTop.Side = asrBottom
-          Left = 195
+          Left = 199
           Height = 19
           Top = 39
           Width = 60
@@ -559,7 +563,7 @@ object Form1: TForm1
         object cbUseAxisTransform: TCheckBox
           AnchorSideLeft.Control = edDataCount
           AnchorSideTop.Control = cbPercent
-          Left = 264
+          Left = 268
           Height = 19
           Top = 39
           Width = 118
@@ -572,7 +576,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = lblDataCount
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = pnCumulNormDistr
-          Left = 264
+          Left = 268
           Height = 23
           Top = 8
           Width = 82
@@ -589,7 +593,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edDataCount
           AnchorSideTop.Side = asrCenter
-          Left = 195
+          Left = 199
           Height = 15
           Top = 12
           Width = 61
@@ -652,8 +656,8 @@ object Form1: TForm1
     end
   end
   object catLog: TChartAxisTransformations
-    left = 216
-    top = 60
+    Left = 216
+    Top = 60
     object ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform
       Scale = 2
     end
@@ -662,8 +666,8 @@ object Form1: TForm1
     end
   end
   object catT: TChartAxisTransformations
-    left = 352
-    top = 60
+    Left = 352
+    Top = 60
     object catTFahrToCel: TLinearAxisTransform
       Offset = -17.777777777
       Scale = 0.5555555555
@@ -678,9 +682,8 @@ object Form1: TForm1
     XMax = 2009
     XMin = 1990
     YMax = 25
-    YMin = 0
-    left = 87
-    top = 106
+    Left = 87
+    Top = 106
   end
   object rcsTWinter: TRandomChartSource
     PointsNumber = 20
@@ -689,12 +692,12 @@ object Form1: TForm1
     XMin = 1990
     YMax = 20
     YMin = -15
-    left = 87
-    top = 156
+    Left = 87
+    Top = 156
   end
   object catTAuto: TChartAxisTransformations
-    left = 352
-    top = 112
+    Left = 352
+    Top = 112
     object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
       Enabled = False
     end
@@ -709,53 +712,52 @@ object Form1: TForm1
         Brush.Color = 12319483
         UsePen = False
       end>
-    left = 352
-    top = 176
+    Left = 352
+    Top = 176
   end
   object rcsUser: TRandomChartSource
     PointsNumber = 100
     RandSeed = 1999979507
     XMax = 50
-    XMin = 0
     YMax = 20
     YMin = 10
-    left = 87
-    top = 208
+    Left = 87
+    Top = 208
   end
   object catUser: TChartAxisTransformations
-    left = 352
-    top = 236
+    Left = 352
+    Top = 236
     object catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform
       OnAxisToGraph = catUserUserDefinedAxisTransform1AxisToGraph
     end
   end
   object ChartToolset1: TChartToolset
-    left = 216
-    top = 116
+    Left = 216
+    Top = 116
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '1'
     end
   end
   object catIndependent1: TChartAxisTransformations
-    left = 220
-    top = 176
+    Left = 220
+    Top = 176
     object catIndependent1Zoom: TLinearAxisTransform
     end
   end
   object catIndependent2: TChartAxisTransformations
-    left = 220
-    top = 236
+    Left = 220
+    Top = 236
     object catIndependent2Zoom: TLinearAxisTransform
     end
   end
   object AxLabelSource: TListChartSource
-    left = 311
-    top = 305
+    Left = 311
+    Top = 305
   end
   object catCumulNormDistr: TChartAxisTransformations
-    left = 310
-    top = 305
+    Left = 310
+    Top = 305
     object catCumulNormDistrLinearAxisTransform1: TLinearAxisTransform
       Enabled = False
       Scale = 0.01

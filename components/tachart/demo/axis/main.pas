@@ -20,6 +20,7 @@ type
     catTFahrToCel: TLinearAxisTransform;
     cbStaticY: TCheckBox;
     cbUnitsY: TComboBox;
+    ChartRotated: TChart;
     ChartPosition: TChart;
     ChartIntervals: TChart;
     ChartAxisGroup: TChart;
@@ -28,6 +29,8 @@ type
     ChartDateTime: TChart;
     ChartDateTimeLineSeries1: TLineSeries;
     ChartPositionFuncSeries1: TFuncSeries;
+    ChartRotatedBarSeries: TBarSeries;
+    ChartStyles1: TChartStyles;
     ChartSubmarks: TChart;
     ChartSubmarksLineSeries1: TLineSeries;
     ChartToolset1ZoomIn: TZoomClickTool;
@@ -37,6 +40,7 @@ type
     cbUnitsX: TComboBox;
     CbSuppressPrevUnit: TCheckBox;
     CbAlternateFormat: TCheckBox;
+    cbRotated: TCheckBox;
     csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     gbPositionX: TGroupBox;
@@ -47,8 +51,10 @@ type
     lblPositionY: TLabel;
     lblUnitsY: TLabel;
     lcsMarks: TListChartSource;
+    lcsRotatedSeries: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     pnlPosition: TPanel;
     rbPositionBottom: TRadioButton;
     rbPositionLeft: TRadioButton;
@@ -57,6 +63,7 @@ type
     rcsDates: TRandomChartSource;
     seXPosition: TSpinEdit;
     seYPosition: TSpinEdit;
+    TabSheet1: TTabSheet;
     tsPosition: TTabSheet;
     tsIntervals: TTabSheet;
     tsAxisGroup: TTabSheet;
@@ -66,6 +73,7 @@ type
     udcsGraph: TUserDefinedChartSource;
     udcsMain: TUserDefinedChartSource;
     udcsSub: TUserDefinedChartSource;
+    procedure cbRotatedChange(Sender: TObject);
     procedure cbStaticXChange(Sender: TObject);
     procedure cbStaticYChange(Sender: TObject);
     procedure CbSuppressPrevUnitChange(Sender: TObject);
@@ -105,6 +113,32 @@ uses
 procedure TForm1.cbStaticXChange(Sender: TObject);
 begin
   ChartPosition.AxisList[3].Visible := cbStaticX.Checked;
+end;
+
+procedure TForm1.cbRotatedChange(Sender: TObject);
+begin
+  if cbRotated.Checked then
+  begin
+    ChartRotatedBarSeries.AxisIndexX := 0;
+    ChartRotatedBarSeries.AxisIndexY := 1;
+    ChartRotated.BottomAxis.Marks.Source := nil;
+    ChartRotated.BottomAxis.Marks.Style := smsValue;
+    ChartRotated.LeftAxis.Marks.Source := lcsRotatedSeries;
+    ChartRotated.LeftAxis.Marks.Style := smsLabel;
+  end else
+  begin
+    ChartRotatedBarSeries.AxisIndexX := 1;
+    ChartRotatedBarSeries.AxisIndexY := 0;
+    ChartRotated.LeftAxis.Marks.Source := nil;
+    ChartRotated.LeftAxis.Marks.Style := smsValue;
+    ChartRotated.BottomAxis.Marks.Source := lcsRotatedSeries;
+    ChartRotated.BottomAxis.Marks.Style := smsLabel;
+  end;
+
+  // This exchanges the x/y value of the source for the marks being displayed
+  // along the axis. This is necessary because the axis does not "know" that
+  // the series uses rotated x/y values.
+  ChartRotated.LeftAxis.Marks.SourceExchangeXY := cbRotated.Checked;
 end;
 
 procedure TForm1.cbStaticYChange(Sender: TObject);
