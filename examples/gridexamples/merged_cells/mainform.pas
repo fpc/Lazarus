@@ -67,7 +67,7 @@ procedure TForm1.DrawCellTextHandler(Sender: TObject; ACol, ARow: Integer;
 var
   ts: TTextStyle;
   x, y: Integer;
-  bmp: TBitmap;
+  w, h, ppi: Integer;
 begin
   Handled := True;
   if (ACol in [2..4]) and (ARow in [3..5]) then
@@ -76,8 +76,8 @@ begin
     ts := Grid.Canvas.TextStyle;
     ts.SingleLine := false;
     ts.Wordbreak := true;
-    x := ARect.Left + constCellPadding;
-    y := ARect.Top + constCellPadding;
+    x := ARect.Left + varCellPadding;
+    y := ARect.Top + varCellPadding;
     Grid.Canvas.TextRect(ARect, x, y, AText, ts);
   end else
   if (ACol = 0) and (ARow in [2..5]) then
@@ -85,7 +85,7 @@ begin
     // Vertical text
     Grid.Canvas.Font.Orientation := 900;
     x := (ARect.Left + ARect.Right - Grid.Canvas.TextHeight('Tg')) div 2;
-    y := ARect.Bottom - constCellPadding;
+    y := ARect.Bottom - varCellPadding;
     Grid.Canvas.TextOut(x, y, AText);
     Grid.Canvas.Font.Orientation := 0;
   end else
@@ -95,34 +95,31 @@ begin
     ts := Grid.Canvas.TextStyle;
     ts.Alignment := taCenter;
     ts.Layout := tlCenter;
-    x := (ARect.Left + ARect.Right) div 2;
-    y := (ARect.Top + ARect.Bottom) div 2;
+    x := 0;  // is ignored for centered Alignment ...
+    y := 0;  // ... and Layout
     Grid.Canvas.TextRect(ARect, x, y, AText, ts);
   end else
   if (ACol = 4) and (ARow = 1) then
   begin
     // Bold text
     Grid.Canvas.Font.Style := [fsBold];
-    x := ARect.Left + constCellPadding;
-    y := ARect.Top + constCellPadding;
+    x := ARect.Left + varCellPadding;
+    y := ARect.Top + varCellPadding;
     Grid.Canvas.TextOut(x, y, AText);
     Grid.Canvas.Font.Style := [];
   end else
   if (ACol = 5) and (ARow = 1) then
   begin
     // Cell with image
-    bmp := TBitmap.Create;
-    try
-      ImageList1.GetBitmap(0, bmp);
-      x := ARect.Left + constCellPadding;
-      y := (ARect.Top + ARect.Bottom - bmp.Height) div 2;
-      Grid.Canvas.Draw(x, y, bmp);
-      inc(x, bmp.Width + constCellpadding);
-      y := ARect.Top + constCellPadding;
-      Grid.Canvas.TextOut(x, y, AText);
-    finally
-      bmp.Free;
-    end;
+    ppi := Grid.Font.PixelsPerInch;
+    w := ImageList1.WidthForPPI[ImageList1.Width, ppi];
+    h := ImageList1.HeightForPPI[ImageList1.Height, ppi];
+    x := ARect.left + varCellPadding;
+    y := (ARect.Top + ARect.Bottom - h) div 2;
+    ImageList1.DrawForPPI(Grid.Canvas, x, y, 0, ImageList1.Width, ppi, Grid.GetCanvasScaleFactor);
+    inc(x, w + varCellPadding);
+    y := (ARect.Top + ARect.Bottom - Grid.Canvas.TextHeight('Tg')) div 2;
+    Grid.Canvas.TextOut(x, y, AText);
   end else
     Handled := false;
 end;
