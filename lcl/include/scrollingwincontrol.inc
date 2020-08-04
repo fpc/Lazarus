@@ -231,9 +231,14 @@ begin
 end;
 
 class procedure TScrollingWinControl.WSRegisterClass;
+const
+  Registered : boolean = False;
 begin
+  if Registered then
+    Exit;
   inherited WSRegisterClass;
   RegisterScrollingWinControl;
+  Registered := True;
 end;
 
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);

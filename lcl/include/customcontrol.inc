@@ -79,9 +79,14 @@ begin
 end;
 
 class procedure TCustomControl.WSRegisterClass;
+const
+  Registered : boolean = False;
 begin
+  if Registered then
+    Exit;
   inherited WSRegisterClass;
   RegisterCustomControl;
+  Registered := True;
 end;
 
 {------------------------------------------------------------------------------
