@@ -122,13 +122,8 @@ begin
   end;
 
   WSRegisterClass;
-  Result := FindWSRegistered(Self);
-  if Result <> nil then
-    Exit;
-
-  { Force creation of intermediate nodes for Self and a leaf node for Self }
-  RegisterNewWSComp(Self);
-  Result := FindWSRegistered(Self);
+  { If required, force creation of intermediate nodes for Self and a leaf node for Self }
+  Result := RegisterNewWSComp(Self);
 end;
 
 {$IFDEF DebugLCLComponents}

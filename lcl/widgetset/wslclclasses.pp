@@ -79,7 +79,7 @@ function IsWSComponentInheritsFrom(const AComponent: TComponentClass;
   InheritFromClass: TWSLCLComponentClass): Boolean;
 procedure RegisterWSComponent(AComponent: TComponentClass;
   AWSComponent: TWSLCLComponentClass; AWSPrivate: TWSPrivateClass = nil);
-procedure RegisterNewWSComp(AComponent: TComponentClass);
+function RegisterNewWSComp(AComponent: TComponentClass): TWSLCLComponentClass; //inline;
 // Only for non-TComponent based objects
 function GetWSLazAccessibleObject: TWSObjectClass;
 procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
@@ -87,7 +87,7 @@ function GetWSLazDeviceAPIs: TWSObjectClass;
 procedure RegisterWSLazDeviceAPIs(const AWSObject: TWSObjectClass);
 
 // ~bk Search for already registered classes
-function FindWSRegistered(const AComponent: TComponentClass): TWSLCLComponentClass;
+function FindWSRegistered(const AComponent: TComponentClass): TWSLCLComponentClass; //inline;
 
 { Debug : Dump the WSClassesList nodes }
 {$IFDEF VerboseWSBrunoK}
@@ -527,10 +527,18 @@ begin
 end;
 
 // Do not create VClass at runtime but use normal Object Pascal class creation.
-procedure RegisterNewWSComp(AComponent: TComponentClass);
+function RegisterNewWSComp(AComponent: TComponentClass): TWSLCLComponentClass;
+var
+  n: PClassNode;
 begin
+  (* RegisterNewWSComp should only be called, if a previous FindWSRegistered failed
+     => WSClassesList should be created already *)
   Assert(Assigned(WSClassesList), 'RegisterNewWSComp: WSClassesList=Nil');
-  GetPClassNode(AComponent, Nil, True, True);
+  n := GetPClassNode(AComponent, Nil, True, True);
+  if n <> nil then
+    Result := TWSLCLComponentClass(n^.VClass)
+  else
+    Result := nil;
 end;
 
 function GetWSLazAccessibleObject: TWSObjectClass;
