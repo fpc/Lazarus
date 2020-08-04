@@ -439,7 +439,7 @@ begin
     if i >= 0 then
       FieldsListBox.Items[i] := Field.FieldName;
   end else
-  if (AComponent is TDataset) And (AComponent = LinkDataset) then
+  if AComponent = LinkDataset then
     Caption := fesFeTitle + ' - ' + LinkDataset.Name;
 end;
 
