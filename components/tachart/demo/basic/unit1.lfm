@@ -10,7 +10,7 @@ object Form1: TForm1
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 374
+    Height = 372
     Top = 0
     Width = 610
     AntialiasingMode = amOn
@@ -52,23 +52,21 @@ object Form1: TForm1
     object Chart1LineHor: TConstantLine
       Legend.Visible = False
       Pen.Style = psDash
-      Position = 0
     end
     object Chart1LineVert: TConstantLine
       Legend.Visible = False
       LineStyle = lsVertical
       Pen.Style = psDash
-      Position = 0
     end
   end
   object Panel1: TPanel
     Left = 0
-    Height = 120
-    Top = 374
+    Height = 122
+    Top = 372
     Width = 610
     Align = alBottom
     AutoSize = True
-    ClientHeight = 120
+    ClientHeight = 122
     ClientWidth = 610
     TabOrder = 0
     object lblAdd: TLabel
@@ -114,7 +112,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       Left = 47
       Height = 15
-      Top = 92
+      Top = 94
       Width = 86
       Caption = 'Add with marks:'
       ParentColor = False
@@ -189,7 +187,7 @@ object Form1: TForm1
       Left = 424
       Height = 19
       Top = 27
-      Width = 84
+      Width = 85
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
@@ -203,7 +201,7 @@ object Form1: TForm1
       Left = 424
       Height = 19
       Top = 46
-      Width = 64
+      Width = 65
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
@@ -213,10 +211,10 @@ object Form1: TForm1
     object cbTitle: TCheckBox
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbLegend
-      Left = 516
+      Left = 517
       Height = 19
       Top = 8
-      Width = 43
+      Width = 42
       BorderSpacing.Right = 8
       Caption = 'Title'
       Checked = True
@@ -229,7 +227,7 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbLegend
       AnchorSideTop.Side = asrBottom
-      Left = 516
+      Left = 517
       Height = 19
       Top = 27
       Width = 54
@@ -243,7 +241,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbFooter
       AnchorSideTop.Side = asrBottom
-      Left = 516
+      Left = 517
       Height = 19
       Top = 46
       Width = 63
@@ -342,10 +340,10 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbInverted
       AnchorSideTop.Side = asrBottom
-      Left = 516
+      Left = 517
       Height = 19
       Top = 65
-      Width = 69
+      Width = 70
       BorderSpacing.Right = 8
       Caption = 'Axis titles'
       OnChange = cbShowAxisTitlesChange
@@ -354,9 +352,10 @@ object Form1: TForm1
     object cbMarkStyle: TComboBox
       AnchorSideLeft.Control = lblMarkStyle
       AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbCrosshairTool
       Left = 141
       Height = 23
-      Top = 88
+      Top = 90
       Width = 136
       BorderSpacing.Left = 8
       BorderSpacing.Bottom = 8
@@ -394,12 +393,12 @@ object Form1: TForm1
       TabOrder = 18
     end
     object lblCrossHairTool: TLabel
-      AnchorSideTop.Control = lblMarkStyle
+      AnchorSideTop.Control = cbCrosshairTool
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = cbCrosshairTool
       Left = 340
       Height = 15
-      Top = 92
+      Top = 94
       Width = 76
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 8
@@ -408,10 +407,13 @@ object Form1: TForm1
     end
     object cbCrosshairTool: TComboBox
       AnchorSideLeft.Control = cbShowGridCheckBox
+      AnchorSideTop.Control = cbShowGridCheckBox
+      AnchorSideTop.Side = asrBottom
       Left = 424
       Height = 23
-      Top = 88
+      Top = 90
       Width = 155
+      BorderSpacing.Top = 6
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
@@ -427,8 +429,8 @@ object Form1: TForm1
     end
   end
   object ChartToolset1: TChartToolset
-    left = 240
-    top = 115
+    Left = 240
+    Top = 115
     object DataPointCrosshairTool: TDataPointCrosshairTool
     end
   end

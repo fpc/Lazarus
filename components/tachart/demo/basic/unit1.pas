@@ -82,7 +82,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAChartUtils, TATextElements, TATypes;
+  Math, GraphUtil, TAChartUtils, TATextElements, TATypes;
 
 { TForm1 }
 
@@ -106,7 +106,7 @@ begin
     if random(2) >= 0.7 then Y3 := Y3 + random(5)
     else if random(2) >= 0.7 then Y3 := 0
     else Y3 := Y3 - random(5);
-    FArea.AddXY(x3, y3, '', clTAColor);
+    FArea.AddXY(x3, y3, Format('Area%d', [i]));
   end;
 end;
 
@@ -118,7 +118,7 @@ begin
   BringToFront(FBar);
   FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
-    FBar.AddXY(x, y, '', clBlue * (i mod 2) + clTAColor * (1 - i mod 2));
+    FBar.AddXY(x, y, Format('Bar%d', [i]));
     X := X + 1;
     if random(2) >= 0.7 then Y := Y + random(5)
     else if random(2) >= 0.7 then Y := 0
@@ -134,7 +134,7 @@ begin
   BringToFront(FLine);
   FLine.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
-    FLine.AddXY(x1, y1, '', IfThen(i mod 2 = 0, clGreen, clBlue));
+    FLine.AddXY(x1, y1, Format('Line%d', [i]));
     X1 := X1 + 1.5;
     if random(2) >= 0.5 then Y1 := Y1 + random(10)
     else Y1 := Y1 - random(5);
@@ -254,6 +254,7 @@ begin
   FArea := TAreaSeries.Create(Chart1);
   FArea.SeriesColor := clFuchsia;
   FArea.Title := 'area';
+  FArea.Marks.LabelBrush.Color := GetHighlightColor(FArea.SeriesColor, 100);
   Chart1.AddSeries(FArea);
 end;
 
@@ -261,7 +262,8 @@ procedure TForm1.InitBar;
 begin
   FBar := TBarSeries.Create(Chart1);
   FBar.Title := 'bars';
-  FBar.SeriesColor := clGreen;
+  FBar.BarBrush.Color := clGreen;
+  FBar.Marks.LabelBrush.Color := GetHighlightColor(FBar.BarBrush.Color, 100);
   Chart1.AddSeries(FBar);
 end;
 
@@ -274,6 +276,7 @@ begin
   FLine.Pointer.Brush.Color := clRed;
   FLine.Title := 'line';
   FLine.SeriesColor := clRed;
+  FLine.Marks.LabelBrush.Color := GetHighlightColor(FLine.SeriesColor, 100);
   Chart1.AddSeries(FLine);
 end;
 

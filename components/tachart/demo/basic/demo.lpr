@@ -13,7 +13,7 @@ uses
 {$R *.res}
 
 begin
-  Application.Title := 'TChart basic demo';
+  Application.Title:='TChart basic demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
