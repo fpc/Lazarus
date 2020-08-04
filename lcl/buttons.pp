@@ -174,6 +174,7 @@ type
     procedure SetNumGlyphs(AValue: Integer);
     procedure SetSpacing(AValue: Integer);
     procedure RealizeKind(ForceDefaults: Boolean);
+    procedure SetDefaultCaption(const AValue: Boolean);
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(AKind: TBitBtnKind): String;
     function GetImages: TCustomImageList;
@@ -205,7 +206,7 @@ type
     function CanShowGlyph(const AWithShowMode: Boolean = False): Boolean;
   public
     property Caption stored IsCaptionStored;
-    property DefaultCaption: Boolean read FDefaultCaption write FDefaultCaption default False;
+    property DefaultCaption: Boolean read FDefaultCaption write SetDefaultCaption default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Images: TCustomImageList read GetImages write SetImages;

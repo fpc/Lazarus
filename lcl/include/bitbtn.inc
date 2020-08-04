@@ -230,7 +230,7 @@ begin
   if (FKind <> bkCustom) and not (csLoading in ComponentState) then
     RealizeKind(True);
   if not (csLoading in ComponentState) then
-    DefaultCaption := FKind <> bkCustom;
+    FDefaultCaption := FKind <> bkCustom;
 end;
 
 procedure TCustomBitBtn.SetLayout(AValue: TButtonLayout);
@@ -348,6 +348,17 @@ begin
   end;
 end;
 
+procedure TCustomBitBtn.SetDefaultCaption(const AValue: Boolean);
+begin
+  if FDefaultCaption = AValue then Exit;
+  FDefaultCaption := AValue;
+  if (Kind <> bkCustom) and DefaultCaption then
+  begin
+    Caption := GetCaptionOfKind(FKind); // will trigger TextChanged
+    FDefaultCaption := True;
+  end;
+end;
+
 { Return the caption associated with the akind value.
   This function replaces BitBtnCaption const because the localizing
   do not work with an const array }
@@ -386,7 +397,7 @@ begin
   if (Kind <> bkCustom) and DefaultCaption and (Caption = '') then
   begin
     Caption := GetCaptionOfKind(Kind); // Will trigger TextChanged
-    DefaultCaption := True;
+    FDefaultCaption := True;
   end;
 end;
 
@@ -394,7 +405,7 @@ procedure TCustomBitBtn.TextChanged;
 begin
   inherited TextChanged;
   AdjustSize;
-  DefaultCaption := False;
+  FDefaultCaption := False;
 end;
 
 class function TCustomBitBtn.GetControlClassDefaultSize: TSize;
