@@ -60,6 +60,10 @@ interface
 {$I laz.vtconfig.inc}
 
 uses
+  {$ifdef LCLCocoa}
+  MacOSAll, // hack: low-level access to Cocoa drawins is going to be used
+            //       in order to support Cocoa HighDPI implementation
+  {$endif}
   {$ifdef Windows}
   Windows,
   ActiveX,
@@ -83,12 +87,26 @@ uses
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs,  // Thread support
   Clipbrd // Clipboard support
+  {$ifdef LCLCocoa}
+  ,CocoaGDIObjects // hack: while using buffered drawing, multiply the context
+                   //       by the retina scale to achieve the needed scale for Retina
+                   //       Ideally - not to use Buffered. but Unbuffered drawing
+                   //       seems to need a fix
+  {$endif}
   {$ifdef ThemeSupport}
   , Themes , TmSchema
   {$endif ThemeSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
   {$endif};
+
+{$ifdef LCLCocoa}
+// WideChar is defined in MacOSAll. This is causing collission
+// with System.WideChar, which is used by the unit below.
+// Redeclearing the type.
+type
+  WideChar = System.WideChar;
+{$endif}
 
 const
   {$I laz.lclconstants.inc}
@@ -9210,6 +9228,9 @@ procedure TVirtualTreeColumns.PaintHeader(DC: HDC; const R: TRect; HOffset: Inte
 var
   VisibleFixedWidth: Integer;
   RTLOffset: Integer;
+  {$ifdef LCLCocoa}
+  sc : Double;
+  {$endif}
 
   procedure PaintFixedArea;
   
@@ -9226,6 +9247,15 @@ begin
   begin
     FHeaderBitmap.Width := Max(Right, R.Right - R.Left);
     FHeaderBitmap.Height := Bottom;
+    {$ifdef LCLCocoa}
+    if Assigned(Header) and Assigned(Header.TreeView) then
+      sc := Header.Treeview.GetCanvasScaleFactor
+    else
+      sc := 1.0;
+    FHeaderBitmap.Width := Round(FHeaderBitmap.Width * sc);
+    FHeaderBitmap.Height := Round(FHeaderBitmap.Height * sc);
+    CGContextScaleCTM(TCocoaBitmapContext(FHeaderBitmap.Canvas.Handle).CGContext, sc, sc);
+    {$endif}
   end;
 
   VisibleFixedWidth := GetVisibleFixedWidth;
@@ -9247,10 +9277,18 @@ begin
   // In case of right-to-left directionality we paint the fixed part last.
   if RTLOffset <> 0 then
     PaintFixedArea;
-  
+
   // Blit the result to target.
   with TWithSafeRect(R) do
+    {$ifdef LCLCocoa}
+    StretchBlt(DC, Left, Top, Right - Left, Bottom - Top,
+      FHeaderBitmap.Canvas.Handle,
+      Left, Top,
+      FHeaderBitmap.Width, FHeaderBitmap.Height,
+      SRCCOPY);
+    {$else}
     BitBlt(DC, Left, Top, Right - Left, Bottom - Top, FHeaderBitmap.Canvas.Handle, Left, Top, SRCCOPY);
+    {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30600,7 +30638,17 @@ var
   CellIsInLastColumn: Boolean;
   ColumnIsFixed: Boolean;
 
+  {$ifdef LCLCocoa}
+  sc: Double; // the retina scale. 1.0 for no-retina
+  cg: CGContextRef; // tracking the Context of Bitmap
+  cglast: CGContextRef; // the last Context of Bitmap.
+                        // The scale is applied only when the context changes
+  {$endif}
 begin
+  {$ifdef LCLCocoa}
+  cglast := nil;
+  sc := GetCanvasScaleFactor;
+  {$endif}
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaint],'PaintTree');{$endif}
   {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'Window',Window);{$endif}
   {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'Target',Target);{$endif}
@@ -30643,7 +30691,12 @@ begin
         else
           NodeBitmap.PixelFormat := PixelFormat;
 
+        {$ifdef LCLCocoa}
+        NodeBitmap.Width := Round(PaintWidth*sc);
+        cg := TCocoaBitmapContext(NodeBitmap.Canvas.Handle).CGContext;
+        {$else}
         NodeBitmap.Width := PaintWidth;
+        {$endif}
 
         // Make sure the buffer bitmap and target bitmap use the same transformation mode.
         {$ifndef Gtk}
@@ -30761,8 +30814,18 @@ begin
                 begin
                   if Height <> PaintInfo.Node.NodeHeight then
                   begin
-                    // Avoid that the VCL copies the bitmap while changing its height.                    
+                    // Avoid that the VCL copies the bitmap while changing its height.
+                    {$ifdef LCLCocoa}
+                    Height := Round(PaintInfo.Node.NodeHeight * sc);
+                    cg := TCocoaBitmapContext(NodeBitmap.Canvas.Handle).CGContext;
+                    if cglast <> cg then
+                    begin
+                      CGContextScaleCTM(cg, sc, sc);
+                      cglast := cg;
+                    end;
+                    {$else}
                     Height := PaintInfo.Node.NodeHeight;
+                    {$endif}
                     {$ifdef UseSetCanvasOrigin}
                     SetCanvasOrigin(Canvas, Window.Left, 0);
                     {$else}
@@ -31082,9 +31145,25 @@ begin
                 // Put the constructed node image onto the target canvas.
                 if not (poUnbuffered in PaintOptions) then
                   with TWithSafeRect(TargetRect), NodeBitmap do
+                  begin
+                    {$ifdef LCLCocoa}
+                    StretchBlt(
+                      TargetCanvas.Handle,
+                      Left,
+                      Top {$ifdef ManualClipNeeded} + YCorrect{$endif},
+                      PaintWidth, PaintInfo.Node.NodeHeight,
+                      Canvas.Handle,
+                      Window.Left,
+                      {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif},
+                      NodeBitmap.Width, NodeBitmap.Height,
+                      SRCCOPY
+                    );
+                    {$else}
                     BitBlt(TargetCanvas.Handle, Left,
                      Top {$ifdef ManualClipNeeded} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
                      {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif}, SRCCOPY);
+                    {$endif}
+                  end;
               end;
             end;
 
