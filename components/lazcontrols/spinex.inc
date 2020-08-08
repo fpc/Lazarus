@@ -468,8 +468,8 @@ begin
     Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
   else
   begin
-    if (Abs(LValue) > 10**FExponentialFormatLimitPos) or
-       (Abs(LValue) > 10**FExponentialFormatLimitNeg) then
+    if (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
+       (Abs(LValue) < Power(10,FExponentialFormatLimitNeg)) then
       Result := FloatToStrF(GetLimitedValue(AValue), ffExponent, FPrecision, DecimalPlaces, FFS)
     else
       Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
