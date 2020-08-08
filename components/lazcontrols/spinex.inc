@@ -37,7 +37,6 @@ begin
   if (MaxValue < MinValue) then FMaxValue := MinValue;
   if (FNullValueBehaviour <> nvbShowTextHint) then
     FValue := GetLimitedValue(FValue);
-
   if (not HandleAllocated) then Exit;
 
   if ([csLoading, csDestroying] * ComponentState <> []) then
@@ -369,6 +368,38 @@ begin
   UpdateControl;
 end;
 
+procedure TCustomFloatSpinEditEx.SetExponentialFormatLimitNeg(AValue: Integer);
+begin
+  if (FExponentialFormatLimitNeg = AValue) or (AValue > -1) then Exit;
+  GetValue;
+  FExponentialFormatLimitNeg := AValue;
+  UpdateControl;
+end;
+
+procedure TCustomFloatSpinEditEx.SetExponentialFormatLimitPos(AValue: Integer);
+begin
+  if (FExponentialFormatLimitPos = AValue) or (AValue < 0) then Exit;
+  GetValue;
+  FExponentialFormatLimitPos := AValue;
+  UpdateControl;
+end;
+
+procedure TCustomFloatSpinEditEx.SetPrecision(AValue: Integer);
+begin
+  if FPrecision = AValue then Exit;
+  GetValue;
+  FPrecision := AValue;
+  UpdateControl;
+end;
+
+procedure TCustomFloatSpinEditEx.SetUseScientificNotation(AValue: Boolean);
+begin
+  if FUseScientificNotation = AValue then Exit;
+  GetValue;
+  FUseScientificNotation := AValue;
+  UpdateControl;
+end;
+
 procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
 begin
   inherited EditKeyPress(Key);
@@ -429,8 +460,20 @@ end;
 
 
 function TCustomFloatSpinEditEx.ValueToStr(const AValue: Double): String;
+var
+  LValue: Double;
 begin
-  Result := FloatToStrF(GetLimitedValue(AValue), ffFixed, 20, DecimalPlaces, FFS);
+  LValue := GetLimitedValue(AValue);
+  if not FUseScientificNotation then
+    Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
+  else
+  begin
+    if (Abs(LValue) > 10**FExponentialFormatLimitPos) or
+       (Abs(LValue) > 10**FExponentialFormatLimitNeg) then
+      Result := FloatToStrF(GetLimitedValue(AValue), ffExponent, FPrecision, DecimalPlaces, FFS)
+    else
+      Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
+  end;
 end;
 
 function TCustomFloatSpinEditEx.StrToValue(const S: String): Double;
@@ -462,7 +505,7 @@ begin
     Result := Def;
   end;
   {$ifdef debugspinex}
-  debugln(['  Result=',(Result)]);
+  debugln(['  Result=',Result]);
   {$endif}
 end;
 
@@ -472,6 +515,10 @@ begin
   FFS := DefaultFormatSettings;
   FFS.DecimalSeparator := DefDecimalSeparator;
   FDecimals := DefDecimals;
+  FUseScientificNotation := False;
+  FExponentialFormatLimitPos := 6;
+  FExponentialFormatLimitNeg := -6;
+  FPrecision := 6;
 end;
 
 
