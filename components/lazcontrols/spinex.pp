@@ -291,6 +291,9 @@ type
   { TCustomSpinEditEx }
 
   TCustomSpinEditEx = class(specialize TSpinEditExBase<Int64>)
+  private
+    FThousandSeparator: String;
+    procedure SetThousandSeparator(AValue: String);
   protected
     procedure EditKeyPress(var Key: char); override;
     function SafeInc(AValue: Int64): Int64; override;
@@ -301,6 +304,7 @@ type
     function StrToValue(const S: String): Int64; override;
   public
     property Increment default 1;
+    property ThousandSeparator: String read FThousandSeparator write SetThousandSeparator; //string so you can use Utf8
   end;
 
 

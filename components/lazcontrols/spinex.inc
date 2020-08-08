@@ -525,14 +525,57 @@ end;
 
 { TCustomSpinEditEx }
 
+function InsertThousandSeparator(const ValueS, AThousandSep: String): String;
+// A bit more complicated, but 3 times faster than repeated Insert() calls
+var
+  ResLen, ResPos, SLen, i, j: Integer;
+begin
+  if (AThousandSep = '') then
+    Exit(ValueS);
+  Result := '';
+  SLen := Length(ValueS);
+  //Needed separators = ((SLen - 1) div 3)
+  ResLen := SLen + ((SLen - 1) div 3) * Length(AThousandSep);
+  SetLength(Result, ResLen);
+  ResPos := ResLen;
+  for i := Length(ValueS) downto 1 do
+  begin
+    if (SLen <> i) and ((SLen-i) mod 3 = 0) then
+    begin
+      for j := Length(AThousandSep) downto 1 do
+      begin
+        Result[ResPos] := AThousandSep[j];
+        Dec(ResPos);
+      end;
+    end;
+    Result[ResPos] := ValueS[i];
+    Dec(ResPos);
+  end;
+end;
+
+function RemoveThousandSeparator(const ValueS: String; AThousandSeparator: String): String;
+begin
+  if (AThousandSeparator = '') then
+    Result := ValueS
+  else
+    Result := StringReplace(ValueS, AThousandSeparator, '', [rfReplaceAll]);
+end;
+
+procedure TCustomSpinEditEx.SetThousandSeparator(AValue: String);
+begin
+  if FThousandSeparator = AValue then Exit;
+  FThousandSeparator := AValue;
+  UpdateControl;
+end;
+
 procedure TCustomSpinEditEx.EditKeyPress(var Key: char);
 begin
   inherited EditKeyPress(Key);
-  {Disallow any key that is not a digit or -
+  {Disallow any key that is not a digit or - or (part of) FThousandSeparator
    Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
   }
   inherited EditKeyPress(Key);
-  if not (Key in (Digits + AllowedControlChars + ['-'])) then Key := #0;
+  if not ((Key in (Digits + AllowedControlChars + ['-'])) or (Pos(Key, FThousandSeparator) > 0)) then Key := #0;
   if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
 
@@ -562,7 +605,7 @@ begin
   {$endif}
 
   try
-    Result := TryStrToInt64(S, N);
+    Result := TryStrToInt64(RemoveThousandSeparator(S, FThousandSeparator), N);
     ANumber := N;
   except
     Result := False;
@@ -576,6 +619,8 @@ end;
 function TCustomSpinEditEx.ValueToStr(const AValue: Int64): String;
 begin
   Result := IntToStr(AValue);
+  if (FThousandSeparator <> '') then
+    Result := InsertThousandSeparator(Result, FThousandSeparator);
 end;
 
 function TCustomSpinEditEx.StrToValue(const S: String): Int64;
@@ -595,14 +640,14 @@ begin
   try
     if (FNullValueBehaviour = nvbShowTextHint)then
     begin
-      if TextIsNumber(S, N)
+      if TextIsNumber(RemoveThousandSeparator(S, FThousandSeparator), N)
       then
         Result := N
       else
         Result := Def;
     end
     else
-      Result := GetLimitedValue(StrToInt64Def(S, Def));
+      Result := GetLimitedValue(StrToInt64Def(RemoveThousandSeparator(S, FThousandSeparator), Def));
   except
     Result := Def;
   end;
