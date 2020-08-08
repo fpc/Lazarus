@@ -368,6 +368,14 @@ begin
   UpdateControl;
 end;
 
+procedure TCustomFloatSpinEditEx.SetExponentDigits(AValue: Integer);
+begin
+  if FExponentDigits = AValue then Exit;
+  GetValue;
+  FExponentDigits := AValue;
+  UpdateControl;
+end;
+
 procedure TCustomFloatSpinEditEx.SetExponentialFormatLimitNeg(AValue: Integer);
 begin
   if (FExponentialFormatLimitNeg = AValue) or (AValue > -1) then Exit;
@@ -470,7 +478,7 @@ begin
   begin
     if (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
        (Abs(LValue) < Power(10,FExponentialFormatLimitNeg)) then
-      Result := FloatToStrF(GetLimitedValue(AValue), ffExponent, FPrecision, DecimalPlaces, FFS)
+      Result := FloatToStrF(GetLimitedValue(AValue), ffExponent, FPrecision, FExponentDigits, FFS)
     else
       Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
   end;
@@ -519,6 +527,7 @@ begin
   FExponentialFormatLimitPos := 6;
   FExponentialFormatLimitNeg := -6;
   FPrecision := 6;
+  FExponentDigits := 2;
 end;
 
 

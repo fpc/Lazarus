@@ -176,6 +176,7 @@ type
     DefDecimalSeparator = '.';
   private
     FDecimals: Integer;
+    FExponentDigits: Integer;
     FExponentialFormatLimitNeg: Integer;
     FExponentialFormatLimitPos: Integer;
     FFS: TFormatSettings;
@@ -183,6 +184,7 @@ type
     FUseScientificNotation: Boolean;
     function GetDecimalSeparator: Char;
     procedure SetDecimalSeparator(AValue: Char);
+    procedure SetExponentDigits(AValue: Integer);
     procedure SetExponentialFormatLimitNeg(AValue: Integer);
     procedure SetExponentialFormatLimitPos(AValue: Integer);
     procedure SetPrecision(AValue: Integer);
@@ -200,9 +202,10 @@ type
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default DefDecimalSeparator;
     property DecimalPlaces: Integer read FDecimals write SetDecimals default DefDecimals;
     property UseScientificNotation: Boolean read FUseScientificNotation write SetUseScientificNotation default False;
-    property ExponentialFormatLimitPos: Integer read FExponentialFormatLimitPos write SetExponentialFormatLimitPos default 6;
-    property ExponentialFormatLimitNeg: Integer read FExponentialFormatLimitNeg write SetExponentialFormatLimitNeg default -6;
-    property Precision: Integer read FPrecision write SetPrecision default 6;
+    property ExponentialFormatLimitPos: Integer read FExponentialFormatLimitPos write SetExponentialFormatLimitPos default 6;  //used for scientific notation only
+    property ExponentialFormatLimitNeg: Integer read FExponentialFormatLimitNeg write SetExponentialFormatLimitNeg default -6; //used for scientific notation only
+    property Precision: Integer read FPrecision write SetPrecision default 6; //used for scientific notation only
+    property ExponentDigits: Integer read FExponentDigits write SetExponentDigits default 2; //used for scientific notation only
   end;
 
 
