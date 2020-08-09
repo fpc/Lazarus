@@ -21,7 +21,7 @@ unit WSLCLClasses;
 {off$DEFINE VerboseWSRegistration}
 {off$DEFINE VerboseWSRegistration_methods}
 {off$DEFINE VerboseWSRegistration_treedump}
-{ Add -dVerboseWSBrunoK switch to compile with $DEFINE VerboseWSBrunoK }
+{.$DEFINE VerboseWSBrunoK }
 
 interface
 ////////////////////////////////////////////////////
@@ -137,16 +137,20 @@ type
   TWSClassesList = class(TFPList)
   private
     FLastFoundIdx: integer;
-    FLastFoundLCLClass: TComponentClass;
+    FLastFoundClass: TClass;
     function FindWSClass(const AComponent: TComponentClass): TWSLCLComponentClass;
     function Get(Index: integer): PClassNode; inline;
+    procedure Insert(aIndex: Integer; aItem: Pointer);
     function Search(const aItem: TClass; Out Index: integer): boolean;
+    procedure UpdatLastFound(aClass: TClass; aIndex: integer);
     property Items[Index: integer]: PClassNode read Get; { write Put; default; }
     {$IFDEF VerboseWSBrunoK} {$ENDIF}
     {$IFDEF VerboseWSBrunoK}
     procedure DumpNode(aN : integer; aPClassNode : PClassNode);
     procedure DumpNodes;
     {$ENDIF}
+  public
+    constructor Create;
   end;
 
 var
@@ -409,7 +413,6 @@ function GetPClassNode(AClass: TClass; AWSComponent: TWSLCLComponentClass;
                        aParentGet: boolean; aLeaf: boolean): PClassNode;
 var
   idx: Integer;
-  OldCount: integer;
   lParentNode : PClassNode;
   lClassNode : TClassNode; { A temp local node to fake normal processing
                              of a node that won't be stored aParentGet = 0
@@ -497,7 +500,6 @@ procedure RegisterWSComponent(AComponent: TComponentClass;
 var
   Node: PClassNode;
   OldPrivate: TClass;
-  idx: Integer;
 begin
   if not Assigned(WSClassesList) then
     DoInitialization;
@@ -577,9 +579,9 @@ end;
 
 { TWSClassesList }
 
-function TWSClassesList.Get(Index: integer): PClassNode;
+constructor TWSClassesList.Create;
 begin
-  Result := PClassNode(inherited Get(Index));
+  FLastFoundClass:=TClass(High(UIntPtr));
 end;
 
 function TWSClassesList.FindWSClass(const AComponent: TComponentClass): TWSLCLComponentClass;
@@ -595,41 +597,52 @@ begin
   Result := nil;
 end;
 
+function TWSClassesList.Get(Index: integer): PClassNode;
+begin
+  Result := PClassNode(inherited Get(Index));
+end;
+
+procedure TWSClassesList.Insert(aIndex: Integer; aItem: Pointer);
+begin
+  inherited Insert(aIndex, aItem);
+  UpdatLastFound(TClass(aItem), aIndex);
+end;
+
 { Searches a match for AComponent.ClassType. Returns index in items of
   the matching AComponent or the next bigger one }
 function TWSClassesList.Search(const aItem: TClass; out Index: integer): boolean;
-const
-  cIndex: integer = 0;
 var
   L, R: integer;
   lLCLClass: TClass;
-  lPClassNode: PClassNode;
 begin
+  if aItem = FLastFoundClass then begin
+    Index := FLastFoundIdx;
+    Exit(True);
+  end;
   L := 0;
   R := Count - 1;
   // Use binary search.
-  if R >= 0 then begin
-    if Pointer(aItem) = Pointer(FLastFoundLCLClass) then begin
-      Index := FLastFoundIdx;
-      Exit(True);
-    end;
-    while (L <= R) do begin
-      Index := L + ((R - L) div 2);
-      lLCLClass := PClassNode(List^[Index])^.LCLClass;
-      if Pointer(aItem) < Pointer(lLCLClass) then
-        R := Index - 1
-      else begin
-        if aItem = lLCLClass then begin
-          FLastFoundIdx := Index;
-          FLastFoundLCLClass := TComponentClass(lLCLClass);
-          Exit(True);
-        end;
-        L := Index + 1;
+  while (L <= R) do begin
+    Index := L + ((R - L) div 2);
+    lLCLClass := PClassNode(List^[Index])^.LCLClass;
+    if Pointer(aItem) < Pointer(lLCLClass) then
+      R := Index - 1
+    else begin
+      if aItem = lLCLClass then begin
+        UpdatLastFound(lLCLClass, Index);
+        Exit(True);
       end;
+      L := Index + 1;
     end;
   end;
   Index := L;
   Result := False;
+end;
+
+procedure TWSClassesList.UpdatLastFound(aClass: TClass; aIndex: integer);
+begin
+  FLastFoundClass := TComponentClass(aClass);
+  FLastFoundIdx := aIndex;
 end;
 
 {$IFDEF VerboseWSBrunoK}
