@@ -170,25 +170,27 @@ type
 
   { TCustomFloatSpinEditEx }
 
+  TDisplayMode = (dmFixed, dmScientific, dmAuto);
+
   TCustomFloatSpinEditEx = class(specialize TSpinEditExBase<Double>)
   private const
     DefDecimals = 2;
     DefDecimalSeparator = '.';
   private
     FDecimals: Integer;
+    FDisplayMode: TDisplayMode;
     FExponentDigits: Integer;
     FExponentialFormatLimitNeg: Integer;
     FExponentialFormatLimitPos: Integer;
     FFS: TFormatSettings;
     FPrecision: Integer;
-    FUseScientificNotation: Boolean;
     function GetDecimalSeparator: Char;
     procedure SetDecimalSeparator(AValue: Char);
+    procedure SetDisplayMode(AValue: TDisplayMode);
     procedure SetExponentDigits(AValue: Integer);
     procedure SetExponentialFormatLimitNeg(AValue: Integer);
     procedure SetExponentialFormatLimitPos(AValue: Integer);
     procedure SetPrecision(AValue: Integer);
-    procedure SetUseScientificNotation(AValue: Boolean);
   protected
     procedure EditKeyPress(var Key: char); override;
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
@@ -201,7 +203,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default DefDecimalSeparator;
     property DecimalPlaces: Integer read FDecimals write SetDecimals default DefDecimals;
-    property UseScientificNotation: Boolean read FUseScientificNotation write SetUseScientificNotation default False;
+    property DisplayMode: TDisplayMode read FDisplayMode write SetDisplayMode default dmFixed;
     property ExponentialFormatLimitPos: Integer read FExponentialFormatLimitPos write SetExponentialFormatLimitPos default 6;  //used for scientific notation only
     property ExponentialFormatLimitNeg: Integer read FExponentialFormatLimitNeg write SetExponentialFormatLimitNeg default -6; //used for scientific notation only
     property Precision: Integer read FPrecision write SetPrecision default 6; //used for scientific notation only

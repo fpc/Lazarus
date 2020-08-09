@@ -368,6 +368,14 @@ begin
   UpdateControl;
 end;
 
+procedure TCustomFloatSpinEditEx.SetDisplayMode(AValue: TDisplayMode);
+begin
+  if FDisplayMode = AValue then Exit;
+  GetValue;
+  FDisplayMode := AValue;
+  UpdateControl;
+end;
+
 procedure TCustomFloatSpinEditEx.SetExponentDigits(AValue: Integer);
 begin
   if FExponentDigits = AValue then Exit;
@@ -400,13 +408,6 @@ begin
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.SetUseScientificNotation(AValue: Boolean);
-begin
-  if FUseScientificNotation = AValue then Exit;
-  GetValue;
-  FUseScientificNotation := AValue;
-  UpdateControl;
-end;
 
 procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
 begin
@@ -472,15 +473,23 @@ var
   LValue: Double;
 begin
   LValue := GetLimitedValue(AValue);
-  if not FUseScientificNotation then
-    Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
-  else
-  begin
-    if (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
-       (Abs(LValue) < Power(10,FExponentialFormatLimitNeg)) then
-      Result := FloatToStrF(GetLimitedValue(AValue), ffExponent, FPrecision, FExponentDigits, FFS)
-    else
+  case FDisplayMode of
+    dmFixed:
+    begin
       Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
+    end;
+    dmScientific:
+    begin
+      Result := FloatToStrF(LValue, ffExponent, FPrecision, FExponentDigits, FFS)
+    end;
+    dmAuto:
+    begin
+      if (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
+         (Abs(LValue) < Power(10,FExponentialFormatLimitNeg)) then
+        Result := FloatToStrF(LValue, ffExponent, FPrecision, FExponentDigits, FFS)
+      else
+        Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)
+    end;
   end;
 end;
 
@@ -523,11 +532,11 @@ begin
   FFS := DefaultFormatSettings;
   FFS.DecimalSeparator := DefDecimalSeparator;
   FDecimals := DefDecimals;
-  FUseScientificNotation := False;
   FExponentialFormatLimitPos := 6;
   FExponentialFormatLimitNeg := -6;
   FPrecision := 6;
   FExponentDigits := 2;
+  FDisplayMode := dmFixed;
 end;
 
 
