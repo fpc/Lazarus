@@ -13,20 +13,16 @@ unit UTF8Process;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF MSWINDOWS}
-{$IF FPC_FULLVERSION < 30200}
-  {$DEFINE UseTProcessW}
-{$ENDIF}
-{$ENDIF}
-
 interface
 
 uses
   Classes, SysUtils, Process,
-  {$IFDEF UseTProcessW}
-  pipes,
-  {$ENDIF}
   FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
+
+  {$IF DEFINED(MSWINDOWS) AND NOT DECLARED(poDetached)} // we need to work around the poNoConsole->poDetached change
+    // more info: issue #32055, #35991; FPC r45228, https://forum.lazarus.freepascal.org/index.php/topic,49631.0
+    {$DEFINE UseTProcessW}
+  {$ENDIF}
 
 { TProcessUTF8 }
 
@@ -65,7 +61,11 @@ procedure Register;
 implementation
 
 {$IF defined(windows)}
-uses Windows;
+uses Windows
+  {$IFDEF UseTProcessW}
+  ,pipes
+  {$ENDIF}
+;
 {$ELSEIF defined(freebsd) or defined(darwin)}
 uses ctypes, sysctl;
 {$ELSEIF defined(linux)}
@@ -201,6 +201,9 @@ Const
   PriorityConstants : Array [TProcessPriority] of Cardinal =
                       (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
                        NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS
+                       {$if (FPC_FULLVERSION >= 30200) and not defined(WinCE)}
+                       ,BELOW_NORMAL_PRIORITY_CLASS,ABOVE_NORMAL_PRIORITY_CLASS
+                       {$endif}
                        );
 
 function WStrAsUniquePWideChar(var s: UnicodeString): PWideChar; inline;
@@ -234,8 +237,15 @@ Function GetCreationFlags(P : TProcessUTF8) : Cardinal;
 
 begin
   Result:=CREATE_UNICODE_ENVIRONMENT;
+  {$IF DECLARED(poDetached)}
+  if poNoConsole in P.Options then
+    Result:=Result or CREATE_NO_WINDOW;
+  if poDetached in P.Options then
+    Result:=Result or Detached_Process;
+  {$ELSE}
   if poNoConsole in P.Options then
     Result:=Result or Detached_Process;
+  {$ENDIF}
   if poNewConsole in P.Options then
     Result:=Result or Create_new_console;
   if poNewProcessGroup in P.Options then
@@ -376,68 +386,39 @@ begin
     end;
 end;
 
-type
-  TProcessClassTemplate = class(TComponent)
-  private
-    {$if fpc_fullversion < 30101}
-    {%H-}FProcessOptions : TProcessOptions;
-    {%H-}FStartupOptions : TStartupOptions;
-    FProcessID : Integer;
-    {%H-}FTerminalProgram: String;
-    {$else}
-    {%H-}FOnRunCommandEvent: TOnRunCommandEvent;
-    {%H-}FProcessOptions : TProcessOptions;
-    FRunCommandSleepTime: Integer;
-    {%H-}FStartupOptions : TStartupOptions;
-    FProcessID : Integer;
-    {$ifend}
-    {%H-}FThreadID : Integer;
-    FProcessHandle : Thandle;
-    FThreadHandle : Thandle;
-  end;
-
 { TProcessUTF8 }
+
+type
+  PHandle = ^THandle;
 
 procedure TProcessUTF8.SetProcessHandle(aProcessHandle: THandle);
 var
-  o: TProcessClassTemplate;
+  P: PHandle;
 begin
-  o:=TProcessClassTemplate.Create(nil);
-  if (@o.FProcessHandle-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
-     (PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^ = ProcessHandle)
-  then
-    PHANDLE(Pointer(Self)+(@o.FProcessHandle-Pointer(o)))^:=aProcessHandle;
+  P := @Self.ProcessHandle;
+  P^ := aProcessHandle;
   if aProcessHandle<>ProcessHandle then
     raise Exception.Create('TProcessUTF8.SetProcessHandle failed');
-  o.Free;
 end;
 
 procedure TProcessUTF8.SetThreadHandle(aThreadHandle: THandle);
 var
-  o: TProcessClassTemplate;
+  P: PHandle;
 begin
-  o:=TProcessClassTemplate.Create(nil);
-  if (@o.FThreadHandle-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
-     (PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^ = ThreadHandle)
-  then
-    PHANDLE(Pointer(Self)+(@o.FThreadHandle-Pointer(o)))^:=aThreadHandle;
+  P := @Self.ThreadHandle;
+  P^ := aThreadHandle;
   if aThreadHandle<>ThreadHandle then
     raise Exception.Create('TProcessUTF8.SetThreadHandle failed');
-  o.Free;
 end;
 
 procedure TProcessUTF8.SetProcessID(aProcessID: Integer);
 var
-  o: TProcessClassTemplate;
+  P: PInteger;
 begin
-  o:=TProcessClassTemplate.Create(nil);
-  if (@o.FProcessID-Pointer(o) <= TProcessUTF8.InstanceSize - SizeOf(HANDLE)) and
-     (PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^ = ProcessID)
-  then
-    PHANDLE(Pointer(Self)+(@o.FProcessID-Pointer(o)))^:=aProcessID;
+  P := @Self.ProcessID;
+  P^ := aProcessID;
   if aProcessID<>ProcessID then
     raise Exception.Create('TProcessUTF8.SetProcessID failed');
-  o.Free;
 end;
 
 procedure TProcessUTF8.Execute;

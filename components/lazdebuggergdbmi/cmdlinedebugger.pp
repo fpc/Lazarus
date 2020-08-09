@@ -381,7 +381,7 @@ begin
     FDbgProcess := TProcessUTF8.Create(nil);
     try
       FDbgProcess.ParseCmdLine(ExternalDebugger + ' ' + AOptions);
-      FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
+      FDbgProcess.Options:= [poUsePipes, {$IF DECLARED(poDetached)}poDetached{$ELSE}poNoConsole{$ENDIF}, poStdErrToOutPut, poNewProcessGroup];
       {$if defined(windows) and not defined(wince)}
       // under win9x and winMe should be created with console,
       // otherwise no break can be sent.
