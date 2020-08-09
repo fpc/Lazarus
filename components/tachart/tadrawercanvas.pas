@@ -327,18 +327,6 @@ end;
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   with GetCanvas.Brush do begin
-    {$ifdef LCLCocoa}
-    // Workaround for series marks drawing bug on macOS
-    // https://forum.lazarus.freepascal.org/index.php/topic,48842.0.html
-    if Color = clWhite then
-      Color := clBlack
-    else
-      Color := clWhite;
-    if Style = bsClear then
-      Style := bsSolid
-    else
-      Style := bsClear;
-    {$endif}
     if ABrush is TBrush then
       Assign(ABrush)
     else begin
@@ -419,18 +407,6 @@ begin
         Pen.Width := APen.Width;
     end
     else begin
-      {$ifdef LCLCocoa}
-      // Workaround for series color issue in cocoa: make sure that color is different
-      // https://forum.lazarus.freepascal.org/index.php/topic,50890.0.html
-      if Pen.Color = clWhite then
-        Pen.Color := clBlack
-      else
-        Pen.Color := clWhite;
-      if Pen.Style = psClear then
-        Pen.Style := psSolid
-      else
-        Pen.Style := psClear;
-      {$endif}
       if APen is TPen then
         Pen.Assign(APen)
       else  begin
