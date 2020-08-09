@@ -2298,6 +2298,8 @@ begin
     Trans := CGContextGetCTM(cgc);
     CGContextRestoreGState(cgc);
     ApplyTransform(Trans);
+    if Assigned(FPen) then FPen.Apply(Self);
+    if Assigned(FBrush) then FBrush.Apply(Self);
   end;
 end;
 
