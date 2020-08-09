@@ -104,6 +104,8 @@ type
     function ResetCursorRects: Boolean; virtual;
     procedure RemoveTarget; virtual;
 
+    procedure InputClientInsertText(const utf8: string);
+
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read FTarget;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
@@ -1520,6 +1522,24 @@ end;
 procedure TLCLCommonCallback.RemoveTarget;
 begin
   FTarget := nil;
+end;
+
+procedure TLCLCommonCallback.InputClientInsertText(const utf8: string);
+var
+  i : integer;
+  c : integer;
+  ch : TUTF8Char;
+begin
+  if (utf8 = '') then Exit;
+  i:=1;
+  while (i<=length(utf8)) do
+  begin
+    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
+    ch := Copy(utf8, 1, c);
+    FTarget.IntfUTF8KeyPress(ch, 1, false);
+    inc(i, c);
+  end;
+
 end;
 
 function TLCLCommonCallback.GetIsOpaque: Boolean;

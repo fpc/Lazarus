@@ -110,6 +110,8 @@ type
     // forwarded to LCL target
     procedure RemoveTarget;
 
+    procedure InputClientInsertText(const utf8: string);
+
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
@@ -190,7 +192,7 @@ type
 
   { TCocoaCustomControl }
 
-  TCocoaCustomControl = objcclass(NSControl)
+  TCocoaCustomControl = objcclass(NSControl, NSTextInputClientProtocol)
   private
     fstr : NSString;
 
@@ -228,6 +230,19 @@ type
     procedure setStringValue(avalue: NSString); override;
     function stringValue: NSString; override;
     procedure addSubView(aview: NSView); override;
+
+    // this is parts of
+    procedure insertText_replacementRange (aString: id; replacementRange: NSRange);
+    procedure doCommandBySelector (aSelector: SEL); override;
+    procedure setMarkedText_selectedRange_replacementRange (aString: id; selectedRange: NSRange; replacementRange: NSRange);
+    procedure unmarkText;
+    function selectedRange: NSRange;
+    function markedRange: NSRange;
+    function hasMarkedText: ObjCBOOL;
+    function attributedSubstringForProposedRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
+    function validAttributesForMarkedText: NSArray;
+    function firstRectForCharacterRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSRect;
+    function characterIndexForPoint (aPoint: NSPoint): NSUInteger;
   end;
 
   TStatusItemData = record
@@ -551,6 +566,65 @@ begin
       {$endif}
     aview.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
   end;
+end;
+
+procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
+  replacementRange: NSRange);
+begin
+  lclGetCallback.InputClientInsertText(NSStringToString(NSString(astring)));
+end;
+
+procedure TCocoaCustomControl.doCommandBySelector(aSelector: SEL);
+begin
+  inherited doCommandBySelector(ASelector);
+end;
+
+procedure TCocoaCustomControl.setMarkedText_selectedRange_replacementRange(
+  aString: id; selectedRange: NSRange; replacementRange: NSRange);
+begin
+
+end;
+
+procedure TCocoaCustomControl.unmarkText;
+begin
+end;
+
+function TCocoaCustomControl.selectedRange: NSRange;
+begin
+  Result := NSMakeRange(0,0);
+end;
+
+function TCocoaCustomControl.markedRange: NSRange;
+begin
+  Result := NSMakeRange(0,0);
+end;
+
+function TCocoaCustomControl.hasMarkedText: ObjCBOOL;
+begin
+  Result := false;
+end;
+
+function TCocoaCustomControl.attributedSubstringForProposedRange_actualRange(
+  aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
+begin
+  Result := nil;
+end;
+
+function TCocoaCustomControl.validAttributesForMarkedText: NSArray;
+begin
+  Result := nil;
+end;
+
+function TCocoaCustomControl.firstRectForCharacterRange_actualRange(
+  aRange: NSRange; actualRange: NSRangePointer): NSRect;
+begin
+  Result := NSMakeRect(0,0,0,0);
+end;
+
+function TCocoaCustomControl.characterIndexForPoint(aPoint: NSPoint
+  ): NSUInteger;
+begin
+  Result := 0;
 end;
 
 procedure TCocoaCustomControl.dealloc;
