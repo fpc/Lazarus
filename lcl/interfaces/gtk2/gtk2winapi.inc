@@ -6834,13 +6834,11 @@ var
   vlItem : TGtkMessageQueueItem;
 begin
   //TODO Filtering
-  DebugLn('Peek !!!' );
   fMessageQueue.Lock;
   try
     vlItem := fMessageQueue.FirstMessageItem;
     Result := vlItem <> nil;
-
-    if Result  then begin
+    if Result then begin
       lpMsg := vlItem.Msg^;
       if (wRemoveMsg and PM_REMOVE) = PM_REMOVE then
         fMessageQueue.RemoveMessage(vlItem,FPMF_Internal,true);
