@@ -482,10 +482,15 @@ begin
     begin
       Result := FloatToStrF(LValue, ffExponent, FPrecision, FExponentDigits, FFS)
     end;
-    dmAuto:
+    dmAuto,dmAutoZeroFixed:
     begin
-      if (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
-         (Abs(LValue) < Power(10,FExponentialFormatLimitNeg)) then
+      //it is safe to use (LValue=0.0) and not SameValue, since this is about text input
+      //and '0.0000' as text will be converted to a bitpattern of all zero's
+      if not ((FDisplayMode = dmAutoZeroFixed) and (LValue = 0.0)) and
+         (
+           (Abs(LValue) > Power(10,FExponentialFormatLimitPos)) or
+           (Abs(LValue) < Power(10,FExponentialFormatLimitNeg))
+         ) then
         Result := FloatToStrF(LValue, ffExponent, FPrecision, FExponentDigits, FFS)
       else
         Result := FloatToStrF(LValue, ffFixed, 20, DecimalPlaces, FFS)

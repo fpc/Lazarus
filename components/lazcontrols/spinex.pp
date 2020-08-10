@@ -170,7 +170,7 @@ type
 
   { TCustomFloatSpinEditEx }
 
-  TDisplayMode = (dmFixed, dmScientific, dmAuto);
+  TDisplayMode = (dmFixed, dmScientific, dmAuto, dmAutoZeroFixed);
 
   TCustomFloatSpinEditEx = class(specialize TSpinEditExBase<Double>)
   private const
