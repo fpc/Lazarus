@@ -238,7 +238,7 @@ type
     procedure unmarkText;
     function selectedRange: NSRange;
     function markedRange: NSRange;
-    function hasMarkedText: ObjCBOOL;
+    function hasMarkedText: LCLObjCBoolean;
     function attributedSubstringForProposedRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
     function validAttributesForMarkedText: NSArray;
     function firstRectForCharacterRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSRect;
@@ -599,7 +599,7 @@ begin
   Result := NSMakeRange(0,0);
 end;
 
-function TCocoaCustomControl.hasMarkedText: ObjCBOOL;
+function TCocoaCustomControl.hasMarkedText: LCLObjCBoolean;
 begin
   Result := false;
 end;
