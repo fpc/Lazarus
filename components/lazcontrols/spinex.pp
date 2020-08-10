@@ -157,7 +157,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: T): T; virtual;
     function ValueToStr(const AValue: T): String; virtual; abstract;
-    function StrToValue(const S: String): T; virtual; abstract;
+    function StrToValue(const S: String): T; virtual;
     procedure EditEditingDone; override;
   public
     property Increment: T read FIncrement write SetIncrement stored IncrementStored nodefault;
@@ -199,7 +199,6 @@ type
     procedure SetDecimals(ADecimals: Integer); virtual;
   public
     function ValueToStr(const AValue: Double): String; override;
-    function StrToValue(const S: String): Double; override;
     constructor Create(TheOwner: TComponent); override;
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default DefDecimalSeparator;
     property DecimalPlaces: Integer read FDecimals write SetDecimals default DefDecimals;
@@ -306,7 +305,6 @@ type
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
     function ValueToStr(const AValue: Int64): String; override;
-    function StrToValue(const S: String): Int64; override;
   public
     property Increment default 1;
     property ThousandSeparator: String read FThousandSeparator write SetThousandSeparator; //string so you can use Utf8

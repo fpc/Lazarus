@@ -347,6 +347,37 @@ begin
   end;
 end;
 
+function TSpinEditExBase.StrToValue(const S: String): T;
+var
+  Def, N: T;
+  IsNumber: Boolean;
+begin
+  {$ifdef debugspinex}
+  debugln(['TSpinEditExBase.StrToValue: S="',S,'"']);
+  {$endif}
+  case FNullValueBehaviour of
+    nvbShowTextHint: Def := FNullValue;
+    nvbLimitedNullValue: Def := GetLimitedValue(FNullValue);
+    nvbMinValue: Def := FMinValue;
+    nvbMaxValue: Def := MaxValue;
+    nvbInitialValue: Def := FInitialValue;
+  end;
+  try
+    IsNumber := TextIsNumber(S, N);
+    if IsNumber then
+      Result := N
+    else
+      Result := Def;
+    if not (FNullValueBehaviour = nvbShowTextHint) then
+      Result := GetLimitedValue(Result);
+  except
+    Result := Def;
+  end;
+  {$ifdef debugspinex}
+  debugln(['  Result=',(Result)]);
+  {$endif}
+end;
+
 procedure TSpinEditExBase.FinalizeWnd;
 begin
   GetValue;
@@ -498,38 +529,6 @@ begin
   end;
 end;
 
-function TCustomFloatSpinEditEx.StrToValue(const S: String): Double;
-var
-  Def, D: Double;
-begin
-  {$ifdef debugspinex}
-  debugln(['TCustomFloatSpinEditEx.StrToValue: S="',S,'"']);
-  {$endif}
-  case FNullValueBehaviour of
-    nvbShowTextHint: Def := FNullValue;
-    nvbLimitedNullValue: Def := GetLimitedValue(FNullValue);
-    nvbMinValue: Def := FMinValue;
-    nvbMaxValue: Def := MaxValue;
-    nvbInitialValue: Def := FInitialValue;
-  end;
-  try
-    if (FNullValueBehaviour = nvbShowTextHint)then
-    begin
-      if TextIsNumber(S, D)
-      then
-        Result := D
-      else
-        Result := Def;
-    end
-    else
-      Result := GetLimitedValue(StrToFloatDef(S, Def, FFS));
-  except
-    Result := Def;
-  end;
-  {$ifdef debugspinex}
-  debugln(['  Result=',Result]);
-  {$endif}
-end;
 
 constructor TCustomFloatSpinEditEx.Create(TheOwner: TComponent);
 begin
@@ -645,38 +644,3 @@ begin
   if (FThousandSeparator <> '') then
     Result := InsertThousandSeparator(Result, FThousandSeparator);
 end;
-
-function TCustomSpinEditEx.StrToValue(const S: String): Int64;
-var
-  Def, N: Int64;
-begin
-  {$ifdef debugspinex}
-  debugln(['TCustomSpinEditEx.StrToValue: S="',S,'"']);
-  {$endif}
-  case FNullValueBehaviour of
-    nvbShowTextHint: Def := FNullValue;
-    nvbLimitedNullValue: Def := GetLimitedValue(FNullValue);
-    nvbMinValue: Def := FMinValue;
-    nvbMaxValue: Def := MaxValue;
-    nvbInitialValue: Def := FInitialValue;
-  end;
-  try
-    if (FNullValueBehaviour = nvbShowTextHint)then
-    begin
-      if TextIsNumber(RemoveThousandSeparator(S, FThousandSeparator), N)
-      then
-        Result := N
-      else
-        Result := Def;
-    end
-    else
-      Result := GetLimitedValue(StrToInt64Def(RemoveThousandSeparator(S, FThousandSeparator), Def));
-  except
-    Result := Def;
-  end;
-  {$ifdef debugspinex}
-  debugln(['  Result=',(Result)]);
-  {$endif}
-end;
-
-
