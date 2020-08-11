@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+
+    <module name="codepagescommon">
+      <short>Contains Unicode conversion tables for common code pages</short>
+      <descr></descr>
+
+      <element name="TCharToUTF8Table">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_1ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_15ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_2ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1250ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1251ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1252ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1253ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1254ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1255ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1256ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1257ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP1258ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP437ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP850ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP852ToUTF8">
+        <short/>
+        <descr>
+          ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP866ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayCP874ToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayKOI8RToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayKOI8UToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayKOI8RUToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ArrayMacintoshToUTF8">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+
+  </package>
+</fpdoc-descriptions>

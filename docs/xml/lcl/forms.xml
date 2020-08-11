@@ -2528,14 +2528,33 @@
       </element>
       <element name="TCustomForm.Activate">
         <short>Notifies the OnActivate handler</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Activate</var> is a procedure used to signal the <var>OnActivate</var> event handler (if  assigned) when the form is activated. Activate is called when the <b>CM_Activate</b> message is handled for the form.
+          </p>
+          <p>
+            Activate uses an internal member to determine whether the form is being displayed for the first time, or following a change of focus between forms. No actions are performed in the method when the form is being displayed for the first time and the <var>WindowState</var> property contains <var>wsMaximized</var> or <var>wsFullScreen</var>.
+          </p>
+          <p>
+            Use <var>OnShow</var> to respond to the event notification performed when the form is displayed for the first time.
+          </p>
+          <p>
+            Use <var>OnChangeBounds</var> or <var>OnResize</var> to respond to delayed changes to the form bounds (position) or resize events.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.OnActivate"/>
+          <link id="TCustomForm.OnShow"/>
+          <link id="TCustomForm.OnChangeBounds"/>
+          <link id="TCustomForm.OnResize"/>
+          <link id="TCustomForm.WindowState"/>
+        </seealso>
       </element>
       <element name="TCustomForm.ActiveChanged">
         <short>An empty implementation in TCustomForm</short>
         <descr>
-          Just like VCL.
           Can be implemented in a descendant to perform actions needed when the active form is changed.
+          Just like Delphi VCL.
         </descr>
         <seealso/>
       </element>
@@ -2560,7 +2579,6 @@
       <element name="TCustomForm.ColorIsStored.Result">
         <short/>
       </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short>Initializes parameters used to create the handle for the form instance</short>
         <descr>
@@ -2568,7 +2586,7 @@
             <var>CreateParams</var> is used to initialize parameters needed to create the handle for the form instance.
           </p>
           <p>
-            CreateParams is an overridden procedure in TCustomForm, and calls the inherited method on entry. CreateParams ensures that values in the Params argument are valid. This includes setting the realized parent form and window handle for forms which are not the main form in the application. Style flags are also updated to indicate how the form is displayed in the task bar.
+            CreateParams is an overridden procedure in <var>TCustomForm</var>, and calls the inherited method on entry. CreateParams ensures that values in the <var>Params</var> argument are valid. This includes setting the realized parent form and window handle for a form which is  not the main form in the application. <var>Style</var> flags are also updated to indicate how the form is displayed in the task bar.
           </p>
         </descr>
         <seealso>
@@ -2686,10 +2704,13 @@
       </element>
       <element name="TCustomForm.ChildHandlesCreated">
         <short>
-          Called after all child control handles are created. When this is a
-          top level form (Parent=Nil) also invokes ParentFormHandleInitialized.
+          Called when handles for child control are created in the form instance
         </short>
-        <descr/>
+        <descr>
+          <p>
+            ChildHandlesCreated is called after all handles for child controls are created. When this is a top-level form (<var>Parent</var> is Nil),  the ParentFormHandleInitialized method is also called.
+          </p>
+        </descr>
         <seealso>
           <link id="#LCL.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
         </seealso>
@@ -2764,7 +2785,7 @@
         <short/>
       </element>
       <element name="TCustomForm.MoveToDefaultPosition" link="TCustomForm.Position">
-        <short>Moves the form to the initial Position</short>
+        <short>Moves the form to its initial Position</short>
         <descr>
         </descr>
         <seealso>

@@ -615,6 +615,28 @@
         <short></short>
       </element>
 
+      <element name="TCustomButtonPanel.Loaded">
+        <short>
+          Performs actions after the component has finished loading during LCL streaming
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in <var>TCustomButtonPanel</var>, and calls the inherited method on entry.
+          </p>
+          <p>
+            Loaded ensures that glyphs for panel buttons are either assigned or cleared based on the value in the <var>ShowGlyphs</var> property. When ShowGlyphs is <b>True</b>, each of the button instances is given the corresponding value in the internal list of glyphs for the class instance. Otherwise, the glyph is set to <b>Nil</b> to suppress display of the graphic image on the button. These are the same actions performed when the value in the ShowGlyph property is changed.
+          </p>
+          <p>
+            Please note: <var>AutoSize</var> is temporarily disabled in the control while assigning the button glyphs, and re-enabled prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.ShowGlyphs"/>
+          <link id="#lcl.controls.TControl.AutoSize"/>
+          <link id="#lcl.extctrls.TCustomPanel.Loaded"/>
+        </seealso>
+      </element>
+
       <element name="TCustomButtonPanel.Notification" link="#rtl.Classes.TComponent.Notification"/>
       <element name="TCustomButtonPanel.Notification.AComponent">
         <short></short>

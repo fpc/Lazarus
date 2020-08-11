@@ -24,6 +24,8 @@
       <element name="Classes"/>
       <element name="Dos"/>
       <element name="LazUTF8"/>
+      <element name="CodepagesCommon"/>
+      <element name="CodepagesAsian"/>
       <element name="iconvenc"/>
 
       <element name="TConvertEncodingErrorMode">
@@ -43,9 +45,6 @@
       <element name="TConvertEncodingErrorMode.ceemReturnEmpty">
         <short/>
       </element>
-
-      //Global variable which controls behaviour of encoding conversion error, in 3 places:
-      ConvertEncodingErrorMode: TConvertEncodingErrorMode = ceemSkip;
 
       <element name="ConvertEncodingErrorMode">
         <short/>

@@ -1,13 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-<short>Lazutils</short>
-<descr>
-<p>
-The Lazutils package contains basic non visual stuff, needed by the LCL and
-other packages.
-Historically some units originated from the LCL and the codetools.
-</p>
-</descr>
-</package>
+  <package name="lazutils">
+
+    <module name="lazutils">
+      <short>LazUtils</short>
+      <descr>
+        <p>
+          <file>LazUtils</file> contains non-visual routines, types, and classes needed by the LCL and other packages. Historically, some units originated from the LCL and the CodeTools used in the Lazarus IDE.
+        </p>
+        <p>
+          This unit contains code in the initialization section to register the <file>lazutils</file> package for use in the Lazarus IDE.
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="AvgLvlTree"/>
+      <element name="DynamicArray"/>
+      <element name="DynHashArray"/>
+      <element name="DynQueue"/>
+      <element name="ExtendedStrings"/>
+      <element name="FileUtil"/>
+      <element name="FPCAdds"/>
+      <element name="Laz2_DOM"/>
+      <element name="Laz2_XMLCfg"/>
+      <element name="laz2_XMLRead"/>
+      <element name="laz2_xmlutils"/>
+      <element name="laz2_XMLWrite"/>
+      <element name="laz2_xpath"/>
+      <element name="Laz_DOM"/>
+      <element name="Laz_XMLCfg"/>
+      <element name="Laz_XMLRead"/>
+      <element name="Laz_XMLStreaming"/>
+      <element name="Laz_XMLWrite"/>
+      <element name="LazClasses"/>
+      <element name="lazCollections"/>
+      <element name="LazConfigStorage"/>
+      <element name="LazDbgLog"/>
+      <element name="lazfglhash"/>
+      <element name="LazFileCache"/>
+      <element name="LazFileUtils"/>
+      <element name="LazLinkedList"/>
+      <element name="LazListClasses "/>
+      <element name="LazLogger"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazLoggerDummy"/>
+      <element name="LazLoggerProfiling"/>
+      <element name="LazMethodList"/>
+      <element name="LazUnicode"/>
+      <element name="LazUTF16"/>
+      <element name="LazUTF8"/>
+      <element name="LazUTF8Classes"/>
+      <element name="LazSysUtils"/>
+      <element name="LazUtilities"/>
+      <element name="LazUtilsStrConsts"/>
+      <element name="LConvEncoding"/>
+      <element name="lcsvutils"/>
+      <element name="LookupStringList"/>
+      <element name="Maps"/>
+      <element name="Masks"/>
+      <element name="PasWString"/>
+      <element name="StringHashList"/>
+      <element name="TextStrings"/>
+      <element name="Translations"/>
+      <element name="UTF8Process"/>
+      <element name="HTML2TextRender"/>
+      <element name="Laz_AVL_Tree"/>
+      <element name="CompWriterPas"/>
+      <element name="LazPasReadUtil"/>
+      <element name="IntegerList"/>
+      <element name="LazVersion"/>
+      <element name="UITypes"/>
+      <element name="GraphType"/>
+      <element name="LazTracer"/>
+      <element name="LazStringUtils"/>
+      <element name="LazUTF8SysUtils"/>
+      <element name="ObjectLists"/>
+      <element name="CodepagesAsian"/>
+      <element name="CodepagesCommon"/>
+      <element name="LazarusPackageIntf"/>
+
+      <element name="Register">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+
+  </package>
 </fpdoc-descriptions>

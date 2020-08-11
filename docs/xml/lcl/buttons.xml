@@ -1078,8 +1078,30 @@
         <short>True if the default values for properties are used in the control</short>
       </element>
 
+      <element name="TCustomBitBtn.SetDefaultCaption">
+        <short>Sets the value for the DefaultCaption property</short>
+        <descr>
+          <p>
+            <var>SetDefaultCaption</var> is the write access specifier for the <var>DefaultCaption</var> property. <var>AValue</var> contains the new value assigned to the property.
+          </p>
+          <p>
+            When <var>AValue</var> is <b>True</b>, and <var>Kind</var> contains a value other than <var>bkCustom</var>, the <var>Caption</var> property is updated to use the value returned from <var>GetCaptionOfKind</var>. This also causes the <var>TextChanged</var> method to be called when the Caption property is updated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.DefaultCaption"/>
+          <link id="TCustomBitBtn.Caption"/>
+          <link id="TCustomBitBtn.Kind"/>
+          <link id="TCustomBitBtn.GetCaptionOfKind"/>
+          <link id="TCustomBitBtn.TextChanged"/>
+        </seealso>
+      </element>
+      <element name="TCustomBitBtn.SetDefaultCaption.AValue">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TCustomBitBtn.GetCaptionOfKind">
-        <short>Gets the default value for the Caption used for the button Kind</short>
+        <short>Gets the default Caption value for the button Kind</short>
         <descr></descr>
         <seealso>
         </seealso>
@@ -1359,7 +1381,7 @@
         <short>Contains the descriptive text displayed for the Bitmap button control</short>
         <descr>
           <p>
-            <var>Caption</var> is a public <var>TCaption</var> property which contains the descriptive text displayed for the Bitmap button control. Assign a value to Caption when the <var>Kind</var> property is set to <var>bkCustom</var>. When Kind contains one of the other <var>TBtiBtnKind</var> enumeration values, the Caption is normally set using the <var>GetCaptionOfKind</var> method.
+            <var>Caption</var> is a public <var>TCaption</var> property which contains the descriptive text displayed for the Bitmap button control. Assign a value to Caption when the <var>Kind</var> property is set to <var>bkCustom</var>. When Kind contains one of the other <var>TBitBtnKind</var> enumeration values, the Caption is normally set using the <var>GetCaptionOfKind</var> method.
           </p>
           <p>
             Use <var>DefaultCaption</var> to determine if the value in Caption is the default one for the control.
@@ -1373,7 +1395,7 @@
       </element>
 
       <element name="TCustomBitBtn.DefaultCaption">
-        <short>Indicates if Caption contains a default value</short>
+        <short>Indicates if Caption contains the default value for the button Kind</short>
         <descr></descr>
         <seealso>
           <link id="TCustomBitBtn.Caption"/>
@@ -1503,7 +1525,7 @@
 
       <element name="TBitBtn.Cancel" link="#LCL.StdCtrls.TCustomButton.Cancel">
         <descr>
-          <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
+          <p>Setting this property to True, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
         </descr>
       </element>
 
