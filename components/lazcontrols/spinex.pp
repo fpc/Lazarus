@@ -170,7 +170,10 @@ type
 
   { TCustomFloatSpinEditEx }
 
-  TDisplayMode = (dmFixed, dmScientific, dmAuto, dmAutoZeroFixed);
+  TDisplayMode = (dmFixed,          // always fixed e.g. 1.23
+                  dmScientific,     // always scientific e.g 1.23E+10
+                  dmAuto,           // fixed if Abs(Value) < 10^ExponentialFormatLimitPos and > 10^ExponentialFormatLimitNeg, otherwise scientific
+                  dmAutoZeroFixed); // like dmAuto, but zero will be displayed as if dmFixed
 
   TCustomFloatSpinEditEx = class(specialize TSpinEditExBase<Double>)
   private const
