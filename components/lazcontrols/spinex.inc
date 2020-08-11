@@ -350,7 +350,6 @@ end;
 function TSpinEditExBase.StrToValue(const S: String): T;
 var
   Def, N: T;
-  IsNumber: Boolean;
 begin
   {$ifdef debugspinex}
   debugln(['TSpinEditExBase.StrToValue: S="',S,'"']);
@@ -363,8 +362,7 @@ begin
     nvbInitialValue: Def := FInitialValue;
   end;
   try
-    IsNumber := TextIsNumber(S, N);
-    if IsNumber then
+    if TextIsNumber(S, N) then
       Result := N
     else
       Result := Def;
