@@ -54,7 +54,7 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, FTextHint)
   else
     if CanShowEmulatedTextHint then
-      ShowEmulatedTextHint(True);
+      ShowEmulatedTextHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -511,14 +511,14 @@ end;
 procedure TCustomEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
-
-  if CanShowEmulatedTextHint then ShowEmulatedTextHint;
+  if CanShowEmulatedTextHint then
+    ShowEmulatedTextHint;
 end;
 
 procedure TCustomEdit.WMSetFocus(var Message: TLMSetFocus);
 begin
-  if FEmulatedTextHintStatus=thsShowing then HideEmulatedTextHint;
-
+  if FEmulatedTextHintStatus=thsShowing then
+    HideEmulatedTextHint;
   inherited WMSetFocus(Message);
 end;
 
@@ -731,35 +731,27 @@ begin
   FTextHint := AValue;
   if (WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES) and HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, AValue);
-  if (FEmulatedTextHintStatus=thsShowing) and (FTextHint = '') then
-  begin
-    HideEmulatedTextHint;
-  end
-  else
-  begin
-    if CanShowEmulatedTextHint then ShowEmulatedTextHint;
+  if (FEmulatedTextHintStatus=thsShowing) then begin
+    if FTextHint = '' then
+      HideEmulatedTextHint
+    else if CanShowEmulatedTextHint then
+      ShowEmulatedTextHint;
   end;
 end;
 
-procedure TCustomEdit.ShowEmulatedTextHint(const ForceShow: Boolean);
+procedure TCustomEdit.ShowEmulatedTextHint;
 var
   HintFont: TFont;
 begin
-  if (FEmulatedTextHintStatus<>thsHidden) and not ForceShow then
-    Exit;
-
   FEmulatedTextHintStatus := thsChanging;
-
   HintFont := CreateEmulatedTextHintFont;
   try
     TWSCustomEditClass(WidgetSetClass).SetFont(Self, HintFont);
   finally
     HintFont.Free;
   end;
-
   TWSCustomEditClass(WidgetSetClass).SetText(Self, Self.TextHint);
   TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, #0);
-
   FEmulatedTextHintStatus := thsShowing;
 end;
 
@@ -767,13 +759,10 @@ procedure TCustomEdit.HideEmulatedTextHint;
 begin
   if FEmulatedTextHintStatus<>thsShowing then
     Exit;
-
   FEmulatedTextHintStatus := thsChanging;
-
   TWSCustomEditClass(WidgetSetClass).SetFont(Self, Font);
   TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, PasswordChar);
   TWSCustomEditClass(WidgetSetClass).SetText(Self, '');
-
   FEmulatedTextHintStatus := thsHidden;
 end;
 
@@ -785,8 +774,6 @@ begin
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
-
-
 
 
 // included by stdctrls.pp

@@ -759,7 +759,7 @@ type
     FTextChangedByRealSetText: Boolean;
     FTextChangedLock: Boolean;
     FTextHint: TTranslateString;
-    procedure ShowEmulatedTextHint(const ForceShow: Boolean = False);
+    procedure ShowEmulatedTextHint;
     procedure HideEmulatedTextHint;
     procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;
