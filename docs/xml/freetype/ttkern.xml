@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+    TTKern
+    ====================================================================
+    -->
+    <module name="TTKern">
+      <short>Implements kerning tables used in the <file>LazFreeType.pas</file> unit</short>
+      <descr/>
+
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="EasyLazFreeType"/>
+      <element name="TTTypes"/>
+      <element name="TTFile"/>
+      <element name="TTObjs"/>
+      <element name="Fgl"/>
+
+      <element name="TCustomKerningTable">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.GetIsCrossStream"/>
+      <element name="TCustomKerningTable.GetIsCrossStream.Result"/>
+      <element name="TCustomKerningTable.GetIsHorizontal"/>
+      <element name="TCustomKerningTable.GetIsHorizontal.Result"/>
+      <element name="TCustomKerningTable.GetIsMinimum"/>
+      <element name="TCustomKerningTable.GetIsMinimum.Result"/>
+      <element name="TCustomKerningTable.GetIsOverride"/>
+      <element name="TCustomKerningTable.GetIsOverride.Result"/>
+
+      <element name="TCustomKerningTable.FCoverage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomKerningTable.Create.ACoverage">
+        <short/>
+      </element>
+
+      <element name="TCustomKerningTable.LoadFromStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomKerningTable.LoadFromStream.AStream">
+        <short/>
+      </element>
+      <element name="TCustomKerningTable.LoadFromStream.ASize">
+        <short/>
+      </element>
+
+      <element name="TCustomKerningTable.IsMinimum">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.IsHorizontal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.IsCrossStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.IsOverride">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomKerningTable.GetKerning">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomKerningTable.GetKerning.Result">
+        <short/>
+      </element>
+      <element name="TCustomKerningTable.GetKerning.ALeftGlyph">
+        <short/>
+      </element>
+      <element name="TCustomKerningTable.GetKerning.ARightGlyph">
+        <short/>
+      </element>
+      <element name="TCustomKerningTable.GetKerning.AInfo">
+        <short/>
+      </element>
+
+      <element name="TKerningTables">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TKerningTables.GetKerning">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TKerningTables.GetKerning.Result">
+        <short/>
+      </element>
+      <element name="TKerningTables.GetKerning.ALeftGlyph">
+        <short/>
+      </element>
+      <element name="TKerningTables.GetKerning.ARightGlyph">
+        <short/>
+      </element>
+
+      <element name="LoadKerningTables">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LoadKerningTables.AFace">
+        <short/>
+      </element>
+      <element name="LoadKerningTables.AKerningTables">
+        <short/>
+      </element>
+
+    </module>
+    <!-- TTKern -->
+  </package>
+</fpdoc-descriptions>
