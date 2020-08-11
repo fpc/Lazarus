@@ -621,21 +621,31 @@ begin
   end;
   L := 0;
   R := Count - 1;
+  Index := 0;
+  if R < 0 then
+    exit(False);
+
   // Use binary search.
-  while (L <= R) do begin
-    Index := L + ((R - L) div 2);
-    lLCLClass := PClassNode(List^[Index])^.LCLClass;
-    if Pointer(aItem) < Pointer(lLCLClass) then
-      R := Index - 1
+  while (L < R) do begin
+    Index := cardinal(L + R) div 2;
+    if Pointer(aItem) <= Pointer(PClassNode(List^[Index])^.LCLClass) then
+      R := Index
     else begin
-      if aItem = lLCLClass then begin
-        UpdatLastFound(lLCLClass, Index);
-        Exit(True);
-      end;
       L := Index + 1;
     end;
   end;
+
   Index := L;
+  lLCLClass := PClassNode(List^[Index])^.LCLClass;
+  if aItem = lLCLClass then begin
+    UpdatLastFound(lLCLClass, Index);
+    Exit(True);
+  end;
+
+  if Pointer(aItem) < Pointer(lLCLClass) then
+    Index := L
+  else
+    Index := L + 1;
   Result := False;
 end;
 
