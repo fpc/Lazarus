@@ -92,6 +92,7 @@ type
     FSpeed: Integer;
     FStartTime: QWord;
     FElapsed: QWord;
+    FTick: Qword;
     FNeedToBreak: Boolean;
     FDownloadTo: String;
     FUPackageName: String;
@@ -295,7 +296,11 @@ begin
   FSpeed := Round(FTotPosTmp/FElapsed);
   if FSpeed > 0 then
     FRemaining := Round((FTotSize - FTotPosTmp)/FSpeed);
-  Synchronize(@DoOnPackageDownloadProgress);
+  if FElapsed >= FTick + 1 then
+  begin
+    FTick := FElapsed;
+    Synchronize(@DoOnPackageDownloadProgress);
+  end;
   Sleep(5);
 end;
 
@@ -309,7 +314,7 @@ begin
   Sleep(50);
   FErrMsg := '';
   FErrTyp := etNone;
-  if FDownloadType = dtJSON then //JSON
+  if FDownloadType = dtJSON then
   begin
     if not FNeedToBreak then
       Synchronize(@DoOnJSONProgress);
