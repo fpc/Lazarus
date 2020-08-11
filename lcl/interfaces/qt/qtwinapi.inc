@@ -5150,12 +5150,12 @@ const
 
   function IconToMessageType(AType: cardinal): QMessageBoxIcon;
   begin
-    Result := QMessageBoxNoIcon;
     case AType of
-      1: Result := QMessageBoxInformation;
-      2: Result := QMessageBoxQuestion;
-      3: Result := QMessageBoxCritical;
-      4: Result := QMessageBoxWarning;
+      1: Result := QMessageBoxCritical; // MB_ICONERROR = $00000010;
+      2: Result := QMessageBoxQuestion; // MB_ICONQUESTION = $00000020;
+      3: Result := QMessageBoxWarning; // MB_ICONWARNING = $00000030;
+      4: Result := QMessageBoxInformation; // MB_ICONINFORMATION = $00000040;
+      else Result := QMessageBoxNoIcon;
     end;
   end;
 
