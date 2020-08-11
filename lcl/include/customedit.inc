@@ -53,8 +53,7 @@ begin
   if WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES then
     TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, FTextHint)
   else
-    if CanShowEmulatedTextHint then
-      ShowEmulatedTextHint;
+    ShowEmulatedTextHintIfYouCan;
 end;
 
 {------------------------------------------------------------------------------
@@ -404,9 +403,7 @@ begin
   Result := HandleAllocated and
             (WidgetSet.GetLCLCapability(lcTextHint)=LCL_CAPABILITY_NO) and
             (([csDesigning,csLoading] * ComponentState) = []) and
-            (FTextHint <> '') and
-            (Text = '') and
-            (not Focused);
+            (Text = '') and not Focused;
 end;
 
 function TCustomEdit.CreateEmulatedTextHintFont: TFont;
@@ -511,14 +508,12 @@ end;
 procedure TCustomEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
-  if CanShowEmulatedTextHint then
-    ShowEmulatedTextHint;
+  ShowEmulatedTextHintIfYouCan;
 end;
 
 procedure TCustomEdit.WMSetFocus(var Message: TLMSetFocus);
 begin
-  if FEmulatedTextHintStatus=thsShowing then
-    HideEmulatedTextHint;
+  HideEmulatedTextHint;
   inherited WMSetFocus(Message);
 end;
 
@@ -575,16 +570,12 @@ begin
                      if (Temp = RealGetText) then Exit;
                    end;
     end;
-  if (FEmulatedTextHintStatus=thsShowing) and (AValue<>'') then
+  if AValue<>'' then
     HideEmulatedTextHint;
-
   FTextChangedByRealSetText := True;
   Modified := False;
   inherited RealSetText(Temp);
   FTextChangedByRealSetText := False;
-
-  if (FEmulatedTextHintStatus=thsHidden) and CanShowEmulatedTextHint then
-    ShowEmulatedTextHint;
 end;
 
 procedure TCustomEdit.RemoveAllHandlersOfObject(AnObject: TObject);
@@ -595,8 +586,7 @@ begin
     FOnChangeHandler.RemoveAllMethodsOfObject(AnObject);
 end;
 
-procedure TCustomEdit.RemoveHandlerOnChange(
-  const AnOnChangeEvent: TNotifyEvent);
+procedure TCustomEdit.RemoveHandlerOnChange(const AnOnChangeEvent: TNotifyEvent);
 begin
   if FOnChangeHandler<>nil then
     FOnChangeHandler.Remove(TMethod(AnOnChangeEvent));
@@ -731,12 +721,18 @@ begin
   FTextHint := AValue;
   if (WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES) and HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, AValue);
-  if (FEmulatedTextHintStatus=thsShowing) then begin
-    if FTextHint = '' then
-      HideEmulatedTextHint
-    else if CanShowEmulatedTextHint then
-      ShowEmulatedTextHint;
-  end;
+  // ToDo: thsChanging is not really used and can be removed.
+  Assert(FEmulatedTextHintStatus<>thsChanging, 'TCustomEdit.SetTextHint: Status=thsChanging');
+  if FTextHint = '' then
+    HideEmulatedTextHint
+  else
+    ShowEmulatedTextHintIfYouCan;
+end;
+
+procedure TCustomEdit.ShowEmulatedTextHintIfYouCan;
+begin
+  if CanShowEmulatedTextHint then
+    ShowEmulatedTextHint;
 end;
 
 procedure TCustomEdit.ShowEmulatedTextHint;
