@@ -337,15 +337,24 @@ begin
 end;
 
 procedure TvWMFVectorialWriter.PrepareScaling(APage: TvVectorialPage);
+const
+  MAXINT16 = 32767;
+var
+  maxx, maxy: Double;
 begin
   FScalingFactor := round(ONE_INCH * 100);   // 1 logical unit is 1/100 mm = 10 µm
-  FLogicalMaxX := trunc(APage.Width * FScalingFactor);
-  FLogicalMaxY := trunc(APage.Height * FScalingFactor);
+  maxx := APage.Width * FScalingFactor;
+  maxy := APage.Height * FScalingFactor;
   // wmf is 16 bit only! --> reduce magnification if numbers get too big
-  if Max(FLogicalMaxX, FLogicalMaxY) > $7FFF then begin
-    FScalingFactor := trunc($7FFF / Max(APage.Width, APage.Height));
-    FLogicalMaxX := trunc(APage.Width * FScalingFactor);
-    FLogicalMaxY := trunc(APage.Height * FScalingFactor);
+  if Max(maxx, maxy) > MAXINT16 then
+  begin
+    FScalingFactor := trunc(MAXINT16 / Max(APage.Width, APage.Height));
+    FLogicalMaxX := word(trunc(APage.Width * FScalingFactor));
+    FLogicalMaxY := word(trunc(APage.Height * FScalingFactor));
+  end else
+  begin
+    FLogicalMaxX := trunc(maxx);
+    FLogicalMaxY := trunc(maxy);
   end;
 end;
 
