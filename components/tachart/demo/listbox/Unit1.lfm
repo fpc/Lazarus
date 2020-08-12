@@ -92,7 +92,6 @@ object Form1: TForm1
       OnSeriesIconDblClick = ChartListboxSeriesIconDblClick
       Align = alClient
       BorderSpacing.Around = 6
-      Color = clInfoBk
       ItemHeight = 20
       TabOrder = 0
     end
@@ -127,6 +126,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Add series'
@@ -197,13 +197,15 @@ object Form1: TForm1
       TabOrder = 4
     end
     object CbShowSeriesIcon: TCheckBox
-      AnchorSideLeft.Control = Bevel2
+      AnchorSideLeft.Control = CbShowCheckboxes
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CbShowCheckboxes
-      Left = 151
+      Left = 146
       Height = 19
       Top = 310
       Width = 112
+      BorderSpacing.Left = 24
+      BorderSpacing.Right = 6
       Caption = 'Show series icons'
       Checked = True
       OnChange = CbShowSeriesIconChange
@@ -260,23 +262,23 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Label2
       AnchorSideTop.Side = asrCenter
-      Left = 206
+      Left = 201
       Height = 23
       Top = 339
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Left = 4
+      BorderSpacing.Right = 6
       MinValue = 1
       OnChange = EdColumnsChange
       TabOrder = 8
       Value = 1
     end
     object Label2: TLabel
-      AnchorSideLeft.Control = Bevel2
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = CbShowSeriesIcon
       AnchorSideTop.Control = CbCheckStyle
       AnchorSideTop.Side = asrCenter
-      Left = 151
+      Left = 146
       Height = 15
       Top = 343
       Width = 51
@@ -308,6 +310,7 @@ object Form1: TForm1
       Width = 245
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Keep sin and cos series out of ChartListBox'
       OnChange = CbKeepSeriesOutChange
@@ -344,25 +347,15 @@ object Form1: TForm1
       OnClick = BtnAddPointClick
       TabOrder = 11
     end
-    object Bevel2: TBevel
-      AnchorSideLeft.Control = Panel1
-      AnchorSideLeft.Side = asrCenter
-      Left = 141
-      Height = 72
-      Top = 304
-      Width = 10
-      Shape = bsSpacer
-    end
   end
   object RandomChartSource: TRandomChartSource
     PointsNumber = 10
     RandSeed = 1603921857
     XMax = 10
-    XMin = 0
     YMax = 1
     YMin = -1
-    left = 496
-    top = 80
+    Left = 496
+    Top = 80
   end
   object ColorDialog: TColorDialog
     Color = clBlack
@@ -388,7 +381,7 @@ object Form1: TForm1
       'ColorS=F0FBFF'
       'ColorT=A4A0A0'
     )
-    left = 496
-    top = 128
+    Left = 496
+    Top = 128
   end
 end

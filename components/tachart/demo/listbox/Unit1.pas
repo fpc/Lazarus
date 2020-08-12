@@ -15,7 +15,6 @@ type
 
   TForm1 = class(TForm)
     Bevel1: TBevel;
-    Bevel2: TBevel;
     BtnAddSeries: TButton;
     BtnDeleteSeries: TButton;
     BtnToggleCOS: TButton;
