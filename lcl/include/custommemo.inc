@@ -84,10 +84,10 @@ end;
 
 function TCustomMemo.CanShowEmulatedTextHint: Boolean;
 begin
-  Result :=
-        Assigned(Lines) // CM_EXIT is sent in destroy -> this function is called in destructor when Lines are already destroyed
-    and (Lines.Count = 0)
-    and inherited CanShowEmulatedTextHint;
+  // CM_EXIT is sent in destroy -> this is called in destructor when Lines are already destroyed
+  //Result := Assigned(Lines) and inherited CanShowEmulatedTextHint;
+  // ToDo: Make this work. The line above does not work with GTK2 at least.
+  Result := False;
 end;
 
 procedure TCustomMemo.CreateParams(var Params: TCreateParams);
