@@ -193,6 +193,7 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TextHint;
     property Visible;
     { events }
     property OnChange;

@@ -254,6 +254,7 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
     property Visible;
   end;
 
@@ -392,6 +393,7 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
     property Visible;
   end;
 

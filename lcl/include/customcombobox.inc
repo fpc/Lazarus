@@ -45,6 +45,10 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
   TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, FDropDownCount);
+  if WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES then
+    TWSCustomComboBoxClass(WidgetSetClass).SetTextHint(Self, FTextHint)
+  else
+    ShowEmulatedTextHintIfYouCan;
 
   if FSelLength<>0 then
   begin
@@ -425,6 +429,32 @@ begin
   end;
 end;
 
+function TCustomComboBox.RealGetText: TCaption;
+begin
+  if FEmulatedTextHintShowing then
+    Result := ''
+  else
+    Result := inherited RealGetText;
+end;
+
+procedure TCustomComboBox.RealSetText(const AValue: TCaption);
+// If the text AValue occurs in the list of strings, then sets the itemindex,
+//  otherwise does the default action
+var
+  I: integer;
+begin
+  // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
+  if AValue<>'' then
+  begin
+    I := ItemIndex;
+    if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
+      if not (csLoading in ComponentState) then
+        ItemIndex := FItems.IndexOf(AValue);
+    HideEmulatedTextHint;
+  end;
+  inherited;
+end;
+
 procedure TCustomComboBox.SetArrowKeysTraverseList(Value : Boolean);
 begin
   if Value <> FArrowKeysTraverseList then
@@ -444,6 +474,18 @@ begin
     Message.Result := 1
   else
     inherited WMChar(Message);
+end;
+
+procedure TCustomComboBox.WMKillFocus(var Message: TLMKillFocus);
+begin
+  inherited WMKillFocus(Message);
+  ShowEmulatedTextHintIfYouCan;
+end;
+
+procedure TCustomComboBox.WMSetFocus(var Message: TLMSetFocus);
+begin
+  HideEmulatedTextHint;
+  inherited WMSetFocus(Message);
 end;
 
 procedure TCustomComboBox.SetCharCase(eccCharCase: TEditCharCase);
@@ -466,6 +508,14 @@ begin
   RegisterPropertyToSkip(TCustomComboBox, 'BevelKind',  'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomComboBox, 'BevelOuter', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomComboBox, 'ImeMode',    'VCL compatibility property', '');
+end;
+
+function TCustomComboBox.CanShowEmulatedTextHint: Boolean;
+begin
+  Result := HandleAllocated and
+            (WidgetSet.GetLCLCapability(lcTextHint)=LCL_CAPABILITY_NO) and
+            (([csDesigning,csLoading] * ComponentState) = []) and
+            (FTextHint <> '') and (Text = '') and not Focused;
 end;
 
 procedure TCustomComboBox.CreateParams(var Params: TCreateParams);
@@ -940,31 +990,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomComboBox.RealSetText
-  Params: AValue -
-  Returns: nothing
-
-  If the text AValue occurs in the list of strings, then sets the itemindex,
-  otherwise does the default action
- ------------------------------------------------------------------------------}
-procedure TCustomComboBox.RealSetText(const AValue: TCaption);
-var
-  I: integer;
-begin
-  // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
-  I := ItemIndex;
-  if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
-  begin
-    I := FItems.IndexOf(AValue);
-    if I >= 0 then
-      ItemIndex := I
-    else if (not (csLoading in ComponentState)) then
-      ItemIndex := -1;
-  end;
-  inherited;
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomComboBox.SetItemIndex
   Params: Val -
   Returns: nothing
@@ -1089,6 +1114,49 @@ begin
   if (not HandleAllocated) or (csLoading in ComponentState) then
     Exit;
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+end;
+
+// TextHint stuff
+
+procedure TCustomComboBox.SetTextHint(const AValue: TTranslateString);
+begin
+  if (FTextHint = AValue) then Exit;
+  FTextHint := AValue;
+  if (WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES) and HandleAllocated then
+    TWSCustomComboBoxClass(WidgetSetClass).SetTextHint(Self, AValue);
+  if FTextHint = '' then
+    HideEmulatedTextHint
+  else
+    ShowEmulatedTextHintIfYouCan;
+end;
+
+procedure TCustomComboBox.ShowEmulatedTextHintIfYouCan;
+begin
+  if CanShowEmulatedTextHint then
+    ShowEmulatedTextHint;
+end;
+
+procedure TCustomComboBox.ShowEmulatedTextHint;
+var
+  HintFont: TFont;
+begin
+  HintFont := CreateEmulatedTextHintFont;
+  try
+    TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, HintFont);
+  finally
+    HintFont.Free;
+  end;
+  TWSCustomComboBoxClass(WidgetSetClass).SetText(Self, Self.TextHint);
+  FEmulatedTextHintShowing := True;
+end;
+
+procedure TCustomComboBox.HideEmulatedTextHint;
+begin
+  if not FEmulatedTextHintShowing then
+    Exit;
+  TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, Font);
+  TWSCustomComboBoxClass(WidgetSetClass).SetText(Self, '');
+  FEmulatedTextHintShowing := False;
 end;
 
 {------------------------------------------------------------------------------

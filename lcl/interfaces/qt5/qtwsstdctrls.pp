@@ -91,6 +91,7 @@ type
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
+    class procedure SetTextHint(const ACustomComboBox: TCustomComboBox; const ATextHint: string); override;
 
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
 
@@ -1599,6 +1600,17 @@ begin
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
   if LineEdit <> nil then
     LineEdit.setReadOnly(NewReadOnly);
+end;
+
+class procedure TQtWSCustomComboBox.SetTextHint(
+  const ACustomComboBox: TCustomComboBox; const ATextHint: string);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setTextHint(ATextHint);
 end;
 
 {------------------------------------------------------------------------------

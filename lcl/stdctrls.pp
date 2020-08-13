@@ -277,16 +277,18 @@ type
 
   TCustomComboBox = class(TWinControl)
   private
-    FCharCase: TEditCharCase;
+    FArrowKeysTraverseList: Boolean;
     FAutoCompleteText: TComboBoxAutoCompleteText;
     FAutoSelect: Boolean;
     FAutoSelected: Boolean;
     FAutoDropDown: Boolean;
     FCanvas: TCanvas;
+    FCharCase: TEditCharCase;
     FDropDownCount: Integer;
     FDroppedDown: boolean;
     FDroppingDown: Boolean;
     FEditingDone: Boolean;
+    FEmulatedTextHintShowing: Boolean;
     FItemHeight: integer;
     FItemIndex: integer;
     FItemWidth: integer;
@@ -300,28 +302,35 @@ type
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
     FReadOnly: Boolean;
+    FReturnArrowState: Boolean; //used to return the state of arrow keys from termporary change
     FSelLength: integer;
     FSelStart: integer;
     FSorted: boolean;
     FStyle: TComboBoxStyle;
-    FArrowKeysTraverseList: Boolean;
-    FReturnArrowState: Boolean; //used to return the state of arrow keys from termporary change
+    FTextHint: TTranslateString;
     function GetAutoComplete: boolean;
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
     procedure SetAutoComplete(const AValue: boolean);
+    procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure SetItemWidth(const AValue: Integer);
+    procedure SetCharCase(eccCharCase: TEditCharCase);
+    procedure SetReadOnly(const AValue: Boolean);
+    procedure SetTextHint(const AValue: TTranslateString);
+    procedure ShowEmulatedTextHintIfYouCan;
+    procedure ShowEmulatedTextHint;
+    procedure HideEmulatedTextHint;
+    procedure UpdateSorted;
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
-    procedure SetReadOnly(const AValue: Boolean);
-    procedure UpdateSorted;
-    procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
-    procedure SetCharCase(eccCharCase: TEditCharCase);
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
   protected
     class procedure WSRegisterClass; override;
+    function CanShowEmulatedTextHint: Boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
@@ -361,6 +370,7 @@ type
     procedure SetSelText(const Val: string); virtual;
     procedure SetSorted(Val: boolean); virtual;
     procedure SetStyle(Val: TComboBoxStyle); virtual;
+    function  RealGetText: TCaption; override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -420,6 +430,7 @@ type
     property Style: TComboBoxStyle read FStyle write SetStyle default csDropDown;
     property TabStop default true;
     property Text;
+    property TextHint: TTranslateString read FTextHint write SetTextHint;
   end;
 
 
@@ -496,6 +507,7 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
     property Visible;
   end;
 
