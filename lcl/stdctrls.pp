@@ -789,7 +789,6 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
-    function GetTextHint: TTranslateString; virtual;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetCharCase(Value: TEditCharCase); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
@@ -802,8 +801,8 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
-    procedure RealSetText(const AValue: TCaption); override;
     function  RealGetText: TCaption; override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
@@ -853,7 +852,7 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
-    property TextHint: TTranslateString read GetTextHint write SetTextHint;
+    property TextHint: TTranslateString read FTextHint write SetTextHint;
   end;
 
 

@@ -120,11 +120,6 @@ begin
   Result := UTF8Copy(Text, SelStart + 1, SelLength)
 end;
 
-function TCustomEdit.GetTextHint: TTranslateString;
-begin
-  Result := FTextHint;
-end;
-
 {------------------------------------------------------------------------------
   Setter for CaretPos
 
@@ -406,11 +401,6 @@ begin
             (FTextHint <> '') and (Text = '') and not Focused;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomEdit.SetEchoMode
-  Params:  Value to set FModified to
-  Returns: Nothing
- ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
 begin
   if FEchoMode=Val then exit;
@@ -429,11 +419,6 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, Val);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomEdit.SetNumbersOnly
-  Params:  Value to set FNumbersOnly to
-  Returns: Nothing
- ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetNumbersOnly(Value: Boolean);
 begin
   if FNumbersOnly <> Value then
@@ -444,12 +429,6 @@ begin
   end;
 end;
 
-
-{------------------------------------------------------------------------------
-  Method:  TCustomEdit.SetReadOnly
-  Params:  Value to set FReadOnly to
-  Returns: Nothing
- ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetReadOnly(Value : Boolean);
 begin
   if FReadOnly <> Value then
@@ -460,9 +439,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
-------------------------------------------------------------------------------}
 function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no children
@@ -550,22 +526,28 @@ begin
   end;//End if (Button = mbLeft)
 end;
 
+function TCustomEdit.RealGetText: TCaption;
+begin
+  if FEmulatedTextHintShowing then
+    Result := ''
+  else
+    Result := inherited RealGetText;
+end;
+
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
 var
   Temp: TCaption;
 begin
-  case
-    CharCase of
-      ecNormal: Temp := AValue; //if Text=AValue SetText won't call RealSetText, so no need to check
-      ecUpperCase: begin
-                     Temp := Utf8UpperCase(AValue);
-                     if (Temp = RealGetText) then Exit;
-                   end;
-      ecLowerCase: begin
-                     Temp := Utf8LowerCase(AValue);
-                     if (Temp = RealGetText) then Exit;
-                   end;
-    end;
+  case CharCase of
+    ecNormal: Temp := AValue; //if Text=AValue SetText won't call RealSetText, so no need to check
+    ecUpperCase, ecLowerCase: begin
+        if CharCase = ecUpperCase then
+          Temp := Utf8UpperCase(AValue)
+        else
+          Temp := Utf8LowerCase(AValue);
+        if Temp = RealGetText then Exit;
+      end;
+  end;
   if AValue<>'' then
     HideEmulatedTextHint;
   FTextChangedByRealSetText := True;
@@ -577,7 +559,6 @@ end;
 procedure TCustomEdit.RemoveAllHandlersOfObject(AnObject: TObject);
 begin
   inherited RemoveAllHandlersOfObject(AnObject);
-
   if FOnChangeHandler<>nil then
     FOnChangeHandler.RemoveAllMethodsOfObject(AnObject);
 end;
@@ -588,19 +569,6 @@ begin
     FOnChangeHandler.Remove(TMethod(AnOnChangeEvent));
 end;
 
-function TCustomEdit.RealGetText: TCaption;
-begin
-  if FEmulatedTextHintShowing then
-    Result := ''
-  else
-    Result := inherited RealGetText;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomEdit.SetModified
-  Params:  Value to set FModified to
-  Returns: Nothing
- ------------------------------------------------------------------------------}
 procedure TCustomEdit.TextChanged;
 var
   Cur, Temp: String;
@@ -710,6 +678,8 @@ begin
     fCaretPos := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
   Result:=fCaretPos;
 end;
+
+// TextHint stuff
 
 procedure TCustomEdit.SetTextHint(const AValue: TTranslateString);
 begin
