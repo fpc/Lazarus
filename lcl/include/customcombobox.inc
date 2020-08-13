@@ -1140,7 +1140,7 @@ procedure TCustomComboBox.ShowEmulatedTextHint;
 var
   HintFont: TFont;
 begin
-  HintFont := CreateEmulatedTextHintFont;
+  HintFont := CreateEmulatedTextHintFont(Self);
   try
     TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, HintFont);
   finally

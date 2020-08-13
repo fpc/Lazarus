@@ -1045,7 +1045,7 @@ begin
   if AWinControl.HandleObjectShouldBeVisible
   and TCustomEdit(AWinControl).EmulatedTextHintShowing then
   begin
-    EditFont := AWinControl.CreateEmulatedTextHintFont;
+    EditFont := CreateEmulatedTextHintFont(AWinControl);
     try
       SetFont(AWinControl, EditFont);
     finally

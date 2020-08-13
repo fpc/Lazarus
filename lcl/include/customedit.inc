@@ -651,7 +651,7 @@ var
 begin
   if FEmulatedTextHintShowing then
   begin
-    HintFont := CreateEmulatedTextHintFont;
+    HintFont := CreateEmulatedTextHintFont(Self);
     try
       inherited FontChanged(HintFont);
     finally
@@ -703,7 +703,7 @@ procedure TCustomEdit.ShowEmulatedTextHint;
 var
   HintFont: TFont;
 begin
-  HintFont := CreateEmulatedTextHintFont;
+  HintFont := CreateEmulatedTextHintFont(Self);
   try
     TWSCustomEditClass(WidgetSetClass).SetFont(Self, HintFont);
   finally

@@ -1657,7 +1657,9 @@ type
     property OptimalFill;
   end;
 
+function CreateEmulatedTextHintFont(AWinControl: TWinControl): TFont;
 procedure Register;
+
 
 implementation
 
@@ -1719,6 +1721,20 @@ begin
   Canvas.Brush.Style := OldBrushStyle;
   Canvas.TextStyle := OldTextStyle;
 end;
+
+// Get font for TextHint in some controls / widgetsets.
+function CreateEmulatedTextHintFont(AWinControl: TWinControl): TFont;
+begin
+  Result := TFont.Create;
+  try
+    Result.Assign(AWinControl.Font);
+    Result.Color := clGrayText;
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
 
 {$I customgroupbox.inc}
 {$I customcombobox.inc}

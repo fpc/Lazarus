@@ -1399,7 +1399,7 @@ begin
       if (ChildWinControl is TCustomEdit)
       and TCustomEdit(ChildWinControl).EmulatedTextHintShowing then
       begin
-        EditFont := ChildWinControl.CreateEmulatedTextHintFont;
+        EditFont := CreateEmulatedTextHintFont(ChildWinControl);
         try
           WindowColor := EditFont.Color;
         finally

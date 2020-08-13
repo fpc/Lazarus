@@ -3689,18 +3689,6 @@ begin
   Result := Control is TCustomForm;//the very top parent must be a form
 end;
 
-function TWinControl.CreateEmulatedTextHintFont: TFont;
-begin
-  Result := TFont.Create;
-  try
-    Result.Assign(Font);
-    Result.Color := clGrayText;
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-
 {------------------------------------------------------------------------------
   TWinControl CreateSubClass
 ------------------------------------------------------------------------------}

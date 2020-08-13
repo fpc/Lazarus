@@ -2313,7 +2313,6 @@ type
     procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); virtual;
     function CanFocus: Boolean; virtual;
     function CanSetFocus: Boolean; virtual;
-    function CreateEmulatedTextHintFont: TFont; // To show TextHint in some controls / widgetsets.
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     function Focused: Boolean; virtual;
