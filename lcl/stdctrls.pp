@@ -746,6 +746,7 @@ type
     FCharCase: TEditCharCase;
     fCaretPos: TPoint;
     FEchoMode: TEchoMode;
+    FEmulatedTextHintShowing: Boolean;
     FHideSelection: Boolean;
     FMaxLength: Integer;
     FModified: Boolean;
@@ -769,14 +770,9 @@ type
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
-  protected type
-    TEmulatedTextHintStatus = (thsHidden, thsShowing, thsChanging);
   protected
-    FEmulatedTextHintStatus: TEmulatedTextHintStatus;
-
     class procedure WSRegisterClass; override;
     function CanShowEmulatedTextHint: Boolean; virtual;
-    function CreateEmulatedTextHintFont: TFont; virtual;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -842,6 +838,7 @@ type
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
+    property EmulatedTextHintShowing: Boolean read FEmulatedTextHintShowing;
     property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
     property Modified: Boolean read GetModified write SetModified;

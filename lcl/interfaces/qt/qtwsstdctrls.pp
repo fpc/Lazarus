@@ -266,14 +266,6 @@ type
   published
   end;
 
-  { TEditHelper }
-
-  TEditHelper = class helper for TCustomEdit
-  public
-    function EmulatedTextHintStatus: TCustomEdit.TEmulatedTextHintStatus;
-    function CreateEmulatedTextHintFont: TFont;
-  end;
-
 
 implementation
 uses qtint;
@@ -299,19 +291,6 @@ const
     QFramePlain,
     QFrameSunken
   );
-
-{ TEditHelper }
-
-function TEditHelper.EmulatedTextHintStatus: TCustomEdit.TEmulatedTextHintStatus;
-begin
-  Result := FEmulatedTextHintStatus;
-end;
-
-function TEditHelper.CreateEmulatedTextHintFont: TFont;
-begin
-  Result := inherited CreateEmulatedTextHintFont;
-end;
-
 
 { TQtWSScrollBar }
 
@@ -1064,9 +1043,9 @@ begin
 
   TQtWSWinControl.ShowHide(AWinControl);
   if AWinControl.HandleObjectShouldBeVisible
-  and (TCustomEdit(AWinControl).EmulatedTextHintStatus=thsShowing) then
+  and TCustomEdit(AWinControl).EmulatedTextHintShowing then
   begin
-    EditFont := TCustomEdit(AWinControl).CreateEmulatedTextHintFont;
+    EditFont := AWinControl.CreateEmulatedTextHintFont;
     try
       SetFont(AWinControl, EditFont);
     finally

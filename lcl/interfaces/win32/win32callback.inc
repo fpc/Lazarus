@@ -1397,9 +1397,9 @@ begin
     if ChildWinControl <> nil then
     begin
       if (ChildWinControl is TCustomEdit)
-      and (TAccessCustomEdit(ChildWinControl).FEmulatedTextHintStatus=thsShowing) then
+      and TCustomEdit(ChildWinControl).EmulatedTextHintShowing then
       begin
-        EditFont := TAccessCustomEdit(ChildWinControl).CreateEmulatedTextHintFont;
+        EditFont := ChildWinControl.CreateEmulatedTextHintFont;
         try
           WindowColor := EditFont.Color;
         finally

@@ -164,7 +164,6 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
     class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); virtual;
     class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); virtual;
-    class function CreateEmulatedTextHintFont(const ACustomEdit: TCustomEdit): TFont; virtual;
 
     class procedure Cut(const ACustomEdit: TCustomEdit); virtual;
     class procedure Copy(const ACustomEdit: TCustomEdit); virtual;
@@ -622,20 +621,6 @@ class procedure TWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
 begin
   if (ACustomEdit.EchoMode = emNormal) and (ACustomEdit.SelLength > 0) then
     Clipboard.AsText := ACustomEdit.SelText;
-end;
-
-class function TWSCustomEdit.CreateEmulatedTextHintFont(
-  const ACustomEdit: TCustomEdit): TFont;
-begin
-  Result := TFont.Create;
-  try
-    Result.Assign(ACustomEdit.Font);
-    Result.Color := clGrayText;
-  except
-    Result.Free;
-    Result := nil;
-    raise;
-  end;
 end;
 
 class procedure TWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
