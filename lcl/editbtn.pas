@@ -1703,7 +1703,7 @@ begin
   If (P=0) then
     Exit;
   N2:=StrToIntDef(Copy(S,1,P-1),-1);
-  If (N1=0) then Exit;
+  If (N2=-1) then Exit;
   Delete(S,1,P);
   N3:=StrToIntDef(S,-1);
   If (N3=-1) then
