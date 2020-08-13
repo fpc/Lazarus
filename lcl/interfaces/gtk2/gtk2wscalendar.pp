@@ -85,6 +85,25 @@ type
     max_week_char_width: guint;
   end;
   PGtkCalendarPrivate = ^TGtkCalendarPrivate;
+  TGtkCalendarInternalTimer = record
+    ACalendar : TCustomCalendar;
+    gtkcalendardisplayoptions: TGtkCalendarDisplayOptions;
+    ATimerSourceID: guint;
+  end;
+  PGtkCalendarInternalTimer = ^TGtkCalendarInternalTimer;
+
+function SetCalendarDisplayOptionsTimer(data: gpointer): gboolean; cdecl;
+Var
+  AGtkCalendarInternalTimer : PGtkCalendarInternalTimer absolute data;
+  Agboolean : gboolean;
+  AGtkCalendar: PGtkCalendar;
+begin
+  Result := False;
+  AGtkCalendar := TGtk2WSCustomCalendar.GetCalendar(AGtkCalendarInternalTimer^.ACalendar);
+  gtk_Calendar_Display_options(AGtkCalendar, AGtkCalendarInternalTimer^.gtkcalendardisplayoptions);
+  Agboolean := g_source_remove(AGtkCalendarInternalTimer^.ATimerSourceID);
+  Dispose(AGtkCalendarInternalTimer);
+end;
 
 { TGtk2WSCustomCalendar }
 
@@ -267,9 +286,11 @@ class procedure TGtk2WSCustomCalendar.SetDisplaySettings(const ACalendar: TCusto
 var
   num: dword;
   gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
+  AGtkCalendarInternalTimer : PGtkCalendarInternalTimer;
 begin
   if not WSCheckHandleAllocated(ACalendar, 'SetDisplaySettings') then
     Exit;
+
   num := 0;
   if (dsShowHeadings in ADisplaySettings) then
     num := Num + (1 shl 0);
@@ -288,7 +309,11 @@ begin
     num := Num  + (1 shl 4);
   }
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
-  gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
+
+  New(AGtkCalendarInternalTimer);
+  AGtkCalendarInternalTimer^.ACalendar := ACalendar;
+  AGtkCalendarInternalTimer^.gtkcalendardisplayoptions := gtkCalendarDisplayOptions;
+  AGtkCalendarInternalTimer^.ATimerSourceID := g_timeout_add(1, @SetCalendarDisplayOptionsTimer, AGtkCalendarInternalTimer);
 end;
 
 class procedure TGtk2WSCustomCalendar.GetPreferredSize(
