@@ -1397,7 +1397,7 @@ begin
     if ChildWinControl <> nil then
     begin
       if (ChildWinControl is TCustomEdit)
-      and TCustomEdit(ChildWinControl).EmulatedTextHintShowing then
+      and (TCustomEdit(ChildWinControl).EmulatedTextHintStatus = thsShowing) then
       begin
         EditFont := CreateEmulatedTextHintFont(ChildWinControl);
         try

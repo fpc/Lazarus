@@ -235,6 +235,9 @@ type
     property OnUTF8KeyPress;
   end;
 
+  // Used for TCustomComboBox and TCustomEdit.
+  TEmulatedTextHintStatus = (thsHidden, thsShowing, thsChanging);
+
   { TCustomComboBox }
   TComboBoxAutoCompleteTextOption = (
     cbactEnabled,             //Enable Auto-Completion Feature
@@ -288,7 +291,7 @@ type
     FDroppedDown: boolean;
     FDroppingDown: Boolean;
     FEditingDone: Boolean;
-    FEmulatedTextHintShowing: Boolean;
+    FEmulatedTextHintStatus: TEmulatedTextHintStatus;
     FItemHeight: integer;
     FItemIndex: integer;
     FItemWidth: integer;
@@ -407,13 +410,11 @@ type
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     property DroppingDown: Boolean read FDroppingDown write FDroppingDown; deprecated 'Will be removed in 2.2';
     procedure SelectAll;
-    property AutoComplete: boolean
-      read GetAutoComplete write SetAutoComplete default False;
+    property AutoComplete: boolean read GetAutoComplete write SetAutoComplete default False;
     property AutoCompleteText: TComboBoxAutoCompleteText
                            read FAutoCompleteText write FAutoCompleteText
                            default DefaultComboBoxAutoCompleteText;
-    property AutoDropDown: Boolean
-                           read FAutoDropDown write FAutoDropDown default False;
+    property AutoDropDown: Boolean read FAutoDropDown write FAutoDropDown default False;
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property AutoSize default True; // Overrides default value
@@ -421,6 +422,7 @@ type
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
+    property EmulatedTextHintStatus: TEmulatedTextHintStatus read FEmulatedTextHintStatus;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
@@ -758,7 +760,7 @@ type
     FCharCase: TEditCharCase;
     fCaretPos: TPoint;
     FEchoMode: TEchoMode;
-    FEmulatedTextHintShowing: Boolean;
+    FEmulatedTextHintStatus: TEmulatedTextHintStatus;
     FHideSelection: Boolean;
     FMaxLength: Integer;
     FModified: Boolean;
@@ -849,7 +851,7 @@ type
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
-    property EmulatedTextHintShowing: Boolean read FEmulatedTextHintShowing;
+    property EmulatedTextHintStatus: TEmulatedTextHintStatus read FEmulatedTextHintStatus;
     property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
     property Modified: Boolean read GetModified write SetModified;

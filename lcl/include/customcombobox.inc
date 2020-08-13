@@ -431,7 +431,7 @@ end;
 
 function TCustomComboBox.RealGetText: TCaption;
 begin
-  if FEmulatedTextHintShowing then
+  if FEmulatedTextHintStatus = thsShowing then
     Result := ''
   else
     Result := inherited RealGetText;
@@ -1140,6 +1140,7 @@ procedure TCustomComboBox.ShowEmulatedTextHint;
 var
   HintFont: TFont;
 begin
+  FEmulatedTextHintStatus := thsChanging;
   HintFont := CreateEmulatedTextHintFont(Self);
   try
     TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, HintFont);
@@ -1147,16 +1148,16 @@ begin
     HintFont.Free;
   end;
   TWSCustomComboBoxClass(WidgetSetClass).SetText(Self, Self.TextHint);
-  FEmulatedTextHintShowing := True;
+  FEmulatedTextHintStatus := thsShowing;
 end;
 
 procedure TCustomComboBox.HideEmulatedTextHint;
 begin
-  if not FEmulatedTextHintShowing then
+  if FEmulatedTextHintStatus<>thsShowing then
     Exit;
   TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, Font);
   TWSCustomComboBoxClass(WidgetSetClass).SetText(Self, '');
-  FEmulatedTextHintShowing := False;
+  FEmulatedTextHintStatus := thsHidden;
 end;
 
 {------------------------------------------------------------------------------

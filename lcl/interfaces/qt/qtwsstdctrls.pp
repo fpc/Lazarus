@@ -27,9 +27,9 @@ uses
   qt4,
   qtprivate, qtwidgets, qtproc, QtWsControls,
   // RTL
-  math,
+  Classes, Types, SysUtils, math,
   // LCL
-  Classes, Types, Graphics, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
+  Graphics, StdCtrls, Controls, Forms, InterfaceBase, LCLType,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses;
 
@@ -1043,7 +1043,7 @@ begin
 
   TQtWSWinControl.ShowHide(AWinControl);
   if AWinControl.HandleObjectShouldBeVisible
-  and TCustomEdit(AWinControl).EmulatedTextHintShowing then
+  and (TCustomEdit(AWinControl).EmulatedTextHintStatus = thsShowing) then
   begin
     EditFont := CreateEmulatedTextHintFont(AWinControl);
     try
