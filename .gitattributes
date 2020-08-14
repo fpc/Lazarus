@@ -5456,6 +5456,7 @@ components/tachart/tachartimagelist.pas svneol=native#text/pascal
 components/tachart/tachartlazaruspkg.lpk svneol=native#text/plain
 components/tachart/tachartlazaruspkg.pas svneol=native#text/plain
 components/tachart/tachartlistbox.pas svneol=native#text/pascal
+components/tachart/tachartliveview.pas svneol=native#text/pascal
 components/tachart/tachartstrconsts.pas svneol=native#text/plain
 components/tachart/tachartteechart.pas svneol=native#text/pascal
 components/tachart/tachartutils.pas svneol=native#text/plain
