@@ -230,6 +230,7 @@ type
     FCurrentExtent: TDoubleRect;
     FDisableRedrawingCounter: Integer;
     FExtentBroadcaster: TBroadcaster;
+    FFullExtentBroadcaster: TBroadcaster;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
     FOffsetInt: TPoint;      // Coordinates transformation
@@ -237,6 +238,8 @@ type
     FOnExtentChanged: TChartEvent;
     FOnExtentChanging: TChartEvent;
     FOnExtentValidate: TChartExtentValidateEvent;
+    FOnFullExtentChanged: TChartEvent;
+    FPrevFullExtent: TDoubleRect;
     FPrevLogicalExtent: TDoubleRect;
     FScale: TDoublePoint;    // Coordinates transformation
     FScalingValid: Boolean;
@@ -382,6 +385,7 @@ type
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
     property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
+    property FullExtentBroadcaster: TBroadcaster read FFullExtentBroadcaster;
     property HorAxis: TChartAxis read GetHorAxis;
     property IsZoomed: Boolean read FIsZoomed;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
@@ -458,9 +462,12 @@ type
     property OnExtentChanged: TChartEvent
       read FOnExtentChanged write FOnExtentChanged;
     property OnExtentChanging: TChartEvent
-      read FOnExtentChanging write FOnExtentChanging; deprecated 'Used OnExtentValidate instead';
+      read FOnExtentChanging write FOnExtentChanging;
+      deprecated 'Used OnExtentValidate instead';
     property OnExtentValidate: TChartExtentValidateEvent
       read FOnExtentValidate write FOnExtentValidate;
+    property OnFullExtentChanged: TChartEvent
+      read FOnFullExtentChanged write FOnFullExtentChanged;
 
   published
     property Align;
@@ -696,6 +703,7 @@ begin
 
   FBroadcaster := TBroadcaster.Create;
   FExtentBroadcaster := TBroadcaster.Create;
+  FFullExtentBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
   FAllowPanning := true;
   FAntialiasingMode := amDontCare;
@@ -747,6 +755,7 @@ begin
 
   FLogicalExtent := EmptyExtent;
   FPrevLogicalExtent := EmptyExtent;
+  FPrevFullExtent := EmptyExtent;
 end;
 
 procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
@@ -777,6 +786,7 @@ begin
   FreeAndNil(FBuiltinToolset);
   FreeAndNil(FBroadcaster);
   FreeAndNil(FExtentBroadcaster);
+  FreeAndNil(FFullExtentBroadcaster);
   FreeAndNil(FDefaultGUIConnector);
 
   DrawData.DeleteByChart(Self);
@@ -982,6 +992,14 @@ begin
   if Assigned(OnAfterDraw) then
     OnAfterDraw(Self, ADrawer);
   ADrawer.DrawingEnd;
+
+  tmpExtent := GetFullExtent;
+  if FPrevFullExtent <> tmpExtent then begin
+    FFullExtentBroadcaster.Broadcast(Self);
+    if Assigned(OnFullExtentChanged) then
+      OnFullExtentChanged(Self);
+    FPrevFullExtent := tmpExtent;
+  end;
 
   if FPrevLogicalExtent <> FLogicalExtent then begin
     FExtentBroadcaster.Broadcast(Self);
