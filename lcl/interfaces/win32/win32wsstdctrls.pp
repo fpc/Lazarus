@@ -100,6 +100,7 @@ type
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
+    class procedure SetTextHint(const ACustomComboBox: TCustomComboBox; const ATextHint: string); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -1126,6 +1127,15 @@ begin
   Win32Extra.GetComboBoxInfo(ACustomComboBox.Handle, @Info);
   if (info.hwndItem<>0) and (info.hwndItem<>INVALID_HANDLE_VALUE) then
     SendMessage(info.hwndItem, EM_SETREADONLY, WParam(NewReadOnly), 0);
+end;
+
+class procedure TWin32WSCustomComboBox.SetTextHint(
+  const ACustomComboBox: TCustomComboBox; const ATextHint: string);
+const
+  CB_SETCUEBANNER = (CBM_FIRST + 3); // Same as EM_SETCUEBANNER for TEdit
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetTextHint') then Exit;
+  SendMessage(ACustomComboBox.Handle, CB_SETCUEBANNER, 1, {%H-}LParam(PWideChar(UTF8ToUTF16(ATextHint))));
 end;
 
 class function TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
