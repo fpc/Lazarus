@@ -11402,34 +11402,42 @@ procedure TSrcNotebookHintCallback.AddDebuggerResult(Sender: TObject;
 var
   Opts: TDBGEvaluateFlags;
 begin
-  if not ASuccess then begin
-    FDebugResText := '???';
-  end
-  else begin
-    // deference a pointer - maybe it is a class
-    if ASuccess and Assigned(ResultDBGType) and (ResultDBGType.Kind in [skPointer]) and
-       not( StringCase(Lowercase(ResultDBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
-    then
-    begin
-      if ResultDBGType.Value.AsPointer <> nil then
+  try
+    if not ASuccess then begin
+      FDebugResText := '???';
+    end
+    else begin
+      // deference a pointer - maybe it is a class
+      if ASuccess and Assigned(ResultDBGType) and (ResultDBGType.Kind in [skPointer]) and
+         not( StringCase(Lowercase(ResultDBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+      then
       begin
-        Opts := [];
-        if EditorOpts.DbgHintAutoTypeCastClass
-        then Opts := [defClassAutoCast];
+        if ResultDBGType.Value.AsPointer <> nil then
+        begin
+          Opts := [];
+          if EditorOpts.DbgHintAutoTypeCastClass
+          then Opts := [defClassAutoCast];
 
-        FDebugResText := ResultText;
+          FDebugResText := ResultText;
 
-        if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then begin
-          FreeAndNil(ResultDBGType);
-          exit;
+          if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then begin
+            FreeAndNil(ResultDBGType);
+            exit;
+          end;
         end;
-      end;
-    end else
-      FDebugResText := DebugBoss.FormatValue(ResultDBGType, ResultText);
+      end else
+        FDebugResText := DebugBoss.FormatValue(ResultDBGType, ResultText);
 
-    FreeAndNil(ResultDBGType);
+      FreeAndNil(ResultDBGType);
+    end;
+    ShowHint;
+  except
+    on E: Exception do
+    try
+      IDEMessageDialog('Error',E.Message,mtError,[mbCancel]);
+    except
+    end;
   end;
-  ShowHint;
 end;
 
 procedure TSrcNotebookHintCallback.AddDebuggerResultDeref(Sender: TObject;
