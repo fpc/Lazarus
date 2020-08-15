@@ -37,7 +37,7 @@ unit SSHGDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Types,
   // LCL
   Dialogs, Controls, Graphics,
   // LazUtils
@@ -340,7 +340,15 @@ function TSSHGDBMIDebugger.CreateDebugProcess(const AOptions: String): Boolean;
 var
   p: TSSHGDBMIDebuggerProperties;
   SshOpt: String;
+  le: TStringDynArray;
 begin
+  if LineEnding <> #10 then begin
+    SetLength(le, 2);
+    le[0] := LineEnding;
+    le[1] := #10;
+    SetLineEnds(le);
+  end;
+
   p := TSSHGDBMIDebuggerProperties(GetProperties);
   SshOpt := p.FSSHStartupOptions;
   if p.FAppendGDBtoSSHopt then begin
