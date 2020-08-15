@@ -9395,8 +9395,12 @@ begin
   then FreeAndNil(TGDBMIDebuggerCommandEvaluate(Sender).FTypeInfo);
 
   with TGDBMIDebuggerCommandEvaluate(Sender) do begin
-    if Callback<> nil then
-      Callback(Self, True, TextValue, TypeInfo);
+    try
+      if Callback<> nil then
+        Callback(Self, True, TextValue, TypeInfo);
+    except
+      debugln(DBG_VERBOSE, ['Failed Evaluate Callback']);
+    end;
     Callback := nil;
   end;
 end;
