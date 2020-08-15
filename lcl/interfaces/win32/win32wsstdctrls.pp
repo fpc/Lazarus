@@ -1133,9 +1133,20 @@ class procedure TWin32WSCustomComboBox.SetTextHint(
   const ACustomComboBox: TCustomComboBox; const ATextHint: string);
 const
   CB_SETCUEBANNER = (CBM_FIRST + 3); // Same as EM_SETCUEBANNER for TEdit
+var
+  Msg: UINT = CB_SETCUEBANNER;
+  Wnd: HWND;
+  Info: TComboboxInfo;
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'SetTextHint') then Exit;
-  SendMessage(ACustomComboBox.Handle, CB_SETCUEBANNER, 1, {%H-}LParam(PWideChar(UTF8ToUTF16(ATextHint))));
+  Info.cbSize := SizeOf(Info);
+  Wnd := ACustomComboBox.Handle;
+  if Win32Extra.GetComboBoxInfo(Wnd, @Info) and (Info.hwndItem <> 0) then
+  begin
+    Wnd := Info.hwndItem;
+    Msg := EM_SETCUEBANNER;
+  end;
+  SendMessage(Wnd, Msg, 1, {%H-}LParam(PWideChar(UTF8ToUTF16(ATextHint))));
 end;
 
 class function TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
