@@ -2985,25 +2985,86 @@ end;
 
 function TCodeHelpManager.TextToHTML(Txt: string): string;
 var
-  p: Integer;
+  l: Integer;
+  c, d: PChar;
 begin
-  Result:=Txt;
-  p:=length(Result);
-  while p>0 do
-  begin
-    case Result[p] of
-    ' ': Result:=copy(Result,1,p-1)+'&nbsp;'+copy(Result,p+1,length(Result));
-    '<': Result:=copy(Result,1,p-1)+'&lt;'+copy(Result,p+1,length(Result));
-    '>': Result:=copy(Result,1,p-1)+'&gt;'+copy(Result,p+1,length(Result));
-    '&': Result:=copy(Result,1,p-1)+'&amp;'+copy(Result,p+1,length(Result));
-    #10,#13:
-      begin
-        if (p>1) and (Result[p-1] in [#10,#13]) and (Result[p-1]<>Result[p]) then
-          dec(p);
-        Result:=copy(Result,1,p-1)+'<br>'+copy(Result,p,length(Result));
-      end;
+  Result := '';
+  if Txt = '' then
+    exit;
+  c := @Txt[1];
+  l := 0;
+  while c^ <> #0 do begin
+    inc(l);
+    case c^ of
+      ' ' : inc(l, 5);
+      '<' : inc(l, 3);
+      '>' : inc(l, 3);
+      '&' : inc(l, 4);
+      #10,#13 :
+        begin
+          inc(l, 3);
+          if c[1] in [#10,#13] then
+            inc(c);
+        end;
     end;
-    dec(p);
+    inc(c);
+  end;
+
+  SetLength(Result, l);
+  c := @Txt[1];
+  d := @Result[1];
+  while c^ <> #0 do begin
+    case c^ of
+      ' ' :
+        begin
+          d[0] := '&';
+          d[1] := 'n';
+          d[2] := 'b';
+          d[3] := 's';
+          d[4] := 'p';
+          d[5] := ';';
+          inc(d, 5);
+        end;
+      '<' :
+        begin
+          d[0] := '&';
+          d[1] := 'l';
+          d[2] := 't';
+          d[3] := ';';
+          inc(d, 3);
+        end;
+      '>' :
+        begin
+          d[0] := '&';
+          d[1] := 'g';
+          d[2] := 't';
+          d[3] := ';';
+          inc(d, 3);
+        end;
+      '&' :
+        begin
+          d[0] := '&';
+          d[1] := 'a';
+          d[2] := 'm';
+          d[3] := 'p';
+          d[4] := ';';
+          inc(d, 4);
+        end;
+      #10,#13 :
+        begin
+          d[0] := '<';
+          d[1] := 'b';
+          d[2] := 'r';
+          d[3] := '>';
+          inc(d, 3);
+          if c[1] in [#10,#13] then
+            inc(c);
+        end;
+      else
+        d^ := c^;
+    end;
+    inc(c);
+    inc(d);
   end;
 end;
 
