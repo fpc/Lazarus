@@ -898,24 +898,22 @@ type
     FWantReturns: Boolean;
     FWantTabs: boolean;
     FWordWrap: Boolean;
-    procedure SetHorzScrollBar(const AValue: TMemoScrollBar);
-    procedure SetVertScrollBar(const AValue: TMemoScrollBar);
   protected
     class procedure WSRegisterClass; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     function  RealGetText: TCaption; override;
-    procedure RealSetText(const Value: TCaption); override;
+    procedure RealSetText(const AValue: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
     function GetCaretPos: TPoint; override;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
-    procedure SetCaretPos(const Value: TPoint); override;
-    procedure SetLines(const Value: TStrings);
+    procedure SetCaretPos(const AValue: TPoint); override;
+    procedure SetLines(const AValue: TStrings);
     procedure SetWantReturns(const AValue: Boolean);
     procedure SetWantTabs(const NewWantTabs: boolean);
-    procedure SetWordWrap(const Value: boolean);
-    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetWordWrap(const AValue: boolean);
+    procedure SetScrollBars(const AValue: TScrollStyle);
     procedure Loaded; override;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     procedure WMGetDlgCode(var Message: TLMGetDlgCode); message LM_GETDLGCODE;
@@ -925,12 +923,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Append(const Value: String);
+    procedure Append(const AValue: String);
     procedure ScrollBy(DeltaX, DeltaY: Integer); override;
   public
     property Lines: TStrings read FLines write SetLines;
-    property HorzScrollBar: TMemoScrollBar read FHorzScrollBar write SetHorzScrollBar;
-    property VertScrollBar: TMemoScrollBar read FVertScrollBar write SetVertScrollBar;
+    property HorzScrollBar: TMemoScrollBar read FHorzScrollBar write FHorzScrollBar;
+    property VertScrollBar: TMemoScrollBar read FVertScrollBar write FVertScrollBar;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;

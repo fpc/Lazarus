@@ -37,9 +37,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomMemo.Append(const Value: String);
+procedure TCustomMemo.Append(const AValue: String);
 begin
-  Lines.Add(Value);
+  Lines.Add(AValue);
 end;
 
 procedure TCustomMemo.ScrollBy(DeltaX, DeltaY: Integer);
@@ -47,24 +47,9 @@ begin
   ScrollBy_WS(DeltaX, DeltaY);
 end;
 
-procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
+procedure TCustomMemo.SetCaretPos(const AValue: TPoint);
 begin
-  if FHorzScrollBar=AValue then exit;
-  FHorzScrollBar:=AValue;
-end;
-
-{------------------------------------------------------------------------------
-  Setter for CaretPos
- ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetCaretPos(const Value: TPoint);
-begin
-  TWSCustomMemoClass(WidgetSetClass).SetCaretPos(Self, Value);
-end;
-
-procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
-begin
-  if FVertScrollBar=AValue then exit;
-  FVertScrollBar:=AValue;
+  TWSCustomMemoClass(WidgetSetClass).SetCaretPos(Self, AValue);
 end;
 
 procedure TCustomMemo.SetWantReturns(const AValue: Boolean);
@@ -168,12 +153,12 @@ begin
   {$endif}
 end;
 
-procedure TCustomMemo.RealSetText(const Value: TCaption);
+procedure TCustomMemo.RealSetText(const AValue: TCaption);
 begin
   {$ifdef DEBUG_MEMO}
-  debugln('TCustomMemo.RealSetText "',Value,'"');
+  debugln('TCustomMemo.RealSetText "',AValue,'"');
   {$endif}
-  Lines.Text := Value;
+  Lines.Text := AValue;
 end;
 
 function TCustomMemo.GetCachedText(var CachedText: TCaption): boolean;
@@ -200,25 +185,24 @@ begin
   inherited;
 end;
 
-procedure TCustomMemo.SetLines(const Value: TStrings);
+procedure TCustomMemo.SetLines(const AValue: TStrings);
 begin
-  if (Value <> nil) then
-    FLines.Assign(Value);
+  if (AValue <> nil) then
+    FLines.Assign(AValue);
 end;
 
-procedure TCustomMemo.SetScrollBars(const Value: TScrollStyle);
+procedure TCustomMemo.SetScrollBars(const AValue: TScrollStyle);
 begin
-  if Value <> FScrollbars then begin
-    FScrollbars:= Value;
+  if AValue <> FScrollbars then begin
+    FScrollbars:= AValue;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, Value);
+      TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, AValue);
   end;
 end;
 
 procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
-
   if HandleAllocated then
   begin
     TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, FScrollbars);
@@ -280,16 +264,16 @@ begin
     TWSCustomMemoClass(WidgetSetClass).SetWantTabs(Self, NewWantTabs);
 end;
 
-procedure TCustomMemo.SetWordWrap(const Value: boolean);
+procedure TCustomMemo.SetWordWrap(const AValue: boolean);
 begin
-  if Value <> FWordWrap then
+  if AValue <> FWordWrap then
   begin
     {$ifdef DEBUG_MEMO}
-    DebugLn(['TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value]);
+    DebugLn(['TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',AValue]);
     {$endif}
-    FWordWrap := Value;
+    FWordWrap := AValue;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, Value);
+      TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, AValue);
   end;    
 end;
 
