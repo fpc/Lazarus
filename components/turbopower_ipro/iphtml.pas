@@ -7824,7 +7824,7 @@ var
   ch1,ch2,ch3: AnsiChar;
 {$ENDIF}
 begin
-  Getmem(TokenStringBuf, 65536);
+  Getmem(TokenStringBuf, CharStream.Size * 4 + 65536);
   try
     CharSP := 0;
     ListLevel := 0;
