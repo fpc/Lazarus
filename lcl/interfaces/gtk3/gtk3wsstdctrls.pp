@@ -122,7 +122,6 @@ type
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class procedure FreeStrings(var AStrings: TStrings); override;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
@@ -450,12 +449,6 @@ begin
   Result := TGtkListStoreStringList(g_object_get_data(PGObject(TGtk3ListBox(ACustomListBox.Handle).GetContainerWidget),
                                      GtkListItemLCLListTag));
   TGtkListStoreStringList(Result).Sorted := ACustomListBox.Sorted;
-end;
-
-class procedure TGtk3WSCustomListBox.FreeStrings(var AStrings: TStrings);
-begin
-  AStrings.Free;
-  AStrings := nil;
 end;
 
 class function  TGtk3WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
