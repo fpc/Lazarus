@@ -245,6 +245,7 @@ type
   TDbgLinuxThread = class(TDbgThread)
   private
     FUserRegs: TUserRegs;
+    FStoredUserRegs: TUserRegs;
     FUserRegsChanged: boolean;
     FExceptionSignal: cint;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
@@ -267,6 +268,9 @@ type
     function DetectHardwareWatchpoint: Pointer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
+    procedure SetRegisterValue(AName: string; AValue: QWord); override;
+    procedure StoreRegisters; override;
+    procedure RestoreRegisters; override;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
@@ -712,6 +716,41 @@ begin
     result := FUserRegs.regs32[UESP]
   else
     result := FUserRegs.regs64[rsp];
+end;
+
+procedure TDbgLinuxThread.SetRegisterValue(AName: string; AValue: QWord);
+begin
+  if Process.Mode=dm32 then
+  begin
+    case AName of
+      'eip': FUserRegs.regs32[eip] := AValue;
+      'eax': FUserRegs.regs32[eax] := AValue;
+    else
+      raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
+    end;
+    FUserRegsChanged:=true;
+  end else
+    begin
+    case AName of
+      'rax': FUserRegs.regs64[rax] := AValue;
+      'rip': FUserRegs.regs64[rip] := AValue;
+    else
+      raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
+    end;
+    FUserRegsChanged:=true;
+  end;
+end;
+
+procedure TDbgLinuxThread.RestoreRegisters;
+begin
+  FUserRegs:=FStoredUserRegs;
+  FUserRegsChanged := true;
+end;
+
+procedure TDbgLinuxThread.StoreRegisters;
+begin
+  Assert(FHasThreadState);
+  FStoredUserRegs := FUserRegs;
 end;
 
 { TDbgLinuxProcess }

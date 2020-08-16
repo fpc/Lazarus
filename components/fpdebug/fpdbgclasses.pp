@@ -208,6 +208,8 @@ type
     procedure BeforeContinue; virtual;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); virtual;
     function DetectHardwareWatchpoint: Pointer; virtual;
+    // This function changes the value of a register in the debugee.
+    procedure SetRegisterValue(AName: string; AValue: QWord); virtual; abstract;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
@@ -218,6 +220,11 @@ type
     function  FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
     function  FindCallStackEntryByInstructionPointer(AInstructionPointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
     procedure ClearCallStack;
+    // Use these functions to 'save' the value of all registers, and to reset
+    // them to their original values. (Used to be able to restore the original
+    // situation after calling functions inside the debugee)
+    procedure StoreRegisters; virtual; abstract;
+    procedure RestoreRegisters; virtual; abstract;
     destructor Destroy; override;
     function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
     function IsAtStartOfLine: boolean;
@@ -304,6 +311,10 @@ type
     procedure Clear; reintroduce;
     procedure AddLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
     procedure RemoveLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
+    // When the debugger modifies the debuggee's code, it might be that the
+    // original value underneeth the breakpoint has to be changed. This function
+    // makes this possible.
+    procedure AdaptOriginalValueAtLocation(const ALocation: TDBGPtr; const NewOrigValue: Byte);
     function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
     function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte; // returns Int3, if there is no break at this location
     function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean;
@@ -533,8 +544,8 @@ type
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; virtual;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; virtual;
     procedure RemoveAllBreakPoints;
-    procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr); virtual;
-    procedure AfterChangingInstructionCode(const ALocation: TDBGPtr); virtual;
+    procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
+    procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
 
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
     // Should create a TDbgThread-instance for the given ThreadIdentifier.
@@ -608,6 +619,8 @@ public
     procedure LoadInfo; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
+    // Modify the debugee's code.
+    function WriteInstructionCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
     procedure TerminateProcess; virtual; abstract;
     function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
@@ -1075,6 +1088,15 @@ end;
 function TBreakLocationMap.GetEnumerator: TBreakLocationMapEnumerator;
 begin
   Result := TBreakLocationMapEnumerator.Create(Self);
+end;
+
+procedure TBreakLocationMap.AdaptOriginalValueAtLocation(const ALocation: TDBGPtr; const NewOrigValue: Byte);
+var
+  LocData: PInternalBreakLocationEntry;
+begin
+  LocData := GetDataPtr(ALocation);
+  if Assigned(LocData) then
+    LocData^.OrigValue := NewOrigValue;
 end;
 
 { TDbgCallstackEntry }
@@ -2138,7 +2160,7 @@ begin
     if ALocation = FTmpRemovedBreaks[i] then
       exit;
 
-  BeforeChangingInstructionCode(ALocation);
+  BeforeChangingInstructionCode(ALocation, 1);
 
   Result := FProcess.WriteData(ALocation, 1, Int3);
   DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['Breakpoint Int3 set to '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
@@ -2146,7 +2168,7 @@ begin
     DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, 'Unable to set breakpoint at '+FormatAddress(ALocation));
 
   if Result then
-    AfterChangingInstructionCode(ALocation);
+    AfterChangingInstructionCode(ALocation, 1);
 end;
 
 function TDbgProcess.RemoveBreakInstructionCode(const ALocation: TDBGPtr;
@@ -2155,14 +2177,14 @@ begin
   if OrigValue = Int3 then
     exit(True); // breakpoint on a hardcoded breakpoint
 
-  BeforeChangingInstructionCode(ALocation);
+  BeforeChangingInstructionCode(ALocation, 1);
 
   Result := WriteData(ALocation, 1, OrigValue);
   DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['Breakpoint Int3 removed from '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', OrigValue]);
   DebugLn((not Result) and (not GotExitProcess) and (DBG_WARNINGS or DBG_BREAKPOINTS), 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
 
   if Result then
-    AfterChangingInstructionCode(ALocation);
+    AfterChangingInstructionCode(ALocation, 1);
 end;
 
 procedure TDbgProcess.RemoveAllBreakPoints;
@@ -2189,12 +2211,12 @@ begin
   assert(FBreakMap.Count = 0, 'TDbgProcess.RemoveAllBreakPoints: FBreakMap.Count = 0');
 end;
 
-procedure TDbgProcess.BeforeChangingInstructionCode(const ALocation: TDBGPtr);
+procedure TDbgProcess.BeforeChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer);
 begin
   //
 end;
 
-procedure TDbgProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr);
+procedure TDbgProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer);
 begin
   //
 end;
@@ -2284,6 +2306,21 @@ function TDbgProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread
 begin
   Result := False;
 end;
+
+function TDbgProcess.WriteInstructionCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
+var
+  i: Integer;
+begin
+  BeforeChangingInstructionCode(AAdress, ASize);
+  for i := 0 to ASize -1 do
+  begin
+    if HasInsertedBreakInstructionAtLocation(AAdress+i) then
+      FBreakMap.AdaptOriginalValueAtLocation(AAdress+i, PByte(@AData+i)^);
+  end;
+  Result := WriteData(AAdress, ASize, AData);
+  AfterChangingInstructionCode(AAdress, ASize);
+end;
+
 
 { TDbgStackFrameInfo }
 

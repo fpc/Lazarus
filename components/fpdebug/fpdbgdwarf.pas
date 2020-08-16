@@ -576,6 +576,15 @@ type
                                 AnInitLocParserData: PInitLocParserData): Boolean; override;
   end;
 
+  { TFpSymbolDwarfFunctionResult }
+
+  TFpSymbolDwarfFunctionResult = class(TFpSymbolDwarfDataWithLocation)
+  protected
+    function GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean; override;
+    procedure Init; override;
+  end;
+
+
   { TFpSymbolDwarfType }
 
   (* Types and allowed tags in dwarf 2
@@ -1001,6 +1010,20 @@ var
 function dbgs(ASubRangeBoundReadState: TFpDwarfAtEntryDataReadState): String;
 begin
   WriteStr(Result, ASubRangeBoundReadState);
+end;
+
+{ TFpSymbolDwarfFunctionResult }
+
+function TFpSymbolDwarfFunctionResult.GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean;
+begin
+  AnAddress := Address;
+  Result := IsInitializedLoc(AnAddress);
+end;
+
+procedure TFpSymbolDwarfFunctionResult.Init;
+begin
+  inherited Init;
+  EvaluatedFields := EvaluatedFields + [sfiAddress];
 end;
 
 { TFpValueDwarfStructBase }

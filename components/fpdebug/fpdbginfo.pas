@@ -506,6 +506,56 @@ type
     constructor Create(AMemManager: TFpDbgMemManager; AnAddress: TDbgPtr; AnSizeOfAddr, AThreadId: Integer; AStackFrame: Integer);
   end;
 
+  { TFpDbgCallMemReader }
+
+  // This is basically a wrapper on another TFpDbgMemReaderBase. But with the
+  // possibility to override the value of some registers.
+  // It is used to evaluate function-results.
+  TFpDbgCallMemReader = class(TFpDbgMemReaderBase)
+  private
+    type TRegisterValue = record IsSet: boolean; Value: TDBGPtr end;
+  private
+    FRegisterCache: array of TRegisterValue;
+    FBaseMemReader: TFpDbgMemReaderBase;
+  public
+    constructor Create(ABaseMemReader: TFpDbgMemReaderBase);
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
+    function RegisterSize(ARegNum: Cardinal): Integer; override;
+    procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
+  end;
+
+  { TFpDbgInfoCallContext }
+
+  // This class is used to represent the context, just after the debugger made
+  // the debugee call some function.
+  // The special addition to make this work is that it is possible to set a
+  // register-value by calling SetRegisterValue. Further this class is an empty
+  // wrapper.
+  TFpDbgInfoCallContext = class(TFpDbgInfoContext)
+  private
+    FBaseContext: TFpDbgInfoContext;
+    FMemManager: TFpDbgMemManager;
+    FMemReader: TFpDbgCallMemReader;
+    FIsValid: Boolean;
+    FMessage: string;
+  protected
+    function GetMemManager: TFpDbgMemManager; override;
+    function GetAddress: TDbgPtr; override;
+    function GetThreadId: Integer; override;
+    function GetStackFrame: Integer; override;
+    function GetSizeOfAddress: Integer; override;
+  public
+    constructor Create(const ABaseContext: TFpDbgInfoContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
+    destructor Destroy; override;
+    procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
+    procedure SetError(Message: string);
+    property IsValid: Boolean read FIsValid;
+    property Message: string read FMessage;
+  end;
+
   { TDbgInfo }
 
   TDbgInfo = class(TObject)
@@ -541,6 +591,118 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TFpDbgCallMemReader }
+
+constructor TFpDbgCallMemReader.Create(ABaseMemReader: TFpDbgMemReaderBase);
+begin
+  FBaseMemReader := ABaseMemReader;
+end;
+
+function TFpDbgCallMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Result := FBaseMemReader.ReadMemory(AnAddress, ASize, ADest);
+end;
+
+function TFpDbgCallMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean;
+begin
+  Result := FBaseMemReader.ReadMemory(AnAddress, ASize, ADest, ABytesRead);
+end;
+
+function TFpDbgCallMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Result := FBaseMemReader.ReadMemoryEx(AnAddress, AnAddressSpace, ASize, ADest);
+end;
+
+function TFpDbgCallMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
+begin
+  if (ARegNum < Length(FRegisterCache)) and (FRegisterCache[ARegNum].IsSet) then
+    begin
+    AValue := FRegisterCache[ARegNum].Value;
+    Result := True;
+    end
+  else
+    Result := FBaseMemReader.ReadRegister(ARegNum, AValue, AContext);
+end;
+
+function TFpDbgCallMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+begin
+  Result := FBaseMemReader.RegisterSize(ARegNum);
+end;
+
+procedure TFpDbgCallMemReader.SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
+var
+  OldSize, i: Integer;
+begin
+  if High(FRegisterCache) < ARegNum then
+    begin
+    OldSize := Length(FRegisterCache);
+    SetLength(FRegisterCache, ARegNum +1);
+    for i := OldSize to High(FRegisterCache) do
+      FRegisterCache[i].IsSet := False;
+    end;
+  FRegisterCache[ARegNum].IsSet := True;
+  FRegisterCache[ARegNum].Value := AValue;
+end;
+
+{ TFpDbgInfoCallContext }
+
+constructor TFpDbgInfoCallContext.Create(const ABaseContext: TFpDbgInfoContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
+begin
+  FBaseContext:=ABaseContext;
+  FBaseContext.AddReference;
+
+  FMemReader := TFpDbgCallMemReader.Create(AMemReader);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter);
+
+  FIsValid := True;
+
+  Inherited Create;
+end;
+
+destructor TFpDbgInfoCallContext.Destroy;
+begin
+  FMemManager.Free;
+  FMemReader.Free;
+  FBaseContext.ReleaseReference;
+  inherited Destroy;
+end;
+
+function TFpDbgInfoCallContext.GetAddress: TDbgPtr;
+begin
+  Result := FBaseContext.GetAddress;
+end;
+
+function TFpDbgInfoCallContext.GetMemManager: TFpDbgMemManager;
+begin
+  Result := FMemManager;
+end;
+
+function TFpDbgInfoCallContext.GetSizeOfAddress: Integer;
+begin
+  Result := FBaseContext.GetSizeOfAddress;
+end;
+
+function TFpDbgInfoCallContext.GetStackFrame: Integer;
+begin
+  Result := FBaseContext.GetSizeOfAddress;
+end;
+
+function TFpDbgInfoCallContext.GetThreadId: Integer;
+begin
+  Result := FBaseContext.GetThreadId;
+end;
+
+procedure TFpDbgInfoCallContext.SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
+begin
+  FMemReader.SetRegisterValue(ARegNum, AValue);
+end;
+
+procedure TFpDbgInfoCallContext.SetError(Message: string);
+begin
+  FIsValid := False;
+  FMessage := Message;
 end;
 
 { TFpValueConstString }
