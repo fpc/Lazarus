@@ -6493,21 +6493,19 @@ begin
           // insert the selected text
           FCaret.IncForcePastEOL;
           try
-            LogicalCaretXY := NewCaret;
-            BlockBegin := NewCaret;
-            SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
+            if (eoPersistentBlock in Options2) and SelAvail then
+              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setMoveBlock], scamEnd, smaMoveUp, smNormal)
+            else
+              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setSelect], scamEnd, smaMoveUp, smNormal);
             if FoldInfo <> '' then begin
               ScanRanges;
               FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
-                    FBlockSelection.StartLinePos-1, FBlockSelection.StartBytePos,
+                    FBlockSelection.EndLinePos-1, FBlockSelection.EndBytePos,
                     PChar(FoldInfo), length(FoldInfo));
             end;
           finally
             FCaret.DecForcePastEOL;
           end;
-          FCaret.LineBytePos := NewCaret;
-          BlockBegin := NewCaret;
-          BlockEnd := NewCaret;
         finally
           InternalEndUndoBlock;
         end;
