@@ -171,7 +171,7 @@ type
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
     procedure LogLastError;
   protected
-    procedure AfterChangingInstructionCode(const ALocation: TDBGPtr); override;
+    procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); override;
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
     procedure InitializeLoaders; override;
@@ -345,9 +345,10 @@ begin
     DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s', [GetLastErrorText]);
 end;
 
-procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr);
+procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr;
+  ACount: Integer);
 begin
-  inherited AfterChangingInstructionCode(ALocation);
+  inherited AfterChangingInstructionCode(ALocation, ACount);
   FlushInstructionCache(Handle, Pointer(PtrUInt(ALocation)), 1);
 end;
 
