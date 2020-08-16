@@ -921,6 +921,7 @@ type
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure DoHandleMouseActionResult(AnActionResult: TSynEditMouseActionResult);
+    function CheckDragDropAccecpt(ANewCaret: TPoint; ASource: TObject; out ADropMove: boolean): boolean;
 
   protected
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
@@ -6398,32 +6399,51 @@ begin
   TextBetweenPointsEx[FCaret.LineBytePos, FCaret.LineBytePos, aCaretMode] := aText;
 end;
 
+function TCustomSynEdit.CheckDragDropAccecpt(ANewCaret: TPoint; ASource: TObject; out ADropMove: boolean): boolean;
+begin
+  // if from other control then move when SHIFT, else copy
+  // if from Self then copy when CTRL, else move
+  if ASource <> Self then begin
+    ADropMove := GetKeyState(VK_SHIFT) < 0;
+    Result := TRUE;
+  end else begin
+    ADropMove := GetKeyState(VK_CONTROL) >= 0;
+    Result := not IsPointInSelection(ANewCaret, not ADropMove);
+  end;
+end;
+
 procedure TCustomSynEdit.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
+var
+  DropMove: boolean;
 begin
   inherited;
   LastMouseCaret:=Point(-1,-1);
-  if (Source is TCustomSynEdit) and not TCustomSynEdit(Source).ReadOnly then
+  Accept := False;
+  if (not ReadOnly) and (Source is TCustomSynEdit) and TCustomSynEdit(Source).SelAvail then
   begin
-    Accept := True;
-    //Ctrl is pressed => change cursor to indicate copy instead of move
-    if GetKeyState(VK_CONTROL) < 0 then
-      DragCursor := crMultiDrag
-    else
-      DragCursor := crDrag;
     FBlockSelection.IncPersistentLock;
-    if State = dsDragLeave then //restore prev caret position
-      ComputeCaret(FMouseDownX, FMouseDownY)
-    else //position caret under the mouse cursor
+    try
+      //if State = dsDragLeave then //restore prev caret position
+      //  ComputeCaret(FMouseDownX, FMouseDownY)
+      //else //position caret under the mouse cursor
       ComputeCaret(X, Y);
-    FBlockSelection.DecPersistentLock;
+
+      Accept := CheckDragDropAccecpt(LogicalCaretXY, Source, DropMove);
+      if DropMove then
+        DragCursor := crDrag
+      else
+        DragCursor := crMultiDrag;
+    finally
+      FBlockSelection.DecPersistentLock;
+    end;
   end;
 end;
 
 procedure TCustomSynEdit.DragDrop(Source: TObject; X, Y: Integer);
 var
   NewCaret: TPoint;
-  DoDrop, DropAfter, DropMove: boolean;
+  DropAfter, DropMove: boolean;
   BB, BE: TPoint;
   DragDropText: string;
   Adjust: integer;
@@ -6438,22 +6458,11 @@ begin
       inherited;
       ComputeCaret(X, Y);
       NewCaret := LogicalCaretXY;
-      // if from other control then move when SHIFT, else copy
-      // if from Self then copy when CTRL, else move
-      if Source <> Self then begin
-        DropMove := GetKeyState(VK_SHIFT) < 0;
-        DoDrop := TRUE;
-        DropAfter := FALSE;
-      end else begin
-        DropMove := GetKeyState(VK_CONTROL) >= 0;
+      if CheckDragDropAccecpt(NewCaret, Source, DropMove) then begin
         BB := BlockBegin;
         BE := BlockEnd;
         DropAfter := (NewCaret.Y > BE.Y)
-          or ((NewCaret.Y = BE.Y) and (NewCaret.X > BE.X));
-        DoDrop := DropAfter or (NewCaret.Y < BB.Y)
-          or ((NewCaret.Y = BB.Y) and (NewCaret.X < BB.X));
-      end;
-      if DoDrop then begin
+          or ((NewCaret.Y = BE.Y) and (NewCaret.X >= BE.X));
         InternalBeginUndoBlock;                                                         //mh 2000-11-20
         try
           DragDropText := TCustomSynEdit(Source).SelText;
