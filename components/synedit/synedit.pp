@@ -6493,7 +6493,7 @@ begin
               SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setMoveBlock], scamEnd, smaMoveUp, sm)
             else
               SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setSelect], scamEnd, smaMoveUp, sm);
-            if FoldInfo <> '' then begin
+            if (FoldInfo <> '') and (sm <> smColumn) then begin
               ScanRanges;
               FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
                     FBlockSelection.EndLinePos-1, FBlockSelection.EndBytePos,
