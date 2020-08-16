@@ -20,6 +20,7 @@ type
     procedure FullExtentChanged(Sender: TObject);
     procedure SetActive(const AValue: Boolean);
     procedure SetChart(const AValue: TChart);
+    procedure SetExtentY(const AValue: TChartLiveViewExtentY);
     procedure SetViewportSize(const AValue: Double);
     procedure UpdateViewport;
   public
@@ -28,7 +29,7 @@ type
   published
     property Active: Boolean read FActive write SetActive default false;
     property Chart: TChart read FChart write SetChart default nil;
-    property ExtentY: TChartLiveViewExtentY read FExtentY write FExtentY default lveAuto;
+    property ExtentY: TChartLiveViewExtentY read FExtentY write SetExtentY default lveAuto;
     property ViewportSize: double read FViewportSize write SetViewportSize;
   end;
 
@@ -38,7 +39,7 @@ procedure Register;
 implementation
 
 uses
-  TACustomSeries, TAEnumerators;
+  Math, TACustomSeries, TAEnumerators;
 
 constructor TChartLiveView.Create(AOwner: TComponent);
 begin
@@ -79,6 +80,13 @@ begin
   FullExtentChanged(Self);
 end;
 
+procedure TChartLiveview.SetExtentY(const AValue: TChartLiveViewExtentY);
+begin
+  if FExtentY = AValue then exit;
+  FExtentY := AValue;
+  FullExtentChanged(nil);
+end;
+
 procedure TChartLiveView.SetViewportSize(const AValue: Double);
 begin
   if FViewportSize = AValue then exit;
@@ -94,6 +102,9 @@ var
   i: Integer;
   ymin, ymax: Double;
 begin
+  if not FChart.ScalingValid then
+    exit;
+
   fext := FChart.GetFullExtent();
   lext := FChart.LogicalExtent;
   w := lext.b.x - lext.a.x;
@@ -110,12 +121,12 @@ begin
   case FExtentY of
     lveAuto:
       begin
-        ymin := 1E308;
-        ymax := -1E308;
+        ymin := Infinity;
+        ymax := -Infinity;
         for i := 0 to FChart.SeriesCount-1 do
           if FChart.Series[i] is TChartSeries then
             TChartSeries(FChart.Series[i]).FindYRange(lext.a.x, lext.b.x, ymin, ymax);
-        if (ymin < 1E308) and (ymax > -1E308) then
+        if (ymin <> Infinity) and (ymax <> -Infinity) then
         begin
           lext.a.y := ymin;
           lext.b.y := ymax;
