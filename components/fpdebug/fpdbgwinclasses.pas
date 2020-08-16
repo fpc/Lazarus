@@ -152,6 +152,7 @@ type
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
 
+    procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
@@ -1711,6 +1712,39 @@ begin
 
   Result := GetFpThreadContext(_UnAligendContext, FCurrentContext, cfFull);
   FRegisterValueListValid:=False;
+end;
+
+procedure TDbgWinThread.SetRegisterValue(AName: string; AValue: QWord);
+begin
+  if ReadThreadState then
+    exit;
+
+  {$ifdef cpui386}
+    case AName of
+      'eip': FCurrentContext^.def.Eip := AValue;
+      'eax': FCurrentContext^.def.Eax := AValue;
+    else
+      raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
+    end;
+  {$else}
+  if (TDbgWinProcess(Process).FBitness = b32) then begin
+    case AName of
+      'eip': FCurrentContext^.WOW.Eip := AValue;
+      'eax': FCurrentContext^.WOW.Eax := AValue;
+    else
+      raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
+    end;
+  end
+  else begin
+    case AName of
+      'eip': FCurrentContext^.def.Rip := AValue;
+      'eax': FCurrentContext^.def.Rax := AValue;
+    else
+      raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
+    end;
+  end;
+  {$endif}
+  FThreadContextChanged:=True;
 end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
