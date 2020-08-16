@@ -437,6 +437,11 @@ begin
   UpdateControl;
 end;
 
+function TCustomFloatSpinEditEx.GetFormatsettings: TFormatSettings;
+begin
+  Result := FFS;
+end;
+
 
 procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
 begin

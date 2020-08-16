@@ -195,6 +195,7 @@ type
     procedure SetExponentialFormatLimitPos(AValue: Integer);
     procedure SetPrecision(AValue: Integer);
   protected
+    function GetFormatsettings: TFormatSettings;
     procedure EditKeyPress(var Key: char); override;
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
     function SafeInc(AValue: Double): Double; override;
