@@ -59,6 +59,9 @@ begin
   ClearButton.Caption := oisClear;
   AddButtons;
   IDEDialogLayoutList.ApplyLayout(Self);
+  {$IFDEF LCLQt5}                  // A hack to prevent layout error with LCL-QT5.
+  TextGroupBox.Caption := 'Lines'; // Can be removed when issue #37576 is solved.
+  {$ENDIF}
 end;
 
 procedure TStringsPropEditorFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
