@@ -1,0 +1,197 @@
+object MainFrom: TMainFrom
+  Left = 299
+  Height = 446
+  Top = 130
+  Width = 723
+  Caption = 'Live View Demo'
+  ClientHeight = 446
+  ClientWidth = 723
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object Chart1: TChart
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ChartNavScrollBar1
+    Left = 0
+    Height = 392
+    Top = 0
+    Width = 723
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Intervals.MaxLength = 80
+        Intervals.MinLength = 30
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Intervals.MaxLength = 80
+        Intervals.MinLength = 30
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    object Chart1LineSeries1: TLineSeries
+    end
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Chart1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 37
+    Top = 409
+    Width = 723
+    Anchors = [akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 37
+    ClientWidth = 723
+    TabOrder = 2
+    object btnAddDataPoint: TButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 6
+      Height = 25
+      Top = 6
+      Width = 105
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Add data point'
+      OnClick = btnAddDataPointClick
+      TabOrder = 0
+    end
+    object cbLiveMode: TCheckBox
+      AnchorSideLeft.Control = btnAddDataPoint
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 135
+      Height = 19
+      Top = 9
+      Width = 75
+      BorderSpacing.Left = 24
+      Caption = 'Live mode'
+      Checked = True
+      OnChange = cbLiveModeChange
+      State = cbChecked
+      TabOrder = 1
+    end
+    object lblViewportSize: TLabel
+      AnchorSideLeft.Control = cbLiveMode
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 234
+      Height = 15
+      Top = 11
+      Width = 69
+      BorderSpacing.Left = 24
+      Caption = 'Viewport size'
+      ParentColor = False
+      Visible = False
+    end
+    object seViewportSize: TFloatSpinEdit
+      AnchorSideLeft.Control = lblViewportSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 311
+      Height = 23
+      Top = 7
+      Width = 73
+      Alignment = taRightJustify
+      BorderSpacing.Left = 8
+      MaxValue = 0
+      OnChange = seViewportSizeChange
+      TabOrder = 2
+      Value = 5
+      Visible = False
+    end
+    object cbExtentY: TComboBox
+      AnchorSideLeft.Control = lblExtentY
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 456
+      Height = 23
+      Top = 7
+      Width = 100
+      BorderSpacing.Left = 8
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Auto'
+        'Full'
+        'Logical'
+      )
+      OnChange = cbExtentYChange
+      TabOrder = 3
+      Text = 'Auto'
+    end
+    object cbFixedExtent: TCheckBox
+      AnchorSideLeft.Control = cbExtentY
+      AnchorSideLeft.Side = asrBottom
+      Left = 580
+      Height = 19
+      Top = 9
+      Width = 127
+      BorderSpacing.Left = 24
+      Caption = 'y = -1.5 .. .+1.5 fixed'
+      OnChange = cbFixedExtentChange
+      TabOrder = 4
+    end
+    object lblExtentY: TLabel
+      AnchorSideLeft.Control = seViewportSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 408
+      Height = 15
+      Top = 11
+      Width = 40
+      BorderSpacing.Left = 24
+      Caption = 'ExtentY'
+      ParentColor = False
+    end
+  end
+  object ChartNavScrollBar1: TChartNavScrollBar
+    AnchorSideLeft.Control = Chart1
+    AnchorSideRight.Control = Chart1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Panel1
+    Left = 0
+    Height = 17
+    Top = 392
+    Width = 723
+    AutoPageSize = True
+    Chart = Chart1
+    Anchors = [akLeft, akRight, akBottom]
+    PageSize = 0
+    TabOrder = 1
+  end
+  object ChartLiveView1: TChartLiveView
+    Chart = Chart1
+    ViewportSize = 5
+    Left = 308
+    Top = 143
+  end
+end
