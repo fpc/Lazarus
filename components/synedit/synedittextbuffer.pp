@@ -355,6 +355,28 @@ type
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
+  TSynEditStringFlagsArray = packed array of TSynEditStringFlags;
+
+  { TSynEditUndoMarkModified }
+
+  TSynEditUndoMarkModified = class(TSynEditUndoItem)
+  private
+    FPosY: TLineIdx;
+    FWasSaved: TSynEditStringFlagsArray;
+  protected
+    function DebugString: String; override;
+  public
+    constructor Create(ALine: TLineIdx; AWasSaved: TSynEditStringFlagsArray);
+    function PerformUndo(Caller: TObject): Boolean; override;
+  end;
+
+var
+  (* Re-usable arrays for the most common cases *)
+  SynEditUndoMarkModifiedOneEmpty:    TSynEditStringFlagsArray; // = [];
+  SynEditUndoMarkModifiedOneSaved:    TSynEditStringFlagsArray; // = [sfSaved];
+  SynEditUndoMarkModifiedOneModified: TSynEditStringFlagsArray; // = [sfModified];
+
+
 { TLazSynDisplayBuffer }
 
 constructor TLazSynDisplayBuffer.Create(ABuffer: TSynEditStringList);
@@ -565,6 +587,63 @@ begin
     TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount)
 end;
 
+{ TSynEditUndoMarkModified }
+
+function TSynEditUndoMarkModified.DebugString: String;
+begin
+  Result := 'Y='+dbgs(FPosY) + ' Cnt='+ dbgs(Length(FWasSaved));
+end;
+
+constructor TSynEditUndoMarkModified.Create(ALine: TLineIdx;
+  AWasSaved: TSynEditStringFlagsArray);
+begin
+  FPosY := ALine;
+  FWasSaved := AWasSaved;
+  {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
+end;
+
+function TSynEditUndoMarkModified.PerformUndo(Caller: TObject): Boolean;
+var
+  i: Integer;
+  WasSaved: TSynEditStringFlagsArray;
+  Buffer: TSynEditStringList absolute Caller;
+  UnSaved: Boolean;
+begin
+  Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  if Result then begin
+    UnSaved := Buffer.CurUndoList.SavedMarkerExists and (not Buffer.CurUndoList.IsTopMarkedAsSaved);
+    if Length(FWasSaved) = 1 then begin
+      if FPosY < Buffer.Count then begin
+        if sfSaved in Buffer.Flags[FPosY] then
+          WasSaved := SynEditUndoMarkModifiedOneSaved
+        else
+        if sfModified in Buffer.Flags[FPosY] then
+          WasSaved := SynEditUndoMarkModifiedOneModified
+        else
+          WasSaved := SynEditUndoMarkModifiedOneEmpty;
+
+        if (sfSaved in FWasSaved[0]) and UnSaved then
+          Buffer.Flags[FPosY] := [sfModified]
+        else
+          Buffer.Flags[FPosY] := FWasSaved[0];
+      end;
+    end
+    else begin
+      SetLength(WasSaved, Length(FWasSaved));
+      for i := 0 to Min(Length(FWasSaved), Buffer.Count - FPosY) - 1 do begin
+        WasSaved[i] := Buffer.Flags[FPosY + i];
+
+        if (sfSaved in FWasSaved[i]) and UnSaved then
+          Buffer.Flags[FPosY + i] := [sfModified]
+        else
+        Buffer.Flags[FPosY + i] := FWasSaved[i];
+      end;
+    end;
+    if WasSaved <> nil then
+      Buffer.CurUndoList.AddChange(TSynEditUndoMarkModified.Create(FPosY, WasSaved), True);
+  end;
+end;
 
 { TSynEditStringList }
 
@@ -823,6 +902,11 @@ begin
   if not AValue then
     SendNotification(senrEndUndoRedo, Self); // before UNDO ends
 
+  if (not AValue) and fUndoList.IsTopMarkedAsSaved then begin
+    fRedoList.MarkTopAsSaved;
+    MarkSaved;
+  end;
+
   FIsUndoing := AValue;
 
   if AValue then
@@ -841,6 +925,11 @@ begin
 
   if not AValue then
     SendNotification(senrEndUndoRedo, Self); // before UNDO ends
+
+  if (not AValue) and fRedoList.IsTopMarkedAsSaved then begin
+    fUndoList.MarkTopAsSaved;
+    MarkSaved;
+  end;
 
   FIsRedoing := AValue;
 
@@ -1213,11 +1302,35 @@ end;
 
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
-  Index: Integer;
+  Index, i: Integer;
+  WasSaved: TSynEditStringFlagsArray;
+  NeedUndo: Boolean;
 begin
-  for Index := AFirst - 1 to ALast - 1 do
-    if (Index >= 0) or (Index < Count) then
+  if IsUndoing or IsRedoing then
+    exit;
+  AFirst := ToIdx(AFirst);
+  ALast := ToIdx(ALast);
+  if ALast = AFirst then begin
+    if sfSaved in Flags[AFirst] then
+      CurUndoList.AddChange(TSynEditUndoMarkModified.Create(AFirst, SynEditUndoMarkModifiedOneSaved), True)
+    else
+    if not (sfModified in Flags[AFirst]) then
+      CurUndoList.AddChange(TSynEditUndoMarkModified.Create(AFirst, SynEditUndoMarkModifiedOneEmpty), True);
+    Flags[AFirst] := Flags[AFirst] + [sfModified] - [sfSaved];
+  end
+  else begin
+    SetLength(WasSaved, ALast - AFirst + 1);
+    i := 0;
+    NeedUndo := False;
+    for Index := Max(0, AFirst) to Min(ALast, Count - 1) do begin
+      NeedUndo := NeedUndo or (Flags[Index] <> [sfModified]);
+      WasSaved[i] := Flags[Index];
       Flags[Index] := Flags[Index] + [sfModified] - [sfSaved];
+      inc(i);
+    end;
+    if NeedUndo then
+      CurUndoList.AddChange(TSynEditUndoMarkModified.Create(AFirst, WasSaved), True);
+  end;
 end;
 
 procedure TSynEditStringList.MarkSaved;
@@ -1227,6 +1340,13 @@ begin
   for Index := 0 to Count - 1 do
     if sfModified in Flags[Index] then
       Flags[Index] := Flags[Index] + [sfSaved];
+
+  if not (IsUndoing or IsRedoing) then begin
+    fUndoList.MarkTopAsSaved;
+    FRedoList.MarkTopAsSaved;
+  end;
+
+  SendNotification(senrHighlightChanged, Self, -1, -1);
 end;
 
 procedure TSynEditStringList.AddManagedHandler(AReason: TSynEditNotifyReason;
@@ -1773,6 +1893,15 @@ begin
     TStringListLineEditEvent(Items[i])(Sender, aLinePos, aBytePos, aCount,
                              aLineBrkCnt, aText);
 end;
+
+initialization
+  SetLength(SynEditUndoMarkModifiedOneEmpty, 1);
+  SetLength(SynEditUndoMarkModifiedOneSaved, 1);
+  SetLength(SynEditUndoMarkModifiedOneModified, 1);
+  SynEditUndoMarkModifiedOneEmpty[0]    := [];
+  SynEditUndoMarkModifiedOneSaved[0]    := [sfSaved, sfModified];
+  SynEditUndoMarkModifiedOneModified[0] := [sfModified];
+
 
 end.
 

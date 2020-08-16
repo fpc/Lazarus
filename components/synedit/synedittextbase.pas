@@ -199,7 +199,7 @@ type
     fOnAdded: TNotifyEvent;
     FOnNeedCaretUndo: TSynGetCaretUndoProc;
     FOnNeedCaretUndoList: TSynEditUpdateCaretUndoProcList;
-    fUnModifiedItem: integer;
+    fUnModifiedItem, fSavedItem: integer;
     FForceGroupEnd: Boolean;
     procedure EnsureMaxEntries;
     function GetCanUndo: boolean;
@@ -213,7 +213,7 @@ type
     {$ENDIF}
     constructor Create;
     destructor Destroy; override;
-    procedure AddChange(AChange: TSynEditUndoItem);
+    procedure AddChange(AChange: TSynEditUndoItem; AForceLocked: Boolean = False);
     // "LastChange: Either in current Group, or in last Group, if no current
     procedure AppendToLastChange(AChange: TSynEditUndoItem);
     function  GetLastChange: TSynEditUndoItem;  // Excludes caret
@@ -226,11 +226,18 @@ type
     function PeekItem: TSynEditUndoGroup;
     procedure Unlock;
     function IsLocked: Boolean;
+    (* Historically SynEdit has
+       TSynEdit.MarkTextAsSaved;   // Affects the "Changes Gutter" only
+       TSynEdit.Modified := False;
+     *)
     procedure MarkTopAsUnmodified;
+    procedure MarkTopAsSaved;
     procedure ForceGroupEnd;
     function RealCount: Integer;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
+    function IsTopMarkedAsSaved: boolean;
+    function SavedMarkerExists: boolean;
     {$IFDEF SynUndoDebugBeginEnd}
     property InGroupCount: integer read FInGroupCount;
     {$ENDIF}
@@ -298,6 +305,7 @@ begin
   fItems := TList.Create;
   fMaxUndoActions := 1024;
   fUnModifiedItem:=-1;
+  fSavedItem := -2;  // -1 shall be that there was a SavedMarker, but it went out of scope due to max entries
   FForceGroupEnd := False;
 end;
 
@@ -310,11 +318,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditUndoList.AddChange(AChange: TSynEditUndoItem);
+procedure TSynEditUndoList.AddChange(AChange: TSynEditUndoItem;
+  AForceLocked: Boolean);
 var
   ugroup: TSynEditUndoGroup;
 begin
-  if fLockCount > 0 then begin
+  if (not AForceLocked) and (fLockCount > 0) then begin
     AChange.Free;
     exit;
   end;
@@ -412,6 +421,7 @@ begin
   fItems.Clear;
   fFullUndoImposible := FALSE;
   fUnModifiedItem:=-1;
+  fSavedItem := -2;
 end;
 
 procedure TSynEditUndoList.EndBlock;
@@ -467,6 +477,7 @@ begin
       Item.Free;
       fItems.Delete(0);
       if fUnModifiedItem>=0 then dec(fUnModifiedItem);
+      if fSavedItem >= 0 then dec(fSavedItem);
     end;
   end;
 end;
@@ -511,6 +522,8 @@ begin
     fItems.Delete(iLast);
     if fUnModifiedItem>fItems.Count then
       fUnModifiedItem:=-1;
+    if fSavedItem>fItems.Count then
+      fSavedItem:=-2;
   end;
 end;
 
@@ -557,6 +570,11 @@ begin
   fUnModifiedItem := RealCount;
 end;
 
+procedure TSynEditUndoList.MarkTopAsSaved;
+begin
+  fSavedItem := RealCount;
+end;
+
 procedure TSynEditUndoList.ForceGroupEnd;
 begin
   FForceGroupEnd := True;
@@ -570,6 +588,16 @@ end;
 function TSynEditUndoList.UnModifiedMarkerExists: boolean;
 begin
   Result := fUnModifiedItem >= 0;
+end;
+
+function TSynEditUndoList.IsTopMarkedAsSaved: boolean;
+begin
+  Result := (RealCount = fSavedItem);
+end;
+
+function TSynEditUndoList.SavedMarkerExists: boolean;
+begin
+  Result := fSavedItem >= -1;
 end;
 
 procedure TSynEditUndoList.RegisterUpdateCaretUndo(AnUpdateProc: TSynUpdateCaretUndoProc);
