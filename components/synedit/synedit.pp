@@ -785,7 +785,7 @@ type
     // x-pixel pos of first char on canvas
     function  TextLeftPixelOffset(IncludeGutterTextDist: Boolean = True): Integer;
     function  TextRightPixelOffset: Integer;
-    function IsPointInSelection(Value: TPoint): boolean;
+    function IsPointInSelection(Value: TPoint; AnIgnoreAtSelectionBound: Boolean = False): boolean;
     procedure LockUndo;
     procedure MoveCaretHorz(DX: integer);
     procedure MoveCaretVert(DY: integer; UseScreenLine: Boolean = False);
@@ -8276,29 +8276,40 @@ begin
   end;
 end;
 
-function TCustomSynEdit.IsPointInSelection(Value: TPoint): boolean;
+function TCustomSynEdit.IsPointInSelection(Value: TPoint;
+  AnIgnoreAtSelectionBound: Boolean): boolean;
 var
   ptBegin, ptEnd: TPoint;
+  i: Integer;
 begin
+  Result := SelAvail;
+  if not Result then
+    exit;
+
   ptBegin := BlockBegin;
   ptEnd := BlockEnd;
-  if (Value.Y >= ptBegin.Y) and (Value.Y <= ptEnd.Y) and
-    ((ptBegin.Y <> ptEnd.Y) or (ptBegin.X <> ptEnd.X))
-    then begin
-    if FBlockSelection.SelectionMode = smLine then
-      Result := TRUE
-    else if (FBlockSelection.ActiveSelectionMode = smColumn) then begin
-      if (ptBegin.X > ptEnd.X) then
-        Result := (Value.X >= ptEnd.X) and (Value.X < ptBegin.X)
-      else if (ptBegin.X < ptEnd.X) then
-        Result := (Value.X >= ptBegin.X) and (Value.X < ptEnd.X)
-      else
-        Result := FALSE;
-    end else
-      Result := ((Value.Y > ptBegin.Y) or (Value.X >= ptBegin.X)) and
-        ((Value.Y < ptEnd.Y) or (Value.X < ptEnd.X));
-  end else
-    Result := FALSE;
+  Result :=  (Value.Y >= ptBegin.Y) and (Value.Y <= ptEnd.Y);
+  if not Result then
+    exit;
+
+  if AnIgnoreAtSelectionBound then
+    i := 0
+  else
+    i := 1;
+  case FBlockSelection.ActiveSelectionMode of
+    smLine: begin
+        Result := TRUE;
+      end;
+    smColumn: begin
+        Result := (Value.x > FBlockSelection.ColumnStartBytePos[Value.y] - i) and
+                  (Value.x < FBlockSelection.ColumnEndBytePos[Value.y]   + i);
+      end;
+    else begin
+        Result :=
+          ( (Value.Y > ptBegin.Y) or (Value.X > ptBegin.X - i) ) and
+          ( (Value.Y < ptEnd.Y)   or (Value.X < ptEnd.X + i) );
+      end;
+  end;
 end;
 
 procedure TCustomSynEdit.BookMarkOptionsChanged(Sender: TObject);
