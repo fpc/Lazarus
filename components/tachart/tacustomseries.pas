@@ -222,6 +222,7 @@ type
     procedure Delete(AIndex: Integer); virtual;
     procedure EndUpdate;
     function Extent: TDoubleRect; virtual;
+    procedure FindYRange(AXMin, AXMax: Double; var AYMin, AYMax: Double); virtual;
     function FormattedMark(
       AIndex: Integer; AFormat: String = ''; AYIndex: Integer = 0): String;
     function IsEmpty: Boolean; override;
@@ -347,6 +348,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     function Extent: TDoubleRect; override;
+    procedure FindYRange(AXMin, AXMax: Double; var AYMin, AYMax: Double); override;
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
@@ -874,6 +876,12 @@ end;
 function TChartSeries.Extent: TDoubleRect;
 begin
   Result := Source.ExtentCumulative;
+end;
+
+procedure TChartSeries.FindYRange(AXMin, AXMax: Double;
+  var AYMin, AYMax: Double);
+begin
+  Source.FindYRange(AXMin, AXMax, false, AYMin, AYMax);
 end;
 
 function TChartSeries.FormattedMark(
@@ -1498,6 +1506,11 @@ begin
     FLoBound := Max(FLoBound - 1, 0);
     FUpBound := Min(FUpBound + 1, Count - 1);
   end;
+end;
+
+procedure TBasicPointSeries.FindYRange(AXMin, AXMax: Double; var AYMin, AYMax: Double);
+begin
+  Source.FindYRange(AXMin, AXMax, FStacked, AYMin, AYMax);
 end;
 
 function TBasicPointSeries.GetErrorBars(AIndex: Integer): TChartErrorBar;

@@ -174,96 +174,97 @@
         <UnitName Value="TAMath"/>
       </Item32>
       <Item33>
+        <Filename Value="tachartliveview.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAChartLiveView"/>
+      </Item33>
+      <Item34>
         <Filename Value="tachartimagelist.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TAChartImageList"/>
-      </Item33>
-      <Item34>
-        <Filename Value="tachartteechart.pas"/>
-        <UnitName Value="TAChartTeeChart"/>
       </Item34>
       <Item35>
-        <Filename Value="tadatatools.pas"/>
-        <UnitName Value="TADataTools"/>
+        <Filename Value="tachartteechart.pas"/>
+        <UnitName Value="TAChartTeeChart"/>
       </Item35>
       <Item36>
-        <Filename Value="taanimatedsource.pas"/>
-        <UnitName Value="TAAnimatedSource"/>
+        <Filename Value="tadatatools.pas"/>
+        <UnitName Value="TADataTools"/>
       </Item36>
       <Item37>
-        <Filename Value="tatextelements.pas"/>
-        <UnitName Value="TATextElements"/>
+        <Filename Value="taanimatedsource.pas"/>
+        <UnitName Value="TAAnimatedSource"/>
       </Item37>
       <Item38>
-        <Filename Value="taaxissource.pas"/>
-        <UnitName Value="TAAxisSource"/>
+        <Filename Value="tatextelements.pas"/>
+        <UnitName Value="TATextElements"/>
       </Item38>
       <Item39>
+        <Filename Value="taaxissource.pas"/>
+        <UnitName Value="TAAxisSource"/>
+      </Item39>
+      <Item40>
         <Filename Value="editors\taseriespropeditors.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TASeriesPropEditors"/>
-      </Item39>
-      <Item40>
-        <Filename Value="tacustomfuncseries.pas"/>
-        <UnitName Value="TACustomFuncSeries"/>
       </Item40>
       <Item41>
-        <Filename Value="tafitutils.pas"/>
-        <UnitName Value="TAFitUtils"/>
+        <Filename Value="tacustomfuncseries.pas"/>
+        <UnitName Value="TACustomFuncSeries"/>
       </Item41>
       <Item42>
-        <Filename Value="taguiconnector.pas"/>
-        <UnitName Value="TAGUIConnector"/>
+        <Filename Value="tafitutils.pas"/>
+        <UnitName Value="TAFitUtils"/>
       </Item42>
       <Item43>
-        <Filename Value="tadiagram.pas"/>
-        <UnitName Value="TADiagram"/>
+        <Filename Value="taguiconnector.pas"/>
+        <UnitName Value="TAGUIConnector"/>
       </Item43>
       <Item44>
-        <Filename Value="tadiagramdrawing.pas"/>
-        <UnitName Value="TADiagramDrawing"/>
+        <Filename Value="tadiagram.pas"/>
+        <UnitName Value="TADiagram"/>
       </Item44>
       <Item45>
-        <Filename Value="tadiagramlayout.pas"/>
-        <UnitName Value="TADiagramLayout"/>
+        <Filename Value="tadiagramdrawing.pas"/>
+        <UnitName Value="TADiagramDrawing"/>
       </Item45>
       <Item46>
-        <Filename Value="tachartstrconsts.pas"/>
-        <UnitName Value="TAChartStrConsts"/>
+        <Filename Value="tadiagramlayout.pas"/>
+        <UnitName Value="TADiagramLayout"/>
       </Item46>
       <Item47>
+        <Filename Value="tachartstrconsts.pas"/>
+        <UnitName Value="TAChartStrConsts"/>
+      </Item47>
+      <Item48>
         <Filename Value="tachartcombos.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TAChartCombos"/>
-      </Item47>
-      <Item48>
-        <Filename Value="tahtml.pas"/>
-        <UnitName Value="TAHtml"/>
       </Item48>
       <Item49>
-        <Filename Value="tafonts.pas"/>
-        <UnitName Value="TAFonts"/>
+        <Filename Value="tahtml.pas"/>
+        <UnitName Value="TAHtml"/>
       </Item49>
       <Item50>
-        <Filename Value="taexpressionseries.pas"/>
-        <UnitName Value="TAExpressionSeries"/>
+        <Filename Value="tafonts.pas"/>
+        <UnitName Value="TAFonts"/>
       </Item50>
       <Item51>
-        <Filename Value="tafitlib.pas"/>
-        <UnitName Value="TAFitLib"/>
+        <Filename Value="taexpressionseries.pas"/>
+        <UnitName Value="TAExpressionSeries"/>
       </Item51>
       <Item52>
+        <Filename Value="tafitlib.pas"/>
+        <UnitName Value="TAFitLib"/>
+      </Item52>
+      <Item53>
         <Filename Value="editors\tasourcepropeditors.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TASourcePropEditors"/>
-      </Item52>
-      <Item53>
-        <Filename Value="tadatapointseditor.pas"/>
-        <UnitName Value="TADataPointsEditor"/>
       </Item53>
       <Item54>
-        <Filename Value="tachartliveview.pas"/>
-        <UnitName Value="TAChartLiveView"/>
+        <Filename Value="tadatapointseditor.pas"/>
+        <UnitName Value="TADataPointsEditor"/>
       </Item54>
     </Files>
     <CompatibilityMode Value="True"/>

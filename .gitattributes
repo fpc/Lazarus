@@ -5392,6 +5392,9 @@ components/tachart/icons/tchartlegendpanel_200.png -text
 components/tachart/icons/tchartlistbox.png -text svneol=unset#images/png
 components/tachart/icons/tchartlistbox_150.png -text
 components/tachart/icons/tchartlistbox_200.png -text
+components/tachart/icons/tchartliveview.png -text svneol=unset#image/png
+components/tachart/icons/tchartliveview_150.png -text svneol=unset#image/png
+components/tachart/icons/tchartliveview_200.png -text svneol=unset#image/png
 components/tachart/icons/tchartnavpanel.png -text svneol=unset#images/png
 components/tachart/icons/tchartnavpanel_150.png -text
 components/tachart/icons/tchartnavpanel_200.png -text

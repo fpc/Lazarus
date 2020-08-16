@@ -14,11 +14,11 @@ uses
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TAChartExtentLink, TAToolEditors, TAMath, 
-  TAChartImageList, TAChartTeeChart, TADataTools, TAAnimatedSource, 
-  TATextElements, TAAxisSource, TASeriesPropEditors, TACustomFuncSeries, 
-  TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, TADiagramLayout, 
-  TAChartStrConsts, TAChartCombos, TAHtml, TAFonts, TAExpressionSeries, 
-  TAFitLib, TASourcePropEditors, TADataPointsEditor, TAChartLiveView, 
+  TAChartLiveView, TAChartImageList, TAChartTeeChart, TADataTools, 
+  TAAnimatedSource, TATextElements, TAAxisSource, TASeriesPropEditors, 
+  TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
+  TADiagramLayout, TAChartStrConsts, TAChartCombos, TAHtml, TAFonts, 
+  TAExpressionSeries, TAFitLib, TASourcePropEditors, TADataPointsEditor, 
   LazarusPackageIntf;
 
 implementation
@@ -38,6 +38,7 @@ begin
   RegisterUnit('TAChartListbox', @TAChartListbox.Register);
   RegisterUnit('TAChartExtentLink', @TAChartExtentLink.Register);
   RegisterUnit('TAToolEditors', @TAToolEditors.Register);
+  RegisterUnit('TAChartLiveView', @TAChartLiveView.Register);
   RegisterUnit('TAChartImageList', @TAChartImageList.Register);
   RegisterUnit('TASeriesPropEditors', @TASeriesPropEditors.Register);
   RegisterUnit('TAChartCombos', @TAChartCombos.Register);

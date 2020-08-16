@@ -8,10 +8,13 @@ uses
   Classes, SysUtils, TAGraph, TAChartUtils;
 
 type
+  TChartLiveViewExtentY = (lveAuto, lveFull, lveLogical);
+
   TChartLiveView = class(TComponent)
   private
     FActive: Boolean;
     FChart: TChart;
+    FExtentY: TChartLiveViewExtentY;
     FListener: TListener;
     FViewportSize: Double;
     procedure FullExtentChanged(Sender: TObject);
@@ -25,11 +28,17 @@ type
   published
     property Active: Boolean read FActive write SetActive default false;
     property Chart: TChart read FChart write SetChart default nil;
+    property ExtentY: TChartLiveViewExtentY read FExtentY write FExtentY default lveAuto;
     property ViewportSize: double read FViewportSize write SetViewportSize;
   end;
 
+procedure Register;
+
 
 implementation
+
+uses
+  TACustomSeries, TAEnumerators;
 
 constructor TChartLiveView.Create(AOwner: TComponent);
 begin
@@ -82,6 +91,8 @@ procedure TChartLiveView.UpdateViewport;
 var
   fext, lext: TDoubleRect;
   w: double;
+  i: Integer;
+  ymin, ymax: Double;
 begin
   fext := FChart.GetFullExtent();
   lext := FChart.LogicalExtent;
@@ -96,9 +107,34 @@ begin
     lext.a.x := fext.a.x;
     lext.b.x := lext.a.x + w;
   end;
-  lext.a.y := fext.a.y;
-  lext.b.y := fext.b.y;
+  case FExtentY of
+    lveAuto:
+      begin
+        ymin := 1E308;
+        ymax := -1E308;
+        for i := 0 to FChart.SeriesCount-1 do
+          if FChart.Series[i] is TChartSeries then
+            TChartSeries(FChart.Series[i]).FindYRange(lext.a.x, lext.b.x, ymin, ymax);
+        if (ymin < 1E308) and (ymax > -1E308) then
+        begin
+          lext.a.y := ymin;
+          lext.b.y := ymax;
+        end;
+      end;
+    lveFull:
+      begin
+        lext.a.y := fext.a.y;
+        lext.b.y := fext.b.y;
+      end;
+    lveLogical:
+      ;
+  end;
   FChart.LogicalExtent := lext;
+end;
+
+procedure Register;
+begin
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartLiveView]);
 end;
 
 end.

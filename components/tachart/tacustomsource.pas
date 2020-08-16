@@ -244,6 +244,8 @@ type
     function ExtentList: TDoubleRect; virtual;
     function ExtentXYList: TDoubleRect; virtual;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
+    procedure FindYRange(AXMin, AXMax: Double; Stacked: Boolean;
+      var AYMin, AYMax: Double);
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String; inline;
     function FormatItemXYText(
@@ -1156,6 +1158,34 @@ begin
       AUB -= 1;
     end;
   end;
+end;
+
+procedure TCustomChartSource.FindYRange(AXMin, AXMax: Double; Stacked: Boolean;
+  var AYMin, AYMax: Double);
+var
+  lb, ub: Integer;
+  i, j: Integer;
+  sum: Double;
+begin
+  FindBounds(AXMin, AXMax, lb, ub);
+  for i := lb to ub do
+  begin
+    if YCount = 1 then
+      UpdateMinMax(Item[i]^.Y, AYMin, AYMax)
+    else
+      if Stacked then
+      begin
+        sum := Item[i]^.Y;
+        for j := 0 to YCount-2 do
+          sum := sum + Item[i]^.YList[j];
+        UpdateMinMax(sum, AYMin, AYMax);
+      end else
+      begin
+        UpdateMinMax(Item[i]^.Y, AYMin, AYMax);
+        for j := 0 to YCount-2 do
+          UpdateMinMax(Item[i]^.YList[j], AYMin, AYMax);
+      end;
+  end
 end;
 
 function TCustomChartSource.FormatItem(
