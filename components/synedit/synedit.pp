@@ -3607,7 +3607,7 @@ begin
         end;
       emcStartDragMove:
         begin
-          if SelAvail and (SelectionMode = smNormal) then begin
+          if SelAvail then begin
             Include(fStateFlags, sfWaitForDragging);
             if AnAction.Option = emcoNotDragedNoCaretOnUp then
               Include(fStateFlags, sfWaitForDraggingNoCaret);
@@ -6443,12 +6443,13 @@ end;
 procedure TCustomSynEdit.DragDrop(Source: TObject; X, Y: Integer);
 var
   NewCaret: TPoint;
-  DropAfter, DropMove: boolean;
+  DropMove: boolean;
   BB, BE: TPoint;
   DragDropText: string;
   Adjust: integer;
   FoldInfo: String;
   BlockSel: TSynEditSelection;
+  sm: TSynSelectionMode;
 begin
   if not ReadOnly  and (Source is TCustomSynEdit)
     and TCustomSynEdit(Source).SelAvail
@@ -6461,8 +6462,6 @@ begin
       if CheckDragDropAccecpt(NewCaret, Source, DropMove) then begin
         BB := BlockBegin;
         BE := BlockEnd;
-        DropAfter := (NewCaret.Y > BE.Y)
-          or ((NewCaret.Y = BE.Y) and (NewCaret.X >= BE.X));
         InternalBeginUndoBlock;                                                         //mh 2000-11-20
         try
           DragDropText := TCustomSynEdit(Source).SelText;
@@ -6471,32 +6470,29 @@ begin
             FoldInfo :=  TCustomSynEdit(Source).FFoldedLinesView.GetFoldDescription(
                   BlockSel.FirstLineBytePos.Y - 1, BlockSel.FirstLineBytePos.X,
                   BlockSel.LastLineBytePos.Y - 1,  BlockSel.LastLineBytePos.X);
+          sm := BlockSel.ActiveSelectionMode;
+          if sm = smLine then
+            sm := smNormal;
+
           // delete the selected text if necessary
           if DropMove then begin
             if Source <> Self then
               TCustomSynEdit(Source).SelText := ''
             else begin
-              SetSelTextExternal('');
-              // adjust horizontal drop position
-              if DropAfter and (NewCaret.Y = BE.Y) then begin
-                if BB.Y = BE.Y then
-                  Adjust := BE.X - BB.X
-                else
-                  Adjust := BE.X - 1;
-                Dec(NewCaret.X, Adjust);
-              end;
-              // adjust vertical drop position
-              if DropAfter and (BE.Y > BB.Y) then
-                Dec(NewCaret.Y, BE.Y - BB.Y);
+              FInternalCaret.AssignFrom(FCaret);
+              FInternalCaret.IncAutoMoveOnEdit;
+              FBlockSelection.SelText := '';
+              FInternalCaret.DecAutoMoveOnEdit;
+              NewCaret := FInternalCaret.LineBytePos;
             end;
           end;
           // insert the selected text
           FCaret.IncForcePastEOL;
           try
             if (eoPersistentBlock in Options2) and SelAvail then
-              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setMoveBlock], scamEnd, smaMoveUp, smNormal)
+              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setMoveBlock], scamEnd, smaMoveUp, sm)
             else
-              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setSelect], scamEnd, smaMoveUp, smNormal);
+              SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setSelect], scamEnd, smaMoveUp, sm);
             if FoldInfo <> '' then begin
               ScanRanges;
               FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
