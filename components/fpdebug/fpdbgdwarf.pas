@@ -851,6 +851,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TFpSymbolDwarfDataMember }
 
   TFpSymbolDwarfDataMember = class(TFpSymbolDwarfDataWithLocation)
+  private
+    FConstData: TByteDynArray;
   protected
     function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
     function GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean; override;
@@ -4759,6 +4761,14 @@ begin
   if AValueObj = nil then debugln([FPDBG_DWARF_VERBOSE, 'TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
   else if AValueObj.StructureValue = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
 
+  if InformationEntry.HasAttrib(DW_AT_const_value) then begin
+    // fpc specific => constant members
+    Result := ConstantFromTag(DW_AT_const_value, FConstData, AnAddress);
+    exit;
+    // There should not be a DW_AT_data_member_location
+  end;
+
+  AnAddress := InvalidLoc;
   if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (AValueObj.FParentTypeSymbol = nil)
   then begin
     debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
