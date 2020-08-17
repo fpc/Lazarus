@@ -2069,20 +2069,24 @@ end;
 function TFpValueDwarfPointer.GetDerefAddress: TFpDbgMemLocation;
 var
   Size: TFpDbgValueSize;
+  Addr: TFpDbgMemLocation;
 begin
   if doneAddr in FEvaluated then begin
     Result := FPointetToAddr;
     exit;
   end;
   Include(FEvaluated, doneAddr);
+  Result := InvalidLoc;
 
   if not GetSize(Size) then
     Size := ZeroSize;
-  if (Size <= 0) then
-    Result := InvalidLoc
-  else
-  if not MemManager.ReadAddress(OrdOrDataAddr, SizeVal(Context.SizeOfAddress), Result) then
-    SetLastError(MemManager.LastError);
+  if (Size > 0) then begin
+    Addr := OrdOrDataAddr;
+    if not IsNilLoc(Addr) then begin
+      if not MemManager.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result) then
+        SetLastError(MemManager.LastError);
+    end;
+  end;
   FPointetToAddr := Result;
 end;
 

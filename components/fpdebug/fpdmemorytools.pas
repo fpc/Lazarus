@@ -427,6 +427,7 @@ function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
 function IsReadableLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
 function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
+function IsNilLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;    // Valid AND NIL // Does not check mlfTargetRegister
 function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
 function IsTargetNotNil(const ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
 
@@ -568,6 +569,12 @@ function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := (ALocation.MType in [mlfTargetMem, mlfSelfMem]) and
             (ALocation.Address <> 0);
+end;
+
+function IsNilLoc(const ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType in [mlfTargetMem, mlfSelfMem, mlfConstant]) and
+            (ALocation.Address = 0);
 end;
 
 function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean;
