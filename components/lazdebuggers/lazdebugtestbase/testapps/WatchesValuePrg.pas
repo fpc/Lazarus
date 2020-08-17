@@ -7,8 +7,12 @@
   Test that the debugger can read any type of value at any location
 *)
 program WatchesValuePrg;
+{$mode objfpc}
 {$LONGSTRINGS ON}
 {$modeswitch advancedrecords}
+{$hints off}
+{$notes off}
+{$warnings off}
 
 uses sysutils, Classes;
 
@@ -262,31 +266,56 @@ type
   // type PxByte: ^Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=Px, "_OP_==^", "_O2_==^", "(=;//", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer ) //}
 
+  (******** CLASS ***********)
 
-  (* LOCATION: field in baseclass *)
   TMyBaseClass = class
+  public const
+    (* LOCATION: class const *)
+    // cl_c_Byte = Byte( 1 + add );
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=cl_c_, ADD=1, CHR1='c', _OP_==, _O2_=:, _EQ_==,"(nil)=nil", _BLOCK_=TestConst)
+  public class var
+    (* LOCATION: class var *)
+    // cl_v_Byte: Byte = (1 + add);
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=cl_v_, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   public
     function SomeMeth1(SomeValue: Integer): Boolean;
   public
+    (* LOCATION: field in baseclass *)
     // mbcByte: Byte;
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mbc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   end;
   PMyBaseClass = ^TMyBaseClass;
 
-  (* LOCATION: field in class *)
   TMyClass = class(TMyBaseClass)
   public
+    (* LOCATION: field in class *)
     // mcByte: Byte;
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
     FMyStringList: TMyStringList;
   end;
   PMyClass = ^TMyClass;
 
+
+  (******** RECORD ***********)
+
+  TMyTestRec = record
+    (* LOCATION: record var *)
+    // rc_f_Byte: ADD=2, CHR1='r',
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=rc_f_, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+    MyEmbedClass: TMyClass;
+  end;
+  PMyTestRec = ^TMyTestRec;
+
 var
   MyClass1: TMyClass;
+  MyNilClass1: TMyClass;
   MyClass2: TMyBaseClass; (* LOCATION: field, requires typecast of containing class *)
   MyPClass1: PMyClass;
   MyPClass2: PMyBaseClass;
+
+  MyTestRec1: TMyTestRec;
+  MyPTestRec1: PMyTestRec;
 
   MyStringItemList: TMyStringItemListShort;
   MyStringList: TMyStringList;
@@ -375,6 +404,7 @@ procedure Foo(
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
   ArgMyClass1: TMyClass;
   ArgMyClass2: TMyBaseClass;
+  ArgMyTestRec1: TMyTestRec;
   Dummy: Integer
 );
 var
@@ -404,6 +434,7 @@ procedure FooVar(
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
   ArgVarMyClass1: TMyClass;
   ArgVarMyClass2: TMyBaseClass;
+  ArgVarMyTestRec1: TMyTestRec;
   Dummy: Integer
 );
 var
@@ -423,6 +454,7 @@ procedure FooConstRef(
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
   ArgConstRefMyClass1: TMyClass;
   ArgConstRefMyClass2: TMyBaseClass;
+  ArgConstRefMyTestRec1: TMyTestRec;
   Dummy: Integer
 );
 var
@@ -477,6 +509,10 @@ begin
   // gv_ptrlist_Byte := @gv_aptr_Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gv_aptr_ ) // }
 
+(* INIT: class var *)
+  // cl_v_Byte: Byte = (1 + add);
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=TMyClass.cl_v_,   ADD=1, CHR1='v', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
 
 (* INIT: field in class / baseclass *)
   MyClass1 := TMyClass.Create;
@@ -485,12 +521,18 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mbc, ADD=3, CHR1='D', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
+  MyNilClass1 := nil;
+
 (* INIT: field in class / baseclass // typecast *)
   MyClass2 := TMyClass.Create;
   MyPClass2 := @MyClass2;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=TMyClass(MyClass2).mbc", ADD=5, CHR1='F', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=TMyClass(MyClass2).mc", ADD=4, CHR1='E', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
+
+(* INIT: record var *)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyTestRec1.rc_f_, ADD=2, CHR1='r', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  MyPTestRec1 := @MyTestRec1;
 
   MyStringList := TMyStringList.Create;
   MyStringList.Flist := @MyStringItemList;
@@ -534,6 +576,7 @@ begin
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
     MyClass1,
     MyClass2,
+    MyTestRec1,
     0
   );
 
@@ -541,6 +584,7 @@ begin
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
     MyClass1,
     MyClass2,
+    MyTestRec1,
     0
   );
 
@@ -548,6 +592,7 @@ begin
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
     MyClass1,
     MyClass2,
+    MyTestRec1,
     0
   );
 
