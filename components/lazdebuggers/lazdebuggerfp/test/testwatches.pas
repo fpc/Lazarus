@@ -835,6 +835,7 @@ for i := StartIdx to t.Count-1 do
     t.Add(AName, p+'Obj3'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4000+n).N('c')],
       'TObject3Int64'))
       .Skip(stDwarf3Up)  // fixed in fpc 3.3 with .SkipKind since it reports skRecord
+      .IgnKind([], Compiler.Version < 029900)
       .SkipIf(ALoc = tlPointerAny);
     t.Add(AName, p+'Obj3Ex'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4100+n).N('c'), weInteger(555).N('d')],
       'TObject3Int64Ex'))
@@ -1150,8 +1151,10 @@ begin
 
     // make sure no deep recorsion...
     t.Add('TSize', 'TSize', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
-    t.Add('TFuncSelfRef', 'TFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
-    t.Add('PFuncSelfRef', 'PFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo);
+    t.Add('TFuncSelfRef', 'TFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo)
+    .SkipIf(Compiler.Version < 029900);
+    t.Add('PFuncSelfRef', 'PFuncSelfRef', weMatch('.', skType)).AddFlag(ehNoTypeInfo)
+    .SkipIf(Compiler.Version < 029900);
 
     t.Add('EnVal1', 'EnVal1', weMatch('EnVal1 *:?= *0', skEnumValue));
     t.Add('EnVal2', 'EnVal2', weMatch('EnVal2 *:?= *1', skEnumValue));
