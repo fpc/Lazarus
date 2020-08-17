@@ -3387,6 +3387,8 @@ end;
 function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TFpValue;
 var
   tmp: TFpValue;
+  MemberName: String;
+  MemberSym: TFpSymbol;
   {$IFDEF FpDebugAutoDerefMember}
   tmp2: TFpValue;
   {$ENDIF}
@@ -3396,6 +3398,8 @@ begin
 
   tmp := Items[0].ResultValue;
   if (tmp = nil) then exit;
+
+  MemberName := Items[1].GetText;
 
   {$IFDEF FpDebugAutoDerefMember}
   // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
@@ -3415,9 +3419,9 @@ begin
   {$ENDIF}
 
   if (tmp.Kind in [skClass, skRecord, skObject]) then begin
-    Result := tmp.MemberByName[Items[1].GetText];
+    Result := tmp.MemberByName[MemberName];
     if Result = nil then begin
-      SetError(fpErrNoMemberWithName, [Items[1].GetText]);
+      SetError(fpErrNoMemberWithName, [MemberName]);
       exit;
     end;
     {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
@@ -3427,6 +3431,30 @@ begin
   {$IFDEF FpDebugAutoDerefMember}
   tmp2.ReleaseReference;
   {$ENDIF}
+
+  if (tmp.Kind in [skType]) and
+     (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind in [skClass, skRecord, skObject])
+  then begin
+    Result := tmp.MemberByName[MemberName];
+    if Result <> nil then begin
+      // only class fields/constants can have an address without valid "self" instance
+      if IsReadableLoc(result.DataAddress) then begin   // result.Address?
+        {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+        exit;
+      end
+      else begin
+        ReleaseRefAndNil(Result);
+        MemberSym := tmp.DbgSymbol.NestedSymbolByName[MemberName];
+        if MemberSym <> nil then begin
+          Result := TFpValueTypeDefinition.Create(MemberSym);
+          {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+          exit;
+        end;
+      end;
+    end;
+    SetError(fpErrNoMemberWithName, [Items[1].GetText]);
+    exit
+  end;
 
   // Todo unit
 

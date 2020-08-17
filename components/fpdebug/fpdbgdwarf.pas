@@ -104,7 +104,7 @@ type
     property StackFrame: Integer read FStackFrame write FStackFrame;
 
     procedure ApplyContext(AVal: TFpValue); inline;
-    function SymbolToValue(ASym: TFpSymbol): TFpValue; inline;
+    function SymbolToValue(ASym: TFpSymbolDwarf): TFpValue; inline;
     function GetSelfParameter: TFpValueDwarf;
 
     function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
@@ -142,12 +142,16 @@ type
 
   TFpValueDwarfTypeDefinition = class(TFpValueDwarfBase)
   private
-    FSymbol: TFpSymbol; // stType
+    FSymbol: TFpSymbolDwarf; // stType
   protected
     function GetKind: TDbgSymbolKind; override;
     function GetDbgSymbol: TFpSymbol; override;
+
+    function GetMemberCount: Integer; override;
+    function GetMemberByName(AIndex: String): TFpValue; override;
+    function GetMember(AIndex: Int64): TFpValue; override;
   public
-    constructor Create(ASymbol: TFpSymbol); // Only for stType
+    constructor Create(ASymbol: TFpSymbolDwarf); // Only for stType
     destructor Destroy; override;
     function GetTypeCastedValue(ADataVal: TFpValue): TFpValue; override;
   end;
@@ -1206,7 +1210,7 @@ begin
     TFpValueDwarfBase(AVal).FContext := Self;
 end;
 
-function TFpDwarfInfoAddressContext.SymbolToValue(ASym: TFpSymbol): TFpValue;
+function TFpDwarfInfoAddressContext.SymbolToValue(ASym: TFpSymbolDwarf): TFpValue;
 begin
   if ASym = nil then begin
     Result := nil;
@@ -1518,7 +1522,30 @@ begin
   Result := FSymbol;
 end;
 
-constructor TFpValueDwarfTypeDefinition.Create(ASymbol: TFpSymbol);
+function TFpValueDwarfTypeDefinition.GetMemberCount: Integer;
+begin
+    Result := FSymbol.NestedSymbolCount;
+end;
+
+function TFpValueDwarfTypeDefinition.GetMemberByName(AIndex: String): TFpValue;
+begin
+  Result := FSymbol.GetNestedValueByName(AIndex);
+  if Result = nil then
+    exit;
+//  TFpValueDwarf(Result).SetStructureValue(Self);
+  TFpValueDwarf(Result).FContext := FContext;
+end;
+
+function TFpValueDwarfTypeDefinition.GetMember(AIndex: Int64): TFpValue;
+begin
+  Result := FSymbol.GetNestedValue(AIndex);
+  if Result = nil then
+    exit;
+//  TFpValueDwarf(Result).SetStructureValue(Self);
+  TFpValueDwarf(Result).FContext := FContext;
+end;
+
+constructor TFpValueDwarfTypeDefinition.Create(ASymbol: TFpSymbolDwarf);
 begin
   inherited Create;
   FSymbol := ASymbol;
@@ -4793,7 +4820,9 @@ end;
 
 function TFpSymbolDwarfDataMember.HasAddress: Boolean;
 begin
-  Result := (InformationEntry.HasAttrib(DW_AT_data_member_location));
+  // DW_AT_data_member_location defaults to zero => i.e. at the start of the containing structure
+  Result := not (InformationEntry.HasAttrib(DW_AT_const_value));
+            //(InformationEntry.HasAttrib(DW_AT_data_member_location));
 end;
 
 { TFpSymbolDwarfTypeStructure }

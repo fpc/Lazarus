@@ -1092,7 +1092,7 @@ end;
 
 function TFpValueTypeDefinition.GetKind: TDbgSymbolKind;
 begin
-  Result := skNone;
+  Result := skType;
 end;
 
 function TFpValueTypeDefinition.GetDbgSymbol: TFpSymbol;
