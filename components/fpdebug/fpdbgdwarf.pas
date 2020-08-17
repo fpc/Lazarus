@@ -3373,17 +3373,22 @@ begin
       Result := RefSymbol <> nil;
       if Result then begin
         ValObj := RefSymbol.Value;
-        assert(ValObj is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
-        TFpValueDwarfBase(ValObj).Context := AValueObj.Context;
-        AValue := ValObj.AsInteger;
-        if IsError(ValObj.LastError) then begin
-          Result := False;
-          SetLastError(AValueObj, ValObj.LastError);
-        end;
-        ValObj.ReleaseReference;
+        Result := ValObj <> nil;
+        if Result then begin
+          assert(ValObj is TFpValueDwarfBase, 'Result is TFpValueDwarfBase');
+          TFpValueDwarfBase(ValObj).Context := AValueObj.Context;
+          AValue := ValObj.AsInteger;
+          if IsError(ValObj.LastError) then begin
+            Result := False;
+            SetLastError(AValueObj, ValObj.LastError);
+          end;
+          ValObj.ReleaseReference;
 
-        if ADataSymbol <> nil then
-          ADataSymbol^ := RefSymbol
+          if ADataSymbol <> nil then
+            ADataSymbol^ := RefSymbol
+          else
+            RefSymbol.ReleaseReference;
+        end
         else
           RefSymbol.ReleaseReference;
       end;
@@ -3614,7 +3619,8 @@ begin
   if sym <> nil then begin
     assert(sym is TFpSymbolDwarfData, 'TFpSymbolDwarf.GetNestedValue: sym is TFpSymbolDwarfData');
     Result := TFpValueDwarf(sym.Value);
-    Result.FParentTypeSymbol := OuterSym;
+    if Result <> nil then
+      Result.FParentTypeSymbol := OuterSym;
   end
   else
     Result := nil;
@@ -3629,7 +3635,8 @@ begin
   if sym <> nil then begin
     assert(sym is TFpSymbolDwarfData, 'TFpSymbolDwarf.GetNestedValueByName: sym is TFpSymbolDwarfData');
     Result := TFpValueDwarf(sym.Value);
-    Result.FParentTypeSymbol := OuterSym;
+    if Result <> nil then
+      Result.FParentTypeSymbol := OuterSym;
   end
   else
     Result := nil;
@@ -5450,8 +5457,10 @@ begin
          InfoEntry.IsArtificial
       then begin
         Result := TFpValueDwarf(TFpSymbolDwarfData.CreateValueSubClass('self', InfoEntry).Value);
-        Result.FDataSymbol.ReleaseReference;
-        Result.FDataSymbol.LocalProcInfo := Self;
+        if Result <> nil then begin
+          Result.FDataSymbol.ReleaseReference;
+          Result.FDataSymbol.LocalProcInfo := Self;
+        end;
         debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataProc.GetSelfParameter ', InfoEntry.ScopeDebugText, DbgSName(Result)]);
       end;
     end;

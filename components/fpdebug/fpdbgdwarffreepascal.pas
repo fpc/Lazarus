@@ -515,6 +515,10 @@ begin
 
   ParentFpSym := TFpSymbolDwarf.CreateSubClass(AName, InfoEntry);
   ParentFpVal := ParentFpSym.Value;
+  if ParentFpVal = nil then begin
+    Result := False;
+    exit;
+  end;
   ApplyContext(ParentFpVal);
   if not (svfOrdinal in ParentFpVal.FieldFlags) then begin
     DebugLn(FPDBG_DWARF_VERBOSE, 'no ordinal for parentfp');
@@ -1016,18 +1020,20 @@ begin
         UpperBoundSym := TFpSymbolDwarf.CreateSubClass('', Info);
         if UpperBoundSym <> nil then begin
           val := UpperBoundSym.Value;
-          TFpValueDwarf(val).Context := Context;
-          h := Val.AsInteger;
-          val.ReleaseReference;
-          if (h >= 0) and (h < maxLongint) then begin
-            Result := h + 1;
-          end
-          else
-            Result := 0;
-// TODO h < -1  => Error
-          Info.ReleaseReference;
-          UpperBoundSym.ReleaseReference;
-          exit;
+          if val <> nil then begin
+            TFpValueDwarf(val).Context := Context;
+            h := Val.AsInteger;
+            val.ReleaseReference;
+            if (h >= 0) and (h < maxLongint) then begin
+              Result := h + 1;
+            end
+            else
+              Result := 0;
+  // TODO h < -1  => Error
+            Info.ReleaseReference;
+            UpperBoundSym.ReleaseReference;
+            exit;
+          end;
         end;
       end;
     end;
