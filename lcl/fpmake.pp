@@ -4,7 +4,7 @@
 
    fpmake.pp for LCLBase 2.1
 
-   This file was generated on 22-05-20
+   This file was generated on 17-08-20
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,9 +35,8 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('freetypelaz');
     D := P.Dependencies.Add('chm');
-    D := P.Dependencies.Add('lazutils');
-    D := P.Dependencies.Add('freetype');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
