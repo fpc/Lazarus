@@ -372,6 +372,23 @@ var
       ADeclaration := Format('record%s%s%send', [LineEnding, s, GetIndent]);
   end;
 
+  function GetObjectType(out ADeclaration: String): Boolean;
+  var
+    s: String;
+  begin
+    if tdfSkipRecordBody in AFlags then begin
+      Result := True;
+      if GetTypeName(s, ADbgSymbol) then
+        ADeclaration := s + ' {=object}'
+      else
+        ADeclaration := Format('object {...};%s%send', [LineEnding, GetIndent]);
+      exit;
+    end;
+    Result := MembersAsGdbText(s, False);
+    if Result then
+      ADeclaration := Format('object%s%s%send', [LineEnding, s, GetIndent]);
+  end;
+
   function GetEnumType(out ADeclaration: String): Boolean;
   var
     i, j, val: Integer;
@@ -498,9 +515,13 @@ begin
     skProcedure, skProcedureRef: Result := GetProcedureType(ATypeDeclaration);
     skClass:     Result := GetClassType(ATypeDeclaration);
     skRecord:    Result := GetRecordType(ATypeDeclaration);
+    skObject:    Result := GetObjectType(ATypeDeclaration);
+    //skInterface: Result := GetInterfaceType(ATypeDeclaration);
     skEnum:      Result := GetEnumType(ATypeDeclaration);
     skset:       Result := GetSetType(ATypeDeclaration);
     skArray:     Result := GetArrayType(ATypeDeclaration);
+    skNone:      ATypeDeclaration := '<unknown>';
+    else         Result := GetBaseType(ATypeDeclaration);
   end;
 
   if VarName <> '' then
@@ -778,6 +799,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoType;
   begin
+    // maybe include tdfIncludeVarName for structure members "TFooClass.SomeField"
     if GetTypeAsDeclaration(APrintedValue, AValue.DbgSymbol) then
       APrintedValue := 'type ' + APrintedValue
     else
