@@ -67,6 +67,7 @@ procedure DrawArrow(Canvas:TCanvas;p1,p2: TPoint; ArrowType: TArrowType=atSolid)
 procedure DrawArrow(Canvas:TCanvas;p1,p2: TPoint; ArrowLen: longint; ArrowAngleRad: float=NiceArrowAngle; ArrowType: TArrowType=atSolid);
 
 procedure FloodFill(Canvas: TCanvas; X, Y: Integer; lColor: TColor; FillStyle: TFillStyle);
+procedure ScaleImg(AImage: TCustomBitmap; AWidth, AHeight: Integer);
 
 // delphi compatibility
 procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
@@ -354,6 +355,27 @@ begin //FloodFill
       end;
   freemem(lMaskRA);
   freemem(lQra);
+end;
+
+procedure ScaleImg(AImage: TCustomBitmap; AWidth, AHeight: Integer);
+var
+  srcImg: TLazIntfImage = nil;
+  destCanvas: TLazCanvas = nil;
+begin
+  try
+    // Create the source LazIntfImage
+    srcImg := AImage.CreateIntfImage;
+    // Create the destination LazCanvas
+    destCanvas := TLazCanvas.Create(srcImg);
+    // Execute the canvas.StretchDraw
+    destCanvas.StretchDraw(0, 0, AWidth, AHeight, srcImg);
+    // Reload the stretched image into the CustomBitmap
+    AImage.LoadFromIntfImage(srcImg);
+    AImage.SetSize(AWidth, AHeight);
+  finally
+    destCanvas.Free;
+    srcImg.Free;
+  end;
 end;
 
 procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
