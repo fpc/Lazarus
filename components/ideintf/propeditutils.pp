@@ -348,7 +348,7 @@ begin
   Result := False;
   if ALookupRoot <> LookupRoot then Exit;
   if not FSelection.IsEqual(ASelection) then Exit;
-  if (ALookupRoot <> nil) and (FLookupRoot is TComponent) then
+  if ALookupRoot is TComponent then
   begin
     if ComponentCount <> TComponent(ALookupRoot).ComponentCount then
       Exit;
