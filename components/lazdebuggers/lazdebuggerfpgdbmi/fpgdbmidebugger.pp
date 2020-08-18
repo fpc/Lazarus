@@ -76,6 +76,8 @@ type
     FMemManager: TFpDbgMemManager;
     // cache last context
     FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgSymbolScope;
+    FLockUnLoadDwarf: integer;
+    FUnLoadDwarfNeeded: Boolean;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
@@ -85,6 +87,8 @@ type
     function  HasDwarf: Boolean;
     procedure LoadDwarf;
     procedure UnLoadDwarf;
+    procedure LockUnLoadDwarf;
+    procedure UnLockUnLoadDwarf;
     function  RequestCommand(const ACommand: TDBGCommand;
               const AParams: array of const;
               const ACallback: TMethod): Boolean; override;
@@ -276,36 +280,41 @@ var
   m: TFpValue;
   n, v: String;
 begin
-  Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
-  if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
-    ALocals.SetDataValidity(ddsInvalid);
-    exit;
-  end;
-
-  ProcVal := Ctx.ProcedureAtAddress;
-
-  if (ProcVal = nil) then begin
-    ALocals.SetDataValidity(ddsInvalid);
-    exit;
-  end;
-  FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
-  FpDebugger.FPrettyPrinter.MemManager := ctx.MemManager;
-
-  ALocals.Clear;
-  for i := 0 to ProcVal.MemberCount - 1 do begin
-    m := ProcVal.Member[i];
-    if m <> nil then begin
-      if m.DbgSymbol <> nil then
-        n := m.DbgSymbol.Name
-      else
-        n := '';
-      FpDebugger.FPrettyPrinter.PrintValue(v, m);
-      m.ReleaseReference;
-      ALocals.Add(n, v);
+  FpDebugger.LockUnLoadDwarf;
+  try
+    Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
+    if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
+      ALocals.SetDataValidity(ddsInvalid);
+      exit;
     end;
+
+    ProcVal := Ctx.ProcedureAtAddress;
+
+    if (ProcVal = nil) then begin
+      ALocals.SetDataValidity(ddsInvalid);
+      exit;
+    end;
+    FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
+    FpDebugger.FPrettyPrinter.MemManager := ctx.MemManager;
+
+    ALocals.Clear;
+    for i := 0 to ProcVal.MemberCount - 1 do begin
+      m := ProcVal.Member[i];
+      if m <> nil then begin
+        if m.DbgSymbol <> nil then
+          n := m.DbgSymbol.Name
+        else
+          n := '';
+        FpDebugger.FPrettyPrinter.PrintValue(v, m);
+        m.ReleaseReference;
+        ALocals.Add(n, v);
+      end;
+    end;
+    ProcVal.ReleaseReference;
+    ALocals.SetDataValidity(ddsValid);
+  finally
+    FpDebugger.UnLockUnLoadDwarf;
   end;
-  ProcVal.ReleaseReference;
-  ALocals.SetDataValidity(ddsValid);
 end;
 
 function TFPGDBMILocals.FpDebugger: TFpGDBMIDebugger;
@@ -569,6 +578,7 @@ begin
   if FWatchEvalLock > 0 then
     exit;
   inc(FWatchEvalLock);
+  FpDebugger.LockUnLoadDwarf;
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
       try
@@ -598,6 +608,7 @@ begin
     end;
   finally
     dec(FWatchEvalLock);
+    FpDebugger.UnLockUnLoadDwarf;
   end;
 end;
 
@@ -777,6 +788,11 @@ end;
 
 procedure TFpGDBMIDebugger.UnLoadDwarf;
 begin
+  if FLockUnLoadDwarf > 0 then begin
+    FUnLoadDwarfNeeded := True;
+    exit;
+  end;
+  FUnLoadDwarfNeeded := False;
   debugln(DBG_VERBOSE, ['TFpGDBMIDebugger.UnLoadDwarf ']);
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoaderList);
@@ -785,6 +801,18 @@ begin
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
   FreeAndNil(FPrettyPrinter);
+end;
+
+procedure TFpGDBMIDebugger.LockUnLoadDwarf;
+begin
+  inc(FLockUnLoadDwarf);
+end;
+
+procedure TFpGDBMIDebugger.UnLockUnLoadDwarf;
+begin
+  dec(FLockUnLoadDwarf);
+  if (FLockUnLoadDwarf <= 0) and FUnLoadDwarfNeeded then
+    UnLoadDwarf;
 end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
@@ -1030,6 +1058,7 @@ begin
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
   FPrettyPrinter.MemManager := ctx.MemManager;
 
+  LockUnLoadDwarf;
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try
     if not IsWatchValueAlive then exit;
@@ -1130,6 +1159,7 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
   finally
     PasExpr.Free;
     FMemManager.DefaultContext := nil;
+    UnLockUnLoadDwarf;
   end;
 end;
 
