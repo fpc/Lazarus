@@ -305,7 +305,7 @@ end;
 
 function TFpDebugLocalsCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
@@ -317,7 +317,7 @@ begin
      (AController.CurrentProcess.DbgInfo = nil) then
     exit;
 
-  AContext := AController.CurrentProcess.FindContext(AController.CurrentThread.ID, 0);
+  AContext := AController.CurrentProcess.FindSymbolScope(AController.CurrentThread.ID, 0);
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then
     exit;
@@ -660,7 +660,7 @@ end;
 
 function TFpDebugThreadEvaluateCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   APasExpr: TFpPascalExpression;
   Res: Boolean;
   APrettyPrinter: TFpPascalPrettyPrinter;
@@ -675,7 +675,7 @@ begin
     exit;
     end;
 
-  AContext := AController.CurrentProcess.FindContext(AController.CurrentThread.ID, 0);
+  AContext := AController.CurrentProcess.FindSymbolScope(AController.CurrentThread.ID, 0);
   if AContext = nil then
     begin
     FValidity:=ddsInvalid;

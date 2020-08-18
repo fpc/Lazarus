@@ -32,8 +32,8 @@ type
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
-      ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
+    function CreateScopeForSymbol(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
 
@@ -53,8 +53,8 @@ type
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
-    //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
+    //class function CreateSymbolScope(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+    //  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
@@ -70,8 +70,8 @@ type
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    //class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
-    //  ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
+    //class function CreateSymbolScope(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+    //  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
@@ -80,11 +80,11 @@ type
 
   {%Region * ***** Context ***** *}
 
-  { TFpDwarfFreePascalAddressContext }
+  { TFpDwarfFreePascalSymbolScope }
 
-  TFpDwarfFreePascalAddressContext = class(TFpDwarfInfoAddressContext)
+  TFpDwarfFreePascalSymbolScope = class(TFpDwarfInfoSymbolScope)
   private
-    FOuterNestContext: TFpDbgInfoContext;
+    FOuterNestContext: TFpDbgSymbolScope;
     FOuterNotFound: Boolean;
   protected
     function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
@@ -355,10 +355,11 @@ begin
   end;
 end;
 
-function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
-  AnAddress: TDBGPtr; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
+function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(AThreadId,
+  AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
 begin
-  Result := TFpDwarfFreePascalAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
+  Result := TFpDwarfFreePascalSymbolScope.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
@@ -447,9 +448,9 @@ begin
   end;
 end;
 
-{ TFpDwarfFreePascalAddressContext }
+{ TFpDwarfFreePascalSymbolScope }
 
-function TFpDwarfFreePascalAddressContext.FindLocalSymbol(const AName: String; PNameUpper,
+function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String; PNameUpper,
   PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean;
 const
   parentfp: string = 'parentfp';
@@ -463,7 +464,7 @@ const
 var
   StartScopeIdx, RegFp, RegPc: Integer;
   ParentFpVal: TFpValue;
-  SearchCtx: TFpDwarfFreePascalAddressContext;
+  SearchCtx: TFpDwarfFreePascalSymbolScope;
   par_fp, cur_fp, prev_fp, pc: TDbgPtr;
   d, i: Integer;
   ParentFpSym: TFpSymbolDwarf;
@@ -539,7 +540,7 @@ begin
 
   // TODO: FindCallStackEntryByBasePointer, once all evaluates run in thread.
   i := StackFrame + 1;
-  SearchCtx := TFpDwarfFreePascalAddressContext.Create(ThreadId, i, 0, Symbol, Dwarf);
+  SearchCtx := TFpDwarfFreePascalSymbolScope.Create(ThreadId, i, 0, Symbol, Dwarf);
 
   cur_fp := 0;
   if MemManager.ReadRegister(RegFp, cur_fp, Self) then begin
@@ -572,13 +573,13 @@ begin
 
   SearchCtx.ReleaseReference;
 
-  FOuterNestContext := Dwarf.FindContext(ThreadId, i, pc);
+  FOuterNestContext := Dwarf.FindSymbolScope(ThreadId, i, pc);
 
   ADbgValue := FOuterNestContext.FindSymbol(AName); // TODO: pass upper/lower
   Result := True; // self, global was done by outer
 end;
 
-destructor TFpDwarfFreePascalAddressContext.Destroy;
+destructor TFpDwarfFreePascalSymbolScope.Destroy;
 begin
   FOuterNestContext.ReleaseReference;
   inherited Destroy;

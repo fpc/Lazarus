@@ -28,7 +28,7 @@ type
 
   { TFpSymbolContext }
 
-  TFpSymbolContext = class(TFpDbgInfoContext)
+  TFpSymbolContext = class(TFpDbgSymbolScope)
   private
     FFpSymbolInfo: TFpSymbolInfo;
     FSizeOfAddress: integer;
@@ -53,7 +53,7 @@ type
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String);
     destructor Destroy; override;
-    function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
+    function FindSymbolScope(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
   end;
@@ -152,10 +152,10 @@ begin
   inherited Destroy;
 end;
 
-function TFpSymbolInfo.FindContext(AThreadId, AStackFrame: Integer;
-  AAddress: TDbgPtr): TFpDbgInfoContext;
+function TFpSymbolInfo.FindSymbolScope(AThreadId, AStackFrame: Integer;
+  AAddress: TDbgPtr): TFpDbgSymbolScope;
 begin
-  assert(False, 'TFpSymbolInfo.FindContext: False');
+  assert(False, 'TFpSymbolInfo.FindSymbolScope: False');
   Result:=FContext; // TODO: nil
 end;
 

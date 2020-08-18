@@ -130,12 +130,12 @@ type
   TDbgMemReader = class(TFpDbgMemReaderBase)
   protected
     function GetDbgProcess: TDbgProcess; virtual; abstract;
-    function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; virtual;
+    function GetDbgThread(AContext: TFpDbgLocationContext): TDbgThread; virtual;
   public
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override; overload;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean; override; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
@@ -577,8 +577,8 @@ public
     *)
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
-    function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
-    function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext; inline;
+    function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
+    function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgSymbolScope; inline;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
     property  LastLibraryUnloaded: TDbgLibrary read FLastLibraryUnloaded write SetLastLibraryUnloadedNil;
@@ -1137,11 +1137,11 @@ function TDbgCallstackEntry.GetParamsAsString(
   APrettyPrinter: TFpPascalPrettyPrinter): string;
 var
   ProcVal: TFpValue;
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   m: TFpValue;
   v: String;
   i: Integer;
-  OldContext: TFpDbgAddressContext;
+  OldContext: TFpDbgLocationContext;
 begin
   result := '';
   if assigned(ProcSymbol) then begin
@@ -1215,7 +1215,7 @@ end;
 
 { TDbgMemReader }
 
-function TDbgMemReader.GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread;
+function TDbgMemReader.GetDbgThread(AContext: TFpDbgLocationContext): TDbgThread;
 var
   Process: TDbgProcess;
 begin
@@ -1241,7 +1241,7 @@ begin
   result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
 end;
 
-function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
+function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
 var
   ARegister: TDbgRegisterValue;
   StackFrame: Integer;
@@ -1718,7 +1718,7 @@ begin
   Result := nil;
 end;
 
-function TDbgProcess.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+function TDbgProcess.FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
 var
   Thread: TDbgThread;
   Frame: TDbgCallstackEntry;
@@ -1741,16 +1741,16 @@ begin
   end;
   if Addr = 0 then
     exit;
-  Result := FDbgInfo.FindContext(AThreadId, AStackFrame, Addr);
-  // SymbolTableInfo.FindContext()
+  Result := FDbgInfo.FindSymbolScope(AThreadId, AStackFrame, Addr);
+  // SymbolTableInfo.FindSymbolScope()
 
   if Result = nil then
-    Result := TFpDbgInfoSimpleContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
+    Result := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
 end;
 
-function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgInfoContext;
+function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgSymbolScope;
 begin
-  Result := FDbgInfo.ContextFromProc(AThreadId, AStackFrame, AProcSym);
+  Result := FDbgInfo.SymbolScopeFromProc(AThreadId, AStackFrame, AProcSym);
 end;
 
 function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;

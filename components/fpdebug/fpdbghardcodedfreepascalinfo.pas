@@ -173,13 +173,13 @@ type
   private
     FTypeSymbol: TFpSymbol;
     FDataSymbol: TFpSymbol;
-    FContext: TFpDbgInfoContext;
+    FContext: TFpDbgSymbolScope;
 
     // Cached:
     FDataAddress: TFpDbgMemLocation;
     FStructureValue: TDbgHardcodedVariableValue;
     procedure SetStructureValue(AValue: TDbgHardcodedVariableValue);
-    procedure SetContext(AValue: TFpDbgInfoContext);
+    procedure SetContext(AValue: TFpDbgSymbolScope);
   protected
     function GetAsString: AnsiString; override;
     function GetAddress: TFpDbgMemLocation; override;
@@ -189,7 +189,7 @@ type
     destructor Destroy; override;
     procedure SetDataSymbol(AValueSymbol: TFpSymbol);
 
-    property Context: TFpDbgInfoContext read FContext write SetContext;
+    property Context: TFpDbgSymbolScope read FContext write SetContext;
   end;
 
   { TDbgHardcodedFPCClassValue }
@@ -204,9 +204,9 @@ type
 
   { TFpDbgHardcodedContext }
 
-  // Just a hack to simulate a real context, when FindContext does not return
+  // Just a hack to simulate a real context, when FindSymbolScope does not return
   // a context.
-  TFpDbgHardcodedContext = class(TFpDbgInfoContext)
+  TFpDbgHardcodedContext = class(TFpDbgSymbolScope)
   private
     FMemManager: TFpDbgMemManager;
     FAddressSize: Integer;
@@ -257,7 +257,7 @@ end;
 
 function TDbgHardcodedFPCAnsistringTypeSymbol.GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgInfoContext;
+  Context: TFpDbgSymbolScope;
 begin
   // Dereference the pointer that points to the real string-data
   Context := AValueObj.Context;
@@ -282,7 +282,7 @@ end;
 
 function TDbgHardcodedFPCClassMember.DoReadDataAddress(const AValueObj: TDbgHardcodedVariableValue; out AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgInfoContext;
+  Context: TFpDbgSymbolScope;
 begin
   Context := (AValueObj as TDbgHardcodedVariableValue).Context;
   AnAddress := AValueObj.FStructureValue.DataAddress + (SizeVal(Context.SizeOfAddress) * FFieldIndex);
@@ -529,7 +529,7 @@ begin
   FStructureValue := AValue;
 end;
 
-procedure TDbgHardcodedVariableValue.SetContext(AValue: TFpDbgInfoContext);
+procedure TDbgHardcodedVariableValue.SetContext(AValue: TFpDbgSymbolScope);
 begin
   if FContext = AValue then
     exit;
@@ -646,7 +646,7 @@ end;
 
 function TDbgHardcodedFPCClassTypeSymbol.GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgInfoContext;
+  Context: TFpDbgSymbolScope;
 begin
   // Dereference the pointer that points to the real class-data
   Context := AValueObj.Context;

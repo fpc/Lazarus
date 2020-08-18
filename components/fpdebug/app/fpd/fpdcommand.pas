@@ -215,7 +215,7 @@ var
   Line: Cardinal;
   bp: TFpInternalBreakpoint;
 
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   AValue: TFpValue;
 
 begin
@@ -263,7 +263,7 @@ begin
       Val(P, Address, e);
       if e <> 0
       then begin
-        AContext := GController.CurrentProcess.SymbolTableInfo.FindContext(GController.CurrentThread.GetInstructionPointerRegisterValue);
+        AContext := GController.CurrentProcess.SymbolTableInfo.FindSymbolScope(GController.CurrentThread.GetInstructionPointerRegisterValue);
         if AContext = nil then begin
           Writeln('Invalid context');
           exit;
@@ -577,7 +577,7 @@ end;
 
 procedure HandleEval(AParams: String; out CallProcessLoop: boolean);
 var
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   APasExpr: TFpPascalExpression;
   APrettyPrinter: TFpPascalPrettyPrinter;
   AVal: string;
@@ -593,7 +593,7 @@ begin
   S := AParams;
   P := GetPart([], [' ', #9], S);
 
-  AContext := GController.CurrentProcess.DbgInfo.FindContext(GController.CurrentThread.GetInstructionPointerRegisterValue);
+  AContext := GController.CurrentProcess.DbgInfo.FindSymbolScope(GController.CurrentThread.GetInstructionPointerRegisterValue);
   if AContext = nil then begin
     Writeln('Invalid context');
     exit;

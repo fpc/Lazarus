@@ -250,7 +250,7 @@ type
   TDbgController = class
   private
     FMemManager: TFpDbgMemManager;
-    FDefaultContext: TFpDbgAddressContext;
+    FDefaultContext: TFpDbgLocationContext;
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
@@ -275,7 +275,7 @@ type
     FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
     function GetCurrentThreadId: Integer;
-    function GetDefaultContext: TFpDbgAddressContext;
+    function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
@@ -302,7 +302,7 @@ type
     procedure StepOverInstr;
     procedure Next;
     procedure Step;
-    function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgInfoContext; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
+    function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgSymbolScope; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
     procedure StepOut(AForceStoreStepInfo: Boolean = False);
     function Pause: boolean;
     function Detach: boolean;
@@ -311,7 +311,7 @@ type
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
     property MemManager: TFpDbgMemManager read FMemManager;
-    property DefaultContext: TFpDbgAddressContext read GetDefaultContext; // CurrentThread, TopStackFrame
+    property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1327,10 +1327,10 @@ begin
   Result := FCurrentThread.ID;
 end;
 
-function TDbgController.GetDefaultContext: TFpDbgAddressContext;
+function TDbgController.GetDefaultContext: TFpDbgLocationContext;
 begin
   if FDefaultContext = nil then begin
-    FDefaultContext := TFpDbgInfoSimpleContext.Create(MemManager,
+    FDefaultContext := TFpDbgSimpleLocationContext.Create(MemManager,
       FCurrentThread.GetInstructionPointerRegisterValue,
       DBGPTRSIZE[CurrentProcess.Mode],
       CurrentThread.ID,
@@ -1851,7 +1851,7 @@ begin
   FNextOnlyStopOnStartLine := true;
 end;
 
-function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgInfoContext; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
+function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgSymbolScope; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
 var
   Context: TFpDbgInfoCallContext;
 begin

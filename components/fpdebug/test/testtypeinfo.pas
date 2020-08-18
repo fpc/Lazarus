@@ -22,7 +22,7 @@ type
   protected
     FDwarfInfo: TFpDwarfInfo;
     FCurrentTestName: String;
-    FCurrentContext: TFpDbgInfoContext;
+    FCurrentContext: TFpDbgSymbolScope;
     FExpression: TFpPascalExpression;
     FImageLoader: TTestDummyImageLoader;
     FImageLoaderList: TDbgImageLoaderList;
@@ -379,7 +379,7 @@ begin
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
 
-  FCurrentContext := FDwarfInfo.FindContext(0, 0, TTestSetupBasicProcMainAddr);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
@@ -429,7 +429,7 @@ begin
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
 
-  FCurrentContext := FDwarfInfo.FindContext(0, 0, TTestSetupBasicProcMainAddr);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
@@ -493,7 +493,7 @@ begin
   ImgLoader := TTestLoaderSetupArray(FImageLoader);
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
-  FCurrentContext := FDwarfInfo.FindContext(0, 0, TTestSetupArrayProcMainAddr);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupArrayProcMainAddr);
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarDynIntArray');
@@ -598,7 +598,7 @@ begin
   ImgLoader.TestStackFrame.Int1 := -299;
   ImgLoader.TestStackFrame.Obj1 := obj1;
   try
-    FCurrentContext := FDwarfInfo.FindContext(0, 0, TTestSetup1ProcBarAddr);
+    FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetup1ProcBarAddr);
     AssertTrue('got ctx', FCurrentContext <> nil);
 
     sym := FCurrentContext.FindSymbol('Int1');
@@ -1250,7 +1250,7 @@ begin
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
 
-  FCurrentContext := FDwarfInfo.FindContext(0, 0, TTestSetupBasicProcMainAddr);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');

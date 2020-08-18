@@ -285,7 +285,7 @@ type
     FCacheReadWrite: TDBGWatchPointKind;
     FCacheScope: TDBGWatchPointScope;
     FCacheThreadId, FCacheStackFrame: Integer;
-    FCacheContext: TFpDbgInfoContext;
+    FCacheContext: TFpDbgSymbolScope;
     //
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
@@ -311,7 +311,7 @@ type
     procedure ClearWatchEvalList;
   protected
     procedure GetCurrentThreadAndStackFrame(out AThreadId, AStackFrame: Integer);
-    function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgInfoContext;
+    function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgSymbolScope;
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
@@ -377,7 +377,7 @@ type
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
     function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
       CurAddr: TDBGPtr = 0): TDBGPtr;
-    function  FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext; inline;
+    function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
     function GetParamsAsString(AStackEntry: TDbgCallstackEntry; APrettyPrinter: TFpPascalPrettyPrinter): string; inline;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
@@ -556,12 +556,12 @@ type
     FFpDebugDebugger: TFpDebugDebugger;
     FRegNum: Cardinal;
     FRegValue: TDbgPtr;
-    FRegContext: TFpDbgAddressContext;
+    FRegContext: TFpDbgLocationContext;
     FRegResult: Boolean;
     procedure DoReadRegister;
   protected
     function GetDbgProcess: TDbgProcess; override;
-    function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; override;
+    function GetDbgThread(AContext: TFpDbgLocationContext): TDbgThread; override;
   public
     constructor create(AFpDebugDebuger: TFpDebugDebugger);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override; overload;
@@ -569,7 +569,7 @@ type
       out ABytesRead: Cardinal): Boolean; override; overload;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
-      AContext: TFpDbgAddressContext): Boolean; override;
+      AContext: TFpDbgLocationContext): Boolean; override;
   end;
 
   { TFpWaitForConsoleOutputThread }
@@ -1038,7 +1038,7 @@ begin
   result := FFpDebugDebugger.FDbgController.CurrentProcess;
 end;
 
-function TFpDbgMemReader.GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread;
+function TFpDbgMemReader.GetDbgThread(AContext: TFpDbgLocationContext): TDbgThread;
 var
   Process: TDbgProcess;
 begin
@@ -1075,7 +1075,7 @@ begin
 end;
 
 function TFpDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
-  AContext: TFpDbgAddressContext): Boolean;
+  AContext: TFpDbgLocationContext): Boolean;
 begin
   if FFpDebugDebugger.FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
   begin
@@ -1311,7 +1311,7 @@ end;
 
 procedure TFPLocals.RequestData(ALocals: TLocals);
 var
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   AController: TDbgController;
   ProcVal: TFpValue;
   i: Integer;
@@ -1328,7 +1328,7 @@ begin
   end;
 
   TFpDebugDebugger(Debugger).GetCurrentThreadAndStackFrame(CurThreadId, CurStackFrame);
-  AContext := FpDebugger.FindContext(CurThreadId, CurStackFrame);
+  AContext := FpDebugger.FindSymbolScope(CurThreadId, CurStackFrame);
   if AContext = nil then begin
     ALocals.SetDataValidity(ddsInvalid);
     exit;
@@ -1438,7 +1438,7 @@ end;
 procedure TFPBreakpoint.SetBreak;
 var
   CurThreadId, CurStackFrame: Integer;
-  CurContext: TFpDbgInfoContext;
+  CurContext: TFpDbgSymbolScope;
   WatchPasExpr: TFpPascalExpression;
   R: TFpValue;
   s: TFpDbgValueSize;
@@ -2598,7 +2598,7 @@ end;
 function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
-  AContext: TFpDbgInfoContext;
+  AContext: TFpDbgSymbolScope;
   APasExpr, PasExpr2: TFpPascalExpression;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
@@ -2859,9 +2859,9 @@ begin
 end;
 
 function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
-  StackFrame: Integer): TFpDbgInfoContext;
+  StackFrame: Integer): TFpDbgSymbolScope;
 begin
-  Result := FindContext(ThreadId, StackFrame);
+  Result := FindSymbolScope(ThreadId, StackFrame);
   if Result <> nil then
     Result.MemManager.DefaultContext := Result;
 end;
@@ -3025,7 +3025,7 @@ procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
 var
   ABreakPoint: TDBGBreakPoint;
   ALocationAddr: TDBGLocationRec;
-  Context: TFpDbgInfoContext;
+  Context: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
   Opts: TFpInt3DebugBreakOptions;
   StackEntry: TDbgCallstackEntry;
@@ -3521,7 +3521,7 @@ end;
 
 procedure TFpDebugDebugger.DoFindContext;
 begin
-  FCacheContext := FDbgController.CurrentProcess.FindContext(FCacheThreadId, FCacheStackFrame);
+  FCacheContext := FDbgController.CurrentProcess.FindSymbolScope(FCacheThreadId, FCacheStackFrame);
 end;
 
 procedure TFpDebugDebugger.DoGetParamsAsString;
@@ -3754,7 +3754,7 @@ begin
   end;
 end;
 
-function TFpDebugDebugger.FindContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+function TFpDebugDebugger.FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
 begin
   if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
   begin
@@ -3765,7 +3765,7 @@ begin
     Result := FCacheContext;
   end
   else
-    Result := FDbgController.CurrentProcess.FindContext(AThreadId, AStackFrame);
+    Result := FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
 end;
 
 function TFpDebugDebugger.GetParamsAsString(AStackEntry: TDbgCallstackEntry;

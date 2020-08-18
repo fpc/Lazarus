@@ -41,7 +41,7 @@ type
     destructor Destroy; override;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace:{%H-} TDbgPtr; ASize: {%H-}Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize({%H-}ARegNum: Cardinal): Integer; override;
   end;
 
@@ -73,7 +73,7 @@ type
     FMemReader: TFpGDBMIDbgMemReader;
     FMemManager: TFpDbgMemManager;
     // cache last context
-    FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgInfoContext;
+    FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgSymbolScope;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
@@ -90,7 +90,7 @@ type
 
     procedure GetCurrentContext(out AThreadId, AStackFrame: Integer);
     function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
-    function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
+    function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
     property CurrentCommand;
     property TargetPID;
   protected
@@ -268,7 +268,7 @@ end;
 
 procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocals);
 var
-  Ctx: TFpDbgInfoContext;
+  Ctx: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
@@ -463,7 +463,7 @@ begin
 end;
 
 function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
-  AContext: TFpDbgAddressContext): Boolean;
+  AContext: TFpDbgLocationContext): Boolean;
 var
   rname: String;
   v: String;
@@ -898,7 +898,7 @@ begin
 end;
 
 function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
-  AStackFrame: Integer): TFpDbgInfoContext;
+  AStackFrame: Integer): TFpDbgSymbolScope;
 var
   Addr: TDBGPtr;
   i: Integer;
@@ -933,8 +933,8 @@ begin
     exit;
   end;
 
-  DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
-  Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
+  DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindSymbolScope ', dbgs(Addr)]);
+  Result := FDwarfInfo.FindSymbolScope(AThreadId, AStackFrame, Addr);
 
   if Result = nil then begin
     debugln(DBG_VERBOSE, ['GetInfoContextForContext CTX NOT FOUND for ', AThreadId, ', ', AStackFrame]);
@@ -972,7 +972,7 @@ end;
 function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
-  Ctx: TFpDbgInfoContext;
+  Ctx: TFpDbgSymbolScope;
   PasExpr, PasExpr2: TFpPascalExpression;
   ResValue: TFpValue;
   s: String;

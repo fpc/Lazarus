@@ -23,7 +23,7 @@ type
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
-      AContext: TFpDbgAddressContext): Boolean; override;
+      AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
@@ -415,7 +415,7 @@ begin
 end;
 
 function TTestMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
-  AContext: TFpDbgAddressContext): Boolean;
+  AContext: TFpDbgLocationContext): Boolean;
 begin
   Result := True;
   AValue := RegisterValues[ARegNum];
