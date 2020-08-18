@@ -780,13 +780,14 @@ if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
     case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
      EXCEPTION_BREAKPOINT, STATUS_WX86_BREAKPOINT,
      EXCEPTION_SINGLE_STEP, STATUS_WX86_SINGLE_STEP: begin
-       Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+       result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
      end
     else
-      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+      result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
     end
   else
-    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+    result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+  DebugLn(not Result, 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
   result := true;
 end;
 
@@ -850,6 +851,7 @@ begin
   repeat
     Done := True;
     result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
+    DebugLn(not Result, 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
 
     if Result and FTerminated and (MDebugEvent.dwDebugEventCode <> EXIT_PROCESS_DEBUG_EVENT)
        and (MDebugEvent.dwDebugEventCode <> EXIT_THREAD_DEBUG_EVENT)
