@@ -2243,7 +2243,7 @@ begin
     DebugLn(', No CTRL down');
   {$ENDIF}
 
-  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  if MouseDownComponent is TControl then
   begin
     MouseDownControl:=TControl(MouseDownComponent);
     p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseDownPos));
@@ -2476,7 +2476,7 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  if MouseDownComponent is TControl then
   begin
     MouseDownControl:=TControl(MouseDownComponent);
     p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseUpPos));
@@ -2642,7 +2642,7 @@ begin
   MouseMoveComponent := MouseDownComponent;
   if MouseMoveComponent = nil then
     MouseMoveComponent := ComponentAtPos(LastMouseMovePos.X, LastMouseMovePos.Y, True, True);
-  if (MouseMoveComponent <> nil) and (MouseMoveComponent is TControl) then
+  if MouseMoveComponent is TControl then
   begin
     MouseMoveControl:=TControl(MouseMoveComponent);
     p:=MouseMoveControl.ScreenToClient(Form.ClientToScreen(LastMouseMovePos));

@@ -1456,7 +1456,7 @@ begin
     exit;
 
   RunCmd := Debugger.CommandQueue.RunningCommand;
-  if (RunCmd <> nil) and (RunCmd is TLldbDebuggerCommandRun) then begin
+  if RunCmd is TLldbDebuggerCommandRun then begin
     Instr := TLldbDebuggerCommandRun(RunCmd).FThreadInstr;
     if (Instr <> nil) and Instr.IsSuccess then begin
       // FThreadInstr, may have the wrong thread marked. Use Debugger.FCurrentThreadId (which should not have changed since the RunCommand set it)

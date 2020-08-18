@@ -4440,7 +4440,7 @@ var
   TheList: TObject;
 begin
   TheList := GetObjectValue;
-  if (TheList <> nil) and (TheList is TList) then
+  if TheList is TList then
     Result := TList(TheList).Count
   else
     Result := 0;
@@ -4646,7 +4646,7 @@ var
   Collection: TObject;
 begin
   Collection := GetObjectValue;
-  if (Collection <> nil) and (Collection is TCollection) then
+  if Collection is TCollection then
     Result := TCollection(Collection).Count
   else
     Result := 0;

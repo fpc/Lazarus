@@ -168,7 +168,7 @@ end;
 function TLazAccessibleObject.FindOwnerWinControl: TWinControl;
 begin
   Result := nil;
-  if (OwnerControl <> nil) and (OwnerControl is TWinControl) then Exit(OwnerControl as TWinControl);
+  if OwnerControl is TWinControl then Exit(TWinControl(OwnerControl));
   if Self.Parent = nil then Exit;
   Result := Self.Parent.FindOwnerWinControl();
 end;
@@ -265,7 +265,7 @@ begin
   FLastSearchInSubcontrols := False;
   if GetChildAccessibleObjectsCount() > 0 then
     Result := GetChildAccessibleObject(0)
-  else if (OwnerControl <> nil) and (OwnerControl is TWinControl) then
+  else if OwnerControl is TWinControl then
   begin
     FLastSearchIndex := 1;
     FLastSearchInSubcontrols := True;
@@ -281,7 +281,7 @@ begin
   begin
     if GetChildAccessibleObjectsCount() < FLastSearchIndex then
       Result := GetChildAccessibleObject(FLastSearchIndex)
-    else if (OwnerControl <> nil) and (OwnerControl is TWinControl) then
+    else if OwnerControl is TWinControl then
     begin
       FLastSearchIndex := 1;
       FLastSearchInSubcontrols := True;
@@ -965,8 +965,8 @@ end;
 function TControl.GetFloating: Boolean;
 begin
   // a non-windowed control can never float for itself
-  Result := (HostDockSite <> nil) and (HostDockSite is FloatingDockSiteClass)
-      and (HostDockSite.DockClientCount<=1);
+  Result := (HostDockSite is FloatingDockSiteClass)
+        and (HostDockSite.DockClientCount<=1);
 end;
 
 {------------------------------------------------------------------------------

@@ -3121,7 +3121,7 @@ begin
         begin
           NewFrmControl := NewFrm.ControlAtPos(NewFrm.ScreenToClient(MousePos),
             [capfAllowWinControls, capfRecursive, capfOnlyWinControls]);
-          if (NewFrmControl<>nil) and (NewFrmControl is TWinControl) then
+          if NewFrmControl is TWinControl then
             NewWinControl := TWinControl(NewFrmControl)
           else
             NewWinControl := NewFrm;

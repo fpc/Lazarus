@@ -600,7 +600,7 @@ type
 
 function DbgsResultValue(AVal: TFpValue; AIndent: String): String;
 begin
-  if (AVal <> nil) and (AVal is TFpPasParserValue) then
+  if AVal is TFpPasParserValue then
     Result := LineEnding + TFpPasParserValue(AVal).DebugText(AIndent)
   else
   if AVal <> nil then
@@ -714,7 +714,7 @@ begin
   Tmp := TFpValueConstAddress.Create(addr);
   if ti <> nil then begin
     Result := ti.TypeCastValue(Tmp);
-    if (Result <> nil) and (Result is TFpValueDwarfBase) then
+    if Result is TFpValueDwarfBase then
       TFpValueDwarfBase(Result).Context := Context;
     Tmp.ReleaseReference;
   end
@@ -783,7 +783,7 @@ end;
 function TFpPasParserValueMakeReftype.GetTypeCastedValue(ADataVal: TFpValue): TFpValue;
 begin
   Result := DbgSymbol.TypeCastValue(ADataVal);
-  if (Result <> nil) and (Result is TFpValueDwarfBase) then
+  if Result is TFpValueDwarfBase then
     TFpValueDwarfBase(Result).Context := Context;
 end;
 
@@ -994,7 +994,7 @@ begin
   Tmp := TFpValueConstAddress.Create(addr);
   if ti <> nil then begin
     Result := ti.TypeCastValue(Tmp);
-    if (Result <> nil) and (Result is TFpValueDwarfBase) then
+    if Result is TFpValueDwarfBase then
       TFpValueDwarfBase(Result).Context := Context;
     Tmp.ReleaseReference;
   end

@@ -633,8 +633,7 @@ end;
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 begin
   Result:=
-    (AWinControl<>nil) and (AWinControl is TWinControl)
-    and (AWinControl.HandleAllocated)
+    (AWinControl is TWinControl) and (AWinControl.HandleAllocated)
     and WidgetIsDestroyingHandle({%H-}PGtkWidget(AWinControl.Handle));
 end;
 
@@ -6905,7 +6904,7 @@ begin
   LCLObject:=GetNearestLCLObject(Widget);
   DbgOut('TGtkWidgetSet.SetWidgetSizeAndPosition Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
     ' New='+dbgs(LCLWidth)+','+dbgs(LCLHeight));
-  if (LCLObject<>nil) and (LCLObject is TControl) then begin
+  if LCLObject is TControl then begin
     with TControl(LCLObject) do
       DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
   end else begin

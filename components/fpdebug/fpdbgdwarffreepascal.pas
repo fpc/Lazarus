@@ -661,7 +661,7 @@ begin
 
   ti := TFpSymbolDwarfFreePascalTypePointer(Result).NestedTypeInfo;
   // only if it is NOT a declaration
-  if (ti <> nil) and (ti is TFpSymbolDwarfTypeStructure) then
+  if ti is TFpSymbolDwarfTypeStructure then
     TFpSymbolDwarfFreePascalTypePointer(Result).IsInternalPointer := True;
 end;
 
@@ -678,7 +678,7 @@ var
 begin
   Result := False;
   ti := NestedTypeInfo;  // Same as TypeInfo, but does not try to be forwarded
-  Result := (ti <> nil) and (ti is TFpSymbolDwarfTypeArray);
+  Result := ti is TFpSymbolDwarfTypeArray;
   if Result then
     Result := (sfDynArray in ti.Flags);
 end;

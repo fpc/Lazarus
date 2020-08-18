@@ -760,7 +760,7 @@ procedure ListViewDrawItem(const AWinControl: TWinControl; Window: HWnd;
   Msg: UInt; WParam: Windows.WParam; const DrawIS: TDrawItemStruct;
   var ItemMsg: Integer; var DrawListItem: Boolean);
 begin
-  DrawListItem := (AWinControl <> nil) and (AWinControl is TListView) and
+  DrawListItem := (AWinControl is TListView) and
       (TListView(AWinControl).ViewStyle = vsReport) and
       (DrawIS.ctlType = ODT_LISTVIEW) and
       (TListView(AWinControl).OwnerDraw);

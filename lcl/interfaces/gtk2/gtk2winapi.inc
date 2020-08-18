@@ -8606,7 +8606,7 @@ begin
         Exit;
       end;
       AForm := TCustomForm(GetLCLObject({%H-}PgtkWidget(hwnd)));
-      if (AForm <> nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
+      if (AForm is TCustomForm) and (AForm.Parent=nil) then
       begin
         if Screen.CustomFormZIndex(AForm) < Screen.GetCurrentModalFormZIndex then
         begin
@@ -9399,7 +9399,7 @@ begin
   // For normal widgets we should use GetFixedWidget,
   // but for TForm we should apply the region in the raw hWnd
   LCLObject := GetLCLObject({%H-}PGtkWidget(hWnd));
-  if (LCLObject <> nil) and (LCLObject is TCustomForm) then
+  if LCLObject is TCustomForm then
   begin
     Widget := {%H-}PGtkWidget(hWnd);
   end

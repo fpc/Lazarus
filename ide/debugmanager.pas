@@ -567,7 +567,7 @@ end;
 procedure TManagedBreakPoints.Update(Item: TCollectionItem);
 begin
   inherited Update(Item);
-  if (Project1 <> nil) and (Item <> nil) and (Item is TIDEBreakPoint) and (TIDEBreakPoint(Item).UserModified)
+  if (Project1 <> nil) and (Item is TIDEBreakPoint) and (TIDEBreakPoint(Item).UserModified)
   then begin
     Project1.Modified := True;
     TIDEBreakPoint(Item).UserModified := False;

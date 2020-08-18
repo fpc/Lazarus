@@ -2606,8 +2606,7 @@ begin
             {non-spontaneous key events are garbage in Qt >= 4.4 for non edits}
             Result := QEvent_spontaneous(Event) or Supports(Self, IQtEdit, QtEdit);
             if Result then
-              Result := SlotKey(Sender, Event) or
-                ((LCLObject <> nil) and (LCLObject is TCustomControl));
+              Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
           end;
 
         //Dead keys (used to compose chars like "ó" by pressing 'o)  do not trigger EventKeyPress
@@ -6860,7 +6859,7 @@ begin
 
   IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
 
-  IsFrameWindow := not IsMainForm and (LCLObject <> nil) and (LCLObject is TCustomFrame);
+  IsFrameWindow := not IsMainForm and (LCLObject is TCustomFrame);
   if IsFrameWindow then
     QtFormBorderStyle := Ord(bsNone);
 

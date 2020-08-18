@@ -180,7 +180,7 @@ begin
     fCTLink.CodeTool.BuildTree(lsrImplementationStart);
     // Iterate the root objects
     CurRootNode:=fLFMTree.Root;
-    while (CurRootNode<>nil) and (CurRootNode is TLFMObjectNode) do begin
+    while CurRootNode is TLFMObjectNode do begin
       RootObjNode:=TLFMObjectNode(CurRootNode);
       if RootObjNode.TypeName='' then exit;
       if not DoObjectValues(RootObjNode, '') then exit;

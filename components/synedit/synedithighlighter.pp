@@ -1365,7 +1365,7 @@ var
   SrcAttri: TSynHighlighterAttributes;
   StoredName: String;
 begin
-  if (Source <> nil) and (Source is TSynCustomHighlighter) then begin
+  if Source is TSynCustomHighlighter then begin
     Src := TSynCustomHighlighter(Source);
     for i := 0 to AttrCount - 1 do begin
       // assign first attribute with the same name

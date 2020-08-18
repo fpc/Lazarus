@@ -10736,7 +10736,7 @@ begin
   if Debugger = nil then Exit;
 
   FUpdateFlags := [];
-  if (FCurrentCmd <> nil) and (FCurrentCmd is TGDBMIDebuggerCommandBreakRemove)
+  if FCurrentCmd is TGDBMIDebuggerCommandBreakRemove
   then exit;
 
   // Cancel any other current command

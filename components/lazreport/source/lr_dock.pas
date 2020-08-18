@@ -593,8 +593,8 @@ begin
   end;
   FWindow := nil;
   oldParent := nil;
-  if (Parent <> nil) and (Parent is TfrDock) then
-    oldParent := Parent as TfrDock;
+  if Parent is TfrDock then
+    oldParent := TfrDock(Parent);
   Parent := aDock;
   if oldParent <> nil then
     oldParent.AdjustBounds;
@@ -794,8 +794,8 @@ begin
   if FWindow = nil then
   begin
     oldParent := nil;
-    if (Parent <> nil) and (Parent is TfrDock) then
-      oldParent := Parent as TfrDock;
+    if Parent is TfrDock then
+      oldParent := TfrDock(Parent);
     Hide;
     FDragBox.Visible:=False;
     FWindow := TfrFloatWindow.Create(GetParentForm(Self));

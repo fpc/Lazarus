@@ -3839,7 +3839,7 @@ begin
   debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataVariable.FrameBaseNeeded ']);
   p := LocalProcInfo;
   // TODO: what if parent is declaration?
-  if (p <> nil) and (p is TFpSymbolDwarfDataProc) then begin
+  if p is TFpSymbolDwarfDataProc then begin
     fb := TFpSymbolDwarfDataProc(p).GetFrameBase(ASender as TDwarfLocationExpression);
     (ASender as TDwarfLocationExpression).FrameBase := fb;
     if fb = 0 then begin

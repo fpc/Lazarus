@@ -1947,7 +1947,7 @@ begin
           FillChar(ATransientWindow^,SizeOf(TTransientWindow),0);
           ATransientWindow^.GtkWindow:=Window;
           LCLObject:=GetLCLObject(Window);
-          if (LCLObject<>nil) and (LCLObject is TComponent) then begin
+          if LCLObject is TComponent then begin
             LCLComponent:=TComponent(LCLObject);
             ATransientWindow^.Component:=LCLComponent;
           end;

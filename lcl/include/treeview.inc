@@ -388,7 +388,7 @@ end;
 
 function TTreeNode.GetTreeNodes: TTreeNodes;
 begin
-  if (Owner<>nil) and (Owner is TTreeNodes) then
+  if Owner is TTreeNodes then
     Result:=TTreeNodes(Owner)
   else
     Result:=nil;

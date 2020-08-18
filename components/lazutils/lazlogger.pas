@@ -817,7 +817,7 @@ end;
 procedure TLazLoggerFile.Assign(Src: TLazLogger);
 begin
   inherited Assign(Src);
-  if (Src <> nil) and (Src is TLazLoggerFile) then begin
+  if Src is TLazLoggerFile then begin
     FOnDbgOut  := TLazLoggerFile(Src).FOnDbgOut;
     FOnDebugLn := TLazLoggerFile(Src).FOnDebugLn;;
 

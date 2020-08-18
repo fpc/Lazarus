@@ -341,7 +341,7 @@ var
 begin
   Widget := TQtWidget(WindowHandle);
 
-  if (Widget <> nil) and (Widget is TQtDesignWidget) then
+  if Widget is TQtDesignWidget then
     Result := TQtDesignWidget(Widget).DesignContext
   else
     Result := 0;

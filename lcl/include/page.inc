@@ -23,7 +23,7 @@ begin
   OldParent := Parent;
   inherited SetParent(AParent);
 
-  if (Parent <> nil) and (Parent is TNotebook) then
+  if Parent is TNotebook then
   begin
     // add to new pagelist
     ParentNotebook := TNotebook(Parent);
@@ -33,7 +33,7 @@ begin
   end;
 
   //if old and new parent is a TNotebook then remove the page from the old one
-  if (OldParent <> nil) and (OldParent is TNotebook) and
+  if OldParent is TNotebook and
     not (csDestroying in OldParent.ComponentState) then
   begin
     // remove from old pagelist
@@ -64,8 +64,7 @@ begin
   DebugLn('[TPage.Destroy]');
   {$endif}
 
-  if (Parent <> nil) and (Parent is TNotebook) and
-    not (csDestroying in Parent.ComponentState) then
+  if (Parent is TNotebook) and not (csDestroying in Parent.ComponentState) then
   begin
     {$ifdef DEBUG_NEW_NOTEBOOK}
     DebugLn('[TPage.Destroy] FPages.Remove(Self)');

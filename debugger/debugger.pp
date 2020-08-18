@@ -5897,7 +5897,7 @@ end;
 
 procedure TIDERegisterValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
 begin
-  if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+  if Owner is TCurrentIDERegisters then
     TCurrentIDERegisters(Owner).DoDataValidityChanged(AnOldValidity);
 end;
 
@@ -5905,11 +5905,11 @@ procedure TIDERegisterValue.DoDisplayFormatChanged(AnOldFormat: TRegisterDisplay
 begin
   if not HasValueFormat[DisplayFormat] then begin
     DataValidity := ddsRequested;
-    if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+    if Owner is TCurrentIDERegisters then
       TCurrentIDERegisters(Owner).FMonitor.RequestData(TCurrentIDERegisters(Owner));
   end
   else
-  if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+  if Owner is TCurrentIDERegisters then
     TCurrentIDERegisters(Owner).FMonitor.NotifyChange(TCurrentIDERegisters(Owner));
 end;
 

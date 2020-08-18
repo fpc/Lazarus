@@ -1966,7 +1966,7 @@ end;
 
 function TGDBExpression.IsCommaSeparated: Boolean;
 begin
-  Result := (FExpressionPart <> nil) and (FExpressionPart is TGDBExpressionPartCommaList);
+  Result := FExpressionPart is TGDBExpressionPartCommaList;
 end;
 
 { TGDBPTypeRequestCache }

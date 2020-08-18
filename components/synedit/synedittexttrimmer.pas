@@ -541,8 +541,7 @@ var
 begin
   if (FTrimType = settIgnoreAll) then begin
     L := CurUndoList.GetLastChange;
-    if (L <> nil) and (L is TSynEditUndoTrimInsert) and
-       (TSynEditUndoTrimInsert(L).FPosY = APosY)
+    if (L is TSynEditUndoTrimInsert) and (TSynEditUndoTrimInsert(L).FPosY = APosY)
     then begin
       {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- MaybeAddUndoForget - removing last undo']);{$ENDIF}
       CurUndoList.PopLastChange.Free;

@@ -170,7 +170,7 @@ var
 begin
   case Index - (inherited GetVerbCount) of
     0: begin
-        if (Component <> nil) and (Component is TCustomSynEdit) then
+        if Component is TCustomSynEdit then
           TCustomSynEdit(Component).ResetMouseActions;
         Modified;
         GetHook(Hook);
@@ -585,7 +585,7 @@ var
   SynObjectList: TObject;
 begin
   SynObjectList := GetObjectValue;
-  if (SynObjectList <> nil) and (SynObjectList is TSynObjectList) then
+  if SynObjectList is TSynObjectList then
     Result := TSynObjectList(SynObjectList).Count
   else
     Result:=0;

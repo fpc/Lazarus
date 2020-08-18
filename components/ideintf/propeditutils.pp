@@ -299,7 +299,7 @@ var
 begin
   FLookupRoot:=AValue;
   FComponentList.Clear;
-  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then
+  if FLookupRoot is TComponent then
     for i:=0 to TComponent(FLookupRoot).ComponentCount-1 do
       FComponentList.Add(TComponent(FLookupRoot).Components[i]);
   FSelection.Clear;

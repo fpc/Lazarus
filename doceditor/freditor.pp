@@ -538,7 +538,7 @@ end;
 Procedure TElementEditor.InsertLink(LinkTarget,LinkText : String);
 
 begin
-  If (CurrentEditable<>Nil) and (CurrentEditable is TCustomEdit) then
+  If CurrentEditable is TCustomEdit then
     With TCustomEdit(CurrentEditable) do
       begin
       If (LinkText<>'') then
@@ -585,7 +585,7 @@ end;
 procedure TElementEditor.InsertPrintShortLink(pLinkTarget: string);
 begin
   { Should be Limit insert only to Long Description edit box? }
-  if (CurrentEditable <> nil) and (CurrentEditable is TCustomEdit) then
+  if CurrentEditable is TCustomEdit then
   begin
     (CurrentEditable as TCustomEdit).SelText :=
         Format('<%s id="%s"/>', [TagNames[ttPrintShort], pLinkTarget]);

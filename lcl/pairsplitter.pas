@@ -170,7 +170,7 @@ end;
 
 function TPairSplitterSide.GetSplitter: TCustomPairSplitter;
 begin
-  if (Parent<>nil) and (Parent is TCustomPairSplitter) then
+  if Parent is TCustomPairSplitter then
     Result:=TCustomPairSplitter(Parent)
   else
     Result:=nil;

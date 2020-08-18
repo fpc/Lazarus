@@ -958,8 +958,7 @@ begin
 
   // Top-Level menu items for PDA systems
   if (Application.ApplicationType in [atPDA, atKeyPadDevice]) and
-    (AMenu <> nil) and (AMenu is TMainMenu) and
-    (AMenuItem.Parent = AMenu.Items) then
+    (AMenu is TMainMenu) and (AMenuItem.Parent = AMenu.Items) then
   begin
     {$ifdef VerboseWinCEMenu}
     DebugLn('[TWinCEWSMenuItem.SetCaption] Top-level menu item');
@@ -988,8 +987,7 @@ begin
   end
   // Second-Level menu items for atKeyPadDevice systems
   else if (Application.ApplicationType = atKeyPadDevice) and
-    (AMenu <> nil) and (AMenu is TMainMenu) and
-    (AMenuItem.Parent <> nil) and
+    (AMenu is TMainMenu) and (AMenuItem.Parent <> nil) and
     (AMenuItem.Parent.Parent = AMenu.Items) then
   begin
     // The only solution is removing and reinserting the item, or the whole menu

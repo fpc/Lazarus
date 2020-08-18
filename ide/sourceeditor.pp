@@ -3419,7 +3419,7 @@ Begin
 
   inherited Create;
   FAOwner := AOwner;
-  if (FAOwner<>nil) and (FAOwner is TSourceNotebook) then
+  if FAOwner is TSourceNotebook then
     FSourceNoteBook:=TSourceNotebook(FAOwner)
   else
     FSourceNoteBook:=nil;

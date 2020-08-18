@@ -1233,12 +1233,12 @@ var
   i: Integer;
 begin
   inherited Assign(Src);
-  if (Src <> nil) and (Src is TLazLoggerWithGroupParam) then begin
+  if Src is TLazLoggerWithGroupParam then begin
     FLogParamParsed := False;
     FParamForEnabledLogGroups := TLazLoggerWithGroupParam(Src).FParamForEnabledLogGroups;
   end;
 
-  if (Src <> nil) then
+  if Src <> nil then
     for i := 0 to Src.BlockHandlerCount - 1 do
       AddBlockHandler(Src.BlockHandler[i]);
 end;

@@ -3124,8 +3124,7 @@ procedure TCDTabSheet.SetParent(NewParent: TWinControl);
 begin
   inherited SetParent(NewParent);
   // Code adding tabs added via the object inspector
-  if (csLoading in ComponentState) and
-    (NewParent <> nil) and (NewParent is TCDPageControl) then
+  if (csLoading in ComponentState) and (NewParent is TCDPageControl) then
   begin
     CDTabControl := NewParent as TCDCustomTabControl;
     TCDPageControl(CDTabControl).AddPage(Self);

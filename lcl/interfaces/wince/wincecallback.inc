@@ -1147,7 +1147,7 @@ begin
           TargetObject := nil;
         end;
 
-        if (TargetObject <> nil) and (TargetObject is TMenuItem) then
+        if TargetObject is TMenuItem then
         begin
           {$ifdef VerboseWinCEMenu}
           DebugLn('[wincecallback] Sending menuitem Click');

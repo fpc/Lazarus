@@ -319,7 +319,7 @@ procedure TMenuDesignerForm.ShowPopupAssignmentsInfo;
 var
   count: integer;
 begin
-  if (FEditedMenu <> nil) and (FEditedMenu is TPopupMenu) then begin
+  if FEditedMenu is TPopupMenu then begin
     count:=GetPopupAssignmentCount;
     PopupAssignmentsCountLabel.Enabled:=True;
     if (count > 0) then
@@ -341,7 +341,7 @@ end;
 
 procedure TMenuDesignerForm.HidePopupAssignmentsInfo;
 begin
-  if (FEditedMenu <> nil) and (FEditedMenu is TMainMenu) then begin
+  if FEditedMenu is TMainMenu then begin
     PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA]);
     PopupAssignmentsCountLabel.Enabled:=False;
     FPopupAssignmentsListBox.Visible:=False;
