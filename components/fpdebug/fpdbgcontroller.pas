@@ -302,7 +302,7 @@ type
     procedure StepOverInstr;
     procedure Next;
     procedure Step;
-    function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgSymbolScope; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
+    function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgInfoCallContext; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
     procedure StepOut(AForceStoreStepInfo: Boolean = False);
     function Pause: boolean;
     function Detach: boolean;
@@ -1851,7 +1851,10 @@ begin
   FNextOnlyStopOnStartLine := true;
 end;
 
-function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgSymbolScope; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
+function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation;
+  const ABaseContext: TFpDbgInfoCallContext;
+  const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor
+  ): TFpDbgInfoCallContext;
 var
   Context: TFpDbgInfoCallContext;
 begin

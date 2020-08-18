@@ -33,12 +33,9 @@ type
     FFpSymbolInfo: TFpSymbolInfo;
     FSizeOfAddress: integer;
   protected
-    function GetAddress: TDbgPtr; override;
-    function GetStackFrame: Integer; override;
-    function GetThreadId: Integer; override;
     function GetSizeOfAddress: Integer; override;
   public
-    constructor Create(AFpSymbolInfo: TFpSymbolInfo);
+    constructor Create(ALocationContext: TFpDbgLocationContext; AFpSymbolInfo: TFpSymbolInfo);
     function FindSymbol(const AName: String): TFpValue; override;
   end;
 
@@ -47,13 +44,12 @@ type
   TFpSymbolInfo = class(TDbgInfo)
   private
     FSymbolList: TfpSymbolList;
-    FContext: TFpSymbolContext;
     FLibName: String;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String);
     destructor Destroy; override;
-    function FindSymbolScope(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
+    function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
   end;
@@ -72,34 +68,16 @@ end;
 
 { TFpSymbolContext }
 
-function TFpSymbolContext.GetAddress: TDbgPtr;
-begin
-  result := 0;
-end;
-
-function TFpSymbolContext.GetStackFrame: Integer;
-begin
-  result := 0;
-end;
-
-function TFpSymbolContext.GetThreadId: Integer;
-begin
-  result := 1;
-end;
-
 function TFpSymbolContext.GetSizeOfAddress: Integer;
 begin
   result := FSizeOfAddress;
 end;
 
-constructor TFpSymbolContext.Create(AFpSymbolInfo: TFpSymbolInfo);
+constructor TFpSymbolContext.Create(ALocationContext: TFpDbgLocationContext;
+  AFpSymbolInfo: TFpSymbolInfo);
 begin
-  inherited create;
+  inherited create(ALocationContext);
   FFpSymbolInfo:=AFpSymbolInfo;
-  if AFpSymbolInfo.TargetInfo.bitness = b64 then
-    FSizeOfAddress:=8
-  else
-    FSizeOfAddress:=4;
 end;
 
 function TFpSymbolContext.FindSymbol(const AName: String): TFpValue;
@@ -128,7 +106,6 @@ var
   i: Integer;
 begin
   inherited Create(ALoaderList, AMemManager);
-  FContext := TFpSymbolContext.Create(self);
 
   FSymbolList := TfpSymbolList.Create;
   for i := 0 to ALoaderList.Count-1 do
@@ -148,15 +125,14 @@ end;
 destructor TFpSymbolInfo.Destroy;
 begin
   FSymbolList.Free;
-  FContext.Free;
   inherited Destroy;
 end;
 
-function TFpSymbolInfo.FindSymbolScope(AThreadId, AStackFrame: Integer;
+function TFpSymbolInfo.FindSymbolScope(ALocationContext: TFpDbgLocationContext;
   AAddress: TDbgPtr): TFpDbgSymbolScope;
 begin
   assert(False, 'TFpSymbolInfo.FindSymbolScope: False');
-  Result:=FContext; // TODO: nil
+  Result := TFpSymbolContext.Create(ALocationContext, Self);
 end;
 
 function TFpSymbolInfo.FindProcSymbol(const AName: String): TFpSymbol;

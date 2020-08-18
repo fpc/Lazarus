@@ -12,10 +12,12 @@ uses
   {$IFdef WithWinMemReader}
   windows,
   {$ENDIF}
-  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses, GDBTypeInfo, LCLProc, Forms,
-  FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazLoggerProfiling, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, MenuIntf;
+  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses,
+  GDBMIDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses,
+  GDBTypeInfo, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
+  LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder,
+  FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon,
+  MenuIntf;
 
 type
 
@@ -901,7 +903,7 @@ function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
   AStackFrame: Integer): TFpDbgSymbolScope;
 var
   Addr: TDBGPtr;
-  i: Integer;
+  i, sa: Integer;
 begin
   Result := nil;
   if FDwarfInfo = nil then
@@ -922,7 +924,7 @@ begin
   i := MAX_CTX_CACHE - 1;
   while (i >= 0) and
     ( (FLastContext[i] = nil) or
-      (FLastContext[i].ThreadId <> AThreadId) or (FLastContext[i].StackFrame <> AStackFrame)
+      (FLastContext[i].LocationContext.ThreadId <> AThreadId) or (FLastContext[i].LocationContext.StackFrame <> AStackFrame)
     )
   do
     dec(i);
@@ -934,7 +936,14 @@ begin
   end;
 
   DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindSymbolScope ', dbgs(Addr)]);
-  Result := FDwarfInfo.FindSymbolScope(AThreadId, AStackFrame, Addr);
+  if FDwarfInfo.TargetInfo.bitness = b32 then
+    sa := 4
+  else
+    sa := 8;
+  Result := FDwarfInfo.FindSymbolScope(
+    TFpDbgSimpleLocationContext.Create(FMemManager, Addr, sa, AThreadId, AStackFrame),
+    Addr
+  );
 
   if Result = nil then begin
     debugln(DBG_VERBOSE, ['GetInfoContextForContext CTX NOT FOUND for ', AThreadId, ', ', AStackFrame]);
@@ -1017,7 +1026,7 @@ begin
   end;
   if Ctx = nil then exit;
 
-  FMemManager.DefaultContext := Ctx;
+  FMemManager.DefaultContext := Ctx.LocationContext;
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
   FPrettyPrinter.MemManager := ctx.MemManager;
 

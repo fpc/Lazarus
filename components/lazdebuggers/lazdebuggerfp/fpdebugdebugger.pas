@@ -2863,7 +2863,7 @@ function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
 begin
   Result := FindSymbolScope(ThreadId, StackFrame);
   if Result <> nil then
-    Result.MemManager.DefaultContext := Result;
+    Result.MemManager.DefaultContext := Result.LocationContext;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;

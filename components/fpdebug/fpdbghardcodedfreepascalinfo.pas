@@ -173,13 +173,13 @@ type
   private
     FTypeSymbol: TFpSymbol;
     FDataSymbol: TFpSymbol;
-    FContext: TFpDbgSymbolScope;
+    FContext: TFpDbgLocationContext;
 
     // Cached:
     FDataAddress: TFpDbgMemLocation;
     FStructureValue: TDbgHardcodedVariableValue;
     procedure SetStructureValue(AValue: TDbgHardcodedVariableValue);
-    procedure SetContext(AValue: TFpDbgSymbolScope);
+    procedure SetContext(AValue: TFpDbgLocationContext);
   protected
     function GetAsString: AnsiString; override;
     function GetAddress: TFpDbgMemLocation; override;
@@ -189,7 +189,7 @@ type
     destructor Destroy; override;
     procedure SetDataSymbol(AValueSymbol: TFpSymbol);
 
-    property Context: TFpDbgSymbolScope read FContext write SetContext;
+    property Context: TFpDbgLocationContext read FContext write SetContext;
   end;
 
   { TDbgHardcodedFPCClassValue }
@@ -207,16 +207,6 @@ type
   // Just a hack to simulate a real context, when FindSymbolScope does not return
   // a context.
   TFpDbgHardcodedContext = class(TFpDbgSymbolScope)
-  private
-    FMemManager: TFpDbgMemManager;
-    FAddressSize: Integer;
-    FThreadId: Integer;
-  protected
-    function GetMemManager: TFpDbgMemManager; override;
-    function GetSizeOfAddress: Integer; override;
-    function GetThreadId: Integer; override;
-    function GetStackFrame: Integer; override;
-    function GetAddress: TDbgPtr; override;
   public
     constructor Create(AMemManager: TFpDbgMemManager; AnAdressSize: Integer; AThreadId: Integer);
   end;
@@ -257,7 +247,7 @@ end;
 
 function TDbgHardcodedFPCAnsistringTypeSymbol.GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgSymbolScope;
+  Context: TFpDbgLocationContext;
 begin
   // Dereference the pointer that points to the real string-data
   Context := AValueObj.Context;
@@ -282,7 +272,7 @@ end;
 
 function TDbgHardcodedFPCClassMember.DoReadDataAddress(const AValueObj: TDbgHardcodedVariableValue; out AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgSymbolScope;
+  Context: TFpDbgLocationContext;
 begin
   Context := (AValueObj as TDbgHardcodedVariableValue).Context;
   AnAddress := AValueObj.FStructureValue.DataAddress + (SizeVal(Context.SizeOfAddress) * FFieldIndex);
@@ -325,36 +315,10 @@ end;
 
 constructor TFpDbgHardcodedContext.Create(AMemManager: TFpDbgMemManager; AnAdressSize: Integer; AThreadId: Integer);
 begin
-  inherited Create;
-  AddReference;
-  FMemManager := AMemManager;
-  FAddressSize := AnAdressSize;
-  FThreadId := AThreadId;
-end;
-
-function TFpDbgHardcodedContext.GetMemManager: TFpDbgMemManager;
-begin
-  Result := FMemManager;
-end;
-
-function TFpDbgHardcodedContext.GetSizeOfAddress: Integer;
-begin
-  Result := FAddressSize;
-end;
-
-function TFpDbgHardcodedContext.GetThreadId: Integer;
-begin
-  Result := FThreadId;
-end;
-
-function TFpDbgHardcodedContext.GetStackFrame: Integer;
-begin
-  Result := 0;
-end;
-
-function TFpDbgHardcodedContext.GetAddress: TDbgPtr;
-begin
-  raise Exception.Create('It is not possible to get the address of this context');
+  inherited Create(
+    TFpDbgSimpleLocationContext.Create(AMemManager, 0, AnAdressSize, AThreadId, 0)
+  );
+  LocationContext.ReleaseReference;
 end;
 
 { TDbgHardcodedFPCShortstringTypeSymbol }
@@ -529,7 +493,7 @@ begin
   FStructureValue := AValue;
 end;
 
-procedure TDbgHardcodedVariableValue.SetContext(AValue: TFpDbgSymbolScope);
+procedure TDbgHardcodedVariableValue.SetContext(AValue: TFpDbgLocationContext);
 begin
   if FContext = AValue then
     exit;
@@ -646,7 +610,7 @@ end;
 
 function TDbgHardcodedFPCClassTypeSymbol.GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean;
 var
-  Context: TFpDbgSymbolScope;
+  Context: TFpDbgLocationContext;
 begin
   // Dereference the pointer that points to the real class-data
   Context := AValueObj.Context;

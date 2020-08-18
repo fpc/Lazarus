@@ -67,17 +67,21 @@ type
   end;
   PFpDbgMemLocation = ^TFpDbgMemLocation;
 
+  TFpDbgMemManager = class;
+
   TFpDbgLocationContext = class(TRefCountedObject)
   protected
     function GetAddress: TDbgPtr; virtual; abstract;
     function GetStackFrame: Integer; virtual; abstract;
     function GetThreadId: Integer; virtual; abstract;
     function GetSizeOfAddress: Integer; virtual; abstract;
+    function GetMemManager: TFpDbgMemManager; virtual; abstract;
   public
     property Address: TDbgPtr read GetAddress;
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;
     property SizeOfAddress: Integer read GetSizeOfAddress;
+    property MemManager: TFpDbgMemManager read GetMemManager;
   end;
 
 

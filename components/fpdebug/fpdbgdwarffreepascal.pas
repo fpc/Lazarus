@@ -32,7 +32,7 @@ type
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    function CreateScopeForSymbol(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
@@ -355,11 +355,11 @@ begin
   end;
 end;
 
-function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(AThreadId,
-  AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
+function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(
+  ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
   ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
 begin
-  Result := TFpDwarfFreePascalSymbolScope.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
+  Result := TFpDwarfFreePascalSymbolScope.Create(ALocationContext, ASymbol, ADwarf);
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
@@ -448,6 +448,34 @@ begin
   end;
 end;
 
+type
+
+  { TFpDbgDwarfSimpleLocationContext }
+
+  TFpDbgDwarfSimpleLocationContext = class(TFpDbgSimpleLocationContext)
+  protected
+    FStackFrame: Integer;
+    function GetStackFrame: Integer; override;
+  public
+    constructor Create(AMemManager: TFpDbgMemManager; AnAddress: TDbgPtr;
+      AnSizeOfAddr, AThreadId: Integer; AStackFrame: Integer);
+  end;
+
+{ TFpDbgDwarfSimpleLocationContext }
+
+constructor TFpDbgDwarfSimpleLocationContext.Create(
+  AMemManager: TFpDbgMemManager; AnAddress: TDbgPtr; AnSizeOfAddr,
+  AThreadId: Integer; AStackFrame: Integer);
+begin
+  inherited Create(AMemManager, AnAddress, AnSizeOfAddr, AThreadId, AStackFrame);
+  FStackFrame := AStackFrame;
+end;
+
+function TFpDbgDwarfSimpleLocationContext.GetStackFrame: Integer;
+begin
+  Result := FStackFrame;
+end;
+
 { TFpDwarfFreePascalSymbolScope }
 
 function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String; PNameUpper,
@@ -464,10 +492,11 @@ const
 var
   StartScopeIdx, RegFp, RegPc: Integer;
   ParentFpVal: TFpValue;
-  SearchCtx: TFpDwarfFreePascalSymbolScope;
+  SearchCtx: TFpDbgDwarfSimpleLocationContext;
   par_fp, cur_fp, prev_fp, pc: TDbgPtr;
   d, i: Integer;
   ParentFpSym: TFpSymbolDwarf;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   Result := False;
   if not(Symbol is TFpSymbolDwarfDataProc) then
@@ -539,17 +568,17 @@ begin
   end;
 
   // TODO: FindCallStackEntryByBasePointer, once all evaluates run in thread.
-  i := StackFrame + 1;
-  SearchCtx := TFpDwarfFreePascalSymbolScope.Create(ThreadId, i, 0, Symbol, Dwarf);
+  i := LocationContext.StackFrame + 1;
+  SearchCtx := TFpDbgDwarfSimpleLocationContext.Create(MemManager, 0, SizeOfAddress, LocationContext.ThreadId, i);
 
   cur_fp := 0;
-  if MemManager.ReadRegister(RegFp, cur_fp, Self) then begin
+  if MemManager.ReadRegister(RegFp, cur_fp, Self.LocationContext) then begin
     if cur_fp > par_fp then
       d := -1  // cur_fp must go down
     else
       d := 1;  // cur_fp must go up
     while not (cur_fp = par_fp) do begin
-      SearchCtx.StackFrame := i;
+      SearchCtx.FStackFrame := i;
       // TODO: get reg num via memreader name-to-num
       prev_fp := cur_fp;
       if not MemManager.ReadRegister(RegFp, cur_fp, SearchCtx) then
@@ -557,7 +586,7 @@ begin
       inc(i);
       if (cur_fp = prev_fp) or ((cur_fp < prev_fp) xor (d = -1)) then
         break;  // wrong direction
-      if i > StackFrame + 200 then break; // something wrong? // TODO better check
+      if i > LocationContext.StackFrame + 200 then break; // something wrong? // TODO better check
     end;
     dec(i);
   end;
@@ -573,7 +602,9 @@ begin
 
   SearchCtx.ReleaseReference;
 
-  FOuterNestContext := Dwarf.FindSymbolScope(ThreadId, i, pc);
+  Ctx := TFpDbgSimpleLocationContext.Create(MemManager, pc, SizeOfAddress, LocationContext.ThreadId, i);
+  FOuterNestContext := Dwarf.FindSymbolScope(Ctx, pc);
+  Ctx.ReleaseReference;
 
   ADbgValue := FOuterNestContext.FindSymbol(AName); // TODO: pass upper/lower
   Result := True; // self, global was done by outer

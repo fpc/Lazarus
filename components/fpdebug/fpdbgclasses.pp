@@ -578,7 +578,7 @@ public
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
-    function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgSymbolScope; inline;
+    function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
     property  LastLibraryUnloaded: TDbgLibrary read FLastLibraryUnloaded write SetLastLibraryUnloadedNil;
@@ -1116,7 +1116,6 @@ end;
 function TDbgCallstackEntry.GetFunctionName: string;
 var
   Symbol: TFpSymbol;
-  offs: TDBGPtr;
 begin
   Symbol := GetProcSymbol;
   if assigned(Symbol) then begin
@@ -1137,7 +1136,7 @@ function TDbgCallstackEntry.GetParamsAsString(
   APrettyPrinter: TFpPascalPrettyPrinter): string;
 var
   ProcVal: TFpValue;
-  AContext: TFpDbgSymbolScope;
+  AContext: TFpDbgLocationContext;
   m: TFpValue;
   v: String;
   i: Integer;
@@ -1147,7 +1146,8 @@ begin
   if assigned(ProcSymbol) then begin
     ProcVal := ProcSymbol.Value;
     if (ProcVal <> nil) then begin
-      AContext := FThread.Process.ContextFromProc(FThread.ID, Index, ProcSymbol);
+      AContext := TFpDbgSimpleLocationContext.Create(FThread.Process.MemManager,
+        LocToAddrOrNil(ProcSymbol.Address), DBGPTRSIZE[FThread.Process.Mode], FThread.ID, Index);
 
       if AContext <> nil then begin
         OldContext := AContext.MemManager.DefaultContext;
@@ -1424,7 +1424,7 @@ end;
 procedure TDbgAsmDecoder.ReverseDisassemble(var AAddress: Pointer; out
   ACodeBytes: String; out ACode: String);
 var
-  i, instrLen: integer;
+  instrLen: integer;
   tmpAddress: PtrUint;
 begin
   // Decode max instruction length backwards,
@@ -1723,8 +1723,10 @@ var
   Thread: TDbgThread;
   Frame: TDbgCallstackEntry;
   Addr: TDBGPtr;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   Result := nil;
+  Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
   if not GetThread(AThreadId, Thread) then
     exit;
   if AStackFrame = 0 then
@@ -1741,16 +1743,18 @@ begin
   end;
   if Addr = 0 then
     exit;
-  Result := FDbgInfo.FindSymbolScope(AThreadId, AStackFrame, Addr);
+  Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
   // SymbolTableInfo.FindSymbolScope()
 
   if Result = nil then
-    Result := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
+    Result := TFpDbgSymbolScope.Create(Ctx);
+  Ctx.ReleaseReference;
 end;
 
-function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgSymbolScope;
+function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer;
+  AProcSym: TFpSymbol): TFpDbgLocationContext;
 begin
-  Result := FDbgInfo.SymbolScopeFromProc(AThreadId, AStackFrame, AProcSym);
+  Result := TFpDbgSimpleLocationContext.Create(MemManager, LocToAddrOrNil(AProcSym.Address), DBGPTRSIZE[Mode], AThreadId, AStackFrame);
 end;
 
 function TDbgProcess.GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
@@ -2645,7 +2649,6 @@ var
   R: TDbgRegisterValue;
   nIP, nBP, nSP: String;
   NextIdx: LongInt;
-  AReadSize: Cardinal;
   OutSideFrame: Boolean;
   StackPtr: TDBGPtr;
 begin
