@@ -289,6 +289,14 @@ begin
     TestExpr([2],   TFpPascalExpressionPartIdentifier, 'b', 0);
     TestExpr([3],   TFpPascalExpressionPartIdentifier, 'c', 0);
 
+    CreateExpr('f(x(a),b)', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 3);
+      TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
+      TestExpr([1],    TFpPascalExpressionPartBracketArgumentList, '(', 2);
+        TestExpr([1,0],   TFpPascalExpressionPartIdentifier, 'x', 0);
+        TestExpr([1,1],   TFpPascalExpressionPartIdentifier, 'a', 0);
+      TestExpr([2],   TFpPascalExpressionPartIdentifier, 'b', 0);
+
     CreateExpr('f(,)', False);
     CreateExpr('f(,,)', False);
     CreateExpr('f(a,)', False);
