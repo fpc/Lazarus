@@ -124,10 +124,12 @@ type
   { TFpValueDwarfBase }
 
   TFpValueDwarfBase = class(TFpValue)
-  private
-    FContext: TFpDbgLocationContext;
+  strict private
+    FLocContext: TFpDbgLocationContext;
+    procedure SetContext(AValue: TFpDbgLocationContext);
   public
-    property Context: TFpDbgLocationContext read FContext write FContext;
+    destructor Destroy; override;
+    property Context: TFpDbgLocationContext read FLocContext write SetContext;
   end;
 
   { TFpValueDwarfTypeDefinition }
@@ -1010,6 +1012,25 @@ begin
   WriteStr(Result, ASubRangeBoundReadState);
 end;
 
+{ TFpValueDwarfBase }
+
+procedure TFpValueDwarfBase.SetContext(AValue: TFpDbgLocationContext);
+begin
+  if FLocContext = AValue then Exit;
+  if FLocContext <> nil then
+    FLocContext.ReleaseReference;
+  FLocContext := AValue;
+  if FLocContext <> nil then
+    FLocContext.AddReference;
+end;
+
+destructor TFpValueDwarfBase.Destroy;
+begin
+  inherited Destroy;
+  if FLocContext <> nil then
+    FLocContext.ReleaseReference;
+end;
+
 { TFpSymbolDwarfFunctionResult }
 
 function TFpSymbolDwarfFunctionResult.GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean;
@@ -1184,8 +1205,8 @@ end;
 
 procedure TFpDwarfInfoSymbolScope.ApplyContext(AVal: TFpValue);
 begin
-  if (AVal <> nil) and (TFpValueDwarfBase(AVal).FContext = nil) then
-    TFpValueDwarfBase(AVal).FContext := Self.LocationContext;
+  if (AVal <> nil) and (TFpValueDwarfBase(AVal).Context = nil) then
+    TFpValueDwarfBase(AVal).Context := Self.LocationContext;
 end;
 
 function TFpDwarfInfoSymbolScope.SymbolToValue(ASym: TFpSymbolDwarf): TFpValue;
@@ -1213,7 +1234,7 @@ begin
     exit;
   Result := TFpSymbolDwarfDataProc(FSymbol).GetSelfParameter(FAddress);
   if (Result <> nil) then
-    Result.FContext := Self.LocationContext;
+    Result.Context := Self.LocationContext;
   FSelfParameter := Result;
 end;
 
@@ -1509,7 +1530,7 @@ begin
   if Result = nil then
     exit;
 //  TFpValueDwarf(Result).SetStructureValue(Self);
-  TFpValueDwarf(Result).FContext := FContext;
+  TFpValueDwarf(Result).Context := Context;
 end;
 
 function TFpValueDwarfTypeDefinition.GetMember(AIndex: Int64): TFpValue;
@@ -1518,7 +1539,7 @@ begin
   if Result = nil then
     exit;
 //  TFpValueDwarf(Result).SetStructureValue(Self);
-  TFpValueDwarf(Result).FContext := FContext;
+  TFpValueDwarf(Result).Context := Context;
 end;
 
 constructor TFpValueDwarfTypeDefinition.Create(ASymbol: TFpSymbolDwarf);
@@ -1538,8 +1559,8 @@ function TFpValueDwarfTypeDefinition.GetTypeCastedValue(ADataVal: TFpValue): TFp
 begin
   Result := FSymbol.TypeCastValue(ADataVal);
   assert((Result = nil) or (Result is TFpValueDwarf), 'TFpValueDwarfTypeDefinition.GetTypeCastedValue: (Result = nil) or (Result is TFpValueDwarf)');
-  if (Result <> nil) and (TFpValueDwarf(Result).FContext = nil) then
-    TFpValueDwarf(Result).FContext := FContext;
+  if (Result <> nil) and (TFpValueDwarf(Result).Context = nil) then
+    TFpValueDwarf(Result).Context := Context;
 end;
 
 { TFpValueDwarf }
@@ -1547,8 +1568,8 @@ end;
 function TFpValueDwarf.MemManager: TFpDbgMemManager;
 begin
   Result := nil;
-  if FContext <> nil then
-    Result := FContext.MemManager;
+  if Context <> nil then
+    Result := Context.MemManager;
 
   if Result = nil then begin
     // Either a typecast, or a member gotten from a typecast,...
@@ -1754,7 +1775,7 @@ begin
   if Result = nil then
     exit;
   TFpValueDwarf(Result).SetStructureValue(Self);
-  TFpValueDwarf(Result).FContext := FContext;
+  TFpValueDwarf(Result).Context := Context;
 end;
 
 function TFpValueDwarf.GetMember(AIndex: Int64): TFpValue;
@@ -1763,7 +1784,7 @@ begin
   if Result = nil then
     exit;
   TFpValueDwarf(Result).SetStructureValue(Self);
-  TFpValueDwarf(Result).FContext := FContext;
+  TFpValueDwarf(Result).Context := Context;
 end;
 
 function TFpValueDwarf.GetDbgSymbol: TFpSymbol;
@@ -2235,7 +2256,7 @@ begin
     Result := ti.TypeCastValue(Tmp);
     Tmp.ReleaseReference;
     TFpValueDwarf(Result).SetStructureValue(Self);
-    TFpValueDwarf(Result).FContext := FContext;
+    TFpValueDwarf(Result).Context := Context;
   end
   else begin
     Result := Tmp;
@@ -2513,7 +2534,7 @@ begin
       FTypedNumValue.ReleaseReference;
       FTypedNumValue := t.TypeCastValue(FNumValue);
       assert((FTypedNumValue is TFpValueDwarf), 'is TFpValueDwarf');
-      TFpValueDwarf(FTypedNumValue).FContext := FContext;
+      TFpValueDwarf(FTypedNumValue).Context := Context;
     end
     else
       TFpValueDwarf(FTypedNumValue).SetTypeCastInfo(FNumValue); // update
@@ -2801,7 +2822,7 @@ begin
     FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpValueDwarfArray.FLastMember'){$ENDIF};
     FLastMember := TFpValueDwarf(FArraySymbol.TypeInfo.TypeCastValue(FAddrObj));
     {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpValueDwarfArray.FLastMember'){$ENDIF};
-    FLastMember.FContext := FContext;
+    FLastMember.Context := Context;
     if GetStride(Stride) then
       TFpValueDwarf(FLastMember).FForcedSize := Stride;
   end
