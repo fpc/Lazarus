@@ -839,7 +839,7 @@ end;
 function TFpDbgMemReaderBase.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer; out ABytesRead: Cardinal): Boolean;
 begin
-  ReadMemoryPartial(AnAddress, ASize, ADest, ABytesRead);
+  Result := ReadMemoryPartial(AnAddress, ASize, ADest, ABytesRead);
 end;
 
 function TFpDbgMemReaderBase.ReadMemoryPartial(AnAddress: TDbgPtr;

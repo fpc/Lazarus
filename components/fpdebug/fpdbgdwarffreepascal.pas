@@ -365,7 +365,7 @@ function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
   APVmt: TDbgPtr; AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer; out
   AClassName: String; out AnError: TFpError): boolean;
 begin
-  TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
+  Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
     AMemManager, ASizeOfAddr, AClassName, AnError);
 end;
 

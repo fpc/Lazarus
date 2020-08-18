@@ -392,6 +392,7 @@ end;
 function TDbgTypeSymbol.GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean;
 begin
   // Do nothing
+  Result := False;
 end;
 
 function TDbgTypeSymbol.GetValueObject: TFpValue;
