@@ -1660,46 +1660,33 @@ begin
   if FThreadContextChanged then
   begin
     Assert(FCurrentContext <> nil, 'TDbgWinThread.BeforeContinue: none existing context was changed');
-    if SetFpThreadContext(FCurrentContext) then
-      FThreadContextChanged:=false;
+    if not SetFpThreadContext(FCurrentContext) then
+      debugln(['Failed to SetFpThreadContext()']);
   end;
   FThreadContextChanged := False;
   FCurrentContext := nil;
 end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
-var
-  _UC: TFpContext;
-  Context: PFpContext;
 begin
   Result := False;
   assert(MDebugEvent.Exception.ExceptionRecord.ExceptionCode <> EXCEPTION_SINGLE_STEP, 'dec(IP) EXCEPTION_SINGLE_STEP');
 
-  if not GetFpThreadContext(_UC, Context, cfControl) then
+  if not ReadThreadState then
     exit;
 
-  if FCurrentContext = nil then
-    if not ReadThreadState then
-      exit;
-
   {$ifdef cpui386}
-  Dec(Context^.def.Eip);
   dec(FCurrentContext^.def.Eip);
   {$else}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
-    Dec(Context^.WOW.Eip);
     dec(FCurrentContext^.WOW.Eip);
   end
   else begin
-    Dec(Context^.def.Rip);
     dec(FCurrentContext^.def.Rip);
   end;
   {$endif}
 
-  if not SetFpThreadContext(Context, cfControl) then
-    exit;
-  // TODO: only changed FCurrentContext, and write back in BeforeContinue;
-  FThreadContextChanged:=false;
+  FThreadContextChanged := True;
   Result := True;
 end;
 
@@ -1709,6 +1696,10 @@ begin
     DebugLn(DBG_WARNINGS, 'ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
     exit(False);
   end;
+
+  Result := True;
+  if FCurrentContext <> nil then
+    exit;
 
   Result := GetFpThreadContext(_UnAligendContext, FCurrentContext, cfFull);
   FRegisterValueListValid:=False;
