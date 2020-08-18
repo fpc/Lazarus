@@ -152,31 +152,36 @@ begin
   end;
 end;
 
-function GetInheritedMethod(AComponent: TComponent; PropInfo: PPropInfo): TMethod;
+function GetInheritedMethod(APersistent: TPersistent; PropInfo: PPropInfo): TMethod;
 var
   AncestorRoot, AncestorComponent: TComponent;
   AncestorMethod: TMethod;
+  Comp: TComponent;
 begin
   FillByte(Result{%H-}, SizeOf(Result), 0);
-  if csAncestor in AComponent.ComponentState then
+  if APersistent is TComponent then
   begin
-    // search for ancestor component
-    if Assigned(AComponent.Owner) then
+    Comp := TComponent(APersistent);
+    if csAncestor in Comp.ComponentState then
     begin
-      AncestorRoot := BaseFormEditor1.GetAncestorLookupRoot(AComponent);
-      if Assigned(AncestorRoot) then
-        AncestorComponent := AncestorRoot.FindComponent(AComponent.Name)
+      // search for ancestor component
+      if Assigned(Comp.Owner) then
+      begin
+        AncestorRoot := BaseFormEditor1.GetAncestorLookupRoot(Comp);
+        if Assigned(AncestorRoot) then
+          AncestorComponent := AncestorRoot.FindComponent(Comp.Name)
+        else
+          AncestorComponent := nil;
+      end
       else
-        AncestorComponent := nil;
-    end
-    else
-      AncestorComponent := BaseFormEditor1.GetAncestorInstance(AComponent);
+        AncestorComponent := BaseFormEditor1.GetAncestorInstance(Comp);
 
-    if Assigned(AncestorComponent) then
-    begin
-      AncestorMethod := GetMethodProp(AncestorComponent, PropInfo);
-      if IsJITMethod(AncestorMethod) then
-        Result := AncestorMethod
+      if Assigned(AncestorComponent) then
+      begin
+        AncestorMethod := GetMethodProp(AncestorComponent, PropInfo);
+        if IsJITMethod(AncestorMethod) then
+          Result := AncestorMethod
+      end;
     end;
   end;
 end;
@@ -203,40 +208,30 @@ var
       else begin
         Result:=copy(ProcName,1,p-1);
         RemovedProcHeads[i]:=copy(ProcName,p+1,length(ProcName));
-        DebugLn(['ExtractClassName ClassName=',Result, ', RemovedProcHeads[i]=',RemovedProcHeads[i]]);
       end;
     end;
   end;
 
-  procedure CheckEvents(AComponent: TComponent);
+  procedure CheckEvents(APersistent: TPersistent);
+  // Read properties and remove event handlers which were removed from source by Codetools.
   var
     TypeInfo: PTypeInfo;
-    //TypeData: PTypeData;
     PropInfo: PPropInfo;
     PropList: PPropList;
-    CurCount,ic: integer;
+    PropCount, ic, i: integer;
     AMethod: TMethod;
     AMethodName: String;
-    i: Integer;
+    Coll: TCollection;
   begin
-    //DebugLn('');
-    // read all properties and remove doubles
-    TypeInfo:=PTypeInfo(AComponent.ClassInfo);
-    //DebugLn(['CheckEvents: AComponent=',AComponent, ', TypeInfo^.Name=',TypeInfo^.Name]);
-    // read all property infos of current class
-    //TypeData:=GetTypeData(TypeInfo);
-    // read property count
-    CurCount:=GetPropList(TypeInfo,PropList);
-    //DebugLn(['CheckEvents: CurCount=', CurCount, ', ClassType=', TypeData^.ClassType]);
+    TypeInfo:=PTypeInfo(APersistent.ClassInfo);
+    PropCount:=GetPropList(TypeInfo,PropList); // List of properties and their count
     try
-      // read properties
-      for ic:=0 to CurCount-1 do
+      for ic:=0 to PropCount-1 do              // iterate properties
       begin
         PropInfo:=PropList^[ic];
         if PropInfo^.PropType^.Kind=tkMethod then
         begin
-          // event
-          AMethod:=GetMethodProp(AComponent,PropInfo);
+          AMethod:=GetMethodProp(APersistent,PropInfo);   // event
           AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
           if AMethodName<>'' then
           begin
@@ -245,12 +240,19 @@ var
               dec(i);
             if i>=0 then
             begin
-              //DebugLn(['  CheckEvents Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
-              AMethod := GetInheritedMethod(AComponent, PropInfo);
-              SetMethodProp(AComponent, PropInfo, AMethod);
+              //DebugLn([' CheckEvents Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
+              AMethod := GetInheritedMethod(APersistent, PropInfo);
+              SetMethodProp(APersistent, PropInfo, AMethod);
               PropChanged:=true;
             end;
           end;
+        end
+        else if PropInfo^.PropType^.Kind=tkClass then
+        begin
+          Coll := TCollection(GetObjectProp(APersistent, PropInfo, TCollection));
+          if Assigned(Coll) then
+            for i := 0 to Coll.Count - 1 do // CollectionItem can have events.
+              CheckEvents(Coll.Items[i]); // Recurse also because collections can be nested.
         end;
       end;
     finally
@@ -286,7 +288,6 @@ begin
         begin
           // fix events of designer components
           LookupRoot:=AnUnitInfo.Component;
-          //DebugLn(['RemoveEmptyMethods: LookupRoot=', LookupRoot]);
           if (LookupRoot<>nil) and (CompareText(LookupRoot.ClassName,CurClassName)=0) then
           begin
             PropChanged:=false;
