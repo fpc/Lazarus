@@ -109,7 +109,7 @@ type
     FLookupRoot: TComponent;
     FNode: TTreeNode;
     procedure AddCollection(AColl: TCollection; AParentNode: TTreeNode);
-    procedure AddOwnedPersistent(APers: TPersistent; APropName: String;
+    procedure AddOwnedPersistent(APers: TPersistent; const APropName: String;
       AParentNode: TTreeNode);
     procedure GetOwnedPersistents(APers: TPersistent; AParentNode: TTreeNode);
     function PersistentFoundInNode(APers: TPersistent): Boolean;
@@ -173,7 +173,7 @@ begin
 end;
 
 procedure TComponentWalker.AddOwnedPersistent(APers: TPersistent;
-  APropName: String; AParentNode: TTreeNode);
+  const APropName: String; AParentNode: TTreeNode);
 var
   TVNode: TTreeNode;
   TheRoot: TPersistent;

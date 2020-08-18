@@ -2498,8 +2498,8 @@ begin
     // Note: When removing published methods, the source, the lfm, the lrs
     //       and the form must be changed. At the moment editing the lfm without
     //       the component is not yet implemented.
-    Result:=RemoveEmptyMethods(AnUnitInfo.Source,
-                   AnUnitInfo.Component.ClassName,0,0,false,[pcsPublished]);
+    Result:=RemoveEmptyMethodsInUnit(AnUnitInfo.Source, AnUnitInfo.Component.ClassName,
+                                     0,0,[pcsPublished]);
     if Result=mrAbort then exit;
   end;
 

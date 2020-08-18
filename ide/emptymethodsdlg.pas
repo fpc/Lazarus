@@ -81,9 +81,8 @@ type
 
 function ShowEmptyMethodsDialog: TModalResult;
 
-function RemoveEmptyMethods(Code: TCodeBuffer; AClassName: string;
-  X, Y: integer; CommitSrcEditor: boolean; Sections: TPascalClassSections
-  ): TModalResult;
+function RemoveEmptyMethodsInUnit(Code: TCodeBuffer; AClassName: string;
+  X, Y: integer; Sections: TPascalClassSections): TModalResult;
 
 
 implementation
@@ -153,9 +152,37 @@ begin
   end;
 end;
 
-function RemoveEmptyMethods(Code: TCodeBuffer; AClassName: string;
-  X, Y: integer; CommitSrcEditor: boolean; Sections: TPascalClassSections
-  ): TModalResult;
+function GetInheritedMethod(AComponent: TComponent; PropInfo: PPropInfo): TMethod;
+var
+  AncestorRoot, AncestorComponent: TComponent;
+  AncestorMethod: TMethod;
+begin
+  FillByte(Result{%H-}, SizeOf(Result), 0);
+  if csAncestor in AComponent.ComponentState then
+  begin
+    // search for ancestor component
+    if Assigned(AComponent.Owner) then
+    begin
+      AncestorRoot := BaseFormEditor1.GetAncestorLookupRoot(AComponent);
+      if Assigned(AncestorRoot) then
+        AncestorComponent := AncestorRoot.FindComponent(AComponent.Name)
+      else
+        AncestorComponent := nil;
+    end
+    else
+      AncestorComponent := BaseFormEditor1.GetAncestorInstance(AComponent);
+
+    if Assigned(AncestorComponent) then
+    begin
+      AncestorMethod := GetMethodProp(AncestorComponent, PropInfo);
+      if IsJITMethod(AncestorMethod) then
+        Result := AncestorMethod
+    end;
+  end;
+end;
+
+function RemoveEmptyMethodsInUnit(Code: TCodeBuffer; AClassName: string;
+  X, Y: integer; Sections: TPascalClassSections): TModalResult;
 var
   RemovedProcHeads: TStrings;
   PropChanged: boolean;
@@ -167,8 +194,8 @@ var
     i: Integer;
   begin
     Result:='';
-    if (RemovedProcHeads=nil) or (RemovedProcHeads.Count=0) then exit;
-    for i:=RemovedProcHeads.Count-1 downto 0 do begin
+    for i:=RemovedProcHeads.Count-1 downto 0 do
+    begin
       ProcName:=RemovedProcHeads[i];
       p:=System.Pos('.',ProcName);
       if p<1 then
@@ -176,39 +203,7 @@ var
       else begin
         Result:=copy(ProcName,1,p-1);
         RemovedProcHeads[i]:=copy(ProcName,p+1,length(ProcName));
-        //DebugLn(['ExtractClassName RemovedProcHeads[i]=',RemovedProcHeads[i]]);
-      end;
-    end;
-  end;
-
-  function GetInheritedMethod(AComponent: TComponent; PropInfo: PPropInfo): TMethod;
-  var
-    AncestorRoot, AncestorComponent: TComponent;
-    AncestorMethod: TMethod;
-  begin
-    FillByte(Result{%H-}, SizeOf(Result), 0);
-    if csAncestor in AComponent.ComponentState then
-    begin
-      // search for ancestor component
-      if Assigned(AComponent.Owner) then
-      begin
-        AncestorRoot := BaseFormEditor1.GetAncestorLookupRoot(AComponent);
-        if Assigned(AncestorRoot) then
-          AncestorComponent := AncestorRoot.FindComponent(AComponent.Name)
-        else
-          AncestorComponent := nil;
-      end
-      else
-      begin
-        AncestorRoot := BaseFormEditor1.GetAncestorInstance(AComponent);
-        AncestorComponent := AncestorRoot;
-      end;
-
-      if Assigned(AncestorComponent) then
-      begin
-        AncestorMethod := GetMethodProp(AncestorComponent, PropInfo);
-        if IsJITMethod(AncestorMethod) then
-          Result := AncestorMethod
+        DebugLn(['ExtractClassName ClassName=',Result, ', RemovedProcHeads[i]=',RemovedProcHeads[i]]);
       end;
     end;
   end;
@@ -216,7 +211,7 @@ var
   procedure CheckEvents(AComponent: TComponent);
   var
     TypeInfo: PTypeInfo;
-    TypeData: PTypeData;
+    //TypeData: PTypeData;
     PropInfo: PPropInfo;
     PropList: PPropList;
     CurCount,ic: integer;
@@ -224,41 +219,43 @@ var
     AMethodName: String;
     i: Integer;
   begin
+    //DebugLn('');
     // read all properties and remove doubles
     TypeInfo:=PTypeInfo(AComponent.ClassInfo);
-    repeat
-      // read all property infos of current class
-      TypeData:=GetTypeData(TypeInfo);
-      // read property count
-      CurCount:=GetPropList(TypeInfo,PropList);;
-      try
-        // read properties
-        for ic:=0 to CurCount-1 do begin
-          PropInfo:=PropList^[ic];
-          if (PropInfo^.PropType^.Kind=tkMethod) then begin
-            // event
-            AMethod:=GetMethodProp(AComponent,PropInfo);
-            AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
-            //DebugLn(['CheckEvents ',PropInfo^.Name,' AMethodName=',AMethodName]);
-            if AMethodName<>'' then begin
-              i:=RemovedProcHeads.Count-1;
-              while (i>=0)
-              and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
-                dec(i);
-              if i>=0 then begin
-                DebugLn(['RemoveEmptyMethods Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
-                AMethod := GetInheritedMethod(AComponent, PropInfo);
-                SetMethodProp(AComponent, PropInfo, AMethod);
-                PropChanged:=true;
-              end;
+    //DebugLn(['CheckEvents: AComponent=',AComponent, ', TypeInfo^.Name=',TypeInfo^.Name]);
+    // read all property infos of current class
+    //TypeData:=GetTypeData(TypeInfo);
+    // read property count
+    CurCount:=GetPropList(TypeInfo,PropList);
+    //DebugLn(['CheckEvents: CurCount=', CurCount, ', ClassType=', TypeData^.ClassType]);
+    try
+      // read properties
+      for ic:=0 to CurCount-1 do
+      begin
+        PropInfo:=PropList^[ic];
+        if PropInfo^.PropType^.Kind=tkMethod then
+        begin
+          // event
+          AMethod:=GetMethodProp(AComponent,PropInfo);
+          AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
+          if AMethodName<>'' then
+          begin
+            i:=RemovedProcHeads.Count-1;
+            while (i>=0) and (CompareText(RemovedProcHeads[i],AMethodName)<>0) do
+              dec(i);
+            if i>=0 then
+            begin
+              //DebugLn(['  CheckEvents Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
+              AMethod := GetInheritedMethod(AComponent, PropInfo);
+              SetMethodProp(AComponent, PropInfo, AMethod);
+              PropChanged:=true;
             end;
           end;
         end;
-      finally
-        FreeMem(PropList);
       end;
-      TypeInfo:=TypeData^.ParentInfo;
-    until TypeInfo=nil;
+    finally
+      FreeMem(PropList);
+    end;
   end;
 
 var
@@ -269,41 +266,36 @@ var
   CurClassName: String;
 begin
   Result:=mrCancel;
-  if CommitSrcEditor and (not LazarusIDE.BeginCodeTools) then exit;
-
-  //DebugLn(['TEmptyMethodsDialog.OKButtonClick ']);
   RemovedProcHeads:=nil;
   try
-    if (not CodeToolBoss.RemoveEmptyMethods(Code,AClassName,X,Y,
-      Sections,AllEmpty,
+    if not CodeToolBoss.RemoveEmptyMethods(Code,AClassName,X,Y,Sections,AllEmpty,
       [phpAddClassName,phpDoNotAddSemicolon,phpWithoutParamList,
        phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon],
-      RemovedProcHeads))
+      RemovedProcHeads)
     then begin
       DebugLn(['RemoveEmptyMethods failed']);
       exit;
     end;
     if (RemovedProcHeads<>nil) and (RemovedProcHeads.Count>0) then begin
-      // RemovedProcHeads contains a list of classname.procname
-      // remove the classname from the list
+      // RemovedProcHeads contains a list of classname.procname, remove classname from the list
       CurClassName:=ExtractClassName;
-      if CurClassName<>'' then begin
-        if (Project1<>nil) then begin
-          AnUnitInfo:=Project1.UnitInfoWithFilename(Code.Filename);
-          if AnUnitInfo<>nil then begin
-            // fix events of designer components
-            LookupRoot:=AnUnitInfo.Component;
-            if (LookupRoot<>nil)
-            and (SysUtils.CompareText(LookupRoot.ClassName,CurClassName)=0) then
-            begin
-              PropChanged:=false;
-              CheckEvents(LookupRoot);
-              for i:=0 to LookupRoot.ComponentCount-1 do
-                CheckEvents(LookupRoot.Components[i]);
-              // update objectinspector
-              if PropChanged and (GlobalDesignHook.LookupRoot=LookupRoot) then
-                GlobalDesignHook.RefreshPropertyValues;
-            end;
+      if (CurClassName<>'') and (Project1<>nil) then
+      begin
+        AnUnitInfo:=Project1.UnitInfoWithFilename(Code.Filename);
+        if AnUnitInfo<>nil then
+        begin
+          // fix events of designer components
+          LookupRoot:=AnUnitInfo.Component;
+          //DebugLn(['RemoveEmptyMethods: LookupRoot=', LookupRoot]);
+          if (LookupRoot<>nil) and (CompareText(LookupRoot.ClassName,CurClassName)=0) then
+          begin
+            PropChanged:=false;
+            CheckEvents(LookupRoot);
+            for i:=0 to LookupRoot.ComponentCount-1 do
+              CheckEvents(LookupRoot.Components[i]);
+            // update objectinspector
+            if PropChanged and (GlobalDesignHook.LookupRoot=LookupRoot) then
+              GlobalDesignHook.RefreshPropertyValues;
           end;
         end;
       end;
@@ -337,8 +329,9 @@ end;
 
 procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);
 begin
-  if RemoveEmptyMethods(Code,'',Caret.X,Caret.Y,true,Sections)<>mrOk then exit;
-  ModalResult:=mrOk;
+  if LazarusIDE.BeginCodeTools
+  and (RemoveEmptyMethodsInUnit(Code,'',Caret.X,Caret.Y,Sections)=mrOk) then
+    ModalResult:=mrOk;
 end;
 
 procedure TEmptyMethodsDialog.PrivateCheckBoxChange(Sender: TObject);
