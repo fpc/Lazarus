@@ -599,7 +599,6 @@ begin
   {Disallow any key that is not a digit or - or (part of) FThousandSeparator
    Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
   }
-  inherited EditKeyPress(Key);
   if not ((Key in (Digits + AllowedControlChars + ['-'])) or (Pos(Key, FThousandSeparator) > 0)) then Key := #0;
   if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
