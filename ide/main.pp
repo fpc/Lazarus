@@ -13383,6 +13383,9 @@ begin
     if ADesigner.LookupRoot.ComponentCount>0 then
     begin
       ComponentClassNames:=TStringList.Create;
+      ComponentClassNames.Sorted:=True;
+      ComponentClassNames.Duplicates:=dupIgnore;
+      ComponentClassNames.CaseSensitive:=False;
       try
         for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
           ComponentClassNames.Add(ADesigner.LookupRoot.Components[i].ClassName);

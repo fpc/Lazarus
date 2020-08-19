@@ -4492,7 +4492,8 @@ var
     Result:=LoadAndParseUnitBuf;
     if Result<>mrOk then exit;
     for i:=0 to UnitNames.Count-1 do begin
-      DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
+      DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Extending Uses ',
+              UnitBuf.Filename,' ',UnitNames[i]);
       if not CodeToolBoss.AddUnitToMainUsesSection(UnitBuf,UnitNames[i],'') then
         MainIDE.DoJumpToCodeToolBossError;
     end;
@@ -4566,15 +4567,20 @@ begin
   AllPackages:=nil;
   CurUnitNames:=TStringList.Create;
   try
-    for CurClassID:=0 to ComponentClassnames.Count-1 do begin
+    for CurClassID:=0 to ComponentClassnames.Count-1 do
+    begin
       CurCompClass:=ComponentClassnames[CurClassID];
       CurRegisteredComponent:=IDEComponentPalette.FindComponent(CurCompClass);
-      if CurRegisteredComponent is TPkgComponent then begin
+      if CurRegisteredComponent is TPkgComponent then
+      begin
         CurUnitName:='';
         CurUnitNames.Clear;
         CurCompReq:=nil;
+        if UnitList=nil then
+          UnitList:=TStringList.Create;
         try
-          if CurRegisteredComponent.ComponentClass<>nil then begin
+          if CurRegisteredComponent.ComponentClass<>nil then
+          begin
             CurUnitName:=GetClassUnitName(CurRegisteredComponent.ComponentClass);
             CurCompReq:=GetComponentRequirements(CurRegisteredComponent.ComponentClass);
           end;
@@ -4584,38 +4590,40 @@ begin
           CurUnitNames.Add(CurUnitName);
           if CurCompReq<>nil then
             CurCompReq.RequiredUnits(CurUnitNames);
-          for CurUnitIdx:=0 to CurUnitNames.Count-1 do begin
-            if UnitList=nil then begin
-              UnitList:=TStringList.Create;
-              UnitList.CaseSensitive:=False;
-              UnitList.Duplicates:=dupIgnore;
-            end;
+          for CurUnitIdx:=0 to CurUnitNames.Count-1 do
+          begin
             CurUnitName:=CurUnitNames[CurUnitIdx];
             UnitList.Add(CurUnitName);
             PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
             //DebugLn(['TPkgManager.GetUnitsAndDependenciesForComponents PkgFile=',PkgFile<>nil]);
             if PkgFile=nil then
               PkgFile:=TPkgComponent(CurRegisteredComponent).PkgFile;
-            if PkgFile<>nil then begin
+            if PkgFile<>nil then
+            begin
               RequiredPackage:=PkgFile.LazPackage;
               RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
-              if RequiredPackage<>nil then begin
-                if CurPackages=nil then begin
+              if RequiredPackage<>nil then
+              begin
+                if CurPackages=nil then
+                begin
                   CurPackages:=TStringList.Create;
+                  CurPackages.Sorted:=True;
                   CurPackages.Duplicates:=dupIgnore;
                   CurPackages.CaseSensitive:=False;
                 end else
                   CurPackages.Clear;
+                if AllPackages=nil then
+                begin
+                  AllPackages:=TStringList.Create;
+                  AllPackages.Sorted:=True;
+                  AllPackages.Duplicates:=dupIgnore;
+                  AllPackages.CaseSensitive:=False;
+                end;
                 CurPackages.Add(RequiredPackage.Name);
                 if Assigned(CurCompReq) then
                   CurCompReq.RequiredPkgs(CurPackages);
                 Helper:=TPackageIterateHelper.Create;
                 try
-                  if AllPackages=nil then begin
-                    AllPackages:=TStringList.Create;
-                    AllPackages.CaseSensitive:=False;
-                    AllPackages.Duplicates:=dupIgnore;
-                  end;
                   Helper.PackageNames:=CurPackages;
                   Helper.PackageList:=AllPackages;
                   PackageGraph.IteratePackages(fpfSearchAllExisting,@Helper.AddDependency);
@@ -4630,9 +4638,9 @@ begin
         end;
       end;
     end;
-    if AllPackages.Count>0 then begin
-      if AllPackages.Count>0 then
-        PackageList:=TPackagePackageArray.Create;
+    if Assigned(AllPackages) and (AllPackages.Count>0) then
+    begin
+      PackageList:=TPackagePackageArray.Create;
       for CurPackageIdx:=0 to AllPackages.Count-1 do
         PackageList.Add(TLazPackageID(AllPackages.Objects[CurPackageIdx]));
     end;
@@ -4647,8 +4655,7 @@ end;
 function TPkgManager.FilterMissingDependenciesForUnit(const UnitFilename: string;
                      InputPackageList: TPackagePackageArray;
                      out OutputPackageList: TOwnerPackageArray): TModalResult;
-// returns a list of packages that are not yet used by the project the unit
-// belongs to
+// returns a list of packages that are not yet used by the project the unit belongs to
 var
   UnitOwners: TFPList;
   UnitOwner: TObject;
