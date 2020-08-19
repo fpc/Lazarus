@@ -174,7 +174,7 @@ procedure TMCStringGrid.PrepareCanvas(aCol, aRow: Integer;
 var
   L, T, R, B: Integer;
 begin
-  if IsMerged(ACol, ARow, L, T, R, B) and
+  if IsMerged(ACol, ARow, L, T, R, B) and not (gdFixed in AState) and
     (Col >= L) and (Col <= R) and (Row >= T) and (Row <= B) and
     not ((ACol = Col) and (ARow = Row))
   then
