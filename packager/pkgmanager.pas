@@ -4577,7 +4577,12 @@ begin
         CurUnitNames.Clear;
         CurCompReq:=nil;
         if UnitList=nil then
+        begin
           UnitList:=TStringList.Create;
+          UnitList.Sorted:=True;
+          UnitList.Duplicates:=dupIgnore;
+          UnitList.CaseSensitive:=False;
+        end;
         try
           if CurRegisteredComponent.ComponentClass<>nil then
           begin
