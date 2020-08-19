@@ -192,11 +192,6 @@ begin
 
   VersionLabel.Font.Color:= clWhite;
 
-  Width:= Scale96ToForm(470);
-  Height:= Scale96ToForm(390);
-  Constraints.MinWidth:= Width;
-  Constraints.MinHeight:= Height;
-
   AboutMemo.Lines.Text:=
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
 

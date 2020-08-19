@@ -8,6 +8,8 @@ object AboutForm: TAboutForm
   Caption = 'About Lazarus'
   ClientHeight = 390
   ClientWidth = 470
+  Constraints.MinHeight = 390
+  Constraints.MinWidth = 470
   OnClose = FormClose
   OnCreate = AboutFormCreate
   OnShow = FormShow

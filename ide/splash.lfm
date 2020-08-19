@@ -3,8 +3,6 @@ object SplashForm: TSplashForm
   Height = 300
   Top = 370
   Width = 450
-  HorzScrollBar.Page = 300
-  VertScrollBar.Page = 450
   BorderStyle = bsNone
   Caption = 'Lazarus'
   ClientHeight = 300
