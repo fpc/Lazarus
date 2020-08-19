@@ -33,7 +33,7 @@ begin
   end;
 
   //if old and new parent is a TNotebook then remove the page from the old one
-  if OldParent is TNotebook and
+  if (OldParent is TNotebook) and
     not (csDestroying in OldParent.ComponentState) then
   begin
     // remove from old pagelist
