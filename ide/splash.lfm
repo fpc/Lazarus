@@ -2,13 +2,13 @@ object SplashForm: TSplashForm
   Left = 561
   Height = 300
   Top = 370
-  Width = 429
-  HorzScrollBar.Page = 428
-  VertScrollBar.Page = 340
+  Width = 450
+  HorzScrollBar.Page = 300
+  VertScrollBar.Page = 450
   BorderStyle = bsNone
   Caption = 'Lazarus'
   ClientHeight = 300
-  ClientWidth = 429
+  ClientWidth = 450
   FormStyle = fsSplash
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
@@ -16,10 +16,8 @@ object SplashForm: TSplashForm
     Left = 0
     Height = 300
     Top = 0
-    Width = 429
+    Width = 450
     Align = alClient
     OnPaint = ImagePaint
-    Proportional = True
-    Stretch = True
   end
 end

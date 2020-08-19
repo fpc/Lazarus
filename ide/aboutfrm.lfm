@@ -1,13 +1,13 @@
 object AboutForm: TAboutForm
   Left = 496
-  Height = 376
+  Height = 390
   Top = 282
-  Width = 460
+  Width = 470
   ActiveControl = Notebook
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'About Lazarus'
-  ClientHeight = 376
-  ClientWidth = 460
+  ClientHeight = 390
+  ClientWidth = 470
   OnClose = FormClose
   OnCreate = AboutFormCreate
   OnShow = FormShow
@@ -17,9 +17,9 @@ object AboutForm: TAboutForm
   LCLVersion = '2.1.0.0'
   object Notebook: TPageControl
     Left = 0
-    Height = 326
+    Height = 340
     Top = 0
-    Width = 460
+    Width = 470
     ActivePage = VersionPage
     Align = alClient
     TabIndex = 0
@@ -27,25 +27,25 @@ object AboutForm: TAboutForm
     OnChange = NotebookPageChanged
     object VersionPage: TTabSheet
       Caption = 'Version'
-      ClientHeight = 298
-      ClientWidth = 452
+      ClientHeight = 312
+      ClientWidth = 462
       object LogoImage: TImage
         AnchorSideLeft.Control = VersionPage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionPage
         AnchorSideTop.Side = asrCenter
-        Left = 1
+        Left = 6
         Height = 300
-        Top = -1
+        Top = 6
         Width = 450
       end
       object VersionLabel: TLabel
         AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = LogoImage
-        Left = 199
+        Left = 204
         Height = 15
-        Top = 120
+        Top = 127
         Width = 54
         Alignment = taCenter
         BorderSpacing.Top = 115
@@ -61,9 +61,9 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 213
+        Left = 218
         Height = 15
-        Top = 141
+        Top = 148
         Width = 27
         Alignment = taCenter
         BorderSpacing.Around = 6
@@ -77,9 +77,9 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = FPCVersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 190
+        Left = 195
         Height = 15
-        Top = 183
+        Top = 190
         Width = 72
         BorderSpacing.Around = 6
         Caption = 'RevisionLabel'
@@ -92,9 +92,9 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = RevisionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 189
+        Left = 194
         Height = 15
-        Top = 204
+        Top = 211
         Width = 74
         BorderSpacing.Around = 6
         Caption = 'PlatformLabel'
@@ -107,9 +107,9 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = BuildDateLabel
         AnchorSideTop.Side = asrBottom
-        Left = 183
+        Left = 188
         Height = 15
-        Top = 162
+        Top = 169
         Width = 87
         BorderSpacing.Around = 6
         Caption = 'FPCVersionLabel'
@@ -120,15 +120,15 @@ object AboutForm: TAboutForm
     end
     object AboutPage: TTabSheet
       Caption = 'About'
-      ClientHeight = 299
-      ClientWidth = 458
+      ClientHeight = 312
+      ClientWidth = 462
       object OfficialLabel: TLabel
         AnchorSideLeft.Control = AboutPage
         AnchorSideBottom.Control = DocumentationLabel
         Left = 6
-        Height = 14
-        Top = 259
-        Width = 59
+        Height = 15
+        Top = 270
+        Width = 66
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'OfficialLabel'
@@ -138,10 +138,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Control = OfficialLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = DocumentationLabel
-        Left = 71
-        Height = 14
-        Top = 259
-        Width = 78
+        Left = 78
+        Height = 15
+        Top = 270
+        Width = 87
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'OfficialURLLabel'
@@ -157,9 +157,9 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Control = AboutPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 14
-        Top = 279
-        Width = 98
+        Height = 15
+        Top = 291
+        Width = 111
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'DocumentationLabel'
@@ -170,10 +170,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = AboutPage
         AnchorSideBottom.Side = asrBottom
-        Left = 110
-        Height = 14
-        Top = 279
-        Width = 117
+        Left = 123
+        Height = 15
+        Top = 291
+        Width = 132
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'DocumentationURLLabel'
@@ -190,10 +190,10 @@ object AboutForm: TAboutForm
         AnchorSideRight.Control = AboutPage
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = OfficialLabel
-        Left = 0
-        Height = 253
-        Top = 0
-        Width = 458
+        Left = 6
+        Height = 258
+        Top = 6
+        Width = 450
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         ReadOnly = True
@@ -211,12 +211,12 @@ object AboutForm: TAboutForm
   object ButtonPanel: TPanel
     Left = 0
     Height = 50
-    Top = 326
-    Width = 460
+    Top = 340
+    Width = 470
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 50
-    ClientWidth = 460
+    ClientWidth = 470
     TabOrder = 1
     object CloseButton: TBitBtn
       AnchorSideLeft.Control = ButtonPanel
@@ -225,7 +225,7 @@ object AboutForm: TAboutForm
       AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 193
+      Left = 198
       Height = 26
       Top = 12
       Width = 75

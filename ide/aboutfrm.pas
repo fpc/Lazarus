@@ -192,8 +192,8 @@ begin
 
   VersionLabel.Font.Color:= clWhite;
 
-  Width:= Scale96ToForm(460);
-  Height:= Scale96ToForm(380);
+  Width:= Scale96ToForm(470);
+  Height:= Scale96ToForm(390);
   Constraints.MinWidth:= Width;
   Constraints.MinHeight:= Height;
 
