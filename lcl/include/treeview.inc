@@ -2580,10 +2580,12 @@ begin
   //SendMessage(Handle, WM_SETREDRAW, Ord(not Updating), 0);
   if Updating then
     Include(Owner.FStates,tvsUpdating)
-  else
+  else begin
     Exclude(Owner.FStates,tvsUpdating);
-  if not Updating then
+    Include(Owner.FStates,tvsScrollbarChanged);
+    Owner.UpdateScrollbars;
     Owner.Invalidate;
+  end;
 end;
 
 procedure TTreeNodes.EndUpdate;

@@ -1391,7 +1391,6 @@ begin
     for i := 0 to fUpdateStrings.Count - 1 do
       AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
     Items.EndUpdate;
-    Resize;
   end;//if
 end;//EndUpdate
 
