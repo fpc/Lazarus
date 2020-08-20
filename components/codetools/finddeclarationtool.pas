@@ -8796,7 +8796,7 @@ begin
         Result:=EndPos;
       end else begin
         // the next atom is the start of the variable
-        if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
+        if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,vatStringConstant,
           vatRoundBracketClose,vatEdgedBracketClose,vatAddrOp])) then
         begin
           MoveCursorToCleanPos(NextAtom.StartPos);

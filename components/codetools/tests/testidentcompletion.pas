@@ -47,6 +47,9 @@ type
     procedure Test_FindCodeContext_ProcParams_NoClosingBracket;
     procedure Test_FindCodeContext_ProcTypeParams;
     procedure Test_FindCodeContext_AttributeParams;
+    procedure Test_GatherIdentifiers_ProcParams_String1;
+    procedure Test_GatherIdentifiers_ProcParams_String2;
+    procedure Test_GatherIdentifiers_ProcParams_String3;
   end;
 
 implementation
@@ -234,6 +237,78 @@ begin
     CheckCodeContext(CodeContexts[0],'b');
     CheckCodeContext(CodeContexts[1],'a');
     // last entry is the default TObject.Create in unit objpas
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_ProcParams_String1;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  'begin',
+  '  writeln({#c}'''');',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_ProcParams_String2;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  'begin',
+  '  writeln({#c}'''');',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos+1,CursorPos);
+  CodeContexts:=nil;
+  try
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_ProcParams_String3;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  'begin',
+  '  writeln(''''{#c});',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
   finally
     CodeContexts.Free;
   end;
