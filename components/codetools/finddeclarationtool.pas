@@ -271,7 +271,8 @@ type
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1), ...
     xtVariant,     // variant
     xtJSValue,     // jsvalue only in Pas2JS, similar to variant
-    xtNil          // nil  = pointer, class, procedure, method, ...
+    xtNil,         // nil  = pointer, class, procedure, method, ...
+    xtSizeInt      // SizeInt for Length intrinsic
     );
   // Do not define: TExpressionTypeDescs = set of TExpressionTypeDesc;
   // There are too many enums, so the set would be big and slow
@@ -322,7 +323,8 @@ var
     'CompilerFunc',
     'Variant',
     'JSValue',
-    'Nil'
+    'Nil',
+    'SizeInt'
   );
 
 const
@@ -334,7 +336,7 @@ const
   xtAllIdentPredefinedTypes = xtAllIdentTypes - [xtContext];
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint,
                        xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
-                       xtByte,xtNativeInt,xtNativeUInt];
+                       xtByte,xtNativeInt,xtNativeUInt,xtSizeInt];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtWordBool, xtLongBool,xtQWordBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble,
                     xtExtended, xtCExtended, xtCurrency, xtComp];
@@ -10599,7 +10601,7 @@ begin
         else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
         begin
           if ParamList.Count<>1 then exit;
-          Result.Desc:=xtConstOrdInteger;
+          Result.Desc:=xtSizeInt;
         end
         else if (CompareIdentifiers(IdentPos,'COPY')=0) then
         begin
@@ -13580,7 +13582,8 @@ begin
     xtShortInt,
     xtByte,
     xtNativeInt,
-    xtNativeUInt:
+    xtNativeUInt,
+    xtSizeInt:
       Result:=ExpressionTypeDescNames[ExprType.Desc];
 
     xtBoolean,
