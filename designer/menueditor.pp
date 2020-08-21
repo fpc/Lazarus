@@ -482,7 +482,7 @@ begin
   if (selMI=nil) then
     Exit;
   selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
-  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if selShadow=nil then Exit;
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
       selShadow.BottomFake:=nil
@@ -534,7 +534,7 @@ begin
   if (selMI=nil) then
     Exit;
   selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
-  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if selShadow=nil then Exit;
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
       selShadow.RightFake:=nil
