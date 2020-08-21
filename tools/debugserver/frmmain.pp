@@ -270,10 +270,10 @@ end;
 procedure TMainForm.StartServer;
 
 begin
-  FSrv:=TSimpleIPCServer.Create(Nil);
+  FSrv:=TSimpleIPCServer.Create(self);
   FSrv.ServerID:=DebugServerID;
   FSrv.Global:=True;
-  FSrv.Active:=True;
+  //cause This operation is illegal when the server is active: FSrv.Active:=True;
   FSrv.StartServer;
   Application.OnIdle:=@CheckMessages;
   ITMessages.Enabled:=True;
@@ -344,7 +344,7 @@ end;
 
 function TMainForm.GetStayOnTop: Boolean;
 begin
-  Result:=FormStyle=fsStayOnTop;
+  Result:=FormStyle=fsSystemStayOnTop;
 end;
 
 procedure TMainForm.CheckDebugMessages;
@@ -497,7 +497,7 @@ end;
 procedure TMainForm.SetStayOnTop(const AValue: Boolean);
 begin
   if AValue then
-    FormStyle:=fsStayOnTop
+    FormStyle:=fsSystemStayOnTop
   else
     FormStyle:=fsNormal;
 end;
