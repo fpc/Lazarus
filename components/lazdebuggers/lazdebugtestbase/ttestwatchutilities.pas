@@ -210,7 +210,7 @@ type
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
       AMaxLen: Integer = -1; AComma: char = ','): TStringArray;
   protected
-    function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer): Boolean; virtual;
+    function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec): Boolean; virtual;
     procedure WaitWhileEval; virtual;
 
     function TestMatches(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
@@ -1135,11 +1135,11 @@ begin
 end;
 
 function TWatchExpectationList.EvaluateWatch(AWatchExp: PWatchExpectation;
-  AThreadId: Integer): Boolean;
+  AThreadId: Integer; constref CurLoc: TDBGLocationRec): Boolean;
 var
   i: Integer;
 begin
-  with LazDebugger.GetLocation do
+  with CurLoc do
     FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
       ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
       '###### '+LineEnding);
@@ -2092,10 +2092,12 @@ end;
 procedure TWatchExpectationList.EvaluateWatches;
 var
   i, t: Integer;
+  l: TDBGLocationRec;
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
+  l := LazDebugger.GetLocation;
   for i := 0 to Length(FList)-1 do begin
-    EvaluateWatch(@FList[i], t);
+    EvaluateWatch(@FList[i], t, l);
     if (i mod 16) = 0 then TestLogger.DbgOut('.');
   end;
   TestLogger.DebugLn('');
