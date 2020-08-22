@@ -2460,10 +2460,13 @@ end;
 function TIDESynGutterMarks.DebugLineToSourceLine(aLinePos: Integer): Integer;
 var
   i, c: LongInt;
+  MaxCnt: Integer;
 begin
   CheckTextBuffer;
   if (aLinePos < 1) or (not HasDebugMarks) then exit(aLinePos);
   Result := aLinePos - 1; // 0 based
+  MaxCnt := FDebugMarkInfo.Count;
+  Result := MinMax(Result, 0, MaxCnt - 1);
   if (FDebugMarkInfo[Result] = 0) or (FDebugMarkInfo[Result] > aLinePos) then begin
     i := Result;
     repeat
