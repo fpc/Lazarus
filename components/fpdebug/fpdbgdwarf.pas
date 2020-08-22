@@ -1256,7 +1256,9 @@ begin
   while i > 0 do begin
     dec(i);
     CU := FDwarf.CompilationUnits[i];
-    if CU = SkipCompUnit then
+    if (CU = SkipCompUnit) or
+       (not CU.KnownNameHashes^[ANameInfo.NameHash and KnownNameHashesBitMask])
+    then
       continue;
     //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU.FileName]);
 
@@ -1275,7 +1277,6 @@ begin
       break;
     end;
 
-    CU.ScanAllEntries;
     if InfoEntry.GoNamedChildEx(ANameInfo) then begin
       if InfoEntry.IsAddressInStartScope(FAddress) then begin
         // only variables are marked "external", but types not / so we may need all top level
@@ -1429,6 +1430,12 @@ begin
       //debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
+      tg := InfoEntry.AbbrevTag;
+      if (tg = DW_TAG_compile_unit) and
+         (not CU.KnownNameHashes^[NameInfo.NameHash and KnownNameHashesBitMask])
+      then
+        break;
+
       //if InfoEntry.Abbrev = nil then
       //  exit;
 
@@ -1462,7 +1469,6 @@ begin
       end;
 
 
-      tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
         if FindSymbolInStructure(AName,NameInfo, InfoEntry, Result) then begin
           exit; // TODO: check error

@@ -113,6 +113,12 @@ type
   {$PACKRECORDS C}
 {%endregion Dwarf Header Structures }
 
+const
+  KnownNameHashesBitMask = $7FF; // 256 bytes
+type
+  TKnownNameHashesArray = bitpacked array [0..KnownNameHashesBitMask] of Boolean;
+  PKnownNameHashesArray = ^TKnownNameHashesArray;
+
 {%region Abbreviation Data / Section "debug_abbrev"}
   { TDwarfAbbrev }
   TDwarfAbbrevFlag = (
@@ -200,6 +206,7 @@ type
 
   TNameSearchInfo = record
     NameUpper, NameLower: String;
+    NameHash: Word;
   end;
 
 {%region Information Entry / Section "debug_info"}
@@ -222,6 +229,7 @@ type
   TDwarfScopeInfoRec = record
     Link: Integer;
     Entry: Pointer;
+    NameHash: Word;
   end;
   PDwarfScopeInfoRec = ^TDwarfScopeInfoRec;
 
@@ -240,6 +248,7 @@ type
     FIndex: Integer;
     function GetChild: TDwarfScopeInfo; inline;
     function GetChildIndex: Integer; inline;
+    function GetCurrent: PDwarfScopeInfoRec;
     function GetEntry: Pointer; inline;
     function GetNext: TDwarfScopeInfo; inline;
     function GetNextIndex: Integer; inline;
@@ -255,6 +264,7 @@ type
     function IsValid: Boolean; inline;
     property Index: Integer read FIndex write SetIndex;
     property Entry: Pointer read GetEntry;
+    property Current: PDwarfScopeInfoRec read GetCurrent;
 
     function HasParent: Boolean; inline;
     function HasNext: Boolean; inline;
@@ -316,6 +326,8 @@ type
     function GetAttribData(AnAttrib: Cardinal; out AnAttribData: TDwarfAttribData): Boolean;
     function HasAttrib(AnAttrib: Cardinal): Boolean; inline;
     property AttribForm[AnIdx: Integer]: Cardinal read GetAttribForm;
+
+    procedure ComputeKnownHashes(AKNownHashes: PKnownNameHashesArray);
 
     function GoNamedChild(AName: String): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
@@ -581,9 +593,11 @@ type
     FScope: TDwarfScopeInfo;
     FScopeList: TDwarfScopeList;
     FScannedToEnd: Boolean;
+    FKnownNameHashes: TKnownNameHashesArray;
 
     procedure BuildAddressMap;
     function GetAddressMap: TMap;
+    function GetKnownNameHashes: PKnownNameHashesArray; inline;
     function GetUnitName: String;
     function  ReadTargetAddressFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
     function  ReadDwarfSectionOffsetOrLenFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
@@ -604,7 +618,6 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean;
     // Read a value that contains an address. The address is evaluated using MapAddressToNewValue
     function ReadAddressValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
-
   public
     constructor Create(AOwner: TFpDwarfInfo; ADebugFile: PDwarfDebugFile; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
@@ -647,7 +660,7 @@ type
     property InfoDataLength: QWord read FLength;  // length of info
     property AddressMap: TMap read GetAddressMap;
     property AbbrevList: TDwarfAbbrevList read FAbbrevList;
-
+    property KnownNameHashes: PKnownNameHashesArray read GetKnownNameHashes; // Only for TOP-LEVEL entries
   end;
   
   { TFpDwarfInfo }
@@ -772,6 +785,7 @@ function NameInfoForSearch(const AName: String): TNameSearchInfo;
 begin
   Result.NameLower := UTF8LowerCase(AName);
   Result.NameUpper := UTF8UpperCase(AName);
+  Result.NameHash := objpas.Hash(Result.NameUpper) and $7fff or $8000;
 end;
 
 function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String;
@@ -1630,6 +1644,13 @@ begin
     Result := FIndex + 1
   else
     Result := -1;
+end;
+
+function TDwarfScopeInfo.GetCurrent: PDwarfScopeInfoRec;
+begin
+  Result := nil;
+  if IsValid then
+    Result := @FScopeList^.List[FIndex];
 end;
 
 function TDwarfScopeInfo.GetParent: TDwarfScopeInfo;
@@ -2520,6 +2541,55 @@ begin
   end;
 end;
 
+procedure TDwarfInformationEntry.ComputeKnownHashes(
+  AKNownHashes: PKnownNameHashesArray);
+var
+  EntryName: PChar;
+  NextTopLevel: Integer;
+  h: LongWord;
+  InEnum: Boolean;
+begin
+  InEnum := False;
+  if not HasValidScope then
+    exit;
+
+  NextTopLevel := 0;
+  dec(FScope.FIndex);
+  while (FScope.Index < FScope.FScopeList^.HighestKnown) do begin
+    inc(FScope.FIndex);
+    ScopeChanged;
+    PrepareAbbrev;
+
+    if not (dafHasName in FAbbrev^.flags) then begin
+      if FScope.Index >= NextTopLevel then
+        NextTopLevel := FScope.GetNextIndex;
+      Continue;
+    end;
+
+    if not ReadValue(DW_AT_name, EntryName) then begin
+      if FScope.Index >= NextTopLevel then
+        NextTopLevel := FScope.GetNextIndex;
+      Continue;
+    end;
+    h := objpas.Hash(UTF8UpperCase(EntryName)) and $7fff or $8000;
+    FScope.Current^.NameHash := h;
+    if (FScope.Index >= NextTopLevel) or InEnum then
+      AKNownHashes^[h and KnownNameHashesBitMask] := True;
+
+    if FScope.Index >= NextTopLevel then begin
+      InEnum := False;
+      if FAbbrev^.tag = DW_TAG_enumeration_type then begin
+        InEnum := True;
+        NextTopLevel := FScope.GetNextIndex;
+        Continue;
+      end;
+    end;
+
+    if FScope.Index >= NextTopLevel then
+      NextTopLevel := FScope.GetNextIndex;
+  end;
+end;
+
 function TDwarfInformationEntry.GetScopeIndex: Integer;
 begin
   Result := FScope.Index;
@@ -2573,6 +2643,7 @@ var
   EntryName: PChar;
   InEnum: Boolean;
   ParentScopIdx: Integer;
+  sc: PDwarfScopeInfoRec;
 begin
   Result := False;
   InEnum := False;
@@ -2583,22 +2654,31 @@ begin
     exit;
   while true do begin
     while HasValidScope do begin
+      sc := FScope.Current;
+      if sc^.NameHash = 0 then begin
+        GoNext;
+        Continue;
+      end;
+
       PrepareAbbrev;
       if not (dafHasName in FAbbrev^.flags) then begin
+        assert(false);
         GoNext;
         Continue;
       end;
 
-      if not ReadValue(DW_AT_name, EntryName) then begin
-        GoNext;
-        Continue;
-      end;
+      if (sc^.NameHash = ANameInfo.NameHash) then begin
+        if not ReadValue(DW_AT_name, EntryName) then begin
+          GoNext;
+          Continue;
+        end;
 
-      if CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.nameLower), EntryName) then begin
-        // TODO: check DW_AT_start_scope;
-        DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
-        Result := True;
-        exit;
+        if CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.nameLower), EntryName) then begin
+          // TODO: check DW_AT_start_scope;
+          DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
+          Result := True;
+          exit;
+        end;
       end;
 
       if FAbbrev^.tag = DW_TAG_enumeration_type then begin
@@ -2626,6 +2706,7 @@ function TDwarfInformationEntry.GoNamedChildMatchCaseEx(
   const ANameInfo: TNameSearchInfo): Boolean;
 var
   EntryName: PChar;
+  sc: PDwarfScopeInfoRec;
 begin
   Result := False;
   if ANameInfo.NameUpper = '' then
@@ -2635,25 +2716,34 @@ begin
     exit;
 
   while HasValidScope do begin
+    sc := FScope.Current;
+    if sc^.NameHash = 0 then begin
+      GoNext;
+      Continue;
+    end;
+
     PrepareAbbrev;
     if not (dafHasName in FAbbrev^.flags) then begin
+      Assert(false);
       GoNext;
       Continue;
     end;
 
-    if not ReadValue(DW_AT_name, EntryName) then begin
-      GoNext;
-      Continue;
+    if (sc^.NameHash = ANameInfo.NameHash) then begin
+      if not ReadValue(DW_AT_name, EntryName) then begin
+        GoNext;
+        Continue;
+      end;
+
+      if CompareMem(PChar(ANameInfo.nameLower), @EntryName, Length(EntryName)) then begin
+        // TODO: check DW_AT_start_scope;
+        DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
+        Result := True;
+        exit;
+      end;
     end;
 
-    if CompareMem(PChar(ANameInfo.nameLower), @EntryName, Length(EntryName)) then begin
-      // TODO: check DW_AT_start_scope;
-      DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
-      Result := True;
-      exit;
-    end;
-
-      GoNext;
+    GoNext;
   end;
 end;
 
@@ -3827,6 +3917,11 @@ begin
   Result := FAddressMap;
 end;
 
+function TDwarfCompilationUnit.GetKnownNameHashes: PKnownNameHashesArray;
+begin
+  Result := @FKnownNameHashes;
+end;
+
 function TDwarfCompilationUnit.FullFileName(const AFileName: string): String;
 begin
   Result := AFileName;
@@ -3869,8 +3964,6 @@ var
   Abbrev: TDwarfAbbrev;
 begin
   if FAddressMapBuild then Exit;
-
-  ScanAllEntries;
 
   Scope := FScope;
   ScopeIdx := Scope.Index;
@@ -4015,6 +4108,7 @@ var
   Form: Cardinal;
   StatementListOffs, Offs: QWord;
   Scope: TDwarfScopeInfo;
+  InfoEntry: TDwarfInformationEntry;
 begin
   //DebugLn(FPDBG_DWARF_VERBOSE, ['-- compilation unit --']);
   //DebugLn(FPDBG_DWARF_VERBOSE, [' data offset: ', ADataOffset]);
@@ -4068,6 +4162,12 @@ begin
     Exit;
   end;
   FValid := True;
+
+  ScanAllEntries;
+  InfoEntry := TDwarfInformationEntry.Create(Self, nil);
+  InfoEntry.ScopeIndex := FirstScope.Index;
+  InfoEntry.ComputeKnownHashes(@FKnownNameHashes);
+  InfoEntry.ReleaseReference;
 
   AttribList.EvalCount := 0;
   /// TODO: (dafHasName in Abbrev.flags)
