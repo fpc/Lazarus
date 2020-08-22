@@ -13,7 +13,7 @@ unit lazCollections;
 interface
 
 uses
-  sysutils, syncobjs,
+  sysutils, math, syncobjs,
   // LazUtils
   LazSysUtils;
 
@@ -155,9 +155,10 @@ begin
       FList[FTotalItemsPushed mod FQueueSize]:=AItem;
       inc(FTotalItemsPushed);
       RTLeventSetEvent(FHasItemEvent);
-      end
-    else
-      RTLeventResetEvent(FHasRoomEvent);
+      end;
+    RTLeventResetEvent(FHasRoomEvent);
+    if FTotalItemsPushed-FTotalItemsPopped<FQueueSize then
+      RTLeventSetEvent(FHasRoomEvent);
   finally
     FMonitor.Leave;
   end;
@@ -173,9 +174,10 @@ begin
       AItem := FList[FTotalItemsPopped mod FQueueSize];
       inc(FTotalItemsPopped);
       RTLeventSetEvent(FHasRoomEvent);
-      end
-    else
-      RTLeventResetEvent(FHasItemEvent);
+      end;
+    RTLeventResetEvent(FHasItemEvent);
+    if FTotalItemsPushed > FTotalItemsPopped then
+      RTLeventSetEvent(FHasItemEvent);
   finally
     FMonitor.Leave;
   end;
@@ -202,11 +204,23 @@ begin
 end;
 
 procedure TLazThreadedQueue.Grow(ADelta: integer);
+var
+  NewList: array of T;
+  c: Integer;
+  i: QWord;
 begin
   FMonitor.Enter;
   try
-    FQueueSize:=FQueueSize+ADelta;
-    setlength(FList, FQueueSize);
+    c:=Max(FQueueSize + ADelta, FTotalItemsPushed - FTotalItemsPopped);
+    setlength(NewList, c);
+    i:=FTotalItemsPopped;
+    while i < FTotalItemsPushed do begin
+      NewList[i div c] := FList[i div FQueueSize];
+      inc(i);
+    end;
+
+    FList := NewList;
+    FQueueSize:=c;
   finally
     FMonitor.Leave;
   end;
@@ -236,7 +250,7 @@ begin
     else
       begin
       RTLeventWaitFor(FHasRoomEvent, FPushTimeout - ltc);
-      ltc := GetTickCount64-tc;
+    ltc := GetTickCount64-tc;
       if ltc > FPushTimeout then
         begin
         result := wrTimeout;
