@@ -120,6 +120,20 @@ begin
   UpdateControl;
 end;
 
+procedure TSpinEditExBase.EditKeyPress(var Key: Char);
+begin
+  inherited EditKeyPress(Key);
+  if not KeyAllowed(Key) then
+    Key := #0;
+end;
+
+procedure TSpinEditExBase.EditUtf8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  inherited EditUtf8KeyPress(UTF8Key);
+  if not Utf8KeyAllowed(Utf8Key) then
+    Utf8Key := '';
+end;
+
 procedure TSpinEditExBase.EditChange;
 begin
   {$ifdef debugspinex}
@@ -376,6 +390,16 @@ begin
   {$endif}
 end;
 
+function TSpinEditExBase.KeyAllowed(Key: Char): Boolean;
+begin
+  Result := True;
+end;
+
+function TSpinEditExBase.Utf8KeyAllowed(Key: TUTF8Char): Boolean;
+begin
+  Result := True;
+end;
+
 procedure TSpinEditExBase.FinalizeWnd;
 begin
   GetValue;
@@ -453,9 +477,8 @@ begin
    If FDecimals = 0, disallow decimalseparator also
   }
   if (Key in ['.',',']) then Key := FFS.Decimalseparator;
-  if not (Key in (Digits + AllowedControlChars + [FFS.DecimalSeparator,'-','+','e','E'])) then Key := #0;
-  if (Key = FFS.DecimalSeparator) and (FDecimals = 0) then Key := #0;
-  //if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
+  if not KeyAllowed(Key) then
+    Key := #0;
 end;
 
 function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
@@ -532,6 +555,19 @@ begin
   end;
 end;
 
+function TCustomFloatSpinEditEx.KeyAllowed(Key: Char): Boolean;
+begin
+  {
+   Disallow any key that is not a digit, decimalseparator or '+', '-' or 'E/e'
+   For ease of use translate any decimalpoint or comma to DecimalSeparator
+   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
+   If FDecimals = 0, disallow decimalseparator also
+  }
+  Result := (Key in (Digits + AllowedControlChars + [FFS.DecimalSeparator,'-','+','e','E']));
+  if Result and (Key = FFS.DecimalSeparator) and (FDecimals = 0) then
+    Result := False;
+end;
+
 
 constructor TCustomFloatSpinEditEx.Create(TheOwner: TComponent);
 begin
@@ -593,15 +629,6 @@ begin
   UpdateControl;
 end;
 
-procedure TCustomSpinEditEx.EditKeyPress(var Key: char);
-begin
-  inherited EditKeyPress(Key);
-  {Disallow any key that is not a digit or - or (part of) FThousandSeparator
-   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
-  }
-  if not ((Key in (Digits + AllowedControlChars + ['-'])) or (Pos(Key, FThousandSeparator) > 0)) then Key := #0;
-  if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
-end;
 
 function TCustomSpinEditEx.SafeInc(AValue: Int64): Int64;
 begin
@@ -645,4 +672,14 @@ begin
   Result := IntToStr(AValue);
   if (FThousandSeparator <> '') then
     Result := InsertThousandSeparator(Result, FThousandSeparator);
+end;
+
+function TCustomSpinEditEx.KeyAllowed(Key: Char): Boolean;
+begin
+  {Disallow any key that is not a digit or - or (part of) FThousandSeparator
+   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
+  }
+  Result := ((Key in (Digits + AllowedControlChars + ['-'])) or (Pos(Key, FThousandSeparator) > 0));
+  if Result and (Key = '-') and IsLimited and (MinValue >= 0) then
+    Result := False;
 end;

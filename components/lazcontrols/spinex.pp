@@ -148,6 +148,10 @@ type
     procedure FinalizeWnd; override;
     procedure Loaded; override;
 
+    procedure EditEditingDone; override;
+    procedure EditKeyPress(var Key: Char); override;
+    procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); override;
+
     property ArrowKeys: Boolean read FArrowKeys write FArrowKeys default True;
     property Edit: TGEEdit read GetEdit;
     property UpDown: TUpDown read GetUpDown;
@@ -158,7 +162,8 @@ type
     function GetLimitedValue(const AValue: T): T; virtual;
     function ValueToStr(const AValue: T): String; virtual; abstract;
     function StrToValue(const S: String): T; virtual;
-    procedure EditEditingDone; override;
+    function KeyAllowed({%H-}Key: Char): Boolean; virtual;
+    function Utf8KeyAllowed({%H-}Key: TUTF8Char): Boolean; virtual;
   public
     property Increment: T read FIncrement write SetIncrement stored IncrementStored nodefault;
     property MinValue: T read FMinValue write SetMinValue;
@@ -203,6 +208,7 @@ type
     procedure SetDecimals(ADecimals: Integer); virtual;
   public
     function ValueToStr(const AValue: Double): String; override;
+    function KeyAllowed(Key: Char): Boolean; override;
     constructor Create(TheOwner: TComponent); override;
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default DefDecimalSeparator;
     property DecimalPlaces: Integer read FDecimals write SetDecimals default DefDecimals;
@@ -303,12 +309,12 @@ type
     FThousandSeparator: String;
     procedure SetThousandSeparator(AValue: String);
   protected
-    procedure EditKeyPress(var Key: char); override;
     function SafeInc(AValue: Int64): Int64; override;
     function SafeDec(AValue: Int64): Int64; override;
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
     function ValueToStr(const AValue: Int64): String; override;
+    function KeyAllowed(Key: Char): Boolean; override;
   public
     property Increment default 1;
     property ThousandSeparator: String read FThousandSeparator write SetThousandSeparator; //string so you can use Utf8
