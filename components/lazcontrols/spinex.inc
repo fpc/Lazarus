@@ -469,16 +469,8 @@ end;
 
 procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
 begin
-  inherited EditKeyPress(Key);
-  {
-   Disallow any key that is not a digit, decimalseparator or '+', '-' or 'E/e'
-   For ease of use translate any decimalpoint or comma to DecimalSeparator
-   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
-   If FDecimals = 0, disallow decimalseparator also
-  }
   if (Key in ['.',',']) then Key := FFS.Decimalseparator;
-  if not KeyAllowed(Key) then
-    Key := #0;
+  inherited EditKeyPress(Key);
 end;
 
 function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
