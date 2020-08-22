@@ -87,7 +87,7 @@ type
     FOuterNestContext: TFpDbgSymbolScope;
     FOuterNotFound: Boolean;
   protected
-    function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
+    function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; override;
   public
     destructor Destroy; override;
@@ -478,12 +478,13 @@ end;
 
 { TFpDwarfFreePascalSymbolScope }
 
-function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean;
+var
+  ParentFpLowerNameInfo, ParentFp2LowerNameInfo, SelfLowerNameInfo: TNameSearchInfo; // case sensitive
+function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String;
+  const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
+  ADbgValue: TFpValue): Boolean;
 const
-  parentfp: string = 'parentfp';
-  parentfp2: string = '$parentfp';
-  selfname: string = 'self';
+  selfname = 'self';
   // TODO: get reg num via memreader name-to-num
   RegFp64 = 6;
   RegPc64 = 16;
@@ -510,7 +511,7 @@ begin
     RegFP := RegFp32;
     RegPc := RegPc32;
   end;
-  if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
+  if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @selfname[1])) then begin
     ADbgValue := GetSelfParameter;
     if ADbgValue <> nil then begin
       ADbgValue.AddReference;
@@ -520,7 +521,7 @@ begin
   end;
 
   StartScopeIdx := InfoEntry.ScopeIndex;
-  Result := inherited FindLocalSymbol(AName, PNameUpper, PNameLower, InfoEntry, ADbgValue);
+  Result := inherited FindLocalSymbol(AName, ANameInfo, InfoEntry, ADbgValue);
   if Result then
     exit;
 
@@ -535,9 +536,9 @@ begin
 
 
   InfoEntry.ScopeIndex := StartScopeIdx;
-  if not InfoEntry.GoNamedChildEx(@parentfp[1], @parentfp[1]) then begin
+  if not InfoEntry.GoNamedChildEx(ParentFpLowerNameInfo) then begin
     InfoEntry.ScopeIndex := StartScopeIdx;
-    if not InfoEntry.GoNamedChildEx(@parentfp2[1], @parentfp2[1]) then begin
+    if not InfoEntry.GoNamedChildEx(ParentFp2LowerNameInfo) then begin
       FOuterNotFound := True;
       exit;
     end;
@@ -1403,5 +1404,7 @@ initialization
 
   FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
 
+  ParentFpLowerNameInfo := NameInfoForSearch('parentfp');
+  ParentFp2LowerNameInfo := NameInfoForSearch('$parentfp');
 end.
 

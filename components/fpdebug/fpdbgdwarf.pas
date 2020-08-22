@@ -99,12 +99,12 @@ type
     function SymbolToValue(ASym: TFpSymbolDwarf): TFpValue; inline;
     function GetSelfParameter: TFpValueDwarf;
 
-    function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
       SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue): Boolean; inline;
-    function FindSymbolInStructure(const AName: String; PNameUpper, PNameLower: PChar;
+    function FindSymbolInStructure(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; inline;
     // FindLocalSymbol: for the subroutine itself
-    function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
+    function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
@@ -1238,8 +1238,9 @@ begin
   FSelfParameter := Result;
 end;
 
-function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String; PNameUpper,
-  PNameLower: PChar; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue): Boolean;
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  ADbgValue: TFpValue): Boolean;
 var
   i, ExtVal: Integer;
   CU: TDwarfCompilationUnit;
@@ -1247,6 +1248,7 @@ var
   s: String;
 begin
   Result := False;
+
   ADbgValue := nil;
   InfoEntry := nil;
   FoundInfoEntry := nil;
@@ -1267,14 +1269,14 @@ begin
     // compile_unit can not have startscope
 
     s := CU.UnitName;
-    if (s <> '') and (CompareUtf8BothCase(PNameUpper, PNameLower, @s[1])) then begin
+    if (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1])) then begin
       ReleaseRefAndNil(FoundInfoEntry);
       ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
       break;
     end;
 
     CU.ScanAllEntries;
-    if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
+    if InfoEntry.GoNamedChildEx(ANameInfo) then begin
       if InfoEntry.IsAddressInStartScope(FAddress) then begin
         // only variables are marked "external", but types not / so we may need all top level
         FoundInfoEntry.ReleaseReference;
@@ -1299,8 +1301,9 @@ begin
   Result := ADbgValue <> nil;
 end;
 
-function TFpDwarfInfoSymbolScope.FindSymbolInStructure(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean;
+function TFpDwarfInfoSymbolScope.FindSymbolInStructure(const AName: String;
+  const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
+  ADbgValue: TFpValue): Boolean;
 var
   InfoEntryInheritance: TDwarfInformationEntry;
   FwdInfoPtr: Pointer;
@@ -1317,7 +1320,7 @@ begin
 
     InfoEntryInheritance := InfoEntry.FindChildByTag(DW_TAG_inheritance);
 
-    if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
+    if InfoEntry.GoNamedChildEx(ANameInfo) then begin
       if InfoEntry.IsAddressInStartScope(FAddress) then begin
         SelfParam := GetSelfParameter;
         if (SelfParam <> nil) then begin
@@ -1350,14 +1353,15 @@ begin
   Result := ADbgValue <> nil;
 end;
 
-function TFpDwarfInfoSymbolScope.FindLocalSymbol(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean;
+function TFpDwarfInfoSymbolScope.FindLocalSymbol(const AName: String;
+  const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
+  ADbgValue: TFpValue): Boolean;
 begin
   Result := False;
   ADbgValue := nil;
   if not(Symbol is TFpSymbolDwarfDataProc) then
     exit;
-  if not InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then
+  if not InfoEntry.GoNamedChildEx(ANameInfo) then
     exit;
   if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
@@ -1394,10 +1398,9 @@ var
   //Scope,
   StartScopeIdx: Integer;
   InfoEntry: TDwarfInformationEntry;
-  NameUpper, NameLower: String;
+  NameInfo: TNameSearchInfo;
   InfoName: PChar;
   tg: Cardinal;
-  PNameUpper, PNameLower: PChar;
 begin
   Result := nil;
   //if (FSymbol = nil) or not(FSymbol is TFpSymbolDwarfDataProc) or (AName = '') then
@@ -1408,13 +1411,10 @@ begin
     SubRoutine := TFpSymbolDwarfDataProc(FSymbol)
   else
     SubRoutine := nil;
-  NameUpper := UTF8UpperCase(AName);
-  NameLower := UTF8LowerCase(AName);
-  PNameUpper := @NameUpper[1];
-  PNameLower := @NameLower[1];
+  NameInfo := NameInfoForSearch(AName);
 
   if Symbol = nil then begin
-    FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, nil, Result);
+    FindExportedSymbolInUnits(AName, NameInfo, nil, Result);
     ApplyContext(Result);
     if Result = nil then
       Result := inherited FindSymbol(AName);
@@ -1442,12 +1442,12 @@ begin
 
       if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
-        if (CompareUtf8BothCase(PNameUpper, PNameLower, InfoName)) then begin
+        if (CompareUtf8BothCase(PChar(NameInfo.NameUpper), PChar(NameInfo.NameLower), InfoName)) then begin
           // TODO: this is a pascal specific search order? Or not?
           // If this is a type with a pointer or ref, need to find the pointer or ref.
           InfoEntry.GoParent;
           if InfoEntry.HasValidScope and
-             InfoEntry.GoNamedChildEx(PNameUpper, PNameLower)
+             InfoEntry.GoNamedChildEx(NameInfo)
           then begin
             if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
               Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
@@ -1464,7 +1464,7 @@ begin
 
       tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-        if FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
+        if FindSymbolInStructure(AName,NameInfo, InfoEntry, Result) then begin
           exit; // TODO: check error
         end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
@@ -1472,7 +1472,7 @@ begin
 
       else
       if (SubRoutine <> nil) and (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
-        if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then begin
+        if FindLocalSymbol(AName,NameInfo, InfoEntry, Result) then begin
           exit;        // TODO: check error
         end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
@@ -1480,7 +1480,7 @@ begin
           // TODO: nested subroutine
 
       else
-      if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
+      if InfoEntry.GoNamedChildEx(NameInfo) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
           exit;
@@ -1492,7 +1492,7 @@ begin
       InfoEntry.GoParent;
     end;
 
-    FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, CU, Result);
+    FindExportedSymbolInUnits(AName, NameInfo, CU, Result);
 
   finally
     if (Result = nil) or (InfoEntry = nil)
@@ -5468,12 +5468,9 @@ begin
   t.ReleaseReference;
 end;
 
+var
+  ThisNameInfo, SelfNameInfo: TNameSearchInfo;
 function TFpSymbolDwarfDataProc.GetSelfParameter(AnAddress: TDbgPtr): TFpValueDwarf;
-const
-  this1: string = 'THIS';
-  this2: string = 'this';
-  self1: string = '$SELF';
-  self2: string = '$self';
 var
   InfoEntry: TDwarfInformationEntry;
   tg: Cardinal;
@@ -5488,10 +5485,10 @@ begin
   tg := InfoEntry.AbbrevTag;
   if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
     InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
-    found := InfoEntry.GoNamedChildEx(@this1[1], @this2[1]);
+    found := InfoEntry.GoNamedChildEx(ThisNameInfo);
     if not found then begin
       InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
-      found := InfoEntry.GoNamedChildEx(@self1[1], @self2[1]);
+      found := InfoEntry.GoNamedChildEx(SelfNameInfo);
     end;
     if found then begin
       if ((AnAddress = 0) or InfoEntry.IsAddressInStartScope(AnAddress)) and
@@ -5703,6 +5700,9 @@ initialization
   FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_SEARCH        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
   FPDBG_DWARF_DATA_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
+
+  ThisNameInfo := NameInfoForSearch('THIS');
+  SelfNameInfo := NameInfoForSearch('$SELF');
 
 end.
 

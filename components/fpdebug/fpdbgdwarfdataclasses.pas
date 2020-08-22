@@ -198,6 +198,10 @@ type
   end;
 {%endregion Abbreviation Data / Section "debug_abbrev"}
 
+  TNameSearchInfo = record
+    NameUpper, NameLower: String;
+  end;
+
 {%region Information Entry / Section "debug_info"}
   (* Link, can either be
      - "Next Sibling" (for the parent): Link will be greater than current index
@@ -315,7 +319,12 @@ type
 
     function GoNamedChild(AName: String): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
-    function GoNamedChildEx(ANameUpper, AnameLower: PChar): Boolean;
+    function GoNamedChildEx(const ANameInfo: TNameSearchInfo): Boolean;
+    // GoNamedChildMatchCaseEx will use
+    // - UpperName for Hash
+    // - LowerName for compare
+    // GoNamedChildMatchCaseEx does not search in enums
+    function GoNamedChildMatchCaseEx(const ANameInfo: TNameSearchInfo): Boolean;
     function GoNamedChildEx(AName: String): Boolean; inline;
 
     function FindNamedChild(AName: String): TDwarfInformationEntry;
@@ -737,6 +746,7 @@ function Dbgs(AInfoEntry: TDwarfInformationEntry; ACompUnit: TDwarfCompilationUn
 function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
 
 function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList; inline;
+function NameInfoForSearch(const AName: String): TNameSearchInfo;
 
 property DwarfSymbolClassMapList: TFpSymbolDwarfClassMapList read GetDwarfSymbolClassMapList;
 
@@ -756,6 +766,12 @@ const
 function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList;
 begin
   Result := TheDwarfSymbolClassMapList;
+end;
+
+function NameInfoForSearch(const AName: String): TNameSearchInfo;
+begin
+  Result.NameLower := UTF8LowerCase(AName);
+  Result.NameUpper := UTF8UpperCase(AName);
 end;
 
 function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String;
@@ -2552,7 +2568,7 @@ begin
   end;
 end;
 
-function TDwarfInformationEntry.GoNamedChildEx(ANameUpper, AnameLower: PChar): Boolean;
+function TDwarfInformationEntry.GoNamedChildEx(const ANameInfo: TNameSearchInfo): Boolean;
 var
   EntryName: PChar;
   InEnum: Boolean;
@@ -2560,7 +2576,7 @@ var
 begin
   Result := False;
   InEnum := False;
-  if ANameUpper = nil then
+  if ANameInfo.NameUpper = '' then
     exit;
   GoChild;
   if not HasValidScope then
@@ -2572,14 +2588,15 @@ begin
         GoNext;
         Continue;
       end;
+
       if not ReadValue(DW_AT_name, EntryName) then begin
         GoNext;
         Continue;
       end;
 
-      if CompareUtf8BothCase(ANameUpper, AnameLower, EntryName) then begin
+      if CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.nameLower), EntryName) then begin
         // TODO: check DW_AT_start_scope;
-        DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AnameLower]);
+        DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
         Result := True;
         exit;
       end;
@@ -2605,16 +2622,47 @@ begin
   end;
 end;
 
-function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
+function TDwarfInformationEntry.GoNamedChildMatchCaseEx(
+  const ANameInfo: TNameSearchInfo): Boolean;
 var
-  s1, s2: String;
+  EntryName: PChar;
+begin
+  Result := False;
+  if ANameInfo.NameUpper = '' then
+    exit;
+  GoChild;
+  if not HasValidScope then
+    exit;
+
+  while HasValidScope do begin
+    PrepareAbbrev;
+    if not (dafHasName in FAbbrev^.flags) then begin
+      GoNext;
+      Continue;
+    end;
+
+    if not ReadValue(DW_AT_name, EntryName) then begin
+      GoNext;
+      Continue;
+    end;
+
+    if CompareMem(PChar(ANameInfo.nameLower), @EntryName, Length(EntryName)) then begin
+      // TODO: check DW_AT_start_scope;
+      DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.nameLower]);
+      Result := True;
+      exit;
+    end;
+
+      GoNext;
+  end;
+end;
+
+function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
 begin
   Result := False;
   if AName = '' then
     exit;
-  s1 := UTF8UpperCase(AName);
-  s2 := UTF8LowerCase(AName);
-  Result := GoNamedChildEx(@s1[1], @s2[1]);
+  Result := GoNamedChildEx(NameInfoForSearch(AName));
 end;
 
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
