@@ -329,7 +329,7 @@ type
 
     procedure ComputeKnownHashes(AKNownHashes: PKnownNameHashesArray);
 
-    function GoNamedChild(AName: String): Boolean;
+    function GoNamedChild(const AName: String): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
     function GoNamedChildEx(const ANameInfo: TNameSearchInfo): Boolean;
     // GoNamedChildMatchCaseEx will use
@@ -337,9 +337,9 @@ type
     // - LowerName for compare
     // GoNamedChildMatchCaseEx does not search in enums
     function GoNamedChildMatchCaseEx(const ANameInfo: TNameSearchInfo): Boolean;
-    function GoNamedChildEx(AName: String): Boolean; inline;
+    function GoNamedChildEx(const AName: String): Boolean; inline;
 
-    function FindNamedChild(AName: String): TDwarfInformationEntry;
+    function FindNamedChild(const AName: String): TDwarfInformationEntry;
     function FindChildByTag(ATag: Cardinal): TDwarfInformationEntry;
     function FirstChild: TDwarfInformationEntry;
     function Clone: TDwarfInformationEntry;
@@ -465,8 +465,8 @@ type
   protected
     procedure Init; virtual;
   public
-    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry);
-    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
+    constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry);
+    constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry;
                        AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
 
@@ -2603,7 +2603,7 @@ begin
   ScopeChanged;
 end;
 
-function TDwarfInformationEntry.GoNamedChild(AName: String): Boolean;
+function TDwarfInformationEntry.GoNamedChild(const AName: String): Boolean;
 var
   EntryName: PChar;
   s1, s2: String;
@@ -2747,7 +2747,7 @@ begin
   end;
 end;
 
-function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
+function TDwarfInformationEntry.GoNamedChildEx(const AName: String): Boolean;
 begin
   Result := False;
   if AName = '' then
@@ -2816,7 +2816,8 @@ begin
     Result := FAbstractOrigin.GetAttribData(AnAttrib, AnAttribData);
 end;
 
-function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
+function TDwarfInformationEntry.FindNamedChild(const AName: String
+  ): TDwarfInformationEntry;
 begin
   Result := nil;
   if not MaybeSearchScope then
@@ -3569,7 +3570,7 @@ begin
   //
 end;
 
-constructor TDbgDwarfSymbolBase.Create(AName: String;
+constructor TDbgDwarfSymbolBase.Create(const AName: String;
   AnInformationEntry: TDwarfInformationEntry);
 begin
   FCU := AnInformationEntry.CompUnit;
@@ -3580,7 +3581,7 @@ begin
   Init;
 end;
 
-constructor TDbgDwarfSymbolBase.Create(AName: String;
+constructor TDbgDwarfSymbolBase.Create(const AName: String;
   AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind;
   AAddress: TFpDbgMemLocation);
 begin

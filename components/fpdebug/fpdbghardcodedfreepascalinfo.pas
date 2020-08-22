@@ -104,7 +104,7 @@ type
     procedure FillFields; virtual;
     function GetFields: TDbgHardcodedFPCClassMemberCollection;
     function GetNestedSymbolCount: Integer; override;
-    function GetNestedSymbolByName(AIndex: string): TFpSymbol; override;
+    function GetNestedSymbolByName(const AIndex: string): TFpSymbol; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
   public
     function GetDataAddress(AValueObj: TDbgHardcodedVariableValue; var AnAddress: TFpDbgMemLocation): Boolean; override;
@@ -197,7 +197,7 @@ type
   // Value of class-instance
   TDbgHardcodedFPCClassValue = class(TDbgHardcodedVariableValue)
   protected
-    function GetMemberByName(AIndex: string): TFpValue; override;
+    function GetMemberByName(const AIndex: string): TFpValue; override;
   public
     function GetClassName: string;
   end;
@@ -410,7 +410,8 @@ begin
   end;
 end;
 
-function TDbgHardcodedFPCClassValue.GetMemberByName(AIndex: string): TFpValue;
+function TDbgHardcodedFPCClassValue.GetMemberByName(const AIndex: string
+  ): TFpValue;
 begin
   Result := FTypeSymbol.NestedSymbolByName[AIndex].Value;
   if Result is TDbgHardcodedVariableValue then
@@ -569,7 +570,8 @@ begin
 end;
 {$ENDIF}
 
-function TDbgHardcodedFPCClassTypeSymbol.GetNestedSymbolByName(AIndex: string): TFpSymbol;
+function TDbgHardcodedFPCClassTypeSymbol.GetNestedSymbolByName(
+  const AIndex: string): TFpSymbol;
 begin
   {$IFDEF HasGenObjDict}
   Result := GetFields.Items[AIndex]

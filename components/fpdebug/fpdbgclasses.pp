@@ -63,8 +63,8 @@ type
     FSize: byte;
     FStrValue: string;
   public
-    constructor Create(AName: String);
-    procedure SetValue(ANumValue: TDBGPtr; AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
+    constructor Create(const AName: String);
+    procedure SetValue(ANumValue: TDBGPtr; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
     procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
     property Name: string read FName;
     property NumValue: TDBGPtr read FNumValue;
@@ -79,8 +79,8 @@ type
 
   TDbgRegisterValueList = class(TGDbgRegisterValueList)
   private
-    function GetDbgRegister(AName: string): TDbgRegisterValue;
-    function GetDbgRegisterAutoCreate(AName: string): TDbgRegisterValue;
+    function GetDbgRegister(const AName: string): TDbgRegisterValue;
+    function GetDbgRegisterAutoCreate(const AName: string): TDbgRegisterValue;
   public
     property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
     function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
@@ -1293,7 +1293,8 @@ end;
 
 { TDbgRegisterValueList }
 
-function TDbgRegisterValueList.GetDbgRegister(AName: string): TDbgRegisterValue;
+function TDbgRegisterValueList.GetDbgRegister(const AName: string
+  ): TDbgRegisterValue;
 var
   i: integer;
 begin
@@ -1306,7 +1307,8 @@ begin
   result := nil;
 end;
 
-function TDbgRegisterValueList.GetDbgRegisterAutoCreate(AName: string): TDbgRegisterValue;
+function TDbgRegisterValueList.GetDbgRegisterAutoCreate(const AName: string
+  ): TDbgRegisterValue;
 begin
   result := GetDbgRegister(AName);
   if not Assigned(result) then
@@ -1331,13 +1333,13 @@ end;
 
 { TDbgRegisterValue }
 
-constructor TDbgRegisterValue.Create(AName: String);
+constructor TDbgRegisterValue.Create(const AName: String);
 begin
   FName:=AName;
 end;
 
-procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr; AStrValue: string;
-  ASize: byte; ADwarfIdx: Cardinal);
+procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr;
+  const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
 begin
   FStrValue:=AStrValue;
   FNumValue:=ANumValue;

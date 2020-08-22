@@ -242,7 +242,7 @@ type
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
-    constructor Create(AController: TDbgController; ATargetFilename: String; ATargetLineNumber: Integer);
+    constructor Create(AController: TDbgController; const ATargetFilename: String; ATargetLineNumber: Integer);
   end;
 
   { TDbgController }
@@ -278,7 +278,7 @@ type
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
     procedure SetEnvironment(AValue: TStrings);
-    procedure SetExecutableFilename(AValue: string);
+    procedure SetExecutableFilename(const AValue: string);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
     procedure SetParams(AValue: TStringList);
 
@@ -1263,7 +1263,7 @@ begin
 end;
 
 constructor TDbgControllerStepToCmd.Create(AController: TDbgController;
-  ATargetFilename: String; ATargetLineNumber: Integer);
+  const ATargetFilename: String; ATargetLineNumber: Integer);
 begin
   FTargetFilename   := ExtractFileName(ATargetFilename);
   FTargetLineNumber := ATargetLineNumber;
@@ -1310,7 +1310,7 @@ begin
   FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
 end;
 
-procedure TDbgController.SetExecutableFilename(AValue: string);
+procedure TDbgController.SetExecutableFilename(const AValue: string);
 begin
   if FExecutableFilename=AValue then Exit;
   FExecutableFilename:=AValue;

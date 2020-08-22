@@ -142,7 +142,7 @@ type
     function GetDbgSymbol: TFpSymbol; override;
 
     function GetMemberCount: Integer; override;
-    function GetMemberByName(AIndex: String): TFpValue; override;
+    function GetMemberByName(const AIndex: String): TFpValue; override;
     function GetMember(AIndex: Int64): TFpValue; override;
   public
     constructor Create(ASymbol: TFpSymbolDwarf); // Only for stType
@@ -190,7 +190,7 @@ type
     function IsValidTypeCast: Boolean; virtual;
     function GetKind: TDbgSymbolKind; override;
     function GetMemberCount: Integer; override;
-    function GetMemberByName(AIndex: String): TFpValue; override;
+    function GetMemberByName(const AIndex: String): TFpValue; override;
     function GetMember(AIndex: Int64): TFpValue; override;
     function GetDbgSymbol: TFpSymbol; override;
     function GetTypeInfo: TFpSymbol; override;
@@ -366,7 +366,7 @@ type
   TFpValueDwarfStructBase = class(TFpValueDwarf)
   protected
     function GetMember(AIndex: Int64): TFpValue; override;
-    function GetMemberByName(AIndex: String): TFpValue; override;
+    function GetMemberByName(const AIndex: String): TFpValue; override;
   end;
 
   TFpValueDwarfStruct = class(TFpValueDwarfStructBase)
@@ -532,16 +532,16 @@ type
     function HasAddress: Boolean; virtual;
 
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; virtual;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; virtual;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; virtual;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
-    function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
+    function GetNestedSymbolByName(const AIndex: String): TFpSymbol; override;
 
     procedure Init; override;
   public
-    class function CreateSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarf;
+    class function CreateSubClass(const AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarf;
     destructor Destroy; override;
     function GetNestedValue(AIndex: Int64): TFpValueDwarf; inline;
-    function GetNestedValueByName(AIndex: String): TFpValueDwarf; inline;
+    function GetNestedValueByName(const AIndex: String): TFpValueDwarf; inline;
     function StartScope: TDbgPtr; // return 0, if none. 0 includes all anyway
     property TypeInfo: TFpSymbolDwarfType read GetTypeInfo;
   end;
@@ -555,12 +555,12 @@ type
     procedure MemberVisibilityNeeded; override;
 
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
     procedure Init; override;
   public
-    class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfData;
+    class function CreateValueSubClass(const AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfData;
   end;
 
   { TFpSymbolDwarfDataWithLocation }
@@ -653,7 +653,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
        Result: Is returned with a RefCount of 1. This ref has to be released by the caller.
     *)
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; virtual;
-    class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfType;
+    class function CreateTypeSubClass(const AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfType;
     function TypeCastValue(AValue: TFpValue): TFpValue; override;
 
     (*TODO: workaround / quickfix // only partly implemented
@@ -691,9 +691,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TFpSymbolDwarfTypeModifierBase = class(TFpSymbolDwarfType)
   protected
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
-    function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
+    function GetNestedSymbolByName(const AIndex: String): TFpSymbol; override;
   end;
 
   { TFpSymbolDwarfTypeModifier }
@@ -786,7 +786,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     //copied from TFpSymbolDwarfDataProc
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
     // TODO: deal with DW_TAG_pointer_type
@@ -822,7 +822,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
   public
     destructor Destroy; override;
@@ -873,7 +873,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     // GetNestedSymbolEx, if AIndex > Count then parent
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
@@ -957,11 +957,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function  DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
 
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
   public
-    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry; AInfo: PDwarfAddressInfo);
+    constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry; AInfo: PDwarfAddressInfo);
     destructor Destroy; override;
   end;
 
@@ -993,7 +993,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FLastChildByName: TFpSymbol;
   protected
     procedure Init; override;
-    function GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
   public
     destructor Destroy; override;
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
@@ -1052,7 +1052,8 @@ begin
   Result := inherited GetMember(AIndex);
 end;
 
-function TFpValueDwarfStructBase.GetMemberByName(AIndex: String): TFpValue;
+function TFpValueDwarfStructBase.GetMemberByName(const AIndex: String
+  ): TFpValue;
 begin
   Result := inherited GetMemberByName(AIndex);
 
@@ -1530,7 +1531,8 @@ begin
     Result := FSymbol.NestedSymbolCount;
 end;
 
-function TFpValueDwarfTypeDefinition.GetMemberByName(AIndex: String): TFpValue;
+function TFpValueDwarfTypeDefinition.GetMemberByName(const AIndex: String
+  ): TFpValue;
 begin
   Result := FSymbol.GetNestedValueByName(AIndex);
   if Result = nil then
@@ -1775,7 +1777,7 @@ begin
   Result := FTypeSymbol.NestedSymbolCount;
 end;
 
-function TFpValueDwarf.GetMemberByName(AIndex: String): TFpValue;
+function TFpValueDwarf.GetMemberByName(const AIndex: String): TFpValue;
 begin
   Result := FTypeSymbol.GetNestedValueByName(AIndex);
   if Result = nil then
@@ -3662,7 +3664,8 @@ begin
     Result := nil;
 end;
 
-function TFpSymbolDwarf.GetNestedValueByName(AIndex: String): TFpValueDwarf;
+function TFpSymbolDwarf.GetNestedValueByName(const AIndex: String
+  ): TFpValueDwarf;
 var
   OuterSym: TFpSymbolDwarfType;
   sym: TFpSymbol;
@@ -3686,7 +3689,7 @@ begin
   AnParentTypeSymbol := nil;
 end;
 
-function TFpSymbolDwarf.GetNestedSymbolExByName(AIndex: String; out
+function TFpSymbolDwarf.GetNestedSymbolExByName(const AIndex: String; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 begin
   assert(False, 'TFpSymbolDwarf.GetNestedSymbolExByName: False not a structuer');
@@ -3701,7 +3704,7 @@ begin
   Result := GetNestedSymbolEx(AIndex, dummy);
 end;
 
-function TFpSymbolDwarf.GetNestedSymbolByName(AIndex: String): TFpSymbol;
+function TFpSymbolDwarf.GetNestedSymbolByName(const AIndex: String): TFpSymbol;
 var
   dummy: TFpSymbolDwarfType;
 begin
@@ -3713,7 +3716,7 @@ begin
   //
 end;
 
-class function TFpSymbolDwarf.CreateSubClass(AName: String;
+class function TFpSymbolDwarf.CreateSubClass(const AName: String;
   AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarf;
 var
   c: TDbgDwarfSymbolBaseClass;
@@ -3781,7 +3784,7 @@ begin
   assert((Result = nil) or (Result is TFpSymbolDwarfData), 'TFpSymbolDwarfData.GetMember is Value');
 end;
 
-function TFpSymbolDwarfData.GetNestedSymbolExByName(AIndex: String; out
+function TFpSymbolDwarfData.GetNestedSymbolExByName(const AIndex: String; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 begin
   AnParentTypeSymbol := TypeInfo;
@@ -3812,7 +3815,7 @@ begin
   SetSymbolType(stValue);
 end;
 
-class function TFpSymbolDwarfData.CreateValueSubClass(AName: String;
+class function TFpSymbolDwarfData.CreateValueSubClass(const AName: String;
   AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfData;
 var
   c: TDbgDwarfSymbolBaseClass;
@@ -3960,7 +3963,7 @@ begin
   Result := DoReadStride(AValueObj, AStride);
 end;
 
-class function TFpSymbolDwarfType.CreateTypeSubClass(AName: String;
+class function TFpSymbolDwarfType.CreateTypeSubClass(const AName: String;
   AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarfType;
 var
   c: TDbgDwarfSymbolBaseClass;
@@ -4087,8 +4090,8 @@ begin
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TFpSymbolDwarfTypeModifierBase.GetNestedSymbolExByName(AIndex: String; out
-  AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeModifierBase.GetNestedSymbolExByName(
+  const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   p: TFpSymbol;
 begin
@@ -4110,8 +4113,8 @@ begin
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TFpSymbolDwarfTypeModifierBase.GetNestedSymbolByName(AIndex: String
-  ): TFpSymbol;
+function TFpSymbolDwarfTypeModifierBase.GetNestedSymbolByName(
+  const AIndex: String): TFpSymbol;
 var
   p: TFpSymbol;
 begin
@@ -4500,8 +4503,8 @@ begin
   Result := FLastMember;
 end;
 
-function TFpSymbolDwarfTypeSubroutine.GetNestedSymbolExByName(AIndex: String;
-  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeSubroutine.GetNestedSymbolExByName(
+  const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Info: TDwarfInformationEntry;
   s, s2: String;
@@ -4659,7 +4662,8 @@ begin
   Result := TFpSymbol(FMembers[AIndex]);
 end;
 
-function TFpSymbolDwarfTypeEnum.GetNestedSymbolExByName(AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeEnum.GetNestedSymbolExByName(const AIndex: String;
+  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   i: Integer;
   s, s1, s2: String;
@@ -4834,8 +4838,8 @@ end;
 
 { TFpSymbolDwarfTypeStructure }
 
-function TFpSymbolDwarfTypeStructure.GetNestedSymbolExByName(AIndex: String;
-  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeStructure.GetNestedSymbolExByName(
+  const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Ident: TDwarfInformationEntry;
   ti: TFpSymbolDwarfType;
@@ -5575,8 +5579,8 @@ begin
   Result := FLastMember;
 end;
 
-function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(AIndex: String; out
-  AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(const AIndex: String;
+  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Info: TDwarfInformationEntry;
   s, s2: String;
@@ -5604,7 +5608,7 @@ begin
   Result := FProcMembers.Count;
 end;
 
-constructor TFpSymbolDwarfTypeProc.Create(AName: String;
+constructor TFpSymbolDwarfTypeProc.Create(const AName: String;
   AnInformationEntry: TDwarfInformationEntry; AInfo: PDwarfAddressInfo);
 begin
   FAddressInfo := AInfo;
@@ -5665,7 +5669,7 @@ begin
   SetKind(skUnit);
 end;
 
-function TFpSymbolDwarfUnit.GetNestedSymbolExByName(AIndex: String; out
+function TFpSymbolDwarfUnit.GetNestedSymbolExByName(const AIndex: String; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Ident: TDwarfInformationEntry;

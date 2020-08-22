@@ -164,7 +164,7 @@ type
   TFpValueDwarfV2FreePascalShortString = class(TFpValueDwarf)
   protected
     function IsValidTypeCast: Boolean; override;
-    function GetInternMemberByName(AIndex: String): TFpValue;
+    function GetInternMemberByName(const AIndex: String): TFpValue;
     procedure Reset; override;
   private
     FValue: String;
@@ -924,7 +924,7 @@ begin
 end;
 
 function TFpValueDwarfV2FreePascalShortString.GetInternMemberByName(
-  AIndex: String): TFpValue;
+  const AIndex: String): TFpValue;
 begin
   if HasTypeCastInfo then begin
     Result := TypeInfo.GetNestedValueByName(AIndex);

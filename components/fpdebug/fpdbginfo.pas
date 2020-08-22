@@ -129,7 +129,7 @@ type
     function GetOrdLowBound: Int64; virtual;
 
     function GetMember({%H-}AIndex: Int64): TFpValue; virtual;
-    function GetMemberByName({%H-}AIndex: String): TFpValue; virtual;
+    function GetMemberByName(const AIndex: String): TFpValue; virtual;
     function GetMemberCount: Integer; virtual;
     function GetIndexType({%H-}AIndex: Integer): TFpSymbol; virtual;
     function GetIndexTypeCount: Integer; virtual;
@@ -238,7 +238,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
   public
-    constructor Create(AValue: AnsiString);
+    constructor Create(const AValue: AnsiString);
   end;
 
   { TFpValueConstWideChar }
@@ -252,7 +252,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
   public
-    constructor Create(AValue: AnsiString);
+    constructor Create(const AValue: AnsiString);
   end;
 
   { TFpValueConstString }
@@ -266,7 +266,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
   public
-    constructor Create(AValue: AnsiString);
+    constructor Create(const AValue: AnsiString);
   end;
 
   { TFpValueConstFloat }
@@ -360,12 +360,12 @@ type
     function GetOrdinalValue: Int64; virtual;
 
     function GetNestedSymbol({%H-}AIndex: Int64): TFpSymbol; virtual;
-    function GetNestedSymbolByName({%H-}AIndex: String): TFpSymbol; virtual;
+    function GetNestedSymbolByName(const AIndex: String): TFpSymbol; virtual;
     function GetNestedSymbolCount: Integer; virtual;
   protected
     property EvaluatedFields: TFpSymbolFields read FEvaluatedFields write FEvaluatedFields;
     // Cached fields
-    procedure SetName(AValue: String); inline;
+    procedure SetName(const AValue: String); inline;
     procedure SetKind(AValue: TDbgSymbolKind); inline;
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
     procedure SetAddress(AValue: TFpDbgMemLocation); inline;
@@ -463,7 +463,7 @@ type
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
-    function GetNestedSymbolByName(AIndex: String): TFpSymbol; override;
+    function GetNestedSymbolByName(const AIndex: String): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
   public
     function GetInstanceClassName(AValueObj: TFpValue; out AClassName: String): boolean; override;
@@ -558,7 +558,7 @@ type
     constructor Create(const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
     destructor Destroy; override;
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
-    procedure SetError(Message: string);
+    procedure SetError(const Message: string);
     property IsValid: Boolean read FIsValid;
     property Message: string read FMessage;
   end;
@@ -707,7 +707,7 @@ begin
   FMemReader.SetRegisterValue(ARegNum, AValue);
 end;
 
-procedure TFpDbgInfoCallContext.SetError(Message: string);
+procedure TFpDbgInfoCallContext.SetError(const Message: string);
 begin
   FIsValid := False;
   FMessage := Message;
@@ -730,7 +730,7 @@ begin
   Result := Value;
 end;
 
-constructor TFpValueConstString.Create(AValue: AnsiString);
+constructor TFpValueConstString.Create(const AValue: AnsiString);
 begin
   inherited Create;
   FValue := AValue;
@@ -753,7 +753,7 @@ begin
   Result := Value;
 end;
 
-constructor TFpValueConstChar.Create(AValue: AnsiString);
+constructor TFpValueConstChar.Create(const AValue: AnsiString);
 begin
   inherited Create;
   FValue := AValue;
@@ -776,7 +776,7 @@ begin
   Result := Value;
 end;
 
-constructor TFpValueConstWideChar.Create(AValue: AnsiString);
+constructor TFpValueConstWideChar.Create(const AValue: AnsiString);
 begin
   inherited Create;
   FValue := AValue;
@@ -912,7 +912,7 @@ begin
   Result := nil;
 end;
 
-function TFpValue.GetMemberByName(AIndex: String): TFpValue;
+function TFpValue.GetMemberByName(const AIndex: String): TFpValue;
 begin
   Result := nil;
 end;
@@ -1334,7 +1334,7 @@ begin
   Result := nil;
 end;
 
-function TFpSymbol.GetNestedSymbolByName(AIndex: String): TFpSymbol;
+function TFpSymbol.GetNestedSymbolByName(const AIndex: String): TFpSymbol;
 begin
   Result := nil;
 end;
@@ -1381,7 +1381,7 @@ begin
   Include(FEvaluatedFields, sfiMemberVisibility);
 end;
 
-procedure TFpSymbol.SetName(AValue: String);
+procedure TFpSymbol.SetName(const AValue: String);
 begin
   FName := AValue;
   Include(FEvaluatedFields, sfiName);
@@ -1647,7 +1647,8 @@ begin
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TFpSymbolForwarder.GetNestedSymbolByName(AIndex: String): TFpSymbol;
+function TFpSymbolForwarder.GetNestedSymbolByName(const AIndex: String
+  ): TFpSymbol;
 var
   p: TFpSymbol;
 begin
