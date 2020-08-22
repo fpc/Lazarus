@@ -38,7 +38,7 @@ unit FpDbgUtil;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, LazUTF8; 
 
 type
   THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
@@ -46,6 +46,11 @@ type
 
   
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
+
+// Optimistic upper/lower case. Attempt Ansi only, but if none ansi is found, do utf8
+function QuickUtf8UpperCase(const AText: String): String;
+function QuickUtf8LowerCase(const AText: String): String;
+
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 procedure Log(const AText: String; const AParams: array of const); overload;
@@ -113,6 +118,58 @@ begin
   end;
 
   Result := AnUpper^ = AnUnknown^;  // both #0
+end;
+
+function QuickUtf8UpperCase(const AText: String): String;
+var
+  src, dst: PChar;
+  c: Integer;
+  t: Char;
+begin
+  SetLength(Result, Length(AText));
+  if Result = '' then
+    exit;
+
+  src := @AText[1];
+  dst := @Result[1];
+  c := Length(Result);
+  while c > 0 do begin
+    t := src^;
+    if (ord(t) and 128) <>  0 then
+      exit(UTF8UpperCase(AText));
+    if (t in ['a'..'z']) then
+      t := chr(ord(t) - 32);
+    dst^ := t;
+    dec(c);
+    inc(src);
+    inc(dst);
+  end;
+end;
+
+function QuickUtf8LowerCase(const AText: String): String;
+var
+  src, dst: PChar;
+  c: Integer;
+  t: Char;
+begin
+  SetLength(Result, Length(AText));
+  if Result = '' then
+    exit;
+
+  src := @AText[1];
+  dst := @Result[1];
+  c := Length(Result);
+  while c > 0 do begin
+    t := src^;
+    if (ord(t) and 128) <>  0 then
+      exit(UTF8UpperCase(AText));
+    if (t in ['A'..'Z']) then
+      t := chr(ord(t) + 32);
+    dst^ := t;
+    dec(c);
+    inc(src);
+    inc(dst);
+  end;
 end;
 
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;

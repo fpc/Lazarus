@@ -783,8 +783,8 @@ end;
 
 function NameInfoForSearch(const AName: String): TNameSearchInfo;
 begin
-  Result.NameLower := UTF8LowerCase(AName);
-  Result.NameUpper := UTF8UpperCase(AName);
+  Result.NameLower := QuickUtf8LowerCase(AName);
+  Result.NameUpper := QuickUtf8UpperCase(AName);
   Result.NameHash := objpas.Hash(Result.NameUpper) and $7fff or $8000;
 end;
 
@@ -2571,7 +2571,7 @@ begin
         NextTopLevel := FScope.GetNextIndex;
       Continue;
     end;
-    h := objpas.Hash(UTF8UpperCase(EntryName)) and $7fff or $8000;
+    h := objpas.Hash(QuickUtf8UpperCase(EntryName)) and $7fff or $8000;
     FScope.Current^.NameHash := h;
     if (FScope.Index >= NextTopLevel) or InEnum then
       AKNownHashes^[h and KnownNameHashesBitMask] := True;
@@ -2614,7 +2614,7 @@ begin
   GoChild;
   if not HasValidScope then
     exit;
-  s1 := UTF8UpperCase(AName);
+  s1 := QuickUtf8UpperCase(AName);
   s2 := UTF8LowerCase(AName);
   while HasValidScope do begin
     PrepareAbbrev;
