@@ -102,7 +102,7 @@ type
     property CurrentCount: Integer read GetCurrentCount;
     property ThreadMonitor: TLazMonitor read FThreadMonitor;
   public
-    constructor Create(AQueueDepth: Integer = 10; PushTimeout: cardinal = INFINITE; PopTimeout: cardinal = INFINITE);
+    constructor Create(AQueueDepth: Integer = 10; PopTimeout: cardinal = INFINITE);
     destructor Destroy; override; // Will not wait for the threads.
 
     procedure Clear; // Not thread safe // remove all none running items
@@ -441,8 +441,9 @@ var
   WorkItem: TFpThreadWorkerItem;
 begin
   while not Terminated do begin
-    FQueue.PopItem(WorkItem);
-    if WorkItem = nil then
+    if (FQueue.PopItem(WorkItem) <> wrSignaled) or
+       (WorkItem = nil)
+    then
       Continue;
 
     if WorkItem is TFpThreadWorkerTerminateItem then begin
@@ -535,10 +536,10 @@ begin
 end;
 
 constructor TFpThreadWorkerQueue.Create(AQueueDepth: Integer;
-  PushTimeout: cardinal; PopTimeout: cardinal);
+  PopTimeout: cardinal);
 begin
   FThreadMonitor:=TLazMonitor.create;
-  inherited create(AQueueDepth, PushTimeout, PopTimeout);
+  inherited create(AQueueDepth, 0, PopTimeout);
   FMainWaitEvent := RTLEventCreate;
   FWorkerThreadList := TFpWorkerThreadList.Create(False);
 end;
@@ -586,10 +587,12 @@ end;
 function TFpThreadWorkerQueue.PushItem(const AItem: TFpThreadWorkerItem
   ): TWaitResult;
 begin
-  if TotalItemsPopped = TotalItemsPushed then
-    Grow(Min(QueueSize, 100));
-  AItem.AddRef;
-  Result := inherited PushItem(AItem);
+  repeat
+    if TotalItemsPopped = TotalItemsPushed then
+      Grow(Min(QueueSize, 100));
+    AItem.AddRef;
+    Result := inherited PushItem(AItem);
+  until Result = wrSignaled;
 end;
 
 procedure TFpThreadWorkerQueue.RemoveItem(const AItem: TFpThreadWorkerItem);
