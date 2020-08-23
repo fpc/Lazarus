@@ -211,7 +211,7 @@ var
 begin
   FMonitor.Enter;
   try
-    c:=Max(FQueueSize + ADelta, FTotalItemsPushed - FTotalItemsPopped);
+    c:=Max(FQueueSize + ADelta, Integer(FTotalItemsPushed - FTotalItemsPopped));
     setlength(NewList, c);
     i:=FTotalItemsPopped;
     while i < FTotalItemsPushed do begin
