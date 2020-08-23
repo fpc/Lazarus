@@ -50,7 +50,6 @@ type
     deFinishedStep, deBreakpoint, deHardCodedBreakpoint,
     deException,
     deInternalContinue);
-  TFPDMode = (dm32, dm64);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
   { TDbgRegisterValue }
@@ -696,15 +695,7 @@ public
     function Equals(AnOther: TOSDbgClasses): Boolean;
   end;
 
-var
-  {$ifdef cpui386}
-  GMode: TFPDMode = dm32;
-  {$else}
-  GMode: TFPDMode = dm64;
-  {$endif}
-
 const
-  DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
   FPDEventNames: array[TFPDEvent] of string = (
     'deExitProcess', 'deCreateProcess',
     'deLoadLibrary', 'deUnloadLibrary',
@@ -718,19 +709,6 @@ function GetDbgProcessClass(ATargetInfo: TTargetDescriptor): TOSDbgClasses;
 procedure RegisterDbgOsClasses(ADbgOsClasses: TOSDbgClasses);
 
 implementation
-
-{$ifdef windows}
-uses
-  FpDbgWinClasses;
-{$endif}
-{$ifdef darwin}
-uses
-  FpDbgDarwinClasses;
-{$endif}
-{$ifdef linux}
-uses
-  FpDbgLinuxClasses;
-{$endif}
 
 type
   TOSDbgClassesList = class(specialize TFPGObjectList<TOSDbgClasses>)

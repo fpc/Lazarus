@@ -38,10 +38,12 @@ unit FpDbgUtil;
 interface
 
 uses
-  Classes, SysUtils, fgl, math, LazUTF8, lazCollections, LazClasses,
+  Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
   UTF8Process, syncobjs;
 
 type
+  TFPDMode = (dm32, dm64);
+
   THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
   THexValueFormatFlags = set of THexValueFormatFlag;
 
@@ -126,6 +128,16 @@ type
     procedure DecRef;
   end;
   
+const
+  DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
+
+var
+  {$ifdef cpui386}
+  GMode: TFPDMode = dm32 deprecated;
+  {$else}
+  GMode: TFPDMode = dm64 deprecated;
+  {$endif}
+
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
 
 // Optimistic upper/lower case. Attempt Ansi only, but if none ansi is found, do utf8
@@ -145,8 +157,7 @@ property FpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue read GetFpDbgGlobalW
 implementation
 
 uses
-  LazLoggerBase,
-  FpDbgClasses;
+  LazLoggerBase;
 
 var
   TheFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue = nil;

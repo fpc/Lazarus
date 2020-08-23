@@ -41,7 +41,7 @@ interface
 
 uses
   LCLType,
-  FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
+  FpImgReaderBase,
   fpDbgSymTable, DbgIntfBaseTypes,
   Classes, SysUtils, contnrs, FpDbgCommon;
 
