@@ -308,6 +308,13 @@ procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: 
 var
   undoManager: NSUndoManager;
   ch : System.WideChar;
+  msk : NSEventModifierFlags;
+  chr : NSString;
+const
+  NSModsMask = NSShiftKeyMask
+            or NSControlKeyMask
+            or NSAlternateKeyMask
+            or NSCommandKeyMask;
 begin
   // todo: system keys could be overriden. thus need to review the current
   //       keyboard configuration first. See "Key Bindings" at
@@ -316,15 +323,31 @@ begin
   handled := false;
   if (event.type_ = NSKeyDown) then
   begin
-    if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
+    msk := (event.modifierFlags and NSModsMask);
+    if (msk = 0) then Exit;
+    // characters contain untranslated input characters, for layouts
+    // without latin characters (i.e. greek cyrillic, arabic).
+    // But for Latin based alphabet, "characters" are the same as
+    // "charactersWihtoutModifiers"....The Roman Empire legacy today!
+    //
+    // charatersWithoutModifiers contain translated characters for any layout.
 
-    ch := NSEventRawKeyChar(event);
+    // In order for the system shortkeys to work on any layout "characters"
+    // property must be used
+    chr := event.characters;
+    if (chr.length = 0)
+      then ch := #0
+      else ch := System.WideChar(chr.characterAtIndex(0));
     case ch of
-      'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
-      'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
-      'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
-      'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
-      'z':
+      'a': if msk= NSCommandKeyMask then
+             handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+      'c': if msk = NSCommandKeyMask then
+             handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+      'v': if msk = NSCommandKeyMask then
+             handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+      'x': if msk = NSCommandKeyMask then
+             handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+      'z': if msk = NSCommandKeyMask then
       begin
         undoManager := atarget.undoManager;
         if Assigned(undoManager) and undoManager.canUndo then
@@ -333,7 +356,7 @@ begin
           undoManager.undo;
         end;
       end;
-      'Z':
+      else if msk = (NSCommandKeyMask or NSShiftKeyMask) then
       begin
         undoManager := atarget.undoManager;
         if Assigned(undoManager) and undoManager.canRedo then
