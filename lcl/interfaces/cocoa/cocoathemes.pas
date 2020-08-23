@@ -147,12 +147,12 @@ begin
     Result := false;
     Exit;
   end;
-  if (not NSApplication(NSApp).respondsToSelector(ObjCSelector('appearance'))) then begin
+  if (not NSApplication(NSApp).respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
     Result := false;
     Exit;
   end;
 
-  Result := IsAppearDark(NSApplication(NSApp).appearance);
+  Result := IsAppearDark(NSApplication(NSApp).effectiveAppearance);
 end;
 
 function IsWinDark(win: NSWindow): Boolean;
@@ -162,12 +162,12 @@ begin
     Result := false;
     Exit;
   end;
-  if (not NSApplication(win).respondsToSelector(ObjCSelector('appearance'))) then begin
+  if (not NSApplication(win).respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
     Result := false;
     Exit;
   end;
 
-  Result := IsAppearDark(win.appearance);
+  Result := IsAppearDark(win.effectiveAppearance);
 end;
 
 function IsPaintDark: Boolean;
