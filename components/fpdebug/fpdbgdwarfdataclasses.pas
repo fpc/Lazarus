@@ -344,6 +344,7 @@ type
     function Clone: TDwarfInformationEntry;
 
     property AbbrevTag: Cardinal read GetAbbrevTag;
+    property InfoScope: TDwarfScopeInfo read FScope;
 
     function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: Integer): Boolean; inline;
     function ReadValue(const AnAttribData: TDwarfAttribData; out AValue: Int64): Boolean; inline;

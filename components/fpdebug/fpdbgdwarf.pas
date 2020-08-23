@@ -1448,6 +1448,7 @@ begin
         Continue;
       end;
 
+      if InfoEntry.InfoScope.Current^.NameHash = NameInfo.NameHash then
       if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
         if (CompareUtf8BothCase(PChar(NameInfo.NameUpper), PChar(NameInfo.NameLower), InfoName)) then begin
