@@ -22,7 +22,7 @@ uses
   DbgIntfDebuggerBase,
   FpdMemoryTools,
   FpPascalParser,
-  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgDwarf;
+  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgDwarf, FpDbgUtil;
 
 type
 
@@ -540,7 +540,6 @@ procedure Register;
 implementation
 
 uses
-  FpDbgUtil,
   FpDbgDisasX86,
   FpDbgCommon;
 
