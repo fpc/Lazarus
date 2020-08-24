@@ -16591,7 +16591,7 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
         <notes><note>deserves a review!</note></notes>
       </topic>
 
-      <topic name="Control coordinates">
+      <topic name="ControlCoordinates">
         <short>
           The coordinates of a control can be specified or retrieved in various ways
         </short>
@@ -16627,7 +16627,7 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
         <notes><note>?</note><note>right?</note></notes>
       </topic>
 
-      <topic name="Anchoring Controls">
+      <topic name="AnchoringControls">
         <short>How multiple controls can be aligned and resized together, at run-time</short>
         <descr>
           <p>

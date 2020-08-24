@@ -703,7 +703,9 @@
         <descr>
           <p>Method:   <var>SplitBezier</var>
           </p>
-          <pre>Params:   Bezier, Left, Right
+  <pre>
+  Params:   Bezier, Left, Right
+
   Returns:  Nothing
 
   Use SplitBezier to split any 4-Point Bezier into two 4-Point Beziers:
@@ -725,18 +727,17 @@
       <element name="SplitBezier.Right">
         <short/>
       </element>
-      <topic name="GraphMath Operators">
+      <topic name="GraphMathOperators">
         <short>
           <b>GraphMath Operators</b>
         </short>
         <descr>
           <p>This Unit contains a number of routines for calculating and converting series of graphic points from one coordinate system to another.</p>
           <p>A fundamental type is introduced, called TFloatPoint. It is an extended precision record containing an X and a Y coordinate for a graphic point. Its structure is as follows:</p>
-          <pre>Type
-  TFloatPoint = Record
-    X, Y : Extended;
-  end;
-
+<pre>Type
+TFloatPoint = Record
+  X, Y : Extended;
+end;
 </pre>
           <p>The Unit contains definitions for mathematical operators which extend the normal definitions of addition, subtraction, multiplication, division and comparison to cover manipulations with TFloatPoints, allowing, for example, addition or multiplication of two TFloatPoints, a TFloatPoint and a TPoint, or a TFloatPoint and an Extended Precision number. </p>
         </descr>

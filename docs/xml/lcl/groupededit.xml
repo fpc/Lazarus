@@ -1928,8 +1928,6 @@
         </seealso>
       </element>
 
-      <!-- WIP -->
-
       <element name="TCustomAbstractGroupedEdit.ClearSelection">
         <short>Clears the content for the current selection in the control</short>
         <descr></descr>

@@ -7,7 +7,7 @@
     ====================================================================
     -->
     <module name="StdCtrls">
-      <short>Several standard controls used in Lazarus forms</short>
+      <short>Standard controls used on Lazarus forms</short>
       <descr/>
 
       <!-- unresolved external references -->
@@ -34,7 +34,7 @@
       <element name="LazUtilities"/>
 
       <element name="TEditCharCase">
-        <short>Determines the case for text in edit box or combo-box controls</short>
+        <short>Determines the case for text in an edit box or a combo-box control</short>
         <descr>
           <p>
             <var>TEditCharCase</var> is an enumerated type with values that determine the case used for text in controls like <var>TCustomComboBox</var> and <var>TCustomEdit</var>. TEditCharCase is the type used to implement the <var>CharCase</var> property in both TCustomComboBox and TCustomEdit.
@@ -46,13 +46,13 @@
         </seealso>
       </element>
       <element name="TEditCharCase.ecNormal">
-        <short>Normal mode - no conversion</short>
+        <short>Normal mode (no case conversion)</short>
       </element>
       <element name="TEditCharCase.ecUppercase">
-        <short>Converts every entered character to upper case</short>
+        <short>Converts every character entered to upper case</short>
       </element>
       <element name="TEditCharCase.ecLowerCase">
-        <short>Converts every entered character to lower case</short>
+        <short>Converts every character entered to lower case</short>
       </element>
 
       <element name="TEchoMode">
@@ -78,7 +78,7 @@
       </element>
 
       <element name="TScrollStyle">
-        <short>The appearance for the scrollbar on a control</short>
+        <short>Indicates the visibility for scrollbars on a control</short>
         <descr>
           <p>
             <var>TScrollStyle</var> is an enumerated type with values that indicates the visibility for one or more scrollbars displayed for an associated edit control. TScrollStyle is the type used to implement the <var>ScrollBars</var> property in <var>TCustomMemo</var>.
@@ -114,7 +114,7 @@
         <short>The scroll action type, as reported by the widget</short>
         <descr>
           <p>
-            TScrollCode is an enumerated type with values that represent scroll actions received from the widgetset class for a scrollbar. The positions and values  in the enumeration correspond to the constants defined in the <file>LCLType</file> unit, including:
+            <var>TScrollCode</var> is an enumerated type with values that represent scroll actions received from the widgetset class for a scrollbar. The positions and values  in the enumeration correspond to the constants defined in the <file>LCLType</file> unit, and include:
           </p>
           <ul>
             <li>SB_LINEUP</li>
@@ -166,12 +166,10 @@
       </element>
 
       <element name="TScrollEvent">
-        <short>
-          Defines an event handler type for scrollbar events
-        </short>
+        <short>Defines an event handler type for scrollbar events</short>
         <descr>
           <p>
-            <var>TScrollEvent</var> is an object procedure which defines an event handler signalled when a scroll event occurs in the widgetset class for a scrollbar. The event handler is called before the new <var>Position</var> is set for the control. The value in Position can be adjusted to implement custom scrollbar behavior.
+            <var>TScrollEvent</var> is an object procedure which defines an event handler signalled when a scroll event occurs in the scrollbar widgetset class. The event handler is called before the new <var>Position</var> is set for the control. The value in Position can be adjusted to implement custom scrollbar behavior.
           </p>
           <p>
             TScrollEvent is the type used to implement the <var>OnScroll</var> event handler in <var>TCustomScrollBar</var>.
@@ -191,7 +189,9 @@
       <element name="TScrollEvent.ScrollPos">
         <short>New position for the scrollbar</short>
         <descr>
-          The suggested new scroll position. Change this value to implement custom scroll behavior.
+          <p>
+            The suggested new scroll position. Change this value to implement custom scroll behavior.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -206,23 +206,23 @@
             A scrollbar allows the content in a client area to be scrolled when it extends beyond the window bounds. TCustomScrollBar provides the properties, methods, and events needed to interface with the widgetset class for the platform or operating system.
           </p>
           <p>
-            Use the Kind property to specify the orientation for the scrollbar.
+            Use the <var>Kind</var> property to specify the orientation for the scrollbar.
           </p>
           <p>
-            Use Min, Max, SmallChange, LargeChange, PageSize and Position properties to control the scrolling behavior for the scrollbar.
+            Use <var>Min</var>, <var>Max</var>, <var>SmallChange</var>, <var>LargeChange</var>, <var>PageSize</var> and <var>Position</var> properties to control the scrolling behavior for the scrollbar.
           </p>
           <p>
-            Use the OnChange and OnScroll event handlers to respond to programmatic changes to the scrollbar, or messages received from the widgetset class.
+            Use the <var>OnChange</var> and <var>OnScroll</var> event handlers to respond to programmatic changes to the scrollbar, or messages received from the widgetset class.
           </p>
           <p>
-            See TControlScrollBar for information about scrollbars used for windowed controls.
+            See <link id="#lcl.forms.TControlScrollBar">TControlScrollBar</link> for information about scrollbars used for windowed controls.
           </p>
         </descr>
         <seealso>
           <link id="TScrollBar"/>
-          <link id="#LCL.Controls.TWinControl"/>
-          <link id="#LCL.Controls.TScrollingWinControl"/>
-          <link id="#LCL.Forms.TControlScrollBar"/>
+          <link id="#lcl.controls.TWinControl"/>
+          <link id="#lcl.controls.TScrollingWinControl"/>
+          <link id="#lcl.forms.TControlScrollBar"/>
         </seealso>
       </element>
 
@@ -251,20 +251,39 @@
         <short>Always returns True</short>
       </element>
 
-      <element name="TCustomScrollBar.SetKind" link="TCustomScrollBar.Kind"/>
+      <element name="TCustomScrollBar.SetKind">
+        <short>Sets the value for the Kind property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomScrollBar.Kind"/>
+        </seealso>
+      </element>
       <element name="TCustomScrollBar.SetKind.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomScrollBar.SetMax" link="TCustomScrollBar.Max"/>
+      <element name="TCustomScrollBar.SetMax">
+        <short>Sets the value for the Max property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomScrollBar.Max"/>
+        </seealso>
+      </element>
       <element name="TCustomScrollBar.SetMax.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomScrollBar.SetMin" link="TCustomScrollBar.Min"/>
+      <element name="TCustomScrollBar.SetMin">
+        <short>Sets the value for the Min property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomScrollBar.Min"/>
+        </seealso>
+      </element>
       <element name="TCustomScrollBar.SetMin.Value">
         <short>New value for the property</short>
       </element>
+
 
       <element name="TCustomScrollBar.SetPosition" link="TCustomScrollBar.Position"/>
       <element name="TCustomScrollBar.SetPosition.Value">
@@ -322,10 +341,12 @@
         </seealso>
       </element>
 
-      <element name="TCustomScrollBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
+      <element name="TCustomScrollBar.GetControlClassDefaultSize">
+        <short>Gets the default size for new instances of the class</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+        </seealso>
       </element>
       <element name="TCustomScrollBar.GetControlClassDefaultSize.Result">
         <short/>
@@ -335,7 +356,7 @@
         <short>Initializes the creation parameters for the class instance</short>
         <descr>
           <p>
-            <var>CreateParams</var> is an overridden method used initialize the creation parameters for the class instance. CreateParams calls the inherited method, and ensures that the <var>Params</var> argument is updated to include the value from the <var>Kind</var> property in the Style information for the <var>TCreateParams</var> instance. This ensures the correct orientation for the scrollbar is available in the creation parameters.
+            <var>CreateParams</var> is an overridden method used initialize the creation parameters for the class instance. CreateParams calls the inherited method, and ensures that the <var>Params</var> argument is updated to include the value from the <var>Kind</var> property in the style information for the <var>TCreateParams</var> instance. This ensures that the correct orientation for the scrollbar is used in the creation parameters.
           </p>
         </descr>
         <seealso>
@@ -404,7 +425,7 @@
       </element>
       <element name="TCustomScrollBar.Scroll.ScrollCode">
         <short>
-          Scroll command code for the operation - up or down a line, a page, to the top or bottom etc
+          Scroll command code for the operation; up or down a line, a page, to the top or bottom, etc.
         </short>
       </element>
       <element name="TCustomScrollBar.Scroll.ScrollPos">
@@ -445,10 +466,10 @@
           </p>
           <dl>
             <dt>TabStop</dt>
-            <dd>Set to <b>True</b>.</dd>
+            <dd>Set to True.</dd>
             <dt>ControlStyle </dt>
             <dd>
-              Includes the values [csFramed, csDoubleClicks, csOpaque], and removes the values [csAcceptsControls, csDoubleClicks, csCaptureMouse, csSetCaption].
+              Includes the values: [csFramed, csDoubleClicks, csOpaque]. Excludes the values: [csAcceptsControls, csDoubleClicks, csCaptureMouse, csSetCaption].
             </dd>
             <dt>Kind</dt>
             <dd>Set to sbHorizontal.</dd>
@@ -642,11 +663,11 @@
 
       <element name="TScrollBar">
         <short>
-          A control that allows the user to scroll the content of an associated control by moving an slider
+          A control that allows the user to scroll the content of an associated control by moving a slider
         </short>
         <descr>
           <p>
-            A control that allows the user to scroll the content of a window, by moving an slider.
+            A control that allows the user to scroll the content of a window, by moving a slider.
           </p>
           <p>
             It appears as a long rectangular track bar, within which a smaller contrasting block or slider can move up and down (or from side to side in a horizontal ScrollBar). It has small triangular indicators or pointers on one or both ends of the bar, depending on the widgetset.
@@ -848,6 +869,32 @@
       <element name="TGroupBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TGroupBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 
+      <element name="TEmulatedTextHintStatus">
+        <short>Status values for an emulated TextHint display in a control</short>
+        <descr>
+          <p>
+            <var>TEmulatedTextHintStatus</var> is an enumerated type with values which indicate the status for an emulated TextHint display in a control. TEmulatedTextHintStatus is the type used for the <var>EmulatedTextHintStatus</var> property in both <var>TCustomComboBox</var> and <var>TCustomEdit</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEdit.EmulatedTextHintStatus"/>
+          <link id="TCustomComboBox.EmulatedTextHintStatus"/>
+        </seealso>
+      </element>
+      <element name="TEmulatedTextHintStatus.thsHidden">
+        <short>An emulated TextHint not currently displayed for the control.</short>
+      </element>
+      <element name="TEmulatedTextHintStatus.thsShowing">
+        <short>
+          An emulated TextHint is currently being shown for the control. The value for control has been temporarily set to the value in TextHint.
+        </short>
+      </element>
+      <element name="TEmulatedTextHintStatus.thsChanging">
+        <short>
+          The emulated TextHint is being displayed. Occurs while the HintFont is being created, and the hint text value and password character are passed to the widgetset class. Changes to thsShowing when the actions have been completed.
+          </short>
+      </element>
+
       <element name="TComboBoxAutoCompleteTextOption">
         <short>
           Defines the behavior of the <var>AutoComplete</var> feature in a combo-box control
@@ -883,9 +930,7 @@
       </element>
 
       <element name="TComboBoxAutoCompleteText" link="TComboBoxAutoCompleteTextOption">
-        <short>
-          Set of <var>TComboBoxAutoCompleteTextOption</var> values
-        </short>
+        <short>Set of <var>TComboBoxAutoCompleteTextOption</var> values</short>
         <descr>
           <p>
             <var>TComboBoxAutoCompleteText</var> is a set type used to store zero (0) or more values from the <var>TComboBoxAutoCompleteTextOption</var> enumeration. TComboBoxAutoCompleteText is the type used to implement the <var>AutoCompleteText</var> property in <var>TCustomComboBox</var> and descendent classes. It is also the type used for the <var>DefaultComboBoxAutoCompleteText</var> constant which defines the default values used in combo-box controls.
@@ -1110,14 +1155,18 @@
         </descr>
       </element>
 
-      <element name="TCustomComboBox.FCharCase"/>
+      <element name="TCustomComboBox.FArrowKeysTraverseList"/>
       <element name="TCustomComboBox.FAutoCompleteText"/>
       <element name="TCustomComboBox.FAutoSelect"/>
       <element name="TCustomComboBox.FAutoSelected"/>
       <element name="TCustomComboBox.FAutoDropDown"/>
       <element name="TCustomComboBox.FCanvas"/>
+      <element name="TCustomComboBox.FCharCase"/>
       <element name="TCustomComboBox.FDropDownCount"/>
       <element name="TCustomComboBox.FDroppedDown"/>
+      <element name="TCustomComboBox.FDroppingDown"/>
+      <element name="TCustomComboBox.FEditingDone"/>
+      <element name="TCustomComboBox.FEmulatedTextHintStatus"/>
       <element name="TCustomComboBox.FItemHeight"/>
       <element name="TCustomComboBox.FItemIndex"/>
       <element name="TCustomComboBox.FItemWidth"/>
@@ -1131,44 +1180,153 @@
       <element name="TCustomComboBox.FOnMeasureItem"/>
       <element name="TCustomComboBox.FOnSelect"/>
       <element name="TCustomComboBox.FReadOnly"/>
-      <element name="TCustomComboBox.FSelLength"/>
-      <element name="TCustomComboBox.FSelStart"/>
-      <element name="TCustomComboBox.FSorted"/>
-      <element name="TCustomComboBox.FStyle"/>
-      <element name="TCustomComboBox.FArrowKeysTraverseList"/>
 
       <element name="TCustomComboBox.FReturnArrowState">
         <short>Used internally, to return the state of arrow keys from temporary change</short>
       </element>
 
-      <element name="TCustomComboBox.GetAutoComplete" link="TCustomComboBox.AutoComplete"/>
+      <element name="TCustomComboBox.FSelLength"/>
+      <element name="TCustomComboBox.FSelStart"/>
+      <element name="TCustomComboBox.FSorted"/>
+      <element name="TCustomComboBox.FStyle"/>
+      <element name="TCustomComboBox.FTextHint"/>
+
+      <element name="TCustomComboBox.GetAutoComplete">
+        <short>Gets the value for the AutoComplete property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.AutoComplete"/>
+        </seealso>
+      </element>
       <element name="TCustomComboBox.GetAutoComplete.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetDroppedDown" link="TCustomComboBox.DroppedDown"/>
+      <element name="TCustomComboBox.GetDroppedDown">
+        <short>Gets the value for the DroppedDown property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.DroppedDown"/>
+         </seealso>
+      </element>
       <element name="TCustomComboBox.GetDroppedDown.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetItemWidth" link="TCustomComboBox.ItemWidth"/>
+      <element name="TCustomComboBox.GetItemWidth">
+        <short>Gets the value for the ItemWidth property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.ItemWidth"/>
+         </seealso>
+      </element>
       <element name="TCustomComboBox.GetItemWidth.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetAutoComplete" link="TCustomComboBox.AutoComplete"/>
+      <element name="TCustomComboBox.SetAutoComplete">
+        <short>Sets the value for the AutoComplete property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.AutoComplete"/>
+        </seealso>
+      </element>
       <element name="TCustomComboBox.SetAutoComplete.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetItemWidth" link="TCustomComboBox.ItemWidth"/>
+      <element name="TCustomComboBox.SetArrowKeysTraverseList">
+        <short>Sets the value for the ArrowKeysTraverseList property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBox.ArrowKeysTraverseList"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.SetArrowKeysTraverseList.Value">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBox.SetItemWidth">
+        <short>Sets the value for the ItemWidth property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.ItemWidth"/>
+        </seealso>
+      </element>
       <element name="TCustomComboBox.SetItemWidth.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetItems" link="TCustomComboBox.Items"/>
-      <element name="TCustomComboBox.SetItems.Value">
+      <element name="TCustomComboBox.SetCharCase">
+        <short>Sets the value for the CharCase property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.CharCase"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.SetCharCase.eccCharCase">
         <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBox.SetReadOnly">
+        <short>Sets the value for the ReadOnly property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBox.ReadOnly"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.SetReadOnly.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBox.SetTextHint">
+        <short>Sets the value for the TextHint property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBox.TextHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.SetTextHint.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBox.ShowEmulatedTextHintIfYouCan">
+        <short>Tries to display an emulated TextHint for the control</short>
+        <descr>
+          <p>
+            <var>ShowEmulatedTextHintIfYouCan</var> is a method which attempts to display an emulated <var>TextHint</var> for the control. ShowEmulatedTextHintIfYouCan calls <var>CanShowEmulatedTextHint</var> to determine if the control requires an emulated TextHint display, and is in a state which allows it. If CanShowEmulatedTextHint returns <b>True</b>, the <var>ShowEmulatedTextHint</var> method is called to display the TextHint.
+          </p>
+          <p>
+            ShowEmulatedTextHintIfYouCan is called from the implementation of the <var>InitializeWnd</var> and <var>WMKillFocus</var> methods, and when a new value is assigned to the TextHint property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.TextHint"/>
+          <link id="TCustomComboBox.CanShowEmulatedTextHint"/>
+          <link id="TCustomComboBox.ShowEmulatedTextHint"/>
+          <link id="TCustomComboBox.WMKillFocus"/>
+          <link id="TCustomComboBox.InitializeWnd"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.ShowEmulatedTextHint">
+        <short>Displays an emulated TextHint for the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomComboBox.HideEmulatedTextHint">
+        <short>Hides an emulated TextHint display for the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomComboBox.UpdateSorted">
+        <short>Performs actions needed when the Sorted property is changed</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomComboBox.Sorted"/>
+        </seealso>
       </element>
 
       <element name="TCustomComboBox.LMDrawListItem">
@@ -1209,17 +1367,6 @@
         <short>Message handled in the method</short>
       </element>
 
-      <element name="TCustomComboBox.UpdateSorted" link="TCustomComboBox.Sorted">
-        <short>Performs actions needed when the Sorted property is changed</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomComboBox.SetArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
-      <element name="TCustomComboBox.SetArrowKeysTraverseList.Value">
-        <short>New value for the property</short>
-      </element>
-
       <element name="TCustomComboBox.WMChar">
         <short>Prevents ordinary characters from triggering accelerator keys</short>
         <descr/>
@@ -1229,15 +1376,37 @@
         <short>Message handled in the method</short>
       </element>
 
-      <element name="TCustomComboBox.SetCharCase" link="TCustomComboBox.CharCase"/>
-      <element name="TCustomComboBox.SetCharCase.eccCharCase">
-        <short>New value for the property</short>
+      <element name="TCustomComboBox.WMKillFocus">
+        <short>Implements a handler for the LM_KILLFOCUS message</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomComboBox.WMKillFocus.Message">
+        <short>Message handled in the method</short>
+      </element>
+
+      <element name="TCustomComboBox.WMSetFocus">
+        <short>Implements a handler for the LM_SETFOCUS message</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomComboBox.WMSetFocus.Message">
+        <short>Message handled in the method</short>
       </element>
 
       <element name="TCustomComboBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
+      <element name="TCustomComboBox.CanShowEmulatedTextHint">
+        <short>Determines if an emulated TextHint can be displayed for the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomComboBox.CanShowEmulatedTextHint.Result">
+        <short>True when emulated TextHints are used, and the control state allows the hint display</short>
+      </element>
+
       <element name="TCustomComboBox.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
-        <short/>
+        <short>Updates the specified createion parameters to include additional flags for the control</short>
         <descr>
           <p>
             <var>CreateParams</var> is an overridden method in <var>TCustomComboBox</var>, and calls the inherited method on entry. CreateParams ensures that the style information in <var>Params</var> is updated to include constants needed to represent values in the <var>Style</var> property for the control. The following constants are also included:
@@ -1258,7 +1427,7 @@
         </seealso>
       </element>
       <element name="TCustomComboBox.CreateParams.Params">
-        <short/>
+        <short>Creaetion parameters updated in the method</short>
       </element>
 
       <element name="TCustomComboBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
@@ -1389,6 +1558,19 @@
         <short>The drawing state for the item (selected...)</short>
       </element>
 
+      <element name="TCustomComboBox.KeyUpAfterInterface">
+        <short/>
+        <descr/>
+        <seealso/>
+        <notes><note>?</note></notes>
+      </element>
+      <element name="TCustomComboBox.KeyUpAfterInterface.Key">
+        <short/>
+      </element>
+      <element name="TCustomComboBox.KeyUpAfterInterface.Shift">
+        <short/>
+      </element>
+
       <element name="TCustomComboBox.MeasureItem">
         <short>Gets the height for an item in the drop-down list</short>
         <descr>
@@ -1437,6 +1619,16 @@
       </element>
       <element name="TCustomComboBox.LMChanged.Msg">
         <short>Message handled in the method</short>
+      </element>
+
+      <element name="TCustomComboBox.CMWantSpecialKey">
+        <short/>
+        <descr/>
+        <seealso/>
+        <notes><note>??? Calls an inherited method that doeas not exist.</note></notes>
+      </element>
+      <element name="TCustomComboBox.CMWantSpecialKey.Message">
+        <short/>
       </element>
 
       <element name="TCustomComboBox.Change">
@@ -1508,6 +1700,17 @@
         </seealso>
       </element>
 
+      <element name="TCustomComboBox.SetItems">
+        <short>Sets the value for the Items property</short>
+        <descr/>
+        <seealso>
+           <link id="TCustomComboBox.Items"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.SetItems.Value">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TCustomComboBox.CloseUp">
         <short>Called when the drop-down list is closed</short>
         <descr>
@@ -1558,6 +1761,21 @@
         </seealso>
       </element>
 
+      <element name="TCustomComboBox.DoAutoAdjustLayout" link="#lcl.controls.TControl.DoAutoAdjustLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomComboBox.DoAutoAdjustLayout.AMode">
+        <short/>
+      </element>
+      <element name="TCustomComboBox.DoAutoAdjustLayout.AXProportion">
+        <short/>
+      </element>
+      <element name="TCustomComboBox.DoAutoAdjustLayout.AYProportion">
+        <short/>
+      </element>
+
       <element name="TCustomComboBox.GetItemCount">
         <short>Returns the number of items defined in the drop-down list</short>
         <descr>
@@ -1573,73 +1791,89 @@
         <short>The number of Items defined in the control</short>
       </element>
 
-      <element name="TCustomComboBox.GetItemHeight" link="TCustomComboBox.ItemHeight">
+      <element name="TCustomComboBox.GetItemHeight">
         <short>Gets the value for the ItemHeight property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.ItemHeight"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetItemHeight.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetSelLength" link="TCustomComboBox.SelLength">
+      <element name="TCustomComboBox.GetSelLength">
         <short>Gets the value for the SelLength property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.SelLength"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetSelLength.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetSelStart" link="TCustomComboBox.SelStart">
+      <element name="TCustomComboBox.GetSelStart">
         <short>Gets the value for the SelStart property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.SelStart"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetSelStart.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetSelText" link="TCustomComboBox.SelText">
+      <element name="TCustomComboBox.GetSelText">
         <short>Gets the value for the SelText property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.SelText"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetSelText.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetItemIndex" link="TCustomComboBox.ItemIndex">
+      <element name="TCustomComboBox.GetItemIndex">
         <short>Gets the value for the ItemIndex property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.ItemIndex"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetItemIndex.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.GetMaxLength" link="TCustomComboBox.MaxLength">
+      <element name="TCustomComboBox.GetMaxLength">
         <short>Gets the value for the MaxLength property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.MaxLength"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.GetMaxLength.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetDropDownCount" link="TCustomComboBox.DropDownCount">
+      <element name="TCustomComboBox.SetDropDownCount">
         <short>Sets the value for the DropDownCount property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.DropDownCount"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.SetDropDownCount.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetDroppedDown" link="TCustomComboBox.DroppedDown">
+      <element name="TCustomComboBox.SetDroppedDown">
         <short>Sets the value for the DroppedDown property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomComboBox.DroppedDown"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.SetDroppedDown.AValue">
         <short>New value for the property</short>
@@ -1715,6 +1949,24 @@
       </element>
       <element name="TCustomComboBox.SetStyle.Val">
         <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomComboBox.RealGetText">
+        <short>Gets the text/caption for the control</short>
+        <descr>
+          <p>
+            <var>RealGetText</var> is an overridden method in <var>TCustomComboBox</var> which provides additional debugging support in the method. RealGetText ensures that a handle has been allocated for the control and the value in Text is available in the widgetset class prior to calling the inherited method.
+          </p>
+          <p>
+            The return value contains the Caption assigned to the control, or an empty string ('') when the  control handle is not available.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.RealGetText"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.RealGetText.Result">
+        <short>Caption for the control, or an empty string</short>
       </element>
 
       <element name="TCustomComboBox.RealSetText">
@@ -1879,10 +2131,283 @@
         <short>The text to find in Items</short>
       </element>
 
+      <element name="TCustomComboBox.ShouldAutoAdjust">
+        <short>Indicates if the width and/or height for the control can be adjusted by a layout policy</short>
+        <descr>
+          <p>
+            <var>ShouldAutoAdjust</var> is an overridden method in <var>TCustomComboBox</var>. It sets the values in the <var>AWidth</var> and <var>AHeight</var> parameters to indicate if the control can adjust the bound(s) when a layout policy is appiled to the control. True indicates the value for the property can be adjusted.
+          </p>
+          <p>
+            ShouldAutoAdjust is used in the implementation of the <var>DoAutoAdjustLayout</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ShouldAutoAdjust"/>
+          <link id="TCustomComboBox.DoAutoAdjustLayout"/>
+        </seealso>
+      </element>
+      <element name="TCustomComboBox.ShouldAutoAdjust.AWidth">
+        <short>Always set to True in the method</short>
+      </element>
+      <element name="TCustomComboBox.ShouldAutoAdjust.AHeight">
+        <short>True when AutoSize is not enabled for the control</short>
+      </element>
+
+      <element name="TCustomComboBox.ItemHeight">
+        <short>The default height of an item in the drop-down for the control</short>
+        <descr>
+          <p>
+            <var>ItemHeight</var> is an Integer property which contains the height (in pixels) used when drawing an item in the drop-down list.
+          </p>
+          <p>
+            The value for the property is retrieved from the widgetset class when not already assigned in the class instance, or when using an owner-drawn <var>Style</var>. Setting a new value for ItemHeight calls the <var>SetItemHeight</var> method in the widgetset class for owner-drawn Styles.
+          </p>
+          <p>
+            The property value is updated when the <var>LM_MeasureItem</var> message is handled for the control. When variable height items are enabled in Style, the <var>OnMeasureItem</var> event handler must be implemented to calculate the height for individual value in <var>Items</var>.
+          </p>
+          <p>
+            <var>ItemHeight</var>, <var>ItemWidth</var>, <var>ItemCount</var>, and <var>DropDownCount</var> are used in the <var>AdjustDropDown</var> method to determine the dimensions for the drop-down list in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.OnMeasureItem"/>
+          <link id="TCustomComboBox.Style"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.ItemCount"/>
+          <link id="TCustomComboBox.ItemWidth"/>
+          <link id="TCustomComboBox.DropDownCount"/>
+          <link id="TCustomComboBox.AdjustDropDown"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.ItemWidth">
+        <short>The minimum width of the items in the drop-down list</short>
+        <descr>
+          <p>
+            <var>ItemWidth</var> is an <var>Integer</var> property which contains the minimum number of pixels used when displaying the static or drop-down list for the control. The default value for the property is 0 (zero).
+          </p>
+          <p>
+            Setting a new value for the property causes the <var>AdjustDropDown</var> method to be called to adjust the dimensions for the list to the values in <var>ItemHeight</var>, <var>ItemWidth</var>, and <var>DropDownCount</var>.
+          </p>
+          <p>
+            Use <var>ItemHeight</var> to specify the number of pixels required for items displayed in the drop-down list for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.DropDownCount"/>
+          <link id="TCustomComboBox.ItemHeight"/>
+          <link id="TCustomComboBox.AdjustDropDown"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.MaxLength">
+        <short>The maximum length for text entered in the edit box for the control</short>
+        <descr>
+          <p>
+            <var>MaxLength</var> is an <var>Integer</var> property which contains the maximum length for a value entered in the <var>Text</var> for the control. It controls the number of characters allowed in the edit box, but does not limit the length of the value that can be directly assigned to Text. MaxLength is passed to and read from the widgetset class when a handle has been assigned for the control.
+          </p>
+          <p>
+            The default value for the property is <b>0</b> (zero), and indicates that a maximum length has not been specified in the property. Setting the value for the property does not alter the existing value in Text.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.Text"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnChange">
+        <short>Event handler signalled for user changes to the text in the edit box</short>
+        <descr>
+          <p>
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property which implements the event handler signalled when the value in the edit box has been changed.
+          </p>
+          <p>
+            The event applies to interactive changes to <var>Text</var> made by the user, not those made programmatically. Note that this differs from how other OnChange events work. For example:  TEdit.OnChange is triggered by text changes that occur in code. This event is also triggered when the item selection is changed using the drop-down list in the combo-box.
+          </p>
+          <p>
+            OnChange is signalled (when assigned) in the <var>Change</var> method called when the <b>LM_CHANGED</b> control message is handled. An application must implement and assign an object procedure using the signature in TNotifyEvent to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEdit.OnChange"/>
+          <link id="TCustomEdit.Change"/>
+          <link id="TCustomEdit.LMChanged"/>
+          <link id="TCustomEdit.Text"/>
+          <link id="#RTL.Classes.TNotifyEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnCloseUp">
+        <short>Handler invoked when the drop-down list closes.</short>
+        <descr>
+          <p>
+            <var>OnCloseUp</var> is a <var>TNotifyEvent</var> property which contains the event handler signalled when the drop-down list in the control is hidden or closed. It can be used to perform any actions needed in an application, such as comparing pre-selection and post-selection values for properties. An application must implement and assign an object procedure to the property to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#RTL.Classes.TNotifyEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnDrawItem">
+        <short>Handler for special painting of an item (in owner-draw mode)</short>
+        <descr>
+          <p>
+            <var>OnDrawItem</var> is a <var>TDrawItemEvent</var> property which contains an event handler used to draw an item in the drop-down list for the control. OnDrawItem is used when <var>Style</var> contains one of the owner-drawn values. See <link id="TComboBoxStyle ">TComboBoxStyle</link> for more information about the owner-drawn style available.
+          </p>
+          <p>
+            OnDrawItem is signalled (when assigned) from the <var>DrawItem</var> method. The event handler is responsible for all drawing operations needed to render the specified list item. This can include the text and any images or overlays drawn for the list item. Use the <var>Canvas</var> property to render the list item to the specified coordinate rectangle.
+          </p>
+          <p>
+            If OnDrawItem is not assigned, an internal default drawing routine is called to render the list item. It handles filling the canvas rectangle with the background for the item, and drawing the item text using the style, layout, and alignment defined in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.DrawItem"/>
+          <link id="TCustomComboBox.Style"/>
+          <link id="TCustomComboBox.Canvas"/>
+          <link id="TDrawItemEvent"/>
+          <link id="TComboBoxStyle"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnDropDown">
+        <short>Handler invoked when the list has dropped down</short>
+        <descr>
+          <p>
+            <var>OnDropDown</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the drop-down list for the control is displayed. OnDropDown is signalled (when assigned) from the <var>DropDown</var> method. DropDown is called when the <b>CBN_DROPDOWN</b> message is handled for the control.
+          </p>
+          <p>
+            Implement and assign an object procedure to the handler to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.Style"/>
+          <link id="TCustomComboBox.DropDown"/>
+          <link id="#RTL.Classes.TNotifyEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnGetItems">
+        <short>Handler invoked when widgetset items list can be populated</short>
+        <descr>
+          <p>
+            <var>OnGetItems</var> is a <var>TNotifyEvent</var> property with the event handler signalled to load the values used in the <var>Items</var> property.
+          </p>
+          <p>
+            OnGetItems is signalled (when assigned) from the <var>GetItems</var> method. Some widgetsets, like GTK, call GetItems (via <var>IntfGetItems</var>) just before the drop-down list is displayed. Others call GetItems when the handle for the control is created. OnGetItems provides one event to handle both cases.
+          </p>
+          <p>
+            An application should implement and assign an object procedure to the handler to respond to the event notification. The procedure must perform any actions needed to load the values for the Items property from an appropriate source.
+          </p>
+          <p>
+            Values can always be stored in the Items property using code at run-time, or by entering the values using the Object Inspector at design-time.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.GetItems"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.IntfGetItems"/>
+          <link id="#RTL.CLasses.TNotifyEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnMeasureItem">
+        <short>Handler invoked when the height for an item is needed</short>
+        <descr>
+          <p>
+            <var>OnMeasureItem</var> is a <var>TMeasureItemEvent</var> property with the event handler signalled to get the height for an item displayed in the list box for the control.
+          </p>
+          <p>
+            OnMeasureItem is signalled (when assigned) from the <var>MeasureItem</var> method. MeasureItem (and OnMeasureItem) are used when the <var>Style</var> property indicates that the control uses a variable height for each item displayed in the list box. OnMeasureItem occurs when the <b>LM_MeasureItem</b> message is handled for the control.
+          </p>
+          <p>
+            Use the <var>Index</var> argument to get the value in <var>Items</var> examined in the event handler. Use <var>ItemWidth</var> to determine the maximum width allowed for the variable height item. <var>Canvas</var> can be used to get text metrics for the <var>Font</var> used in the control. Update the <var>AHeight</var> argument with the height calculated for the item.
+          </p>
+          <p>
+            Use <var>ItemHeight</var> for the item height used for fixed height drawing styles.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.MeasureItem"/>
+          <link id="TCustomComboBox.Style"/>
+          <link id="TCustomComboBox.ItemHeight"/>
+          <link id="TCustomComboBox.ItemWidth"/>
+          <link id="TCustomComboBox.Canvas"/>
+          <link id="TMeasureItemEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.OnSelect">
+        <short>Handler invoked when an item is selected</short>
+        <descr>
+          <p>
+            <var>OnSelect</var> is a <var>TNotifyEvent</var> property with the event handler signalled when an item is selected in the list box for the control.
+          </p>
+          <p>
+            OnSelect is signalled (when assigned) from the <var>Select</var> method when <var>ItemIndex</var> contains a positive non-zero value. Select (and subsequently OnSelect) are called from multiple methods in TCustomComboBox. <var>SelectItem</var> calls Select when the value in ItemIndex is changed as a result of assigning a value to <var>Text</var>. <var>KeyUp</var> calls Select when the value in Text is updated by auto-completion features in the control. Select is also called when the <b>LM_SelChange</b> message is handled for the control.
+          </p>
+          <p>
+            Implement and assign an object procedure to the handler to respond to the event notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.Select"/>
+          <link id="TCustomComboBox.SelectItem"/>
+          <link id="TCustomComboBox.ItemIndex"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.KeyUp"/>
+          <link id="#RTL.Classes.TNotifyEvent"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+
+      <element name="TCustomComboBox.Sorted">
+        <short>Determines whether the list entries are sorted in alphanumeric order</short>
+        <descr>
+          <p>
+            <var>Sorted</var> is a <var>Boolean</var> property which indicates if values in <var>Items</var> are stored and displayed in alphanumeric sort order.
+          </p>
+          <p>
+            Setting this property to <b>True</b> enforces ascending alphanumeric case-insensitive sorting of the list. When set to <b>True</b>, new entries are added in sort order, and not to the end of the Items list. When a new value is assigned to the property, the <var>UpdateSorted</var> method is called to set the <var>Sorted</var> property in <var>Items</var> to the corresponding value. <var>ItemIndex</var> is also set to the location in Items where the value in <var>Text</var> is stored, or <b>-1</b> when not found.
+          </p>
+          <p>
+            The default value for the property is <b>False</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="TCustomComboBox.Create">
         <short>Constructor for the class instance</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited contructor on entry. Create ensures that resources are allocated for members in the class instance. Create sets the default values for properties, including the following:
+          </p>
+          <dl>
+          </dl>
+
+          <dt>ControlSyle</dt>
+          <dd>Removes csCaptureMouse from the style flags.</dd>
+          <dt>DropDownCunt</dt>
+          <dd>Set to display 8 items by default.</dd>
+          <dt>ArrowKeysTraverseList</dt>
+          <dd>Set to True to enable cursor key navigation in the control.</dd>
+          <dt>AutoCompleteText</dt>
+          <dd>Set to the values in the DefaultComboBoxAutoCompleteText constant.</dd>
+          <dt>AutoSelect</dt>
+          <dd>Set to True.</dd>
+          <dt>CharCase</dt>
+          <dd>Set to ecNormal.</dd>
+          <dt>AutoSize</dt>
+          <dd>
+            Set to True. AutoSize must be true by default since some widgetsets (win32, wince) ignore the combo-box height and others (gtk2) look ugly with a very small height.
+          </dd>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.Destroy"/>
+        </seealso>
       </element>
       <element name="TCustomComboBox.Create.TheOwner">
         <short>Owner of the class instance</short>
@@ -1895,7 +2420,9 @@
             <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>DestroyHandle</var> if a handle has been allocated for the control. Destroy frees resources allocated for the <var>Canvas</var> property, and calls the inherited destructor.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomComboBox.Create"/>
+        </seealso>
       </element>
 
       <element name="TCustomComboBox.IntfGetItems">
@@ -2022,7 +2549,7 @@
             <var>CharCase</var> is a <var>TEditCharCase</var> property which indicates the case conversion applied to the value entered in the edit box for the control. The default value for the property is <var>ecNormal</var>, and indicates that no case conversion is performed.
           </p>
           <p>
-            Setting a new value for the property causes the value in <var>Text</var> to be converted to the specified case by calling either the <var>UTF8LowerCase</var> or the <var>UTF8UpperCase</var> routine. Text is not modified when ecNormal is assigned to the property.
+            Setting a new value for the property causes the value in <var>Text</var> to be converted to the specified case by calling either the <var>UTF8LowerCase</var> or the <var>UTF8UpperCase</var> routine. Text is not modified when <var>ecNormal</var> is assigned to the property.
           </p>
           <p>
             The value in CharCase is used when the <var>UTF8KeyPress</var> is called to apply key press events for the control.
@@ -2265,51 +2792,22 @@
         </seealso>
       </element>
 
-      <element name="TCustomComboBox.ItemHeight">
-        <short>The default height of a list item</short>
+      <element name="TCustomComboBox.EmulatedTextHintStatus">
+        <short>Status for the emulated TextHint in the control</short>
         <descr>
           <p>
-            <var>ItemHeight</var> is an Integer property which contains the height (in pixels) used when drawing an item in the drop-down list.
+            <var>EmulatedTextHintStatus</var> is a read-only <var>TEmulatedTextHintStatus</var> property which contains the status value for an emulated TextHint display in the control. EmulatedTextHintStatus is used when a value has been assigned to the <var>TextHint</var> property and the widgetset does not natively implement the capability. The LCL emulates the TextHint display by assigning the value in TextHint to the <var>Text</var> for the control.
           </p>
           <p>
-            The value for the property is retrieved from the widgetset class when not already assigned in the class instance, or when using an owner-drawn <var>Style</var>. Setting a new value for ItemHeight calls the <var>SetItemHeight</var> method in the widgetset class for owner-drawn Styles.
-          </p>
-          <p>
-            The property value is updated when the <var>LM_MeasureItem</var> message is handled for the control. When variable height items are enabled in Style, the <var>OnMeasureItem</var> event handler must be implemented to calculate the height for individual value in <var>Items</var>.
-          </p>
-          <p>
-            <var>ItemHeight</var>, <var>ItemWidth</var>, <var>ItemCount</var>, and <var>DropDownCount</var> are used in the <var>AdjustDropDown</var> method to determine the dimensions for the drop-down list in the control.
+            EmulatedTextHintStatus is updated in the <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.OnMeasureItem"/>
-          <link id="TCustomComboBox.Style"/>
-          <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.ItemCount"/>
-          <link id="TCustomComboBox.ItemWidth"/>
-          <link id="TCustomComboBox.DropDownCount"/>
-          <link id="TCustomComboBox.AdjustDropDown"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.ItemIndex">
-        <short>The index of the currently selected item, or -1 if none is selected</short>
-        <descr>
-          <p>
-            <var>ItemIndex</var> is an <var>Integer</var> property which contains the ordinal position in <var>Items</var> for the current list box selection in the control. The first value in Items is at index position 0 (zero). The final value in Items is at the index position ItemCount-1. When no value is selected in the list box, ItemIndex is set to -1. The default value for the property is -1.
-          </p>
-          <p>
-            When the value for the property is read, the widgetset class is queried when a handle has been assigned for the control.
-          </p>
-          <p>
-            Assigning a new value to the property causes the value in Text to be updated to reflect the new selection in the control. When ItemIndex is -1, Text is set to an empty string ('').
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.ItemCount"/>
-          <link id="TCustomComboBox.AddItem"/>
-          <link id="TCustomComboBox.AddHistoryItem"/>
+          <link id="TEmulatedTextHintStatus"/>
+          <link id="TCustomComboBox.TextHint"/>
+          <link id="TCustomComboBox.Text"/>
+          <link id="TCustomComboBox.ShowEmulatedTextHint"/>
+          <link id="TCustomComboBox.HideEmulatedTextHint"/>
         </seealso>
       </element>
 
@@ -2338,188 +2836,26 @@
         </seealso>
       </element>
 
-      <element name="TCustomComboBox.ItemWidth">
-        <short>The minimum width of the items in the drop-down list</short>
+      <element name="TCustomComboBox.ItemIndex">
+        <short>The index of the currently selected item, or -1 if none is selected</short>
         <descr>
           <p>
-            <var>ItemWidth</var> is an <var>Integer</var> property which contains the minimum number of pixels used when displaying the static or drop-down list for the control. The default value for the property is 0 (zero).
+            <var>ItemIndex</var> is an <var>Integer</var> property which contains the ordinal position in <var>Items</var> for the current list box selection in the control. The first value in Items is at index position 0 (zero). The final value in Items is at the index position ItemCount-1. When no value is selected in the list box, ItemIndex is set to -1. The default value for the property is -1.
           </p>
           <p>
-            Setting a new value for the property causes the <var>AdjustDropDown</var> method to be called to adjust the dimensions for the list to the values in <var>ItemHeight</var>, <var>ItemWidth</var>, and <var>DropDownCount</var>.
+            When the value for the property is read, the widgetset class is queried when a handle has been assigned for the control.
           </p>
           <p>
-            Use <var>ItemHeight</var> to specify the number of pixels required for items displayed in the drop-down list for the control.
+            Assigning a new value to the property causes the value in Text to be updated to reflect the new selection in the control. When ItemIndex is -1, Text is set to an empty string ('').
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.DropDownCount"/>
-          <link id="TCustomComboBox.ItemHeight"/>
-          <link id="TCustomComboBox.AdjustDropDown"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.MaxLength">
-        <short>The maximum length for text entered in the edit box for the control</short>
-        <descr>
-          <p>
-            <var>MaxLength</var> is an <var>Integer</var> property which contains the maximum length for a value entered in the <var>Text</var> for the control. It controls the number of characters allowed in the edit box, but does not limit the length of the value that can be directly assigned to Text. MaxLength is passed to and read from the widgetset class when a handle has been assigned for the control.
-          </p>
-          <p>
-            The default value for the property is <b>0</b> (zero), and indicates that a maximum length has not been specified in the property. Setting the value for the property does not alter the existing value in Text.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.Text"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnChange">
-        <short>Event handler signalled for user changes to the text in the edit box</short>
-        <descr>
-          <p>
-            <var>OnChange</var> is a <var>TNotifyEvent</var> property which implements the event handler signalled when the value in the edit box has been changed.
-          </p>
-          <p>
-            The event applies to interactive changes to <var>Text</var> made by the user, not those made programmatically. Note that this differs from how other OnChange events work. For example:  TEdit.OnChange is triggered by text changes that occur in code. This event is also triggered when the item selection is changed using the drop-down list in the combo-box.
-          </p>
-          <p>
-            OnChange is signalled (when assigned) in the <var>Change</var> method called when the <b>LM_CHANGED</b> control message is handled. An application must implement and assign an object procedure using the signature in TNotifyEvent to respond to the event notification.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomEdit.OnChange"/>
-          <link id="TCustomEdit.Change"/>
-          <link id="TCustomEdit.LMChanged"/>
-          <link id="TCustomEdit.Text"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnCloseUp">
-        <short>Handler invoked when the drop-down list closes.</short>
-        <descr>
-          <p>
-            <var>OnCloseUp</var> is a <var>TNotifyEvent</var> property which contains the event handler signalled when the drop-down list in the control is hidden or closed. It can be used to perform any actions needed in an application, such as comparing pre-selection and post-selection values for properties. An application must implement and assign an object procedure to the property to respond to the event notification.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#RTL.Classes.TNotifyEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnDrawItem">
-        <short>Handler for special painting of an item (in owner-draw mode)</short>
-        <descr>
-          <p>
-            <var>OnDrawItem</var> is a <var>TDrawItemEvent</var> property which contains an event handler used to draw an item in the drop-down list for the control. OnDrawItem is used when <var>Style</var> contains one of the owner-drawn values. See <link id="TComboBoxStyle ">TComboBoxStyle</link> for more information about the owner-drawn style available.
-          </p>
-          <p>
-            OnDrawItem is signalled (when assigned) from the <var>DrawItem</var> method. The event handler is responsible for all drawing operations needed to render the specified list item. This can include the text and any images or overlays drawn for the list item. Use the <var>Canvas</var> property to render the list item to the specified coordinate rectangle.
-          </p>
-          <p>
-            If OnDrawItem is not assigned, an internal default drawing routine is called to render the list item. It handles filling the canvas rectangle with the background for the item, and drawing the item text using the style, layout, and alignment defined in the control.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.DrawItem"/>
-          <link id="TCustomComboBox.Style"/>
-          <link id="TCustomComboBox.Canvas"/>
-          <link id="TDrawItemEvent"/>
-          <link id="TComboBoxStyle"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnDropDown">
-        <short>Handler invoked when the list has dropped down</short>
-        <descr>
-          <p>
-            <var>OnDropDown</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the drop-down list for the control is displayed. OnDropDown is signalled (when assigned) from the <var>DropDown</var> method. DropDown is called when the <b>CBN_DROPDOWN</b> message is handled for the control.
-          </p>
-          <p>
-            Implement and assign an object procedure to the handler to respond to the event notification.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.Style"/>
-          <link id="TCustomComboBox.DropDown"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnGetItems">
-        <short>Handler invoked when widgetset items list can be populated</short>
-        <descr>
-          <p>
-            <var>OnGetItems</var> is a <var>TNotifyEvent</var> property with the event handler signalled to load the values used in the <var>Items</var> property.
-          </p>
-          <p>
-            OnGetItems is signalled (when assigned) from the <var>GetItems</var> method. Some widgetsets, like GTK, call GetItems (via <var>IntfGetItems</var>) just before the drop-down list is displayed. Others call GetItems when the handle for the control is created. OnGetItems provides one event to handle both cases.
-          </p>
-          <p>
-            An application should implement and assign an object procedure to the handler to respond to the event notification. The procedure must perform any actions needed to load the values for the Items property from an appropriate source.
-          </p>
-          <p>
-            Values can always be stored in the Items property using code at run-time, or by entering the values using the Object Inspector at design-time.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.GetItems"/>
           <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.IntfGetItems"/>
-          <link id="#RTL.CLasses.TNotifyEvent"/>
+          <link id="TCustomComboBox.ItemCount"/>
+          <link id="TCustomComboBox.AddItem"/>
+          <link id="TCustomComboBox.AddHistoryItem"/>
         </seealso>
       </element>
-
-      <element name="TCustomComboBox.OnMeasureItem">
-        <short>Handler invoked when the height for an item is needed</short>
-        <descr>
-          <p>
-            <var>OnMeasureItem</var> is a <var>TMeasureItemEvent</var> property with the event handler signalled to get the height for an item displayed in the list box for the control.
-          </p>
-          <p>
-            OnMeasureItem is signalled (when assigned) from the <var>MeasureItem</var> method. MeasureItem (and OnMeasureItem) are used when the <var>Style</var> property indicates that the control uses a variable height for each item displayed in the list box. OnMeasureItem occurs when the <b>LM_MeasureItem</b> message is handled for the control.
-          </p>
-          <p>
-            Use the <var>Index</var> argument to get the value in <var>Items</var> examined in the event handler. Use <var>ItemWidth</var> to determine the maximum width allowed for the variable height item. <var>Canvas</var> can be used to get text metrics for the <var>Font</var> used in the control. Update the <var>AHeight</var> argument with the height calculated for the item.
-          </p>
-          <p>
-            Use <var>ItemHeight</var> for the item height used for fixed height drawing styles.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.MeasureItem"/>
-          <link id="TCustomComboBox.Style"/>
-          <link id="TCustomComboBox.ItemHeight"/>
-          <link id="TCustomComboBox.ItemWidth"/>
-          <link id="TCustomComboBox.Canvas"/>
-          <link id="TMeasureItemEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.OnSelect">
-        <short>Handler invoked when an item is selected</short>
-        <descr>
-          <p>
-            <var>OnSelect</var> is a <var>TNotifyEvent</var> property with the event handler signalled when an item is selected in the list box for the control.
-          </p>
-          <p>
-            OnSelect is signalled (when assigned) from the <var>Select</var> method when <var>ItemIndex</var> contains a positive non-zero value. Select (and subsequently OnSelect) are called from multiple methods in TCustomComboBox. <var>SelectItem</var> calls Select when the value in ItemIndex is changed as a result of assigning a value to <var>Text</var>. <var>KeyUp</var> calls Select when the value in Text is updated by auto-completion features in the control. Select is also called when the <b>LM_SelChange</b> message is handled for the control.
-          </p>
-          <p>
-            Implement and assign an object procedure to the handler to respond to the event notification.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomComboBox.Select"/>
-          <link id="TCustomComboBox.SelectItem"/>
-          <link id="TCustomComboBox.ItemIndex"/>
-          <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.KeyUp"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
 
       <element name="TCustomComboBox.ReadOnly">
         <short>Disallows free-form entry of Text into the combo-box edit field</short>
@@ -2600,22 +2936,6 @@
         </seealso>
       </element>
 
-      <element name="TCustomComboBox.Sorted">
-        <short>Determines whether the list entries are sorted in alphanumeric order</short>
-        <descr>
-          <p>
-            <var>Sorted</var> is a <var>Boolean</var> property which indicates if values in <var>Items</var> are stored and displayed in alphanumeric sort order.
-          </p>
-          <p>
-            Setting this property to <b>True</b> enforces ascending alphanumeric case-insensitive sorting of the list. When set to <b>True</b>, new entries are added in sort order, and not to the end of the Items list. When a new value is assigned to the property, the <var>UpdateSorted</var> method is called to set the <var>Sorted</var> property in <var>Items</var> to the corresponding value. <var>ItemIndex</var> is also set to the location in Items where the value in <var>Text</var> is stored, or <b>-1</b> when not found.
-          </p>
-          <p>
-            The default value for the property is <b>False</b>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
       <element name="TCustomComboBox.Style">
         <short>Appearance and behavior of the combo-box</short>
         <descr>
@@ -2668,6 +2988,12 @@
         </seealso>
       </element>
 
+      <element name="TCustomComboBox.TextHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TComboBox">
         <short>
           A combination of an edit box and a (drop-down) list allowing one of several options to be chosen
@@ -2695,39 +3021,39 @@
 
       <element name="TComboBox.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TComboBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
-      <element name="TComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete"/>
-      <element name="TComboBox.AutoCompleteText" link="#LCL.StdCtrls.TCustomComboBox.AutoCompleteText"/>
-      <element name="TComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown"/>
-      <element name="TComboBox.AutoSelect" link="#LCL.StdCtrls.TCustomComboBox.AutoSelect"/>
+      <element name="TComboBox.ArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TComboBox.AutoComplete" link="TCustomComboBox.AutoComplete"/>
+      <element name="TComboBox.AutoCompleteText" link="TCustomComboBox.AutoCompleteText"/>
+      <element name="TComboBox.AutoDropDown" link="TCustomComboBox.AutoDropDown"/>
+      <element name="TComboBox.AutoSelect" link="TCustomComboBox.AutoSelect"/>
       <element name="TComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TComboBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TComboBox.CharCase" link="#LCL.StdCtrls.TCustomComboBox.CharCase"/>
+      <element name="TComboBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TComboBox.CharCase" link="TCustomComboBox.CharCase"/>
       <element name="TComboBox.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TComboBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
+      <element name="TComboBox.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TComboBox.DragKind"/>
+      <element name="TComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TComboBox.DropDownCount" link="#LCL.StdCtrls.TCustomComboBox.DropDownCount"/>
+      <element name="TComboBox.DropDownCount" link="TCustomComboBox.DropDownCount"/>
       <element name="TComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TComboBox.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TComboBox.ItemHeight" link="#LCL.StdCtrls.TCustomComboBox.ItemHeight"/>
-      <element name="TComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
-      <element name="TComboBox.Items" link="#LCL.StdCtrls.TCustomComboBox.Items"/>
-      <element name="TComboBox.ItemWidth" link="#LCL.StdCtrls.TCustomComboBox.ItemWidth"/>
-      <element name="TComboBox.MaxLength" link="#LCL.StdCtrls.TCustomComboBox.MaxLength"/>
-      <element name="TComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange"/>
+      <element name="TComboBox.ItemHeight" link="TCustomComboBox.ItemHeight"/>
+      <element name="TComboBox.ItemIndex" link="TCustomComboBox.ItemIndex"/>
+      <element name="TComboBox.Items" link="TCustomComboBox.Items"/>
+      <element name="TComboBox.ItemWidth" link="TCustomComboBox.ItemWidth"/>
+      <element name="TComboBox.MaxLength" link="TCustomComboBox.MaxLength"/>
+      <element name="TComboBox.OnChange" link="TCustomComboBox.OnChange"/>
       <element name="TComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TComboBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TComboBox.OnCloseUp" link="TCustomComboBox.OnCloseUp"/>
       <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TComboBox.OnDrawItem" link="#LCL.StdCtrls.TCustomComboBox.OnDrawItem"/>
-      <element name="TComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown"/>
+      <element name="TComboBox.OnDrawItem" link="TCustomComboBox.OnDrawItem"/>
+      <element name="TComboBox.OnDropDown" link="TCustomComboBox.OnDropDown"/>
       <element name="TComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TComboBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
       <element name="TComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
@@ -2736,28 +3062,32 @@
       <element name="TComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TComboBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomComboBox.OnMeasureItem"/>
+      <element name="TComboBox.OnMeasureItem" link="TCustomComboBox.OnMeasureItem"/>
       <element name="TComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TComboBox.OnMouseEnter"/>
-      <element name="TComboBox.OnMouseLeave"/>
+      <element name="TComboBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TComboBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TComboBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TComboBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TComboBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TComboBox.OnSelect" link="TCustomComboBox.OnSelect"/>
       <element name="TComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TComboBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect"/>
       <element name="TComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TComboBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D"/>
+      <element name="TComboBox.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly"/>
+      <element name="TComboBox.ReadOnly" link="TCustomComboBox.ReadOnly"/>
       <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted"/>
-      <element name="TComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
+      <element name="TComboBox.Sorted" link="TCustomComboBox.Sorted"/>
+      <element name="TComboBox.Style" link="TCustomComboBox.Style"/>
       <element name="TComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TComboBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text"/>
+      <element name="TComboBox.Text" link="TCustomComboBox.Text"/>
+      <element name="TComboBox.TextHint" link="TCustomComboBox.TextHint"/>
       <element name="TComboBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="TListBoxStyle">
@@ -3285,7 +3615,7 @@
             <var>State</var> contains the drawing state for the owner-drawn item.
           </p>
           <p>
-            DrawItem signals the <var>OnDrawItem</var> event handler (when assigned). An internal default drawing method is used when the event handler has been implemented.
+            DrawItem signals the <var>OnDrawItem</var> event handler (when assigned). An internal default drawing method is used when the event handler has not been implemented.
           </p>
           <p>
             DrawItem is called when the <b>LM_DrawListItem</b> message is handled for the control.
@@ -4141,7 +4471,7 @@
             The strings are stored in the <var>Items</var> list.
           </p>
           <p>
-            At design time a click on the ellipsis character (<b>...</b>) next to the <var>Items</var> entry in the Object Inspector opens an string-list editor, in which the individual text-strings for the list items can be entered or edited. The editor also allows the entries to be sorted alphabetically in normal or reverse order.
+            At design time, a click on the ellipsis character (<b>...</b>) next to the <var>Items</var> entry in the Object Inspector opens a string-list editor in which the individual text-strings for the list items can be entered or edited. The editor also allows the entries to be sorted alphabetically in normal or reverse order.
           </p>
         </descr>
         <seealso>
@@ -4230,31 +4560,31 @@
             <var>TCustomEdit</var> is a <var>TWinControl</var> descendant which implements the base class for an edit control presenting a single line of text. TCustomEdit provides properties, methods, and events needed for common editing features in the control, including:
           </p>
           <ul>
-            <li><link id="TCustomEdit.Text"/></li>
-            <li><link id="TCustomEdit.TextHint"/></li>
-            <li><link id="TCustomEdit.Modified"/></li>
-            <li><link id="TCustomEdit.ReadOnly"/></li>
-            <li><link id="TCustomEdit.MaxLength"/></li>
-            <li><link id="TCutomEdit.Clear"/></li>
-            <li><link id="TCutomEdit.NumbersOnly"/></li>
-            <li><link id="TCutomEdit.CharCase"/></li>
-            <li><link id="TCutomEdit.EchoMode"/></li>
-            <li><link id="TCutomEdit.PasswordChar"/></li>
-            <li><link id="TCutomEdit.AutoSelect"/></li>
-            <li><link id="TCutomEdit.SelectAll"/></li>
-            <li><link id="TCutomEdit.SelStart"/></li>
-            <li><link id="TCutomEdit.SelLength"/></li>
-            <li><link id="TCutomEdit.SelText"/></li>
-            <li><link id="TCutomEdit.HideSelection"/></li>
-            <li><link id="TCutomEdit.ClearSelection"/></li>
-            <li><link id="TCutomEdit.CaretPos"/></li>
-            <li><link id="TCutomEdit.CopyToClipboard"/></li>
-            <li><link id="TCutomEdit.CutToClipboard"/></li>
-            <li><link id="TCutomEdit.PasteFromClipboard"/></li>
-            <li><link id="TCutomEdit.Undo"/></li>
+            <li>Text</li>
+            <li>TextHint</li>
+            <li>Modified</li>
+            <li>ReadOnly</li>
+            <li>MaxLength</li>
+            <li>Clear</li>
+            <li>NumbersOnly</li>
+            <li>CharCase</li>
+            <li>EchoMode</li>
+            <li>PasswordChar</li>
+            <li>AutoSelect</li>
+            <li>SelectAll</li>
+            <li>SelStart</li>
+            <li>SelLength</li>
+            <li>SelText</li>
+            <li>HideSelection</li>
+            <li>ClearSelection</li>
+            <li>CaretPos</li>
+            <li>CopyToClipboard</li>
+            <li>CutToClipboard</li>
+            <li>PasteFromClipboard</li>
+            <li>Undo</li>
           </ul>
           <p>
-            Do not create instances of TCustomEdit in an application; use of the descendent classes like <var>TEdit</var>, <var>TLabeledEdit</var>, <var>TMaskEdit</var>, or <var>TMemo</var>.
+            Do not create instances of TCustomEdit in an application; use one of the descendent classes like <var>TEdit</var>, <var>TLabeledEdit</var>, <var>TMaskEdit</var>, or <var>TMemo</var>.
           </p>
         </descr>
         <seealso>
@@ -4272,6 +4602,13 @@
       <element name="TCustomEdit.FCharCase" link="TCustomEdit.CharCase"/>
       <element name="TCustomEdit.fCaretPos" link="TCustomEdit.CaretPos"/>
       <element name="TCustomEdit.FEchoMode" link="TCustomEdit.EchoMode"/>
+
+      <element name="TCustomEdit.FEmulatedTextHintStatus">
+        <short>Status for  the emulated TextHint for the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TCustomEdit.FHideSelection" link="TCustomEdit.HideSelection"/>
       <element name="TCustomEdit.FMaxLength" link="TCustomEdit.MaxLength"/>
       <element name="TCustomEdit.FModified" link="TCustomEdit.Modified"/>
@@ -4286,23 +4623,47 @@
       <element name="TCustomEdit.FTextChangedLock" link="TCustomEdit.TextChanged"/>
       <element name="TCustomEdit.FTextHint" link="TCustomEdit.TextHint"/>
 
-      <element name="TCustomEdit.ShowEmulatedTextHint">
-        <short>Displays TextHint using the hint font for the control</short>
+      <element name="TCustomEdit.ShowEmulatedTextHintIfYouCan">
+        <short/>
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomEdit.ShowEmulatedTextHint.ForceShow">
-        <short>True cause the text hint to be displayed the iniline-hint is already visible</short>
+
+      <element name="TCustomEdit.ShowEmulatedTextHint">
+        <short>Displays a TextHint using the hint font for the control</short>
+        <descr>
+          <p>
+            <var>ShowEmulatedTextHint</var> is a method used to display an emulated Text hint using the hint font for the control. Emulated text hints are used for widgetsets that do not natively support the <var>TextHint</var> capability.
+          </p>
+          <p>
+            ShowEmulatedTextHint gets the Hint font for the display by calling CreateEmulatedTextHintFont, and passes the value to the widgetset class. The value in <var>Text</var> is set to the text in the TextHint property. The widgetset class is notified of the property changes,  and an internal flag used to track emulated hint display is set to <b>True</b>.
+          </p>
+          <p>
+            The compliment to ShowEmulatedTextHint is <var>HideEmulatedTextHint</var>.
+          </p>
+          <p>
+            ShowEmulatedTextHint is used in the implementation of the <var>ShowEmulatedTextHintIfYouCan</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEdit.CreateEmulatedTextHintFont"/>
+          <link id="TCustomEdit.ShowEmulatedTextHintIfYouCan"/>
+          <link id="TCustomEdit.TextHint"/>
+          <link id="TCustomEdit.Text"/>
+          <link id="TCustomEdit.HideEmulatedTextHint"/>
+        </seealso>
       </element>
 
       <element name="TCustomEdit.HideEmulatedTextHint">
-        <short>Hides the TextHint and restores the editing font and PasswordChar in the control</short>
+        <short>
+          Hides an emulated TextHint display and restores the editing font and PasswordChar in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomEdit.SetAlignment" link="TCustomEdit.Alignment">
-        <short/>
+        <short>Sets the value for the Alignment property</short>
         <descr/>
         <seealso/>
       </element>
@@ -4310,91 +4671,73 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetCanUndo" link="TCustomEdit.CanUndo">
-        <short/>
+      <element name="TCustomEdit.GetCanUndo">
+        <short>Gets the value for the CanUndo property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.CanUndo"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.GetCanUndo.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetModified" link="TCustomEdit.Modified">
-        <short/>
+      <element name="TCustomEdit.GetModified">
+        <short>Gets the value for the Modified property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.Modified"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.GetModified.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetHideSelection" link="TCustomEdit.HideSelection">
-        <short/>
+      <element name="TCustomEdit.SetHideSelection">
+        <short>Sets the value for the HideSelection property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.HideSelection"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.SetHideSelection.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetMaxLength" link="TCustomEdit.MaxLength">
-        <short/>
+      <element name="TCustomEdit.SetMaxLength">
+        <short>Sets the value for the MaxLength property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.MaxLength"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.SetMaxLength.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetModified" link="TCustomEdit.Modified">
-        <short/>
+      <element name="TCustomEdit.SetModified">
+        <short>Sets the value for the Modified property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.Modified"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.SetModified.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetPasswordChar" link="TCustomEdit.PasswordChar">
-        <short/>
+      <element name="TCustomEdit.SetPasswordChar">
+        <short>Sets the value for the PasswordChar property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEdit.PasswordChar"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.SetPasswordChar.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.TEmulatedTextHintStatus">
-        <short>Contains the hint status values for an inline hint display</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomEdit.TEmulatedTextHintStatus.thsHidden">
-        <short>Text hint is hidden</short>
-      </element>
-      <element name="TCustomEdit.TEmulatedTextHintStatus.thsShowing">
-        <short>Text hint is visible</short>
-      </element>
-      <element name="TCustomEdit.TEmulatedTextHintStatus.thsChanging">
-        <short>Text hint is changing</short>
-      </element>
-
-      <element name="TCustomEdit.FEmulatedTextHintStatus">
-        <short>Member used to store the text hint status for the control</short>
-        <descr/>
-        <seealso/>
-      </element>
-
       <element name="TCustomEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-
-      <element name="TCustomEdit.SetReadOnly" link="TCustomEdit.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomEdit.SetReadOnly.Value">
-        <short>New value for the property</short>
-      </element>
 
       <element name="TCustomEdit.CanShowEmulatedTextHint">
         <short>Indicates if the value in TextHint can be displayed in the edit control</short>
@@ -4432,6 +4775,35 @@
         <short>True when the emulated text hint can be displayed</short>
       </element>
 
+
+      <element name="TCustomEdit.CalculatePreferredSize" link="#lcl.controls.TWinControl.CalculatePreferredSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomEdit.CalculatePreferredSize.PreferredWidth">
+        <short/>
+      </element>
+      <element name="TCustomEdit.CalculatePreferredSize.PreferredHeight">
+        <short/>
+      </element>
+      <element name="TCustomEdit.CalculatePreferredSize.WithThemeSpace">
+        <short/>
+     </element>
+
+
+     <element name="TCustomEdit.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
+       <short/>
+       <descr/>
+       <seealso>
+         <link id="#lcl.controls.TWinControl.CreateParams"/>
+       </seealso>
+     </element>
+     <element name="TCustomEdit.CreateParams.Params">
+       <short/>
+     </element>
+
+
       <element name="TCustomEdit.CreateEmulatedTextHintFont">
         <short>Gets the font instance used for an emulated TextHint display</short>
         <descr>
@@ -4449,32 +4821,6 @@
       </element>
       <element name="TCustomEdit.CreateEmulatedTextHintFont.Result">
         <short>TFont isntance used for the emulated TextHint</short>
-      </element>
-
-      <element name="TCustomEdit.CalculatePreferredSize" link="#lcl.controls.TWinControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomEdit.CalculatePreferredSize.PreferredWidth">
-        <short/>
-      </element>
-      <element name="TCustomEdit.CalculatePreferredSize.PreferredHeight">
-        <short/>
-      </element>
-      <element name="TCustomEdit.CalculatePreferredSize.WithThemeSpace">
-        <short/>
-      </element>
-
-      <element name="TCustomEdit.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
-        <short/>
-        <descr/>
-        <seealso>
-          <link id="#lcl.controls.TWinControl.CreateParams"/>
-        </seealso>
-      </element>
-      <element name="TCustomEdit.CreateParams.Params">
-        <short/>
       </element>
 
       <element name="TCustomEdit.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
@@ -4644,13 +4990,13 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetTextHint" link="TCustomEdit.TextHint">
-        <short/>
+      <element name="TCustomEdit.SetCaretPos" link="TCustomEdit.CaretPos">
+        <short>Sets the value for the CaretPos property</short>
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomEdit.GetTextHint.Result">
-        <short>Value for the property</short>
+      <element name="TCustomEdit.SetCaretPos.Value">
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomEdit.SetCharCase">
@@ -4661,15 +5007,6 @@
         </seealso>
       </element>
       <element name="TCustomEdit.SetCharCase.Value">
-        <short>New value for the property</short>
-      </element>
-
-      <element name="TCustomEdit.SetCaretPos" link="TCustomEdit.CaretPos">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomEdit.SetCaretPos.Value">
         <short>New value for the property</short>
       </element>
 
@@ -4749,12 +5086,12 @@
       </element>
 
       <element name="TCustomEdit.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
-        <short/>
+        <short>Gets the dimensions for a new instance of the class</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomEdit.GetControlClassDefaultSize.Result">
-        <short>Gets the dimensions for a new instance of the class</short>
+        <short>The dimensions for a new instance of the class</short>
       </element>
 
       <element name="TCustomEdit.MouseUp" link="#lcl.controls.TControl.MouseUp">
@@ -4773,6 +5110,22 @@
       </element>
       <element name="TCustomEdit.MouseUp.Y">
         <short/>
+      </element>
+
+      <element name="TCustomEdit.RealGetText" link="#LCL.Controls.TControl.RealGetText">
+        <short>Uses the TextHint display status when getting the value for Text</short>
+        <descr>
+          <p>
+            <var>RealGetText</var> is an overridden method in <var>TCustomEdit</var>. It ensures that an  emulated <var>TextHint</var> display status is considered when getting the value for the <var>Text</var> property. In other words, the inherited method is <b>not</b> called when the TextHint display is visible. The return value is an empty string (<b>''</b>) in this case.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEdit.Text"/>
+          <link id="TCustomEdit.TextHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomEdit.RealGetText.Result">
+        <short>Value used for the Text property</short>
       </element>
 
       <element name="TCustomEdit.RealSetText" link="#LCL.Controls.TControl.RealSetText">
@@ -4799,22 +5152,6 @@
       </element>
       <element name="TCustomEdit.RealSetText.AValue">
         <short/>
-      </element>
-
-      <element name="TCustomEdit.RealGetText" link="#LCL.Controls.TControl.RealGetText">
-        <short>Uses the TextHint display status when getting the value for Text</short>
-        <descr>
-          <p>
-            <var>RealGetText</var> is an overridden method in <var>TCustomEdit</var>. It ensures that an  emulated <var>TextHint</var> display status is considered when getting the value for the <var>Text</var> property. In other words, the inherited method is <b>not</b> called when the TextHint display is visible. The return value is an empty string (<b>''</b>) in this case.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomEdit.Text"/>
-          <link id="TCustomEdit.TextHint"/>
-        </seealso>
-      </element>
-      <element name="TCustomEdit.RealGetText.Result">
-        <short>Value used for the Text property</short>
       </element>
 
       <element name="TCustomEdit.KeyUpAfterInterface" link="#lcl.controls.TWinControl.KeyUpAfterInterface">
@@ -4846,6 +5183,7 @@
           </p>
         </descr>
         <seealso/>
+        <notes><note>Calls an inherited method that does not exist.</note></notes>
       </element>
       <element name="TCustomEdit.CMWantSpecialKey.Message">
         <short>Message handled in the method</short>
@@ -4903,6 +5241,7 @@
         <short>Message handled in the method</short>
       </element>
 
+
       <element name="TCustomEdit.WMKillFocus" link="#lcl.controls.TWinControl.WMKillFocus">
         <short>Handles the LM_KILLFOCUS message for the control</short>
         <descr>
@@ -4915,6 +5254,7 @@
       <element name="TCustomEdit.WMKillFocus.Message">
         <short>Message handled in the method</short>
       </element>
+
 
       <element name="TCustomEdit.AutoSelect">
         <short>Enables auto-selection of text when focused</short>
@@ -4936,7 +5276,7 @@
       </element>
 
       <element name="TCustomEdit.AutoSelected">
-        <short>True when the text selection was made automatically</short>
+        <short>Set to True when the text selection was made automatically</short>
         <descr/>
         <seealso>
           <link id="TCustomEdit.AutoSelect"/>
@@ -5032,11 +5372,13 @@
         </seealso>
       </element>
 
+
       <element name="TCustomEdit.CutToClipboard">
         <short>Moves the selected text into the clipboard (removes it from the control)</short>
         <descr/>
         <seealso/>
       </element>
+
 
       <element name="TCustomEdit.PasteFromClipboard">
         <short>
@@ -5046,14 +5388,16 @@
         <seealso/>
       </element>
 
+
       <element name="TCustomEdit.Undo">
         <short>Reverts the last edit action in the control</short>
         <descr/>
         <seealso/>
       </element>
 
+
       <element name="TCustomEdit.RemoveAllHandlersOfObject" link="#lcl.controls.TControl.RemoveAllHandlersOfObject">
-        <short/>
+        <short>Removes all event handlers assigned for the specified object</short>
         <descr/>
         <seealso/>
         <notes>
@@ -5064,25 +5408,38 @@
         <short/>
       </element>
 
+
       <element name="TCustomEdit.AddHandlerOnChange">
-        <short/>
+        <short>Adds the specified OnChange event handler to the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomEdit.AddHandlerOnChange.AnOnChangeEvent">
-        <short/>
+        <short>Event handler added in the method</short>
       </element>
       <element name="TCustomEdit.AddHandlerOnChange.AsFirst">
-        <short/>
+        <short>True if the handler is stored at the top of the method list</short>
       </element>
 
+
       <element name="TCustomEdit.RemoveHandlerOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Removes the specified OnChange event handler for the control</short>
+        <descr>
+          <p>
+            <var>RemoveHandlerOnChange</var> is a method used to remove the event handler specified in <var>AnOnChangeEvent</var> from the list of <var>OnChange</var> handlers for the control. AnOnChangeEvent is a <var>TNotifyEvent</var> instance, and its <var>Remove</var> method is used to locate and remove the <var>TMethod</var> entry for the handler. RemoveHandlerOnChange reverses the actions performed in <var>AddHandlerOnChange</var>, called when an OnChange event handler is assigned to the control.
+          </p>
+          <p>
+            No actions are performed in the method when the internal OnChange method list has not been assigned (contains Nil).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TNotifyEvent.Remove"/>
+          <link id="#lazutis.lazmethodlist.TMethodList"/>
+          <link id="#rtl.system.TMethod"/>
+        </seealso>
       </element>
       <element name="TCustomEdit.RemoveHandlerOnChange.AnOnChangeEvent">
-        <short/>
+        <short>Event handler removed from the list of handlers in the control</short>
       </element>
 
       <element name="TCustomEdit.Alignment">
@@ -5117,16 +5474,23 @@
       </element>
 
       <element name="TCustomEdit.CaretPos">
-        <short>The position of the editing cursor in the text for the control</short>
+        <short>The position of the editing cursor in the control</short>
         <descr>
           <p>
-            Character positions are relative to the content encoding for the string, and independent of LTR/RTL display. The position reflects logical (UTF-8) characters.
+            CaretPos is a TPoint property which contains the coordinates for the caret (or editing cursor)  in the control. The coordinates reflects logical (UTF-8) characters and lines.
           </p>
+          <dl>
+            <dt>TPoint.X</dt>
+            <dd>
+              Contains the zero-based offset into the UTF-8-encoded characters in the control Text. Position 0 is immediately prior to the first UTF-8 character in Text. If there is selected text in the control, the caret is considered to be positioned right <b>after</b> the last selected character. Character positions are independent of the LTR/RTL Bidi-ness for the control.
+            </dd>
+            <dt>TPoint.Y</dt>
+            <dd>
+              Contains the zero-based relative line number for the editing cursor. For single-line edits the value is normally 0.
+            </dd>
+          </dl>
           <p>
-            Position zero is right <b>before</b> the first character in Text.
-          </p>
-          <p>
-            If there is a selection, the caret is considered to be positioned right <b>after</b> the last selected character.
+            The value in CaretPos is updated by the widgetset class when key and selection control messages are handled.
           </p>
         </descr>
       </element>
@@ -5140,7 +5504,7 @@
             <li>All upper case letters</li>
             <li>All lower case letters</li>
           </ul>
-          <remark>Conversions apply to the entire text, and can <b>not</b> be reverted.</remark>
+          <remark>Conversions apply to the entire text, and <b>cannot</b> be reverted.</remark>
         </descr>
       </element>
 
@@ -5162,8 +5526,27 @@
         </descr>
       </element>
 
+      <element name="TCustomEdit.EmulatedTextHintStatus">
+        <short>Status for the emulated TextHint in the control</short>
+        <descr>
+          <p>
+            <var>EmulatedTextHintStatus</var> is a read-only <var>TEmulatedTextHintStatus</var> property which contains the status value for an emulated TextHint display in the control. EmulatedTextHintStatus is used when a value has been assigned to the <var>TextHint</var> property and the widgetset does not natively implement the capability. The LCL emulates the TextHint display by assigning the value in TextHint to the <var>Text</var> for the control.
+          </p>
+          <p>
+            EmulatedTextHintStatus is updated in the <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TEmulatedTextHintStatus"/>
+          <link id="TCustomEdit.TextHint"/>
+          <link id="TCustomEdit.Text"/>
+          <link id="TCustomEdit.ShowEmulatedTextHint"/>
+          <link id="TCustomEdit.HideEmulatedTextHint"/>
+        </seealso>
+      </element>
+
       <element name="TCustomEdit.HideSelection">
-        <short>Allows the selected text to be hidden when the control does not have the focus</short>
+        <short>Allows the selected text to be hidden when the control does not have focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -5234,7 +5617,7 @@
       <element name="TCustomEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
 
       <element name="TCustomEdit.ReadOnly">
-        <short>Indicates if the user is prevented from changing the text value in the control</short>
+        <short>Indicates if the user is prevented from changing the value for the Text in the control</short>
         <descr>
           <p>
             <var>ReadOnly</var> is a <var>Boolean</var> property which indicates if the user is prevented from changing the value in the control.
@@ -5424,6 +5807,7 @@
             The textual values in the multi-line control can be accessed using the <var>Lines</var> property. An individual line of text can be accessed by its ordinal position in List. For example:
           </p>
           <code>
+            // var sContent: String; ...
             sContent := AMemo.Lines[2];
           </code>
           <p>
@@ -5433,6 +5817,7 @@
             The values for all of the text in Lines can be retrieved as a single String using the <var>Text</var> property in the <var>TStrings</var> class instance. Each line of text in Lines is separated by the <var>LineEnding</var> character sequence for the host platform or operating system. For example:
           </p>
           <code>
+            // var sContent: String; ...
             sContent := AMemo.Lines.Text;
           </code>
           <p>
@@ -5475,16 +5860,6 @@
       <element name="TCustomMemo.FWantReturns" link="TCustomMemo.WantReturns"/>
       <element name="TCustomMemo.FWantTabs" link="TCustomMemo.WantTabs"/>
       <element name="TCustomMemo.FWordWrap" link="TCustomMemo.WordWrap"/>
-
-      <element name="TCustomMemo.SetHorzScrollBar" link="TCustomMemo.HorzScrollBar"/>
-      <element name="TCustomMemo.SetHorzScrollBar.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomMemo.SetVertScrollBar" link="TCustomMemo.VertScrollBar"/>
-      <element name="TCustomMemo.SetVertScrollBar.AValue">
-        <short/>
-      </element>
 
       <element name="TCustomMemo.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
@@ -5563,7 +5938,7 @@
           <link id="#LCL.Controls.TControl.RealSetText">TControl.RealSetText</link>
         </seealso>
       </element>
-      <element name="TCustomMemo.RealSetText.Value">
+      <element name="TCustomMemo.RealSetText.AValue">
         <short>
           Sets the value for the control from a single string.
         </short>
@@ -5586,80 +5961,132 @@
       <element name="TCustomMemo.GetCachedText.CachedText">
         <short>The <var>CachedText</var> of type TCaption that is being fetched</short>
       </element>
-      <element name="TCustomMemo.GetCaretPos" link="#LCL.StdCtrls.TCustomEdit.GetCaretPos"/>
+
+      <element name="TCustomMemo.GetCaretPos">
+        <short>Get the value for the CaretPos property</short>
+        <descr>
+          <p>
+            <var>GetCaretPosition</var> is an overridden method in <var>TCustomMemo</var> used to get the value for the <var>CaretPos</var> property. It calls the GetCaretPos method in the widgetset class to get the return value for the method.
+          </p>
+        </descr>
+        <seealso>
+           <link id="TCustomMemo.CaretPos"/>
+           <link id="TCustomMemo.SetCaretPos"/>
+           <link id="#LCL.StdCtrls.TCustomEdit.GetCaretPos"/>
+        </seealso>
+      </element>
       <element name="TCustomMemo.GetCaretPos.Result">
         <short>Returns the position of the editing cursor or caret</short>
       </element>
-      <element name="TCustomMemo.SetCaretPos" link="#LCL.StdCtrls.TCustomEdit.SetCaretPos"/>
-      <element name="TCustomMemo.SetCaretPos.Value">
-        <short/>
+
+      <element name="TbnCustomMemo.SetCaretPos">
+        <short>Sets the position for the editing cursor or caret to the specified location</short>
+        <descr>
+          <p>
+            <var>SetCaretPos</var> is an overridden method in <var>TCustomMemo</var> used to set the position for the editing cursor (or caret).
+          </p>
+          <p>
+            <var>AValue</var> is a <var>TPoint</var> instance with the character and line coordinates for the editing cursor.  The X member contains the 0-based relative column offset to the UTF-8-encoded character where the caret is positioned. 0 is immediately before the first character in the current line of text. The Y member contains the 0-based offset to the line where the caret is positioned.
+          </p>
+          <p>
+            SetCaretPos ensures that the widgetset class is cast to a TWSCustomMemoClass instance, and calls its SetCaretPos method.
+          </p>
+        </descr>
+        <seealso>
+           <link id="#LCL.StdCtrls.TCustomEdit.SetCaretPos"/>
+        </seealso>
+      </element>
+      <element name="TCustomMemo.SetCaretPos.AValue">
+        <short>New position for the editing cursor or caret</short>
       </element>
 
-      <element name="TCustomMemo.SetLines" link="TCustomMemo.Lines">
-        <short/>
+      <element name="TCustomMemo.SetLines">
+        <short>Sets the value for the Lines property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomMemo.Lines"/>
+        </seealso>
       </element>
       <element name="TCustomMemo.SetLines.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomMemo.SetSelText" link="#LCL.StdCtrls.TCustomEdit.SelText">
-        <short/>
+      <element name="TCustomMemo.SetSelText">
+        <short>Sets the value for the SelText property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="#LCL.StdCtrls.TCustomEdit.SelText"/>
+        </seealso>
       </element>
-      <element name="TCustomMemo.SetSelText.Val">
+      <element name="TCustomMemo.SetSelText.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomMemo.SetWantReturns" link="TCustomMemo.WantReturns">
-        <short/>
+      <element name="TCustomMemo.SetWantReturns">
+        <short>Sets the value for the WantReturns property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomMemo.WantReturns"/>
+        </seealso>
       </element>
       <element name="TCustomMemo.SetWantReturns.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomMemo.SetWantTabs" link="TCustomMemo.WantTabs">
-        <short/>
+      <element name="TCustomMemo.SetWantTabs">
+        <short>Sets the value for the WantTabs property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomMemo.WantTabs"/>
+        </seealso>
       </element>
       <element name="TCustomMemo.SetWantTabs.NewWantTabs">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomMemo.SetWordWrap" link="TCustomMemo.WordWrap">
-        <short/>
+      <element name="TCustomMemo.SetWordWrap">
+        <short>Sets the value for the WordWrap property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomMemo.WordWrap"/>
+        </seealso>
       </element>
-      <element name="TCustomMemo.SetWordWrap.Value">
+      <element name="TCustomMemo.SetWordWrap.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomMemo.SetScrollBars" link="TCustomMemo.ScrollBars">
-        <short/>
+      <element name="TCustomMemo.SetScrollBars">
+        <short>Sets the value for the ScrollBars property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomMemo.ScrollBars"/>
+        </seealso>
       </element>
-      <element name="TCustomMemo.SetScrollBars.Value">
+      <element name="TCustomMemo.SetScrollBars.AValue">
         <short>New value for the property</short>
       </element>
 
       <element name="TCustomMemo.Loaded" link="#lcl.controls.TWinControl.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Performs actions needed when the component has been loaded using the LCL streaming mechanism
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in <var>TCustomMemo</var>, and calls the inherited method on entry. When a handle has been allocated for the control, the widgetset class is notified of the current values in the <var>ScrollBars</var> and <var>WordWrap</var> properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.Loaded"/>
+          <link id="TCustomMemo.ScrollBars"/>
+          <link id="TCustomMemo.WordWrap"/>
+        </seealso>
       </element>
 
       <element name="TCustomMemo.CMWantSpecialKey" link="TCustomEdit.CMWantSpecialKey">
         <short>Handles control messages for Return and Tab keys when enabled in the control</short>
         <descr>
           <p>
-            <var>CMWantSpecialKey</var> is an overridden method in <var>TCustomMemo</var>. It ensures that control messages for VK_RETURN and VK_TAB keys are marked as handled when WantReturns or WantTabs are enabled in the control. All other messages are handled by callint the inherited method.
+            <var>CMWantSpecialKey</var> is an overridden method in <var>TCustomMemo</var>. It ensures that control messages for VK_RETURN and VK_TAB keys are marked as handled when WantReturns or WantTabs are enabled in the control. All other messages are handled by calling the inherited method.
           </p>
         </descr>
         <seealso/>
@@ -5674,11 +6101,11 @@
         <seealso/>
       </element>
       <element name="TCustomMemo.WMGetDlgCode.Message">
-        <short/>
+        <short>Message examined in the method</short>
       </element>
 
       <element name="TCustomMemo.GetControlClassDefaultSize">
-        <short/>
+        <short>Gets the default size used for new instances of the class</short>
         <descr/>
         <seealso/>
       </element>
@@ -5689,21 +6116,40 @@
       </element>
 
       <element name="TCustomMemo.UTF8KeyPress" link="#lcl.controls.TWinControl.UTF8KeyPress">
-        <short/>
-        <descr/>
+        <short>Implements the handler for UTF8 key press events in the control</short>
+        <descr>
+          <p>
+            <var>UTF8KeyPress</var> is an overridden method in <var>TCustomMemo</var> which implements the handler for UTF-8-encoded key press events in the control.
+          </p>
+          <p>
+            UTF8KeyPress calls the inherited method on entry to signal the OnUTF8KeyPress event handler (when assigned). It ensures that a <b>Carriage Return</b> (decimal character 13) key is handled using the setting specified in the <var>WantReturns</var> property. When WantReturns is set to <b>False</b>,  the value in <var>UTF8Key</var> is set to an empty string (<b>''</b>) to discard the character.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomMemo.UTF8KeyPress.UTF8Key">
-        <short/>
+        <short>Key examined in the method</short>
       </element>
 
-      <element name="TCustomMemo.CanShowEmulatedTextHint" link="TCustomEdit.CanShowEmulatedTextHint">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomMemo.CanShowEmulatedTextHint">
+        <short>Indicates if an emulated TextHint can be displayed for the control</short>
+        <descr>
+          <p>
+            <var>CanShowEmulatedTextHint</var> is an overridden <var>Boolean</var> function in <var>TCustomMemo</var>, and does <b>not</b> call the inherited method in its implementation.
+          </p>
+          <p>
+            CanShowEmulatedTextHint determines whether an emulated <var>TextHint</var> can be displayed for the control. Normally, this requires a control handle and an unassigned value in the control text. In addition, some widgetsets implement text hints natively, and do not require LCL to emulate the capability (Windows, QT5). Emulated hint displays can also be suppressed when the widgetset class is being freed (when the Lines in the control have already been destroyed).
+          </p>
+          <p>
+            The current implementation always returns <b>False</b> for Memo controls. Please note: there is a <b>TODO</b> in the source to get this working under GTK2 at a minimum.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEdit.CanShowEmulatedTextHint"/>
+        </seealso>
       </element>
       <element name="TCustomMemo.CanShowEmulatedTextHint.Result">
-        <short/>
+        <short>True when an emulated TextHint can be displayed for the control</short>
       </element>
 
       <element name="TCustomMemo.Create">
@@ -5743,9 +6189,10 @@
         <short>Appends the specified text to the Lines in the control</short>
         <descr>
           <p>
-            <var>Append</var> is a procedure used to append the line of text in <var>Value</var> to the end of the values in the <var>Lines</var> property. It is a convenience method, and calls the <var>Add</var> method in the Lines class instance.
+            <var>Append</var> is a procedure used to append the line of text in <var>AValue</var> to the end of the values in the <var>Lines</var> property. It is a convenience method, and calls the <var>Add</var> method in Lines class.
           </p>
           <code>
+            // var sLine: String;
             // the following are equivalent
             AMemo.Append(sLine);
             AMemo.Lines.Add(sLine);
@@ -5753,7 +6200,7 @@
         </descr>
         <seealso/>
       </element>
-      <element name="TCustomMemo.Append.Value">
+      <element name="TCustomMemo.Append.AValue">
         <short>The text value added to Lines in the method</short>
       </element>
 
@@ -5791,6 +6238,7 @@
             <var>Lines</var> is a <var>TStrings</var> property which contains the individual lines of text in the multi-line edit control. The values in Lines can be accessed using the <var>Strings</var> and <var>Text</var> properties defined in TStrings. The Strings property in Lines allows an individual line of text to be accessed by its ordinal position. For example:
           </p>
           <code>
+            // var sContent: String;
             sContent := AMemo.Lines.Strings[2];
             // equivalent to preceeding since Strings is the default property
             sContent := AMemo.Lines[2];
@@ -5799,6 +6247,7 @@
             The Text property in Lines allows access to all of the values stored in Lines. Text lines are  separated by the <var>LineEnding</var> character sequence defined for the host platform or operating system. For example:
           </p>
           <code>
+            // var sContent: String;
             sContent := AMemo.Lines.Text;
           </code>
           <p>
@@ -5820,21 +6269,27 @@
 
       <element name="TCustomMemo.HorzScrollBar">
         <short>The horizontal scrollbar for the control</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>HorzScrollBar</var> is a <var>TMemoScrollBar</var> property which contains the horizontal scrollbar displayed for the control. Resources are allocated to the property in the constructor, and freed in the destructor.
+          </p>
+        </descr>
         <seealso/>
+        <notes><note>?</note></notes>
       </element>
 
       <element name="TCustomMemo.VertScrollBar">
         <short>The vertical scrollbar for the control</short>
         <descr/>
         <seealso/>
+        <notes><note>?</note></notes>
       </element>
 
       <element name="TCustomMemo.ScrollBars">
         <short>Defines the vertical and/or horizontal scrollbars used in the control</short>
         <descr>
           <p>
-            <var>ScrollBars</var> is a <var>TScrollStyle</var> property which defines the horizontal and vertical scrollbars displayed for the control. It is a single value from the <link id="TScrollStyle">TScrollStyle</link> enumeration.
+            <var>ScrollBars</var> is a <var>TScrollStyle</var> property which defines whether the horizontal and vertical scrollbars are displayed for the control. It is a single value from the <link id="TScrollStyle">TScrollStyle</link> enumeration.
           </p>
           <p>
             The default value for the property is <var>ssNone</var>, and disables both horizontal and vertical scrollbars in the control.
@@ -5964,12 +6419,13 @@
         <short>Control used to display and edit multi-line text</short>
         <descr>
           <p>
-            TMemo is a TCustomMemo descendant which implements a multi-line text edit control. TMemo sets the visibility for properties introduced in TCustomMemo, but does not introduce any new methods.
+            <var>TMemo</var> is a <var>TCustomMemo</var> descendant which implements a multi-line text edit control. TMemo sets the visibility for properties introduced in TCustomMemo, but does not introduce any new methods.
           </p>
           <p>
             The textual values in the multi-line control can be accessed using the <var>Lines</var> property. An individual line of text can be accessed by its ordinal position in List. For example:
           </p>
           <code>
+            // var sContent: String;
             sContent := AMemo.Lines[2];
           </code>
           <p>
@@ -5979,6 +6435,7 @@
             The values for all of the text in Lines can be retrieved as a single String using the <var>Text</var> property in the <var>TStrings</var> class instance. Each line of text in Lines is separated by the <var>LineEnding</var> character sequence for the host platform or operating system. For example:
           </p>
           <code>
+            // var sContent: String;
             sContent := AMemo.Lines.Text;
           </code>
           <p>
@@ -5999,6 +6456,7 @@
         </descr>
         <seealso>
           <link id="HowToUseStdCtrls"/>
+          <link id="TCustomMemo"/>
           <link id="TEdit"/>
         </seealso>
       </element>
@@ -6066,9 +6524,15 @@
       <element name="TMemo.WordWrap" link="#LCL.StdCtrls.TCustomMemo.WordWrap"/>
 
       <element name="TStaticBorderStyle">
-        <short>Border styled used for static text controls</short>
-        <descr/>
-        <seealso/>
+        <short>Contains border styles used for static text controls</short>
+        <descr>
+          <p>
+            <var>TStaticBorderStyle</var> is an enumerated type with values that represents border styles used for static text controls. TStaticBorderStyle is the type used for the <var>Style</var> property in <var>TCustomStaticText</var> and decendants.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomStaticText.Style"/>
+        </seealso>
       </element>
       <element name="TStaticBorderStyle.sbsNone">
         <short>No border</short>
@@ -6082,9 +6546,13 @@
 
       <element name="TCustomStaticText">
         <short>The base class for <var>TStaticText</var></short>
-        <descr/>
+        <descr>
+          <p>
+            Specifies the base ancestor for TStaticText, a control used to display static text. TCustomStaticText is a TWinControl descendant. It can be used inplace of TLabel for situations where a TWinControl descendant is required.
+          </p>
+        </descr>
         <seealso/>
-        <notes><note>Needs description.</note></notes>
+        <notes><note>Required where?</note></notes>
       </element>
 
       <element name="TCustomStaticText.FAlignment" link="TCustomStaticText.Alignment"/>
@@ -6572,13 +7040,13 @@
         </seealso>
       </element>
 
-      <element name="TCustomButton.CreateWnd">
+      <element name="TCustomButton.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <seealso/>
       </element>
 
-      <element name="TCustomButton.CreateParams">
+      <element name="TCustomButton.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <seealso/>
@@ -6768,7 +7236,7 @@
           </p>
         </descr>
         <seealso/>
-        <notes><note>Needs more/better description.</note></notes>
+        <notes><note>Needs a better description.</note></notes>
       </element>
 
       <element name="TButton.Click" link="#LCL.Controls.TControl.Click"/>
@@ -6865,23 +7333,28 @@
       <element name="TCustomCheckBox.FShortCut" link="TCustomCheckBox.ShortCut"/>
       <element name="TCustomCheckBox.FShortCutKey2" link="TCustomCheckBox.ShortCutKey2"/>
 
-      <element name="TCustomCheckBox.SetState" link="TCustomCheckBox.State">
-        <short/>
+      <element name="TCustomCheckBox.SetState">
+        <short>Sets the value for the State property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomCheckBox.State"/>
+        </seealso>
       </element>
       <element name="TCustomCheckBox.SetState.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
-      <element name="TCustomCheckBox.GetState" link="TCustomCheckBox.State">
-        <short/>
+      <element name="TCustomCheckBox.GetState">
+        <short>Gets the value for the State property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+           <link id="TCustomCheckBox.State"/>
+        </seealso>
       </element>
       <element name="TCustomCheckBox.GetState.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
+
 
       <element name="TCustomCheckBox.DoChange">
         <short>Invokes either the OnClick or OnChange handler</short>
@@ -6892,13 +7365,14 @@
         <short/>
       </element>
 
+
       <element name="TCustomCheckBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomCheckBox.Click" link="#LCL.Controls.TControl.Click">
         <short/>
         <descr>Overridden to do nothing.</descr>
         <seealso/>
-        <notes><note>Why?</note></notes>
+        <notes><note>Explain why...</note></notes>
       </element>
 
       <element name="TCustomCheckBox.DoClickOnChange">
@@ -7133,7 +7607,9 @@
       <element name="TCheckBox.AutoSize" link="#lcl.controls.TControl.AutoSize">
         <short/>
         <descr>
-          The default value in TCheckBox is True.
+          <p>
+            The default value for the property in <var>TCheckBox</var> is <b>True</b>.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -7321,6 +7797,7 @@
         </seealso>
       </element>
 
+
       <element name="TRadioButton.DialogChar" link="TCustomCheckBox.DialogChar">
         <short/>
         <descr/>
@@ -7333,6 +7810,7 @@
         <short/>
       </element>
 
+
       <element name="TRadioButton.RealSetText" link="TCustomCheckBox.RealSetText">
         <short/>
         <descr/>
@@ -7342,24 +7820,48 @@
         <short/>
       </element>
 
-      <element name="TRadioButton.DoClickOnChange" link="TCustomCheckBox.DoClickOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TRadioButton.DoClickOnChange">
+        <short>Performs actions needed when the control has been changed using a mouse click</short>
+        <descr>
+          <p>
+            <var>DoClickOnChange</var> is an overridden method used to signal an <var>OnChange</var> event handler when the mouse is clicked on the control. DoClickOnChange ensures the value in <var>TabStop</var> is updated to reflect the <var>State</var> for the control. When State contains <var>cbChecked</var>, TabStop is set to <b>True</b>. Otherwise, it is set to <b>False</b>.
+          </p>
+          <p>
+            DoClickOnChange also ensures that the correct click/change behavor is used for the current control State. If the control is Checked, the inherited DoClickOnChange method is called. This also emulates the Delphi Click behaviour where the <var>OnChange</var> event handler is signalled when <var>ClicksDiabled</var> is <b>True</b>. When the control is not Checked, the <var>DoOnChange</var> method is called to signal both the <var>OnEditingDone</var> and <var>OnChange</var> event handlers.
+          </p>
+          <p>
+            DoClickOnChange is called from the <var>DoChange</var> method in the <var>TCustomCheckBox</var> ancestor class.
+          </p>
+        </descr>
+        <seealso>
+           <link id="TCustomCheckBox.DoClickOnChange"/>
+           <link id="TCustomCheckBox.DoOnChange"/>
+        </seealso>
       </element>
 
-      <element name="TRadioButton.CreateParams" link="TCustomCheckBox.CreateParams">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TRadioButton.CreateParams">
+        <short>Initializes the creation parameters for the class instance</short>
+        <descr>
+          <p>
+            <var>CreateParams</var> is an overridden method used to update creation parameters for the class instance, and calls the inherited method on entry. CreateParams ensures that <var>Style</var> flags in the <var>Params</var> argument are updated to include the <var>BS_RADIOBUTTON</var> style flag, and to exclude the <var>BS_3STATE</var> style flag.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckBox.CreateParams"/>
+        </seealso>
       </element>
       <element name="TRadioButton.CreateParams.Params">
-        <short/>
+        <short>Creation parameters updated in the method</short>
       </element>
 
       <element name="TRadioButton.Create">
         <short>Constructor for the class instance</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create ensures that the <var>csRadioButton</var> style flag is included in the component style flags for the control. The default value for the <var>AutoSize</var> property is set to <b>True</b>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRadioButton.Create.TheOwner">
@@ -7370,9 +7872,14 @@
       <element name="TRadioButton.Anchors" link="#LCL.Controls.TControl.Anchors"/>
 
       <element name="TRadioButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
-        <short>TRadioButton default is True</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            The default value for the property is <b>True</b> in <var>TRadioButton</var>.
+          </p>
+        </descr>
+        <seealso>
+           <link id="#LCL.Controls.TControl.AutoSize"/>
+        </seealso>
       </element>
 
       <element name="TRadioButton.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
@@ -7471,23 +7978,51 @@
 
       <element name="TCustomLabel.CanTab">
         <short>Always False, since you cannot tab into a label control</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>CanTab</var> is an overridden method in <var>TCustomLabel</var>. The return value is always <b>False</b> since the <b>Tab</b> key cannot be used to give focus to the control.
+          </p>
+        </descr>
         <seealso>
           <link id="#LCL.Controls.TControl.CanTab"/>
         </seealso>
       </element>
       <element name="TCustomLabel.CanTab.Result">
-        <short/>
+        <short>Always False in TCustomLabel</short>
       </element>
 
       <element name="TCustomLabel.DoMeasureTextPosition">
         <short>Determines the location for the text within the control</short>
         <descr>
           <p>
-            Uses the value in Layout to determine the vertical alignment for the text. When Layout is tlTop, the value in TextTop is set to 0 (zero). TextLeft is always set to 0 (zero). Calls CalculateSize the width and height for the text when othe values are used in Layout.
+            <var>DoMeasureTextPosition</var> is a procedure used to determine the coordinates where the control text is drawn. Values in <var>TextTop</var> and <var>TextLeft</var> are updated in the method.
+          </p>
+          <p>
+            DoMeasureTextPosition uses the value in <var>Layout</var> to determine the vertical alignment for the text. When Layout is <var>tlTop</var>, the value in TextTop is set to <b>0</b> (zero). TextLeft is always set to <b>0</b> (zero).
+          </p>
+          <p>
+            DoMeasureTextPosition calls <var>CalculateSize</var> to get the width and height needed for the text when other values are used in Layout. The calculated text height and the control <var>Height</var> are used to get the value for TextTop as follows:
+          </p>
+          <dl>
+            <dt>tlCenter</dt>
+            <dd>
+              Half of the ununsed height is used in TextTop so that equal spacing occurs both above and below the text (vertically centered).
+            </dd>
+            <dt>tlBottom</dt>
+            <dd>
+              The amount of unused space is used in TextTop so the text is aligned to the bottom of the control.
+            </dd>
+          </dl>
+          <p>
+            DoMeasureTextPosition is used in the implementation of the <var>Paint</var> method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomLabel.Layout"/>
+          <link id="TCustomLabel.Height"/>
+          <link id="TCustomLabel.CalculateSize"/>
+          <link id="TCustomLabel.Paint"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.DoMeasureTextPosition.TextTop">
         <short>Top coordinate for the text</short>
@@ -7498,17 +8033,43 @@
 
       <element name="TCustomLabel.HasMultiLine">
         <short>Checks for CR or LF characters in the label text for the control</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>HasMultiLine</var> is a <var>Boolean</var> function used to determine if <b>CR</b> (Carriage Return, Decimal 13) or <b>LF</b> (LineFeed, Decimal 10) characters are included in the text for the control. HasMultiLine calls GetLabelText to get the text stored in the label.
+          </p>
+          <p>
+            The return value is <b>True</b> when either character occurs in the text for the label.
+          </p>
+          <p>
+            HasMultiLine is used in the <var>CalculateSize</var> method to determine whether the <var>DT_SINGLELINE</var> flag is included in the drawing flags for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomLabel.CalculateSize"/>
+          <link id="TCustomLabel.GetLabelText"/>
+          <link id="#lcl.lcltype.DT_SINGLELINE"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.HasMultiLine.Result">
-        <short/>
+        <short>True when CR or LF characters are used in the text for the label</short>
       </element>
 
-      <element name="TCustomLabel.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomLabel.CalculatePreferredSize">
+        <short>Calculates the preferred size for the control using its anchoring and constraints</short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method used to calculated the preferred size for the control. Values stored in the <var>Anchors</var>, <var>Constraints</var>, and <var>WordWrap</var> properties are used to determine the effective width for the control. CalculateSize is called to calculate the text rectangle for the control using the requested dimensions.
+          </p>
+          <p>
+            No actions are performed in the method if <var>Parent</var> has not been assigned (contains Nil), or when a handle has not been allocated in the Parent control.
+          </p>
+          <p>
+            Please note: CalculatePreferredSize does <b>not</b> call the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.CalculatePreferredSize"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.CalculatePreferredSize.PreferredWidth">
         <short/>
@@ -7521,7 +8082,7 @@
       </element>
 
       <element name="TCustomLabel.CalculateSize">
-        <short>Determines the text extent based on a maximum width constraint</short>
+        <short>Determines the text extent for a maximum width constraint</short>
         <descr/>
         <seealso/>
       </element>
@@ -7535,11 +8096,13 @@
         <short>Height needed for the text</short>
       </element>
 
+
       <element name="TCustomLabel.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
+
 
       <element name="TCustomLabel.DialogChar" link="#lcl.controls.TControl.DialogChar">
         <short/>
@@ -7553,37 +8116,63 @@
         <short/>
       </element>
 
+
       <element name="TCustomLabel.TextChanged" link="#lcl.controls.TControl.TextChanged">
         <short/>
         <descr/>
         <seealso/>
       </element>
 
-      <element name="TCustomLabel.DoSetBounds" link="#lcl.controls.TControl.DoSetBounds">
-        <short/>
-        <descr/>
-        <seealso/>
+
+      <element name="TCustomLabel.DoSetBounds">
+        <short>Performs a bounds change for the control</short>
+        <descr>
+          <p>
+            <var>DoSetBounds</var> is an overridden method in <var>TCustomLabel</var>. It calls the inherited method to store the values in ALeft, ATop, AWidth, and AHeight to the corresponding properties in the control. Values in <var>OptimalFill</var>, <var>WordWrap</var>, and <var>Autosize</var> are used to determine if additional actions are needed for the bounds change.
+          </p>
+          <p>
+            When <var>OptimalFill</var> is <b>True</b> and <var>AutoSize</var> is <b>False</b>, the <var>AdjustFontForOptimalFill</var> method is called. If <var>Width</var> was changed and <var>WordWrap</var> is <b>True</b>, both the <var>InvalidatePreferredSize</var> and <var>AdjustSize</var> methods are called.
+          </p>
+          <p>
+            DoSetBounds is called from the <var>ChangeBounds</var> method in an ancestor class.
+          </p>
+        </descr>
+        <seealso>
+           <link id="TCustomLabel.OptimalFill"/>
+           <link id="TCustomLabel.AutoSize"/>
+           <link id="TCustomLabel.WordWrap"/>
+           <link id="TCustomLabel.AdjustFontForOptimalFill"/>
+           <link id="#lcl.controls.TControl.DoSetBounds"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.DoSetBounds.ALeft">
-        <short/>
+        <short>New value for the Left property</short>
       </element>
       <element name="TCustomLabel.DoSetBounds.ATop">
-        <short/>
+        <short>New value for the Top property</short>
       </element>
       <element name="TCustomLabel.DoSetBounds.AWidth">
-        <short/>
+        <short>New value for the Width property</short>
       </element>
       <element name="TCustomLabel.DoSetBounds.AHeight">
-        <short/>
+        <short>New value for the Height property</short>
       </element>
 
-      <element name="TCustomLabel.FontChanged" link="#lcl.controls.TControl.FontChanged">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomLabel.FontChanged">
+        <short>Implements the OnChange event handler for the Font in the control</short>
+        <descr>
+          <p>
+            <var>FontChanged</var> is an overridden method in <var>TCustomLabel</var> which implements the <var>OnChange</var> event handler for the <var>Font</var> in the control. FontChanged calls the inherited method on entry, and calls <var>UpdateSize</var> to resize the control for any changes to font propertites.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomLabel.UpdateSize"/>
+           <link id="#lcl.controls.TControl.FontChanged"/>
+           <link id="#lcl.graphics.TFont"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.FontChanged.Sender">
-        <short/>
+        <short>Object for the event notification</short>
       </element>
 
       <element name="TCustomLabel.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
@@ -7713,7 +8302,17 @@
 
       <element name="TCustomLabel.UpdateSize">
         <short>Adjusts the size for the control based on settings in AutoSize and OptimalFill</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>UpdateSizevar</var> is a method used to adjust the size for the control based on settings in the <var>AutoSize</var> and <var>OptimalFill</var> properties. UpdateSize calls <var>InvalidatePreferredSize</var>.
+          </p>
+          <p>
+            When <var>OptimalFill</var> is <b>True</b> and <var>AutoSize</var> is <b>False</b>, the <var>AdjustFontForOptimalFill</var> method is called to adjust the font size used in the control. <var>AdjustSize</var> is called to resize the control (and any parent controls). When <var>Alignment</var> is set to <var>taRightJustify</var>, the value in <var>Left</var> may be changed to reflect the new <var>Width</var> for the control.
+          </p>
+          <p>
+            UpdateSize is called from the implementation of the <var>FontChanged</var> and <var>TextChanged</var> methods, and when setting a new value for the <var>ShowAccelChar</var> or <var>WordWrap</var> properties.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -7731,10 +8330,24 @@
       </element>
 
       <element name="TCustomLabel.CalcFittingFontHeight">
-        <short>
-          Calculate the maximum height of the font needed to fit the available space, given the MaxWidth and MaxHeight constraints
-        </short>
-        <descr/>
+        <short>Calculates the font height needed to fill the specified width and height constraints</short>
+        <descr>
+          <p>
+            <var>CalcFittingFontHeight</var> is a <var>Boolean</var> function used to calculate the maximum font height needed to make the specified string fill the available space, given the MaxWidth and MaxHeight constraints.
+          </p>
+          <p>
+            The return value is <b>True</b> when the text rectangle using the new font height fits within the size constraints in MaxWidth and MaxHeight. NeedWidth and NeedHeight are set to the values indicated in the text rectangle. The return value is <b>False</b> when the text rectangle is either too wide or too tall, or cannot be calculated using the specified parameter values.
+          </p>
+          <remark>
+            Please note: No actions are performed in the method when AutoSizeDelayed is set to <b>True</b>, when TheText is an empty string, or when MaxHeight or MaxWidth contain 0 or a negative value.
+          </remark>
+          <p>
+            The font height is calculated using a temporary TFont instance with the current Font for the control, setting its drawing flags to calculate the text rectangle. The drawing flags include wrapping when the WordWrap property is set to <b>True</b>. The font height is incrementally increased or decreased until the maximum font height which fits with MaxHeight and MaxWidth is determined.
+          </p>
+          <p>
+            CalcFittingFontHeight is used in the implementation of the <var>AdjustFontForOptimalFill</var> method.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomLabel.CalcFittingFontHeight.Result">
@@ -7759,18 +8372,41 @@
         <short/>
       </element>
 
-      <element name="TCustomLabel.ColorIsStored" link="TCustomLabel.Color"/>
+      <element name="TCustomLabel.ColorIsStored">
+        <short>Implements the storage specifier for the Color property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomLabel.Color"/>
+        </seealso>
+      </element>
       <element name="TCustomLabel.ColorIsStored.Result">
-        <short>Storage specifier for the property value</short>
+        <short>True when a value other than clNone has been assigned to the Color property</short>
       </element>
 
       <element name="TCustomLabel.AdjustFontForOptimalFill">
-        <short>If True, attempts to adjust font for an optimal fill of the space available</short>
-        <descr/>
-        <seealso/>
+        <short>Adjusts the font height for the control text to fill the available client area</short>
+        <descr>
+          <p>
+            <var>AdjustFontForOptimalFill</var> is a <var>Boolean</var> function used to adjust the font height so that text in the label expands to fill the available client area for the control. AdjustFontForOptimalFill calls <var>CalcFittingFontHeight</var> to determine the font height needed to make the label text (caption) fill the Width for the control. The calculated font height is stored in the <var>Font</var> property.
+          </p>
+          <p>
+            The return value is <b>True</b> when the Font height was changed in the method.
+          </p>
+          <p>
+            AdjustFontForOptimalFill is called from <var>DoSetBounds</var> and <var>UpdateSize</var> when <var>OptimalFill</var> is set to <b>True</b> and <var>AutoSize</var> is set to <b>False</b>. It is also called when a new value is assigned to the <var>OptimalFill</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomLabel.CalcFittingFontHeight"/>
+          <link id="TCustomLabel.OptimalFill"/>
+          <link id="TCustomLabel.AutoSize"/>
+          <link id="TCustomLabel.UpdateSize"/>
+          <link id="TCustomLabel.DoSetBounds"/>
+          <link id="#lcl.controls.TControl.Font"/>
+        </seealso>
       </element>
       <element name="TCustomLabel.AdjustFontForOptimalFill.Result">
-        <short/>
+        <short>True when the font height was changed in the method</short>
       </element>
 
       <element name="TCustomLabel.Paint">
@@ -7791,10 +8427,10 @@
       </element>
 
       <element name="TCustomLabel.SetBounds" link="#lcl.controls.TControl.SetBounds">
-        <short>Sets the bounds (Top, Left, Bottom, Right) for the control</short>
+        <short>Sets the bounds (Top, Left, Width, Height) for the control</short>
         <descr>
           <p>
-            Overridden to call InvalidatePreferredSize the first time the method is used and both AutoSize and WordWrap are enabled in the control. Calls the inherited method prior to exit.
+            Overridden to call <var>InvalidatePreferredSize</var> the first time the method is used and both <var>AutoSize</var> and <var>WordWrap</var> are enabled in the control. Calls the inherited method prior to exit.
           </p>
         </descr>
         <seealso>
@@ -7805,29 +8441,32 @@
         </seealso>
       </element>
       <element name="TCustomLabel.SetBounds.aLeft">
-        <short/>
+        <short>Horizontal coordinate for the left-hand edge of the control</short>
       </element>
       <element name="TCustomLabel.SetBounds.aTop">
-        <short/>
+        <short>Vertical coordinate for the top edge of the control</short>
       </element>
       <element name="TCustomLabel.SetBounds.aWidth">
-        <short/>
+        <short>New width for the control</short>
       </element>
       <element name="TCustomLabel.SetBounds.aHeight">
-        <short/>
+        <short>New Height for the control</short>
       </element>
 
       <element name="TCustomLabel.Alignment">
-        <short>Horizontal text justification (centered, left- or right-justified)</short>
+        <short>Horizontal text justification in the control (centered, left- or right-justified)</short>
         <descr>
           <p>
-            <var>Alignment</var> is a <var>TAlignment</var> property which controls the horizontal justification of the text displayed in the control. The default value for the property is <var>taLeftJustify</var>. When a new value is assigned to the property, the <var>Invalidate</var> method is called to repaint the control.
+            <var>Alignment</var> is a <var>TAlignment</var> property which controls the horizontal justification of the text displayed in the control. The default value for the property is <var>taLeftJustify</var>. When a new value is assigned to the Alignment property, the <var>Invalidate</var> method is called to repaint the control.
           </p>
           <p>
             Alignment (and other properties) are used in the <var>Paint</var> method when the text is rendered to the <var>Canvas</var> for the control. It is also used in <var>UpdateSize</var> when right alignment needs to be considered for an auto-sized or optimal-filled control.
           </p>
           <p>
             Use the <var>Layout</var> property to control the vertical alignment of the text displayed in  the control.
+          </p>
+          <p>
+            Use <var>OptimalFill</var> to indicate if the font height can be adjust to fill the client area for the control.
           </p>
         </descr>
         <seealso>
@@ -7842,10 +8481,15 @@
       </element>
 
       <element name="TCustomLabel.AutoSize" link="#lcl.controls.TControl.AutoSize">
-        <short>TCustomLabel default is True</short>
-        <descr/>
-        <seealso/>
-        <notes><note>Needs description.</note></notes>
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>True</b> in <var>TCustomLabel</var>.
+          </p>
+        </descr>
+        <seealso>
+           <link id="#lcl.controls.TControl.AutoSize"/>
+        </seealso>
       </element>
 
       <element name="TCustomLabel.Color" link="#LCL.Controls.TControl.Color"/>
@@ -7860,7 +8504,7 @@
             A label control cannot receive the input focus (it's read-only), but can display an accelerator key indicator, just like a menu entries. A windowed control (Edit...) can receive focus, but cannot indicate an accelerator key.
           </p>
           <p>
-            Using a combination of both an label and another control allows one to specify both the accelerator key, in the label's caption, and make the other control receive the focus when the user presses that accelerator key.
+            Using a combination of a label and another control allows setting the accelerator key in the label caption. The other control receives focus when the user presses the accelerator key.
           </p>
           <p>
             An accelerator key is marked by an Ampersand '&amp;' in the label caption, immediately preceding the character to be used as the accelerator key. The marked character appears underlined on screen, when ShowAccelChar is set to <b>True</b>.
@@ -7875,10 +8519,23 @@
       </element>
 
       <element name="TCustomLabel.Layout">
-        <short>Vertical alignment of the text (at top, bottom or centered)</short>
-        <descr/>
+        <short>Vertical alignment for control text (at the top, bottom, or center)</short>
+        <descr>
+          <p>
+            <var>Layout</var> is a <var>TTextLayout</var> property with the vertical alignment used for the text displayed in the control. The default value for the property is <var>tlTop</var>. Changing the value in Layout causes the <var>Invalidate</var> method to be called to redraw the control.
+          </p>
+          <p>
+            Use the <var>Alignment</var> property to control the horizontal alignment for the text in the control.
+          </p>
+          <p>
+            Use <var>OptimalFill</var> to indicate if the font height can be adjusted to fill the client area for the control.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomLabel.Alignment"/>
+          <link id="TCustomLabel.OptimalFill"/>
+          <link id="#lcl.graphics.TTextLayout"/>
+          <link id="#lcl.controls.TControl.Invalidate"/>
         </seealso>
       </element>
 

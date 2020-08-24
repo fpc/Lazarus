@@ -7,9 +7,7 @@
       ====================================================================
     -->
     <module name="GraphUtil">
-      <short>
-        Contains routines and types used when drawing graphics
-      </short>
+      <short>Contains routines and types used when drawing graphics</short>
       <descr>
         <p>
           <var>GraphUtil.pp</var> contains routines and types used when drawing graphics. They focus primarily on converting colors and drawing gradients, scroll bars, and arrows.
@@ -37,9 +35,7 @@
       <element name="LCLIntf"/>
 
       <element name="ColorToGray">
-        <short>
-          Converts a Lazarus TColor value to its grayscale equivalent
-        </short>
+        <short>Converts a Lazarus TColor value to its grayscale equivalent</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -70,9 +66,7 @@
       </element>
 
       <element name="RGBtoHLS">
-        <short>
-          Converts RGB color values to Hue, Lightness, and Saturation values
-        </short>
+        <short>Converts RGB color values to Hue, Lightness, and Saturation values</short>
         <descr></descr>
         <errors/>
         <seealso></seealso>
@@ -97,9 +91,7 @@
       </element>
 
       <element name="HLStoColor">
-        <short>
-          Converts Hue, Lightness, and Saturation values to a TColor value
-        </short>
+        <short>Converts Hue, Lightness, and Saturation values to a TColor value</short>
         <descr></descr>
         <errors/>
         <seealso></seealso>
@@ -118,9 +110,7 @@
       </element>
 
       <element name="HLStoRGB">
-        <short>
-          Converts Hue, Lightness, and Saturation values to a RGB color values
-        </short>
+        <short>Converts Hue, Lightness, and Saturation values to a RGB color values</short>
         <descr></descr>
         <errors/>
         <seealso></seealso>
@@ -146,9 +136,7 @@
 
       <!-- HSV functions are copied from mbColorLib without changes -->
       <element name="ColorToHSV">
-        <short>
-          Converts a TColor value to Hue, Saturation, and brightness Values
-        </short>
+        <short>Converts a TColor value to Hue, Saturation, and brightness Values</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -166,9 +154,7 @@
       </element>
 
       <element name="HSVToColor">
-        <short>
-          Converts Hue, Saturation, and brightness values to a TColor value
-        </short>
+        <short>Converts Hue, Saturation, and brightness values to a TColor value</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -186,9 +172,7 @@
       </element>
 
       <element name="RGBToHSV">
-        <short>
-          Comverts RGB values to Hue, Saturation, and brightness values
-        </short>
+        <short>Comverts RGB values to Hue, Saturation, and brightness values</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -215,9 +199,7 @@
       </element>
 
       <element name="HSVtoRGB">
-        <short>
-          Converts Hue, Saturation, and brightness values to RGB values
-        </short>
+        <short>Converts Hue, Saturation, and brightness values to RGB values</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -386,12 +368,9 @@
       </element>
 
       <element name="DrawVerticalGradient">
-        <short>
-          Draws a gradient from top to bottom with parabolic color variation
-        </short>
-        <descr></descr>
-        <errors/>
-        <seealso></seealso>
+        <short>Draws a gradient from top to bottom with parabolic color variation</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawVerticalGradient.Canvas">
         <short>Canvas where the gradient is drawn</short>
@@ -407,12 +386,9 @@
       </element>
 
       <element name="DrawGradientWindow">
-        <short>
-          Draws a window with a Title using gradient coloring
-        </short>
-        <descr></descr>
-        <errors/>
-        <seealso></seealso>
+        <short>Draws a window with a Title using gradient coloring</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawGradientWindow.Canvas">
         <short>Canvas where the gradient is drawn</short>
@@ -428,9 +404,7 @@
       </element>
 
       <element name="AntiAliasedStretchDrawBitmap">
-        <short>
-          Stretch-draws a bitmap using anti-aliased drawing
-        </short>
+        <short>Stretch-draws a bitmap using anti-aliased drawing</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -489,7 +463,9 @@
       <element name="DrawArrow">
         <short>Draws an arrow at the specified location on a canvas</short>
         <descr>
-          DrawArrow is an overloaded procedure used to draw an arrow on a canvas at the specified location. Overloaded variants of the routine allow the type of arrow, length, angle, and drawing style to be specified in their arguments.
+          <p>
+            <var>DrawArrow</var> is an overloaded procedure used to draw an arrow on a canvas at the specified location. Overloaded variants of the routine allow the type of arrow, length, angle, and drawing style to be specified as arguments.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -522,12 +498,10 @@
       </element>
 
       <element name="FloodFill">
-        <short>
-          A simple first-in-first-out circular buffer (queue) for flood-filling contiguous voxels
-        </short>
+        <short>A simple first-in-first-out circular buffer (queue) for flood-filling contiguous voxels</short>
         <descr>
           <p>
-            FloodFill is a procedure which implements a simple first-in-first-out circular buffer (queue) for flood-filling contiguous voxels. This algorithm avoids stack problems associated simple recursive algorithms described in the discussion at <url href="http://steve.hollasch.net/cgindex/polygons/floodfill.html"/>. Please note that is slow because of its use of Canvas.Pixels.
+            <var>FloodFill</var> is a procedure which implements a simple first-in-first-out circular buffer (queue) for flood-filling contiguous voxels. This algorithm avoids stack problems associated simple recursive algorithms described in the discussion at <url href="http://steve.hollasch.net/cgindex/polygons/floodfill.html"/>. Please note that the routine is slow because of its use of <var>Canvas.Pixels</var>.
           </p>
           <p>
             Orginal author: Chris Rorden
@@ -549,6 +523,28 @@
       </element>
       <element name="FloodFill.FillStyle">
         <short></short>
+      </element>
+
+      <element name="ScaleImg">
+        <short>Scales the specified image to the required dimensons</short>
+        <descr>
+          <p>
+            <var>ScaleImg</var> is a procedure used to scale the image in <var>AImage</var> to the dimensions in <var>AWidth</var> and <var>AWidth</var>.
+          </p>
+          <p>
+            ScaleImg calls the <var>CreateIntfImage</var> method in <var>AImage</var> to get a <var>TLazIntfImage</var> instance with the original content. A temporary <var>TLazCanvas</var> instance is created for the source image, and its <var>StretchDraw</var> method is called to resize and draw the interface image on the Canvas. AImage is updated with the resized content, and its <var>Height</var> and <var>Width</var> properties are set to the parameter values.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="ScaleImg.AImage">
+        <short>Bitmap image resize in the routine</short>
+      </element>
+      <element name="ScaleImg.AWidth">
+        <short>New Width requested for the image</short>
+      </element>
+      <element name="ScaleImg.AHeight">
+        <short>New height requested for the image</short>
       </element>
 
       <element name="ColorRGBToHLS">
@@ -644,9 +640,7 @@
       </element>
 
       <element name="NormalizeRect">
-        <short>
-          Ensures that coordinates in the rectangle are in the correct order
-        </short>
+        <short>Ensures that coordinates in the rectangle are in the correct order</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -658,9 +652,7 @@
       </element>
 
       <element name="WaveTo">
-        <short>
-          Draws a hoizontal or vertical wave at the specified position to the given device context
-        </short>
+        <short>Draws a hoizontal or vertical wave at the specified position to the given device context</short>
         <descr></descr>
         <seealso></seealso>
       </element>

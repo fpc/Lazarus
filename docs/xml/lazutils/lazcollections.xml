@@ -14,6 +14,7 @@
 
       <!-- unresolved external references -->
       <element name="SysUtils"/>
+      <element name="Math"/>
       <element name="SyncObjs"/>
       <element name="LazSysUtils"/>
 
@@ -190,7 +191,6 @@
       <element name="TLazThreadedQueue.FHasItemEvent"/>
       <element name="TLazThreadedQueue.FShutDown"/>
 
-      <!-- function Visibility: private -->
       <element name="TLazThreadedQueue.TryPushItem">
         <short>Tries to add the specified item to the queue</short>
         <descr>
@@ -198,42 +198,30 @@
             <var>TryPushItem</var> is a <var>Boolean</var> function which tries to add the item specified in <var>AItem</var> to the internal storage for the queue. The return value is <b>True</b> if the item was successfully added in the method.
           </p>
           <p>
-            <var>TryPushItem</var> is used in the implementation of the <var>PushItem</var> method. Use <var>PushItem</var> or to add an item to the thread-safe queue.
+            <var>TryPushItem</var> is used in the implementation of the <var>PushItem</var> method. Use <var>PushItem</var> to add an item to the thread-safe queue.
           </p>
         </descr>
         <seealso>
           <link id="TLazThreadedQueue.PushItem"/>
         </seealso>
       </element>
-      <!-- function result Visibility: private -->
       <element name="TLazThreadedQueue.TryPushItem.Result">
         <short>True if the item was added successfully</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.TryPushItem.AItem">
         <short>Item added to the queue in the method</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TLazThreadedQueue.TryPopItem">
-        <short>
-          Tries to remove the next item in the thread-safe queue
-        </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Tries to remove the next item in the thread-safe queue</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- function result Visibility: private -->
       <element name="TLazThreadedQueue.TryPopItem.Result">
-        <short>
-          True if an item was successfully removed from the queue
-        </short>
+        <short>True if an item was successfully removed from the queue</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.TryPopItem.AItem">
-        <short>
-          Item removed from the queue in the method
-        </short>
+        <short>Item removed from the queue in the method</short>
       </element>
 
       <!-- constructor Visibility: public -->
@@ -292,24 +280,20 @@
         </seealso>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TLazThreadedQueue.Grow">
-        <short>
-          Increases the allocated storage for the queue by the specified size
-        </short>
+        <short>Increases the allocated storage for the queue by the specified size</short>
         <descr>
           <p>
             <var>Grow</var> is a procedure which increases the storage allocated for items in the queue by the specified value in <var>ADelta</var>. The internal queue size is incremented by the value in <var>ADelta</var>. The length of the internal storage for the queue is increased to match the new queue size.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
+        <notes><note>Update needed. Internal storage is now re-allocated.</note></notes>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.Grow.ADelta">
         <short>Value used to increase the size of the queue</short>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TLazThreadedQueue.PushItem">
         <short>Adds the specified item to the queue</short>
         <descr>
@@ -323,7 +307,7 @@
             When PushTimeout contains <b>0</b>, the request will timeout after the first failed attempt to add the specified item to the queue.
           </p>
           <p>
-            When <var>ShutDown</var> contains True, the return value is updated to indicate that the request should be abandoned.
+            When <var>ShutDown</var> contains <b>True</b>, the return value is updated to indicate that the request should be abandoned.
           </p>
           <p>
             The return value contains a <var>TWaitResult</var> enumeration value that indicates the status for the enqueue request. See <var>TWaitResult</var> for more information about enumeration values and their meanings.
@@ -331,15 +315,13 @@
         </descr>
         <seealso>
           <link id="TLazThreadedQueue.ShutDown"/>
-          <link id="#FCL.SyncObjs.TWaitResult"/>
-          <link id="#RTL.System.RTLeventWaitFor"/>
+          <link id="#fcl.syncobjs.TWaitResult"/>
+          <link id="#rtl.system.RTLeventWaitFor"/>
         </seealso>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TLazThreadedQueue.PushItem.Result">
         <short>Contains the status for the enqueue request</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.PushItem.AItem">
         <short>Item added to the storage for the queue</short>
       </element>

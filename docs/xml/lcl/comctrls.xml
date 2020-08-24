@@ -17238,14 +17238,31 @@
       </element>
 
       <element name="TTreeNodes.SetUpdateState">
-        <short>
-          <var>SetUpdateState</var> - records status of update process
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Sets the update state in the TreeView which owns the node tree</short>
+        <descr>
+          <p>
+            <var>SetUpdateState</var> is a procedure used to set the update state in the TreeView which owns the class instance. <var>Updating</var> indicates the <var>TTreeViewState</var> value(s) that are included in or excluded from the States property in the <var>Owner</var>.
+          </p>
+          <p>
+            When <var>Updating</var> is <b>True</b>, the value <var>tvsUpdating</var> is included in the <var>States</var> property in Owner.
+          </p>
+          <p>
+            When Updating is <b>False</b>, <var>tvsUpdating</var> is excluded from and <var>tvsScrollbarChanged</var> is included in the States property in Owner. This also causes the TreeView to update its scrollbars and repaint the control .
+          </p>
+          <p>
+            SetUpdateState is used to implement the <var>BeginUpdate</var> and <var>EndUpdate</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodes.Owner"/>
+          <link id="TTreeNodes.BeginUpdate"/>
+          <link id="TTreeNodes.EndUpdate"/>
+          <link id="TCustomTreeView.States"/>
+          <link id="TTreeViewState"/>
+        </seealso>
       </element>
       <element name="TTreeNodes.SetUpdateState.Updating">
-        <short/>
+        <short>True when the tree nodes are being updated, False when the update has been completed</short>
       </element>
 
       <element name="TTreeNodes.Create">
