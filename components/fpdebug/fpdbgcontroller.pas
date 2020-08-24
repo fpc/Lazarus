@@ -16,7 +16,6 @@ uses
   {$ifdef windows}  FpDbgWinClasses,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
   {$ifdef linux}  FpDbgLinuxClasses,  {$endif}
-  FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
   FpDbgInfo, FpDbgDwarf, FpdMemoryTools;
 
 type
