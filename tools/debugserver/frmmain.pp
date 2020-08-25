@@ -467,6 +467,7 @@ begin
         FShowOnmessage:=ShowOnMessage;
         FAtBottom:=NewMessageAtBottom;
         FKeepVisible:=NewMessageVisible;
+        FCleanLog:=CleanLogOnNewProcess;
         SaveSettings;
         end;
     finally
