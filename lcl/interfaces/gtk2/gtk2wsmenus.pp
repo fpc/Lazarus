@@ -488,7 +488,9 @@ class procedure TGtk2WSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
-  if gtk_is_check_menu_item({%H-}Pointer(AMenuItem.Handle)) <> HasIcon then
+  // recreating menu handle without icon may lead to failures like
+  // main menu bar vanishing, see mantis issue #37607
+  if HasIcon then
     AMenuItem.RecreateHandle;
 end;
 
