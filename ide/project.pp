@@ -186,10 +186,13 @@ type
     // Todo: FCustomHighlighter is only ever set to false, and not stored in XML
     FCustomHighlighter: boolean; // do not change highlighter on file extension change
     FSyntaxHighlighter: TLazSyntaxHighlighter;
+    procedure SetCursorPos(const AValue: TPoint);
     procedure SetFoldState(AValue: String);
+    procedure SetIsLocked(const AValue: Boolean);
     procedure SetPageIndex(const AValue: Integer);
     procedure SetIsVisibleTab(const AValue: Boolean);
     procedure SetSyntaxHighlighter(AValue: TLazSyntaxHighlighter);
+    procedure SetTopLine(const AValue: Integer);
     procedure SetWindowIndex(const AValue: Integer);
   protected
     procedure Clear;
@@ -205,10 +208,10 @@ type
     property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
     property PageIndex: Integer read FPageIndex write SetPageIndex;
     property WindowID: Integer read FWindowID write SetWindowIndex;
-    property TopLine: Integer read FTopLine write FTopLine;
-    property CursorPos: TPoint read FCursorPos write FCursorPos;
+    property TopLine: Integer read FTopLine write SetTopLine;
+    property CursorPos: TPoint read FCursorPos write SetCursorPos;
     property FoldState: String read FFoldState write SetFoldState;
-    property IsLocked: Boolean read FIsLocked  write FIsLocked;
+    property IsLocked: Boolean read FIsLocked  write SetIsLocked;
     property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
     property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write SetSyntaxHighlighter; // SetSyntaxHighlighter
   end;
@@ -1260,6 +1263,20 @@ begin
   FUnitInfo.SessionModified := True;
 end;
 
+procedure TUnitEditorInfo.SetIsLocked(const AValue: Boolean);
+begin
+  if FIsLocked=AValue then Exit;
+  FIsLocked:=AValue;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetCursorPos(const AValue: TPoint);
+begin
+  if ComparePoints(FCursorPos,AValue)=0 then Exit;
+  FCursorPos:=AValue;
+  FUnitInfo.SessionModified := True;
+end;
+
 procedure TUnitEditorInfo.SetIsVisibleTab(const AValue: Boolean);
 begin
   if FIsVisibleTab = AValue then exit;
@@ -1272,6 +1289,13 @@ begin
   if FSyntaxHighlighter = AValue then Exit;
   FSyntaxHighlighter := AValue;
   FCustomHighlighter := FSyntaxHighlighter <> FUnitInfo.DefaultSyntaxHighlighter;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetTopLine(const AValue: Integer);
+begin
+  if FTopLine=AValue then Exit;
+  FTopLine:=AValue;
   FUnitInfo.SessionModified := True;
 end;
 
