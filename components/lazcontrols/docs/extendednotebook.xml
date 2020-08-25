@@ -1,6 +1,444 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="ExtendedNotebook"><element name="TExtendedNotebook"><short>ToDo: Explain TExtendedNotebook.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+
+    <module name="ExtendedNotebook">
+      <short/>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="LCLIntf"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
+      <element name="Controls"/>
+      <element name="ComCtrls"/>
+      <element name="LCLProc"/>
+
+      <element name="TNotebookTabDragDropEvent">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
+      <element name="TNotebookTabDragDropEvent.Sender">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragDropEvent.Source">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragDropEvent.OldIndex">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragDropEvent.NewIndex">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragDropEvent.CopyDrag">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragDropEvent.Done">
+        <short/>
+      </element>
+
+      <element name="TNotebookTabDragOverEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.Sender">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.Source">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.OldIndex">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.NewIndex">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.CopyDrag">
+        <short/>
+      </element>
+      <element name="TNotebookTabDragOverEvent.Accept">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook">
+        <short/>
+        <descr>
+          <p>
+            TExtendedNotebook is a TPageControl descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TExtendedNotebook.FDraggingTabIndex">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabDragDrop">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabDragOver">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabDragOverEx">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabDragDropEx">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabEndDrag">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FOnTabStartDrag">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FTabDragMode">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FTabDragAcceptMode">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FTabDragged">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FDragOverIndex">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FDragToRightSide">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FDragOverTabRect">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FDragNextToTabRect">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FMouseWaitForDrag">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FMouseDownIndex">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FMouseDownX">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FMouseDownY">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FTriggerDragX">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.FTriggerDragY">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.InitDrag">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.InvalidateRect">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.InvalidateRect.ARect">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.TabIndexForDrag">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabIndexForDrag.Result">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabIndexForDrag.x">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabIndexForDrag.y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.TabRectEx">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabRectEx.Result">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabRectEx.AIndex">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabRectEx.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabRectEx.Y">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.TabRectEx.IsRightHalf">
+        <short/>
+      </element>
+
+      <!-- protected methods -->
+      <element name="TExtendedNotebook.MouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.MouseDown.Button">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseDown.Shift">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseDown.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseDown.Y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.MouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.MouseUp.Button">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseUp.Shift">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseUp.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseUp.Y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.MouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.MouseMove.Shift">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseMove.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.MouseMove.Y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.CNNotify">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.CNNotify.Message">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.RemovePage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.RemovePage.Index">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.InsertPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.InsertPage.APage">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.InsertPage.Index">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.CaptureChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.DoStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.DoStartDrag.DragObject">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.DoEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.DoEndDrag.Target">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DoEndDrag.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DoEndDrag.Y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.DragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.DragOver.Source">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragOver.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragOver.Y">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragOver.State">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragOver.Accept">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.DragCanceled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.PaintWindow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.PaintWindow.DC">
+        <short/>
+      </element>
+
+      <!-- public methods and properties -->
+      <element name="TExtendedNotebook.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.Create.TheOwner">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.DragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.DragDrop.Source">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragDrop.X">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.DragDrop.Y">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.BeginDragTab">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedNotebook.BeginDragTab.ATabIndex">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.BeginDragTab.Immediate">
+        <short/>
+      </element>
+      <element name="TExtendedNotebook.BeginDragTab.Threshold">
+        <short/>
+      </element>
+
+      <element name="TExtendedNotebook.DraggingTabIndex">
+        <short/>
+        <descr>
+          <p>
+            DraggingTabIndex is a read-only Integer property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- published properties -->
+      <element name="TExtendedNotebook.OnTabDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.OnTabDragOverEx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.OnTabDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.OnTabDragDropEx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.OnTabEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.OnTabStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.TabDragMode">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>dmManual</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedNotebook.TabDragAcceptMode">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>dmManual</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
     </module>
+
   </package>
 </fpdoc-descriptions>

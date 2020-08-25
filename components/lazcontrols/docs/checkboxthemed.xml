@@ -1,6 +1,537 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="CheckBoxThemed"><element name="TCheckBoxThemed"><short>Custom drawn checkbox, planned to be used in Object Inspector boolean editor.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+
+    <module name="CheckBoxThemed">
+      <short>Implements a custom-drawn check box control drawing using theme services</short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="Math"/>
+      <element name="Controls"/>
+      <element name="StdCtrls"/>
+      <element name="Graphics"/>
+      <element name="ActnList"/>
+      <element name="Forms"/>
+      <element name="LCLIntf"/>
+      <element name="LMessages"/>
+      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="Themes"/>
+      <element name="LazMethodList"/>
+
+      <element name="TCheckBoxThemedActionLink">
+        <short/>
+        <descr>
+          TCheckBoxThemedActionLink is a TWinControlActionLink descendant.
+        </descr>
+        <seealso/>
       </element>
+
+      <!-- protected members and methods -->
+      <element name="TCheckBoxThemedActionLink.FClientCheckBoxThemed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCheckBoxThemedActionLink.AssignClient">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCheckBoxThemedActionLink.AssignClient.AClient">
+        <short/>
+      </element>
+
+      <element name="TCheckBoxThemedActionLink.SetChecked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCheckBoxThemedActionLink.SetChecked.Value">
+        <short/>
+      </element>
+
+      <!-- public methods -->
+      <element name="TCheckBoxThemedActionLink.IsCheckedLinked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCheckBoxThemedActionLink.IsCheckedLinked.Result">
+        <short/>
+      </element>
+
+      <element name="TCheckBoxThemedActionLinkClass">
+        <short/>
+        <descr>
+          TCheckBoxThemedActionLinkClass is a TCheckBoxThemedActionLink class type.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed">
+        <short/>
+        <descr>
+          TCustomCheckBoxThemed is a TCustomControl descendant.
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TCustomCheckBoxThemed.FAlignment"/>
+      <element name="TCustomCheckBoxThemed.FAllowGrayed"/>
+      <element name="TCustomCheckBoxThemed.FCheckBoxHovered"/>
+      <element name="TCustomCheckBoxThemed.FCheckFromAction"/>
+      <element name="TCustomCheckBoxThemed.FOnChange"/>
+      <element name="TCustomCheckBoxThemed.FState"/>
+
+      <element name="TCustomCheckBoxThemed.GetChecked">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.GetChecked.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.SetAlignment">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.SetAlignment.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.SetCheckBoxHovered">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.SetCheckBoxHovered.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.SetChecked">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.SetChecked.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.SetState">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.SetState.AValue">
+        <short/>
+      </element>
+
+      <!-- private class members -->
+      <element name="TCustomCheckBoxThemed.FThemeCheckBoxSize">
+        <short/>
+      </element>
+
+      <!-- protected members, methods, properties, and constants -->
+      <element name="TCustomCheckBoxThemed.GetCheckBoxSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.GetCheckBoxSize.Result">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.GetCheckBoxSize.PixelsPerInch">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CheckBoxPressed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.KnobPosUnchecked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.KnobPosChecked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.KnobPosGrayed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CalculatePreferredSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.CalculatePreferredSize.PreferredWidth">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.CalculatePreferredSize.PreferredHeight">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.CalculatePreferredSize.WithThemeSpace">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CMBiDiModeChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.CMBiDiModeChanged.Message">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CMEnabledChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.CMEnabledChanged.Message">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.InitCheckBoxSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.DialogChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.DialogChar.Result">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.DialogChar.Message">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.DoClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.DoEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.DoExit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.GetActionLinkClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.GetActionLinkClass.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.KeyDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.KeyDown.Key">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.KeyDown.Shift">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.KeyUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.KeyUp.Key">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.KeyUp.Shift">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.MouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseDown.Button">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseDown.Shift">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseDown.X">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseDown.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.MouseEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.MouseLeave">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.MouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseUp.Button">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseUp.Shift">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseUp.X">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.MouseUp.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.Paint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.TextChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.WMSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.WMSize.Message">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CheckBoxHovered">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.CheckFromAction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.cFocusBorder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.cIndent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public methods and propeties -->
+      <element name="TCustomCheckBoxThemed.PaintSelf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.ACanvas">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.ACaption">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.ARect">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.AState">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.ARightToLeft">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.AHovered">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.APressed">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.AFocused">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.AAlignment">
+        <short/>
+      </element>
+      <element name="TCustomCheckBoxThemed.PaintSelf.AEnabled">
+        <short/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.Alignment">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>taRightJustify</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.AllowGrayed">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>False</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.Checked">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>False</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.State">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>cbUnchecked</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCheckBoxThemed">
+        <short>Implements a custom-drawn check box control</short>
+        <descr>
+          <p>
+            TCheckBoxThemed is a TCustomCheckBoxThemed descendant which implements a custom-drawn check box control. TCheckBoxThemed is the type used to implement check box controls used in both the Object Inspector and Property editors in the Lazarus IDE.
+          </p>
+          <p>
+            TCheckBoxThemed sets the visibility for properties defined in an ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomCheckBoxThemed"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomCheckBoxThemed.Action"/>
+      <element name="TCustomCheckBoxThemed.Align"/>
+      <element name="TCustomCheckBoxThemed.Alignment"/>
+      <element name="TCustomCheckBoxThemed.AllowGrayed"/>
+      <element name="TCustomCheckBoxThemed.Anchors"/>
+      <element name="TCustomCheckBoxThemed.AutoSize"/>
+      <element name="TCustomCheckBoxThemed.BiDiMode"/>
+      <element name="TCustomCheckBoxThemed.BorderSpacing"/>
+      <element name="TCustomCheckBoxThemed.Caption"/>
+      <element name="TCustomCheckBoxThemed.Checked"/>
+      <element name="TCustomCheckBoxThemed.Color"/>
+      <element name="TCustomCheckBoxThemed.Constraints"/>
+      <element name="TCustomCheckBoxThemed.Cursor"/>
+      <element name="TCustomCheckBoxThemed.DragCursor"/>
+      <element name="TCustomCheckBoxThemed.DragKind"/>
+      <element name="TCustomCheckBoxThemed.DragMode"/>
+      <element name="TCustomCheckBoxThemed.Enabled"/>
+      <element name="TCustomCheckBoxThemed.Font"/>
+      <element name="TCustomCheckBoxThemed.Height"/>
+      <element name="TCustomCheckBoxThemed.HelpContext"/>
+      <element name="TCustomCheckBoxThemed.HelpKeyword"/>
+      <element name="TCustomCheckBoxThemed.HelpType"/>
+      <element name="TCustomCheckBoxThemed.Hint"/>
+      <element name="TCustomCheckBoxThemed.Left"/>
+      <element name="TCustomCheckBoxThemed.ParentBiDiMode"/>
+      <element name="TCustomCheckBoxThemed.ParentColor"/>
+      <element name="TCustomCheckBoxThemed.ParentFont"/>
+      <element name="TCustomCheckBoxThemed.ParentShowHint"/>
+      <element name="TCustomCheckBoxThemed.PopupMenu"/>
+      <element name="TCustomCheckBoxThemed.ShowHint"/>
+      <element name="TCustomCheckBoxThemed.State"/>
+      <element name="TCustomCheckBoxThemed.TabOrder"/>
+      <element name="TCustomCheckBoxThemed.TabStop"/>
+      <element name="TCustomCheckBoxThemed.Top"/>
+      <element name="TCustomCheckBoxThemed.Visible"/>
+      <element name="TCustomCheckBoxThemed.Width"/>
+      <element name="TCustomCheckBoxThemed.OnChangeBounds"/>
+      <element name="TCustomCheckBoxThemed.OnChange"/>
+      <element name="TCustomCheckBoxThemed.OnClick"/>
+      <element name="TCustomCheckBoxThemed.OnContextPopup"/>
+      <element name="TCustomCheckBoxThemed.OnDragDrop"/>
+      <element name="TCustomCheckBoxThemed.OnDragOver"/>
+      <element name="TCustomCheckBoxThemed.OnEditingDone"/>
+      <element name="TCustomCheckBoxThemed.OnEndDrag"/>
+      <element name="TCustomCheckBoxThemed.OnEnter"/>
+      <element name="TCustomCheckBoxThemed.OnExit"/>
+      <element name="TCustomCheckBoxThemed.OnKeyDown"/>
+      <element name="TCustomCheckBoxThemed.OnKeyPress"/>
+      <element name="TCustomCheckBoxThemed.OnKeyUp"/>
+      <element name="TCustomCheckBoxThemed.OnMouseDown"/>
+      <element name="TCustomCheckBoxThemed.OnMouseEnter"/>
+      <element name="TCustomCheckBoxThemed.OnMouseLeave"/>
+      <element name="TCustomCheckBoxThemed.OnMouseMove"/>
+      <element name="TCustomCheckBoxThemed.OnMouseUp"/>
+      <element name="TCustomCheckBoxThemed.OnMouseWheel"/>
+      <element name="TCustomCheckBoxThemed.OnMouseWheelDown"/>
+      <element name="TCustomCheckBoxThemed.OnMouseWheelUp"/>
+      <element name="TCustomCheckBoxThemed.OnResize"/>
+      <element name="TCustomCheckBoxThemed.OnStartDrag"/>
+      <element name="TCustomCheckBoxThemed.OnUTF8KeyPress"/>
+
     </module>
+
   </package>
 </fpdoc-descriptions>

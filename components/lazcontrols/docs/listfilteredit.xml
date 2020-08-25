@@ -1,10 +1,280 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="ListFilterEdit"><element name="TListFilterEdit"><short>Filter for an associated ListBox.</short>
-      </element><element name="TListFilterEdit.FilteredListbox"><short>The associated Listbox.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+
+    <module name="ListFilterEdit">
+      <short>Implements a control used to filter an associated list box</short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="LCLType"/>
+      <element name="Graphics"/>
+      <element name="StdCtrls"/>
+      <element name="EditBtn"/>
+      <element name="CheckLst"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUTF8"/>
+      <element name="AvgLvlTree"/>
+
+      <element name="TImageIndexEvent">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
-    <element name="TListFilterEdit.SelectionList"><short>List of selected items. They are restored after filtering.</short>
-      </element><element name="TListFilterEdit.Items"><short>Maintains the data which is filtered and shown in the Listbox.</short>
+      <element name="TImageIndexEvent.Result">
+        <short/>
       </element>
+      <element name="TImageIndexEvent.Str">
+        <short/>
+      </element>
+      <element name="TImageIndexEvent.Data">
+        <short/>
+      </element>
+      <element name="TImageIndexEvent.IsEnabled">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit">
+        <short>Filter for an associated ListBox</short>
+        <descr>
+          <p>
+            TListFilterEdit is a TCustomControlFilterEdit descendant which implements a filter for an associated ListBox.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TListFilterEdit.FFilteredListbox">
+        <short>The control showing the filtered data</short>
+      </element>
+
+      <element name="TListFilterEdit.FSelectionList">
+        <short>Stores / restores the selections in the associated control</short>
+      </element>
+
+      <element name="TListFilterEdit.FOriginalData">
+        <short>The orignal value supplied in the Data property</short>
+      </element>
+
+      <element name="TListFilterEdit.FSortedData">
+        <short>Sorted values from the Data property</short>
+      </element>
+
+      <element name="TListFilterEdit.FCheckedItems">
+        <short>Contains the checked items for TCheckListBox</short>
+      </element>
+
+      <element name="TListFilterEdit.CompareFNs">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.CompareFNs.Result">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.CompareFNs.AFilename1">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.CompareFNs.AFilename2">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.SetFilteredListbox">
+        <short>Sets the value for the FilteredListbox property</short>
+      </element>
+      <element name="TListFilterEdit.SetFilteredListbox.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <!-- protected methods -->
+      <element name="TListFilterEdit.Notification">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.Notification.AComponent">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.Notification.Operation">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MoveTo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MoveTo.AIndex">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.MoveTo.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MoveNext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MoveNext.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MovePrev">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MovePrev.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MovePageUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MovePageUp.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MovePageDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MovePageDown.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MoveHome">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MoveHome.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.MoveEnd">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.MoveEnd.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.ReturnKeyHandled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.ReturnKeyHandled.Result">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.SortAndFilter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListFilterEdit.ApplyFilterCore">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListFilterEdit.GetDefaultGlyphName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.GetDefaultGlyphName.Result">
+        <short/>
+      </element>
+
+      <!-- public methods -->
+      <element name="TListFilterEdit.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.Create.AOwner">
+        <short>Owner for the class instance</short>
+      </element>
+
+      <element name="TListFilterEdit.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TListFilterEdit.RemoveItem">
+        <short>Removes the specified item from the Items property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.RemoveItem.AItem">
+        <short>Item located and removed in the method</short>
+      </element>
+
+      <element name="TListFilterEdit.ItemWasClicked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListFilterEdit.ItemWasClicked.AItem">
+        <short/>
+      </element>
+      <element name="TListFilterEdit.ItemWasClicked.IsChecked">
+        <short/>
+      </element>
+
+      <element name="TListFilterEdit.StoreSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListFilterEdit.RestoreSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public properties -->
+      <element name="TListFilterEdit.SelectionList">
+        <short>List of selected items. They are restored after filtering.</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListFilterEdit.Items">
+        <short>Maintains the data which is filtered and shown in the Listbox.</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- published properties -->
+      <element name="TListFilterEdit.FilteredListbox">
+        <short>The Listbox associated with the filter edit control</short>
+        <descr/>
+        <seealso/>
+      </element>
+
     </module>
+
   </package>
 </fpdoc-descriptions>

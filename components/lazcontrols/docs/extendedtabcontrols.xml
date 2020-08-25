@@ -1,0 +1,1062 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LazControls">
+    <!-- ExtendedTabControls -->
+    <module name="ExtendedTabControls">
+      <short/>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="ComCtrls"/>
+      <element name="Controls"/>
+      <element name="Toolwin"/>
+      <element name="ImgList"/>
+      <element name="Graphics"/>
+      <element name="Menus"/>
+      <element name="Forms"/>
+      <element name="LazLoggerBase"/>
+
+      <element name="TTabControlToolBarSide">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTabControlToolBarSide.tsNone">
+        <short/>
+      </element>
+      <element name="TTabControlToolBarSide.tsLeft">
+        <short/>
+      </element>
+      <element name="TTabControlToolBarSide.tsRight">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabToolbar">
+        <short/>
+        <descr>
+          TExtendedTabToolbar is a TToolBar descendant.
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- protected members and methods -->
+      <element name="TExtendedTabToolbar.FVertical">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabToolbar.IsVertical">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabToolbar.IsVertical.Result">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabToolbar.Loaded">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public methods -->
+      <element name="TExtendedTabToolbar.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabToolbar.GetChildren">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabToolbar.GetChildren.Proc">
+        <short/>
+      </element>
+      <element name="TExtendedTabToolbar.GetChildren.Root">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabToolButton">
+        <short/>
+        <descr>
+          <p>
+            TExtendedTabToolButton is a TToolButton descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabToolButton.Loaded">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TToolbarWrapper.FOwner"/>
+
+      <element name="TToolbarWrapper.ToolBar">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.ToolBar.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetButton">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetButton.Result">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetButton.Index">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetButtonCount">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetButtonCount.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetButtonList">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetButtonList.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetEdgeInner">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetEdgeInner.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetEdgeOuter">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetEdgeOuter.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetEnabled">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetEnabled.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetFEdgeBorders">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetFEdgeBorders.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetFlat">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetFlat.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetFont">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetFont.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetHotImages">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetHotImages.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetImages">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetImages.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetIndent">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetIndent.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetList">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetList.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetOnClick">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetOnClick.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetOnContextPopup">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetOnContextPopup.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetOnDblClick">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetOnDblClick.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetPopupMenu">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetPopupMenu.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetRowCount">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetRowCount.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetShowCaptions">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetShowCaptions.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetShowHint">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetShowHint.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.GetWrapable">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.GetWrapable.Result">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetEdgeBorders">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetEdgeBorders.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetEdgeInner">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetEdgeInner.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetEdgeOuter">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetEdgeOuter.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetEnabled">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetEnabled.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetFlat">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetFlat.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetFont">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetFont.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetHotImages">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetHotImages.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetImages">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetImages.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetIndent">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetIndent.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetList">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetList.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetOnClick">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetOnClick.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetOnContextPopup">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetOnContextPopup.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetOnDblClick">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetOnDblClick.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetPopupMenu">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetPopupMenu.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetShowCaptions">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetShowCaptions.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetShowHint">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetShowHint.AValue">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.SetWrapable">
+        <short/>
+      </element>
+      <element name="TToolbarWrapper.SetWrapable.AValue">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TToolbarWrapper.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TToolbarWrapper.Create.AnAdvTabControl">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.AcceptButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TToolbarWrapper.AcceptButton.AToolButton">
+        <short/>
+      </element>
+
+      <element name="TToolbarWrapper.ButtonCount">
+        <short>Number of tool buttons in the Buttons property</short>
+        <descr>
+          <p>
+            <var>ButtonCount</var> is a read-only <var>Integer</var> property which contains the number of tool buttons available in the Buttons property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Buttons">
+        <short/>
+        <descr>
+          <p>
+            <var>Buttons</var> is an indexed <var>TToolButton</var> property which provides access to the tool buttons created for the tool bar. The Index value must be in the range <b>0</b> to <b><var>ButtonCount</var> - 1</b>.
+          </p>
+          <p>
+            Use ButtonCount to get the number of tool buttons created in the ButtonList for the tool bar.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TToolbarWrapper.Buttons.Index">
+        <short>Ordinal position for the requested tool button</short>
+      </element>
+
+      <element name="TToolbarWrapper.ButtonList">
+        <short/>
+        <descr>
+          <p>
+            <var>ButtonList</var> is a read-only <var>TList</var> property which contains the <var>TToolButton</var> instances created for the tool bar. Use <var>Buttons</var> to access an individual TToolButton instance by its ordinal position in ButtonList. Use <var>ButtonCount</var> to get the number to tool buttons stored in ButtonList.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.RowCount">
+        <short/>
+        <descr>
+          <p>
+            <var>RowCount</var> is a read-only <var>Integer</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <element name="TToolbarWrapper.EdgeBorders">
+        <short/>
+        <descr>
+          <p>
+            EdgeBorders is a TEdgeBorders property which contains a set of TEdgeBorder enumeration values. The values indicates which borders will be drawn for the tool bar. The default value for the property is a set which includes the following values:
+          </p>
+          <ul>
+            <li>ebLeft</li>
+            <li>ebTop</li>
+            <li>ebRight</li>
+            <li>ebBottom</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.EdgeInner">
+        <short>Drawing styleused for the inner edge of the tool bar</short>
+        <descr>
+          <p>
+            EdgeInner is a TEdgeStyle property which indicates the drawing style used for the inner edge of the tool bar. The default value for the property is esRaised.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.EdgeOuter">
+        <short/>
+        <descr>
+          The default value for the property is esLowered.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Enabled">
+        <short/>
+        <descr>
+          The default value for the property is <b>True</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Flat">
+        <short/>
+        <descr>
+          The default value for the property is <b>True</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Font">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.HotImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Images">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Indent">
+        <short/>
+        <descr>
+          The default value for the property is <b>1</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.List">
+        <short/>
+        <descr>
+          The default value for the property is <b>False</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.ShowCaptions">
+        <short/>
+        <descr>
+          The default value for the property is <b>False</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.ShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.Wrapable">
+        <short/>
+        <descr>
+          The default value for the property is <b>True</b>.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.OnContextPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TToolbarWrapper.OnDblClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedInternalCustomPage">
+        <short/>
+        <descr>
+          TExtendedInternalCustomPage is a TCustomPage descendant.
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- public -->
+      <element name="TExtendedInternalCustomPage.RealPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedInternalCustomPage.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedInternalTabControl">
+        <short>Internal TabControl used to display tabs</short>
+        <descr>
+          TExtendedInternalTabControl is a TNoteBookStringsTabControl descendant.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedInternalTabControl.GetPageClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedInternalTabControl.GetPageClass.Result">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings">
+        <short>List of tabs (and pages) used in TCustomExtendedTabControl</short>
+        <descr>
+          TExtendedTabControlNoteBookStrings is a TTabControlNoteBookStrings descendant.
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TExtendedTabControlNoteBookStrings.FShowToolBar"/>
+      <element name="TExtendedTabControlNoteBookStrings.FToolBar"/>
+
+      <element name="TExtendedTabControlNoteBookStrings.SetShowToolBar">
+        <short/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.SetShowToolBar.AValue">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.ToolbarResized">
+        <short/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.ToolbarResized.Sender">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TExtendedTabControlNoteBookStrings.GetInternalTabControllClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.GetInternalTabControllClass.Result">
+        <short>Returns a TExtendedInternalTabControl type</short>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.SetToolbar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.SetToolbar.AValue">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.Notification">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.Notification.AComponent">
+        <short/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.Notification.Operation">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.NBPageChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.NBPageChanged.Sender">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TExtendedTabControlNoteBookStrings.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.Create.TheTabControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.IndexOfPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.IndexOfPage.Result">
+        <short/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.IndexOfPage.APage">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.Delete">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TExtendedTabControlNoteBookStrings.Delete.Index">
+        <short/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.TabControlBoundsChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.ShowToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabControlNoteBookStrings.ToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabSheet">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TCustomExtendedTabSheet.FInternalTabPage"/>
+
+      <element name="TCustomExtendedTabSheet.SetInternalTabPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabSheet.SetInternalTabPage.AValue">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TCustomExtendedTabSheet.InternalTabPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public -->
+      <element name="TCustomExtendedTabSheet.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabSheet.Create.TheOwner">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabSheet.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabSheet">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <!-- TODO: Add links to ancestor classes -->
+      <element name="TExtendedTabSheet.BorderWidth"/>
+      <element name="TExtendedTabSheet.BiDiMode"/>
+      <element name="TExtendedTabSheet.Caption"/>
+      <element name="TExtendedTabSheet.ChildSizing"/>
+      <element name="TExtendedTabSheet.ClientHeight"/>
+      <element name="TExtendedTabSheet.ClientWidth"/>
+      <element name="TExtendedTabSheet.Enabled"/>
+      <element name="TExtendedTabSheet.Font"/>
+      <element name="TExtendedTabSheet.ImageIndex"/>
+      <element name="TExtendedTabSheet.OnContextPopup"/>
+      <element name="TExtendedTabSheet.OnDragDrop"/>
+      <element name="TExtendedTabSheet.OnDragOver"/>
+      <element name="TExtendedTabSheet.OnEndDrag"/>
+      <element name="TExtendedTabSheet.OnEnter"/>
+      <element name="TExtendedTabSheet.OnExit"/>
+      <element name="TExtendedTabSheet.OnHide"/>
+      <element name="TExtendedTabSheet.OnMouseDown"/>
+      <element name="TExtendedTabSheet.OnMouseEnter"/>
+      <element name="TExtendedTabSheet.OnMouseLeave"/>
+      <element name="TExtendedTabSheet.OnMouseMove"/>
+      <element name="TExtendedTabSheet.OnMouseUp"/>
+      <element name="TExtendedTabSheet.OnResize"/>
+      <element name="TExtendedTabSheet.OnShow"/>
+      <element name="TExtendedTabSheet.OnStartDrag"/>
+      <element name="TExtendedTabSheet.PageIndex"/>
+      <element name="TExtendedTabSheet.ParentBiDiMode"/>
+      <element name="TExtendedTabSheet.ParentFont"/>
+      <element name="TExtendedTabSheet.ParentShowHint"/>
+      <element name="TExtendedTabSheet.PopupMenu"/>
+      <element name="TExtendedTabSheet.ShowHint"/>
+      <element name="TExtendedTabSheet.TabVisible"/>
+      <element name="TExtendedTabSheet.Width"/>
+
+      <element name="TCustomExtendedTabControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TCustomExtendedTabControl.FToolBarWrapper"/>
+
+      <element name="TCustomExtendedTabControl.GetActiveTabSheet">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetActiveTabSheet.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetShowToolBar">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetShowToolBar.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetTabSheet">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetTabSheet.Result">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetTabSheet.Index">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.SetActivePageComponent">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.SetActivePageComponent.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.SetActiveTabSheet">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.SetActiveTabSheet.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.SetShowToolBar">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.SetShowToolBar.AValue">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TCustomExtendedTabControl.AdvTabs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.AdvTabs.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.CreateTabNoteBookStrings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.CreateTabNoteBookStrings.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.InsertPage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.InsertPage.APage">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.InsertPage.Index">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.RemovePage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.RemovePage.Index">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetChildOwner">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetChildOwner.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.Notification">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.Notification.AComponent">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.Notification.Operation">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetPageClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetPageClass.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetListClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetListClass.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.ActivePageComponent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public -->
+      <element name="TCustomExtendedTabControl.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.Create.TheOwner">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.GetChildren">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetChildren.Proc">
+        <short/>
+      </element>
+      <element name="TCustomExtendedTabControl.GetChildren.Root">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.ActivePage">
+        <short/>
+        <descr>
+          <p>
+            Experimental. Platform dependent.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.Pages">
+        <short/>
+        <descr>
+          <p>
+            Experimental. Platform dependent.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomExtendedTabControl.Pages.Index">
+        <short/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.ShowToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.ToolBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomExtendedTabControl.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TExtendedTabControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <!-- TODO: add links to ancestor classes -->
+      <element name="TExtendedTabControl.ShowToolBar"/>
+      <element name="TExtendedTabControl.ToolBar"/>
+
+    </module>
+    <!-- ExtendedTabControls -->
+  </package>
+</fpdoc-descriptions>

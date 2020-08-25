@@ -1,6 +1,3415 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="LvlGraphCtrl"><element name="TLvlGraphControl"><short>ToDo: Explain TLvlGraphControl.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+    <!-- LvlGraphCtrl -->
+    <module name="LvlGraphCtrl">
+      <short>Implements a Level (or Layered) Graph control</short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="Math"/>
+      <element name="TypInfo"/>
+      <element name="FPImage"/>
+      <element name="FPCanvas"/>
+      <element name="Laz_AVL_Tree"/>
+      <element name="LazLoggerBase"/>
+      <element name="AvgLvlTree"/>
+      <element name="LMessages"/>
+      <element name="LCLType"/>
+      <element name="LCLIntf"/>
+      <element name="GraphType"/>
+      <element name="Graphics"/>
+      <element name="Controls"/>
+      <element name="ImgList"/>
+      <element name="Forms"/>
+      <element name="Themes"/>
+
+      <element name="TLazCtrlPalette">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
+
+      <element name="DefaultLvlGraphNodeImageEffect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeArray">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphNode.FCaption"/>
+      <element name="TLvlGraphNode.FColor"/>
+      <element name="TLvlGraphNode.FDrawnCaptionRect"/>
+      <element name="TLvlGraphNode.FGraph"/>
+      <element name="TLvlGraphNode.FImageEffect"/>
+      <element name="TLvlGraphNode.FImageIndex"/>
+      <element name="TLvlGraphNode.FInEdges"/>
+      <element name="TLvlGraphNode.FDrawSize"/>
+      <element name="TLvlGraphNode.FInWeight"/>
+      <element name="TLvlGraphNode.FLevel"/>
+      <element name="TLvlGraphNode.FNextSelected"/>
+      <element name="TLvlGraphNode.FOutEdges"/>
+      <element name="TLvlGraphNode.FDrawPosition"/>
+      <element name="TLvlGraphNode.FOutWeight"/>
+      <element name="TLvlGraphNode.FOverlayIndex"/>
+      <element name="TLvlGraphNode.FPrevSelected"/>
+      <element name="TLvlGraphNode.FSelected"/>
+      <element name="TLvlGraphNode.FSubGraph"/>
+      <element name="TLvlGraphNode.FVisible"/>
+
+      <element name="TLvlGraphNode.GetIndexInLevel">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetIndexInLevel.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetInEdges">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetInEdges.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetInEdges.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetOutEdges">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetOutEdges.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetOutEdges.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetCaption">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetCaption.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetColor">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetColor.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.OnLevelDestroy">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetDrawCenter">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetDrawCenter.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetDrawSize">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetDrawSize.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetImageEffect">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetImageEffect.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetImageIndex">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetImageIndex.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetIndexInLevel">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetIndexInLevel.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetLevel">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetLevel.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetOverlayIndex">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetOverlayIndex.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetSelected">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetSelected.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetSubGraph">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetSubGraph.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SetVisible">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.SetVisible.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.UnbindLevel">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.SelectionChanged">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetDrawCenter">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.GetDrawCenter.Result">
+        <short/>
+      </element>
+
+      <!-- protected properties -->
+      <element name="TLvlGraphNode.SubGraph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public members, methods, and properties -->
+      <element name="TLvlGraphNode.Data">
+        <short/>
+        <descr>
+          <p>
+            Data is a Pointer property which points to the location in memory where the data for the node is stored.
+          </p>
+        </descr>
+        <seealso/>
+        <notes><note>Free for user data?</note></notes>
+      </element>
+
+      <element name="TLvlGraphNode.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.Create.TheGraph">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.Create.TheCaption">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.Create.TheLevel">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Clear">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Invalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.OverlayIndex">
+        <short/>
+        <descr>
+          <p>
+            Requires a value greater than or equal to 0 (zero).
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.ImageEffect">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeImageEffect constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Graph">
+        <short/>
+        <descr>
+          <p>
+            Graph is a read-only TLvlGraph property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.IndexOfInEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.IndexOfInEdge.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.IndexOfInEdge.Source">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.FindInEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.FindInEdge.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.FindInEdge.Source">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.InEdgeCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.InEdgeCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.InEdges">
+        <short/>
+        <descr>
+          <p>
+            InEdges is a read-only indexed TLvlGraphEdge property which provides access to the input edges for the node. Use InEdgeCount to get the total number of input edges for the node.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLvlGraphNode.InEdgeCount"/>
+        </seealso>
+      </element>
+      <element name="TLvlGraphNode.InEdges.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.IndexOfOutEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.IndexOfOutEdge.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.IndexOfOutEdge.Target">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.FindOutEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.FindOutEdge.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNode.FindOutEdge.Target">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.OutEdgeCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.OutEdgeCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.OutEdges">
+        <short/>
+        <descr>
+          <p>
+            OutEdges is a read-only indexed TLvlGraph property which provides access to the output edges for the node. Use OutEdgeCount to get the total number of output edges for the node.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLvlGraphNode.OutEdgeCount"/>
+        </seealso>
+      </element>
+      <element name="TLvlGraphNode.OutEdges.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetVisibleSourceNodes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.GetVisibleSourceNodes.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetVisibleSourceNodesAsAVLTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.GetVisibleSourceNodesAsAVLTree.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetVisibleTargetNodes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.GetVisibleTargetNodes.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.GetVisibleTargetNodesAsAVLTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.GetVisibleTargetNodesAsAVLTree.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.IndexInLevel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Level">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.Selected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.NextSelected">
+        <short/>
+        <descr>
+          <p>
+            NextSelected is a read-only TLvlGraphNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.PrevSelected">
+        <short/>
+        <descr>
+          <p>
+            PrevSelected is a read-only TLvlGraphNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.DrawPosition">
+        <short>Drawing position for the node at the current Level</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.DrawSize">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>1</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.DrawCenter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.DrawPositionEnd">
+        <short/>
+        <descr>
+          <p>
+            Calculated using the formula:
+          </p>
+          <code>
+          DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
+          </code>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNode.DrawPositionEnd.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNode.DrawnCaptionRect">
+        <short>Last drawing position for the caption, with scrolling</short>
+        <descr>
+          <p>
+            DrawnCaptionRect is a read-only TRect property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.InWeight">
+        <short>Total weight for InEdges</short>
+        <descr>
+          <p>
+            InWeight is a read-only Single property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNode.OutWeight">
+        <short>Total weight for OutEdges</short>
+        <descr>
+          <p>
+            OutWeight is a read-only Single property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeClass">
+        <short>Class reference for the TLvlGrapNode type</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="PLvlGraphNodeClass">
+        <short>Pointer to a TLvlGrapNode instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private  -->
+      <element name="TLvlGraphEdge.FBackEdge"/>
+
+      <element name="TLvlGraphEdge.FNoGapCircle">
+        <short>
+          True when a circular reference exists between 2 nodes, with no levels between; i. e. both edges paint in the same location
+        </short>
+      </element>
+
+      <element name="TLvlGraphEdge.FDrawnAt"/>
+      <element name="TLvlGraphEdge.FHighlighted"/>
+      <element name="TLvlGraphEdge.FSource"/>
+      <element name="TLvlGraphEdge.FTarget"/>
+      <element name="TLvlGraphEdge.FWeight"/>
+
+      <element name="TLvlGraphEdge.SetHighlighted">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdge.SetHighlighted.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.SetWeight">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdge.SetWeight.AValue">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TLvlGraphEdge.RevertDirection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraphEdge.Data">
+        <short>Pointer to the user data for the edge</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.Create.TheSource">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdge.Create.TheTarget">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.Source">
+        <short/>
+        <descr>
+          <p>
+            Source is a read-only TLvlGrapNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.Target">
+        <short/>
+        <descr>
+          <p>
+            Target is a read-only TLvlGrapNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.Weight">
+        <short/>
+        <descr>
+          <p>
+            Requires a value greater than or equal to <b>0</b> (<b>zero</b>).
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.IsBackEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.IsBackEdge.Result">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.BackEdge">
+        <short/>
+        <descr>
+          <p>
+            BackEdge is a read-only Boolean property. The value is True if the direction for the edge was  reversed (source and target were exchanged).
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.Highlighted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.DrawnAt">
+        <short>Last drawing rectangle, with scrolling</short>
+        <descr>
+          DrawnAt is a read-only TRect property.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdge.GetVisibleSourceNodes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.GetVisibleSourceNodes.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.GetVisibleTargetNodes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.GetVisibleTargetNodes.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.GetVisibleTargetNodesAsAVLTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.GetVisibleTargetNodesAsAVLTree.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdge.AsString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdge.AsString.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeArray">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PLvlGraphEdge">
+        <short>Pointer to a TLvlGraphEdge type</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel">
+        <short/>
+        <descr>
+          <p>
+            TLvlGraphLevel is a TPersistent descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphLevel.FGraph"/>
+      <element name="TLvlGraphLevel.FIndex"/>
+      <element name="TLvlGraphLevel.FNodes"/>
+      <element name="TLvlGraphLevel.FDrawPosition"/>
+
+      <element name="TLvlGraphLevel.GetNodes">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.GetNodes.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.GetNodes.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.SetDrawPosition">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.SetDrawPosition.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.MoveNode">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.MoveNode.Node">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.MoveNode.NewIndexInLevel">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraphLevel.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLevel.Create.TheGraph">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.Create.TheIndex">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel.Invalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel.Nodes">
+        <short/>
+        <descr>
+          <p>
+            Nodes is a read-only indexed TLvlGrapNode property. Nodes is the default property for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLevel.Nodes.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.IndexOf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLevel.IndexOf.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphLevel.IndexOf.Node">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLevel.Count.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLevel.GetTotalInOutWeights">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLevel.GetTotalInOutWeights.Result">
+        <short>Sum of the maximum weights for each node: Max(InWeight,OutWeight)</short>
+      </element>
+
+      <element name="TLvlGraphLevel.Index">
+        <short/>
+        <descr>
+          <p>
+            Index is a read-only Integer property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel.Graph">
+        <short/>
+        <descr>
+          <p>
+            Graph is a read-only TLvlGraph property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevel.DrawPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLevelClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphSubGraph">
+        <short/>
+        <descr>
+          <p>
+            TLvlGraphSubGraph is a TPersistent descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphSubGraph.FGraph"/>
+      <element name="TLvlGraphSubGraph.FHighestLevel"/>
+      <element name="TLvlGraphSubGraph.FIndex"/>
+      <element name="TLvlGraphSubGraph.FLowestLevel"/>
+
+      <!-- public -->
+      <element name="TLvlGraphSubGraph.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphSubGraph.Create.TheGraph">
+        <short/>
+      </element>
+      <element name="TLvlGraphSubGraph.Create.TheIndex">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphSubGraph.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphSubGraph.Graph">
+        <short/>
+        <descr>
+          <p>
+            Graph is a read-only TLvlGraph property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphSubGraph.Index">
+        <short/>
+        <descr>
+          <p>
+            Index is a read-only Integer property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphSubGraph.LowestLevel">
+        <short/>
+        <descr>
+          <p>
+            LowestLevel is a read-only Integer property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphSubGraph.HighestLevel">
+        <short/>
+        <descr>
+          <p>
+            HighestLevel is a read-only Integer property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TOnLvlGraphStructureChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TOnLvlGraphStructureChanged.Sender">
+        <short/>
+      </element>
+      <element name="TOnLvlGraphStructureChanged.Element">
+        <short/>
+      </element>
+      <element name="TOnLvlGraphStructureChanged.Operation">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeSplitMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdgeSplitMode.lgesNone">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeSplitMode.lgesSeparate">
+        <short>Create separate hidden nodes for each edge; this creates a lot of hidden nodes</short>
+      </element>
+      <element name="TLvlGraphEdgeSplitMode.lgesMergeSource">
+        <short>Combine hidden nodes at source (outgoing edge)</short>
+      </element>
+      <element name="TLvlGraphEdgeSplitMode.lgesMergeTarget">
+        <short>Combine hidden nodes at target (incoming edge)</short>
+      </element>
+      <element name="TLvlGraphEdgeSplitMode.lgesMergeHighest">
+        <short>Combine hidden nodes at source or target, whichever has more edges</short>
+      </element>
+
+      <element name="TLvlGraph">
+        <short/>
+        <descr>
+          <p>
+            TLvlGraph is a TPersistent descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraph.FEdgeClass"/>
+      <element name="TLvlGraph.FFirstSelected"/>
+      <element name="TLvlGraph.FLastSelected"/>
+      <element name="TLvlGraph.FLevelClass"/>
+      <element name="TLvlGraph.FNodeClass"/>
+      <element name="TLvlGraph.FOnInvalidate"/>
+      <element name="TLvlGraph.FNodes"/>
+      <element name="TLvlGraph.FLevels"/>
+      <element name="TLvlGraph.FSubGraphs"/>
+      <element name="TLvlGraph.FCaseSensitive"/>
+      <element name="TLvlGraph.FOnSelectionChanged"/>
+      <element name="TLvlGraph.FOnStructureChanged"/>
+
+      <element name="TLvlGraph.GetLevelCount">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetLevelCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetLevelCount">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetLevelCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetLevels">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetLevels.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetLevels.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetNodes">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetNodes.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetNodes.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetSubGraphCount">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetSubGraphCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetSubGraphs">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetSubGraphs.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetSubGraphs.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.SetLevelCount">
+        <short/>
+      </element>
+      <element name="TLvlGraph.SetLevelCount.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.InternalRemoveNode">
+        <short/>
+      </element>
+      <element name="TLvlGraph.InternalRemoveNode.Node">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.InternalRemoveLevel">
+        <short/>
+      </element>
+      <element name="TLvlGraph.InternalRemoveLevel.Lvl">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TLvlGraph.SelectionChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.NewLevelAtIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.NewLevelAtIndex.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.NewLevelAtIndex.AnIndex">
+        <short/>
+      </element>
+      <element name="TLvlGraph.NewLevelAtIndex.ASubGraphIndex">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraph.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.Clear">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.Invalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.StructureChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.StructureChanged.Element">
+        <short/>
+      </element>
+      <element name="TLvlGraph.StructureChanged.Operation">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.OnInvalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.OnSelectionChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.OnStructureChanged">
+        <short/>
+        <descr>
+          <p>
+            Signalled when a Node, Edge, or Level has been added or deleted in the level graph.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.NodeCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.NodeCount.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.Nodes">
+        <short/>
+        <descr>
+          <p>
+            Nodes is a read-only indexed TLvlGraphNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.Nodes.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.GetNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.GetNode.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetNode.ACaption">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetNode.CreateIfNotExists">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.CreateHiddenNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.CreateHiddenNode.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.CreateHiddenNode.Level">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.NodeClass">
+        <short/>
+        <descr>
+          <p>
+            NodeClass is a read-only TLvlGraphNodeClass property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.FirstSelected">
+        <short/>
+        <descr>
+          <p>
+            FirstSelected is a read-only TLvlGrapNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.LastSelected">
+        <short/>
+        <descr>
+          <p>
+            LastSelected is a read-only TLvlGraphNode property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.ClearSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.SingleSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.SingleSelect.Node">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.IsMultiSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.IsMultiSelection.Result">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.CaseSensitive">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.GetEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.GetEdge.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetEdge.SourceCaption">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetEdge.TargetCaption">
+        <short/>
+      </element>
+      <element name="TLvlGraph.GetEdge.CreateIfNotExists">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.EdgeClass">
+        <short/>
+        <descr>
+          <p>
+            EdgeClass is a read-only TLvlGraphEdgeClass property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.SubGraphs">
+        <short/>
+        <descr>
+          <p>
+            SubGraphs is a read-only indexed TLvlGraphSubGraph property. Use SubGraphCount to get the number of subgraphs in the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLvlGraph.SubGraphCount"/>
+        </seealso>
+      </element>
+      <element name="TLvlGraph.SubGraphs.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.SubGraphCount">
+        <short/>
+        <descr>
+          <p>
+            SubGraphCount is a read-only Integer property with the number of subgraphs available in the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLvlGraph.SubGraphs"/>
+        </seealso>
+      </element>
+
+      <element name="TLvlGraph.Levels">
+        <short/>
+        <descr>
+          <p>
+            Levels is a read-only indexed TLvlGraphLevel property. Use LevelCount to get the number of Levels used in the nodes for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.Levels.Index">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.LevelCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.LevelClass">
+        <short/>
+        <descr>
+          <p>
+            LevelClass is a read-only TLvlGraphLevelClass property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.FindIndependentGraphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.CreateTopologicalLevels">
+        <short>Creates levels using the edges for the Level Graph</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.CreateTopologicalLevels.HighLevels">
+        <short/>
+      </element>
+      <element name="TLvlGraph.CreateTopologicalLevels.ReduceBackEdges">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.MinimizeEdgeLens">
+        <short/>
+        <descr>
+          <p>
+            Requires BackEdge to have been processed in MarkBackEdges.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.MinimizeEdgeLens.HighLevels">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.LimitLevelHeights">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.LimitLevelHeights.MaxHeight">
+        <short/>
+      </element>
+      <element name="TLvlGraph.LimitLevelHeights.MaxHeightRel">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.SplitLongEdges">
+        <short>Splits long edges by adding hidden nodes</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.SplitLongEdges.SplitMode">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.ScaleNodeDrawSizes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.NodeGapAbove">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.NodeGapBelow">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.HardMaxTotal">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.HardMinOneNode">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.SoftMaxTotal">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.SoftMinOneNode">
+        <short/>
+      </element>
+      <element name="TLvlGraph.ScaleNodeDrawSizes.PixelPerWeight">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.SetAllNodeDrawSizes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.SetAllNodeDrawSizes.PixelPerWeight">
+        <short/>
+      </element>
+      <element name="TLvlGraph.SetAllNodeDrawSizes.MinWeight">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.MarkBackEdges">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.MinimizeCrossings">
+        <short>Permutates nodes to minimize crossings</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.MinimizeOverlappings">
+        <short>Sets the position for all nodes to minimize overlappings</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.MinimizeOverlappings.MinPos">
+        <short/>
+      </element>
+      <element name="TLvlGraph.MinimizeOverlappings.NodeGapAbove">
+        <short/>
+      </element>
+      <element name="TLvlGraph.MinimizeOverlappings.NodeGapBelow">
+        <short/>
+      </element>
+      <element name="TLvlGraph.MinimizeOverlappings.ALevel">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.StraightenGraph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraph.SetColors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.SetColors.Palette">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.WriteDebugReport">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.WriteDebugReport.Msg">
+        <short/>
+      </element>
+
+      <element name="TLvlGraph.ConsistencyCheck">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraph.ConsistencyCheck.WithBackEdge">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphCtrlOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoAutoLayout">
+        <short>
+          Automatic graph layout after graph has changed.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoReduceBackEdges">
+        <short>
+          CreateTopologicalLevels (AutoLayout) will attempts to find an order with less BackEdges.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoHighLevels">
+        <short>
+          Puts nodes topologically at higher levels.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoMinimizeEdgeLens">
+        <short>
+          If nodes are not fixed to a level by neighbours on both side, find the level which reduces total edge length the most.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoStraightenGraph">
+        <short>
+          Minimizes vertical up/down movement of edges.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoHighlightNodeUnderMouse">
+        <short>
+          Mouse hover highlights a node and its edges.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoHighlightEdgeNearMouse">
+        <short>
+          When the mouse is near an edge, highlight the node and its edges. lgoHighlightNodeUnderMouse takes precedence.
+        </short>
+      </element>
+      <element name="TLvlGraphCtrlOption.lgoMouseSelects">
+        <short>
+        </short>
+      </element>
+
+      <element name="TLvlGraphCtrlOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DefaultLvlGraphCtrlOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeCaptionPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeCaptionPosition.lgncLeft">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeCaptionPosition.lgncTop">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeCaptionPosition.lgncRight">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeCaptionPosition.lgncBottom">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeCaptionPositions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeShape.lgnsNone">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeShape.lgnsRectangle">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeShape.lgnsEllipse">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeShapes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeColoring">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeColoring.lgncNone">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeColoring.lgncRGB">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeColorings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DefaultLvlGraphNodeWith">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeCaptionScale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeCaptionPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeGapLeft">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeGapRight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeGapTop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeGapBottom">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphNodeColoring">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdgeShape.lgesStraight">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeShape.lgesCurved">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeShapes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DefaultLvlGraphEdgeSplitMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeNearMouseDistMax">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeShape">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeHighlightColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeBackColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultLvlGraphEdgeBackHighlightColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultMaxLevelHeightAbs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DefaultMaxLevelHeightRel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle">
+        <short/>
+        <descr>
+          <p>
+            TLvlGraphNodeStyle is a TPersistent descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphNodeStyle.FCaptionPosition"/>
+      <element name="TLvlGraphNodeStyle.FCaptionScale"/>
+      <element name="TLvlGraphNodeStyle.FColoring"/>
+      <element name="TLvlGraphNodeStyle.FControl"/>
+      <element name="TLvlGraphNodeStyle.FDefaultImageIndex"/>
+      <element name="TLvlGraphNodeStyle.FGapBottom"/>
+      <element name="TLvlGraphNodeStyle.FGapLeft"/>
+      <element name="TLvlGraphNodeStyle.FGapRight"/>
+      <element name="TLvlGraphNodeStyle.FGapTop"/>
+      <element name="TLvlGraphNodeStyle.FShape"/>
+      <element name="TLvlGraphNodeStyle.FWidth"/>
+
+      <element name="TLvlGraphNodeStyle.SetCaptionPosition">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetCaptionPosition.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetCaptionScale">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetCaptionScale.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetColoring">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetColoring.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetDefaultImageIndex">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetDefaultImageIndex.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetGapBottom">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetGapBottom.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetGapLeft">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetGapLeft.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetGapRight">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetGapRight.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetGapTop">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetGapTop.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetShape">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetShape.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.SetWidth">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.SetWidth.AValue">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraphNodeStyle.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeStyle.Create.AControl">
+        <short>Level Graph control where values in the class instance are used</short>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Assign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeStyle.Assign.Source">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Equals">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphNodeStyle.Equals.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphNodeStyle.Equals.Obj">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Control">
+        <short/>
+        <descr>
+          <p>
+            Control is a read-only TCustomLvlGraphControl property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <element name="TLvlGraphNodeStyle.CaptionPosition">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeCaptionPosition constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.CaptionScale">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeCaptionScale constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Shape">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeShape constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.GapLeft">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeGapLeft constant. Used by AutoLayout.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.GapTop">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeGapTop constant. Used by AutoLayout.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.GapRight">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeGapRight constant. Used by AutoLayout.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.GapBottom">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeGapBottom constant. Used by AutoLayout.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Width">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the DefaultLvlGraphNodeWith constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.DefaultImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphNodeStyle.Coloring">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle">
+        <short/>
+        <descr>
+          <p>
+            TLvlGraphEdgeStyle is a TPersistent descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphEdgeStyle.FBackColor"/>
+      <element name="TLvlGraphEdgeStyle.FColor"/>
+      <element name="TLvlGraphEdgeStyle.FControl"/>
+      <element name="TLvlGraphEdgeStyle.FBackHighlightColor"/>
+      <element name="TLvlGraphEdgeStyle.FHighlightColor"/>
+      <element name="TLvlGraphEdgeStyle.FMouseDistMax"/>
+      <element name="TLvlGraphEdgeStyle.FShape"/>
+      <element name="TLvlGraphEdgeStyle.FSplitMode"/>
+
+      <element name="TLvlGraphEdgeStyle.SetBackColor">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetBackColor.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetColor">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetColor.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetBackHighlightColor">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetBackHighlightColor.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetHighlightColor">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetHighlightColor.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetMouseDistMax">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetMouseDistMax.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetShape">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetShape.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.SetSplitMode">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.SetSplitMode.AValue">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraphEdgeStyle.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.Create.AControl">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Assign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.Assign.Source">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Equals">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.Equals.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphEdgeStyle.Equals.Obj">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Control">
+        <short/>
+        <descr>
+          <p>
+            <var>Control</var> is a read-only <var>TCustomLvlGraphControl</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <element name="TLvlGraphEdgeStyle.SplitMode">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeSplitMode</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.MouseDistMax">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeNearMouseDistMax</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Shape">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeShape</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.Color">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeColor</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.BackColor">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeBackColor</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.HighlightColor">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeHighlightColor</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphEdgeStyle.BackHighlightColor">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphEdgeBackHighlightColor</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLimits">
+        <short/>
+        <descr>
+          <p>
+            <var>TLvlGraphLimits</var> is a <var>TPersistent</var> descendant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- private -->
+      <element name="TLvlGraphLimits.FControl"/>
+      <element name="TLvlGraphLimits.FMaxLevelHeightAbs"/>
+      <element name="TLvlGraphLimits.FMaxLevelHeightRel"/>
+
+      <element name="TLvlGraphLimits.SetMaxLevelHeightAbs">
+        <short/>
+      </element>
+      <element name="TLvlGraphLimits.SetMaxLevelHeightAbs.AValue">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLimits.SetMaxLevelHeightRel">
+        <short/>
+      </element>
+      <element name="TLvlGraphLimits.SetMaxLevelHeightRel.AValue">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TLvlGraphLimits.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLimits.Create.AControl">
+        <short>Control where class instance is used</short>
+      </element>
+
+      <element name="TLvlGraphLimits.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLimits.Assign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLimits.Assign.Source">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLimits.Equals">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphLimits.Equals.Result">
+        <short/>
+      </element>
+      <element name="TLvlGraphLimits.Equals.Obj">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphLimits.Control">
+        <short/>
+        <descr>
+          <p>
+            <var>Control</var> is a read-only <var>TCustomLvlGraphControl</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <!-- published -->
+      <element name="TLvlGraphLimits.MaxLevelHeightAbs">
+        <short>Maximum number of user-specified nodes for a level</short>
+        <descr>
+          <p>
+            MaxLevelHeightAbs is an Integer property with the maximum number of visible (user-specified) nodes in a level. <b>0</b> (<b>zero</b>) indicates that the maximum is ignored. The default value for the property is defined in the <var>DefaultMaxLevelHeightAbs</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphLimits.MaxLevelHeightRel">
+        <short/>
+        <descr>
+          <p>
+            <var>MaxLevelHeightRel</var> is a Single property with a factor used to determine the maximum number of nodes for a level. <b>0</b> (<b>zero</b>) indicates that the factor is ignored.
+          </p>
+          <p>
+            The default value for the property is defined in the <var>DefaultMaxLevelHeightRel</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+        <notes><note>?</note></notes>
+      </element>
+
+      <element name="TLvlGraphControlFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphControlFlag.lgcNeedInvalidate">
+        <short/>
+      </element>
+      <element name="TLvlGraphControlFlag.lgcNeedAutoLayout">
+        <short/>
+      </element>
+      <element name="TLvlGraphControlFlag.lgcIgnoreGraphInvalidate">
+        <short/>
+      </element>
+      <element name="TLvlGraphControlFlag.lgcUpdatingScrollBars">
+        <short/>
+      </element>
+      <element name="TLvlGraphControlFlag.lgcFocusedPainting">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphControlFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphMinimizeOverlappingsEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphMinimizeOverlappingsEvent.MinPos">
+        <short/>
+      </element>
+      <element name="TLvlGraphMinimizeOverlappingsEvent.NodeGapInFront">
+        <short/>
+      </element>
+      <element name="TLvlGraphMinimizeOverlappingsEvent.NodeGapBehind">
+        <short/>
+      </element>
+      <element name="TLvlGraphMinimizeOverlappingsEvent.Handled">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphDrawStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsBackground">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsHeader">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsNormalEdges">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsNodeCaptions">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsHighlightedEdges">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsNodes">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawStep.lgdsFinish">
+        <short/>
+      </element>
+
+      <element name="TLvlGraphDrawSteps">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphDrawEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLvlGraphDrawEvent.Step">
+        <short/>
+      </element>
+      <element name="TLvlGraphDrawEvent.Skip">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl">
+        <short>Ancestor for the TLvlGraphControl control</short>
+        <descr>
+          <p>
+            <var>TCustomLvlGraphControl</var> is a <var>TCustomControl</var> descendant which impements the ancestor for <var>TLvlGraphControl</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLvlGraphControl"/>
+        </seealso>
+        <notes><note>Make this consistent with TLvlGraphicControl.</note></notes>
+      </element>
+
+      <!-- private -->
+      <element name="TCustomLvlGraphControl.FEdgeStyle"/>
+      <element name="TCustomLvlGraphControl.FEdgeNearMouse"/>
+      <element name="TCustomLvlGraphControl.FGraph"/>
+      <element name="TCustomLvlGraphControl.FImageChangeLink"/>
+      <element name="TCustomLvlGraphControl.FImages"/>
+      <element name="TCustomLvlGraphControl.FLimits"/>
+      <element name="TCustomLvlGraphControl.FNodeStyle"/>
+      <element name="TCustomLvlGraphControl.FNodeUnderMouse"/>
+      <element name="TCustomLvlGraphControl.FOnDrawStep"/>
+      <element name="TCustomLvlGraphControl.FOnEndAutoLayout"/>
+      <element name="TCustomLvlGraphControl.FOnMinimizeCrossings"/>
+      <element name="TCustomLvlGraphControl.FOnMinimizeOverlappings"/>
+      <element name="TCustomLvlGraphControl.FOnSelectionChanged"/>
+      <element name="TCustomLvlGraphControl.FOnStartAutoLayout"/>
+      <element name="TCustomLvlGraphControl.FOptions"/>
+      <element name="TCustomLvlGraphControl.FPixelPerWeight"/>
+      <element name="TCustomLvlGraphControl.FScrollLeft"/>
+      <element name="TCustomLvlGraphControl.FScrollLeftMax"/>
+      <element name="TCustomLvlGraphControl.FScrollTopMax"/>
+      <element name="TCustomLvlGraphControl.FScrollTop"/>
+      <element name="TCustomLvlGraphControl.FUpdateLock"/>
+      <element name="TCustomLvlGraphControl.FFlags"/>
+
+      <element name="TCustomLvlGraphControl.ColorNodesRandomRGB">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DrawCaptions">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DrawCaptions.TxtH">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ComputeEdgeCoords">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DrawEdges">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DrawEdges.Highlighted">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DrawNodes">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GetSelectedNode">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetSelectedNode.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetEdgeNearMouse">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetEdgeNearMouse.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetImages">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetImages.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetNodeStyle">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetNodeStyle.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetNodeUnderMouse">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetNodeUnderMouse.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetOptions">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetOptions.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetScrollLeft">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetScrollLeft.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetScrollTop">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetScrollTop.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SetSelectedNode">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.SetSelectedNode.AValue">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.UpdateScrollBars">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.WMHScroll">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.WMHScroll.Msg">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.WMVScroll">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.WMVScroll.Msg">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.WMMouseWheel">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.WMMouseWheel.Message">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ImageListChange">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.ImageListChange.Sender">
+        <short/>
+      </element>
+
+      <!-- protected -->
+      <element name="TCustomLvlGraphControl.GraphInvalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GraphInvalidate.Sender">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GraphSelectionChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GraphSelectionChanged.Sender">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GraphStructureChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GraphStructureChanged.Sender">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GraphStructureChanged.Element">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GraphStructureChanged.Operation">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoSetBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoSetBounds.ALeft">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoSetBounds.ATop">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoSetBounds.AWidth">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoSetBounds.AHeight">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoStartAutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoMinimizeCrossings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoAutoLayoutLevels">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoAutoLayoutLevels.TxtHeight">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoMinimizeOverlappings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoMinimizeOverlappings.MinPos">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoMinimizeOverlappings.NodeGapInFront">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoMinimizeOverlappings.NodeGapBehind">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoEndAutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoDrawEdge">
+        <short>Draws a line for the specified Edge using the current Canvas color</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoDrawEdge.Edge">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Paint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Draw">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.Draw.Result">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.Draw.Step">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.MouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseMove.Shift">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseMove.X">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseMove.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.MouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseDown.Button">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseDown.Shift">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseDown.X">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseDown.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.CreateWnd">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.HighlightConnectedEgdes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.HighlightConnectedEgdes.Element">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.DoOnShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.DoOnShowHint.HintInfo">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TCustomLvlGraphControl.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.EraseBackground">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.EraseBackground.DC">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Graph">
+        <short/>
+        <descr>
+          <p>
+            <var>Graph</var> is a read-only <var>TLvlGraph</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Clear">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.AutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Invalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.InvalidateAutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.BeginUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.EndUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GetNodeAt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetNodeAt.Result">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetNodeAt.X">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetNodeAt.Y">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GetEdgeAt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetEdgeAt.Result">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetEdgeAt.X">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetEdgeAt.Y">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetEdgeAt.Distance">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetControlClassDefaultSize.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.GetDrawSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetDrawSize.Result">
+        <short/>
+      </element>
+
+      <!-- public -->
+      <element name="TCustomLvlGraphControl.NodeStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.NodeUnderMouse">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.EdgeNearMouse">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.EdgeStyle">
+        <short/>
+        <descr>
+          <p>
+            <var>EdgeStyle</var> is a read-only <var>TLvlGraphEdgeStyle</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Limits">
+        <short/>
+        <descr>
+          <p>
+            <var>Limits</var> is a read-only <var>TLvlGraphLimits</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Options">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is defined in the <var>DefaultLvlGraphCtrlOptions</var> constant.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnSelectionChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ScrollTop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ScrollTopMax">
+        <short/>
+        <descr>
+          <p>
+            <var>ScrollTopMax</var> is a read-only <var>Integer</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ScrollLeft">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ScrollLeftMax">
+        <short/>
+        <descr>
+          <p>
+            <var>ScrollLeftMax</var> is a read-only <var>Integer</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnMinimizeCrossings">
+        <short>Event handler signalled to provide an alternative minimize crossing algorithm</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnMinimizeOverlappings">
+        <short>Event handler signalled to provide an alternative minimize overlappings algorithm</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnStartAutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnEndAutoLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.OnDrawStep">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.Images">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.PixelPerWeight">
+        <short/>
+        <descr>
+          <p>
+            <var>PixelPerWeight</var> is a read-only <var>Single</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.SelectedNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomLvlGraphControl.ShowHint">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLvlGraphControl">
+        <short>Implements a control used to draw a level (or layered) graph</short>
+        <descr>
+          <p>
+            TLvlGraphControl is a TCustomLvlGraphControl descendant which implements a control used to render a level graph (also known as a edlayered graph). A level graph consists of nodes (or vertices) and edges  with an equidistant spacing beteen related nodes.
+          </p>
+          <p>
+            TLvlGraphControl provides the following features:
+          </p>
+          <ul>
+            <li>
+              Offers automatic topological sorting, with an option to put nodes left-most or right-most.
+            </li>
+            <li>
+              Offers automatic topological sorting, with an option to put nodes left-most or right-most.
+            </li>
+            <li>
+              Edges can be automatically combined.
+            </li>
+            <li>
+              Long edges over multiple levels are combined into a single line with forks to related nodes.
+            </li>
+            <li>
+              Provides a heuristic to minimize line crossings.
+            </li>
+            <li>
+              Automatically prevents overlapping of display elements.
+            </li>
+            <li>
+              Nodes can be displayed as rectangles, ellipses or icons stored in a TImageList.
+            </li>
+            <li>
+              You can select nodes using the mouse.
+            </li>
+            <li>
+              You can select multiple nodes at once.
+            </li>
+            <li>
+              You can highlight nodes or edges under the mouse.
+            </li>
+            <li>
+              The control displays back edges in special colours, which facilitates quick visual identification of cycles (e.g. unit circles).
+            </li>
+            <li>
+              Edges can be drawn straight or as a curve (bezier).
+            </li>
+            <li>
+              There is a header caption.
+            </li>
+            <li>
+              Node captions can be shown to the left, to the right, above, or below nodes.
+            </li>
+            <li>
+              All colors can be set via published properties.
+            </li>
+            <li>
+              Events are provided to custom-draw and/or skip each part of the default drawing.
+            </li>
+          </ul>
+          <p>
+            There is a simple example in:
+            <file>($LazarusDir)/examples/levelgraph/lvlgraph_dependencies.lpi</file>.
+          </p>
+          <p>
+            TLvlGraphControl is used to display unit dependencies in the Package Graph for the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+      <!-- published -->
+      <!-- TODO: add links to ancestor classes -->
+      <element name="TLvlGraphControl.Align"/>
+      <element name="TLvlGraphControl.Anchors"/>
+      <element name="TLvlGraphControl.BorderSpacing"/>
+      <element name="TLvlGraphControl.BorderStyle"/>
+      <element name="TLvlGraphControl.BorderWidth"/>
+      <element name="TLvlGraphControl.Color"/>
+      <element name="TLvlGraphControl.Constraints"/>
+      <element name="TLvlGraphControl.DragCursor"/>
+      <element name="TLvlGraphControl.DragKind"/>
+      <element name="TLvlGraphControl.DragMode"/>
+      <element name="TLvlGraphControl.EdgeStyle"/>
+      <element name="TLvlGraphControl.Enabled"/>
+      <element name="TLvlGraphControl.Font"/>
+      <element name="TLvlGraphControl.NodeStyle"/>
+      <element name="TLvlGraphControl.OnClick"/>
+      <element name="TLvlGraphControl.OnContextPopup"/>
+      <element name="TLvlGraphControl.OnDblClick"/>
+      <element name="TLvlGraphControl.OnDragDrop"/>
+      <element name="TLvlGraphControl.OnDragOver"/>
+      <element name="TLvlGraphControl.OnDrawStep"/>
+      <element name="TLvlGraphControl.OnEndAutoLayout"/>
+      <element name="TLvlGraphControl.OnEndDrag"/>
+      <element name="TLvlGraphControl.OnEnter"/>
+      <element name="TLvlGraphControl.OnExit"/>
+      <element name="TLvlGraphControl.OnKeyDown"/>
+      <element name="TLvlGraphControl.OnKeyPress"/>
+      <element name="TLvlGraphControl.OnKeyUp"/>
+      <element name="TLvlGraphControl.OnMinimizeCrossings"/>
+      <element name="TLvlGraphControl.OnMinimizeOverlappings"/>
+      <element name="TLvlGraphControl.OnMouseDown"/>
+      <element name="TLvlGraphControl.OnMouseEnter"/>
+      <element name="TLvlGraphControl.OnMouseLeave"/>
+      <element name="TLvlGraphControl.OnMouseMove"/>
+      <element name="TLvlGraphControl.OnMouseUp"/>
+      <element name="TLvlGraphControl.OnSelectionChanged"/>
+      <element name="TLvlGraphControl.OnShowHint"/>
+      <element name="TLvlGraphControl.OnStartAutoLayout"/>
+      <element name="TLvlGraphControl.OnStartDrag"/>
+      <element name="TLvlGraphControl.OnUTF8KeyPress"/>
+      <element name="TLvlGraphControl.Options"/>
+      <element name="TLvlGraphControl.ParentColor"/>
+      <element name="TLvlGraphControl.ParentFont"/>
+      <element name="TLvlGraphControl.ParentShowHint"/>
+      <element name="TLvlGraphControl.PopupMenu"/>
+      <element name="TLvlGraphControl.ShowHint"/>
+      <element name="TLvlGraphControl.TabOrder"/>
+      <element name="TLvlGraphControl.TabStop"/>
+      <element name="TLvlGraphControl.Tag"/>
+      <element name="TLvlGraphControl.Visible"/>
+
+      <element name="GetCCPaletteRGB">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GetCCPaletteRGB.Result">
+        <short/>
+      </element>
+      <element name="GetCCPaletteRGB.Cnt">
+        <short/>
+      </element>
+      <element name="GetCCPaletteRGB.Shuffled">
+        <short/>
+      </element>
+
+      <element name="ShuffleCCPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ShuffleCCPalette.Palette">
+        <short/>
+      </element>
+
+      <element name="Darker">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Darker.Result">
+        <short/>
+      </element>
+      <element name="Darker.c">
+        <short/>
+      </element>
+
+      <element name="GetManhattanDistancePointLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GetManhattanDistancePointLine.Result">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.X">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.Y">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.LineX1">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.LineY1">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.LineX2">
+        <short/>
+      </element>
+      <element name="GetManhattanDistancePointLine.LineY2">
+        <short/>
+      </element>
+
+      <element name="GetDistancePointLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GetDistancePointLine.Result">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.X">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.Y">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.LineX1">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.LineY1">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.LineX2">
+        <short/>
+      </element>
+      <element name="GetDistancePointLine.LineY2">
+        <short/>
+      </element>
+
+      <element name="GetDistancePointPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GetDistancePointPoint.Result">
+        <short/>
+      </element>
+      <element name="GetDistancePointPoint.X1">
+        <short/>
+      </element>
+      <element name="GetDistancePointPoint.Y1">
+        <short/>
+      </element>
+      <element name="GetDistancePointPoint.X2">
+        <short/>
+      </element>
+      <element name="GetDistancePointPoint.Y2">
+        <short/>
+      </element>
+
+      <element name="LvlGraphMinimizeCrossings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LvlGraphMinimizeCrossings.Graph">
+        <short/>
+      </element>
+
+      <element name="LvlGraphHighlightNode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LvlGraphHighlightNode.Node">
+        <short/>
+      </element>
+      <element name="LvlGraphHighlightNode.HighlightedElements">
+        <short/>
+      </element>
+      <element name="LvlGraphHighlightNode.FollowIn">
+        <short/>
+      </element>
+      <element name="LvlGraphHighlightNode.FollowOut">
+        <short/>
+      </element>
+
+      <element name="CompareLGNodesByCenterPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CompareLGNodesByCenterPos.Result">
+        <short/>
+      </element>
+      <element name="CompareLGNodesByCenterPos.Node1">
+        <short/>
+      </element>
+      <element name="CompareLGNodesByCenterPos.Node2">
+        <short/>
+      </element>
+
+      <element name="DrawCurvedLvlLeftToRightEdge">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.Canvas">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.x1">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.y1">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.x2">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.y2">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.StraightenLeft">
+        <short/>
+      </element>
+      <element name="DrawCurvedLvlLeftToRightEdge.StraightenRight">
+        <short/>
+      </element>
+
+      <element name="NodeAVLTreeToNodeArray">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="NodeAVLTreeToNodeArray.Result">
+        <short/>
+      </element>
+      <element name="NodeAVLTreeToNodeArray.Nodes">
+        <short/>
+      </element>
+      <element name="NodeAVLTreeToNodeArray.RemoveHidden">
+        <short/>
+      </element>
+      <element name="NodeAVLTreeToNodeArray.FreeTree">
+        <short/>
+      </element>
+
+      <element name="NodeArrayAsString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="NodeArrayAsString.Result">
+        <short/>
+      </element>
+      <element name="NodeArrayAsString.Nodes">
+        <short/>
+      </element>
+
+      <element name="dbgs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="dbgs.Result">
+        <short/>
+      </element>
+      <element name="dbgs.p">
+        <short/>
+      </element>
+      <element name="dbgs.o">
+        <short/>
+      </element>
+      <element name="dbgs.Options">
+        <short/>
+      </element>
+
     </module>
+    <!-- LvlGraphCtrl -->
   </package>
 </fpdoc-descriptions>

@@ -1,6 +1,336 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="DividerBevel"><element name="TDividerBevel"><short>Line with text in the middle, used as a divider or header.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+
+    <module name="DividerBevel">
+      <short/>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="Types"/>
+      <element name="Math"/>
+      <element name="LCLType"/>
+      <element name="LCLIntf"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="GraphType"/>
+      <element name="ComCtrls"/>
+      <element name="ExtCtrls"/>
+      <element name="Themes"/>
+
+      <element name="TDividerBevel">
+        <short>Line with text in the middle, used as a divider or header.</short>
+        <descr>
+          <p>
+            TDividerBevel is a TGraphicControl descendant which implements a component represented as a beveled line with a caption. It is used as a separator or header on forms, frames, and panels.
+          </p>
+          <p>
+            TDividerBevel can be oriented either horizontally or vertically. The bevel can be drawn using a raised or lowered drawing style. The bevel can be rendered using a line drawing style or pattern defined in the TGrabStlye enumeration. The height of the bevel  can be specified, or a height relative to the size of the Text on the control can be used. The caption drawn on the control can be surrounded by additional space, drawn at specific position, or centered in the orientation for the control. Transparency is also supported in the control.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+
+      <!-- private members and methods -->
+      <element name="TDividerBevel.FBevelStyle"/>
+      <element name="TDividerBevel.FBevelWidth"/>
+      <element name="TDividerBevel.FCaptionSpacing"/>
+      <element name="TDividerBevel.FLeftIndent"/>
+      <element name="TDividerBevel.FOrientation"/>
+      <element name="TDividerBevel.FBevelStyle"/>
+      <element name="TDividerBevel.FBevelWidth"/>
+      <element name="TDividerBevel.FCaptionSpacing"/>
+      <element name="TDividerBevel.FLeftIndent"/>
+      <element name="TDividerBevel.FOrientation"/>
+      <element name="TDividerBevel.FStyle"/>
+      <element name="TDividerBevel.FTransparent"/>
+
+      <element name="TDividerBevel.SetBevelStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetBevelStyle.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetBevelWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetBevelWidth.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetCaptionSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetCaptionSpacing.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetLeftIndent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetLeftIndent.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetOrientation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetOrientation.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetStyle.AValue">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetTransparent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetTransparent.AValue">
+        <short/>
+      </element>
+
+      <!-- protected members and methods -->
+      <element name="TDividerBevel.FBevelHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.FBevelTop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.FNeedCalcSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.FTextExtent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.GetControlClassDefaultSize.Result">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.CalcSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.Paint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.FontChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.FontChanged.Sender">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.SetAutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.SetAutoSize.Value">
+        <short/>
+      </element>
+
+      <element name="TDividerBevel.TextChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.CalculatePreferredSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.CalculatePreferredSize.PreferredWidth">
+        <short/>
+      </element>
+      <element name="TDividerBevel.CalculatePreferredSize.PreferredHeight">
+        <short/>
+      </element>
+      <element name="TDividerBevel.CalculatePreferredSize.WithThemeSpace">
+        <short/>
+      </element>
+
+      <!-- public methods -->
+      <element name="TDividerBevel.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TDividerBevel.ShouldAutoAdjust">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDividerBevel.ShouldAutoAdjust.AWidth">
+        <short/>
+      </element>
+      <element name="TDividerBevel.ShouldAutoAdjust.AHeight">
+        <short/>
+      </element>
+
+      <!-- published properties -->
+      <element name="TDividerBevel.Caption"/>
+      <element name="TDividerBevel.Align"/>
+      <element name="TDividerBevel.AutoSize"/>
+      <element name="TDividerBevel.Anchors"/>
+
+      <element name="TDividerBevel.BevelStyle">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>bsLowered</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.BevelWidth">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>-1</b>. Negative values in the property indicate that the bevel is drawn using 20% of the Text height for the control, with a minimum height of 3 pixels.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.BiDiMode"/>
+      <element name="TDividerBevel.BorderSpacing"/>
+
+      <element name="TDividerBevel.CaptionSpacing">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>10</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.Color"/>
+      <element name="TDividerBevel.Constraints"/>
+      <element name="TDividerBevel.DragCursor"/>
+      <element name="TDividerBevel.DragKind"/>
+      <element name="TDividerBevel.DragMode"/>
+      <element name="TDividerBevel.Font"/>
+      <element name="TDividerBevel.Hint"/>
+
+      <element name="TDividerBevel.LeftIndent">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is 60 pixels.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.Orientation">
+        <short/>
+        <descr>
+          <p>
+            The default valule for the property is <var>trHorizontal</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.ParentBiDiMode"/>
+      <element name="TDividerBevel.ParentColor"/>
+      <element name="TDividerBevel.ParentFont"/>
+      <element name="TDividerBevel.ParentShowHint"/>
+      <element name="TDividerBevel.PopupMenu"/>
+      <element name="TDividerBevel.ShowHint"/>
+
+      <element name="TDividerBevel.Style">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <var>gsSimple</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.Transparent">
+        <short/>
+        <descr>
+          <p>
+            The defauilt value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TDividerBevel.Visible"/>
+      <element name="TDividerBevel.OnChangeBounds"/>
+      <element name="TDividerBevel.OnClick"/>
+      <element name="TDividerBevel.OnContextPopup"/>
+      <element name="TDividerBevel.OnDblClick"/>
+      <element name="TDividerBevel.OnDragDrop"/>
+      <element name="TDividerBevel.OnDragOver"/>
+      <element name="TDividerBevel.OnEndDrag"/>
+      <element name="TDividerBevel.OnMouseDown"/>
+      <element name="TDividerBevel.OnMouseEnter"/>
+      <element name="TDividerBevel.OnMouseLeave"/>
+      <element name="TDividerBevel.OnMouseMove"/>
+      <element name="TDividerBevel.OnMouseUp"/>
+      <element name="TDividerBevel.OnResize"/>
+      <element name="TDividerBevel.OnStartDrag"/>
+
     </module>
+
   </package>
 </fpdoc-descriptions>

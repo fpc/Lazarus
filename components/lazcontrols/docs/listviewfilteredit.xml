@@ -1,11 +1,302 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fpdoc-descriptions><package name="LazControls"><module name="ListViewFilterEdit"><element name="TListViewFilterEdit"><short>Filter for an associated ListView.</short>
-      </element><element name="TListViewFilterEdit.FilteredListview"><short>The associated ListView.</short>
+<fpdoc-descriptions>
+  <package name="LazControls">
+
+    <module name="ListViewFilterEdit">
+      <short/>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="Fgl"/>
+      <element name="LCLType"/>
+      <element name="Graphics"/>
+      <element name="ComCtrls"/>
+      <element name="EditBtn"/>
+      <element name="LazUTF8"/>
+
+      <element name="TStringArray">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
-    <element name="TListViewFilterEdit.ByAllFields"><short>Use all ListView fields when searching filter matches. Otherwise just the first field (ListView caption) is used.</short>
-      </element><element name="TListViewFilterEdit.Items"><short>Maintains the data which is filtered and shown in the ListView.</short>
-      </element><element name="TListViewFilterEdit.SelectionList"><short>List of selected items. They are restored after filtering.</short>
+
+      <element name="TListViewDataItem">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
+
+      <element name="TListViewDataItem.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewDataItem.StringArray">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewDataItem.OperatorEqual">
+        <short>Implements the Equal (=) comparison operator for TListViewDataItem instances</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewDataItem.OperatorEqual.Result">
+        <short/>
+      </element>
+      <element name="TListViewDataItem.OperatorEqual.a">
+        <short/>
+      </element>
+      <element name="TListViewDataItem.OperatorEqual.b">
+        <short/>
+      </element>
+
+      <element name="TListViewDataList">
+        <short>List container for TListViewDataItem instances</short>
+        <descr/>
+        <seealso>
+          <link id="#fcl.Fgl.TFPGList"/>
+          <link id="TListViewDataItem"/>
+        </seealso>
+      </element>
+
+      <element name="TListViewFilterEdit">
+        <short>Implements a control used to filter an associated ListView</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TListViewFilterEdit.FFilteredListview">
+        <short>A control showing the (filtered) data</short>
+      </element>
+
+      <element name="TListViewFilterEdit.FByAllFields">
+        <short></short>
+      </element>
+
+      <element name="TListViewFilterEdit.FSelectionList">
+        <short>Stores / restores the previous selections in the associated control</short>
+      </element>
+
+      <element name="TListViewFilterEdit.FOriginalData">
+        <short>Data supplied by the caller through the Items property</short>
+      </element>
+
+      <element name="TListViewFilterEdit.FFilteredData">
+        <short>Data sorted for viewing</short>
+      </element>
+
+      <element name="TListViewFilterEdit.MatchesFilter">
+        <short/>
+      </element>
+      <element name="TListViewFilterEdit.MatchesFilter.Result">
+        <short/>
+      </element>
+        <short/>
+        <element name="TListViewFilterEdit.MatchesFilter.AData">
+      </element>
+
+      <element name="TListViewFilterEdit.SetFilteredListview">
+        <short/>
+      </element>
+      <element name="TListViewFilterEdit.SetFilteredListview.AValue">
+        <short/>
+      </element>
+
+      <!-- protected methods -->
+      <element name="TListViewFilterEdit.Notification">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.Notification.AComponent">
+        <short/>
+      </element>
+      <element name="TListViewFilterEdit.Notification.Operation">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.GetLastSelectedIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.GetLastSelectedIndex.Result">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MoveTo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MoveTo.AIndex">
+        <short/>
+      </element>
+      <element name="TListViewFilterEdit.MoveTo.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MoveNext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MoveNext.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MovePrev">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MovePrev.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MovePageUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MovePageUp.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MovePageDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MovePageDown.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MoveHome">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MoveHome.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.MoveEnd">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.MoveEnd.ASelect">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.ReturnKeyHandled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.ReturnKeyHandled.Result">
+        <short/>
+      </element>
+
+      <element name="TListViewFilterEdit.SortAndFilter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.ApplyFilterCore">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.GetDefaultGlyphName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.GetDefaultGlyphName.Result">
+        <short/>
+      </element>
+
+      <!-- public methods and properties -->
+      <element name="TListViewFilterEdit.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TListViewFilterEdit.Create.AOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TListViewFilterEdit.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.StoreSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.RestoreSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.SelectionList">
+        <short>Selected items restored after filtering</short>
+        <descr>
+          <p>
+            The list of selected items. They are restored after filtering.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.Items">
+        <short>Maintains the data which is filtered and shown in the ListView</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- published properties -->
+      <element name="TListViewFilterEdit.FilteredListview">
+        <short>The associated ListView</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TListViewFilterEdit.ByAllFields">
+        <short>Indicates if all fields are compared using the filter</short>
+        <descr>
+          <p>
+            Use all ListView fields when searching filter matches. Otherwise just the first field (ListView caption) is used.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
     </module>
+
   </package>
 </fpdoc-descriptions>

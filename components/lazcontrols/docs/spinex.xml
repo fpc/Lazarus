@@ -1,0 +1,1933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="LazControls">
+    <!-- SpinEx -->
+    <module name="SpinEx">
+      <short>Provides extended TSpinEdit- and TFloatSpinEdit-like controls</short>
+      <descr>
+        <p>
+          Implements <var>TSpinEditEx</var> and <var>TFloatSpinEditEx</var>, which allow a <var>NullValue</var> and provide behaviors applied when the text for the control is not a valid number.
+        </p>
+        <p>
+          Initial implementation:  2016 by Bart Broersma. Revised in August 2020.
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="LCLType"/>
+      <element name="LCLProc"/>
+      <element name="Controls"/>
+      <element name="ClipBrd"/>
+      <element name="ComCtrls"/>
+      <element name="GroupedEdit"/>
+
+      <element name="TNullValueBehaviour">
+        <short>
+          Specifies the behavior applied in a control when its text is not a valid number
+        </short>
+        <descr>
+          <p>
+            <var>TNullValueBehaviour</var> is an enumerated type with values that control the behavior in TSpinEditEx or TFloatSpinEditEx when their value is not a valid number, or not within the Min and Max value for the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TNullValueBehaviour.nvbShowTextHint">
+        <short>Value becomes NullValue, and Text becomes empty. TextHint will show when focus is lost.</short>
+      </element>
+      <element name="TNullValueBehaviour.nvbLimitedNullValue">
+        <short>Value becomes GetLimitedValue(NullValue), and Text becomes Value.</short>
+      </element>
+      <element name="TNullValueBehaviour.nvbMinValue">
+        <short>
+          Value becomes MinValue, and Text becomes Value.  Please note: This is the default behavior, as used  in Delphi.
+        </short>
+      </element>
+      <element name="TNullValueBehaviour.nvbMaxValue">
+        <short>
+          Value becomes MaxValue, and Text becomes Value.
+        </short>
+      </element>
+      <element name="TNullValueBehaviour.nvbInitialValue">
+        <short>
+          Value becomes InitialValue (OnEnter), and Text becomes Value.
+        </short>
+      </element>
+
+      <element name="TSpinEditExBase">
+        <short>Specifies the base class for extended spin edit controls in the unit</short>
+        <descr>
+          <p>
+            <var>TSpinEditExBase</var> is a generic class type, and a descendant of <var>TCustomAbstractGroupedEdit</var>. TSpinEditExBase specifies the base class for the extended spin edit controls including <var>TSpinEditEx</var> and <var>TFloatSpinEditEx</var>. TSpinEditExBase must be specialized in a descendent class for a specific data type. The specialization type is used to implement properties including: Increment, MinValue, MaxValue, NullValue, and Value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit"/>
+          <link id="TCustomFloatSpinEditEx"/>
+          <link id="TFloatSpinEditEx"/>
+          <link id="TCustomSpinEditEx"/>
+          <link id="TSpinEditEx"/>
+          <link id="IntroToSpinEx"/>
+        </seealso>
+      </element>
+
+      <!-- private constants -->
+      <element name="TSpinEditExBase.DefIncrement">
+        <short>Default value for the Increment property</short>
+      </element>
+      <element name="TSpinEditExBase.DefMaxValue">
+        <short>Default value for the MaxValue property</short>
+      </element>
+      <element name="TSpinEditExBase.DefMinRepeatValue">
+        <short>Default value for the MinRepeatValue property</short>
+      </element>
+
+      <!-- private members -->
+      <element name="TSpinEditExBase.FArrowKeys"/>
+      <element name="TSpinEditExBase.FIncrement"/>
+      <element name="TSpinEditExBase.FMaxValue"/>
+      <element name="TSpinEditExBase.FMinValue"/>
+      <element name="TSpinEditExBase.FInitialValue"/>
+      <element name="TSpinEditExBase.FMinRepeatValue"/>
+      <element name="TSpinEditExBase.FNullValue"/>
+      <element name="TSpinEditExBase.FNullValueBehaviour"/>
+      <element name="TSpinEditExBase.FValue"/>
+      <element name="TSpinEditExBase.FUpdatePending"/>
+      <element name="TSpinEditExBase.FSettingValue"/>
+
+      <!-- private methods -->
+      <element name="TSpinEditExBase.GetEdit">
+        <short>Gets the value for the Edit property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Edit"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.GetEdit.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetMinRepeatValue">
+        <short>Sets the value for the MinRepeatValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MinRepeatValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetMinRepeatValue.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SpinUpDown">
+        <short>Called when one of the buttons in the TUpDown control has been clicked</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.UpDown"/>
+          <link id="TSpinEditExBase.Increment"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SpinUpDown.Up">
+        <short>
+          True when the Up button in the TUpDown control has been clicked; False when the Down button has been clicked
+        </short>
+      </element>
+
+      <element name="TSpinEditExBase.GetNullValue">
+        <short>Gets the value for the NullValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.NullValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.GetNullValue.Result">
+        <short>Returns the generic type with the value for the NullValue property</short>
+      </element>
+
+      <element name="TSpinEditExBase.GetUpDown">
+        <short>Gets the value for the UpDown property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.UpDown"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.GetUpDown.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.GetValue">
+        <short>Gets the value for the Value property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.GetValue.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.IsLimited">
+        <short>Indicates if valid values have been assigned to the MinValue and MaxValue properties</short>
+        <descr>
+          <p>
+            The return value is <b>True</b> when MaxValue is larger than MinValue. IsLimited is used in the implementation of the <var>IsOutOfLimits</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TSpinEditExBase.IsOutOfLimits"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.IsLimited.Result">
+        <short>True when the typed value in MaxValue is larger than the typed value in MinValue</short>
+      </element>
+
+      <element name="TSpinEditExBase.IsOutOfLimits">
+        <short>Determines if the specified value is not within the limits set in MinValue and MaxValue</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.IsOutOfLimits.Result">
+        <short>True when the value is outside the limits specified in the MinValue and MaxValue properties</short>
+      </element>
+      <element name="TSpinEditExBase.IsOutOfLimits.AValue">
+        <short>Value examined in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.UpdateControl">
+        <short>Updates members in the control when editing is completed</short>
+        <descr>
+          <p>
+            <var>UpdateControl</var> is a method used to update members in the class instance to reflect the state for the control. It is called when a new value is assigned to properties in the class instance. It is called when editing has been completed using the <var>Edit</var> for the grouped editing control. It is also called when the handle is allocated for the control in <var>InitializeWnd</var>.
+          </p>
+          <p>
+            UpdateControl ensures that values in <var>MinValue</var> and <var>MaxValue</var> are valid. If MaxValue is not larger than MinValue, the value in MinValue is used in both properties.
+          </p>
+          <p>
+            <var>NullValueBehaviour</var> is used to determine whether <var>Value</var> is adjusted to ensure that it is in the range specified by MinValue and MaxValue. A value other than <var>nvbShowTextHint</var> causes <var>GetLimitedValue</var> to be called to get the adjusted Value.
+          </p>
+          <p>
+            No additional actions are performed in the method when a handle has not been allocated for the control, or at design-time.
+          </p>
+          <p>
+            When NullValueBehaviour is set to <var>nvbShowTextHint</var>, an invalid numeric value entered in <var>Text</var> causes Text to be set to an empty string. This allows the <var>TextHint</var> for the control to be displayed.
+          </p>
+          <p>
+            When Value is a valid number, and in the required range, it is converted to its <var>String</var> representation and assigned to the Text for the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TSpinEditExBase.UpDownChangingEx">
+        <short>Implements the OnChangingEx event handler assigned to UpDown</short>
+        <descr>
+          <p>
+            No actions are performed in the handler when <var>ReadOnly</var> is set to <b>True</b>.
+          </p>
+          <p>
+            When <var>Direction</var> is <var>updUp</var>, the <var>SpinUpDown</var> method is called using <b>True</b> as an argument. Otherwise, SpinUpDown is called using <b>False</b> as an argument.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.UpDownChangingEx.Sender">
+        <short>Control for the event notification</short>
+      </element>
+      <element name="TSpinEditExBase.UpDownChangingEx.AllowChange">
+        <short>Not used in the method</short>
+      </element>
+      <element name="TSpinEditExBase.UpDownChangingEx.NewValue">
+        <short>Not used in the method</short>
+      </element>
+      <element name="TSpinEditExBase.UpDownChangingEx.Direction">
+        <short>Indicates whether the up or down button was clicked in UpDown</short>
+      </element>
+
+      <element name="TSpinEditExBase.UpDownClick">
+        <short>Implements the OnClick event handler assigned to UpDown</short>
+        <descr>
+          <p>
+            Calls the <var>BuddyClick</var> method for the grouped edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyClick"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.UpDownClick.Sender">
+        <short>Control for the event notification</short>
+      </element>
+      <element name="TSpinEditExBase.UpDownClick.Button">
+        <short>The button type for the TUpDown control</short>
+      </element>
+
+      <element name="TSpinEditExBase.IncrementStored">
+        <short>Gets the storage specifier for the Increment property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.IncrementStored.Result">
+        <short>True when a value other than DefIncrement has been assigned to the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.MaxValueStored">
+        <short>Gets the storage specifier for the MaxValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MaxValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.MaxValueStored.Result">
+        <short>True when a value other than DefMaxValue has been assigned to the property</short>
+      </element>
+
+      <!-- protected members and properties -->
+      <element name="TSpinEditExBase.GetBuddyClassType">
+        <short>Gets the class type used for Buddy in the grouped edit control</short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.GetBuddyClassType"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Buddy"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.GetBuddyClassType.Result">
+        <short>Returns a class reference to TUpDown</short>
+      </element>
+
+      <element name="TSpinEditExBase.DoEnter">
+        <short>Performs actions needed when the control is focused</short>
+        <descr>
+          <p>
+            <var>DoEnter</var> is an overridden method in <var>TSpinEditExBase</var>, and calls the inherited method on entry. The inherited methods handle the change in control focus, and signal the OnEnter event handler (when assigned). DoEnter ensures that the initial <var>Value</var> for the control is stored internally for use with the <var>NullValueBehaviour</var> used for the control instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.DoEnter"/>
+          <link id="TSpinEditExBase.NullValue"/>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TSpinEditExBase.NullValueBehaviour"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.RealGetText" link="#lcl.groupededit.TCustomAbstractGroupedEdit.RealGetText">
+        <short>Gets the text displayed for the control</short>
+        <descr>
+          <p>
+            <var>RealGetText</var> is an overridden <var>TCaption</var> function in <var>TSpinEditExBase</var> used to get the text displayed for the control. RealGetText checks whether a handle has been allocated for the control in the widget set class. When a handle is assigned, the inherited method is called to the <var>Text</var> for the <var>Edit</var> in the grouped edit  control. Otherwise, <var>ValueToStr</var> is called to get the string representation for the control <var>Value</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.ValueToStr"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.RealGetText"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.RealGetText.Result">
+        <short>Contains the text with the value for the control</short>
+      </element>
+
+
+      <element name="TSpinEditExBase.Reset">
+        <short>Reverts changes made to the value for the control</short>
+        <descr>
+          <p>
+            <var>Reset</var> is an overridden method in <var>TSpinEditExBase</var> used to revert changes made to the <var>Value</var> for the control. The <var>IsMasked</var> property is used to determine if an editing mask is in use in the <var>Edit</var> for the grouped edit control. When set to <b>True</b>, the inherited method is called to revert any changes made in Edit. When an editing mask is not in use, the initial value for the control (captured when it received focus) is restored in the Value property.
+          </p>
+          <p>
+            Reset is used in the implementation of the <var>EditKeyDown</var> event handler assigned to Edit. It is called when the <b>Escape</b> key (<b>VK_Escape</b>) is pressed in the Edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.EditKeyDown"/>
+          <link id="TSpinEditExBase.DoEnter"/>
+           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Reset"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.EditChange">
+        <short>Signals the OnEditChange event handler for the Edit in the grouped edit control</short>
+        <descr>
+          <p>
+            Calls the inherited method and performs no additional actions.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditChange"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.EditKeyDown">
+        <short>Implements the KeyDown handler for the grouped edit control</short>
+        <descr>
+          <p>
+            <var>EditKeyDown</var> is an overridden method in <var>TSpinEditExBase</var> which implements the <var>KeyDown</var> event handler for the <var>Edit</var> control. It calls the inherited method which signals the <var>OnEditKeyDown</var> event handler (when assigned). It also ensures that any keys explicitly handled in the grouped edit control are discarded by setting <var>Key</var> to <b>0</b> (<b>zero</b>). This includes the following virtual key codes and their associated actions:
+          </p>
+          <dl>
+            <dt>VK_Escape</dt>
+            <dd>Calls Reset.</dd>
+            <dt>VK_Up</dt>
+            <dd>Calls SpinUpDown when ArrowKeys is set to True.</dd>
+            <dt>VK_Down</dt>
+            <dd>Calls SpinUpDown when ArrowKeys is set to True.</dd>
+          </dl>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.EditKeyDown.Key">
+        <short>Virtual key code examined in the handler</short>
+      </element>
+      <element name="TSpinEditExBase.EditKeyDown.Shift">
+        <short>Shift, Ctrl, or Alt modifier for the key code</short>
+      </element>
+
+      <element name="TSpinEditExBase.EditMouseWheelUp">
+        <short>Applies a Mouse Wheel Up message to the value for the control</short>
+        <descr>
+          <p>
+            <var>EditMouseWheelUp</var> is the handler signalled when a Mouse Wheel Up message occurs in the <var>Edit</var> for the control. EditMouseWheelUp is overridden in <var>TSpinEditExBase</var>, and calls the inherited method. <var>Handled</var> is set to <b>True</b> if the mouse wheel message was handled in the ancestor class. When set to <b>False</b>, the <var>SpinUpDown</var> method is called to increment the value in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditMouseWheelUp"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelUp.Shift">
+        <short>Shift, Alt, or Ctrl modifier for the mouse wheel message</short>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelUp.MousePos">
+        <short>Coordinates for the Mouse pointer</short>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelUp.Handled">
+        <short>True when the message is handled in the ancestor class</short>
+      </element>
+
+
+      <element name="TSpinEditExBase.EditMouseWheelDown">
+        <short>Handles mouse wheel down messages for the Edit in the control</short>
+        <descr>
+          <p>
+            <var>EditMouseWheelDown</var> is the handler signalled when a Mouse Wheel Down message occurs in the <var>Edit</var> for the control. EditMouseWheelDown is overridden in <var>TSpinEditExBase</var>, and calls the inherited method. <var>Handled</var> is set to <b>True</b> if the mouse wheel message was handled in the ancestor class. When set to <b>False</b>, the <var>SpinUpDown</var> method is called to decrement the value in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditMouseWheelUp"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelDown.Shift">
+        <short>Shift, Alt, or Ctrl modifier for the mouse message</short>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelDown.MousePos">
+        <short>Coordinates for the mouse cursor</short>
+      </element>
+      <element name="TSpinEditExBase.EditMouseWheelDown.Handled">
+        <short>True when the message was handled in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.SafeInc">
+        <short>Ensures the incremented value is a valid number for the data type</short>
+        <descr>
+          <p>
+            <var>SafeInc</var> is a function used to increase the specified value by the <var>Increment</var> for the control. SafeInc ensures that the incremented value is valid for a given data type. It is an abstract virtual method, and must be implemented in a descendent class to use the specific data type for the specialization.
+          </p>
+          <p>
+            <var>AValue</var> contains the type with the numeric value to be incremented.
+          </p>
+          <p>
+            The return value contains the numeric value for the type after the value in Increment has been added. The return value is constrained when the incremented value is too large for the data type.
+          </p>
+          <p>
+            SafeInc is used in the implementation of the <var>SpinUpDown</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.SafeInc"/>
+          <link id="TCustomFloatSpinEditEx.SafeInc"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SafeInc.Result">
+        <short>The incremented (and possibly constrained) value</short>
+      </element>
+      <element name="TSpinEditExBase.SafeInc.AValue">
+        <short>Value incremented in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.SafeDec">
+        <short>Ensures the decremented value is a valid number for the data type</short>
+        <descr>
+          <p>
+            <var>SafeDec</var> is a function used to decrease the specified value by the <var>Increment</var> for the control. SafeDec ensures that the decremented value is valid for a given data type. It is an abstract virtual method, and must be implemented in a descendent class to use the specific data type for the specialization.
+          </p>
+          <p>
+            <var>AValue</var> contains the type with the numeric value to be decremented.
+          </p>
+          <p>
+            The return value contains the numeric value for the type after the value in Increment has been subtracted. The return value is constrained when the incremented value is too large for the data type.
+          </p>
+          <p>
+            SafeDec is used in the implementation of the <var>SpinUpDown</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.SafeDec"/>
+          <link id="TCustomFloatSpinEditEx.SafeDec"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SafeDec.Result">
+        <short/>
+      </element>
+      <element name="TSpinEditExBase.SafeDec.AValue">
+        <short>The decremented (and possibly constrained) value</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetValue">
+        <short>Sets the value for the Value property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetValue.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetNullValue">
+        <short>Sets the value for the NullValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.NullValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetNullValue.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetMaxValue">
+        <short>Sets the value for the MaxValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MaxValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetMaxValue.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetMinValue">
+        <short>Sets the value for the MinValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MinValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetMinValue.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.SetIncrement">
+        <short>Sets the value for the Increment property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SetIncrement.AIncrement">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TSpinEditExBase.TextIsNumber">
+        <short>Indicates if the specified String contains a valid numeric value</short>
+        <descr>
+          <p>
+            <var>TextIsNumber</var> is an abstract virtual <var>Boolean</var> function which indicates the value specified in <var>S</var> represents a valid number. <var>ANumber</var> is an output parameter where the numeric value for the data type is stored.
+          </p>
+          <p>
+            TextIsNumber must be implemented in a descendent class using the data type for the specialization.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.TextIsNumber"/>
+          <link id="TCustomFloatSpinEditEx.TextIsNumber"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.TextIsNumber.Result">
+        <short>True when S contains a value that can be converted to the data type for ANumber</short>
+      </element>
+      <element name="TSpinEditExBase.TextIsNumber.S">
+        <short>String converted to a numeric value in the method</short>
+      </element>
+      <element name="TSpinEditExBase.TextIsNumber.ANumber">
+        <short>Numeric value for the specified String</short>
+      </element>
+
+      <element name="TSpinEditExBase.InitializeWnd">
+        <short>Performs actions needed when the handle is allocated for the control</short>
+        <descr>
+          <p>
+            <var>InitializeWnd</var> is an overridden method used to perform actions needed when the handle is allocated for the control, and before child controls are created. InitializeWnd calls the inherited method on entry.
+          </p>
+          <p>
+            InitializeWnd calls <var>UpdateControl</var> to validate and update members in the class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+
+      <element name="TSpinEditExBase.FinalizeWnd">
+        <short>Performs actions prior to freeing the handle for the control</short>
+        <descr>
+        </descr>
+        <seealso/>
+        <notes><note>?</note></notes>
+      </element>
+
+
+      <element name="TSpinEditExBase.Loaded">
+        <short>
+          Performs action needed when the component has been loaded from the LCL streaming mechanism
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in <var>TSpinEditExBase</var>, and calls the inherited method on entry. Loaded corrects an undesirable behavior in the ancestor class; it sends a <b>CM_PARENTFONTCHANGED</b> message which also alters the color in the grouped edit control.  Loaded calls <var>UpdateSpacing</var> prior to restoring the initial color assigned to the edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.Loaded"/>
+          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.UpdateSpacing"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.ArrowKeys">
+        <short>Indicates is Up and Down cursor keys can be used in the Edit for the control </short>
+        <descr>
+          <p>
+            <var>ArrowKeys</var> is a <var>Boolean</var> property which indicates if cursor keys can be used to navigate content in the Edit for the control.
+          </p>
+          <p>
+            When set to <b>True</b>, the <b>Up</b> (<var>VK_UP</var>) and <b>Down</b> (<var>VK_Down</var>) arrow keys can be used to increase or decrease the <var>Value</var> for the control. The key events are handled in the <var>EditKeyDown</var> event handler assigned to <var>Edit</var>. When set to <b>False</b>, the Up and Down keys are ignored in Edit.
+          </p>
+          <p>
+            The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            Use <var>UpDown</var> to access the <var>TUpDown</var> instance used in the grouped edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.EditKeyDown"/>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.UpDown"/>
+          <link id="#lcl.comctrls.TUpDown"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.Edit">
+        <short>Text editor for the grouped edit control</short>
+        <descr>
+          <p>
+            <var>Edit</var> a read-only <var>TGEEdit</var> property which contains the editor for the grouped edit control. Edit is used to perform direct input of a new <var>Value</var> for the control. Edit allows  use of the <b>Up</b> and <b>Down</b> cursor keys to increment or decrement the value when <var>ArrowKeys</var> is enabled.
+          </p>
+          <p>
+            <var>UpDown</var> is the <var>TUpDown</var> instance used to increment and decrement the value for the grouped edit control using mouse clicks.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TGEEdit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Edit"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.UpDown">
+        <short>Contains the TUpDown instance used in the grouped edit control</short>
+        <descr>
+          <p>
+            <var>UpDown</var> is a read-only property which contains the <var>TUpDown</var> instance used to increment or decrement the <var>Value</var> for the grouped edit control. Click on the buttons in UpDown to increase or decrease the <var>Value</var> for the control by the amount specified in the <var>Increment</var> property.
+          </p>
+          <p>
+            <var>Edit</var> is used to perform direct input of the value for the grouped edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="#lcl.comctrls.TUpDown"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.UpDownVisible">
+        <short>Indicates whether the TUpDown instance for the grouped edit control is visible</short>
+        <descr>
+          <p>
+            <var>UpDownVisible</var> is a <var>Boolean</var> property which indicates if <var>UpDown</var> in the grouped edit control is visible. It is a convenience property; read and write access for the value are redirected to the <var>Visible</var> property in the <var>TUpDown</var> instance in UpDown. The default value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.UpDown"/>
+          <link id="#lcl.comctrls.TUpDown"/>
+          <link id="#lcl.comctrls.TUpDown.Visible"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.MinRepeatValue">
+        <short>Contains the repeat interval for the TUpDown instance in the grouped edit control</short>
+        <descr>
+          <p>
+            <var>MinRepeatValue</var> contains the repeat interval used for the <var>UpDown</var> control in the grouped edit. The default value for the property is defined in the <var>DefMinRepeatValue</var> constant.
+          </p>
+          <p>
+            Changing the value for the property causes the <var>MinRepeatInterval</var> property in <var>UpDown</var> to be updated with the new value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.comctrls.TUpDown.MinRepeatInterval"/>
+          <link id="DefMinRepeatValue"/>
+        </seealso>
+        <notes><note>?</note></notes>
+      </element>
+
+      <!-- public methods and properties -->
+      <element name="TSpinEditExBase.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create sets the default values for properties, including:
+          </p>
+          <ul>
+            <li>ArrowKeys</li>
+            <li>Increment</li>
+            <li>MaxValue</li>
+            <li>NullValueBehaviour</li>
+            <li>MinRepeatValue</li>
+          </ul>
+          <p>
+            Create configures the <var>Edit</var> and <var>UpDown</var> instances used in the grouped edit control. Edit is configured to use right alignment for its text (since it is a numeric value). UpDown is configured to include the flags needed in its ControlStyle property. The OnChangingEx and OnClick event handlers for UpDown are also set in the method.
+          </p>
+          <remark>
+            Please note: UpDown does not use its Associate property to maintain the relationship to Edit. This is by design, and allows Edit to be used with floating point numbers and have a NullValue (in a descendent class instance). It also enables proper alignment and anchoring for the grouped edit control.
+          </remark>
+          <p>
+            Internal members needed in the class instance are also initialized.
+          </p>
+          <p>
+            Create calls <var>SetInitialBounds</var> to set the size for the control to the default values returned from <var>GetControlClassDefaultSize</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TSpinEditExBase.GetLimitedValue">
+        <short>Constrains the specified value to MinValue and MaxValue for the control</short>
+        <descr>
+          <p>
+            <var>GetLimitedValue</var> is used in the implementation of <var>UpdateControl</var>, <var>SpinUpDown</var>, and <var>StrToValue</var> methods. It is also called from the <var>ValueToStr</var> method in <var>TCustomFloatSpinEditEx</var>.
+          </p>
+          <p>
+            GetLimitedValue ensures that the value for the type specified in <var>AValue</var> is constrained to the range specified in the <var>MinValue</var> and <var>MaxValue</var> properties. AValue is the type with the numeric value examined in the method.
+          </p>
+          <p>
+            The return value contains the original value after it has been range adjusted. When AValue is smaller than MinValue, MinValue is assigned to the return value. When AValue is larger than MaxValue, MaxValue is assigned to the return value.
+          </p>
+          <remark>
+            Please note: The return value is not range adjusted when MinValue and MaxValue have the same value. This is Delphi VCL compatible.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.GetLimitedValue.Result">
+        <short>Value adjusted (when needed) to the MinValue and MaxValue constraints</short>
+      </element>
+      <element name="TSpinEditExBase.GetLimitedValue.AValue">
+        <short>Value examined (and adjusted when needed) in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.ValueToStr">
+        <short>Converts the specified value to its representation as a String</short>
+        <descr>
+          <p>
+            <var>ValueToStr</var> is an abstract virtual <var>String</var> function used to convert the value specified in <var>AValue</var> to its representation as a String data type. ValueToStr must be implemented in a descendent class to use the data type and formatting needed for the specialization.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.ValueToStr.Result">
+        <short>String representation for the specified data type</short>
+      </element>
+      <element name="TSpinEditExBase.ValueToStr.AValue">
+        <short>Type with the numeric value converted in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.StrToValue">
+        <short>Converts the specified string to a numeric value for the generic data type</short>
+        <descr>
+          <p>
+            <var>StrToValue</var> is a function which returns a generic type with the numeric value for the specified String. <var>TextIsNumber</var> is used to determine if <var>S</var> contains a valid numeric value. If S is not a valid number, the <var>NullValueBehaviour</var> property is used to determine the return value for the method.
+          </p>
+          <dl>
+            <dt>nvbShowTextHint</dt>
+            <dd>NullValue is used a the return value.</dd>
+            <dt>nvbLimitedNullValue</dt>
+            <dd>GetLimitedValue is used derive the Null return value.</dd>
+            <dt>nvbMinValue</dt>
+            <dd>MinValue is used as the return value.</dd>
+            <dt>nvbMaxValue</dt>
+            <dd>MaxValue is used as the return value.</dd>
+            <dt>nvbInitialValue</dt>
+            <dd>The initial value for the control is used as the return value.</dd>
+            <dt>nvbShowTextHint</dt>
+            <dd>GetLimitedValue is used to get the return value</dd>
+          </dl>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSpinEditExBase.StrToValue.Result">
+        <short>Numeric value for the specified string</short>
+      </element>
+      <element name="TSpinEditExBase.StrToValue.S">
+        <short>String representation converted in method</short>
+      </element>
+
+      <element name="TSpinEditExBase.EditEditingDone">
+        <short>Implements the EditingDone handler for the Edit in the grouped edit control</short>
+        <descr>
+          <p>
+            <var>EditEditingDone</var> is an overridden method in <var>TSpinEditExBase</var>. It calls the inherited method on entry to signal the <var>OnEditingDone</var> event handler (when assigned).
+          </p>
+          <p>
+            EditEditingDone updates the <var>Value</var> for the control from the <var>Text</var> in the <var>Edit</var>. <var>UpdateControl</var> is called to ensure that members in the property are updated and validated after a change to the Value property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditEditingDone"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.Increment">
+        <short>Value added to or subtracted from Value when the UpDown control is clicked</short>
+        <descr>
+          <p>
+            <var>Increment</var> is a property which defines the value added to or subtracted from the control <var>Value</var> when the <var>UpDown</var> control is clicked. It is also used when <var>ArrowKeys</var> are enable in the Edit for the grouped edit control.
+          </p>
+          <p>
+            Increment uses the generic type for the class instance. There is no default value for the control in TSpinEditExBase, but it may be re-specified in a descendent class specialized for a given data type.
+          </p>
+        </descr>
+        -<seealso>
+          <link id="TCustomSpinEditEx.Increment"/>
+          <link id="TCustomSpinEditEx.Value"/>
+          <link id="TCustomSpinEditEx.UpDown"/>
+          <link id="TCustomSpinEditEx.Edit"/>
+          <link id="TCustomSpinEditEx.ArrowKeys"/>
+          <link id="TCustomFloatSpinEditEx.Increment"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.MinValue">
+        <short>Minimum value allowed in the Value property</short>
+        <descr>
+          <p>
+            <var>MinValue</var> is a property used to specify the minimum numeric value allowed in the <var>Value</var> property. MinValue uses the type specified for the generic class. Changing the property value causes <var>UpdateControl</var> to be called to range check and update members in the control.
+          </p>
+          <p>
+            MinValue is used in the implementation of methods such as <var>IsLimited</var>, <var>IsOutOfLimits</var>, <var>SpinUpDown</var>, and <var>GetLimitedValue</var>. It also influences the value stored in the control when a <var>NullValueBehaviour</var> is applied.
+          </p>
+          <p>
+            Use <var>MaxValue</var> to specify the maximum value allowed in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.NullValue"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TSpinEditExBase.NullValueBehaviour"/>
+          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TSpinEditExBase.IsLimited"/>
+          <link id="TSpinEditExBase.IsOutOfLimits"/>
+          <link id="TSpinEditExBase.SpinUpDown"/>
+          <link id="TSpinEditExBase.GetLimitedValue"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.MaxValue">
+        <short>Maximum value allowed in the Value property</short>
+        <descr>
+          <p>
+            <var>MaxValue</var> is a property which contains the largest numeric value allowed in the <var>Value</var> property. MaxValue uses the type specified for the generic class. Changing the property value causes <var>UpdateControl</var> to be called to range check and update members in the control.
+          </p>
+          <p>
+            MaxValue is used in the implementation of methods such as <var>IsLimited</var>, <var>IsOutOfLimits</var>, <var>SpinUpDown</var>, and <var>GetLimitedValue</var>. It also influences the value stored in the control when a <var>NullValueBehaviour</var> is applied.
+          </p>
+          <p>
+            Use <var>MinValue</var> to specify the smallest value allowed in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.NullValue"/>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.NullValueBehaviour"/>
+          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TSpinEditExBase.IsLimited"/>
+          <link id="TSpinEditExBase.IsOutOfLimits"/>
+          <link id="TSpinEditExBase.SpinUpDown"/>
+          <link id="TSpinEditExBase.GetLimitedValue"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditExBase.NullValue">
+        <short>Value used when the text for the control is not a valid number</short>
+        <descr>
+          <p>
+            <var>NullValue</var> contains the numeric value used when the text for the control does not represent a valid number. NullValue is assigned to Value when the NullValueBehaviour property is set to nvbLimitedNullValue or nvbShowTextHint.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TSpinEditExBase.NullValueBehaviour">
+        <short>Controls the logic applied when control text is not a valid number</short>
+        <descr>
+          <p>
+            <var>NullValueBehaviour</var> is a <var>TNullValueBehaviour</var> property which contains the logic applied when the text for the control does not represent a valid numeric value. The default value for the property is <var>nvbMinValue</var>, and indicates that the value in <var>MinValue</var> is stored in the <var>Value</var> property when an invalid number is detected.
+          </p>
+          <p>
+            See <link id="TNullValueBehaviour">TNullValueBehaviour</link> for more information about values in the enumeration and their meanings.
+          </p>
+          <p>
+            NullValueBehaviour is used in the implementation of the <var>UpdateControl</var> and <var>StrToValue</var> methods.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TSpinEditExBase.Value">
+        <short>Numeric value for the control</short>
+        <descr>
+          <p>
+            <var>Value</var> is a property which contains the numeric value for the grouped edit control. Value used the data type specified for the generic class.
+          </p>
+          <p>
+            Read access to the property value checks for an allocated handle in the control. If the handle has not been allocated, the <var>StrToValue</var> method is called to get the property value. When the handle exists, the value stored in the internal member is used.
+          </p>
+          <p>
+            Write access to the property value ensures that text assigned directly to <var>Edit</var> contains a valid number for the data type. This is done by calling <var>TextIsNumber</var>. If the new value is the same as the stored property value, no actions are performed.
+          </p>
+          <p>
+            When the value for the property is changed, the <var>UpdateControl</var> method is called to range check, validate, and update members in the class instance.
+          </p>
+          <p>
+            Use <var>MinValue</var> and <var>MaxValue</var> to control the minimum and maximum values allowed in the control. Use <var>Increment</var> to control the amount applied to the control value when a button in the <var>UpDown</var> control is clicked. Use <var>NullValue</var> and <var>NullValueBehaviour</var> to control the logic applied with an invalid numeric value is stored in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.NullValue"/>
+          <link id="TSpinEditExBase.NullValueBehaviour"/>
+          <link id="TSpinEditExBase.StrToValue"/>
+          <link id="TSpinEditExBase.TextIsNumber"/>
+          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TSpinEditExBase.UpDown"/>
+        </seealso>
+      </element>
+
+      <element name="TDisplayMode">
+        <short>Indicates the display mode used for the floating point value in TFloatSpinEditEx</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDisplayMode.dmFixed">
+        <short>Value is displayed with fixed precision and decimal places</short>
+      </element>
+      <element name="TDisplayMode.dmScientific">
+        <short>
+          Value is displayed in scientific (exponential) notation used for numbers that are too large or too small to be easily represented using the decimal form.
+        </short>
+      </element>
+      <element name="TDisplayMode.dmAuto">
+        <short>
+          Value is automatically formatted using scientific notation when it exceeds the limits assigned in ExponentialFormatLimitPos or ExponentialFormatLimitNeg
+        </short>
+      </element>
+      <element name="TDisplayMode.dmAutoZeroFixed">
+        <short>
+          When Value is 0.0, it is formatted using 20 digits of fixed precision with the number of decimals in DecimalPlaces. Similar to dmAuto but using fixed precision.
+        </short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx">
+        <short>A specialization of TSpinEditExBase for the Double data type</short>
+        <descr>
+          <p>
+            <var>TCustomFloatSpinEditEx</var> defines an extended spin edit control with an editor for the numeric value, and buttons to increment or decrement the control value.It is a  <var>TSpinEditExBase</var> descendant which specializes the generic ancestor for the <url href="https://www.freepascal.org/docs-html/ref/refsu5.html"><var>Double</var></url> data type. Double is a real type which allows values in the range 5.0E-324 .. 1.7E+308 and uses 15-16 digits of precision. Double is used to implement properties including: <var>Increment</var>, <var>MinValue</var>, <var>MaxValue</var>, <var>NullValue</var>, and <var>Value</var>.
+          </p>
+          <p>
+            Do not create instances of TCustomFloatSpinEditEx; use the <var>TFloatSpinEditEx</var> descendant which sets the visibility and default values for properties in the class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase"/>
+          <link id="TFloatSpinEditEx"/>
+          <link id="IntroToSpinEx"/>
+        </seealso>
+      </element>
+
+      <!-- private constants -->
+      <element name="TCustomFloatSpinEditEx.DefDecimals">
+        <short>Default number of decimal places used to display the Value for the control</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.DefDecimalSeparator">
+        <short>Default decimal separator used in the floating point value</short>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TCustomFloatSpinEditEx.FDecimals">
+        <short>Number of decimal places used to display the Value for the control</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FDisplayMode">
+        <short>Formatting used to edit and display the Value for the control</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FExponentDigits">
+        <short>Number of digits displayed in an exponent using scientific notation</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FExponentialFormatLimitNeg">
+        <short>Maximum exponent digits allowed before exponential notation is used for negative values</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FExponentialFormatLimitPos">
+        <short>Maximum exponent digits allowed before exponential notation is used for positive values</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FFS">
+        <short>Local format settings used in the control</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.FPrecision">
+        <short>Number of digits of precision used to edit and display the Value for the control</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.GetDecimalSeparator">
+        <short>Gets the value for the DecimalSeparator property</short>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.GetDecimalSeparator.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetDecimalSeparator">
+        <short>Sets the value for the DecimalSeparator property</short>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetDecimalSeparator.AValue">
+        <short>New value for the  property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetDisplayMode">
+        <short>Sets the value for the DisplayMode property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetDisplayMode.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetExponentDigits">
+        <short>Sets the value for the ExponentDigits property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetExponentDigits.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetExponentialFormatLimitNeg">
+        <short>Sets the value for the ExponentialFormatLimitNeg property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetExponentialFormatLimitNeg.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetExponentialFormatLimitPos">
+        <short>Sets the value for the ExponentialFormatLimitPos property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetExponentialFormatLimitPos.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetPrecision">
+        <short>Sets the value for the Precision property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetPrecision.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <!-- protected methods  -->
+     <element name="TCustomFloatSpinEditEx.GetFormatsettings">
+       <short>Gets the local format settings for the control</short>
+       <descr/>
+       <seealso/>
+     </element>
+     <element name="TCustomFloatSpinEditEx.GetFormatsettings.Result">
+       <short>Local format settings used for the control</short>
+     </element>
+
+      <element name="TCustomFloatSpinEditEx.EditKeyPress">
+        <short>Implements handler for KeyPress events in the Edit for the control</short>
+        <descr>
+          <p>
+            <var>EditKeyPress</var> is an overridden method in <var>TCustomFloatSpinEditEx</var> used to ensure that the specified character is valid for the Edit in the control. <var>Key</var> contains the character examined in the method. The allowed values in Key include the following characters:
+          </p>
+          <dl>
+            <dt>Numeric Digits</dt>
+            <dd>Characters in the range '0'..'9'.</dd>
+            <dt>Decimal separator</dt>
+            <dd>
+              Accepts either ',' (Comma), or '.' (Period) characters as the decimal separator, and is  automatically translated to the value used in local format settings in the DecimalSeparator property. Any decimal separator will, however, be discarded when DecimalPlaces is set to 0 (zero).
+            </dd>
+            <dt>Exponent Notation</dt>
+            <dd>
+              Allows 'E' or 'e' to represent the exponent character used to represent "... times ten raised to the power of ...".
+            </dd>
+            <dt>Control Characters</dt>
+            <dd>
+              Allows the following control characters to be passed to the Edit control: #8 (BackSpace), #9 (Tab), ^C (Ctrl+C or Copy), ^X (Ctrl+X or Cut), ^V (Ctrl+V or Paste), ^Z (Ctrl+Z or Undo).
+            </dd>
+          </dl>
+          <p>
+            EditKeyPress calls the inherited method to signal the OnEditKeyPress event handler (when assigned).
+          </p>
+          <p>
+            Any character which is not allowed in the floating point value is set to #0 to discard the character value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TCustomFloatSpinEditEx.DecimalPlaces"/>
+          <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditKeyPress"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.EditKeyPress.Key">
+        <short>Character examined in the method</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.TextIsNumber">
+        <short>Determines if the specified string is a valid number for the numeric data type</short>
+        <descr>
+          <p>
+            <var>TextIsNumber</var> is an overridden <var>Boolean</var> function used to determine if the specified string contains a valid representation for the numeric data type in the control. TextIsNumber re-implements the inherited method to use the <var>Double</var> data type, and does not call the method in the ancestor class.
+          </p>
+          <p>
+            TextIsNumber calls <var>TryStrToFloat</var> using the local format settings for the control to convert the value in <var>S</var> to a floating point value. An exception raised by TryStrToFloat is handled in the method. The converted numeric value is stored in the <var>ANumber</var> argument on success. ANumber should be considered "undefined" when the conversion fails due to an exception.
+          </p>
+          <p>
+            The return value is <b>True</b> when the value in S can be converted to the Double data type. It is <b>False</b> when an exception was raised and handled in the method.
+          </p>
+          <p>
+            TextIsNumber is used in the implementation of methods like <var>UpdateControl</var>, <var>SpinUpDown</var>, and <var>StrToValue</var>. It is also called when setting a new value in the <var>Value</var> property.
+          </p>
+          <p>
+            Set values in the <var>MinValue</var>, <var>MaxValue</var>, <var>NullValue</var>, and <var>NullValueBehaviour</var> properties to control the actions performed when TextIsNumber returns <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase"/>
+          <link id="TSpinEditExBase.TextIsNumber"/>
+          <link id="TFloatSpinEditEx"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.TextIsNumber.Result">
+        <short>True if the specified string is a valid numeric value</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.TextIsNumber.S">
+        <short>String with the value examined in the method</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.TextIsNumber.ANumber">
+        <short>Stores the numeric value for the specified string; undefined when the result is False</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SafeInc">
+        <short>Ensures the incremented value is a valid number for the Double data type</short>
+        <descr>
+          <p>
+            <var>SafeInc</var> is an overridden function in <var>TCustomFloatSpinEditEx</var> used to increase the specified value by the <var>Increment</var> for the control. SafeInc ensures that the incremented value is valid for the <var>Double</var> data type. SafeInc does not call the inherited method.
+          </p>
+          <p>
+            <var>AValue</var> contains the type with the numeric value to be incremented.
+          </p>
+          <p>
+            The return value contains the numeric value after the value in Increment has been added. The return value is constrained when the incremented value is too large for the Double data type. The upper limit for the value in the data type is defined in the <var>MaxDouble</var> constant.
+          </p>
+          <p>
+            SafeInc is used in the implementation of the <var>SpinUpDown</var> method.
+          </p>
+          <p>
+            <var>SafeDec</var> is used to decrement a specified Double value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+          <link id="TSpinEditExBase.SpinUpDown"/>
+          <link id="TCustomFloatSpinEditEx.SafeDec"/>
+          <link id="#rtl.math.MaxDouble"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SafeInc.Result">
+        <short>The numeric value after Increment has been added</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SafeInc.AValue">
+        <short>Numeric value incremented in the method</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SafeDec">
+        <short>Ensures the decremented value is a valid number for the Double data type</short>
+        <descr>
+          <p>
+            <var>SafeDec</var> is an overridden function in <var>TCustomFloatSpinEditEx</var> used to decrease the specified value by the <var>Increment</var> for the control. SafeDec ensures that the decremented value is valid for the <var>Double</var> data type. SafeDec does not call the inherited method.
+          </p>
+          <p>
+            <var>AValue</var> contains the type with the numeric value to be decremented.
+          </p>
+          <p>
+            The return value contains the numeric value after the value in Increment has been subtracted. The return value is constrained when the decremented value is too small for the Double data type. The lower limit for the value in the data type is defined as <var>-1 * MaxDouble</var>.
+          </p>
+          <p>
+            SafeDec is used in the implementation of the <var>SpinUpDown</var> method.
+          </p>
+          <p>
+            <var>SafeInc</var> is used to increment a specified Double value.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SafeDec.Result">
+        <short>The numeric value after Increment has been subtracted</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SafeDec.AValue">
+        <short>Numeric value decremented in the method</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.SetDecimals">
+        <short>Sets the value for the DecimalPlaces property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.DecimalPlaces"/>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SetDecimals.AValue">
+        <short>New value for the  property</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.DisplayMode">
+        <short>Specifies the formatting used to edit and display the Value for the control</short>
+        <descr>
+          <p>
+            <var>DisplayMode</var> is a <var>TDisplayMode</var> property which specifies the formatting used to edit and display the <var>Value</var> for the control. The default value for the property is <var>dmFixed</var>, and indicates that fixed precision and decimals are used when formatting the control value.
+
+            See <var>TDisplayMode</var> for more information about the values and meanings in the enumeration.
+          </p>
+          <p>
+            Changing the value in DisplayMode causes the Value for the control to be updated.  It also forces <var>UpdateControl</var> to be called to validate and normalize members in the class instance.
+          </p>
+          <p>
+            DisplayMode is used in the implementation of the <var>ValueToStr</var> method which generates the string representation for the Value in the control, and is assigned to the <var>Text</var> property in the <var>Edit</var> for the grouped edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDisplayMode"/>
+          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TSpinEditExBase.Edit"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.ExponentialFormatLimitPos">
+        <short>
+          Maximum exponent allowed before exponential notation is required for a positive number
+        </short>
+        <descr>
+          <p>
+            <var>ExponentialFormatLimitPos</var> is an <var>Integer</var> property which contains the maximum exponent allowed before a positive <var>Value</var> in the control must be represented using exponential notation. The default value for the property is  <b>6</b> (six) and indicates that Value must exceed 10^6 before  exponential notation is required for a positive number.
+          </p>
+          <p>
+            Setting a new value for the property causes Value to be updated, and calls the <var>UpdateControl</var> method to validate and normalize members in the class instance.
+          </p>
+          <p>
+            ExponentialFormatLimitPos is used in the <var>ValueToStr</var> method when <var>DisplayMode</var> contains the value <var>dmAuto</var> and Value has a non-zero floating point value.
+          </p>
+          <p>
+            Use <var>ExponentialFormatLimitNeg</var> to specify the maximum exponent allowed before using exponential notation for a negative value in the control.
+          </p>
+          <p>
+            Use <var>Precision</var> to specify the total number of digits used for a number in scientific notation. Use <var>ExponentDigits</var> to specify the number of exponent digits used for a number in scientific notation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+          <link id="TCustomFloatSpinEditEx.Precision"/>
+          <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
+          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitNeg"/>
+          <link id="TDisplayMode.dmAuto"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.ExponentialFormatLimitNeg">
+        <short/>
+        <descr>
+          <p>
+            <var>ExponentialFormatLimitNeg</var> is an <var>Integer</var> property which contains the exponent value at which use of scientific notation is triggered for a negative <var>Value</var> in the control. The default value for the property is <b>-6</b>, and indicates that scientific notation is required when Value is smaller than 10^-6.
+          </p>
+          <p>
+            Changing the value for the property causes GetValue and UpdateControl to be called.
+          </p>
+          <p>
+            ExponentialFormatLimitNeg is used in the <var>ValueToStr</var> method when <var>DisplayMode</var> is <var>dmAuto</var> and the <var>Value</var> is not 0.0.
+          </p>
+          <p>
+            Use <var>ExponentialFormatLimitPos</var> to specify the exponent value which triggers use of scientific notation for a positive value.
+          </p>
+          <p>
+            Use <var>Precision</var> to specify the total number of digits used for a number in scientific notation. Use <var>ExponentDigits</var> to specify the number of exponent digits used for a number in scientific notation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+          <link id="TCustomFloatSpinEditEx.GetValue"/>
+          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitPos"/>
+          <link id="TCustomFloatSpinEditEx.Precision"/>
+          <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.Precision">
+        <short>Number of digits of precision used after the decimal point in scientific notation</short>
+        <descr>
+          <p>
+            Precision is an Integer property which specifies the number of digits of precision used after the decimal point for a floating point value in scientific notation. It is the value used as the precision argument for the FloatToStrF routine in RTL. The default value for the property is <b>6</b>. The maximum precision for the data type is 15.
+          </p>
+          <p>
+            Changing the value for the property causes the GetValue and UpdateControl methods to be called.
+          </p>
+          <p>
+            Precision is used in the ValueToStr method when <var>DisplayMode</var> is <var>dmScientific</var> or <var>dmAuto</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.ExponentDigits">
+        <short>Number of digits prior to the decimal point used in scientific notation</short>
+        <descr>
+          <p>
+            <var>ExponentDigits</var> is an <var>Integer</var> property which contains the number of digits used before the decimal point when using scientific notation. The default value for the property is <b>2</b>.
+          </p>
+          <p>
+            Changing the value for the property causes the <var>GetValue</var> and <var>UpdateControl</var> methods to be called.
+          </p>
+          <p>
+            ExponentDigits is used in the <var>ValueToStr</var> method when the <var>DisplayMode</var> is <var>dmScientific</var> or <var>dmAuto</var>.
+          </p>
+          <p>
+            Use <var>Precision</var> to specify the number of digits after the decimal point in a floating point value using scientific notation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.Precision"/>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TCustomFloatSpinEditEx.GetValue"/>
+          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+        </seealso>
+      </element>
+
+      <!-- public methods and properties -->
+      <element name="TCustomFloatSpinEditEx.ValueToStr">
+        <short>Gets the string representation for the numeric Value in the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomFloatSpinEditEx.ValueToStr.Result">
+        <short>String representation for the numeric Value</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.ValueToStr.AValue">
+        <short>Numeric value examined and converted in the method</short>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry.
+          </p>
+          <p>
+            Create makes an internal copy of the default format settings for the platform. This allows the value in <var>DecimalSeparator</var> to be specified and stored independent of the value in <var>DefaultFormatSettings</var>. The local copy is modified to used the value in the <var>DefDecimalSeparator</var> constant as the default value for DecimalSeparator.
+          </p>
+          <p>
+            Create sets the default values for properties, including:
+          </p>
+          <dl>
+            <dt>DecimalPlaces</dt>
+            <dd>Set to the value in the DefDecimals constant.</dd>
+            <dt>ExponentialFormatLimitPos</dt>
+            <dd>Set to 6 (six).</dd>
+            <dt>ExponentialFormatLimitNeg</dt>
+            <dd>Set to -6.</dd>
+            <dt>Precision</dt>
+            <dd>Set 6 digits for the mantissa.</dd>
+            <dt>ExponentDigits</dt>
+            <dd>Set to 2.</dd>
+            <dt>DisplayMode</dt>
+            <dd>
+              Set to the value dmFixed for fixed format using the Precision and ExponentDigits defined in the control.
+            </dd>
+          </dl>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.DecimalSeparator">
+        <short>Value used to represent a decimal point in the Edit control</short>
+        <descr>
+          <p>
+            <var>DecimalSeparator</var> is a <var>Char</var> property which contains the character used as the decimal point in a floating point value. Read and write access for the property value are redirected to the local <var>TFormatSetting</var> stored in the class instance. This allows the control to set the decimal separator independent of the format settings for the platform or operating system.
+          </p>
+          <p>
+            The default value for the property is defined in the <var>DefDecimalSeparator</var> constant. Changing the value for the property updates the local format settings, and calls <var>UpdateControl</var> to validate and update members in the class instance.
+          </p>
+          <p>
+            DecimalSeparator is used in <var>EditKeyPress</var> to validate characters entered in the <var>Edit</var> for the control. It is also used in <var>ValueToStr</var> to format the value in the control for the selected <var>DisplayMode</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.Create"/>
+          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TCustomFloatSpinEditEx.EditKeyPress"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+          <link id="DefDecimalSeparator"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomFloatSpinEditEx.DecimalPlaces">
+        <short>Number of decimal places used to edit and display the Value for the control</short>
+        <descr>
+          <p>
+            <var>DecimalPlaces</var> is an <var>Integer</var> property which indicates the number of decimal places used when formatting the <var>Value</var> for the control. It must contain a positive integer value or <b>0</b> (<b>zero</b>). The default value for the property is defined in the <var>DefDecimals</var> constant. Changing the value for the property causes the Value property to be updated, and calls <var>UpdateControl</var> to validate and update other members in the class instance.
+          </p>
+          <p>
+            DecimalPlaces is used in <var>ValueToStr</var> to format the value in the control for the selected <var>DisplayMode</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id=""/>
+          <link id="TCustomFloatSpinEditEx.Create"/>
+          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TCustomFloatSpinEditEx.ValueToStr"/>
+          <link id="TCustomFloatSpinEditEx.DisplayMode"/>
+          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="DefDecimals"/>
+        </seealso>
+      </element>
+
+      <element name="TFloatSpinEditEx">
+        <short>Implement a spin edit control for a value using the Double data type</short>
+        <descr>
+          <p>
+            <var>TFloatSpinEditEx</var> is a <var>TCustomFloatSpinEditEx</var> descendant which implements a spin edit control for a value using the <var>Double</var> data type. TFloatSpinEditEx sets the visibility for properties defined in ancestor classes.
+          </p>
+          <p>
+            <var>TFloatSpinEditEx</var> defines an extended spin edit control with an editor for the numeric value, and buttons to increment or decrement the control value. It specializes the generic ancestor for the <url href="https://www.freepascal.org/docs-html/ref/refsu5.html"><var>Double</var></url> data type. Double is a real type which allows values in the range 5.0E-324 .. 1.7E+308 and uses 15-16 digits of precision. Double is used to implement properties including: <var>Increment</var>, <var>MinValue</var>, <var>MaxValue</var>, <var>NullValue</var>, and <var>Value</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx"/>
+          <link id="IntroToSpinEx"/>
+        </seealso>
+      </element>
+
+      <element name="TFloatSpinEditEx.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
+      <element name="TFloatSpinEditEx.AutoSelect" link="TCustomEdit.AutoSelect"/>
+      <element name="TFloatSpinEditEx.AutoSizeHeightIsEditHeight" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
+      <element name="TFloatSpinEditEx.AutoSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize"/>
+      <element name="TFloatSpinEditEx.Action" link="#lcl.controls.TControl.Action"/>
+      <element name="TFloatSpinEditEx.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TFloatSpinEditEx.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
+      <element name="TFloatSpinEditEx.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TFloatSpinEditEx.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TFloatSpinEditEx.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TFloatSpinEditEx.BorderStyle" link="#lcl.controls.TCustomControl.BorderStyle"/>
+      <element name="TFloatSpinEditEx.CharCase" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase"/>
+      <element name="TFloatSpinEditEx.Color" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Color"/>
+      <element name="TFloatSpinEditEx.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TFloatSpinEditEx.Cursor" link="#lcl.controls.TControl.Cursor"/>
+      <element name="TFloatSpinEditEx.DirectInput" link="#lcl.groupededit.TCustomAbstractGroupedEdit.DirectInput"/>
+      <element name="TFloatSpinEditEx.EchoMode" link="#lcl.groupededit.TCustomAbstractGroupedEdit.EchoMode"/>
+      <element name="TFloatSpinEditEx.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TFloatSpinEditEx.FocusOnBuddyClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
+      <element name="TFloatSpinEditEx.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TFloatSpinEditEx.Hint" link="#lcl.controls.TControl.Hint"/>
+      <element name="TFloatSpinEditEx.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
+      <element name="TFloatSpinEditEx.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
+      <element name="TFloatSpinEditEx.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
+      <element name="TFloatSpinEditEx.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TFloatSpinEditEx.ParentColor" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ParentColor"/>
+      <element name="TFloatSpinEditEx.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TFloatSpinEditEx.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TFloatSpinEditEx.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
+      <element name="TFloatSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
+      <element name="TFloatSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TFloatSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TFloatSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
+      <element name="TFloatSpinEditEx.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
+      <element name="TFloatSpinEditEx.Visible" link="#lcl.controls.TControl.Visible"/>
+
+      <element name="TFloatSpinEditEx.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
+      <element name="TFloatSpinEditEx.OnClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnClick"/>
+      <element name="TFloatSpinEditEx.OnDblClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDblClick"/>
+      <element name="TFloatSpinEditEx.OnDragDrop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragDrop"/>
+      <element name="TFloatSpinEditEx.OnDragOver" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragOver"/>
+      <element name="TFloatSpinEditEx.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TFloatSpinEditEx.OnEditingDone" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditingDone"/>
+      <element name="TFloatSpinEditEx.OnEndDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEndDrag"/>
+      <element name="TFloatSpinEditEx.OnEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEnter"/>
+      <element name="TFloatSpinEditEx.OnExit" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnExit"/>
+      <element name="TFloatSpinEditEx.OnKeyDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyDown"/>
+      <element name="TFloatSpinEditEx.OnKeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyPress"/>
+      <element name="TFloatSpinEditEx.OnKeyUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyUp"/>
+      <element name="TFloatSpinEditEx.OnMouseDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseDown"/>
+      <element name="TFloatSpinEditEx.OnMouseEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseEnter"/>
+      <element name="TFloatSpinEditEx.OnMouseLeave" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseLeave"/>
+      <element name="TFloatSpinEditEx.OnMouseMove" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseMove"/>
+      <element name="TFloatSpinEditEx.OnMouseUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseUp"/>
+      <element name="TFloatSpinEditEx.OnMouseWheel" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheel"/>
+      <element name="TFloatSpinEditEx.OnMouseWheelDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
+      <element name="TFloatSpinEditEx.OnMouseWheelUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
+      <element name="TFloatSpinEditEx.OnStartDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnStartDrag"/>
+      <element name="TFloatSpinEditEx.OnUTF8KeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
+
+      <element name="TFloatSpinEditEx.ArrowKeys" link="TSpinEditExBase.ArrowKeys"/>
+      <element name="TFloatSpinEditEx.DecimalSeparator" link="TCustomFloatSpinEditEx.DecimalSeparator"/>
+      <element name="TFloatSpinEditEx.DecimalPlaces" link="TCustomFloatSpinEditEx.DecimalPlaces"/>
+      <element name="TFloatSpinEditEx.Increment" link="TSpinEditExBase.Increment"/>
+      <element name="TFloatSpinEditEx.MaxValue" link="TSpinEditExBase.MaxValue"/>
+      <element name="TFloatSpinEditEx.MinValue" link="TSpinEditExBase.MinValue"/>
+      <element name="TFloatSpinEditEx.MinRepeatValue" link="TSpinEditExBase.MinRepeatValue"/>
+      <element name="TFloatSpinEditEx.NullValue" link="TSpinEditExBase.NullValue"/>
+      <element name="TFloatSpinEditEx.NullValueBehaviour" link="TSpinEditExBase.NullValueBehaviour"/>
+      <element name="TFloatSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
+      <element name="TFloatSpinEditEx.UpDownVisible" link="TSpinEditExBase.UpDownVisible"/>
+      <element name="TFloatSpinEditEx.Value" link="TSpinEditExBase.Value"/>
+
+
+      <element name="TCustomSpinEditEx">
+        <short>Defines the base class for a spin edit control for Int64 values</short>
+        <descr>
+          <p>
+            <var>TCustomSpinEditEx</var> is a specialization of the generic <var>TSpinEditExBase</var> class for the <var>Int64</var> data type. In addition to implementing the Int64 data type, it provides additional properties and methods used  to validate, format, and display the numeric value.
+          </p>
+          <p>
+            Use the <var>ThousandSeparator</var> to set the UTF-8-encoded value used as the decimal point in the control value.
+          </p>
+          <p>
+            Set <var>Increment</var> to the value by which the control is increased or decreased when the <var>UpDown</var> button is clicked.
+          </p>
+          <p>
+            Use <var>ValueToStr</var> to get the string representation for the numeric value.
+          </p>
+          <p>
+            Do not create instances of TCustomSpinEditEx; use <var>TSpinEditEx</var>, which sets the visibility for properties, instead.
+          </p>
+          <p>
+            Use <var>TFloatSpinEditEx</var> to edit a floating point value using fixed or scientific notation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpinEditExBase"/>
+          <link id="TSpinEditEx"/>
+          <link id="TFloatSpinEditEx"/>
+          <link id="IntroToSpinEx"/>
+        </seealso>
+      </element>
+
+      <!-- private members and methods -->
+      <element name="TCustomSpinEditEx.FThousandSeparator">
+        <short>Stores the thousands separator</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.SetThousandSeparator">
+        <short>Sets the value for the ThousandSeparator property</short>
+        <seealso>
+          <link id="TCustomSpinEditEx.ThousandSeparator"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.SetThousandSeparator.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <!-- protected methods -->
+      <element name="TCustomSpinEditEx.EditKeyPress">
+        <short>Implements the handler for KeyPress events in the Edit for the control</short>
+        <descr>
+          <p>
+            <var>EditKeyPress</var> is an overridden method in <var>TCustomSpinEditEx</var>, and calls the inherited method on entry. The <var>OnEditKeyPress</var> event handler is signalled (when assigned) by the inherited method.
+          </p>
+          <p>
+            EditKeyPress ensures that the value in <var>Key</var> is valid for the control. An invalid value is discarded by setting Key to the <b>#0</b> character (Decimal 0). Valid characters include numeric digits (<b>'0'..'9'</b>), the value in <var>ThousandSeparator</var>, and the negative sign indicator (<b>'-'</b>).
+          </p>
+          <p>
+            Please note: The sign indicator will be disallowed when a positive non-zero value is specified in the <var>MinValue</var> property.
+          </p>
+          <p>
+            Tab, BackSpace, Cut, Paste, Copy, and Undo key presses are passed to the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditKeyPress"/>
+          <link id="TCustomSpinEditEx.ThousandSeparator"/>
+          <link id="TCustomSpinEditEx.MinValue"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.EditKeyPress.Key">
+        <short>Character examined in the method</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.SafeInc">
+        <short>Ensures the incremented value is valid for the data type</short>
+        <descr>
+          <p>
+            <var>SafeInc</var> is a function used to increase <var>AValue</var> by the amount specified in the <var>Increment</var> property. SafeInc is overridden in TCustomSpinEditEx to ensure that the incremented value is valid for the <var>Int64</var> data type.
+          </p>
+          <p>
+            <var>AValue</var> contains the the numeric value to be incremented.
+          </p>
+          <p>
+            The return value contains the Int64 value after Increment has been added. The return value is constrained when the incremented value is too large for the Int64 data type; its value is set to <var>High(Int64)</var>.
+          </p>
+          <p>
+            SafeInc is used in the implementation of the <var>SpinUpDown</var> method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.Increment"/>
+          <link id="TSpinEditExBase.SpinUpDown"/>
+          <link id="TSpinEditExBase.SafeInc"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.SafeInc.Result">
+        <short>Numeric value after the increment has been added</short>
+      </element>
+      <element name="TCustomSpinEditEx.SafeInc.AValue">
+        <short>Numeric value incremented in the method</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.SafeDec">
+        <short>Ensures the decremented value is valid for the data type</short>
+        <descr>
+          <p>
+            <var>SafeDec</var> is a function used to decrease the specified value by the amount specified in the <var>Increment</var> property. SafeDec is overridden in <var>TCustomSpinEditEx</var> to ensure that the decremented value is valid for the <var>Int64</var> data type.
+          </p>
+          <p>
+            <var>AValue</var> contains the numeric value to be decremented.
+          </p>
+          <p>
+            The return value contains the Int64 value after Increment has been subtracted. The return value is constrained when the decremented value is too small for the Int64 data type; its value is set to <b>Low(Int64)</b>.
+          </p>
+          <p>
+            SafeDec is used in the implementation of the <var>SpinUpDown</var> method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.Increment"/>"
+          <link id="TSpinEditExBase.SpinUpDown"/>
+          <link id="TSpinEditExBase.SafeDec"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.SafeDec.Result">
+        <short>Numeric value after the increment has been subtracted</short>
+      </element>
+      <element name="TCustomSpinEditEx.SafeDec.AValue">
+        <short>Numeric value decremented in the method</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.TextIsNumber">
+        <short>Indicates if the specified String contains a valid Int64 data type</short>
+        <descr>
+          <p>
+            <var>TextIsNumber</var> is an overridden  <var>Boolean</var> function which indicates if the value specified in <var>S</var> represents a valid number for the <var>Int64</var> data type.
+          </p>
+          <p>
+            <var>ANumber</var> is an output parameter where the numeric value from the conversion from the is stored.
+          </p>
+          <p>
+            The return value is a <var>Boolean</var> type which contains <b>True</b> when the text in <var>S</var> is successfully converted to an Int64 value and stored i the <var>N</var> argument. If the conversion raises an exception, it is handled in the method and the return value is set to <b>False</b>. The value in N should be considered as "undefined" in this scenario.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.ThousandSeparator"/>
+          <link id="RemoveThousandSeparator"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.TextIsNumber.Result">
+        <short>True when the text contains a valid Int64 value</short>
+      </element>
+      <element name="TCustomSpinEditEx.TextIsNumber.S">
+        <short>Text converted to a numeric value in the method</short>
+      </element>
+      <element name="TCustomSpinEditEx.TextIsNumber.ANumber">
+        <short>Contains the successfully converted number value</short>
+      </element>
+
+      <!-- public methods and properties -->
+      <element name="TCustomSpinEditEx.ValueToStr">
+        <short>Converts the specified numeric value to its String representation</short>
+        <descr>
+          <p>
+            <var>ValueToStr</var> is an overridden <var>String</var> function used to convert the value specified in <var>AValue</var> to its representation as a <var>String</var> data type. AValue is an <var>Int64</var> type.
+          </p>
+          <p>
+            <var>ValueToStr</var> calls <var>IntToStr</var> to convert the integer value to the String used as the return value for the method. When <var>ThousandSeparator</var> has been assigned, the <var>InsertThousandSeparator</var> routine is called to apply the display formatting to the return value.
+          </p>
+          <p>
+            ValueToStr is used in the implementation of both the <var>UpdateControl</var> and <var>RealGetText</var> methods in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFloatSpinEditEx.ThousandSeparator"/>
+          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TSpinEditExBase.RealGetText"/>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.ValueToStr.Result">
+        <short>String representation for the specified numeric value</short>
+      </element>
+      <element name="TCustomSpinEditEx.ValueToStr.AValue">
+        <short>Numeric value converted in the method</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.Increment">
+        <short>Amount by which the control value is increased or decreased when UpDown is clicked</short>
+        <descr>
+          <p>
+            <var>Increment</var> is an <var>Int64</var> property  in <var>TCustomSpinEditEx</var>, and represents the amount by which the control value is increased or decreased when the UpDown button is clicked. The default value for the property is <b>1</b>.
+          </p>
+          <p>
+            Increment is used in the implementation of the <var>SafeInc</var> and <var>SafeDec</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.SafeInc"/>
+          <link id="TCustomSpinEditEx.SafeDec"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomSpinEditEx.ThousandSeparator">
+        <short>Contains the thousands separator used to format and display the control value</short>
+        <descr>
+          <p>
+            <var>ThousandSeparator</var> is a <var>String</var> property which contains the character used as the thousands separator in the control. It is implemented as a <var>String</var> type to allow use of UTF-8-encoded characters in the property value. When it is unassigned (contains an empty string), the separator is not used to format the string value for the control.
+          </p>
+          <p>
+            Changing the value in ThousandSeparator causes the <var>UpdateControl</var> method to be called to update the display for the control.
+          </p>
+          <p>
+            ThousandSeparator is used in methods like <var>EditKeyPress</var>, <var>TextIsNumber</var>, and <var>ValueToStr</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx.EditKeyPress"/>
+          <link id="TCustomSpinEditEx.TextIsNumber"/>
+          <link id="TCustomSpinEditEx.ValueToStr"/>
+          <link id="TSpinEditExBase.UpdateControl"/>
+        </seealso>
+      </element>
+
+      <element name="TSpinEditEx">
+        <short>Implements a spin edit control for an Int64 data type</short>
+        <descr>
+          <p>
+            <var>TSpinEditEx</var> is a <var>TCustomSpinEditEx</var> descendant which implements a spin edit control using an <var>Int64</var> value. TSpinEditEx sets the visibility for properties defined in ancestor classes.
+          </p>
+          <p>
+            Use the <var>ThousandSeparator</var> to set the UTF-8-encoded value used as the decimal point in the control value.
+          </p>
+          <p>
+            Set <var>Increment</var> to the value by which the control is increased or decreased when the <var>UpDown</var> button is clicked.
+          </p>
+          <p>
+            Use <var>ValueToStr</var> to get the string representation for the numeric value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpinEditEx"/>
+          <link id="IntroToSpinEx"/>
+        </seealso>
+      </element>
+
+      <!-- public properties -->
+      <element name="TSpinEditEx.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
+
+      <!-- published  properties -->
+      <element name="TSpinEditEx.AutoSelect" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelect"/>
+      <element name="TSpinEditEx.AutoSizeHeightIsEditHeight" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
+      <element name="TSpinEditEx.AutoSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize"/>
+      <element name="TSpinEditEx.Action" link="#lcl.controls.TControl.Action"/>
+      <element name="TSpinEditEx.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TSpinEditEx.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
+      <element name="TSpinEditEx.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TSpinEditEx.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TSpinEditEx.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TSpinEditEx.BorderStyle" link="#lcl.controls.TCustomControl.BorderStyle"/>
+      <element name="TSpinEditEx.CharCase" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase"/>
+      <element name="TSpinEditEx.Color" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Color"/>
+      <element name="TSpinEditEx.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TSpinEditEx.Cursor" link="#lcl.controls.TControl.Cursor"/>
+      <element name="TSpinEditEx.DirectInput" link="#lcl.groupededit.TCustomAbstractGroupedEdit.DirectInput"/>
+      <element name="TSpinEditEx.EchoMode" link="#lcl.groupededit.TCustomAbstractGroupedEdit.EchoMode"/>
+      <element name="TSpinEditEx.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TSpinEditEx.FocusOnBuddyClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
+      <element name="TSpinEditEx.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TSpinEditEx.Hint" link="#lcl.controls.TControl.Hint"/>
+      <element name="TSpinEditEx.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
+      <element name="TSpinEditEx.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
+      <element name="TSpinEditEx.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
+      <element name="TSpinEditEx.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TSpinEditEx.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TSpinEditEx.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TSpinEditEx.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TSpinEditEx.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
+      <element name="TSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
+      <element name="TSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.ShowHint"/>
+      <element name="TSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
+      <element name="TSpinEditEx.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
+      <element name="TSpinEditEx.Visible" link="#lcl.controls.TControl.Visible"/>
+
+      <element name="TSpinEditEx.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
+      <element name="TSpinEditEx.OnClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnClick"/>
+      <element name="TSpinEditEx.OnDblClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDblClick"/>
+      <element name="TSpinEditEx.OnDragDrop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragDrop"/>
+      <element name="TSpinEditEx.OnDragOver" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragOver"/>
+      <element name="TSpinEditEx.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TSpinEditEx.OnEditingDone" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditingDone"/>
+      <element name="TSpinEditEx.OnEndDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEndDrag"/>
+      <element name="TSpinEditEx.OnEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEnter"/>
+      <element name="TSpinEditEx.OnExit" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnExit"/>
+      <element name="TSpinEditEx.OnKeyDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyDown"/>
+      <element name="TSpinEditEx.OnKeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyPress"/>
+      <element name="TSpinEditEx.OnKeyUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyUp"/>
+      <element name="TSpinEditEx.OnMouseDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseDown"/>
+      <element name="TSpinEditEx.OnMouseEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseEnter"/>
+      <element name="TSpinEditEx.OnMouseLeave" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseLeave"/>
+      <element name="TSpinEditEx.OnMouseMove" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseMove"/>
+      <element name="TSpinEditEx.OnMouseUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseUp"/>
+      <element name="TSpinEditEx.OnMouseWheel" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheel"/>
+      <element name="TSpinEditEx.OnMouseWheelDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
+      <element name="TSpinEditEx.OnMouseWheelUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
+      <element name="TSpinEditEx.OnStartDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnStartDrag"/>
+      <element name="TSpinEditEx.OnUTF8KeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
+
+      <element name="TSpinEditEx.ArrowKeys" link="TSpinEditExBase.ArrowKeys"/>
+      <element name="TSpinEditEx.Increment" link="TCustomSpinEditEx.Increment"/>
+      <element name="TSpinEditEx.MaxValue" link="TCustomSpinEditEx.MaxValue"/>
+      <element name="TSpinEditEx.MinValue" link="TCustomSpinEditEx.MinValue"/>
+      <element name="TSpinEditEx.MinRepeatValue" link="TSpinEditExBase.MinRepeatValue"/>
+      <element name="TSpinEditEx.NullValue" link="TSpinEditExBase.NullValue"/>
+      <element name="TSpinEditEx.NullValueBehaviour" link="TSpinEditExBase.NullValueBehaviour"/>
+      <element name="TSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
+      <element name="TSpinEditEx.UpDownVisible" link="TSpinEditExBase.UpDownVisible"/>
+      <element name="TSpinEditEx.Value" link="TSpinEditExBase.Value"/>
+
+      <element name="DbgS">
+        <short>Gets debugging information about a value from TNullValueBehaviour</short>
+        <descr>
+          <p>
+            <var>DbgS</var> is an overloaded  <var>String</var> function used to get information displayed in the Debugger. This variant of the routine accepts a <var>TNullValueBehaviour</var> argument, an converts the specified value to its string representation,
+          </p>
+        </descr>
+      </element>
+      <element name="DbgS.Result">
+        <short>String representation for the specified null value behavior</short>
+      </element>
+      <element name="DbgS.ANvb">
+        <short>Enumeration value converted to a string in the method</short>
+      </element>
+
+      <topic name="IntroToSpinEx">
+        <short>Introduction to Extended Spin Edit Controls</short>
+        <descr>
+          <p>
+            The <file>SpinEx.pp</file> unit contains extended spin edit controls, like <var>TSpinEditEx</var> and <var>TFloatSpinEditEx</var>. They are very similar to <var>TSpinEdit</var> and <var>TFloatSpinEdit</var>, but provide additional features which allow a NullValue for the control and behaviors performed when the value for the control is not a valid numeric value.
+          </p>
+          <p>
+            This introduction will discuss the problems the design of the controls, and the problems they are intended to eliminate.
+          </p>
+          <p>
+            <b>Why another SpinEdit or FloatSpinEdit control?</b>
+          </p>
+          <p>
+            The standard controls, TSpinEdit and TFloatSpinEdit, do not support a NullValue mechanism. Also, their implementations are widgetset dependent. While this provides a control that has the look and feel native to the widgetset, the behavior also depends on the widgetset. This is especially important when the text for the control contains an invalid numeric value (otherwise not a number). In such a case, when querying the control for it's Value, the results are not consistent for the various platforms. The difference in behavior between widgetsets also prevents implementation of the NullValue mechanism, especially the possibility to leave the control empty or to display informative text inside the control about the condition.
+          </p>
+          <p>
+            TSpinEditEx handles Int64 values, while TSpinEdit is limited to LongInt values. This is because TSpinEdit inherits from TCustomFloatSpinEdit and the internal member for the Value is stored using the Double type, and Double does not have enough significant digits to handle the range for the Int64 type.
+          </p>
+          <p>
+            In addition, TFloatSpinEditEx can set the value for its DecimalSeparator property independent of the value in the DefaultFormatSettings for the platform or operating system. Note: Unlike T(Float)SpinEdit, the GetValue method is always derived from the actual text in the control. This is by design, and it should not be altered.
+          </p>
+          <p>
+            <b>Why not simply associate a TUpDown with a TEdit instead?</b>
+          </p>
+          <p>
+            Using TEdit with a TUpDown control has several disadvantages:
+          </p>
+          <ul>
+            <li>It does not allow floating point values.</li>
+            <li>Its range is limited to the range for the SmallInt type.</li>
+            <li>It does not properly anchor and/or align.</li>
+          </ul>
+          <p>
+            While both TSpinEditEx and TFloatSpinEditEx use a TUpDown control in their implementations, they do not use the Associate property in TUpDown. The two controls (the edit and the up/down button) are embedded in a TCustomControl (much like TEditButton) to provide proper alignment and anchoring behavior.
+          </p>
+        </descr>
+        <seealso/>
+      </topic>
+
+    </module>
+    <!-- SpinEx -->
+  </package>
+</fpdoc-descriptions>
