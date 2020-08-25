@@ -77,6 +77,25 @@ type
 
   TFpValueDwarf = class;
   TFpSymbolDwarf = class;
+  TFpDwarfInfoSymbolScope = class;
+
+  TDwarfCompilationUnitArray = array of TDwarfCompilationUnit;
+
+  { TFpThreadWorkerFindSymbolInUnits }
+
+  TFpThreadWorkerFindSymbolInUnits = class(TFpThreadWorkerItem)
+  protected
+    FScope: TFpDwarfInfoSymbolScope;
+    FCUs: TDwarfCompilationUnitArray;
+    FNameInfo: TNameSearchInfo;
+
+    FFoundInfoEntry: TDwarfInformationEntry;
+    FIsExt: Boolean;
+    procedure DoExecute; override;
+  public
+    constructor Create(AScope: TFpDwarfInfoSymbolScope; CUs: TDwarfCompilationUnitArray; const ANameInfo: TNameSearchInfo);
+    destructor Destroy; override;
+  end;
 
   { TFpDwarfInfoSymbolScope }
 
@@ -99,8 +118,10 @@ type
     function SymbolToValue(ASym: TFpSymbolDwarf): TFpValue; inline;
     function GetSelfParameter: TFpValueDwarf;
 
+    function FindExportedSymbolInUnit(CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo;
+      out AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean): Boolean; inline;
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
-      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue): Boolean; inline;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue): Boolean;
     function FindSymbolInStructure(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; inline;
     // FindLocalSymbol: for the subroutine itself
@@ -1170,7 +1191,42 @@ begin
   Result := TFpSymbolDwarfUnit.Create(ACompilationUnit.UnitName, AInfoEntry);
 end;
 
-{ TDbgDwarfInfoAddressContext }
+{ TFpThreadWorkerFindSymbolInUnits }
+
+procedure TFpThreadWorkerFindSymbolInUnits.DoExecute;
+var
+  i: Integer;
+  InfoEntry: TDwarfInformationEntry;
+  IsExt: Boolean;
+begin
+  FFoundInfoEntry := nil;
+  for i := 0 to Length(FCUs) - 1 do begin
+    if FScope.FindExportedSymbolInUnit(FCUs[i], FNameInfo, InfoEntry, IsExt) then begin
+      FFoundInfoEntry.ReleaseReference;
+      FFoundInfoEntry := InfoEntry;
+      if FIsExt then
+        break;
+    end;
+  end;
+end;
+
+constructor TFpThreadWorkerFindSymbolInUnits.Create(
+  AScope: TFpDwarfInfoSymbolScope; CUs: TDwarfCompilationUnitArray;
+  const ANameInfo: TNameSearchInfo);
+begin
+  inherited Create;
+  FScope := AScope;
+  FCUs := CUs;
+  FNameInfo := ANameInfo;
+end;
+
+destructor TFpThreadWorkerFindSymbolInUnits.Destroy;
+begin
+  FFoundInfoEntry.ReleaseReference;
+  inherited Destroy;
+end;
+
+{ TFpDwarfInfoSymbolScope }
 
 function TFpDwarfInfoSymbolScope.GetSymbolAtAddress: TFpSymbol;
 begin
@@ -1239,59 +1295,156 @@ begin
   FSelfParameter := Result;
 end;
 
-function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
-  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
-  ADbgValue: TFpValue): Boolean;
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnit(
+  CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo; out
+  AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean): Boolean;
 var
   i, ExtVal: Integer;
-  CU: TDwarfCompilationUnit;
-  InfoEntry, FoundInfoEntry: TDwarfInformationEntry;
+  InfoEntry: TDwarfInformationEntry;
   s: String;
 begin
   Result := False;
 
+  AnInfoEntry := nil;
+  AnIsExternal := False;
+
+  //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU.FileName]);
+
+  InfoEntry := TDwarfInformationEntry.Create(CU, nil);
+  InfoEntry.ScopeIndex := CU.FirstScope.Index;
+
+  if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
+    exit;
+  // compile_unit can not have startscope
+
+  s := CU.UnitName;
+  if (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1])) then begin
+    Result := True;
+    AnInfoEntry := InfoEntry;
+    AnIsExternal := True;
+  end
+
+  else
+  if InfoEntry.GoNamedChildEx(ANameInfo) then begin
+    if InfoEntry.IsAddressInStartScope(FAddress) then begin
+      // only variables are marked "external", but types not / so we may need all top level
+      Result := True;
+      AnInfoEntry := InfoEntry;
+      //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier MAYBE FOUND Name=', CU.FileName]);
+
+      // DW_AT_visibility ?
+
+      if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
+        AnIsExternal := ExtVal <> 0;
+    end;
+  end;
+
+  if not  Result then
+    InfoEntry.ReleaseReference;
+end;
+
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  ADbgValue: TFpValue): Boolean;
+const
+  PER_WORKER_CNT = 20;
+var
+  i, j: Integer;
+  CU: TDwarfCompilationUnit;
+  CUList: TDwarfCompilationUnitArray;
+  InfoEntry, FoundInfoEntry: TDwarfInformationEntry;
+  IsExt: Boolean;
+  WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
+begin
+  Result := False;
+
   ADbgValue := nil;
-  InfoEntry := nil;
   FoundInfoEntry := nil;
+  SetLength(CUList, PER_WORKER_CNT);
+  PrevWorkItem := nil;
+  IsExt := False;
+
   i := FDwarf.CompilationUnitsCount;
   while i > 0 do begin
-    dec(i);
-    CU := FDwarf.CompilationUnits[i];
+    j := 0;
+    while (j < PER_WORKER_CNT) and (i > 0) do begin
+      dec(i);
+      CU := FDwarf.CompilationUnits[i];
+
     if (CU = SkipCompUnit) or
        (not CU.KnownNameHashes^[ANameInfo.NameHash and KnownNameHashesBitMask])
     then
       continue;
-    //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU.FileName]);
 
-    InfoEntry.ReleaseReference;
-    InfoEntry := TDwarfInformationEntry.Create(CU, nil);
-    InfoEntry.ScopeIndex := CU.FirstScope.Index;
-
-    if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
-      continue;
-    // compile_unit can not have startscope
-
-    s := CU.UnitName;
-    if (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1])) then begin
-      ReleaseRefAndNil(FoundInfoEntry);
-      ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
-      break;
+      CUList[j] := CU;
+      inc(j);
     end;
 
-    if InfoEntry.GoNamedChildEx(ANameInfo) then begin
-      if InfoEntry.IsAddressInStartScope(FAddress) then begin
-        // only variables are marked "external", but types not / so we may need all top level
-        FoundInfoEntry.ReleaseReference;
-        FoundInfoEntry := InfoEntry.Clone;
-        //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier MAYBE FOUND Name=', CU.FileName]);
+    if j < PER_WORKER_CNT then begin
+      assert(i=0, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: i=0');
+      SetLength(CUList, j);
+    end;
 
-        // DW_AT_visibility ?
-        if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
-          if ExtVal <> 0 then
-            break;
-        // Search for better ADbgValue
+    if j > 0 then begin
+      WorkItem := TFpThreadWorkerFindSymbolInUnits.Create(Self, CUList, ANameInfo);
+      WorkItem.AddRef;
+    end
+    else
+      WorkItem := nil;
+
+    if (PrevWorkItem <> nil) and (not PrevWorkItem.IsDone) then begin
+      if WorkItem <> nil then begin
+        WorkItem.Execute;
+        if (WorkItem.FFoundInfoEntry = nil) and (not PrevWorkItem.IsDone) then begin
+          WorkItem.DecRef;
+          continue;
+        end;
+      end;
+      Dwarf.WorkQueue.WaitForItem(PrevWorkItem); // must check result from Prev first, to keep a stable search order
+    end;
+
+    while PrevWorkItem <> nil do begin
+      assert(PrevWorkItem.IsDone, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: PrevWorkItem.IsDone');
+      ReadBarrier;
+      if PrevWorkItem.FFoundInfoEntry <> nil then begin
+        FoundInfoEntry.ReleaseReference;
+        FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
+        FoundInfoEntry.AddReference;
+        IsExt := PrevWorkItem.FIsExt;
+      end;
+      PrevWorkItem.DecRef;
+      PrevWorkItem := nil;
+      if IsExt then begin
+        WorkItem.DecRef;
+        break;
+      end;
+      if (WorkItem <> nil) and WorkItem.IsDone then begin
+        PrevWorkItem := WorkItem;
+        WorkItem := nil;
       end;
     end;
+
+    if WorkItem <> nil then begin
+      if i = 0 then
+        WorkItem.Execute
+      else
+        Dwarf.WorkQueue.PushItemIdleOrRun(WorkItem);
+      PrevWorkItem := WorkItem;
+      WorkItem := nil;
+    end;
+  end;
+
+  if PrevWorkItem <> nil then begin
+    if not IsExt then begin  // IsExt => already got a final result
+      if not PrevWorkItem.IsDone then
+        Dwarf.WorkQueue.WaitForItem(PrevWorkItem);
+      if PrevWorkItem.FFoundInfoEntry <> nil then begin
+        FoundInfoEntry.ReleaseReference;
+        FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
+        FoundInfoEntry.AddReference
+      end;
+    end;
+    PrevWorkItem.DecRef;
   end;
 
   if FoundInfoEntry <> nil then begin
@@ -1299,7 +1452,6 @@ begin
     FoundInfoEntry.ReleaseReference;
   end;
 
-  InfoEntry.ReleaseReference;
   Result := ADbgValue <> nil;
 end;
 
