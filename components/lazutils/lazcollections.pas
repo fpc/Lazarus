@@ -38,6 +38,8 @@ type
 
   { TThreadedQueue }
 
+  { TLazThreadedQueue }
+
   generic TLazThreadedQueue<T> = class
   private
     FMonitor: TLazMonitor;
@@ -50,8 +52,13 @@ type
     FHasRoomEvent: PRTLEvent;
     FHasItemEvent: PRTLEvent;
     FShutDown: boolean;
-    function TryPushItem(const AItem: T): boolean;
-    function TryPopItem(out AItem: T): boolean;
+    function TryPushItem(const AItem: T): boolean; inline;
+    function TryPopItem(out AItem: T): boolean; inline;
+  protected
+    function TryPushItemUnprotected(const AItem: T): boolean;
+    function TryPopItemUnprotected(out AItem: T): boolean;
+    procedure Lock;
+    procedure Unlock;
   public
     constructor create(AQueueDepth: Integer = 10; PushTimeout: cardinal = INFINITE; PopTimeout: cardinal = INFINITE);
     destructor Destroy; override;
@@ -149,16 +156,7 @@ function TLazThreadedQueue.TryPushItem(const AItem: T): boolean;
 begin
   FMonitor.Enter;
   try
-    result := FTotalItemsPushed-FTotalItemsPopped<FQueueSize;
-    if result then
-      begin
-      FList[FTotalItemsPushed mod FQueueSize]:=AItem;
-      inc(FTotalItemsPushed);
-      RTLeventSetEvent(FHasItemEvent);
-      end;
-    RTLeventResetEvent(FHasRoomEvent);
-    if FTotalItemsPushed-FTotalItemsPopped<FQueueSize then
-      RTLeventSetEvent(FHasRoomEvent);
+    result := TryPushItemUnprotected(AItem);
   finally
     FMonitor.Leave;
   end;
@@ -168,19 +166,48 @@ function TLazThreadedQueue.TryPopItem(out AItem: T): boolean;
 begin
   FMonitor.Enter;
   try
-    result := FTotalItemsPushed>FTotalItemsPopped;
-    if result then
-      begin
-      AItem := FList[FTotalItemsPopped mod FQueueSize];
-      inc(FTotalItemsPopped);
-      RTLeventSetEvent(FHasRoomEvent);
-      end;
-    RTLeventResetEvent(FHasItemEvent);
-    if FTotalItemsPushed > FTotalItemsPopped then
-      RTLeventSetEvent(FHasItemEvent);
+    result := TryPopItemUnprotected(AItem);
   finally
     FMonitor.Leave;
   end;
+end;
+
+function TLazThreadedQueue.TryPushItemUnprotected(const AItem: T): boolean;
+begin
+  result := FTotalItemsPushed-FTotalItemsPopped<FQueueSize;
+  if result then
+    begin
+    FList[FTotalItemsPushed mod FQueueSize]:=AItem;
+    inc(FTotalItemsPushed);
+    RTLeventSetEvent(FHasItemEvent);
+    end;
+  RTLeventResetEvent(FHasRoomEvent);
+  if FTotalItemsPushed-FTotalItemsPopped<FQueueSize then
+    RTLeventSetEvent(FHasRoomEvent);
+end;
+
+function TLazThreadedQueue.TryPopItemUnprotected(out AItem: T): boolean;
+begin
+  result := FTotalItemsPushed>FTotalItemsPopped;
+  if result then
+    begin
+    AItem := FList[FTotalItemsPopped mod FQueueSize];
+    inc(FTotalItemsPopped);
+    RTLeventSetEvent(FHasRoomEvent);
+    end;
+  RTLeventResetEvent(FHasItemEvent);
+  if FTotalItemsPushed > FTotalItemsPopped then
+    RTLeventSetEvent(FHasItemEvent);
+end;
+
+procedure TLazThreadedQueue.Lock;
+begin
+  FMonitor.Enter;
+end;
+
+procedure TLazThreadedQueue.Unlock;
+begin
+  FMonitor.Leave;
 end;
 
 constructor TLazThreadedQueue.create(AQueueDepth: Integer; PushTimeout: cardinal; PopTimeout: cardinal);
