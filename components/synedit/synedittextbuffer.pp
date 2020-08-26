@@ -1186,7 +1186,9 @@ procedure TSynEditStringList.SetModified(const AValue: Boolean);
 begin
   if AValue then
     IncreaseTextChangeStamp;
-  if FModified = AValue then exit;
+  if (FModified = AValue) and
+     (CurUndoList.IsTopMarkedAsUnmodified <> AValue)
+  then exit;
   FModified := AValue;
   if not FModified then
   begin
