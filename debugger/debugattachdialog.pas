@@ -285,7 +285,7 @@ procedure TDebugAttachDialogForm.lvProcessesSelectItem(Sender: TObject; Item: TL
 var
   info: TRunningProcessInfo;
 begin
-  if (Item.Index <> -1) And Selected then
+  if (Item <> nil) and (Item.Index <> -1) And Selected then
   begin
     info := TRunningProcessInfo(FList.Items[Item.Index]);
     FPidString := IntToStr(info.PID);
