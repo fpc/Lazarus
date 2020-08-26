@@ -1376,10 +1376,13 @@ type
     function AllowFocus(ColumnIndex: TColumnIndex): Boolean;
     procedure Assign(Source: TPersistent); override;
     {$IF LCL_FullVersion >= 1080000}
-    procedure AutoAdjustLayout(const AXProportion, AYProportion: Double);
+    procedure AutoAdjustLayout(const AXProportion, AYProportion: Double); virtual;
     {$IFEND}
     procedure AutoFitColumns(Animated: Boolean = True; SmartAutoFitType: TSmartAutoFitType = smaUseColumnOption;
       RangeStartCol: Integer = NoColumn; RangeEndCol: Integer = NoColumn); virtual;
+    {$IF LCL_FullVersion >= 2010000}
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
+    {$IFEND}
     function InHeader(const P: TPoint): Boolean; virtual;
     function InHeaderSplitterArea(P: TPoint): Boolean; virtual;
     procedure Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
@@ -2773,6 +2776,9 @@ type
     procedure EnsureNodeFocused(); virtual;
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
+    {$IF LCL_FullVersion >= 2010000}
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
+    {$IFEND}
     procedure FontChanged(AFont: TObject); virtual; reintroduce;
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode; ImgCheckType: TCheckType = ctNone;
@@ -11587,6 +11593,15 @@ begin
     Treeview.EndOperation(okAutoFitColumns);
   end;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 2010000}
+procedure TVTHeader.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+begin
+  TreeView.DoFixDesignFontPPI(Font, ADesignTimePPI);
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -21841,6 +21856,16 @@ begin
   // ... and seek to the last endposition
   Stream.Position := EndPos;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 2010000}
+procedure TBaseVirtualTree.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+begin
+  inherited;
+  FHeader.FixDesignFontsPPI(ADesignTimePPI);
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
