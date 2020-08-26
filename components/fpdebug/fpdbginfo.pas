@@ -327,6 +327,8 @@ type
     destructor Destroy; override;
   end;
 
+  TFpDbgSymbolScope = class;
+
   { TFpSymbol }
 
   TFpSymbol = class(TRefCountedObject)
@@ -441,6 +443,8 @@ type
     // TypeCastValue| only fon stType symbols, may return nil
     // Returns a reference to caller / caller must release
     function TypeCastValue({%H-}AValue: TFpValue): TFpValue; virtual;
+
+    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope; virtual;
   end;
 
   { TFpSymbolForwarder }
@@ -1259,6 +1263,12 @@ begin
 end;
 
 function TFpSymbol.TypeCastValue(AValue: TFpValue): TFpValue;
+begin
+  Result := nil;
+end;
+
+function TFpSymbol.CreateSymbolScope(ALocationContext: TFpDbgLocationContext
+  ): TFpDbgSymbolScope;
 begin
   Result := nil;
 end;

@@ -470,7 +470,7 @@ type
                        AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
 
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual;
+    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
 
     property CompilationUnit: TDwarfCompilationUnit read FCU;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
@@ -500,9 +500,9 @@ type
     function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
                                  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; virtual; abstract;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
-                                    AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
+                                    AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
-                                    AInfoEntry: TDwarfInformationEntry): TDbgDwarfSymbolBase; virtual; abstract;
+                                    AInfoEntry: TDwarfInformationEntry; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
   end;
   TFpSymbolDwarfClassMapClass = class of TFpSymbolDwarfClassMap;
 
@@ -3474,7 +3474,7 @@ begin
       then Continue;
 
       // TDbgDwarfProcSymbol
-      Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress);
+      Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress, Self);
       if Result<>nil then
         break;
     finally
@@ -3504,7 +3504,7 @@ begin
     if not CU.LocateEntry(DW_TAG_compile_unit, Scope) then
       break;
 
-    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, TDwarfInformationEntry.Create(CU, Scope));
+    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, TDwarfInformationEntry.Create(CU, Scope), Self);
     break;
   end;
 end;

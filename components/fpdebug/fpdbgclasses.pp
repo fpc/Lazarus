@@ -1704,30 +1704,36 @@ var
   Frame: TDbgCallstackEntry;
   Addr: TDBGPtr;
   Ctx: TFpDbgSimpleLocationContext;
+  sym: TFpSymbol;
 begin
   Result := nil;
   Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
-  if not GetThread(AThreadId, Thread) then
-    exit;
-  if AStackFrame = 0 then
-    Addr := Thread.GetInstructionPointerRegisterValue
-  else
-  begin
+
+  if GetThread(AThreadId, Thread) then begin
     Thread.PrepareCallStackEntryList(AStackFrame + 1);
-    if AStackFrame >= Thread.CallStackEntryList.Count then
-      exit;
-    Frame := Thread.CallStackEntryList[AStackFrame];
-    if Frame = nil then
-      exit;
-    Addr := Frame.AnAddress;
+
+    if AStackFrame < Thread.CallStackEntryList.Count then begin
+      Frame := Thread.CallStackEntryList[AStackFrame];
+
+      if Frame <> nil then begin
+        sym := Frame.ProcSymbol;
+        if sym <> nil then
+          Result := sym.CreateSymbolScope(Ctx);
+
+        if Result = nil then begin
+          Addr := Frame.AnAddress;
+          if Addr <> 0 then
+            Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
+        end;
+      end;
+    end;
+
+    // SymbolTableInfo.FindSymbolScope()
   end;
-  if Addr = 0 then
-    exit;
-  Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
-  // SymbolTableInfo.FindSymbolScope()
 
   if Result = nil then
     Result := TFpDbgSymbolScope.Create(Ctx);
+
   Ctx.ReleaseReference;
 end;
 
