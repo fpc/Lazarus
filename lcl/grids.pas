@@ -1145,8 +1145,6 @@ type
     procedure RowHeightsChanged; virtual;
     procedure SaveContent(cfg: TXMLConfig); virtual;
     procedure SaveGridOptions(cfg: TXMLConfig); virtual;
-    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); override;
-    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); override;
     procedure ScrollBarRange(Which:Integer; aRange,aPage,aPos: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
     function  ScrollBarIsVisible(Which:Integer): Boolean;
@@ -1321,6 +1319,7 @@ type
 
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); override;
     function  Focused: Boolean; override;
     function  HasMultiSelection: Boolean;
     procedure HideSortArrow;
@@ -1339,6 +1338,7 @@ type
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     procedure SaveToFile(FileName: string); virtual;
     procedure SaveToStream(AStream: TStream); virtual;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); override;
     procedure SetFocus; override;
 
     property CursorState: TGridCursorState read FCursorState;
