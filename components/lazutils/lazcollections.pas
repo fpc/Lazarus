@@ -242,7 +242,7 @@ begin
     setlength(NewList, c);
     i:=FTotalItemsPopped;
     while i < FTotalItemsPushed do begin
-      NewList[i div c] := FList[i div FQueueSize];
+      NewList[i mod c] := FList[i mod FQueueSize];
       inc(i);
     end;
 
