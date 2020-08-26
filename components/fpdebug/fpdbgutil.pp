@@ -420,16 +420,19 @@ begin
 
   if (OldState in [TWSTATE_NEW, TWSTATE_WAIT_WORKER]) then begin
     (* State is now either TWSTATE_RUNNING or TWSTATE_WAIT_WORKER  *)
-    if not StopRequested then
-      DoExecute;
+    try
+      if not StopRequested then
+        DoExecute;
 
-    OldState := InterLockedExchange(FState, TWSTATE_DONE);
-    if (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]) then
-      RTLeventSetEvent(MyWorkerThread.Queue.MainWaitEvent)
-    else
-    // If other threads have a ref, they may call WaitForFinish and read data from this.
-    if (InterLockedExchangeAdd(FRefCnt, 0) > 1) then
-      WriteBarrier;
+    finally
+      OldState := InterLockedExchange(FState, TWSTATE_DONE);
+      if (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]) then
+        RTLeventSetEvent(MyWorkerThread.Queue.MainWaitEvent)
+      else
+      // If other threads have a ref, they may call WaitForFinish and read data from this.
+      if (InterLockedExchangeAdd(FRefCnt, 0) > 1) then
+        WriteBarrier;
+    end;
   end;
 end;
 
