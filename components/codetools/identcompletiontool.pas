@@ -1503,6 +1503,7 @@ begin
     AddCompilerProcedure('Str','const X[:Width[:Decimals]];var S:String');
     AddCompilerFunction('Succ','X:Ordinal', 'Ordinal');
     AddCompilerFunction('TypeInfo','Identifier', 'Pointer');
+    AddCompilerFunction('GetTypeKind','Identifier', 'TTypeKind');
     AddCompilerFunction('TypeOf','Identifier', 'Pointer');
     AddCompilerProcedure('Val','S:String;var V;var Code:Integer');
     AddCompilerFunction('Unaligned','var X','var'); // Florian declaration :)
@@ -2619,6 +2620,7 @@ begin
         AddKeyWord('ThreadName');
         AddKeyWord('TypedAddress');
         AddKeyWord('TypeInfo');
+        AddKeyWord('GetTypeKind');
         AddKeyWord('UnDef');
         AddKeyWord('UnitPath');
         AddKeyWord('VarParaCopyOutCheck');
@@ -3288,6 +3290,7 @@ var
       AddCompilerProc('Str','const X[:Width[:Decimals]];var S:String');
       AddCompilerProc('Succ','X:Ordinal', 'Ordinal');
       AddCompilerProc('TypeInfo','Identifier', 'Pointer');
+      AddCompilerProc('GetTypeKind','Identifier', 'TTypeKind');
       AddCompilerProc('TypeOf','Identifier', 'Pointer');
       AddCompilerProc('Val','S:String;var V;var Code:Integer');
       AddCompilerProc('Unaligned','var X','var');
