@@ -3955,11 +3955,28 @@ end;
 
 function TGtk3WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
   pvParam: Pointer; fWinIni: DWord): LongBool;
+var
+  wa:TGdkRectangle;
+  pdisp:PGdkDisplay;
+  pmon:PgdkMonitor;
+  pr:PRect;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SystemParametersInfo not implemented ...');
-  {$ENDIF}
-  Result:=inherited SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+  Result:=True;
+  Case uiAction of
+    SPI_GETWHEELSCROLLLINES: PDword(pvParam)^ := 3;
+    SPI_GETWORKAREA: begin
+      pdisp:=TGdkDisplay.get_default;
+      pmon:=pdisp^.get_primary_monitor();
+      pmon^.get_workarea(@wa);
+      pr:=PRect(pvParam);
+      pr^.Left:=wa.x;
+      pr^.Top:=wa.y;
+      pr^.Width:=wa.width;
+      pr^.Height:=wa.height;
+    end;
+  else
+    Result:=False;
+  end;
 end;
 
 function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;

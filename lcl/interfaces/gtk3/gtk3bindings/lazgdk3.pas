@@ -2891,6 +2891,10 @@ type
     function intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl; inline; static;
   end;
 
+  { TGdkDisplay }
+
+  PGdkMonitor = ^TGdkMonitor;
+
   TGdkDisplay = object(TGObject)
     function get_default: PGdkDisplay; cdecl; inline; static;
     function open(display_name: Pgchar): PGdkDisplay; cdecl; inline; static;
@@ -2905,6 +2909,7 @@ type
     function get_default_screen: PGdkScreen; cdecl; inline;
     function get_device_manager: PGdkDeviceManager; cdecl; inline;
     function get_event: PGdkEvent; cdecl; inline;
+    function get_primary_monitor: PGdkMonitor; cdecl;inline;
     procedure get_maximal_cursor_size(width: Pguint; height: Pguint); cdecl; inline;
     function get_n_screens: gint; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
@@ -3901,7 +3906,6 @@ type
   );
 
   { TGdkMonitor available since 3.22 }
-  PGdkMonitor = ^TGdkMonitor;
   TGdkMonitor = object(TGObject)
   public
     function get_display ():PGdkDisplay;cdecl;inline;
@@ -3974,6 +3978,7 @@ function gdk_display_get_event(display: PGdkDisplay): PGdkEvent; cdecl; external
 function gdk_display_get_n_screens(display: PGdkDisplay): gint; cdecl; external;
 function gdk_display_get_name(display: PGdkDisplay): Pgchar; cdecl; external;
 function gdk_display_get_screen(display: PGdkDisplay; screen_num: gint): PGdkScreen; cdecl; external;
+function gdk_display_get_primary_monitor(display: PGdkDisplay): PGdkMonitor; cdecl; external;
 function gdk_display_get_type: TGType; cdecl; external;
 function gdk_display_has_pending(display: PGdkDisplay): gboolean; cdecl; external;
 function gdk_display_is_closed(display: PGdkDisplay): gboolean; cdecl; external;
@@ -4550,6 +4555,11 @@ end;
 function TGdkDisplay.get_event: PGdkEvent; cdecl;
 begin
   Result := LazGdk3.gdk_display_get_event(@self);
+end;
+
+function TGdkDisplay.get_primary_monitor: PGdkMonitor; cdecl;
+begin
+  Result:=LazGdk3.gdk_display_get_primary_monitor(@Self);
 end;
 
 procedure TGdkDisplay.get_maximal_cursor_size(width: Pguint; height: Pguint); cdecl;
