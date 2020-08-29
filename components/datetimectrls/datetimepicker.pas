@@ -371,7 +371,7 @@ type
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property LeadingZeros: Boolean read FLeadingZeros write SetLeadingZeros;
     property TextForNullDate: TCaption
-             read FTextForNullDate write SetTextForNullDate;
+             read FTextForNullDate write SetTextForNullDate nodefault;
     property NullInputAllowed: Boolean
              read FNullInputAllowed write SetNullInputAllowed default True;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -3876,7 +3876,10 @@ begin
     is saved and opened again, then, this property gets default value NULL
     instead of empty string. The following condition seems to be a workaround
     for this. }
+  {$if fpc_fullversion < 030200}
+  // This hack is no more needed since FPC 3.2 (see bug report 31985)
   if (AOwner = nil) or not (csReading in Owner.ComponentState) then
+  {$endif}
     FTextForNullDate := 'NULL';
 
   FCenturyFrom := 1941;
