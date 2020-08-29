@@ -661,7 +661,6 @@ end;
 procedure TGtkListStoreStringList.Insert(Index: Integer; const S: String);
 var
   li: TGtkTreeIter;
-  LCLIndex: PInteger;
 begin
   if (Index < 0) or (Index > Count)
   then begin

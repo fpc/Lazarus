@@ -73,17 +73,22 @@ begin
     ModalResult:= {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
-    if not Result then PInteger(data)^:= ModalResult
-    else DebugLn('Do not close !!!');
-  end else Result:= false;
+    if Result then
+      DebugLn('Do not close !!!')
+    else
+      PInteger(data)^:= Integer(ModalResult);
+  end else
+    Result:= false;
 end;
 
 function ButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  ModalResult : PtrUInt;
 begin
-  PInteger(data)^ := {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
+  ModalResult := {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
+  PInteger(data)^ := Integer(ModalResult);
   Result := False;
 end;
-
 
 
 class function TGtk3DialogFactory.ResponseID(const AnID: Integer): Integer;
@@ -105,7 +110,6 @@ begin
     Result:=AnID;
   end;
 end;
-
 
 class function TGtk3DialogFactory.gtk_resp_to_lcl(const gtk_resp:integer):integer;
 begin
@@ -152,7 +156,6 @@ begin
     Result:=gtk_resp;
   end;
 end;
-
 
 procedure TGtk3DialogFactory.CreateButton(
     const ALabel : String;
