@@ -492,7 +492,7 @@ type
     FWindowState: TWindowState;
     FDelayedEventCtr: Integer;
     FDelayedOnChangeBounds, FDelayedOnResize: Boolean;
-    FIsFirstOnShow, FIsFirstOnActivate: Boolean;
+    FIsFirstOnShow, FIsFirstOnActivate, FIsFirstRestore: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
