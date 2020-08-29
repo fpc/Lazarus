@@ -652,7 +652,6 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): boolean;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
-    function FullFileName(const AFileName:string): String;
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
     function MapAddressToNewValue(AValue: QWord): QWord;
@@ -3822,7 +3821,7 @@ end;
 procedure TDwarfLineInfoStateMachine.SetFileName(AIndex: Cardinal);
 begin
   if (Aindex > 0) and (AIndex <= FOwner.FLineInfo.FileNames.Count)
-  then FFileName := FOwner.FullFileName(FOwner.FLineInfo.FileNames[AIndex - 1])
+  then FFileName := FOwner.FLineInfo.FileNames[AIndex - 1]
   else FFileName := Format('Unknown fileindex(%u)', [AIndex]);
 end;
 
@@ -4010,13 +4009,6 @@ begin
   Result := @FKnownNameHashes;
 end;
 
-function TDwarfCompilationUnit.FullFileName(const AFileName: string): String;
-begin
-  Result := AFileName;
-  if FCompDir = '' then exit;
-  Result := LazFileUtils.ResolveDots(FCompDir+AFileName);
-end;
-
 function TDwarfCompilationUnit.GetUnitName: String;
 begin
   Result := FUnitName;
@@ -4182,9 +4174,12 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
       Inc(pb, Length(S)+1);
       //diridx
       diridx := ULEB128toOrdinal(pb);
-      if diridx < FLineInfo.Directories.Count
-      then S := FLineInfo.Directories[diridx] + S
-      else S := Format('Unknown dir(%u)', [diridx]) + DirectorySeparator + S;
+      if diridx < FLineInfo.Directories.Count then begin
+        S := FLineInfo.Directories[diridx] + S;
+        S := CreateAbsolutePath(S, FCompDir);
+      end
+      else
+        S := Format('Unknown dir(%u)', [diridx]) + DirectorySeparator + S;
       FLineInfo.FileNames.Add(S);
       //last modified
       ULEB128toOrdinal(pb);
