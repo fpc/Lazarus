@@ -692,34 +692,34 @@ begin
     Exit;
   { update restored bounds }
   if WindowState = wsNormal then
+  begin
+    if FDelayedOnChangeBounds then
     begin
-      if FDelayedOnChangeBounds then
-        begin
-          FRestoredLeft := Left;
-          FRestoredTop := Top;
-        end;
-      if FDelayedOnResize then
-        begin
-          FRestoredWidth := Width;
-          FRestoredHeight := Height;
-        end;
+      FRestoredLeft := Left;
+      FRestoredTop := Top;
     end;
+    if FDelayedOnResize then
+    begin
+      FRestoredWidth := Width;
+      FRestoredHeight := Height;
+    end;
+  end;
   { call onShow() or onActivate() for the first time, after first OnResize()
     and OnChangeBounds() }
   if FDelayedOnResize and FDelayedOnChangeBounds then
+  begin
+    if FIsFirstOnShow then
     begin
-      if FIsFirstOnShow then
-        begin
-          FIsFirstOnShow := False;
-          DoShow;
-        end;
-      if FIsFirstOnActivate then
-        begin
-          FIsFirstOnActivate := False;
-          if FActive then
-            Activate;
-        end;
+      FIsFirstOnShow := False;
+      DoShow;
     end;
+    if FIsFirstOnActivate then
+    begin
+      FIsFirstOnActivate := False;
+      if FActive then
+        Activate;
+    end;
+  end;
   if not (FIsFirstOnShow or FIsFirstOnActivate) then
   begin
     { delayed onResize() }
