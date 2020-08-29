@@ -4118,7 +4118,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     HeaderLength: QWord;
     Name: PChar;
     diridx: Cardinal;
-    S: String;
+    S, S2: String;
     pb: PByte absolute Name;
   begin
     FLineInfo.Header := AData;
@@ -4175,8 +4175,10 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
       //diridx
       diridx := ULEB128toOrdinal(pb);
       if diridx < FLineInfo.Directories.Count then begin
-        S := FLineInfo.Directories[diridx] + S;
-        S := CreateAbsolutePath(S, FCompDir);
+        S2 := FLineInfo.Directories[diridx] + S;
+        S := CreateAbsolutePath(S2, FCompDir);
+        if (diridx = 0) and not FileExistsUTF8(S2) and (FLineInfo.FileNames.Count > 0) then // https://bugs.freepascal.org/view.php?id=37658
+          S := S2;
       end
       else
         S := Format('Unknown dir(%u)', [diridx]) + DirectorySeparator + S;
