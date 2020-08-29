@@ -1082,10 +1082,10 @@
         <short>Handles UTF-8 characters for the data-aware control</short>
          <descr>
            <p>
-             <p>UTF8KeyPress</p> is an overridden method in TDBEdit. UTF8KeyPress calls the inherited method, and performs actions needed to handle the UTF-8-encoded character specified in the <var>UTF8Key</var> argument.
+             <var>UTF8KeyPress</var> is an overridden method in TDBEdit. UTF8KeyPress calls the inherited method, and performs actions needed to handle the UTF-8-encoded character specified in the <var>UTF8Key</var> argument.
            </p>
            <p>
-             UTF8KeyPress checks the value in UTF8Key to determine the number of bytes required for the code point. A single-byte code point is converted to a Char type, and passed to the <var>FieldCanAcceptKey</var> routine to validate its content for the Field in the control. Multi-byte Unicode code points are ignored, and the Extended ASCII <b>nbsp</b> character (Decimal 255) is passed to FieldCanAcceptKey. The value in UTF8Key is set to an empty string if it is valid for the Field.
+             UTF8KeyPress checks the value in UTF8Key to determine the number of bytes required for the code point. A single-byte code point is converted to a Char type, and passed to the <var>FieldCanAcceptKey</var> routine to validate its content for the Field in the control. Multi-byte Unicode code points are ignored, and the Extended ASCII <b>NbSp</b> character (Decimal 255) is passed to FieldCanAcceptKey. The value in UTF8Key is set to an empty string if it is valid for the Field.
            </p>
            <p>
              Use the OnUTF8KeyPress event handler to handle/convert specific multi-byte character values.

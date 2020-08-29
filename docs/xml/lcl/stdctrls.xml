@@ -199,8 +199,8 @@
       <element name="TCustomScrollBar" link="#LCL.Controls.TWinControl">
         <short>The base class for <var>TScrollBar</var></short>
         <descr>
-          <var>TCustomScrollBar</var> is a <var>TWinControl</var> descendant which defines the base class for a scrollbar, such as <var>TScrollBar</var>. TCustomScrollBar can be used for horizontal or vertical scrollbars displayed for a form or scrolling window control.
           <p>
+            <var>TCustomScrollBar</var> is a <var>TWinControl</var> descendant which defines the base class for a scrollbar, such as <var>TScrollBar</var>. TCustomScrollBar can be used for horizontal or vertical scrollbars displayed for a form or scrolling window control.
           </p>
           <p>
             A scrollbar allows the content in a client area to be scrolled when it extends beyond the window bounds. TCustomScrollBar provides the properties, methods, and events needed to interface with the widgetset class for the platform or operating system.
@@ -1625,7 +1625,6 @@
         <short/>
         <descr/>
         <seealso/>
-        <notes><note>??? Calls an inherited method that doeas not exist.</note></notes>
       </element>
       <element name="TCustomComboBox.CMWantSpecialKey.Message">
         <short/>
@@ -2386,24 +2385,23 @@
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited contructor on entry. Create ensures that resources are allocated for members in the class instance. Create sets the default values for properties, including the following:
           </p>
           <dl>
+            <dt>ControlSyle</dt>
+            <dd>Removes csCaptureMouse from the style flags.</dd>
+            <dt>DropDownCunt</dt>
+            <dd>Set to display 8 items by default.</dd>
+            <dt>ArrowKeysTraverseList</dt>
+            <dd>Set to True to enable cursor key navigation in the control.</dd>
+            <dt>AutoCompleteText</dt>
+            <dd>Set to the values in the DefaultComboBoxAutoCompleteText constant.</dd>
+            <dt>AutoSelect</dt>
+            <dd>Set to True.</dd>
+            <dt>CharCase</dt>
+            <dd>Set to ecNormal.</dd>
+            <dt>AutoSize</dt>
+            <dd>
+              Set to True. AutoSize must be true by default since some widgetsets (win32, wince) ignore the combo-box height and others (gtk2) look ugly with a very small height.
+            </dd>
           </dl>
-
-          <dt>ControlSyle</dt>
-          <dd>Removes csCaptureMouse from the style flags.</dd>
-          <dt>DropDownCunt</dt>
-          <dd>Set to display 8 items by default.</dd>
-          <dt>ArrowKeysTraverseList</dt>
-          <dd>Set to True to enable cursor key navigation in the control.</dd>
-          <dt>AutoCompleteText</dt>
-          <dd>Set to the values in the DefaultComboBoxAutoCompleteText constant.</dd>
-          <dt>AutoSelect</dt>
-          <dd>Set to True.</dd>
-          <dt>CharCase</dt>
-          <dd>Set to ecNormal.</dd>
-          <dt>AutoSize</dt>
-          <dd>
-            Set to True. AutoSize must be true by default since some widgetsets (win32, wince) ignore the combo-box height and others (gtk2) look ugly with a very small height.
-          </dd>
         </descr>
         <seealso>
           <link id="TCustomComboBox.Destroy"/>
@@ -5179,11 +5177,10 @@
         <short>Handles the CM_WANTSPECIALKEY message for the control</short>
         <descr>
           <p>
-            For the Darwin platform/widgetset, the LCL must be prevented from handling the arrow (cursor) keys VK_LEFT, VK_RIGHT, VK_UP, and VK_DOWN. The Result in Message is set to 1 to indicate that these keys have already been handled. Calls the inherited method prior to exit.
+            For the Darwin platform/widgetset, the LCL must be prevented from handling the arrow (cursor) keys VK_LEFT, VK_RIGHT, VK_UP, and VK_DOWN. The Result in Message is set to 1 to indicate that these keys have already been handled.
           </p>
         </descr>
         <seealso/>
-        <notes><note>Calls an inherited method that does not exist.</note></notes>
       </element>
       <element name="TCustomEdit.CMWantSpecialKey.Message">
         <short>Message handled in the method</short>
@@ -8501,7 +8498,7 @@
             Set <var>FocusControl</var> to the control which is focused when the accelerator key in the label is pressed.
           </p>
           <p>
-            A label control cannot receive the input focus (it's read-only), but can display an accelerator key indicator, just like a menu entries. A windowed control (Edit...) can receive focus, but cannot indicate an accelerator key.
+            A label control cannot receive the input focus (it is read-only), but can display an accelerator key indicator, just like a menu entries. A windowed control (Edit...) can receive focus, but cannot indicate an accelerator key.
           </p>
           <p>
             Using a combination of a label and another control allows setting the accelerator key in the label caption. The other control receives focus when the user presses the accelerator key.
@@ -8510,7 +8507,7 @@
             An accelerator key is marked by an Ampersand '&amp;' in the label caption, immediately preceding the character to be used as the accelerator key. The marked character appears underlined on screen, when ShowAccelChar is set to <b>True</b>.
           </p>
           <p>
-            For example: When you have a NameEdit1 control on a form, preceded by a label NameLabel1, you can set NameLabel1.FocusControl to NameEdit1, and NameLabel1.Caption to '&amp;Name'. This makes the NameLabel1 displayed as '<u><b>N</b></u>ame'.
+            For example: When you have a NameEdit1 control on a form, preceded by a label NameLabel1, you can set NameLabel1.FocusControl to NameEdit1, and NameLabel1.Caption to '&amp;Name'.
           </p>
         </descr>
         <seealso>
@@ -8688,7 +8685,8 @@
       </element>
 
       <topic name="HowToUseStdCtrls">
-        <short>How to use <var>StdCtrls</var>, <var>ComCtrls</var> or <var>ExtCtrls</var>
+        <short>
+          How to use <var>StdCtrls</var>, <var>ComCtrls</var> or <var>ExtCtrls</var>
         </short>
         <descr>
           <p>
@@ -8736,8 +8734,10 @@
           <p>
             If the description of a property on that page is insufficient, you can navigate to the corresponding description in the ancestor classes, by selecting the links in the Inheritance listing or by selecting the ancestor Type in the declaration of the object.
           </p>
+          <p>
+            <b>Some commonly listed properties</b>
+          </p>
           <table>
-            <caption>Some commonly listed properties</caption>
             <th>
               <td>Property</td>
               <td>Meaning</td>
@@ -8849,8 +8849,7 @@
             </tr>
             <tr>
               <td>ShowHint</td>
-              <td>Allows to enable or suppress <var>Hints</var>.
-              </td>
+              <td>Allows to enable or suppress <var>Hints</var>.</td>
             </tr>
             <tr>
               <td>Size (or Height and Width)</td>
@@ -8901,8 +8900,10 @@
           <p>
             A common strategy in Object-Oriented programming is to provide an <link id="#lcl.ActnList.TActionList">ActionList</link> with the facility for entering, removing or editing a number of predefined actions, from which the most appropriate can be selected to use in any particular instance.
           </p>
+          <p>
+            <b>Some commonly listed Actions</b>
+          </p>
           <table>
-            <caption>Some commonly listed Actions</caption>
             <th>
               <td>Event</td>
               <td>Meaning</td>
@@ -8995,7 +8996,7 @@
               Declare <var>Destroy</var> with the <b>override</b> directive, because it is a <b>virtual</b> method.
             </li>
             <li>
-              Always call the <code>inherited Destroy;</code> method as the last action in the destructor code.
+              Always call the inherited Destroy method as the last action in the destructor code.
             </li>
             <li>
               Be aware that an <var>exception</var> may be raised by the <var>constructor</var> when  there is not enough memory to create an object, or something else goes wrong. If the <var>exception</var> is not handled inside the constructor, the object will be destroyed immediately. In this case <var>Destroy</var> will be called with a partially initialized object, so your destructor must check if the resources were really allocated before disposing of them.

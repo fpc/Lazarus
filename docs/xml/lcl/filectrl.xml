@@ -462,7 +462,7 @@
             This property has exactly the same rules and behavior as the <var>Mask</var> property in <var>TFilterComboBox</var>.
           </p>
           <p>
-            Changing the value in Mask causes the <vvar>UpdateFileList</vvar> method to be called to reload the file information in the Items property.
+            Changing the value in Mask causes the <var>UpdateFileList</var> method to be called to reload the file information in the Items property.
           </p>
         </descr>
         <seealso>

@@ -726,7 +726,7 @@
       </element>
 
       <element name="TColumnButtonStyle">
-        <short>Enumerated type with cell editor types available in a grid control</short>
+        <short>Enumeration with cell editor types available in a grid control</short>
         <descr>
           <p>
             <var>TColumnButtonStyle</var> is an enumerated type with values that represent the different cell editor types available in a grid control. TColumnButtonStyle is the type used for the <var>TGridColumn.ButtonStyle</var> property, and passed as an argument when an editor is requested for a column definition. It is also used when the <var>TCustomGrid.GetDefaultEditor</var> method is called to get the default cell editor for a given column.
@@ -945,7 +945,9 @@
       <element name="TCellProcessType">
         <short>Identifies the action performed for cell content</short>
         <descr>
-          TCellProcessType is an enumerated type with values that identify the action performed for the content in a grid cell. Values in the enumeration indicate whether cell content is copied or pasted in event handlers. TCellProcessType arguments are passed  to the TCustomStringGrid.OnCellProcess event handler.
+          <p>
+            <var>TCellProcessType</var> is an enumerated type with values that identify the action performed for the content in a grid cell. Values in the enumeration indicate whether cell content is copied or pasted in event handlers. TCellProcessType arguments are passed  to the <var>TCustomStringGrid.OnCellProcess</var> event handler.
+          </p>
         </descr>
         <seealso>
           <link id="TCellProcessEvent"/>
@@ -964,7 +966,7 @@
         <short>All save options available in LCL grid controls</short>
         <descr>
           <p>
-            <var>soAll</var> is a <var>TSaveOptions</var> set type representing all of the TGridSaveOptions values available in a LCL grid control.
+            <var>soAll</var> is a <var>TSaveOptions</var> constant with the set representing all of the TGridSaveOptions values available in a LCL grid control.
           </p>
         </descr>
         <seealso>
@@ -2884,7 +2886,6 @@
       </element>
 
       <element name="TGridColumnTitle.FixDesignFontsPPI">
-        <!-- TODO -->
         <short></short>
         <descr>
           <p>
@@ -2892,13 +2893,13 @@
           </p>
         </descr>
         <seealso></seealso>
+        <notes><note>TODO</note></notes>
       </element>
       <element name="TGridColumnTitle.FixDesignFontsPPI.ADesignTime">
         <short></short>
       </element>
 
       <element name="TGridColumnTitle.ScaleFontsPPI">
-        <!-- TODO -->
         <short></short>
         <descr>
           <p>
@@ -2906,6 +2907,7 @@
           </p>
         </descr>
         <seealso></seealso>
+        <notes><note>TODO</note></notes>
       </element>
       <element name="TGridColumnTitle.ScaleFontsPPI.AToPPI">
         <short></short>
@@ -3709,7 +3711,6 @@
       </element>
 
       <element name="TGridColumn.FixDesignFontsPPI">
-        <!-- TODO -->
         <short></short>
         <descr>
           <p>
@@ -3717,13 +3718,13 @@
           </p>
         </descr>
         <seealso></seealso>
+        <notes><note>TODO</note></notes>
       </element>
       <element name="TGridColumn.FixDesignFontsPPI.ADesignTime">
         <short></short>
       </element>
 
       <element name="TGridColumn.ScaleFontsPPI">
-        <!-- TODO -->
         <short></short>
         <descr>
           <p>
@@ -3731,6 +3732,7 @@
           </p>
         </descr>
         <seealso></seealso>
+        <notes><note>TODO</note></notes>
       </element>
       <element name="TGridColumn.ScaleFontsPPI.AToPPI">
         <short></short>
@@ -9301,37 +9303,6 @@
         <short>XML configuration file where values are stored</short>
       </element>
 
-      <element name="TCustomGrid.FixDesignFontsPPI">
-        <!-- TODO -->
-        <short></short>
-        <descr>
-          <p>
-            <var>FixDesignFontsPPI</var> is a procedure used to...
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomGrid.FixDesignFontsPPI.ADesignTime">
-        <short></short>
-      </element>
-
-      <element name="TCustomGrid.ScaleFontsPPI">
-        <!-- TODO -->
-        <short></short>
-        <descr>
-          <p>
-            <var>ScaleFontsPPI</var> is an overridden procedure used to...
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomGrid.ScaleFontsPPI.AToPPI">
-        <short></short>
-      </element>
-      <element name="TCustomGrid.ScaleFontsPPI.AProportion">
-        <short></short>
-      </element>
-
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.ScrollBarRange">
         <short>
@@ -11319,6 +11290,31 @@
         <short>Device context for the drawing operation</short>
       </element>
 
+      <element name="TCustomGrid.FixDesignFontsPPI">
+        <short>Adjusts fonts in the control to the specified design-time PixelsPerInch</short>
+        <descr>
+          <p>
+            <var>FixDesignFontsPPI</var> is an overridden  procedure used to adjust the assigned font size for grid columns and their titles to the specified design-time Pixels Per Inch (PPI). This is needed because the display density (PPI) used for fonts is not stored in Form resource (.LFM) files. When the design-time PPI is different than the run-time setting, font scaling issues can occur.
+          </p>
+          <p>
+            FixDesignFontsPPI restores the design-time font PPI so it can be used in the LCL Scaling mechanism. FixDesignFontsPPI calls the inherited method on entry, and sets the value for the <var>PixelsPerInch</var> property in <var>TitleFont</var> when needed. Column definitions stored in the <var>Columns</var> property are also adjusted (when needed) by calling the FixDesignFontsPPI method for each of the <var>TGridColumn</var> instances in the container.
+          </p>
+          <p>
+            FixDesignFontsPPI is called when scaling is enabled, and the Form which hosts the control calls its <var>Loaded</var> method during LCL streaming.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.ScaleFontsPPI"/>
+          <link id="TStringGrid.Columns"/>
+          <link id="TGridColumns"/>
+          <link id="TGridColumn.FixDesignFontsPPI"/>
+          <link id="TControl.FixDesignFontsPPI"/>
+        </seealso>
+      </element>
+      <element name="TCustomGrid.FixDesignFontsPPI.ADesignTime">
+        <short>Design-time PixelsPerInch needed for fonts in the control</short>
+      </element>
+
       <element name="TCustomGrid.Focused">
         <short>
           Indicates if the grid is focused or has an active focused cell editor
@@ -11606,6 +11602,23 @@
       </element>
       <element name="TCustomGrid.SaveToStream.AStream">
         <short>TStream instance where grid information is stored</short>
+      </element>
+
+      <element name="TCustomGrid.ScaleFontsPPI">
+        <short></short>
+        <descr>
+          <p>
+            <var>ScaleFontsPPI</var> is an overridden procedure used to...
+          </p>
+        </descr>
+        <seealso></seealso>
+        <notes><note>TODO</note></notes>
+      </element>
+      <element name="TCustomGrid.ScaleFontsPPI.AToPPI">
+        <short></short>
+      </element>
+      <element name="TCustomGrid.ScaleFontsPPI.AProportion">
+        <short></short>
       </element>
 
       <!-- procedure Visibility: public -->
