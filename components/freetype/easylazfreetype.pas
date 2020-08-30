@@ -21,7 +21,7 @@ interface
 uses
   Classes, SysUtils, fpimage, Laz_AVL_Tree,
   // LazUtils                     // Note: Types must be after TTTypes for PByte.
-  LazUTF8, LazFreeType, TTRASTER, TTTypes, Types;
+  LazUTF8, LazFreeType, TTRASTER, TTTypes, TTObjs, Types;
 
 type
   TGlyphRenderQuality = (grqMonochrome, grqLowQuality, grqHighQuality);
@@ -184,6 +184,7 @@ type
     procedure SetHinted(const AValue: boolean); virtual; abstract;
   public
     UnderlineDecoration,StrikeOutDecoration: boolean;
+    Orientation: integer;
     function TextWidth(AText: string): single; virtual; abstract;
     function TextHeight(AText: string): single; virtual; abstract;
     function CharWidthFromUnicode(AUnicode: integer): single; virtual; abstract;
@@ -339,13 +340,16 @@ type
     FLoaded: boolean;
     FGlyphData: TT_Glyph;
     FIndex: integer;
+    FOrientation: Integer;
     function GetAdvance: single;
     function GetBounds: TRect;
     function GetBoundsWithOffset(x, y: single): TRect;
+    {%H-}constructor create;
   public
     constructor Create(AFont: TFreeTypeFont; AIndex: integer);
     function RenderDirectly(x,y: single; Rect: TRect; OnRender : TDirectRenderingFunction; quality : TGlyphRenderQuality; ClearType: boolean = false): boolean;
     function RenderDirectly(ARasterizer: TFreeTypeRasterizer; x,y: single; Rect: TRect; OnRender : TDirectRenderingFunction; quality : TGlyphRenderQuality; ClearType: boolean = false): boolean;
+    function Clone(AOrientation:Integer): TFreeTypeGlyph;
     destructor Destroy; override;
     property Loaded: boolean read FLoaded;
     property Data: TT_Glyph read FGlyphData;
@@ -752,15 +756,8 @@ end;
 { TFreeTypeGlyph }
 
 function TFreeTypeGlyph.GetBounds: TRect;
-var
-  metrics: TT_Glyph_Metrics;
 begin
-  if TT_Get_Glyph_Metrics(FGlyphData, metrics) = TT_Err_Ok then
-    with metrics.bbox do
-      result := rect(IncludeFullGrainMin(xMin,64) div 64,IncludeFullGrainMin(-yMax,64) div 64,
-         (IncludeFullGrainMax(xMax,64)+1) div 64,(IncludeFullGrainMax(-yMin,64)+1) div 64)
-  else
-      result := TRect.Empty;
+  result := GetBoundsWithOffset(0, 0);
 end;
 
 function TFreeTypeGlyph.GetAdvance: single;
@@ -776,15 +773,30 @@ end;
 function TFreeTypeGlyph.GetBoundsWithOffset(x, y: single): TRect;
 var
   metrics: TT_Glyph_Metrics;
+  outline: TT_Outline;
+  bbox: TT_BBox;
+  error: TT_Error;
 begin
-  if TT_Get_Glyph_Metrics(FGlyphData, metrics) = TT_Err_Ok then
+
+  if FOrientation<>0 then
   begin
-    with metrics.bbox do
+    error := TT_Get_Glyph_Outline(FGlyphData, outline{%H-});
+    if error=TT_Err_Ok then
+      error := TT_Get_Outline_BBox(outline, bbox{%H-});
+  end else
+  begin
+    error := TT_Get_Glyph_Metrics(FGlyphData, metrics);
+    if error=TT_Err_Ok then
+      bbox := metrics.bbox;
+  end;
+
+  if error=TT_Err_Ok then
+    with bbox do
       result := rect(IncludeFullGrainMin(xMin+round(x*64),64) div 64,
                      IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
                     (IncludeFullGrainMax(xMax+round(x*64),64)+1) div 64,
-                    (IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
-  end else
+                    (IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64)
+  else
     result := TRect.Empty;
 end;
 
@@ -794,6 +806,23 @@ begin
     raise EFreeType.Create('Cannot create empty glyph');
   FLoaded := AFont.LoadGlyphInto(FGlyphData, AIndex);
   FIndex := AIndex;
+end;
+
+constructor TFreeTypeGlyph.create;
+begin
+end;
+
+function TFreeTypeGlyph.Clone(AOrientation: Integer): TFreeTypeGlyph;
+begin
+  if not FLoaded then
+    raise EFreeType.Create('Cannot create a clone of an empty glyph');
+
+  result := TFreeTypeGlyph.create;
+  result.FLoaded := FLoaded;
+  result.FIndex := FIndex;
+  result.FOrientation := AOrientation;
+
+  TT_Copy_Glyph(FGlyphData, result.FGlyphData);
 end;
 
 function TFreeTypeGlyph.RenderDirectly(x, y: single; Rect: TRect;
@@ -1239,7 +1268,7 @@ begin
     raise EFreeType.Create('No font instance');
   flags := TT_Load_Scale_Glyph;
   if FHinted then flags := flags or TT_Load_Hint_Glyph;
-  result := (TT_Load_Glyph(FInstance, _glyph, glyph_index, flags) <> TT_Err_Ok);
+  result := (TT_Load_Glyph(FInstance, _glyph, glyph_index, flags) = TT_Err_Ok);
 end;
 
 procedure TFreeTypeFont.SetWidthFactor(const AValue: single);
@@ -1526,19 +1555,44 @@ var
   idx: integer;
   g: TFreeTypeGlyph;
   prevCharcode, glyphIndex: integer;
+  txmatrix: TT_Matrix;
+  angle: single;
+  outline: ^TT_Outline;
+  vector: TT_Vector;
+  corrX, corrY: single;
 begin
   if not CheckInstance then exit;
   if AText = '' then exit;
   idx := pos(LineEnding,AText);
+
+  if Orientation<>0 then
+  begin
+    angle := Orientation * PI / 1800;
+    txmatrix.xx :=  Round( cos( angle ) * $10000 );
+    txmatrix.xy := -Round( sin( angle ) * $10000 );
+    txmatrix.yx :=  Round( sin( angle ) * $10000 );
+    txmatrix.yy :=  Round( cos( angle ) * $10000 );
+  end;
+
   while idx <> 0 do
   begin
     RenderText(copy(AText,1,idx-1),x,y,ARect,OnRender);
     delete(AText,1,idx+length(LineEnding)-1);
-    y += LineFullHeight;
+    if Orientation<>0 then
+    begin
+      vector.x := 0;
+      vector.y := -round(LineFullHeight * 64);
+      TT_Transform_Vector(vector.x, vector.y, txmatrix);
+      x += vector.x / 64;
+      y -= vector.y / 64;
+    end else
+      y += LineFullHeight;
     idx := pos(LineEnding,AText);
   end;
   If Assigned(FOnRenderText) then
     FOnRenderText(AText,x,y);
+
+  // TODO: Rotation at arbitraty angles requires antialiased drawing
   RenderTextDecoration(AText,x,y,ARect,OnRender);
   pstr := @AText[1];
   left := length(AText);
@@ -1546,25 +1600,49 @@ begin
   while left > 0 do
   begin
     charcode := UTF8CodepointToUnicode(pstr, charlen);
-    inc(pstr,charlen);
     dec(left,charlen);
     glyphIndex := CharIndex[charcode];
     g := Glyph[glyphIndex];
+    if Orientation<>0 then
+      g := g.Clone(Orientation);
+
     if g <> nil then
     with g do
     begin
+      corrX := Advance;
+
       if KerningEnabled and (prevCharcode <> -1) then
-        x += GetCharKerning(prevCharcode, charcode).Kerning.x;
+        corrX += round(GetCharKerning(prevCharcode, charcode).Kerning.x);
+
+      vector.x := round(corrX * 64);
+      vector.y := 0;
+
+      if Orientation<>0 then begin
+        outLine := @PGlyph(Data.z)^.outline;
+        TT_Transform_Outline(outline^, txmatrix);
+        TT_Transform_Vector(vector.x, vector.y, txmatrix);
+      end;
+
+      corrX := vector.x / 64;
+      corry := vector.y / 64;
+
       if Hinted then
-       RenderDirectly(x,round(y),ARect,OnRender,quality,FClearType)
+        RenderDirectly(x,round(y),ARect,OnRender,quality,FClearType)
       else
-       RenderDirectly(x,y,ARect,OnRender,quality,FClearType);
+        RenderDirectly(x,y,ARect,OnRender,quality,FClearType);
+
       if FClearType then
-        x += Advance/3
+        x += corrX/3
       else
-        x += Advance;
+        x += corrX;
+
+      y -= corrY;
+
       prevCharcode := charcode;
+      if Orientation<>0 then
+        g.Free;
     end;
+    inc(pstr,charlen);
   end;
 end;
 

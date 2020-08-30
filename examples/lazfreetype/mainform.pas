@@ -5,7 +5,7 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Math, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, Spin, fpimage, LCLType,
 
   IntfGraphics, GraphType,      //Intf basic routines
@@ -19,13 +19,16 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    CheckBox_Rect: TCheckBox;
+    CheckBox_SingleLine: TRadioButton;
+    CheckBox_Para: TRadioButton;
+    CheckBox_Rot: TRadioButton;
     Label1: TLabel;
+    LAngle: TLabel;
     LFontSize: TLabel;
     Panel_Option: TPanel;
     SpinEdit_Zoom: TSpinEdit;
     TrackBar_Size: TTrackBar;
-    procedure CheckBox_RectChange(Sender: TObject);
+    procedure CheckBox_SingleLineChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -35,11 +38,14 @@ type
     procedure TrackBar_SizeChange(Sender: TObject);
   private
     procedure UpdateSizeLabel;
+    procedure UpdateAngleLabel;
   public
     lazimg: TLazIntfImage;
     drawer: TIntfFreeTypeDrawer;
     ftFont1,ftFont2,ftFont3: TFreeTypeFont;
     mx,my: integer; //mouse position
+    fSin,fCos: double;
+    fAngle: double;
     procedure EraseBackground(DC: HDC); override;
     procedure SetupFonts;
   end;
@@ -125,8 +131,9 @@ begin
   ftFont3 := nil;
 end;
 
-procedure TForm1.CheckBox_RectChange(Sender: TObject);
+procedure TForm1.CheckBox_SingleLineChange(Sender: TObject);
 begin
+  LAngle.Enabled := CheckBox_Rot.Checked;
   invalidate;
 end;
 
@@ -143,6 +150,14 @@ procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,Y: Integer
 begin
   mx := X;
   my := Y;
+  if CheckBox_Rot.Checked then
+  begin
+    fAngle := ArcTan2(Panel_Option.Top/2 - my, mx - ClientWidth/2);
+    SinCos(fAngle, fSin, fCos);
+    fAngle := RadToDeg(fAngle);
+    if fAngle<0 then fAngle += 360;
+    UpdateAngleLabel;
+  end;
   invalidate;
 end;
 
@@ -154,21 +169,39 @@ begin
   if ftFont3 <> nil then ftFont3.SizeInPoints := TrackBar_Size.Position;
 end;
 
+procedure TForm1.UpdateAngleLabel;
+begin
+  LAngle.Caption := format('%3.0fº',[fAngle]);
+end;
+
 procedure TForm1.FormPaint(Sender: TObject);
 const testtext = 'The'#13#10'quick brown fox jumps over the lazy dog';
 var bmp: TBitmap;
     tx,ty: integer;
     p: array of TCharPosition;
-    x,y: single;
+    x,y,h,rx,ry: single;
     i: integer;
     StartTime,EndTime,EndTime2: TDateTime;
     zoom: integer;
+    Orientation: Integer;
+
+    procedure Rotate(dx,dy:single);
+    begin
+      rx := tx/2 + (fCos*dx - fSin*dy);
+      ry := ty/2 - (fSin*dx + fCos*dy);
+    end;
+
 begin
   if lazimg = nil then exit;
   canvas.Font.Name := 'Comic Sans MS';
 
   zoom := SpinEdit_Zoom.Value;
   StartTime := Now;
+
+  if not CheckBox_Rot.Checked then
+    Orientation := 0
+  else
+    Orientation := round(fAngle*10);
 
   tx := ClientWidth div zoom;
   ty := Panel_Option.Top div zoom;
@@ -179,17 +212,31 @@ begin
 
   x := mx/zoom;
   y := my/zoom;
+  if CheckBox_Rot.Checked then
+  begin
+    h := 0.0;
+    if ftFont1<>nil then h += ftFont1.LineFullHeight;
+    if ftFont2<>nil then h += ftFont2.LineFullHeight;
+    if ftFont3<>nil then h += ftFont3.LineFullHeight;
+    h := h / 2;
+  end;
 
   if ftFont1<>nil then
   begin
     ftFont1.Hinted := true;
-    ftFont1.ClearType := true;
+    ftFont1.ClearType := not CheckBox_Rot.Checked; // ClearType and rotation is not working yet
     ftFont1.Quality := grqHighQuality;
     ftFont1.SmallLinePadding := false;
-    if CheckBox_Rect.Checked then
+    ftFont1.Orientation := Orientation;
+    if CheckBox_Para.Checked then
       drawer.DrawTextRect(testtext, ftFont1, 0,0, tx/3,ty, colBlack, [ftaLeft, ftaBottom])
-    else
-      drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
+    else if CheckBox_SingleLine.Checked then
+      drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom])
+    else begin
+      Rotate( -ftFont1.TextWidth(ftFont1.Information[ftiFullName])/2,
+              h - ftFont1.LineFullHeight);
+      drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, rx, ry,   colBlack);
+    end;
   end;
 
   if ftFont2<>nil then
@@ -197,23 +244,34 @@ begin
     ftFont2.Hinted := false;
     ftFont2.ClearType := false;
     ftFont2.Quality := grqHighQuality;
-    if CheckBox_Rect.Checked then
+    ftFont2.Orientation := Orientation;
+    if CheckBox_Para.Checked then
       drawer.DrawTextRect(testtext, ftFont2, tx/3,0, 2*tx/3,ty, colRed, [ftaCenter, ftaVerticalCenter])
-    else
-      drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
+    else if CheckBox_SingleLine.Checked then
+      drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline])
+    else begin
+      Rotate( -ftFont2.TextWidth(ftFont2.Information[ftiFullName])/2,
+              -ftFont2.LineFullHeight/2);
+      drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, rx, ry, colRed);
+    end;
   end;
 
   if ftFont3<>nil then begin
     ftFont3.Hinted := false;
     ftFont3.ClearType := false;
     ftFont3.Quality := grqMonochrome;
-    if CheckBox_Rect.Checked then
+    ftFont3.Orientation := Orientation;
+    if CheckBox_Para.Checked then
       drawer.DrawTextRect(testtext, ftFont3, 2*tx/3,0, tx,ty, colBlue, [ftaRight, ftaTop])
-    else
-      drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
+    else if CheckBox_SingleLine.Checked then
+      drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop])
+    else begin
+      Rotate( -ftFont3.TextWidth(ftFont3.Information[ftiFullName])/2, - h );
+      drawer.DrawText(ftFont3.Information[ftiFullName], ftFont3, rx, ry, colBlue);
+    end;
   end;
 
-  if (ftFont1<>nil) and not CheckBox_Rect.Checked then
+  if (ftFont1<>nil) and CheckBox_SingleLine.Checked then
   begin
     p := ftFont1.CharsPosition(ftFont1.Information[ftiFullName],[ftaRight, ftaBottom]);
     for i := 0 to high(p) do
@@ -233,7 +291,11 @@ begin
   EndTime2 := Now;
 
   Canvas.TextOut(0,0, inttostr(round((EndTime-StartTime)*24*60*60*1000))+' ms + '+inttostr(round((EndTime2-EndTime)*24*60*60*1000))+' ms');
-
+  if CheckBox_Rot.Checked then
+  begin
+    Canvas.Pen.Color := clFuchsia;
+    Canvas.Line(ClientWidth div 2, Panel_Option.Top div 2, mx, my);
+  end;
 end;
 
 procedure TForm1.FormShow(Sender: TObject);

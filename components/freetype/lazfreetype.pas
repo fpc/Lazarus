@@ -231,6 +231,12 @@ uses TTTypes, Classes;
                            glyph_index : Word;
                            load_flags  : Integer ) : TT_Error;
 
+  (*****************************************************************)
+  (*  Copy a glyph container into another one                      *)
+  (*                                                               *)
+  function TT_Copy_Glyph( var source : TT_Glyph;
+                          var target : TT_Glyph ) : TT_Error;
+
 const
   TT_Load_Scale_Glyph = 1;  (* ask the loader to scale the glyph  *)
                             (* to the current pointsize/transform *)
@@ -1007,6 +1013,50 @@ uses
     error := TT_Err_Ok;
     Load_TrueType_Glyph( ins, glyph, glyph_index, load_flags );
     TT_Load_Glyph := error;
+  end;
+
+  (*****************************************************************)
+  (*                                                               *)
+  (*                                                               *)
+  function TT_Copy_Glyph(var source: TT_Glyph; var target: TT_Glyph): TT_Error;
+  var
+    src, dst : PGlyph;
+  begin
+
+    src := PGlyph(source.z);
+    dst := PGlyph(target.z);
+
+    if (PGlyph(source.z)<>nil) then
+      begin
+        if dst=nil then
+          begin
+            error := TT_New_Glyph(TT_Face(src^.face), target);
+            if error<>TT_Err_Ok then
+              begin
+                TT_Copy_Glyph := error;
+                exit;
+              end;
+            dst := PGlyph(target.z);
+          end
+        else
+          TT_Done_Outline(dst^.outline);
+
+        dst^.metrics        := src^.metrics;
+        dst^.computed_width := src^.computed_width;
+        dst^.precalc_width  := src^.precalc_width;
+        dst^.is_composite   := src^.is_composite;
+
+        TT_New_Outline(src^.outline.n_points, src^.outline.n_contours, dst^.outline);
+
+        dst^.outline.owner := src^.outline.owner;
+        dst^.outline.high_precision := src^.outline.high_precision;
+        dst^.outline.second_pass := src^.outline.second_pass;
+        dst^.outline.dropout_mode := src^.outline.dropout_mode;
+
+        TT_Copy_Glyph := TT_Copy_Outline( src^.outline, dst^.outline );
+      end
+    else
+      TT_Copy_Glyph := TT_Err_Invalid_Glyph_Handle;
   end;
 
 
