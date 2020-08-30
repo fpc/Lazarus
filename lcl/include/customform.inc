@@ -704,9 +704,9 @@ begin
       FRestoredHeight := Height;
     end;
   end;
-  { call onShow() or onActivate() for the first time, after first OnResize()
-    and OnChangeBounds() }
-  if FDelayedOnResize and FDelayedOnChangeBounds then
+  { call onShow() or onActivate() for the first time,
+    after first OnResize() and OnChangeBounds() }
+  if FDelayedOnResize or FDelayedOnChangeBounds then
   begin
     if FIsFirstOnShow then
     begin
