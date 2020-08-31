@@ -127,11 +127,15 @@ begin
   if (SourceEditorManagerIntf= nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
     LogIdeMessage('', 'No current window', mtInputError, -1, -1)
   else begin
-    lsMsg := Format(lisJEDICodeFormatOfStartFormatting, [SourceEditorManagerIntf
-      .ActiveEditor.FileName
-            + NativeLineBreak]);
-    if CanFormat(lsMsg) then
-      ConvertEditor(SourceEditorManagerIntf.ActiveEditor)
+    if SourceEditorManagerIntf.ActiveEditor.SelectionAvailable then
+      DoFormatSelection(Sender)
+    else
+    begin
+      lsMsg := Format(lisJEDICodeFormatOfStartFormatting,
+                [SourceEditorManagerIntf.ActiveEditor.FileName + NativeLineBreak]);
+      if CanFormat(lsMsg) then
+        ConvertEditor(SourceEditorManagerIntf.ActiveEditor)
+    end;
   end;
 end;
 
@@ -156,9 +160,8 @@ begin
   lazProject := GetCurrentProject;
   if lazProject = nil then
     exit;
-  lsMsg := Format(lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi, [
-    lazProject.MainFile.FileName + NativeLineBreak, IntToStr(lazProject.
-    FileCount)]);
+  lsMsg := Format(lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi,
+    [lazProject.MainFile.FileName + NativeLineBreak, IntToStr(lazProject.FileCount)]);
   if CanFormat(lsMsg) then
   begin
     ClearToolMessages;
@@ -280,18 +283,13 @@ var
   begin
     p1 := srcEditor.BlockBegin;
     p2 := srcEditor.BlockEnd;
-    if (p1.y > p2.y) then
+    if p1.y > p2.y then
     begin
       p1 := srcEditor.BlockEnd;
       p2 := srcEditor.BlockBegin;
     end;
-    if p2.x<=1 then
-    begin
-      if p2.y>1 then
-        p2.y:=p2.y-1;
-    end;
-    p2.x:=Length(srcEditor.Lines[p2.y-1])+1;   //last char
-    p1.x:=1;
+    if (p2.x <= 1) and (p2.y > 1) then
+      p2.y := p2.y-1;
   end;
 
 var
@@ -308,7 +306,7 @@ begin
     exit;
   end;
   srcEditor := SourceEditorManagerIntf.ActiveEditor;
-  if (srcEditor.SelectionAvailable=false) or srcEditor.ReadOnly then
+  if not srcEditor.SelectionAvailable or srcEditor.ReadOnly then
     Exit;
   sourceCode := srcEditor.GetText(False);   //get ALL editor text.
   GetSelectedBlockFullLines(BlockBegin,BlockEnd);
@@ -318,12 +316,15 @@ begin
     fcConverter.InputCode := sourceCode;
     fcConverter.GuiMessages := true;
     FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
-    fcConverter.ConvertPart(lineStartOffset,lineEndOffset,true);
-    wI := length(fcConverter.OutputCode);
-    // converter adds 2 LineEndings.
-    outputstr := Copy(fcConverter.OutputCode, 1, wI-Length(LineEnding+LineEnding));
+    fcConverter.ConvertPart(lineStartOffset, lineEndOffset, True);
     if not fcConverter.ConvertError then
-      srcEditor.ReplaceText(BlockBegin, BlockEnd, outputstr);
+    begin
+      wI := length(fcConverter.OutputCode);
+      while (wI > 1) and (fcConverter.OutputCode[wI] in [#10, #13, ' ']) do
+        Dec(wI);
+      outputstr := Copy(fcConverter.OutputCode, 1, wI);
+      srcEditor.ReplaceLines(BlockBegin.Y, BlockEnd.Y, outputstr, false);
+    end;
   finally
     fcConverter.Free;
   end;
@@ -392,7 +393,6 @@ begin
     fcEditorConverter := TEditorConverter.Create;
     fcEditorConverter.OnStatusMessage := LogIDEMessage;
   end;
-
   Assert(fcEditorConverter <> nil);
 end;
 
@@ -403,7 +403,6 @@ begin
   lazMessages := IDEMessagesWindow;
   if lazMessages = nil then
     exit;
-
   lazMessages.Clear;
 end;
 
