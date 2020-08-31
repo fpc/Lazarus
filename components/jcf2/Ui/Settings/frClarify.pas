@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SetClarify, jcfuiconsts;
+  JcfSettings, SetClarify, JcfUIConsts;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin

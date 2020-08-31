@@ -37,7 +37,9 @@ unit MozComment;
 
 interface
 
-uses BaseVisitor, SourceToken;
+uses
+  SysUtils,
+  BaseVisitor, SourceToken;
 
 type
   TMozComment = class(TBaseTreeNodeVisitor)
@@ -56,8 +58,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   Tokens, TokenUtils, JcfSettings, JcfStringUtils,
   SettingsTypes, ParseTreeNodeType, SetClarify;

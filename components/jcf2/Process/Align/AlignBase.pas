@@ -34,7 +34,9 @@ unit AlignBase;
 
 interface
 
-uses SwitchableVisitor, SourceToken, SourceTokenList;
+uses
+  SysUtils, Math,
+  SwitchableVisitor, SourceToken, SourceTokenList;
 
 type
 
@@ -73,8 +75,6 @@ type
 implementation
 
 uses
-  { delphi }SysUtils, Math,
-  { jcl }
   { jcf } JcfSettings, TokenUtils, ParseTreeNodeType;
 
 { TAlignBase }

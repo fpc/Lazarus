@@ -42,7 +42,9 @@ interface
  Should emit a warning that param b is not used.
 }
 
-uses Warning, ParseTreeNode;
+uses
+  SysUtils,
+  Warning, ParseTreeNode;
 
 type
 
@@ -65,8 +67,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   ParseTreeNodeType, SourceToken, TokenUtils, JCfSettings;
 

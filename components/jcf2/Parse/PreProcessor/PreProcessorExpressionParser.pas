@@ -61,7 +61,6 @@ interface
 
 
 uses
-  { celphi }
   Classes, SysUtils,
   { local }
   PreProcessorExpressionTokens;

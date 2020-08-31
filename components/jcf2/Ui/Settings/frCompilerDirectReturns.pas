@@ -62,7 +62,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, jcfuiconsts;
+  JcfSettings, SettingsTypes, JcfUIConsts;
 
 procedure TfCompilerDirectReturns.FrameResize(Sender:TObject);
 begin

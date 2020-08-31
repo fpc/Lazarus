@@ -29,6 +29,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
+uses
+  Classes, SysUtils, Dialogs;
+
 type
   TFileContentType = (eUnknown, e8Bit, eUtf8,
     eUtf16LittleEndian, eUtf16BigEndian,
@@ -44,10 +47,6 @@ procedure WriteTextFile(const psFileName: string; const psContents: String;
 
 
 implementation
-
-uses
-  { delphi }
-  Classes, SysUtils, Dialogs;
 
 const
   // byte order markers (BOM)

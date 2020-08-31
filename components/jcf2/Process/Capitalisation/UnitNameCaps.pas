@@ -32,7 +32,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TUnitNameCaps = class(TSwitchableVisitor)
@@ -53,8 +55,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   SourceToken, Tokens, ParseTreeNodeType, JcfSettings, FormatFlags,
   TokenUtils;

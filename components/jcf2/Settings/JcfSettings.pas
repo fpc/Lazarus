@@ -34,13 +34,19 @@ unit JcfSettings;
 interface
 
 uses
-  { local }
-  SetObfuscate, SetClarify,
-  SetIndent, SetSpaces, SetReturns,
-  SetComments, SetCaps, SetWordList,
-  SetAlign, SetReplace, SetUses, SetPreProcessor,
-  SettingsStream, SetTransform,  SetAsm,
-  JcfVersionConsts, IDEOptionsIntf, IDEOptEditorIntf;
+  {$IFNDEF FPC}Windows,{$ELSE}LazFileUtils, LazUTF8,{$ENDIF} SysUtils,
+  // LCL
+  Dialogs,
+  // BuildIntf
+  IDEOptionsIntf,
+  // IdeIntf
+  IDEOptEditorIntf,
+  // local
+  SetObfuscate, SetClarify, SetIndent, SetSpaces, SetReturns, SetComments,
+  SetCaps, SetWordList, SetAlign, SetReplace, SetUses, SetPreProcessor,
+  SettingsStream, SetTransform, SetAsm, JcfVersionConsts,
+  JcfStringUtils, JcfSetBase, JcfRegistrySettings, JcfUIConsts;
+
 
 type
 
@@ -166,16 +172,8 @@ const
 const
   GUI_PAD = 3;
 
-implementation
 
-uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ELSE}LazFileUtils, LazUTF8,{$ENDIF} SysUtils, Dialogs,
-  { local }
-  JcfStringUtils,
-  JcfSetBase,
-  JcfRegistrySettings,
-  jcfuiconsts;
+implementation
 
 
 constructor TFormattingSettings.Create(const pbReadRegFile: boolean);

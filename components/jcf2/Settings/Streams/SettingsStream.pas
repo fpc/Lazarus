@@ -37,8 +37,7 @@ unit SettingsStream;
 interface
 
 uses
-  { delphi }
-  Classes;
+  Classes, SysUtils;
 
 type
   // abstract base class - interface
@@ -154,8 +153,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$ifndef fpc}Windows,{$endif} SysUtils,
   { local}
   JcfStringUtils, JcfMiscFunctions;
 

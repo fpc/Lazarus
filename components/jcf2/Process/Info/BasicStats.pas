@@ -38,7 +38,9 @@ interface
 
 {(*}
 
-uses BaseVisitor;
+uses
+  SysUtils,
+  BaseVisitor;
 
 type
   TBasicStats = class(TBaseTreeNodeVisitor)
@@ -69,8 +71,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { JCF  }
   JcfStringUtils,
   SourceToken, Tokens, ParseTreeNode, ParseTreeNodeType, TokenUtils,

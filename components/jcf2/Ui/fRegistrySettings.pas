@@ -32,10 +32,10 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ShellAPI,
-  { JVCL }
+  SysUtils, Classes, ShellAPI,
+  // LCL
+  Controls, Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls,
+  // JVCL
   JvMemo, JvEdit, JvExStdCtrls, JvValidateEdit, JvBaseDlg, JvBrowseFolder;
 
 type

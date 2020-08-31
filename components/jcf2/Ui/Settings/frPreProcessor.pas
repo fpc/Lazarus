@@ -61,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfPreProcessor.Create(AOwner: TComponent);
 begin

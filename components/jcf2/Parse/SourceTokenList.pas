@@ -45,8 +45,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Contnrs,
+  Contnrs, SysUtils,
   { local }
   SourceToken,
   Tokens;
@@ -104,8 +103,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfMiscFunctions;
 

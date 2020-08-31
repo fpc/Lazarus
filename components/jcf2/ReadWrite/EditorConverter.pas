@@ -34,7 +34,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes,
+  Classes, SysUtils, Math,
   {$ifdef fpc}
     { lazarus design time }
     SrcEditorIntf, LazUTF8,
@@ -102,8 +102,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils, Math,
   { local }
   JcfLog, JcfRegistrySettings, JcfMiscFunctions;
 

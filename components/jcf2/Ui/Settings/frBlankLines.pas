@@ -67,7 +67,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfBlankLines.Create(AOwner: TComponent);
 begin

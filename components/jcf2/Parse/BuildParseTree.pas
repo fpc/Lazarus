@@ -40,17 +40,17 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} Contnrs,
-  { local }
+  Contnrs, SysUtils,
+  Forms,
+  // local
   ParseTreeNode,
   ParseTreeNodeType,
   ParseError,
   SourceToken,
   SourceTokenList,
   Tokens,
-  TokenUtils;
-
+  TokenUtils,
+  JcfStringUtils;
 
 type
   TBuildParseTree = class(TObject)
@@ -287,12 +287,6 @@ type
   end;
 
 implementation
-
-uses
-  { delphi }
-  SysUtils, Forms,
-  { local }
-  JcfStringUtils;
 
 const
   UPDATE_INTERVAL = 512;

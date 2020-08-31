@@ -57,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, SetReturns, jcfuiconsts;
+  JcfSettings, SetReturns, JcfUIConsts;
 
 
 constructor TfClarifyLongLineBreaker.Create(AOwner: TComponent);

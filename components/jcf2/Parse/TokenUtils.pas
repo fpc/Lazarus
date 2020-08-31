@@ -36,7 +36,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses ParseTreeNode, SourceToken, SettingsTypes;
+uses
+  SysUtils,
+  ParseTreeNode, SourceToken, SettingsTypes;
 
 { make a new return token }
 function NewReturn: TSourceToken;
@@ -172,8 +174,6 @@ function HasAsmCaps(const pt: TSourceToken): boolean;
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, 
   { local }
   JcfSettings,
   JcfStringUtils,

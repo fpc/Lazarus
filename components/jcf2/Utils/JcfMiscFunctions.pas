@@ -47,7 +47,12 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses Classes;
+uses
+  Classes, SysUtils,
+  Forms,
+  // local
+  JcfStringUtils;
+
 
 function GetApplicationFolder: string;
 
@@ -77,12 +82,6 @@ function FileIsReadOnly(const psFile: string): boolean;
 
 
 implementation
-
-uses
-  { delphi }
-  SysUtils, Forms,
-  { local }
-  JcfStringUtils;
 
 function GetApplicationFolder: string;
 begin

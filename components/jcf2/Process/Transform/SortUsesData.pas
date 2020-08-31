@@ -29,8 +29,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Contnrs, Classes,
+  Contnrs, Classes, Math, SysUtils,
   { local }
   SourceToken, ParseTreeNode;
 
@@ -95,8 +94,6 @@ function ReverseLengthNameSort(Item1, Item2: Pointer): integer;
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} Math, SysUtils,
   {local }
   ParseTreeNodeType, Tokens, TokenUtils;
 

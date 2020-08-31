@@ -29,7 +29,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TFindReplace = class(TSwitchableVisitor)
@@ -49,8 +51,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfSettings,
   SourceToken,

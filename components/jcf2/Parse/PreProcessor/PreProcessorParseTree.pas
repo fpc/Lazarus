@@ -33,8 +33,8 @@ interface
 }
 
 uses
-  { delphi }
-  Classes,
+  Classes, SysUtils,
+  Forms,
   { local }
   Tokens, SourceTokenList, SourceToken;
 
@@ -90,8 +90,6 @@ procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
 implementation
 
 uses
-  { delphi }
-  SysUtils, Forms,
   { local }
   PreProcessorExpressionTokenise, PreProcessorExpressionParser,
   ParseError, JcfSettings;

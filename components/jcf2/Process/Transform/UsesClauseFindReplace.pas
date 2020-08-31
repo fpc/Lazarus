@@ -36,6 +36,7 @@ interface
  }
 
 uses
+  SysUtils,
   { local }
   SourceToken,
   SwitchableVisitor;
@@ -61,8 +62,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfSettings,
   Tokens,

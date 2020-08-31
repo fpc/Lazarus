@@ -66,7 +66,7 @@ implementation
 
 uses
   { jcf }
-  JcfSettings, jcfuiconsts,
+  JcfSettings, JcfUIConsts,
   { local }
   SettingsTypes, SetAsm;
 

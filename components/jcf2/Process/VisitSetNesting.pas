@@ -32,8 +32,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Contnrs,
+  Contnrs, SysUtils,
   { local }
   BaseVisitor, Nesting;
 
@@ -60,7 +59,7 @@ type
 
 implementation
 
-uses SysUtils,
+uses
   ParseTreeNode, ParseTreeNodeType,
   Tokens, SourceToken;
 

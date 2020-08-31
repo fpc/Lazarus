@@ -30,7 +30,9 @@ interface
 
 { unit to sort the uses clause }
 
-uses BaseVisitor, ParseTreeNode;
+uses
+  Contnrs, Classes,
+  BaseVisitor, ParseTreeNode;
 
 type
   TSortUses = class(TBaseTreeNodeVisitor)
@@ -50,8 +52,6 @@ type
 implementation
 
 uses
-  { delphi }
-  Contnrs, Classes, 
   { local }
   ParseTreeNodeType, SourceToken, Tokens, JcfSettings,
   SetTransform, TokenUtils, SortUsesData;

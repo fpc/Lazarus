@@ -35,7 +35,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses Warning;
+uses
+  SysUtils,
+  Warning;
 
 type
 
@@ -47,8 +49,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   SourceToken, ParseTreeNodeType, ParseTreeNode;
 

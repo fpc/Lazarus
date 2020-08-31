@@ -34,6 +34,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
+uses
+  SysUtils;
+
 type
 
   TFormatFlag = (eAllFormat,
@@ -74,8 +77,6 @@ const
 implementation
 
 uses
-  { delphi }
-  {$ifndef fpc}Windows,{$endif} SysUtils,
   { local }
   JcfStringUtils;
 

@@ -31,7 +31,8 @@ interface
 
 uses
   SysUtils,
-  Controls, StdCtrls, Graphics, Dialogs,
+  Controls, StdCtrls, Graphics, Dialogs, LCLIntf,
+  LazFileUtils,
   IDEOptionsIntf, IDEOptEditorIntf;
 
 type
@@ -64,7 +65,7 @@ implementation
 
 uses
   { local }
-  JcfFileUtils, JcfRegistrySettings, JcfSettings, jcfuiconsts, LazFileUtils, LCLIntf;
+  JcfFileUtils, JcfRegistrySettings, JcfSettings, JcfUIConsts;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var

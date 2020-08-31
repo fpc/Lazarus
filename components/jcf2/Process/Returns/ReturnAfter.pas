@@ -34,7 +34,9 @@ interface
 }
 
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TReturnAfter = class(TSwitchableVisitor)
@@ -51,8 +53,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   TokenUtils, SourceToken, Tokens,
   ParseTreeNodeType, ParseTreeNode, JcfSettings, FormatFlags, SettingsTypes;

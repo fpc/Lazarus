@@ -30,7 +30,9 @@ unit fAbout;
 interface
 
 uses
-  Classes, Forms, Graphics, StdCtrls, Buttons, ExtCtrls, ButtonPanel, SysUtils;
+  Classes, SysUtils,
+  // LCL
+  Forms, Graphics, StdCtrls, ExtCtrls, ButtonPanel, LCLIntf;
 
 type
 
@@ -65,9 +67,8 @@ implementation
 {$endif}
 
 uses
-  LCLIntf,
   { local }
-  JcfVersionConsts, JcfStringUtils, jcfuiconsts;
+  JcfVersionConsts, JcfStringUtils, JcfUIConsts;
 
 procedure ShowURL(const ps: string);
 begin

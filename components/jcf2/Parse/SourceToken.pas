@@ -33,6 +33,7 @@ unit SourceToken;
 interface
 
 uses
+  SysUtils,
   { local }
   Tokens, ParseTreeNode;
 
@@ -103,10 +104,6 @@ type
   TSourceTokenProcedure = procedure(const pt: TSourceToken) of object;
 
 implementation
-
-uses
-  { delphi }
-  SysUtils;
 
 {-------------------------------------------------------------------------------
  TSourceToken }

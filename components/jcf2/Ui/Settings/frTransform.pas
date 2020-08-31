@@ -63,7 +63,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfSettings, SetTransform, jcfuiconsts;
+  SettingsTypes, JcfSettings, SetTransform, JcfUIConsts;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin

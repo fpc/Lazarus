@@ -35,8 +35,9 @@ unit SetWordList;
 interface
 
 uses
-    { delphi }Classes,
-    { local }JcfSetBase, SettingsStream;
+  Classes, SysUtils,
+  { local }
+  JcfSetBase, SettingsStream;
 
 type
 
@@ -68,10 +69,6 @@ type
   end;
 
 implementation
-
-uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils;
 
 const
   REG_ENABLED = 'Enabled';

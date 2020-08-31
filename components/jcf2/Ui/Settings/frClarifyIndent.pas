@@ -72,7 +72,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin

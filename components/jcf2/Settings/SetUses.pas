@@ -38,8 +38,9 @@ unit SetUses;
 interface
 
 uses
-  { delphi }Classes,
-  { local }JcfSetBase, SettingsStream;
+  Classes, SysUtils,
+  { local }
+  JcfSetBase, SettingsStream;
 
 type
 
@@ -77,8 +78,6 @@ type
   end;
 
 implementation
-
-uses SysUtils;
 
 const
   REG_REMOVE_ENABLED = 'RemoveEnabled';

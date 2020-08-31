@@ -37,7 +37,9 @@ interface
  The tokens are defined in PreProcessorTokens
  Whitespace is discarded
 }
-uses PreProcessorExpressionTokens;
+uses
+  SysUtils,
+  PreProcessorExpressionTokens;
 
 type
   TPreProcessorExpressionTokeniser = class
@@ -69,8 +71,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   JcfStringUtils;
 

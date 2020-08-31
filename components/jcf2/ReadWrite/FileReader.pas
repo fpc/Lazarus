@@ -48,7 +48,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses CodeReader;
+uses
+  SysUtils,
+  CodeReader;
 
 type
   TFileReader = class(TCodeReader)
@@ -70,7 +72,6 @@ type
 implementation
 
 uses
-  {delphi }SysUtils,
   JclAnsiStrings;
 
 { TFileReader }

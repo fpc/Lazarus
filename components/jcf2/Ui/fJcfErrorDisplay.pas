@@ -59,7 +59,7 @@ implementation
 
 uses
   { local }
-  ParseError, JcfStringUtils, JcfFontSetFunctions, jcfuiconsts;
+  ParseError, JcfStringUtils, JcfFontSetFunctions, JcfUIConsts;
 
 {$ifndef FPC}
   {$R *.dfm}

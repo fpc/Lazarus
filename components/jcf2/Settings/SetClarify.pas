@@ -33,7 +33,7 @@ unit SetClarify;
 interface
 
 uses
-  Classes,
+  Classes, SysUtils,
   JcfSetBase, SettingsStream;
 
 type
@@ -71,8 +71,6 @@ type
 implementation
 
 uses
-  { Delphi }
-  SysUtils,
   { local }
   JcfStringUtils;
 

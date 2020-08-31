@@ -40,8 +40,8 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Registry, Classes,
+  Registry, Classes, SysUtils,
+  Dialogs,
   { local }
   ConvertTypes;
 
@@ -190,8 +190,6 @@ var
 implementation
 
 uses
-  { delphi }
-  {$ifndef fpc}Windows,{$endif} SysUtils, Dialogs,
   { jcf }
   JcfStringUtils, JcfSystemUtils, JcfMiscFunctions;
 

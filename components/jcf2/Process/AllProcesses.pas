@@ -71,7 +71,6 @@ type
 implementation
 
 uses
-  { delphi }
   Forms, SysUtils,
   { local }
   JcfSettings, SetClarify, VisitSetXY,

@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfrAnyCapsSettings.Create(AOwner: TComponent);
 begin

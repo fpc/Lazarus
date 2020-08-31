@@ -44,7 +44,9 @@ interface
   The first being generating the parse tree
 }
 
-uses ParseTreeNode, BaseVisitor;
+uses
+  SysUtils,
+  ParseTreeNode, BaseVisitor;
 
 type
   TTreeWalker = class(TObject)
@@ -75,9 +77,6 @@ type
   end;
 
 implementation
-
-uses
-  { delphi } SysUtils;
 
 procedure TTreeWalker.InitialiseFlags;
 begin

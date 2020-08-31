@@ -55,7 +55,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfComments.Create(AOwner: TComponent);
 begin

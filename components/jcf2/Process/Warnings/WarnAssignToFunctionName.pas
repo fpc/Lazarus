@@ -47,7 +47,9 @@ interface
   end;
 }
 
-uses Warning;
+uses
+  SysUtils,
+  Warning;
 
 type
 
@@ -64,8 +66,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils;
 

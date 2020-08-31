@@ -33,7 +33,9 @@ unit GlobalInclude;
 
 interface
 
-uses BaseVisitor, SourceToken;
+uses
+  SysUtils,
+  BaseVisitor, SourceToken;
 
 type
   TGlobalInclude = class(TBaseTreeNodeVisitor)
@@ -52,7 +54,6 @@ type
 implementation
 
 uses
-  { delphi }SysUtils,
   JclAnsiStrings,
   { local }Tokens, TokenUtils, JcfSettings,
   SettingsTypes, ParseTreeNodeType, SetClarify;

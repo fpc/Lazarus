@@ -38,8 +38,7 @@ interface
     this object serves as both the root and the section
   }
 uses
-  { delphi }
-  Registry, Classes,
+  Registry, Classes, SysUtils,
   { local }
   SettingsStream;
 
@@ -95,8 +94,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfMiscFunctions,
   JcfStringUtils;

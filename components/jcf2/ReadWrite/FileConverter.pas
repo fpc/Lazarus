@@ -30,9 +30,10 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi } Classes,
-  { local } Converter, 
-  ConvertTypes;
+  Classes, SysUtils,
+  Dialogs, Controls, Forms,
+  // local
+  Converter, ConvertTypes;
 
 { AFS 7 July 04
   rewrote this as a wrapper for the string->string converter
@@ -112,8 +113,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$ifndef fpc}Windows, {$endif} SysUtils, Dialogs, Controls, Forms,
   { local }
   JcfStringUtils, JcfSystemUtils,
   JcfMiscFunctions, JcfLog,

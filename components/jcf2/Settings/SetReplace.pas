@@ -34,8 +34,7 @@ unit SetReplace;
 interface
 
 uses
-  { delphi }
-  Classes,
+  Classes, SysUtils,
   { local }
   JcfSetBase, SettingsStream;
 
@@ -70,8 +69,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { locals }
   JcfStringUtils;
 

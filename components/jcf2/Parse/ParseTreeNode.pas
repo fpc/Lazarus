@@ -33,7 +33,6 @@ interface
   A node on the parse tree
 }
 uses
-  {delphi }
   Contnrs, Classes,
   { local }
   Tokens, ParseTreeNodeType, Nesting;

@@ -33,8 +33,7 @@ interface
 }
 
 uses
-  { delphi }
-  Classes,
+  Classes, SysUtils,
   { local }
   JcfSetBase, SettingsStream;
 
@@ -65,8 +64,6 @@ type
   end;
 
 implementation
-
-uses SysUtils;
 
 const
   REG_ENABLED = 'Enabled';

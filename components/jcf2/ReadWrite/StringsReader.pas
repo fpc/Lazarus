@@ -35,8 +35,9 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }Classes,
-  { local }CodeReader;
+  Classes,
+  { local }
+  CodeReader;
 
 type
   TStringsReader = class(TCodeReader)

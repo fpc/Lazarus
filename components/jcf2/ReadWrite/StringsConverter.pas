@@ -30,8 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Classes,
+  Classes, SysUtils,
   { local }
   Converter;
 
@@ -59,8 +58,6 @@ type
 
 
 implementation
-
-uses SysUtils;
 
 constructor TStringsConverter.Create;
 begin

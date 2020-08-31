@@ -33,7 +33,9 @@ interface
   Obfusccate - capitalisation
 }
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TFixCase = class(TSwitchableVisitor)
@@ -47,8 +49,6 @@ type
 implementation
 
 uses
-  { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
   JcfStringUtils,
   Tokens, SourceToken, SettingsTypes,

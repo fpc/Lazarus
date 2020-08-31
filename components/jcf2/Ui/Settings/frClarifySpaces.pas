@@ -96,7 +96,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, jcfuiconsts;
+  JcfSettings, SettingsTypes, JcfUIConsts;
 
 constructor TfClarifySpaces.Create(AOwner: TComponent);
 begin

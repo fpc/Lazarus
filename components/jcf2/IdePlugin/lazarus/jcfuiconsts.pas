@@ -1,4 +1,4 @@
-unit jcfuiconsts;
+unit JcfUIConsts;
 
 {$mode objfpc}{$H+}
 

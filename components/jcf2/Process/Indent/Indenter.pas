@@ -38,7 +38,9 @@ interface
   it sets the indent for the start of the line
 }
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TIndenter = class(TSwitchableVisitor)
@@ -51,8 +53,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfStringUtils,
   SourceToken, Nesting, FormatFlags, JcfSettings, TokenUtils,

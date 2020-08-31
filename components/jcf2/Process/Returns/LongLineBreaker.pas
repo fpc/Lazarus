@@ -39,7 +39,9 @@ interface
   (before? after?) the line will be broken 
 }
 
-uses SwitchableVisitor, IntList, SourceTokenList;
+uses
+  SysUtils,
+  SwitchableVisitor, IntList, SourceTokenList;
 
 
 type
@@ -62,8 +64,6 @@ type
 implementation
 
 uses
-  { delphi }
-  SysUtils,
   { local }
   JcfStringUtils,
   SourceToken, FormatFlags, JcfSettings, SetReturns,

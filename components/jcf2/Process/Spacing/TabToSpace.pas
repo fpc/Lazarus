@@ -32,7 +32,9 @@ interface
 { AFS 4 Jan 2002
   convert tabs to spaces }
 
-uses SwitchableVisitor;
+uses
+  SysUtils,
+  SwitchableVisitor;
 
 type
   TTabToSpace = class(TSwitchableVisitor)
@@ -51,8 +53,6 @@ type
 implementation
 
 uses
-  { Delphi }
-  SysUtils,
   { local }
   JcfStringUtils,
   JcfSettings, SourceToken, Tokens, FormatFlags;

@@ -35,7 +35,6 @@ unit fMain;
 interface
 
 uses
-  { delphi }
   SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, Menus,
   ActnList, StdActns, ToolWin, ImgList, ShellAPI,
   { local }

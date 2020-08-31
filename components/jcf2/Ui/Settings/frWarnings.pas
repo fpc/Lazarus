@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfWarnings.Create(AOwner: TComponent);
 begin

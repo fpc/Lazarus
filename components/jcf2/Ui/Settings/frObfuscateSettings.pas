@@ -59,7 +59,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, jcfuiconsts;
+  JcfSettings, SettingsTypes, JcfUIConsts;
 
 { TfObfuscateSettings }
 

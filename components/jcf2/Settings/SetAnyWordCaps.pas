@@ -34,8 +34,10 @@ unit SetAnyWordCaps;
 interface
 
 uses
-    { delphi }Classes,
-    { local }JcfSetBase, SettingsStream;
+  Classes, SysUtils,
+  Dialogs,
+  { local }
+  JcfSetBase, SettingsStream;
 
 type
 
@@ -61,9 +63,6 @@ type
   end;
 
 implementation
-
-uses
-    { delphi }SysUtils, Dialogs;
 
 const
   REG_ENABLED = 'Enabled';

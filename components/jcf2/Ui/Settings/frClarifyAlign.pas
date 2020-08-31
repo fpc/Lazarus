@@ -76,7 +76,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, jcfuiconsts;
+  JcfSettings, JcfUIConsts;
 
 constructor TfClarifyAlign.Create(AOwner: TComponent);
 begin
