@@ -36,11 +36,16 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { freepascal }SysUtils, Classes,
-  { lazarus design time }
-  LazIDEIntf, SrcEditorIntf, IDEMsgIntf, ProjectIntf, IDEExternToolIntf,
-  { local}
-  EditorConverter, FileConverter, ConvertTypes, jcfuiconsts;
+  SysUtils, Classes,
+  // BuildIntf
+  ProjectIntf, IDEExternToolIntf,
+  // IdeIntf
+  LazIDEIntf, SrcEditorIntf, IDEMsgIntf,
+  // LCL
+  Menus, Dialogs, Controls,
+  // local
+  EditorConverter, FileConverter, Converter, ConvertTypes,
+  JcfUIConsts, JcfStringUtils, JcfSettings, fAbout, frFiles;
 
 type
 
@@ -67,6 +72,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure DoFormatSelection(Sender: TObject);
     procedure DoFormatCurrentIDEWindow(Sender: TObject);
     procedure DoFormatProject(Sender: TObject);
     procedure DoFormatOpen(Sender: TObject);
@@ -77,15 +83,6 @@ type
 
 
 implementation
-
-uses
-  { lazarus }
-  Menus, Dialogs, Controls,
-  { jcf }
-  JcfStringUtils,
-  { local }
-  fAbout, frFiles, JcfSettings;
-
 
 function FileIsAllowedType(const psFileName: string): boolean;
 const
@@ -227,6 +224,108 @@ procedure TJcfIdeMain.DoFormatSettings(Sender: TObject);
 begin
   // open with the first frame
   LazarusIDE.DoOpenIDEOptions(TfFiles);
+end;
+
+//offset in bytes of first char of the lines. 1 based.
+procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
+                      out aLineStartOffset: integer; out aLineEndOffset:integer);
+var
+  lineCount:integer;
+  len:integer;
+  pC:PChar;
+  offset:integer;
+begin
+  len:=length(aStr);
+  pC:=@aStr[1];
+  lineCount:=1;
+  offset:=1;
+  aLineStartOffset:=0;
+  aLineEndOffset:=0;
+  if len<1 then
+    exit;
+  if aLineStart=1 then
+    aLineStartOffset:=offset;
+  if (aLineEnd=1) then
+    aLineEndOffset:=offset;
+  while (offset<=len) and (lineCount<=aLineEnd) do
+  begin
+    while (offset<=len) and (pC^<>#10) do
+    begin
+      inc(offset);
+      inc(pC);
+    end;
+    if (pC^=#10) and (offset<len) then
+    begin
+      inc(pC);
+      inc(offset);
+      inc(lineCount);
+      if lineCount=aLineStart then
+        aLineStartOffset:=offset;
+      if lineCount=aLineEnd then
+      begin
+        aLineEndOffset:=offset;
+        exit;
+      end;
+    end
+    else
+      exit;
+  end;
+end;
+
+procedure TJcfIdeMain.DoFormatSelection(Sender: TObject);
+var
+  srcEditor: TSourceEditorInterface;
+
+  procedure GetSelectedBlockFullLines(out p1: TPoint; out p2: TPoint);
+  begin
+    p1 := srcEditor.BlockBegin;
+    p2 := srcEditor.BlockEnd;
+    if (p1.y > p2.y) then
+    begin
+      p1 := srcEditor.BlockEnd;
+      p2 := srcEditor.BlockBegin;
+    end;
+    if p2.x<=1 then
+    begin
+      if p2.y>1 then
+        p2.y:=p2.y-1;
+    end;
+    p2.x:=Length(srcEditor.Lines[p2.y-1])+1;   //last char
+    p1.x:=1;
+  end;
+
+var
+  sourceCode: string;
+  BlockBegin, BlockEnd: TPoint;
+  fcConverter: TConverter;
+  lineStartOffset,lineEndOffset: integer;
+  wi: integer;
+  outputstr: string;
+begin
+  if (SourceEditorManagerIntf = nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
+  begin
+    LogIdeMessage('', 'No current window', mtInputError, -1, -1);
+    exit;
+  end;
+  srcEditor := SourceEditorManagerIntf.ActiveEditor;
+  if (srcEditor.SelectionAvailable=false) or srcEditor.ReadOnly then
+    Exit;
+  sourceCode := srcEditor.GetText(False);   //get ALL editor text.
+  GetSelectedBlockFullLines(BlockBegin,BlockEnd);
+  fcConverter := TConverter.Create;
+  try
+    fcConverter.OnStatusMessage := LogIDEMessage;
+    fcConverter.InputCode := sourceCode;
+    fcConverter.GuiMessages:=true;
+    FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
+    fcConverter.ConvertPart(lineStartOffset,lineEndOffset,true);
+    wI:=length(fcConverter.OutputCode);
+    outputstr:=Copy(fcConverter.OutputCode,1,wI-4);   // converter adds 2 line ends 0d0a 0d0a
+    if fcConverter.ConvertError=false then
+      srcEditor.ReplaceText(BlockBegin, BlockEnd, outputstr);
+  finally
+    fcConverter.Free;
+  end;
 end;
 
 procedure TJcfIdeMain.DoAbout(Sender: TObject);

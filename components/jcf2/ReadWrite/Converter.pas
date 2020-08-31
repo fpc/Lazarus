@@ -37,10 +37,11 @@ unit Converter;
 interface
 
 uses
-  { delphi } SysUtils, Controls, Forms,
-  { local } ConvertTypes, ParseTreeNode,
-  BuildTokenList,
-  BuildParseTree, BaseVisitor;
+  SysUtils, strutils,
+  // LCL
+  Controls, Forms,
+  // local
+  ConvertTypes, ParseTreeNode, BuildTokenList, BuildParseTree, BaseVisitor;
 
 type
 
@@ -89,7 +90,8 @@ type
 
     procedure Clear;
     procedure Convert;
-    procedure ConvertPart(const piStartIndex, piEndIndex: Integer);
+    procedure ConvertPart(const piStartIndex, piEndIndex: Integer;
+                          aOnlyOutputSelection: boolean=false);
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
 
@@ -298,17 +300,10 @@ begin
 
   // is it a leaf with source?
   if (pcRoot is TSourceToken) then
-  begin
-    fsOutputCode := fsOutputCode + TSourceToken(pcRoot).SourceCode;
-  end
-  else
-  begin
-    // recurse, write out all child nodes
+    fsOutputCode := fsOutputCode + TSourceToken(pcRoot).SourceCode
+  else  // recurse, write out all child nodes
     for liLoop := 0 to pcRoot.ChildNodeCount - 1 do
-    begin
       CollectOutput(pcRoot.ChildNodes[liLoop]);
-    end;
-  end;
 end;
 
 function TConverter.GetOnStatusMessage: TStatusMessageProc;
@@ -365,7 +360,8 @@ begin
     fShowParseTree.ShowParseTree(fcBuildParseTree.Root);
 end;
 
-procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer);
+procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer;
+                                 aOnlyOutputSelection: boolean);
 const
   FORMAT_START = '{<JCF_!*$>}';
   FORMAT_END   = '{</JCF_!*$>}';
@@ -398,17 +394,18 @@ begin
 
   Convert;
 
-  { locate the markers in the output,
-    and replace before and after }
+  { locate the markers in the output, and replace before and after }
   liOutputStart := Pos(FORMAT_START, fsOutputCode) + Length(FORMAT_START);
-  liOutputEnd   := Pos(FORMAT_END, fsOutputCode);
-
+  liOutputEnd   := PosEx(FORMAT_END, fsOutputCode,liOutputStart);
 
   { splice }
-  lsNewOutput := StrLeft(fsInputCode, liRealInputStart - 1);
-  lsNewOutput := lsNewOutput + Copy(fsOutputCode, liOutputStart, (liOutputEnd - liOutputStart));
-  lsNewOutput := lsNewOutput + StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
-
+  if aOnlyOutputSelection then
+    lsNewOutput := Copy(fsOutputCode, liOutputStart, (liOutputEnd - liOutputStart))
+  else begin
+    lsNewOutput := StrLeft(fsInputCode, liRealInputStart - 1);
+    lsNewOutput := lsNewOutput + Copy(fsOutputCode, liOutputStart, (liOutputEnd - liOutputStart));
+    lsNewOutput := lsNewOutput + StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
+  end;
   fsOutputCode := lsNewOutput;
 end;
 

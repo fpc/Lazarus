@@ -51,27 +51,30 @@ uses
   JcfIdeMain, JcfRegistrySettings;
 
 const
-  FORMAT_MENU_NAME     = 'jcfJEDICodeFormat';
-  FORMAT_CURRENT_NAME  = 'jcfCurrentEditorWindow';
-  FORMAT_PROJECT_MENU_NAME  = 'jcfAllFilesinProject';
-  FORMAT_OPEN_MENU_NAME     = 'jcfAllOpenWindows';
+  FORMAT_MENU_NAME         = 'jcfJEDICodeFormat';
+  FORMAT_SELECTION_NAME    = 'jcfSelectionText';
+  FORMAT_CURRENT_NAME      = 'jcfCurrentEditorWindow';
+  FORMAT_PROJECT_MENU_NAME = 'jcfAllFilesinProject';
+  FORMAT_OPEN_MENU_NAME    = 'jcfAllOpenWindows';
   //FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegistrySettings';
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
-  FORMAT_ABOUT_MENU_NAME = 'jcfAbout';
+  FORMAT_ABOUT_MENU_NAME   = 'jcfAbout';
   FORMAT_CATEGORY_IDECMD_NAME = 'jcfFormat';
-  FORMAT_MENU_SECTION1 = 'jcfSection1';
-  FORMAT_MENU_SECTION2 = 'jcfSection2';
+  FORMAT_MENU_SECTION1     = 'jcfSection1';
+  FORMAT_MENU_SECTION2     = 'jcfSection2';
 
 resourcestring
-  FORMAT_MENU     = 'JEDI Code &Format';
-  FORMAT_CURRENT_MENU  = '&Current Editor Window';
-  FORMAT_CURRENT_IDECMD  = 'Format code in current editor window';
-  FORMAT_PROJECT_MENU  = '&All Files in Project';
-  FORMAT_OPEN_MENU     = 'All &Open Windows';
+  FORMAT_MENU             = 'JEDI Code &Format';
+  FORMAT_SELECTION_MENU   = 'Selection';
+  FORMAT_CURRENT_MENU     = '&Current Editor Window';
+  FORMAT_SELECTION_IDECMD = 'Format code in Selection';
+  FORMAT_CURRENT_IDECMD   = 'Format code in current editor window';
+  FORMAT_PROJECT_MENU     = '&All Files in Project';
+  FORMAT_OPEN_MENU        = 'All &Open Windows';
   //FORMAT_REG_SETTINGS_MENU = '&Registry Settings';
-  FORMAT_SETTINGS_MENU = '&Format Settings';
-  FORMAT_ABOUT_MENU = '&About';
-  FORMAT_CATEGORY_IDECMD = 'JEDI Code Format';
+  FORMAT_SETTINGS_MENU    = '&Format Settings';
+  FORMAT_ABOUT_MENU       = '&About';
+  FORMAT_CATEGORY_IDECMD  = 'JEDI Code Format';
 
 const
   DefaultJCFOptsFile = 'jcfsettings.cfg';
@@ -109,24 +112,32 @@ end;
 procedure Register;
 var
   Cat: TIDECommandCategory;
-  Key: TIDEShortCut;
   fcMainMenu, SubSection: TIDEMenuSection;
-  CmdFormatFile: TIDECommand;
+  KeySelect, KeyUnit: TIDEShortCut;
+  CmdSelect, CmdUnit: TIDECommand;
 begin
   SetLazarusDefaultFileName;
   GetDefaultSettingsFileName := IDEGetDefaultSettingsFileName;
 
   Cat := IDECommandList.CreateCategory(nil, FORMAT_CATEGORY_IDECMD_NAME,
     FORMAT_CATEGORY_IDECMD, IDECmdScopeSrcEditOnly);
-  // Ctrl + D ?
-  Key := IDEShortCut(VK_D, [SSctrl], VK_UNKNOWN, []);
-  CmdFormatFile := RegisterIDECommand(Cat, FORMAT_CURRENT_NAME, FORMAT_CURRENT_IDECMD, Key,
-    lcJCFIDE.DoFormatCurrentIDEWindow);
 
   fcMainMenu := RegisterIDESubMenu(itmSourceTools, FORMAT_MENU_NAME, FORMAT_MENU);
 
+  KeySelect := IDEShortCut(VK_UNKNOWN, []);
+  // We are running out of free shortcut combinations. Ctrl+Shift+Alt+D is free.
+  //KeySelect := IDEShortCut(VK_D, [ssShift,ssAlt,SSctrl]);
+  CmdSelect := RegisterIDECommand(Cat, FORMAT_SELECTION_NAME, FORMAT_SELECTION_IDECMD,
+    KeySelect, lcJCFIDE.DoFormatSelection);
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_SELECTION_NAME, FORMAT_SELECTION_MENU,
+    lcJCFIDE.DoFormatSelection, nil, CmdSelect);
+
+  // Ctrl + D
+  KeyUnit := IDEShortCut(VK_D, [SSctrl]);
+  CmdUnit := RegisterIDECommand(Cat, FORMAT_CURRENT_NAME, FORMAT_CURRENT_IDECMD,
+    KeyUnit, lcJCFIDE.DoFormatCurrentIDEWindow);
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_CURRENT_NAME, FORMAT_CURRENT_MENU,
-    lcJCFIDE.DoFormatCurrentIDEWindow, nil, CmdFormatFile);
+    lcJCFIDE.DoFormatCurrentIDEWindow, nil, CmdUnit);
 
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_PROJECT_MENU_NAME, FORMAT_PROJECT_MENU,
     lcJCFIDE.DoFormatProject);
