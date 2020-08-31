@@ -35,7 +35,6 @@ uses
   SysUtils,
   FileCtrl,
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
-  JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
   JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
@@ -50,7 +49,6 @@ uses
   VisitSetXY in '..\..\Process\VisitSetXY.pas',
   BaseVisitor in '..\..\Process\BaseVisitor.pas',
   JcfMiscFunctions in '..\..\Utils\JcfMiscFunctions.pas',
-  //FileUtils in '..\..\Utils\FileUtils.pas',
   JcfLog in '..\..\Utils\JcfLog.pas',
   fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',
@@ -155,7 +153,6 @@ uses
   RemoveReturnsAfter in '..\..\Process\Returns\RemoveReturnsAfter.pas',
   IndentAsmParam in '..\..\Process\Indent\IndentAsmParam.pas',
   AsmKeywords in '..\..\Parse\AsmKeywords.pas',
-  JcfUnicode in '..\..\Utils\JcfUnicode.pas',
   JcfUnicodeFiles in '..\..\Utils\JcfUnicodeFiles.pas',
   CommandLineReturnCode in '..\CommandLineReturnCode.pas',
   CommandLineConstants in '..\CommandLineConstants.pas',
@@ -312,7 +309,7 @@ var
     end;
 
     { must have read from registry or file }
-    if (not FormatSettings.HasRead) and (not fbQuietFail) then
+    if (not FormattingSettings.HasRead) and (not fbQuietFail) then
     begin
         WriteLn('No settings to read');
         WriteLn;
@@ -352,7 +349,7 @@ var
     end;
 
     GetRegSettings.Input := lsPath;
-    FormatSettings.Obfuscate.Enabled := fbCmdLineObfuscate;
+    FormattingSettings.Obfuscate.Enabled := fbCmdLineObfuscate;
   end;
 
   procedure ConvertFiles;
@@ -395,7 +392,7 @@ begin
   { format setttings will be altered by the command line.
     Do not persist these changes
     do this after parsing the command line }
-  FormatSettings.WriteOnExit := False;
+  FormattingSettings.WriteOnExit := False;
 
   if fbQuietFail then
   begin

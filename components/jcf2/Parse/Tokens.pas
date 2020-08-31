@@ -49,6 +49,9 @@ unit Tokens;
 
 interface
 
+uses
+  SysUtils;
+
 type
   TWordType = (wtNotAWord,
     wtReservedWord, wtReservedWordDirective, wtBuiltInConstant, wtBuiltInType,
@@ -492,11 +495,6 @@ function PreProcSymbolTypeSetToString(
 implementation
 
 uses
-  { system }
-{$IFNDEF FPC}
-  Windows,
-{$ENDIF}
-  SysUtils,
   { local }
   JcfStringUtils;
 

@@ -65,7 +65,7 @@ implementation
 
 uses
   { local }
-  JcfFileUtils, JcfRegistrySettings, JcfSettings, JcfUIConsts;
+  JcfRegistrySettings, JcfSettings, JcfUIConsts;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var

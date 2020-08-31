@@ -395,16 +395,9 @@ var
 begin
   Assert(psDir <> '');
   Assert(psFiles <> nil);
-
-  { for all pas files in the dir }
-  {$IFDEF FPC}
-  lsSearch := psDir + AllFilesMask;
-  {$ELSE}
-  lsSearch := psDir + '*.*';
-  {$ENDIF}
+  lsSearch := psDir + AllFilesMask;   { for all pas files in the dir }
   FillChar(rSearch{%H-}, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, 0, rSearch) <> 0);
-
   while not bDone do
   begin
     lsName := rSearch.Name;
@@ -430,13 +423,7 @@ var
 begin
   Assert(psDir <> '');
   Assert(psFiles <> nil);
-
-  {$IFDEF FPC}
   lsSearch := psDir + AllFilesMask;
-  {$ELSE}
-  lsSearch := psDir + '*.*';
-  {$ENDIF}
-  
   FillChar(rSearch{%H-}, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, faDirectory, rSearch) <> 0);
 

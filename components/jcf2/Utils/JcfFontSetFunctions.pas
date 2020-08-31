@@ -31,6 +31,10 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
+uses
+  TypInfo,
+  Graphics;
+
 type
      TFontType  = (ftAuto, ftCaption, ftContent);
 
@@ -40,7 +44,6 @@ procedure SetObjectFontToSystemFont(
 implementation
 
 uses
-  StdCtrls, Graphics, TypInfo,
   JcfSystemUtils;
 
 procedure SetCaptionFont(const AObjectFont: TFont);
@@ -87,38 +90,8 @@ end;
 
 
 procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFontType);
-var
-  AObjectFont: TFont;
-  AFontType:   TFontType;
 begin
-  {$ifdef FPC}
   exit; // Lazarus forms have "default" font set
-  {$endif}
-
-  if (AObject.ClassType = TFont) then
-    AObjectFont := TFont(AObject)
-  else
-    AObjectFont := TFont(GetObjectProp(AObject, 'Font', TFont));
-
-  if (FontType = ftAuto) then
-  begin
-    if (AObject.ClassType = TMemo) {$IFNDEF FPC} or (AObject.ClassType = TRichEdit) {$ENDIF} then
-      AFontType := ftContent
-    else
-      AFontType := ftCaption;
-  end
-  else
-    AFontType := FontType;
-
-  if (AFontType = ftCaption) then
-  begin
-    SetCaptionFont(AObjectFont);
-  end
-  else if (AFontType = ftContent) then
-  begin
-    SetContentFont(AObjectFont);
-  end;
-
 end;
 
 

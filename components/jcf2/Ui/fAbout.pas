@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Graphics, StdCtrls, ExtCtrls, ButtonPanel, LCLIntf;
+  Forms, Graphics, StdCtrls, ExtCtrls, ButtonPanel, LCLIntf, LCLType;
 
 type
 
@@ -60,15 +60,11 @@ type
 
 implementation
 
-{$ifndef FPC}
-  {$R *.dfm}
-{$else}
-  {$R *.lfm}
-{$endif}
+{$R *.lfm}
 
 uses
   { local }
-  JcfVersionConsts, JcfStringUtils, JcfUIConsts;
+  JcfHelp, JcfVersionConsts, JcfStringUtils, JcfUIConsts;
 
 procedure ShowURL(const ps: string);
 begin
@@ -113,15 +109,13 @@ end;
 
 procedure TfrmAboutBox.FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
 begin
-{$ifndef fpc}
   if Key = VK_F1 then
     try
       Application.HelpContext(HELP_MAIN);
     except
       if FileExists(Application.HelpFile) then
-        ShellExecute(Handle, 'open', PChar(Application.HelpFile), nil, nil, SW_SHOWNORMAL);
+        OpenDocument(Application.HelpFile);
     end;
-{$endif}
 end;
 
 procedure TfrmAboutBox.hlHomePageClick(Sender: TObject);

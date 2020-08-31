@@ -34,7 +34,7 @@ unit JcfSettings;
 interface
 
 uses
-  {$IFNDEF FPC}Windows,{$ELSE}LazFileUtils, LazUTF8,{$ENDIF} SysUtils,
+  SysUtils,
   // LCL
   Dialogs,
   // BuildIntf
@@ -283,16 +283,12 @@ var
   lsText: string;
   lcFile: TSettingsInputString;
 begin
-  if {$ifdef FPC}FileExistsUTF8(psFileName){$else}FileExists(psFileName){$endif} then
+  if FileExists(psFileName) then
   begin
     // debug ShowMessage('Reading settings from file ' + lsSettingsFileName);
 
     // now we know the file exists - try get settings from it
-    {$ifdef FPC}
-    lsText := string(FileToString(UTF8ToSys(psFileName)));
-    {$else}
     lsText := string(FileToString(psFileName));
-    {$endif}
     lcFile := TSettingsInputString.Create(lsText);
     try
       FromStream(lcFile);
@@ -300,14 +296,9 @@ begin
       lcFile.Free;
     end;
   end
-  else
-  begin
-    if pbMustExist then
-    begin
-      MessageDlg(Format(lisTheSettingsFileDoesNotExist, [psFileName, NativeLineBreak]),
-        mtError, [mbOK], 0);
-      end;
-  end;
+  else if pbMustExist then
+    MessageDlg(Format(lisTheSettingsFileDoesNotExist, [psFileName, NativeLineBreak]),
+               mtError, [mbOK], 0);
 end;
 
 
@@ -339,11 +330,7 @@ begin
   if lcReg.FormatConfigFileName = '' then
     exit;
 
-  {$ifdef FPC}
-  if FileExistsUTF8(lcReg.FormatConfigFileName) and FileIsReadOnlyUTF8(lcReg.FormatConfigFileName) then
-  {$else}
   if FileExists(lcReg.FormatConfigFileName) and FileIsReadOnly(lcReg.FormatConfigFileName) then
-  {$endif}
   begin
     { fail quietly? }
     if lcReg.FormatFileWriteOption = eAlwaysWrite then
@@ -353,11 +340,7 @@ begin
 
   try
     // use the Settings file name
-    {$ifdef FPC}
-    lcFile := TSettingsStreamOutput.Create(UTF8ToSys(GetRegSettings.FormatConfigFileName));
-    {$else}
     lcFile := TSettingsStreamOutput.Create(GetRegSettings.FormatConfigFileName);
-    {$endif}
     try
       ToStream(lcFile);
 
@@ -504,7 +487,6 @@ function FormattingSettings: TFormattingSettings;
 begin
   if mcFormattingSettings = nil then
     mcFormattingSettings := TFormattingSettings.Create(true);
-
   Result := mcFormattingSettings;
 end;
 

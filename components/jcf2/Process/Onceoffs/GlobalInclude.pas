@@ -83,8 +83,8 @@ end;
 
 function TGlobalInclude.IsIncludedInSettings: boolean;
 begin
-  Result := ( not FormatSettings.Obfuscate.Enabled) and
-    (FormatSettings.Clarify.OnceOffs <> eDoNotRun)
+  Result := not FormattingSettings.Obfuscate.Enabled and
+               (FormattingSettings.Clarify.OnceOffs <> eDoNotRun)
 end;
 
 

@@ -74,13 +74,6 @@ function SplitIntoLines(s: string): TStrings;
 procedure SplitIntoChangeSections(const s1, s2, SameStart, SameEnd: TStrings);
 
 
-{$IFDEF DELPHI_5}
-{ these functions are in Delphi 6 and up }
-function IncludeTrailingPathDelimiter(const psPath: string): string;
-function FileIsReadOnly(const psFile: string): boolean;
-{$ENDIF}
-
-
 implementation
 
 function GetApplicationFolder: string;
@@ -401,24 +394,5 @@ begin
   end;
 
 end;
-
-{$IFDEF DELPHI_5}
-
-{ these functions are in Delphi 6 and up }
-
-function IncludeTrailingPathDelimiter(const psPath: string): string;
-begin
-  Result := psPath;
-  if StrRight(psPath, 1) <> DirDelimiter then
-    Result := Result + DirDelimiter;
-end;
-
-{ dummy for D5}
-function FileIsReadOnly(const psFile: string): boolean;
-begin
-  Result := False;
-end;
-
-{$ENDIF}
 
 end.

@@ -29,6 +29,10 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
+uses
+  SysUtils,
+  Forms;
+
 { code interface to JCF help file }
 
 function GetHelpFilePath: string;
@@ -71,60 +75,10 @@ const
 
 implementation
 
-uses
-  {$ifndef fpc} Windows, {$endif} SysUtils, Forms;
-
 function GetHelpFilePath: string;
-var
-  HelpFilePath: string;
 begin
-  HelpFilePath := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
+  Result := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
     HELP_FILE_NAME;
-{$ifndef fpc}
-  if not FileExists(HelpFilePath) then
-  begin
-    HelpFilePath := IncludeTrailingPathDelimiter(
-      ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD12.bpl')))) +
-      HELP_FILE_NAME;
-    if not FileExists(HelpFilePath) then
-    begin
-      HelpFilePath := IncludeTrailingPathDelimiter(
-        ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD11.bpl')))) +
-        HELP_FILE_NAME;
-      if not FileExists(HelpFilePath) then
-      begin
-        HelpFilePath := IncludeTrailingPathDelimiter(
-          ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD10.bpl')))) +
-          HELP_FILE_NAME;
-        if not FileExists(HelpFilePath) then
-        begin
-          HelpFilePath := IncludeTrailingPathDelimiter(
-            ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD9.bpl')))) +
-            HELP_FILE_NAME;
-          if not FileExists(HelpFilePath) then
-          begin
-            HelpFilePath := IncludeTrailingPathDelimiter(
-              ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD7.bpl')))) +
-              HELP_FILE_NAME;
-            if not FileExists(HelpFilePath) then
-            begin
-              HelpFilePath := IncludeTrailingPathDelimiter(
-                ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD6.bpl')))) +
-                HELP_FILE_NAME;
-              if not FileExists(HelpFilePath) then
-              begin
-                HelpFilePath := IncludeTrailingPathDelimiter(
-                  ExtractFilePath(GetModuleName(GetModuleHandle('JCFIdeD5.bpl')))) +
-                  HELP_FILE_NAME;
-              end;
-            end;
-          end;
-        end;
-      end;
-    end;
-  end;
-{$endif}
-  Result := HelpFilePath;
 end;
 
 end.

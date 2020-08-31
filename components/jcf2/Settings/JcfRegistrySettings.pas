@@ -634,7 +634,6 @@ begin
     mcRegistrySettings := TJCFRegistrySettings.Create;
     mcRegistrySettings.ReadAll;
   end;
-
   Result := mcRegistrySettings;
 end;
 

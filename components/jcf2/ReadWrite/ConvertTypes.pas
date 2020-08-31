@@ -59,20 +59,7 @@ type
 
 const
   OLD_REG_ROOT_KEY = '\Software\Jedi\JediCodeFormat';
- {$IFDEF FPC} REG_ROOT_KEY = OLD_REG_ROOT_KEY; {$ENDIF}
- {$IFDEF DELPHI1} REG_ROOT_KEY = '\Software\Borland\Delphi\1.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI2} REG_ROOT_KEY = '\Software\Borland\Delphi\2.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI3} REG_ROOT_KEY = '\Software\Borland\Delphi\3.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI4} REG_ROOT_KEY = '\Software\Borland\Delphi\4.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI5} REG_ROOT_KEY = '\Software\Borland\Delphi\5.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI6} REG_ROOT_KEY = '\Software\Borland\Delphi\6.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI7} REG_ROOT_KEY = '\Software\Borland\Delphi\7.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI8} REG_ROOT_KEY = '\Software\Borland\BDS\2.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI9} REG_ROOT_KEY = '\Software\Borland\BDS\3.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI10} REG_ROOT_KEY = '\Software\Borland\BDS\4.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI11} REG_ROOT_KEY = '\Software\Borland\BDS\5.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI12} REG_ROOT_KEY = '\Software\CodeGear\BDS\6.0\Jedi\JCF'; {$ENDIF}
- {$IFDEF DELPHI14} REG_ROOT_KEY = '\Software\CodeGear\BDS\7.0\Jedi\JCF'; {$ENDIF}
+  REG_ROOT_KEY = OLD_REG_ROOT_KEY;
 
 const
   SOURCE_FILE_FILTERS =
