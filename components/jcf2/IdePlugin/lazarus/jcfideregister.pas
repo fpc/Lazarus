@@ -63,7 +63,6 @@ const
 resourcestring
   FORMAT_MENU             = 'JEDI Code &Format';
   FORMAT_CURRENT_MENU     = '&Current Editor Window';
-  FORMAT_SELECTION_IDECMD = 'Format code in Selection';
   FORMAT_CURRENT_IDECMD   = 'Format code in current editor window';
   FORMAT_PROJECT_MENU     = '&All Files in Project';
   FORMAT_OPEN_MENU        = 'All &Open Windows';
