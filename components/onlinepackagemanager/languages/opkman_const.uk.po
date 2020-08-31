@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2020-06-10 20:59+0200\n"
+"PO-Revision-Date: 2020-08-31 01:08+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -1081,11 +1081,11 @@ msgstr "Файл пакунка не знайдено."
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage1
 msgid "Orphaned package"
-msgstr ""
+msgstr "Осиротілий пакунок"
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage2
 msgid "currently has no active maintainer"
-msgstr ""
+msgstr "наразі не має активного розробника"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
