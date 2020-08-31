@@ -316,12 +316,13 @@ begin
   try
     fcConverter.OnStatusMessage := LogIDEMessage;
     fcConverter.InputCode := sourceCode;
-    fcConverter.GuiMessages:=true;
+    fcConverter.GuiMessages := true;
     FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
     fcConverter.ConvertPart(lineStartOffset,lineEndOffset,true);
-    wI:=length(fcConverter.OutputCode);
-    outputstr:=Copy(fcConverter.OutputCode,1,wI-4);   // converter adds 2 line ends 0d0a 0d0a
-    if fcConverter.ConvertError=false then
+    wI := length(fcConverter.OutputCode);
+    // converter adds 2 LineEndings.
+    outputstr := Copy(fcConverter.OutputCode, 1, wI-Length(LineEnding+LineEnding));
+    if not fcConverter.ConvertError then
       srcEditor.ReplaceText(BlockBegin, BlockEnd, outputstr);
   finally
     fcConverter.Free;
