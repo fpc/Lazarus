@@ -2200,28 +2200,24 @@ procedure TCustomDateTimePicker.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   TextOrigin: TPoint;
-  M: Integer;
 
 begin
   RecalculateTextSizesIfNeeded;
   TextOrigin := GetTextOrigin(True);
 
+  PreferredHeight := 2 * TextOrigin.y + FTextHeight + Height - ClientHeight;
+
   // We must use TextOrigin's x + y (x is, of course, left margin, but not right
   // margin if check box is shown. However, y, which is top margin, always
   // equals right margin).
-  PreferredWidth := TextOrigin.x + TextOrigin.y;
+  PreferredWidth := TextOrigin.x + TextOrigin.y
+    + FTextWidth + Width - ClientWidth;
 
   if Assigned(FUpDown) then
     Inc(PreferredWidth, FUpDown.Width)
   else if Assigned(FArrowButton) then
     Inc(PreferredWidth, FArrowButton.Width);
 
-  PreferredWidth := PreferredWidth + FTextWidth;
-
-  M := Width - ClientWidth;
-  PreferredWidth := PreferredWidth + M;
-
-  PreferredHeight := 2 * TextOrigin.y + FTextHeight + M;
 end;
 
 procedure TCustomDateTimePicker.SetBiDiMode(AValue: TBiDiMode);
@@ -2870,10 +2866,8 @@ begin
     try
       if Assigned(FUpDown) then
         C := FUpDown
-      else if Assigned(FArrowButton) then
-        C := FArrowButton
       else
-        C := nil;
+        C := FArrowButton; // might be nil.
 
       if Assigned(C) then begin
         if IsRightToLeft then
@@ -2966,11 +2960,8 @@ begin
   Canvas.FillRect(ClientRect);
 
   R.TopLeft := GetTextOrigin;
-
-  M := 2 * R.Top + FTextHeight;
-  M := (ClientHeight - M) div 2;
-
-  Inc(R.Top, M);
+  if not AutoSize then
+    R.Top := (ClientHeight - FTextHeight) div 2;
 
   R.Bottom := R.Top + FTextHeight;
 
