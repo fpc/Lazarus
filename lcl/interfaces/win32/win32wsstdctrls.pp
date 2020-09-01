@@ -1182,6 +1182,9 @@ begin
   begin
     //Use CB_SETMINVISIBLE in vista or above
     SendMessage(ACustomComboBox.Handle, CB_SETMINVISIBLE, NewCount, 0);
+    //Issue #37670: Fix DropDownCount not changing when Style=csDropDownList
+    if not (ACustomComboBox.Style in [csSimple, csDropDown, csOwnerDrawEditableFixed]) then
+      RecreateWnd(ACustomCombobox);
   end
   else
   begin
