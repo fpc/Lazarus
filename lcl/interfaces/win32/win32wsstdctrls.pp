@@ -1113,6 +1113,8 @@ end;
 class procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
   RecreateWnd(ACustomComboBox);
+  if (NewStyle = csSimple) and (csDesigning in ACustomComboBox.ComponentState) then
+    ACustomComboBox.Constraints.SetInterfaceConstraints(0,0,0,0);
 end;
 
 class procedure TWin32WSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
