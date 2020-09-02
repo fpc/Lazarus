@@ -1642,8 +1642,7 @@ end;
 
 procedure TCustomDateTimePicker.AdjustSelection;
 begin
-  if GetDateTimePartFromTextPart(FSelectedTextPart) in
-                   FEffectiveHideDateTimeParts then
+  if GetSelectedDateTimePart in FEffectiveHideDateTimeParts then
     MoveSelectionLR(False);
 end;
 
@@ -2047,7 +2046,7 @@ procedure TCustomDateTimePicker.SelectTextPartUnderMouse(XMouse: Integer);
 var
   I, M, NX: Integer;
   InTime: Boolean;
-  DTP: TDateTimePart;
+
 begin
   UpdateIfUserChangedText;
   SetFocusIfPossible;
@@ -2077,8 +2076,8 @@ begin
         I := 4;
         M := FTimeSeparatorWidth div 2;
         while I <= 6 do begin
-          DTP := GetDateTimePartFromTextPart(I);
-          if not (DTP in FEffectiveHideDateTimeParts) then begin
+          if not (GetDateTimePartFromTextPart(I)
+                        in FEffectiveHideDateTimeParts) then begin
             Inc(M, 2 * FDigitWidth);
             if M > NX then begin
               FSelectedTextPart := I;
@@ -2097,7 +2096,7 @@ begin
       I := 1;
       M := FSeparatorWidth div 2;
       while I <= 2 do begin
-        if not(GetDateTimePartFromTextPart(I)
+        if not (GetDateTimePartFromTextPart(I)
                       in FEffectiveHideDateTimeParts) then begin
           if I = FYearPos then
             Inc(M, 4 * FDigitWidth)
@@ -2119,8 +2118,7 @@ begin
 
     end;
 
-    if GetDateTimePartFromTextPart(FSelectedTextPart)
-                    in FEffectiveHideDateTimeParts then
+    if GetSelectedDateTimePart in FEffectiveHideDateTimeParts then
       MoveSelectionLR(True);
 
     Invalidate;
@@ -2900,13 +2898,10 @@ end;
 procedure TCustomDateTimePicker.SelectDate;
 begin
   if (FSelectedTextPart > 3)
-          or (GetDateTimePartFromTextPart(FSelectedTextPart)
-                  in FEffectiveHideDateTimeParts) then
+          or (GetSelectedDateTimePart in FEffectiveHideDateTimeParts) then
     FSelectedTextPart := 1;
 
-  if GetDateTimePartFromTextPart(FSelectedTextPart)
-                  in FEffectiveHideDateTimeParts then
-    MoveSelectionLR(False);
+  AdjustSelection;
 
   Invalidate;
 end;
@@ -2914,13 +2909,10 @@ end;
 procedure TCustomDateTimePicker.SelectTime;
 begin
   if (FSelectedTextPart < 4)
-          or (GetDateTimePartFromTextPart(FSelectedTextPart)
-                  in FEffectiveHideDateTimeParts) then
+          or (GetSelectedDateTimePart in FEffectiveHideDateTimeParts) then
     FSelectedTextPart := 4;
 
-  if GetDateTimePartFromTextPart(FSelectedTextPart)
-                  in FEffectiveHideDateTimeParts then
-    MoveSelectionLR(False);
+  AdjustSelection;
 
   Invalidate;
 end;
