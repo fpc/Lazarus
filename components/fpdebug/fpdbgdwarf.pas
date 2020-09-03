@@ -1366,21 +1366,21 @@ begin
 
   ADbgValue := nil;
   FoundInfoEntry := nil;
-  SetLength(CUList, PER_WORKER_CNT);
   PrevWorkItem := nil;
   IsExt := False;
 
   i := FDwarf.CompilationUnitsCount;
   while i > 0 do begin
     j := 0;
+    SetLength(CUList, PER_WORKER_CNT);
     while (j < PER_WORKER_CNT) and (i > 0) do begin
       dec(i);
       CU := FDwarf.CompilationUnits[i];
 
-    if (CU = SkipCompUnit) or
-       (not CU.KnownNameHashes^[ANameInfo.NameHash and KnownNameHashesBitMask])
-    then
-      continue;
+      if (CU = SkipCompUnit) or
+         (not CU.KnownNameHashes^[ANameInfo.NameHash and KnownNameHashesBitMask])
+      then
+        continue;
 
       CUList[j] := CU;
       inc(j);
@@ -1398,35 +1398,37 @@ begin
     else
       WorkItem := nil;
 
-    if (PrevWorkItem <> nil) and (not PrevWorkItem.IsDone) then begin
-      if WorkItem <> nil then begin
-        WorkItem.Execute;
-        if (WorkItem.FFoundInfoEntry = nil) and (not PrevWorkItem.IsDone) then begin
-          WorkItem.DecRef;
-          continue;
+    if PrevWorkItem <> nil then begin
+      if (not PrevWorkItem.IsDone) then begin
+        if WorkItem <> nil then begin
+          WorkItem.Execute;
+          if (WorkItem.FFoundInfoEntry = nil) and (not PrevWorkItem.IsDone) then begin
+            WorkItem.DecRef;
+            continue;
+          end;
         end;
+        Dwarf.WorkQueue.WaitForItem(PrevWorkItem); // must check result from Prev first, to keep a stable search order
       end;
-      Dwarf.WorkQueue.WaitForItem(PrevWorkItem); // must check result from Prev first, to keep a stable search order
-    end;
 
-    while PrevWorkItem <> nil do begin
-      assert(PrevWorkItem.IsDone, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: PrevWorkItem.IsDone');
-      ReadBarrier;
-      if PrevWorkItem.FFoundInfoEntry <> nil then begin
-        FoundInfoEntry.ReleaseReference;
-        FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
-        FoundInfoEntry.AddReference;
-        IsExt := PrevWorkItem.FIsExt;
-      end;
-      PrevWorkItem.DecRef;
-      PrevWorkItem := nil;
-      if IsExt then begin
-        WorkItem.DecRef;
-        break;
-      end;
-      if (WorkItem <> nil) and WorkItem.IsDone then begin
-        PrevWorkItem := WorkItem;
-        WorkItem := nil;
+      while PrevWorkItem <> nil do begin
+        assert(PrevWorkItem.IsDone, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: PrevWorkItem.IsDone');
+        ReadBarrier;
+        if PrevWorkItem.FFoundInfoEntry <> nil then begin
+          FoundInfoEntry.ReleaseReference;
+          FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
+          FoundInfoEntry.AddReference;
+          IsExt := PrevWorkItem.FIsExt;
+        end;
+        PrevWorkItem.DecRef;
+        PrevWorkItem := nil;
+        if IsExt then begin
+          WorkItem.DecRef;
+          break;
+        end;
+        if (WorkItem <> nil) and WorkItem.IsDone then begin
+          PrevWorkItem := WorkItem;
+          WorkItem := nil;
+        end;
       end;
     end;
 
