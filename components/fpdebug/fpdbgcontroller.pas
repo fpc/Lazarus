@@ -95,7 +95,7 @@ type
 
     procedure InitStackFrameInfo; inline;
 
-    procedure CallProcessContinue(ASingleStep: boolean);
+    procedure CallProcessContinue(ASingleStep: boolean; ASkipCheckNextInstr: Boolean = False);
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
   public
     destructor Destroy; override;
@@ -761,9 +761,10 @@ begin
   FStackFrameInfo := FThread.GetCurrentStackFrameInfo;
 end;
 
-procedure TDbgControllerHiddenBreakStepBaseCmd.CallProcessContinue(ASingleStep: boolean);
+procedure TDbgControllerHiddenBreakStepBaseCmd.CallProcessContinue(
+  ASingleStep: boolean; ASkipCheckNextInstr: Boolean);
 begin
-  if (FStackFrameInfo <> nil) then
+  if (FStackFrameInfo <> nil) and (not ASkipCheckNextInstr) then
     FStackFrameInfo.CheckNextInstruction(NextInstruction, ASingleStep);
 
   FProcess.Continue(FProcess, FThread, ASingleStep);
@@ -939,7 +940,7 @@ begin
 
   if (FState <> siRunningStepOut) then
     StoreWasAtJumpInstruction;
-  CallProcessContinue(FState <> siRunningStepOut);
+  CallProcessContinue(FState <> siRunningStepOut, FState = siSteppingNested);
 end;
 
 constructor TDbgControllerStepIntoLineCmd.Create(AController: TDbgController);
