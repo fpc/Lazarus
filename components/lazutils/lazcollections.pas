@@ -286,6 +286,10 @@ begin
       end;
     if FShutDown then
       begin
+      RTLeventResetEvent(FHasRoomEvent);
+      RTLeventResetEvent(FHasItemEvent);
+      RTLeventSetEvent(FHasRoomEvent);
+      RTLeventSetEvent(FHasItemEvent);
       result := wrAbandoned;
       exit;
       end;
@@ -332,6 +336,10 @@ begin
       end;
     if FShutDown then
       begin
+      RTLeventResetEvent(FHasRoomEvent);
+      RTLeventResetEvent(FHasItemEvent);
+      RTLeventSetEvent(FHasRoomEvent);
+      RTLeventSetEvent(FHasItemEvent);
       result := wrAbandoned;
       exit;
       end;
@@ -344,7 +352,7 @@ procedure TLazThreadedQueue.DoShutDown;
 begin
   FShutDown:=true;
   RTLeventSetEvent(FHasRoomEvent);
-  RTLeventResetEvent(FHasItemEvent);
+  RTLeventSetEvent(FHasItemEvent);
 end;
 
 initialization
