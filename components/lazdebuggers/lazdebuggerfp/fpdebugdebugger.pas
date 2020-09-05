@@ -384,7 +384,7 @@ type
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
-    function GetLocationRec(AnAddress: TDBGPtr=0): TDBGLocationRec;
+    function GetLocationRec(AnAddress: TDBGPtr=0; AnAddrOffset: Integer = 0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
@@ -2904,7 +2904,7 @@ begin
     SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
   then
     ExceptIP := 0;
-  AnExceptionLocation:=GetLocationRec(ExceptIP);
+  AnExceptionLocation:=GetLocationRec(ExceptIP, -1);
 
   if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
     SizeVal(SizeOf(AnExceptionObjectLocation)), AnExceptionObjectLocation, FDbgController.DefaultContext)
@@ -2948,7 +2948,7 @@ begin
     SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
   then
     ExceptIP := 0;
-  ExceptionLocation:=GetLocationRec(ExceptIP);
+  ExceptionLocation:=GetLocationRec(ExceptIP, -1);
 
   if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
     SizeVal(SizeOf(LongInt)), ErrNo, FDbgController.DefaultContext)
@@ -3838,7 +3838,8 @@ begin
   inherited Destroy;
 end;
 
-function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr): TDBGLocationRec;
+function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;
+  AnAddrOffset: Integer): TDBGLocationRec;
 var
   sym, symproc: TFpSymbol;
 begin
@@ -3854,7 +3855,9 @@ begin
     else
       result.Address := AnAddress;
 
-    sym := FDbgController.CurrentProcess.FindProcSymbol(result.Address);
+    {$PUSH}{$R-}{$Q-}
+    sym := FDbgController.CurrentProcess.FindProcSymbol(result.Address + AnAddrOffset);
+    {$POP}
     if sym = nil then
       Exit;
 
