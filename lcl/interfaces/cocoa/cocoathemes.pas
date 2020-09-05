@@ -162,7 +162,7 @@ begin
     Result := false;
     Exit;
   end;
-  if (not NSApplication(win).respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
+  if (not win.respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
     Result := false;
     Exit;
   end;

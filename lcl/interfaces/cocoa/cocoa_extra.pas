@@ -197,6 +197,7 @@ type
     {$endif}
     // 10.14
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
+    function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
   NSTableColumnFix = objccategory external (NSTableColumn)

@@ -308,7 +308,7 @@ procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: 
 var
   undoManager: NSUndoManager;
   ch : System.WideChar;
-  msk : NSEventModifierFlags;
+  msk : LongWord; //NSEventModifierFlags;
   chr : NSString;
 const
   NSModsMask = NSShiftKeyMask
