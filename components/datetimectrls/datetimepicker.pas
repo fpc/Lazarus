@@ -119,8 +119,17 @@ type
     dtaDefault means it is determined by BiDiMode }
   TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
 
-  TDateTimePickerOption = (dtpoDoChangeOnSetDateTime, dtpoEnabledIfUnchecked,
-                           dtpoAutoCheck, dtpoFlatButton, dtpoResetSelection);
+  TDateTimePickerOption = (
+    dtpoDoChangeOnSetDateTime, // The OnChange handler will be called also when
+                               // date/time is programatically changed.
+    dtpoEnabledIfUnchecked, // Enable the date time picker if the checkbox is unchecked.
+    dtpoAutoCheck, // Auto-check an unchecked checkbox when DateTime is changed
+                   // (makes sense only if dtpoEnabledIfUnchecked is set).
+    dtpoFlatButton, // Use flat button for calender picker.
+    dtpoResetSelection // When the control receives focus, the selection is always
+       // in the first part (the control does not remember which part was previously selected).
+    );
+
   TDateTimePickerOptions = set of TDateTimePickerOption;
 
   { TCustomDateTimePicker }
@@ -3868,7 +3877,9 @@ begin
   FCenturyFrom := 1941;
   FRecalculatingTextSizesNeeded := True;
   FOnChange := nil;
+  FOnChangeHandlers := nil;
   FOnCheckBoxChange := nil;
+  FOnCheckBoxChangeHandlers := nil;
   FSeparatorWidth := 0;
   FSepNoSpaceWidth := 0;
   FDigitWidth := 0;
