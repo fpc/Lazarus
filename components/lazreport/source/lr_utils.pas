@@ -83,7 +83,7 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 
 implementation
 
-uses LR_Class, LR_Const, LR_Pars, LazUtilsStrConsts, LR_DSet, LR_DBComponent;
+uses LR_Class, LR_Const, LR_Pars, LazUtilsStrConsts, LR_DSet, LR_DBSet, LR_DBComponent;
 
 var
   PreviousFormatSettings: TFormatSettings;
@@ -346,6 +346,7 @@ var
   Component: TComponent;
   F:TfrObject;
   S1, S2:string;
+  DSet: TDataSet;
 begin
   Result := nil;
   if ComplexName = '' then exit;
@@ -368,6 +369,15 @@ begin
     else
     begin
       F:=CurReport.FindObject(ComplexName);
+      if (F=nil) and (CurReport.Dataset is TfrDBDataSet) then
+      begin
+        DSet := TfrDBDataSet(CurReport.Dataset).DataSet;
+        if (DSet=nil) and (TfrDBDataSet(CurReport.Dataset).DataSource<>nil) then
+          DSet := TfrDBDataSet(CurReport.Dataset).DataSource.DataSet;
+         if (DSet<>nil) and SameText(ComplexName, DSet.Name) then
+          Component := DSet;
+      end
+      else
       if F is TLRDataSetControl then
         Component:=TLRDataSetControl(F).DataSet;
     end;
