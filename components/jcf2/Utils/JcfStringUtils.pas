@@ -34,7 +34,7 @@ For use when the JCL string functions are not avaialable
 interface
 
 uses
-  SysUtils, Classes;
+  SysUtils, Classes, StrUtils;
 
 const
   NativeNull           = Char(#0);
@@ -91,12 +91,7 @@ const
   NativeDoubleQuote = Char('"');
   NativeSingleQuote = Char('''');
 
-
-{$IFNDEF DELPHI12}
-{$IFNDEF DELPHI14}
 function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
-{$ENDIF}
-{$ENDIF}
 function CharIsAlpha(const C: Char): Boolean;
 function CharIsAlphaNum(const C: Char): Boolean;
 function CharIsWordChar(const c: Char): Boolean;
@@ -154,30 +149,24 @@ function PathExtractFileNameNoExt(const Path: string): string;
 function PadNumber(const pi: integer): string;
 function StrHasAlpha(const str: String): boolean;
 
+//offset in bytes of first char of the lines. 1 based.
+procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
+                      out aLineStartOffset: integer; out aLineEndOffset:integer);
+function SkipLeftSpaces(const aStr: string; aPos: integer): integer;
+function SkipToNextLine(const aStr: string; aPos: integer): integer;
+function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
+
 type
   EJcfConversionError = class(Exception)
   end;
 
 implementation
 
-uses
-{$ifdef MSWINDOWS}
-  //Windows, ShellApi
-{$endif}
-{$ifdef Unix}
-  //Unix
-{$endif}
-  LCLIntf, fileutil;
-
-{$IFNDEF DELPHI12}
-{$IFNDEF DELPHI14}
-// define  CharInSet for Delphi 2007 or earlier
+// define CharInSet
 function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
 begin
   Result := C in testSet;
 end;
-{$ENDIF}
-{$ENDIF}
 
 function CharIsAlpha(const C: Char): Boolean;
 begin
@@ -601,6 +590,98 @@ begin
       break;
     end;
   end;
+end;
+
+//offset in bytes of first char of the lines. 1 based.
+procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
+                      out aLineStartOffset: integer; out aLineEndOffset:integer);
+var
+  lineCount:integer;
+  len:integer;
+  pC:PChar;
+  offset:integer;
+begin
+  len:=length(aStr);
+  pC:=@aStr[1];
+  lineCount:=1;
+  offset:=1;
+  aLineStartOffset:=0;
+  aLineEndOffset:=0;
+  if len<1 then
+    exit;
+  if aLineStart=1 then
+    aLineStartOffset:=offset;
+  if (aLineEnd=1) then
+    aLineEndOffset:=offset;
+  while (offset<=len) and (lineCount<=aLineEnd) do
+  begin
+    while (offset<=len) and (pC^<>#10) do
+    begin
+      inc(offset);
+      inc(pC);
+    end;
+    if (pC^=#10) and (offset<len) then
+    begin
+      inc(pC);
+      inc(offset);
+      inc(lineCount);
+      if lineCount=aLineStart then
+        aLineStartOffset:=offset;
+      if lineCount=aLineEnd then
+      begin
+        aLineEndOffset:=offset;
+        exit;
+      end;
+    end
+    else
+      exit;
+  end;
+end;
+
+function SkipLeftSpaces(const aStr: string; aPos: integer): integer;
+begin
+  while (aPos > 1) do
+  begin
+    Dec(aPos);
+    if not (aStr[aPos] in [' ',#9]) then
+      break;
+  end;
+  Result := aPos;
+end;
+
+function SkipToNextLine(const aStr: string; aPos: integer): integer;
+begin
+  while (aPos > 1) and (aPos < Length(aStr)) do
+  begin
+    Inc(aPos);
+    if aStr[aPos] = #10 then
+    begin
+      Inc(aPos);
+      break;
+    end;
+  end;
+  Result := aPos;
+end;
+
+function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
+var
+  index, stringStart: integer;
+begin
+  index := 1;
+  while (index > 0) and (index < length(aSourceCode)) do
+  begin
+    stringStart := PosEx(aStr, aSourceCode, index);
+    if (stringStart > 0) then
+    begin
+      index := SkipLeftSpaces(aSourceCode, stringStart);
+      if (index > 0) and ((index = 1) or (aSourceCode[index] in [#10, #13])) then
+        exit(True);
+      index := stringStart + length(aStr);
+    end
+    else
+      break;
+  end;
+  Result := False;
 end;
 
 {------------------------------------------------------

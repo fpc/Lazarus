@@ -66,8 +66,6 @@ type
     procedure ClearToolMessages;
     procedure ConvertEditor(const pciEditor: TSourceEditorInterface);
     function CanFormat(const AMsg: String): Boolean;
-
-  protected
   public
     constructor Create;
     destructor Destroy; override;
@@ -229,52 +227,6 @@ begin
   LazarusIDE.DoOpenIDEOptions(TfFiles);
 end;
 
-//offset in bytes of first char of the lines. 1 based.
-procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
-                      out aLineStartOffset: integer; out aLineEndOffset:integer);
-var
-  lineCount:integer;
-  len:integer;
-  pC:PChar;
-  offset:integer;
-begin
-  len:=length(aStr);
-  pC:=@aStr[1];
-  lineCount:=1;
-  offset:=1;
-  aLineStartOffset:=0;
-  aLineEndOffset:=0;
-  if len<1 then
-    exit;
-  if aLineStart=1 then
-    aLineStartOffset:=offset;
-  if (aLineEnd=1) then
-    aLineEndOffset:=offset;
-  while (offset<=len) and (lineCount<=aLineEnd) do
-  begin
-    while (offset<=len) and (pC^<>#10) do
-    begin
-      inc(offset);
-      inc(pC);
-    end;
-    if (pC^=#10) and (offset<len) then
-    begin
-      inc(pC);
-      inc(offset);
-      inc(lineCount);
-      if lineCount=aLineStart then
-        aLineStartOffset:=offset;
-      if lineCount=aLineEnd then
-      begin
-        aLineEndOffset:=offset;
-        exit;
-      end;
-    end
-    else
-      exit;
-  end;
-end;
-
 procedure TJcfIdeMain.DoFormatSelection(Sender: TObject);
 var
   srcEditor: TSourceEditorInterface;
@@ -314,7 +266,7 @@ begin
   try
     fcConverter.OnStatusMessage := LogIDEMessage;
     fcConverter.InputCode := sourceCode;
-    fcConverter.GuiMessages := true;
+    fcConverter.GuiMessages := false; //true;
     FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
     fcConverter.ConvertPart(lineStartOffset, lineEndOffset, True);
     if not fcConverter.ConvertError then
@@ -324,6 +276,22 @@ begin
         Dec(wI);
       outputstr := Copy(fcConverter.OutputCode, 1, wI);
       srcEditor.ReplaceLines(BlockBegin.Y, BlockEnd.Y, outputstr, false);
+    end
+    else
+    begin    //try formating wrapping selected code in fake unit.
+      ClearToolMessages;
+      BlockBegin := srcEditor.BlockBegin;
+      BlockBegin.X := 1;     // full lines.
+      BlockEnd := srcEditor.BlockEnd;
+      if BlockEnd.X > 1 then
+        BlockEnd.Y := BlockEnd.Y + 1;
+      BlockEnd.X := 1;
+      srcEditor.SelectText(BlockBegin, BlockEnd); //extend selection to full lines.
+      fcConverter.InputCode := srcEditor.GetText(True);  // only selected text.
+      fcConverter.GuiMessages := true;
+      fcConverter.ConvertUsingFakeUnit;
+      if not fcConverter.ConvertError then
+        srcEditor.ReplaceText(BlockBegin, BlockEnd, fcConverter.OutputCode);
     end;
   finally
     fcConverter.Free;

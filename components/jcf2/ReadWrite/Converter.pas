@@ -92,6 +92,7 @@ type
     procedure Convert;
     procedure ConvertPart(const piStartIndex, piEndIndex: Integer;
                           aOnlyOutputSelection: boolean=false);
+    procedure ConvertUsingFakeUnit;
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
 
@@ -323,8 +324,7 @@ var
   leParseError:  TEParseError;
   leMessageType: TStatusMessageType;
 begin
-  lsMessage := 'Exception ' + pe.ClassName +
-    '  ' + pe.Message;
+  lsMessage := 'Exception ' + pe.ClassName + '  ' + pe.Message;
 
   if pe is TEParseError then
   begin
@@ -407,6 +407,102 @@ begin
     lsNewOutput := lsNewOutput + StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
   end;
   fsOutputCode := lsNewOutput;
+end;
+
+{ position on we insert selected CODE depending if the CODE contains interface
+  and/or implementation
+
+hasIterface     F      F      T      T
+hasImplemen.    F      T      F      T
+-----------------------------------------
+              +unit  +unit  +unit  +unit
+              +intf  +intf  CODE   CODE
+              +impl  CODE   +impl  +end.
+              CODE   +end.  +end.
+              +end.
+}
+
+// convert only formats complete units
+// so we wrap the selected code in a fake unit.
+// Only works if the inputCode include the full procedure,function,class or record declaration.
+// Needed for formating include files or part of a file with tokens not supported by
+// the jedi code format parser.
+// {$I %DATE%} for example.
+procedure TConverter.ConvertUsingFakeUnit;
+const
+  END_MARK_INTERFACE = 'tfaketjcf_intfc_end_mark;';        //<lower case required
+  END_MARK_IMPLEMENTATION = 'tfaketjcf_implm_end_mark;'; //<lower case required
+  FAKE_UNIT_NAME = 'fakeunitjcf;'; //<lower case required
+var
+  sourceCode: string;
+  sourceCodeLowerCase: string;
+  lcStartIndex, lcEndIndex: integer;
+  hasInterface, hasImplementation: boolean;
+
+  procedure AddFakeUnit;
+  begin
+    sourceCode := sourceCode + 'unit ' + FAKE_UNIT_NAME + #10;
+  end;
+
+  procedure AddFakeInterface;
+  begin
+    sourceCode := sourceCode + 'interface' + #10;
+    sourceCode := sourceCode + 'type' + #10;        // if there is only a class selected this is required
+    sourceCode := sourceCode + 'faketjcfifc=' + END_MARK_INTERFACE + #10;
+  end;
+
+  procedure AddFakeImplementation;
+  begin
+    sourceCode := sourceCode + 'implementation' + #10;
+    sourceCode := sourceCode + 'type' + #10;
+    sourceCode := sourceCode + 'faketjcfimpl=' + END_MARK_IMPLEMENTATION + #10;
+  end;
+
+  procedure AddFakeEnd;
+  begin
+    sourceCode := sourceCode + #10 + 'end.' + #10;
+  end;
+
+begin
+  //WRAPPING the inputCode in a fake unit
+  sourceCodeLowerCase := LowerCase(fsInputCode);
+  hasInterface := HasStringAtLineStart(sourceCodeLowerCase, 'interface');
+  hasImplementation := HasStringAtLineStart(sourceCodeLowerCase, 'implementation');
+  sourceCode := '';
+  AddFakeUnit;
+  if hasInterface = False then
+  begin
+    AddFakeInterface;
+    if hasImplementation = False then
+      AddFakeImplementation;
+  end;
+  sourceCode := sourceCode + fsInputCode;
+  if (hasInterface = True) and (hasImplementation = False) then
+    AddFakeImplementation;
+  AddFakeEnd;
+  fsInputCode:=sourceCode;
+  Convert;
+  if ConvertError = False then
+  begin
+    sourceCodeLowerCase := LowerCase(OutputCode);
+    //DELETE FAKE lines from output
+    if hasInterface then
+      lcStartIndex := Pos(FAKE_UNIT_NAME, sourceCodeLowerCase) + length(FAKE_UNIT_NAME)
+    else
+    begin
+      if hasImplementation then
+        lcStartIndex := Pos(END_MARK_INTERFACE, sourceCodeLowerCase) + length(END_MARK_INTERFACE)
+      else
+        lcStartIndex := Pos(END_MARK_IMPLEMENTATION, sourceCodeLowerCase) + length(END_MARK_IMPLEMENTATION);
+    end;
+    lcStartIndex := SkipToNextLine(sourceCodeLowerCase, lcStartIndex);
+    if hasInterface and not hasImplementation then
+      lcEndIndex := RPos('implementation', sourceCodeLowerCase)
+    else
+      lcEndIndex := RPos('end', sourceCodeLowerCase);
+    lcEndIndex := SkipLeftSpaces(sourceCodeLowerCase, lcEndIndex);
+    fsOutputCode:=Copy(OutputCode, lcStartIndex, lcEndIndex - lcStartIndex);
+  end;
 end;
 
 end.
