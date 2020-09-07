@@ -370,6 +370,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure SetFontToStr(dst: NSMutableAttributedString);
     procedure SetText(UTF8Text: PChar; ByteSize: Integer);
     function GetSize: TSize;
     function GetGlyphs: TGlyphArray;
@@ -1280,6 +1281,11 @@ end;
 { TCocoaTextLayout }
 
 procedure TCocoaTextLayout.UpdateFont;
+begin
+  SetFontToStr(FTextStorage);
+end;
+
+procedure TCocoaTextLayout.SetFontToStr(dst: NSMutableAttributedString);
 const
   UnderlineStyle = NSUnderlineStyleSingle or NSUnderlinePatternSolid;
 var
@@ -1287,20 +1293,21 @@ var
 begin
   if Assigned(FFont) then
   begin
-    Range := GetTextRange;
+    Range.location := 0;
+    Range.length := dst.string_.length;
     if (Range.length <= 0) or (FFont.Font = nil) then Exit;
     // apply font itself
-    FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont.Font, Range);
+    dst.addAttribute_value_range(NSFontAttributeName, FFont.Font, Range);
     // aply font attributes which are not in NSFont
     if cfs_Underline in FFont.Style then
-      FTextStorage.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
-     else
-     FTextStorage.removeAttribute_range(NSUnderlineStyleAttributeName, Range);
+      dst.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+    else
+      dst.removeAttribute_range(NSUnderlineStyleAttributeName, Range);
 
     if cfs_Strikeout in FFont.Style then
-      FTextStorage.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+      dst.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
     else
-      FTextStorage.removeAttribute_range(NSStrikethroughStyleAttributeName, Range);
+      dst.removeAttribute_range(NSStrikethroughStyleAttributeName, Range);
   end;
 end;
 
@@ -2388,10 +2395,32 @@ end;
   Computes the width and height of the specified string of text
  ------------------------------------------------------------------------------}
 function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
+var
+  s : NSString;
+  M : NSMutableAttributedString;
+  r : NSRect;
 begin
-  FText.SetText(AStr, ACount);
+  {FText.SetText(AStr, ACount);
   Size := FText.GetSize;
-  Result := True;
+  Result := True;}
+  S := NSString( CFStringCreateWithBytesNoCopy(nil, AStr, ACount, kCFStringEncodingUTF8,
+    false,
+    kCFAllocatorNull));
+  Result := Assigned(S);
+  if not Result then Exit;
+
+  M := NSMutableAttributedString.alloc.initWithString(S);
+  Result := Assigned(M);
+  if Result then
+  begin
+    FText.SetFontToStr(M);
+    r := M.boundingRectWithSize_options(NSMakeSize(MaxInt, MaxInt), 0);
+
+    Size.cx := Round(r.size.width);
+    Size.cy := Round(r.Size.height);
+    M.release;
+  end;
+  CFRelease(S);
 end;
 
 {------------------------------------------------------------------------------
