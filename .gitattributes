@@ -2279,8 +2279,6 @@ components/jcf2/Contributions/StyleEditor/JCFStyle.bdsproj svneol=native#text/pl
 components/jcf2/Contributions/StyleEditor/JCFStyle.cfg svneol=native#text/plain
 components/jcf2/Contributions/StyleEditor/JCFStyle.res -text
 components/jcf2/Contributions/StyleEditor/Readme.txt svneol=native#text/plain
-components/jcf2/IdePlugin/JcfIdeMain.pas svneol=native#text/pascal
-components/jcf2/IdePlugin/JcfIdeRegister.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/Makefile svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/Makefile.compiled svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/Makefile.fpc svneol=native#text/plain
