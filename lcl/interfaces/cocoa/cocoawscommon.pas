@@ -1787,7 +1787,7 @@ begin
   if Obj.respondsToSelector(ObjCSelector('setTextColor:')) then
   begin
     if AFont.Color = clDefault then
-      Obj.setTextColor(nil)
+      Obj.setTextColor(NSColor.controlTextColor)
     else
       Obj.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
   end;
