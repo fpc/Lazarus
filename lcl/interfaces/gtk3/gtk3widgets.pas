@@ -671,6 +671,7 @@ type
     procedure SetMargin(AValue: Integer);
     procedure SetSpacing(AValue: Integer);
   protected
+    procedure ButtonClicked(pData:pointer);cdecl;
     procedure SetImage(AImage:TBitmap);
     function getText: String; override;
     procedure setText(const AValue: String); override;
@@ -2072,7 +2073,9 @@ begin
 
   if AKeyPress and (ACharCode = VK_TAB) then
   begin
-
+    if Sender^.is_focus then
+    Self.LCLObject.SelectNext(Self.LCLObject,true,true);
+    exit;
   end;
 
   IsArrowKey := ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
@@ -6515,6 +6518,12 @@ begin
   end;
 end;
 
+procedure TGtk3Button.ButtonClicked(pData: pointer); cdecl;
+begin
+  if TObject(pdata) is TButton then
+  TButton(pdata).Click;
+end;
+
 procedure TGtk3Button.SetImage(AImage: TBitmap);
 begin
   if Assigned(fImage) then
@@ -6545,6 +6554,9 @@ begin
   Result := PGtkWidget(TGtkButton.new);
 
   btn^.set_use_underline(true);
+
+  g_signal_connect_data(btn,'clicked',
+        TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, 0);
 
   FMargin := -1;
   FLayout := GTK_POS_LEFT;
