@@ -192,7 +192,7 @@ procedure Register;
 implementation
 
 uses
-  Graphics, Math, LCLIntf, LCLType, SysUtils, Themes,
+  Graphics, Math, LCLIntf, LCLType, SysUtils, Themes, IntegerList,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
 type
@@ -560,27 +560,21 @@ begin
 end;
 
 procedure TChartListbox.Populate;
-{ populates the listbox with all series contained in the chart. Use the event
+{ Populates the listbox with all series contained in the chart. Use the event
   OnPopulate if you don't omit special series from the listbox (RemoveSeries) }
 var
   li: TLegendItem;
-  list: TFPList;
-  ser: TCustomChartSeries;
+  list: TIntegerList;
   i, idx: Integer;
 begin
   Items.BeginUpdate;
-  list := TFPList.Create;
+  list := TIntegerList.Create;
   try
     // In case of multiselect, the selected items would get lost here.
     // Store series belonging to selected items in temporary list
     for i:=0 to Items.Count-1 do
-      if Selected[i] then begin
-        li := TLegendItem(Items.Objects[i]);
-        if (li <> nil) and (li.Owner is TCustomChartSeries) then begin
-          ser := TCustomChartSeries(li.Owner);
-          list.Add(ser);
-        end;
-      end;
+      if Selected[i] then
+        list.Add(i);
 
     Items.Clear;
     if (FChart = nil) or (FChart.Series = nil) then exit;
@@ -591,10 +585,8 @@ begin
       // The caption is owner-drawn, but add it anyway for user convenience.
       idx := Items.AddObject(li.Text, li);
       // Restore selected state from temporary list
-      if (li.Owner is TCustomChartSeries) then begin
-        ser := TCustomChartSeries(li.Owner);
-        if list.IndexOf(ser) <> -1 then Selected[idx] := true;
-      end;
+      if (li.Owner is TCustomChartSeries) and (list.IndexOf(idx) <> -1) then
+        Selected[idx] := true;
     end;
     if Assigned(OnPopulate) then
       OnPopulate(Self);
