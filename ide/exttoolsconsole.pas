@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazLogger,
+  LazLogger, LazUtilities,
   // IDEIntf
   IDEExternToolIntf,
   // IDE
@@ -235,7 +235,8 @@ end;
 procedure TExternalToolsConsole.HandleMesages;
 begin
   if IsMultiThread then begin
-    DebugLn('TExternalToolsConsole.HandleMesages: Calling CheckSynchronize!');
+    if ConsoleVerbosity>0 then
+      DebugLn('TExternalToolsConsole.HandleMesages: Calling CheckSynchronize!');
     CheckSynchronize;
   end;
 end;
