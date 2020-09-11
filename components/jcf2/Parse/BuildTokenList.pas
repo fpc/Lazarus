@@ -38,6 +38,8 @@ unit BuildTokenList;
 interface
 
 uses
+  SysUtils, StrUtils,
+  Forms,
   { local }
   Tokens, SourceToken, SourceTokenList;
 
@@ -107,7 +109,6 @@ type
 implementation
 
 uses
-  Forms, SysUtils,
   { local }
   JcfStringUtils, JcfSystemUtils,
   JcfRegistrySettings;
@@ -268,8 +269,8 @@ end;
 
 function TBuildTokenList.TryCurlyComment(const pcToken: TSourceToken): boolean;
 var
-  liCommentLength: integer;
-  lNestedDepth: integer;
+  liCommentLength, lNestedDepth: integer;
+
   procedure MoveToCommentEnd;
   var
     lForwardChar: char;
@@ -282,7 +283,7 @@ var
       lForwardChar:=ForwardChar(liCommentLength);
       if CheckMultiByte(lForwardChar) then
       begin
-        liCommentLength := liCommentLength + 2;
+        Inc(liCommentLength, 2);
         continue;
       end;
       Inc(liCommentLength);
@@ -296,6 +297,8 @@ var
     end;
   end;
 
+var
+  lLen, lPos: integer;
 begin
   Result := False;
   if Current <> '{' then
@@ -313,9 +316,29 @@ begin
     pcToken.CommentStyle := eCurlyBrace;
 
   MoveToCommentEnd;
-
   pcToken.SourceCode := CurrentChars(liCommentLength);
   Consume(liCommentLength);
+
+  if pcToken.CommentStyle=eCompilerDirective then  // {$I %XXX%} {$include %XXX%}
+  begin
+    lPos:=0;
+    lLen:=length(pcToken.SourceCode);
+    if StartsText('{$include',pcToken.SourceCode)=true then
+      lPos:=10
+    else if StartsStr('{$I',pcToken.SourceCode)=true then
+      lPos:=4;
+    if (lPos>0) and (lPos<lLen) and (CharIsWhiteSpace(pcToken.SourceCode[lPos])) then
+    begin
+      while (lPos<=lLen) and CharIsWhiteSpace(pcToken.SourceCode[lPos]) do
+        Inc(lPos);
+      if (lPos<lLen) and (pcToken.SourceCode[lPos]='%') then
+      begin
+        pcToken.CommentStyle := eNotAComment;
+        pcToken.WordType:=wtIdentifier;
+        pcToken.TokenType:=ttIdentifier;
+      end;
+    end;
+  end;
 
   Result := True;
 end;
