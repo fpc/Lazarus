@@ -1121,8 +1121,6 @@ begin
           {$ENDIF}
           SizeMsg.SizeType := SIZE_MINIMIZED;
         end
-        else if (GDK_WINDOW_STATE_FULLSCREEN and state^.new_window_state)>0 then
-          SizeMsg.SizeType := SIZE_FULLSCREEN
         else if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
         begin
           // it can be both maximized + iconified and just loose iconified state

@@ -720,17 +720,14 @@ begin
         Activate;
     end;
   end;
-  if not (FIsFirstOnShow or FIsFirstOnActivate) then
-  begin
-    { delayed onResize() }
-    if FDelayedOnResize then
-      inherited DoOnResize;
-    { delayed onChangeBounds() }
-    if FDelayedOnResize or FDelayedOnChangeBounds then
-      inherited DoOnChangeBounds;
-    FDelayedOnChangeBounds := False;
-    FDelayedOnResize := False;
-  end;
+  { delayed onResize() }
+  if FDelayedOnResize then
+    inherited DoOnResize;
+  { delayed onChangeBounds() }
+  if FDelayedOnResize or FDelayedOnChangeBounds then
+    inherited DoOnChangeBounds;
+  FDelayedOnChangeBounds := False;
+  FDelayedOnResize := False;
 end;
 
 procedure TCustomForm.WMWindowPosChanged(var Message: TLMWindowPosChanged);
@@ -1004,7 +1001,6 @@ begin
   if FIsFirstOnShow and (WindowState in [wsMaximized, wsFullScreen]) then
     Exit;
   FIsFirstOnShow := False;
-  FIsFirstRestore := WindowState in [wsMaximized, wsFullScreen];
   if Assigned(FOnShow) then FOnShow(Self);
 end;
 
@@ -1143,15 +1139,17 @@ begin
   if Showing and not (csDesigning in ComponentState) then
   begin
     OldState := FWindowState;
+    FWindowState := State;
     if OldState <> State then
     begin
-      WindowState := State;
       if (State = wsMinimized) and (Application.MainForm = Self) and
          (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
         Application.Minimize;
       if (OldState = wsMinimized) and (Application.MainForm = Self) and
          (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
         Application.Restore;
+      if Assigned(OnWindowStateChange) then
+        OnWindowStateChange(Self);
     end;
   end;
 end;
@@ -1832,19 +1830,7 @@ begin
     FWindowState := Value;
     //DebugLn(['TCustomForm.SetWindowState ',DbgSName(Self),' ',ord(FWindowState),' csDesigning=',csDesigning in ComponentState,' Showing=',Showing]);
     if (not (csDesigning in ComponentState)) and Showing then
-    begin
       ShowWindow(Handle, ShowCommands[Value]);
-      if not (FIsFirstOnShow or FIsFirstOnActivate) then
-      begin
-        if FIsFirstRestore then
-        begin
-          MoveToDefaultPosition;
-          FIsFirstRestore := False;
-        end;
-        if Assigned(OnWindowStateChange) then
-          OnWindowStateChange(Self);
-      end;
-    end;
   end;
 end;
 
@@ -2044,7 +2030,6 @@ begin
   FDelayedOnResize := False;
   FIsFirstOnShow := True;
   FIsFirstOnActivate := True;
-  FIsFirstRestore := False;
   GlobalNameSpace.BeginWrite;
   try
     CreateNew(AOwner, 1); // this calls BeginFormUpdate, which is ended in AfterConstruction
