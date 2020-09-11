@@ -4088,7 +4088,7 @@ begin
       Public ["name" "'" symname "'"]
   }
   result:=false;
-  if TopNode.HasParentNode([nClassBody, nObjectType]) then
+  if TopNode.HasParentNode([nClassBody, nObjectType, nRecordType]) then
     exit;
 
   Recognise(ttPublic);
