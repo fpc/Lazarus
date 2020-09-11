@@ -7492,6 +7492,7 @@ begin
   Clear;
   Objects.Free;
   RTObjects.Free;
+  ClearRecList;
   List.Free;
   fMargins.Free;
   if Assigned(frDesigner) and (frDesigner.Page = Self) then
