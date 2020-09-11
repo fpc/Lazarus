@@ -1046,6 +1046,9 @@ begin
   FreeAndNil(FColTotalCell);
   FreeAndNil(FGrandTotalCell);
 
+  FreeAndNil(FTotalCHCell);
+  FreeAndNil(FTotalRHCell);
+
   FreeAndNil(FCellFields);
   FreeAndNil(FColumnFields);
   FreeAndNil(FRowFields);
