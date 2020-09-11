@@ -323,10 +323,11 @@ begin
   begin
     lPos:=0;
     lLen:=length(pcToken.SourceCode);
-    if StartsText('{$include',pcToken.SourceCode)=true then
-      lPos:=10
-    else if StartsStr('{$I',pcToken.SourceCode)=true then
-      lPos:=4;
+    if AnsiStartsText('{$I', pcToken.SourceCode) then
+      if AnsiStartsText('{$INCLUDE', pcToken.SourceCode) then
+        lPos := 10
+      else
+        lPos := 4;
     if (lPos>0) and (lPos<lLen) and (CharIsWhiteSpace(pcToken.SourceCode[lPos])) then
     begin
       while (lPos<=lLen) and CharIsWhiteSpace(pcToken.SourceCode[lPos]) do
