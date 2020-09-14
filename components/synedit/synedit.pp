@@ -288,7 +288,11 @@ type
     eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
     eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
     eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
-    eoNoScrollOnSelectRange    // SelectALl, SelectParagraph, SelectToBrace will not scroll
+    eoNoScrollOnSelectRange,   // SelectALl, SelectParagraph, SelectToBrace will not scroll
+    eoAcceptDragDropEditing    // Accept dropping text dragged from a SynEdit (self or other).
+                               // OnDragOver: To use OnDragOver, this flag should NOT be set.
+                               // WARNING: Currently OnDragOver also works, if drag-source is NOT TSynEdit, this may be change for other drag sources.
+                               //          This may in future affect if OnDragOver is called at all or not.
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -356,7 +360,8 @@ const
 
   SYNEDIT_DEFAULT_OPTIONS2 = [
     eoFoldedCopyPaste,
-    eoOverwriteBlock
+    eoOverwriteBlock,
+    eoAcceptDragDropEditing
   ];
 
   SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
@@ -6419,23 +6424,25 @@ var
 begin
   inherited;
   LastMouseCaret:=Point(-1,-1);
-  Accept := False;
-  if (not ReadOnly) and (Source is TCustomSynEdit) and TCustomSynEdit(Source).SelAvail then
-  begin
-    FBlockSelection.IncPersistentLock;
-    try
-      //if State = dsDragLeave then //restore prev caret position
-      //  ComputeCaret(FMouseDownX, FMouseDownY)
-      //else //position caret under the mouse cursor
-      ComputeCaret(X, Y);
+  if (eoAcceptDragDropEditing in FOptions2) and (Source is TCustomSynEdit) then begin
+    Accept := False;
+    if (not ReadOnly) and TCustomSynEdit(Source).SelAvail then
+    begin
+      FBlockSelection.IncPersistentLock;
+      try
+        //if State = dsDragLeave then //restore prev caret position
+        //  ComputeCaret(FMouseDownX, FMouseDownY)
+        //else //position caret under the mouse cursor
+        ComputeCaret(X, Y);
 
-      Accept := CheckDragDropAccecpt(LogicalCaretXY, Source, DropMove);
-      if DropMove then
-        DragCursor := crDrag
-      else
-        DragCursor := crMultiDrag;
-    finally
-      FBlockSelection.DecPersistentLock;
+        Accept := CheckDragDropAccecpt(LogicalCaretXY, Source, DropMove);
+        if DropMove then
+          DragCursor := crDrag
+        else
+          DragCursor := crMultiDrag;
+      finally
+        FBlockSelection.DecPersistentLock;
+      end;
     end;
   end;
 end;
@@ -6451,8 +6458,8 @@ var
   BlockSel: TSynEditSelection;
   sm: TSynSelectionMode;
 begin
-  if not ReadOnly  and (Source is TCustomSynEdit)
-    and TCustomSynEdit(Source).SelAvail
+  if (eoAcceptDragDropEditing in FOptions2) and (not ReadOnly) and
+     (Source is TCustomSynEdit) and TCustomSynEdit(Source).SelAvail
   then begin
     IncPaintLock;
     try
