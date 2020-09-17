@@ -649,7 +649,7 @@ begin
           RPos^ := c; inc(RPos);
           RPos^ := SPos[1]; inc(RPos);
           RPos^ := SPos[2]; inc(RPos);
-          inc(SPos, 2);
+          inc(SPos, 3);
         end;
         #240..#247: begin
           if ((Byte(SPos[1]) and $C0) <> $80) or ((Byte(SPos[2]) and $C0) <> $80) or
@@ -660,7 +660,7 @@ begin
           RPos^ := SPos[1]; inc(RPos);
           RPos^ := SPos[2]; inc(RPos);
           RPos^ := SPos[3]; inc(RPos);
-          inc(SPos, 3);
+          inc(SPos, 4);
         end;
         #0: begin
           if (SPos < SEnd) then
@@ -677,7 +677,7 @@ begin
       end;
 
       c := SPos^;
-    until False;;
+    until False;
 
     if RPos = QPos then
       dec(RPos)
