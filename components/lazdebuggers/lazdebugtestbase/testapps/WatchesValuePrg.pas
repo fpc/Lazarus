@@ -320,6 +320,8 @@ var
   MyStringItemList: TMyStringItemListShort;
   MyStringList: TMyStringList;
 
+  U8Data1, U8Data2: Utf8String;
+
   {$if FPC_FULLVERSION >= 30000}
   dummy1: PFuncSelfRef;
   {$ENDIF}
@@ -466,6 +468,8 @@ begin // TEST_BREAKPOINT=FooConstRefBegin
 end;
 
 begin
+  U8Data1 := #$2267; //#$E2#$89#$A7;
+  U8Data2 := #$2267'X';
   // access constant that are not passed as function arg
   // so every constant is accessed, and they can not be optimized away
   InterfacedObject:= TInterfacedObject.create;

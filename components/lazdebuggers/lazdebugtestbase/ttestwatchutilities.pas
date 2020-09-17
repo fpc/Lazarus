@@ -32,6 +32,7 @@ type
      ehMatchTypeName,     // The typename is a regex
      ehNoTypeInfo,
 
+     ehNoCharQuoting,     // unprintable chars are already escaped/quoted
      ehCharFromIndex,     // Debugger is allowed Pchar: 'x' String 'y'
      ehNoFieldOrder,  // structure: fields can be in any order
      ehMissingFields, // structure: fields may have gaps
@@ -171,6 +172,7 @@ type
     function IgnTypeName(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function MatchTypeName(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
+    function NoCharQuoting(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function CharFromIndex(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
     function ExpectNotFound(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
@@ -993,6 +995,13 @@ begin
   Result := Self^.AddFlag(ehMatchTypeName, ASymTypes);
 end;
 
+function TWatchExpectationHelper.NoCharQuoting(ASymTypes: TSymbolTypes;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if not ACond then exit(Self);
+  Result := Self^.AddFlag(ehNoCharQuoting, ASymTypes);
+end;
+
 function TWatchExpectationHelper.CharFromIndex(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
 begin
   if not ACond then exit(Self);
@@ -1570,10 +1579,13 @@ begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
-
-    e := QuoteText(Expect.ExpTextData);
-
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+
+    if ehNoCharQuoting in ehf then
+      e := Expect.ExpTextData
+    else
+      e := QuoteText(Expect.ExpTextData);
+
     if ehCharFromIndex in ehf then begin
       if AContext.WatchVal.Value <> e then begin
 //AnIgnoreRsn := AnIgnoreRsn + 'char from index not implemented';
@@ -1633,7 +1645,10 @@ begin
       end;
     end;
 
-    e := QuoteText(Expect.ExpTextData);
+    if ehNoCharQuoting in ehf then
+      e := Expect.ExpTextData
+    else
+      e := QuoteText(Expect.ExpTextData);
     Result := TestEquals('Data', e, v, AContext, AnIgnoreRsn);
   end;
 end;
@@ -1643,11 +1658,16 @@ function TWatchExpectationList.CheckResultShortStr(
 var
   Expect: TWatchExpectationResult;
   e: String;
+  ehf: TWatchExpErrorHandlingFlags;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
-    e := QuoteText(Expect.ExpTextData);
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+    if ehNoCharQuoting in ehf then
+      e := Expect.ExpTextData
+    else
+      e := QuoteText(Expect.ExpTextData);
 
     Result := TestEquals('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
   end;

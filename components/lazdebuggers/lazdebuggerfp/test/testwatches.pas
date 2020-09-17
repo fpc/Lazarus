@@ -1131,6 +1131,17 @@ begin
 //t.CheckResults;
 //exit;
 
+    t.Add('U8Data1',    weAnsiStr(''''#$E2#$89#$A7'''', 'Utf8String'))
+    //t.Add('U8Data1',    weAnsiStr(''''#$2267'''', 'Utf8String'))
+     .NoCharQuoting
+     .IgnTypeName.IgnKind
+     .skipIf(Compiler.Version < 030000);
+    t.Add('U8Data2',    weAnsiStr(''''#$E2#$89#$A7'X''', 'Utf8String'))
+    //t.Add('U8Data2',    weAnsiStr(''''#$2267'X''', 'Utf8String'))
+     .NoCharQuoting
+     .IgnTypeName.IgnKind
+     .skipIf(Compiler.Version < 030000);
+
     t.Add('SomeFunc1',    weMatch('^function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN *AT *\$[0-9A-F]+', skFunction) );
     t.Add('SomeProc1',    weMatch('^procedure *\(\) *AT *\$[0-9A-F]+', skProcedure) );
     t.Add('@SomeFunc1',   weMatch('^\^function.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
