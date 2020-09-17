@@ -1715,7 +1715,9 @@ begin
         AResults.FDist := 0;
         AResults.FIndex := pointindex;
         AResults.FYIndex := stackIndex;
-        AResults.FValue := DoublePoint(Source[pointindex]^.X, Source[pointindex]^.GetY(stackIndex));
+        AResults.FValue := DoublePoint(Source[pointIndex]^.X, Source[pointindex]^.GetY(stackIndex));
+        if FStacked and (stackIndex > 0) then
+          AResults.FValue.Y := AResults.FValue.Y + heights[stackIndex];
         AResults.FValue := AxisToGraph(AResults.FValue);
         AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
         Result := true;
