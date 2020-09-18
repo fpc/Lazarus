@@ -1,6 +1,38 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr ""
+
+#: jcfuiconsts.format_category_idecmd
+msgid "JEDI Code Format"
+msgstr ""
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr ""
+
+#: jcfuiconsts.format_current_menu
+msgid "&Current Editor Window"
+msgstr ""
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr ""
+
+#: jcfuiconsts.format_open_menu
+msgid "All &Open Windows"
+msgstr ""
+
+#: jcfuiconsts.format_project_menu
+msgid "&All Files in Project"
+msgstr ""
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr ""
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr ""

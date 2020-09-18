@@ -41,7 +41,7 @@ uses
   // IdeIntf
   LazIDEIntf, MenuIntf, IdeCommands,
   // local
-  JcfIdeMain, JcfRegistrySettings;
+  JcfIdeMain, JcfRegistrySettings, JcfUIConsts;
 
 procedure Register;
 
@@ -60,17 +60,6 @@ const
   FORMAT_MENU_SECTION1     = 'jcfSection1';
   FORMAT_MENU_SECTION2     = 'jcfSection2';
 
-resourcestring
-  FORMAT_MENU             = 'JEDI Code &Format';
-  FORMAT_CURRENT_MENU     = '&Current Editor Window';
-  FORMAT_CURRENT_IDECMD   = 'Format code in current editor window';
-  FORMAT_PROJECT_MENU     = '&All Files in Project';
-  FORMAT_OPEN_MENU        = 'All &Open Windows';
-  FORMAT_SETTINGS_MENU    = '&Format Settings';
-  FORMAT_ABOUT_MENU       = '&About';
-  FORMAT_CATEGORY_IDECMD  = 'JEDI Code Format';
-
-const
   DefaultJCFOptsFile = 'jcfsettings.cfg';
 
 var

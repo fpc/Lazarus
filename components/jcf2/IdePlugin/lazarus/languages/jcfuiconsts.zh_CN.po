@@ -12,6 +12,42 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "关于(&A)"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI代码格式"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "在当前编辑器窗口格式代码"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "当前编辑器窗口(&C)"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI代码格式(&F)"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "所有打开窗口(&O)"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "工程中的所有文件(&A)"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "格式设置(&F)"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "关于JEDI代码格式"

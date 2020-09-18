@@ -10,6 +10,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "O Jedi Code Format"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfuiconsts.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI Code Format"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formátovat kód v aktuálním okně editoru"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfuiconsts.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Aktuální okno editoru"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI Code &Format"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfuiconsts.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Všechna &Otevřená okna"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfuiconsts.format_project_menu"
+msgid "&All Files in Project"
+msgstr "&Všechny soubory v Projektu"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "Nastavení &Formátu"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "O JEDI Code Format"

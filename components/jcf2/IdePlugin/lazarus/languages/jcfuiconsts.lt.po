@@ -11,6 +11,42 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "&Apie"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI kodo formatas"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formatuoti dabartiniame rengyklės lange esantį kodą"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Dabartiniame rengyklės lange"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI kodo &formatas"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Visuose atvertuose &languose"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Visuose projekto &failuose"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "&Formato parinktys"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "Apie JEDI kodo formatą"

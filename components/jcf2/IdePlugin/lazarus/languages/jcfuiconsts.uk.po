@@ -13,6 +13,42 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "&Про програму"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "Форматування коду JEDI"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Форматувати код у поточному вікні редактора"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Поточне вікно редактора"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "&Форматування коду JEDI"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Всі &відкриті вікна"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Всі &файли у проєкті"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "&Параметри форматування"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "Про форматування коду JEDI"

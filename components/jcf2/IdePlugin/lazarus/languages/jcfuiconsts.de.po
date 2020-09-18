@@ -9,6 +9,42 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "Über"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI-Codeformatierer"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formatiere Code im aktuellen Editorfenster"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "Aktuelles Editorfenster"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI Code&formatierer"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Alle &offenen Fenster"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "&Alle Dateien im Projekt"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "&Formatierungseinstellungen"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "Über JEDI Code Format"

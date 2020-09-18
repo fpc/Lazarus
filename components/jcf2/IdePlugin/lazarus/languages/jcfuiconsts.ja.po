@@ -11,6 +11,42 @@ msgstr ""
 "Language: ja\n"
 "X-Generator: Poedit 1.5.7\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "JEDI について(&A)"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI コード整形"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "現在のエディタウィンドウに対してコード整形をする"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "現在のエディタウィンドウ(&C)"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI コード整形(&F)"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "開いているウィンドウすべて(&O)"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "プロジェクト内すべてのファイル(&A)"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "整形設定(&F)"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "JEDI コード整形について"

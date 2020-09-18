@@ -11,6 +11,42 @@ msgstr ""
 "Language: fr\n"
 "X-Generator: Poedit 2.2.1\n"
 
+#: jcfuiconsts.format_about_menu
+msgid "&About"
+msgstr "&À propos"
+
+#: jcfuiconsts.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "Formatage de code JEDI"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formater le code dans la fenêtre d'édition en cours"
+
+#: jcfuiconsts.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "Fenêtre de l'éditeur en &cours"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "&Formatage de code JEDI"
+
+#: jcfuiconsts.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Toutes les fenêtres &ouvertes"
+
+#: jcfuiconsts.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Tous les fichiers d&ans le projet"
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings"
+msgstr "Paramètres de &formatage"
+
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
 msgstr "À propos de JEDI Code Format"
