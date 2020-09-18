@@ -11699,9 +11699,17 @@ begin
     if Prn.Printers.IndexOf(PrnName) <> -1 then
       Prn.PrinterIndex := Prn.Printers.IndexOf(PrnName)
     else
-    if Prn.Printers.Count>0 then
-      Prn.PrinterIndex := 0 // either the system default or
-                            // own virtual default printer
+    begin
+      if Prn.Printers.Count>0 then
+        Prn.PrinterIndex := 0; // either the system default or
+                               // own virtual default printer
+      if Prn.UseVirtualPrinter then
+        // this report want to connect to a designed printer but that printer
+        // is not available and now our default (virtual) printer have to be used.
+        // the original paper dimensions were stored in points but the virtual
+        // printer uses tenths of millimeter...
+        Prn.NeedUnitsConversion := true;
+    end;
   end;
   {$ifdef dbgPrinter}
   DebugLnExit('TfrReport.SetPrinterTo DONE CurPrinter="%s"',[Prn.Printer.PrinterName]);

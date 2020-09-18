@@ -37,6 +37,7 @@ type
     FPrinters: TStringList;
     FPrinterIndex: Integer;
     FDefaultPrinter: Integer;
+    FNeedUnitsConversion: boolean;
     procedure GetSettings(PrinterChanged: boolean = true);
     procedure SetSettings;
     procedure SetPrinter(Value: TPrinter);
@@ -64,7 +65,8 @@ type
     {$IFDEF DbgPrinter}
     procedure DumpPrinterInfo;
     {$ENDIF}
-    
+
+    property NeedUnitsConversion: boolean read FNeedUnitsConversion write FNeedUnitsConversion;
     property PaperNames: TStringList read GetPaperNames;
     property Printer: TPrinter read FPrinter write SetPrinter;
     property Printers: TStringList read FPrinters;
@@ -1029,8 +1031,17 @@ begin
   begin
     with p do
     begin
-      Pgw := Round(PaperWidth * kx / 254);
-      Pgh := Round(PaperHeight * ky / 254);
+      if NeedUnitsConversion then
+      begin
+        // paper units are points convert to inches
+        Pgw := Round(PaperWidth * kx / 72);
+        Pgh := Round(PaperHeight * ky / 72);
+      end else 
+      begin
+        // paper units are tenths of a millimeter convert to inches
+        Pgw := Round(PaperWidth * kx / 254);
+        Pgh := Round(PaperHeight * ky / 254);
+      end;
       Ofx := Round(50 * kx / 254);
       Ofy := Round(50 * ky / 254);
       Pw := Pgw - Ofx * 2;
