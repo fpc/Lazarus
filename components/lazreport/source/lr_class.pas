@@ -11696,23 +11696,18 @@ begin
   {$endif}
   if not PrintToDefault then
   begin
+    prn.DocumentUnits := puPoints;
     if Prn.Printers.IndexOf(PrnName) <> -1 then
       Prn.PrinterIndex := Prn.Printers.IndexOf(PrnName)
     else
-    begin
       if Prn.Printers.Count>0 then
         Prn.PrinterIndex := 0; // either the system default or
                                // own virtual default printer
-      if Prn.UseVirtualPrinter then
-        // this report want to connect to a designed printer but that printer
-        // is not available and now our default (virtual) printer have to be used.
-        // the original paper dimensions were stored in points but the virtual
-        // printer uses tenths of millimeter...
-        Prn.NeedUnitsConversion := true;
-    end;
-  end;
+  end else
+    Prn.DocumentUnits := puTenthsMM;
   {$ifdef dbgPrinter}
-  DebugLnExit('TfrReport.SetPrinterTo DONE CurPrinter="%s"',[Prn.Printer.PrinterName]);
+  DebugLnExit('TfrReport.SetPrinterTo DONE CurPrinter="%s" UseVirtualPrinter=%s',
+    [Prn.Printer.PrinterName, dbgs(Prn.UseVirtualPrinter)]);
   {$endif}
 end;
 

@@ -24,11 +24,14 @@ uses
 
 type
 
+  TlrPaperUnits = (puPoints, puTenthsMM);
+
   { TfrPrinter }
 
   TfrPrinter = class
   private
     FDevice: PChar;
+    FDocumentUnits: TlrPaperUnits;
     FDriver: PChar;
     FPort: PChar;
     //FDeviceMode: THandle;
@@ -37,7 +40,6 @@ type
     FPrinters: TStringList;
     FPrinterIndex: Integer;
     FDefaultPrinter: Integer;
-    FNeedUnitsConversion: boolean;
     procedure GetSettings(PrinterChanged: boolean = true);
     procedure SetSettings;
     procedure SetPrinter(Value: TPrinter);
@@ -66,7 +68,7 @@ type
     procedure DumpPrinterInfo;
     {$ENDIF}
 
-    property NeedUnitsConversion: boolean read FNeedUnitsConversion write FNeedUnitsConversion;
+    property DocumentUnits: TlrPaperUnits read FDocumentUnits write FDocumentUnits;
     property PaperNames: TStringList read GetPaperNames;
     property Printer: TPrinter read FPrinter write SetPrinter;
     property Printers: TStringList read FPrinters;
@@ -882,34 +884,11 @@ begin
     //
     // based on the old information, find a suitable paper within our own
     // custom paper list.
-    FPaperNames.Clear;
-    for i:=0 to PAPERCOUNT-1 do begin
-      FPaperNames.Add(PaperInfo[i].Name);
-      if (WinPaperSize<>256)and(WinPaperSize=PaperInfo[i].Typ) then begin
-
-        PrinterIndex := i;
-
-        {$IFDEF MSWINDOWS}
-        PaperWidth := PaperInfo[i].X;
-        PaperHeight:= PaperInfo[i].Y;
-        {$ELSE}
-        PaperWidth := PPDPaperInfo[i].X;
-        PaperWidth := PPDPaperInfo[i].Y;
-        {$ENDIF}
-
-        if Orientation = poLandscape then
-        begin
-          n := PaperWidth;
-          PaperWidth := PaperHeight;
-          PaperHeight := n;
-        end;
-
-      end;
-    end;
     *)
     {$ifdef DbgPrinter}
     DebugLn('DefaultPrinter, setting up defaultSet of Papers');
     {$endif}
+    n := -1;
     FPaperNames.Clear;
     for i := 0 to PAPERCOUNT - 1 do
     begin
@@ -917,20 +896,30 @@ begin
       PaperSizes[i] := PaperInfo[i].Typ;
       if (PaperSize <> $100) and (PaperSize = PaperInfo[i].Typ) then
       begin
-      {$ifdef DbgPrinter}
-      DebugLn(['DefaultPrinter, PaperSize=',PaperSize,' Corresponds to ', PaperInfo[i].Name]);
-      {$endif}
-        PaperWidth := PaperInfo[i].X;
-        PaperHeight := PaperInfo[i].Y;
+        {$ifdef DbgPrinter}
+        DebugLn(['DefaultPrinter, PaperSize=',PaperSize,' Corresponds to ', PaperInfo[i].Name]);
+        {$endif}
+        n := i;
         if Orientation = poLandscape then
         begin
-          n := PaperWidth;
-          PaperWidth := PaperHeight;
-          PaperHeight := n;
+          PaperWidth := PaperInfo[i].Y;
+          PaperHeight := PaperInfo[i].X;
+        end else
+        begin
+          PaperWidth := PaperInfo[i].X;
+          PaperHeight := PaperInfo[i].Y;
         end;
+        break;
       end;
     end;
     PaperSizesNum := PAPERCOUNT;
+    if (n<0) and (FDocumentUnits=puPoints) then
+    begin
+      // Paper units are points and paperSize didn't match any predefined
+      // paper, yet SetFillInfo expects tenths of mm, convert them here.
+      PaperWidth  := round(PaperWidth*254/72);
+      PaperHeight := round(PaperHeight*254/72);
+    end;
     {$IFDEF DbgPrinter}
     DebugLnExit('TfrPrinter.SetSettings: EXIT (default printer)');
     {$ENDIF}
@@ -1021,7 +1010,8 @@ var
   kx, ky: Double;
 begin
   {$ifdef DbgPrinter}
-  DebugLnEnter(['TfrPrinter.FillPrnInfo INIT IsDefaultPrinter=',UseVirtualPrinter]);
+  DebugLnEnter('TfrPrinter.FillPrnInfo INIT IsVirtualPrn=%s DocUnits=%d PWidth=%d PHeight=%d',
+    [dbgs(UseVirtualPrinter), ord(DocumentUnits), PaperWidth, PaperHeight]);
   {$endif}
 
   kx := 93 / 1.022;
@@ -1031,17 +1021,8 @@ begin
   begin
     with p do
     begin
-      if NeedUnitsConversion then
-      begin
-        // paper units are points convert to inches
-        Pgw := Round(PaperWidth * kx / 72);
-        Pgh := Round(PaperHeight * ky / 72);
-      end else 
-      begin
-        // paper units are tenths of a millimeter convert to inches
-        Pgw := Round(PaperWidth * kx / 254);
-        Pgh := Round(PaperHeight * ky / 254);
-      end;
+      Pgw := Round(PaperWidth * kx / 254);
+      Pgh := Round(PaperHeight * ky / 254);
       Ofx := Round(50 * kx / 254);
       Ofy := Round(50 * ky / 254);
       Pw := Pgw - Ofx * 2;
