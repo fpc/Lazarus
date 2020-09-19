@@ -61,6 +61,8 @@ type
     property ShapeType : TfrShapeType Read fShapeType write fShapeType;
   end;
 
+  {$IFNDEF LCLNOGUI}
+
   { TfrShapeForm }
 
   TfrShapeForm = class(TfrObjEditorForm)
@@ -79,6 +81,8 @@ type
 
 var
   frShapeForm: TfrShapeForm;
+
+  {$ENDIF}
 
 implementation
 
@@ -440,7 +444,7 @@ begin
   end;
 end;
 
-
+{$IFNDEF LCLNOGUI}
 {------------------------------------------------------------------------}
 procedure TfrShapeForm.ShowEditor(t: TfrView);
 begin
@@ -467,19 +471,24 @@ begin
   GroupBox1.Caption := sShapeFormKind;
 end;
 
+{$ENDIF}
+
 { TfrShapeObject }
 constructor TfrShapeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
-  
+
+  {$IFNDEF LCLNOGUI}
   if not assigned(frShapeForm) {and not (csDesigning in ComponentState)} then
   begin
     frShapeForm:=TfrShapeForm.Create(nil);
     frRegisterObject(TfrShapeView, frShapeForm.Image1.Picture.Bitmap,
       sInsShape, frShapeForm);
   end;
+  {$ENDIF}
 end;
 
+{$IFNDEF LCLNOGUI}
 initialization
 
   frShapeForm:=nil;
@@ -488,6 +497,9 @@ finalization
 
   if Assigned(frShapeForm) then
     frShapeForm.Free;
-
+{$ELSE}
+initialization
+  frRegisterObject(TfrShapeView, nil, sInsShape, nil);
+{$ENDIF}
 end.
 

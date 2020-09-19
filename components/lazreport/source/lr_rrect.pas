@@ -33,7 +33,11 @@ uses
   Graphics, Controls, Forms, Dialogs,Buttons,
   StdCtrls, Menus,ClipBrd,
 
-  LCLType,LR_Class, ExtCtrls,LCLIntf,LCLProc;
+  LCLType,LR_Class, ExtCtrls,LCLIntf,LCLProc
+  {$IFDEF LCLNOGUI}
+  ,lr_ngcanvas
+  {$ENDIF}
+  ;
 
 type
   {These are the six different gradient styles available.}
@@ -104,6 +108,8 @@ type
 
   // Editeur de propriétés
 
+  {$IFNDEF LCLNOGUI}
+
   { TfrRoundRectForm }
 
   TfrRoundRectForm = class(TfrObjEditorForm)
@@ -167,14 +173,17 @@ type
     property Corners: TCornerSet read GetCorners write SetCorners;
   end;
 
+  {$ENDIF}
 implementation
 
 uses LR_Const, LR_Var, LR_Flds;
 
+{$IFNDEF LCLNOGUI}
 {$R *.lfm}
 
 var
   frRoundRectForm: TfrRoundRectForm;
+{$ENDIF}
 
 function RGB(R,G,B : Byte): TColor;
 begin
@@ -187,7 +196,7 @@ procedure PaintGrad(Cv: TCanvas; X, Y, X1, Y1: Word;
 var
   FromR, FromG, FromB: Integer; //These are the separate color values for RGB
   DiffR, DiffG, DiffB: Integer; // of color values.
-  bm: TBitMap;
+  bm: TLazReportBitmap;
 
   {To speed things up and reduce flicker, I use a Bitmap to draw the button in
    its entirety, ten BitBlt it to the canvas of the control.}
@@ -359,7 +368,7 @@ var
 begin
   DebugLn('PaintGrad');
   try
-    bm := TBitMap.Create;
+    bm := TLazReportBitmap.Create;
     if Cv = nil then Exit;
     bm.Width := X1 - X;          //Set BMP dimensions to match control's
     bm.Height :=Y1 - Y;
@@ -387,7 +396,11 @@ begin
     {Finally, the button is all painted on the bitmap canvas. Now we just need
      to copy it to the canvas of our control.  BitBlt is one method; there are
      several others.}
+    {$IFDEF LCLNOGUI}
+    TVirtualCanvas(Cv).Draw(x, y, bm);
+    {$ELSE}
     BitBlt(Cv.Handle, X, Y, bm.Width, bm.Height, bm.Canvas.Handle, 0, 0, SRCCOPY);
+    {$ENDIF}
   finally
     bm.Free;
   end;
@@ -722,7 +735,7 @@ begin
   end;
 end;
 
-
+{$IFNDEF LCLNOGUI}
 (****************************************************)
 procedure TfrRoundRectForm.FormCreate(Sender: TObject);
 var
@@ -1050,6 +1063,7 @@ begin
   ChgColorButton(bColor2, fNormalColor);
   ChgColorButton(bColor3, fShadowColor);
 end;
+{$ENDIF}
 
 
 { TfrRoundRectObject }
@@ -1057,15 +1071,17 @@ end;
 constructor TfrRoundRectObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
-  
+  {$IFNDEF LCLNOGUI}
   if not assigned(frRoundRectForm) {and not (csDesigning in ComponentState)} then
   begin
     frRoundRectForm := TfrRoundRectForm.Create(nil);
     frRegisterObject(TfrRoundRectView, frRoundRectForm.Image1.Picture.Bitmap,
       sInsRoundRect, frRoundRectForm);
   end;
+  {$ENDIF}
 end;
 
+{$IFNDEF LCLNOGUI}
 initialization
 
   frRoundRectForm:=nil;
@@ -1074,6 +1090,11 @@ finalization
 
   if Assigned(frRoundRectForm) then
     frRoundRectForm.Free;
+
+{$ELSE}
+initialization
+  frRegisterObject(TfrRoundRectView, nil, sInsRoundRect, nil);
+{$ENDIF}
 
 end.
 

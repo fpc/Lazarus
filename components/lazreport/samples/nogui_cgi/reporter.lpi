@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <MainUnitHasScaledStatement Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="reporter"/>
+      <UseAppBundle Value="False"/>
+      <ResourceType Value="res"/>
+      <Resources Count="1">
+        <Resource_0 FileName="images\splash_logo.png" Type="RCDATA" ResourceName="LOGO1"/>
+      </Resources>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+      <Item Name="CGI Debug Local">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="reporter.cgi" ApplyConventions="False"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dCGI"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="HTTP Server">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="reporter"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dHTTP_SERVER"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="CGI Cross WinToLinux">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="reporter_linux.cgi" ApplyConventions="False"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <TargetCPU Value="x86_64"/>
+            <TargetOS Value="linux"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <StripSymbols Value="True"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dCGI"/>
+            <ExecuteAfter>
+              <Command Value="$(ProjPath)deploy.bat FROMIDE"/>
+              <CompileReasons Compile="False"/>
+            </ExecuteAfter>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="Console App WinToLinux">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="reporter_linux" ApplyConventions="False"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <TargetCPU Value="x86_64"/>
+            <TargetOS Value="linux"/>
+          </CodeGeneration>
+          <Other>
+            <CustomOptions Value="-dCONSOLE_APP"/>
+            <ExecuteAfter>
+              <Command Value="$(ProjPath)deploy.bat FROMIDE CONSOLE"/>
+              <CompileReasons Compile="False"/>
+            </ExecuteAfter>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="Console App">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="reporter"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dCONSOLE_APP"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="258419380352" Modes="CGI Debug Local,CGI Cross WinToLinux,HTTP Server,Console App,Console App WinToLinux" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
+      </SharedMatrixOptions>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <CommandLineParams Value="-d --back=txt"/>
+      </local>
+      <environment>
+        <UserOverrides Count="3">
+          <Variable0 Name="REQUEST_METHOD" Value="GET"/>
+          <Variable1 Name="PATH_INFO" Value="/web/crosstab"/>
+          <Variable2 Name="QUERY_STRING" Value="backend=fclpdf"/>
+        </UserOverrides>
+      </environment>
+      <FormatVersion Value="2"/>
+      <Modes>
+        <Mode Name="CGI Debug LOCAL">
+          <local>
+            <CommandLineParams Value="-d --back=txt"/>
+          </local>
+          <environment>
+            <UserOverrides Count="3">
+              <Variable0 Name="REQUEST_METHOD" Value="GET"/>
+              <Variable1 Name="PATH_INFO" Value="/web/crosstab"/>
+              <Variable2 Name="QUERY_STRING" Value="backend=fclpdf"/>
+            </UserOverrides>
+          </environment>
+        </Mode>
+      </Modes>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="lr_extexp"/>
+      </Item>
+      <Item>
+        <PackageName Value="lrSpreadSheetExport"/>
+      </Item>
+      <Item>
+        <PackageName Value="lr_pdfexport"/>
+      </Item>
+      <Item>
+        <PackageName Value="lr_codereport_pkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="lazreportpdfexport"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="DBFLaz"/>
+      </Item>
+      <Item>
+        <PackageName Value="lazreport"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="WebLaz"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="reporter.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitweb.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WebDM"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="UnitWeb"/>
+      </Unit>
+      <Unit>
+        <Filename Value="conapp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="conApp"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitreporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UnitReporter"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="reporter"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

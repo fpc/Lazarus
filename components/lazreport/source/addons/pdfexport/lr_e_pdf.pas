@@ -164,7 +164,9 @@ begin
     PDF.UseOutlines := True;
     PDF.PageLayout := plOneColumn;
     PDF.BeginDoc;
+    {$IFNDEF LCLNOGUI}
     DummyControl := TForm.Create(nil);
+    {$ENDIF}
     NewPage := False;
     FPageNo := 0;
 end;
@@ -274,9 +276,12 @@ end;
 procedure TfrTNPDFExportFilter.ShowBarCode(View: TfrCustomBarCodeView; x, y, h, w:
     integer);
 var
-    Bitmap: TBitmap;
+    Bitmap: TLazreportBitmap;
     PRImage: TPRImage;
     oldX, oldY: Integer;
+    {$IFDEF LCLNOGUI}
+    bmpStream: TMemoryStream;
+    {$ENDIF}
 begin
     oldX := View.x;
     oldy := View.y;
@@ -297,7 +302,13 @@ begin
         PRImage.Height := h;
         PRImage.Width := w;
 
+        {$IFDEF LCLNOGUI}
+        bmpStream := Bitmap.Stream;
+        PRImage.Picture.LoadFromStream(bmpStream);
+        bmpStream.Free;
+        {$ELSE}
         PRImage.Picture.Bitmap := Bitmap;
+        {$ENDIF}
     finally
         FreeAndNil(Bitmap);
     end;

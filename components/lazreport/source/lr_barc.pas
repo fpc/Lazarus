@@ -39,7 +39,11 @@ uses
   Classes, SysUtils,
   LCLPlatformDef, InterfaceBase, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls, Menus, Barcode, ExtCtrls, ButtonPanel,
-  LCLType, LR_Class;
+  LCLType, LR_Class
+  {$IFDEF LCLNOGUI}
+  ,lr_ngcanvas
+  {$ENDIF}
+  ;
 
 
 {.$DEFINE BC_1_25} //For Barcode version 1.25 actually in debug
@@ -82,7 +86,7 @@ type
     procedure SetCheckSum(const AValue: Boolean);
     procedure SetShowText(const AValue: Boolean);
     procedure SetZoom(const AValue: Double);
-    function CreateBarcode: TBitmap;
+    function CreateBarcode: TLazreportBitmap;
     function CreateLabelFont(aCanvas: TCanvas): TFont;
     procedure DrawLabel(aCanvas: TCanvas; R: TRect);
   public
@@ -91,7 +95,7 @@ type
     constructor Create(AOwnerPage:TfrPage);override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function GenerateBitmap: TBitmap; virtual;
+    function GenerateBitmap: TLazreportBitmap; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure Draw(aCanvas: TCanvas); override;
@@ -121,6 +125,8 @@ type
     property FrameWidth;
     property Restrictions;
   end;
+
+  {$IFNDEF LCLNOGUI}
 
   { TfrBarCodeForm }
 
@@ -154,17 +160,19 @@ type
   public
     procedure ShowEditor(t: TfrView); override;
   end;
+  {$ENDIF}
 
 
 implementation
 
-{$R *.lfm}
-
 uses LR_Var, LR_Flds, LR_Const, LR_Utils;
 
+{$IFNDEF LCLNOGUI}
+{$R *.lfm}
 
 var
   frBarCodeForm: TfrBarCodeForm;
+{$ENDIF}
 
 const
    cbDefaultText ='12345678';
@@ -289,7 +297,7 @@ begin
   end;
 end;
 
-function TfrCustomBarCodeView.CreateBarcode: TBitmap;
+function TfrCustomBarCodeView.CreateBarcode: TLazreportBitmap;
 begin
 
   Result := nil;
@@ -373,7 +381,7 @@ begin
       BarC.Left:= dx;
     end;
 
-  Result:=TBitMap.Create;
+  result := TLazreportBitmap.Create;
 
   Result.Width:=dx;
   Result.Height:=dy;
@@ -499,7 +507,7 @@ begin
     Param := TfrCustomBarCodeView(Source).Param;
 end;
 
-function TfrCustomBarCodeView.GenerateBitmap: TBitmap;
+function TfrCustomBarCodeView.GenerateBitmap: TLazreportBitmap;
 var
   R: TRect;
   barcodeFont: TFont;
@@ -532,7 +540,7 @@ end;
 
 procedure TfrCustomBarCodeView.Draw(aCanvas:TCanvas);
 var
-  Bmp : TBitMap;
+  Bmp : TLazreportBitmap;
   R: TRect;
   fh: integer;
   barcodeFont: TFont;
@@ -587,7 +595,11 @@ begin
           R := Rect(DRect.Left,DRect.Top,
                   DRect.Right ,
                   DRect.Bottom -  fh);
+      {$IFDEF LCLNOGUI}
+      TVirtualCanvas(aCanvas).StretchDraw(R,Bmp);
+      {$ELSE}
       aCanvas.StretchDraw(R,Bmp);
+      {$ENDIF}
       DrawLabel(aCanvas, DRect);
       finally
         aCanvas.Font := oldFont;
@@ -595,7 +607,11 @@ begin
       end;
     end
     else
+      {$IFDEF LCLNOGUI}
+      TVirtualCanvas(aCanvas).StretchDraw(DRect,Bmp);
+      {$ELSE}
       aCanvas.StretchDraw(DRect,Bmp);
+      {$ENDIF}
 
     ShowFrame;
 
@@ -648,6 +664,7 @@ begin
   XML.SetValue(Path+'BarCode/Angle', GetSaveProperty('Angle'));
 end;
 
+{$IFNDEF LCLNOGUI}
 //--------------------------------------------------------------------------
 procedure TfrBarCodeForm.FormCreate(Sender: TObject);
 var
@@ -803,15 +820,19 @@ begin
     frSetAddinHint(TfrBarcodeView, sInsBarcode);
   end;
 end;
+{$ENDIF}
 
 { TfrBarCodeObject }
 
 constructor TfrBarCodeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
+  {$IFNDEF LCLNOGUI}
   InitializeBarcAddin;
+  {$ENDIF}
 end;
 
+{$IFNDEF LCLNOGUI}
 initialization
   frBarcodeForm := nil;
   frRegisterObject(TfrBarCodeView, nil, '', nil, @InitializeBarcAddin);
@@ -819,5 +840,9 @@ initialization
 finalization
   if Assigned(frBarCodeForm) then
     frBarCodeForm.Free;
+{$ELSE}
+initialization
+  frRegisterObject(TfrBarCodeView, nil, '', nil);
+{$ENDIF}
 
 end.

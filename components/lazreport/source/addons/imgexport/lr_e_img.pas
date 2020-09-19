@@ -12,7 +12,11 @@ unit LR_e_img;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, Graphics, LazUtf8Classes;
+  Classes, SysUtils, LR_Class, Graphics, LazUtf8Classes
+  {$IFDEF LCLNOGUI}
+  , FPImage, FPWriteBMP, FPWritePNG, FPWriteJPEG
+  {$ENDIF}
+  ;
 
 type
   TfrImageExport = class(TComponent)
@@ -23,7 +27,11 @@ type
 
   TfrImageExportFilter = class(TfrExportFilter)
   private
+    {$IFDEF LCLNOGUI}
+    FBmp: TLazreportBitmap;
+    {$ELSE}
     FBmp: TFPImageBitmap;
+    {$ENDIF}
     FCurPage: Integer;
     FFileName: String;
     FFileExt: String;
@@ -54,6 +62,9 @@ begin
   FCurPage := 0;
   FJQuality := 75;
   FColor := clWhite;
+  {$IFDEF LCLNOGUI}
+  FBmp := TLazreportBitmap.create;
+  {$ELSE}
   if FFileExt = '.jpg' then
     FBmp := TJPEGImage.Create
   else
@@ -61,6 +72,7 @@ begin
       FBmp := TPortableNetworkGraphic.Create
     else
       FBmp := TBitmap.Create;
+  {$ENDIF}
 end;
 
 destructor TfrImageExportFilter.Destroy;
@@ -71,13 +83,18 @@ end;
 
 procedure TfrImageExportFilter.OnBeginDoc;
 begin
+  {$IFNDEF LCLNOGUI}
   if FBmp is TJPEGImage then
     TJPEGImage(FBmp).CompressionQuality := FJQuality;
+  {$ENDIF}
 end;
 
 procedure TfrImageExportFilter.OnEndPage;
 var
   TmpVisible: Boolean;
+  {$IFDEF LCLNOGUI}
+  Writer: TFPCustomImageWriter;
+  {$ENDIF}
 begin
   Inc(FCurPage);
   FBmp.Clear;
@@ -90,10 +107,28 @@ begin
   CurReport.EMFPages[FCurPage - 1]^.Visible := True;
   CurReport.EMFPages.Draw(FCurPage - 1, FBmp.Canvas, Rect(0, 0, FBmp.Width, FBmp.Height));
   CurReport.EMFPages[FCurPage - 1]^.Visible := TmpVisible;
+  {$IFDEF LCLNOGUI}
+  case FFileExt of
+    '.jpg','.jpeg':
+      begin
+        Writer := TFPWriterJPEG.Create;
+        TFPWriterJPEG(Writer).CompressionQuality := JPEGQuality;
+      end;
+    '.png':
+        Writer := TFPWriterPNG.create;
+    else
+        Writer := nil;
+  end;
+  if FCurPage = 1 then
+    FBmp.SaveToStream(Stream, Writer)
+  else
+    FBmp.SaveToFile(FFileName + '_' + IntToStr(FCurPage) + FFileExt, Writer);
+  {$ELSE}
   if FCurPage = 1 then
     FBmp.SaveToStream(Stream)
   else
     FBmp.SaveToFile(FFileName + '_' + IntToStr(FCurPage) + FFileExt);
+  {$ENDIF}
 end;
 
 initialization

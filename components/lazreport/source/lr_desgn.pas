@@ -3975,7 +3975,7 @@ begin
   //if C2.Items.Count=0 then
   //  GetFontList; // defered to speed loading
   LastFontSize := 10;
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   LastFontName := 'Arial';
   {$ELSE}
   LastFontName := 'helvetica [urw]';

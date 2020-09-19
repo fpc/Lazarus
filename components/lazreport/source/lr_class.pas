@@ -24,7 +24,11 @@ uses
   // IDEIntf
   PropEdits,
   // LazReport
-  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls;
+  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls
+  {$IFDEF LCLNOGUI}
+  ,lr_ngcanvas
+  {$ENDIF}
+  ;
 
 const
   lrMaxBandsInReport       = 256; //temp fix. in future need remove this limit
@@ -1452,6 +1456,11 @@ type
 
   TfrAddinInitProc = procedure;
 
+  {$IFDEF LCLNOGUI}
+  TLazreportBitmap = TVirtualBitmap;
+  {$ELSE}
+  TLazreportBitmap = TBitmap;
+  {$ENDIF}
 
 function frCreateObject(Typ: Byte; const ClassName: String; AOwnerPage:TfrPage): TfrView;
 procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
@@ -1611,7 +1620,7 @@ var
   LRE_OLDV28_FRF_READ: Boolean = False;  // read frf v28 (lazarus 1.4.4) reports, bug 29966
 
   // variables used through report building
-  TempBmp: TBitmap;            // temporary bitmap used by TfrMemoView
+  TempBmp: TLazreportBitmap;                    // temporary bitmap used by TfrMemoView
 
 function ExportFilters:TExportFilters;
 implementation
@@ -4037,7 +4046,12 @@ begin
     [Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
   {$ENDIF}
 
+  {$IFDEF LCLNOGUI}
+  // TODO: TVirtualCanvas(WCanvas).CharacterSpacing := CharacterSpacing;
+  {$ELSE}
   SetTextCharacterExtra(WCanvas.Handle, CharacterSpacing);
+  {$ENDIF}
+
   SMemo.Clear;
   if Angle<>0 then
     OutMemo90
@@ -4360,8 +4374,12 @@ begin
   if n > 2 then
     if (s[n - 1] = #13) and (s[n] = #10) then
       SetLength(s, n - 2);
+  {$IFDEF LCLNOGUI}
+  DrawTextNoGui(Canvas, s, CalcRect, DTFlags);
+  {$ELSE}
   SetTextCharacterExtra(Canvas.Handle, Round(CharacterSpacing * ScaleX));
   DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DTFlags);
+  {$ENDIF}
   Result := CalcRect.Right + Round(2 * FrameWidth) + 2;
   {$IFDEF DebugLR}
   DebugLnExit('TfrMemoView.CalcWidth DONE Width=%d Rect=%s',[Result,dbgs(CalcRect)]);
@@ -4469,7 +4487,18 @@ begin
   begin
     Memo1.Assign(Memo);
     St:=Memo1.Text;
+    {$IFDEF DebugLR}
+    try
+      CurReport.InternalOnEnterRect(Memo1, Self);
+    except
+      on E:Exception do begin
+        DebugLnExit('TfrMemoView.Print EXIT by Exception in OnEnterRect: %s',[E.Message]);
+        raise;
+      end;
+    end;
+    {$ELSE}
     CurReport.InternalOnEnterRect(Memo1, Self);
+    {$ENDIF}
     if St<>Memo1.Text then
        CanExpandVar:= False;
   end
@@ -5713,8 +5742,12 @@ var
   r: TRect;
   kx, ky: Double;
   w, h, w1, h1, PictureHeight, PictureWidth: Integer;
+  {$IFDEF LCLNOGUI}
+  bmp: TLazreportBitmap;
+  {$ELSE}
   ClipRgn, PreviousClipRgn: HRGN;
   ClipNeeded: Boolean;
+  {$ENDIF}
 
 begin
   {$IFDEF DebugLR}
@@ -5756,7 +5789,14 @@ begin
           if (Flags and flPictCenter) <> 0 then
             OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
         end;
+        {$IFDEF LCLNOGUI}
+        bmp := TLazreportBitmap.create;
+        bmp.LoadFromGraphic(Picture.Graphic);
+        TVirtualCanvas(aCanvas).StretchDraw(r, bmp);
+        bmp.Free;
+        {$ELSE}
         StretchDraw(r, Picture.Graphic);
+        {$ENDIF}
       end
       else
       begin
@@ -5764,6 +5804,12 @@ begin
         PictureHeight := Round(Picture.Height * ScaleY);
         if (Flags and flPictCenter) <> 0 then
           OffsetRect(r, (w - PictureWidth) div 2, (h - PictureHeight) div 2);
+        {$IFDEF LCLNOGUI}
+        bmp := TLazreportBitmap.create;
+        bmp.LoadFromGraphic(Picture.Graphic);
+        TVirtualCanvas(aCanvas).Draw(r.Left, r.Top, bmp);
+        bmp.Free;
+        {$ELSE}
         ClipNeeded := (PictureHeight > h) or (PictureWidth > w);
         if ClipNeeded then
         begin
@@ -5781,6 +5827,7 @@ begin
           DeleteObject(PreviousClipRgn);
           DeleteObject(ClipRgn);
         end;
+        {$ENDIF}
       end;
     end;
     ShowFrame;
@@ -9226,7 +9273,7 @@ begin
         begin
           t :=TfrView(Page.Objects[i]);
           v := True;
-
+          {$IFNDEF LCLNOGUI}
           if not IsPrinting then
           begin
             with t, DrawRect do
@@ -9237,7 +9284,7 @@ begin
                                        Round((y + dy) * sy) + Top + 10));
             end;
           end;
-
+          {$ENDIF}
           if v then
           begin
             t.ScaleX := sx;
@@ -9900,6 +9947,20 @@ begin
   inherited Create(AOwner);
   FRebuildPrinter:=false;
 
+  {$IFDEF LCLNOGUI}
+  FRInitialized := True;
+  TempBmp := TVirtualBitmap.Create;
+  FDetailReports:=TlrDetailReports.Create;
+  FPages := TfrPages.Create(Self);
+  FEMFPages := TfrEMFPages.Create(Self);
+  FVars := TStringList.Create;
+  FVal := TfrValues.Create;
+  FileName := sUntitled;
+  FComments:=TStringList.Create;
+  FScript:=TfrScriptStrings.Create;
+  UpdateObjectStringResources;
+  {$ELSE}
+  TempBmp := TBitmap.Create;
   if not FRInitialized then
   begin
     FRInitialized := True;
@@ -9932,6 +9993,7 @@ begin
   FComments:=TStringList.Create;
   FScript:=TfrScriptStrings.Create;
   UpdateObjectStringResources;
+  {$ENDIF}
 end;
 
 destructor TfrReport.Destroy;
@@ -10980,10 +11042,13 @@ begin
   DoBuildReport;
   if FinalPass then
   begin
-    if Terminated then
-      frProgressForm.ModalDone(mrCancel)
-    else
-      frProgressForm.ModalDone(mrOk);
+    if frProgressForm<>nil then
+    begin
+      if Terminated then
+        frProgressForm.ModalDone(mrCancel)
+      else
+        frProgressForm.ModalDone(mrOk);
+    end;
   end
   else
   begin
@@ -11165,7 +11230,8 @@ begin
     FCurrentFilter.OnEndPage;
   end;
   FCurrentFilter.OnEndDoc;
-  frProgressForm.ModalResult := mrOk;
+  if frProgressForm<>nil then
+    frProgressForm.ModalResult := mrOk;
 end;
 
 function TfrReport.ExportTo(FilterClass: TfrExportFilterClass; aFileName: String

@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Graphics, LR_Const, LR_Class, ExtCtrls, LR_Shape,
-  LR_BarC, Barcode, Printers;
+  LR_BarC, Barcode, Printers{$IFDEF LCLNOGUI}, lr_ngcanvas{$ENDIF};
 
 type
 
@@ -81,7 +81,7 @@ type
     PaperSize, PaperWidth, PaperHeight: integer;
     PaperOrientation: TPrinterOrientation;
     FReport, FOwnedReport: TfrReport;
-    ABitMap: TBitMap;
+    ABitmap: TLazreportBitmap;
     SavedLineStyle: TlrLineStyle;
     SavedTextRectStyle: TlrTextRectStyle;
     SavedFrameStyle: TlrTextRectStyle;
@@ -167,7 +167,10 @@ type
     {* Drawing images *}
     procedure DrawImage(X, Y, W, H: double; AImage: TImage;
       ASharedName: string = ''; AStretched: boolean = True;
-      AKeepAspect: boolean = True; ACentered: boolean = False);
+      AKeepAspect: boolean = True; ACentered: boolean = False); overload;
+    procedure DrawImage(X, Y, W, H: double; APicture: TPicture;
+      ASharedName: string = ''; AStretched: boolean = True;
+      AKeepAspect: boolean = True; ACentered: boolean = False); overload;
 
     {* Drawing shapes *}
     procedure DrawShape(X, Y, W, H: double; Style: TlrShapeStyle);
@@ -223,7 +226,7 @@ begin
   PageMargin.Right := 0.0;
   PageMargin.Top := 0.0;
   PageMargin.Bottom := 0.0;
-  ABitMap := TBitMap.Create; // for canvas stuff
+  ABitmap := TLazreportBitmap.create;
   // Set default paper
   PaperSize := 9;  // A4   check LR_Prntr unit for a list
   PaperWidth := 0;
@@ -678,20 +681,27 @@ end;
 
 procedure TlrCodeReport.DrawImage(X, Y, W, H: double; AImage: TImage;
   ASharedName: string; AStretched: boolean; AKeepAspect: boolean; ACentered: boolean);
-var
-  APicture: TfrPictureView;
 begin
-  APicture := TfrPictureView.Create(nil);
-  APicture.Left := X * XRatio;
-  APicture.Top := Y * YRatio;
-  APicture.Width := W * XRatio;
-  APicture.Height := H * YRatio;
-  APicture.SharedName := ASharedName;
-  APicture.Stretched := AStretched;
-  APicture.KeepAspect := AKeepAspect;
-  APicture.Centered := ACentered;
-  APicture.Picture.Assign(AImage.Picture);
-  Report.Pages[ActivePage].Objects.Add(APicture);
+  DrawImage(X, Y, W, H, AImage.Picture, ASharedName, AStretched, AKeepAspect, ACentered);
+end;
+
+procedure TlrCodeReport.DrawImage(X, Y, W, H: double; APicture: TPicture;
+  ASharedName: string; AStretched: boolean; AKeepAspect: boolean;
+  ACentered: boolean);
+var
+  frPicture: TfrPictureView;
+begin
+  frPicture := TfrPictureView.Create(nil);
+  frPicture.Left := X * XRatio;
+  frPicture.Top := Y * YRatio;
+  frPicture.Width := W * XRatio;
+  frPicture.Height := H * YRatio;
+  frPicture.SharedName := ASharedName;
+  frPicture.Stretched := AStretched;
+  frPicture.KeepAspect := AKeepAspect;
+  frPicture.Centered := ACentered;
+  frPicture.Picture.Assign(APicture);
+  Report.Pages[ActivePage].Objects.Add(frPicture);
 end;
 
 procedure TlrCodeReport.DrawShape(X, Y, W, H: double; Style: TlrShapeStyle);

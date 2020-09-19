@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="lazreportpdfexport"/>
     <Type Value="RunAndDesignTime"/>
@@ -32,6 +32,7 @@
         <UnitName Value="lr_pdfexp_reg"/>
       </Item2>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="5">
       <Item1>
         <PackageName Value="IDEIntf"/>
@@ -41,8 +42,8 @@
       </Item2>
       <Item3>
         <PackageName Value="pack_powerpdf"/>
-        <MaxVersion Minor="9" Release="10"/>
-        <MinVersion Minor="9" Release="15" Valid="True"/>
+        <MaxVersion Minor="9" Release="15"/>
+        <MinVersion Minor="9" Release="16" Valid="True"/>
       </Item3>
       <Item4>
         <PackageName Value="lazreport"/>
@@ -57,7 +58,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>

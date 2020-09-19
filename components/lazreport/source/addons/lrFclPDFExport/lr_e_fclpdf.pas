@@ -116,7 +116,7 @@ type
     InternalGapX:integer;
     InternalGapY:integer;
     procedure WriteTextRectJustify(AExportFont: TExportFontItem; X, Y, W, H: TPDFFloat; const Text: string; Trimmed: boolean);
-    procedure WriteTextRect(AExportFont:TExportFontItem; X, Y, W{, H}:TPDFFloat; AText:string; AHAlign:TAlignment);
+    procedure WriteTextRect(AExportFont:TExportFontItem; X, Y, W{, H}:TPDFFloat; AText:string; AHAlign:TAlignment; angle: TPDFFloat);
     procedure DrawRect(X, Y, W, H: TPDFFloat; ABorderColor, AFillColor: TColor;
       AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
     procedure DrawRectView(AView: TfrView);
@@ -124,7 +124,7 @@ type
     procedure DrawLine(X1, Y1, X2, Y2: TPDFFloat; ABorderColor: TColor; ABorderWidth: TPDFFloat);
     procedure DrawEllipse(X, Y, W, H: TPDFFloat; ABorderColor, AFillColor: TColor;
       AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
-    procedure DrawImage(X, Y, W, H: integer; ABmp:TBitmap);
+    procedure DrawImage(X, Y, W, H: integer; ABmp:TLazreportBitmap);
     procedure DrawLRObjectInternal(View:TfrView);
   private
     procedure DoMemoView(View:TfrMemoView);
@@ -344,17 +344,17 @@ procedure TlrPdfExportFilter.SetupFonts;
 //Find default font name
 function DefFontName:string;
 const
-  DefFontNames : array [1..3] of string =
+  DefFontNames : array [1..4] of string =
   // TODO: Check if Arial is better default choice in windows/linux/mac
   {$IFDEF MSWINDOWS}
-     ('Arial', 'Liberation Sans', 'FreeSans');
+     ('Arial', 'Liberation Sans', 'FreeSans', 'DejaVu Sans');
   {$ELSE}
-     ('Liberation Sans', 'Arial', 'FreeSans');
+     ('Liberation Sans', 'Arial', 'FreeSans', 'DejaVu Sans');
   {$ENDIF}
 var
   i: Integer;
 begin
-  for i:=1 to 3 do
+  for i:=1 to 4 do
     if Assigned(gTTFontCache.Find(DefFontNames[i], false, false)) then
     begin
       Result:=DefFontNames[i];
@@ -595,7 +595,7 @@ end;
 
 procedure TlrPdfExportFilter.DoBarCodeView(View: TfrCustomBarCodeView);
 var
-  FBmp: TBitmap;
+  FBmp: TLazreportBitmap;
   X, Y: Integer;
 begin
   DrawRectView(View);
@@ -695,7 +695,7 @@ begin
 end;
 
 procedure TlrPdfExportFilter.WriteTextRect(AExportFont: TExportFontItem; X, Y,
-  W: TPDFFloat; AText: string; AHAlign: TAlignment);
+  W: TPDFFloat; AText: string; AHAlign: TAlignment; angle: TPDFFloat);
 var
   FTW, FTH: Single;
   X1: TPDFFloat;
@@ -731,7 +731,7 @@ begin
           X1:=fX;
       end;
   end;
-  FCurPage.WriteText(X1, Y1, AText);
+  FCurPage.WriteText(X1, Y1, AText, angle);
 end;
 
 procedure TlrPdfExportFilter.DrawRect(X, Y, W, H: TPDFFloat; ABorderColor,
@@ -827,7 +827,7 @@ begin
   FCurPage.DrawEllipse(fX, fY + fH, fW, fH, ABorderWidth, (AFillColor <> clNone), (ABorderColor <> clNone))
 end;
 
-procedure TlrPdfExportFilter.DrawImage(X, Y, W, H: integer; ABmp: TBitmap);
+procedure TlrPdfExportFilter.DrawImage(X, Y, W, H: integer; ABmp: TLazreportBitmap);
 var
   X1, Y1, W1, H1: TPDFFloat;
   S: TMemoryStream;
@@ -852,12 +852,12 @@ end;
 
 procedure TlrPdfExportFilter.DrawLRObjectInternal(View: TfrView);
 var
-  FBmp: TBitmap;
+  FBmp: TLazReportBitmap;
   X, Y: Integer;
 begin
   X:=View.X;
   Y:=View.Y;
-  FBmp:=TBitmap.Create;
+  FBmp:=TLazReportBitmap.Create;
   try
     FBmp.Width:=View.DX + 1;
     FBmp.Height:=View.DY + 1;
@@ -995,7 +995,7 @@ begin
     if TfrMemoView(View).Justify and not TfrMemoView(View).LastLine then
       WriteTextRectJustify(FCurFont, X + InternalGapX, Y, W, View.dy, Text, true)
     else
-      WriteTextRect(FCurFont, X + InternalGapX, Y, W, Text, TfrMemoView(View).Alignment);
+      WriteTextRect(FCurFont, X + InternalGapX, Y, W, Text, TfrMemoView(View).Alignment, TfrMemoView(View).Angle);
   end;
 end;
 

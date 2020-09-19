@@ -12,7 +12,11 @@ unit LR_e_htmldiv;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, Graphics;
+  Classes, SysUtils, LR_Class, Graphics
+  {$IFDEF LCLNOGUI}
+  , fpImage, fpCanvas, lr_ngcanvas
+  {$ENDIF}
+  ;
 
 type
   TfrHtmlDivExport = class(TComponent)
@@ -202,9 +206,14 @@ var
   BrdW: integer;
   BLeft, BTop, BRight, BBottom: integer;
   St: string;
-  B64: TBase64EncodingStream;
+  {$IFDEF LCLNOGUI}
+  Png: TMemoryStream;
+  tmpBmp: TLazReportBitmap;
+  {$ELSE}
   Png: TPortableNetworkGraphic;
-  BCBmp: TBitmap;
+  {$ENDIF}
+  B64: TBase64EncodingStream;
+  BCBmp: TLazReportBitmap;
   CS: TChunkStream;
 begin
   W := View.dx;
@@ -251,12 +260,47 @@ begin
       WriteString('data:image/png;base64,')
     else
       WriteString(ExtractFileName(TFileStream(Stream).FileName) + '_image_' + IntToStr(FImgCnt) + '.png');
-    Png := TPortableNetworkGraphic.Create;
+
     if EmbeddedImages then
     begin
       CS := TChunkStream.Create(Stream);
       B64 := TBase64EncodingStream.Create(CS);
     end;
+    {$IFDEF LCLNOGUI}
+      if View is TfrCustomBarCodeView then
+        BCBmp := TfrCustomBarCodeView(View).GenerateBitmap
+      else
+      if View is TfrPictureView then
+      begin
+        BCBmp := TLazreportBitmap.Create;
+        tmpBmp := TLazReportBitmap.Create;
+        BCBmp.Canvas.DrawingMode := dmAlphaBlend;
+        BCBmp.SetSize(View.dx, View.dy);
+        TVirtualCanvas(BCBmp.Canvas).Fill(colTransparent);
+        tmpBmp.LoadFromGraphic(TfrPictureView(View).Picture.Graphic);
+        if TfrPictureView(view).Stretched then
+          TVirtualCanvas(BCBmp.Canvas).StretchDraw(Rect(0, 0, View.dx, View.dy), tmpBmp)
+        else
+          TVirtualCanvas(BCBmp.Canvas).Draw(0, 0, tmpBmp);
+        tmpBmp.Free;
+      end;
+
+      Png := BCBmp.GetStreamAsFormat('.png', true);
+      Png.Position := 0;
+      BCBmp.Free;
+
+      if EmbeddedImages then
+      begin
+        Png.SaveToStream(B64);
+        B64.Flush;
+        B64.Free;
+        CS.Free;
+      end
+      else
+        Png.SaveToFile(TFileStream(Stream).FileName + '_image_' + IntToStr(FImgCnt) + '.png');
+      Png.Free;
+    {$ELSE}
+    Png := TPortableNetworkGraphic.Create;
     if View is TfrCustomBarCodeView then
     begin
       BCBmp := TfrCustomBarCodeView(View).GenerateBitmap;
@@ -282,6 +326,8 @@ begin
     else
       Png.SaveToFile(TFileStream(Stream).FileName + '_image_' + IntToStr(FImgCnt) + '.png');
     Png.Free;
+    {$ENDIF}
+
     WriteString(HTML_IMG2);
   end
   else

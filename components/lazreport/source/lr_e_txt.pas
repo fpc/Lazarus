@@ -16,7 +16,11 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, LResources, Graphics, GraphType, Controls, Forms,
-  Dialogs, LCLType, LCLIntf, LR_Class;
+  Dialogs, LCLType, LCLIntf, LR_Class
+  {$IFDEF LCLNOGUI}
+  , lr_ngcanvas
+  {$ENDIF}
+  ;
 
 type
 
@@ -174,14 +178,15 @@ begin
     if FDeleteEmptyLine and (S = '') then
       Continue;
 
-    if FPageBreaks then
-    begin
-      S :=S+ #12+LineEnding;
-      Stream.Write(s[1], Length(s));
-    end;
+    S :=S + LineEnding;
+    Stream.Write(s[1], Length(s));
   end;
-  s := #12+LineEnding;
-  Stream.Write(s[1], Length(s));
+
+  if FPageBreaks then
+  begin
+    s := #12+LineEnding;
+    Stream.Write(s[1], Length(s));
+  end;
 end;
 
 procedure TfrTextExportFilter.OnBeginPage;

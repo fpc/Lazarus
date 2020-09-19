@@ -327,7 +327,7 @@ end;
 procedure TlrSpreadSheetExportFilter.ShowBarCode(View: TfrCustomBarCodeView);
 var
   R: TExportObject;
-  FBmp: TBitmap;
+  FBmp: TLazreportBitmap;
   FX, FY: Integer;
   LHeader: ^TBitMapInfoHeader;
   M: TMemoryStream;
@@ -354,6 +354,10 @@ const
 +}
 begin
   R:=FExportMatrix.ExportObject(View);
+  {$IFDEF LCLNOGUI}
+  FBmp := View.GenerateBitmap;
+  M := FBmp.Stream;
+  {$ELSE}
   FBmp:=TBitmap.Create;
   FBmp.Width:=View.dx;
   FBmp.Height:=View.dy;
@@ -374,6 +378,7 @@ begin
 
   M:=TMemoryStream.Create;
   FBMP.SaveToStream(M);
+  {$ENDIF}
 
   LHeader := M.Memory + SizeOf(TBitMapFileHeader);
   LHeader^.biXPelsPerMeter := Ceil(F_DPI * 100 / 2.54);
@@ -385,12 +390,13 @@ begin
 
   R.ObjType:=gtPicture;
   FBmp.Free;
+  M.Free;
 end;
 
 function TlrSpreadSheetExportFilter.Setup: boolean;
 begin
   Result:=inherited Setup;
-
+  {$IFNDEF LCLNOGUI}
   if Assigned(lrSpreadSheetExportComponent) and not lrSpreadSheetExportComponent.ShowSetupForm then exit;
 
   leSpreadsheetParamsForm:=TleSpreadsheetParamsForm.Create(Application);
@@ -450,13 +456,16 @@ begin
       BandTypes := BandTypes - [btPageFooter];
   end;
   leSpreadsheetParamsForm.Free;
+  {$ENDIF}
 end;
 
 procedure TlrSpreadSheetExportFilter.AfterExport;
 begin
   inherited AfterExport;
+  {$IFNDEF LCLNOGUI}
   if FOpenAfterExport and FileExistsUTF8(FFileName) then
     OpenDocument(FFileName);
+  {$ENDIF}
 end;
 
 constructor TlrSpreadSheetExportFilter.Create(AStream: TStream);

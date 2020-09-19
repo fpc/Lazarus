@@ -27,6 +27,7 @@ uses
   ComponentEditors,
   LazarusPackageIntf;
 
+{$IFNDEF LCLNOGUI}
 type
 
   { TfrRepEditor }
@@ -38,10 +39,12 @@ type
     function GetVerbCount: Integer; override;
     procedure DoDesign;
   end;
-
+{$ENDIF}
   procedure register;
 
 implementation
+
+{$IFNDEF LCLNOGUI}
 
 {$R lr_register.res}
 
@@ -80,6 +83,12 @@ begin
     if TfrReportDesigner(frDesigner).Modified then
       Designer.Modified;
 end;
+{$ELSE}
 
+procedure Register;
+begin
+end;
+
+{$ENDIF}
 end.
 

@@ -1,0 +1,47 @@
+object WebDM: TWebDM
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  OldCreateOrder = False
+  Actions = <  
+    item
+      Name = 'defaultaction'
+      Default = True
+      OnRequest = defaultactionRequest
+      Template.AllowTagParams = False
+    end  
+    item
+      Name = 'reporteimg'
+      Default = False
+      OnRequest = reporteimgRequest
+      Template.AllowTagParams = False
+    end  
+    item
+      Name = 'reportedisks'
+      Default = False
+      OnRequest = reportedisksRequest
+      Template.AllowTagParams = False
+    end  
+    item
+      Name = 'lrcodereport'
+      Default = False
+      OnRequest = lrcodereportRequest
+      Template.AllowTagParams = False
+    end  
+    item
+      Name = 'crosstab'
+      Default = False
+      OnRequest = crosstabRequest
+      Template.AllowTagParams = False
+    end  
+    item
+      Name = 'roundrect'
+      Default = False
+      OnRequest = roundrectRequest
+      Template.AllowTagParams = False
+    end>
+  CreateSession = False
+  Height = 249
+  HorizontalOffset = 587
+  VerticalOffset = 285
+  Width = 382
+end

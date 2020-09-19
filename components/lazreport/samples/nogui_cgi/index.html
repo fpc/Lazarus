@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+		This html file is not supposed to be used as the start page in a http server 
+		like apache, instead it is used by the cgi or http application as the main 
+		page sent to the browser by the application. So it should be treated as input
+		data for either application.
+		
+		In order to be used as a normal, start web page, ajax should be used for 
+		querying the cgi or http server application, or other strategies on form
+		actions should be implemented, but this is not yet done at this time.
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>LazReport web tester</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		fieldset {
+			margin: 0;
+			float: left;
+			width: 50%;
+			display: inline-block;
+			box-sizing: border-box;
+		}
+		.tbmargin {
+			margin-top:10px;
+			margin-bottom:10px
+		}
+		.centered {
+			text-align:center;
+		}
+	</style>
+	<script>
+		function log(msg) {
+			let logdiv = document.getElementById("log");
+			logdiv.innerHTML = msg + "<br><br>";
+		}
+		function isHttpServer() {
+			let index = window.location.href.indexOf(".cgi");
+			return (index<0);
+		}
+		function changeVisible(id, show, blockOrInline="inline") {
+			x = document.getElementById(id);
+			if (x) {
+				if (show)
+					x.style.display = blockOrInline;
+				else
+					x.style.display = "none";
+			}
+		}		
+		function checkOptions() {
+			let backend = document.forms[0]["backend"].value;
+			let report = document.forms[0]["report"].value;
+			let imgfs = document.getElementById("fsimg");
+			let sheetfs = document.getElementById("fssheet");
+						
+			//log("report: "+ report + ", backend: "+backend);
+			
+			switch (backend) {
+				case "img":
+					imgfs.disabled = false;
+					sheetfs.disabled = true;
+					break;								
+				case "sheet":
+					imgfs.disabled = true;
+					sheetfs.disabled = false;
+					break;								
+				default:
+					imgfs.disabled = true;
+					sheetfs.disabled = true;
+					break;								
+			}
+			
+			changeVisible("btnTerminate", isHttpServer());
+		}
+		function rewriteFormAction(form) {
+			let backend = form["backend"].value;
+			let report = form["report"].value;
+			let lraction = form.getAttribute("lraction");
+			let act = lraction + report;
+			//log("action before: " + form.action + "<br>action after: " + act);
+			
+			form.action = act;
+		}
+	</script>
+  </head>
+<body style="margin:0; padding:0;">
+	<div id="header" class="centered">
+		<h1>Welcome to the LazReport NO-GUI Tester</h1>
+		<div id="log">
+		</div>
+	</div>
+	<div id="form" style="width:80%; margin: 0px auto;">
+		<form onsubmit="rewriteFormAction(this);" method="GET" target="docview" lraction="%uri%/web/">
+			<fieldset id="fsreport" class="tbmargin">
+				<legend>Select a report</legend>
+				<input type="radio" id="reporteimg" name="report" value="reporteimg">
+				<label for="reporteimg">Images Report</label><br>
+				<input type="radio" id="reportedisks" name="report" value="reportedisks">
+				<label for="reportedisks">Disks Inventory Report</label><br>
+				<input type="radio" id="lrcodereport" name="report" value="lrcodereport">
+				<label for="lrcodereport">LRCodeReport</label><br>
+				<input type="radio" id="crosstab" name="report" value="crosstab" checked>
+				<label for="crosstab">CrossTab Report</label><br>
+				<input type="radio" id="roundrect" name="report" value="roundrect">
+				<label for="roundrect">RoundRects</label><br>
+			</fieldset>
+			<fieldset id="fsbackend" class="tbmargin">
+				<legend>Select a backend</legend>
+				<input type="radio" id="powerpdf" name="backend" value="powerpdf" onchange="checkOptions()" checked>
+				<label for="powerpdf">PDF using PowerPDF</label><br>		
+				<input type="radio" id="fclpdf" name="backend" value="fclpdf" onchange="checkOptions()">
+				<label for="fclpdf">PDF using the FCL's PDF support</label><br>		
+				<input type="radio" id="htmldiv" name="backend" value="htmldiv" onchange="checkOptions()">
+				<label for="htmldiv">HTML using div</label><br>		
+				<input type="radio" id="images" name="backend" value="img" onchange="checkOptions()">
+				<label for="images">Report to an image</label><br>
+				<input type="radio" id="spreadsheet" name="backend" value="sheet" onchange="checkOptions()">
+				<label for="spreadsheet">Spreadsheet</label><br>
+				<input type="radio" id="text" name="backend" value="text" onchange="checkOptions()">
+				<label for="text">Plain Text (txt)</label><br>
+				<input type="radio" id="csv" name="backend" value="csv" onchange="checkOptions()">
+				<label for="csv">Comma Separated Values (csv)</label><br>
+			</fieldset>
+			<fieldset id="fsimg">
+				<legend>Format for 'Report to images'</legend>
+				<input type="radio" id="imgbmp" name="imgext" value="bmp">
+				<label for="imgbmp">.BMP</label><br>		
+				<input type="radio" id="imgpng" name="imgext" value="png" checked>
+				<label for="imgpng">.PNG</label><br>		
+				<input type="radio" id="imgjpg" name="imgext" value="jpg">
+				<label for="imgjpg">.JPG</label><br>		
+			</fieldset>
+			<fieldset id="fssheet">
+				<legend>Format for 'Spreadsheet'</legend>
+				<input type="radio" id="xls" name="shext" value="xls">
+				<label for="xls">Excel .xls format</label><br>		
+				<input type="radio" id="xlsx" name="shext" value="xlsx" checked>
+				<label for="xlsx">Excel .xlsx format</label><br>		
+				<input type="radio" id="odf" name="shext" value="odf">
+				<label for="odf">Open/Libre Office .odf</label><br>		
+			</fieldset>
+			<div>&nbsp;</div>
+			<div class="tbmargin centered">
+				<input id="btnSubmit" type="submit" value="Run Report">
+				<input id="btnTerminate" type="submit" value="Terminate HTTP server" formaction="/Terminate">
+			</div>
+		</form>
+	</div>
+	<div class="tbmargin centered">
+		<iframe id="iframe" name="docview" title="Report Viewer" height="550px" width="80%"></iframe>
+	</div>
+	
+  <script>
+	checkOptions();
+  </script>
+  
+</body>
+</html>

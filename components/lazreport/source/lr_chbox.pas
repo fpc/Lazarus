@@ -64,12 +64,15 @@ type
 
 implementation
 
-{$R lr_checkbox.res}
-
 uses LR_Utils, LR_Const;
+
+{$IFNDEF LCLNOGUI}
+
+{$R lr_checkbox.res}
 
 var
   lrBMPCheckBox : TBitMap;
+{$ENDIF}
 
 
 procedure TfrCheckBoxView.DrawCheck(ARect: TRect; aChecked: Boolean);
@@ -199,7 +202,7 @@ end;
 constructor TfrCheckBoxObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
-  
+  {$IFNDEF LCLNOGUI}
   if not assigned(lrBMPCheckBox) {and not (csDesigning in ComponentState)} then
   begin
     lrBMPCheckBox := TBitMap.Create;
@@ -207,11 +210,17 @@ begin
 
     frRegisterObject(TfrCheckBoxView, lrBMPCheckBox, sInsCheckBox, nil);
   end;
+  {$ENDIF}
 end;
 
+{$IFNDEF LCLNOGUI}
 initialization 
   lrBMPCheckBox:=nil;
 finalization
   if Assigned(lrBMPCheckBox) then
     FreeAndNil(lrBMPCheckBox);
+{$ELSE}
+initialization
+  frRegisterObject(TfrCheckBoxView, nil, sInsCheckBox, nil);
+{$ENDIF}
 end.

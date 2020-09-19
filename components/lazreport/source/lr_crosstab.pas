@@ -211,7 +211,7 @@ const
     ftBCD, ftAutoInc, ftLargeint];
 
 implementation
-uses lr_CrossTabEditor, LR_Utils, LR_Const, strutils, variants, Math;
+uses {$IFNDEF LCLNOGUI}lr_CrossTabEditor, {$ENDIF}LR_Utils, LR_Const, strutils, variants, Math;
 
 {$R *.res}
 
@@ -1226,6 +1226,7 @@ begin
   FTotalRHCell.SaveToStream(Stream);
 end;
 
+{$IFNDEF LCLNOGUI}
 procedure InitializeCrosstAddin;
 begin
   frSetAddinHint(TlrCrossView, sInsCrossTab);
@@ -1246,5 +1247,9 @@ initialization
 finalization
   if Assigned(lrBMPCrossView) then
     FreeAndNil(lrBMPCrossView);
+{$ELSE}
+initialization
+  frRegisterObject(TlrCrossView, nil, '', nil, otlReportView, nil, nil);
+{$ENDIF}
 end.
 

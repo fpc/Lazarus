@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="lazreport"/>
-    <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Olivier Guilbaud, Jesus Reyes A., Aleksey Lagunov"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -23,8 +24,8 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
     <License Value="Modified LGPL
 See license.txt and license-lazreport.txt for details.
 "/>
-    <Version Minor="9" Release="9"/>
-    <Files Count="70">
+    <Version Major="1"/>
+    <Files Count="71">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -292,7 +293,7 @@ See license.txt and license-lazreport.txt for details.
       </Item66>
       <Item67>
         <Filename Value="lr_previewtoolsabstract.pas"/>
-        <UnitName Value="lr_previewtoolsabstract"/>
+        <UnitName Value="lr_PreviewToolsAbstract"/>
       </Item67>
       <Item68>
         <Filename Value="lr_crossarray.pas"/>
@@ -304,14 +305,18 @@ See license.txt and license-lazreport.txt for details.
       </Item69>
       <Item70>
         <Filename Value="lr_crosstabeditor.pas"/>
-        <UnitName Value="lr_crosstabeditor"/>
+        <UnitName Value="lr_CrossTabEditor"/>
       </Item70>
+      <Item71>
+        <Filename Value="lr_ngcanvas.pas"/>
+        <UnitName Value="lr_ngcanvas"/>
+      </Item71>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>
         <PackageName Value="SynEdit"/>
@@ -335,7 +340,6 @@ See license.txt and license-lazreport.txt for details.
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>
