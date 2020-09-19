@@ -2950,6 +2950,7 @@ components/lazreport/samples/nogui_cgi/data/SalesCustomer.dbf -text
 components/lazreport/samples/nogui_cgi/data/disco.dbf -text
 components/lazreport/samples/nogui_cgi/data/disco.mdx -text
 components/lazreport/samples/nogui_cgi/demo_cross.lrf svneol=native#text/xml
+components/lazreport/samples/nogui_cgi/deploy.bat svneol=native#text/x-msdos-program
 components/lazreport/samples/nogui_cgi/disks.lrf svneol=native#text/xml
 components/lazreport/samples/nogui_cgi/favicon.ico -text
 components/lazreport/samples/nogui_cgi/frroundrecttester.lrf svneol=native#text/xml
