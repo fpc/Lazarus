@@ -24,7 +24,7 @@ msgstr ""
 #: fperrormessages.msgfperrcannotwritememataddr
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrcannotwritememataddr"
-msgid "Failed to read Mem at Address $%1:x"
+msgid "Failed to write Mem at Address $%1:x"
 msgstr ""
 
 #: fperrormessages.msgfperrchangevariablenotsupported

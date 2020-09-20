@@ -34,8 +34,9 @@ msgstr "Falha ao ler memória no endereço $%1:x"
 
 #: fperrormessages.msgfperrcannotwritememataddr
 #, object-pascal-format, fuzzy
+#| msgid "Failed to read Mem at Address $%1:x"
 msgctxt "fperrormessages.msgfperrcannotwritememataddr"
-msgid "Failed to read Mem at Address $%1:x"
+msgid "Failed to write Mem at Address $%1:x"
 msgstr "Falha ao ler memória no endereço $%1:x"
 
 #: fperrormessages.msgfperrchangevariablenotsupported

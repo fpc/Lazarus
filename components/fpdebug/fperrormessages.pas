@@ -35,7 +35,7 @@ resourcestring
   MsgfpErrFailedReadRegiseter             = 'Failed to read data from register';
   MsgfpErrFailedWriteMem                  = 'Failed to write data';
   MsgfpInternalErrCanNotWriteInvalidMem   = 'Internal error writing data: Missing data location';
-  MsgfpErrCanNotWriteMemAtAddr            = 'Failed to read Mem at Address $%1:x';
+  MsgfpErrCanNotWriteMemAtAddr            = 'Failed to write Mem at Address $%1:x';
 
   // 200 LocationParser
   MsgfpErrLocationParser                  = 'Internal Error: Cannot calculate location.';
