@@ -26,13 +26,17 @@ resourcestring
   MsgfpErrInvalidNumber                   = 'Cannot parse number: %1:s';
   MsgfpErrCannotDereferenceType           = 'Cannot dereference Expression "%1:s"';
   MsgfpErrTypeHasNoIndex                  = 'Cannot access indexed element in expression %1:s';
+  MsgfpErrChangeVariableNotSupported      = 'Changing the value of this variable is not supported';
   // 100 memreader error
   MsgfpInternalErrfpErrFailedReadMem              = 'Internal error: Failed to read data from memory';
   MsgfpInternalErrCanNotReadInvalidMem            = 'Internal error: Missing data location';
   MsgfpErrReadMemSizeLimit                        = 'Memory read size exceeds limit';
   MsgfpErrCanNotReadMemAtAddr             = 'Failed to read Mem at Address $%1:x';
   MsgfpErrFailedReadRegiseter             = 'Failed to read data from register';
-  MsgfpInternalErrFailedWriteMem          = 'Failed to write data';
+  MsgfpErrFailedWriteMem                  = 'Failed to write data';
+  MsgfpInternalErrCanNotWriteInvalidMem   = 'Internal error writing data: Missing data location';
+  MsgfpErrCanNotWriteMemAtAddr            = 'Failed to read Mem at Address $%1:x';
+
   // 200 LocationParser
   MsgfpErrLocationParser                  = 'Internal Error: Cannot calculate location.';
   MsgfpErrLocationParserMemRead           = '%1:s (while calculating location)';          // Pass on nested error
@@ -199,13 +203,16 @@ begin
     fpErrInvalidNumber:                   Result := MsgfpErrInvalidNumber;
     fpErrCannotDereferenceType:           Result := MsgfpErrCannotDereferenceType;
     fpErrTypeHasNoIndex: Result := MsgfpErrTypeHasNoIndex;
+    fpErrChangeVariableNotSupported:      Result := MsgfpErrChangeVariableNotSupported;
 
     fpInternalErrCanNotReadInvalidMem: Result := MsgfpInternalErrCanNotReadInvalidMem;
     fpErrReadMemSizeLimit:             Result := MsgfpErrReadMemSizeLimit;
     fpInternalErrFailedReadMem:        Result := MsgfpInternalErrfpErrFailedReadMem;
     fpErrCanNotReadMemAtAddr:          Result := MsgfpErrCanNotReadMemAtAddr;
     fpErrFailedReadRegister:           Result := MsgfpErrFailedReadRegiseter;
-    fpErrFailedWriteMem:       Result := MsgfpInternalErrFailedWriteMem;
+    fpInternalErrCanNotWriteInvalidMem:Result := MsgfpInternalErrCanNotWriteInvalidMem;
+    fpErrFailedWriteMem:               Result := MsgfpErrFailedWriteMem;
+    fpErrCanNotWriteMemAtAddr:         Result := MsgfpErrCanNotWriteMemAtAddr;
 
     fpErrLocationParser:                 Result := MsgfpErrLocationParser;
     fpErrLocationParserMemRead:          Result := MsgfpErrLocationParserMemRead;

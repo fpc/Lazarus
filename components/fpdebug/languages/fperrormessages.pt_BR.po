@@ -28,12 +28,28 @@ msgstr "Impossível desreferenciar Expressão \"%1:s\""
 
 #: fperrormessages.msgfperrcannotreadmemataddr
 #, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotreadmemataddr"
 msgid "Failed to read Mem at Address $%1:x"
 msgstr "Falha ao ler memória no endereço $%1:x"
+
+#: fperrormessages.msgfperrcannotwritememataddr
+#, object-pascal-format, fuzzy
+msgctxt "fperrormessages.msgfperrcannotwritememataddr"
+msgid "Failed to read Mem at Address $%1:x"
+msgstr "Falha ao ler memória no endereço $%1:x"
+
+#: fperrormessages.msgfperrchangevariablenotsupported
+msgid "Changing the value of this variable is not supported"
+msgstr ""
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
 msgstr "Falha ao ler dados do registrador"
+
+#: fperrormessages.msgfperrfailedwritemem
+msgctxt "fperrormessages.msgfperrfailedwritemem"
+msgid "Failed to write data"
+msgstr ""
 
 #: fperrormessages.msgfperrinvalidnumber
 #, object-pascal-format
@@ -112,8 +128,8 @@ msgstr "Impossível acessar elemento indexado na expressão %1:s"
 msgid "Internal error: Missing data location"
 msgstr "Erro interno: Localização dos dados faltando"
 
-#: fperrormessages.msgfpinternalerrfailedwritemem
-msgid "Failed to write data"
+#: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
+msgid "Internal error writing data: Missing data location"
 msgstr ""
 
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem

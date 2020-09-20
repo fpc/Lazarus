@@ -17,11 +17,27 @@ msgstr ""
 
 #: fperrormessages.msgfperrcannotreadmemataddr
 #, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotreadmemataddr"
 msgid "Failed to read Mem at Address $%1:x"
+msgstr ""
+
+#: fperrormessages.msgfperrcannotwritememataddr
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotwritememataddr"
+msgid "Failed to read Mem at Address $%1:x"
+msgstr ""
+
+#: fperrormessages.msgfperrchangevariablenotsupported
+msgid "Changing the value of this variable is not supported"
 msgstr ""
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
+msgstr ""
+
+#: fperrormessages.msgfperrfailedwritemem
+msgctxt "fperrormessages.msgfperrfailedwritemem"
+msgid "Failed to write data"
 msgstr ""
 
 #: fperrormessages.msgfperrinvalidnumber
@@ -101,8 +117,8 @@ msgstr ""
 msgid "Internal error: Missing data location"
 msgstr ""
 
-#: fperrormessages.msgfpinternalerrfailedwritemem
-msgid "Failed to write data"
+#: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
+msgid "Internal error writing data: Missing data location"
 msgstr ""
 
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem

@@ -27,12 +27,28 @@ msgstr "Невозможно разыменовать выражение \"%1:s\
 
 #: fperrormessages.msgfperrcannotreadmemataddr
 #, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotreadmemataddr"
 msgid "Failed to read Mem at Address $%1:x"
 msgstr "Не удалось прочитать память по адресу $%1:x"
+
+#: fperrormessages.msgfperrcannotwritememataddr
+#, object-pascal-format, fuzzy
+msgctxt "fperrormessages.msgfperrcannotwritememataddr"
+msgid "Failed to read Mem at Address $%1:x"
+msgstr "Не удалось прочитать память по адресу $%1:x"
+
+#: fperrormessages.msgfperrchangevariablenotsupported
+msgid "Changing the value of this variable is not supported"
+msgstr ""
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
 msgstr "Не удалось прочитать данные из регистра"
+
+#: fperrormessages.msgfperrfailedwritemem
+msgctxt "fperrormessages.msgfperrfailedwritemem"
+msgid "Failed to write data"
+msgstr ""
 
 #: fperrormessages.msgfperrinvalidnumber
 #, object-pascal-format
@@ -111,8 +127,8 @@ msgstr "Невозможно получить доступ к элементу �
 msgid "Internal error: Missing data location"
 msgstr "Внутренняя ошибка: неизвестно расположение данных"
 
-#: fperrormessages.msgfpinternalerrfailedwritemem
-msgid "Failed to write data"
+#: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
+msgid "Internal error writing data: Missing data location"
 msgstr ""
 
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem

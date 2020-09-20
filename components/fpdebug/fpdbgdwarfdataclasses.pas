@@ -2099,11 +2099,6 @@ begin
           FStack.PushConst(NewValue);
         end;
       DW_OP_regx: begin
-          //if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
-          //  SetError;
-          //  exit;
-          //end;
-          //FStack.PushConst(NewValue);
           FStack.PushTargetRegister(ULEB128toOrdinal(CurData));
         end;
 

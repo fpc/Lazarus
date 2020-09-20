@@ -493,7 +493,6 @@ type
     function GetProcedureAtAddress: TFpValue; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
     function GetSizeOfAddress: Integer; virtual;
-    procedure DoReferenceReleased; override;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext);
     destructor Destroy; override;
@@ -1199,11 +1198,6 @@ end;
 function TFpDbgSymbolScope.FindSymbol(const AName: String): TFpValue;
 begin
   Result := nil;
-end;
-
-procedure TFpDbgSymbolScope.DoReferenceReleased;
-begin
-  inherited DoReferenceReleased;
 end;
 
 function TFpDbgSimpleLocationContext.GetMemManager: TFpDbgMemManager;
