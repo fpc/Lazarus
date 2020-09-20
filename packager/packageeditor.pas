@@ -3427,23 +3427,23 @@ procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEO
     if Control <> nil then
     begin
       if Control is TAbstractIDEOptionsEditor then
+      begin
+        Assert(False,'TPackageEditorForm.TraverseSettings: IDEOptionsEditor found under PropsPageControl');
         with TAbstractIDEOptionsEditor(Control) do
-        begin
-          case anAction of
+        case anAction of
           iodaRead: ReadSettings(AOptions);
           iodaWrite: WriteSettings(AOptions);
           iodaRestore: RestoreSettings(AOptions);
-          end;
         end;
+      end;
       for i := 0 to Control.ControlCount -1 do
         if Control.Controls[i] is TWinControl then
-        begin
           Traverse(TWinControl(Control.Controls[i]));
-        end;
     end;
   end;
 
 begin
+  DebugLn(['TPackageEditorForm.TraverseSettings: AOptions=', AOptions, ', Action=', anAction]);
   Traverse(PropsPageControl);
 end;
 
