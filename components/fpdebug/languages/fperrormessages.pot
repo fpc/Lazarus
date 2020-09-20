@@ -101,6 +101,10 @@ msgstr ""
 msgid "Internal error: Missing data location"
 msgstr ""
 
+#: fperrormessages.msgfpinternalerrfailedwritemem
+msgid "Failed to write data"
+msgstr ""
+
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem
 msgid "Internal error: Failed to read data from memory"
 msgstr ""

@@ -733,7 +733,28 @@ begin
     begin
     case AName of
       'rax': FUserRegs.regs64[rax] := AValue;
+      'rbx': FUserRegs.regs64[rbx] := AValue;
+      'rcx': FUserRegs.regs64[rcx] := AValue;
+      'rdx': FUserRegs.regs64[rdx] := AValue;
+      'rsi': FUserRegs.regs64[rsi] := AValue;
+      'rdi': FUserRegs.regs64[rdi] := AValue;
+      'rbp': FUserRegs.regs64[rbp] := AValue;
+      'rsp': FUserRegs.regs64[rsp] := AValue;
+
+      'r8': FUserRegs.regs64[r8] := AValue;
+      'r9': FUserRegs.regs64[r9] := AValue;
+      'r10': FUserRegs.regs64[r10] := AValue;
+      'r11': FUserRegs.regs64[r11] := AValue;
+      'r12': FUserRegs.regs64[r12] := AValue;
+      'r13': FUserRegs.regs64[r13] := AValue;
+      'r14': FUserRegs.regs64[r14] := AValue;
+      'r15': FUserRegs.regs64[r15] := AValue;
+
       'rip': FUserRegs.regs64[rip] := AValue;
+
+      'cs': FUserRegs.regs64[cs] := AValue;
+      'fs': FUserRegs.regs64[fs] := AValue;
+      'gs': FUserRegs.regs64[gs] := AValue;
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;

@@ -136,6 +136,8 @@ type
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
+
+    function WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
   end;
 
   { TDbgStackFrameInfo
@@ -1198,7 +1200,10 @@ var
   Process: TDbgProcess;
 begin
   Process := GetDbgProcess;
-  if not Process.GetThread(AContext.ThreadId, Result) then
+  // In fact, AContext should always be assigned, assuming that the main thread
+  // should be used is dangerous. But functions like TFpDbgMemManager.ReadSignedInt
+  // have a default value of nil for the context. Which is a lot of work to fix.
+  if not Assigned(AContext) or not Process.GetThread(AContext.ThreadId, Result) then
     Result := Process.MainThread;
 end;
 
@@ -1256,6 +1261,34 @@ begin
     AValue := ARegister.NumValue;
     result := true;
     end;
+end;
+
+function TDbgMemReader.WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
+var
+  ARegister: TDbgRegisterValue;
+  StackFrame: Integer;
+  AFrame: TDbgCallstackEntry;
+  CtxThread: TDbgThread;
+begin
+  result := false;
+  CtxThread := GetDbgThread(AContext);
+  if CtxThread = nil then
+    exit;
+
+  if AContext <> nil then // TODO: Always true?
+    StackFrame := AContext.StackFrame
+  else
+    StackFrame := 0;
+  if StackFrame = 0 then
+    begin
+    ARegister:=CtxThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    if assigned(ARegister) then
+      begin
+      CtxThread.SetRegisterValue(ARegister.Name, AValue);
+      CtxThread.LoadRegisterValues;
+      result := true;
+      end;
+    end
 end;
 
 function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;

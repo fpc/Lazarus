@@ -121,6 +121,11 @@ type
     function GetAsWideString: WideString; virtual;
     function GetAsFloat: Extended; virtual;
 
+    procedure SetAsCardinal(AValue: QWord); virtual;
+    procedure SetAsInteger(AValue: Int64); virtual;
+    procedure SetAsBool(AValue: Boolean); virtual;
+    procedure SetAsString(AValue: AnsiString); virtual;
+
     function GetAddress: TFpDbgMemLocation;  virtual;
     function DoGetSize(out ASize: TFpDbgValueSize): Boolean; virtual;
     function GetDataAddress: TFpDbgMemLocation;  virtual;
@@ -153,10 +158,10 @@ type
     property Kind: TDbgSymbolKind read GetKind;
     property FieldFlags: TFpValueFieldFlags read GetFieldFlags;
 
-    property AsInteger: Int64 read GetAsInteger;
-    property AsCardinal: QWord read GetAsCardinal;
-    property AsBool: Boolean read GetAsBool;
-    property AsString: AnsiString read GetAsString;
+    property AsInteger: Int64 read GetAsInteger write SetAsInteger;
+    property AsCardinal: QWord read GetAsCardinal write SetAsCardinal;
+    property AsBool: Boolean read GetAsBool write SetAsBool;
+    property AsString: AnsiString read GetAsString write SetAsString;
     property AsWideString: WideString read GetAsWideString;
     property AsFloat: Extended read GetAsFloat;
 
@@ -488,6 +493,7 @@ type
     function GetProcedureAtAddress: TFpValue; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
     function GetSizeOfAddress: Integer; virtual;
+    procedure DoReferenceReleased; override;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext);
     destructor Destroy; override;
@@ -536,18 +542,19 @@ type
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer; out ABytesRead: Cardinal): Boolean; override;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
+    function WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
   end;
 
-  { TFpDbgInfoCallContext }
+  { TFpDbgInfoAbstractCallContext }
 
   // This class is used to represent the context, just after the debugger made
   // the debugee call some function.
   // The special addition to make this work is that it is possible to set a
   // register-value by calling SetRegisterValue. Further this class is an empty
   // wrapper.
-  TFpDbgInfoCallContext = class(TFpDbgLocationContext)
+  TFpDbgAbstractCallContext = class(TFpDbgLocationContext)
   private
     FBaseContext: TFpDbgLocationContext;
     FMemManager: TFpDbgMemManager;
@@ -563,6 +570,9 @@ type
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
     destructor Destroy; override;
+
+    function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol): TFpValue; virtual; abstract;
+
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
     procedure SetError(const Message: string);
     property IsValid: Boolean read FIsValid;
@@ -658,9 +668,12 @@ begin
   FRegisterCache[ARegNum].Value := AValue;
 end;
 
-{ TFpDbgInfoCallContext }
+function TFpDbgCallMemReader.WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
+begin
+  Result := FBaseMemReader.WriteRegister(ARegNum, AValue, AContext);
+end;
 
-constructor TFpDbgInfoCallContext.Create(
+constructor TFpDbgAbstractCallContext.Create(
   const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
   AMemConverter: TFpDbgMemConvertor);
 begin
@@ -675,7 +688,7 @@ begin
   Inherited Create;
 end;
 
-destructor TFpDbgInfoCallContext.Destroy;
+destructor TFpDbgAbstractCallContext.Destroy;
 begin
   FMemManager.Free;
   FMemReader.Free;
@@ -683,37 +696,37 @@ begin
   inherited Destroy;
 end;
 
-function TFpDbgInfoCallContext.GetAddress: TDbgPtr;
+function TFpDbgAbstractCallContext.GetAddress: TDbgPtr;
 begin
   Result := FBaseContext.Address;
 end;
 
-function TFpDbgInfoCallContext.GetMemManager: TFpDbgMemManager;
+function TFpDbgAbstractCallContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := FMemManager;
 end;
 
-function TFpDbgInfoCallContext.GetSizeOfAddress: Integer;
+function TFpDbgAbstractCallContext.GetSizeOfAddress: Integer;
 begin
   Result := FBaseContext.SizeOfAddress;
 end;
 
-function TFpDbgInfoCallContext.GetStackFrame: Integer;
+function TFpDbgAbstractCallContext.GetStackFrame: Integer;
 begin
   Result := FBaseContext.StackFrame;
 end;
 
-function TFpDbgInfoCallContext.GetThreadId: Integer;
+function TFpDbgAbstractCallContext.GetThreadId: Integer;
 begin
   Result := FBaseContext.ThreadId;
 end;
 
-procedure TFpDbgInfoCallContext.SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
+procedure TFpDbgAbstractCallContext.SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
 begin
   FMemReader.SetRegisterValue(ARegNum, AValue);
 end;
 
-procedure TFpDbgInfoCallContext.SetError(const Message: string);
+procedure TFpDbgAbstractCallContext.SetError(const Message: string);
 begin
   FIsValid := False;
   FMessage := Message;
@@ -990,6 +1003,26 @@ begin
   Result := 0;
 end;
 
+procedure TFpValue.SetAsCardinal(AValue: QWord);
+begin
+  SetLastError(CreateError(fpErrChangeVariableNotSupported));
+end;
+
+procedure TFpValue.SetAsInteger(AValue: Int64);
+begin
+  SetLastError(CreateError(fpErrChangeVariableNotSupported));
+end;
+
+procedure TFpValue.SetAsBool(AValue: Boolean);
+begin
+  SetLastError(CreateError(fpErrChangeVariableNotSupported));
+end;
+
+procedure TFpValue.SetAsString(AValue: AnsiString);
+begin
+  SetLastError(CreateError(fpErrChangeVariableNotSupported));
+end;
+
 { TPasParserConstNumberSymbolValue }
 
 function TFpValueConstNumber.GetKind: TDbgSymbolKind;
@@ -1166,6 +1199,11 @@ end;
 function TFpDbgSymbolScope.FindSymbol(const AName: String): TFpValue;
 begin
   Result := nil;
+end;
+
+procedure TFpDbgSymbolScope.DoReferenceReleased;
+begin
+  inherited DoReferenceReleased;
 end;
 
 function TFpDbgSimpleLocationContext.GetMemManager: TFpDbgMemManager;

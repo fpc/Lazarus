@@ -262,6 +262,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
+    procedure SetAsInteger(AValue: Int64); override;
   end;
 
   { TFpValueDwarfCardinal }
@@ -271,6 +272,7 @@ type
     FValue: QWord;
   protected
     function GetAsCardinal: QWord; override;
+    procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
   end;
 
@@ -291,6 +293,7 @@ type
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsBool: Boolean; override;
+    procedure SetAsBool(AValue: Boolean); override;
   end;
 
   { TFpValueDwarfChar }
@@ -311,6 +314,7 @@ type
     function GetDerefAddress: TFpDbgMemLocation;
   protected
     function GetAsCardinal: QWord; override;
+    procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetAsString: AnsiString; override;
@@ -331,7 +335,9 @@ type
     //function IsValidTypeCast: Boolean; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
+    procedure SetAsCardinal(AValue: QWord); override;
     function GetAsString: AnsiString; override;
+    procedure SetAsString(AValue: AnsiString); override;
     // Has exactly 0 (if the ordinal value is out of range) or 1 member (the current value's enum)
     function GetMemberCount: Integer; override;
     function GetMember({%H-}AIndex: Int64): TFpValue; override;
@@ -397,6 +403,7 @@ type
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
+    procedure SetAsCardinal(AValue: QWord); override;
     function GetDataSize: TFpDbgValueSize; override;
   end;
 
@@ -2103,12 +2110,25 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsInteger
   else
-  if not MemManager.ReadSignedInt(OrdOrDataAddr, Size, Result) then begin
+  if not MemManager.ReadSignedInt(OrdOrDataAddr, Size, Result, Context) then begin
     Result := 0; // TODO: error
     SetLastError(MemManager.LastError);
   end;
 
   FIntValue := Result;
+end;
+
+procedure TFpValueDwarfInteger.SetAsInteger(AValue: Int64);
+var
+  Size: TFpDbgValueSize;
+begin
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
+    inherited SetAsCardinal(AValue)
+  else
+  if not MemManager.WriteSignedInt(OrdOrDataAddr, Size, AValue, Context) then begin
+    SetLastError(MemManager.LastError);
+  end;
+  Exclude(FEvaluated, doneUInt);
 end;
 
 { TDbgDwarfCardinalSymbolValue }
@@ -2126,7 +2146,7 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, Size, Result) then begin
+  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, Size, Result, Context) then begin
     Result := 0; // TODO: error
     SetLastError(MemManager.LastError);
   end;
@@ -2138,6 +2158,19 @@ function TFpValueDwarfCardinal.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfCardinal];
+end;
+
+procedure TFpValueDwarfCardinal.SetAsCardinal(AValue: QWord);
+var
+  Size: TFpDbgValueSize;
+begin
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
+    inherited SetAsCardinal(AValue)
+  else
+  if not MemManager.WriteUnsignedInt(OrdOrDataAddr, Size, AValue, Context) then begin
+    SetLastError(MemManager.LastError);
+  end;
+  Exclude(FEvaluated, doneUInt);
 end;
 
 { TFpValueDwarfFloat }
@@ -2166,7 +2199,7 @@ begin
     SetLastError(CreateError(fpErrorBadFloatSize));
   end
   else
-  if not MemManager.ReadFloat(OrdOrDataAddr, Size, Result) then begin
+  if not MemManager.ReadFloat(OrdOrDataAddr, Size, Result, Context) then begin
     Result := 0; // TODO: error
     SetLastError(MemManager.LastError);
   end;
@@ -2185,6 +2218,11 @@ end;
 function TFpValueDwarfBoolean.GetAsBool: Boolean;
 begin
   Result := QWord(GetAsCardinal) <> 0;
+end;
+
+procedure TFpValueDwarfBoolean.SetAsBool(AValue: Boolean);
+begin
+  SetAsCardinal(QWord(AValue));
 end;
 
 { TFpValueDwarfChar }
@@ -2249,7 +2287,7 @@ begin
   if (Size > 0) then begin
     Addr := OrdOrDataAddr;
     if not IsNilLoc(Addr) then begin
-      if not MemManager.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result) then
+      if not MemManager.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result, Context) then
         SetLastError(MemManager.LastError);
     end;
   end;
@@ -2333,7 +2371,7 @@ begin
       exit;
     end;
 
-    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
+    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], Context, [mmfPartialRead]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
       exit;
@@ -2369,7 +2407,7 @@ begin
       exit;
     end;
 
-    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], nil, [mmfPartialRead]) then begin
+    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], Context, [mmfPartialRead]) then begin
       Result := '';
       SetLastError(MemManager.LastError);
       exit;
@@ -2432,6 +2470,12 @@ begin
   end;
 end;
 
+procedure TFpValueDwarfPointer.SetAsCardinal(AValue: QWord);
+begin
+  if not MemManager.WriteSignedInt(OrdOrDataAddr, SizeVal(Context.SizeOfAddress), AValue, Context) then
+    SetLastError(MemManager.LastError);
+end;
+
 { TFpValueDwarfEnum }
 
 procedure TFpValueDwarfEnum.InitMemberIndex;
@@ -2477,12 +2521,25 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadEnum(OrdOrDataAddr, Size, Result) then begin
+  if not MemManager.ReadEnum(OrdOrDataAddr, Size, Result, Context) then begin
     SetLastError(MemManager.LastError);
     Result := 0; // TODO: error
   end;
 
   FValue := Result;
+end;
+
+procedure TFpValueDwarfEnum.SetAsCardinal(AValue: QWord);
+var
+  Size: TFpDbgValueSize;
+begin
+  if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
+    inherited SetAsCardinal(AValue)
+  else
+  if not MemManager.WriteEnum(OrdOrDataAddr, Size, AValue, Context) then begin
+    SetLastError(MemManager.LastError);
+  end;
+  Exclude(FEvaluated, doneUInt);
 end;
 
 function TFpValueDwarfEnum.GetAsString: AnsiString;
@@ -2513,6 +2570,18 @@ begin
   end
   else
     Result := nil;
+end;
+
+procedure TFpValueDwarfEnum.SetAsString(AValue: AnsiString);
+var
+  EnumSymbol: TFpSymbol;
+begin
+  EnumSymbol := TypeInfo.NestedSymbolByName[AValue];
+  if Assigned(EnumSymbol) then begin
+    SetAsCardinal(EnumSymbol.OrdinalValue);
+  end
+  else
+    SetLastError(CreateError(fpErrAnyError, ['Not a valid enum-value']));
 end;
 
 { TFpValueDwarfEnumMember }
@@ -2581,7 +2650,7 @@ begin
   if t = nil then exit;
 
   GetDwarfDataAddress(DAddr);
-  if not MemManager.ReadSet(DAddr, Size, FMem) then begin
+  if not MemManager.ReadSet(DAddr, Size, FMem, Context) then begin
     SetLastError(MemManager.LastError);
     exit; // TODO: error
   end;
@@ -2799,6 +2868,19 @@ begin
   Result := QWord(LocToAddrOrNil(Addr));
 end;
 
+procedure TFpValueDwarfStruct.SetAsCardinal(AValue: QWord);
+var
+  Addr: TFpDbgMemLocation;
+begin
+  Addr := Address;
+  if not IsValidLoc(Addr) then
+    SetLastError(CreateError(fpErrFailedWriteMem))
+  else begin
+    if not MemManager.WriteUnsignedInt(Addr, SizeVal(Context.SizeOfAddress), AValue, Context) then
+      SetLastError(MemManager.LastError);
+  end;
+end;
+
 function TFpValueDwarfStruct.GetDataSize: TFpDbgValueSize;
 begin
   Assert((FDataSymbol = nil) or (FDataSymbol.TypeInfo is TFpSymbolDwarf));
@@ -2949,7 +3031,7 @@ end;
 function TFpValueDwarfArray.GetAsCardinal: QWord;
 begin
   // TODO cache
-  if not MemManager.ReadUnsignedInt(OrdOrAddress, SizeVal(AddressSize), Result) then begin
+  if not MemManager.ReadUnsignedInt(OrdOrAddress, SizeVal(AddressSize), Result, Context) then begin
     SetLastError(MemManager.LastError);
     Result := 0;
   end;
@@ -4829,7 +4911,10 @@ var
   i: Integer;
   s, s1, s2: String;
 begin
-  if AIndex = '' then
+  if AIndex = '' then begin
+    Result := nil;
+    Exit;
+  end;
   s1 := UTF8UpperCase(AIndex);
   s2 := UTF8LowerCase(AIndex);
   CreateMembers;

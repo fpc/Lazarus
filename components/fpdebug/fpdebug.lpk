@@ -216,7 +216,11 @@ File(s) with other licenses (see also header in file(s):
       </Item>
       <Item>
         <Filename Value="fpdbghardcodedfreepascalinfo.pas"/>
-        <UnitName Value="fpdbghardcodedfreepascalinfo"/>
+        <UnitName Value="FpDbgHardcodedFreepascalInfo"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgcallcontextinfo.pas"/>
+        <UnitName Value="fpdbgcallcontextinfo"/>
       </Item>
     </Files>
     <i18n>

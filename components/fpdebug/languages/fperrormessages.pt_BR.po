@@ -112,6 +112,10 @@ msgstr "Impossível acessar elemento indexado na expressão %1:s"
 msgid "Internal error: Missing data location"
 msgstr "Erro interno: Localização dos dados faltando"
 
+#: fperrormessages.msgfpinternalerrfailedwritemem
+msgid "Failed to write data"
+msgstr ""
+
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem
 msgid "Internal error: Failed to read data from memory"
 msgstr "Erro interno: Falha ao ler dados da memória"

@@ -11,8 +11,8 @@ uses
   Maps,
   LazLoggerBase, LazClasses,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  FpDbgDisasX86, FpDbgUtil,
-  FpDbgClasses,
+  FpDbgDisasX86,
+  FpDbgClasses, FpDbgCallContextInfo, FpDbgUtil,
   {$ifdef windows}  FpDbgWinClasses,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
   {$ifdef linux}  FpDbgLinuxClasses,  {$endif}
@@ -425,6 +425,8 @@ begin
 
   FRoutineAddress := LocToAddr(ARoutineAddress);
   FCallContext := ACallContext;
+
+  StoreRegisters;
 end;
 
 procedure TDbgControllerCallRoutineCmd.Init;
@@ -433,7 +435,6 @@ begin
 
   FStep := sSingleStep;
   StoreInstructionPointer;
-  StoreRegisters;
   InsertCallInstructionCode;
 end;
 

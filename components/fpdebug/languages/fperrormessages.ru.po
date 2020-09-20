@@ -111,6 +111,10 @@ msgstr "Невозможно получить доступ к элементу �
 msgid "Internal error: Missing data location"
 msgstr "Внутренняя ошибка: неизвестно расположение данных"
 
+#: fperrormessages.msgfpinternalerrfailedwritemem
+msgid "Failed to write data"
+msgstr ""
+
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem
 msgid "Internal error: Failed to read data from memory"
 msgstr "Внутренняя ошибка: не удалось прочитать данные из памяти"

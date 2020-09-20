@@ -202,11 +202,11 @@ type
     function GetClassName: string;
   end;
 
-  { TFpDbgHardcodedContext }
+  { TFpDbgHardcodedScope }
 
-  // Just a hack to simulate a real context, when FindSymbolScope does not return
-  // a context.
-  TFpDbgHardcodedContext = class(TFpDbgSymbolScope)
+  // Just a hack to simulate a real scope, when FindSymbolScope does not return
+  // a scope.
+  TFpDbgHardcodedScope = class(TFpDbgSymbolScope)
   public
     constructor Create(AMemManager: TFpDbgMemManager; AnAdressSize: Integer; AThreadId: Integer);
   end;
@@ -311,9 +311,9 @@ begin
   end;
 end;
 
-{ TFpDbgHardcodedContext }
+{ TFpDbgHardcodedScope }
 
-constructor TFpDbgHardcodedContext.Create(AMemManager: TFpDbgMemManager; AnAdressSize: Integer; AThreadId: Integer);
+constructor TFpDbgHardcodedScope.Create(AMemManager: TFpDbgMemManager; AnAdressSize: Integer; AThreadId: Integer);
 begin
   inherited Create(
     TFpDbgSimpleLocationContext.Create(AMemManager, 0, AnAdressSize, AThreadId, 0)

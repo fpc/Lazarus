@@ -738,6 +738,7 @@ type
     procedure PushCopy(AFromIndex: Integer);
     procedure PushConst(const AVal: TDBGPtr);
     procedure PushTargetMem(const AVal: TDBGPtr);
+    procedure PushTargetRegister(const ARegNum: Cardinal);
     function  Peek: PFpDbgMemLocation;
     function  PeekForDeref: PFpDbgMemLocation;
     function  PeekKind: TFpDbgMemLocationType; // Can be called on empty stack
@@ -1874,6 +1875,15 @@ begin
   inc(FCount);
 end;
 
+procedure TDwarfLocationStack.PushTargetRegister(const ARegNum: Cardinal);
+begin
+  if Length(FList) <= FCount then
+    IncCapacity;
+  FList[FCount] := Default(TFpDbgMemLocation);
+  FList[FCount] := RegisterLoc(ARegNum);
+  inc(FCount);
+end;
+
 function TDwarfLocationStack.Peek: PFpDbgMemLocation;
 begin
   Assert(0 < FCount);
@@ -2089,11 +2099,12 @@ begin
           FStack.PushConst(NewValue);
         end;
       DW_OP_regx: begin
-          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
-            SetError;
-            exit;
-          end;
-          FStack.PushConst(NewValue);
+          //if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
+          //  SetError;
+          //  exit;
+          //end;
+          //FStack.PushConst(NewValue);
+          FStack.PushTargetRegister(ULEB128toOrdinal(CurData));
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
