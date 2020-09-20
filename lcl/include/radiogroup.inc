@@ -146,12 +146,12 @@ end;
 
 procedure TCustomRadioGroup.ItemEnter(Sender: TObject);
 begin
-  DoEnter;
+  if Assigned(FOnItemEnter) then FOnItemEnter(Sender);
 end;
 
 procedure TCustomRadioGroup.ItemExit(Sender: TObject);
 begin
-  DoExit;
+  if Assigned(FOnItemExit) then FOnItemExit(Sender);
 end;
 
 procedure TCustomRadioGroup.ItemResize(Sender: TObject);

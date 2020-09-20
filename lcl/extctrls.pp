@@ -683,6 +683,8 @@ type
     FItems: TStrings;
     FLastClickedItemIndex: integer;
     FOnClick: TNotifyEvent;
+    FOnItemEnter: TNotifyEvent;
+    FOnItemExit: TNotifyEvent;
     FOnSelectionChanged: TNotifyEvent;
     FReading: boolean;
     FUpdatingItems: Boolean;
@@ -725,6 +727,8 @@ type
     property Columns: integer read FColumns write SetColumns default 1;
     property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnItemEnter: TNotifyEvent read FOnItemEnter write FOnItemEnter;
+    property OnItemExit: TNotifyEvent read FOnItemExit write FOnItemExit;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
@@ -762,6 +766,8 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnItemEnter;
+    property OnItemExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
