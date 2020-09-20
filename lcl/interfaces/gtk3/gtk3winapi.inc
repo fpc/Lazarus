@@ -116,7 +116,12 @@ begin
       exit;
     end;
     if Gtk3IsGdkWindow(AWidget.Widget^.window) then
-      gdk_window_get_origin(AWidget.Widget^.window, @Pt.X, @Pt.Y)
+    begin
+      gdk_window_get_origin(AWidget.Widget^.window, @Pt.X, @Pt.Y);
+      gtk_widget_get_allocation(AWidget.Widget, @TempAlloc);
+      Pt.X += TempAlloc.x;
+      Pt.Y += TempAlloc.y;
+    end
     else
     begin
       gtk_widget_get_allocation(AWidget.Widget, @TempAlloc);

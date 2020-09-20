@@ -1495,7 +1495,7 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  if ACtl.WidgetType*[wtEntry,wtComboBox,wtScrollBar,wtSpinEdit]<>[] then
+  if ACtl.WidgetType*[wtEntry,wtComboBox,wtScrollBar,wtSpinEdit,wtHintWindow]<>[] then
   begin
     Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
     Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
@@ -1512,7 +1512,7 @@ begin
   end;
   ACtl.DeliverMessage(Msg);
 
-  if (wtWindow in ACtl.WidgetType) and
+ (* if (wtWindow in ACtl.WidgetType) and
     ((AGdkRect^.x <> ACtl.LCLObject.Left) or (AGdkRect^.y <> ACtl.LCLObject.Top)) then
   begin
     FillChar(MoveMsg, SizeOf(MoveMsg), #0);
@@ -1524,7 +1524,7 @@ begin
     DebugLn('SEND MOVE MESSAGE X=',dbgs(AGdkRect^.x),' Y=',dbgs(AGdkRect^.y),' control ',dbgsName(ACtl.LCLObject));
     {$ENDIF}
     ACtl.DeliverMessage(MoveMsg);
-  end;
+  end;   *)
 end;
 
 function Gtk3ResizeEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; Data: gpointer): gboolean; cdecl;
@@ -4622,17 +4622,21 @@ begin
       if (ndx>0) then
       begin
         ParentMenu:=menuItem.Parent.Items[ndx-1];
-        if (MenuItem.GroupIndex>0) and (ParentMenu.GroupIndex=MenuItem.GroupIndex) then
+        if (MenuItem.GroupIndex>=0) and (ParentMenu.GroupIndex=MenuItem.GroupIndex) then
         begin
           pl:=PGtkRadioMenuItem(TGtk3MenuItem(ParentMenu.Handle).Widget)^.get_group;
           PGtkRadioMenuItem(Result)^.set_group(pl);
         end;
       end;
     end;
+    //PGtkRadioMenuItem(Result)^.set_active(MenuItem.Checked);
   end
   else
   if MenuItem.IsCheckItem and not MenuItem.HasIcon then
-    Result := TGtkCheckMenuItem.new
+  begin
+    Result := TGtkCheckMenuItem.new;
+    PGtkCheckMenuItem(Result)^.set_active(MenuItem.Checked);
+  end
   else
     Result := TGtkMenuItem.new;
 
