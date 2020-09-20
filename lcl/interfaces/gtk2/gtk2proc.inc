@@ -4067,6 +4067,7 @@ function GetControlWindow(Widget: Pointer) : PGDKWindow;
 begin
   if Widget <> nil then 
   begin
+    gtk_widget_realize(Widget); // associate with window
     If not GTKWidgetIsA(PGTKWidget(Widget), GTK_Layout_Get_Type) then
       Result := PGTKWidget(Widget)^.Window
     else
