@@ -1200,7 +1200,7 @@ class procedure TWin32WSCustomComboBox.SetDroppedDown(
   const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
 var
   aSelStart, aSelLength: Integer;
-  aText: string;
+  aText: string = '';
   Editable: Boolean;
   OldItemIndex: Integer;
 begin
@@ -1217,7 +1217,8 @@ begin
 
     OldItemIndex := GetItemIndex(ACustomComboBox);
     SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
-    SetItemIndex(ACustomComboBox, OldItemIndex);
+    if GetKeyState(VK_RETURN) < 0 then
+      SetItemIndex(ACustomComboBox, OldItemIndex);
 
     if Editable then
     begin
