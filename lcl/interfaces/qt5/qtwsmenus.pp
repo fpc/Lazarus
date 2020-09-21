@@ -400,7 +400,7 @@ begin
   if AMenuItem.HasParent then
   begin
     if HasIcon then
-      AMenuItem.RecreateHandle
+      TQtMenu(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
     else
       TQtMenu(AMenuItem.Handle).setImage(nil);
   end;
