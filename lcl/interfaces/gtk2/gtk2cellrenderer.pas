@@ -425,6 +425,7 @@ var
   ListItem: TListItem;
   Value: TGValue;
 begin
+  FillByte(Value{%H-},SizeOf(Value),0);
   if G_IS_OBJECT(cell) = false then
     exit;
 
