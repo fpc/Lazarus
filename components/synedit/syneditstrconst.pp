@@ -444,6 +444,12 @@ resourcestring
 
   SYNS_emcPluginMultiCaretToggleCaret = 'Toggle extra caret';
   SYNS_emcPluginMultiCaretSelectionToCarets = 'Set carets at EOL in selected lines';
+
+  //SynMacroRecorder
+  sCannotRecord = 'Cannot record macro when recording';
+  sCannotPlay = 'Cannot playback macro when recording';
+  sCannotPause = 'Can only pause when recording';
+  sCannotResume = 'Can only resume when paused';
 implementation
 
 end.

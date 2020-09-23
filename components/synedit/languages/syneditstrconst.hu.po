@@ -11,6 +11,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Csak rögzítés közben lehet szüneteltetni"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Rögzítés közben nem lehet makrót lejátszani"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Rögzítés közben nem lehet makrót rögzíteni"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Csak szüneteltetés közben lehet folytatni"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Magyarázat"

@@ -9,6 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Kann nur während der Aufnahme anhalten"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Kann Makro während der Aufnahme nicht abspielen"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Kann Makro während der Aufnahme nicht aufnehmen"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Kann nur während der Pause wiederaufnehmen"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

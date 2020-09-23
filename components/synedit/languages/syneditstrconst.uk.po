@@ -13,6 +13,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Призупинитись можна лише під час запису"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Неможливо відтворити макрос під час запису"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Неможливо почати писати макрос під час запису"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Продовжити можна лише якщо зупинено"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Анотація"

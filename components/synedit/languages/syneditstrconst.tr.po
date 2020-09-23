@@ -12,6 +12,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: tr_TR\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Sadece kayıt sırasında duraklatabilir"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Kaydederken makro kayıttan oynatılamıyor"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Kaydederken makro kaydedilemiyor"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Yalnızca duraklatılmış olduğunda devam edebilir"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Ek açıklama"

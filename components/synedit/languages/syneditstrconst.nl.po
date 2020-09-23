@@ -9,6 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr ""
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr ""
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr ""
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr ""
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

@@ -12,6 +12,22 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "录制宏时只能暂停"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "录制宏时无法回放宏"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "不能录制宏 当记录时"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "只能恢复 当暂停时"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "注释"

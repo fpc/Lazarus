@@ -42,13 +42,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazUTF8Classes, Types, LCLType, Menus,
-  SynEdit, SynEditKeyCmds, SynEditPlugins;
-
-resourcestring
-  sCannotRecord = 'Cannot record macro when recording';
-  sCannotPlay = 'Cannot playback macro when recording';
-  sCannotPause = 'Can only pause when recording';
-  sCannotResume = 'Can only resume when paused';
+  SynEdit, SynEditKeyCmds, SynEditPlugins, SynEditStrConst;
 
 type
   TSynMacroState = (msStopped, msRecording, msPlaying, msPaused); // msPaused = paused recording

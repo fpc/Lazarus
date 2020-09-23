@@ -11,6 +11,22 @@ msgstr ""
 "Language: cs\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Pozastavit lze pouze při nahrávání"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Nelze přehrát makro při nahrávání"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Nelze zaznamenávat makro během zaznamenávání"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Obnovit lze jen pokud je pozastaveno"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

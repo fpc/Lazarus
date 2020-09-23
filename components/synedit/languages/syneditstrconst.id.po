@@ -12,6 +12,22 @@ msgstr ""
 "X-Poedit-Country: INDONESIA\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Hanya bisa istirahat ketika merekam"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Tidak bisa memainkan makro saat merekam"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Tidak bisa merekam makro saat merekam"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Hanya bisa melanjutkan lagi ketika istirahat"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

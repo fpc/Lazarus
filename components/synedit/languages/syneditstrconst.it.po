@@ -12,6 +12,22 @@ msgstr ""
 "X-Generator: Virtaal 0.5.1\n"
 "POT-Creation-Date: \n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Da registrazione puoi solo mettere in pausa"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Non puoi eseguire macro mentre ne stai registrando una"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Non puoi registrare una macro mentre ne stai registrando un'altra"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "In pausa puoi solo ricominciare"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Annotazione"

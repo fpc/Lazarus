@@ -12,6 +12,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Įrašinėjant galima tik pristabdyti"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Neina paleisti makrokomandos įrašą kai įrašinėjama"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Neina įrašyti makrokomandą kai įrašinėjama"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Pristabdžius galima tik tęsti"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Komentaras"

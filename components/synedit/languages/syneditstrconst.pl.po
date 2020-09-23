@@ -12,6 +12,22 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Language: pl_PL\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Można tylko zatrzymać gdy trwa nagrywanie"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Nie można odtwarzać makra gdy trwa nagrywanie"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Nie można nagrać makra podczas nagrywania"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Można wznowić tylko gdy zatrzymane"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

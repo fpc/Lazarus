@@ -9,6 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "יכול רק לעשות הפסקה בזמן הקלטה"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "לא יכול להפעיל את המקרו באמצע הקלטה"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "לא יכול להקליט את המקרו באמצע הקלטה"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "יכול רק לחדש הקלטה בזמן הפסקה"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr ""

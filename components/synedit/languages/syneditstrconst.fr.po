@@ -11,6 +11,22 @@ msgstr ""
 "Language: fr\n"
 "X-Generator: Poedit 2.1.1\n"
 
+#: syneditstrconst.scannotpause
+msgid "Can only pause when recording"
+msgstr "Impossible de mettre en pause hors de l'enregistrement"
+
+#: syneditstrconst.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Impossible de jouer la macro en enregistrant"
+
+#: syneditstrconst.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Impossible d'enregistrer la macro en enregistrant"
+
+#: syneditstrconst.scannotresume
+msgid "Can only resume when paused"
+msgstr "Impossible de reprendre hors d'une pause"
+
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
 msgstr "Annotation"
