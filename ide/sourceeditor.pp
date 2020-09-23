@@ -7127,7 +7127,7 @@ var
 const
   LE_Names : array [TLineEnding] of String =(
     'LF (Unix, Linux)',
-    'CR (Mac)',
+    'CR (Classic Mac)',
     'CRLF (Win, DOS)'
   );
 begin
