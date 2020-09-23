@@ -164,10 +164,12 @@ type
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
 
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
@@ -767,6 +769,14 @@ begin
   TGtk3Entry(ACustomEdit.Handle).SetMaxLength(NewLength);
 end;
 
+class procedure TGtk3WSCustomEdit.SetNumbersOnly(
+  const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'NumbersOnly') then
+    Exit;
+  TGtk3Entry(ACustomEdit.Handle).SetNumbersOnly(NewNumbersOnly);
+end;
+
 class procedure TGtk3WSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetPasswordChar') then
@@ -797,6 +807,14 @@ begin
   TGtk3Editable(ACustomEdit.Handle).BeginUpdate;
   TGtk3Editable(ACustomEdit.Handle).SetSelLength(NewLength);
   TGtk3Editable(ACustomEdit.Handle).EndUpdate;
+end;
+
+class procedure TGtk3WSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
+  const ATextHint: string);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetTextHint') then
+    Exit;
+  TGtk3Entry(ACustomEdit.Handle).SetTextHint(ATextHint);
 end;
 
 class procedure TGtk3WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);

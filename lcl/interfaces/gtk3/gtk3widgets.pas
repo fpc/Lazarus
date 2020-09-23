@@ -209,6 +209,7 @@ type
     procedure SetAlignment(AValue: TAlignment);
   protected
     function EatArrowKeys(const AKey: Word): Boolean; override;
+    procedure InsertText(const atext:pchar;len:gint;var pos:gint;edt:TGtk3Entry);cdecl;
     function getText: String; override;
     procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
@@ -217,8 +218,12 @@ type
     procedure SetEchoMode(AVisible: Boolean);
     procedure SetMaxLength(AMaxLength: Integer);
     procedure SetPasswordChar(APasswordChar: Char);
+    procedure SetNumbersOnly(ANumbersOnly:boolean);
+    procedure SetTextHint(const AHint:string);
+    function GetTextHint:string;
     function IsWidgetOk: Boolean; override;
     property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property TextHint:string read GetTextHint write SetTextHint;
   end;
 
   { TGtk3SpinEdit }
@@ -2649,6 +2654,7 @@ var
   ARect: TGdkRectangle;
   ARgba: TGdkRGBA;
   i: TGtkStateType;
+  mh,nh,mw,nw:gint;
 begin
   FFocusableByMouse := False;
   FCentralWidget := nil;
@@ -2671,6 +2677,13 @@ begin
       height := LCLObject.Height;
     end;
     FWidget^.set_allocation(@ARect);
+
+    fWidget^.get_preferred_height(@mh,@nh);
+    fWidget^.get_preferred_width(@mw,@nw);
+
+    LCLObject.Constraints.MinHeight:=mh;
+    LCLObject.Constraints.MinWidth:=mw;
+
   end;
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
 
@@ -3387,6 +3400,23 @@ begin
   Result := AKey in [VK_UP, VK_DOWN];
 end;
 
+procedure TGtk3Entry.InsertText(const atext:pchar;len:gint;var pos:gint;edt:TGtk3Entry);cdecl;
+var
+  i:integer;
+begin
+  if TCustomEdit(edt.LCLObject).NumbersOnly then
+  begin
+    for i := 0 to len-1 do
+    begin
+       if not (atext[i] in ['0'..'9']) then
+       begin
+         g_signal_stop_emission_by_name(Self, 'insert-text');
+         exit;
+       end;
+    end;
+  end;
+end;
+
 function TGtk3Entry.getText: String;
 begin
   if IsValidHandle and IsWidgetOk then
@@ -3412,7 +3442,13 @@ end;
 procedure TGtk3Entry.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(PGtkEntry(FWidget), 'changed', TGCallback(@Gtk3EntryChanged), Self, nil, 0);
+
+  Self.SetTextHint(TCustomEdit(Self.LCLObject).TextHint);
+  Self.SetNumbersOnly(TCustomEdit(Self.LCLObject).NumbersOnly);
+
+  g_signal_connect_data(FWidget, 'changed', TGCallback(@Gtk3EntryChanged), Self, nil, 0);
+  g_signal_connect_data(FWidget, 'insert-text', TGCallback(@TGtk3Entry.InsertText), Self, nil, 0);
+
   //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'deleted-text', TGCallback(@Gtk3EntryDeletedText), Self, nil, 0);
   //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'inserted-text', TGCallback(@Gtk3EntryInsertedText), Self, nil, 0);
 end;
@@ -3428,6 +3464,30 @@ begin
       PWChar := 9679;
     PGtkEntry(FWidget)^.set_invisible_char(PWChar);
   end;
+end;
+
+procedure TGtk3Entry.SetNumbersOnly(ANumbersOnly:boolean);
+const
+  ips:array[boolean]of TGtkInputPurpose=(GTK_INPUT_PURPOSE_FREE_FORM,GTK_INPUT_PURPOSE_NUMBER);
+begin
+  // this is not enough for numeric input - it is just a hint for GUI
+  if IsWidgetOK then
+    PGtkEntry(FWidget)^.set_input_purpose(ips[ANumbersOnly]);
+end;
+
+procedure TGtk3Entry.SetTextHint(const AHint: string);
+begin
+  if IsWidgetOK then
+    PGtkEntry(FWidget)^.set_placeholder_text(PgChar(AHint));
+end;
+
+function TGtk3Entry.GetTextHint:string;
+
+begin
+  if IsWidgetOK then
+    Result:=PGtkEntry(FWidget)^.get_placeholder_text()
+  else
+    Result:='';
 end;
 
 procedure TGtk3Entry.SetEchoMode(AVisible: Boolean);
@@ -6561,6 +6621,8 @@ begin
 
   g_signal_connect_data(btn,'clicked',
         TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, 0);
+
+  LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
 
   FMargin := -1;
   FLayout := GTK_POS_LEFT;

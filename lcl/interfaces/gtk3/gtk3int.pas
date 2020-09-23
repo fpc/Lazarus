@@ -124,6 +124,7 @@ type
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     procedure SetDesigning(AComponent: TComponent); override;
+    function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
@@ -210,6 +211,16 @@ function HwndFromGtkWidget(AWidget: PGtkWidget): HWND;
 begin
   Result := HWND(Gtk3WidgetFromGtkWidget(AWidget));
 end;
+
+function TGtk3WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+  lcTextHint: Result := LCL_CAPABILITY_YES;
+  else
+    Result := inherited GetLCLCapability(ACapability);
+  end;
+end;
+
 
 {$i gtk3object.inc}
 {$i gtk3winapi.inc}
