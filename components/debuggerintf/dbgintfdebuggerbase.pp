@@ -3110,7 +3110,7 @@ end;
 
 function TRegisterDisplayValue.GetValue(ADispFormat: TRegisterDisplayFormat): String;
 const Digits = '01234567';
-  function IntToBase(Val, Base: Integer): String;
+  function IntToBase(Val, Base: QWord): String;
   var
     M: Integer;
   begin
