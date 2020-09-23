@@ -120,6 +120,11 @@ begin
   Result := UTF8Copy(Text, SelStart + 1, SelLength)
 end;
 
+function TCustomEdit.GetTextHint: TTranslateString;
+begin
+  Result := FTextHint;
+end;
+
 {------------------------------------------------------------------------------
   Setter for CaretPos
 

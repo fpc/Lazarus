@@ -803,6 +803,7 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    function GetTextHint: TTranslateString; virtual;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetCharCase(Value: TEditCharCase); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
@@ -866,7 +867,7 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
-    property TextHint: TTranslateString read FTextHint write SetTextHint;
+    property TextHint: TTranslateString read GetTextHint write SetTextHint;
   end;
 
 
