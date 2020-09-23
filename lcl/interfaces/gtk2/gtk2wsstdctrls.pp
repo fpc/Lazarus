@@ -25,7 +25,7 @@ uses
   glib2,  gdk2, gtk2,
   Classes, SysUtils, Math,
   // LazUtils
-  LazLoggerBase, LazTracer,
+  LazLoggerBase, LazTracer, LazStringUtils,
   // LCL
   Controls, Graphics, StdCtrls, LMessages, LCLType, LazUtf8Classes, LazUTF8,
   // Widgetset
@@ -1093,6 +1093,8 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then
     Exit;
+  if TCustomEdit(AWinControl).NumbersOnly and not IsNumber(AText) then
+    Exit;
   {$IFDEF VerboseTWinControlRealText}
   DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
   {$ENDIF}
@@ -1132,6 +1134,8 @@ var
   Mess : TLMessage;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelText') then
+    Exit;
+  if ACustomEdit.NumbersOnly and not IsNumber(NewSelText) then
     Exit;
   Widget:={%H-}PGtkWidget(ACustomEdit.Handle);
   if GTK_IS_SPIN_BUTTON(Widget) then

@@ -439,11 +439,23 @@ begin
   end;
 end;
 
-procedure gtkchanged_editbox_insert_text(Widget: PGtkWidget; ANewText: gChar;
+procedure gtkchanged_editbox_insert_text(Widget: PGtkWidget; ANewText: PgChar;
   ANewTextLength: gint; APosition: pgint; data: gPointer); cdecl;
 var
   id: gPointer;
+  EntryText: PgChar;
+  LCLObject: TObject;
 begin
+  EntryText := gtk_entry_get_text(PGtkEntry(Widget));
+  LCLObject := TObject(data);
+  if (widget <> nil) and (LCLObject is TCustomEdit) then
+    { NumbersOnly: stop signal if inserted text is not a number }
+    if TCustomEdit(LCLObject).NumbersOnly and not IsNumber(ANewText) then
+    begin
+      gtk_entry_set_text(PGtkEntry(widget), EntryText);
+      g_signal_stop_emission_by_name(Widget, 'insert-text');
+    end;
+
   id := g_object_get_data(PGObject(Widget), 'lcl-postpone-changed-signal');
   if id <> nil then
   begin
@@ -507,6 +519,29 @@ function gtkchanged_editbox_delete(widget: PGtkWidget;
   AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
+end;
+
+function gtkpaste_editbox(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+var
+  FClipText: string;
+  FClip: gtk2.PGtkClipboard;
+  LCLObject: TObject;
+begin
+  Result := CallBackDefaultReturn;
+
+  LCLObject := TObject(data);
+  if (widget <> nil) and (LCLObject is TCustomEdit) then
+    { NumbersOnly }
+    if TCustomEdit(LCLObject).NumbersOnly then
+    begin
+      { get clipboard text and stop signal if pasted text is not a number }
+      FClipText := '';
+      FClip := gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+      if (FClip <> nil) and gtk_clipboard_wait_is_text_available(FClip) then
+        FClipText := gtk_clipboard_wait_for_text(FClip);
+      if Assigned(FClip) and not IsNumber(FClipText) then
+        g_signal_stop_emission_by_name(Widget, 'paste-clipboard');
+    end;
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;

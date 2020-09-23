@@ -441,6 +441,7 @@ begin
            ConnectSenderSignal(gObject,'delete-text', @gtkchanged_editbox_delete_text);
            ConnectSenderSignal(gObject,'insert-text', @gtkchanged_editbox_insert_text);
            ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
+           ConnectSenderSignal(gObject,'paste-clipboard', @gtkpaste_editbox);
          end;
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
        end;
