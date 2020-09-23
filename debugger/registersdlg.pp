@@ -38,10 +38,19 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, Clipbrd,
   BaseDebugManager, IDEWindowIntf, DebuggerStrConst,
-  ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
-  LazarusIDEStrConsts, IDEImagesIntf, DbgIntfDebuggerBase;
+  ComCtrls, ActnList, Menus, Grids, Debugger, DebuggerDlg,
+  LazarusIDEStrConsts, IDEImagesIntf, DbgIntfDebuggerBase, Types;
 
 type
+
+  { TStringGridAllowRightMouse }
+
+  TStringGridAllowRightMouse = class(TStringGrid)
+  protected
+    FAllowRightButton: Boolean;
+    function MouseButtonAllowed(Button: TMouseButton): boolean; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+  end;
 
   { TRegistersDlg }
 
@@ -53,7 +62,7 @@ type
     actPower: TAction;
     ActionList1: TActionList;
     ImageList1: TImageList;
-    lvRegisters: TListView;
+    lvRegisters: TStringGridAllowRightMouse;
     DispDefault: TMenuItem;
     DispHex: TMenuItem;
     DispBin: TMenuItem;
@@ -84,7 +93,9 @@ type
     procedure actCopyValueExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
-    procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; {%H-}Selected: Boolean);
+    procedure lvRegistersDrawCell(Sender: TObject; aCol, aRow: Integer;
+      aRect: TRect; aState: TGridDrawState);
+    procedure lvRegistersSelection(Sender: TObject; aCol, aRow: Integer);
     procedure ToolButtonDispTypeClick(Sender: TObject);
     function GetCurrentRegisters: TRegisters;
   private
@@ -118,7 +129,7 @@ var
 const
   COL_REGISTER_NAME   = 1;
   COL_REGISTER_VALUE  = 2;
-  COL_WIDTHS: Array[0..1] of integer = ( 150, 50);
+  COL_WIDTHS: Array[0..2] of integer = (18, 50, 350);
 
 function RegisterDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -133,6 +144,29 @@ begin
     TRegistersDlg(AForm).ColSizeSetter(AColId, ASize);
 end;
 
+{ TStringGridAllowRightMouse }
+
+function TStringGridAllowRightMouse.MouseButtonAllowed(Button: TMouseButton
+  ): boolean;
+begin
+  Result := inherited MouseButtonAllowed(Button);
+  if (not Result) and (Button = mbRight) then
+    Result := FAllowRightButton;
+end;
+
+procedure TStringGridAllowRightMouse.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p: TPoint;
+begin
+  FAllowRightButton := False;
+  if Button = mbRight then begin
+    p := MouseToCell(Point(X,Y));
+    FAllowRightButton := not IsCellSelected[p.X, p.Y];
+  end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
 { TRegistersDlg }
 
 constructor TRegistersDlg.Create(AOwner: TComponent);
@@ -145,8 +179,9 @@ begin
   RegistersNotification.OnChange  := @RegistersChanged;
 
   Caption:= lisRegisters;
-  lvRegisters.Columns[0].Caption:= lisName;
-  lvRegisters.Columns[1].Caption:= lisValue;
+  lvRegisters.Columns[1].Title.Caption:= lisName;
+  lvRegisters.Columns[2].Title.Caption:= lisValue;
+  lvRegisters.RangeSelectMode := rsmMulti;
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -193,7 +228,7 @@ begin
   popFormat.Caption := regdlgFormat;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
-    lvRegisters.Column[i].Width := COL_WIDTHS[i];
+    lvRegisters.Columns[i].Width := COL_WIDTHS[i];
 end;
 
 destructor TRegistersDlg.Destroy;
@@ -216,48 +251,72 @@ begin
 end;
 
 procedure TRegistersDlg.actCopyNameExecute(Sender: TObject);
+var
+  s: String;
+  i: Integer;
 begin
+  s := '';
+  for i := 1 to lvRegisters.RowCount - 1 do
+    if lvRegisters.IsCellSelected[0,i] then begin
+      if s <> '' then
+        s := s + LineEnding;
+      s := s + lvRegisters.Cells[1, i];
+    end;
   Clipboard.Open;
-  Clipboard.AsText := lvRegisters.Selected.Caption;
+  Clipboard.AsText := s;
   Clipboard.Close;
 end;
 
 procedure TRegistersDlg.actCopyValueExecute(Sender: TObject);
+var
+  s: String;
+  i: Integer;
 begin
+  s := '';
+  for i := 1 to lvRegisters.RowCount - 1 do
+    if lvRegisters.IsCellSelected[0,i] then begin
+      if s <> '' then
+        s := s + LineEnding;
+      s := s + lvRegisters.Cells[2,i];
+    end;
   Clipboard.Open;
-  Clipboard.AsText := lvRegisters.Selected.SubItems[0];
+  Clipboard.AsText := s;
   Clipboard.Close;
 end;
 
 procedure TRegistersDlg.actCopyNameValueExecute(Sender: TObject);
+var
+  s: String;
+  i: Integer;
 begin
+  s := '';
+  for i := 1 to lvRegisters.RowCount - 1 do
+    if lvRegisters.IsCellSelected[0,i] then begin
+      if s <> '' then
+        s := s + LineEnding;
+      s := s + lvRegisters.Cells[1, i] + '=' + lvRegisters.Cells[2,i];
+    end;
   Clipboard.Open;
-  Clipboard.AsText := Concat(lvRegisters.Selected.Caption, '=',
-    lvRegisters.Selected.SubItems[0]);
+  Clipboard.AsText := s;
   Clipboard.Close;
 end;
 
 procedure TRegistersDlg.actCopyAllExecute(Sender: TObject);
 var
-  T: string;
-  I: Integer;
-  LI: TListItem;
+  s: String;
+  i: Integer;
 begin
+  s := '';
+  for i := 1 to lvRegisters.RowCount - 1 do
+    s := Concat(s, lvRegisters.Cells[1, i], '=', lvRegisters.Cells[2,i], sLineBreak);
   Clipboard.Open;
-  T := '';
-  for I := 0 to Pred(lvRegisters.Items.Count) do
-  begin
-    LI := lvRegisters.Items[I];
-    T := Concat(T, LI.Caption, '=', LI.SubItems[0], sLineBreak);
-  end;
-  Clipboard.AsText := T;
+  Clipboard.AsText := s;
   Clipboard.Close;
 end;
 
 procedure TRegistersDlg.DispDefaultClick(Sender: TObject);
 var
   n: Integer;
-  Item: TListItem;
   Reg: TRegisters;
   RegVal: TRegisterValue;
 begin
@@ -265,20 +324,28 @@ begin
   Reg := GetCurrentRegisters;
   if Reg = nil then exit;
 
-  for n := 0 to lvRegisters.Items.Count -1 do
-  begin
-    Item := lvRegisters.Items[n];
-    if Item.Selected then begin
-      RegVal := Reg.EntriesByName[Item.Caption];
+  for n := 1 to lvRegisters.RowCount - 1 do
+    if lvRegisters.IsCellSelected[0,n] then begin
+      RegVal := Reg.EntriesByName[lvRegisters.Cells[1,n]];
       if RegVal <> nil then
         RegVal.DisplayFormat := TRegisterDisplayFormat(TMenuItem(Sender).Tag);
     end;
-  end;
-  lvRegistersSelectItem(nil, nil, True);
+  lvRegistersSelection(nil, -1, -1);
 end;
 
-procedure TRegistersDlg.lvRegistersSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
+procedure TRegistersDlg.lvRegistersDrawCell(Sender: TObject; aCol,
+  aRow: Integer; aRect: TRect; aState: TGridDrawState);
+begin
+  if (aCol = 0) and (aRow > 0) and
+     (lvRegisters.Objects[0, aRow] <> nil)
+  then begin
+    ImageList1.Draw(lvRegisters.Canvas, (aRect.Left + aRect.Right - ImageList1.Width) div 2,
+                                        (aRect.Top + aRect.Bottom - ImageList1.Height) div 2, 0);
+  end;
+end;
+
+procedure TRegistersDlg.lvRegistersSelection(Sender: TObject; aCol,
+  aRow: Integer);
 var
   n, j: Integer;
   SelFormat: TRegisterDisplayFormat;
@@ -292,11 +359,9 @@ begin
   Reg := GetCurrentRegisters;
   if Reg = nil then exit;
 
-  for n := 0 to lvRegisters.Items.Count -1 do
-  begin
-    Item := lvRegisters.Items[n];
-    if Item.Selected then begin
-      RegVal := Reg.EntriesByName[Item.Caption];
+  for n := 1 to lvRegisters.RowCount - 1 do
+    if lvRegisters.IsCellSelected[0,n] then begin
+      RegVal := Reg.EntriesByName[lvRegisters.Cells[1,n]];
       if RegVal <> nil then begin
         if j = 0
         then SelFormat := RegVal.DisplayFormat;
@@ -307,13 +372,12 @@ begin
         end;
       end;
     end;
-  end;
   ToolButtonDispType.Enabled := j > 0;
   popFormat.Enabled := j > 0;
   actCopyName.Enabled := j > 0;
   actCopyValue.Enabled := j > 0;
   actCopyNameValue.Enabled := j > 0;
-  actCopyAll.Enabled := lvRegisters.Items.Count > 0;
+  actCopyAll.Enabled := lvRegisters.RowCount > 1;
 
   PopDispDefault.Checked := False;
   PopDispHex.Checked := False;
@@ -381,9 +445,8 @@ end;
 
 procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
-  n, idx, Cnt: Integer;
+  n, i, idx, Cnt: Integer;
   List: TStringList;
-  Item: TListItem;
   S: String;
   Reg: TRegisters;
 begin
@@ -400,25 +463,22 @@ begin
     Reg := GetCurrentRegisters;
     if (Reg = nil) or (reg.DataValidity<> ddsValid) then begin
       if (DebugBoss = nil) or not (DebugBoss.State in [dsPause, dsInternalPause, dsRun]) then
-        lvRegisters.Items.Clear;
+        lvRegisters.RowCount := 1;
 
       if (reg <> nil) then
         reg.Count;
-      for n := 0 to lvRegisters.Items.Count - 1 do
-        if lvRegisters.Items[n].SubItems[0] <> '<Unavailable>' then
-          lvRegisters.Items[n].SubItems[0] := '<Unavailable>';
+      for n := 1 to lvRegisters.RowCount - 1 do
+        lvRegisters.Cells[2, n] := '<Unavailable>';
       exit;
     end;
 
     List := TStringList.Create;
     try
       //Get existing items
-      for n := 0 to lvRegisters.Items.Count - 1 do
+      for n := 1 to lvRegisters.RowCount - 1 do
       begin
-        Item := lvRegisters.Items[n];
-        S := Item.Caption;
-        S := UpperCase(S);
-        List.AddObject(S, Item);
+        S := UpperCase(lvRegisters.Cells[1,n]);
+        List.AddObject(S, TObject(ptruint(n)));
       end;
 
       // add/update entries
@@ -431,24 +491,27 @@ begin
         if idx = -1
         then begin
           // New entry
-          Item := lvRegisters.Items.Add;
-          Item.Caption := Reg[n].Name;
-          Item.SubItems.Add(Reg[n].Value);
+          i := lvRegisters.RowCount;
+          lvRegisters.RowCount := i + 1;
+          lvRegisters.Cells[1, i] := Reg[n].Name;
+          lvRegisters.Cells[2, i] := Reg[n].Value;
         end
         else begin
           // Existing entry
-          Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := Reg[n].Value;
+          i := PtrUInt(List.Objects[idx]);
           List.Delete(idx);
+          lvRegisters.Cells[1, i] := Reg[n].Name;
+          lvRegisters.Cells[2, i] := Reg[n].Value;
         end;
         if Reg[n].Modified
-        then Item.ImageIndex := 0
-        else Item.ImageIndex := -1;
+        then lvRegisters.Objects[0, i] := TObject(ptruint(1)) //Item.ImageIndex := 0
+        else lvRegisters.Objects[0, i] := nil;  //Item.ImageIndex := -1;
       end;
 
       // remove obsolete entries
-      for n := 0 to List.Count - 1 do
-        lvRegisters.Items.Delete(TListItem(List.Objects[n]).Index);
+      for n := List.Count - 1 downto 0 do
+        lvRegisters.DeleteRow(PtrUInt(List.Objects[n]));
+      lvRegisters.Invalidate;
 
     finally
       List.Free;
@@ -457,7 +520,7 @@ begin
     EndUpdate;
   end;
 
-  lvRegistersSelectItem(nil, nil, True);
+  lvRegistersSelection(nil, -1, -1);
 end;
 
 procedure TRegistersDlg.DoRegistersChanged;
@@ -482,9 +545,9 @@ end;
 
 function TRegistersDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  if (AColId - 1 >= 0) and (AColId - 1 < lvRegisters.ColumnCount) then begin
-    ASize := lvRegisters.Column[AColId - 1].Width;
-    Result := ASize <> COL_WIDTHS[AColId - 1];
+  if (AColId >= 0) and (AColId < lvRegisters.Columns.Count) then begin
+    ASize := lvRegisters.Columns[AColId].Width;
+    Result := ASize <> COL_WIDTHS[AColId];
   end
   else
     Result := False;
@@ -493,8 +556,8 @@ end;
 procedure TRegistersDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
 begin
   case AColId of
-    COL_REGISTER_NAME:   lvRegisters.Column[0].Width := ASize;
-    COL_REGISTER_VALUE:  lvRegisters.Column[1].Width := ASize;
+    COL_REGISTER_NAME:   lvRegisters.Columns[1].Width := ASize;
+    COL_REGISTER_VALUE:  lvRegisters.Columns[2].Width := ASize;
   end;
 end;
 

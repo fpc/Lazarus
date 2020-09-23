@@ -1,4 +1,4 @@
-inherited RegistersDlg: TRegistersDlg
+object RegistersDlg: TRegistersDlg
   Left = 342
   Height = 253
   Top = 117
@@ -9,29 +9,6 @@ inherited RegistersDlg: TRegistersDlg
   ClientHeight = 253
   ClientWidth = 346
   LCLVersion = '2.1.0.0'
-  object lvRegisters: TListView
-    Left = 0
-    Height = 227
-    Top = 26
-    Width = 346
-    Align = alClient
-    Columns = <    
-      item
-        Caption = 'Name'
-        Width = 150
-      end    
-      item
-        Caption = 'Value'
-      end>
-    MultiSelect = True
-    PopupMenu = PopupMenu1
-    RowSelect = True
-    SmallImages = ImageList1
-    SortType = stText
-    TabOrder = 0
-    ViewStyle = vsReport
-    OnSelectItem = lvRegistersSelectItem
-  end
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -52,13 +29,13 @@ inherited RegistersDlg: TRegistersDlg
     end
     object ToolButton1: TToolButton
       Left = 24
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButtonDispType: TToolButton
-      Left = 34
+      Left = 32
       Top = 2
       Caption = '...'
       DropdownMenu = PopupDispType
@@ -68,26 +45,51 @@ inherited RegistersDlg: TRegistersDlg
       Style = tbsDropDown
     end
   end
+  object lvRegisters: TStringGridAllowRightMouse
+    Left = 0
+    Height = 227
+    Top = 26
+    Width = 346
+    Align = alClient
+    AutoEdit = False
+    ColCount = 3
+    ColumnClickSorts = True
+    Columns = <    
+      item
+        Title.Caption = ' '
+        Width = 18
+      end    
+      item
+        Title.Caption = 'Name'
+        Width = 70
+      end    
+      item
+        Title.Caption = 'Value'
+        Width = 400
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goRangeSelect, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll, goFixedColSizing]
+    PopupMenu = PopupMenu1
+    RowCount = 1
+    TabOrder = 0
+    OnDrawCell = lvRegistersDrawCell
+    OnSelection = lvRegistersSelection
+  end
   object ImageList1: TImageList
     Height = 8
     Width = 8
-    Left = 112
-    Top = 93
+    left = 96
+    top = 104
     Bitmap = {
-      4C69010000000800000008000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000005CDD8AFF33D56FFF65DE
-      8FFF000000000000000000000000000000004FD374FF15C649FF17C64BFF14C6
-      49FF4FCD72FF00000000000000000000000019B73CFF0CB330FF0CB331FF0CB3
-      30FF15B038FF0000000000000000000000004EBC5DFF03A01AFF04A11CFF03A0
-      19FF50B95FFF000000000000000000000000000000004BB257FF169D27FF56B5
-      5FFF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000
+      4C7A010000000800000008000000630000000000000078DA6360200EC4DCEDFA
+      6F7C35FF7FEABDFEFFE872FE974BFE8B1EF3FC2F7ECCFBBF0890F63F5B84A246
+      72BBCD7F9ECD06406C08A6453758A0C8FBED89FDCFBC40EA3FCB4219202DF93F
+      60673C861DDE9BC2FF8BCD55FF1FB615538E120000CF852E03
     }
   end
   object ActionList1: TActionList
-    Left = 200
-    Top = 112
+    left = 200
+    top = 112
     object actPower: TAction
       Enabled = False
       OnExecute = actPowerExecute
@@ -118,8 +120,8 @@ inherited RegistersDlg: TRegistersDlg
     end
   end
   object PopupDispType: TPopupMenu
-    Left = 200
-    Top = 176
+    left = 200
+    top = 176
     object DispDefault: TMenuItem
       Caption = 'New Item1'
       OnClick = DispDefaultClick
@@ -146,8 +148,8 @@ inherited RegistersDlg: TRegistersDlg
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 95
-    Top = 178
+    left = 95
+    top = 178
     object popFormat: TMenuItem
       Caption = 'New Item1'
       object PopDispDefault: TMenuItem
