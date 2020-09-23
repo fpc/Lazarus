@@ -2106,6 +2106,8 @@ begin
       FRegisters.DataValidity := ddsValid;
 
       if ChangedRegList <> nil then begin
+        for i := 0 to FRegisters.Count - 1 do
+          FRegisters[i].Modified := False;
         for i := 0 to ChangedRegList.Count - 1 do begin
           idx := StrToIntDef(Unquote(ChangedRegList.GetString(i)), -1);
           if (idx < 0) or (idx > High(FGDBMIRegSupplier.FRegNamesCache)) then Continue;
