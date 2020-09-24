@@ -12,6 +12,120 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Apache模块"
+
+#: fpwebstrconsts.rsapachemodule2
+#, fuzzy, badformat
+#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Apache模块%s一个Apache加载模块在Free Pascal使用webmodules中.这个主库文件是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "CGI应用程序"
+
+#: fpwebstrconsts.rscgiapplicati2
+#, fuzzy, badformat
+#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "CGI应用%s一个CGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "自定义CGI应用程序"
+
+#: fpwebstrconsts.rscustomcgiapp2
+#, fuzzy, badformat
+#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Custom CGI应用%s一个CGI (通用网关接口)程序在Free Pasca中.这个程序的source是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "自定义FastCGI应用程序"
+
+#: fpwebstrconsts.rscustomfastcg2
+#, fuzzy, badformat
+#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "自定义FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中.这个程序的source是由Lazarus自动地维护."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "FastCGI应用程序"
+
+#: fpwebstrconsts.rsfastcgiappli2
+#, fuzzy, badformat
+#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "HTML Web模块"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+#, fuzzy, badformat
+#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgid "A Web datamodule for producing strict HTML."
+msgstr "HTML WEB模块%s一个Web datamodule用于产生静态HTML."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "HTTP server应用程序"
+
+#: fpwebstrconsts.rshttpappli2
+#, fuzzy
+#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "HTTP server应用.完整的HTTP Server程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Web DataProvider模块"
+
+#: fpwebstrconsts.rswebdataprovi2
+#, fuzzy, badformat
+#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "WEB DataProvider模块%s一个datamodule使用WebDataProvider组件来处理数据请求用于 WEB (HTTP)应用."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Web Ext.Direct模块"
+
+#: fpwebstrconsts.rswebextdirect2
+#, fuzzy, badformat
+#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "WEB Ext.Direct模块%s一个datamodule使用TJSONRPCHandler组件来发出Ext.Direct请求在WEB (HTTP)应用中."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Web JSON-RPC模块"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+#, fuzzy, badformat
+#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "WEB JSON-RPC模块%s一个datamodule使用TJSONRPCHandler组件来发出JSON-RPCt请求在WEB (HTTP)应用中."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Web模块"
+
+#: fpwebstrconsts.rswebmoduleada
+#, fuzzy, badformat
+#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "WEB模块%s一个datamodule用于WEB (HTTP)应用程序."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "创建一个新的JSON-RPC module"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "CSS文件"
@@ -165,6 +279,10 @@ msgstr "Tag属性: %s"
 msgid "Html &title - <title>"
 msgstr "Html &标题-<title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "HTTP路径"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "端口监听请求(&P)"
@@ -176,6 +294,10 @@ msgstr "Javascript 文件"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "创建新javascript文件..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "JSON-RPC类"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -392,6 +514,14 @@ msgstr "新建HTTP应用"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "注册位置以服务文件从(&R)"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "在工厂注册JSON-RPC handlers"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "注册web module"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

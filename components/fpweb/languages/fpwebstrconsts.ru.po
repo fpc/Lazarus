@@ -11,6 +11,98 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 1.7.7\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Модуль Apache"
+
+#: fpwebstrconsts.rsapachemodule2
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Загружаемый модуль Apache на Free Pascal с использованием веб-модулей. Исходный код библиотеки автоматически поддерживается Lazarus."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "Приложение CGI"
+
+#: fpwebstrconsts.rscgiapplicati2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Программа CGI (Common Gateway Interface) на Free Pascal с использованием веб-модулей."
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Пользовательское приложение CGI"
+
+#: fpwebstrconsts.rscustomcgiapp2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Программа CGI (Common Gateway Interface) на Free Pascal."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Пользовательское приложение FastCGI"
+
+#: fpwebstrconsts.rscustomfastcg2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Программа FastCGI (Common Gateway Interface) на Free Pascal."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "Приложение FastCGI"
+
+#: fpwebstrconsts.rsfastcgiappli2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Программа FastCGI (Common Gateway Interface) на Free Pascal с использованием веб-модулей."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "Веб-модуль HTML"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+msgid "A Web datamodule for producing strict HTML."
+msgstr "Модуль данных веб для создания Strict HTML."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "Приложение сервера HTTP"
+
+#: fpwebstrconsts.rshttpappli2
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "Законченная программа сервера HTTP на Free Pascal, использующая веб-модули."
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Модуль Web DataProvider"
+
+#: fpwebstrconsts.rswebdataprovi2
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Модуль данных для обработки информационных запросов в приложениях веб (HTTP) с использованием компонентов WebDataProvider."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Модуль Web Ext.Direct"
+
+#: fpwebstrconsts.rswebextdirect2
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль данных для обработки запросов Ext.Direct в приложениях веб (HTTP) с использованием компонентов TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Модуль Web JSON-RPC"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль данных для обработки запросов JSON-RPC в приложениях веб (HTTP) с использованием компонентов TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Веб-модуль"
+
+#: fpwebstrconsts.rswebmoduleada
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Модуль данных для приложений веб (HTTP)."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Создать новый модуль JSON-RPC"
+
 #: fpwebstrconsts.scssfile
 msgctxt "fpwebstrconsts.scssfile"
 msgid "CSS file"
@@ -179,6 +271,10 @@ msgstr "Свойства тега: %s"
 msgid "Html &title - <title>"
 msgstr "&Заголовок Html - <title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "Путь HTTP"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "&Порт прослушивания запросов:"
@@ -190,6 +286,10 @@ msgstr "Файл JavaScript"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Создать новый файл JavaScript ..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "Класс JSON-RPC"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -434,6 +534,14 @@ msgstr "Новое приложение HTTP"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "&Зарегистрировать расположение файлов для выдачи"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Зарегистрировать обработчики JSON-RPC в механизме"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Зарегистрировать веб-модуль"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

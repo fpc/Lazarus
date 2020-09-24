@@ -10,6 +10,112 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Modul Apache"
+
+#: fpwebstrconsts.rsapachemodule2
+#, fuzzy, badformat
+#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Modul Apache%sNačítatelný modul Apache ve Free Pascalu využívající webové moduly. Hlavní soubor knihovny je automaticky spravován Lazarusem."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "Aplikace CGI"
+
+#: fpwebstrconsts.rscgiapplicati2
+#, fuzzy, badformat
+#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Aplikace CGI%sProgram CGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Vlastní aplikace CGI"
+
+#: fpwebstrconsts.rscustomcgiapp2
+#, fuzzy, badformat
+#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Vlastní aplikace CGI%sProgram CGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Vlastní aplikace FastCGI"
+
+#: fpwebstrconsts.rscustomfastcg2
+#, fuzzy, badformat
+#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Vlastní aplikace FastCGI%sProgram FastCGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "Alikace FastCGI"
+
+#: fpwebstrconsts.rsfastcgiappli2
+#, fuzzy, badformat
+#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Aplikace FastCGI%sProgram FastCGI(Common Gateway Interface) ve Free Pascalu používající webové moduly. Zdroj programu je automaticky spravování Lazarusem."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "Webový HTML modul"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+#, fuzzy, badformat
+#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgid "A Web datamodule for producing strict HTML."
+msgstr "Webový HTML modul%sWebový modul pro vytváření přísného HTML."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr ""
+
+#: fpwebstrconsts.rshttpappli2
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr ""
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebdataprovi2
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr ""
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebextdirect2
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Webový modul"
+
+#: fpwebstrconsts.rswebmoduleada
+#, fuzzy, badformat
+#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Webový modul%sDatový modul pro webové (HTTP) aplikace."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Vytvořit nový JSON-RPC modul"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "CSS soubor"
@@ -163,6 +269,10 @@ msgstr "Vlastost tagu: %s"
 msgid "Html &title - <title>"
 msgstr "HTML &titulek - <title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "HTTP Cesta"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "&Port na odposlouchání žádostí:"
@@ -174,6 +284,10 @@ msgstr "Soubor Javascriptu"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Vytvořit nový soubor javasriptu ..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "JSON-RPC třída"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -390,6 +504,14 @@ msgstr "Nová HTTP aplikace"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "&Registrovat umístění, odkud se budou souvory \"servírovat\""
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Zaregistrovat JSON-RPC ukazatele v továrně"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Registrovat webový modul"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls;
+  ButtonPanel, StdCtrls, fpWebStrConsts;
 
 type
 
@@ -43,13 +43,6 @@ var
   JSONRPCModuleOptionsForm: TJSONRPCModuleOptionsForm; 
 
 implementation
-
-resourcestring
-  sCaption = 'Create a new JSON-RPC module';
-  sRegisterJSON = 'Register JSON-RPC handlers in factory';
-  sJSONClass = 'JSON-RPC class';
-  sRegisterWebM = 'Register web module';
-  sHTTPPath = 'HTTP Path';
 
 {$R *.lfm}
 

@@ -9,6 +9,98 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Módulo Apache"
+
+#: fpwebstrconsts.rsapachemodule2
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Um módulo Apache carregável no Free Pascal usando módulos web. O arquivo biblioteca principal é mantido automaticamente pelo Lazarus."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "Aplicação CGI"
+
+#: fpwebstrconsts.rscgiapplicati2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Um programa CGI (Common Gateway Interface) em Free Pascal usando módulos web."
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Aplicação CGI personalizada"
+
+#: fpwebstrconsts.rscustomcgiapp2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Um programa CGI (Common Gateway Interface) em Free Pascal."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Aplicação FastCGI personalizada"
+
+#: fpwebstrconsts.rscustomfastcg2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Um programa FastCGI (Common Gateway Interface) em Free Pascal."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "Aplicação FastCGI"
+
+#: fpwebstrconsts.rsfastcgiappli2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Um programa FastCGI (Common Gateway Interface) em Free Pascal usando módulos web."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "Módulo Web HTML"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+msgid "A Web datamodule for producing strict HTML."
+msgstr "Um módulo de dados Web para geração HTML."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "Aplicação servidora HTTP"
+
+#: fpwebstrconsts.rshttpappli2
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "Programa servidor HTTP completo em Free Pascal usando módulos web."
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Módulo Web DataProvider"
+
+#: fpwebstrconsts.rswebdataprovi2
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Um módulo de dados para lidar com requisições de dados para aplicações WEB (HTTP) usando componentes WebDataProvider."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Módulo Web Ext.Direct"
+
+#: fpwebstrconsts.rswebextdirect2
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Um módulo de dados para despachar requisições Ext.Direct em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Módulo Web JSON-RPC"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Um módulo de dados para despachar requisições JSON-RPC em aplicações Web (HTTP) usando componentes TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Módulo Web"
+
+#: fpwebstrconsts.rswebmoduleada
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Um módulo de dados para aplicações Web (HTTP)."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Criar um novo módulo JSON-RPC"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "Arquivo CSS"
@@ -162,6 +254,10 @@ msgstr "Propriedade Tag: %s"
 msgid "Html &title - <title>"
 msgstr "&Título Html - \"<title>\""
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "Caminho HTTP"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "&Porta de escuta para requisições:"
@@ -173,6 +269,10 @@ msgstr "Arquivo Javascript"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Criar novo arquivo javascript ..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "Classe JSON-RPC"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -389,6 +489,14 @@ msgstr "Nova aplicação HTTP"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "&Registrar local dos arquivos à servir"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Registrar manipuladores JSON-RPC na fábrica"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Registrar módulo web"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

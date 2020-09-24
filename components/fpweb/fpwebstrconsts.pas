@@ -4,9 +4,6 @@ unit fpWebStrConsts;
 
 interface
 
-uses
-  Classes, SysUtils; 
-
 resourcestring
   SHTMLTitle         = 'Html &title - <title>';
   SHTMLAutor         = 'Html &author - <meta name="author">';
@@ -122,6 +119,40 @@ resourcestring
   sDocumentLocation = '&Location';
   sDocumentRoot = '&Directory';
   sUseThreads = 'Use &threads to serve requests in';
+
+  sCaption = 'Create a new JSON-RPC module';
+  sRegisterJSON = 'Register JSON-RPC handlers in factory';
+  sJSONClass = 'JSON-RPC class';
+  sRegisterWebM = 'Register web module';
+  sHTTPPath = 'HTTP Path';
+
+  rsCGIApplicati = 'CGI Application';
+  rsCGIApplicati2 = 'A CGI (Common Gateway Interface) program in Free Pascal using webmodules.';
+  rsCustomCGIApp = 'Custom CGI Application';
+  rsCustomCGIApp2 = 'A CGI (Common Gateway Interface) program in Free Pascal.';
+  rsWebModule = 'Web Module';
+  rsWEBModuleADa = 'A datamodule for WEB (HTTP) applications.';
+  rsHTMLWebModul = 'HTML Web Module';
+  rsHTMLWEBModul2 = 'A Web datamodule for producing strict HTML.';
+  rsApacheModule = 'Apache Module';
+  rsApacheModule2 = 'An Apache loadable module in Free Pascal using webmodules. '
+    +'The main library file is automatically maintained by Lazarus.';
+  rsCustomFastCG = 'Custom FastCGI Application';
+  rsCustomFastCG2 = 'A FastCGI (Common Gateway Interface) program in Free Pascal.';
+  rsFastCGIAppli = 'FastCGI Application';
+  rsFastCGIAppli2 = 'A FastCGI (Common Gateway Interface) '
+    +'program in Free Pascal using webmodules.';
+  rsWebDataProvi = 'Web DataProvider Module';
+  rsWEBDataProvi2 = 'A datamodule to handle data requests for WEB (HTTP) '
+    +'applications using WebDataProvider components.';
+  rsWebJSONRPCMo = 'Web JSON-RPC Module';
+  rsWEBJSONRPCMo2 = 'A datamodule to dispatch JSON-RPC requests in WEB (HTTP) '
+    +'applications using TJSONRPCHandler components.';
+  rsWebExtDirect = 'Web Ext.Direct Module';
+  rsWEBExtDirect2 = 'A datamodule to dispatch Ext.Direct requests in WEB (HTTP) '
+    +'applications using TJSONRPCHandler components.';
+  rsHTTPAppli = 'HTTP server Application';
+  rsHTTPAppli2 = 'Complete HTTP Server program in Free Pascal using webmodules.';
 
 implementation
 

@@ -13,6 +13,98 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Модуль Apache"
+
+#: fpwebstrconsts.rsapachemodule2
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Завантажуваний модуль Apache на Free Pascal з використанням вебмодулів. Головний файл бібліотеки автоматично підтримується в Lazarus."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "Програма CGI"
+
+#: fpwebstrconsts.rscgiapplicati2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Програма CGI (Common Gateway Interface) на Free Pascal з використанням вебмодулів"
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Користувацька програма CGI"
+
+#: fpwebstrconsts.rscustomcgiapp2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Програма CGI (Common Gateway Interface) на Free Pascal."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Користувацька програма FastCGI"
+
+#: fpwebstrconsts.rscustomfastcg2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Програма FastCGI (Common Gateway Interface) на Free Pascal."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "Програма FastCGI"
+
+#: fpwebstrconsts.rsfastcgiappli2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "Програма FastCGI (Common Gateway Interface) на Free Pascal з використанням вебмодулів."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "Модуль HTML Web"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+msgid "A Web datamodule for producing strict HTML."
+msgstr "Модуль вебданих для створення строгого HTML."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "Застосунок сервера HTTP"
+
+#: fpwebstrconsts.rshttpappli2
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "Повна програма HTTP-сервера на Free Pascal з використанням вебмодулів."
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Модуль Web DataProvider"
+
+#: fpwebstrconsts.rswebdataprovi2
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Модуль даних для керування запитами даних для WEB (HTTP)-застосунків з використанням компонентів WebDataProvider."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Модуль Web Ext.Direct"
+
+#: fpwebstrconsts.rswebextdirect2
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль даних для керування запитами Ext.Direct у WEB (HTTP)-застосунках з використанням компонентів TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Модуль Web JSON-RPC"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль даних для керування запитами JSON-RPC у WEB (HTTP)-застосунках з використанням компонентів TJSONRPCHandler."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Веб-модуль"
+
+#: fpwebstrconsts.rswebmoduleada
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Модуль даних для WEB (HTTP)-застосунків."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Створити новий модуль JSON-RPC"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "Файл CSS"
@@ -166,6 +258,10 @@ msgstr "Властивість тега: %s"
 msgid "Html &title - <title>"
 msgstr "&Заголовок Html - <title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "Шлях HTTP"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "&Порт прослуховування запитів:"
@@ -177,6 +273,10 @@ msgstr "Файл Javascript"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Створити новий файл javascript ..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "Клас JSON-RPC"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -393,6 +493,14 @@ msgstr "Новий застосунок HTTP"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "Зар&еєструвати розташування файлів для видачі"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Зареєструвати обробники JSON-RPC у механізмі"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Зареєструвати веб-модуль"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

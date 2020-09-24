@@ -11,6 +11,120 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Apache modulis"
+
+#: fpwebstrconsts.rsapachemodule2
+#, fuzzy, badformat
+#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Apache modulis%sĮkeliamasis Apache modulis Free Pascal-yje, naudojantis „webmodules“. Lazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "CGI programa"
+
+#: fpwebstrconsts.rscgiapplicati2
+#, fuzzy, badformat
+#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "CGI programa%sCGI (Common Gateway Interface) programa Free Pascal-yje, naudojanti „webmodules“. Lazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Sava CGI programa"
+
+#: fpwebstrconsts.rscustomcgiapp2
+#, fuzzy, badformat
+#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "CGI programa%sCGI (Common Gateway Interface) programa Free Pascal-yje. Lazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Sava FastCGI programa"
+
+#: fpwebstrconsts.rscustomfastcg2
+#, fuzzy, badformat
+#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Sava FastCGI programa%sFastCGI (Common Gateway Interface) programa Free Pascal-yje. Lazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "FastCGI programa"
+
+#: fpwebstrconsts.rsfastcgiappli2
+#, fuzzy, badformat
+#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "FastCGI programa%sFastCGI (Common Gateway Interface) programa Free Pascal-yje, naudojanti „webmodules“. Lazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "HTML saityno modulis"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+#, fuzzy, badformat
+#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgid "A Web datamodule for producing strict HTML."
+msgstr "HTML saityno modulis%sSaityno duomenų modulis griežto HTML kūrimui,"
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "HTTP serverio programa"
+
+#: fpwebstrconsts.rshttpappli2
+#, fuzzy
+#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "HTTP serverio programa. „Free Pascal“ aplinkoje naudojant saityno modulius sukurti HTTP serverio programą. Programos pirminį kodą automatiškai prižiūrės „Lazarus“."
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Saityno „DataProvider“ modulis"
+
+#: fpwebstrconsts.rswebdataprovi2
+#, fuzzy, badformat
+#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Saityno „DataProvider“ modulis%sDuomenų modulis, kuris naudodamas „WebDataProvider“ modulius doroja WEB (HTTP) programoms skirtas duomenų užklausas."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Saityno „Ext.Direct“ modulis"
+
+#: fpwebstrconsts.rswebextdirect2
+#, fuzzy, badformat
+#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Saityno „Ext.Direct“ modulis%sDuomenų modulis, kuris naudodamas „TJSONRPCHandler“ komponentus skirsto „Ext.Direct“ užklausas WEB (HTTP) programose."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Saityno „JSON-RPC“ modulis"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+#, fuzzy, badformat
+#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Saityno „JSON-RPC“ modulis%sDuomenų modulis, kuris naudodamas „TJSONRPCHandler“ komponentus skirsto „JSON-RPC“ užklausas WEB (HTTP) programose."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Saityno modulis"
+
+#: fpwebstrconsts.rswebmoduleada
+#, fuzzy, badformat
+#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Saityno modulis%sDuomenų modulis saityno (HTTP) programoms."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Kurti naują JSON-RPC modulį"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "CSS failas"
@@ -164,6 +278,10 @@ msgstr "Gairės savybė: %s"
 msgid "Html &title - <title>"
 msgstr "Html &antraštė - <title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "HTTP kelias"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "Prie&vadas užklausų priėmimui:"
@@ -175,6 +293,10 @@ msgstr "Javascript failas"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Kurti naują Javascript failą…"
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "JSON-RPC klasė"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -391,6 +513,14 @@ msgstr "Nauja HTTP programa"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "Re&gistruoti vietą, iš kurios bus tiekiami failai"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Registruoti JSON-RPC dorokles mechanizme"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Registruoti saityno modulį"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

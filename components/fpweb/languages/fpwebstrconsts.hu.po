@@ -11,6 +11,120 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr "Apache modul"
+
+#: fpwebstrconsts.rsapachemodule2
+#, fuzzy, badformat
+#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Apache modul%sEgy az Apache által betölthető modul Free Pascal-ban webmodulok használatával. A fő fügvénytár forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr "CGI alkalmazás"
+
+#: fpwebstrconsts.rscgiapplicati2
+#, fuzzy, badformat
+#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Egyéni CGI alkalmazás"
+
+#: fpwebstrconsts.rscustomcgiapp2
+#, fuzzy, badformat
+#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Egyéni CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Egyéni FastCGI alkalmazás"
+
+#: fpwebstrconsts.rscustomfastcg2
+#, fuzzy, badformat
+#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr "Egyéni FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "FastCGI alkalmazás"
+
+#: fpwebstrconsts.rsfastcgiappli2
+#, fuzzy, badformat
+#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr "FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "HTTP web modul"
+
+#: fpwebstrconsts.rshtmlwebmodul2
+#, fuzzy, badformat
+#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgid "A Web datamodule for producing strict HTML."
+msgstr "HTML WEB modul%sEgy web adatmodul szigorú HTML létrehozására."
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr "HTTP kiszolgáló alkalmazás"
+
+#: fpwebstrconsts.rshttpappli2
+#, fuzzy
+#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr "HTTP kiszolgáló alkalmazás. Teljes HTTP kiszolgáló program Free Pascal-ban webmodulok használatával. Az program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Web adatszolgáltató modul"
+
+#: fpwebstrconsts.rswebdataprovi2
+#, fuzzy, badformat
+#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "WEB adatszolgáltató modul%sEgy adatmodul WEB (HTTP) alkalmazások számára az adatkérések kezelésére WebDataProvider komponensek haszálatával."
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Web Ext.Direct modul"
+
+#: fpwebstrconsts.rswebextdirect2
+#, fuzzy, badformat
+#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Web Ext.Direct modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban az Ext.Direct kéréseket kezeli TJSONRPCHandler komponensek használatával."
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Web JSON-RPC modul"
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+#, fuzzy, badformat
+#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Web JSON-RPC modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban a JSON-RPC kéréseket kezeli TJSONRPCHandler komponensek használatával."
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr "Web modul"
+
+#: fpwebstrconsts.rswebmoduleada
+#, fuzzy, badformat
+#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr "Web modul%sEgy adatmodul WEB (HTTP) alkalmazások számára."
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Új JSON-RPC modul létrehozása"
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "CSS fájl"
@@ -164,6 +278,10 @@ msgstr "Cimke tulajdonság: %s"
 msgid "Html &title - <title>"
 msgstr "Html &cím - <title>"
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr "HTTP útvonal"
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr "A kérések figyelésére használt &port:"
@@ -175,6 +293,10 @@ msgstr "Javascript fájl"
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
 msgstr "Új javascript fájl létrehozása ..."
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
+msgstr "JSON-RPC osztály"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -391,6 +513,14 @@ msgstr "Új HTTP alkalmazás"
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
 msgstr "Hely &bejegyzése a fájlok kiszolgálására"
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "JSON-RPC kezelők regisztrálása az előállítóban"
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
+msgstr "Web modul regisztrálása"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

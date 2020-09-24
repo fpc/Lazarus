@@ -12,6 +12,98 @@ msgstr ""
 "Language: pl\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: fpwebstrconsts.rsapachemodule
+msgid "Apache Module"
+msgstr ""
+
+#: fpwebstrconsts.rsapachemodule2
+msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr ""
+
+#: fpwebstrconsts.rscgiapplicati
+msgid "CGI Application"
+msgstr ""
+
+#: fpwebstrconsts.rscgiapplicati2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr ""
+
+#: fpwebstrconsts.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr ""
+
+#: fpwebstrconsts.rscustomcgiapp2
+msgid "A CGI (Common Gateway Interface) program in Free Pascal."
+msgstr ""
+
+#: fpwebstrconsts.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr ""
+
+#: fpwebstrconsts.rscustomfastcg2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
+msgstr ""
+
+#: fpwebstrconsts.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr ""
+
+#: fpwebstrconsts.rsfastcgiappli2
+msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
+msgstr ""
+
+#: fpwebstrconsts.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr ""
+
+#: fpwebstrconsts.rshtmlwebmodul2
+msgid "A Web datamodule for producing strict HTML."
+msgstr ""
+
+#: fpwebstrconsts.rshttpappli
+msgid "HTTP server Application"
+msgstr ""
+
+#: fpwebstrconsts.rshttpappli2
+msgid "Complete HTTP Server program in Free Pascal using webmodules."
+msgstr ""
+
+#: fpwebstrconsts.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebdataprovi2
+msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr ""
+
+#: fpwebstrconsts.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebextdirect2
+msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: fpwebstrconsts.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebjsonrpcmo2
+msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: fpwebstrconsts.rswebmodule
+msgid "Web Module"
+msgstr ""
+
+#: fpwebstrconsts.rswebmoduleada
+msgid "A datamodule for WEB (HTTP) applications."
+msgstr ""
+
+#: fpwebstrconsts.scaption
+msgid "Create a new JSON-RPC module"
+msgstr ""
+
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
 msgstr "Plik CSS"
@@ -165,6 +257,10 @@ msgstr ""
 msgid "Html &title - <title>"
 msgstr ""
 
+#: fpwebstrconsts.shttppath
+msgid "HTTP Path"
+msgstr ""
+
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
 msgstr ""
@@ -175,6 +271,10 @@ msgstr "Plik Javascript"
 
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
+msgstr ""
+
+#: fpwebstrconsts.sjsonclass
+msgid "JSON-RPC class"
 msgstr ""
 
 #: fpwebstrconsts.sjssource
@@ -391,6 +491,14 @@ msgstr ""
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
+msgstr ""
+
+#: fpwebstrconsts.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr ""
+
+#: fpwebstrconsts.sregisterwebm
+msgid "Register web module"
 msgstr ""
 
 #: fpwebstrconsts.susethreads
