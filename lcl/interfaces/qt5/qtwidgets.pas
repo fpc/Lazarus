@@ -1818,9 +1818,11 @@ type
     function getDetailText: WideString;
     function getMessageStr: WideString;
     function getMsgBoxType: QMessageBoxIcon;
+    function GetTextFormat: QtTextFormat;
     procedure setDetailText(const AValue: WideString);
     procedure setMessageStr(const AValue: WideString);
     procedure setMsgBoxType(const AValue: QMessageBoxIcon);
+    procedure SetTextFormat(AValue: QtTextFormat);
     procedure setTitle(const AValue: WideString);
   protected
     function CreateWidget(AParent: QWidgetH):QWidgetH; overload;
@@ -1841,6 +1843,7 @@ type
     property MessageStr: WideString read getMessageStr write setMessageStr;
     property MsgBoxType:QMessageBoxIcon read getMsgBoxType write setMsgBoxType;
     property Title: WideString read FTitle write setTitle;
+    property TextFormat: QtTextFormat read GetTextFormat write SetTextFormat;
   end;
   
   { TQtCalendar }
@@ -19573,6 +19576,11 @@ begin
   Result := QMessageBox_icon(QMessageBoxH(Widget));
 end;
 
+function TQtMessageBox.GetTextFormat: QtTextFormat;
+begin
+  Result := QMessageBox_textFormat(QMessageBoxH(Widget));
+end;
+
 procedure TQtMessageBox.setDetailText(const AValue: WideString);
 var
   Str: WideString;
@@ -19610,6 +19618,11 @@ begin
   QMessageBox_setIcon(QMessageBoxH(Widget), AValue);
 end;
 
+procedure TQtMessageBox.SetTextFormat(AValue: QtTextFormat);
+begin
+  QMessageBox_setTextFormat(QMessageBoxH(Widget), AValue);
+end;
+
 procedure TQtMessageBox.setTitle(const AValue: WideString);
 begin
   if AValue <> FTitle then
@@ -19642,6 +19655,7 @@ begin
     AParent := QApplication_activeWindow;
   {$ENDIF}
   Widget := CreateWidget(AParent);
+  TextFormat := QtPlainText;
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
   QtWidgetSet.AddHandle(Self);
 end;
