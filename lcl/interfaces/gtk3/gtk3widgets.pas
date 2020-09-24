@@ -1224,7 +1224,8 @@ begin
     // GDK_BUTTON_RELEASE:
     7:
     begin
-      Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
+      if not (csClickEvents in TGtk3Widget(Data).LCLObject.ControlStyle) then
+        Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
 
     // GDK_KEY_PRESS
@@ -6923,7 +6924,13 @@ end;
 
 function TGtk3Window.GetTitle: String;
 begin
-  Result:=PGtkWindow(FWidget)^.get_title();
+  if Gtk3IsGtkWindow(fWidget) then
+    Result:=PGtkWindow(fWidget)^.get_title()
+  {else
+  if Gtk3IsWIdget(fWidget) then
+    Result:='widget'}
+  else
+    Result:=''
 end;
 
 procedure TGtk3Window.SetIcon(AValue: PGdkPixBuf);
@@ -6957,7 +6964,8 @@ end;
 
 procedure TGtk3Window.SetTitle(const AValue: String);
 begin
-  PGtkWindow(FWidget)^.set_title(PGChar(AValue));
+  if Gtk3IsGtkWindow(fWidget) then
+    PGtkWindow(FWidget)^.set_title(PGChar(AValue))
 end;
 
 function Gtk3WindowState(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): GBoolean; cdecl;
