@@ -1037,9 +1037,9 @@ uses
                 exit;
               end;
             dst := PGlyph(target.z);
-          end
-        else
-          TT_Done_Outline(dst^.outline);
+          end;
+
+        TT_Done_Outline(dst^.outline);
 
         dst^.metrics        := src^.metrics;
         dst^.computed_width := src^.computed_width;
