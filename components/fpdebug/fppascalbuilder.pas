@@ -1091,7 +1091,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         end;
       end;
 
-      if (ADisplayFormat = wdfPointer) or (ppoStackParam in AOptions) then begin
+      if ((ADisplayFormat = wdfPointer) or (ppoStackParam in AOptions)) and (AValue.Kind in [skClass, skInterface]) then begin
         if not (ppvCreateDbgType in AFlags) then
           s := ResTypeName;
         APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
@@ -1141,7 +1141,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         InternalPrintValue(MbVal, MemberValue, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions+[ppoStackParam]);
         if MemberValue.DbgSymbol <> nil then begin
           MbName := MemberValue.DbgSymbol.Name;
-          s := MbName + ' = ' + MbVal;
+          if (ppoStackParam in AOptions) then
+            s := MbVal
+          else
+            s := MbName + ' = ' + MbVal;
         end
         else begin
           MbName := '';
