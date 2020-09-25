@@ -1712,7 +1712,7 @@ begin
     if i > 1 then
       delete(g, 1, i)
     else
-    if not (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) then begin
+    if not((Length(Expect.ExpSubResults) = 1) and (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) ) then begin
       TestTrue('nil pointer, but expecting data / internal test correctness', False, AContext, AnIgnoreRsn);
       exit;
     end
