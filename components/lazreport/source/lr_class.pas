@@ -1295,7 +1295,8 @@ type
     // report manipulation methods
     function DesignReport: Integer;
     function PrepareReport: Boolean;
-    function ExportTo(FilterClass: TfrExportFilterClass; aFileName: String):Boolean;
+    function ExportTo(FilterClass: TfrExportFilterClass; aFileName: String):Boolean; overload;
+    function ExportTo(FilterClass: TfrExportFilterClass; exportStream: TStream; freeStream:boolean=false): boolean; overload;
     procedure ShowReport;
     procedure ShowPreparedReport;
     procedure PrintPreparedReport(const PageNumbers: String; Copies: Integer);
@@ -11236,6 +11237,30 @@ end;
 
 function TfrReport.ExportTo(FilterClass: TfrExportFilterClass; aFileName: String
   ): Boolean;
+begin
+
+  if (aFileName='') and (fDefExportFileName<>'') then
+    aFileName := fDefExportFileName;
+
+  if Trim(aFilename) = '' then
+    raise Exception.create(sNoValidExportFilenameWasSupplied);
+
+  ExportStream := TFileStreamUtf8.Create(aFileName, fmCreate);
+  result := ExportTo(FilterClass, exportStream, true);
+  if result then
+  begin
+    fDefExportFilterClass := FCurrentFilter.ClassName;
+    fDefExportFileName := aFileName;
+  end;
+
+end;
+
+// Export the report to exportStream using the FilterClass filter
+// if exportStream is TFileStream, freeStream should be true because when
+// Filter.AfterExport is called, the stream might not be yet written to disk
+// this decision, however, is left to the user of this routine.
+function TfrReport.ExportTo(FilterClass: TfrExportFilterClass;
+  exportStream: TStream; freeStream: boolean): boolean;
 var
   s: String;
   i: Integer;
@@ -11251,18 +11276,12 @@ begin
       end;
   end;
 
-  if (aFileName='') and (fDefExportFileName<>'') then
-    aFileName := fDefExportFileName;
-
   if FilterClass=nil then
     raise Exception.Create(sNoValidFilterClassWasSupplied);
 
-  if Trim(aFilename) = '' then
-    raise Exception.create(sNoValidExportFilenameWasSupplied);
-
-  ExportStream := TFileStreamUtf8.Create(aFileName, fmCreate);
-  FCurrentFilter := FilterClass.Create(ExportStream);
+  FCurrentFilter := FilterClass.Create(exportStream);
   try
+
     CurReport := Self;
     MasterReport := Self;
 
@@ -11290,21 +11309,27 @@ begin
         ExportBeforeModal(nil);
 
       fDefExportFilterClass := FCurrentFilter.ClassName;
-      fDefExportFileName := aFileName;
       Result:=true;
     end
     else
       Result:=false;
-  finally
-    //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
-    //to ensure the exported file is properly written to the file system
-    ExportStream.Free;
-  end;
-  FCurrentFilter.Stream := nil;
 
-  if Result then
-    FCurrentFilter.AfterExport;
-  FreeAndNil(FCurrentFilter);
+    FCurrentFilter.Stream := nil;
+
+    if freeStream then
+    begin
+      //it is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
+      //to ensure the exported file is properly written to the file system
+      exportStream.free;
+    end;
+
+    if Result then
+      FCurrentFilter.AfterExport;
+
+  finally
+    FreeAndNil(FCurrentFilter);
+  end;
+
 end;
 
 procedure TfrReport.FillQueryParams;
