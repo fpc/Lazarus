@@ -1508,11 +1508,13 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
+{$ifndef CD_UseNativeMonitors}
 function TCDWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
   Result := lpfnEnum(1, 0, nil, dwData);
 end;
+{$endif}
 
 (*
 function CharsetToQtCharSet(const ALCLCharset: Byte): QFontDatabaseWritingSystem;
@@ -2901,6 +2903,8 @@ begin
     Result := 0;
 end;
 *)
+
+{$ifndef CD_UseNativeMonitors}
 function TCDWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor = 1);
@@ -2909,6 +2913,7 @@ begin
   lpmi^.rcWork:=lpmi^.rcMonitor;
   lpmi^.dwFlags := MONITORINFOF_PRIMARY
 end;
+{$endif}
 (*
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetDeviceSize

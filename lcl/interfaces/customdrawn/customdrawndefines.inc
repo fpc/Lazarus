@@ -39,6 +39,9 @@
 {$if defined(CD_WINDOWS)}
   //{$define CD_UseNativeText}
 {$endif}
+{$if defined(CD_X11)}
+  {$define CD_UseNativeMonitors}
+{$endif}
 
 // ==================
 // Other options
