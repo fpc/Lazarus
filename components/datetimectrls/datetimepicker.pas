@@ -3656,7 +3656,8 @@ begin
 end;
 
 procedure TDTSpeedButton.Paint;
-  procedure DrawDropDownArrow(const Canvas: TCanvas; const DropDownButtonRect: TRect);
+
+  procedure DrawThemedDropDownArrow;
   var
     Details: TThemedElementDetails;
     ArrowState: TThemedToolBar;
@@ -3669,52 +3670,57 @@ procedure TDTSpeedButton.Paint;
       ArrowState := ttbSplitButtonDropDownDisabled;
     Details := ThemeServices.GetElementDetails(ArrowState);
     ASize := ThemeServices.GetDetailSize(Details);
-    ARect := DropDownButtonRect;
+    ARect := Rect(0, 0, Width, Height);
     InflateRect(ARect, -(ARect.Right - ARect.Left - ASize.cx) div 2, 0);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
   end;
+
 const
   ArrowColor = TColor($8D665A);
+
 var
   X, Y: Integer;
+
 begin
   inherited Paint;
 
+  if DTPicker.FArrowShape = asTheme then
+    DrawThemedDropDownArrow
+  else begin
   // First I ment to put arrow images in a lrs file. In my opinion, however, that
   // wouldn't be an elegant option for so simple shapes.
 
-  Canvas.Brush.Style := bsSolid;
-  Canvas.Pen.Color := ArrowColor;
-  Canvas.Brush.Color := Canvas.Pen.Color;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.Pen.Color := ArrowColor;
+    Canvas.Brush.Color := Canvas.Pen.Color;
 
-  X := (Width - 9) div 2;
-  Y := (Height - 6) div 2;
+    X := (Width - 9) div 2;
+    Y := (Height - 6) div 2;
 
-{ Let's draw shape of the arrow on the button: }
-  case DTPicker.FArrowShape of
-    asTheme:
-      DrawDropDownArrow(Canvas, Rect(0, 0, Width, Height));
+  { Let's draw shape of the arrow on the button: }
+    case DTPicker.FArrowShape of
+      asClassicLarger:
+        { triangle: }
+        Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 8, Y + 1),
+                                                        Point(X + 4, Y + 5)]);
+      asClassicSmaller:
+        { triangle -- smaller variant:  }
+        Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 7, Y + 2),
+                                                        Point(X + 4, Y + 5)]);
+      asModernLarger:
+        { modern: }
+        Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
+                          Point(X + 4, Y + 3), Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
+      asModernSmaller:
+        { modern -- smaller variant:    }
+        Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 2, Y + 1),
+                          Point(X + 4, Y + 3), Point(X + 6, Y + 1), Point(X + 7, Y + 2), Point(X + 4, Y + 5)]);
+      asYetAnotherShape:
+        { something in between, not very pretty:  }
+        Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
+              Point(X + 2, Y + 1), Point(X + 6, Y + 1),Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
+    end;
 
-    asClassicLarger:
-      { triangle: }
-      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 8, Y + 1),
-                                                      Point(X + 4, Y + 5)]);
-    asClassicSmaller:
-      { triangle -- smaller variant:  }
-      Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 7, Y + 2),
-                                                      Point(X + 4, Y + 5)]);
-    asModernLarger:
-      { modern: }
-      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
-                        Point(X + 4, Y + 3), Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
-    asModernSmaller:
-      { modern -- smaller variant:    }
-      Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 2, Y + 1),
-                        Point(X + 4, Y + 3), Point(X + 6, Y + 1), Point(X + 7, Y + 2), Point(X + 4, Y + 5)]);
-    asYetAnotherShape:
-      { something in between, not very pretty:  }
-      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
-            Point(X + 2, Y + 1), Point(X + 6, Y + 1),Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
   end;
 end;
 
