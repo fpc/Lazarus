@@ -869,6 +869,30 @@ begin
   Result := False;
 end;
 
+
+function gtk_message_dialog_get_message_area(Dialog:PGtkMessageDialog):PGtkWidget; cdecl; external gtklib;
+
+procedure set_message_text(Dialog:PGtkMessageDialog;const msg: string;const is_pango_markup:boolean=false);
+var
+  ma:PGtkWidget;
+  mainList,ChildList:PgList;
+begin
+  if is_pango_markup then
+    gtk_message_dialog_set_markup(Dialog, PGChar(msg))
+  else
+  begin
+    ma:=gtk_message_dialog_get_message_area(Dialog);
+    MainList := gtk_container_get_children(PGtkContainer(ma));
+    if Assigned(MainList) then
+    begin
+      gtk_label_set_label(PGtkLabel(MainList^.data),PGChar(msg));
+      g_list_free(MainList);
+    end;
+
+  end;
+end;
+
+
 function TGtk2WidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 
@@ -997,7 +1021,7 @@ begin
     GTK_DIALOG_MODAL, GtkDialogType, Btns,
      nil);
 
-  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
+  set_message_text(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
 
   g_signal_connect(PGtkObject(Dialog), 'delete-event',
     TGtkSignalFunc(@PromptUserBoxClosed),
