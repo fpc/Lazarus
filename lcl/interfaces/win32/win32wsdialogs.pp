@@ -482,7 +482,7 @@ var
   OpenFileName: Windows.POPENFILENAME;
   DlgRec: POpenFileDialogRec;
   CanClose: Boolean;
-
+{
   procedure Reposition(ADialogWnd: Handle);
   var
     Left, Top: Integer;
@@ -490,7 +490,6 @@ var
   begin
     // Btw, setting width and height of dialog doesnot reposition child controls :(
     // So no way to set another height and width at least here
-
     if (GetParent(ADialogWnd) = Win32WidgetSet.AppHandle) then
     begin
       if Screen.ActiveCustomForm <> nil then
@@ -508,7 +507,7 @@ var
     Top := (ABounds.Bottom - DialogRect.Bottom + DialogRect.Top) div 2;
     SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
   end;
-
+}
   procedure ExtractDataFromNotify;
   begin
     OpenFileName := OpenFileNotify^.lpOFN;
@@ -523,7 +522,7 @@ begin
   begin
     // Windows asks us to initialize dialog. At this moment controls are not
     // arranged and this is that moment when we should set bounds of our dialog
-    Reposition(GetParent(Wnd));
+    //Reposition(GetParent(Wnd)); this causes active form to move out of position with old dialogs JP
   end
   else
   if uMsg = WM_NOTIFY then
