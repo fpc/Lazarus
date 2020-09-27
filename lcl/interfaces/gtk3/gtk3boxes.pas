@@ -38,6 +38,7 @@ type
     procedure run;
     function btn_coll_info(ndx:integer):longint;
     function btn_ptr_info(ndx:integer):longint;
+    procedure set_message_text(const msg:string;const is_pango_markup:boolean=false);
     procedure update_widget_list(const func:TBtnListFunction);
     procedure CreateButton(const ALabel : String; const AResponse: Integer;
       const AImageHint: Integer = -1);
@@ -265,7 +266,7 @@ begin
 
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns, nil , []);
 
-  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
+  set_message_text(DialogMessage);
 
   g_signal_connect_data(Dialog, 'delete-event',
     TGCallback(@BoxClosed),
@@ -313,6 +314,26 @@ end;
 function TGtk3DialogFactory.btn_ptr_info(ndx:integer):longint;
 begin
   Result:=pButtons[ndx];
+end;
+
+procedure TGtk3DialogFactory.set_message_text(const msg: string;const is_pango_markup:boolean=false);
+var
+  ma:PGtkWidget;
+  mainList,ChildList:PgList;
+begin
+  if is_pango_markup then
+    gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(msg))
+  else
+  begin
+    ma:=PGtkMessageDialog(Dialog)^.get_message_area();
+    MainList := gtk_container_get_children(PGtkContainer(ma));
+    if Assigned(MainList) then
+    begin
+      PGtkLabel(MainList^.data)^.set_label(PGChar(msg));
+      g_list_free(MainList);
+    end;
+
+  end;
 end;
 
 procedure TGtk3DialogFactory.update_widget_list(const func:TBtnListFunction);
@@ -431,7 +452,7 @@ begin
 
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns, nil , []);
 
-  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
+  set_message_text(DialogMessage);
 
   g_signal_connect_data(GPointer(Dialog), 'delete-event',
     TGCallback(@BoxClosed),
