@@ -1,0 +1,216 @@
+object lrDMDlg: TlrDMDlg
+  Left = 618
+  Height = 550
+  Top = 251
+  Width = 645
+  AutoSize = True
+  BorderStyle = bsDialog
+  Caption = 'Print'
+  ClientHeight = 550
+  ClientWidth = 645
+  Position = poScreenCenter
+  LCLVersion = '1.4.2.0'
+  object lblPrinter: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 10
+    Height = 23
+    Top = 10
+    Width = 88
+    BorderSpacing.Bottom = 5
+    BorderSpacing.Around = 10
+    Caption = 'Printer:'
+    ParentColor = False
+  end
+  object cboPrinter: TComboBox
+    AnchorSideLeft.Control = lblPrinter
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblPrinter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 108
+    Height = 35
+    Top = 10
+    Width = 527
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 10
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object lblCopies: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblPrinter
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 23
+    Top = 48
+    Width = 77
+    BorderSpacing.Bottom = 5
+    BorderSpacing.Around = 10
+    Caption = 'Copies:'
+    ParentColor = False
+  end
+  object edtCopies: TSpinEdit
+    AnchorSideLeft.Control = lblCopies
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblCopies
+    Left = 97
+    Height = 33
+    Top = 48
+    Width = 100
+    MinValue = 1
+    TabOrder = 1
+    Value = 1
+  end
+  object grpOptions: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblCopies
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 194
+    Top = 86
+    Width = 625
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 10
+    Caption = 'Options'
+    ClientHeight = 169
+    ClientWidth = 621
+    TabOrder = 2
+    object chkOptionsAutoNewPage: TCheckBox
+      AnchorSideLeft.Control = grpOptions
+      AnchorSideTop.Control = grpOptions
+      Left = 10
+      Height = 25
+      Top = 10
+      Width = 166
+      BorderSpacing.Bottom = 5
+      BorderSpacing.Around = 10
+      Caption = 'Auto new page'
+      TabOrder = 0
+    end
+    object lblOptionsAutoNewPageLines: TLabel
+      AnchorSideLeft.Control = grpOptions
+      AnchorSideTop.Control = chkOptionsAutoNewPage
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 23
+      Top = 50
+      Width = 253
+      BorderSpacing.Bottom = 5
+      BorderSpacing.Around = 10
+      Caption = 'Lines of auto new page:'
+      ParentColor = False
+    end
+    object edtOptionsAutoNewPageLines: TSpinEdit
+      AnchorSideLeft.Control = lblOptionsAutoNewPageLines
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkOptionsAutoNewPage
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpOptions
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grpOptions
+      AnchorSideBottom.Side = asrBottom
+      Left = 273
+      Height = 33
+      Top = 50
+      Width = 338
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Right = 10
+      BorderSpacing.Bottom = 10
+      TabOrder = 1
+    end
+    object lblOptionsLineSpacing: TLabel
+      AnchorSideLeft.Control = grpOptions
+      AnchorSideTop.Control = lblOptionsAutoNewPageLines
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 23
+      Top = 88
+      Width = 154
+      BorderSpacing.Bottom = 5
+      BorderSpacing.Around = 10
+      Caption = 'Lines Spacing:'
+      ParentColor = False
+    end
+    object cboOptionsLineSpacing: TComboBox
+      AnchorSideLeft.Control = lblOptionsLineSpacing
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblOptionsLineSpacing
+      AnchorSideRight.Control = grpOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 174
+      Height = 35
+      Top = 88
+      Width = 437
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Right = 10
+      ItemHeight = 0
+      OnChange = cboOptionsLineSpacingChange
+      Style = csDropDownList
+      TabOrder = 2
+    end
+    object lblOptionsLineSpacingCustom: TLabel
+      AnchorSideLeft.Control = grpOptions
+      AnchorSideTop.Control = lblOptionsLineSpacing
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 23
+      Top = 126
+      Width = 286
+      BorderSpacing.Around = 10
+      Caption = 'Line Spacing Custom Value:'
+      ParentColor = False
+    end
+    object edtOptionsLineSpacingCustom: TSpinEdit
+      AnchorSideLeft.Control = lblOptionsLineSpacingCustom
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblOptionsLineSpacingCustom
+      AnchorSideRight.Control = grpOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 306
+      Height = 33
+      Top = 126
+      Width = 305
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Right = 10
+      MinValue = 1
+      TabOrder = 3
+      Value = 1
+    end
+  end
+  object btnOK: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpOptions
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 33
+    Top = 290
+    Width = 32
+    AutoSize = True
+    BorderSpacing.Around = 10
+    Caption = '&OK'
+    ModalResult = 1
+    TabOrder = 3
+  end
+  object btnCancel: TBitBtn
+    AnchorSideLeft.Control = btnOK
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = grpOptions
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    Left = 52
+    Height = 33
+    Top = 290
+    Width = 76
+    AutoSize = True
+    BorderSpacing.Around = 10
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+end

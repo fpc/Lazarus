@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lr_dotmatrix_pack"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="heliosroots"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="lazreport for dot matrix printer"/>
+    <Version Minor="1" Release="1" Build="30"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="source/lr_dotmatrix_filter.pas"/>
+        <UnitName Value="lr_dotmatrix_filter"/>
+      </Item1>
+      <Item2>
+        <Filename Value="source/lr_dotmatrix_dlg.pas"/>
+        <UnitName Value="lr_dotmatrix_dlg"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source/lr_dotmatrix.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lr_dotmatrix"/>
+      </Item3>
+    </Files>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="lazreport"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

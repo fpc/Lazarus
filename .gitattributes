@@ -2989,6 +2989,16 @@ components/lazreport/source/addons/DialogControls/resources/tlrlistbox.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrmemo.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrradiobutton.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrradiogroup.bmp -text
+components/lazreport/source/addons/LrDotMatrix/README.md svneol=native#text/plain
+components/lazreport/source/addons/LrDotMatrix/image/TlrDMReport.png -text svneol=unset#image/png
+components/lazreport/source/addons/LrDotMatrix/image/make_icon.bat svneol=native#text/x-msdos-program
+components/lazreport/source/addons/LrDotMatrix/lr_dotmatrix_pack.lpk svneol=native#text/plain
+components/lazreport/source/addons/LrDotMatrix/lr_dotmatrix_pack.pas svneol=native#text/pascal
+components/lazreport/source/addons/LrDotMatrix/source/lr_dotmatrix.pas svneol=native#text/pascal
+components/lazreport/source/addons/LrDotMatrix/source/lr_dotmatrix.res -text
+components/lazreport/source/addons/LrDotMatrix/source/lr_dotmatrix_dlg.lfm svneol=native#text/plain
+components/lazreport/source/addons/LrDotMatrix/source/lr_dotmatrix_dlg.pas svneol=native#text/pascal
+components/lazreport/source/addons/LrDotMatrix/source/lr_dotmatrix_filter.pas svneol=native#text/pascal
 components/lazreport/source/addons/SqlDB/lr_editsqldbparamsunit.lfm svneol=native#text/plain
 components/lazreport/source/addons/SqlDB/lr_editsqldbparamsunit.pas svneol=native#text/pascal
 components/lazreport/source/addons/SqlDB/lr_ibconnection.pas svneol=native#text/plain
