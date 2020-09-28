@@ -132,6 +132,11 @@ type
     PaperRect: TPaperRect;
   end;
 
+  TCustomPaperItem = record
+    PaperSet: boolean;
+    Item: TPaperItem;
+  end;
+
   { TPaperSize }
 
   TPaperSize = Class(TObject)
@@ -156,10 +161,12 @@ type
     fInternalPapers    : array of TPaperItem;
     fDefaultPapers     : boolean;
     fDefaultPaperIndex : Integer;
+    fCustomPaper       : TCustomPaperItem;
     procedure CreateInternalPapers;
     procedure FillDefaultPapers;
     function GetDefaultPaperRect(const AName: string; var APaperRect:TPaperRect): Integer;
     function IndexOfDefaultPaper(const AName: string): Integer;
+    procedure SetPaperRect(AValue: TPaperRect);
   public
     constructor Create(aOwner : TPrinter); overload;
     destructor Destroy; override;
@@ -170,7 +177,7 @@ type
     property PaperName       : string read GetPaperName write SetPaperName;
     property DefaultPaperName: string read GetDefaultPaperName;
 
-    property PaperRect       : TPaperRect read GetPaperRect;
+    property PaperRect       : TPaperRect read GetPaperRect write SetPaperRect;
     property SupportedPapers : TStrings read GetSupportedPapers;
 
     property PaperRectOf[aName : string] : TPaperRect read PaperRectOfName;
@@ -254,6 +261,7 @@ type
      function DoGetBinName: string; virtual;
      procedure DoSetBinName(aName: string); virtual;
      function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; virtual;
+     function DoSetPaperRect(aPaperRc: TPaperRect): boolean; virtual;
      function DoGetPrinterState: TPrinterState; virtual;
      procedure DoDestroy; virtual;
 
@@ -319,6 +327,9 @@ var
   Printer: TPrinter = nil;
   
 implementation
+
+const
+  CUSTOM_PAPER_NAME = 'LCLCustomPaper';
 
 { TPrinter }
 
@@ -954,6 +965,11 @@ begin
   //Override this method
 end;
 
+function TPrinter.DoSetPaperRect(aPaperRc: TPaperRect): boolean;
+begin
+  result := false;
+end;
+
 //Get a state of current printer
 function TPrinter.DoGetPrinterState: TPrinterState;
 begin
@@ -1090,6 +1106,9 @@ function TPaperSize.GetPaperName: string;
 begin
   CheckSupportedPapers;
 
+  if fCustomPaper.PaperSet then
+    result := fCustomPaper.Item.PaperName
+  else
   if fDefaultPapers then
     Result := SupportedPapers[FDefaultPaperIndex]
   else
@@ -1101,6 +1120,9 @@ end;
 
 function TPaperSize.GetPaperRect: TPaperRect;
 begin
+  if fCustomPaper.PaperSet then
+    result := fCustomPaper.Item.PaperRect
+  else
   Result:=PaperRectOfName(PaperName);
 end;
 
@@ -1129,8 +1151,25 @@ begin
     end;
 end;
 
+procedure TPaperSize.SetPaperRect(AValue: TPaperRect);
+begin
+  fCustomPaper.PaperSet := true;
+  fCustomPaper.Item.PaperRect := AValue;
+  if not fDefaultPapers then
+    fOwnedPrinter.DoSetPaperRect(AValue);
+end;
+
 procedure TPaperSize.SetPaperName(const AName: string);
 begin
+
+  if fCustomPaper.PaperSet and (AName=fCustomPaper.Item.PaperName) then
+  begin
+    // update printer custom paper dimensions
+    if not fDefaultPapers and not fCustomPaper.Item.PaperRect.PhysicalRect.IsEmpty then
+      fOwnedPrinter.DoSetPaperRect(fCustomPaper.Item.PaperRect);
+    exit;
+  end;
+
   if SupportedPapers.IndexOf(aName)<>-1 then
   begin
     if aName<>PaperName then
@@ -1138,7 +1177,9 @@ begin
       if fDefaultPapers then
         FDefaultPaperIndex := IndexOfDefaultPaper(AName)
       else
-        FOwnedPrinter.DoSetPaperName(aName)
+        FOwnedPrinter.DoSetPaperName(aName);
+
+      fCustomPaper.PaperSet := false;
     end;
   end
   else
@@ -1150,6 +1191,13 @@ function TPaperSize.PaperRectOfName(const AName: string): TPaperRect;
 var TmpPaperRect : TPaperRect;
     Margins      : Integer;
 begin
+
+  if (fCustomPaper.PaperSet) and (AName=fCustomPaper.Item.PaperName) then
+  begin
+    result := fCustomPaper.Item.PaperRect;
+    exit;
+  end;
+
   FillChar(Result,SizeOf(Result),0);
 
   if SupportedPapers.IndexOf(AName)<>-1 then
@@ -1197,6 +1245,9 @@ begin
   fLastPrinterIndex:=-2;
   fOwnedPrinter:=aOwner;
   fSupportedPapers:=TStringList.Create;
+
+  FillChar(fCustomPaper, sizeOf(fCustomPaper), 0);
+  fCustomPaper.Item.PaperName := CUSTOM_PAPER_NAME;
 end;
 
 destructor TPaperSize.Destroy;

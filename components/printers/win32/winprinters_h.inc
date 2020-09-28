@@ -57,6 +57,7 @@ Type
     function DoGetDefaultPaperName: string; override;
     procedure DoSetPaperName(aName : string); override;
     function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; override;
+    function DoSetPaperRect(aPaperRc: TPaperRect):boolean; override;
 
     procedure DoEnumBins(Lst : TStrings); override;
     function DoGetDefaultBinName: string; override;

@@ -11,6 +11,9 @@ uses
   {%H-}udlgpropertiesprinter, // used to compile it on this target
   FileUtil, LazFileUtils;
 
+const
+  CUPS_CUSTOM_PAPER = 'Custom';
+
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
 begin
@@ -257,6 +260,20 @@ begin
     if not Assigned(fcupsHttp) then
        raise Exception.Create('Unable to contact server: '+GetLastError);
   end;
+end;
+
+procedure TCUPSPrinter.DoCustomPaper;
+var
+  aSize: String;
+begin
+  // while the default canvas class is TCairoPsCanvas, this is not
+  // technically necessary, as the canvas setup the page size itself.
+  aSize := format('%s.%dx%d', [ CUPS_CUSTOM_PAPER, round(fCustomPaperWidth),
+                                round(fCustomPaperHeight) ]);
+  cupsAddOption('PageSize', aSize);
+  {$IFDEF DebugCUPS}
+  DebugLn('Using CustomPaper ', aSize);
+  {$ENDIF}
 end;
 
 function TCUPSPrinter.CupsPapersListValid: boolean;
@@ -1194,6 +1211,10 @@ end;
 
 function TCUPSPrinter.DoGetPaperName: string;
 begin
+  if cpsCustomPaperValid in FStates then begin
+    result := CUPS_CUSTOM_PAPER;
+    exit;
+  end;
   if not (cpsPaperNameValid in FStates) then begin
     // paper is not yet retrieved for first time
     // first try to see if there is a list of papers available
@@ -1211,6 +1232,11 @@ end;
 
 procedure TCUPSPrinter.DoSetPaperName(aName: string);
 begin
+  if (aName=CUPS_CUSTOM_PAPER) and (cpsCustomPaperValid in FStates) then begin
+    DoCustomPaper;
+    exit;
+  end;
+
   {$IFDEF UseCache}
   if aName=DoGetPaperName then exit;
   Exclude(FStates,cpsPaperNameValid);
@@ -1219,8 +1245,10 @@ begin
   
   if FCupsPapersCount<=0 then
     PaperSize.PaperName:=AName
-  else
+  else begin
+    Exclude(Fstates, cpsCustomPaperValid);
     cupsAddOption('PageSize',aName)
+  end;
 end;
 
 //Initialise aPaperRc with the aName paper rect
@@ -1234,6 +1262,16 @@ var
   P : Pppd_size_t;
   Ky,Kx: Double;
 begin
+  if (aName=CUPS_CUSTOM_PAPER) and (cpsCustomPaperValid in FStates) then begin
+    aPaperRc.PhysicalRect.Left := 0;
+    aPaperRc.PhysicalRect.Top := 0;
+    aPaperRc.PhysicalRect.Right := round(fCustomPaperWidth*Printer.XDPI/72);
+    aPaperRc.PhysicalRect.Bottom := round(fCustomPaperHeight*Printer.YDPI/72);
+    aPaperRc.WorkRect := aPaperRc.PhysicalRect;
+    result := 0;
+    exit;
+  end;
+
   if (not (cpsPaperRectValid in FStates)) or
     (fCachePaperRectName<>aName) then
   begin
@@ -1344,6 +1382,25 @@ begin
   aPaperRc:=fCachePaperRect;
 end;
 
+function TCUPSPrinter.DoSetPaperRect(aPaperRc: TPaperRect): boolean;
+begin
+  result := CUPSLibInstalled;
+  if result then
+  begin
+    Include(fStates, cpsCustomPaperValid);
+    fCustomPaperWidth  := aPaperRC.PhysicalRect.Width * 72 / Printer.XDPI;
+    fCustomPaperHeight := aPaperRC.PhysicalRect.Height * 72 / Printer.YDPI;
+    DoCustomPaper;
+    {$IFDEF DebugCUPS}
+    DebugLn('CUPS: custom paper width=%dpx %4.1fpt %3.0fmm height=%dpx %4.1fpt %3.0fmm',
+      [aPaperRC.PhysicalRect.Width,
+       fCustomPaperWidth, fCustomPaperWidth*25.4/72,
+       aPaperRC.PhysicalRect.Height,
+       fCustomPaperHeight, fCustomPaperHeight*25.4/72
+       ]);
+    {$ENDIF}
+  end;
+end;
 
 function TCUPSPrinter.DoGetPrinterState: TPrinterState;
 var //Request   : Pipp_t; //IPP Request

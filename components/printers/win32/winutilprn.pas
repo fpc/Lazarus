@@ -38,6 +38,7 @@ const
 const
   Win32Orientations: array [TPrinterOrientation] of SHORT = (
     DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE, DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE);
+  DMPAPER_USER = 256;
 
 type
   TFcntHook = function(Wnd: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
