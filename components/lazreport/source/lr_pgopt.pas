@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls,ComCtrls,LCLType, ButtonPanel, Spin;
+  ExtCtrls, Buttons, StdCtrls,ComCtrls,LCLType, ButtonPanel, Spin, Printers;
 
 type
 
@@ -64,20 +64,28 @@ TfrPgoptForm = class(TForm)
     Label8: TLabel;
     procedure ComB1DrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       State: TOwnerDrawState);
+    procedure ComB1Select(Sender: TObject);
+    procedure E1Change(Sender: TObject);
     procedure ecolCountChange(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure RB1Click(Sender: TObject);
     procedure RB2Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure ComB1Click(Sender: TObject);
     procedure CB5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure RBColumnsClick(Sender: TObject);
     procedure RBRowsClick(Sender: TObject);
   private
     { Private declarations }
+    FCustomWidth, FCustomHeight: Integer;
+    function  GetPgSize: Integer;
     procedure UpdateColumnsLayout;
+    procedure UpdatePaperSize;
   public
     { Public declarations }
+    property PgSize: Integer read GetPgSize;
+    property PaperWidth: Integer read FCustomWidth write FCustomWidth;
+    property PaperHeight: Integer read FCustomHeight write FCustomHeight;
   end;
 
 var
@@ -117,22 +125,44 @@ begin
     Canvas.FillRect(aRect);
     
     i := PtrInt(Items.Objects[Index]);
-    if (i>=1)and(i<=MAX_TYP_KNOWN) then S := 'W' else // Known Windows std paper size
-    if (i>MAX_TYP_KNOWN)and (i<256) then S:='w' else // Unkknown Windows std paper size
-    if (i=256) then S:='U' else             // User Defined paper size
-    if (i>=2000) then S:='I' else           // Looks like an Input Slot
-    if (i>=1000) then S:='C'                // Known Custom No-Std Paper Size
-    else
-      S:='?';                               // unknown unclassified paper size
+    if (i>=1)and(i<=MAX_TYP_KNOWN) then   S := 'W' else // Known Windows std paper size
+    if (i>MAX_TYP_KNOWN) and (i<256) then S := 'w' else // Unknown Windows std paper size
+    if (i=256) then                       S := 'U' else // User Defined paper size
+    if (i>=2000) and (i<2050) then        S := 'I'      // Looks like an Input Slot
+    else                                  S := 'C';     // Known Custom No-Std Paper Size
+
     Canvas.Font.Color := clWindowText;
     Canvas.TextRect(aRect, aRect.Left+1, aRect.Top+3, S);
 
   end;
 end;
 
+procedure TfrPgoptForm.ComB1Select(Sender: TObject);
+begin
+  UpdatePaperSize;
+end;
+
+procedure TfrPgoptForm.E1Change(Sender: TObject);
+begin
+  if pgSize=256 then begin
+    if Sender=E1 then FCustomWidth := StrToIntDef(E1.Text, 0);
+    if Sender=E2 then FCustomHeight := StrToIntDef(E2.Text, 0);
+  end;
+end;
+
 procedure TfrPgoptForm.ecolCountChange(Sender: TObject);
 begin
   UpdateColumnsLayout;
+end;
+
+procedure TfrPgoptForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if (ModalResult=mrOk) and (PgSize=256) then
+  begin
+    canClose := (PaperWidth>1) and (PaperHeight>1);
+    if not canClose then
+      ShowMessage(sPgoptFormInvalidCustomPaperSize);
+  end;
 end;
 
 procedure TfrPgoptForm.RB2Click(Sender: TObject);
@@ -148,7 +178,7 @@ begin
     RB1Click(nil)
   else
     RB2Click(nil);
-  ComB1Click(nil);
+  UpdatePaperSize;
   CB5Click(nil);
 
   ComB1.Width:=E1.Width;
@@ -160,12 +190,6 @@ begin
   UpdateColumnsLayout;
 end;
 
-procedure TfrPgoptForm.ComB1Click(Sender: TObject);
-begin
-  frEnableControls([Label1, Label2, E1, E2],
-    Prn.PaperSizes[ComB1.ItemIndex] = $100);
-end;
-
 procedure TfrPgoptForm.CB5Click(Sender: TObject);
 begin
   frEnableControls([Label3, Label4, Label5, Label6, E3, E4, E5, E6],
@@ -174,7 +198,7 @@ end;
 
 procedure TfrPgoptForm.FormCreate(Sender: TObject);
 begin
-  Caption := sPgoptFormCapt;
+  Caption := sPgoptFormCapt + ' - ' + QuotedStr(prn.Printer.PrinterName);
   TabSheet1.Caption := sPgoptFormPaper;
   GroupBox2.Caption := sPgoptFormOr;
   RB1.Caption := sPgoptFormPort;
@@ -211,6 +235,11 @@ begin
   ImgRows.Visible:=true;
 end;
 
+function TfrPgoptForm.GetPgSize: Integer;
+begin
+  result := PtrInt(ComB1.Items.Objects[Comb1.ItemIndex]);
+end;
+
 procedure TfrPgoptForm.UpdateColumnsLayout;
 begin
   if EColCount.Value<2 then begin
@@ -219,6 +248,25 @@ begin
   end else begin
     RBColumns.Enabled:=true;
     RBRows.Enabled:=true;
+  end;
+end;
+
+procedure TfrPgoptForm.UpdatePaperSize;
+var
+  isCustom: Boolean;
+  pgIndex: Integer;
+  PaperRect: TPaperRect;
+begin
+  isCustom := (pgSize = $100);
+  frEnableControls([Label1, Label2, E1, E2], isCustom);
+  if isCustom then begin
+    E1.Text := IntToStr(PaperWidth);
+    E2.Text := IntToStr(PaperHeight);
+  end else begin
+    pgIndex := prn.GetArrayPos(pgSize);
+    PaperRect := prn.Printer.PaperSize.PaperRectOf[prn.PaperNames[pgIndex]];
+    E1.Text := IntToStr(round(PaperRect.PhysicalRect.Width*25.4/prn.Printer.XDPI));
+    E2.Text := IntToStr(round(PaperRect.PhysicalRect.Height*25.4/prn.Printer.YDPI));
   end;
 end;
 

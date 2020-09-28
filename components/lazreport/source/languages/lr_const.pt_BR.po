@@ -2313,6 +2313,10 @@ msgstr "&Não usar"
 msgid "&Height, mm"
 msgstr "&Altura, mm"
 
+#: lr_const.spgoptforminvalidcustompapersize
+msgid "Invalid custom paper size"
+msgstr ""
+
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "&Paisagem"

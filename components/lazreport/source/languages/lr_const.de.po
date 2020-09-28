@@ -2323,6 +2323,10 @@ msgstr "&Nicht definiert"
 msgid "&Height, mm"
 msgstr "&Höhe, mm"
 
+#: lr_const.spgoptforminvalidcustompapersize
+msgid "Invalid custom paper size"
+msgstr ""
+
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "&Querformat"

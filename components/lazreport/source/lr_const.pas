@@ -61,6 +61,7 @@ resourcestring
   sPgoptFormLayoutOrder = 'Layout Order';
   sPgoptFormByColumns = 'By Colum&ns';
   sPgoptFormByRows = 'By Row&s';
+  sPgoptFormInvalidCustomPaperSize = 'Invalid custom paper size';
 
 //--- EditorForm resources ----------------------------------------------------
   sEditorFormCapt = 'Text editor';

@@ -9,6 +9,7 @@
 {*****************************************}
 
 {.$define DbgPrinter}
+{.$define DbgPrinter_detail}
 
 unit LR_Prntr;
 
@@ -46,6 +47,7 @@ type
     procedure SetPrinterIndex(Value: Integer);
     function  GetPaperNames: TStringList;
     function  MatchPrinterPaper(const aWidth, aHeight: Integer): integer;
+    function  GetPaperRect: TPaperRect;
   public
     Orientation: TPrinterOrientation;
     PaperSize: Integer;
@@ -64,6 +66,7 @@ type
     function DefaultPaperIndex: Integer;
     function DefaultPageSize: Integer;
     function UseVirtualPrinter: boolean;
+    function FillPapers(list: TStrings; addCustom:boolean=true): Integer;
     {$IFDEF DbgPrinter}
     procedure DumpPrinterInfo;
     {$ENDIF}
@@ -814,7 +817,7 @@ begin
     {$ENDIF}
     
     {$IFDEF DbgPrinter_detail}
-    DebugLn(['Dump printer List of papers:']);
+    DebugLn(['Dump printer List of papers for ''',fPrinter.PrinterName,''' :']);
 
     n := FPapernames.IndexOf(FPrinter.PaperSize.PaperName);
     if n<0 then
@@ -854,7 +857,7 @@ begin
     end;
   end;
   {$ifdef DbgPrinter}
-  DebugLnExit(['TfrPrinter.GetSettings DONE: PrinterChanged: ', PrinterChanged]);
+  DebugLnExit('TfrPrinter.GetSettings DONE: Paper w=%d h=%d or=%d', [PaperWidth, PaperHeight, ord(Orientation)]);
   {$endif}
 end;
 
@@ -944,7 +947,10 @@ begin
     // todo: real USER custom sized papers are handled here
     //    requested custom paper size currently is not
     //    supported by printer4lazarus
-    DebugLn('SetCustomPaperSize REQUESTED, not yet supported...');
+    {$IFDEF DbgPrinter}
+    DebugLn('PaperSize Setting CustomPaper width=%d height=%d', [paperWidth, paperHeight]);
+    {$ENDIF}
+    FPrinter.PaperSize.PaperRect := GetPaperRect;
   end else begin
     // Standard paper sizes are handled here
     n := -1;
@@ -1146,17 +1152,41 @@ begin
   result := FPrinterIndex = FDefaultPrinter;
 end;
 
+function TfrPrinter.FillPapers(list: TStrings; addCustom: boolean): Integer;
+var
+  i, customIndex: Integer;
+begin
+  list.BeginUpdate;
+  try
+    list.Clear;
+    result := FPaperNames.Count;
+    customIndex := -1;
+    for i:=0 to result-1 do
+    begin
+      if PaperSizes[i]=256 then
+        customIndex := i;
+      list.AddObject(FPaperNames[i], TObject(PtrInt(PaperSizes[i])));
+    end;
+    if addCustom and (customIndex<0) then
+      list.AddObject(sPaper256, TObject(PtrInt(256)));
+  finally
+    list.EndUpdate;
+  end;
+end;
+
 {$IFDEF DbgPrinter}
 procedure TfrPrinter.DumpPrinterInfo;
 begin
 
   DbgOut(['PrinterIndex=',FPrinterIndex]);
-  if (FPrinters<>nil)and(FPrinters.Count>0) then begin
+  if FPrinters.Count>0 then begin
     if FPrinterIndex>=0 then
       DbgOut([' (',FPrinters[FPrinterIndex],')'])
+    else
+      DbgOut(' (no printer selected???)');
   end else
-    DbgOut(' (no defined internal list of printers)');
-  DebugLn([' Is Default(Virtual) printer=',UseVirtualPrinter]);
+    DbgOut(' (internal list of printers is empty)');
+  DebugLn([' Is Virtual printer=',UseVirtualPrinter]);
   if FPrinter=nil then
     DebugLn('SysPrinter is nil')
   else
@@ -1214,11 +1244,23 @@ begin
     end;
 end;
 
+function TfrPrinter.GetPaperRect: TPaperRect;
+begin
+  result.PhysicalRect.Left := 0;
+  result.PhysicalRect.Top := 0;
+  result.PhysicalRect.Width := PaperWidth * FPrinter.XDPI div 72;
+  result.PhysicalRect.Height := PaperHeight * FPrinter.YDPI div 72;
+  result.WorkRect := result.PhysicalRect;
+end;
+
 procedure TfrPrinter.SetPrinter(Value: TPrinter);
 begin
   {$ifdef DbgPrinter}
   DebugLnEnter('TfrPrinter.SetPrinter: INIT',[]);
   DumpPrinterInfo;
+  DbgOut('New printer ');
+  if Value=nil then DebugLn('is nil')
+  else              DebugLn('Index=%d ''%s''',[Value.PrinterIndex, Value.PrinterName]);
   {$endif}
   FPrinters.Clear;
   FPrinterIndex := 0;

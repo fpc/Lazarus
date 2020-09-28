@@ -6459,14 +6459,14 @@ begin
       RB1.Checked := True
     else
       RB2.Checked := True;
-    ComB1.Items := Prn.PaperNames;
-    ComB1.ItemIndex := Prn.GetArrayPos(pgSize);
+    Prn.FillPapers(COMB1.Items);
+    ComB1.ItemIndex := COMB1.Items.IndexOfObject(TObject(PtrInt(pgSize)));
     E1.Text := ''; E2.Text := '';
 
     if pgSize = $100 then
     begin
-      E1.Text := IntToStr(Width div 10);
-      E2.Text := IntToStr(Height div 10);
+      PaperWidth := round(Width * 25.4 / 72);      // pt to mm
+      PaperHeight := round(Height * 25.4 / 72);    // pt to mm
     end;
     
     E3.Text := PointsToMMStr(Margins.Left);
@@ -6497,12 +6497,12 @@ begin
       else
         LayoutOrder := loRows;
         
-      p := Prn.PaperSizes[ComB1.ItemIndex];
+      p := frPgoptForm.pgSize;
       w := 0; h := 0;
       if p = $100 then
         try
-          w := StrToInt(E1.Text) * 10;
-          h := StrToInt(E2.Text) * 10;
+          w := round(PaperWidth * 72 / 25.4);    // mm to pt
+          h := round(PaperHeight * 72 / 25.4);   // mm to pt
         except
           on exception do p := 9; // A4
         end;

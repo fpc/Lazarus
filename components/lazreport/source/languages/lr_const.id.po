@@ -2378,6 +2378,10 @@ msgstr "Jan&gan pakai"
 msgid "&Height, mm"
 msgstr "&Tinggi, mm"
 
+#: lr_const.spgoptforminvalidcustompapersize
+msgid "Invalid custom paper size"
+msgstr ""
+
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "Membentan&g"
