@@ -11582,8 +11582,9 @@ end;
 procedure TfrReport.DoPrintReport(const PageNumbers: String; Copies: Integer);
 var
   k, FCollateCopies: Integer;
-  f: Boolean;
+  isFirstPage: Boolean;
   pgList: TStringList;
+  printerTitle: string;
 
   procedure ParsePageNumbers;
   var
@@ -11633,17 +11634,21 @@ var
   procedure PrintPage(n: Integer);
   begin
     {$ifdef DebugLR}
-    DebugLnEnter('PrintPage: INIT ',[]);
+    DebugLnEnter('PrintPage: %d INIT',[n]);
     {$endif}
     with Printer, EMFPages[n]^ do
     begin
       if not Prn.IsEqual(pgSize, pgWidth, pgHeight, pgOr) then
       begin
         EndDoc;
+        {$ifdef DebugLR}
+        DebugLn('Page %d done ',[n]);
+        {$endif}
+        Title := Format('%s page %d',[printerTitle, n]);
         Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
         BeginDoc;
       end
-      else if not f then
+      else if not isFirstPage then
              NewPage;
              
       Prn.FillPrnInfo(PrnInfo);
@@ -11662,7 +11667,7 @@ var
     end;
     InternalOnProgress(n + 1);
     Application.ProcessMessages;
-    f := False;
+    isFirstPage := False;
     {$ifdef DebugLR}
     DebugLnExit('PrintPage: DONE',[]);
     {$endif}
@@ -11695,9 +11700,6 @@ var
       begin
         for j := 0 to Copies - 1 do
         begin
-          {$IFDEF DebugLR}
-          DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
-          {$ENDIF}
           PrintPage(i);
 
           if Terminated then
@@ -11714,7 +11716,7 @@ var
 begin
   {$ifdef DebugLR}
   DebugLnEnter('TfrReport.DoPrintReport: INIT ',[]);
-  DebugPrnInfo('=== INIT');
+  DebugPrnInfo('PageSizes');
   {$endif}
   if Prn.UseVirtualPrinter then
     ChangePrinter(Prn.PrinterIndex, Printer.PrinterIndex);
@@ -11737,16 +11739,14 @@ begin
     Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
     Prn.FillPrnInfo(PrnInfo);
   end;
-  {$IFDEF DebugLR}
-  DebugPrnInfo('=== AFTER EMFPages[0]^');
-  {$ENDIF}
   if Title <> '' then
-    Printer.Title:=Format('%s',[Title])
+    printerTitle:=Format('%s',[Title])
   else
-    Printer.Title:=Format('LazReport : %s',[sUntitled]);
+    printerTitle:=Format('LazReport : %s',[sUntitled]);
+  Printer.Title := printerTitle;
 
   Printer.BeginDoc;
-  f:= True;
+  isFirstPage:= True;
 
   if FDefaultCollate then
   begin
@@ -11764,7 +11764,6 @@ begin
     OnAfterPrint(Self);
 
   {$ifdef DebugLR}
-  DebugPrnInfo('=== END');
   DebugLnExit('TfrReport.DoPrintReport: DONE',[]);
   {$endif}
 end;
