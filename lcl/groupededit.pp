@@ -75,6 +75,7 @@ type
     //Forwarded events from FEdit
     FOnEditClick: TNotifyEvent;
     FOnEditChange: TNotifyEvent;
+    FOnEditContextPopup:TContextPopupEvent;
     FOnEditDblClick: TNotifyEvent;
     FOnEditDragDrop: TDragDropEvent;
     FOnEditDragOver: TDragOverEvent;
@@ -125,6 +126,7 @@ type
     procedure InternalOnEditClick(Sender: TObject);
     procedure InternalOnEditDblClick(Sender: TObject);
     procedure InternalOnEditChange(Sender: TObject);
+    procedure InternalOnEditContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure InternalOnEditDragDrop(Sender, Source: TObject; X,Y: Integer);
     procedure InternalOnEditDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
     procedure InternalOnEditEditingDone(Sender: TObject);
@@ -206,6 +208,7 @@ type
 
     procedure EditChange; virtual;
     procedure EditClick; virtual;
+    procedure EditContextPopup(MousePos: TPoint; var Handled: Boolean); virtual;
     procedure EditDblClick; virtual;
     procedure EditDragDrop(Source: TObject; X,Y: Integer);  virtual;
     procedure EditDragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean); virtual;
@@ -304,6 +307,7 @@ type
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
+    property OnContextPopup: TContextPopupEvent read FOnEditContextPopup write FOnEditContextPopup;
     property OnDblClick: TNotifyEvent read FOnEditDblClick write FOnEditDblClick;
     property OnDragDrop: TDragDropEvent read FOnEditDragDrop write FOnEditDragDrop;
     property OnDragOver: TDragOverEvent read FOnEditDragOver write FOnEditDragOver;
@@ -435,6 +439,12 @@ procedure TCustomAbstractGroupedEdit.InternalOnEditChange(Sender: TObject);
 begin
   if not (csLoading in ComponentState) then
     EditChange;
+end;
+
+procedure TCustomAbstractGroupedEdit.InternalOnEditContextPopup(
+  Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+begin
+  EditContextPopup(MousePos, Handled);
 end;
 
 procedure TCustomAbstractGroupedEdit.InternalOnEditClick(Sender: TObject);
@@ -937,6 +947,11 @@ begin
   if Assigned(FOnEditClick) then FOnEditClick(Self);
 end;
 
+procedure TCustomAbstractGroupedEdit.EditContextPopup(MousePos: TPoint; var Handled: Boolean);
+begin
+  if Assigned(FOnEditContextPopup) then FOnEditContextPopup(Self, MousePos, Handled);
+end;
+
 procedure TCustomAbstractGroupedEdit.EditDblClick;
 begin
   if Assigned(FOnEditDblClick) then FOnEditDblClick(Self);
@@ -1211,6 +1226,7 @@ begin
 
     OnChange := @InternalOnEditChange;
     OnClick := @InternalOnEditClick;
+    OnContextPopup := @InternalOnEditContextPopup;
     OnDblClick := @InternalOnEditDblClick;
     OnDragDrop := @InternalOnEditDragDrop;
     OnDragOver := @InternalOnEditDragOver;
