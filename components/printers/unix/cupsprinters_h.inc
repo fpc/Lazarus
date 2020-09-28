@@ -67,7 +67,8 @@ type
     cpsPaperNameValid,
     cpsCopiesValid,
     cpsPaperRectValid,
-    cpsResolutionValid
+    cpsResolutionValid,
+    cpsCustomPaperValid
     );
   TCUPSPrinterStates = set of TCUPSPrinterState;
 
@@ -95,9 +96,11 @@ type
      fRawModeStream: TMemoryStream;
      FOutputFilename: string;
      fCachedResolution: TPoint;
+     fCustomPaperWidth,fCustomPaperHeight: double;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
+     procedure DoCustomPaper;
 
   private
      fCupsPapersCount: Integer;
@@ -126,6 +129,7 @@ type
      procedure DoSetPaperName(aName : string); override;
      function DoGetPaperRect(aName : string;
                              var aPaperRc: TPaperRect): Integer; override;
+     function DoSetPaperRect(aPaperRc: TPaperRect): boolean; override;
      function DoGetPrinterState: TPrinterState; override;
      function DoGetDefaultCanvasClass: TPrinterCanvasRef; override;
      
