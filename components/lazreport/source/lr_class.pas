@@ -140,6 +140,7 @@ type
   TPrintReportEvent = procedure(Sender: TfrReport) of object;
   TFormPageBookmarksEvent = procedure(Sender: TfrReport; Backup: boolean) of object;
   TExecScriptEvent = procedure(frObject:TfrObject; AScript:TfrScriptStrings) of object;
+  TBeforePreviewFormEvent = procedure( var PrForm : TfrPreviewForm ) of Object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -1148,6 +1149,7 @@ type
     FObjectClick: TObjectClickEvent;
     FOnExportFilterSetup: TExportFilterSetup;
     fOnFormPageBookmarks: TFormPageBookmarksEvent;
+    fOnBeforePreview : TBeforePreviewFormEvent;
     FPages: TfrPages;
     FEMFPages: TfrEMFPages;
     FRebuildPrinter: boolean;
@@ -1365,6 +1367,7 @@ type
     property OnObjectClick: TObjectClickEvent read FObjectClick write FObjectClick;
     property OnMouseOverObject: TMouseOverObjectEvent read FMouseOverObject write FMouseOverObject;
     property OnFormPageBookmarks: TFormPageBookmarksEvent read fOnFormPageBookmarks write fOnFormPageBookmarks;
+    property OnBeforePreview : TBeforePreviewFormEvent read  fOnBeforePreview write fOnBeforePreview;
   end;
 
   TfrCompositeReport = class(TfrReport)
@@ -11534,6 +11537,8 @@ begin
       p.SaveDialog.InitialDir := ExtractFilePath(ExportFileName);
       p.SaveDialog.FileName := ExportFilename;
     end;
+    if Assigned( OnBeforePreview ) then
+      OnBeforePreview( p );
     p.Show_Modal(Self);
   end;
   {$IFDEF DebugLR}
