@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-04 01:22+0300\n"
+"PO-Revision-Date: 2020-09-30 02:25+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -2314,8 +2314,8 @@ msgid "&Height, mm"
 msgstr "&Высота, мм"
 
 #: lr_const.spgoptforminvalidcustompapersize
-msgid "Invalid custom paper size"
-msgstr ""
+msgid "Invalid custom paper size."
+msgstr "Пользовательский размер бумаги некорректен."
 
 #: lr_const.spgoptformland
 msgid "&Landscape"

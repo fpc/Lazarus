@@ -2317,7 +2317,7 @@ msgid "&Height, mm"
 msgstr "&Aukštis, mm"
 
 #: lr_const.spgoptforminvalidcustompapersize
-msgid "Invalid custom paper size"
+msgid "Invalid custom paper size."
 msgstr ""
 
 #: lr_const.spgoptformland
