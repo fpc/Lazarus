@@ -805,7 +805,7 @@ begin
   {$ENDIF}
   if not FRejectToggleOnSelect then
     begin
-      if ItemEnabled[ItemIndex] then Toggle(ItemIndex);
+      if (ItemIndex >= 0) and ItemEnabled[ItemIndex] then Toggle(ItemIndex);
       FRejectToggleOnSelect:=True;
     end;
   FDropped:=False;
