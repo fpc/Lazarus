@@ -23,6 +23,30 @@ msgstr "Створити налаштувальний метод"
 msgid "Create TearDown method"
 msgstr "Створити метод демонтажу"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Консольний тестовий застосунок FPCUnit"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "Застосунок для запуску тестів FPCUnit у режимі консолі."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Тестовий застосунок FPCUnit"
+
+#: strtestcaseopts.sfpcuntestappdesc
+msgid "An application to run FPCUnit test cases."
+msgstr "Застосунок для запуску тестів FPCUnit."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Тест FPCUnit"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "Модуль, що містить тест FPCUnit."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Параметри тесту"
@@ -38,4 +62,8 @@ msgstr "Назви"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Типова назва тесту"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Напишіть ваш власний тест"
 

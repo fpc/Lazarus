@@ -32,7 +32,7 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts;
+  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts, strtestcaseopts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -88,15 +88,6 @@ var
 procedure Register;
 
 implementation
-
-resourcestring
-  sFPCUnTestApp = 'FPCUnit Test Application';
-  sFPCUnTestAppDesc = 'An application to run FPCUnit test cases.';
-  sFPCUnTestCase = 'FPCUnit Test Case';
-  sFPCUnTestCaseDesc = 'A unit containing a FPCUnit Test Case.';
-  sWriteYourOwnTest = 'Write your own test';
-  sFPCUnConsoleTestApp = 'FPCUnit Console Test Application';
-  sFPCUnConsoleTestDesc = 'An application to run FPCUnit test cases in console mode.';
 
 procedure Register;
 begin

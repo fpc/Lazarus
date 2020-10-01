@@ -24,6 +24,36 @@ msgstr "创建Setup Method"
 msgid "Create TearDown method"
 msgstr "创建TearDown method"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "FPCUnit控制台测试应用程序"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "FPCUnit控制台测试应用程序%s一个应用程序在控制台模式中来运行FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "FPCUnit测试应用程序"
+
+#: strtestcaseopts.sfpcuntestappdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
+msgstr "FPCUnit测试应用程序%s一个应用程序来运行 FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "FPCUnit Test Case"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "FPCUnit Test Case%s一个unit含有一个FPCUnit Test Case."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "TestCase选择"
@@ -39,4 +69,8 @@ msgstr "名称"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "默认测试名称"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "编写你自己的测试"
 

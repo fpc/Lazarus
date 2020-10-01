@@ -23,6 +23,36 @@ msgstr "Kurti sąrankos metodą"
 msgid "Create TearDown method"
 msgstr "Kurti „TearDown“ metodą"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "FPCUnit testo pulte programa"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "FPCUnit testo pulte programa%sPrograma, kuri pulte vykdys FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "FPCUnit testo programa"
+
+#: strtestcaseopts.sfpcuntestappdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
+msgstr "FPCUnit testo programa%sPrograma, vykdanti FPCUnit testuojamus atvejus.%sLazarus automatiškai rūpinsis programos pirminiu kodu."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "FPCUnit testavimo atvejis"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "FPCUnit testavimo atvejis%sModulis, kuriame aprašytas FPCUnit testavimo atvejis."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "„TestCase“ parinktys"
@@ -38,4 +68,8 @@ msgstr "Pavadinimai"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Numatytas testavimo pavadinimas"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Sukurkite savo testavimą"
 

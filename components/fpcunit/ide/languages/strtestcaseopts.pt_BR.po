@@ -23,6 +23,30 @@ msgstr "Criar Método Configuração"
 msgid "Create TearDown method"
 msgstr "Criar Método \"TearDown\""
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Aplicação Console Teste \"FPCUnit\""
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "Uma aplicação para executar testes unitários \"FPCUnit\" em modo console."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Aplicação Teste \"FPCUnit\""
+
+#: strtestcaseopts.sfpcuntestappdesc
+msgid "An application to run FPCUnit test cases."
+msgstr "Uma aplicação para executar testes unitários \"FPCUnit\"."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Testes Unitários \"FPCUnit\""
+
+#: strtestcaseopts.sfpcuntestcasedesc
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "Uma unidade contendo um teste unitário \"FPCUnit\""
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Opções Testes Unitários"
@@ -38,4 +62,8 @@ msgstr "Nomes"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Nome Padrão do Teste"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Escreva seu próprio teste"
 

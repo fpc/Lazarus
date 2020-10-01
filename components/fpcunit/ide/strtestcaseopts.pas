@@ -1,21 +1,3 @@
-{ TestCase Opions Resource Strings
-
-  Copyright (C) 2010 Marcelo Borges de Paula
-
-  Estes fontes são software livre; você pode redistribuir e/ou modificá-los
-  sob os termos da GNU Library General Public License como publicada pela Free
-  Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer
-  versão posterior.
-
-  Este código é distribuído na esperança de que seja útil, mas SEM
-  QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou
-  ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public
-  License para maiores detalhes.
-
-  Você deve ter recebido uma cópia da licença GNU Library General Public
-  License juntamente com esta biblioteca; senão, escreva a Free Software
-  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.
-}
 unit strtestcaseopts;
 
 {$mode objfpc}{$H+}
@@ -32,6 +14,13 @@ resourcestring
   schkTear = 'Create TearDown method';
   sbtnCreate = 'Create unit';
 
+  sFPCUnTestApp = 'FPCUnit Test Application';
+  sFPCUnTestAppDesc = 'An application to run FPCUnit test cases.';
+  sFPCUnTestCase = 'FPCUnit Test Case';
+  sFPCUnTestCaseDesc = 'A unit containing a FPCUnit Test Case.';
+  sWriteYourOwnTest = 'Write your own test';
+  sFPCUnConsoleTestApp = 'FPCUnit Console Test Application';
+  sFPCUnConsoleTestDesc = 'An application to run FPCUnit test cases in console mode.';
 
 implementation
 

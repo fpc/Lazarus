@@ -13,6 +13,30 @@ msgstr ""
 msgid "Create TearDown method"
 msgstr ""
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr ""
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr ""
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr ""
+
+#: strtestcaseopts.sfpcuntestappdesc
+msgid "An application to run FPCUnit test cases."
+msgstr ""
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr ""
+
+#: strtestcaseopts.sfpcuntestcasedesc
+msgid "A unit containing a FPCUnit Test Case."
+msgstr ""
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr ""
@@ -27,5 +51,9 @@ msgstr ""
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
+msgstr ""
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
 msgstr ""
 

@@ -24,6 +24,36 @@ msgstr "Felépítési eljárás létrehozása"
 msgid "Create TearDown method"
 msgstr "Bontási eljárás létrehozása"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "FPCUnit parancssoros teszt alkalmazás"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "FPCUnit parancssoros teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "FPCUnit teszt alkalmazás"
+
+#: strtestcaseopts.sfpcuntestappdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
+msgstr "FPCUnit teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "FPCUnit teszt"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "FPCUnit teszt%sEgy unit, amely FPCUnit tesztet tartalmaz."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Teszt beállítások"
@@ -39,4 +69,8 @@ msgstr "Nevek"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Alapértelmezett teszt neve"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Saját teszt írása"
 

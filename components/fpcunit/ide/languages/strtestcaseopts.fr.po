@@ -23,6 +23,36 @@ msgstr "Créer la méthode d'installation"
 msgid "Create TearDown method"
 msgstr "Créer la méthode de démontage"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Unité FPC - Application console de test"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "Unité FPC - Application console de test%sUne application pour exécuter les tests types des unités FPC en mode console.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Unité FPC - Application de test"
+
+#: strtestcaseopts.sfpcuntestappdesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgid "An application to run FPCUnit test cases."
+msgstr "Unité FPC - Application de test%sUne application pour exécuter les tests types des unités de FPC.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Unité de FPC - Test type"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+#, fuzzy, badformat
+#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "Unité FPC - Test type%sUne unité contenant un test type des unités FPC."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Options des tests"
@@ -38,4 +68,8 @@ msgstr "Noms"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Nom de test par défaut"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Écrivez votre propre test"
 

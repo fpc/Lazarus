@@ -21,6 +21,30 @@ msgstr "Создать настраивающий метод"
 msgid "Create TearDown method"
 msgstr "Создать завершающий метод"
 
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Консольное тестовое приложение FPCUnit"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "Приложение для запуска тестов FPCUnit в режиме консоли."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Тестовое приложение FPCUnit"
+
+#: strtestcaseopts.sfpcuntestappdesc
+msgid "An application to run FPCUnit test cases."
+msgstr "Приложение для запуска тестов FPCUnit."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Тест FPCUnit"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "Модуль, содержащий тест FPCUnit."
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Параметры теста"
@@ -36,4 +60,8 @@ msgstr "Имена"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Имя теста по умолчанию"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Напишите ваш тест"
 
