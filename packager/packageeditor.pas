@@ -48,7 +48,7 @@ uses
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
+  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps, ProjPackFilePropGui;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -202,7 +202,6 @@ type
     MoveUpBtn: TSpeedButton;
     DirectoryHierarchyButton: TSpeedButton;
     OpenButton: TSpeedButton;
-    DisableI18NForLFMCheckBox: TCheckBox;
     FilterEdit: TTreeFilterEdit;
     FilterPanel: TPanel;
     AddPopupMenu: TPopupMenu;
@@ -223,29 +222,15 @@ type
     ItemsTreeView: TTreeView;
     // properties
     PropsGroupBox: TGroupBox;
-    // file properties
-    CallRegisterProcCheckBox: TCheckBox;
-    AddToUsesPkgSectionCheckBox: TCheckBox;
-    RegisteredPluginsGroupBox: TGroupBox;
-    RegisteredListBox: TListBox;
-    // dependency properties
-    UseMinVersionCheckBox: TCheckBox;
-    MinVersionEdit: TEdit;
-    UseMaxVersionCheckBox: TCheckBox;
-    MaxVersionEdit: TEdit;
-    ApplyDependencyButton: TButton;
+    PropsPageControl: TPageControl;
+    CommonOptionsTabSheet: TTabSheet;
     // statusbar
     StatusBar: TStatusBar;
     // hidden components
     UsePopupMenu: TPopupMenu;
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
-    PropsPageControl: TPageControl;
-    CommonOptionsTabSheet: TTabSheet;
     procedure AddToProjectClick(Sender: TObject);
-    procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
-    procedure ApplyDependencyButtonClick(Sender: TObject);
-    procedure CallRegisterProcCheckBoxChange(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
     procedure CleanDependenciesMenuItemClick(Sender: TObject);
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
@@ -257,7 +242,6 @@ type
     procedure CreateMakefileClick(Sender: TObject);
     procedure CreateFpmakeFileClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
-    procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -284,8 +268,6 @@ type
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
-    procedure MaxVersionEditChange(Sender: TObject);
-    procedure MinVersionEditChange(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -296,8 +278,6 @@ type
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure PublishClick(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
-    procedure RegisteredListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
-                                        ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RevertClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
@@ -309,8 +289,6 @@ type
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
     procedure UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
-    procedure UseMaxVersionCheckBoxChange(Sender: TObject);
-    procedure UseMinVersionCheckBoxChange(Sender: TObject);
     procedure UseNoUnitsInDirectoryMenuItemClick(Sender: TObject);
     procedure UsePopupMenuPopup(Sender: TObject);
     procedure ViewPkgSourceClick(Sender: TObject);
@@ -326,6 +304,7 @@ type
     FRemovedFilesNode: TTreeNode;
     FRemovedRequiredNode: TTreeNode;
     FPlugins: TStringList; // ComponentClassName, Objects=TPkgComponent
+    FPropGui: TProjPackFilePropGui;
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
@@ -336,6 +315,9 @@ type
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
+    function CreateToolButton(AName, ACaption, AHint, AImageName: String;
+      AOnClick: TNotifyEvent): TToolButton;
+    function CreateDivider: TToolButton;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
@@ -353,8 +335,8 @@ type
     procedure UpdateRequiredPkgs(Immediately: boolean = false);
     procedure UpdatePEProperties(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
-    procedure UpdateApplyDependencyButton(Immediately: boolean = false);
     procedure UpdateStatusBar(Immediately: boolean = false);
+    function GetDependencyToUpdate(Immediately: boolean): TPkgDependencyBase;
     procedure GetDirectorySummary(DirNode: TTreeNode;
         out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
@@ -367,6 +349,12 @@ type
     procedure FileOptionsToGui;
     procedure GuiToFileOptions(Restore: boolean);
     procedure FileOptionsChange(Sender: TObject);
+    procedure CallRegisterProcCheckBoxChange(Sender: TObject);
+    procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
+    procedure ApplyDependencyButtonClick(Sender: TObject);
+    procedure RegisteredListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
+                                        ARect: TRect; {%H-}State: TOwnerDrawState);
+    procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
   protected
     fFlags: TPEFlags;
     procedure SetLazPackage(const AValue: TLazPackage); override;
@@ -1129,16 +1117,6 @@ begin
   PackageEditors.InstallPackage(LazPackage);
 end;
 
-procedure TPackageEditorForm.MaxVersionEditChange(Sender: TObject);
-begin
-  UpdateApplyDependencyButton;
-end;
-
-procedure TPackageEditorForm.MinVersionEditChange(Sender: TObject);
-begin
-  UpdateApplyDependencyButton;
-end;
-
 procedure TPackageEditorForm.SetDepDefaultFilenameMenuItemClick(Sender: TObject);
 begin
   SetDependencyDefaultFilename(false);
@@ -1269,14 +1247,14 @@ begin
   if CurObject is TPkgComponent then begin
     // draw registered component
     CurComponent:=TPkgComponent(CurObject);
-    with RegisteredListBox.Canvas do begin
+    with FPropGui.RegisteredListBox do begin
       if Assigned(CurComponent.RealPage) then
         CurStr:=Format(lisPckEditPage,[CurComponent.ComponentClass.ClassName,
                                        CurComponent.RealPage.PageName])
       else
         CurStr:=CurComponent.ComponentClass.ClassName;
-      TxtH:=TextHeight(CurStr);
-      FillRect(ARect);
+      TxtH:=Canvas.TextHeight(CurStr);
+      Canvas.FillRect(ARect);
       IL:=CurComponent.Images;
       II:=CurComponent.ImageIndex;
       //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem ',DbgSName(CurIcon),' ',CurComponent.ComponentClass.ClassName);
@@ -1284,14 +1262,12 @@ begin
         Res := IL.ResolutionForControl[0, Self];
         IconWidth:=Res.Width;
         IconHeight:=Res.Height;
-        Res.Draw(RegisteredListBox.Canvas,
-             ARect.Left+(25-IconWidth) div 2,
-             ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2,
-             II);
+        Res.Draw(Canvas,
+                 ARect.Left+(25-IconWidth) div 2,
+                 ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, II);
       end;
-      TextOut(ARect.Left+25,
-              ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
-              CurStr);
+      Canvas.TextOut(ARect.Left+25,
+                     ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
     end;
   end;
 end;
@@ -1467,6 +1443,7 @@ begin
   PackageEditors.DoFreeEditor(LazPackage);
   FLazPackage:=nil;
   FreeAndNil(FPlugins);
+  FreeAndNil(FPropGui);
 end;
 
 procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
@@ -1563,18 +1540,6 @@ begin
   FFirstNodeData[Typ]:=Result;
 end;
 
-procedure TPackageEditorForm.UseMaxVersionCheckBoxChange(Sender: TObject);
-begin
-  MaxVersionEdit.Enabled:=UseMaxVersionCheckBox.Checked;
-  UpdateApplyDependencyButton;
-end;
-
-procedure TPackageEditorForm.UseMinVersionCheckBoxChange(Sender: TObject);
-begin
-  MinVersionEdit.Enabled:=UseMinVersionCheckBox.Checked;
-  UpdateApplyDependencyButton;
-end;
-
 procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
 begin
   DoUseUnitsInDirectory(true);
@@ -1642,9 +1607,9 @@ begin
     if not (Item is TPkgFile) then continue;
     CurFile:=TPkgFile(Item);
     if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-    if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then continue;
+    if CurFile.AddToUsesPkgSection=FPropGui.AddToUsesPkgSectionCheckBox.Checked then continue;
     // change flag
-    CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
+    CurFile.AddToUsesPkgSection:=FPropGui.AddToUsesPkgSectionCheckBox.Checked;
     if (not NodeData.Removed) and CurFile.AddToUsesPkgSection then begin
       // mark all other units with the same name as unused
       for j:=0 to LazPackage.FileCount-1 do begin
@@ -1666,62 +1631,14 @@ end;
 
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
 var
-  Flags: TPkgDependencyFlags;
-  MinVers, MaxVers: TPkgVersion;
   CurDependency: TPkgDependency;
 begin
   CurDependency:=GetSingleSelectedDependency;
   if (LazPackage=nil) or (CurDependency=nil)
-  then exit;
-
-  MinVers:=TPkgVersion.Create;
-  MaxVers:=TPkgVersion.Create;
-  try
-    // Assign relevant data to temp variables
-    Flags:=CurDependency.Flags;
-    MinVers.Assign(CurDependency.MinVersion);
-    MaxVers.Assign(CurDependency.MinVersion);
-
-    // read minimum version
-    if UseMinVersionCheckBox.Checked then begin
-      Include(Flags, pdfMinVersion);
-      if not MinVers.ReadString(MinVersionEdit.Text) then begin
-        MessageDlg(lisPckEditInvalidMinimumVersion,
-          Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion,
-                 [MinVersionEdit.Text, LineEnding]),
-          mtError,[mbCancel],0);
-        exit;
-      end;
-    end
-    else
-      Exclude(Flags, pdfMinVersion);
-
-    // read maximum version
-    if UseMaxVersionCheckBox.Checked then begin
-      Include(Flags, pdfMaxVersion);
-      if not MaxVers.ReadString(MaxVersionEdit.Text) then begin
-        MessageDlg(lisPckEditInvalidMaximumVersion,
-          Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion,
-                 [MaxVersionEdit.Text, LineEnding]),
-          mtError,[mbCancel],0);
-        exit;
-      end;
-    end
-    else
-      Exclude(Flags, pdfMaxVersion);
-
-    // Assign changes back to the dependency
-    CurDependency.Flags := Flags;
-    CurDependency.MinVersion.Assign(MinVers);
-    CurDependency.MaxVersion.Assign(MaxVers);
-
-    UpdateNodeImage(ItemsTreeView.Selected);
-    //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
-    LazPackage.Modified:=True;
-  finally
-    MaxVers.Free;
-    MinVers.Free;
-  end;
+  or not FPropGui.CheckApplyDependency(CurDependency) then exit;
+  UpdateNodeImage(ItemsTreeView.Selected);
+  //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
+  LazPackage.Modified:=True;
 end;
 
 procedure TPackageEditorForm.CallRegisterProcCheckBoxChange(Sender: TObject);
@@ -1735,12 +1652,13 @@ begin
   if LazPackage=nil then exit;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
     TVNode:=ItemsTreeView.Selections[i];
-    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-    if not (Item is TPkgFile) then continue;
+    if not GetNodeDataItem(TVNode,NodeData,Item) or not (Item is TPkgFile) then
+      continue;
     CurFile:=TPkgFile(Item);
-    if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-    if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then continue;
-    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
+    if not (CurFile.FileType in PkgFileUnitTypes)
+    or CurFile.HasRegisterProc=FPropGui.CallRegisterProcCheckBox.Checked then
+      continue;
+    CurFile.HasRegisterProc:=FPropGui.CallRegisterProcCheckBox.Checked;
     if not NodeData.Removed then
       LazPackage.ModifySilently;
     UpdateNodeImage(TVNode, NodeData, Item);
@@ -1857,13 +1775,13 @@ begin
   try
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if not (Item is TPkgFile) then continue;
-      CurFile:=TPkgFile(Item);
-      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      if CurFile.DisableI18NForLFM=DisableI18NForLFMCheckBox.Checked then
+      if not GetNodeDataItem(TVNode,NodeData,Item) or not (Item is TPkgFile) then
         continue;
-      CurFile.DisableI18NForLFM:=DisableI18NForLFMCheckBox.Checked;
+      CurFile:=TPkgFile(Item);
+      if not (CurFile.FileType in PkgFileUnitTypes)
+      or CurFile.DisableI18NForLFM=FPropGui.DisableI18NForLFMCheckBox.Checked then
+        continue;
+      CurFile.DisableI18NForLFM:=FPropGui.DisableI18NForLFMCheckBox.Checked;
       if not NodeData.Removed then
         LazPackage.Modified:=true;
     end;
@@ -1897,30 +1815,30 @@ begin
   UpdateAll(true);
 end;
 
+function TPackageEditorForm.CreateToolButton(AName, ACaption, AHint, AImageName: String;
+  AOnClick: TNotifyEvent): TToolButton;
+begin
+  Result := TToolButton.Create(Self);
+  Result.Name := AName;
+  Result.Caption := ACaption;
+  Result.Hint := AHint;
+  if AImageName <> '' then
+    Result.ImageIndex := IDEImages.LoadImage(AImageName);
+  Result.ShowHint := True;
+  Result.OnClick := AOnClick;
+  Result.AutoSize := True;
+  Result.Parent := ToolBar;
+end;
+
+function TPackageEditorForm.CreateDivider: TToolButton;
+begin
+  Result := TToolButton.Create(Self);
+  Result.Style := tbsDivider;
+  Result.AutoSize := True;
+  Result.Parent := ToolBar;
+end;
+
 procedure TPackageEditorForm.SetupComponents;
-
-  function CreateToolButton(AName, ACaption, AHint, AImageName: String; AOnClick: TNotifyEvent): TToolButton;
-  begin
-    Result := TToolButton.Create(Self);
-    Result.Name := AName;
-    Result.Caption := ACaption;
-    Result.Hint := AHint;
-    if AImageName <> '' then
-      Result.ImageIndex := IDEImages.LoadImage(AImageName);
-    Result.ShowHint := True;
-    Result.OnClick := AOnClick;
-    Result.AutoSize := True;
-    Result.Parent := ToolBar;
-  end;
-
-  function CreateDivider: TToolButton;
-  begin
-    Result := TToolButton.Create(Self);
-    Result.Style := tbsDivider;
-    Result.AutoSize := True;
-    Result.Parent := ToolBar;
-  end;
-
 begin
   ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
   ImageIndexRemovedFiles    := IDEImages.LoadImage('pkg_removedfiles');
@@ -1991,28 +1909,19 @@ begin
   PropsGroupBox.Caption:=lisPckEditFileProperties;
   CommonOptionsTabSheet.Caption:=lisPckEditCommonOptions;
 
-  CallRegisterProcCheckBox.Caption:=lisPckEditRegisterUnit;
-  CallRegisterProcCheckBox.Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
-
-  AddToUsesPkgSectionCheckBox.Caption:=lisPkgMangUseUnit;
-  AddToUsesPkgSectionCheckBox.Hint:=lisPkgMangAddUnitToUsesClause;
-
-  DisableI18NForLFMCheckBox.Caption:=lisPckDisableI18NOfLfm;
-  DisableI18NForLFMCheckBox.Hint:=lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString;
-
-  UseMinVersionCheckBox.Caption:=lisPckEditMinimumVersion;
-  UseMaxVersionCheckBox.Caption:=lisPckEditMaximumVersion;
-  ApplyDependencyButton.Caption:=lisPckEditApplyChanges;
-  RegisteredPluginsGroupBox.Caption:=lisPckEditRegisteredPlugins;
-  RegisteredListBox.ItemHeight:=ComponentPaletteImageHeight;
+  FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet);
+  // file properties
+  FPropGui.AddToUsesPkgSectionCheckBox.OnChange := @AddToUsesPkgSectionCheckBoxChange;
+  FPropGui.CallRegisterProcCheckBox.OnChange := @CallRegisterProcCheckBoxChange;
+  FPropGui.RegisteredListBox.OnDrawItem := @RegisteredListBoxDrawItem;
+  FPropGui.DisableI18NForLFMCheckBox.OnChange := @DisableI18NForLFMCheckBoxChange;
+  // dependency properties
+  FPropGui.OnGetPkgDep := @GetDependencyToUpdate;
+  FPropGui.ApplyDependencyButton.OnClick := @ApplyDependencyButtonClick;
 
   FDirSummaryLabel:=TLabel.Create(Self);
-  with FDirSummaryLabel do
-  begin
-    Name:='DirSummaryLabel';
-    Parent:=CommonOptionsTabSheet;
-  end;
-
+  FDirSummaryLabel.Name:='DirSummaryLabel';
+  FDirSummaryLabel.Parent:=CommonOptionsTabSheet;
   CreatePackageFileEditors;
 end;
 
@@ -2426,7 +2335,7 @@ begin
     if pefNeedUpdateButtons in fFlags then
       UpdateButtons(true);
     if pefNeedUpdateApplyDependencyButton in fFlags then
-      UpdateApplyDependencyButton(true);
+      FPropGui.UpdateApplyDependencyButton(true);
     if pefNeedUpdateStatusBar in fFlags then
       UpdateStatusBar(true);
     IdleConnected:=false;
@@ -2444,7 +2353,6 @@ begin
   if (fUpdateLock>0) and not Immediately then begin
     Include(fFlags,Flag);
     IdleConnected:=true;
-    Result:=false;
   end else begin
     Exclude(fFlags,Flag);
     Result:=true;
@@ -2593,72 +2501,33 @@ begin
   UpdateButtons;
 end;
 
+procedure MergeMultiBool(var b: TMultiBool; NewValue: boolean);
+begin
+  case b of
+  mubNone    : if NewValue then b:=mubAllTrue else b:=mubAllFalse;
+  mubAllTrue : if not NewValue then b:=mubMixed;
+  mubAllFalse: if NewValue then b:=mubMixed;
+  mubMixed: ;
+  end;
+end;
+
 procedure TPackageEditorForm.UpdatePEProperties(Immediately: boolean);
-type
-  TMultiBool = (mubNone, mubAllTrue, mubAllFalse, mubMixed);
-
-  procedure MergeMultiBool(var b: TMultiBool; NewValue: boolean);
-  begin
-    case b of
-    mubNone: if NewValue then b:=mubAllTrue else b:=mubAllFalse;
-    mubAllTrue: if not NewValue then b:=mubMixed;
-    mubAllFalse: if NewValue then b:=mubMixed;
-    mubMixed: ;
-    end;
-  end;
-
-  procedure SetCheckBox(Box: TCheckBox; aVisible: boolean; State: TMultiBool);
-  begin
-    Box.Visible:=aVisible;
-    case State of
-    mubAllTrue:
-      begin
-        Box.State:=cbChecked;
-        Box.AllowGrayed:=false;
-      end;
-    mubAllFalse:
-      begin
-        Box.State:=cbUnchecked;
-        Box.AllowGrayed:=false;
-      end;
-    mubMixed:
-      begin
-        Box.AllowGrayed:=true;
-        Box.State:=cbGrayed;
-      end;
-    end;
-  end;
-
 var
   CurFile, SingleSelectedFile: TPkgFile;
   CurDependency, SingleSelectedDep: TPkgDependency;
   CurComponent: TPkgComponent;
   CurLine, CurFilename: string;
-  i, j: Integer;
+  TVNode, SingleSelectedDirectory, SingleSelectedNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  SelFileCount: Integer;
-  SelDepCount: Integer;
-  SelHasRegisterProc: TMultiBool;
-  SelAddToUsesPkgSection: TMultiBool;
-  SelDisableI18NForLFM: TMultiBool;
-  SelUnitCount: Integer;
-  SelDirCount: Integer;
-  SelHasLFMCount: Integer;
-  OnlyFilesSelected: Boolean;
-  OnlyFilesWithUnitsSelected: Boolean;
-  aVisible: Boolean;
-  TVNode: TTreeNode;
-  SingleSelectedDirectory, SingleSelectedNode: TTreeNode;
-  SingleSelectedRemoved: Boolean;
-  FileCount: integer;
-  HasRegisterProcCount: integer;
-  AddToUsesPkgSectionCount: integer;
+  i, j: Integer;
+  SelFileCount, SelDepCount, SelUnitCount, SelDirCount, SelHasLFMCount: Integer;
+  FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer;
+  SelHasRegisterProc, SelAddToUsesPkgSection, SelDisableI18NForLFM: TMultiBool;
+  aVisible, OnlyFilesWithUnitsSelected, SingleSelectedRemoved: Boolean;
 begin
   if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
-
   GuiToFileOptions(False);
-
   FPlugins.Clear;
 
   // check selection
@@ -2688,12 +2557,12 @@ begin
         if CurFile.FileType in PkgFileUnitTypes then begin
           inc(SelUnitCount);
           MergeMultiBool(SelAddToUsesPkgSection,CurFile.AddToUsesPkgSection);
-          if (CurFile.FileType in PkgFileRealUnitTypes) then
+          if CurFile.FileType in PkgFileRealUnitTypes then
           begin
             CurFilename:=CurFile.GetFullFilename;
             if FilenameIsAbsolute(CurFilename)
-                and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'))
-            then begin
+            and FileExistsCached(ChangeFileExt(CurFilename,'.lfm')) then
+            begin
               inc(SelHasLFMCount);
               MergeMultiBool(SelDisableI18NForLFM,CurFile.DisableI18NForLFM);
             end;
@@ -2716,7 +2585,8 @@ begin
       inc(SelDirCount);
       SingleSelectedDirectory:=TVNode;
       SingleSelectedNode:=TVNode;
-    end;
+    end //else if TVNode=FRequiredPackagesNode then
+      // DebugLn('UpdatePEProperties: Required packages selected');
   end;
 
   if (SelFileCount+SelDepCount+SelDirCount>1) then begin
@@ -2726,49 +2596,34 @@ begin
     SingleSelectedDirectory:=nil;
     SingleSelectedNode:=nil;
   end;
-  OnlyFilesSelected:=(SelFileCount>0) and (SelDepCount=0) and (SelDirCount=0);
-  OnlyFilesWithUnitsSelected:=OnlyFilesSelected and (SelUnitCount>0);
 
   //debugln(['TPackageEditorForm.UpdatePEProperties SelFileCount=',SelFileCount,' SelDepCount=',SelDepCount,' SelDirCount=',SelDirCount,' SelUnitCount=',SelUnitCount]);
   //debugln(['TPackageEditorForm.UpdatePEProperties FSingleSelectedFile=',SingleSelectedFile<>nil,' FSingleSelectedDependency=',SingleSelectedDep<>nil,' SingleSelectedDirectory=',SingleSelectedDirectory<>nil]);
 
+  OnlyFilesWithUnitsSelected:=
+    (SelFileCount>0) and (SelDepCount=0) and (SelDirCount=0) and (SelUnitCount>0);
+  FPropGui.ControlVisible := OnlyFilesWithUnitsSelected;
+  FPropGui.ControlEnabled := not LazPackage.ReadOnly;
   DisableAlign;
   try
+    FPropGui.SetAddToUsesCB(SelAddToUsesPkgSection);    // 'Add to uses' of files
+    FPropGui.SetCallRegisterProcCB(SelHasRegisterProc); // 'RegisterProc' of files
+    FPropGui.SetRegisteredPluginsGB(FPlugins);          // registered plugins
+
+    // Min/Max version of dependency (only single selection)
+    FPropGui.ControlVisible := SingleSelectedDep<>nil;
+    FPropGui.SetMinMaxVisibility;
+
+    // disable i18n for lfm
+    FPropGui.ControlVisible := OnlyFilesWithUnitsSelected and (SelHasLFMCount>0)
+      and LazPackage.EnableI18N and LazPackage.EnableI18NForLFM;
+    FPropGui.SetDisableI18NCB(SelDisableI18NForLFM);
+
     // move up/down (only single selection)
     aVisible:=(not (SortAlphabetically or SingleSelectedRemoved))
        and ((SingleSelectedFile<>nil) or (SingleSelectedDep<>nil));
     MoveUpBtn.Enabled  :=aVisible and Assigned(SingleSelectedNode.GetPrevVisibleSibling);
     MoveDownBtn.Enabled:=aVisible and Assigned(SingleSelectedNode.GetNextVisibleSibling);
-
-    // Min/Max version of dependency (only single selection)
-    aVisible:=SingleSelectedDep<>nil;
-    UseMinVersionCheckBox.Visible:=aVisible;
-    MinVersionEdit.Visible:=aVisible;
-    UseMaxVersionCheckBox.Visible:=aVisible;
-    MaxVersionEdit.Visible:=aVisible;
-    ApplyDependencyButton.Visible:=aVisible;
-
-    // 'RegisterProc' of files (supports multi selection)
-    SetCheckBox(CallRegisterProcCheckBox,OnlyFilesWithUnitsSelected, SelHasRegisterProc);
-    CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly);
-
-    // 'Add to uses' of files (supports multi selection)
-    SetCheckBox(AddToUsesPkgSectionCheckBox,OnlyFilesWithUnitsSelected, SelAddToUsesPkgSection);
-    AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly);
-
-    // disable i18n for lfm (supports multi selection)
-    SetCheckBox(DisableI18NForLFMCheckBox,
-     OnlyFilesWithUnitsSelected and (SelHasLFMCount>0) and LazPackage.EnableI18N
-     and LazPackage.EnableI18NForLFM,
-     SelDisableI18NForLFM);
-    DisableI18NForLFMCheckBox.Enabled:=(not LazPackage.ReadOnly);
-
-    // registered plugins (supports multi selection)
-    RegisteredPluginsGroupBox.Visible:=OnlyFilesWithUnitsSelected;
-    RegisteredPluginsGroupBox.Enabled:=(not LazPackage.ReadOnly);
-    if not RegisteredPluginsGroupBox.Visible then
-      FPlugins.Clear;
-    RegisteredListBox.Items.Assign(FPlugins);
 
     // directory summary (only single selection)
     FDirSummaryLabel.Visible:=(SelFileCount=0) and (SelDepCount=0) and (SelDirCount=1);
@@ -2780,16 +2635,12 @@ begin
     else if SingleSelectedDep<>nil then begin
       PropsGroupBox.Enabled:=not SingleSelectedRemoved;
       PropsGroupBox.Caption:=lisPckEditDependencyProperties;
-      UseMinVersionCheckBox.Checked:=pdfMinVersion in SingleSelectedDep.Flags;
-      MinVersionEdit.Text:=SingleSelectedDep.MinVersion.AsString;
-      MinVersionEdit.Enabled:=pdfMinVersion in SingleSelectedDep.Flags;
-      UseMaxVersionCheckBox.Checked:=pdfMaxVersion in SingleSelectedDep.Flags;
-      MaxVersionEdit.Text:=SingleSelectedDep.MaxVersion.AsString;
-      MaxVersionEdit.Enabled:=pdfMaxVersion in SingleSelectedDep.Flags;
-      UpdateApplyDependencyButton;
+      FPropGui.SetMinMaxValues(SingleSelectedDep);
+      FPropGui.UpdateApplyDependencyButton;
     end
     else if SingleSelectedDirectory<>nil then begin
       PropsGroupBox.Enabled:=true;
+      PropsGroupBox.Caption:=lisPckEditFileProperties;
       GetDirectorySummary(SingleSelectedDirectory,
         FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
       FDirSummaryLabel.Caption:=Format(
@@ -2798,6 +2649,7 @@ begin
     end
     else begin
       PropsGroupBox.Enabled:=false;
+      PropsGroupBox.Caption:=lisPckEditDependencyProperties;
     end;
 
     if SingleSelectedFile<>nil then begin
@@ -2866,38 +2718,12 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.UpdateApplyDependencyButton(Immediately: boolean);
-var
-  DependencyChanged: Boolean;
-  AVersion: TPkgVersion;
-  CurDependency: TPkgDependency;
+function TPackageEditorForm.GetDependencyToUpdate(Immediately: boolean): TPkgDependencyBase;
 begin
-  if not CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then exit;
-  CurDependency:=GetSingleSelectedDependency;
-  DependencyChanged:=false;
-  if (CurDependency<>nil) then begin
-    // check min version
-    if UseMinVersionCheckBox.Checked<>(pdfMinVersion in CurDependency.Flags) then
-      DependencyChanged:=true;
-    if UseMinVersionCheckBox.Checked then begin
-      AVersion:=TPkgVersion.Create;
-      if AVersion.ReadString(MinVersionEdit.Text)
-      and (AVersion.Compare(CurDependency.MinVersion)<>0) then
-        DependencyChanged:=true;
-      AVersion.Free;
-    end;
-    // check max version
-    if UseMaxVersionCheckBox.Checked<>(pdfMaxVersion in CurDependency.Flags) then
-      DependencyChanged:=true;
-    if UseMaxVersionCheckBox.Checked then begin
-      AVersion:=TPkgVersion.Create;
-      if AVersion.ReadString(MaxVersionEdit.Text)
-      and (AVersion.Compare(CurDependency.MaxVersion)<>0) then
-        DependencyChanged:=true;
-      AVersion.Free;
-    end;
-  end;
-  ApplyDependencyButton.Enabled:=DependencyChanged;
+  if CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then
+    Result:=GetSingleSelectedDependency
+  else
+    Result:=nil;
 end;
 
 procedure TPackageEditorForm.UpdateStatusBar(Immediately: boolean);
@@ -3427,15 +3253,12 @@ procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEO
     if Control <> nil then
     begin
       if Control is TAbstractIDEOptionsEditor then
-      begin
-        Assert(False,'TPackageEditorForm.TraverseSettings: IDEOptionsEditor found under PropsPageControl');
         with TAbstractIDEOptionsEditor(Control) do
         case anAction of
           iodaRead: ReadSettings(AOptions);
           iodaWrite: WriteSettings(AOptions);
           iodaRestore: RestoreSettings(AOptions);
         end;
-      end;
       for i := 0 to Control.ControlCount -1 do
         if Control.Controls[i] is TWinControl then
           Traverse(TWinControl(Control.Controls[i]));
@@ -3443,12 +3266,10 @@ procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEO
   end;
 
 begin
-  DebugLn(['TPackageEditorForm.TraverseSettings: AOptions=', AOptions, ', Action=', anAction]);
   Traverse(PropsPageControl);
 end;
 
 procedure TPackageEditorForm.CreatePackageFileEditors;
-
 var
   Instance: TAbstractIDEOptionsEditor;
   i, j: integer;
@@ -3458,7 +3279,6 @@ var
   ItemTabSheet: TTabSheet;
 begin
   IDEEditorGroups.Resort;
-
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
@@ -3469,12 +3289,10 @@ begin
         AGroupCaption := Rec^.GroupClass.GetGroupCaption
       else
         AGroupCaption := '';
-
       for j := 0 to Rec^.Items.Count - 1 do
       begin
         ItemTabSheet := PropsPageControl.AddTabSheet;
         ItemTabSheet.Align := alClient;
-
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);
 //        Instance.OnLoadIDEOptions := @LoadIDEOptions;
 //        Instance.OnSaveIDEOptions := @SaveIDEOptions;

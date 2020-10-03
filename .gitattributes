@@ -11294,6 +11294,7 @@ packager/pkgregisterbase.pas svneol=native#text/pascal
 packager/pkgvirtualuniteditor.pas svneol=native#text/pascal
 packager/projpackchecks.pas svneol=native#text/pascal
 packager/projpackcommon.pas svneol=native#text/pascal
+packager/projpackfilepropgui.pas svneol=native#text/pascal
 packager/registration/Makefile.compiled svneol=native#text/plain
 packager/registration/README.txt svneol=native#text/plain
 packager/registration/fcl.lpk svneol=native#text/plain
