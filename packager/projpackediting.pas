@@ -71,8 +71,6 @@ type
     function FilesOwnerName: string; // for debugging purposes
     procedure BeginUpdate;
     procedure EndUpdate;
-    function GetNodeData(TVNode: TTreeNode): TPENodeData;
-    function GetNodeItem(NodeData: TPENodeData): TObject;
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
       out Item: TObject): boolean;
     function GetNodeFilename(Node: TTreeNode): string;

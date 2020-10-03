@@ -1,14 +1,14 @@
 object ProjectInspectorForm: TProjectInspectorForm
-  Left = 670
-  Height = 456
-  Top = 134
-  Width = 299
+  Left = 564
+  Height = 485
+  Top = 166
+  Width = 463
   ActiveControl = ItemsTreeView
   AllowDropFiles = True
   BorderIcons = [biSystemMenu]
   Caption = 'ProjectInspectorForm'
-  ClientHeight = 456
-  ClientWidth = 299
+  ClientHeight = 485
+  ClientWidth = 463
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
@@ -16,9 +16,9 @@ object ProjectInspectorForm: TProjectInspectorForm
   LCLVersion = '2.1.0.0'
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 378
+    Height = 261
     Top = 78
-    Width = 299
+    Width = 463
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
@@ -35,19 +35,19 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnKeyDown = ItemsTreeViewKeyDown
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
-  object BtnPanel: TPanel
+  object FilterPanel: TPanel
     Left = 0
     Height = 28
     Top = 48
-    Width = 299
+    Width = 463
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 28
-    ClientWidth = 299
+    ClientWidth = 463
     TabOrder = 1
     object OpenButton: TSpeedButton
-      AnchorSideLeft.Control = BtnPanel
-      AnchorSideTop.Control = BtnPanel
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = FilterPanel
       AnchorSideTop.Side = asrCenter
       Left = 2
       Height = 25
@@ -108,9 +108,9 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 95
-      Height = 25
-      Top = 2
-      Width = 201
+      Height = 32
+      Top = -2
+      Width = 365
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
@@ -126,12 +126,30 @@ object ProjectInspectorForm: TProjectInspectorForm
     Left = 0
     Height = 48
     Top = 0
-    Width = 299
+    Width = 463
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 23
     ShowCaptions = True
     TabOrder = 2
+  end
+  object PropsGroupBox: TGroupBox
+    Left = 0
+    Height = 141
+    Top = 344
+    Width = 463
+    Align = alBottom
+    Caption = 'PropsGroupBox'
+    TabOrder = 3
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 339
+    Width = 463
+    Align = alBottom
+    ResizeAnchor = akBottom
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup

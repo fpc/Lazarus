@@ -271,7 +271,7 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     procedure CreatePackageFileEditors;
-    function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
+    function TreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure UpdateNodeImage(TVNode: TTreeNode);
     procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData; Item: TObject);
     procedure UpdatePending;
@@ -283,7 +283,7 @@ type
     procedure UpdatePEProperties(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
     procedure UpdateStatusBar(Immediately: boolean = false);
-    function GetDependencyToUpdate(Immediately: boolean): TPkgDependencyBase;
+    function GetDependencyToUpdate(Immediately: boolean): TPkgDependencyID;
     procedure GetDirectorySummary(DirNode: TTreeNode;
         out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
@@ -343,7 +343,6 @@ type
     function FirstRequiredDependency: TPkgDependency;
     function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
     function ExtendIncSearchPath(NewIncPaths: string): boolean;
-    function GetNodeData(TVNode: TTreeNode): TPENodeData;
     function GetNodeItem(NodeData: TPENodeData): TObject;
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
       out Item: TObject): boolean;
@@ -496,8 +495,6 @@ uses
 var
   ImageIndexFiles: integer;
   ImageIndexRemovedFiles: integer;
-  ImageIndexRequired: integer;
-  ImageIndexRemovedRequired: integer;
   ImageIndexUnit: integer;
   ImageIndexRegisterUnit: integer;
   ImageIndexLFM: integer;
@@ -506,7 +503,6 @@ var
   ImageIndexIssues: integer;
   ImageIndexText: integer;
   ImageIndexBinary: integer;
-  ImageIndexConflict: integer;
   ImageIndexDirectory: integer;
 
 procedure RegisterStandardPackageEditorMenuItems;
@@ -1780,8 +1776,6 @@ procedure TPackageEditorForm.SetupComponents;
 begin
   ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
   ImageIndexRemovedFiles    := IDEImages.LoadImage('pkg_removedfiles');
-  ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
-  ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
   ImageIndexUnit            := IDEImages.LoadImage('pkg_unit');
   ImageIndexRegisterUnit    := IDEImages.LoadImage('pkg_registerunit');
   ImageIndexLFM             := IDEImages.LoadImage('pkg_lfm');
@@ -1790,12 +1784,11 @@ begin
   ImageIndexIssues          := IDEImages.LoadImage('pkg_issues');
   ImageIndexText            := IDEImages.LoadImage('pkg_text');
   ImageIndexBinary          := IDEImages.LoadImage('pkg_binary');
-  ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
   ImageIndexDirectory       := IDEImages.LoadImage('pkg_files');
 
   ItemsTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
-  FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
+  FilterEdit.OnGetImageIndex:=@TreeViewGetImageIndex;
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
@@ -1835,18 +1828,6 @@ begin
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 
-  ItemsTreeView.BeginUpdate;
-  FFilesNode:=ItemsTreeView.Items.Add(nil, dlgEnvFiles);
-  FFilesNode.ImageIndex:=ImageIndexFiles;
-  FFilesNode.SelectedIndex:=FFilesNode.ImageIndex;
-  FRequiredPackagesNode:=ItemsTreeView.Items.Add(nil, lisPckEditRequiredPackages);
-  FRequiredPackagesNode.ImageIndex:=ImageIndexRequired;
-  FRequiredPackagesNode.SelectedIndex:=FRequiredPackagesNode.ImageIndex;
-  ItemsTreeView.EndUpdate;
-
-  PropsGroupBox.Caption:=lisPckEditFileProperties;
-  CommonOptionsTabSheet.Caption:=lisPckEditCommonOptions;
-
   FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet);
   // file properties
   FPropGui.AddToUsesPkgSectionCheckBox.OnChange := @AddToUsesPkgSectionCheckBoxChange;
@@ -1856,6 +1837,18 @@ begin
   // dependency properties
   FPropGui.OnGetPkgDep := @GetDependencyToUpdate;
   FPropGui.ApplyDependencyButton.OnClick := @ApplyDependencyButtonClick;
+
+  ItemsTreeView.BeginUpdate;
+  FFilesNode:=ItemsTreeView.Items.Add(nil, dlgEnvFiles);
+  FFilesNode.ImageIndex:=ImageIndexFiles;
+  FFilesNode.SelectedIndex:=FFilesNode.ImageIndex;
+  FRequiredPackagesNode:=ItemsTreeView.Items.Add(nil, lisPckEditRequiredPackages);
+  FRequiredPackagesNode.ImageIndex:=FPropGui.ImageIndexRequired;
+  FRequiredPackagesNode.SelectedIndex:=FRequiredPackagesNode.ImageIndex;
+  ItemsTreeView.EndUpdate;
+
+  PropsGroupBox.Caption:=lisPckEditFileProperties;
+  CommonOptionsTabSheet.Caption:=lisPckEditCommonOptions;
 
   FDirSummaryLabel:=TLabel.Create(Self);
   FDirSummaryLabel.Name:='DirSummaryLabel';
@@ -2169,7 +2162,7 @@ begin
     PackageGraph.OpenDependency(PkgDependency, False);
   end;
   Ena := True;                      // Neither Ena nor the String param are used.
-  ImgIndex := OnTreeViewGetImageIndex('', NodeData, Ena);
+  ImgIndex := TreeViewGetImageIndex('', NodeData, Ena);
   TVNode.ImageIndex:=ImgIndex;
   TVNode.SelectedIndex:=ImgIndex;
 end;
@@ -2214,12 +2207,11 @@ begin
   OpenButton.Enabled:=(FileCount+DepCount>0);
 end;
 
-function TPackageEditorForm.OnTreeViewGetImageIndex(Str: String; Data: TObject;
+function TPackageEditorForm.TreeViewGetImageIndex(Str: String; Data: TObject;
                                              var AIsEnabled: Boolean): Integer;
 var
   PkgFile: TPkgFile;
   Item: TObject;
-  PkgDependency: TPkgDependency;
   NodeData: TPENodeData;
 begin
   Result:=-1;
@@ -2245,15 +2237,8 @@ begin
         Result:=-1;
     end;
   end
-  else if Item is TPkgDependency then begin
-    PkgDependency:=TPkgDependency(Item);
-    if PkgDependency.Removed then
-      Result:=ImageIndexRemovedRequired
-    else if PkgDependency.LoadPackageResult=lprSuccess then
-      Result:=ImageIndexRequired
-    else
-      Result:=ImageIndexConflict;
-  end;
+  else if Item is TPkgDependency then
+    Result:=FPropGui.GetDependencyImageIndex(TPkgDependency(Item));
 end;
 
 procedure TPackageEditorForm.UpdatePending;
@@ -2413,7 +2398,7 @@ begin
   if CurDependency<>nil then begin
     if FRemovedRequiredNode=nil then begin
       FRemovedRequiredNode:=ItemsTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
-      FRemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
+      FRemovedRequiredNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
     RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
@@ -2656,7 +2641,7 @@ begin
   end;
 end;
 
-function TPackageEditorForm.GetDependencyToUpdate(Immediately: boolean): TPkgDependencyBase;
+function TPackageEditorForm.GetDependencyToUpdate(Immediately: boolean): TPkgDependencyID;
 begin
   if CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then
     Result:=GetSingleSelectedDependency
@@ -2680,19 +2665,6 @@ begin
   if LazPackage.Modified then
     StatusText:=Format(lisPckEditModified, [StatusText]);
   StatusBar.SimpleText:=StatusText;
-end;
-
-function TPackageEditorForm.GetNodeData(TVNode: TTreeNode): TPENodeData;
-var
-  o: TObject;
-begin
-  Result:=nil;
-  if (TVNode=nil) then exit;
-  o:=TObject(TVNode.Data);
-  if o is TFileNameItem then
-    o:=TObject(TFileNameItem(o).Data);
-  if o is TPENodeData then
-    Result:=TPENodeData(o);
 end;
 
 function TPackageEditorForm.GetNodeItem(NodeData: TPENodeData): TObject;

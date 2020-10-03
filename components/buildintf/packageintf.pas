@@ -101,6 +101,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
+    function AsString: string;
   public
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write FLoadPackageResult;
     property RequiredIDEPackage: TIDEPackage read FRequiredPackage write SetRequiredPackage;
@@ -588,6 +589,17 @@ procedure TPkgDependencyID.Clear;
 begin
   inherited Clear;
   RequiredIDEPackage:=nil;
+end;
+
+function TPkgDependencyID.AsString: string;
+begin
+  if Self=nil then
+    exit('(nil)');
+  Result:=FPackageName;
+  if pdfMinVersion in FFlags then
+    Result:=Result+' (>='+MinVersion.AsString+')';
+  if pdfMaxVersion in FFlags then
+    Result:=Result+' (<='+MaxVersion.AsString+')';
 end;
 
 // Setters

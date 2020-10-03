@@ -5907,7 +5907,8 @@ begin
       end else begin
         // there is already a package with this name, but wrong version open
         // -> unable to load this dependency due to conflict
-        debugln('Error: (lazarus) Open dependency found incompatible package: searched for '+Dependency.AsString(true)+', but found '+APackage.IDAsString);
+        debugln('Error: (lazarus) Open dependency found incompatible package: searched for '
+                +Dependency.AsString(true,false)+', but found '+APackage.IDAsString);
         if IsStaticBasePackage(APackage.Name) then
         begin
           debugln(['Note: (lazarus) LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);

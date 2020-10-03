@@ -34,18 +34,22 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LResources, Forms, Controls, StdCtrls, Dialogs,
+  LResources, Forms, Controls, StdCtrls, ComCtrls, Dialogs,
+  // LazControls
+  TreeFilterEdit,
+  // LazUtils
+  LazLoggerBase,
   // BuildIntf
-  PackageDependencyIntf,
+  PackageDependencyIntf, PackageLinkIntf, PackageIntf,
   // IdeIntf
-  FormEditingIntf,
+  FormEditingIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, ProjPackEditing, PackageLinks;
 
 type
 
   TMultiBool = (mubNone, mubAllTrue, mubAllFalse, mubMixed);
-  TGetPkgDepEvent = function(Immediately: boolean): TPkgDependencyBase of object;
+  TGetPkgDepEvent = function(Immediately: boolean): TPkgDependencyID of object;
 
   { TProjPackFilePropGui }
 
@@ -57,6 +61,11 @@ type
     procedure UseMinVersionCheckBoxChange(Sender: TObject);
     procedure UseMaxVersionCheckBoxChange(Sender: TObject);
   public
+    // ImageIndexes
+    ImageIndexRequired: integer;
+    ImageIndexRemovedRequired: integer;
+    ImageIndexConflict: integer;
+    ImageIndexAvailableOnline: integer;
     // file properties
     AddToUsesPkgSectionCheckBox: TCheckBox;
     CallRegisterProcCheckBox: TCheckBox;
@@ -74,26 +83,48 @@ type
 
     constructor Create(aOwner: TWinControl);
     destructor Destroy; override;
+    function GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
+    function FindOnlinePackageLink(const ADependency: TPkgDependencyID): TPackageLink;
     procedure SetAddToUsesCB(State: TMultiBool);
     procedure SetCallRegisterProcCB(State: TMultiBool);
     procedure SetRegisteredPluginsGB(aPlugins: TStringList);
     procedure SetMinMaxVisibility;
-    procedure SetMinMaxValues(aDep: TPkgDependencyBase);
+    procedure SetMinMaxValues(aDep: TPkgDependencyID);
     procedure SetDisableI18NCB(State: TMultiBool);
-    function CheckApplyDependency(aDep: TPkgDependencyBase): Boolean;
+    function CheckApplyDependency(aDep: TPkgDependencyID): Boolean;
     procedure UpdateApplyDependencyButton(Immediately: boolean = False);
 
     property OnGetPkgDep: TGetPkgDepEvent read fOnGetPkgDep write fOnGetPkgDep;
   end;
 
+  function GetNodeData(TVNode: TTreeNode): TPENodeData;
+
 
 implementation
+
+function GetNodeData(TVNode: TTreeNode): TPENodeData;
+var
+  o: TObject;
+begin
+  Result:=nil;
+  if TVNode=nil then exit;
+  o:=TObject(TVNode.Data);
+  if o is TFileNameItem then
+    o:=TObject(TFileNameItem(o).Data);
+  if o is TPENodeData then
+    Result:=TPENodeData(o);
+end;
 
 { TProjPackFilePropGui }
 
 constructor TProjPackFilePropGui.Create(aOwner: TWinControl);
 begin
   fOwner := aOwner;
+  // ImageIndexes to be used later.
+  ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
+  ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
+  ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
+  ImageIndexAvailableOnline := IDEImages.LoadImage('pkg_install');
 
   // file properties
   // ---------------
@@ -230,6 +261,30 @@ begin
   inherited Destroy;
 end;
 
+function TProjPackFilePropGui.GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
+begin
+  if aDep.Removed then
+    Result := ImageIndexRemovedRequired
+  else if aDep.LoadPackageResult=lprSuccess then
+    Result := ImageIndexRequired
+  else if Assigned(FindOnlinePackageLink(aDep)) then
+    Result := ImageIndexAvailableOnline
+  else
+    Result := ImageIndexConflict;
+end;
+
+function TProjPackFilePropGui.FindOnlinePackageLink(const ADependency: TPkgDependencyID): TPackageLink;
+var
+  PackageLink: TPackageLink;
+begin
+  Result := nil;
+  if OPMInterface = Nil then Exit;
+  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
+  if Assigned(PackageLink) and (PackageLink.Origin = ploOnline)
+  and (ADependency.IsCompatible(PackageLink.Version)) then
+    Result := PackageLink;
+end;
+
 procedure SetCheckBox(Box: TCheckBox; aVisible: boolean; State: TMultiBool);
 begin
   Box.Visible:=aVisible;
@@ -282,7 +337,7 @@ begin
   ApplyDependencyButton.Visible := ControlVisible;
 end;
 
-procedure TProjPackFilePropGui.SetMinMaxValues(aDep: TPkgDependencyBase);
+procedure TProjPackFilePropGui.SetMinMaxValues(aDep: TPkgDependencyID);
 begin
   UseMinVersionCheckBox.Checked := pdfMinVersion in aDep.Flags;
   MinVersionEdit.Text := aDep.MinVersion.AsString;
@@ -298,7 +353,7 @@ begin
   DisableI18NForLFMCheckBox.Enabled := ControlEnabled;
 end;
 
-function TProjPackFilePropGui.CheckApplyDependency(aDep: TPkgDependencyBase): Boolean;
+function TProjPackFilePropGui.CheckApplyDependency(aDep: TPkgDependencyID): Boolean;
 var
   Flags: TPkgDependencyFlags;
   MinVers, MaxVers: TPkgVersion;
@@ -355,7 +410,7 @@ procedure TProjPackFilePropGui.UpdateApplyDependencyButton(Immediately: boolean)
 var
   DependencyChanged: Boolean;
   AVersion: TPkgVersion;
-  CurDependency: TPkgDependencyBase;
+  CurDependency: TPkgDependencyID;
 begin
   Assert(Assigned(OnGetPkgDep), 'UpdateApplyDependencyButton: OnPkgDepToUpdate = Nil.');
   CurDependency := OnGetPkgDep(Immediately);
