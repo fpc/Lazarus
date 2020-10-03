@@ -8650,7 +8650,7 @@ begin
     Statusbar.Panels[3].Text := PanelCharMode;
     Statusbar.Panels[4].Text := PanelFilename;
     if(EditorMacroForRecording.IsRecording(CurEditor)) then
-      Statusbar.Panels[1].Width := 20
+      Statusbar.Panels[1].Width := IDEImages.ScaledSize(20)
     else
       Statusbar.Panels[1].Width := 0;
 
