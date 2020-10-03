@@ -3917,7 +3917,6 @@ begin
     CTDumpStack;
   end;
   {$ENDIF}
-
   if fDestroying then exit;
   if AValue then
     IncreaseChangeStamp

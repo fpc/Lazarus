@@ -1225,33 +1225,28 @@ var
   ANodeData : TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateFiles) then exit;
-  //ItemsTreeView.BeginUpdate;
-  //try
-    FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
-    FilesBranch.ClearNodeData;
-    FreeNodeData(penFile);
-    if LazProject<>nil then begin
-      FilterEdit.SelectedPart:=FNextSelectedPart;
-      FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
-      FilterEdit.SortData:=SortAlphabetically;
-      FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-      // collect and sort files
-      CurFile:=LazProject.FirstPartOfProject;
-      while CurFile<>nil do begin
-        Filename:=CurFile.GetShortFilename(true);
-        if Filename<>'' then Begin
-          ANodeData := CreateNodeData(penFile, CurFile.Filename, False);
-          FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
-        end;
-        CurFile:=CurFile.NextPartOfProject;
+  FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
+  FilesBranch.ClearNodeData;
+  FreeNodeData(penFile);
+  if LazProject<>nil then begin
+    FilterEdit.SelectedPart:=FNextSelectedPart;
+    FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
+    FilterEdit.SortData:=SortAlphabetically;
+    FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+    // collect and sort files
+    CurFile:=LazProject.FirstPartOfProject;
+    while CurFile<>nil do begin
+      Filename:=CurFile.GetShortFilename(true);
+      if Filename<>'' then Begin
+        ANodeData := CreateNodeData(penFile, CurFile.Filename, False);
+        FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
       end;
+      CurFile:=CurFile.NextPartOfProject;
     end;
-    FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
-    UpdateProperties;
-    UpdateButtons;
-  //finally
-  //  ItemsTreeView.EndUpdate;
-  //end;
+  end;
+  FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
+  UpdateProperties;
+  UpdateButtons;
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
@@ -1262,66 +1257,61 @@ var
   ANodeData : TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
-  //ItemsTreeView.BeginUpdate;
-  //try
-    RequiredBranch:=FilterEdit.GetCleanBranch(FDependenciesNode);
-    RequiredBranch.ClearNodeData;
-    FreeNodeData(penDependency);
-    Dependency:=Nil;
-    if LazProject<>nil then begin
-      // required packages
-      Dependency:=LazProject.FirstRequiredDependency;
+  RequiredBranch:=FilterEdit.GetCleanBranch(FDependenciesNode);
+  RequiredBranch.ClearNodeData;
+  FreeNodeData(penDependency);
+  Dependency:=Nil;
+  if LazProject<>nil then begin
+    // required packages
+    Dependency:=LazProject.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      // Figure out the item's caption
+      NodeText:=Dependency.AsString;
+      if Dependency.DefaultFilename<>'' then begin
+        AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
+        if Dependency.PreferDefaultFilename then
+          NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
+        else
+          NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
+      end;
+      if Dependency.LoadPackageResult<>lprSuccess then
+        if FPropGui.FindOnlinePackageLink(Dependency)<>nil then
+          NodeText:=NodeText+' '+lisPckEditAvailableOnline;
+      if Dependency.DependencyType=pdtFPMake then
+        NodeText:=NodeText+' '+lisPckEditFPMakePackage;
+      // Add the required package under the branch
+      ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
+      RequiredBranch.AddNodeData(NodeText, ANodeData);
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+
+    // removed required packages
+    Dependency:=LazProject.FirstRemovedDependency;
+    if Dependency<>nil then begin
+      // Create root node for removed dependencies if not done yet.
+      if FRemovedDependenciesNode=nil then begin
+        FRemovedDependenciesNode:=ItemsTreeView.Items.Add(FDependenciesNode,
+                                                lisProjInspRemovedRequiredPackages);
+        FRemovedDependenciesNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
+        FRemovedDependenciesNode.SelectedIndex:=FRemovedDependenciesNode.ImageIndex;
+      end;
+      RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedDependenciesNode);
+      // Add all removed dependencies under the branch
       while Dependency<>nil do begin
-        // Figure out the item's caption
-        NodeText:=Dependency.AsString;
-        if Dependency.DefaultFilename<>'' then begin
-          AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
-          if Dependency.PreferDefaultFilename then
-            NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
-          else
-            NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
-        end;
-        if Dependency.LoadPackageResult<>lprSuccess then
-          if FPropGui.FindOnlinePackageLink(Dependency)<>nil then
-            NodeText:=NodeText+' '+lisPckEditAvailableOnline;
-        if Dependency.DependencyType=pdtFPMake then
-          NodeText:=NodeText+' '+lisPckEditFPMakePackage;
-        // Add the required package under the branch
-        ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
-        RequiredBranch.AddNodeData(NodeText, ANodeData);
+        ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);
+        RemovedBranch.AddNodeData(Dependency.AsString, ANodeData);
         Dependency:=Dependency.NextRequiresDependency;
       end;
-
-      // removed required packages
-      Dependency:=LazProject.FirstRemovedDependency;
-      if Dependency<>nil then begin
-        // Create root node for removed dependencies if not done yet.
-        if FRemovedDependenciesNode=nil then begin
-          FRemovedDependenciesNode:=ItemsTreeView.Items.Add(FDependenciesNode,
-                                                  lisProjInspRemovedRequiredPackages);
-          FRemovedDependenciesNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
-          FRemovedDependenciesNode.SelectedIndex:=FRemovedDependenciesNode.ImageIndex;
-        end;
-        RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedDependenciesNode);
-        // Add all removed dependencies under the branch
-        while Dependency<>nil do begin
-          ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);
-          RemovedBranch.AddNodeData(Dependency.AsString, ANodeData);
-          Dependency:=Dependency.NextRequiresDependency;
-        end;
-      end;
     end;
+  end;
 
-    // Dependency is set to removed required packages if there is active project
-    if (Dependency=nil) and (FRemovedDependenciesNode<>nil) then begin
-      // No removed dependencies -> delete the root node
-      FilterEdit.DeleteBranch(FRemovedDependenciesNode);
-      FreeThenNil(FRemovedDependenciesNode);
-    end;
-    FilterEdit.InvalidateFilter;
-  //finally
-  //  ItemsTreeView.EndUpdate;
-  //end;
+  // Dependency is set to removed required packages if there is active project
+  if (Dependency=nil) and (FRemovedDependenciesNode<>nil) then begin
+    // No removed dependencies -> delete the root node
+    FilterEdit.DeleteBranch(FRemovedDependenciesNode);
+    FreeThenNil(FRemovedDependenciesNode);
+  end;
+  FilterEdit.InvalidateFilter;
   UpdateProperties;
   UpdateButtons;
 end;
