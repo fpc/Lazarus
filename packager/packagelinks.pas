@@ -47,7 +47,7 @@ uses
   LazTracer, LazUtilities, AvgLvlTree,
   // Codetools
   FileProcs, CodeToolManager,
-  // IdeIntf
+  // BuildIntf
   PackageDependencyIntf, PackageLinkIntf, PackageIntf, MacroIntf,
   // IDE
   IDEProcs, EnvironmentOpts, LazConf, IDECmdLine, PackageDefs;

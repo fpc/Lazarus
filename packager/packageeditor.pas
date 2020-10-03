@@ -37,18 +37,20 @@ uses
   // LCL
   Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
   ExtCtrls, ImgList, LCLType, LCLIntf,
+  // LazControls
   TreeFilterEdit,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
+  // BuildIntf
+  ProjectIntf, PackageDependencyIntf, PackageIntf, IDEOptionsIntf, NewItemIntf,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf,
-  FormEditingIntf, PackageDependencyIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
-  NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf,
+  IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
   // IDE
-  MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
-  EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
+  MainBase, IDEProcs, DialogProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
+  EnvironmentOpts, InputHistory, PackageSystem, PackageDefs, AddToPackageDlg,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps, ProjPackFilePropGui;
+  MissingPkgFilesDlg, CleanPkgDeps, ProjPackFilePropGui, ProjPackEditing;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -127,61 +129,6 @@ type
   TOnSavePackage =
     function(Sender: TObject; APackage: TLazPackage;
              SaveAs: boolean): TModalResult of object;
-
-  TPENodeType = (
-    penFile,
-    penDependency
-    );
-
-  { TPENodeData }
-
-  TPENodeData = class(TTFENodeData)
-  public
-    Typ: TPENodeType;
-    Name: string; // file or package name
-    Removed: boolean;
-    FileType: TPkgFileType;
-    Next: TPENodeData;
-    constructor Create(aTyp: TPENodeType; aName: string; aRemoved: boolean);
-  end;
-
-  { IFilesEditorInterface
-    An editor with a TTreeView with files and dependencies }
-
-  IFilesEditorInterface = interface
-    function FilesEditTreeView: TTreeView;
-    function TVNodeFiles: TTreeNode;
-    function TVNodeRequiredPackages: TTreeNode;
-    function FilesEditForm: TCustomForm;
-    function FilesOwner: TObject; // TProject or TLazPackage
-    function FilesOwnerName: string; // for debugging purposes
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function GetNodeData(TVNode: TTreeNode): TPENodeData;
-    function GetNodeItem(NodeData: TPENodeData): TObject;
-    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
-      out Item: TObject): boolean;
-    function GetNodeFilename(Node: TTreeNode): string;
-    function IsDirectoryNode(Node: TTreeNode): boolean;
-    function FilesBaseDirectory: string;
-    function FilesOwnerReadOnly: boolean;
-    function FirstRequiredDependency: TPkgDependency;
-    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
-    function ExtendIncSearchPath(NewIncPaths: string): boolean;
-    procedure UpdateAll(Immediately: boolean = false);
-  end;
-
-  TPEFlag = (
-    pefNeedUpdateTitle,
-    pefNeedUpdateFiles,
-    pefNeedUpdateRemovedFiles,
-    pefNeedUpdateRequiredPkgs,
-    pefNeedUpdateProperties,
-    pefNeedUpdateButtons,
-    pefNeedUpdateApplyDependencyButton,
-    pefNeedUpdateStatusBar
-    );
-  TPEFlags = set of TPEFlag;
 
   TIDEPackageOptsDlgAction = (
     iodaRead,
@@ -658,15 +605,6 @@ begin
   end;
   if ADependency.DependencyType=pdtFPMake then
     Result:=Result+' '+lisPckEditFPMakePackage;
-end;
-
-{ TPENodeData }
-
-constructor TPENodeData.Create(aTyp: TPENodeType; aName: string; aRemoved: boolean);
-begin
-  Typ:=aTyp;
-  Name:=aName;
-  Removed:=aRemoved;
 end;
 
 { TPackageEditorForm }

@@ -56,14 +56,15 @@ uses
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,
-  // IDE Interface
-  IDECommands, NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf,
-  PackageDependencyIntf, PackageLinkIntf, CompOptsIntf, MenuIntf, IDEWindowIntf,
-  IDEExternToolIntf, MacroIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
+  // BuildIntf
+  ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
+  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf,
+  // IdeIntf
+  IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   ComponentReg, ComponentEditors, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
-  EnvironmentOpts, MiscOptions, InputHistory, Project, PackageEditor,
+  EnvironmentOpts, MiscOptions, InputHistory, Project, ProjPackEditing, PackageEditor,
   AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
   TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
@@ -99,8 +100,7 @@ type
     procedure PackageEditorDragDropTreeView(Sender, Source: TObject; X, Y: Integer);
     function PackageEditorDragOverTreeView(Sender, Source: TObject; X, Y: Integer;
       out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType): boolean;
-    function PackageEditorFindInFiles(Sender: TObject; APackage: TLazPackage
-      ): TModalResult;
+    function PackageEditorFindInFiles(Sender: TObject; APackage: TLazPackage): TModalResult;
     function PackageEditorInstallPackage(Sender: TObject;
                                          APackage: TLazPackage): TModalResult;
     function PackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage): TModalResult;

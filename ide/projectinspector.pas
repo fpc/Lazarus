@@ -57,17 +57,21 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, LCLIntf, Forms, Controls, Buttons, ComCtrls,
-  Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls, Graphics,
+  LCLType, LCLIntf, Forms, Controls, Buttons, ComCtrls, Menus, Dialogs,
+  ExtCtrls, StdCtrls, Graphics,
   // LazControls
   TreeFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUtilities, LazTracer, LazFileCache,
+  // BuildIntf
+  ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
-  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
-  PackageIntf, PackageLinkIntf, MainIntf,
+  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, PackageEditor, AddToProjectDlg, AddPkgDependencyDlg,
-  InputHistory, MainBase, ProjPackChecks, PackageLinks, AddFPMakeDependencyDlg;
+  LazarusIDEStrConsts, MainIntf, IDEProcs, DialogProcs, IDEOptionDefs,
+  PackageDefs, Project, InputHistory, MainBase, EnvironmentOpts,
+  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg,
+  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageLinks;
 
 type
   TOnAddUnitToProject =
