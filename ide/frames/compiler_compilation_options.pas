@@ -230,10 +230,10 @@ begin
       if Cmb.Checked[i] then begin
         j:=ExternalToolList.ParserCount-1;
         while (j>=0)
-        and (Cmb.Items[i]<>ExternalToolList.Parsers[i].GetLocalizedParserName) do
+        and (Cmb.Items[i]<>ExternalToolList.Parsers[j].GetLocalizedParserName) do
           dec(j);
         if j>=0 then
-          sl.Add(ExternalToolList.Parsers[i].GetParserName)
+          sl.Add(ExternalToolList.Parsers[j].GetParserName)
         else
           sl.Add(Cmb.Items[i]); // not registered parser
       end;
