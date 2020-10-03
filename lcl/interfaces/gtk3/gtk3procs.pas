@@ -647,10 +647,10 @@ begin
     GDK_KEY_End: Result := VK_END;
     GDK_KEY_Page_Up: Result := VK_PRIOR;
     GDK_KEY_Page_Down: Result := VK_NEXT;
-    GDK_KEY_Left: Result := VK_LEFT;
-    GDK_KEY_Up: Result := VK_UP;
-    GDK_KEY_Right: Result := VK_RIGHT;
-    GDK_KEY_Down: Result := VK_DOWN;
+    GDK_KEY_Left, GDK_KEY_KP_LEFT: Result := VK_LEFT;
+    GDK_KEY_Up, GDK_KEY_KP_UP: Result := VK_UP;
+    GDK_KEY_Right, GDK_KEY_KP_Right: Result := VK_RIGHT;
+    GDK_KEY_Down, GDK_KEY_KP_Down: Result := VK_DOWN;
     GDK_KEY_Menu: Result := VK_APPS;
     GDK_KEY_Tab, GDK_KEY_3270_BackTab, GDK_KEY_ISO_Left_Tab: Result := VK_TAB;
     GDK_KEY_Shift_L, GDK_KEY_Shift_R: Result := VK_SHIFT;

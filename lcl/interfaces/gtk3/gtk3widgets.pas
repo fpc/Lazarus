@@ -909,88 +909,47 @@ function Gtk3EventToStr(AEvent: TGdkEventType): String;
 begin
   Result := 'GDK_NOTHING';
   case AEvent of
-    // GDK_DELETE:
-    0: Result := 'GDK_DELETE';
-    // GDK_DESTROY:
-    1: Result := 'GDK_DESTROY';
-    // GDK_EXPOSE:
-    2: Result := 'GDK_EXPOSE';
-    // GDK_MOTION_NOTIFY:
-    3: Result := 'GDK_MOTION_NOTIFY';
-    // GDK_BUTTON_PRESS:
-    4: Result := 'GDK_BUTTON_PRESS';
-    // GDK_2BUTTON_PRESS:
-    5: Result := 'GDK_2BUTTON_PRESS';
-    // GDK_3BUTTON_PRESS:
-    6: Result := 'GDK_3BUTTON_PRESS';
-    // GDK_BUTTON_RELEASE:
-    7: Result := 'GDK_BUTTON_RELEASE';
-    // GDK_KEY_PRESS:
-    8: Result := 'GDK_KEY_PRESS';
-    // GDK_KEY_RELEASE:
-    9: Result := 'GDK_KEY_RELEASE';
-    // GDK_ENTER_NOTIFY:
-    10: Result := 'GDK_ENTER_NOTIFY';
-    // GDK_LEAVE_NOTIFY:
-    11: Result := 'GDK_LEAVE_NOTIFY';
-    // GDK_FOCUS_CHANGE:
-    12: Result := 'GDK_FOCUS_CHANGE';
-    // GDK_CONFIGURE:
-    13: Result := 'GDK_CONFIGURE';
-    // GDK_MAP:
-    14: Result := 'GDK_MAP';
-    // GDK_UNMAP:
-    15: Result := 'GDK_UNMAP';
-    // GDK_PROPERTY_NOTIFY:
-    16: Result := 'GDK_PROPERTY_NOTIFY';
-    // GDK_SELECTION_CLEAR:
-    17: Result := 'GDK_SELECTION_CLEAR';
-    // GDK_SELECTION_REQUEST:
-    18: Result := 'GDK_SELECTION_REQUEST';
-    // GDK_SELECTION_NOTIFY:
-    19: Result := 'GDK_SELECTION_NOTIFY';
-    // GDK_PROXIMITY_IN:
-    20: Result := 'GDK_PROXIMITY_IN';
-    // GDK_PROXIMITY_OUT:
-    21: Result := 'GDK_PROXIMITY_OUT';
-    // GDK_DRAG_ENTER:
-    22: Result := 'GDK_DRAG_ENTER';
-    // GDK_DRAG_LEAVE:
-    23: Result := 'GDK_DRAG_LEAVE';
-    // GDK_DRAG_MOTION_:
-    24: Result := 'GDK_DRAG_MOTION_';
-    // GDK_DRAG_STATUS_:
-    25: Result := 'GDK_DRAG_STATUS_';
-    // GDK_DROP_START:
-    26: Result := 'GDK_DROP_START';
-    // GDK_DROP_FINISHED:
-    27: Result := 'GDK_DROP_FINISHED';
-    // GDK_CLIENT_EVENT:
-    28: Result := 'GDK_CLIENT_EVENT';
-    // GDK_VISIBILITY_NOTIFY:
-    29: Result := 'GDK_VISIBILITY_NOTIFY';
-    // GDK_SCROLL:
-    31: Result := 'GDK_SCROLL';
-    // GDK_WINDOW_STATE:
-    32: Result := 'GDK_WINDOW_STATE';
-    // GDK_SETTING:
-    33: Result := 'GDK_SETTING';
-    // GDK_OWNER_CHANGE:
-    34: Result := 'GDK_OWNER_CHANGE';
-    // GDK_GRAB_BROKEN:
-    35: Result := 'GDK_GRAB_BROKEN';
-    // GDK_DAMAGE:
-    36: Result := 'GDK_DAMAGE';
-    // GDK_TOUCH_BEGIN:
-    37: Result := 'GDK_TOUCH_BEGIN';
-    // GDK_TOUCH_UPDATE:
-    38: Result := 'GDK_TOUCH_UPDATE';
-    // GDK_TOUCH_END:
-    39: Result := 'GDK_TOUCH_END';
-    // GDK_TOUCH_CANCEL:
-    40: Result := 'GDK_TOUCH_CANCEL';
-    // GDK_EVENT_LAST:
-    41: Result := 'GDK_EVENT_LAST';
+  GDK_DELETE: Result := 'GDK_DELETE';
+  GDK_DESTROY: Result := 'GDK_DESTROY';
+  GDK_EXPOSE: Result := 'GDK_EXPOSE';
+  GDK_MOTION_NOTIFY: Result := 'GDK_MOTION_NOTIFY';
+  GDK_BUTTON_PRESS: Result := 'GDK_BUTTON_PRESS';
+  GDK_2BUTTON_PRESS: Result := 'GDK_2BUTTON_PRESS';
+  GDK_3BUTTON_PRESS: Result := 'GDK_3BUTTON_PRESS';
+  GDK_BUTTON_RELEASE: Result := 'GDK_BUTTON_RELEASE';
+  GDK_KEY_PRESS: Result := 'GDK_KEY_PRESS';
+  GDK_KEY_RELEASE: Result := 'GDK_KEY_RELEASE';
+  GDK_ENTER_NOTIFY: Result := 'GDK_ENTER_NOTIFY';
+  GDK_LEAVE_NOTIFY: Result := 'GDK_LEAVE_NOTIFY';
+  GDK_FOCUS_CHANGE: Result := 'GDK_FOCUS_CHANGE';
+  GDK_CONFIGURE: Result := 'GDK_CONFIGURE';
+  GDK_MAP: Result := 'GDK_MAP';
+  GDK_UNMAP: Result := 'GDK_UNMAP';
+  GDK_PROPERTY_NOTIFY: Result := 'GDK_PROPERTY_NOTIFY';
+  GDK_SELECTION_CLEAR: Result := 'GDK_SELECTION_CLEAR';
+  GDK_SELECTION_REQUEST: Result := 'GDK_SELECTION_REQUEST';
+  GDK_SELECTION_NOTIFY: Result := 'GDK_SELECTION_NOTIFY';
+  GDK_PROXIMITY_IN: Result := 'GDK_PROXIMITY_IN';
+  GDK_PROXIMITY_OUT: Result := 'GDK_PROXIMITY_OUT';
+  GDK_DRAG_ENTER: Result := 'GDK_DRAG_ENTER';
+  GDK_DRAG_LEAVE: Result := 'GDK_DRAG_LEAVE';
+  GDK_DRAG_MOTION_: Result := 'GDK_DRAG_MOTION_';
+  GDK_DRAG_STATUS_: Result := 'GDK_DRAG_STATUS_';
+  GDK_DROP_START: Result := 'GDK_DROP_START';
+  GDK_DROP_FINISHED: Result := 'GDK_DROP_FINISHED';
+  GDK_CLIENT_EVENT: Result := 'GDK_CLIENT_EVENT';
+  GDK_VISIBILITY_NOTIFY: Result := 'GDK_VISIBILITY_NOTIFY';
+  GDK_SCROLL: Result := 'GDK_SCROLL';
+  GDK_WINDOW_STATE: Result := 'GDK_WINDOW_STATE';
+  GDK_SETTING: Result := 'GDK_SETTING';
+  GDK_OWNER_CHANGE: Result := 'GDK_OWNER_CHANGE';
+  GDK_GRAB_BROKEN: Result := 'GDK_GRAB_BROKEN';
+  GDK_DAMAGE: Result := 'GDK_DAMAGE';
+  GDK_TOUCH_BEGIN: Result := 'GDK_TOUCH_BEGIN';
+  GDK_TOUCH_UPDATE: Result := 'GDK_TOUCH_UPDATE';
+  GDK_TOUCH_END: Result := 'GDK_TOUCH_END';
+  GDK_TOUCH_CANCEL: Result := 'GDK_TOUCH_CANCEL';
+  GDK_EVENT_LAST: Result := 'GDK_EVENT_LAST';
   end;
 end;
 
@@ -1005,18 +964,15 @@ begin
   //  ' ',Gtk3EventToStr(event^.type_));
 
   case event^.type_ of
-    // GDK_DELETE
-    0:
+  GDK_DELETE:
     begin
       // DebugLn('****** GDK_DELETE FOR ',dbgsName(TGtk3Widget(Data).LCLObject),' main_level=',dbgs(gtk_main_level));
     end;
-    // GDK_DESTROY
-    1:
+  GDK_DESTROY:
     begin
      // DebugLn('****** GDK_DESTROY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    // GDK_EXPOSE
-    2:
+  GDK_EXPOSE:
     begin
       // DebugLn('****** GDK_EXPOSE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
       // Gtk3DrawWidget is attached to 'draw' signal, Expose event doesn't trigger
@@ -1024,86 +980,75 @@ begin
        // we use 'draw' signal Gtk3DrawEvent()
       // Result := TGtk3Widget(Data).GtkEventPaint(Widget, Event);
     end;
-    // GDK_MOTION_NOTIFY
-    3:
+  GDK_MOTION_NOTIFY:
     begin
       // Result := TGtk3Widget(Data).GtkEventMouseMove(Widget, Event);
     end;
-    // GDK_BUTTON_PRESS:
-    4:
+  GDK_BUTTON_PRESS:
     begin
       // Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_2BUTTON_PRESS:
-    5:
+  GDK_2BUTTON_PRESS:
     begin
       // if not TGtk3Widget(Data).LCLObject.Focused and TGtk3Widget(Data).LCLObject.CanFocus then
       //  LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
       // Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_3BUTTON_PRESS:
-    6:
+  GDK_3BUTTON_PRESS:
     begin
       // if not TGtk3Widget(Data).LCLObject.Focused and TGtk3Widget(Data).LCLObject.CanFocus then
       //  LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
       // Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_BUTTON_RELEASE:
-    7:
+  GDK_BUTTON_RELEASE:
     begin
       // Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-
-    // GDK_KEY_PRESS
-    8:
+  GDK_KEY_PRESS:
     begin
       // if Widget^.has_focus then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
       //  Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
     end;
-    // GDK_KEY_RELEASE
-    9:
+  GDK_KEY_RELEASE:
     begin
       // if Widget^.has_focus then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
       //  Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
     end;
 
-    // GDK_ENTER_NOTIFY
-    10:
+  GDK_ENTER_NOTIFY:
     begin
       // TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
-    // GDK_LEAVE_NOTIFY
-    11:
+  GDK_LEAVE_NOTIFY:
     begin
       // TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
-    12:
+  GDK_FOCUS_CHANGE:
     begin
-      // GDK_FOCUS_CHANGE
+      //
     end;
-    // GDK_CONFIGURE
-    13:
+  GDK_CONFIGURE:
     begin
       // GDK_CONFIGURE
     end;
-    14: // GDK_MAP
+  GDK_MAP:
     begin
       // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    16: // GDK_PROPERTY_NOTIFY
+  GDK_PROPERTY_NOTIFY:
     begin
       // DebugLn('****** GDK_PROPERTY_NOTIFY FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    28: // GDK_CLIENT_EVENT
+  GDK_CLIENT_EVENT:
     begin
       // DebugLn('****** GDK_CLIENT_EVENT FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    29: // GDK_VISIBILITY_NOTIFY
+  GDK_VISIBILITY_NOTIFY:
     begin
       // Result := TGtk3Widget(Data).GtkEventShowHide(Widget, Event);
       // DebugLn('****** GDK_VISIBILITY_NOTIFY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    31: // GDK_SCROLL
+  GDK_SCROLL:
     begin
       // DebugLn('****** GDK_SCROLL ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
@@ -1143,8 +1088,7 @@ begin
   if Assigned(Application) and Application.Terminated then
       exit;
   case event^.type_ of
-    // GDK_DELETE
-    0:
+  GDK_DELETE:
     begin
       // DebugLn('****** GDK_DELETE FOR ',dbgsName(TGtk3Widget(Data).LCLObject),' main_level=',dbgs(gtk_main_level));
       if wtWindow in TGtk3Widget(Data).WidgetType then
@@ -1154,13 +1098,11 @@ begin
         Result := True;
       end;
     end;
-    // GDK_DESTROY
-    1:
+  GDK_DESTROY:
     begin
      // DebugLn('****** GDK_DESTROY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    // GDK_EXPOSE
-    2:
+  GDK_EXPOSE:
     begin
       DebugLn('****** GDK_EXPOSE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
       // Gtk3DrawWidget is attached to 'draw' signal, Expose event doesn't trigger
@@ -1168,8 +1110,7 @@ begin
        // we use 'draw' signal Gtk3DrawEvent()
       // Result := TGtk3Widget(Data).GtkEventPaint(Widget, Event);
     end;
-    // GDK_MOTION_NOTIFY
-    3:
+  GDK_MOTION_NOTIFY:
     begin
       if wtWindow in TGtk3Widget(Data).WidgetType then
       begin
@@ -1178,8 +1119,7 @@ begin
       end;
       Result := TGtk3Widget(Data).GtkEventMouseMove(Widget, Event);
     end;
-    // GDK_BUTTON_PRESS:
-    4:
+  GDK_BUTTON_PRESS:
     begin
       // set focus before gtk does that, so we have same behaviour as other ws
       if TGtk3Widget(Data).GetFocusableByMouse and
@@ -1201,8 +1141,7 @@ begin
 
       Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_2BUTTON_PRESS:
-    5:
+  GDK_2BUTTON_PRESS:
     begin
       // set focus before gtk does that, so we have same behaviour as other ws
       if TGtk3Widget(Data).GetFocusableByMouse and
@@ -1211,8 +1150,7 @@ begin
           LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
       Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_3BUTTON_PRESS:
-    6:
+  GDK_3BUTTON_PRESS:
     begin
       // set focus before gtk does that, so we have same behaviour as other ws
       if TGtk3Widget(Data).GetFocusableByMouse and
@@ -1221,28 +1159,22 @@ begin
           LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
       Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-    // GDK_BUTTON_RELEASE:
-    7:
+  GDK_BUTTON_RELEASE:
     begin
       if not (csClickEvents in TGtk3Widget(Data).LCLObject.ControlStyle) then
         Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
-
-    // GDK_KEY_PRESS
-    8:
+  GDK_KEY_PRESS:
     begin
       if Widget^.has_focus then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
     end;
-    // GDK_KEY_RELEASE
-    9:
+  GDK_KEY_RELEASE:
     begin
       if Widget^.has_focus then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
     end;
-
-    // GDK_ENTER_NOTIFY
-    10:
+  GDK_ENTER_NOTIFY:
     begin
       if wtWindow in TGtk3Widget(Data).WidgetType then
       begin
@@ -1268,8 +1200,7 @@ begin
       *)
       TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
-    // GDK_LEAVE_NOTIFY
-    11:
+  GDK_LEAVE_NOTIFY:
     begin
       if wtWindow in TGtk3Widget(Data).WidgetType then
       begin
@@ -1297,8 +1228,7 @@ begin
       *)
       TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
-    // GDK_FOCUS_CHANGE
-    12:
+  GDK_FOCUS_CHANGE:
     begin
       if wtComboBox in TGtk3Widget(Data).WidgetType then
       begin
@@ -1310,8 +1240,7 @@ begin
       end;
       TGtk3Widget(Data).GtkEventFocus(Widget, Event);
     end;
-    // GDK_CONFIGURE
-    13:
+  GDK_CONFIGURE:
     begin
       (* DOES NOT WORK AS DOCUMENTATION SAYS
       if Data <> nil then
@@ -1326,23 +1255,23 @@ begin
       *)
       Result := TGtk3Widget(Data).GtkEventResize(Widget, Event);
     end;
-    14: // GDK_MAP
+  GDK_MAP:
     begin
       // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    15: // GDK_UNMAP
+  GDK_UNMAP:
     begin
        // DebugLn('****** GDK_UNMAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    16: // GDK_PROPERTY_NOTIFY
+  GDK_PROPERTY_NOTIFY:
     begin
       // DebugLn('****** GDK_PROPERTY_NOTIFY FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    28: // GDK_CLIENT_EVENT
+  GDK_CLIENT_EVENT:
     begin
       // DebugLn('****** GDK_CLIENT_EVENT FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    29: // GDK_VISIBILITY_NOTIFY
+  GDK_VISIBILITY_NOTIFY:
     begin
       // ONLY HERE WE CAN CATCH Activate/Deactivate but problem is that
       // PGtkWindow does not update active property properly
@@ -1354,17 +1283,17 @@ begin
       // Result := TGtk3Widget(Data).GtkEventShowHide(Widget, Event);
       // DebugLn('****** GDK_VISIBILITY_NOTIFY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
-    31: // GDK_SCROLL
+  GDK_SCROLL:
     begin
       // DebugLn('****** GDK_SCROLL ' + dbgsName(TGtk3Widget(Data).LCLObject));
       Result := TGtk3Widget(Data).GtkEventMouseWheel(Widget, Event);
     end;
-    32: // GDK_WINDOW_STATE
+  GDK_WINDOW_STATE:
     begin
       // DebugLn('****** GDK_WINDOW_STATE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
       // this doesn't work as expected ... must use GDK_CONFIGURE to get active status ?!?
     end;
-    35: // GDK_GRAB_BROKEN  could be broken eg. because of popupmenu
+  GDK_GRAB_BROKEN:  //could be broken eg. because of popupmenu
     begin
       DebugLn('****** GDK_GRAB_BROKEN (no problem if popupmenu is activated) ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
@@ -2084,7 +2013,7 @@ begin
     exit;
   end;
 
-  IsArrowKey := ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
+  IsArrowKey := (AEventString='') and ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
 
   {$IFDEF GTK3DEBUGKEYPRESS}
   if AKeyPress then
@@ -2110,11 +2039,14 @@ begin
     if not CanSendLCLMessage then
       exit;
 
-    if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) or EatArrowKeys(ACharCode) then
+    if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) or (IsArrowKey{EatArrowKeys(ACharCode)}) then
     begin
       {$IFDEF GTK3DEBUGKEYPRESS}
       DebugLn('CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
+      if ([wtEntry,wtMemo] * WidgetType <>[]) then
+      exit(false)
+      else
       exit(True);
     end;
 
@@ -2135,7 +2067,7 @@ begin
 
     {$warning workaround for GtkTreeView key bindings.Must find out what LCL does with
      this keys.}
-    if IsArrowKey and ([wtListBox,wtListView] * WidgetType <> []) then
+    if {IsArrowKey and} ([wtListBox,wtListView,wtEntry,wtMemo] * WidgetType <> []) then
     // let gtk3 select cell for now. Must check what LCL does with arrow keys
     // since gtk3 becomes crazy after delivery of this message
     else
@@ -2250,8 +2182,7 @@ begin
   MButton := Event^.button.button;
 
   case Event^.type_ of
-    // GDK_BUTTON_PRESS
-    4:
+  GDK_BUTTON_PRESS:
     begin
       if MButton = GTK3_LEFT_BUTTON then
       begin
@@ -2271,8 +2202,7 @@ begin
         Msg.Keys := Msg.Keys or MK_MBUTTON;
       end;
     end;
-    // GDK_BUTTON2_PRESS -> double click
-    5: // GDK_DOUBLE_BUTTON_PRESS
+  GDK_2BUTTON_PRESS: //-> double click GDK_DOUBLE_BUTTON_PRESS
     begin
       if MButton = GTK3_LEFT_BUTTON then
       begin
@@ -2292,8 +2222,7 @@ begin
         Msg.Keys := Msg.Keys or MK_MBUTTON;
       end;
     end;
-    // GDK_BUTTON_RELEASE: TGdkEventType = 7;
-    7:
+  GDK_BUTTON_RELEASE:
     begin
       if MButton = GTK3_LEFT_BUTTON then
       begin
