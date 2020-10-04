@@ -1207,7 +1207,7 @@ begin
     while CurFile<>nil do begin
       Filename:=CurFile.GetShortFilename(true);
       if Filename<>'' then Begin
-        ANodeData := FPropGui.CreateNodeData(penFile, CurFile.Filename, False);
+        ANodeData:=FPropGui.CreateNodeData(penFile, CurFile.Filename, False);
         FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
       end;
       CurFile:=CurFile.NextPartOfProject;

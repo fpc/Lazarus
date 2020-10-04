@@ -5,13 +5,15 @@ unit AddFPMakeDependencyDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ListFilterEdit,
-  ProjPackCommon,
-  PackageDefs,
-  LazarusIDEStrConsts,
+  Classes, SysUtils,
+  // LCL
+  LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
+  // LazControls
+  ListFilterEdit,
+  // IdeIntf
   IDEWindowIntf,
-  AddPkgDependencyDlg,
+  // IDE
+  ProjPackCommon, PackageDefs, LazarusIDEStrConsts, AddPkgDependencyDlg,
   // fppkg
   FppkgHelper;
 

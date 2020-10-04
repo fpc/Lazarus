@@ -229,9 +229,9 @@ type
     );
   TPkgMarkerFlags = set of TPkgMarkerFlag;
   
-  TPkgDependencyList = (
-    pdlRequires,
-    pdlUsedBy
+  TPkgDependencyDirection = (
+    pddRequires,
+    pddUsedBy
     );
 
   TPkgDependencyType = (
@@ -263,7 +263,7 @@ type
   protected
     procedure SetPackageName(const AValue: string); override;
   public
-    NextDependency, PrevDependency: array[TPkgDependencyList] of TPkgDependency;
+    NextDependency, PrevDependency: array[TPkgDependencyDirection] of TPkgDependency;
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
@@ -291,15 +291,15 @@ type
     procedure RemoveRequiresDep(var FirstDependency: TPkgDependencyBase); override;
     // API using ListType.
     procedure AddToList(var FirstDependency: TPkgDependency;
-                        ListType: TPkgDependencyList);
+                        ListType: TPkgDependencyDirection);
     procedure AddToEndOfList(var LastDependency: TPkgDependency;
-                             ListType: TPkgDependencyList);
+                             ListType: TPkgDependencyDirection);
     procedure RemoveFromList(var FirstDependency: TPkgDependency;
-                             ListType: TPkgDependencyList);
+                             ListType: TPkgDependencyDirection);
     function MoveUpInList(var FirstDependency: TPkgDependency;
-                          ListType: TPkgDependencyList): Boolean;
+                          ListType: TPkgDependencyDirection): Boolean;
     function MoveDownInList(var FirstDependency: TPkgDependency;
-      ListType: TPkgDependencyList): Boolean;
+      ListType: TPkgDependencyDirection): Boolean;
     function MakeFilenameRelativeToOwner(const AFilename: string): string;
     function FindDefaultFilename: string;
   public
@@ -832,31 +832,31 @@ function FileNameToPkgFileType(AFilename: string): TPkgFileType;
 
 procedure SortDependencyListAlphabetically(Dependencies: TFPList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  var First: TPkgDependency; ListType: TPkgDependencyDirection; Owner: TObject;
   HoldPackages, SortList: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  First: TPkgDependency; ListType: TPkgDependencyList;
+  First: TPkgDependency; ListType: TPkgDependencyDirection;
   UsePathDelim: TPathDelimSwitch;LegacyLists:Boolean);
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
-  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  var First: TPkgDependency; ListType: TPkgDependencyDirection; Owner: TObject;
   HoldPackages: boolean);
 procedure DeleteDependencyInList(ADependency: TPkgDependency;
-  var First: TPkgDependency; ListType: TPkgDependencyList);
+  var First: TPkgDependency; ListType: TPkgDependencyDirection);
 procedure FreeDependencyList(var First: TPkgDependency;
-  ListType: TPkgDependencyList);
+  ListType: TPkgDependencyDirection);
 function DependencyListAsString(First: TPkgDependency;
-  ListType: TPkgDependencyList): string;
+  ListType: TPkgDependencyDirection): string;
 
 function FindDependencyByNameInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; const Name: string): TPkgDependency;
+  ListType: TPkgDependencyDirection; const Name: string): TPkgDependency;
 function FindCompatibleDependencyInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
+  ListType: TPkgDependencyDirection; ComparePackage: TLazPackageID): TPkgDependency;
 function GetDependencyWithIndex(First: TPkgDependency;
-  ListType: TPkgDependencyList; Index: integer): TPkgDependency;
+  ListType: TPkgDependencyDirection; Index: integer): TPkgDependency;
 function IndexOfDependencyInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; FindDependency: TPkgDependency): integer;
+  ListType: TPkgDependencyDirection; FindDependency: TPkgDependency): integer;
 function GetFirstDependency(ListItem: TPkgDependency;
-  ListType: TPkgDependencyList): TPkgDependency;
+  ListType: TPkgDependencyDirection): TPkgDependency;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
 function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
@@ -941,7 +941,7 @@ begin
 end;
 
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  var First: TPkgDependency; ListType: TPkgDependencyDirection; Owner: TObject;
   HoldPackages, SortList: boolean);
 var
   i: Integer;
@@ -986,7 +986,7 @@ begin
 end;
 
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  First: TPkgDependency; ListType: TPkgDependencyList;
+  First: TPkgDependency; ListType: TPkgDependencyDirection;
   UsePathDelim: TPathDelimSwitch; LegacyLists: Boolean);
 var
   i: Integer;
@@ -1005,7 +1005,7 @@ begin
 end;
 
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
-  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  var First: TPkgDependency; ListType: TPkgDependencyDirection; Owner: TObject;
   HoldPackages: boolean);
 var
   NewDependency: TPkgDependency;
@@ -1024,7 +1024,7 @@ begin
 end;
 
 procedure DeleteDependencyInList(ADependency: TPkgDependency;
-  var First: TPkgDependency; ListType: TPkgDependencyList);
+  var First: TPkgDependency; ListType: TPkgDependencyDirection);
 var
   NextDependency, PrevDependency: TPkgDependency;
 begin
@@ -1039,7 +1039,7 @@ begin
 end;
 
 procedure FreeDependencyList(var First: TPkgDependency;
-  ListType: TPkgDependencyList);
+  ListType: TPkgDependencyDirection);
 var
   NextDependency: TPkgDependency;
 begin
@@ -1051,7 +1051,7 @@ begin
 end;
 
 function DependencyListAsString(First: TPkgDependency;
-  ListType: TPkgDependencyList): string;
+  ListType: TPkgDependencyDirection): string;
 begin
   Result:='';
   while First<>nil do begin
@@ -1247,7 +1247,7 @@ begin
 end;
 
 function FindDependencyByNameInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; const Name: string): TPkgDependency;
+  ListType: TPkgDependencyDirection; const Name: string): TPkgDependency;
 begin
   Result:=First;
   while Result<>nil do begin
@@ -1257,7 +1257,7 @@ begin
 end;
 
 function FindCompatibleDependencyInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
+  ListType: TPkgDependencyDirection; ComparePackage: TLazPackageID): TPkgDependency;
 begin
   Result:=First;
   while Result<>nil do begin
@@ -1267,7 +1267,7 @@ begin
 end;
 
 function GetDependencyWithIndex(First: TPkgDependency;
-  ListType: TPkgDependencyList; Index: integer): TPkgDependency;
+  ListType: TPkgDependencyDirection; Index: integer): TPkgDependency;
 begin
   if Index<0 then RaiseGDBException('GetDependencyWithIndex');
   Result:=First;
@@ -1381,7 +1381,7 @@ begin
 end;
 
 function IndexOfDependencyInList(First: TPkgDependency;
-  ListType: TPkgDependencyList; FindDependency: TPkgDependency): integer;
+  ListType: TPkgDependencyDirection; FindDependency: TPkgDependency): integer;
 var
   Dependency: TPkgDependency;
 begin
@@ -1396,7 +1396,7 @@ begin
 end;
 
 function GetFirstDependency(ListItem: TPkgDependency;
-  ListType: TPkgDependencyList): TPkgDependency;
+  ListType: TPkgDependencyDirection): TPkgDependency;
 begin
   Result:=ListItem;
   if Result=nil then exit;
@@ -1953,46 +1953,46 @@ end;
 
 function TPkgDependency.NextUsedByDependency: TPkgDependency;
 begin
-  Result:=NextDependency[pdlUsedBy];
+  Result:=NextDependency[pddUsedBy];
 end;
 
 function TPkgDependency.PrevUsedByDependency: TPkgDependency;
 begin
-  Result:=PrevDependency[pdlUsedBy];
+  Result:=PrevDependency[pddUsedBy];
 end;
 
 function TPkgDependency.NextRequiresDependency: TPkgDependency;
 begin
-  Result:=NextDependency[pdlRequires];
+  Result:=NextDependency[pddRequires];
 end;
 
 function TPkgDependency.PrevRequiresDependency: TPkgDependency;
 begin
-  Result:=PrevDependency[pdlRequires];
+  Result:=PrevDependency[pddRequires];
 end;
 
 procedure TPkgDependency.AddUsedByDep(var FirstDependency: TPkgDependencyBase);
 begin
-  AddToList(TPkgDependency(FirstDependency), pdlUsedBy);
+  AddToList(TPkgDependency(FirstDependency), pddUsedBy);
 end;
 
 procedure TPkgDependency.RemoveUsedByDep(var FirstDependency: TPkgDependencyBase);
 begin
-  RemoveFromList(TPkgDependency(FirstDependency), pdlUsedBy);
+  RemoveFromList(TPkgDependency(FirstDependency), pddUsedBy);
 end;
 
 procedure TPkgDependency.AddRequiresDep(var FirstDependency: TPkgDependencyBase);
 begin
-  AddToList(TPkgDependency(FirstDependency), pdlRequires);
+  AddToList(TPkgDependency(FirstDependency), pddRequires);
 end;
 
 procedure TPkgDependency.RemoveRequiresDep(var FirstDependency: TPkgDependencyBase);
 begin
-  RemoveFromList(TPkgDependency(FirstDependency), pdlRequires);
+  RemoveFromList(TPkgDependency(FirstDependency), pddRequires);
 end;
 
 procedure TPkgDependency.AddToList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList);
+  ListType: TPkgDependencyDirection);
 begin
   NextDependency[ListType]:=FirstDependency;
   FirstDependency:=Self;
@@ -2002,7 +2002,7 @@ begin
 end;
 
 procedure TPkgDependency.AddToEndOfList(var LastDependency: TPkgDependency;
-  ListType: TPkgDependencyList);
+  ListType: TPkgDependencyDirection);
 begin
   PrevDependency[ListType]:=LastDependency;
   LastDependency:=Self;
@@ -2012,7 +2012,7 @@ begin
 end;
 
 procedure TPkgDependency.RemoveFromList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList);
+  ListType: TPkgDependencyDirection);
 begin
   if FirstDependency=Self then FirstDependency:=NextDependency[ListType];
   if NextDependency[ListType]<>nil then
@@ -2024,7 +2024,7 @@ begin
 end;
 
 function TPkgDependency.MoveUpInList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList): Boolean;
+  ListType: TPkgDependencyDirection): Boolean;
 var
   OldPrev: TPkgDependency;
 begin
@@ -2043,7 +2043,7 @@ begin
 end;
 
 function TPkgDependency.MoveDownInList(var FirstDependency: TPkgDependency;
-  ListType: TPkgDependencyList): Boolean;
+  ListType: TPkgDependencyDirection): Boolean;
 var
   OldNext: TPkgDependency;
 begin
@@ -2914,7 +2914,7 @@ begin
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires,Self,false,false);
+                        FFirstRequiredDependency,pddRequires,Self,false,false);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
                                   PathDelimChanged);
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
@@ -2995,7 +2995,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
 
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires,UsePathDelim,UseLegacyLists);
+                        FFirstRequiredDependency,pddRequires,UsePathDelim,UseLegacyLists);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
@@ -3299,27 +3299,27 @@ end;
 
 function TLazPackage.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,PackageName);
+  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pddRequires,PackageName);
 end;
 
 function TLazPackage.FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,PkgName);
+  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pddRequires,PkgName);
 end;
 
 function TLazPackage.RequiredDepByIndex(Index: integer): TPkgDependency;
 begin
-  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pdlRequires,Index);
+  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pddRequires,Index);
 end;
 
 function TLazPackage.RemovedDepByIndex(Index: integer): TPkgDependency;
 begin
-  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pdlRequires,Index);
+  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pddRequires,Index);
 end;
 
 function TLazPackage.UsedByDepByIndex(Index: integer): TPkgDependency;
 begin
-  Result:=GetDependencyWithIndex(FFirstUsedByDependency,pdlUsedBy,Index);
+  Result:=GetDependencyWithIndex(FFirstUsedByDependency,pddUsedBy,Index);
 end;
 
 function TLazPackage.FindUsedByDepPrefer(Ignore: TPkgDependency): TPkgDependency;
@@ -3633,13 +3633,13 @@ end;
 
 procedure TLazPackage.RemoveRemovedDependency(Dependency: TPkgDependency);
 begin
-  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRemovedDependency,pddRequires);
   Dependency.Removed:=false;
 end;
 
 procedure TLazPackage.AddRequiredDependency(Dependency: TPkgDependency);
 begin
-  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
+  Dependency.AddToList(FFirstRequiredDependency,pddRequires);
   Dependency.Owner:=Self;
   Modified:=true;
 end;
@@ -3657,9 +3657,9 @@ end;
 procedure TLazPackage.RemoveRequiredDepSilently(Dependency: TPkgDependency);
 // Remove a dependency without setting the Modified flag. Caller must take care of it.
 begin
-  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRequiredDependency,pddRequires);
   Dependency.RequiredPackage:=nil;
-  Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
+  Dependency.AddToList(FFirstRemovedDependency,pddRequires);
   Dependency.Removed:=true;
 end;
 
@@ -3672,25 +3672,25 @@ end;
 procedure TLazPackage.DeleteRequiredDependency(Dependency: TPkgDependency);
 begin
   Dependency.RequiredPackage:=nil;
-  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRequiredDependency,pddRequires);
   Dependency.Free;
 end;
 
 procedure TLazPackage.DeleteRemovedDependency(Dependency: TPkgDependency);
 begin
   Dependency.RequiredPackage:=nil;
-  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRemovedDependency,pddRequires);
   Dependency.Free;
 end;
 
 function TLazPackage.MoveRequiredDependencyUp(Dependency: TPkgDependency): Boolean;
 begin
-  Result := Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+  Result := Dependency.MoveUpInList(FFirstRequiredDependency,pddRequires);
 end;
 
 function TLazPackage.MoveRequiredDependencyDown(Dependency: TPkgDependency): Boolean;
 begin
-  Result := Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+  Result := Dependency.MoveDownInList(FFirstRequiredDependency,pddRequires);
 end;
 
 function TLazPackage.CreateDependencyWithOwner(NewOwner: TObject;
@@ -3725,7 +3725,7 @@ end;
 
 function TLazPackage.Requires(APackage: TLazPackage): boolean;
 begin
-  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pddRequires,
                   APackage)<>nil;
 end;
 

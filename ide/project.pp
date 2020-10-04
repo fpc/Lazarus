@@ -2980,7 +2980,7 @@ begin
   CodeToolBoss.DefineTree.ClearCache;
   // load the dependencies
   LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-                        FFirstRequiredDependency,pdlRequires,Self,true,false);
+                        FFirstRequiredDependency,pddRequires,Self,true,false);
   // load the Run and Build parameter Options
   RunParameterOptions.Clear;
   if FFileVersion<11 then
@@ -3314,7 +3314,7 @@ begin
   RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI, UseLegacyLists);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-    FFirstRequiredDependency,pdlRequires,fCurStorePathDelim,pfCompatibilityMode in FFlags);
+    FFirstRequiredDependency,pddRequires,fCurStorePathDelim,pfCompatibilityMode in FFlags);
   // save units
   SaveUnits(Path,FSaveSessionInLPI);
 
@@ -4605,29 +4605,29 @@ end;
 
 function TProject.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
+  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pddRequires,
                                      PackageName);
 end;
 
 function TProject.FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,PkgName);
+  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pddRequires,PkgName);
 end;
 
 function TProject.RequiredDepByIndex(Index: integer): TPkgDependency;
 begin
-  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pdlRequires,Index);
+  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pddRequires,Index);
 end;
 
 function TProject.RemovedDepByIndex(Index: integer): TPkgDependency;
 begin
-  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pdlRequires,Index);
+  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pddRequires,Index);
 end;
 
 procedure TProject.AddRequiredDependency(Dependency: TPkgDependency);
 begin
   BeginUpdate(true);
-  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
+  Dependency.AddToList(FFirstRequiredDependency,pddRequires);
   Dependency.Owner:=Self;
   Dependency.HoldPackage:=true;
   FDefineTemplates.CustomDefinesChanged;
@@ -4645,9 +4645,9 @@ end;
 procedure TProject.RemoveRequiredDependency(Dependency: TPkgDependency);
 begin
   BeginUpdate(true);
-  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRequiredDependency,pddRequires);
   Dependency.RequiredPackage:=nil;
-  Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
+  Dependency.AddToList(FFirstRemovedDependency,pddRequires);
   Dependency.Removed:=true;
   FDefineTemplates.CustomDefinesChanged;
   IncreaseCompilerParseStamp;
@@ -4662,7 +4662,7 @@ procedure TProject.DeleteRequiredDependency(Dependency: TPkgDependency);
 begin
   BeginUpdate(true);
   Dependency.RequiredPackage:=nil;
-  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRequiredDependency,pddRequires);
   Dependency.Free;
   FDefineTemplates.CustomDefinesChanged;
   IncreaseCompilerParseStamp;
@@ -4673,7 +4673,7 @@ procedure TProject.DeleteRemovedDependency(Dependency: TPkgDependency);
 begin
   BeginUpdate(true);
   Dependency.RequiredPackage:=nil;
-  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRemovedDependency,pddRequires);
   Dependency.Free;
   EndUpdate;
 end;
@@ -4681,7 +4681,7 @@ end;
 procedure TProject.RemoveRemovedDependency(Dependency: TPkgDependency);
 begin
   BeginUpdate(true);
-  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.RemoveFromList(FFirstRemovedDependency,pddRequires);
   Dependency.Removed:=false;
   EndUpdate;
 end;
@@ -4698,7 +4698,7 @@ procedure TProject.MoveRequiredDependencyUp(Dependency: TPkgDependency);
 begin
   if Dependency.PrevRequiresDependency=nil then exit;
   BeginUpdate(true);
-  Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+  Dependency.MoveUpInList(FFirstRequiredDependency,pddRequires);
   FDefineTemplates.CustomDefinesChanged;
   IncreaseCompilerParseStamp;
   EndUpdate;
@@ -4708,7 +4708,7 @@ procedure TProject.MoveRequiredDependencyDown(Dependency: TPkgDependency);
 begin
   if Dependency.NextRequiresDependency=nil then exit;
   BeginUpdate(true);
-  Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+  Dependency.MoveDownInList(FFirstRequiredDependency,pddRequires);
   FDefineTemplates.CustomDefinesChanged;
   IncreaseCompilerParseStamp;
   EndUpdate;
@@ -4720,7 +4720,7 @@ begin
     Result:=PackageGraph.FindDependencyRecursively(FFirstRequiredDependency,
                                                    APackage)<>nil
   else
-    Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+    Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pddRequires,
                                            APackage)<>nil;
 end;
 
@@ -4739,7 +4739,7 @@ procedure TProject.AddPackageDependency(const PackageName: string);
 var
   PkgDependency: TPkgDependency;
 begin
-  if FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName)
+  if FindDependencyByNameInList(FirstRequiredDependency,pddRequires,PackageName)
   <>nil then exit;
   PkgDependency:=TPkgDependency.Create;
   PkgDependency.DependencyType:=pdtLazarus;
@@ -4751,7 +4751,7 @@ function TProject.RemovePackageDependency(const PackageName: string): boolean;
 var
   PkgDependency: TPkgDependency;
 begin
-  PkgDependency:=FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName);
+  PkgDependency:=FindDependencyByNameInList(FirstRequiredDependency,pddRequires,PackageName);
   Result := Assigned(PkgDependency);
   if Result then
     RemoveRequiredDependency(PkgDependency);

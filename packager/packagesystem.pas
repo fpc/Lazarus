@@ -2211,7 +2211,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency: TPkgDependency;
     Quiet: Boolean;
   begin
-    if FindDependencyByNameInList(FirstAutoInstallDependency,pdlRequires,
+    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,
       PkgName)<>nil
     then
       exit;
@@ -2219,7 +2219,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency.Owner:=Self;
     Dependency.PackageName:=PkgName;
     Dependency.DependencyType:=pdtLazarus;
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.AddToList(FirstAutoInstallDependency,pddRequires);
     Quiet:=false;
     OpenInstalledDependency(Dependency,pitStatic,Quiet);
   end;
@@ -2253,14 +2253,14 @@ begin
     PackageName:=PkgList[i];
     if not IsValidPkgName(PackageName) then continue;
     Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
-                                           pdlRequires,PackageName);
+                                           pddRequires,PackageName);
     //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
     if Dependency<>nil then continue;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
     Dependency.DependencyType:=pdtLazarus;
     Dependency.PackageName:=PackageName;
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.AddToList(FirstAutoInstallDependency,pddRequires);
     if OpenDependency(Dependency,false)<>lprSuccess then begin
       IDEMessageDialog(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, [PackageName, LineEnding]),
@@ -2384,7 +2384,7 @@ begin
   begin
     Dependency:=PackageGraph.FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
+    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pddRequires);
     Dependency.Free;
   end;
 end;
@@ -3011,7 +3011,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
     while ADependency<>nil do begin
       Result:=CheckPackage(ADependency.RequiredPackage);
       if Result then exit;
-      ADependency:=ADependency.NextDependency[pdlRequires];
+      ADependency:=ADependency.NextDependency[pddRequires];
     end;
   end;
 
@@ -5622,13 +5622,13 @@ begin
     Dependency:=Dependencies[i];
     //debugln('TLazPackageGraph.SortDependencyListTopologically A ',Dependency.AsString);
     if i=0 then
-      Dependency.PrevDependency[pdlRequires]:=nil
+      Dependency.PrevDependency[pddRequires]:=nil
     else
-      Dependency.PrevDependency[pdlRequires]:=Dependencies[i-1];
+      Dependency.PrevDependency[pddRequires]:=Dependencies[i-1];
     if i=DependencyCount-1 then
-      Dependency.NextDependency[pdlRequires]:=nil
+      Dependency.NextDependency[pddRequires]:=nil
     else
-      Dependency.NextDependency[pdlRequires]:=Dependencies[i+1];
+      Dependency.NextDependency[pddRequires]:=Dependencies[i+1];
   end;
 
   // clean up
@@ -6356,10 +6356,10 @@ procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
           Pkg2:=Dependency2.RequiredPackage;
           if Pkg2<>nil then
             AddConnection(Pkg1,Pkg2);
-          Dependency2:=Dependency2.NextDependency[pdlRequires];
+          Dependency2:=Dependency2.NextDependency[pddRequires];
         end;
       end;
-      Dependency1:=Dependency1.NextDependency[pdlRequires];
+      Dependency1:=Dependency1.NextDependency[pddRequires];
     end;
   end;
   

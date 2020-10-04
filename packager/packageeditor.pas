@@ -2304,37 +2304,35 @@ end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs(Immediately: boolean);
 var
-  CurDependency: TPkgDependency;
+  Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   OldFilter: String;
   NodeData: TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
-
   OldFilter := FilterEdit.ForceFilter('');
-
   // required packages
   RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
-  FPropGui.FreeNodeData(penDependency);
   RequiredBranch.ClearNodeData;
-  CurDependency:=LazPackage.FirstRequiredDependency;
+  FPropGui.FreeNodeData(penDependency);
+  Dependency:=LazPackage.FirstRequiredDependency;
   FilterEdit.SelectedPart:=nil;
-  while CurDependency<>nil do begin
-    NodeData:=FPropGui.CreateNodeData(penDependency,CurDependency.PackageName,false);
+  while Dependency<>nil do begin
+    NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,false);
     if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
     and (FNextSelectedPart.Name=NodeData.Name)
     then
       FilterEdit.SelectedPart:=NodeData;
-    RequiredBranch.AddNodeData(DependencyAsString(CurDependency), NodeData);
-    CurDependency:=CurDependency.NextRequiresDependency;
+    RequiredBranch.AddNodeData(DependencyAsString(Dependency), NodeData);
+    Dependency:=Dependency.NextRequiresDependency;
   end;
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
     FreeAndNil(FNextSelectedPart);
   RequiredBranch.InvalidateBranch;
 
   // removed required packages
-  CurDependency:=LazPackage.FirstRemovedDependency;
-  if CurDependency<>nil then begin
+  Dependency:=LazPackage.FirstRemovedDependency;
+  if Dependency<>nil then begin
     if FRemovedRequiredNode=nil then begin
       FRemovedRequiredNode:=ItemsTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
       FRemovedRequiredNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
@@ -2342,10 +2340,10 @@ begin
     end;
     RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
     RemovedBranch.ClearNodeData;
-    while CurDependency<>nil do begin
-      NodeData:=FPropGui.CreateNodeData(penDependency,CurDependency.PackageName,true);
-      RemovedBranch.AddNodeData(DependencyAsString(CurDependency), NodeData);
-      CurDependency:=CurDependency.NextRequiresDependency;
+    while Dependency<>nil do begin
+      NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,true);
+      RemovedBranch.AddNodeData(DependencyAsString(Dependency), NodeData);
+      Dependency:=Dependency.NextRequiresDependency;
     end;
     RemovedBranch.InvalidateBranch;
   end else begin
