@@ -1055,6 +1055,8 @@ begin
   end;
 end;
 
+const act_count:integer=0;
+
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 begin
   {$IFDEF GTK3DEBUGCOMBOBOX}
@@ -1230,6 +1232,19 @@ begin
     end;
   GDK_FOCUS_CHANGE:
     begin
+      if event^.focus_change.in_=1 then
+      begin
+        if act_count=0 then
+          Application.IntfAppActivate();
+        inc(act_count);
+      end
+      else
+      begin
+        if act_count>0 then
+          Application.IntfAppDeactivate();
+        dec(act_count);
+      end;
+
       if wtComboBox in TGtk3Widget(Data).WidgetType then
       begin
         TGtk3ComboBox(Data).DumpPrivateStructValues('GDK_FOCUS_CHANGE='+IntToStr(Event^.focus_change.in_));
