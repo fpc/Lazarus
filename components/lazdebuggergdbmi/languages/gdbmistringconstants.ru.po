@@ -24,7 +24,7 @@ msgstr "Возникла ошибка отладчика при попытке �
 #: gdbmistringconstants.gdbmicommandstartapplicationerror
 #, object-pascal-format
 msgid "The application could not be started:%0:s%1s"
-msgstr ""
+msgstr "Не удалось запустить приложение:%0:s%1s"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
