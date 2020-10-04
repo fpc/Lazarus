@@ -87,7 +87,6 @@ type
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure FreeNodeData(Typ: TPENodeType);
     function GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
-    function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
     procedure SetAddToUsesCB(State: TMultiBool);
     procedure SetCallRegisterProcCB(State: TMultiBool);
     procedure SetRegisteredPluginsGB(aPlugins: TStringList);
@@ -102,6 +101,8 @@ type
 
   function GetNodeData(TVNode: TTreeNode): TPENodeData;
   function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
+  function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
+  function OPNote(ADep: TPkgDependencyID): string;
 
 
 implementation
@@ -125,6 +126,27 @@ begin
   Result := (xIterNode = xParentNode);
   if not Result and Assigned(xIterNode) then
     Result := NodeTreeIsIn(xIterNode.Parent, xParentNode);
+end;
+
+function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
+var
+  PackageLink: TPackageLink;
+begin
+  Result := nil;
+  if OPMInterface = Nil then Exit;
+  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
+  if Assigned(PackageLink) and (PackageLink.Origin = ploOnline)
+  and (ADependency.IsCompatible(PackageLink.Version)) then
+    Result := PackageLink;
+end;
+
+function OPNote(ADep: TPkgDependencyID): string;
+// Returns a note about online package's availability, if there is one.
+begin
+  if (ADep.LoadPackageResult<>lprSuccess) and (FindOPLink(ADep)<>nil) then
+    Result:=' '+lisPckEditAvailableOnline
+  else
+    Result:='';
 end;
 
 { TProjPackFilePropGui }
@@ -304,18 +326,6 @@ begin
     Result := ImageIndexAvailableOnline
   else
     Result := ImageIndexConflict;
-end;
-
-function TProjPackFilePropGui.FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
-var
-  PackageLink: TPackageLink;
-begin
-  Result := nil;
-  if OPMInterface = Nil then Exit;
-  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
-  if Assigned(PackageLink) and (PackageLink.Origin = ploOnline)
-  and (ADependency.IsCompatible(PackageLink.Version)) then
-    Result := PackageLink;
 end;
 
 procedure SetCheckBox(Box: TCheckBox; aVisible: boolean; State: TMultiBool);

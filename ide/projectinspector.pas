@@ -71,7 +71,7 @@ uses
   LazarusIDEStrConsts, MainIntf, IDEProcs, DialogProcs, IDEOptionDefs,
   PackageDefs, Project, InputHistory, MainBase, EnvironmentOpts,
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg,
-  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageSystem, PackageLinks;
+  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageSystem;
 
 type
   TOnAddUnitToProject =
@@ -821,7 +821,7 @@ begin
                 Exit;
               end;
             end else begin
-              PackageLink:=FPropGui.FindOPLink(CurDependency);
+              PackageLink:=FindOPLink(CurDependency);
               if PackageLink<>nil then
                 PkgLinks.Add(PackageLink);
             end;
@@ -1222,7 +1222,6 @@ procedure TProjectInspectorForm.UpdateRequiredPackages;
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
-  NodeText, AFilename: String;
   ANodeData : TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
@@ -1234,23 +1233,9 @@ begin
     // required packages
     Dependency:=LazProject.FirstRequiredDependency;
     while Dependency<>nil do begin
-      // Figure out the item's caption
-      NodeText:=Dependency.AsString;
-      if Dependency.DefaultFilename<>'' then begin
-        AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
-        if Dependency.PreferDefaultFilename then
-          NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
-        else
-          NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
-      end;
-      if Dependency.LoadPackageResult<>lprSuccess then
-        if FPropGui.FindOPLink(Dependency)<>nil then
-          NodeText:=NodeText+' '+lisPckEditAvailableOnline;
-      if Dependency.DependencyType=pdtFPMake then
-        NodeText:=NodeText+' '+lisPckEditFPMakePackage;
       // Add the required package under the branch
-      ANodeData := FPropGui.CreateNodeData(penDependency, Dependency.PackageName, False);
-      RequiredBranch.AddNodeData(NodeText, ANodeData);
+      ANodeData:=FPropGui.CreateNodeData(penDependency, Dependency.PackageName, False);
+      RequiredBranch.AddNodeData(Dependency.AsString(False,True)+OPNote(Dependency), ANodeData);
       Dependency:=Dependency.NextRequiresDependency;
     end;
 

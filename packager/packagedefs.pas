@@ -278,7 +278,7 @@ type
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean; overload;
     procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
-    function AsString(WithOwner: boolean; WithDefaults: boolean): string; overload;
+    function AsString(WithOwner, WithDefaults: boolean): string; overload;
     // API for iterating dependencies.
     function NextUsedByDependency: TPkgDependency; override;
     function PrevUsedByDependency: TPkgDependency; override;
@@ -1933,21 +1933,25 @@ begin
   if MaxVersion.Compare(Version)<0 then MaxVersion.Assign(Version);
 end;
 
-function TPkgDependency.AsString(WithOwner: boolean; WithDefaults: boolean): string;
+function TPkgDependency.AsString(WithOwner, WithDefaults: boolean): string;
+var
+  FN: String;
 begin
   Result:=inherited AsString;
   if WithOwner and (Owner<>nil) then
     Result:=GetDependencyOwnerAsString(Self)+' uses '+Result;
   if WithDefaults then
   begin
-    if DefaultFilename<>'' then begin
-      Result+=', ';
+    if DefaultFilename<>'' then
+    begin
+      FN:=MakeFilenameRelativeToOwner(DefaultFilename);
       if PreferDefaultFilename then
-        Result+='preferred'
+        Result:=Format(lisCEIn, [Result,FN]) // like 'in' keyword in uses section
       else
-        Result+='default';
-      Result+='="'+DefaultFilename+'"';
+        Result:=Format(lisPckEditDefault, [Result,FN]);
     end;
+    if DependencyType=pdtFPMake then
+      Result:=Result+' '+lisPckEditFPMakePackage;
   end;
 end;
 
