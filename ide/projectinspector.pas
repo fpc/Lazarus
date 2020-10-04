@@ -172,15 +172,12 @@ type
     ImageIndexBinary: integer;
     ImageIndexDirectory: integer;
     FFlags: TPEFlags;
-    FProjectNodeDataList : array [TPENodeType] of TPENodeData;
     FPropGui: TProjPackFilePropGui;
     procedure AddMenuItemClick(Sender: TObject);
     function AddOneFile(aFilename: string): TModalResult;
     procedure DoAddMoreDialog;
     procedure DoAddDepDialog;
     procedure DoAddFPMakeDepDialog;
-    procedure FreeNodeData(Typ: TPENodeType);
-    function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
     function CreateDivider: TToolButton;
@@ -473,19 +470,11 @@ begin
 end;
 
 procedure TProjectInspectorForm.AddMenuItemClick(Sender: TObject);
-
-  function _NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
-  begin
-    Result := (xIterNode = xParentNode);
-    if not Result and Assigned(xIterNode) then
-      Result := _NodeTreeIsIn(xIterNode.Parent, xParentNode);
-  end;
-
 begin
   //check the selected item in ItemsTreeView
   // -> if it's "Required Packages", call "New Requirement" (mnuAddReqClick)
   // -> otherwise (selected = "Files") call "Add files from file system" (AddBitBtnClick)
-  if _NodeTreeIsIn(ItemsTreeView.Selected, FDependenciesNode) then
+  if NodeTreeIsIn(ItemsTreeView.Selected, FDependenciesNode) then
     mnuAddReqClick(Sender)
   else
     mnuAddBitBtnClick(Sender);
@@ -806,26 +795,33 @@ begin
     NeedToRebuild := False;
     BeginUpdate;
     try
-      for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      for i:=0 to ItemsTreeView.SelectionCount-1 do
+      begin
         TVNode:=ItemsTreeView.Selections[i];
         if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-        if Item is TUnitInfo then begin
+        if Item is TUnitInfo then
+        begin
           CurFile:=TUnitInfo(Item);
-          if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk then begin
-             PkgLinks.Free;
-             Exit;
+          if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk then
+          begin
+            FreeAndNil(PkgLinks);
+            Exit;
           end;
         end
-        else if Item is TPkgDependency then begin
+        else if Item is TPkgDependency then
+        begin
           CurDependency:=TPkgDependency(Item);
-          if CurDependency.DependencyType=pdtLazarus then begin
-            if CurDependency.LoadPackageResult = lprSuccess then begin
-              if PackageEditingInterface.DoOpenPackageWithName(CurDependency.PackageName,[],false)<>mrOk then begin
-                PkgLinks.Free;
+          if CurDependency.DependencyType=pdtLazarus then
+          begin
+            if CurDependency.LoadPackageResult = lprSuccess then
+            begin
+              if PackageEditingInterface.DoOpenPackageWithName(CurDependency.PackageName,[],false)<>mrOk then
+              begin
+                FreeAndNil(PkgLinks);
                 Exit;
               end;
             end else begin
-              PackageLink:=FPropGui.FindOnlinePackageLink(CurDependency);
+              PackageLink:=FPropGui.FindOPLink(CurDependency);
               if PackageLink<>nil then
                 PkgLinks.Add(PackageLink);
             end;
@@ -1154,7 +1150,6 @@ begin
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
   IDEImages.AssignImage(DirectoryHierarchyButton, 'pkg_hierarchical');
 
-  FPropGui:=TProjPackFilePropGui.Create(PropsGroupBox, False);
   FPropGui.OnGetPkgDep := @GetDependencyToUpdate;
   FPropGui.ApplyDependencyButton.OnClick := @ApplyDependencyButtonClick;
 
@@ -1201,7 +1196,7 @@ begin
   if not CanUpdate(pefNeedUpdateFiles) then exit;
   FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
   FilesBranch.ClearNodeData;
-  FreeNodeData(penFile);
+  FPropGui.FreeNodeData(penFile);
   if LazProject<>nil then begin
     FilterEdit.SelectedPart:=FNextSelectedPart;
     FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
@@ -1212,7 +1207,7 @@ begin
     while CurFile<>nil do begin
       Filename:=CurFile.GetShortFilename(true);
       if Filename<>'' then Begin
-        ANodeData := CreateNodeData(penFile, CurFile.Filename, False);
+        ANodeData := FPropGui.CreateNodeData(penFile, CurFile.Filename, False);
         FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
       end;
       CurFile:=CurFile.NextPartOfProject;
@@ -1233,7 +1228,7 @@ begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
   RequiredBranch:=FilterEdit.GetCleanBranch(FDependenciesNode);
   RequiredBranch.ClearNodeData;
-  FreeNodeData(penDependency);
+  FPropGui.FreeNodeData(penDependency);
   Dependency:=Nil;
   if LazProject<>nil then begin
     // required packages
@@ -1249,12 +1244,12 @@ begin
           NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
       end;
       if Dependency.LoadPackageResult<>lprSuccess then
-        if FPropGui.FindOnlinePackageLink(Dependency)<>nil then
+        if FPropGui.FindOPLink(Dependency)<>nil then
           NodeText:=NodeText+' '+lisPckEditAvailableOnline;
       if Dependency.DependencyType=pdtFPMake then
         NodeText:=NodeText+' '+lisPckEditFPMakePackage;
       // Add the required package under the branch
-      ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
+      ANodeData := FPropGui.CreateNodeData(penDependency, Dependency.PackageName, False);
       RequiredBranch.AddNodeData(NodeText, ANodeData);
       Dependency:=Dependency.NextRequiresDependency;
     end;
@@ -1272,7 +1267,7 @@ begin
       RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedDependenciesNode);
       // Add all removed dependencies under the branch
       while Dependency<>nil do begin
-        ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);
+        ANodeData := FPropGui.CreateNodeData(penDependency, Dependency.PackageName, True);
         RemovedBranch.AddNodeData(Dependency.AsString, ANodeData);
         Dependency:=Dependency.NextRequiresDependency;
       end;
@@ -1390,6 +1385,7 @@ begin
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
   KeyPreview:=true;
+  FPropGui:=TProjPackFilePropGui.Create(PropsGroupBox, False);
   SetupComponents;
   KeyPreview:=true;
   SortAlphabetically := EnvironmentOptions.ProjInspSortAlphabetically;
@@ -1397,17 +1393,13 @@ begin
 end;
 
 destructor TProjectInspectorForm.Destroy;
-var
-  nt: TPENodeType;
 begin
   IdleConnected:=false;
   LazProject:=nil;
   inherited Destroy;
-  for nt:=Low(TPENodeType) to High(TPENodeType) do
-    FreeNodeData(nt);
+  FreeAndNil(FPropGui);
   if ProjInspector=Self then
     ProjInspector:=nil;
-  FreeAndNil(FPropGui);
 end;
 
 function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
@@ -1682,28 +1674,6 @@ begin
     Exclude(fFlags,Flag);
     Result:=true;
   end;
-end;
-
-procedure TProjectInspectorForm.FreeNodeData(Typ: TPENodeType);
-var
-  NodeData,
-  n: TPENodeData;
-begin
-  NodeData:=FProjectNodeDataList[Typ];
-  while NodeData<>nil do begin
-    n:=NodeData;
-    NodeData:=NodeData.Next;
-    n.Free;
-  end;
-  FProjectNodeDataList[Typ]:=nil;
-End;
-
-function TProjectInspectorForm.CreateNodeData(Typ: TPENodeType;
-  aName: string; aRemoved: boolean): TPENodeData;
-Begin
-  Result := TPENodeData.Create(Typ,aName,aRemoved);
-  Result.Next := FProjectNodeDataList[Typ];
-  FProjectNodeDataList[Typ] := Result;
 end;
 
 function TProjectInspectorForm.GetNodeItem(NodeData: TPENodeData): TObject;

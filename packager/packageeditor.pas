@@ -256,12 +256,9 @@ type
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
     FOptionsShownOfFile: TPkgFile;
-    FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
-    procedure FreeNodeData(Typ: TPENodeType);
-    function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
     function CreateDivider: TToolButton;
@@ -1354,28 +1351,25 @@ end;
 procedure TPackageEditorForm.FormCreate(Sender: TObject);
 begin
   FPlugins:=TStringList.Create;
+  FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet, True);
   SetupComponents;
   SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
 end;
 
 procedure TPackageEditorForm.FormDestroy(Sender: TObject);
-var
-  nt: TPENodeType;
 begin
   IdleConnected:=true;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
   FilterEdit.ForceFilter('');
-  for nt:=Low(TPENodeType) to High(TPENodeType) do
-    FreeNodeData(nt);
   if PackageEditorMenuRoot.MenuItem=ItemsPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
+  FreeAndNil(FPropGui);
   PackageEditors.DoFreeEditor(LazPackage);
   FLazPackage:=nil;
   FreeAndNil(FPlugins);
-  FreeAndNil(FPropGui);
 end;
 
 procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
@@ -1446,30 +1440,6 @@ end;
 procedure TPackageEditorForm.ViewPkgTodosClick(Sender: TObject);
 begin
   PackageEditors.ViewPkgToDos(LazPackage);
-end;
-
-procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
-var
-  NodeData: TPENodeData;
-  n: TPENodeData;
-begin
-  NodeData:=FFirstNodeData[Typ];
-  while NodeData<>nil do begin
-    n:=NodeData;
-    NodeData:=NodeData.Next;
-    if Assigned(n.Branch) Then
-      n.Branch.FreeNodeData(n.Node);
-    n.Free;
-  end;
-  FFirstNodeData[Typ]:=nil;
-end;
-
-function TPackageEditorForm.CreateNodeData(Typ: TPENodeType; aName: string;
-  aRemoved: boolean): TPENodeData;
-begin
-  Result:=TPENodeData.Create(Typ,aName,aRemoved);
-  Result.Next:=FFirstNodeData[Typ];
-  FFirstNodeData[Typ]:=Result;
 end;
 
 procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
@@ -1827,7 +1797,6 @@ begin
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 
-  FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet, True);
   // file properties
   FPropGui.AddToUsesPkgSectionCheckBox.OnChange := @AddToUsesPkgSectionCheckBoxChange;
   FPropGui.CallRegisterProcCheckBox.OnChange := @CallRegisterProcCheckBoxChange;
@@ -2266,7 +2235,7 @@ begin
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
-  FreeNodeData(penFile);
+  FPropGui.FreeNodeData(penFile);
   FilesBranch.ClearNodeData;
   FilterEdit.SelectedPart:=nil;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
@@ -2275,7 +2244,7 @@ begin
   // collect and sort files
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
-    NodeData:=CreateNodeData(penFile,CurFile.Filename,false);
+    NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,false);
     NodeData.FileType:=CurFile.FileType;
     Filename:=CurFile.GetShortFilename(true);
     if Filename='' then continue;
@@ -2315,7 +2284,7 @@ begin
     RemovedBranch.ClearNodeData;
     for i:=0 to LazPackage.RemovedFilesCount-1 do begin
       CurFile:=LazPackage.RemovedFiles[i];
-      NodeData:=CreateNodeData(penFile,CurFile.Filename,true);
+      NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,true);
       RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
     end;
     RemovedBranch.InvalidateBranch;
@@ -2346,12 +2315,12 @@ begin
 
   // required packages
   RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
-  FreeNodeData(penDependency);
+  FPropGui.FreeNodeData(penDependency);
   RequiredBranch.ClearNodeData;
   CurDependency:=LazPackage.FirstRequiredDependency;
   FilterEdit.SelectedPart:=nil;
   while CurDependency<>nil do begin
-    NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,false);
+    NodeData:=FPropGui.CreateNodeData(penDependency,CurDependency.PackageName,false);
     if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
     and (FNextSelectedPart.Name=NodeData.Name)
     then
@@ -2374,7 +2343,7 @@ begin
     RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
     RemovedBranch.ClearNodeData;
     while CurDependency<>nil do begin
-      NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,true);
+      NodeData:=FPropGui.CreateNodeData(penDependency,CurDependency.PackageName,true);
       RemovedBranch.AddNodeData(DependencyAsString(CurDependency), NodeData);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;

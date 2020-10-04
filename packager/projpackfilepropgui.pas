@@ -56,6 +56,7 @@ type
   TProjPackFilePropGui = class
   private
     fOwner: TWinControl;
+    FNodeDataList: array[TPENodeType] of TPENodeData;
     fOnGetPkgDep: TGetPkgDepEvent;
     procedure MinMaxVersionEditChange(Sender: TObject);
     procedure UseMinVersionCheckBoxChange(Sender: TObject);
@@ -83,8 +84,10 @@ type
 
     constructor Create(aOwner: TWinControl; aPackageGui: Boolean);
     destructor Destroy; override;
+    function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
+    procedure FreeNodeData(Typ: TPENodeType);
     function GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
-    function FindOnlinePackageLink(const ADependency: TPkgDependencyID): TPackageLink;
+    function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
     procedure SetAddToUsesCB(State: TMultiBool);
     procedure SetCallRegisterProcCB(State: TMultiBool);
     procedure SetRegisteredPluginsGB(aPlugins: TStringList);
@@ -98,6 +101,7 @@ type
   end;
 
   function GetNodeData(TVNode: TTreeNode): TPENodeData;
+  function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
 
 
 implementation
@@ -113,6 +117,14 @@ begin
     o:=TObject(TFileNameItem(o).Data);
   if o is TPENodeData then
     Result:=TPENodeData(o);
+end;
+
+function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
+// Is xIterNode under xParentNode, or the xParentNode itself?
+begin
+  Result := (xIterNode = xParentNode);
+  if not Result and Assigned(xIterNode) then
+    Result := NodeTreeIsIn(xIterNode.Parent, xParentNode);
 end;
 
 { TProjPackFilePropGui }
@@ -251,8 +263,35 @@ begin
 end;
 
 destructor TProjPackFilePropGui.Destroy;
+var
+  nt: TPENodeType;
 begin
+  for nt:=Low(TPENodeType) to High(TPENodeType) do
+    FreeNodeData(nt);
   inherited Destroy;
+end;
+
+function TProjPackFilePropGui.CreateNodeData(Typ: TPENodeType; aName: string;
+  aRemoved: boolean): TPENodeData;
+begin
+  Result:=TPENodeData.Create(Typ,aName,aRemoved);
+  Result.Next:=FNodeDataList[Typ];
+  FNodeDataList[Typ]:=Result;
+end;
+
+procedure TProjPackFilePropGui.FreeNodeData(Typ: TPENodeType);
+var
+  NodeData, n: TPENodeData;
+begin
+  NodeData:=FNodeDataList[Typ];
+  while NodeData<>nil do begin
+    n:=NodeData;
+    NodeData:=NodeData.Next;
+    if Assigned(n.Branch) Then
+      n.Branch.FreeNodeData(n.Node);
+    n.Free;
+  end;
+  FNodeDataList[Typ]:=nil;
 end;
 
 function TProjPackFilePropGui.GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
@@ -261,13 +300,13 @@ begin
     Result := ImageIndexRemovedRequired
   else if aDep.LoadPackageResult=lprSuccess then
     Result := ImageIndexRequired
-  else if Assigned(FindOnlinePackageLink(aDep)) then
+  else if Assigned(FindOPLink(aDep)) then
     Result := ImageIndexAvailableOnline
   else
     Result := ImageIndexConflict;
 end;
 
-function TProjPackFilePropGui.FindOnlinePackageLink(const ADependency: TPkgDependencyID): TPackageLink;
+function TProjPackFilePropGui.FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
 var
   PackageLink: TPackageLink;
 begin
