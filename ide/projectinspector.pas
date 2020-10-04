@@ -1323,27 +1323,28 @@ end;
 procedure TProjectInspectorForm.PackageListAvailable(Sender: TObject);
 var
   CurDependency: TPkgDependency;
-  i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
   NodeText: String;
-  ImageIndex: Integer;
+  i, ImgInd: Integer;
 begin
   BeginUpdate;
   try
+    DebugLn(['TProjectInspectorForm.PackageListAvailable: Start']);
     for i:=0 to ItemsTreeView.Items.Count-1 do begin
       TVNode:=ItemsTreeView.Items[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if not (Item is TPkgDependency) or (TPkgDependency(Item).DependencyType=pdtFPMake) then continue;
+      if not (Item is TPkgDependency) then continue;
       CurDependency:=TPkgDependency(Item);
+      if CurDependency.DependencyType = pdtFPMake then continue;
       NodeText:=CurDependency.AsString;
-      ImageIndex:=FPropGui.GetDependencyImageIndex(CurDependency);
-      if ImageIndex = FPropGui.ImageIndexAvailableOnline then
+      ImgInd:=FPropGui.GetDependencyImageIndex(CurDependency);
+      if ImgInd = FPropGui.ImageIndexAvailableOnline then
         NodeText:=NodeText+' '+lisPckEditAvailableOnline;
       TVNode.Text:=NodeText;
-      TVNode.ImageIndex:=ImageIndex;
-      TVNode.SelectedIndex:=ImageIndex;
+      TVNode.ImageIndex:=ImgInd;
+      TVNode.SelectedIndex:=ImgInd;
     end;
   finally
     EndUpdate;
