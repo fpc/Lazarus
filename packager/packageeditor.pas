@@ -272,8 +272,6 @@ type
     procedure SetupComponents;
     procedure CreatePackageFileEditors;
     function TreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
-    procedure UpdateNodeImage(TVNode: TTreeNode);
-    procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData; Item: TObject);
     procedure UpdatePending;
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
     procedure UpdateTitle(Immediately: boolean = false);
@@ -1570,7 +1568,9 @@ begin
   CurDependency:=GetSingleSelectedDependency;
   if (LazPackage=nil) or (CurDependency=nil)
   or not FPropGui.CheckApplyDependency(CurDependency) then exit;
-  UpdateNodeImage(ItemsTreeView.Selected);
+  // Try to load the package again. Min/max version may have changed.
+  CurDependency.LoadPackageResult := lprUndefined;
+  PackageGraph.OpenDependency(CurDependency, False);
   //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
   LazPackage.Modified:=True;
 end;
@@ -1595,7 +1595,6 @@ begin
     CurFile.HasRegisterProc:=FPropGui.CallRegisterProcCheckBox.Checked;
     if not NodeData.Removed then
       LazPackage.ModifySilently;
-    UpdateNodeImage(TVNode, NodeData, Item);
   end;
 end;
 
@@ -1828,7 +1827,7 @@ begin
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 
-  FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet);
+  FPropGui:=TProjPackFilePropGui.Create(CommonOptionsTabSheet, True);
   // file properties
   FPropGui.AddToUsesPkgSectionCheckBox.OnChange := @AddToUsesPkgSectionCheckBoxChange;
   FPropGui.CallRegisterProcCheckBox.OnChange := @CallRegisterProcCheckBoxChange;
@@ -2136,35 +2135,6 @@ begin
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
   Caption:=NewCaption;
-end;
-
-procedure TPackageEditorForm.UpdateNodeImage(TVNode: TTreeNode);
-var
-  NodeData: TPENodeData;
-  Item: TObject;
-begin
-  if GetNodeDataItem(TVNode, NodeData, Item) then
-    UpdateNodeImage(TVNode, NodeData, Item);
-end;
-
-procedure TPackageEditorForm.UpdateNodeImage(TVNode: TTreeNode;
-  NodeData: TPENodeData; Item: TObject);
-var
-  PkgDependency: TPkgDependency;
-  ImgIndex: Integer;
-  Ena: Boolean;
-begin
-  Assert(Assigned(Item), 'TPackageEditorForm.UpdateNodeImage: Item = Nil.');
-  if Item is TPkgDependency then begin
-    PkgDependency:=TPkgDependency(Item);
-    // Try to load the package again. Min/max version may have changed.
-    PkgDependency.LoadPackageResult := lprUndefined;
-    PackageGraph.OpenDependency(PkgDependency, False);
-  end;
-  Ena := True;                      // Neither Ena nor the String param are used.
-  ImgIndex := TreeViewGetImageIndex('', NodeData, Ena);
-  TVNode.ImageIndex:=ImgIndex;
-  TVNode.SelectedIndex:=ImgIndex;
 end;
 
 procedure TPackageEditorForm.UpdateButtons(Immediately: boolean);
@@ -2593,25 +2563,21 @@ end;
 function TPackageEditorForm.GetSingleSelectedDependency: TPkgDependency;
 var
   i: Integer;
-  TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
   Result:=nil;
-  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-    TVNode:=ItemsTreeView.Selections[i];
-    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-    if Item is TPkgFile then begin
-      Result:=nil;
-      break;
-    end else if Item is TPkgDependency then begin
-      if Result<>nil then begin
-        // not single selected
-        Result:=nil;
-        break;
-      end;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do
+  begin
+    if not GetNodeDataItem(ItemsTreeView.Selections[i],NodeData,Item) then continue;
+    if Item is TPkgDependency then
+    begin
+      if Result<>nil then
+        Exit(nil);                  // not single selected
       Result:=TPkgDependency(Item);
-    end;
+    end
+    else
+      Exit(nil);
   end;
 end;
 

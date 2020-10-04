@@ -81,7 +81,7 @@ type
     // Values used when setting controls' visibility and Enabled state.
     ControlVisible, ControlEnabled: Boolean;
 
-    constructor Create(aOwner: TWinControl);
+    constructor Create(aOwner: TWinControl; aPackageGui: Boolean);
     destructor Destroy; override;
     function GetDependencyImageIndex(aDep: TPkgDependencyID): Integer;
     function FindOnlinePackageLink(const ADependency: TPkgDependencyID): TPackageLink;
@@ -117,7 +117,7 @@ end;
 
 { TProjPackFilePropGui }
 
-constructor TProjPackFilePropGui.Create(aOwner: TWinControl);
+constructor TProjPackFilePropGui.Create(aOwner: TWinControl; aPackageGui: Boolean);
 begin
   fOwner := aOwner;
   // ImageIndexes to be used later.
@@ -126,75 +126,73 @@ begin
   ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
   ImageIndexAvailableOnline := IDEImages.LoadImage('pkg_install');
 
-  // file properties
-  // ---------------
-  CallRegisterProcCheckBox := TCheckBox.Create(fOwner);
-  CallRegisterProcCheckBox.Parent := fOwner;
-  CallRegisterProcCheckBox.Visible := False;
-  CallRegisterProcCheckBox.Left := 6;
-  CallRegisterProcCheckBox.Top := 0;
-  CallRegisterProcCheckBox.Width := 185;
-  CallRegisterProcCheckBox.ShowHint := True;
-  CallRegisterProcCheckBox.TabOrder := 0;
-  CallRegisterProcCheckBox.Caption := lisPckEditRegisterUnit;
-  CallRegisterProcCheckBox.Hint := Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
+  if aPackageGui then
+  begin
+    // file properties (not used for project files)
+    // ---------------
+    CallRegisterProcCheckBox := TCheckBox.Create(fOwner);
+    CallRegisterProcCheckBox.Parent := fOwner;
+    CallRegisterProcCheckBox.Left := 6;
+    CallRegisterProcCheckBox.Top := 0;
+    CallRegisterProcCheckBox.Width := 185;
+    CallRegisterProcCheckBox.ShowHint := True;
+    CallRegisterProcCheckBox.TabOrder := 0;
+    CallRegisterProcCheckBox.Caption := lisPckEditRegisterUnit;
+    CallRegisterProcCheckBox.Hint := Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
 
-  AddToUsesPkgSectionCheckBox := TCheckBox.Create(fOwner);
-  AddToUsesPkgSectionCheckBox.Parent := fOwner;
-  AddToUsesPkgSectionCheckBox.Visible := False;
-  AddToUsesPkgSectionCheckBox.AnchorSideLeft.Control := CallRegisterProcCheckBox;
-  AddToUsesPkgSectionCheckBox.AnchorSideLeft.Side := asrBottom;
-  AddToUsesPkgSectionCheckBox.Left := 195;
-  AddToUsesPkgSectionCheckBox.Top := 0;
-  AddToUsesPkgSectionCheckBox.Width := 222;
-  AddToUsesPkgSectionCheckBox.BorderSpacing.Left := 10;
-  AddToUsesPkgSectionCheckBox.ShowHint := True;
-  AddToUsesPkgSectionCheckBox.TabOrder := 1;
-  AddToUsesPkgSectionCheckBox.Caption := lisPkgMangUseUnit;
-  AddToUsesPkgSectionCheckBox.Hint := lisPkgMangAddUnitToUsesClause;
+    AddToUsesPkgSectionCheckBox := TCheckBox.Create(fOwner);
+    AddToUsesPkgSectionCheckBox.Parent := fOwner;
+    AddToUsesPkgSectionCheckBox.AnchorSideLeft.Control := CallRegisterProcCheckBox;
+    AddToUsesPkgSectionCheckBox.AnchorSideLeft.Side := asrBottom;
+    AddToUsesPkgSectionCheckBox.Left := 195;
+    AddToUsesPkgSectionCheckBox.Top := 0;
+    AddToUsesPkgSectionCheckBox.Width := 222;
+    AddToUsesPkgSectionCheckBox.BorderSpacing.Left := 10;
+    AddToUsesPkgSectionCheckBox.ShowHint := True;
+    AddToUsesPkgSectionCheckBox.TabOrder := 1;
+    AddToUsesPkgSectionCheckBox.Caption := lisPkgMangUseUnit;
+    AddToUsesPkgSectionCheckBox.Hint := lisPkgMangAddUnitToUsesClause;
 
-  RegisteredPluginsGroupBox := TGroupBox.Create(fOwner);
-  RegisteredPluginsGroupBox.Parent := fOwner;
-  RegisteredPluginsGroupBox.Visible := False;
-  RegisteredPluginsGroupBox.Left := 3;
-  RegisteredPluginsGroupBox.Height := 165;
-  RegisteredPluginsGroupBox.Top := 27;
-  RegisteredPluginsGroupBox.Width := 452;
-  RegisteredPluginsGroupBox.Align := alBottom;
-  RegisteredPluginsGroupBox.Anchors := [akTop, akLeft, akRight, akBottom];
-  RegisteredPluginsGroupBox.BorderSpacing.Top := 6;
-  RegisteredPluginsGroupBox.TabOrder := 7;
-  RegisteredPluginsGroupBox.Caption := lisPckEditRegisteredPlugins;
+    RegisteredPluginsGroupBox := TGroupBox.Create(fOwner);
+    RegisteredPluginsGroupBox.Parent := fOwner;
+    RegisteredPluginsGroupBox.Left := 3;
+    RegisteredPluginsGroupBox.Height := 165;
+    RegisteredPluginsGroupBox.Top := 27;
+    RegisteredPluginsGroupBox.Width := 452;
+    RegisteredPluginsGroupBox.Align := alBottom;
+    RegisteredPluginsGroupBox.Anchors := [akTop, akLeft, akRight, akBottom];
+    RegisteredPluginsGroupBox.BorderSpacing.Top := 6;
+    RegisteredPluginsGroupBox.TabOrder := 7;
+    RegisteredPluginsGroupBox.Caption := lisPckEditRegisteredPlugins;
 
-  RegisteredListBox := TListBox.Create(fOwner);
-  RegisteredListBox.Parent := RegisteredPluginsGroupBox;
-  RegisteredListBox.Align := alClient;
-  RegisteredListBox.ScrollWidth := 448;
-  RegisteredListBox.Style := lbOwnerDrawFixed;
-  RegisteredListBox.TabOrder := 0;
-  RegisteredListBox.ItemHeight := ComponentPaletteImageHeight;
+    RegisteredListBox := TListBox.Create(fOwner);
+    RegisteredListBox.Parent := RegisteredPluginsGroupBox;
+    RegisteredListBox.Align := alClient;
+    RegisteredListBox.ScrollWidth := 448;
+    RegisteredListBox.Style := lbOwnerDrawFixed;
+    RegisteredListBox.TabOrder := 0;
+    RegisteredListBox.ItemHeight := ComponentPaletteImageHeight;
 
-  // I18N
-  DisableI18NForLFMCheckBox := TCheckBox.Create(fOwner);
-  DisableI18NForLFMCheckBox.Parent := fOwner;
-  DisableI18NForLFMCheckBox.Visible := False;
-  DisableI18NForLFMCheckBox.AnchorSideLeft.Control := AddToUsesPkgSectionCheckBox;
-  DisableI18NForLFMCheckBox.AnchorSideLeft.Side := asrBottom;
-  DisableI18NForLFMCheckBox.AnchorSideTop.Control := AddToUsesPkgSectionCheckBox;
-  DisableI18NForLFMCheckBox.Left := 423;
-  DisableI18NForLFMCheckBox.Top := 0;
-  DisableI18NForLFMCheckBox.Width := 208;
-  DisableI18NForLFMCheckBox.BorderSpacing.Left := 10;
-  DisableI18NForLFMCheckBox.ShowHint := True;
-  DisableI18NForLFMCheckBox.TabOrder := 8;
-  DisableI18NForLFMCheckBox.Caption := lisPckDisableI18NOfLfm;
-  DisableI18NForLFMCheckBox.Hint := lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString;
+    // I18N
+    DisableI18NForLFMCheckBox := TCheckBox.Create(fOwner);
+    DisableI18NForLFMCheckBox.Parent := fOwner;
+    DisableI18NForLFMCheckBox.AnchorSideLeft.Control := AddToUsesPkgSectionCheckBox;
+    DisableI18NForLFMCheckBox.AnchorSideLeft.Side := asrBottom;
+    DisableI18NForLFMCheckBox.AnchorSideTop.Control := AddToUsesPkgSectionCheckBox;
+    DisableI18NForLFMCheckBox.Left := 423;
+    DisableI18NForLFMCheckBox.Top := 0;
+    DisableI18NForLFMCheckBox.Width := 208;
+    DisableI18NForLFMCheckBox.BorderSpacing.Left := 10;
+    DisableI18NForLFMCheckBox.ShowHint := True;
+    DisableI18NForLFMCheckBox.TabOrder := 8;
+    DisableI18NForLFMCheckBox.Caption := lisPckDisableI18NOfLfm;
+    DisableI18NForLFMCheckBox.Hint := lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString;
+  end;
 
   // dependency properties
   // ---------------------
   UseMinVersionCheckBox := TCheckBox.Create(fOwner);
   UseMinVersionCheckBox.Parent := fOwner;
-  UseMinVersionCheckBox.Visible := False;
   UseMinVersionCheckBox.AnchorSideTop.Control := MinVersionEdit;
   UseMinVersionCheckBox.AnchorSideTop.Side := asrCenter;
   UseMinVersionCheckBox.Left := 6;
@@ -206,7 +204,6 @@ begin
 
   MinVersionEdit := TEdit.Create(fOwner);
   MinVersionEdit.Parent := fOwner;
-  MinVersionEdit.Visible := False;
   MinVersionEdit.AnchorSideLeft.Control := UseMinVersionCheckBox;
   MinVersionEdit.AnchorSideLeft.Side := asrBottom;
   MinVersionEdit.Left := 201;
@@ -218,7 +215,6 @@ begin
 
   UseMaxVersionCheckBox := TCheckBox.Create(fOwner);
   UseMaxVersionCheckBox.Parent := fOwner;
-  UseMaxVersionCheckBox.Visible := False;
   UseMaxVersionCheckBox.AnchorSideTop.Control := MaxVersionEdit;
   UseMaxVersionCheckBox.AnchorSideTop.Side := asrCenter;
   UseMaxVersionCheckBox.Left := 6;
@@ -230,7 +226,6 @@ begin
 
   MaxVersionEdit := TEdit.Create(fOwner);
   MaxVersionEdit.Parent := fOwner;
-  MaxVersionEdit.Visible := False;
   MaxVersionEdit.AnchorSideLeft.Control := UseMaxVersionCheckBox;
   MaxVersionEdit.AnchorSideLeft.Side := asrBottom;
   MaxVersionEdit.AnchorSideTop.Control := MinVersionEdit;
@@ -245,7 +240,6 @@ begin
 
   ApplyDependencyButton := TButton.Create(fOwner);
   ApplyDependencyButton.Parent := fOwner;
-  ApplyDependencyButton.Visible := False;
   ApplyDependencyButton.AnchorSideTop.Control := MaxVersionEdit;
   ApplyDependencyButton.AnchorSideTop.Side := asrBottom;
   ApplyDependencyButton.Left := 6;

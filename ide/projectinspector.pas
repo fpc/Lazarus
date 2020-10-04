@@ -191,6 +191,7 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function GetDependencyToUpdate(Immediately: boolean): TPkgDependencyID;
+    function GetSingleSelectedDependency: TPkgDependency;
     procedure ApplyDependencyButtonClick(Sender: TObject);
     function TreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure ProjectBeginUpdate(Sender: TObject);
@@ -198,8 +199,6 @@ type
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
     procedure PackageListAvailable(Sender: TObject);
     function CanUpdate(Flag: TPEFlag): boolean;
-    procedure UpdateNodeImage(TVNode: TTreeNode);
-    procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData; Item: TObject);
     procedure UpdateProjectFiles;
     procedure UpdateProperties;
     procedure UpdateButtons;
@@ -213,7 +212,6 @@ type
     function IsUpdateLocked: boolean; inline;
     procedure UpdateTitle;
     procedure UpdateRequiredPackages;
-    function GetSingleSelectedDependency: TPkgDependency;
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
   public
     // IFilesEditorInterface
@@ -1087,7 +1085,11 @@ begin
   CurDependency:=GetSingleSelectedDependency;
   if (LazProject=nil) or (CurDependency=nil)
   or not FPropGui.CheckApplyDependency(CurDependency) then exit;
-  UpdateNodeImage(ItemsTreeView.Selected);
+  // Try to load the package again. Min/max version may have changed.
+  CurDependency.LoadPackageResult := lprUndefined;
+  // This calls UpdateRequiredPackages from PackageGraph.OnEndUpdate,
+  //  and also updates all package editors which is useless here.
+  PackageGraph.OpenDependency(CurDependency, False);
   //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
   LazProject.Modified:=True;
 end;
@@ -1152,7 +1154,7 @@ begin
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
   IDEImages.AssignImage(DirectoryHierarchyButton, 'pkg_hierarchical');
 
-  FPropGui:=TProjPackFilePropGui.Create(PropsGroupBox);
+  FPropGui:=TProjPackFilePropGui.Create(PropsGroupBox, False);
   FPropGui.OnGetPkgDep := @GetDependencyToUpdate;
   FPropGui.ApplyDependencyButton.OnClick := @ApplyDependencyButtonClick;
 
@@ -1187,34 +1189,6 @@ begin
   end
   else if Item is TPkgDependency then
     Result:=FPropGui.GetDependencyImageIndex(TPkgDependency(Item));
-end;
-
-procedure TProjectInspectorForm.UpdateNodeImage(TVNode: TTreeNode);
-var
-  NodeData: TPENodeData;
-  Item: TObject;
-begin
-  if GetNodeDataItem(TVNode, NodeData, Item) then
-    UpdateNodeImage(TVNode, NodeData, Item);
-end;
-
-procedure TProjectInspectorForm.UpdateNodeImage(TVNode: TTreeNode;
-  NodeData: TPENodeData; Item: TObject);
-var
-  ImgIndex: Integer;
-  Ena: Boolean;
-begin
-  Ena := True;                      // Neither Ena nor the String param are used.
-  ImgIndex := TreeViewGetImageIndex('', NodeData, Ena);
-  TVNode.ImageIndex:=ImgIndex;
-  TVNode.SelectedIndex:=ImgIndex;
-  if Item is TPkgDependency then begin
-    // Try to load the package again. Min/max version may have changed.
-    TPkgDependency(Item).LoadPackageResult := lprUndefined;
-    // This calls UpdateRequiredPackages from PackageGraph.OnEndUpdate,
-    //  and also updates all package editors which is useless here.
-    PackageGraph.OpenDependency(TPkgDependency(Item), False);
-  end;
 end;
 
 procedure TProjectInspectorForm.UpdateProjectFiles;
