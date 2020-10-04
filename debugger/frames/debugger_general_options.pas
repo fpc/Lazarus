@@ -83,8 +83,9 @@ procedure TDebuggerGeneralOptionsFrame.FetchDebuggerGeneralOptions;
 begin
   // IMPORTANT if more items are added the indexes must be updated here!
   gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
-  gcbDebuggerGeneralOptions.Checked[1] := EnvironmentOptions.DebuggerResetAfterRun;
-  gcbDebuggerGeneralOptions.Checked[2] := EnvironmentOptions.DebuggerAutoCloseAsm;
+  gcbDebuggerGeneralOptions.Checked[1] := EnvironmentOptions.DebuggerShowExitCodeMessage;
+  gcbDebuggerGeneralOptions.Checked[2] := EnvironmentOptions.DebuggerResetAfterRun;
+  gcbDebuggerGeneralOptions.Checked[3] := EnvironmentOptions.DebuggerAutoCloseAsm;
   txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
 
@@ -103,6 +104,7 @@ begin
   gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;
   gcbDebuggerGeneralOptions.Caption := lisDebugOptionsFrmDebuggerGeneralOptions;
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowMessageOnStop);
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowExitCodeOnStop);
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmResetDebuggerOnEachRun);
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoCloseAsm);
 end;
@@ -123,9 +125,10 @@ begin
   begin
     DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
     // IMPORTANT if more items are added the indexes must be updated here!
-    DebuggerShowStopMessage := gcbDebuggerGeneralOptions.Checked[0];
-    DebuggerResetAfterRun := gcbDebuggerGeneralOptions.Checked[1];
-    DebuggerAutoCloseAsm := gcbDebuggerGeneralOptions.Checked[2];
+    DebuggerShowStopMessage     := gcbDebuggerGeneralOptions.Checked[0];
+    DebuggerShowExitCodeMessage := gcbDebuggerGeneralOptions.Checked[1];
+    DebuggerResetAfterRun       := gcbDebuggerGeneralOptions.Checked[2];
+    DebuggerAutoCloseAsm        := gcbDebuggerGeneralOptions.Checked[3];
   end;
 end;
 

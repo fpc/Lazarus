@@ -1838,6 +1838,7 @@ type
     FRegisters: TRegisterSupplier;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
+    FSkipStopMessage: Boolean;
     FState: TDBGState;
     FCallStack: TCallStackSupplier;
     FWatches: TWatchesSupplier;
@@ -1966,6 +1967,7 @@ type
     property  IsInReset: Boolean read FIsInReset;
     procedure AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
     procedure RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
+    procedure SetSkipStopMessage;
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -1997,6 +1999,7 @@ type
     property IsIdle: Boolean read GetIsIdle;                                     // Nothing queued
     property ErrorStateMessage: String read FErrorStateMessage;
     property ErrorStateInfo: String read FErrorStateInfo;
+    property SkipStopMessage: Boolean read FSkipStopMessage;
     //property UnitInfoProvider: TDebuggerUnitInfoProvider                        // Provided by DebugBoss, to map files to packages or project
     //         read GetUnitInfoProvider write FUnitInfoProvider;
     // Events
@@ -5957,6 +5960,11 @@ begin
   FDestroyNotificationList[AReason].Remove(TMethod(AnEvent));
 end;
 
+procedure TDebuggerIntf.SetSkipStopMessage;
+begin
+  FSkipStopMessage := True;
+end;
+
 class function TDebuggerIntf.SupportedCommandsFor(AState: TDBGState): TDBGCommands;
 begin
   Result := COMMANDMAP[AState] * GetSupportedCommands;
@@ -6407,6 +6415,8 @@ begin
 
   if AValue <> FState
   then begin
+    if AValue <> dsStop then
+      FSkipStopMessage := False;
     DebugLnEnter(DBG_STATE, ['DebuggerState: Setting to ', dbgs(AValue),', from ', dbgs(FState)]);
     OldState := FState;
     FState := AValue;

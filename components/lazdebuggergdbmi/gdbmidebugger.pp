@@ -5234,8 +5234,46 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     StoppedFile, StoppedLine: String;
     StoppedAddr: TDBGPtr;
     StoppedAtEntryPoint: Boolean;
+    StateStopped: Boolean;
   const
     MIN_RELOC_ADDRESS = $4000;
+
+  function HandleStartError(R: TGDBMIExecResult): boolean;
+  var
+    List: TGDBMINameValueList;
+    ErrMsg, s: String;
+  begin
+    Result := False; // no id found
+    if R.State <> dsError then
+      exit;
+    List := nil;
+    try
+      List := TGDBMINameValueList.Create(R);
+      ErrMsg := List.Values['msg'];
+      if pos('program exited', ErrMsg) > 0 then begin
+        Result := True;
+        s := GetPart(['with code '], ['.'], ErrMsg, True, False);
+        if s <> '' then begin
+          FTheDebugger.SetExitCode(StrToIntDef(s, 0));
+        end;
+        DoDbgEvent(ecProcess, etProcessExit, Format(gdbmiEventLogProcessExitCode, [IntToStr(FTheDebugger.ExitCode)]));
+
+        if FTheDebugger.ExitCode = 0 then begin
+          FTheDebugger.OnFeedback
+           (self, Format(gdbmiCommandStartApplicationError, [LineEnding, ErrMsg]),
+            '', ftInformation, [frOk]);
+          FTheDebugger.SetSkipStopMessage;
+        end;
+        ExecuteCommand('kill', [cfNoThreadContext], 1500);
+        StateStopped := True;
+        if FTheDebugger.State = dsStop then
+          SetDebuggerState(dsNone); // dsInit would trigger breakpoints...
+        SetDebuggerState(dsStop);
+      end;
+    except
+    end;
+    List.Free;
+  end;
 
   procedure RunToMain(EntryPoint: String);
   type
@@ -5394,10 +5432,14 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       DefaultTimeOut := 0;
       if not ExecuteCommand(Cmd, R, [cfTryAsync])
       then begin
+        if HandleStartError(R) then
+          exit;
         SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
                               ErrorStateInfo);
         exit;
       end;
+      if HandleStartError(R) then
+        exit;
       s := r.Values + FLogWarnings;
       if TargetInfo^.TargetPID = 0 then begin
         TargetInfo^.TargetPID := ParseLogForPid(s);
@@ -5415,6 +5457,8 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         if (TargetInfo^.TargetPID <> 0) then
           FCanKillNow := True;
         ProcessRunning(s2, R);
+        if HandleStartError(R) then
+          exit;
         FCanKillNow := False;
         FTheDebugger.FCurrentCmdIsAsync := False;
         j := ParseStopped(s2);
@@ -5541,7 +5585,6 @@ var
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   CanContinue: Boolean;
-  StateStopped: Boolean;
   DbgProp: TGDBMIDebuggerPropertiesBase;
 begin
   Result := True;

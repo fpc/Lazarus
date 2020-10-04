@@ -21,6 +21,11 @@ msgstr "Débogueur"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"Ok\" pour retirer les points d'arrêt et continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."

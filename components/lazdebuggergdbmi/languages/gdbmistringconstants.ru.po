@@ -21,6 +21,11 @@ msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\", чтобы закончить отладку."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"

@@ -21,6 +21,11 @@ msgstr "调试器"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "调试器遇到一个错误 在尝试运行/停止应用程序时:%0:s%0:s%1:s%0:s%0:s按\"Ok\"移除断点并继续调试(暂停),改正错误,或选择一个其他的运行命令.%0:s按\"Stop\"结束调试会话."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."

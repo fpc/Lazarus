@@ -21,6 +21,11 @@ msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "デバッガがアプリケーション%0:s%0:s%1:s%0:s%0:sの実行／ステップ実行を試みた際にエラーが発生しました。ブレークポイントを削除しデバッグ（一時停止）を継続する場合は \"Ok\" を押し、問題を修正し、あるいは別の実行コマンドを選択してください。%0:sデバッグセッションを終了する場合は \"停止\" を押してください。"
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"

@@ -542,6 +542,7 @@ type
     XML_PATH_DEBUGGER_CONF_OLD = 'EnvironmentOptions/Debugger/Class%s/%s/';
   private
     FCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
+    FDebuggerShowExitCodeMessage: boolean;
     FHasActiveDebuggerEntry: Boolean;
     fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
@@ -904,6 +905,7 @@ type
     property DebuggerFileHistory[AnIndex: String]: TStringList read GetNamedDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
+    property DebuggerShowExitCodeMessage: boolean read FDebuggerShowExitCodeMessage write FDebuggerShowExitCodeMessage;
     property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun write FDebuggerResetAfterRun;
     property DebuggerAutoCloseAsm: boolean read FDebuggerAutoCloseAsm write FDebuggerAutoCloseAsm;
     property FppkgConfigFile: string read GetFppkgConfigFile write SetFppkgConfigFile;
@@ -2464,6 +2466,7 @@ begin
   DebuggerSearchPath:=FXMLCfg.GetValue(Path+'DebuggerSearchPath/Value','');
   // Debugger General Options
   DebuggerShowStopMessage:=FXMLCfg.GetValue(Path+'DebuggerOptions/ShowStopMessage/Value', True);
+  DebuggerShowExitCodeMessage:=FXMLCfg.GetValue(Path+'DebuggerOptions/DebuggerShowExitCodeMessage/Value', True);
   DebuggerResetAfterRun :=FXMLCfg.GetValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value', False);
   FDebuggerAutoCloseAsm :=FXMLCfg.GetValue(Path+'DebuggerOptions/DebuggerAutoCloseAsm/Value', False);
   FDebuggerEventLogClearOnRun := FXMLCfg.GetValue(Path+'Debugger/EventLogClearOnRun', True);
@@ -2855,6 +2858,8 @@ begin
   SaveDebuggerPropertiesList;
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
       FDebuggerShowStopMessage, True);
+  FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerShowExitCodeMessage/Value',
+      FDebuggerShowExitCodeMessage, True);
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
       FDebuggerResetAfterRun, False);
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerAutoCloseAsm/Value',

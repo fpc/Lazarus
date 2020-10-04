@@ -22,6 +22,11 @@ msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Зневаджувач зазнав помилки під час спроби запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"

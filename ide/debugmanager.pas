@@ -1444,13 +1444,29 @@ begin
       if (OldState<>dsIdle)
       then begin
         MainIDE.DoCallRunFinishedHandler;
-        if EnvironmentOptions.DebuggerShowStopMessage
-        then begin
-          MsgResult:=IDEQuestionDialog(lisExecutionStopped, lisExecutionStopped,
-              mtInformation, [mrOK, lisMenuOk,
-                              mrYesToAll, lisDoNotShowThisMessageAgain], '');
-          if MsgResult=mrYesToAll then
-            EnvironmentOptions.DebuggerShowStopMessage:=false;
+        if not FDebugger.SkipStopMessage then begin
+          if (FDebugger.ExitCode <> 0) and EnvironmentOptions.DebuggerShowExitCodeMessage then begin
+            i := 4;
+            if FDebugger.ExitCode > 65535 then
+            i := 8;
+            {$PUSH}{$R-}
+            MsgResult:=IDEQuestionDialog(lisExecutionStopped,
+                Format(lisExecutionStoppedExitCode, [LineEnding+'', FDebugger.ExitCode, IntToHex(FDebugger.ExitCode, i)]),
+                mtInformation, [mrOK, lisMenuOk,
+                                mrYesToAll, lisDoNotShowThisMessageAgain], '');
+            {$POP}
+            if MsgResult=mrYesToAll then
+              EnvironmentOptions.DebuggerShowExitCodeMessage:=false;
+          end
+          else
+          if EnvironmentOptions.DebuggerShowStopMessage
+          then begin
+            MsgResult:=IDEQuestionDialog(lisExecutionStopped, lisExecutionStopped,
+                mtInformation, [mrOK, lisMenuOk,
+                                mrYesToAll, lisDoNotShowThisMessageAgain], '');
+            if MsgResult=mrYesToAll then
+              EnvironmentOptions.DebuggerShowStopMessage:=false;
+          end;
         end;
 
         if EnvironmentOptions.DebuggerResetAfterRun or FDebugger.NeedReset then
@@ -2085,6 +2101,10 @@ begin
   if FDebugger <> nil then begin
     AvailCommands := FDebugger.Commands;
     CurState := FDebugger.State;
+    if CurState = dsError then begin
+      CurState := dsStop;
+      AvailCommands := GetDebuggerClass.SupportedCommandsFor(dsStop);
+    end;
   end
   else begin
     AvailCommands := GetDebuggerClass.SupportedCommandsFor(dsStop);

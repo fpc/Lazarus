@@ -21,6 +21,11 @@ msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"

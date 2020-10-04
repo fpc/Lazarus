@@ -22,6 +22,11 @@ msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Derintuvei vykdant programą ar darant joje žingsnį įvyko klaida:%0:s%0:s%1:s%0:s%0:sPaspaudus „Tinka“ bus pašalinti stabdos taškai ir tęsiamas derinimas (pristabdytas), tai leis pašalinti problemą arba pasirinkti alternatyvią vykdymo komandą.%0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
 
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr ""
+
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
