@@ -67,11 +67,12 @@ unit SynTextDrawer;
 interface
 
 uses
+  {$IFDEF WINDOWS}windows, {$ENDIF}
   Classes, Types, SysUtils,
   // LCL
   LCLType, LCLIntf, Graphics, GraphUtil,
   // LazUtils
-  LazMethodList, LazLoggerBase, LazTracer,
+  LazMethodList, LazLoggerBase, LazTracer, LazUTF8,
   // SynEdit
   SynEditTypes, SynEditMiscProcs;
 
@@ -244,7 +245,7 @@ type
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
       Text: PChar; Length: Integer; FrameBottom: Integer = -1); virtual;
     procedure NewTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
-      Text: PChar; Length: Integer; AnEto: TEtoBuffer);
+      Text: PChar; ALength: Integer; AnEto: TEtoBuffer);
     procedure DrawFrame(const ARect: TRect);
     procedure ForceNextTokenWithEto;
     function  NeedsEto: boolean;
@@ -1239,20 +1240,41 @@ begin
     LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
 end;
 
-procedure TheTextDrawer.NewTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
-  Text: PChar; Length: Integer; AnEto: TEtoBuffer);
+{$IFDEF WINDOWS_LIGATURE}
+function GetCharacterPlacementW(hdc: HDC; lpString: LPCWSTR; nCount, nMaxExtend: Integer; var lpResults: GCP_RESULTSW; dwFlags: DWORD): DWORD; external 'gdi32' name 'GetCharacterPlacementW';
+{$ENDIF}
+procedure TheTextDrawer.NewTextOut(X, Y: Integer; fuOptions: UINT;
+  const ARect: TRect; Text: PChar; ALength: Integer; AnEto: TEtoBuffer);
 var
   EtoArray: PInteger;
+  {$IFDEF WINDOWS_LIGATURE}
+  W: WideString;
+  Glyphs: array of WideChar;
+  CharPlaceInfo: GCP_RESULTSW;
+  {$ENDIF}
 begin
   if AnEto <> nil then
     EtoArray := AnEto.Eto
   else
     EtoArray := nil;
 
+  {$IFDEF WINDOWS_LIGATURE}
+  W := UTF8ToUTF16(Text, ALength);
+  ZeroMemory(@CharPlaceInfo, SizeOf(CharPlaceInfo));
+  CharPlaceInfo.lStructSize:= SizeOf(CharPlaceInfo);
+  SetLength(Glyphs, Length(W));
+  CharPlaceInfo.lpGlyphs:= @Glyphs[0];
+  CharPlaceInfo.nGlyphs:= Length(Glyphs);
+  if GetCharacterPlacementW(FDC, PWChar(W), Length(W), 0, CharPlaceInfo, GCP_LIGATE)<> 0 then begin
+    Windows.ExtTextOutW(FDC, X, Y, fuOptions or ETO_GLYPH_INDEX, @ARect, Pointer(Glyphs), Length(Glyphs), EtoArray);
+    exit;
+  end;
+  {$ENDIF}
+
   if UseUTF8 then
-    LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, EtoArray)
+    LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, ALength, EtoArray)
   else
-    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, EtoArray);
+    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, ALength, EtoArray);
 
 end;
 
