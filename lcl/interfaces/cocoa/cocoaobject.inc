@@ -295,6 +295,8 @@ begin
     lcTransparentWindow,
     lcCanDrawHidden:
       Result := LCL_CAPABILITY_YES;
+    lcAccelleratorKeys:
+      Result := LCL_CAPABILITY_NO;
   else
     Result := inherited;
   end;
