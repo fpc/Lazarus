@@ -91,7 +91,8 @@ begin
     lcReceivesLMClearCutCopyPasteReliably,
     lcSendsUTF8KeyPress,
     lcEmulatedMDI,
-    lcNativeTaskDialog: Result := LCL_CAPABILITY_YES;
+    lcNativeTaskDialog,
+    lcAccelleratorKeys: Result := LCL_CAPABILITY_YES;
   else
     Result := LCL_CAPABILITY_NO;
   end;

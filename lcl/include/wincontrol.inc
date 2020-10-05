@@ -5948,6 +5948,7 @@ var
   ParentForm: TCustomForm;
 begin
   Result := False;
+  if WidgetSet.GetLCLCapability(lcAccelleratorKeys) = LCL_CAPABILITY_NO then Exit;
   ParentForm := GetParentForm(Self);
   if ParentForm <> nil then
   begin
