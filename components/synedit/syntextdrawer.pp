@@ -1259,15 +1259,18 @@ begin
     EtoArray := nil;
 
   {$IFDEF WINDOWS_LIGATURE}
-  W := UTF8ToUTF16(Text, ALength);
-  ZeroMemory(@CharPlaceInfo, SizeOf(CharPlaceInfo));
-  CharPlaceInfo.lStructSize:= SizeOf(CharPlaceInfo);
-  SetLength(Glyphs, Length(W));
-  CharPlaceInfo.lpGlyphs:= @Glyphs[0];
-  CharPlaceInfo.nGlyphs:= Length(Glyphs);
-  if GetCharacterPlacementW(FDC, PWChar(W), Length(W), 0, CharPlaceInfo, GCP_LIGATE)<> 0 then begin
-    Windows.ExtTextOutW(FDC, X, Y, fuOptions or ETO_GLYPH_INDEX, @ARect, Pointer(Glyphs), Length(Glyphs), EtoArray);
-    exit;
+  if ALength > 0 then begin
+    W := UTF8ToUTF16(Text, ALength);
+    ZeroMemory(@CharPlaceInfo, SizeOf(CharPlaceInfo));
+    CharPlaceInfo.lStructSize:= SizeOf(CharPlaceInfo);
+    SetLength(Glyphs, Length(W));
+    CharPlaceInfo.lpGlyphs:= @Glyphs[0];
+    CharPlaceInfo.nGlyphs:= Length(Glyphs);
+    Glyphs[0] := #0;
+    if GetCharacterPlacementW(FDC, PWChar(W), Length(W), 0, CharPlaceInfo, GCP_LIGATE or GCP_REORDER or GCP_GLYPHSHAPE)<> 0 then begin
+      Windows.ExtTextOutW(FDC, X, Y, fuOptions or ETO_GLYPH_INDEX, @ARect, Pointer(Glyphs), CharPlaceInfo.nGlyphs, EtoArray);
+      exit;
+    end;
   end;
   {$ENDIF}
 
