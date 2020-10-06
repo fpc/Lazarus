@@ -8152,8 +8152,10 @@ end;
 procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
   const ARect: TRect);
 begin
-  if APanel = StatusBar.Panels[1] then
-    IDEImages.Images_16.Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
+  if APanel = StatusBar.Panels[1] then begin
+    IDEImages.Images_16.ResolutionForControl[16, AStatusBar]
+      .Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
+  end;
 end;
 
 procedure TSourceNotebook.ToggleBreakpointClicked(Sender: TObject);
