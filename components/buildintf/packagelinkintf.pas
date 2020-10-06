@@ -124,6 +124,8 @@ type
     function FindOnlineLink(const AName: String): TPackageLink; virtual; abstract;
     procedure AddPackageListNotification(ANotification: TNotifyEvent); virtual; abstract;
     procedure RemovePackageListNotification(ANotification: TNotifyEvent); virtual; abstract;
+    function IsPackageListLoaded: Boolean; virtual; abstract;
+    procedure GetPackageList; virtual; abstract;
   end;
 
 var

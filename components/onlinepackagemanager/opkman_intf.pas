@@ -77,6 +77,8 @@ type
     function FindOnlineLink(const AName: String): TPackageLink; override;
     procedure AddPackageListNotification(ANotification: TNotifyEvent); override;
     procedure RemovePackageListNotification(ANotification: TNotifyEvent); override;
+    function IsPackageListLoaded: Boolean; override;
+    procedure GetPackageList; override;
   end;
 
 implementation
@@ -147,10 +149,7 @@ begin
       if (not LazarusIDE.IDEIsClosing) then
       begin
         if (Options.CheckForUpdates <> 5) and (not Assigned(MainFrm)) then
-        begin
-          PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
-          LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
-        end;
+          GetPackageList;
       end;
     end;
   end;
@@ -196,6 +195,17 @@ end;
 procedure TOPMInterfaceEx.RemovePackageListNotification(ANotification: TNotifyEvent);
 begin
   FPackageListNotifications.Remove(TMethod(ANotification));
+end;
+
+function TOPMInterfaceEx.IsPackageListLoaded: Boolean;
+begin
+  Result := Assigned(SerializablePackages) and (SerializablePackages.Count > 0);
+end;
+
+procedure TOPMInterfaceEx.GetPackageList;
+begin
+  PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
+  LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
 end;
 
 procedure TOPMInterfaceEx.SynchronizePackages;
