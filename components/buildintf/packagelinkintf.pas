@@ -115,15 +115,15 @@ type
   { TOPMInterface }
 
   TOPMInterface = class
-  private
-    FPackageListAvailable: TNotifyEvent;
   public
-    {confirmation/install/extract/download dialogs will be displayed in the center of WorkArea}
+    // confirmation/install/extract/download dialogs will be displayed in the center of WorkArea
     function DownloadPackages(APkgLinks: TList): TModalResult; virtual; abstract;
-    function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; virtual; abstract;
+    // InstallPackages may return mrRetry which means the IDE should be rebuilt.
+    function InstallPackages(APkgLinks: TList): TModalResult; virtual; abstract;
     function IsPackageAvailable(APkgLink: TPackageLink; AType: Integer): Boolean; virtual; abstract;
     function FindOnlineLink(const AName: String): TPackageLink; virtual; abstract;
-    property OnPackageListAvailable: TNotifyEvent read FPackageListAvailable write FPackageListAvailable;
+    procedure AddPackageListNotification(ANotification: TNotifyEvent); virtual; abstract;
+    procedure RemovePackageListNotification(ANotification: TNotifyEvent); virtual; abstract;
   end;
 
 var

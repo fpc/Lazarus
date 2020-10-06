@@ -10,10 +10,12 @@ uses
   LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
   // LazControls
   ListFilterEdit,
+  // BuildIntf
+  PackageIntf,
   // IdeIntf
   IDEWindowIntf,
   // IDE
-  ProjPackCommon, PackageDefs, LazarusIDEStrConsts, AddPkgDependencyDlg,
+  LazarusIDEStrConsts, ProjPackCommon, PackageDefs, AddPkgDependencyDlg,
   // fppkg
   FppkgHelper;
 

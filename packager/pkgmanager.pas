@@ -208,8 +208,7 @@ type
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
       IDEFiles: TFPList; TargetDirectory: string): boolean;
     function CopyMoveFiles(Sender: TObject): boolean;
-    function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList;
-      var ANeedToRebuild: Boolean): TModalResult;
+    function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -3289,8 +3288,7 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList;
-  var ANeedToRebuild: Boolean): TModalResult;
+function TPkgManager.ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList): TModalResult;
 var
   Dependency: TPkgDependency;
   I: Integer;
@@ -3315,7 +3313,7 @@ begin
     end;
     if PkgLinks.Count > 0 then begin
       if IDEMessageDialog(lisNotInstalledPackages, Format(lisInstallPackagesMsg, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then
-        Result := OPMInterface.InstallPackages(PkgLinks, ANeedToRebuild);
+        Result := OPMInterface.InstallPackages(PkgLinks);
     end;
   finally
     PkgLinks.Free;
@@ -3326,30 +3324,32 @@ function TPkgManager.OpenProjectDependencies(AProject: TProject;
   ReportMissing: boolean): TModalResult;
 var
   BrokenDependencies: TFPList;
-  NeedToRebuild: Boolean;
+  OpmRes: TModalResult;
 begin
-  NeedToRebuild := False;
-  Result:=mrOk;
+  Result := mrOk;
+  OpmRes := mrOk;
   PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
   if ReportMissing then begin
-    BrokenDependencies:=PackageGraph.FindAllBrokenDependencies(nil,
-                                             AProject.FirstRequiredDependency);
-    if BrokenDependencies<>nil then begin
-      if OPMInterface <> nil then begin
-        ResolveBrokenDependenciesOnline(BrokenDependencies, NeedToRebuild);
+    BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
+                                               AProject.FirstRequiredDependency);
+    if Assigned(BrokenDependencies) then
+    begin
+      if Assigned(OPMInterface) then
+      begin
+        OpmRes := ResolveBrokenDependenciesOnline(BrokenDependencies);
         FreeAndNil(BrokenDependencies);
-        BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil, AProject.FirstRequiredDependency);
-        if BrokenDependencies <> nil then
+        BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
+                                               AProject.FirstRequiredDependency);
+        if Assigned(BrokenDependencies) then
           Result := ShowBrokenDependenciesReport(BrokenDependencies);
       end
       else
-        Result:=ShowBrokenDependenciesReport(BrokenDependencies);
+        Result := ShowBrokenDependenciesReport(BrokenDependencies);
       BrokenDependencies.Free;
     end;
   end;
   LazPackageLinks.SaveUserLinks;
-
-  if (OPMInterface <> nil) and (NeedToRebuild) then
+  if OpmRes = mrRetry then    // mrRetry means the IDE must be rebuilt.
     MainIDEInterface.DoBuildLazarus([])
 end;
 
@@ -3538,7 +3538,7 @@ begin
 
   // add to recent packages
   if (pofAddToRecent in Flags) then begin
-    AFilename:=APackage.Filename;
+    Assert(AFilename=APackage.Filename, 'TPkgManager.DoOpenPackage(');
     if FileExistsCached(AFilename) then begin
       AddToMenuRecentPackages(AFilename);
     end;
@@ -5149,16 +5149,13 @@ function TPkgManager.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
 var
   Filename: String;
 begin
-  if (PkgFile.FileType=pftVirtualUnit) then begin
-    Filename:=FindVirtualUnitSource(PkgFile);
-    if Filename<>'' then begin
-      Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,
-                                  [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
-      exit;
-    end;
-  end;
-  Result:=MainIDE.DoOpenEditorFile(PkgFile.GetFullFilename,-1,-1,
-                                  [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
+  if (PkgFile.FileType=pftVirtualUnit) then
+    Filename:=FindVirtualUnitSource(PkgFile)
+  else
+    Filename:=PkgFile.GetFullFilename;
+  if Filename<>'' then
+    Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,
+                                     [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
 end;
 
 function TPkgManager.FindVirtualUnitSource(PkgFile: TPkgFile): string;

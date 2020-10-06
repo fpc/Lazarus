@@ -29,10 +29,15 @@ unit opkman_intf;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson, ExtCtrls,
-  dateutils,
+  Classes, SysUtils, Contnrs, fpjson, dateutils,
+  // LCL
+  Forms, Dialogs, Controls, ExtCtrls,
+  // LazUtils
+  LazMethodList,
+  // BuildIntf
+  PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
-  LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf, IDECommands,
+  LazIDEIntf, IDECommands,
   // OPM
   opkman_downloader, opkman_serializablepackages, opkman_installer, opkman_mainfrm;
 
@@ -46,6 +51,7 @@ type
     FPackagesToInstall: TObjectList;
     FPackageDependecies: TObjectList;
     FPackageLinks: TObjectList;
+    FPackageListNotifications: TMethodList;
     FTimer: TTimer;
     FNeedToInit: Boolean;
     procedure DoOnTimer(Sender: TObject);
@@ -66,9 +72,11 @@ type
     destructor Destroy; override;
   public
     function DownloadPackages(APkgLinks: TList): TModalResult; override;
-    function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; override;
+    function InstallPackages(APkgLinks: TList): TModalResult; override;
     function IsPackageAvailable(APkgLink: TPackageLink; AType: Integer): Boolean; override;
     function FindOnlineLink(const AName: String): TPackageLink; override;
+    procedure AddPackageListNotification(ANotification: TNotifyEvent); override;
+    procedure RemovePackageListNotification(ANotification: TNotifyEvent); override;
   end;
 
 implementation
@@ -86,6 +94,7 @@ begin
   FPackagesToDownload := TObjectList.Create(False);
   FPackagesToInstall := TObjectList.Create(False);
   FPackageDependecies := TObjectList.Create(False);
+  FPackageListNotifications := TMethodList.Create;
   FNeedToInit := True;
   FTimer := TTimer.Create(nil);
   FTimer.Interval := 50;
@@ -96,6 +105,7 @@ end;
 destructor TOPMInterfaceEx.Destroy;
 begin
   FTimer.Free;
+  FPackageListNotifications.Free;
   FPackageLinks.Clear;
   FPackageLinks.Free;
   FPackagesToDownload.Clear;
@@ -118,7 +128,6 @@ begin
     if PackageDownloader.DownloadingJSON then
       PackageDownloader.Cancel;
 end;
-
 
 procedure TOPMInterfaceEx.DoOnTimer(Sender: TObject);
 begin
@@ -179,6 +188,16 @@ begin
   end;
 end;
 
+procedure TOPMInterfaceEx.AddPackageListNotification(ANotification: TNotifyEvent);
+begin
+  FPackageListNotifications.Add(TMethod(ANotification));
+end;
+
+procedure TOPMInterfaceEx.RemovePackageListNotification(ANotification: TNotifyEvent);
+begin
+  FPackageListNotifications.Remove(TMethod(ANotification));
+end;
+
 procedure TOPMInterfaceEx.SynchronizePackages;
 var
   I, J: Integer;
@@ -215,8 +234,7 @@ begin
       end;
     end;
   end;
-  if (Assigned(OnPackageListAvailable)) then
-     OnPackageListAvailable(Self);
+  FPackageListNotifications.CallNotifyEvents(Self);
 end;
 
 procedure TOPMInterfaceEx.AddToDownloadList(const AName: String);
@@ -412,11 +430,12 @@ begin
 end;
 
 
-function TOPMInterfaceEx.InstallPackages(APkgLinks: TList;
-  var ANeedToRebuild: Boolean): TModalResult;
+function TOPMInterfaceEx.InstallPackages(APkgLinks: TList): TModalResult;
+// Result can be mrOk, mrCancel, or mrRetry which means the IDE should be rebuilt.
 var
   I: Integer;
   InstallStatus: TInstallStatus;
+  ANeedToRebuild: Boolean;
 begin
   FPackagesToInstall.Clear;
   for I := 0 to APkgLinks.Count - 1 do
@@ -431,7 +450,6 @@ begin
      Exit;
   for I := 0 to FPackageDependecies.Count - 1 do
     FPackagesToInstall.Insert(0, FPackageDependecies.Items[I]);
-
 
   PackageAction := paInstall;
   if SerializablePackages.DownloadCount > 0 then
@@ -461,8 +479,11 @@ begin
         begin
           SerializablePackages.MarkRuntimePackages;
           SerializablePackages.GetPackageStates;
-          if (ANeedToRebuild) and ((InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed)) then
-            ANeedToRebuild :=  MessageDlgEx(rsOPMInterfaceRebuildConf, mtConfirmation, [mbYes, mbNo], nil) = mrYes;
+          if ANeedToRebuild
+          and ((InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed))
+          and (MessageDlgEx(rsOPMInterfaceRebuildConf,mtConfirmation,[mbYes,mbNo], nil) = mrYes)
+          then
+            Result := mrRetry;
         end;
       end;
     end;

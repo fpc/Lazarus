@@ -234,25 +234,11 @@ type
     pddUsedBy
     );
 
-  TPkgDependencyType = (
-    pdtLazarus,
-    pdtFPMake
-    );
-
-const
-  PkgDependencyTypeNames: array[TPkgDependencyType] of string = (
-    'Lazarus',
-    'FPMake'
-    );
-
-type
-
   { TPkgDependency }
 
   TPkgDependency = class(TPkgDependencyID)
   private
     FDefaultFilename: string;
-    FDependencyType: TPkgDependencyType;
     FHoldPackage: boolean;
     FMarkerFlags: TPKgMarkerFlags;
     FOwner: TObject;
@@ -309,7 +295,6 @@ type
     property DefaultFilename: string read FDefaultFilename write FDefaultFilename;
     property PreferDefaultFilename: boolean read FPreferDefaultFilename write FPreferDefaultFilename;
     property RequiredPackage: TLazPackage read GetRequiredPackage write SetRequiredPackage;
-    property DependencyType: TPkgDependencyType read FDependencyType write FDependencyType;
   end;
   PPkgDependency = ^TPkgDependency;
 
@@ -1792,7 +1777,7 @@ end;
 
 procedure TPkgDependency.SetRequiredPackage(AValue: TLazPackage);
 begin
-  Assert((FDependencyType=pdtLazarus) or not assigned(AValue), 'Not possible to set a reference to a LazPackage into an FPMake-dependency');
+  Assert((DependencyType=pdtLazarus) or not assigned(AValue), 'Not possible to set a reference to a LazPackage into an FPMake-dependency');
   RequiredIDEPackage := AValue;
 end;
 

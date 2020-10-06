@@ -42,7 +42,8 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
   // BuildIntf
-  ProjectIntf, PackageDependencyIntf, PackageIntf, IDEOptionsIntf, NewItemIntf,
+  ProjectIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf,
+  IDEOptionsIntf, NewItemIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf,
   IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
@@ -218,7 +219,7 @@ type
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure OpenFileMenuItemClick(Sender: TObject);
+    procedure OpenButtonClick(Sender: TObject);
     procedure OpenFolderMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -274,7 +275,7 @@ type
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateFiles(Immediately: boolean = false);
     procedure UpdateRemovedFiles(Immediately: boolean = false);
-    procedure UpdateRequiredPkgs(Immediately: boolean = false);
+    procedure UpdateRequiredPackages(Immediately: boolean = false);
     procedure UpdatePEProperties(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
     procedure UpdateStatusBar(Immediately: boolean = false);
@@ -286,6 +287,7 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
+    procedure PackageListAvailable(Sender: TObject);
     function PassesFilter(rec: PIDEOptionsGroupRec): Boolean;
     procedure TraverseSettings(AOptions: TAbstractPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
     procedure FileOptionsToGui;
@@ -318,7 +320,6 @@ type
     procedure DoRevert;
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
-    function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function ShowNewCompDialog: TModalResult;
     function ShowAddDepDialog: TModalResult;
     function ShowAddFPMakeDepDialog: TModalResult;
@@ -761,7 +762,7 @@ begin
       SetItem(PkgEditMenuAddNewFPMakeReqr, @mnuAddFPMakeReqClick, UserSelection=[pstReqPackNode],
               Writable);
       // selected files
-      SetItem(PkgEditMenuOpenFile, @OpenFileMenuItemClick,
+      SetItem(PkgEditMenuOpenFile, @OpenButtonClick,
               UserSelection*[pstFilesNode,pstReqPackNode,pstFPMake]=[]);
       SetItem(PkgEditMenuRemoveFile, @RemoveBitBtnClick,
               UserSelection=[pstFile], RemoveBitBtn.Enabled);
@@ -955,7 +956,7 @@ end;
 
 procedure TPackageEditorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
-  OpenFileMenuItemClick(Self);
+  OpenButtonClick(Self);
 end;
 
 procedure TPackageEditorForm.ItemsTreeViewKeyDown(Sender: TObject;
@@ -974,7 +975,7 @@ begin
       Handled := False;
   end
   else if Key = VK_RETURN then
-    OpenFileMenuItemClick(Nil)
+    OpenButtonClick(Nil)
   else if Key = VK_DELETE then
     RemoveBitBtnClick(Nil)
   else if Key = VK_INSERT then
@@ -1048,7 +1049,7 @@ begin
   CurDependency.DefaultFilename:='';
   CurDependency.PreferDefaultFilename:=false;
   LazPackage.Modified:=true;
-  UpdateRequiredPkgs;
+  UpdateRequiredPackages;
 end;
 
 procedure TPackageEditorForm.CollapseDirectoryMenuItemClick(Sender: TObject);
@@ -1081,27 +1082,27 @@ begin
     DoMoveDependency(1)
 end;
 
-procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
+procedure TPackageEditorForm.OpenButtonClick(Sender: TObject);
 var
-  CurFile: TPkgFile;
-  CurDependency: TPkgDependency;
   i: Integer;
-  TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
-  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-    TVNode:=ItemsTreeView.Selections[i];
-    if GetNodeDataItem(TVNode,NodeData,Item) then begin
-      if Item is TPkgFile then begin
-        CurFile:=TPkgFile(Item);
-        if DoOpenPkgFile(CurFile)<>mrOk then exit;
-      end else if Item is TPkgDependency then begin
-        CurDependency:=TPkgDependency(Item);
-        if PackageEditors.OpenDependency(Self,CurDependency)<>mrOk then exit;
-      end;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do
+  begin
+    if GetNodeDataItem(ItemsTreeView.Selections[i],NodeData,Item) then
+    begin
+      if Item is TPkgFile then
+      begin
+        if PackageEditors.OpenPkgFile(Self,TPkgFile(Item))<>mrOk then
+          Exit;
+      end
+      else if Item is TPkgDependency then
+        if not OpmAddOrOpenDependency(TPkgDependency(Item)) then
+          Exit;
     end;
   end;
+  OpmInstallPendingDependencies;
 end;
 
 procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
@@ -1319,7 +1320,7 @@ procedure TPackageEditorForm.FilterEditKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
   begin
-    OpenFileMenuItemClick(Nil);
+    OpenButtonClick(Nil);
     Key := VK_UNKNOWN;
   end;
 end;
@@ -1336,10 +1337,14 @@ begin
   SetupComponents;
   SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
+  if OPMInterface <> nil then
+    OPMInterface.AddPackageListNotification(@PackageListAvailable);
 end;
 
 procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 begin
+  if OPMInterface <> nil then
+    OPMInterface.RemovePackageListNotification(@PackageListAvailable);
   IdleConnected:=true;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
@@ -1835,7 +1840,7 @@ begin
     CurDependency.DefaultFilename:=NewFilename;
     CurDependency.PreferDefaultFilename:=AsPreferred;
     LazPackage.Modified:=true;
-    UpdateRequiredPkgs;
+    UpdateRequiredPackages;
     debugln(['Info: TPackageEditorForm.SetDependencyDefaultFilename ',CurDependency.PackageName,' DefaultFilename:=',NewFilename,' AsPreferred=',AsPreferred]);
   finally
     EndUpdate;
@@ -2172,7 +2177,7 @@ begin
     if pefNeedUpdateRemovedFiles in fFlags then
       UpdateRemovedFiles(true);
     if pefNeedUpdateRequiredPkgs in fFlags then
-      UpdateRequiredPkgs(true);
+      UpdateRequiredPackages(true);
     if pefNeedUpdateProperties in fFlags then
       UpdatePEProperties(true);
     if pefNeedUpdateButtons in fFlags then
@@ -2283,7 +2288,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TPackageEditorForm.UpdateRequiredPkgs(Immediately: boolean);
+procedure TPackageEditorForm.UpdateRequiredPackages(Immediately: boolean);
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
@@ -2824,6 +2829,12 @@ begin
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
 end;
 
+procedure TPackageEditorForm.PackageListAvailable(Sender: TObject);
+begin
+  DebugLn(['TPackageEditorForm.PackageListAvailable: ', LazPackage.Name]);
+  UpdateRequiredPackages;
+end;
+
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
   GuiToFileOptions(False);
@@ -3000,11 +3011,6 @@ begin
   TreeSelection:=ItemsTreeView.StoreCurrentSelection;
   LazPackage.SortFiles;
   ItemsTreeView.ApplyStoredSelection(TreeSelection);
-end;
-
-function TPackageEditorForm.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
-begin
-  Result:=PackageEditors.OpenPkgFile(Self,PkgFile);
 end;
 
 procedure TPackageEditorForm.DoFixFilesCase;
@@ -3363,7 +3369,8 @@ begin
     if Dependency.DependencyType=pdtLazarus then
     begin
       APackage:=Dependency.RequiredPackage;
-      if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
+      if Assigned(OnOpenPackage) then
+        Result:=OnOpenPackage(Sender,APackage);
     end
     else
       ShowMessage('It is not possible to open FPMake packages.');

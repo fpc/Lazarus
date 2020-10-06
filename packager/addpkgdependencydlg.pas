@@ -45,7 +45,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
-    function InstallOnlinePackages(out ANeedToRebuild: Boolean): TModalResult;
+    function InstallOnlinePackages: TModalResult;
   private
     fUpdating: Boolean;
     fPackages: TAVLTree;    // tree of TLazPackage or TPackageLink.
@@ -187,13 +187,12 @@ begin
   UpdateAvailableDependencyNames;
 end;
 
-function TAddPkgDependencyDialog.InstallOnlinePackages(out ANeedToRebuild: Boolean): TModalResult;
+function TAddPkgDependencyDialog.InstallOnlinePackages: TModalResult;
 var
   I: Integer;
   Pkg: TLazPackageID;
   PkgList: TList;
 begin
-  ANeedToRebuild := False;
   Result := mrOk;
   PkgList := TList.Create;
   try
@@ -209,7 +208,7 @@ begin
     if PkgList.Count > 0 then
     begin
       Assert(Assigned(OPMInterface), 'InstallOnlinePackages: OPMInterface=Nil');
-      Result := OPMInterface.InstallPackages(PkgList, ANeedToRebuild);
+      Result := OPMInterface.InstallPackages(PkgList);
     end;
   finally
     PkgList.Free;
@@ -218,17 +217,16 @@ end;
 
 procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
 var
-  NeedToRebuild: Boolean;
+  OpmRes: TModalResult;
 begin
   ModalResult := mrNone;
-  if InstallOnlinePackages(NeedToRebuild) = mrOK then
+  OpmRes := InstallOnlinePackages;
+  if OpmRes = mrCancel then Exit;
+  UpdateAvailableDependencyNames;
+  if OpmRes = mrRetry then   // mrRetry means the IDE must be rebuilt.
   begin
-    UpdateAvailableDependencyNames;
-    if NeedToRebuild then
-    begin
-      Self.Hide;
-      MainIDEInterface.DoBuildLazarus([]);
-    end;
+    Self.Hide;
+    MainIDEInterface.DoBuildLazarus([]);
   end;
 end;
 

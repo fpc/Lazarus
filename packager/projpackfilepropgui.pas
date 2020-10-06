@@ -44,7 +44,7 @@ uses
   // IdeIntf
   FormEditingIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, ProjPackEditing, PackageLinks;
+  LazarusIDEStrConsts, ProjPackEditing, PackageLinks, MainIntf;
 
 type
 
@@ -103,6 +103,8 @@ type
   function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
   function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
   function OPNote(ADep: TPkgDependencyID): string;
+  function OpmAddOrOpenDependency(ADep: TPkgDependencyID): Boolean;
+  procedure OpmInstallPendingDependencies;
 
 
 implementation
@@ -147,6 +149,44 @@ begin
     Result:=' '+lisPckEditAvailableOnline
   else
     Result:='';
+end;
+
+// The following 2 functions are a pair.
+// The first may add online package names to a list and the second downloads them.
+var
+  OpmPkgLinks: TList = Nil;
+
+function OpmAddOrOpenDependency(ADep: TPkgDependencyID): Boolean;
+var
+  PackageLink: TPackageLink;
+begin
+  Result := True;
+  if aDep.DependencyType <> pdtLazarus then Exit;
+  if aDep.LoadPackageResult = lprSuccess then
+  begin
+    if PackageEditingInterface.DoOpenPackageWithName(aDep.PackageName,[],false)<>mrOk then
+      Exit(False);
+  end
+  else begin
+    PackageLink := FindOPLink(ADep);
+    if Assigned(PackageLink) then
+    begin
+      if OpmPkgLinks = Nil then
+        OpmPkgLinks := TList.Create;
+      OpmPkgLinks.Add(PackageLink);
+    end;
+  end;
+end;
+
+procedure OpmInstallPendingDependencies;
+begin
+  if Assigned(OpmPkgLinks) then
+  try
+    if OPMInterface.InstallPackages(OpmPkgLinks) = mrRetry then
+      MainIDEInterface.DoBuildLazarus([]); // mrRetry means IDE must be rebuilt.
+  finally
+    FreeAndNil(OpmPkgLinks);
+  end;
 end;
 
 { TProjPackFilePropGui }

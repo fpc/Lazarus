@@ -94,6 +94,7 @@ begin
   spCollapse.Caption := '';
   spCollapse.Images := MainDM.Images;
   spCollapse.ImageIndex := IMG_COLLAPSE;
+  ButtonPanel1.OKButton.Caption := rsMainFrm_TBInstall_Caption;
   FVST := TLazVirtualStringTree.Create(nil);
   with FVST do
   begin

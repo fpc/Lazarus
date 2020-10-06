@@ -163,7 +163,7 @@ object PackageEditorForm: TPackageEditorForm
       BorderSpacing.Left = 3
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
-      OnClick = OpenFileMenuItemClick
+      OnClick = OpenButtonClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False

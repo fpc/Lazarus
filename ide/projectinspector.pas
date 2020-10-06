@@ -115,6 +115,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -572,7 +573,13 @@ begin
     UpdateAll;
   end;
   if OPMInterface <> nil then
-    OPMInterface.OnPackageListAvailable := @PackageListAvailable;
+    OPMInterface.AddPackageListNotification(@PackageListAvailable);
+end;
+
+procedure TProjectInspectorForm.FormDestroy(Sender: TObject);
+begin
+  if OPMInterface <> nil then
+    OPMInterface.RemovePackageListNotification(@PackageListAvailable);
 end;
 
 procedure TProjectInspectorForm.FormActivate(Sender: TObject);
@@ -781,63 +788,25 @@ end;
 procedure TProjectInspectorForm.OpenButtonClick(Sender: TObject);
 var
   i: Integer;
-  TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  CurFile: TUnitInfo;
-  CurDependency: TPkgDependency;
-  PackageLink: TPackageLink;
-  PkgLinks: TList;
-  NeedToRebuild: Boolean;
 begin
-  PkgLinks := TList.Create;
-  try
-    NeedToRebuild := False;
-    BeginUpdate;
-    try
-      for i:=0 to ItemsTreeView.SelectionCount-1 do
+  for i:=0 to ItemsTreeView.SelectionCount-1 do
+  begin
+    if GetNodeDataItem(ItemsTreeView.Selections[i], NodeData, Item) then
+    begin
+      if Item is TUnitInfo then
       begin
-        TVNode:=ItemsTreeView.Selections[i];
-        if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-        if Item is TUnitInfo then
-        begin
-          CurFile:=TUnitInfo(Item);
-          if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk then
-          begin
-            FreeAndNil(PkgLinks);
-            Exit;
-          end;
-        end
-        else if Item is TPkgDependency then
-        begin
-          CurDependency:=TPkgDependency(Item);
-          if CurDependency.DependencyType=pdtLazarus then
-          begin
-            if CurDependency.LoadPackageResult = lprSuccess then
-            begin
-              if PackageEditingInterface.DoOpenPackageWithName(CurDependency.PackageName,[],false)<>mrOk then
-              begin
-                FreeAndNil(PkgLinks);
-                Exit;
-              end;
-            end else begin
-              PackageLink:=FindOPLink(CurDependency);
-              if PackageLink<>nil then
-                PkgLinks.Add(PackageLink);
-            end;
-          end;
-        end;
-      end;
-    finally
-      EndUpdate;
+        if LazarusIDE.DoOpenEditorFile(TUnitInfo(Item).Filename,
+                                       -1,-1,[ofAddToRecent]) <> mrOk then
+          Exit;
+      end
+      else if Item is TPkgDependency then
+        if not OpmAddOrOpenDependency(TPkgDependency(Item)) then
+          Exit;
     end;
-    if (OPMInterface<>nil) and (PkgLinks.Count>0) then
-      OPMInterface.InstallPackages(PkgLinks, NeedToRebuild);
-  finally
-    PkgLinks.Free;
   end;
-  if (OPMInterface<>nil) and (NeedToRebuild) then
-    MainIDEInterface.DoBuildLazarus([])
+  OpmInstallPendingDependencies;
 end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
@@ -1301,34 +1270,9 @@ begin
 end;
 
 procedure TProjectInspectorForm.PackageListAvailable(Sender: TObject);
-var
-  CurDependency: TPkgDependency;
-  TVNode: TTreeNode;
-  NodeData: TPENodeData;
-  Item: TObject;
-  NodeText: String;
-  i, ImgInd: Integer;
 begin
-  BeginUpdate;
-  try
-    DebugLn(['TProjectInspectorForm.PackageListAvailable: Start']);
-    for i:=0 to ItemsTreeView.Items.Count-1 do begin
-      TVNode:=ItemsTreeView.Items[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if not (Item is TPkgDependency) then continue;
-      CurDependency:=TPkgDependency(Item);
-      if CurDependency.DependencyType = pdtFPMake then continue;
-      NodeText:=CurDependency.AsString;
-      ImgInd:=FPropGui.GetDependencyImageIndex(CurDependency);
-      if ImgInd = FPropGui.ImageIndexAvailableOnline then
-        NodeText:=NodeText+' '+lisPckEditAvailableOnline;
-      TVNode.Text:=NodeText;
-      TVNode.ImageIndex:=ImgInd;
-      TVNode.SelectedIndex:=ImgInd;
-    end;
-  finally
-    EndUpdate;
-  end;
+  DebugLn(['TProjectInspectorForm.PackageListAvailable: ', LazProject.Title]);
+  UpdateRequiredPackages;
 end;
 
 procedure TProjectInspectorForm.KeyDown(var Key: Word; Shift: TShiftState);

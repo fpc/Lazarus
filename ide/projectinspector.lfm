@@ -12,6 +12,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
+  OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   LCLVersion = '2.1.0.0'
   object ItemsTreeView: TTreeView

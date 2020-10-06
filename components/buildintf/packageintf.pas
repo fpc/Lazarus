@@ -80,9 +80,20 @@ type
     property CustomOptions: TConfigStorage read FCustomOptions;
   end;
 
-  { PkgDependency flags }
+  TPkgDependencyType = (
+    pdtLazarus,
+    pdtFPMake
+    );
 
-  TLoadPackageResult = (
+const
+  PkgDependencyTypeNames: array[TPkgDependencyType] of string = (
+    'Lazarus',
+    'FPMake'
+    );
+
+type
+
+  TLoadPackageResult = (      // PkgDependency flags
     lprUndefined,
     lprSuccess,
     lprNotFound,
@@ -93,6 +104,7 @@ type
 
   TPkgDependencyID = class(TPkgDependencyBase)
   private
+    FDependencyType: TPkgDependencyType;
     procedure SetRequiredPackage(const AValue: TIDEPackage);
   protected
     FLoadPackageResult: TLoadPackageResult;
@@ -103,6 +115,7 @@ type
     procedure Clear; override;
     function AsString: string;
   public
+    property DependencyType: TPkgDependencyType read FDependencyType write FDependencyType;
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write FLoadPackageResult;
     property RequiredIDEPackage: TIDEPackage read FRequiredPackage write SetRequiredPackage;
   end;
