@@ -72,6 +72,13 @@ type
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function GetImageIndex(ImageName: String; ImageSize: Integer = 16): Integer;
 
+    (* Images_nn
+       Each list contains images according to their default size at 96 PPI.
+       Any specific image is ONLY present in one of the Lists (and that list also has all the scaled versions of that image)
+       To use an image, either
+       - assign IdeImages.Images_nn to the ImageList property of a component
+       - IdeImages.Images_nn.ResolutionForControl[NN, Control].Draw(...)  // where NN is the same as nn
+    *)
     property Images_12: TLCLGlyphs read GetImages_12;
     property Images_16: TLCLGlyphs read GetImages_16;
     property Images_24: TLCLGlyphs read GetImages_24;
