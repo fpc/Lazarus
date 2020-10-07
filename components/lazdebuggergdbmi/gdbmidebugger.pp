@@ -5268,7 +5268,9 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         StateStopped := True;
         if FTheDebugger.State = dsStop then
           SetDebuggerState(dsNone); // dsInit would trigger breakpoints...
+        FTheDebugger.ClearCommandQueue;
         SetDebuggerState(dsStop);
+        FSuccess := True; // Make sure we run TGDBMIDebuggerCommandChangeFilename
       end;
     except
     end;
@@ -5684,8 +5686,7 @@ begin
 
       if DebuggerState = dsStop
       then begin
-        Result := False;
-        FSuccess := False;
+        Result := FSuccess;
         Exit;
       end;
 
@@ -9141,8 +9142,10 @@ begin
     DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: Finished ']);
   end;
 
-  if FNeedStateToIdle and (FInExecuteCount = 0)
-  then ResetStateToIdle;
+  if FNeedStateToIdle and (FInExecuteCount = 0) then begin
+    ResetStateToIdle;
+    ClearCommandQueue;
+  end;
 end;
 
 procedure TGDBMIDebuggerBase.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
