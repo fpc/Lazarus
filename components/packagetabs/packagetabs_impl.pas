@@ -462,8 +462,8 @@ end;
 
 procedure TPackageTabScrollBox.DoAlignControls;
 var
-  xNextY, I, xWidth, xHeight: Integer;
-  xControl: TControl;
+  I: Integer;
+  xControl, xPrevControl: TControl;
   xClientRect: TRect;
   xBS: TControlBorderSpacing;
 begin
@@ -471,22 +471,23 @@ begin
   AdjustClientRect(xClientRect);
   DisableAlign;
   try
-    xNextY := 0;
+    xPrevControl := nil;
     for I := 0 to ControlCount-1 do
     begin
       xControl := Controls[I];
 
       xControl.Anchors := [akLeft, akRight, akTop];
-      xWidth := 0;
-      xHeight := 0;
-      xControl.GetPreferredSize(xWidth, xHeight);
-      xControl.Height := xHeight;
+      if Assigned(xPrevControl) then
+      begin
+        xControl.AnchorSide[akTop].Control := xPrevControl;
+        xControl.AnchorSide[akTop].Side := asrBottom;
+      end;
       xBS := xControl.BorderSpacing;
       xControl.SetBounds(
-        xBS.Left+xBS.Around, xNextY+xBS.Top+xBS.Around,
+        xBS.Left+xBS.Around, 0,
         xClientRect.Right-xClientRect.Left-xBS.Left-xBS.Right-xBS.Around*2,
         xBS.ControlHeight);
-      Inc(xNextY, xHeight);
+      xPrevControl := xControl;
     end;
   finally
     EnableAlign;
@@ -513,6 +514,7 @@ begin
     WithThemeSpace);
 
   PreferredHeight := PreferredHeight + 4;
+  PreferredWidth := PreferredWidth + 8;
 end;
 
 { TGroupTabLabel }
@@ -535,6 +537,7 @@ begin
     WithThemeSpace);
 
   PreferredHeight := PreferredHeight + 8;
+  PreferredWidth := PreferredWidth + 8;
 end;
 
 procedure TGroupTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -918,7 +921,6 @@ begin
         xLbl.Caption := xPkgItem.Title;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
-        xLbl.AutoSize := False;
         xLbl.OnCloseAllFiles := @CloseAllFiles;
         if FPanel is TPackageTabScrollBox then
         begin
@@ -941,7 +943,6 @@ begin
           xEditor.UpdateProjectFile; // updates FNewEditorInfo.PageIndex
           Inc(xNewIndex);
           xBtn := TPackageTabButton.Create(Self);
-          xBtn.AutoSize := False;
           xBtn.Caption := xEditor.PageCaption;
           xBtn.Hint := xEditor.FileName;
           xBtn.ShowHint := True;
