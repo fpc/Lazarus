@@ -274,6 +274,16 @@ begin
 
   // dependency properties
   // ---------------------
+  MinVersionEdit := TEdit.Create(fOwner);
+  MinVersionEdit.Parent := fOwner;
+  MinVersionEdit.AnchorSideLeft.Side := asrBottom;
+  MinVersionEdit.Left := 201;
+  MinVersionEdit.Top := 0;
+  MinVersionEdit.Width := 100;
+  MinVersionEdit.BorderSpacing.Left := 10;
+  MinVersionEdit.TabOrder := 3;
+  MinVersionEdit.OnChange := @MinMaxVersionEditChange;
+
   UseMinVersionCheckBox := TCheckBox.Create(fOwner);
   UseMinVersionCheckBox.Parent := fOwner;
   UseMinVersionCheckBox.AnchorSideTop.Control := MinVersionEdit;
@@ -285,16 +295,20 @@ begin
   UseMinVersionCheckBox.Caption := lisPckEditMinimumVersion;
   UseMinVersionCheckBox.OnChange := @UseMinVersionCheckBoxChange;
 
-  MinVersionEdit := TEdit.Create(fOwner);
-  MinVersionEdit.Parent := fOwner;
   MinVersionEdit.AnchorSideLeft.Control := UseMinVersionCheckBox;
-  MinVersionEdit.AnchorSideLeft.Side := asrBottom;
-  MinVersionEdit.Left := 201;
-  MinVersionEdit.Top := 0;
-  MinVersionEdit.Width := 100;
-  MinVersionEdit.BorderSpacing.Left := 10;
-  MinVersionEdit.TabOrder := 3;
-  MinVersionEdit.OnChange := @MinMaxVersionEditChange;
+
+  MaxVersionEdit := TEdit.Create(fOwner);
+  MaxVersionEdit.Parent := fOwner;
+  MaxVersionEdit.AnchorSideLeft.Side := asrBottom;
+  MaxVersionEdit.AnchorSideTop.Control := MinVersionEdit;
+  MaxVersionEdit.AnchorSideTop.Side := asrBottom;
+  MaxVersionEdit.Left := 204;
+  MaxVersionEdit.Top := 38;
+  MaxVersionEdit.Width := 100;
+  MaxVersionEdit.BorderSpacing.Left := 10;
+  MaxVersionEdit.BorderSpacing.Top := 2;
+  MaxVersionEdit.TabOrder := 5;
+  MaxVersionEdit.OnChange := @MinMaxVersionEditChange;
 
   UseMaxVersionCheckBox := TCheckBox.Create(fOwner);
   UseMaxVersionCheckBox.Parent := fOwner;
@@ -307,19 +321,7 @@ begin
   UseMaxVersionCheckBox.Caption := lisPckEditMaximumVersion;
   UseMaxVersionCheckBox.OnChange := @UseMaxVersionCheckBoxChange;
 
-  MaxVersionEdit := TEdit.Create(fOwner);
-  MaxVersionEdit.Parent := fOwner;
   MaxVersionEdit.AnchorSideLeft.Control := UseMaxVersionCheckBox;
-  MaxVersionEdit.AnchorSideLeft.Side := asrBottom;
-  MaxVersionEdit.AnchorSideTop.Control := MinVersionEdit;
-  MaxVersionEdit.AnchorSideTop.Side := asrBottom;
-  MaxVersionEdit.Left := 204;
-  MaxVersionEdit.Top := 38;
-  MaxVersionEdit.Width := 100;
-  MaxVersionEdit.BorderSpacing.Left := 10;
-  MaxVersionEdit.BorderSpacing.Top := 2;
-  MaxVersionEdit.TabOrder := 5;
-  MaxVersionEdit.OnChange := @MinMaxVersionEditChange;
 
   ApplyDependencyButton := TButton.Create(fOwner);
   ApplyDependencyButton.Parent := fOwner;
