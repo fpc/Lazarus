@@ -15494,6 +15494,10 @@ msgstr "(доступні онлайн)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Викликати процедуру %sRegister%s вибраного модуля"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Очистити залежності ..."

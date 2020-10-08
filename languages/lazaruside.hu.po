@@ -15493,6 +15493,10 @@ msgstr "(hálózaton elérhető)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "A kiválasztott unit %sRegister%s eljárásának hívása"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Függőségek tisztítása ..."

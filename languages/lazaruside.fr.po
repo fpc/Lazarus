@@ -15501,6 +15501,10 @@ msgstr "(disponible en ligne)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Appeler la procédure %sRegister%s de l'unité sélectionnée"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Nettoyer les dépendances..."

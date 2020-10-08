@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-05 00:53+0300\n"
+"PO-Revision-Date: 2020-10-09 02:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15489,6 +15489,10 @@ msgstr "(доступен в сети)"
 #, object-pascal-format
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Вызвать процедуру %sRegister%s выбранного модуля"
+
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr "Проверить доступность в сети"
 
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."

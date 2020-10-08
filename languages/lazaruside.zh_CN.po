@@ -15723,6 +15723,10 @@ msgstr "(可获得的 在线的)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "调用 %s注册所选单元%s 的过程"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "清理依赖..."

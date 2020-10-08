@@ -15395,6 +15395,10 @@ msgstr "(saatavana verkossa)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Kutsu valitun käännösyksikön %sRegisteröintiä%s"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Siivoa riippuvuudet ..."

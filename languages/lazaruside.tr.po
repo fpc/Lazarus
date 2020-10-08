@@ -15427,6 +15427,10 @@ msgstr "(mevcut çevrimiçi)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Seçilen ünitenin %sRegister%s prosedürünü çağır"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Bağımlılıkları temizle ..."

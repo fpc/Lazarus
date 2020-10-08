@@ -16088,6 +16088,10 @@ msgstr ""
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Panggil %sRegister%s procedure dari unit yang dipilih"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr ""

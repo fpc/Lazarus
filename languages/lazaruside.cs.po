@@ -15572,6 +15572,10 @@ msgstr "(dostupné online)"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Volání %sRegister%s procedura vybrané jednotky"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "Vyčistit závislosti ..."

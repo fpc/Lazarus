@@ -15678,6 +15678,10 @@ msgstr ""
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "選択されたユニットの%sRegister%s手続きを呼び出す"
 
+#: lazarusidestrconsts.lispckeditcheckavailabilityonline
+msgid "Check availability online"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
 msgstr "依存関係をクリーンアップ ..."
