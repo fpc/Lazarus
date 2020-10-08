@@ -1464,7 +1464,7 @@ function TOICustomPropertyGrid.RealDefaultItemHeight: integer;
 begin
   Result := FDefaultItemHeight;
   if (Result<=0) then
-    Result := Canvas.TextHeight('Hg')*5 div 4 + 2;
+    Result := Canvas.TextHeight('Hg')*5 div 4 + 4;
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
