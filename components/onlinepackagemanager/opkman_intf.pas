@@ -163,6 +163,7 @@ begin
   SerializablePackages.OnUpdatePackageLinks := @DoUpdatePackageLinks;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   InstallPackageList := TObjectList.Create(True);
+  LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
 end;
 
 procedure TOPMInterfaceEx.DoUpdatePackageLinks(Sender: TObject);
@@ -205,7 +206,6 @@ end;
 procedure TOPMInterfaceEx.GetPackageList;
 begin
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
-  LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
 end;
 
 procedure TOPMInterfaceEx.SynchronizePackages;
