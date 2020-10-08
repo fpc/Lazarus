@@ -197,14 +197,23 @@ end;
 
 { TDbgFileLoader }
 
+{$ifdef USE_WIN_FILE_MAPPING}
+function CreateFileW(lpFileName:LPCWSTR; dwDesiredAccess:DWORD; dwShareMode:DWORD; lpSecurityAttributes:LPSECURITY_ATTRIBUTES; dwCreationDisposition:DWORD;dwFlagsAndAttributes:DWORD; hTemplateFile:HANDLE):HANDLE; external 'kernel32' name 'CreateFileW';
+{$ENDIF}
+
 constructor TDbgFileLoader.Create(AFileName: String);
 {$IFDEF MacOS}
 var
   s: String;
 {$ENDIF}
+{$ifdef USE_WIN_FILE_MAPPING}
+var
+  s: UnicodeString;
+{$ENDIF}
 begin
   {$ifdef USE_WIN_FILE_MAPPING}
-  FFileHandle := CreateFile(PChar(AFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  s := UTF8Decode(AFileName);
+  FFileHandle := CreateFileW(PWideChar(s), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   Create(FFileHandle);
   {$else}
   FList := TList.Create;

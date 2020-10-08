@@ -1299,7 +1299,9 @@ var
 begin
   if (FExecutableFilename <> '') and FileExists(FExecutableFilename) then
   begin
-   DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
+    DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
+    source := nil;
+    imgReader := nil;
     try
       source := TDbgFileLoader.Create(FExecutableFilename);
       imgReader := GetImageReader(source, nil, false);
