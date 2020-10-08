@@ -462,7 +462,7 @@ end;
 
 procedure TPackageTabScrollBox.DoAlignControls;
 var
-  xNextY, I: Integer;
+  xNextY, I, xWidth, xHeight: Integer;
   xControl: TControl;
   xClientRect: TRect;
   xBS: TControlBorderSpacing;
@@ -477,12 +477,16 @@ begin
       xControl := Controls[I];
 
       xControl.Anchors := [akLeft, akRight, akTop];
+      xWidth := 0;
+      xHeight := 0;
+      xControl.GetPreferredSize(xWidth, xHeight);
+      xControl.Height := xHeight;
       xBS := xControl.BorderSpacing;
       xControl.SetBounds(
         xBS.Left+xBS.Around, xNextY+xBS.Top+xBS.Around,
         xClientRect.Right-xClientRect.Left-xBS.Left-xBS.Right-xBS.Around*2,
         xBS.ControlHeight);
-      Inc(xNextY, xControl.Height);
+      Inc(xNextY, xHeight);
     end;
   finally
     EnableAlign;
@@ -508,8 +512,7 @@ begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
 
-  PreferredHeight := Height; // ignore PreferredHeight
-  PreferredWidth := PreferredWidth + 6;
+  PreferredHeight := PreferredHeight + 4;
 end;
 
 { TGroupTabLabel }
@@ -531,8 +534,7 @@ begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
 
-  PreferredHeight := Height; // ignore PreferredHeight
-  PreferredWidth := PreferredWidth + 8;
+  PreferredHeight := PreferredHeight + 8;
 end;
 
 procedure TGroupTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -557,6 +559,7 @@ begin
         if Assigned(FOnCloseAllFiles) then
           FOnCloseAllFiles(Self);
       end;
+    else // disable warning
     end;
   end;
 end;
@@ -915,7 +918,7 @@ begin
         xLbl.Caption := xPkgItem.Title;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
-        xLbl.Height := FPanel.Scale96ToForm(TPackageTabButton.GetControlClassDefaultSize.cy);
+        xLbl.AutoSize := False;
         xLbl.OnCloseAllFiles := @CloseAllFiles;
         if FPanel is TPackageTabScrollBox then
         begin
@@ -938,7 +941,7 @@ begin
           xEditor.UpdateProjectFile; // updates FNewEditorInfo.PageIndex
           Inc(xNewIndex);
           xBtn := TPackageTabButton.Create(Self);
-          xBtn.Height := xLbl.Height;
+          xBtn.AutoSize := False;
           xBtn.Caption := xEditor.PageCaption;
           xBtn.Hint := xEditor.FileName;
           xBtn.ShowHint := True;
@@ -1154,6 +1157,7 @@ begin
   case Button of
     mbLeft: FWindow.ActiveEditor := xBtn.Editor;
     mbMiddle: LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
+  else // disable warning
   end;
 end;
 
