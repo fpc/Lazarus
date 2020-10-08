@@ -458,13 +458,8 @@ var
   i: Integer;
 begin
   for i := 0 to High(FpcPackages) do
-    begin
     if SameText(PackageName, FpcPackages[i]) then
-      begin
-      Result := True;
-      Exit;
-      end;
-    end;
+      Exit(True);
   Result := False;
 end;
 

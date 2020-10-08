@@ -5869,8 +5869,7 @@ begin
               OpenFile(AFilename);
             end;
           end;
-          // try in owner directory (some projects put all their packages into
-          //   one directory)
+          // try in owner directory (some projects put all their packages into one directory)
           if Dependency.LoadPackageResult=lprNotFound then begin
             CurDir:=GetDependencyOwnerDirectory(Dependency);
             if (CurDir<>'') then begin
@@ -5911,14 +5910,15 @@ begin
                 +Dependency.AsString(true,false)+', but found '+APackage.IDAsString);
         if IsStaticBasePackage(APackage.Name) then
         begin
-          debugln(['Note: (lazarus) LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);
+          //debugln(['Note: (lazarus) LazarusDir="',EnvironmentOptions.GetParsedLazarusDirectory,'"']);
           // wrong base package
           if (EnvironmentOptions.LazarusDirectory='')
           or (not DirPathExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
           then begin
             // the lazarus directory is not set
             debugln(['Note: (lazarus) The Lazarus directory is not set. Pass parameter --lazarusdir.']);
-          end else if not DirPathExistsCached(LazPackageLinks.GetGlobalLinkDirectory)
+          end
+          else if not DirPathExistsCached(LazPackageLinks.GetGlobalLinkDirectory)
           then begin
             debugln(['Note: (lazarus) The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
           end;

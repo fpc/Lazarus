@@ -209,6 +209,7 @@ type
       IDEFiles: TFPList; TargetDirectory: string): boolean;
     function CopyMoveFiles(Sender: TObject): boolean;
     function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList): TModalResult;
+    function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -250,7 +251,6 @@ type
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
     procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
-    function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; override;
     procedure RebuildDefineTemplates; override;
     procedure LazarusSrcDirChanged; override;
@@ -3293,26 +3293,28 @@ var
   Dependency: TPkgDependency;
   I: Integer;
   PkgLinks: TList;
-  PkgLinksStr: String;
+  PkgsStr: String;
   PackageLink: TPackageLink;
 begin
   Result := mrCancel;
   PkgLinks := TList.Create;
   try
-    PkgLinksStr := '';
+    PkgsStr := '';
     for I := 0 to ABrokenDependencies.Count - 1  do begin
-       Dependency := TPkgDependency(ABrokenDependencies[i]);
-       PackageLink := LazPackageLinks.FindLinkWithPkgName(Dependency.AsString);
-       if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) then begin
-         if PkgLinksStr = '' then
-           PkgLinksStr := '"' + PackageLink.Name + '"'
-         else
-           PkgLinksStr := PkgLinksStr + ', ' + '"' + PackageLink.Name + '"';
-         PkgLinks.Add(PackageLink);
-       end;
+      Dependency := TPkgDependency(ABrokenDependencies[i]);
+      PackageLink := LazPackageLinks.FindLinkWithPkgName(Dependency.AsString);
+      if (PackageLink <> nil) {and (PackageLink.Origin = ploOnline)} then begin
+        PkgLinks.Add(PackageLink);
+        Dependency.LoadPackageResult:=lprAvailableOnline;
+        if PkgsStr = '' then
+          PkgsStr := '"' + PackageLink.Name + '"'
+        else
+          PkgsStr := PkgsStr + ', ' + '"' + PackageLink.Name + '"';
+      end;
     end;
     if PkgLinks.Count > 0 then begin
-      if IDEMessageDialog(lisNotInstalledPackages, Format(lisInstallPackagesMsg, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then
+      if IDEMessageDialog(lisNotInstalledPackages, Format(lisInstallPackagesMsg,[PkgsStr]),
+                          mtConfirmation, [mbYes, mbNo]) = mrYes then
         Result := OPMInterface.InstallPackages(PkgLinks);
     end;
   finally
@@ -3340,11 +3342,8 @@ begin
         FreeAndNil(BrokenDependencies);
         BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
                                                AProject.FirstRequiredDependency);
-        if Assigned(BrokenDependencies) then
-          Result := ShowBrokenDependenciesReport(BrokenDependencies);
-      end
-      else
-        Result := ShowBrokenDependenciesReport(BrokenDependencies);
+      end;
+      Result := ShowBrokenDependenciesReport(BrokenDependencies);
       BrokenDependencies.Free;
     end;
   end;
@@ -3525,25 +3524,14 @@ var
   AFilename: String;
 begin
   AFilename:=APackage.Filename;
-  //debugln(['TPkgManager.DoOpenPackage ',AFilename]);
-  
   // revert: if possible and wanted
-  if (pofRevert in Flags) and (FileExistsCached(AFilename)) then begin
-    Result:=DoOpenPackageFile(AFilename,Flags,ShowAbort);
-    exit;
-  end;
-
+  if (pofRevert in Flags) and (FileExistsCached(AFilename)) then
+    exit(DoOpenPackageFile(AFilename,Flags,ShowAbort));
   // open a package editor
   PackageEditors.OpenEditor(APackage,true);
-
   // add to recent packages
-  if (pofAddToRecent in Flags) then begin
-    Assert(AFilename=APackage.Filename, 'TPkgManager.DoOpenPackage(');
-    if FileExistsCached(AFilename) then begin
-      AddToMenuRecentPackages(AFilename);
-    end;
-  end;
-
+  if (pofAddToRecent in Flags) and FileExistsCached(AFilename) then
+    AddToMenuRecentPackages(AFilename);
   Result:=mrOk;
 end;
 
@@ -3571,13 +3559,7 @@ end;
 
 function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags;
   ShowAbort: boolean): TModalResult;
-var
-  APackage: TLazPackage;
-  XMLConfig: TXMLConfig;
-  AlternativePkgName: String;
-  Code: TCodeBuffer;
-  OpenEditor: Boolean;
-  
+
   procedure DoQuestionDlg(const Caption, Message: string);
   begin
     if pofMultiOpen in Flags then
@@ -3587,6 +3569,13 @@ var
     else
       Result:=IDEQuestionDialog(Caption, Message, mtError, [mrAbort])
   end;
+
+var
+  APackage: TLazPackage;
+  XMLConfig: TXMLConfig;
+  AlternativePkgName: String;
+  Code: TCodeBuffer;
+  OpenEditor: Boolean;
 begin
   // replace macros
   if pofConvertMacros in Flags then begin
@@ -3648,7 +3637,6 @@ begin
     Result:=mrCancel;
     APackage:=TLazPackage.Create;
     try
-
       // load the package file
       try
         XMLConfig:=TCodeBufXMLConfig.Create(nil);
@@ -3867,7 +3855,7 @@ begin
       Msg:=Format(lisSeeProjectProjectInspector, [Msg]);
     end;
   end;
-  
+
   Result:=IDEMessageDialog(lisMissingPackages, Msg, mtError, [mbOk]);
 end;
 
