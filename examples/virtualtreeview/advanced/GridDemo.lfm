@@ -1,0 +1,190 @@
+object GridForm: TGridForm
+  Left = 341
+  Height = 393
+  Top = 353
+  Width = 736
+  ActiveControl = VST5
+  Caption = 'GridForm'
+  ClientHeight = 393
+  ClientWidth = 736
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object Label15: TLabel
+    AnchorSideLeft.Control = VST5
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 515
+    Height = 105
+    Top = 8
+    Width = 213
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'This sample demonstrates the grid extensions introduced in Virtual Treeview. The main difference to normal mode is the  way cell content is handled (editing, selection etc.). In Grid mode always the entire cell is used. Another point is the key handling .'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = VST5
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Label15
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 515
+    Height = 45
+    Top = 121
+    Width = 213
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    Caption = 'The main column in this sample is reduced to an indicator and is set as a fixed column.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object VST5: TLazVirtualStringTree
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Cursor = 63
+    Left = 8
+    Height = 377
+    Top = 8
+    Width = 499
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    ClipboardFormats.Strings = (
+      'CSV'
+      'HTML Format'
+      'Plain text'
+      'Rich Text Format'
+      'Rich Text Format Without Objects'
+      'Unicode text'
+      'Virtual Tree Data'
+    )
+    Colors.BorderColor = clWindowText
+    Colors.HotColor = clBlack
+    DefaultNodeHeight = 19
+    DefaultText = 'Node'
+    DragMode = dmAutomatic
+    EditDelay = 300
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Header.AutoSizeIndex = 2
+    Header.Background = clBtnShadow
+    Header.Columns = <    
+      item
+        Color = clWindow
+        Options = [coParentBidiMode, coVisible, coFixed]
+        Position = 0
+        Width = 20
+      end    
+      item
+        Margin = 0
+        Position = 1
+        Text = 'Customer ID'
+        Width = 100
+      end    
+      item
+        Margin = 0
+        Position = 2
+        Text = 'First Name'
+        Width = 120
+      end    
+      item
+        Margin = 0
+        Position = 3
+        Text = 'Last Name'
+        Width = 120
+      end    
+      item
+        Margin = 0
+        Position = 4
+        Text = 'Order date'
+        Width = 100
+      end>
+    Header.DefaultHeight = 17
+    Header.Font.Height = -12
+    Header.Font.Name = 'Microsoft Sans Serif'
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowImages, hoVisible]
+    Header.Style = hsFlatButtons
+    HintMode = hmTooltip
+    ParentFont = False
+    ParentShowHint = False
+    RootNodeCount = 100
+    ScrollBarOptions.AlwaysVisible = True
+    ShowHint = True
+    TabOrder = 0
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking]
+    TreeOptions.MiscOptions = [toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.PaintOptions = [toHotTrack, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toUseBlendedImages]
+    TreeOptions.SelectionOptions = [toDisableDrawSelection, toExtendedFocus, toMiddleClickSelect, toMultiSelect, toRightClickSelect, toCenterScrollIntoView]
+    WantTabs = True
+    OnAfterCellPaint = VST5AfterCellPaint
+    OnBeforeCellPaint = VST5BeforeCellPaint
+    OnBeforeItemErase = VST5BeforeItemErase
+    OnCreateEditor = VST5CreateEditor
+    OnFocusChanging = VST5FocusChanging
+    OnGetText = VST5GetText
+    OnPaintText = VST5PaintText
+    OnInitNode = VST5InitNode
+    OnStateChange = VST5StateChange
+  end
+  object GridLineCheckBox: TCheckBox
+    AnchorSideLeft.Control = Label15
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideBottom.Control = VST5
+    AnchorSideBottom.Side = asrBottom
+    Left = 568
+    Height = 19
+    Top = 366
+    Width = 107
+    Anchors = [akLeft, akBottom]
+    Caption = 'Toggle grid lines'
+    Checked = True
+    OnClick = GridLineCheckBoxClick
+    State = cbChecked
+    TabOrder = 1
+  end
+  object TreeImages: TImageList
+    Left = 22
+    Top = 36
+    Bitmap = {
+      4C7A120000001000000010000000230400000000000078DAED9B0D96AB200C85
+      B37496D69DF1C6D7D2C6989F9BE038B6D67338765ABF242017023A44A73A7A50
+      42DE3A401B2ECFECCCF8F76C74E4F8F29FCB27CA271DB375ACEADDE501BDAFF8
+      E1737C6E4641FB4D53BE376CA8638CC58F33EA9FD7CBA80BEC5FDACFF8E745F2
+      5A49F8578F847F979FF11F9537D2747E0C58DADE687FC9B6D63AFD94FFE7C172
+      3BCB79FC3EAEE1BE39EBC5A85F27ED9A25F48F9E0DFFFC1CF49BD8BFA3CB06FA
+      F774BDD2AFE39FC72DFFAEF8D7C61FD4BF8CC3EBBF6FA1FFBB36EEFE967ACBBF
+      030D7366F9DCD96702E7E371AD3CC3F3B160DAB8FF8FC279696373DDA300F97B
+      9713F0B0313EF3B9C2CA011FD791D666D91C92D7D52A410EDAFB847F72E6CB2B
+      F99FE1AFB9065834F01A3BF2D7DEBF8BED78BF4736D018351B68DDF458F2BC15
+      C711FEF5FAD7DB0E6D7FECFECFF1B18D7C5BD7F4728C1F20122047F1F2162FC7
+      42F9022BF3B6D4187E142F73930CFFCC2B446E86F0922525A762798BCA4787C8
+      2D559EFBD7E20979833572DBD51A2DE15FCD679112AE352F9003CCAE71765823
+      A15A75F77CB5FBABF07DC6FFD2233DBDB760FF61AC6EC8D9FBE3D779859CBD37
+      8437EA4205FFB06E00365A29CF686E56AFEFA87573CC02B4E9FE16F0916649E4
+      02DA98EADAE0BC3356D873A4E049DF4B274367A67F7BECD8AE399BB33FA1D93C
+      62CDEEEDB77FAAFFB3ADF99D5C0FE2FAD226AF365B3A5A183FE746A33E595EAC
+      7D2FE6CF9A8FADBC4B8B7993738B9C7C75FF59DC234E9E43CABC77959F739ED5
+      D3F2AFF64D87BFE7AAC44ADBEE4F2A365ED7B1F544637BDF063F0AE707DB49E5
+      89027EF57D9227B9B6DCD69F341B56FB2BEB978D96A57FAB1F7939CC3BAD1F7A
+      F140786A34CD5B362C7E33E61836345E5E97F5AFF199FA7BD757DACF8D2DE0A3
+      BA78BCD66E283F73FF90FB56ADFF6CFB5BFCE9D6F4B5F16AF31C2BF1DE94CA23
+      7134E7391A1287B60E91BC1787BAA7A9F0561CDA5E87C5CBE7D77BFAD7E61ED4
+      3F721F8BFD611D87E2FF88FE4817798FAFBA6EE0CFBE6FB7DBEA8CD8B0586EC3
+      8B0DD9AF76F6AF89E77A560C46BD563CCA2EE7AFFF7DFD570A05EFFF1C917FF7
+      C9E34CFA777406B1DA7DEE09FD6B7DE5B7F55FEA7782CF8C594BE1FAC9C43EDE
+      A394FD3F5DFFD733C692FE259FB1613D3BDC41FF7455FD03ED54D23EB04F02F1
+      51AE06FA779FF75AC7D2EF46A9F0DC4695EF4C775F5EE7F97DB20A9DF0FF76AE
+      AAFFAEAC7751FDDFF767715EEEB57336A37F8D45F56FB150FF77D8905FB33D9D
+      BB3DD6DD15FD8E3CA5A27F991B7DF5EFE784B3DAADDA41F7CA2C3BE85E953596
+      6479EDFF070AFE37B92FC26B7D31C36BB94496975A3A03CFC789422EF01C2BB8
+      9D422EB1B273D4587255FD77E5792EAA3F3EA7A5F56FE40E50FF53E65298676C
+      5A3F824DF18CCDEA97CFFF15FD5B7A44F4EFED8D7CF57FCA67887D07BEEFC0F7
+      1DF8BE03DF77E0FB0E7CFF43FF7FD5FE9779BFF71FE2A60890
+    }
+  end
+end

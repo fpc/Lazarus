@@ -1,0 +1,175 @@
+object PropertiesForm: TPropertiesForm
+  Left = 397
+  Height = 389
+  Top = 294
+  Width = 637
+  ActiveControl = VST3
+  Caption = 'PropertiesForm'
+  ClientHeight = 389
+  ClientWidth = 637
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object Label9: TLabel
+    AnchorSideLeft.Control = VST3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 417
+    Height = 60
+    Top = 8
+    Width = 212
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 8
+    Caption = 'This tree demonstrates a typical property page as it can be found in the property dialog for Word and other documents.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label10: TLabel
+    AnchorSideLeft.Control = Label9
+    AnchorSideTop.Control = Label9
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Label9
+    AnchorSideRight.Side = asrBottom
+    Left = 417
+    Height = 45
+    Top = 78
+    Width = 212
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 10
+    Caption = 'What makes this demonstration special is the sample implementation for node editors.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object VST3: TLazVirtualStringTree
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 8
+    Height = 373
+    Top = 8
+    Width = 401
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    Colors.BorderColor = clWindowText
+    Colors.HotColor = clBlack
+    DefaultNodeHeight = 20
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 1
+    Header.Columns = <    
+      item
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Position = 0
+        Text = 'Properties'
+        Width = 204
+      end    
+      item
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Position = 1
+        Text = 'Values'
+        Width = 193
+      end>
+    Header.DefaultHeight = 17
+    Header.Font.Style = [fsBold]
+    Header.Height = 18
+    Header.Options = [hoAutoResize, hoColumnResize, hoVisible, hoAutoSpring]
+    HintMode = hmHint
+    Images = TreeImages
+    IncrementalSearch = isAll
+    IncrementalSearchTimeout = 500
+    Indent = 19
+    ParentShowHint = False
+    RootNodeCount = 2
+    ShowHint = True
+    TabOrder = 0
+    TreeOptions.AnimationOptions = [toAnimatedToggle]
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoTristateTracking, toAutoDeleteMovedNodes]
+    TreeOptions.MiscOptions = [toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.SelectionOptions = [toExtendedFocus, toFullRowSelect, toCenterScrollIntoView]
+    TreeOptions.StringOptions = [toAutoAcceptEditChange]
+    OnChange = VST3Change
+    OnCreateEditor = VST3CreateEditor
+    OnEditing = VST3Editing
+    OnGetText = VST3GetText
+    OnPaintText = VST3PaintText
+    OnGetImageIndex = VST3GetImageIndex
+    OnGetHint = VST3GetHint
+    OnIncrementalSearch = VST3IncrementalSearch
+    OnInitChildren = VST3InitChildren
+    OnInitNode = VST3InitNode
+    OnStateChange = VST3StateChange
+  end
+  object RadioGroup1: TRadioGroup
+    AnchorSideLeft.Control = Label9
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 417
+    Height = 70
+    Top = 319
+    Width = 220
+    Anchors = [akLeft, akRight, akBottom]
+    AutoFill = True
+    AutoSize = True
+    Caption = ' Incremental search direction: '
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 50
+    ClientWidth = 216
+    ItemIndex = 0
+    Items.Strings = (
+      'Forward'
+      'Backward'
+    )
+    OnClick = RadioGroup1Click
+    TabOrder = 1
+  end
+  object TreeImages: TImageList
+    Left = 504
+    Top = 200
+    Bitmap = {
+      4C7A120000001000000010000000200400000000000078DAED9A8B9283200C45
+      F3E97CDAFE19BB6E4B1B631E37C1BA75AD338C7D7812406E0828D13B1CAD2F65
+      396AD7DE7E8BED78FF4736D03A6A36D0B6E975C9F3563D8EF0AFB7BFDE7768FF
+      63F77F8E8F6DE4FBBAA69763FC1C7EF4A084BC7580365C9ED999F1EFD9E8C8F1
+      E1FF2F9F2857D03DCC17F5EEF280DE57FCF0393E37A3A0E3A629BF1B36D41863
+      F1E38CFAE7ED32DA02FB97F633FE7991BC5612FEF55916F7EFF233FEA372224D
+      E763C0D2F746FF4BB6B59FDCEDA7FC9E07CBED2CE7F1FFB886FBE6AC5747FD3A
+      69D72CA17FF46CF8E7E760DCC4FE1D5D36D0BFA7EB957E1DFFBCDEF27BC5BF16
+      7F50FFB21EDEF83D85FED93AE2B7DDF27BA061CE2C9F3BFB4CE07C3CAE956778
+      3E164C1BF7FF5E382F6D6CAEBB17207FEF72021E36C6673E575839E0FD3AD2FA
+      2C9B43F2B65A25C8417B9FF04FCE7C7925FF33FCD9D600488CF2E296176351BE
+      C0CAB89DBA8747F1323665F8475C11B119E1254B4A4C65714BE5A343CC2D2ACF
+      FD6BF509798335E6B6558E96F0AFCE67480973CD0BEC03CCE6383BE448A856DD
+      3D1FEDFE2A7C9FF1BF8C484FEF2D587F8CEC869CB53FBFCE2BE4ACBD11DE680B
+      15FCC3BA01D828539ED1DCAC5ECFA875336601DA74FF0BF848B32472012DA6BA
+      3638EFC40A7B8E143CE97B6964E8CCF46FC78E6DCED99CF58966F3889CDDDB6F
+      FBAFFEDF2DE777723D88EB4B9F3CFB6C196861FD39373AF5C1F262AD7B993F6B
+      3EB6F22EADCE9B9C5BE4E4ABFBCFEA3DEAC9734899F7AEF273CEB3765AFED5B1
+      E9F0B75C955869DBFD09C5C6F33AB69E686CEFCBE047E1FC603BA93C51C0AF7E
+      4FF224D796DBF69366C3EA7F65FDB2D1B2F46F8D232F8739D3FAA1170F84A746
+      D3BC65C3E23731C7B0A1F1F2BAAC7F8DCFB4DFBBBED27F6EDD023E6A8BC76BFD
+      86F233F70FB96FD5F6CFF6BFC5BFDD9ABE16AF36FBD889F726541EA94773F6D1
+      917A68EB10C97BF550F73415DEAA87B6D761F1F2F9D59EFEB5B907F58FDCC7E2
+      7858D743F17FC478BCCA7B3CD575037FF6F5F5F5B53A23362C96DBF0EA86EC57
+      3BFBD7C4733DAB0E46BB563CCA2EE78FFF7DFD570A05CFFFAFF61EDFACFE1D9D
+      41AC769F7B42FFDA5879B5FE4BE34EF09998B514AE9F4CDDC77B5472FCA7DBFF
+      7CC658D2BFE43336AC67873BE89FAEAA7FA09F4ADA07F649203ECAD540FFEEF3
+      5EEB58C6DD28159EDBA8F29DE9EEC3EB3CBF4F56A1CF7BFB6FA3FFAEAC7751FD
+      DFF667715EEEB57336A37F8D45F56FB1D0F877D8905FB33D9DBBDDD7DD15FD8E
+      3CA5A27F991B7DF4FF5AED56EDA07B65961D74AFCA8A25595E7B7FB8E07F93FB
+      22BC361633BC964B6479A9A577E0799C28E4028F58C1ED147289959DB3C492B3
+      EABF2BCF7351FDF1392DAD7F237780C69F3297C23C63D3FA116C8A676C56BF7C
+      FEAFE8DFD223A27F6F6FE4A3FFB77D57708F770DF77857718F771DF778577297
+      772D0F7A46F50AFF7FD5FF7F35FE0E3FBE019F9389F2
+    }
+  end
+end

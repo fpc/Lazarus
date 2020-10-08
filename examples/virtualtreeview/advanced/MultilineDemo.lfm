@@ -1,0 +1,113 @@
+object NodeForm: TNodeForm
+  Left = 497
+  Height = 542
+  Top = 332
+  Width = 773
+  ActiveControl = Panel1
+  Caption = 'NodeForm'
+  ClientHeight = 542
+  ClientWidth = 773
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object Label8: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 8
+    Height = 60
+    Top = 474
+    Width = 757
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    Caption = 'Since Virtual Treeview uses Unicode for text display it is not easy to provide multiline support on Windows 9x/Me systems. Under Windows NT (4.0, 2000, XP) there is support by the operation system and so full word breaking is possible there. Otherwise you have to insert line breaks manually to have multiline captions. Of course there is no difference in handling between multiline and single line nodes (except for the vertical alignment of the latter).'
+    ParentColor = False
+    ShowAccelChar = False
+    WordWrap = True
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AutoAdjustCheckBox
+    Left = 8
+    Height = 431
+    Top = 8
+    Width = 757
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    ClientHeight = 431
+    ClientWidth = 757
+    Color = clAppWorkspace
+    ParentColor = False
+    TabOrder = 0
+    object MLTree: TLazVirtualStringTree
+      Left = 96
+      Height = 411
+      Top = 8
+      Width = 574
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ClipboardFormats.Strings = (
+        'CSV'
+        'HTML Format'
+        'Plain text'
+        'Rich Text Format'
+        'Rich Text Format Without Objects'
+        'Unicode text'
+        'Virtual Tree Data'
+      )
+      Colors.SelectionRectangleBlendColor = 10539203
+      DefaultNodeHeight = 130
+      DefaultText = 'Node'
+      Header.AutoSizeIndex = 0
+      Header.Columns = <      
+        item
+          Position = 1
+          Width = 503
+        end      
+        item
+          Position = 0
+        end>
+      Header.DefaultHeight = 17
+      Header.Font.Height = -11
+      Header.Font.Name = 'MS Sans Serif'
+      Header.Height = 17
+      Header.Options = [hoAutoResize, hoColumnResize, hoDrag]
+      HintMode = hmTooltip
+      LineMode = lmBands
+      NodeAlignment = naFromTop
+      NodeDataSize = 4
+      ParentShowHint = False
+      RootNodeCount = 30
+      SelectionCurveRadius = 10
+      ShowHint = True
+      TabOrder = 0
+      TextMargin = 5
+      TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoSpanColumns, toAutoTristateTracking, toAutoDeleteMovedNodes]
+      TreeOptions.MiscOptions = [toEditable, toInitOnSave, toReportMode, toToggleOnDblClick, toWheelPanning]
+      TreeOptions.PaintOptions = [toHideFocusRect, toShowDropmark, toShowTreeLines, toThemeAware, toUseBlendedImages]
+      TreeOptions.SelectionOptions = [toMultiSelect]
+      OnEditing = MLTreeEditing
+      OnGetText = MLTreeGetText
+      OnPaintText = MLTreePaintText
+      OnInitNode = MLTreeInitNode
+      OnMeasureItem = MLTreeMeasureItem
+      OnStateChange = MLTreeStateChange
+    end
+  end
+  object AutoAdjustCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Label8
+    Left = 8
+    Height = 19
+    Top = 447
+    Width = 266
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 8
+    Caption = 'Automatically adjust node height to node text.'
+    OnClick = AutoAdjustCheckBoxClick
+    TabOrder = 1
+  end
+end

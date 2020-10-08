@@ -1,0 +1,146 @@
+object MainForm: TMainForm
+  Left = 340
+  Height = 500
+  Top = 147
+  Width = 379
+  ActiveControl = VST
+  Caption = 'Simple Virtual Treeview demo'
+  ClientHeight = 500
+  ClientWidth = 379
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 126
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    Caption = 'Last operation duration:'
+    ParentColor = False
+  end
+  object VST: TLazVirtualStringTree
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AddOneButton
+    Left = 8
+    Height = 372
+    Top = 25
+    Width = 363
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Colors.BorderColor = clWindowText
+    Colors.HotColor = clBlack
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = -1
+    Header.Columns = <>
+    Header.DefaultHeight = 17
+    Header.Font.Height = -11
+    Header.Font.Name = 'MS Sans Serif'
+    Header.Height = 17
+    Header.MainColumn = -1
+    Header.Options = [hoColumnResize, hoDrag]
+    IncrementalSearch = isAll
+    RootNodeCount = 100
+    TabOrder = 0
+    TreeOptions.AnimationOptions = [toAnimatedToggle]
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoTristateTracking]
+    TreeOptions.MiscOptions = [toEditable, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.PaintOptions = [toShowButtons, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages]
+    TreeOptions.SelectionOptions = [toMultiSelect, toCenterScrollIntoView]
+    OnFreeNode = VSTFreeNode
+    OnGetText = VSTGetText
+    OnInitNode = VSTInitNode
+  end
+  object ClearButton: TButton
+    AnchorSideLeft.Control = Edit1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 97
+    Height = 25
+    Top = 463
+    Width = 151
+    Anchors = [akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 8
+    Caption = 'Clear tree'
+    OnClick = ClearButtonClick
+    TabOrder = 1
+  end
+  object AddOneButton: TButton
+    AnchorSideLeft.Control = Edit1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Button1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Button1
+    Left = 97
+    Height = 25
+    Top = 405
+    Width = 151
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    Caption = 'Add node(s) to root'
+    OnClick = AddButtonClick
+    TabOrder = 2
+  end
+  object Edit1: TEdit
+    AnchorSideTop.Control = AddOneButton
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 23
+    Top = 406
+    Width = 79
+    TabOrder = 3
+    Text = '1'
+  end
+  object Button1: TButton
+    Tag = 1
+    AnchorSideLeft.Control = Edit1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ClearButton
+    Left = 97
+    Height = 25
+    Top = 434
+    Width = 151
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 4
+    Caption = 'Add node(s) as children'
+    OnClick = AddButtonClick
+    TabOrder = 4
+  end
+  object CloseButton: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 316
+    Height = 25
+    Top = 467
+    Width = 55
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Caption = 'Close'
+    OnClick = CloseButtonClick
+    TabOrder = 5
+  end
+end

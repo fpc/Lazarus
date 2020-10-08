@@ -1,0 +1,618 @@
+object StateForm: TStateForm
+  Left = 403
+  Height = 684
+  Top = 147
+  Width = 530
+  HorzScrollBar.Page = 477
+  VertScrollBar.Page = 588
+  ActiveControl = EnableCheckBox
+  AutoSize = True
+  BorderStyle = bsToolWindow
+  Caption = 'Watch Virtual Treeview at work:'
+  ClientHeight = 684
+  ClientWidth = 530
+  LCLVersion = '2.1.0.0'
+  object EnableCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 201
+    Height = 19
+    Top = 8
+    Width = 129
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    Caption = 'Enable state tracking'
+    OnClick = EnableCheckBoxClick
+    TabOrder = 0
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EnableCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox8
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 108
+    Top = 39
+    Width = 231
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 12
+    Caption = ' Changes: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 227
+    TabOrder = 1
+    object CheckBox1: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 157
+      Caption = 'Change pending'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox3: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 157
+      Caption = 'Toggle focus selection'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox4: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 157
+      Caption = 'Clear pending'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox32: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 157
+      Caption = 'Structure change pending'
+      Enabled = False
+      TabOrder = 3
+    end
+  end
+  object GroupBox2: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GroupBox5
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox8
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 184
+    Top = 279
+    Width = 231
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 12
+    Caption = ' Mouse actions: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 164
+    ClientWidth = 227
+    TabOrder = 2
+    object CheckBox8: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 168
+      Caption = 'Draw selection pending'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox9: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 168
+      Caption = 'Draw selecting'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox19: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 168
+      Caption = 'Left mouse button down'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox20: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 168
+      Caption = 'Mouse check pending'
+      Enabled = False
+      TabOrder = 3
+    end
+    object CheckBox21: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 82
+      Width = 168
+      Caption = 'Middle mouse button down'
+      Enabled = False
+      TabOrder = 4
+    end
+    object CheckBox27: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 101
+      Width = 168
+      Caption = 'Right mouse button down'
+      Enabled = False
+      TabOrder = 5
+    end
+    object CheckBox43: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 120
+      Width = 168
+      Caption = 'Mouse wheel panning'
+      Enabled = False
+      TabOrder = 6
+    end
+    object CheckBox44: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 139
+      Width = 168
+      Caption = 'Mouse wheel scrolling'
+      Enabled = False
+      TabOrder = 7
+    end
+  end
+  object GroupBox3: TGroupBox
+    AnchorSideLeft.Control = GroupBox6
+    AnchorSideTop.Control = GroupBox6
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox6
+    AnchorSideRight.Side = asrBottom
+    Left = 263
+    Height = 127
+    Top = 355
+    Width = 209
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    Caption = ' Keyboard actions: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 107
+    ClientWidth = 205
+    TabOrder = 3
+    object CheckBox10: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 181
+      Caption = 'Editing'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox11: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 181
+      Caption = 'Edit pending'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox15: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 181
+      Caption = 'Incremental search in progress'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox16: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 181
+      Caption = 'Incremental search pending'
+      Enabled = False
+      TabOrder = 3
+    end
+    object CheckBox18: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 82
+      Width = 181
+      Caption = 'Key check pending'
+      Enabled = False
+      TabOrder = 4
+    end
+  end
+  object GroupBox4: TGroupBox
+    AnchorSideLeft.Control = GroupBox8
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = GroupBox1
+    Left = 263
+    Height = 184
+    Top = 39
+    Width = 209
+    AutoSize = True
+    BorderSpacing.Left = 24
+    BorderSpacing.Right = 8
+    Caption = ' Clipboard and drag''n drop actions: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 164
+    ClientWidth = 205
+    TabOrder = 4
+    object CheckBox5: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 173
+      Caption = 'Clipboard flushing'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox6: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 173
+      Caption = 'Clipboard copy pending'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox7: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 173
+      Caption = 'Clipboard cut pending'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox24: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 173
+      Caption = 'OLE drag''n drop in progress'
+      Enabled = False
+      TabOrder = 3
+    end
+    object CheckBox25: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 82
+      Width = 173
+      Caption = 'OLE drag''n drop pending'
+      Enabled = False
+      TabOrder = 4
+    end
+    object CheckBox37: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 101
+      Width = 173
+      Caption = 'VCL dd with app. drag object'
+      Enabled = False
+      TabOrder = 5
+    end
+    object CheckBox41: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 120
+      Width = 173
+      Caption = 'VCL drag''n drop in progress'
+      Enabled = False
+      TabOrder = 6
+    end
+    object CheckBox42: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 139
+      Width = 173
+      Caption = 'VCL drag''n drop pending'
+      Enabled = False
+      TabOrder = 7
+    end
+  end
+  object GroupBox5: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GroupBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox8
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 108
+    Top = 159
+    Width = 231
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 12
+    Caption = ' Tree cache: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 227
+    TabOrder = 5
+    object CheckBox31: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 199
+      Caption = 'Tree cache validation stop request'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox36: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 199
+      Caption = 'Tree cache valid'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox39: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 199
+      Caption = 'Tree cache is being validated'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox40: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 199
+      Caption = 'Tree cache invalid or unused'
+      Enabled = False
+      TabOrder = 3
+    end
+  end
+  object GroupBox6: TGroupBox
+    AnchorSideLeft.Control = GroupBox4
+    AnchorSideTop.Control = GroupBox4
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox4
+    AnchorSideRight.Side = asrBottom
+    Left = 263
+    Height = 108
+    Top = 235
+    Width = 209
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    Caption = ' Collapse/Expand/Scroll: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 205
+    TabOrder = 6
+    object CheckBox2: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 146
+      Caption = 'Full collapse in progress'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox12: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 146
+      Caption = 'Full expand in progress'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox28: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 146
+      Caption = 'Scrolling'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox29: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 146
+      Caption = 'Auto scroll pending'
+      Enabled = False
+      TabOrder = 3
+    end
+  end
+  object GroupBox7: TGroupBox
+    AnchorSideLeft.Control = GroupBox3
+    AnchorSideTop.Control = GroupBox3
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox3
+    AnchorSideRight.Side = asrBottom
+    Left = 263
+    Height = 146
+    Top = 494
+    Width = 209
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    BorderSpacing.Bottom = 8
+    Caption = ' Miscellanous: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 126
+    ClientWidth = 205
+    TabOrder = 7
+    object CheckBox13: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 178
+      Caption = 'Last hint window was from VT'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox14: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 178
+      Caption = 'In animation'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox17: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 178
+      Caption = 'Iterating'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox23: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 178
+      Caption = 'Need root count update'
+      Enabled = False
+      TabOrder = 3
+    end
+    object CheckBox33: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 82
+      Width = 178
+      Caption = 'Synchronous mode active'
+      Enabled = False
+      TabOrder = 4
+    end
+    object CheckBox46: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 101
+      Width = 178
+      Caption = 'Popup menu shown'
+      Enabled = False
+      TabOrder = 5
+    end
+  end
+  object GroupBox8: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GroupBox2
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 165
+    Top = 475
+    Width = 231
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 12
+    Caption = ' Window related actions: '
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 145
+    ClientWidth = 227
+    TabOrder = 8
+    object CheckBox22: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 203
+      Caption = 'Default node height scale'
+      Enabled = False
+      TabOrder = 0
+    end
+    object CheckBox26: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 25
+      Width = 203
+      Caption = 'Tree painting'
+      Enabled = False
+      TabOrder = 1
+    end
+    object CheckBox30: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 44
+      Width = 203
+      Caption = 'Window resizing'
+      Enabled = False
+      TabOrder = 2
+    end
+    object CheckBox34: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 63
+      Width = 203
+      Caption = 'Tumb tracking (scrollbar)'
+      Enabled = False
+      TabOrder = 3
+    end
+    object CheckBox35: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 82
+      Width = 203
+      Caption = 'Updates locked'
+      Enabled = False
+      TabOrder = 4
+    end
+    object CheckBox38: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 101
+      Width = 203
+      Caption = 'Windows XP Theme support in use'
+      Enabled = False
+      TabOrder = 5
+    end
+    object CheckBox45: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 120
+      Width = 203
+      Caption = 'Treewindow is under construction'
+      Enabled = False
+      TabOrder = 6
+    end
+  end
+end
