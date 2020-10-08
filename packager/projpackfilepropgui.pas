@@ -139,7 +139,10 @@ begin
   PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
   if Assigned(PackageLink) and (PackageLink.Origin = ploOnline)
   and (ADependency.IsCompatible(PackageLink.Version)) then
+  begin
+    ADependency.LoadPackageResult := lprAvailableOnline;
     Result := PackageLink;
+  end;
 end;
 
 function OPNote(ADep: TPkgDependencyID): string;
@@ -162,18 +165,24 @@ var
 begin
   Result := True;
   if aDep.DependencyType <> pdtLazarus then Exit;
-  if aDep.LoadPackageResult = lprSuccess then
-  begin
-    if PackageEditingInterface.DoOpenPackageWithName(aDep.PackageName,[],false)<>mrOk then
-      Exit(False);
-  end
-  else begin
-    PackageLink := FindOPLink(ADep);
-    if Assigned(PackageLink) then
-    begin
-      if OpmPkgLinks = Nil then
-        OpmPkgLinks := TList.Create;
-      OpmPkgLinks.Add(PackageLink);
+  case aDep.LoadPackageResult of
+    lprSuccess:
+      if PackageEditingInterface.DoOpenPackageWithName(aDep.PackageName,[],false)<>mrOk then
+        Exit(False);
+    lprAvailableOnline:
+      begin    //  Install
+        PackageLink := FindOPLink(ADep);
+        if Assigned(PackageLink) then
+        begin
+          if OpmPkgLinks = Nil then
+            OpmPkgLinks := TList.Create;
+          OpmPkgLinks.Add(PackageLink);
+        end;
+      end;
+    else begin   // lprNotFound
+      if Assigned(OPMInterface) and not OPMInterface.IsPackageListLoaded then
+        OPMInterface.GetPackageList;
+      PackageLink := FindOPLink(ADep); // Sets lprAvailableOnline flag if package found.
     end;
   end;
 end;
@@ -362,7 +371,7 @@ begin
     Result := ImageIndexRemovedRequired
   else if aDep.LoadPackageResult=lprSuccess then
     Result := ImageIndexRequired
-  else if Assigned(FindOPLink(aDep)) then
+  else if aDep.LoadPackageResult=lprAvailableOnline {Assigned(FindOPLink(aDep))} then
     Result := ImageIndexAvailableOnline
   else
     Result := ImageIndexConflict;

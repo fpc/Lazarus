@@ -96,6 +96,7 @@ type
   TLoadPackageResult = (      // PkgDependency flags
     lprUndefined,
     lprSuccess,
+    lprAvailableOnline,
     lprNotFound,
     lprLoadError
     );

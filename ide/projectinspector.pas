@@ -653,6 +653,7 @@ var
   HasValidDep: Integer;
   CanClearDep: Integer;
   CanMoveFileCount: Integer;
+  OpenItemCapt: String;
 begin
   ItemCnt:=0;
 
@@ -720,8 +721,18 @@ begin
   end
   else begin
     // Files, dependencies or everything mixed is selected.
-    if CanOpenCount>0 then
-      AddPopupMenuItem(lisOpen, @OpenButtonClick);
+    if CanOpenCount>0 then begin
+      OpenItemCapt := lisOpen;
+      if Assigned(SingleSelectedDep) then
+        case SingleSelectedDep.LoadPackageResult of
+          lprAvailableOnline:
+            OpenItemCapt:=lisPckEditInstall;
+          lprNotFound:
+            if Assigned(OPMInterface) and not OPMInterface.IsPackageListLoaded then
+              OpenItemCapt:=lisPckEditCheckAvailabilityOnline;
+        end;
+      AddPopupMenuItem(OpenItemCapt, @OpenButtonClick);
+    end;
     if CanRemoveCount>0 then
       AddPopupMenuItem(lisRemove, @RemoveBitBtnClick);
     // files section

@@ -671,7 +671,7 @@ var
             Include(UserSelection, pstFile);
         end else if Item is TPkgDependency then begin
           CurDependency := TPkgDependency(Item);
-          if (ItemsTreeView.SelectionCount=1) and Assigned(CurDependency.RequiredPackage) then
+          if (ItemsTreeView.SelectionCount=1) {and Assigned(CurDependency.RequiredPackage)} then
             SingleSelectedDep:=CurDependency;
           if CurDependency.DependencyType=pdtFPMake then
             Include(UserSelection, pstFPMake);
@@ -736,6 +736,7 @@ var
 
 var
   Writable: Boolean;
+  OpenItemCapt: String;
 begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',ItemsPopupMenu.Items.Count]);
   PackageEditorMenuFilesRoot.MenuItem:=ItemsPopupMenu.Items;
@@ -743,6 +744,7 @@ begin
   //PackageEditorMenuRoot.BeginUpdate;
   try
     CollectSelected;
+    OpenItemCapt := lisOpen;  // May be changed later.
     Writable := not LazPackage.ReadOnly;
 
     // items for Files node and for selected files, under section PkgEditMenuSectionFile
@@ -792,6 +794,14 @@ begin
                                   or (ItemsTreeView.Selected=FRequiredPackagesNode);
     if PkgEditMenuSectionDependency.Visible then
     begin
+      if Assigned(SingleSelectedDep) then
+        case SingleSelectedDep.LoadPackageResult of
+          lprAvailableOnline:
+            OpenItemCapt:=lisPckEditInstall;
+          lprNotFound:
+            if Assigned(OPMInterface) and not OPMInterface.IsPackageListLoaded then
+              OpenItemCapt:=lisPckEditCheckAvailabilityOnline;
+        end;
       SetItem(PkgEditMenuRemoveDependency, @RemoveBitBtnClick,
               pstdep in UserSelection, Writable);
       SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,
@@ -805,7 +815,7 @@ begin
       SetItem(PkgEditMenuCleanDependencies, @CleanDependenciesMenuItemClick,
               Assigned(LazPackage.FirstRequiredDependency), Writable);
     end;
-
+    PkgEditMenuOpenFile.MenuItem.Caption := OpenItemCapt;
   finally
     //PackageEditorMenuRoot.EndUpdate;
     SingleSelectedFile := Nil;

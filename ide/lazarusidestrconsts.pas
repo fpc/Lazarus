@@ -4794,6 +4794,7 @@ resourcestring
   lisPckEditRemovedFiles = 'Removed Files';
   lisPckEditRemovedRequiredPackages = 'Removed required packages';
   lisPckEditDefault = '%s, default: %s';
+  lisPckEditCheckAvailabilityOnline = 'Check availability online';
   lisPckEditAvailableOnline = '(available online)';
   lisPckEditFPMakePackage = '(fpmake)';
   lisPckEditDependencyProperties = 'Dependency Properties';
