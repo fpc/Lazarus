@@ -7464,7 +7464,7 @@ begin
   MainBuildBoss.SetBuildTargetProject1(false);
 
   // load required packages
-  PkgBoss.OpenProjectDependencies(Project1,true);
+  PkgBoss.OpenProjectDependencies(Project1, MainIDE.IDEStarted);
 
   Project1.DefineTemplates.AllChanged;
   //DebugLn('CompleteLoadingProjectInfo ',Project1.IDAsString);
