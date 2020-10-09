@@ -2192,8 +2192,8 @@ begin
       UpdatePEProperties(true);
     if pefNeedUpdateButtons in fFlags then
       UpdateButtons(true);
-    if pefNeedUpdateApplyDependencyButton in fFlags then
-      FPropGui.UpdateApplyDependencyButton(true);
+    //if pefNeedUpdateApplyDependencyButton in fFlags then
+    //  FPropGui.UpdateApplyDependencyButton(true);
     if pefNeedUpdateStatusBar in fFlags then
       UpdateStatusBar(true);
     IdleConnected:=false;

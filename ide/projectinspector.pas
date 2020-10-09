@@ -196,10 +196,10 @@ type
     procedure ProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
     procedure PackageListAvailable(Sender: TObject);
-    function CanUpdate(Flag: TPEFlag): boolean;
-    procedure UpdateProjectFiles;
-    procedure UpdateProperties;
-    procedure UpdateButtons;
+    function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
+    procedure UpdateFiles(Immediately: boolean = false);
+    procedure UpdateProperties(Immediately: boolean = false);
+    procedure UpdateButtons(Immediately: boolean = false);
     procedure UpdatePending;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -208,8 +208,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function IsUpdateLocked: boolean; inline;
-    procedure UpdateTitle;
-    procedure UpdateRequiredPackages;
+    procedure UpdateTitle(Immediately: boolean = false);
+    procedure UpdateRequiredPackages(Immediately: boolean = false);
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
   public
     // IFilesEditorInterface
@@ -943,7 +943,7 @@ begin
     end;
     if HasChanged then begin
       LazProject.Modified:=true;
-      UpdateProjectFiles;
+      UpdateFiles;
     end;
   finally
     EndUpdate;
@@ -1048,7 +1048,7 @@ end;
 
 function TProjectInspectorForm.GetDependencyToUpdate(Immediately: boolean): TPkgDependencyID;
 begin
-  if CanUpdate(pefNeedUpdateApplyDependencyButton) then
+  if CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then
     Result:=GetSingleSelectedDependency
   else
     Result:=nil;
@@ -1166,14 +1166,14 @@ begin
     Result:=FPropGui.GetDependencyImageIndex(TPkgDependency(Item));
 end;
 
-procedure TProjectInspectorForm.UpdateProjectFiles;
+procedure TProjectInspectorForm.UpdateFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
   Filename: String;
   ANodeData : TPENodeData;
 begin
-  if not CanUpdate(pefNeedUpdateFiles) then exit;
+  if not CanUpdate(pefNeedUpdateFiles,Immediately) then exit;
   FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
   FilesBranch.ClearNodeData;
   FPropGui.FreeNodeData(penFile);
@@ -1198,13 +1198,13 @@ begin
   UpdateButtons;
 end;
 
-procedure TProjectInspectorForm.UpdateRequiredPackages;
+procedure TProjectInspectorForm.UpdateRequiredPackages(Immediately: boolean);
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   ANodeData : TPENodeData;
 begin
-  if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
+  if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
   RequiredBranch:=FilterEdit.GetCleanBranch(FDependenciesNode);
   RequiredBranch.ClearNodeData;
   FPropGui.FreeNodeData(penDependency);
@@ -1294,10 +1294,9 @@ end;
 
 procedure TProjectInspectorForm.IdleHandler(Sender: TObject; var Done: Boolean);
 begin
-  if IsUpdateLocked then
-    IdleConnected:=false
-  else
-    UpdatePending;
+  if fUpdateLock>0 then exit;
+  IdleConnected:=false;
+  UpdatePending;
 end;
 
 function TProjectInspectorForm.GetSingleSelectedDependency: TPkgDependency;
@@ -1433,20 +1432,31 @@ end;
 
 procedure TProjectInspectorForm.UpdateAll(Immediately: boolean);
 begin
-  UpdateTitle;
-  UpdateProjectFiles;
-  UpdateRequiredPackages;
-  UpdateButtons;
+  if csDestroying in ComponentState then exit;
+  fFlags:=fFlags+[
+    pefNeedUpdateTitle,
+    pefNeedUpdateFiles,
+    pefNeedUpdateRequiredPkgs,
+    pefNeedUpdateProperties,
+    pefNeedUpdateButtons,
+    pefNeedUpdateApplyDependencyButton,
+    pefNeedUpdateStatusBar];
+  //UpdateTitle;
+  //UpdateFiles;
+  //UpdateRequiredPackages;
+  //UpdateButtons;
   if Immediately then
-    UpdatePending;
+    UpdatePending
+  else
+    IdleConnected:=true;
 end;
 
-procedure TProjectInspectorForm.UpdateTitle;
+procedure TProjectInspectorForm.UpdateTitle(Immediately: boolean);
 var
   NewCaption: String;
   IconStream: TStream;
 begin
-  if not CanUpdate(pefNeedUpdateTitle) then exit;
+  if not CanUpdate(pefNeedUpdateTitle,Immediately) then exit;
   Icon.Clear;
   if LazProject=nil then
     Caption:=lisMenuProjectInspector
@@ -1472,7 +1482,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateProperties;
+procedure TProjectInspectorForm.UpdateProperties(Immediately: boolean);
 var
   CurDependency, SingleSelectedDep: TPkgDependency;
   TVNode, SingleSelectedDirectory: TTreeNode;
@@ -1481,7 +1491,7 @@ var
   i, SelFileCount, SelDepCount, SelUnitCount, SelDirCount: Integer;
   SingleSelectedRemoved: Boolean;
 begin
-  if not CanUpdate(pefNeedUpdateProperties) then exit;
+  if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
   //GuiToFileOptions(False);
 
   // check selection
@@ -1551,7 +1561,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateButtons;
+procedure TProjectInspectorForm.UpdateButtons(Immediately: boolean);
 var
   i: Integer;
   TVNode: TTreeNode;
@@ -1561,7 +1571,7 @@ var
   CurUnitInfo: TUnitInfo;
   CanOpenCount: Integer;
 begin
-  if not CanUpdate(pefNeedUpdateButtons) then exit;
+  if not CanUpdate(pefNeedUpdateButtons,Immediately) then exit;
   CanRemoveCount:=0;
   CanOpenCount:=0;
   if Assigned(LazProject) then
@@ -1590,24 +1600,31 @@ end;
 
 procedure TProjectInspectorForm.UpdatePending;
 begin
-  if pefNeedUpdateFiles in FFlags then
-    UpdateProjectFiles;
-  if pefNeedUpdateRequiredPkgs in FFlags then
-    UpdateRequiredPackages;
-  if pefNeedUpdateTitle in FFlags then
-    UpdateTitle;
-  if pefNeedUpdateProperties in FFlags then
-    UpdateProperties;
-  if pefNeedUpdateButtons in FFlags then
-    UpdateButtons;
-  IdleConnected:=false;
+  ItemsTreeView.BeginUpdate;
+  try
+    if pefNeedUpdateTitle in FFlags then
+      UpdateTitle(True);
+    if pefNeedUpdateFiles in FFlags then
+      UpdateFiles(True);
+    if pefNeedUpdateRequiredPkgs in FFlags then
+      UpdateRequiredPackages(True);
+    if pefNeedUpdateProperties in FFlags then
+      UpdateProperties(True);
+    if pefNeedUpdateButtons in FFlags then
+      UpdateButtons(True);
+    //if pefNeedUpdateApplyDependencyButton in fFlags then
+    //  FPropGui.UpdateApplyDependencyButton(true);
+    IdleConnected:=false;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
 end;
 
-function TProjectInspectorForm.CanUpdate(Flag: TPEFlag): boolean;
+function TProjectInspectorForm.CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
 begin
   Result:=false;
   if csDestroying in ComponentState then exit;
-  if IsUpdateLocked then begin
+  if (FUpdateLock>0) and not Immediately then begin
     Include(fFlags,Flag);
     IdleConnected:=true;
   end else begin
