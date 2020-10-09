@@ -1093,6 +1093,7 @@ begin
       Add('Symbian');
       Add('MSDOS');
       Add('Wii');
+      Add('iOS');
     end;
     ItemIndex:=0;
   end;

@@ -109,7 +109,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..37] of shortstring =(
+  FPCOperatingSystemNames: array[1..38] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -127,6 +127,7 @@ const
      'go32v2',
      'haiku',
      'iphonesim',
+     'ios',
      'java',
      'msdos',
      'morphos',
@@ -142,7 +143,7 @@ const
      'wdosx',
      'wii'
     );
-  FPCOperatingSystemCaptions: array[1..37] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..38] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -159,6 +160,7 @@ const
      'Go32v2',
      'Haiku',
      'iPhoneSim',
+     'iOS',
      'Java',
      'Linux',
      'MacOS',
@@ -3636,6 +3638,7 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   or (CompareText(TargetOS,'dragonfly')=0)
   or (CompareText(TargetOS,'darwin')=0)
+  or (CompareText(TargetOS,'ios')=0)
   or (CompareText(TargetOS,'solaris')=0)
   or (CompareText(TargetOS,'haiku')=0)
   or (CompareText(TargetOS,'android')=0)
