@@ -250,17 +250,17 @@ end;
 
 procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
 // CloseButton is now "Install".
-var
-  OpmRes: TModalResult;
 begin
   ModalResult := mrNone;
-  OpmRes := InstallOnlinePackages;
-  if OpmRes = mrCancel then Exit;
-  UpdateAvailableDependencyNames;
-  if OpmRes = mrRetry then   // mrRetry means the IDE must be rebuilt.
-  begin
-    Self.Hide;
-    MainIDEInterface.DoBuildLazarus([]);
+  case InstallOnlinePackages of
+    mrCancel: Exit;
+    mrRetry:   // mrRetry means the IDE must be rebuilt.
+      begin
+        Self.Hide;
+        MainIDEInterface.DoBuildLazarus([]);
+      end;
+    else
+      UpdateAvailableDependencyNames;
   end;
 end;
 
