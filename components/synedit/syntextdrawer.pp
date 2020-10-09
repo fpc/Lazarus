@@ -1241,7 +1241,7 @@ begin
 end;
 
 {$IFDEF WINDOWS_LIGATURE}
-function GetCharacterPlacementW(hdc: HDC; lpString: LPCWSTR; nCount, nMaxExtend: Integer; var lpResults: GCP_RESULTSW; dwFlags: DWORD): DWORD; external 'gdi32' name 'GetCharacterPlacementW';
+function GetCharacterPlacementW(hdc: HDC; lpString: LPCWSTR; nCount, nMaxExtend: Integer; var lpResults: GCP_RESULTSW; dwFlags: DWORD): DWORD; stdcall; external 'gdi32' name 'GetCharacterPlacementW';
 {$ENDIF}
 procedure TheTextDrawer.NewTextOut(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; ALength: Integer; AnEto: TEtoBuffer);
