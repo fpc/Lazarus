@@ -10,6 +10,8 @@ uses
   LCLType, LCLIntf, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, Graphics, ExtCtrls,
   // LazControls
   ListFilterEdit,
+  // LazUtils
+  LazLoggerBase,
   // BuildIntf
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
@@ -38,12 +40,14 @@ type
     pnLocalPkg: TPanel;
     pnOnlinePkg: TPanel;
     procedure cbLocalPkgChange(Sender: TObject);
+    procedure cbOnlinePkgChange(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure DependPkgNameListBoxDrawItem(Control: TWinControl;
       Index: Integer; ARect: TRect; State: TOwnerDrawState);
     procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     function InstallOnlinePackages: TModalResult;
   private
@@ -54,6 +58,7 @@ type
     procedure AddUniquePackagesToList(APackageID: TLazPackageID);
     procedure UpdateAvailableDependencyNames;
     function IsInstallButtonVisible: Boolean;
+    procedure PackageListAvailable(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,11 +127,24 @@ end;
 
 procedure TAddPkgDependencyDialog.FormCreate(Sender: TObject);
 begin
-  DependPkgTypeLabel.Visible := OPMInterface <> nil;
-  pnLocalPkg.Visible := OPMInterface <> nil;
-  pnOnlinePkg.Visible := OPMInterface <> nil;
-  BP.CloseButton.Visible := False;      // CloseButton is now "Install".
+  if Assigned(OPMInterface) then
+    cbOnlinePkg.Checked := OPMInterface.IsPackageListLoaded
+  else begin
+    DependPkgTypeLabel.Visible := False;
+    pnLocalPkg.Visible := False;
+    pnOnlinePkg.Visible := False;
+  end;
+  cbOnlinePkg.OnChange := @cbOnlinePkgChange; // Set handler after setting Checked.
+  BP.CloseButton.Visible := False;            // CloseButton is now "Install".
   DependPkgNameListBox.ItemHeight := MulDiv(20, Screen.PixelsPerInch, 96);
+  if OPMInterface <> nil then
+    OPMInterface.AddPackageListNotification(@PackageListAvailable);
+end;
+
+procedure TAddPkgDependencyDialog.FormDestroy(Sender: TObject);
+begin
+  if OPMInterface <> nil then
+    OPMInterface.RemovePackageListNotification(@PackageListAvailable);
 end;
 
 procedure TAddPkgDependencyDialog.DependPkgNameListBoxDrawItem(
@@ -175,6 +193,12 @@ begin
   Result := False;
 end;
 
+procedure TAddPkgDependencyDialog.PackageListAvailable(Sender: TObject);
+begin
+  DebugLn(['TAddPkgDependencyDialog.PackageListAvailable: ', fProjPack.IDAsString]);
+  UpdateAvailableDependencyNames;
+end;
+
 procedure TAddPkgDependencyDialog.DependPkgNameListBoxSelectionChange(
   Sender: TObject; User: boolean);
 begin
@@ -185,6 +209,15 @@ end;
 procedure TAddPkgDependencyDialog.cbLocalPkgChange(Sender: TObject);
 begin
   UpdateAvailableDependencyNames;
+end;
+
+procedure TAddPkgDependencyDialog.cbOnlinePkgChange(Sender: TObject);
+begin
+  Assert(Assigned(OPMInterface), 'TAddPkgDependencyDialog: OPMInterface=Nil.');
+  if (Sender as TCheckBox).Checked and not OPMInterface.IsPackageListLoaded then
+    OPMInterface.GetPackageList  // ListBox will be updated later by an event.
+  else
+    UpdateAvailableDependencyNames;
 end;
 
 function TAddPkgDependencyDialog.InstallOnlinePackages: TModalResult;
@@ -216,6 +249,7 @@ begin
 end;
 
 procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
+// CloseButton is now "Install".
 var
   OpmRes: TModalResult;
 begin
