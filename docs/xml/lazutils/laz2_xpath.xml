@@ -559,10 +559,10 @@
             <var>Evaluate</var> is an overridden <var>TXPathVariable</var> function that implements the method defined in the ancestor class. Evaluate is used to derive the value for the function call using any arguments found in the XPath expression, and to store the result in the TXPathVariable return value.
           </p>
           <p>
-            Evaluate uses the AEnvironment parameter to access the function names (and their implementations) available in the XPath environment. If a function with the required name is not found in AEnvironment, the EvaluationError routine is called to raise an exception with the message in lrsEvalUnknownFunction.
+            Evaluate uses the <var>AEnvironment</var> parameter to access the function names (and their implementations) available in the XPath environment. If a function with the required name is not found in AEnvironment, the <var>EvaluationError</var> routine is called to raise an exception with the message in <var>lrsEvalUnknownFunction</var>.
           </p>
           <p>
-            Evaluate creates an internal TXPathVarList instance that is used to store the value for any arguments in the XPath expression. The list, and the context node in AContext, are passed to the function call. The internal list is freed prior to exiting from the method.
+            Evaluate creates an internal <var>TXPathVarList</var> instance that is used to store the value for any arguments in the XPath expression. The list, and the context node in <var>AContext</var>, are passed to the function call. The internal list is freed prior to exiting from the method.
           </p>
         </descr>
         <seealso>
@@ -2164,7 +2164,7 @@
       <element name="TXPathEnvironment.FVariables"/>
 
       <!-- function Visibility: private -->
-      <element name="TXPathEnvironment.GetFunctionCount" link="TXPathEnvironment.FunctionCount">
+      <element name="TXPathEnvironment.GetFunctionCount" link="#lazutils.laz2_xpath.TXPathEnvironment.FunctionCount">
         <short>Gets the value for the FunctionCount property</short>
       </element>
 
@@ -2174,7 +2174,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TXPathEnvironment.GetVariableCount" link="TXPathEnvironment.VariableCount">
+      <element name="TXPathEnvironment.GetVariableCount" link="#lazutils.laz2_xpath.TXPathEnvironment.VariableCount">
         <short>Gets the value for the VariableCount property</short>
       </element>
 

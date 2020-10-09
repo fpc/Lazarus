@@ -519,13 +519,13 @@
             Create allocates resources needed for members in the class instance, and assigns the <var>OnChange</var> event handler used in the internal <var>TChangeLink</var> instance when the <var>Images</var> property is altered.
           </p>
           <p>
-            Create sets the default value in the <var>State</var> property to     <var>asNormal</var>.
+            Create sets the default value in the <var>State</var> property to <var>asNormal</var>.
           </p>
         </descr>
         <seealso>
           <link id="TCustomActionList.Images"/>
           <link id="#LCL.ImgList.TChangeLink.OnChange"/>
-          <link id="#LCL.LCLClasses.TLCLComponent.Create"/>
+          <link id="#rtl.classes.TComponent.Create"/>
         </seealso>
       </element>
       <element name="TCustomActionList.Create.AOwner">

@@ -118,7 +118,7 @@
         </seealso>
       </element>
 
-      <element name="TRubberBand" link="TCustomRubberBand">
+      <element name="TRubberBand" link="#lcl.rubberband.TCustomRubberBand">
         <short>
           Implements a rubber-band selection
         </short>

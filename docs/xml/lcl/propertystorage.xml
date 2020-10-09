@@ -74,17 +74,17 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TStoredValue.FName" link="TStoredValue.Name"/>
-      <element name="TStoredValue.FValue" link="TStoredValue.Value"/>
-      <element name="TStoredValue.FKeyString" link="TStoredValue.KeyString"/>
-      <element name="TStoredValue.FOnSave" link="TStoredValue.OnSave"/>
-      <element name="TStoredValue.FOnRestore" link="TStoredValue.OnRestore"/>
+      <element name="TStoredValue.FName" link="#lcl.propertystorage.TStoredValue.Name"/>
+      <element name="TStoredValue.FValue" link="#lcl.propertystorage.TStoredValue.Value"/>
+      <element name="TStoredValue.FKeyString" link="#lcl.propertystorage.TStoredValue.KeyString"/>
+      <element name="TStoredValue.FOnSave" link="#lcl.propertystorage.TStoredValue.OnSave"/>
+      <element name="TStoredValue.FOnRestore" link="#lcl.propertystorage.TStoredValue.OnRestore"/>
       <!-- function Visibility: private -->
-      <element name="TStoredValue.IsValueStored" link="TStoredValue.Value"/>
+      <element name="TStoredValue.IsValueStored" link="#lcl.propertystorage.TStoredValue.Value"/>
       <element name="TStoredValue.IsValueStored.Result"><short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TStoredValue.GetStoredValues" link="TStoredValue.StoredValues"/>
+      <element name="TStoredValue.GetStoredValues" link="#lcl.propertystorage.TStoredValue.StoredValues"/>
       <element name="TStoredValue.GetStoredValues.Result"><short/>
       </element>
       <!-- function Visibility: protected -->
@@ -97,7 +97,7 @@
       <element name="TStoredValue.GetDisplayName.Result"><short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStoredValue.SetDisplayName" link="TStoredValue.Name"/>
+      <element name="TStoredValue.SetDisplayName" link="#lcl.propertystorage.TStoredValue.Name"/>
       <element name="TStoredValue.SetDisplayName.AValue"><short/>
       </element>
       <!-- constructor Visibility: public -->
@@ -182,39 +182,39 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TStoredValues.FStorage" link="TStoredValues.Storage"/>
+      <element name="TStoredValues.FStorage" link="#lcl.propertystorage.TStoredValues.Storage"/>
       <!-- function Visibility: private -->
-      <element name="TStoredValues.GetValue" link="TStoredValues.Values"/>
+      <element name="TStoredValues.GetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
       <element name="TStoredValues.GetValue.Result"><short/>
       </element>
       <element name="TStoredValues.GetValue.AName"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TStoredValues.SetValue" link="TStoredValues.Values"/>
+      <element name="TStoredValues.SetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
       <element name="TStoredValues.SetValue.AName"><short/>
       </element>
       <element name="TStoredValues.SetValue.AStoredValue"><short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TStoredValues.GetStoredValue" link="TStoredValues.StoredValue"/>
+      <element name="TStoredValues.GetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
       <element name="TStoredValues.GetStoredValue.Result"><short/>
       </element>
       <element name="TStoredValues.GetStoredValue.AName"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TStoredValues.SetStoredValue" link="TStoredValues.StoredValue"/>
+      <element name="TStoredValues.SetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
       <element name="TStoredValues.SetStoredValue.AName"><short/>
       </element>
       <element name="TStoredValues.SetStoredValue.Value"><short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TStoredValues.GetItem" link="TStoredValues.Items"/>
+      <element name="TStoredValues.GetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
       <element name="TStoredValues.GetItem.Result"><short/>
       </element>
       <element name="TStoredValues.GetItem.Index"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TStoredValues.SetItem" link="TStoredValues.Items"/>
+      <element name="TStoredValues.SetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
       <element name="TStoredValues.SetItem.Index"><short/>
       </element>
       <element name="TStoredValues.SetItem.AStoredValue"><short/>
@@ -299,15 +299,15 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TPropertyStorageLink.FStorage" link="TPropertyStorageLink.Storage"/>
-      <element name="TPropertyStorageLink.FOnSave" link="TPropertyStorageLink.OnSave"/>
-      <element name="TPropertyStorageLink.FOnLoad" link="TPropertyStorageLink.OnLoad"/>
+      <element name="TPropertyStorageLink.FStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
+      <element name="TPropertyStorageLink.FOnSave" link="#lcl.propertystorage.TPropertyStorageLink.OnSave"/>
+      <element name="TPropertyStorageLink.FOnLoad" link="#lcl.propertystorage.TPropertyStorageLink.OnLoad"/>
       <!-- function Visibility: private -->
-      <element name="TPropertyStorageLink.GetRootSection" link="TPropertyStorageLink.RootSection"/>
+      <element name="TPropertyStorageLink.GetRootSection" link="#lcl.propertystorage.TPropertyStorageLink.RootSection"/>
       <element name="TPropertyStorageLink.GetRootSection.Result"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TPropertyStorageLink.SetStorage" link="TPropertyStorageLink.Storage"/>
+      <element name="TPropertyStorageLink.SetStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
       <element name="TPropertyStorageLink.SetStorage.Value"><short/>
       </element>
       <!-- procedure Visibility: protected -->
@@ -378,10 +378,10 @@
         </notes>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomPropertyStorage.FOnRestoringProperties" link="TCustomPropertyStorage.OnRestoringProperties"/>
-      <element name="TCustomPropertyStorage.FOnSavingProperties" link="TCustomPropertyStorage.OnSavingProperties"/>
-      <element name="TCustomPropertyStorage.FStoredValues" link="TCustomPropertyStorage.StoredValues"/>
-      <element name="TCustomPropertyStorage.FActive" link="TCustomPropertyStorage.Active"/>
+      <element name="TCustomPropertyStorage.FOnRestoringProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoringProperties"/>
+      <element name="TCustomPropertyStorage.FOnSavingProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSavingProperties"/>
+      <element name="TCustomPropertyStorage.FStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
+      <element name="TCustomPropertyStorage.FActive" link="#lcl.propertystorage.TCustomPropertyStorage.Active"/>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FLinks">
         <short>The list of linked property collections</short>
@@ -407,8 +407,8 @@
         </notes>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomPropertyStorage.FOnSaveProperties" link="TCustomPropertyStorage.OnSaveProperties"/>
-      <element name="TCustomPropertyStorage.FOnRestoreProperties" link="TCustomPropertyStorage.OnRestoreProperties"/>
+      <element name="TCustomPropertyStorage.FOnSaveProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSaveProperties"/>
+      <element name="TCustomPropertyStorage.FOnRestoreProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoreProperties"/>
       <!-- procedure Visibility: private -->
       <element name="TCustomPropertyStorage.AddLink">
         <short>Establish a connection to a property collection.
@@ -442,23 +442,23 @@
       <element name="TCustomPropertyStorage.NotifyLinks.Operation"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomPropertyStorage.SetStoredValues" link="TCustomPropertyStorage.StoredValues"/>
+      <element name="TCustomPropertyStorage.SetStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
       <element name="TCustomPropertyStorage.SetStoredValues.Value"><short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TCustomPropertyStorage.GetStoredValue" link="TCustomPropertyStorage.StoredValue"/>
+      <element name="TCustomPropertyStorage.GetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
       <element name="TCustomPropertyStorage.GetStoredValue.Result"><short/>
       </element>
       <element name="TCustomPropertyStorage.GetStoredValue.AName"><short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomPropertyStorage.SetStoredValue" link="TCustomPropertyStorage.StoredValue"/>
+      <element name="TCustomPropertyStorage.SetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
       <element name="TCustomPropertyStorage.SetStoredValue.AName"><short/>
       </element>
       <element name="TCustomPropertyStorage.SetStoredValue.Value"><short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomPropertyStorage.GetRoot" link="TCustomPropertyStorage.Root"/>
+      <element name="TCustomPropertyStorage.GetRoot" link="#lcl.propertystorage.TCustomPropertyStorage.Root"/>
       <element name="TCustomPropertyStorage.GetRoot.Result"><short/>
       </element>
       <!-- function Visibility: protected -->

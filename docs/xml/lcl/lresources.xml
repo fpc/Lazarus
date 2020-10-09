@@ -100,7 +100,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLResourceList.Items" name="TLResourceList.FList">
+      <element link="#lcl.lresources.TLResourceList.Items" name="TLResourceList.FList">
         <short>Main list with all resource pointers.</short>
         <descr/>
         <seealso/>
@@ -133,7 +133,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element link="TLResourceList.Items" name="TLResourceList.GetItems"/>
+      <element link="#lcl.lresources.TLResourceList.Items" name="TLResourceList.GetItems"/>
       <element name="TLResourceList.GetItems.Result">
         <short/>
       </element>
@@ -256,7 +256,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLazarusResourceStream.Res" name="TLazarusResourceStream.FLRes"/>
+      <element link="#lcl.lresources.TLazarusResourceStream.Res" name="TLazarusResourceStream.FLRes"/>
       <!-- variable Visibility: private -->
       <element name="TLazarusResourceStream.FPRes">
         <short>Resource in FPC format.</short>
@@ -443,7 +443,7 @@
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element link="TLRSORStackItem" name="PLRSORStackItem"/>
+      <element link="#lcl.lresources.TLRSORStackItem" name="PLRSORStackItem"/>
       <!-- object Visibility: default -->
       <element name="TLRSObjectReader">
         <short>Reader for resource streams.</short>
@@ -453,7 +453,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLRSObjectReader.Stream" name="TLRSObjectReader.FStream"/>
+      <element link="#lcl.lresources.TLRSObjectReader.Stream" name="TLRSObjectReader.FStream"/>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FBuffer">
         <short>The input stream buffer.</short>
@@ -497,7 +497,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLRSObjectReader.Reader" name="TLRSObjectReader.FReader"/>
+      <element link="#lcl.lresources.TLRSObjectReader.Reader" name="TLRSObjectReader.FReader"/>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.SkipProperty">
         <short>Skip the property name, then the property value.</short>
@@ -869,7 +869,7 @@
         </notes>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element link="TLRSObjectReader" name="TLRSObjectReaderClass"/>
+      <element link="#lcl.lresources.TLRSObjectReader" name="TLRSObjectReaderClass"/>
       <!-- enumeration type Visibility: default -->
       <element name="TLRSOWStackItemState">
         <short>Tracking what already has been stored or written.</short>
@@ -955,7 +955,7 @@
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element link="TLRSOWStackItem" name="PLRSOWStackItem"/>
+      <element link="#lcl.lresources.TLRSOWStackItem" name="PLRSOWStackItem"/>
       <!-- object Visibility: default -->
       <element name="TLRSObjectWriter">
         <short>Object writer for Lazarus Resource Streams.
@@ -1010,9 +1010,9 @@
         <short/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLRSObjectWriter.WriteEmptyInheritedChilds" name="TLRSObjectWriter.FWriteEmptyInheritedChilds"/>
+      <element link="#lcl.lresources.TLRSObjectWriter.WriteEmptyInheritedChilds" name="TLRSObjectWriter.FWriteEmptyInheritedChilds"/>
       <!-- variable Visibility: private -->
-      <element link="TLRSObjectWriter.Writer" name="TLRSObjectWriter.FWriter"/>
+      <element link="#lcl.lresources.TLRSObjectWriter.Writer" name="TLRSObjectWriter.FWriter"/>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.Push">
         <short/>
@@ -1482,7 +1482,7 @@
         <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element link="TLRSObjectWriter" name="TLRSObjectWriterClass"/>
+      <element link="#lcl.lresources.TLRSObjectWriter" name="TLRSObjectWriterClass"/>
       <!-- record type Visibility: default -->
       <element name="TLRPositionLink">
         <short/>
@@ -1510,7 +1510,7 @@
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element link="TLRPositionLink" name="PLRPositionLink"/>
+      <element link="#lcl.lresources.TLRPositionLink" name="PLRPositionLink"/>
       <!-- class Visibility: default -->
       <element name="TLRPositionLinks">
         <short/>
@@ -1526,9 +1526,9 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TLRPositionLinks.Count" name="TLRPositionLinks.FCount"/>
+      <element link="#lcl.lresources.TLRPositionLinks.Count" name="TLRPositionLinks.FCount"/>
       <!-- function Visibility: private -->
-      <element link="TLRPositionLinks.Data" name="TLRPositionLinks.GetData"/>
+      <element link="#lcl.lresources.TLRPositionLinks.Data" name="TLRPositionLinks.GetData"/>
       <element name="TLRPositionLinks.GetData.Result">
         <short/>
       </element>
@@ -1536,7 +1536,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element link="TLRPositionLinks.LFM" name="TLRPositionLinks.GetLFM"/>
+      <element link="#lcl.lresources.TLRPositionLinks.LFM" name="TLRPositionLinks.GetLFM"/>
       <element name="TLRPositionLinks.GetLFM.Result">
         <short/>
       </element>
@@ -1544,7 +1544,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element link="TLRPositionLinks.LRS" name="TLRPositionLinks.GetLRS"/>
+      <element link="#lcl.lresources.TLRPositionLinks.LRS" name="TLRPositionLinks.GetLRS"/>
       <element name="TLRPositionLinks.GetLRS.Result">
         <short/>
       </element>
@@ -1561,7 +1561,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element link="TLRPositionLinks.Data" name="TLRPositionLinks.SetData"/>
+      <element link="#lcl.lresources.TLRPositionLinks.Data" name="TLRPositionLinks.SetData"/>
       <element name="TLRPositionLinks.SetData.Index">
         <short/>
       </element>
@@ -1569,7 +1569,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element link="TLRPositionLinks.LFM" name="TLRPositionLinks.SetLFM"/>
+      <element link="#lcl.lresources.TLRPositionLinks.LFM" name="TLRPositionLinks.SetLFM"/>
       <element name="TLRPositionLinks.SetLFM.Index">
         <short/>
       </element>
@@ -1577,7 +1577,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element link="TLRPositionLinks.LRS" name="TLRPositionLinks.SetLRS"/>
+      <element link="#lcl.lresources.TLRPositionLinks.LRS" name="TLRPositionLinks.SetLRS"/>
       <element name="TLRPositionLinks.SetLRS.Index">
         <short/>
       </element>
@@ -1765,9 +1765,9 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="TUTF8Parser.FloatType" name="TUTF8Parser.fFloatType"/>
-      <element link="TUTF8Parser.SourceLine" name="TUTF8Parser.fSourceLine"/>
-      <element link="TUTF8Parser.Token" name="TUTF8Parser.fToken"/>
+      <element link="#lcl.lresources.TUTF8Parser.FloatType" name="TUTF8Parser.fFloatType"/>
+      <element link="#lcl.lresources.TUTF8Parser.SourceLine" name="TUTF8Parser.fSourceLine"/>
+      <element link="#lcl.lresources.TUTF8Parser.Token" name="TUTF8Parser.fToken"/>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fEofReached">
         <short>True when reached the end of the input stream.</short>
@@ -2174,7 +2174,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomLazComponentQueue.FOnFindComponentClass" link="TCustomLazComponentQueue.OnFindComponentClass"/>
+      <element name="TCustomLazComponentQueue.FOnFindComponentClass" link="#lcl.lresources.TCustomLazComponentQueue.OnFindComponentClass"/>
       <!-- variable Visibility: protected -->
       <element name="TCustomLazComponentQueue.FQueue">
         <short/>
@@ -2332,7 +2332,7 @@
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PRemovedProperty" link="TPropertyToSkip"/>
+      <element name="PRemovedProperty" link="#lcl.lresources.TPropertyToSkip"/>
 <!-- class Visibility: default -->
       <element name="TPropertiesToSkip">
         <short/>
@@ -2466,7 +2466,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="LazarusResources" link="TLResourceList">
+      <element name="LazarusResources" link="#lcl.lresources.TLResourceList">
         <short>The list of all loaded standard resources.</short>
         <descr/>
         <seealso/>

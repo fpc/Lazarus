@@ -245,7 +245,7 @@
         <short>Ordinal position for the changed checkbox</short>
       </element>
 
-      <element name="TListCompareEvent" link="TListItemsCompare">
+      <element name="TListCompareEvent" link="#lcl.comboex.TListItemsCompare">
         <short/>
         <descr>
           <p>
@@ -862,7 +862,7 @@
         <short>Collection item examined in the method</short>
       </element>
 
-      <element name="TComboExItems.Add" link="TListControlItems.Add">
+      <element name="TComboExItems.Add" link="#lcl.comboex.TListControlItems.Add">
         <short>Adds a new item to the collection</short>
         <descr>
           <p>
@@ -1467,7 +1467,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TComboBoxEx" link="TCustomComboBoxEx">
+      <element name="TComboBoxEx" link="#lcl.comboex.TCustomComboBoxEx">
         <short>Implements an extended Combo Box component</short>
         <descr></descr>
         <seealso>
@@ -1479,8 +1479,8 @@
       <element name="TComboBoxEx.Anchors" link="#lcl.Controls.TControl.Anchors"/>
       <element name="TComboBoxEx.ArrowKeysTraverseList" link="#lcl.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
       <element name="TComboBoxEx.AutoComplete" link="#lcl.StdCtrls.TCustomComboBox.AutoComplete"/>
-      <element name="TComboBoxEx.AutoCompleteOptions" link="TCustomComboBoxEx.AutoCompleteOptions"/>
-      <element name="TComboBoxEx.AutoCompleteText" link="TCustomComboBoxEx.AutoCompleteText"/>
+      <element name="TComboBoxEx.AutoCompleteOptions" link="#lcl.comboex.TCustomComboBoxEx.AutoCompleteOptions"/>
+      <element name="TComboBoxEx.AutoCompleteText" link="#lcl.comboex.TCustomComboBoxEx.AutoCompleteText"/>
       <element name="TComboBoxEx.AutoDropDown" link="#lcl.StdCtrls.TCustomComboBox.AutoDropDown"/>
       <element name="TComboBoxEx.AutoSelect" link="#lcl.StdCtrls.TCustomComboBox.AutoSelect"/>
       <element name="TComboBoxEx.AutoSize" link="#lcl.StdCtrls.TCustomComboBox.AutoSize"/>
@@ -1496,10 +1496,10 @@
       <element name="TComboBoxEx.DropDownCount" link="#lcl.StdCtrls.TCustomComboBox.DropDownCount"/>
       <element name="TComboBoxEx.Enabled" link="#lcl.Controls.TControl.Enabled"/>
       <element name="TComboBoxEx.Font" link="#lcl.Controls.TControl.Font"/>
-      <element name="TComboBoxEx.Images" link="TCustomComboBoxEx.Images"/>
-      <element name="TComboBoxEx.ImagesWidth" link="TCustomComboBoxEx.ImagesWidth"/>
+      <element name="TComboBoxEx.Images" link="#lcl.comboex.TCustomComboBoxEx.Images"/>
+      <element name="TComboBoxEx.ImagesWidth" link="#lcl.comboex.TCustomComboBoxEx.ImagesWidth"/>
       <element name="TComboBoxEx.ItemHeight" link="#lcl.StdCtrls.TCustomComboBox.ItemHeight"/>
-      <element name="TComboBoxEx.ItemsEx" link="TCustomComboBoxEx.ItemsEx"/>
+      <element name="TComboBoxEx.ItemsEx" link="#lcl.comboex.TCustomComboBoxEx.ItemsEx"/>
       <element name="TComboBoxEx.ItemIndex" link="#lcl.StdCtrls.TCustomComboBox.ItemIndex"/>
       <element name="TComboBoxEx.ItemWidth" link="#lcl.StdCtrls.TCustomComboBox.ItemWidth"/>
       <element name="TComboBoxEx.MaxLength" link="#lcl.StdCtrls.TCustomComboBox.MaxLength"/>
@@ -1539,8 +1539,8 @@
       <element name="TComboBoxEx.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
       <element name="TComboBoxEx.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
       <element name="TComboBoxEx.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
-      <element name="TComboBoxEx.Style" link="TCustomComboBoxEx.Style"/>
-      <element name="TComboBoxEx.StyleEx" link="TCustomComboBoxEx.StyleEx"/>
+      <element name="TComboBoxEx.Style" link="#lcl.comboex.TCustomComboBoxEx.Style"/>
+      <element name="TComboBoxEx.StyleEx" link="#lcl.comboex.TCustomComboBoxEx.StyleEx"/>
       <element name="TComboBoxEx.TabOrder" link="#lcl.Controls.TWinControl.TabOrder"/>
       <element name="TComboBoxEx.TabStop" link="#lcl.StdCtrls.TCustomComboBox.TabStop"/>
       <element name="TComboBoxEx.Text" link="#lcl.StdCtrls.TCustomComboBox.Text"/>
@@ -2392,14 +2392,14 @@
         </seealso>
       </element>
 
-      <element name="TCheckComboBox" link="TCustomCheckCombo">
+      <element name="TCheckComboBox" link="#lcl.comboex.TCustomCheckCombo">
         <short>Custom combo box which displays checkboxes for the items in the control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCheckComboBox.Align" link="#lcl.Controls.TControl.Align"/>
-      <element name="TCheckComboBox.AllowGrayed" link="TCustomCheckCombo.AllowGrayed"/>
+      <element name="TCheckComboBox.AllowGrayed" link="#lcl.comboex.TCustomCheckCombo.AllowGrayed"/>
       <element name="TCheckComboBox.Anchors" link="#lcl.Controls.TControl.Anchors"/>
       <element name="TCheckComboBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
       <element name="TCheckComboBox.AutoDropDown" link="#lcl.StdCtrls.TCustomComboBox.AutoDropDown"/>
@@ -2435,7 +2435,7 @@
       <element name="TCheckComboBox.OnEnter" link="#lcl.Controls.TWinControl.OnExit"/>
       <element name="TCheckComboBox.OnExit" link="#lcl.Controls.TWinControl.OnExit"/>
       <element name="TCheckComboBox.OnGetItems" link="#lcl.StdCtrls.TCustomComboBox.OnGetItems"/>
-      <element name="TCheckComboBox.OnItemChange" link="TCustomCheckCombo.OnItemChange"/>
+      <element name="TCheckComboBox.OnItemChange" link="#lcl.comboex.TCustomCheckCombo.OnItemChange"/>
       <element name="TCheckComboBox.OnKeyDown" link="#lcl.Controls.TWinControl.OnKeyDown"/>
       <element name="TCheckComboBox.OnKeyPress" link="#lcl.Controls.TWinControl.OnKeyPress"/>
       <element name="TCheckComboBox.OnKeyUp" link="#lcl.Controls.TWinControl.OnKeyUp"/>

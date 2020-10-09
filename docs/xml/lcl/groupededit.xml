@@ -2044,7 +2044,7 @@
         </descr>
         <seealso>
           <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-          <link id="#LCL.MaskEdit.TCustomMaskEdit.CharCase"/>
+          <link id="#LCL.MaskEdit.TMaskEdit.CharCase"/>
           <link id="#LCL.MaskEdit.TCustomMaskEdit.EditMask"/>
           <link id="#LCL.StdCtrls.TEditCharCase"/>
         </seealso>
@@ -2219,76 +2219,76 @@
         </seealso>
       </element>
 
-      <element name="TAbstractGroupedEdit" link="TCustomAbstractGroupedEdit">
+      <element name="TAbstractGroupedEdit" link="#lcl.groupededit.TCustomAbstractGroupedEdit">
         <seealso>
           <link id="TCustomAbstractGroupedEdit"/>
         </seealso>
       </element>
 
-      <element name="TAbstractGroupedEdit.AutoSelected" link="TCustomAbstractGroupedEdit.AutoSelected"/>
-      <element name="TAbstractGroupedEdit.NumbersOnly" link="TCustomAbstractGroupedEdit.NumbersOnly"/>
+      <element name="TAbstractGroupedEdit.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
+      <element name="TAbstractGroupedEdit.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
       <element name="TAbstractGroupedEdit.Action" link="#LCL.Controls.TControl.Action"/>
-      <element name="TAbstractGroupedEdit.AutoSelect" link="TCustomAbstractGroupedEdit.AutoSelect"/>
-      <element name="TAbstractGroupedEdit.AutoSizeHeightIsEditHeight" link="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
-      <element name="TAbstractGroupedEdit.AutoSize" link="TCustomAbstractGroupedEdit.AutoSize"/>
+      <element name="TAbstractGroupedEdit.AutoSelect" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelect"/>
+      <element name="TAbstractGroupedEdit.AutoSizeHeightIsEditHeight" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
+      <element name="TAbstractGroupedEdit.AutoSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize"/>
       <element name="TAbstractGroupedEdit.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TAbstractGroupedEdit.Alignment" link="TCustomAbstractGroupedEdit.Alignment"/>
+      <element name="TAbstractGroupedEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
       <element name="TAbstractGroupedEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TAbstractGroupedEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TAbstractGroupedEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TAbstractGroupedEdit.BorderStyle" link="#LCL.Controls.TCustomControl.BorderStyle"/>
-      <element name="TAbstractGroupedEdit.BuddyCaption" link="TCustomAbstractGroupedEdit.BuddyCaption"/>
-      <element name="TAbstractGroupedEdit.BuddyCursor" link="TCustomAbstractGroupedEdit.BuddyCursor"/>
-      <element name="TAbstractGroupedEdit.BuddyHint" link="TCustomAbstractGroupedEdit.BuddyHint"/>
-      <element name="TAbstractGroupedEdit.BuddyWidth" link="TCustomAbstractGroupedEdit.BuddyWidth"/>
-      <element name="TAbstractGroupedEdit.CharCase" link="TCustomAbstractGroupedEdit.CharCase"/>
-      <element name="TAbstractGroupedEdit.Color" link="TCustomAbstractGroupedEdit.Color"/>
+      <element name="TAbstractGroupedEdit.BuddyCaption" link="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyCaption"/>
+      <element name="TAbstractGroupedEdit.BuddyCursor" link="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyCursor"/>
+      <element name="TAbstractGroupedEdit.BuddyHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyHint"/>
+      <element name="TAbstractGroupedEdit.BuddyWidth" link="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyWidth"/>
+      <element name="TAbstractGroupedEdit.CharCase" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase"/>
+      <element name="TAbstractGroupedEdit.Color" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Color"/>
       <element name="TAbstractGroupedEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TAbstractGroupedEdit.Cursor" link="#LCL.Controls.TControl.Cursor"/>
-      <element name="TAbstractGroupedEdit.DirectInput" link="TCustomAbstractGroupedEdit.DirectInput"/>
-      <element name="TAbstractGroupedEdit.EchoMode" link="TCustomAbstractGroupedEdit.EchoMode"/>
+      <element name="TAbstractGroupedEdit.DirectInput" link="#lcl.groupededit.TCustomAbstractGroupedEdit.DirectInput"/>
+      <element name="TAbstractGroupedEdit.EchoMode" link="#lcl.groupededit.TCustomAbstractGroupedEdit.EchoMode"/>
       <element name="TAbstractGroupedEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TAbstractGroupedEdit.FocusOnBuddyClick" link="TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
+      <element name="TAbstractGroupedEdit.FocusOnBuddyClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.FocusOnBuddyClick"/>
       <element name="TAbstractGroupedEdit.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TAbstractGroupedEdit.Hint" link="#LCL.Controls.TControl.Hint"/>
-      <element name="TAbstractGroupedEdit.Layout" link="TCustomAbstractGroupedEdit.Layout"/>
-      <element name="TAbstractGroupedEdit.MaxLength" link="TCustomAbstractGroupedEdit.MaxLength"/>
-      <element name="TAbstractGroupedEdit.OnChange" link="TCustomAbstractGroupedEdit.OnChange"/>
-      <element name="TAbstractGroupedEdit.OnClick" link="TCustomAbstractGroupedEdit.OnClick"/>
-      <element name="TAbstractGroupedEdit.OnDblClick" link="TCustomAbstractGroupedEdit.OnDblClick"/>
-      <element name="TAbstractGroupedEdit.OnDragDrop" link="TCustomAbstractGroupedEdit.OnDragDrop"/>
-      <element name="TAbstractGroupedEdit.OnDragOver" link="TCustomAbstractGroupedEdit.OnDragOver"/>
+      <element name="TAbstractGroupedEdit.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
+      <element name="TAbstractGroupedEdit.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
+      <element name="TAbstractGroupedEdit.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
+      <element name="TAbstractGroupedEdit.OnClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnClick"/>
+      <element name="TAbstractGroupedEdit.OnDblClick" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDblClick"/>
+      <element name="TAbstractGroupedEdit.OnDragDrop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragDrop"/>
+      <element name="TAbstractGroupedEdit.OnDragOver" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnDragOver"/>
       <element name="TAbstractGroupedEdit.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TAbstractGroupedEdit.OnEditingDone" link="TCustomAbstractGroupedEdit.OnEditingDone"/>
-      <element name="TAbstractGroupedEdit.OnEndDrag" link="TCustomAbstractGroupedEdit.OnEndDrag"/>
-      <element name="TAbstractGroupedEdit.OnEnter" link="TCustomAbstractGroupedEdit.OnEnter"/>
-      <element name="TAbstractGroupedEdit.OnExit" link="TCustomAbstractGroupedEdit.OnExit"/>
-      <element name="TAbstractGroupedEdit.OnKeyDown" link="TCustomAbstractGroupedEdit.OnKeyDown"/>
-      <element name="TAbstractGroupedEdit.OnKeyPress" link="TCustomAbstractGroupedEdit.OnKeyPress"/>
-      <element name="TAbstractGroupedEdit.OnKeyUp" link="TCustomAbstractGroupedEdit.OnKeyUp"/>
-      <element name="TAbstractGroupedEdit.OnMouseDown" link="TCustomAbstractGroupedEdit.OnMouseDown"/>
-      <element name="TAbstractGroupedEdit.OnMouseEnter" link="TCustomAbstractGroupedEdit.OnMouseEnter"/>
-      <element name="TAbstractGroupedEdit.OnMouseLeave" link="TCustomAbstractGroupedEdit.OnMouseLeave"/>
-      <element name="TAbstractGroupedEdit.OnMouseMove" link="TCustomAbstractGroupedEdit.OnMouseMove"/>
-      <element name="TAbstractGroupedEdit.OnMouseUp" link="TCustomAbstractGroupedEdit.OnMouseUp"/>
-      <element name="TAbstractGroupedEdit.OnMouseWheel" link="TCustomAbstractGroupedEdit.OnMouseWheel"/>
-      <element name="TAbstractGroupedEdit.OnMouseWheelDown" link="TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
-      <element name="TAbstractGroupedEdit.OnMouseWheelUp" link="TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
+      <element name="TAbstractGroupedEdit.OnEditingDone" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditingDone"/>
+      <element name="TAbstractGroupedEdit.OnEndDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEndDrag"/>
+      <element name="TAbstractGroupedEdit.OnEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEnter"/>
+      <element name="TAbstractGroupedEdit.OnExit" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnExit"/>
+      <element name="TAbstractGroupedEdit.OnKeyDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyDown"/>
+      <element name="TAbstractGroupedEdit.OnKeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyPress"/>
+      <element name="TAbstractGroupedEdit.OnKeyUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyUp"/>
+      <element name="TAbstractGroupedEdit.OnMouseDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseDown"/>
+      <element name="TAbstractGroupedEdit.OnMouseEnter" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseEnter"/>
+      <element name="TAbstractGroupedEdit.OnMouseLeave" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseLeave"/>
+      <element name="TAbstractGroupedEdit.OnMouseMove" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseMove"/>
+      <element name="TAbstractGroupedEdit.OnMouseUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseUp"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheel" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheel"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheelDown" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
+      <element name="TAbstractGroupedEdit.OnMouseWheelUp" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
       <element name="TAbstractGroupedEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TAbstractGroupedEdit.OnUTF8KeyPress" link="TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
+      <element name="TAbstractGroupedEdit.OnUTF8KeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
       <element name="TAbstractGroupedEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TAbstractGroupedEdit.ParentColor" link="TAbstractGroupedEdit.ParentColor"/>
+      <element name="TAbstractGroupedEdit.ParentColor" link="#lcl.groupededit.TAbstractGroupedEdit.ParentColor"/>
       <element name="TAbstractGroupedEdit.ParentFont" link="#LCL.Controls.TControl.ParentShowFont"/>
       <element name="TAbstractGroupedEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TAbstractGroupedEdit.PasswordChar" link="TCustomAbstractGroupedEdit.PasswordChar"/>
-      <element name="TAbstractGroupedEdit.PopupMenu" link="TCustomAbstractGroupedEdit.PopupMenu"/>
-      <element name="TAbstractGroupedEdit.ReadOnly" link="TCustomAbstractGroupedEdit.ReadOnly"/>
+      <element name="TAbstractGroupedEdit.PasswordChar" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PasswordChar"/>
+      <element name="TAbstractGroupedEdit.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
+      <element name="TAbstractGroupedEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
       <element name="TAbstractGroupedEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TAbstractGroupedEdit.Spacing" link="TCustomAbstractGroupedEdit.Spacing"/>
+      <element name="TAbstractGroupedEdit.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
       <element name="TAbstractGroupedEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TAbstractGroupedEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TAbstractGroupedEdit.Text" link="#LCL.Controls.TControl.Text"/>
-      <element name="TAbstractGroupedEdit.TextHint" link="TCustomAbstractGroupedEdit.TextHint"/>
+      <element name="TAbstractGroupedEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
       <element name="TAbstractGroupedEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
 
     </module>

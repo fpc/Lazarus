@@ -119,7 +119,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TIndexedAVLTreeNode" link="TAVLTreeNode">
+      <element name="TIndexedAVLTreeNode" link="#lazutils.avglvltree.TAVLTreeNode">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -131,7 +131,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TIndexedAVLTree" link="TAvgLvlTree">
+      <element name="TIndexedAVLTree" link="#lazutils.avglvltree.TAvgLvlTree">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -810,7 +810,7 @@
         <short></short>
       </element>
 
-      <element name="TStringMapEnumerator" link="TCustomStringMapEnumerator">
+      <element name="TStringMapEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -829,7 +829,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringMap" link="TCustomStringMap">
+      <element name="TStringMap" link="#lazutils.avglvltree.TCustomStringMap">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -906,7 +906,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringToStringTreeEnumerator" link="TCustomStringMapEnumerator">
+      <element name="TStringToStringTreeEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -927,13 +927,11 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringToStringTree" link="TCustomStringMap">
-        <short>
-          <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees
-        </short>
+      <element name="TStringToStringTree" link="#lazutils.avglvltree.TCustomStringMap">
+        <short>An associative array of StringToString Items, or a tree of trees</short>
         <descr>
           <p>
-            <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.
+            <var>TStringToStringTree</var> implements an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.
           </p>
         </descr>
         <seealso/>
@@ -1235,7 +1233,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringToPointerTree" link="TCustomStringMap">
+      <element name="TStringToPointerTree" link="#lazutils.avglvltree.TCustomStringMap">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -1356,7 +1354,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TFilenameToStringTree" link="TStringToStringTree">
+      <element name="TFilenameToStringTree" link="#lazutils.avglvltree.TStringToStringTree">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -1373,7 +1371,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TFilenameToPointerTree" link="TStringToPointerTree">
+      <element name="TFilenameToPointerTree" link="#lazutils.avglvltree.TStringToPointerTree">
         <short></short>
         <descr></descr>
         <seealso></seealso>

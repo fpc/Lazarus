@@ -2646,7 +2646,7 @@ Default is psSolid
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#fcl.FPCanvas.TFPCustomBrush.SetStyle" name="TBrush.SetStyle">
+      <element name="TBrush.SetStyle">
         <short/>
         <descr/>
         <errors/>
@@ -2970,9 +2970,7 @@ Default is psSolid
           <var>DefineProperties</var> finds out whether the object really is a binary (graphic)</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#RTL.Classes.TPersistent.DefineProperties"/>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.DefineProperties.Filer">
@@ -3764,7 +3762,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+          <link id="#rtl.Classes.TPersistent.Assign"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3785,7 +3783,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPicture.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
+      <element name="TPicture.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -8617,9 +8615,7 @@ Use <var>Pie</var>
         </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomBrush"/>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TBrush.DoDeAllocateResources">
@@ -8636,9 +8632,7 @@ Use <var>Pie</var>
         </short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#fcl.FPCanvas.TFPCustomBrush"/>
-        </seealso>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBrush.DoCopyProps.From">

@@ -275,19 +275,19 @@
         </short>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TControlScrollBar.FIncrement" link="TControlScrollBar.Increment"/>
-      <element name="TControlScrollBar.FKind" link="TControlScrollBar.Kind"/>
-      <element name="TControlScrollBar.FPage" link="TControlScrollBar.Page"/>
-      <element name="TControlScrollBar.FRange" link="TControlScrollBar.Range"/>
-      <element name="TControlScrollBar.FSmooth" link="TControlScrollBar.Smooth"/>
-      <element name="TControlScrollBar.FTracking" link="TControlScrollBar.Tracking"/>
-      <element name="TControlScrollBar.FVisible" link="TControlScrollBar.Visible"/>
+      <element name="TControlScrollBar.FIncrement" link="#lcl.forms.TControlScrollBar.Increment"/>
+      <element name="TControlScrollBar.FKind" link="#lcl.forms.TControlScrollBar.Kind"/>
+      <element name="TControlScrollBar.FPage" link="#lcl.forms.TControlScrollBar.Page"/>
+      <element name="TControlScrollBar.FRange" link="#lcl.forms.TControlScrollBar.Range"/>
+      <element name="TControlScrollBar.FSmooth" link="#lcl.forms.TControlScrollBar.Smooth"/>
+      <element name="TControlScrollBar.FTracking" link="#lcl.forms.TControlScrollBar.Tracking"/>
+      <element name="TControlScrollBar.FVisible" link="#lcl.forms.TControlScrollBar.Visible"/>
       <element name="TControlScrollBar.FOldScrollInfo"/>
       <element name="TControlScrollBar.FOldScrollInfoValid"/>
       <element name="TControlScrollBar.FControl">
         <short>The associated <link id="TScrollingWinControl"/></short>
       </element>
-      <element name="TControlScrollBar.FPosition" link="TControlScrollBar.Position"/>
+      <element name="TControlScrollBar.FPosition" link="#lcl.forms.TControlScrollBar.Position"/>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ControlHandle">
         <short>The Handle for the associated <link id="TScrollingWinControl"/></short>
@@ -315,27 +315,27 @@
         </short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TControlScrollBar.GetIncrement" link="TControlScrollBar.Increment"/>
+      <element name="TControlScrollBar.GetIncrement" link="#lcl.forms.TControlScrollBar.Increment"/>
       <element name="TControlScrollBar.GetIncrement.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.GetPage" link="TControlScrollBar.Page"/>
+      <element name="TControlScrollBar.GetPage" link="#lcl.forms.TControlScrollBar.Page"/>
       <element name="TControlScrollBar.GetPage.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.GetPosition" link="TControlScrollBar.Position"/>
+      <element name="TControlScrollBar.GetPosition" link="#lcl.forms.TControlScrollBar.Position"/>
       <element name="TControlScrollBar.GetPosition.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.GetRange" link="TControlScrollBar.Range"/>
+      <element name="TControlScrollBar.GetRange" link="#lcl.forms.TControlScrollBar.Range"/>
       <element name="TControlScrollBar.GetRange.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.GetSize" link="TControlScrollBar.Size"/>
+      <element name="TControlScrollBar.GetSize" link="#lcl.forms.TControlScrollBar.Size"/>
       <element name="TControlScrollBar.GetSize.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.GetSmooth" link="TControlScrollBar.Smooth"/>
+      <element name="TControlScrollBar.GetSmooth" link="#lcl.forms.TControlScrollBar.Smooth"/>
       <element name="TControlScrollBar.GetSmooth.Result">
         <short/>
       </element>
@@ -347,7 +347,7 @@
       <element name="TControlScrollBar.HandleAllocated.Result">
         <short/>
       </element>
-      <element name="TControlScrollBar.IsRangeStored" link="TControlScrollBar.Range"/>
+      <element name="TControlScrollBar.IsRangeStored" link="#lcl.forms.TControlScrollBar.Range"/>
       <element name="TControlScrollBar.IsRangeStored.Result">
         <short/>
       </element>
@@ -382,35 +382,35 @@
       <element name="TControlScrollBar.ScrollHandler.Message">
         <short>Message examined in the method</short>
       </element>
-      <element name="TControlScrollBar.SetIncrement" link="TControlScrollBar.Increment"/>
+      <element name="TControlScrollBar.SetIncrement" link="#lcl.forms.TControlScrollBar.Increment"/>
       <element name="TControlScrollBar.SetIncrement.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetPage" link="TControlScrollBar.Page"/>
+      <element name="TControlScrollBar.SetPage" link="#lcl.forms.TControlScrollBar.Page"/>
       <element name="TControlScrollBar.SetPage.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetPosition" link="TControlScrollBar.Position"/>
+      <element name="TControlScrollBar.SetPosition" link="#lcl.forms.TControlScrollBar.Position"/>
       <element name="TControlScrollBar.SetPosition.Value">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetRange" link="TControlScrollBar.Range"/>
+      <element name="TControlScrollBar.SetRange" link="#lcl.forms.TControlScrollBar.Range"/>
       <element name="TControlScrollBar.SetRange.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetSize" link="TControlScrollBar.Size"/>
+      <element name="TControlScrollBar.SetSize" link="#lcl.forms.TControlScrollBar.Size"/>
       <element name="TControlScrollBar.SetSize.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetSmooth" link="TControlScrollBar.Smooth"/>
+      <element name="TControlScrollBar.SetSmooth" link="#lcl.forms.TControlScrollBar.Smooth"/>
       <element name="TControlScrollBar.SetSmooth.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetTracking" link="TControlScrollBar.Tracking"/>
+      <element name="TControlScrollBar.SetTracking" link="#lcl.forms.TControlScrollBar.Tracking"/>
       <element name="TControlScrollBar.SetTracking.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="TControlScrollBar.SetVisible" link="TControlScrollBar.Visible"/>
+      <element name="TControlScrollBar.SetVisible" link="#lcl.forms.TControlScrollBar.Visible"/>
       <element name="TControlScrollBar.SetVisible.AValue">
         <short>New value for the property</short>
       </element>
@@ -746,7 +746,7 @@
           <link id="TScrollingWinControl"/>
         </seealso>
       </element>
-      <element name="TControlScrollBar.SmoothIsStored" link="TControlScrollBar.Smooth"/>
+      <element name="TControlScrollBar.SmoothIsStored" link="#lcl.forms.TControlScrollBar.Smooth"/>
       <element name="TControlScrollBar.SmoothIsStored.Result">
         <short/>
       </element>
@@ -811,9 +811,9 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TScrollingWinControl.FHorzScrollBar" link="TScrollingWinControl.HorzScrollBar"/>
-      <element name="TScrollingWinControl.FVertScrollBar" link="TScrollingWinControl.VertScrollBar"/>
-      <element name="TScrollingWinControl.FAutoScroll" link="TScrollingWinControl.AutoScroll"/>
+      <element name="TScrollingWinControl.FHorzScrollBar" link="#lcl.forms.TScrollingWinControl.HorzScrollBar"/>
+      <element name="TScrollingWinControl.FVertScrollBar" link="#lcl.forms.TScrollingWinControl.VertScrollBar"/>
+      <element name="TScrollingWinControl.FAutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
       <!-- variable Visibility: private -->
       <element name="TScrollingWinControl.FIsUpdating">
         <short>Prevents recursive updates, True while an update is already in progress</short>
@@ -821,12 +821,12 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScrollingWinControl.SetHorzScrollBar" link="TScrollingWinControl.HorzScrollBar"/>
+      <element name="TScrollingWinControl.SetHorzScrollBar" link="#lcl.forms.TScrollingWinControl.HorzScrollBar"/>
       <element name="TScrollingWinControl.SetHorzScrollBar.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScrollingWinControl.SetVertScrollBar" link="TScrollingWinControl.VertScrollBar"/>
+      <element name="TScrollingWinControl.SetVertScrollBar" link="#lcl.forms.TScrollingWinControl.VertScrollBar"/>
       <element name="TScrollingWinControl.SetVertScrollBar.Value">
         <short/>
       </element>
@@ -977,7 +977,7 @@
         <short>True when something has changed</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScrollingWinControl.SetAutoScroll" link="TScrollingWinControl.AutoScroll"/>
+      <element name="TScrollingWinControl.SetAutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
       <element name="TScrollingWinControl.SetAutoScroll.Value">
         <short/>
       </element>
@@ -1532,7 +1532,7 @@
         <short/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="TCustomFrameClass" link="TCustomFrame"/>
+      <element name="TCustomFrameClass" link="#lcl.forms.TCustomFrame"/>
       <!-- object Visibility: default -->
       <element name="TFrame">
         <short>
@@ -1557,8 +1557,8 @@
         </descr>
         <seealso/>
       </element>
-      <element name="TFrame.FLCLVersion" link="TFrame.LCLVersion"/>
-      <element name="TFrame.LCLVersionIsStored" link="TFrame.LCLVersion"/>
+      <element name="TFrame.FLCLVersion" link="#lcl.forms.TFrame.LCLVersion"/>
+      <element name="TFrame.LCLVersionIsStored" link="#lcl.forms.TFrame.LCLVersion"/>
       <element name="TFrame.LCLVersionIsStored.Result">
         <short/>
       </element>
@@ -1650,7 +1650,7 @@
       <element name="TBorderIcon.biHelp">
         <short>Window has an Help button</short>
       </element>
-      <element name="TBorderIcons" link="TBorderIcon"/>
+      <element name="TBorderIcons" link="#lcl.forms.TBorderIcon"/>
       <element name="TDefaultMonitor">
         <short>The preferred monitor for showing a form</short>
         <descr>
@@ -1742,7 +1742,7 @@
         <short>disable autosize</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TFormState" link="TFormStateType">
+      <element name="TFormState" link="#lcl.forms.TFormStateType">
         <short>The set of form state flags</short>
         <descr/>
         <seealso/>
@@ -1768,7 +1768,7 @@
         </seealso>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PModalResult" link="TModalResult"/>
+      <element name="PModalResult" link="#lcl.forms.TModalResult"/>
       <!-- enumeration type Visibility: default -->
       <element name="TFormHandlerType">
         <short>TForm Notification handler types</short>
@@ -1992,61 +1992,61 @@
         </seealso>
       </element>
       <!-- variable Visibility: protected -->
-      <element name="TCustomForm.FActive" link="TCustomForm.Active"/>
-      <element name="TCustomForm.FActiveControl" link="TCustomForm.ActiveControl"/>
-      <element name="TCustomForm.FActiveDefaultControl" link="TCustomForm.ActiveDefaultControl"/>
-      <element name="TCustomForm.FAllowDropFiles" link="TCustomForm.AllowDropFiles"/>
-      <element name="TCustomForm.FAlphaBlend" link="TCustomForm.AlphaBlend"/>
-      <element name="TCustomForm.FAlphaBlendValue" link="TCustomForm.AlphaBlendValue"/>
-      <element name="TCustomForm.FBorderIcons" link="TCustomForm.BorderIcons"/>
-      <element name="TCustomForm.FDefaultControl" link="TCustomForm.DefaultControl"/>
-      <element name="TCustomForm.FCancelControl" link="TCustomForm.CancelControl"/>
-      <element name="TCustomForm.FDefaultMonitor" link="TCustomForm.DefaultMonitor"/>
-      <element name="TCustomForm.FDesigner" link="TCustomForm.Designer"/>
-      <element name="TCustomForm.FFormStyle" link="TCustomForm.FormStyle"/>
-      <element name="TCustomForm.FFormUpdateCount" link="TCustomForm.FormIsUpdating"/>
+      <element name="TCustomForm.FActive" link="#lcl.forms.TCustomForm.Active"/>
+      <element name="TCustomForm.FActiveControl" link="#lcl.forms.TCustomForm.ActiveControl"/>
+      <element name="TCustomForm.FActiveDefaultControl" link="#lcl.forms.TCustomForm.ActiveDefaultControl"/>
+      <element name="TCustomForm.FAllowDropFiles" link="#lcl.forms.TCustomForm.AllowDropFiles"/>
+      <element name="TCustomForm.FAlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
+      <element name="TCustomForm.FAlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
+      <element name="TCustomForm.FBorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
+      <element name="TCustomForm.FDefaultControl" link="#lcl.forms.TCustomForm.DefaultControl"/>
+      <element name="TCustomForm.FCancelControl" link="#lcl.forms.TCustomForm.CancelControl"/>
+      <element name="TCustomForm.FDefaultMonitor" link="#lcl.forms.TCustomForm.DefaultMonitor"/>
+      <element name="TCustomForm.FDesigner" link="#lcl.forms.TCustomForm.Designer"/>
+      <element name="TCustomForm.FFormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
+      <element name="TCustomForm.FFormUpdateCount" link="#lcl.forms.TCustomForm.FormIsUpdating"/>
       <element name="TCustomForm.FFormHandlers">
         <short>Lists of installed Form notification handlers</short>
       </element>
-      <element name="TCustomForm.FHelpFile" link="TCustomForm.HelpFile"/>
-      <element name="TCustomForm.FIcon" link="TCustomForm.Icon"/>
-      <element name="TCustomForm.FOnShowModalFinished" link="TCustomForm.OnShowModalFinished"/>
-      <element name="TCustomForm.FPopupMode" link="TCustomForm.PopupMode"/>
-      <element name="TCustomForm.FPopupParent" link="TCustomForm.PopupParent"/>
-      <element name="TCustomForm.FSmallIconHandle" link="TCustomForm.SmallIconHandle"/>
-      <element name="TCustomForm.FBigIconHandle" link="TCustomForm.BigIconHandle"/>
-      <element name="TCustomForm.FKeyPreview" link="TCustomForm.KeyPreview"/>
-      <element name="TCustomForm.FMenu" link="TCustomForm.Menu"/>
-      <element name="TCustomForm.FModalResult" link="TCustomForm.ModalResult"/>
-      <element name="TCustomForm.FLastFocusedControl" link="TCustomForm.SetLastFocusedControl">
+      <element name="TCustomForm.FHelpFile" link="#lcl.forms.TCustomForm.HelpFile"/>
+      <element name="TCustomForm.FIcon" link="#lcl.forms.TCustomForm.Icon"/>
+      <element name="TCustomForm.FOnShowModalFinished" link="#lcl.forms.TCustomForm.OnShowModalFinished"/>
+      <element name="TCustomForm.FPopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
+      <element name="TCustomForm.FPopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
+      <element name="TCustomForm.FSmallIconHandle" link="#lcl.forms.TCustomForm.SmallIconHandle"/>
+      <element name="TCustomForm.FBigIconHandle" link="#lcl.forms.TCustomForm.BigIconHandle"/>
+      <element name="TCustomForm.FKeyPreview" link="#lcl.forms.TCustomForm.KeyPreview"/>
+      <element name="TCustomForm.FMenu" link="#lcl.forms.TCustomForm.Menu"/>
+      <element name="TCustomForm.FModalResult" link="#lcl.forms.TCustomForm.ModalResult"/>
+      <element name="TCustomForm.FLastFocusedControl" link="#lcl.forms.TCustomForm.SetLastFocusedControl">
         <short>Used to track Focus changes (Enter/Exit events)</short>
       </element>
-      <element name="TCustomForm.FOldBorderStyle" link="TCustomForm.DoDock"/>
-      <element name="TCustomForm.FOnActivate" link="TCustomForm.OnActivate"/>
-      <element name="TCustomForm.FOnClose" link="TCustomForm.OnClose"/>
-      <element name="TCustomForm.FOnCloseQuery" link="TCustomForm.OnCloseQuery"/>
-      <element name="TCustomForm.FOnCreate" link="TCustomForm.OnCreate"/>
-      <element name="TCustomForm.FOnDeactivate" link="TCustomForm.OnDeactivate"/>
-      <element name="TCustomForm.FOnDestroy" link="TCustomForm.OnDestroy"/>
-      <element name="TCustomForm.FOnDropFiles" link="TCustomForm.OnDropFiles"/>
-      <element name="TCustomForm.FOnHelp" link="TCustomForm.OnHelp"/>
-      <element name="TCustomForm.FOnHide" link="TCustomForm.OnHide"/>
-      <element name="TCustomForm.FOnShortcut" link="TCustomForm.OnShortcut"/>
-      <element name="TCustomForm.FOnShow" link="TCustomForm.OnShow"/>
-      <element name="TCustomForm.FOnWindowStateChange" link="TCustomForm.OnWindowStateChange"/>
-      <element name="TCustomForm.FPosition" link="TCustomForm.Position"/>
-      <element name="TCustomForm.FRestoredLeft" link="TCustomForm.RestoredLeft"/>
-      <element name="TCustomForm.FRestoredTop" link="TCustomForm.RestoredTop"/>
-      <element name="TCustomForm.FRestoredWidth" link="TCustomForm.RestoredWidth"/>
-      <element name="TCustomForm.FRestoredHeight" link="TCustomForm.RestoredHeight"/>
-      <element name="TCustomForm.FShowInTaskbar" link="TCustomForm.ShowInTaskBar"/>
-      <element name="TCustomForm.FWindowState" link="TCustomForm.WindowState"/>
+      <element name="TCustomForm.FOldBorderStyle" link="#lcl.forms.TCustomForm.DoDock"/>
+      <element name="TCustomForm.FOnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>
+      <element name="TCustomForm.FOnClose" link="#lcl.forms.TCustomForm.OnClose"/>
+      <element name="TCustomForm.FOnCloseQuery" link="#lcl.forms.TCustomForm.OnCloseQuery"/>
+      <element name="TCustomForm.FOnCreate" link="#lcl.forms.TCustomForm.OnCreate"/>
+      <element name="TCustomForm.FOnDeactivate" link="#lcl.forms.TCustomForm.OnDeactivate"/>
+      <element name="TCustomForm.FOnDestroy" link="#lcl.forms.TCustomForm.OnDestroy"/>
+      <element name="TCustomForm.FOnDropFiles" link="#lcl.forms.TCustomForm.OnDropFiles"/>
+      <element name="TCustomForm.FOnHelp" link="#lcl.forms.TCustomForm.OnHelp"/>
+      <element name="TCustomForm.FOnHide" link="#lcl.forms.TCustomForm.OnHide"/>
+      <element name="TCustomForm.FOnShortcut" link="#lcl.forms.TCustomForm.OnShortcut"/>
+      <element name="TCustomForm.FOnShow" link="#lcl.forms.TCustomForm.OnShow"/>
+      <element name="TCustomForm.FOnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
+      <element name="TCustomForm.FPosition" link="#lcl.forms.TCustomForm.Position"/>
+      <element name="TCustomForm.FRestoredLeft" link="#lcl.forms.TCustomForm.RestoredLeft"/>
+      <element name="TCustomForm.FRestoredTop" link="#lcl.forms.TCustomForm.RestoredTop"/>
+      <element name="TCustomForm.FRestoredWidth" link="#lcl.forms.TCustomForm.RestoredWidth"/>
+      <element name="TCustomForm.FRestoredHeight" link="#lcl.forms.TCustomForm.RestoredHeight"/>
+      <element name="TCustomForm.FShowInTaskbar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
+      <element name="TCustomForm.FWindowState" link="#lcl.forms.TCustomForm.WindowState"/>
       <element name="TCustomForm.FDelayedEventCtr"/>
       <element name="TCustomForm.FDelayedWMMove"/>
       <element name="TCustomForm.FDelayedWMSize"/>
       <element name="TCustomForm.FIsFirstOnShow"/>
       <element name="TCustomForm.FIsFirstOnActivate"/>
-      <element name="TCustomForm.GetClientHandle" link="TCustomForm.ClientHandle"/>
+      <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
       <element name="TCustomForm.GetClientHandle.Result">
         <short/>
       </element>
@@ -2072,13 +2072,13 @@
       <element name="TCustomForm.GetEffectiveShowInTaskBar.Result">
         <short>Effect visibility for the form icon in the task bar</short>
       </element>
-      <element name="TCustomForm.GetMonitor" link="TCustomForm.Monitor">
+      <element name="TCustomForm.GetMonitor" link="#lcl.forms.TCustomForm.Monitor">
         <short>Gets the value for the Monitor property</short>
       </element>
       <element name="TCustomForm.GetMonitor.Result">
         <short>Value for the property</short>
       </element>
-      <element name="TCustomForm.IsAutoScrollStored" link="TCustomForm.AutoScroll"/>
+      <element name="TCustomForm.IsAutoScrollStored" link="#lcl.forms.TCustomForm.AutoScroll"/>
       <element name="TCustomForm.IsAutoScrollStored.Result">
         <short/>
       </element>
@@ -2103,7 +2103,7 @@
           True when the value for the various properties should be included in the LCL streaming mechanism
         </short>
       </element>
-      <element name="TCustomForm.IsIconStored" link="TCustomForm.Icon"/>
+      <element name="TCustomForm.IsIconStored" link="#lcl.forms.TCustomForm.Icon"/>
       <element name="TCustomForm.IsIconStored.Result">
         <short/>
       </element>
@@ -2184,75 +2184,75 @@
           An integer pointer to the data for the event; not used in the current implementation
         </short>
       </element>
-      <element name="TCustomForm.SetActive" link="TCustomForm.Active"/>
+      <element name="TCustomForm.SetActive" link="#lcl.forms.TCustomForm.Active"/>
       <element name="TCustomForm.SetActive.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetActiveControl" link="TCustomForm.ActiveControl"/>
+      <element name="TCustomForm.SetActiveControl" link="#lcl.forms.TCustomForm.ActiveControl"/>
       <element name="TCustomForm.SetActiveControl.AWinControl">
         <short/>
       </element>
-      <element name="TCustomForm.SetActiveDefaultControl" link="TCustomForm.ActiveDefaultControl"/>
+      <element name="TCustomForm.SetActiveDefaultControl" link="#lcl.forms.TCustomForm.ActiveDefaultControl"/>
       <element name="TCustomForm.SetActiveDefaultControl.AControl">
         <short/>
       </element>
-      <element name="TCustomForm.SetAllowDropFiles" link="TCustomForm.AllowDropFiles"/>
+      <element name="TCustomForm.SetAllowDropFiles" link="#lcl.forms.TCustomForm.AllowDropFiles"/>
       <element name="TCustomForm.SetAllowDropFiles.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetAlphaBlend" link="TCustomForm.AlphaBlend"/>
+      <element name="TCustomForm.SetAlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
       <element name="TCustomForm.SetAlphaBlend.AValue">
       <short/>
       </element>
-      <element name="TCustomForm.SetAlphaBlendValue" link="TCustomForm.AlphaBlendValue"/>
+      <element name="TCustomForm.SetAlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
       <element name="TCustomForm.SetAlphaBlendValue.AValue">
       <short/>
       </element>
-      <element name="TCustomForm.SetBorderIcons" link="TCustomForm.BorderIcons"/>
+      <element name="TCustomForm.SetBorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
       <element name="TCustomForm.SetBorderIcons.NewIcons">
         <short/>
       </element>
-      <element name="TCustomForm.SetFormBorderStyle" link="TCustomForm.BorderStyle"/>
+      <element name="TCustomForm.SetFormBorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
       <element name="TCustomForm.SetFormBorderStyle.NewStyle">
         <short/>
       </element>
-      <element name="TCustomForm.SetCancelControl" link="TCustomForm.CancelControl"/>
+      <element name="TCustomForm.SetCancelControl" link="#lcl.forms.TCustomForm.CancelControl"/>
       <element name="TCustomForm.SetCancelControl.NewControl">
         <short/>
       </element>
-      <element name="TCustomForm.SetDefaultControl" link="TCustomForm.DefaultControl"/>
+      <element name="TCustomForm.SetDefaultControl" link="#lcl.forms.TCustomForm.DefaultControl"/>
       <element name="TCustomForm.SetDefaultControl.NewControl">
         <short/>
       </element>
-      <element name="TCustomForm.SetFormStyle" link="TCustomForm.FormStyle"/>
+      <element name="TCustomForm.SetFormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
       <element name="TCustomForm.SetFormStyle.Value">
         <short/>
       </element>
-      <element name="TCustomForm.SetIcon" link="TCustomForm.Icon"/>
+      <element name="TCustomForm.SetIcon" link="#lcl.forms.TCustomForm.Icon"/>
       <element name="TCustomForm.SetIcon.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetMenu" link="TCustomForm.Menu"/>
+      <element name="TCustomForm.SetMenu" link="#lcl.forms.TCustomForm.Menu"/>
       <element name="TCustomForm.SetMenu.Value">
         <short/>
       </element>
-      <element name="TCustomForm.SetModalResult" link="TCustomForm.ModalResult"/>
+      <element name="TCustomForm.SetModalResult" link="#lcl.forms.TCustomForm.ModalResult"/>
       <element name="TCustomForm.SetModalResult.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetPopupMode" link="TCustomForm.PopupMode"/>
+      <element name="TCustomForm.SetPopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
       <element name="TCustomForm.SetPopupMode.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetPopupParent" link="TCustomForm.PopupParent"/>
+      <element name="TCustomForm.SetPopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
       <element name="TCustomForm.SetPopupParent.AValue">
         <short/>
       </element>
-      <element name="TCustomForm.SetPosition" link="TCustomForm.Position"/>
+      <element name="TCustomForm.SetPosition" link="#lcl.forms.TCustomForm.Position"/>
       <element name="TCustomForm.SetPosition.Value">
         <short/>
       </element>
-      <element name="TCustomForm.SetShowInTaskbar" link="TCustomForm.ShowInTaskBar"/>
+      <element name="TCustomForm.SetShowInTaskbar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
       <element name="TCustomForm.SetShowInTaskbar.Value">
         <short/>
       </element>
@@ -2287,7 +2287,7 @@
           <link id="TCustomForm.Active"/>
         </seealso>
       </element>
-      <element name="TCustomForm.SetWindowState" link="TCustomForm.WindowState"/>
+      <element name="TCustomForm.SetWindowState" link="#lcl.forms.TCustomForm.WindowState"/>
       <element name="TCustomForm.SetWindowState.Value">
         <short/>
       </element>
@@ -2516,8 +2516,8 @@
           <var>FActionLists</var> is a local variable holding lists of actions associated with the Form
         </short>
       </element>
-      <element name="TCustomForm.FFormBorderStyle" link="TCustomForm.BorderStyle"/>
-      <element name="TCustomForm.FFormState" link="TCustomForm.FormState"/>
+      <element name="TCustomForm.FFormBorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
+      <element name="TCustomForm.FFormState" link="#lcl.forms.TCustomForm.FormState"/>
       <element name="TCustomForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomForm.DoShowWindow">
         <short>
@@ -2784,7 +2784,7 @@
       <element name="TCustomForm.SetParent.NewParent">
         <short/>
       </element>
-      <element name="TCustomForm.MoveToDefaultPosition" link="TCustomForm.Position">
+      <element name="TCustomForm.MoveToDefaultPosition" link="#lcl.forms.TCustomForm.Position">
         <short>Moves the form to its initial Position</short>
         <descr>
         </descr>
@@ -2843,7 +2843,7 @@
           Handled messages include: Activate, SetFocus, KillFocus, Exit, Enter, Window Position Changing, and DrawItem
         </short>
       </element>
-      <element name="TCustomForm.VisibleIsStored" link="TCustomForm.Visible"/>
+      <element name="TCustomForm.VisibleIsStored" link="#lcl.forms.TCustomForm.Visible"/>
       <element name="TCustomForm.VisibleIsStored.Result">
         <short/>
       </element>
@@ -2852,7 +2852,7 @@
       <element name="TCustomForm.SetAutoSize.Value">
         <short/>
       </element>
-      <element name="TCustomForm.SetAutoScroll" link="TCustomForm.AutoScroll"/>
+      <element name="TCustomForm.SetAutoScroll" link="#lcl.forms.TCustomForm.AutoScroll"/>
       <element name="TCustomForm.SetAutoScroll.Value">
         <short/>
       </element>
@@ -3437,14 +3437,14 @@
       <element name="TCustomForm.ActiveMDIChild.Result">
         <short>Nil if the form is neither an MDI host nor child</short>
       </element>
-      <element name="TCustomForm.GetMDIChildren" link="TCustomForm.MDIChildren"/>
+      <element name="TCustomForm.GetMDIChildren" link="#lcl.forms.TCustomForm.MDIChildren"/>
       <element name="TCustomForm.GetMDIChildren.Result">
         <short>Nil if caller isn't an MDI type or handle isn't allocated</short>
       </element>
       <element name="TCustomForm.GetMDIChildren.AIndex">
         <short/>
       </element>
-      <element name="TCustomForm.MDIChildCount" link="TCustomForm.MDIChildren"/>
+      <element name="TCustomForm.MDIChildCount" link="#lcl.forms.TCustomForm.MDIChildren"/>
       <element name="TCustomForm.MDIChildCount.Result">
         <short>-1 if caller isn't an MDI form or handle is not allocated</short>
       </element>
@@ -4275,13 +4275,13 @@
       </element>
 
       <!-- "class of" type Visibility: default -->
-      <element name="TCustomFormClass" link="TCustomForm"/>
+      <element name="TCustomFormClass" link="#lcl.forms.TCustomForm"/>
 
       <!-- object Visibility: default -->
-      <element name="TForm" link="TCustomForm"/>
+      <element name="TForm" link="#lcl.forms.TCustomForm"/>
 
-      <element name="TForm.FLCLVersion" link="TForm.LCLVersion"/>
-      <element name="TForm.LCLVersionIsStored" link="TForm.LCLVersion"/>
+      <element name="TForm.FLCLVersion" link="#lcl.forms.TForm.LCLVersion"/>
+      <element name="TForm.LCLVersionIsStored" link="#lcl.forms.TForm.LCLVersion"/>
       <element name="TForm.LCLVersionIsStored.Result">
         <short/>
       </element>
@@ -4325,20 +4325,20 @@
         <descr></descr>
         <seealso></seealso>
       </element>
-      <element name="TForm.ClientHandle" link="TCustomForm.ClientHandle"/>
+      <element name="TForm.ClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
       <element name="TForm.DockManager" link="#LCL.Controls.TWinControl.DockManager"/>
       <element name="TForm.Action" link="#LCL.Controls.TControl.Action"/>
-      <element name="TForm.ActiveControl" link="TCustomForm.ActiveControl"/>
+      <element name="TForm.ActiveControl" link="#lcl.forms.TCustomForm.ActiveControl"/>
       <element name="TForm.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TForm.AllowDropFiles" link="TCustomForm.AllowDropFiles"/>
-      <element name="TForm.AlphaBlend" link="TCustomForm.AlphaBlend"/>
-      <element name="TForm.AlphaBlendValue" link="TCustomForm.AlphaBlendValue"/>
+      <element name="TForm.AllowDropFiles" link="#lcl.forms.TCustomForm.AllowDropFiles"/>
+      <element name="TForm.AlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
+      <element name="TForm.AlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
       <element name="TForm.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TForm.AutoScroll" link="TScrollingWinControl.AutoScroll"/>
+      <element name="TForm.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
       <element name="TForm.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TForm.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TForm.BorderIcons" link="TCustomForm.BorderIcons"/>
-      <element name="TForm.BorderStyle" link="TCustomForm.BorderStyle"/>
+      <element name="TForm.BorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
+      <element name="TForm.BorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
       <element name="TForm.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
       <element name="TForm.Caption" link="#LCL.Controls.TControl.Caption"/>
       <element name="TForm.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
@@ -4346,38 +4346,38 @@
       <element name="TForm.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TForm.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TForm.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TForm.DefaultMonitor" link="TCustomForm.DefaultMonitor"/>
-      <element name="TForm.DesignTimePPI" link="TCustomDesignControl.DesignTimePPI"/>
+      <element name="TForm.DefaultMonitor" link="#lcl.forms.TCustomForm.DefaultMonitor"/>
+      <element name="TForm.DesignTimePPI" link="#lcl.forms.TCustomDesignControl.DesignTimePPI"/>
       <element name="TForm.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
       <element name="TForm.DoubleBuffered" link="#LCL.Controls.TControl.DoubleBuffered"/>
       <element name="TForm.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TForm.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TForm.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TForm.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TForm.FormStyle" link="TCustomForm.FormStyle"/>
-      <element name="TForm.HelpFile" link="TCustomForm.HelpFile"/>
-      <element name="TForm.Icon" link="TCustomForm.Icon"/>
-      <element name="TForm.KeyPreview" link="TCustomForm.KeyPreview"/>
-      <element name="TForm.Menu" link="TCustomForm.Menu"/>
-      <element name="TForm.OnActivate" link="TCustomForm.OnActivate"/>
+      <element name="TForm.FormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
+      <element name="TForm.HelpFile" link="#lcl.forms.TCustomForm.HelpFile"/>
+      <element name="TForm.Icon" link="#lcl.forms.TCustomForm.Icon"/>
+      <element name="TForm.KeyPreview" link="#lcl.forms.TCustomForm.KeyPreview"/>
+      <element name="TForm.Menu" link="#lcl.forms.TCustomForm.Menu"/>
+      <element name="TForm.OnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>
       <element name="TForm.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TForm.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TForm.OnClose" link="TCustomForm.OnClose"/>
-      <element name="TForm.OnCloseQuery" link="TCustomForm.OnCloseQuery"/>
-      <element name="TForm.OnContextPopup" link="TCustomForm.OnContextPopup"/>
-      <element name="TForm.OnCreate" link="TCustomForm.OnCreate"/>
+      <element name="TForm.OnClose" link="#lcl.forms.TCustomForm.OnClose"/>
+      <element name="TForm.OnCloseQuery" link="#lcl.forms.TCustomForm.OnCloseQuery"/>
+      <element name="TForm.OnContextPopup" link="#lcl.forms.TCustomForm.OnContextPopup"/>
+      <element name="TForm.OnCreate" link="#lcl.forms.TCustomForm.OnCreate"/>
       <element name="TForm.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TForm.OnDeactivate" link="TCustomForm.OnDeactivate"/>
-      <element name="TForm.OnDestroy" link="TCustomForm.OnDestroy"/>
+      <element name="TForm.OnDeactivate" link="#lcl.forms.TCustomForm.OnDeactivate"/>
+      <element name="TForm.OnDestroy" link="#lcl.forms.TCustomForm.OnDestroy"/>
       <element name="TForm.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
       <element name="TForm.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
       <element name="TForm.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TForm.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TForm.OnDropFiles" link="TCustomForm.OnDropFiles"/>
+      <element name="TForm.OnDropFiles" link="#lcl.forms.TCustomForm.OnDropFiles"/>
       <element name="TForm.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TForm.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
-      <element name="TForm.OnHelp" link="TCustomForm.OnHelp"/>
-      <element name="TForm.OnHide" link="TCustomForm.OnHide"/>
+      <element name="TForm.OnHelp" link="#lcl.forms.TCustomForm.OnHelp"/>
+      <element name="TForm.OnHide" link="#lcl.forms.TCustomForm.OnHide"/>
       <element name="TForm.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TForm.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TForm.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
@@ -4391,24 +4391,24 @@
       <element name="TForm.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TForm.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint"/>
       <element name="TForm.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TForm.OnShortCut" link="TCustomForm.OnShortcut"/>
-      <element name="TForm.OnShow" link="TCustomForm.OnShow"/>
+      <element name="TForm.OnShortCut" link="#lcl.forms.TCustomForm.OnShortcut"/>
+      <element name="TForm.OnShow" link="#lcl.forms.TCustomForm.OnShow"/>
       <element name="TForm.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TForm.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TForm.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
       <element name="TForm.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TForm.OnWindowStateChange" link="TCustomForm.OnWindowStateChange"/>
+      <element name="TForm.OnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
       <element name="TForm.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TForm.ParentDoubleBuffered" link="#LCL.Controls.TControl.ParentDoubleBuffered"/>
       <element name="TForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TForm.PixelsPerInch" link="TCustomForm.PixelsPerInch"/>
+      <element name="TForm.PixelsPerInch" link="#lcl.forms.TCustomForm.PixelsPerInch"/>
       <element name="TForm.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TForm.PopupMode" link="TCustomForm.PopupMode"/>
-      <element name="TForm.PopupParent" link="TCustomForm.PopupParent"/>
-      <element name="TForm.Position" link="TCustomForm.Position"/>
+      <element name="TForm.PopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
+      <element name="TForm.PopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
+      <element name="TForm.Position" link="#lcl.forms.TCustomForm.Position"/>
       <element name="TForm.SessionProperties" link="#LCL.Controls.TControl.SessionProperties"/>
       <element name="TForm.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TForm.ShowInTaskBar" link="TCustomForm.ShowInTaskBar"/>
+      <element name="TForm.ShowInTaskBar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
       <element name="TForm.UseDockManager" link="#LCL.Controls.TWinControl.UseDockManager"/>
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams using
@@ -4416,9 +4416,9 @@
       </element>
       <element name="TForm.Scaled"/>
       <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TForm.WindowState" link="TCustomForm.WindowState"/>
+      <element name="TForm.WindowState" link="#lcl.forms.TCustomForm.WindowState"/>
       <!-- "class of" type Visibility: default -->
-      <element name="TFormClass" link="TForm">
+      <element name="TFormClass" link="#lcl.forms.TForm">
         <short>Class of <var>TForm</var></short>
         <descr/>
         <seealso/>
@@ -4508,17 +4508,17 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="THintWindow.FAlignment" link="THintWindow.Alignment"/>
+      <element name="THintWindow.FAlignment" link="#lcl.forms.THintWindow.Alignment"/>
       <element name="THintWindow.FHintRect"/>
       <element name="THintWindow.FHintData"/>
-      <element name="THintWindow.FAutoHide" link="THintWindow.AutoHide"/>
+      <element name="THintWindow.FAutoHide" link="#lcl.forms.THintWindow.AutoHide"/>
       <element name="THintWindow.FAutoHideTimer">
         <short>The timer used to make the hint disappear</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="THintWindow.FHideInterval" link="THintWindow.HideInterval"/>
+      <element name="THintWindow.FHideInterval" link="#lcl.forms.THintWindow.HideInterval"/>
       <element name="THintWindow.AdjustBoundsForMonitor">
         <short>Adjusts HintRect to fit on the current monitor</short>
         <descr>Used in the implementation of the OffsetHintRect method.</descr>
@@ -4551,7 +4551,7 @@
         <short>Draw Text flags for the hint window</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="THintWindow.SetAutoHide" link="THintWindow.AutoHide"/>
+      <element name="THintWindow.SetAutoHide" link="#lcl.forms.THintWindow.AutoHide"/>
       <element name="THintWindow.SetAutoHide.Value">
         <short>New value for the property</short>
       </element>
@@ -4572,7 +4572,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="THintWindow.SetHideInterval" link="THintWindow.HideInterval"/>
+      <element name="THintWindow.SetHideInterval" link="#lcl.forms.THintWindow.HideInterval"/>
       <element name="THintWindow.SetHideInterval.Value">
         <short>New value for the property</short>
       </element>
@@ -4941,7 +4941,7 @@
         </seealso>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="THintWindowClass" link="THintWindow">
+      <element name="THintWindowClass" link="#lcl.forms.THintWindow">
         <short>Class of <var>THintWindow</var></short>
         <descr/>
         <seealso/>
@@ -4986,8 +4986,8 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TMonitor.FHandle" link="TMonitor.Handle"/>
-      <element name="TMonitor.FMonitorNum" link="TMonitor.MonitorNum"/>
+      <element name="TMonitor.FHandle" link="#lcl.forms.TMonitor.Handle"/>
+      <element name="TMonitor.FMonitorNum" link="#lcl.forms.TMonitor.MonitorNum"/>
       <!-- function Visibility: private -->
       <element name="TMonitor.GetInfo">
         <short>Retrieves monitor information from the OS or platform</short>
@@ -5021,7 +5021,7 @@
         <short>Value for the property</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetHeight" link="TMonitor.Height"/>
+      <element name="TMonitor.GetHeight" link="#lcl.forms.TMonitor.Height"/>
       <element name="TMonitor.GetHeight.Result">
         <short/>
       </element>
@@ -5036,27 +5036,27 @@
         <short>Value for the property</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetTop" link="TMonitor.Top"/>
+      <element name="TMonitor.GetTop" link="#lcl.forms.TMonitor.Top"/>
       <element name="TMonitor.GetTop.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetWidth" link="TMonitor.Width"/>
+      <element name="TMonitor.GetWidth" link="#lcl.forms.TMonitor.Width"/>
       <element name="TMonitor.GetWidth.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetBoundsRect" link="TMonitor.BoundsRect"/>
+      <element name="TMonitor.GetBoundsRect" link="#lcl.forms.TMonitor.BoundsRect"/>
       <element name="TMonitor.GetBoundsRect.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetWorkareaRect" link="TMonitor.WorkareaRect"/>
+      <element name="TMonitor.GetWorkareaRect" link="#lcl.forms.TMonitor.WorkareaRect"/>
       <element name="TMonitor.GetWorkareaRect.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetPrimary" link="TMonitor.Primary"/>
+      <element name="TMonitor.GetPrimary" link="#lcl.forms.TMonitor.Primary"/>
       <element name="TMonitor.GetPrimary.Result">
         <short/>
       </element>
@@ -5097,7 +5097,7 @@
         <short>A list of all available monitors</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitorList.GetItem" link="TMonitorList.Items"/>
+      <element name="TMonitorList.GetItem" link="#lcl.forms.TMonitorList.Items"/>
       <element name="TMonitorList.GetItem.Result">
         <short/>
       </element>
@@ -5105,7 +5105,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TMonitorList.SetItem" link="TMonitorList.Items"/>
+      <element name="TMonitorList.SetItem" link="#lcl.forms.TMonitorList.Items"/>
       <element name="TMonitorList.SetItem.AIndex">
         <short/>
       </element>
@@ -5138,7 +5138,7 @@
         <short>Ordinal position for a monitor in the list</short>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PCursorRec" link="TCursorRec"/>
+      <element name="PCursorRec" link="#lcl.forms.TCursorRec"/>
       <!-- record type Visibility: default -->
       <element name="TCursorRec">
         <short>An element of the Cursor list</short>
@@ -5262,22 +5262,22 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TScreen.FActiveControl" link="TScreen.ActiveControl"/>
-      <element name="TScreen.FActiveCustomForm" link="TScreen.ActiveCustomForm"/>
-      <element name="TScreen.FActiveForm" link="TScreen.ActiveForm"/>
-      <element name="TScreen.FCursor" link="TScreen.Cursor"/>
-      <element name="TScreen.FCursorMap" link="TScreen.Cursors"/>
-      <element name="TScreen.FCustomForms" link="TScreen.CustomForms"/>
-      <element name="TScreen.FCustomFormsZOrdered" link="TScreen.CustomFormsZOrdered"/>
+      <element name="TScreen.FActiveControl" link="#lcl.forms.TScreen.ActiveControl"/>
+      <element name="TScreen.FActiveCustomForm" link="#lcl.forms.TScreen.ActiveCustomForm"/>
+      <element name="TScreen.FActiveForm" link="#lcl.forms.TScreen.ActiveForm"/>
+      <element name="TScreen.FCursor" link="#lcl.forms.TScreen.Cursor"/>
+      <element name="TScreen.FCursorMap" link="#lcl.forms.TScreen.Cursors"/>
+      <element name="TScreen.FCustomForms" link="#lcl.forms.TScreen.CustomForms"/>
+      <element name="TScreen.FCustomFormsZOrdered" link="#lcl.forms.TScreen.CustomFormsZOrdered"/>
       <element name="TScreen.FDefaultCursor"/>
       <!-- variable Visibility: private -->
-      <element name="TScreen.FHintFont" link="TScreen.HintFont"/>
-      <element name="TScreen.FFocusedForm" link="TScreen.FocusedForm"/>
-      <element name="TScreen.FFonts" link="TScreen.Fonts"/>
-      <element name="TScreen.FFormList" link="TScreen.Forms"/>
-      <element name="TScreen.FDataModuleList" link="TScreen.DataModules"/>
-      <element name="TScreen.FIconFont" link="TScreen.IconFont"/>
-      <element name="TScreen.FMenuFont" link="TScreen.MenuFont"/>
+      <element name="TScreen.FHintFont" link="#lcl.forms.TScreen.HintFont"/>
+      <element name="TScreen.FFocusedForm" link="#lcl.forms.TScreen.FocusedForm"/>
+      <element name="TScreen.FFonts" link="#lcl.forms.TScreen.Fonts"/>
+      <element name="TScreen.FFormList" link="#lcl.forms.TScreen.Forms"/>
+      <element name="TScreen.FDataModuleList" link="#lcl.forms.TScreen.DataModules"/>
+      <element name="TScreen.FIconFont" link="#lcl.forms.TScreen.IconFont"/>
+      <element name="TScreen.FMenuFont" link="#lcl.forms.TScreen.MenuFont"/>
       <element name="TScreen.FScreenHandlers"/>
       <element name="TScreen.FLastActiveControl">
         <short>The last active control, used to detect focus changes</short>
@@ -5294,12 +5294,12 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TScreen.FMonitors" link="TScreen.Monitors"/>
-      <element name="TScreen.FOnActiveControlChange" link="TScreen.OnActiveControlChange"/>
-      <element name="TScreen.FOnActiveFormChange" link="TScreen.OnActiveFormChange"/>
-      <element name="TScreen.FPixelsPerInch" link="TScreen.PixelsPerInch"/>
+      <element name="TScreen.FMonitors" link="#lcl.forms.TScreen.Monitors"/>
+      <element name="TScreen.FOnActiveControlChange" link="#lcl.forms.TScreen.OnActiveControlChange"/>
+      <element name="TScreen.FOnActiveFormChange" link="#lcl.forms.TScreen.OnActiveFormChange"/>
+      <element name="TScreen.FPixelsPerInch" link="#lcl.forms.TScreen.PixelsPerInch"/>
       <element name="TScreen.FSaveFocusedList"/>
-      <element name="TScreen.FSystemFont" link="TScreen.SystemFont"/>
+      <element name="TScreen.FSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DeleteCursor">
         <short>Removes a cursor from the Cursors property</short>
@@ -5322,7 +5322,7 @@
         <seealso></seealso>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetCursors" link="TScreen.Cursors"/>
+      <element name="TScreen.GetCursors" link="#lcl.forms.TScreen.Cursors"/>
       <element name="TScreen.GetCursors.Result">
         <short/>
       </element>
@@ -5330,17 +5330,17 @@
         <short>The logical cursor ID</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetCustomFormCount" link="TScreen.CustomFormCount"/>
+      <element name="TScreen.GetCustomFormCount" link="#lcl.forms.TScreen.CustomFormCount"/>
       <element name="TScreen.GetCustomFormCount.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetCustomFormZOrderCount" link="TScreen.CustomFormZOrderCount"/>
+      <element name="TScreen.GetCustomFormZOrderCount" link="#lcl.forms.TScreen.CustomFormZOrderCount"/>
       <element name="TScreen.GetCustomFormZOrderCount.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetCustomForms" link="TScreen.CustomForms"/>
+      <element name="TScreen.GetCustomForms" link="#lcl.forms.TScreen.CustomForms"/>
       <element name="TScreen.GetCustomForms.Result">
         <short/>
       </element>
@@ -5348,7 +5348,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetCustomFormsZOrdered" link="TScreen.CustomFormZOrdered"/>
+      <element name="TScreen.GetCustomFormsZOrdered" link="#lcl.forms.TScreen.CustomFormZOrdered"/>
       <element name="TScreen.GetCustomFormsZOrdered.Result">
         <short/>
       </element>
@@ -5356,12 +5356,12 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDataModuleCount" link="TScreen.DataModuleCount"/>
+      <element name="TScreen.GetDataModuleCount" link="#lcl.forms.TScreen.DataModuleCount"/>
       <element name="TScreen.GetDataModuleCount.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDataModules" link="TScreen.DataModules"/>
+      <element name="TScreen.GetDataModules" link="#lcl.forms.TScreen.DataModules"/>
       <element name="TScreen.GetDataModules.Result">
         <short/>
       </element>
@@ -5369,42 +5369,42 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDesktopLeft" link="TScreen.DesktopLeft"/>
+      <element name="TScreen.GetDesktopLeft" link="#lcl.forms.TScreen.DesktopLeft"/>
       <element name="TScreen.GetDesktopLeft.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDesktopTop" link="TScreen.DesktopTop"/>
+      <element name="TScreen.GetDesktopTop" link="#lcl.forms.TScreen.DesktopTop"/>
       <element name="TScreen.GetDesktopTop.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDesktopHeight" link="TScreen.DesktopHeight"/>
+      <element name="TScreen.GetDesktopHeight" link="#lcl.forms.TScreen.DesktopHeight"/>
       <element name="TScreen.GetDesktopHeight.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDesktopWidth" link="TScreen.DesktopWidth"/>
+      <element name="TScreen.GetDesktopWidth" link="#lcl.forms.TScreen.DesktopWidth"/>
       <element name="TScreen.GetDesktopWidth.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetDesktopRect" link="TScreen.DesktopRect"/>
+      <element name="TScreen.GetDesktopRect" link="#lcl.forms.TScreen.DesktopRect"/>
       <element name="TScreen.GetDesktopRect.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetFonts" link="TScreen.Fonts"/>
+      <element name="TScreen.GetFonts" link="#lcl.forms.TScreen.Fonts"/>
       <element name="TScreen.GetFonts.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetFormCount" link="TScreen.FormCount"/>
+      <element name="TScreen.GetFormCount" link="#lcl.forms.TScreen.FormCount"/>
       <element name="TScreen.GetFormCount.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetForms" link="TScreen.Forms"/>
+      <element name="TScreen.GetForms" link="#lcl.forms.TScreen.Forms"/>
       <element name="TScreen.GetForms.Result">
         <short/>
       </element>
@@ -5412,12 +5412,12 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetHeight" link="TScreen.Height"/>
+      <element name="TScreen.GetHeight" link="#lcl.forms.TScreen.Height"/>
       <element name="TScreen.GetHeight.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetMonitor" link="TScreen.Monitors"/>
+      <element name="TScreen.GetMonitor" link="#lcl.forms.TScreen.Monitors"/>
       <element name="TScreen.GetMonitor.Result">
       <short/>
       </element>
@@ -5425,17 +5425,17 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetMonitorCount" link="TScreen.MonitorCount"/>
+      <element name="TScreen.GetMonitorCount" link="#lcl.forms.TScreen.MonitorCount"/>
       <element name="TScreen.GetMonitorCount.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetPrimaryMonitor" link="TScreen.PrimaryMonitor"/>
+      <element name="TScreen.GetPrimaryMonitor" link="#lcl.forms.TScreen.PrimaryMonitor"/>
       <element name="TScreen.GetPrimaryMonitor.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWidth" link="TScreen.Width"/>
+      <element name="TScreen.GetWidth" link="#lcl.forms.TScreen.Width"/>
       <element name="TScreen.GetWidth.Result">
         <short/>
       </element>
@@ -5458,7 +5458,7 @@
         <short>Form instance removed from the list</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.SetFocusedForm" link="TScreen.FocusedForm"/>
+      <element name="TScreen.SetFocusedForm" link="#lcl.forms.TScreen.FocusedForm"/>
       <element name="TScreen.SetFocusedForm.Result">
         <short/>
       </element>
@@ -5466,12 +5466,12 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetCursor" link="TScreen.Cursor"/>
+      <element name="TScreen.SetCursor" link="#lcl.forms.TScreen.Cursor"/>
       <element name="TScreen.SetCursor.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetCursors" link="TScreen.Cursors"/>
+      <element name="TScreen.SetCursors" link="#lcl.forms.TScreen.Cursors"/>
       <element name="TScreen.SetCursors.AIndex">
         <short/>
       </element>
@@ -5479,22 +5479,22 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetHintFont" link="TScreen.HintFont"/>
+      <element name="TScreen.SetHintFont" link="#lcl.forms.TScreen.HintFont"/>
       <element name="TScreen.SetHintFont.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetIconFont" link="TScreen.IconFont"/>
+      <element name="TScreen.SetIconFont" link="#lcl.forms.TScreen.IconFont"/>
       <element name="TScreen.SetIconFont.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetMenuFont" link="TScreen.MenuFont"/>
+      <element name="TScreen.SetMenuFont" link="#lcl.forms.TScreen.MenuFont"/>
       <element name="TScreen.SetMenuFont.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.SetSystemFont" link="TScreen.SystemFont"/>
+      <element name="TScreen.SetSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
       <element name="TScreen.SetSystemFont.AValue">
         <short/>
       </element>
@@ -5542,7 +5542,7 @@
         <short>The notification handler</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.DoAddDataModule" link="TScreen.DataModules">
+      <element name="TScreen.DoAddDataModule" link="#lcl.forms.TScreen.DataModules">
         <short>Adds the specified DataModule to the list</short>
         <descr></descr>
         <errors></errors>
@@ -5552,7 +5552,7 @@
         <short>Data module instance added in the method</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.DoRemoveDataModule" link="TScreen.DataModules">
+      <element name="TScreen.DoRemoveDataModule" link="#lcl.forms.TScreen.DataModules">
         <short>Removes the specified DataModule from the list</short>
         <descr></descr>
         <errors></errors>
@@ -5575,47 +5575,47 @@
         <short>Form instance for the notification</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWorkAreaHeight" link="TScreen.WorkAreaHeight"/>
+      <element name="TScreen.GetWorkAreaHeight" link="#lcl.forms.TScreen.WorkAreaHeight"/>
       <element name="TScreen.GetWorkAreaHeight.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWorkAreaLeft" link="TScreen.WorkAreaLeft"/>
+      <element name="TScreen.GetWorkAreaLeft" link="#lcl.forms.TScreen.WorkAreaLeft"/>
       <element name="TScreen.GetWorkAreaLeft.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWorkAreaRect" link="TScreen.WorkAreaRect"/>
+      <element name="TScreen.GetWorkAreaRect" link="#lcl.forms.TScreen.WorkAreaRect"/>
       <element name="TScreen.GetWorkAreaRect.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWorkAreaTop" link="TScreen.WorkAreaTop"/>
+      <element name="TScreen.GetWorkAreaTop" link="#lcl.forms.TScreen.WorkAreaTop"/>
       <element name="TScreen.GetWorkAreaTop.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TScreen.GetWorkAreaWidth" link="TScreen.WorkAreaWidth"/>
+      <element name="TScreen.GetWorkAreaWidth" link="#lcl.forms.TScreen.WorkAreaWidth"/>
       <element name="TScreen.GetWorkAreaWidth.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScreen.GetHintFont" link="TScreen.HintFont"/>
+      <element name="TScreen.GetHintFont" link="#lcl.forms.TScreen.HintFont"/>
       <element name="TScreen.GetHintFont.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScreen.GetIconFont" link="TScreen.IconFont"/>
+      <element name="TScreen.GetIconFont" link="#lcl.forms.TScreen.IconFont"/>
       <element name="TScreen.GetIconFont.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScreen.GetMenuFont" link="TScreen.MenuFont"/>
+      <element name="TScreen.GetMenuFont" link="#lcl.forms.TScreen.MenuFont"/>
       <element name="TScreen.GetMenuFont.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScreen.GetSystemFont" link="TScreen.SystemFont"/>
+      <element name="TScreen.GetSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
       <element name="TScreen.GetSystemFont.Result">
         <short/>
       </element>
@@ -5627,7 +5627,7 @@
       <!-- destructor Visibility: public -->
       <element name="TScreen.Destroy"/>
       <!-- function Visibility: public -->
-      <element name="TScreen.CustomFormIndex" link="TScreen.CustomForms">
+      <element name="TScreen.CustomFormIndex" link="#lcl.forms.TScreen.CustomForms">
         <short>The ordinal position in CustomForms the requested form</short>
         <descr/>
         <seealso/>
@@ -6106,23 +6106,23 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopLeft" link="TScreen.DesktopRect">
+      <element name="TScreen.DesktopLeft" link="#lcl.forms.TScreen.DesktopRect">
         <short>The leftmost coordinate of the desktop</short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopTop" link="TScreen.DesktopRect">
+      <element name="TScreen.DesktopTop" link="#lcl.forms.TScreen.DesktopRect">
         <short>The topmost coordinate of the desktop</short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopHeight" link="TScreen.DesktopRect">
+      <element name="TScreen.DesktopHeight" link="#lcl.forms.TScreen.DesktopRect">
         <short>The total vertical size of the desktop</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopWidth" link="TScreen.DesktopRect">
+      <element name="TScreen.DesktopWidth" link="#lcl.forms.TScreen.DesktopRect">
         <short>The total horizontal size of the display</short>
       </element>
       <!-- property Visibility: public -->
@@ -6142,7 +6142,7 @@
         <notes><note>really?</note><note>what's different from ActiveForm?</note></notes>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.FormCount" link="TScreen.Forms">
+      <element name="TScreen.FormCount" link="#lcl.forms.TScreen.Forms">
         <short>The number of existing Forms</short>
         <seealso/>
       </element>
@@ -6221,7 +6221,7 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.MonitorCount" link="TScreen.Monitors">
+      <element name="TScreen.MonitorCount" link="#lcl.forms.TScreen.Monitors">
         <short>The number of available Monitors</short>
       </element>
       <!-- property Visibility: public -->
@@ -6269,7 +6269,7 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaHeight" link="TScreen.WorkareaRect">
+      <element name="TScreen.WorkAreaHeight" link="#lcl.forms.TScreen.WorkareaRect">
         <short>The usable height of the primary monitor</short>
         <descr>
         </descr>
@@ -6277,7 +6277,7 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaLeft" link="TScreen.WorkareaRect">
+      <element name="TScreen.WorkAreaLeft" link="#lcl.forms.TScreen.WorkareaRect">
         <short>The usable left coordinate on the primary monitor</short>
         <descr>
         </descr>
@@ -6285,7 +6285,7 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaTop" link="TScreen.WorkareaRect">
+      <element name="TScreen.WorkAreaTop" link="#lcl.forms.TScreen.WorkareaRect">
         <short>The usable top coordinate on the primary monitor</short>
         <descr>
         </descr>
@@ -6293,7 +6293,7 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaWidth" link="TScreen.WorkareaRect">
+      <element name="TScreen.WorkAreaWidth" link="#lcl.forms.TScreen.WorkareaRect">
         <short>The usable width of the primary monitor</short>
         <descr>
         </descr>
@@ -6607,7 +6607,7 @@
         <short>Application has been initialized</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TApplicationFlags" link="TApplicationFlag"/>
+      <element name="TApplicationFlags" link="#lcl.forms.TApplicationFlag"/>
       <!-- enumeration type Visibility: default -->
       <element name="TApplicationNavigationOption">
         <short>Which keys can be used for the navigation within a form</short>
@@ -6640,7 +6640,7 @@
         <notes><note>?</note></notes>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TApplicationNavigationOptions" link="TApplicationNavigationOption"/>
+      <element name="TApplicationNavigationOptions" link="#lcl.forms.TApplicationNavigationOption"/>
       <!-- enumeration type Visibility: default -->
       <element name="TApplicationHandlerType">
         <short>Types of Application notification handlers</short>
@@ -6727,7 +6727,7 @@
         </notes>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PAsyncCallQueueItem" link="TAsyncCallQueueItem">
+      <element name="PAsyncCallQueueItem" link="#lcl.forms.TAsyncCallQueueItem">
         <short>A queued asynchronous callback request node</short>
         <descr/>
         <seealso/>
@@ -6945,9 +6945,9 @@
         <short>Holds the registered notification handlers for the application</short>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TApplication.FApplicationType" link="TApplication.ApplicationType"/>
+      <element name="TApplication.FApplicationType" link="#lcl.forms.TApplication.ApplicationType"/>
       <!-- variable Visibility: private -->
-      <element name="TApplication.FCaptureExceptions" link="TApplication.CaptureExceptions"/>
+      <element name="TApplication.FCaptureExceptions" link="#lcl.forms.TApplication.CaptureExceptions"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FComponentsToRelease">
         <short>The list of components marked for release</short>
@@ -6969,22 +6969,22 @@
       <element name="TApplication.FDoubleBuffered"/>
       <element name="TApplication.FExceptionDialog"/>
       <element name="TApplication.FExtendedKeysSupport"/>
-      <element name="TApplication.FFindGlobalComponentEnabled" link="TApplication.FindGlobalComponentEnabled"/>
-      <element name="TApplication.FFlags" link="TApplication.Flags"/>
-      <element name="TApplication.FHint" link="TApplication.Hint"/>
-      <element name="TApplication.FHintColor" link="TApplication.HintColor"/>
-      <element name="TApplication.FHintControl" link="TApplication.HintControl"/>
-      <element name="TApplication.FHintHidePause" link="TApplication.HintHidePause"/>
-      <element name="TApplication.FHintHidePausePerChar" link="TApplication.HintHidePausePerChar"/>
-      <element name="TApplication.FHintPause" link="TApplication.HintPause"/>
+      <element name="TApplication.FFindGlobalComponentEnabled" link="#lcl.forms.TApplication.FindGlobalComponentEnabled"/>
+      <element name="TApplication.FFlags" link="#lcl.forms.TApplication.Flags"/>
+      <element name="TApplication.FHint" link="#lcl.forms.TApplication.Hint"/>
+      <element name="TApplication.FHintColor" link="#lcl.forms.TApplication.HintColor"/>
+      <element name="TApplication.FHintControl" link="#lcl.forms.TApplication.HintControl"/>
+      <element name="TApplication.FHintHidePause" link="#lcl.forms.TApplication.HintHidePause"/>
+      <element name="TApplication.FHintHidePausePerChar" link="#lcl.forms.TApplication.HintHidePausePerChar"/>
+      <element name="TApplication.FHintPause" link="#lcl.forms.TApplication.HintPause"/>
       <element name="TApplication.FHintRect">
         <short>The screen area of the current Hint window</short>
         <seealso>
           <link id="TApplication.Hint"/>
         </seealso>
       </element>
-      <element name="TApplication.FHintShortCuts" link="TApplication.HintShortCuts"/>
-      <element name="TApplication.FHintShortPause" link="TApplication.HintShortPause"/>
+      <element name="TApplication.FHintShortCuts" link="#lcl.forms.TApplication.HintShortCuts"/>
+      <element name="TApplication.FHintShortPause" link="#lcl.forms.TApplication.HintShortPause"/>
       <element name="TApplication.FHintTimer">
         <short>The timer for showing and hiding Hints</short>
       </element>
@@ -7000,23 +7000,23 @@
           <link id="TApplication.Hint"/>
         </seealso>
       </element>
-      <element name="TApplication.FIcon" link="TApplication.Icon"/>
+      <element name="TApplication.FIcon" link="#lcl.forms.TApplication.Icon"/>
       <element name="TApplication.FBigIconHandle">
         <short>The Handle for the big application icon</short>
       </element>
       <element name="TApplication.FLayoutAdjustmentPolicy"/>
-      <element name="TApplication.FMainFormOnTaskBar" link="TApplication.MainFormOnTaskBar"/>
-      <element name="TApplication.FModalLevel" link="TApplication.ModalLevel"/>
+      <element name="TApplication.FMainFormOnTaskBar" link="#lcl.forms.TApplication.MainFormOnTaskBar"/>
+      <element name="TApplication.FModalLevel" link="#lcl.forms.TApplication.ModalLevel"/>
       <element name="TApplication.FLayoutAdjustmentPolicy"/>
       <element name="TApplication.FMoveFormFocusToChildren"/>
       <element name="TApplication.FOnCircularException"/>
-      <element name="TApplication.FOnGetMainFormHandle" link="TApplication.OnGetMainFormHandle"/>
+      <element name="TApplication.FOnGetMainFormHandle" link="#lcl.forms.TApplication.OnGetMainFormHandle"/>
       <element name="TApplication.FOnMessageDialogFinished"/>
-      <element name="TApplication.FOnModalBegin" link="TApplication.OnModalBegin"/>
-      <element name="TApplication.FOnModalEnd" link="TApplication.OnModalEnd"/>
+      <element name="TApplication.FOnModalBegin" link="#lcl.forms.TApplication.OnModalBegin"/>
+      <element name="TApplication.FOnModalEnd" link="#lcl.forms.TApplication.OnModalEnd"/>
       <element name="TApplication.FScaled"/>
-      <element name="TApplication.FShowButtonGlyphs" link="TApplication.ShowButtonGlyphs"/>
-      <element name="TApplication.FShowMenuGlyphs" link="TApplication.ShowMenuGlyphs"/>
+      <element name="TApplication.FShowButtonGlyphs" link="#lcl.forms.TApplication.ShowButtonGlyphs"/>
+      <element name="TApplication.FShowMenuGlyphs" link="#lcl.forms.TApplication.ShowMenuGlyphs"/>
       <element name="TApplication.FSmallIconHandle">
         <short>The Handle for the small application icon</short>
       </element>
@@ -7032,37 +7032,37 @@
       <element name="TApplication.FLastKeyDownShift">
         <short>Cached key event parameter</short>
       </element>
-      <element name="TApplication.FMainForm" link="TApplication.MainForm"/>
-      <element name="TApplication.FMouseControl" link="TApplication.MouseControl"/>
-      <element name="TApplication.FNavigation" link="TApplication.Navigation"/>
+      <element name="TApplication.FMainForm" link="#lcl.forms.TApplication.MainForm"/>
+      <element name="TApplication.FMouseControl" link="#lcl.forms.TApplication.MouseControl"/>
+      <element name="TApplication.FNavigation" link="#lcl.forms.TApplication.Navigation"/>
       <element name="TApplication.FOldExceptProc">
         <short>The previously installed exception handler</short>
       </element>
       <element name="TApplication.FOldExitProc">
         <short>The previously installed Exit procedure</short>
       </element>
-      <element name="TApplication.FOnActionExecute" link="TApplication.OnActionExecute"/>
-      <element name="TApplication.FOnActionUpdate" link="TApplication.OnActionUpdate"/>
-      <element name="TApplication.FOnActivate" link="TApplication.OnActivate"/>
-      <element name="TApplication.FOnDeactivate" link="TApplication.OnDeactivate"/>
-      <element name="TApplication.FOnDestroy" link="TApplication.OnDestroy"/>
-      <element name="TApplication.FOnDropFiles" link="TApplication.OnDropFiles"/>
-      <element name="TApplication.FOnHelp" link="TApplication.OnHelp"/>
-      <element name="TApplication.FOnHint" link="TApplication.OnHint"/>
-      <element name="TApplication.FOnIdle" link="TApplication.OnIdle"/>
-      <element name="TApplication.FOnIdleEnd" link="TApplication.OnIdleEnd"/>
-      <element name="TApplication.FOnEndSession" link="TApplication.OnEndSession"/>
-      <element name="TApplication.FOnQueryEndSession" link="TApplication.OnQueryEndSession"/>
-      <element name="TApplication.FOnMinimize" link="TApplication.OnMinimize"/>
-      <element name="TApplication.FOnRestore" link="TApplication.OnRestore"/>
-      <element name="TApplication.FOnShortcut" link="TApplication.OnShortcut"/>
-      <element name="TApplication.FOnShowHint" link="TApplication.OnShowHint"/>
-      <element name="TApplication.FOnUserInput" link="TApplication.OnUserInput"/>
-      <element name="TApplication.FAsyncCall" link="TApplication.QueueAsyncCall">
+      <element name="TApplication.FOnActionExecute" link="#lcl.forms.TApplication.OnActionExecute"/>
+      <element name="TApplication.FOnActionUpdate" link="#lcl.forms.TApplication.OnActionUpdate"/>
+      <element name="TApplication.FOnActivate" link="#lcl.forms.TApplication.OnActivate"/>
+      <element name="TApplication.FOnDeactivate" link="#lcl.forms.TApplication.OnDeactivate"/>
+      <element name="TApplication.FOnDestroy" link="#lcl.forms.TApplication.OnDestroy"/>
+      <element name="TApplication.FOnDropFiles" link="#lcl.forms.TApplication.OnDropFiles"/>
+      <element name="TApplication.FOnHelp" link="#lcl.forms.TApplication.OnHelp"/>
+      <element name="TApplication.FOnHint" link="#lcl.forms.TApplication.OnHint"/>
+      <element name="TApplication.FOnIdle" link="#lcl.forms.TApplication.OnIdle"/>
+      <element name="TApplication.FOnIdleEnd" link="#lcl.forms.TApplication.OnIdleEnd"/>
+      <element name="TApplication.FOnEndSession" link="#lcl.forms.TApplication.OnEndSession"/>
+      <element name="TApplication.FOnQueryEndSession" link="#lcl.forms.TApplication.OnQueryEndSession"/>
+      <element name="TApplication.FOnMinimize" link="#lcl.forms.TApplication.OnMinimize"/>
+      <element name="TApplication.FOnRestore" link="#lcl.forms.TApplication.OnRestore"/>
+      <element name="TApplication.FOnShortcut" link="#lcl.forms.TApplication.OnShortcut"/>
+      <element name="TApplication.FOnShowHint" link="#lcl.forms.TApplication.OnShowHint"/>
+      <element name="TApplication.FOnUserInput" link="#lcl.forms.TApplication.OnUserInput"/>
+      <element name="TApplication.FAsyncCall" link="#lcl.forms.TApplication.QueueAsyncCall">
         <short>Queues for asynchronous calls</short>
       </element>
-      <element name="TApplication.FShowHint" link="TApplication.ShowHint"/>
-      <element name="TApplication.FShowMainForm" link="TApplication.ShowMainForm"/>
+      <element name="TApplication.FShowHint" link="#lcl.forms.TApplication.ShowHint"/>
+      <element name="TApplication.FShowMainForm" link="#lcl.forms.TApplication.ShowMainForm"/>
       <element name="TApplication.FLastMousePos">
         <short>Cached mouse event parameter</short>
       </element>
@@ -7072,19 +7072,19 @@
       <element name="TApplication.FLastMouseControlValid">
         <short>Cached mouse event parameter</short>
       </element>
-      <element name="TApplication.FBidiMode" link="TApplication.BiDiMode"/>
+      <element name="TApplication.FBidiMode" link="#lcl.forms.TApplication.BiDiMode"/>
       <element name="TApplication.FRestoreStayOnTop">
         <short>The list of all forms that should be restored to StayOnTop</short>
         <descr>The list is created in RemoveStayOnTop, processed in RestoreStayOnTop.</descr>
       </element>
-      <element name="TApplication.FTaskBarBehavior" link="TApplication.TaskBarBehavior"/>
+      <element name="TApplication.FTaskBarBehavior" link="#lcl.forms.TApplication.TaskBarBehavior"/>
       <element name="TApplication.FUpdateFormatSettings"/>
       <element name="TApplication.FRemoveStayOnTopCounter"/>
       <element name="TApplication.FExceptionCounter"/>
       <element name="TApplication.DoOnIdleEnd">
         <short>Notifies the OnIdleEnd handlers; called when the application exits Idle state</short>
       </element>
-      <element name="TApplication.GetActive" link="TApplication.Active"/>
+      <element name="TApplication.GetActive" link="#lcl.forms.TApplication.Active"/>
       <element name="TApplication.GetActive.Result">
         <short/>
       </element>
@@ -7182,37 +7182,37 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetBidiMode" link="TApplication.BiDiMode"/>
+      <element name="TApplication.SetBidiMode" link="#lcl.forms.TApplication.BiDiMode"/>
       <element name="TApplication.SetBidiMode.AValue">
       <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetFlags" link="TApplication.Flags"/>
+      <element name="TApplication.SetFlags" link="#lcl.forms.TApplication.Flags"/>
       <element name="TApplication.SetFlags.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetMainFormOnTaskBar" link="TApplication.MainFormOnTaskBar"/>
+      <element name="TApplication.SetMainFormOnTaskBar" link="#lcl.forms.TApplication.MainFormOnTaskBar"/>
       <element name="TApplication.SetMainFormOnTaskBar.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetNavigation" link="TApplication.Navigation"/>
+      <element name="TApplication.SetNavigation" link="#lcl.forms.TApplication.Navigation"/>
       <element name="TApplication.SetNavigation.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetShowButtonGlyphs" link="TApplication.ShowButtonGlyphs"/>
+      <element name="TApplication.SetShowButtonGlyphs" link="#lcl.forms.TApplication.ShowButtonGlyphs"/>
       <element name="TApplication.SetShowButtonGlyphs.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetShowMenuGlyphs" link="TApplication.ShowMenuGlyphs"/>
+      <element name="TApplication.SetShowMenuGlyphs" link="#lcl.forms.TApplication.ShowMenuGlyphs"/>
       <element name="TApplication.SetShowMenuGlyphs.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetTaskBarBehavior" link="TApplication.TaskBarBehavior"/>
+      <element name="TApplication.SetTaskBarBehavior" link="#lcl.forms.TApplication.TaskBarBehavior"/>
       <element name="TApplication.SetTaskBarBehavior.AValue">
         <short/>
       </element>
@@ -7238,27 +7238,27 @@
         <short>The control under the mouse</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetCaptureExceptions" link="TApplication.CaptureExceptions"/>
+      <element name="TApplication.SetCaptureExceptions" link="#lcl.forms.TApplication.CaptureExceptions"/>
       <element name="TApplication.SetCaptureExceptions.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetHint" link="TApplication.Hint"/>
+      <element name="TApplication.SetHint" link="#lcl.forms.TApplication.Hint"/>
       <element name="TApplication.SetHint.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetHintColor" link="TApplication.HintControl"/>
+      <element name="TApplication.SetHintColor" link="#lcl.forms.TApplication.HintControl"/>
       <element name="TApplication.SetHintColor.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetIcon" link="TApplication.Icon"/>
+      <element name="TApplication.SetIcon" link="#lcl.forms.TApplication.Icon"/>
       <element name="TApplication.SetIcon.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.SetShowHint" link="TApplication.ShowHint"/>
+      <element name="TApplication.SetShowHint" link="#lcl.forms.TApplication.ShowHint"/>
       <element name="TApplication.SetShowHint.AValue">
         <short/>
       </element>
@@ -7472,7 +7472,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TApplication.SetTitle" link="TApplication.Title"/>
+      <element name="TApplication.SetTitle" link="#lcl.forms.TApplication.Title"/>
       <element name="TApplication.SetTitle.AValue">
         <short/>
       </element>
@@ -7519,7 +7519,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TApplication.FreeComponent" link="TApplication.ReleaseComponents"/>
+      <element name="TApplication.FreeComponent" link="#lcl.forms.TApplication.ReleaseComponents"/>
       <element name="TApplication.FreeComponent.Data">
         <short>Ignored, should be zero</short>
       </element>
@@ -9482,37 +9482,37 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TApplicationProperties.FCaptureExceptions" link="TApplicationProperties.CaptureExceptions"/>
+      <element name="TApplicationProperties.FCaptureExceptions" link="#lcl.forms.TApplicationProperties.CaptureExceptions"/>
       <element name="TApplicationProperties.FExceptionDialogType"/>
-      <element name="TApplicationProperties.FHelpFile" link="TApplicationProperties.HelpFile"/>
-      <element name="TApplicationProperties.FHint" link="TApplicationProperties.Hint"/>
-      <element name="TApplicationProperties.FHintColor" link="TApplicationProperties.HintColor"/>
-      <element name="TApplicationProperties.FHintHidePause" link="TApplicationProperties.HintHidePause"/>
-      <element name="TApplicationProperties.FHintPause" link="TApplicationProperties.HintPause"/>
-      <element name="TApplicationProperties.FHintShortCuts" link="TApplicationProperties.HintShortCuts"/>
-      <element name="TApplicationProperties.FHintShortPause" link="TApplicationProperties.HintShortPause"/>
+      <element name="TApplicationProperties.FHelpFile" link="#lcl.forms.TApplicationProperties.HelpFile"/>
+      <element name="TApplicationProperties.FHint" link="#lcl.forms.TApplicationProperties.Hint"/>
+      <element name="TApplicationProperties.FHintColor" link="#lcl.forms.TApplicationProperties.HintColor"/>
+      <element name="TApplicationProperties.FHintHidePause" link="#lcl.forms.TApplicationProperties.HintHidePause"/>
+      <element name="TApplicationProperties.FHintPause" link="#lcl.forms.TApplicationProperties.HintPause"/>
+      <element name="TApplicationProperties.FHintShortCuts" link="#lcl.forms.TApplicationProperties.HintShortCuts"/>
+      <element name="TApplicationProperties.FHintShortPause" link="#lcl.forms.TApplicationProperties.HintShortPause"/>
       <element name="TApplicationProperties.FOnActivate"/>
       <element name="TApplicationProperties.FOnDeactivate"/>
-      <element name="TApplicationProperties.FOnDropFiles" link="TApplicationProperties.OnDropFiles"/>
-      <element name="TApplicationProperties.FOnGetMainFormHandle" link="TApplicationProperties.OnGetMainFormHandle"/>
-      <element name="TApplicationProperties.FOnModalBegin" link="TApplicationProperties.OnModalBegin"/>
-      <element name="TApplicationProperties.FOnModalEnd" link="TApplicationProperties.OnModalEnd"/>
-      <element name="TApplicationProperties.FShowButtonGlyphs" link="TApplicationProperties.ShowButtonGlyphs"/>
-      <element name="TApplicationProperties.FShowHint" link="TApplicationProperties.ShowHint"/>
-      <element name="TApplicationProperties.FShowMainForm" link="TApplicationProperties.ShowMainForm"/>
-      <element name="TApplicationProperties.FShowMenuGlyphs" link="TApplicationProperties.ShowMenuGlyphs"/>
-      <element name="TApplicationProperties.FTitle" link="TApplicationProperties.Title"/>
-      <element name="TApplicationProperties.FOnException" link="TApplicationProperties.OnException"/>
-      <element name="TApplicationProperties.FOnIdle" link="TApplicationProperties.OnIdle"/>
-      <element name="TApplicationProperties.FOnIdleEnd" link="TApplicationProperties.OnIdleEnd"/>
-      <element name="TApplicationProperties.FOnHelp" link="TApplicationProperties.OnHelp"/>
-      <element name="TApplicationProperties.FOnHint" link="TApplicationProperties.OnHint"/>
-      <element name="TApplicationProperties.FOnShowHint" link="TApplicationProperties.OnShowHint"/>
-      <element name="TApplicationProperties.FOnUserInput" link="TApplicationProperties.OnUserInput"/>
-      <element name="TApplicationProperties.FOnEndSession" link="TApplicationProperties.OnEndSession"/>
-      <element name="TApplicationProperties.FOnQueryEndSession" link="TApplicationProperties.OnQueryEndSession"/>
-      <element name="TApplicationProperties.FOnMinimize" link="TApplicationProperties.OnMinimize"/>
-      <element name="TApplicationProperties.FOnRestore" link="TApplicationProperties.OnRestore"/>
+      <element name="TApplicationProperties.FOnDropFiles" link="#lcl.forms.TApplicationProperties.OnDropFiles"/>
+      <element name="TApplicationProperties.FOnGetMainFormHandle" link="#lcl.forms.TApplicationProperties.OnGetMainFormHandle"/>
+      <element name="TApplicationProperties.FOnModalBegin" link="#lcl.forms.TApplicationProperties.OnModalBegin"/>
+      <element name="TApplicationProperties.FOnModalEnd" link="#lcl.forms.TApplicationProperties.OnModalEnd"/>
+      <element name="TApplicationProperties.FShowButtonGlyphs" link="#lcl.forms.TApplicationProperties.ShowButtonGlyphs"/>
+      <element name="TApplicationProperties.FShowHint" link="#lcl.forms.TApplicationProperties.ShowHint"/>
+      <element name="TApplicationProperties.FShowMainForm" link="#lcl.forms.TApplicationProperties.ShowMainForm"/>
+      <element name="TApplicationProperties.FShowMenuGlyphs" link="#lcl.forms.TApplicationProperties.ShowMenuGlyphs"/>
+      <element name="TApplicationProperties.FTitle" link="#lcl.forms.TApplicationProperties.Title"/>
+      <element name="TApplicationProperties.FOnException" link="#lcl.forms.TApplicationProperties.OnException"/>
+      <element name="TApplicationProperties.FOnIdle" link="#lcl.forms.TApplicationProperties.OnIdle"/>
+      <element name="TApplicationProperties.FOnIdleEnd" link="#lcl.forms.TApplicationProperties.OnIdleEnd"/>
+      <element name="TApplicationProperties.FOnHelp" link="#lcl.forms.TApplicationProperties.OnHelp"/>
+      <element name="TApplicationProperties.FOnHint" link="#lcl.forms.TApplicationProperties.OnHint"/>
+      <element name="TApplicationProperties.FOnShowHint" link="#lcl.forms.TApplicationProperties.OnShowHint"/>
+      <element name="TApplicationProperties.FOnUserInput" link="#lcl.forms.TApplicationProperties.OnUserInput"/>
+      <element name="TApplicationProperties.FOnEndSession" link="#lcl.forms.TApplicationProperties.OnEndSession"/>
+      <element name="TApplicationProperties.FOnQueryEndSession" link="#lcl.forms.TApplicationProperties.OnQueryEndSession"/>
+      <element name="TApplicationProperties.FOnMinimize" link="#lcl.forms.TApplicationProperties.OnMinimize"/>
+      <element name="TApplicationProperties.FOnRestore" link="#lcl.forms.TApplicationProperties.OnRestore"/>
       <element name="TApplicationProperties.SetExceptionDialog">
         <short>Sets the value for the ExceptionDialog property</short>
         <descr></descr>
@@ -9901,49 +9901,49 @@
           <link id="TApplicationProperties.OnUserInput"/>
         </seealso>
       </element>
-      <element name="TApplicationProperties.CaptureExceptions" link="TApplication.CaptureExceptions"/>
+      <element name="TApplicationProperties.CaptureExceptions" link="#lcl.forms.TApplication.CaptureExceptions"/>
       <element name="TApplicationProperties.ExceptionDialog">
         <short>Indicates the dialog type displayed for an exception</short>
         <descr>The default value is aedOkCancelDialog.</descr>
         <seealso></seealso>
       </element>
-      <element name="TApplicationProperties.HelpFile" link="TApplication.HelpFile"/>
-      <element name="TApplicationProperties.Hint" link="TApplication.Hint"/>
-      <element name="TApplicationProperties.HintColor" link="TApplication.HintColor"/>
-      <element name="TApplicationProperties.HintHidePause" link="TApplication.HintHidePause"/>
-      <element name="TApplicationProperties.HintPause" link="TApplication.HintPause"/>
-      <element name="TApplicationProperties.HintShortCuts" link="TApplication.HintShortCuts"/>
-      <element name="TApplicationProperties.HintShortPause" link="TApplication.HintShortPause"/>
-      <element name="TApplicationProperties.ShowButtonGlyphs" link="TApplication.ShowButtonGlyphs"/>
-      <element name="TApplicationProperties.ShowMenuGlyphs" link="TApplication.ShowMenuGlyphs"/>
-      <element name="TApplicationProperties.ShowHint" link="TApplication.ShowHint"/>
-      <element name="TApplicationProperties.ShowMainForm" link="TApplication.ShowMainForm"/>
-      <element name="TApplicationProperties.Title" link="TApplication.Title"/>
-      <element name="TApplicationProperties.OnActivate" link="TApplication.OnActivate">
+      <element name="TApplicationProperties.HelpFile" link="#lcl.forms.TApplication.HelpFile"/>
+      <element name="TApplicationProperties.Hint" link="#lcl.forms.TApplication.Hint"/>
+      <element name="TApplicationProperties.HintColor" link="#lcl.forms.TApplication.HintColor"/>
+      <element name="TApplicationProperties.HintHidePause" link="#lcl.forms.TApplication.HintHidePause"/>
+      <element name="TApplicationProperties.HintPause" link="#lcl.forms.TApplication.HintPause"/>
+      <element name="TApplicationProperties.HintShortCuts" link="#lcl.forms.TApplication.HintShortCuts"/>
+      <element name="TApplicationProperties.HintShortPause" link="#lcl.forms.TApplication.HintShortPause"/>
+      <element name="TApplicationProperties.ShowButtonGlyphs" link="#lcl.forms.TApplication.ShowButtonGlyphs"/>
+      <element name="TApplicationProperties.ShowMenuGlyphs" link="#lcl.forms.TApplication.ShowMenuGlyphs"/>
+      <element name="TApplicationProperties.ShowHint" link="#lcl.forms.TApplication.ShowHint"/>
+      <element name="TApplicationProperties.ShowMainForm" link="#lcl.forms.TApplication.ShowMainForm"/>
+      <element name="TApplicationProperties.Title" link="#lcl.forms.TApplication.Title"/>
+      <element name="TApplicationProperties.OnActivate" link="#lcl.forms.TApplication.OnActivate">
         <short></short>
         <descr></descr>
         <seealso></seealso>
       </element>
-      <element name="TApplicationProperties.OnDeactivate" link="TApplication.OnDeactivate">
+      <element name="TApplicationProperties.OnDeactivate" link="#lcl.forms.TApplication.OnDeactivate">
         <short></short>
         <descr></descr>
         <seealso></seealso>
       </element>
-      <element name="TApplicationProperties.OnException" link="TApplication.OnException"/>
-      <element name="TApplicationProperties.OnGetMainFormHandle" link="TApplication.OnGetMainFormHandle"/>
-      <element name="TApplicationProperties.OnIdle" link="TApplication.OnIdle"/>
-      <element name="TApplicationProperties.OnIdleEnd" link="TApplication.OnIdleEnd"/>
-      <element name="TApplicationProperties.OnEndSession" link="TApplication.OnEndSession"/>
-      <element name="TApplicationProperties.OnQueryEndSession" link="TApplication.OnQueryEndSession"/>
-      <element name="TApplicationProperties.OnMinimize" link="TApplication.OnMinimize"/>
-      <element name="TApplicationProperties.OnModalBegin" link="TApplication.OnModalBegin"/>
-      <element name="TApplicationProperties.OnModalEnd" link="TApplication.OnModalEnd"/>
-      <element name="TApplicationProperties.OnRestore" link="TApplication.OnRestore"/>
-      <element name="TApplicationProperties.OnDropFiles" link="TApplication.OnDropFiles"/>
-      <element name="TApplicationProperties.OnHelp" link="TApplication.OnHelp"/>
-      <element name="TApplicationProperties.OnHint" link="TApplication.OnHint"/>
-      <element name="TApplicationProperties.OnShowHint" link="TApplication.OnShowHint"/>
-      <element name="TApplicationProperties.OnUserInput" link="TApplication.OnUserInput"/>
+      <element name="TApplicationProperties.OnException" link="#lcl.forms.TApplication.OnException"/>
+      <element name="TApplicationProperties.OnGetMainFormHandle" link="#lcl.forms.TApplication.OnGetMainFormHandle"/>
+      <element name="TApplicationProperties.OnIdle" link="#lcl.forms.TApplication.OnIdle"/>
+      <element name="TApplicationProperties.OnIdleEnd" link="#lcl.forms.TApplication.OnIdleEnd"/>
+      <element name="TApplicationProperties.OnEndSession" link="#lcl.forms.TApplication.OnEndSession"/>
+      <element name="TApplicationProperties.OnQueryEndSession" link="#lcl.forms.TApplication.OnQueryEndSession"/>
+      <element name="TApplicationProperties.OnMinimize" link="#lcl.forms.TApplication.OnMinimize"/>
+      <element name="TApplicationProperties.OnModalBegin" link="#lcl.forms.TApplication.OnModalBegin"/>
+      <element name="TApplicationProperties.OnModalEnd" link="#lcl.forms.TApplication.OnModalEnd"/>
+      <element name="TApplicationProperties.OnRestore" link="#lcl.forms.TApplication.OnRestore"/>
+      <element name="TApplicationProperties.OnDropFiles" link="#lcl.forms.TApplication.OnDropFiles"/>
+      <element name="TApplicationProperties.OnHelp" link="#lcl.forms.TApplication.OnHelp"/>
+      <element name="TApplicationProperties.OnHint" link="#lcl.forms.TApplication.OnHint"/>
+      <element name="TApplicationProperties.OnShowHint" link="#lcl.forms.TApplication.OnShowHint"/>
+      <element name="TApplicationProperties.OnUserInput" link="#lcl.forms.TApplication.OnUserInput"/>
       <!-- object Visibility: default -->
       <element name="TIDesigner">
         <short>The abstract base class for visual Form designers</short>

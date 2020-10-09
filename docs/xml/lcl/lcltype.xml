@@ -49,7 +49,7 @@
         </notes>
       </element>
       <!-- pointer type Visibility: default -->
-      <element link="TCriticalSection" name="PCriticalSection"/>
+      <element link="#lcl.lcltype.TCriticalSection" name="PCriticalSection"/>
       <!-- enumeration type Visibility: default -->
       <element name="TDockImageOperation">
         <short>Actions occurring while dragging an image.</short>
@@ -71,8 +71,8 @@
         <descr/>
         <seealso/>
       </element>
-      <element link="THandle" name="HANDLE"/>
-      <element link="THandle" name="PHandle"/>
+      <element link="#lcl.lcltype.THandle" name="HANDLE"/>
+      <element link="#lcl.lcltype.THandle" name="PHandle"/>
       <!-- alias type Visibility: default -->
       <element name="HKEY">
         <short/>
@@ -4969,10 +4969,10 @@
       <element name="tagScrollInfo.nTrackPos">
         <short>The current position while the user is dragging the slider.</short>
       </element>
-      <element link="tagScrollInfo" name="PScrollInfo"/>
-      <element link="tagScrollInfo" name="TScrollInfo"/>
+      <element link="#lcl.lcltype.tagScrollInfo" name="PScrollInfo"/>
+      <element link="#lcl.lcltype.tagScrollInfo" name="TScrollInfo"/>
       <!-- pointer type Visibility: default -->
-      <element link="tagPaletteEntry" name="PPaletteEntry"/>
+      <element link="#lcl.lcltype.tagPaletteEntry" name="PPaletteEntry"/>
       <!-- record type Visibility: default -->
       <element name="tagPALETTEENTRY">
         <short/>
@@ -9925,7 +9925,7 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element link="tagLOGBRUSH" name="PLogBrush"/>
+      <element link="#lcl.lcltype.tagLOGBRUSH" name="PLogBrush"/>
       <!-- record type Visibility: default -->
       <element name="tagLOGBRUSH">
         <short>Description of a Brush.</short>
@@ -9961,8 +9961,8 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <descr/>
         <seealso/>
       </element>
-      <element link="tagLOGBRUSH" name="TLogBrush"/>
-      <element link="tagLOGBRUSH" name="LOGBRUSH"/>
+      <element link="#lcl.lcltype.tagLOGBRUSH" name="TLogBrush"/>
+      <element link="#lcl.lcltype.tagLOGBRUSH" name="LOGBRUSH"/>
       <!-- pointer type Visibility: default -->
       <element name="PMaxLogPalette">
         <short/>

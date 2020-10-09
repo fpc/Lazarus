@@ -59,8 +59,8 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TLCLComponent.FWidgetSetClass" link="TLCLComponent.WidgetSetClass"/>
-      <element name="TLCLComponent.FLCLRefCount" link="TLCLComponent.LCLRefCount"/>
+      <element name="TLCLComponent.FWidgetSetClass" link="#lcl.lclclasses.TLCLComponent.WidgetSetClass"/>
+      <element name="TLCLComponent.FLCLRefCount" link="#lcl.lclclasses.TLCLComponent.LCLRefCount"/>
 
       <element name="TLCLComponent.WSRegisterClass">
         <short>Registers this component class with the current WidgetSet</short>
@@ -139,8 +139,8 @@
         <short>The object whose handlers shall be removed</short>
       </element>
 
-      <element name="TLCLComponent.IncLCLRefCount" link="TLCLComponent.LCLRefCount"/>
-      <element name="TLCLComponent.DecLCLRefCount" link="TLCLComponent.LCLRefCount"/>
+      <element name="TLCLComponent.IncLCLRefCount" link="#lcl.lclclasses.TLCLComponent.LCLRefCount"/>
+      <element name="TLCLComponent.DecLCLRefCount" link="#lcl.lclclasses.TLCLComponent.LCLRefCount"/>
 
       <element name="TLCLComponent.LCLRefCount">
         <short>The number of references to this component</short>
@@ -196,7 +196,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TLCLReferenceComponent.GetHandle" link="TLCLReferenceComponent.Handle"/>
+      <element name="TLCLReferenceComponent.GetHandle" link="#lcl.lclclasses.TLCLReferenceComponent.Handle"/>
       <element name="TLCLReferenceComponent.GetHandle.Result">
         <short/>
       </element>
@@ -280,7 +280,7 @@
         </seealso>
       </element>
 
-      <element name="TLCLReferenceComponent.HandleAllocated" link="TLCLReferenceComponent.ReferenceAllocated"/>
+      <element name="TLCLReferenceComponent.HandleAllocated" link="#lcl.lclclasses.TLCLReferenceComponent.ReferenceAllocated"/>
 
       <element name="TLCLReferenceComponent.ReferenceAllocated">
         <short>If True, a Reference has been allocated for this component</short>

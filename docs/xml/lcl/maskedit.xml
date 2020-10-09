@@ -1655,8 +1655,8 @@
         </seealso>
       </element>
 
-      <element name="TMaskEdit.IsMasked" link="TCustomMaskEdit.IsMasked"/>
-      <element name="TMaskEdit.EditText" link="TCustomMaskEdit.EditText"/>
+      <element name="TMaskEdit.IsMasked" link="#lcl.maskedit.TCustomMaskEdit.IsMasked"/>
+      <element name="TMaskEdit.EditText" link="#lcl.maskedit.TCustomMaskEdit.EditText"/>
       <element name="TMaskEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TMaskEdit.Alignment" link="#LCL.StdCtrls.TCustomEdit.Alignment"/>
 
@@ -1923,7 +1923,7 @@
       <element name="TMaskEdit.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TMaskEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TMaskEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TMaskEdit.EditMask" link="TCustomMaskEdit.EditMask"/>
+      <element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
 
       <element name="TMaskEdit.Text">
         <short></short>

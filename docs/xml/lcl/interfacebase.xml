@@ -113,7 +113,7 @@
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TPipeReasons" link="TPipeReason"/>
+      <element name="TPipeReasons" link="#lcl.interfacebase.TPipeReason"/>
       <!-- procedure type Visibility: default -->
       <element name="TApplicationMainLoop">
         <short/>
@@ -233,7 +233,7 @@
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TLCLPlatforms" link="TLCLPlatform"/>
+      <element name="TLCLPlatforms" link="#lcl.interfacebase.TLCLPlatform"/>
       <!-- enumeration type Visibility: default -->
       <element name="TLCLCapability">
         <short>Capabilities of the (current) platform.</short>
@@ -291,25 +291,25 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDialogButton.FCaption" link="TDialogButton.Caption"/>
-      <element name="TDialogButton.FModalResult" link="TDialogButton.ModalResult"/>
+      <element name="TDialogButton.FCaption" link="#lcl.interfacebase.TDialogButton.Caption"/>
+      <element name="TDialogButton.FModalResult" link="#lcl.interfacebase.TDialogButton.ModalResult"/>
       <!-- function Visibility: private -->
-      <element name="TDialogButton.GetCancel" link="TDialogButton.Cancel"/>
+      <element name="TDialogButton.GetCancel" link="#lcl.interfacebase.TDialogButton.Cancel"/>
       <element name="TDialogButton.GetCancel.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TDialogButton.GetDefault" link="TDialogButton.Default"/>
+      <element name="TDialogButton.GetDefault" link="#lcl.interfacebase.TDialogButton.Default"/>
       <element name="TDialogButton.GetDefault.Result">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TDialogButton.SetCancel" link="TDialogButton.Cancel"/>
+      <element name="TDialogButton.SetCancel" link="#lcl.interfacebase.TDialogButton.Cancel"/>
       <element name="TDialogButton.SetCancel.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TDialogButton.SetDefault" link="TDialogButton.Default"/>
+      <element name="TDialogButton.SetDefault" link="#lcl.interfacebase.TDialogButton.Default"/>
       <element name="TDialogButton.SetDefault.AValue">
         <short/>
       </element>
@@ -321,7 +321,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDialogButton.SetCaption" link="TDialogButton.Caption"/>
+      <element name="TDialogButton.SetCaption" link="#lcl.interfacebase.TDialogButton.Caption"/>
       <element name="TDialogButton.SetCaption.AValue">
         <short/>
       </element>
@@ -362,10 +362,10 @@
         <seealso/>
       </element>
       <!-- variable Visibility: protected -->
-      <element name="TDialogButtons.FCancelButton" link="TDialogButtons.CancelButton"/>
-      <element name="TDialogButtons.FDefaultButton" link="TDialogButtons.DefaultButton"/>
+      <element name="TDialogButtons.FCancelButton" link="#lcl.interfacebase.TDialogButtons.CancelButton"/>
+      <element name="TDialogButtons.FDefaultButton" link="#lcl.interfacebase.TDialogButtons.DefaultButton"/>
       <!-- function Visibility: protected -->
-      <element name="TDialogButtons.GetItem" link="TDialogButtons.Items"/>
+      <element name="TDialogButtons.GetItem" link="#lcl.interfacebase.TDialogButtons.Items"/>
       <element name="TDialogButtons.GetItem.Result">
         <short/>
       </element>
@@ -373,17 +373,17 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDialogButtons.SetCancelButton" link="TDialogButtons.CancelButton"/>
+      <element name="TDialogButtons.SetCancelButton" link="#lcl.interfacebase.TDialogButtons.CancelButton"/>
       <element name="TDialogButtons.SetCancelButton.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDialogButtons.SetDefaultButton" link="TDialogButtons.DefaultButton"/>
+      <element name="TDialogButtons.SetDefaultButton" link="#lcl.interfacebase.TDialogButtons.DefaultButton"/>
       <element name="TDialogButtons.SetDefaultButton.Value">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDialogButtons.SetItem" link="TDialogButtons.Items"/>
+      <element name="TDialogButtons.SetItem" link="#lcl.interfacebase.TDialogButtons.Items"/>
       <element name="TDialogButtons.SetItem.Index">
         <short/>
       </element>
@@ -460,7 +460,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: protected -->
-      <element name="TWidgetSet.FThemeServices" link="TWidgetSet.ThemeServices"/>
+      <element name="TWidgetSet.FThemeServices" link="#lcl.interfacebase.TWidgetSet.ThemeServices"/>
       <!-- procedure Visibility: protected -->
       <element name="TWidgetSet.PassCmdLineOptions">
         <short/>
@@ -472,17 +472,17 @@
         </notes>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWidgetSet.CreateThemeServices" link="TWidgetSet.ThemeServices"/>
+      <element name="TWidgetSet.CreateThemeServices" link="#lcl.interfacebase.TWidgetSet.ThemeServices"/>
       <element name="TWidgetSet.CreateThemeServices.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWidgetSet.GetAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWidgetSet.GetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.GetAppHandle.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWidgetSet.SetAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWidgetSet.SetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.SetAppHandle.AValue">
         <short/>
       </element>
@@ -3130,7 +3130,7 @@
         <short>Receives the total width and height of the required display area.</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.GetTextExtentPoint32" link="TWidgetSet.GetTextExtentPoint">
+      <element name="TWidgetSet.GetTextExtentPoint32" link="#lcl.interfacebase.TWidgetSet.GetTextExtentPoint">
         <short>Computes the display width and height of an string.</short>
         <descr/>
         <errors/>
@@ -3785,7 +3785,7 @@
         </short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.MonitorFromRect" link="TWidgetSet.MonitorFromPoint">
+      <element name="TWidgetSet.MonitorFromRect" link="#lcl.interfacebase.TWidgetSet.MonitorFromPoint">
         <short>Finds the monitor covering most of a rectangle.</short>
         <descr/>
         <seealso/>
@@ -6123,7 +6123,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.ExtUTF8Out" link="TWidgetSet.ExtTextOut">
+      <element name="TWidgetSet.ExtUTF8Out" link="#lcl.interfacebase.TWidgetSet.ExtTextOut">
         <short>Draws an UTF-8 string without formatting (single line).</short>
         <descr>The inter-character spacing array (Dx) must have one element for every Char (byte) in the
           UTF-8 text. For multi-byte character codes the values of all Dx elements are summed up.
@@ -7269,7 +7269,7 @@
         <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="TWidgetSetClass" link="TWidgetSet"/>
+      <element name="TWidgetSetClass" link="#lcl.interfacebase.TWidgetSet"/>
       <!-- constant Visibility: default -->
       <element name="LCLPlatformDirNames">
         <short/>

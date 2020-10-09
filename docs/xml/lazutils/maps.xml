@@ -945,7 +945,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMap.Add" link="TBaseMap.InternalAdd">
+      <element name="TMap.Add" link="#lazutils.maps.TBaseMap.InternalAdd">
         <short>
           Adds a map item with the specified ID and Data values
         </short>
@@ -981,59 +981,59 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TMap.GetData" link="TBaseMap.InternalGetData">
+      <element name="TMap.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
         <short>
           Gets the Data for the map item with the specified ID
         </short>
         <descr></descr>
       </element>
       <!-- function result Visibility: public -->
-      <element name="TMap.GetData.Result" link="TBaseMap.InternalGetData.Result">
+      <element name="TMap.GetData.Result" link="#lazutils.maps.TBaseMap.InternalGetData.Result">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.GetData.AId" link="TBaseMap.InternalGetData.AId">
+      <element name="TMap.GetData.AId" link="#lazutils.maps.TBaseMap.InternalGetData.AId">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.GetData.AData" link="TBaseMap.InternalGetData.AId">
+      <element name="TMap.GetData.AData" link="#lazutils.maps.TBaseMap.InternalGetData.AId">
         <short></short>
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TMap.GetDataPtr" link="TBaseMap.InternalGetDataPtr">
+      <element name="TMap.GetDataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
         <short>Gets a Pointer to the data for the specified map item</short>
         <descr></descr>
       </element>
       <!-- function result Visibility: public -->
-      <element name="TMap.GetDataPtr.Result" link="TBaseMap.InternalGetDataPtr.Result">
+      <element name="TMap.GetDataPtr.Result" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.Result">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.GetDataPtr.AId" link="TBaseMap.InternalGetDataPtr.AId">
+      <element name="TMap.GetDataPtr.AId" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.AId">
         <short></short>
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TMap.SetData" link="TBaseMap.InternalSetData">
+      <element name="TMap.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
         <short>Stores the data for the specified map item</short>
         <descr></descr>
       </element>
       <!-- function result Visibility: public -->
-      <element name="TMap.SetData.Result" link="TBaseMap.InternalSetData.Result">
+      <element name="TMap.SetData.Result" link="#lazutils.maps.TBaseMap.InternalSetData.Result">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.SetData.AId" link="TBaseMap.InternalSetData.AId">
+      <element name="TMap.SetData.AId" link="#lazutils.maps.TBaseMap.InternalSetData.AId">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMap.SetData.AData" link="TBaseMap.InternalSetData.AData">
+      <element name="TMap.SetData.AData" link="#lazutils.maps.TBaseMap.InternalSetData.AData">
         <short></short>
       </element>
 
       <!-- class Visibility: default -->
-      <element name="TMapIterator" link="TBaseMapIterator">
+      <element name="TMapIterator" link="#lazutils.maps.TBaseMapIterator">
         <short>
           Implements an iterator for items in a map
         </short>
@@ -1045,7 +1045,7 @@
       </element>
 
       <!-- constructor Visibility: public -->
-      <element name="TMapIterator.Create" link="TBaseMapIterator.InternalCreate">
+      <element name="TMapIterator.Create" link="#lazutils.maps.TBaseMapIterator.InternalCreate">
         <short>Constructor for the class instance</short>
         <descr></descr>
       </element>
@@ -1055,61 +1055,61 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TMapIterator.DataPtr" link="TBaseMap.InternalGetDataPtr">
+      <element name="TMapIterator.DataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
         <short>Gets the Pointer to the Data in a map item</short>
         <descr></descr>
       </element>
       <!-- function result Visibility: public -->
-      <element name="TMapIterator.DataPtr.Result" link="TBaseMap.InternalGetDataPtr.Result">
+      <element name="TMapIterator.DataPtr.Result" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.Result">
         <short></short>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMapIterator.GetData" link="TBaseMap.InternalGetData">
+      <element name="TMapIterator.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
         <short>Gets the Data for a map item</short>
         <descr></descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.GetData.AData" link="TBaseMap.InternalGetData,AData">
+      <element name="TMapIterator.GetData.AData" link="#lazutils.maps.TBaseMap.InternalGetData,AData">
         <short>Data for the map item</short>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMapIterator.GetID" link="TBaseMap.InternalGetID">
+      <element name="TMapIterator.GetID" link="#lazutils.maps.TBaseMap.InternalGetID">
         <short>Gets the ID for a map item</short>
         <descr></descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.GetID.AID" link="TBaseMap.InternalGetID.AID">
+      <element name="TMapIterator.GetID.AID" link="#lazutils.maps.TBaseMap.InternalGetID.AID">
         <short></short>
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TMapIterator.Locate" link="TBaseMapIterator.InternalLocate">
+      <element name="TMapIterator.Locate" link="#lazutils.maps.TBaseMapIterator.InternalLocate">
         <short>Locates a map item with the specified ID</short>
         <descr></descr>
       </element>
       <!-- function result Visibility: public -->
-      <element name="TMapIterator.Locate.Result" link="TBaseMapIterator.InternalLocate.Result">
+      <element name="TMapIterator.Locate.Result" link="#lazutils.maps.TBaseMapIterator.InternalLocate.Result">
         <short></short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.Locate.AId" link="TBaseMapIterator.InternalLocate.AId">
+      <element name="TMapIterator.Locate.AId" link="#lazutils.maps.TBaseMapIterator.InternalLocate.AId">
         <short></short>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMapIterator.SetData" link="TBaseMap.InternalSetData">
+      <element name="TMapIterator.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
         <short>Sets the Data for a map item</short>
         <descr></descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMapIterator.SetData.AData" link="TBaseMap.InternalSetData.AData">
+      <element name="TMapIterator.SetData.AData" link="#lazutils.maps.TBaseMap.InternalSetData.AData">
         <short></short>
       </element>
 
       <!-- class Visibility: default -->
-      <element name="TTypedMap" link="TMap">
+      <element name="TTypedMap" link="#lazutils.maps.TMap">
         <short>
           Implements a map with support for reference counted Type Information in the Data
         </short>
@@ -1124,7 +1124,7 @@
       <element name="TTypedMap.FTypeInfo"/>
 
       <!-- function Visibility: protected -->
-      <element name="TTypedMap.InternalSetData" link="TBaseMap.InternalSetData">
+      <element name="TTypedMap.InternalSetData" link="#lazutils.maps.TBaseMap.InternalSetData">
         <short></short>
         <descr></descr>
       </element>
@@ -1142,7 +1142,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TTypedMap.ReleaseData" link="TBaseMap.ReleaseData">
+      <element name="TTypedMap.ReleaseData" link="#lazutils.maps.TBaseMap.ReleaseData">
         <short></short>
         <descr></descr>
       </element>
@@ -1152,7 +1152,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TTypedMap.Add" link="TMap.Add">
+      <element name="TTypedMap.Add" link="#lazutils.maps.TMap.Add">
         <short></short>
         <descr></descr>
       </element>
@@ -1180,13 +1180,13 @@
       </element>
 
       <!-- destructor Visibility: public -->
-      <element name="TTypedMap.Destroy" link="TBaseMap.Destroy">
+      <element name="TTypedMap.Destroy" link="#lazutils.maps.TBaseMap.Destroy">
         <short>Destructor for the class instance</short>
         <descr></descr>
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TTypedMap.HasId" link="TMap.HasId">
+      <element name="TTypedMap.HasId" link="#lazutils.maps.TMap.HasId">
         <short></short>
         <descr></descr>
       </element>
@@ -1200,7 +1200,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TTypedMap.GetData" link="TMap.GetData">
+      <element name="TTypedMap.GetData" link="#lazutils.maps.TMap.GetData">
         <short>Gets the Data for the specified map item</short>
         <descr></descr>
       </element>
@@ -1218,7 +1218,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TTypedMap.GetDataPtr" link="TMap.GetDataPtr">
+      <element name="TTypedMap.GetDataPtr" link="#lazutils.maps.TMap.GetDataPtr">
         <short>Gets a Pointer to the Data for the specified map item</short>
         <descr></descr>
       </element>
@@ -1232,7 +1232,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TTypedMap.SetData" link="TMap.SetData">
+      <element name="TTypedMap.SetData" link="#lazutils.maps.TMap.SetData">
         <short>Stores the Data for the specified map item</short>
         <descr></descr>
       </element>
@@ -1250,7 +1250,7 @@
       </element>
 
       <!-- class Visibility: default -->
-      <element name="TTypedMapIterator" link="TMapIterator">
+      <element name="TTypedMapIterator" link="#lazutils.maps.TMapIterator">
         <short>
           Implements an iterator for items in a map
         </short>

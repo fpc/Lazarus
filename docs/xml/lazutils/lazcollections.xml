@@ -41,13 +41,13 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TLazMonitor.FSpinCount" link="TLazMonitor.SpinCount"/>
+      <element name="TLazMonitor.FSpinCount" link="#lazutils.lazcollections.TLazMonitor.SpinCount"/>
 
       <!-- variable Visibility: private -->
-      <element name="TLazMonitor.FDefaultSpinCount" link="TLazMonitor.DefaultSpinCount"/>
+      <element name="TLazMonitor.FDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount"/>
 
       <!-- class function Visibility: private -->
-      <element name="TLazMonitor.GetDefaultSpinCount" link="TLazMonitor.DefaultSpinCount">
+      <element name="TLazMonitor.GetDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount">
         <short>Gets the value for the DefaultSpinCount class property</short>
       </element>
       <!-- function result Visibility: private -->
@@ -56,7 +56,7 @@
       </element>
 
       <!-- class procedure Visibility: private -->
-      <element name="TLazMonitor.SetDefaultSpinCount" link="TLazMonitor.DefaultSpinCount">
+      <element name="TLazMonitor.SetDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount">
         <short>Sets the value for the DefaultSpinCount property</short>
       </element>
       <!-- argument Visibility: default -->
@@ -65,7 +65,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TLazMonitor.GetSpinCount" link="TLazMonitor.SpinCount">
+      <element name="TLazMonitor.GetSpinCount" link="#lazutils.lazcollections.TLazMonitor.SpinCount">
         <short>Gets the value for the SpinCount property</short>
       </element>
       <!-- function result Visibility: private -->
@@ -74,7 +74,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TLazMonitor.SetSpinCount" link="TLazMonitor.SpinCount">
+      <element name="TLazMonitor.SetSpinCount" link="#lazutils.lazcollections.TLazMonitor.SpinCount">
         <short>Sets the value for the SpinCount property</short>
       </element>
       <!-- argument Visibility: default -->

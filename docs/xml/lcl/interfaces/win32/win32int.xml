@@ -93,8 +93,8 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="PPPipeEventInfo" link="TPipeEventInfo"/>
-      <element name="PPipeEventInfo" link="TPipeEventInfo"/>
+      <element name="PPPipeEventInfo" link="#lcl.win32int.TPipeEventInfo"/>
+      <element name="PPipeEventInfo" link="#lcl.win32int.TPipeEventInfo"/>
       <element name="TPipeEventInfo">
         <short/>
         <descr/>
@@ -177,7 +177,7 @@
         </errors>
         <seealso/>
       </element>
-      <element name="TWin32WidgetSet.FCommonControlsVersion" link="TWin32WidgetSet.CommonControlsVersion"/>
+      <element name="TWin32WidgetSet.FCommonControlsVersion" link="#lcl.win32int.TWin32WidgetSet.CommonControlsVersion"/>
       <element name="TWin32WidgetSet.FMetrics">
         <short/>
         <descr/>
@@ -188,7 +188,7 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="TWin32WidgetSet.FDefaultFont" link="TWin32WidgetSet.DefaultFont"/>
+      <element name="TWin32WidgetSet.FDefaultFont" link="#lcl.win32int.TWin32WidgetSet.DefaultFont"/>
       <element name="TWin32WidgetSet.FWaitHandleCount">
         <short/>
         <descr/>
@@ -225,9 +225,9 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="TWin32WidgetSet.FOnAsyncSocketMsg" link="TWin32WidgetSet.OnAsyncSocketMsg"/>
-      <element name="TWin32WidgetSet.FDotsPatternBitmap" link="TWin32WidgetSet.DotsPatternBitmap"/>
-      <element name="TWin32WidgetSet.GetDotsPatternBitmap" link="TWin32WidgetSet.DotsPatternBitmap"/>
+      <element name="TWin32WidgetSet.FOnAsyncSocketMsg" link="#lcl.win32int.TWin32WidgetSet.OnAsyncSocketMsg"/>
+      <element name="TWin32WidgetSet.FDotsPatternBitmap" link="#lcl.win32int.TWin32WidgetSet.DotsPatternBitmap"/>
+      <element name="TWin32WidgetSet.GetDotsPatternBitmap" link="#lcl.win32int.TWin32WidgetSet.DotsPatternBitmap"/>
       <element name="TWin32WidgetSet.GetDotsPatternBitmap.Result">
         <short/>
       </element>
@@ -258,16 +258,16 @@
       <element name="TWin32WidgetSet.WinRegister.Result">
         <short>False on failure.</short>
       </element>
-      <element name="TWin32WidgetSet.CreateAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWin32WidgetSet.CreateAppHandle" link="#lcl.win32int.TWidgetSet.AppHandle"/>
       <element name="TWin32WidgetSet.CreateThemeServices" link="#lcl.InterfaceBase.TWidgetSet.ThemeServices"/>
       <element name="TWin32WidgetSet.CreateThemeServices.Result">
         <short/>
       </element>
-      <element name="TWin32WidgetSet.GetAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWin32WidgetSet.GetAppHandle" link="#lcl.win32int.TWidgetSet.AppHandle"/>
       <element name="TWin32WidgetSet.GetAppHandle.Result">
         <short>Returns FAppHandle.</short>
       </element>
-      <element name="TWin32WidgetSet.SetAppHandle" link="TWidgetSet.AppHandle">
+      <element name="TWin32WidgetSet.SetAppHandle" link="#lcl.win32int.TWidgetSet.AppHandle">
         <short>Sets the application window handle, if not done before.</short>
         <descr/>
         <seealso/>

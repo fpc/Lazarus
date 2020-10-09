@@ -400,7 +400,7 @@
         <short></short>
       </element>
 
-      <element name="TCustomEditButton.CalculatePreferredSize" link="TCustomAbstractGroupedEdit.CalculatePreferredSize"/>
+      <element name="TCustomEditButton.CalculatePreferredSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CalculatePreferredSize"/>
       <element name="TCustomEditButton.CalculatePreferredSize.PreferredWidth"/>
       <element name="TCustomEditButton.CalculatePreferredSize.PreferredHeight"/>
       <element name="TCustomEditButton.CalculatePreferredSize.WithThemeSpace"/>
@@ -613,7 +613,7 @@
       </element>
 
       <element name="TEditButton.AutoSelected" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.AutoSelected"/>
-      <element name="TEditButton.Button" link="TCustomEditButton.Button"/>
+      <element name="TEditButton.Button" link="#lcl.editbtn.TCustomEditButton.Button"/>
       <element name="TEditButton.NumbersOnly" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.NumbersOnly"/>
       <element name="TEditButton.Action" link="#LCL.Controls.TControl.Action"/>
       <element name="TEditButton.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
@@ -639,30 +639,30 @@
         </descr>
       </element>
 
-      <element name="TEditButton.ButtonCaption" link="TCustomEditButton.ButtonCaption"/>
-      <element name="TEditButton.ButtonCursor" link="TCustomEditButton.ButtonCursor"/>
-      <element name="TEditButton.ButtonHint" link="TCustomEditButton.ButtonHint"/>
-      <element name="TEditButton.ButtonOnlyWhenFocused" link="TCustomEditButton.ButtonOnlyWhenFocused"/>
-      <element name="TEditButton.ButtonWidth" link="TCustomEditButton.ButtonWidth"/>
-      <element name="TEditButton.CharCase" link="TCustomEdit.CharCase"/>
+      <element name="TEditButton.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
+      <element name="TEditButton.ButtonCursor" link="#lcl.editbtn.TCustomEditButton.ButtonCursor"/>
+      <element name="TEditButton.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
+      <element name="TEditButton.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
+      <element name="TEditButton.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
+      <element name="TEditButton.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
       <element name="TEditButton.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TEditButton.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TEditButton.Cursor" link="#LCL.Controls.TControl.Cursor"/>
-      <element name="TEditButton.DirectInput" link="TCustomEditButton.DirectInput"/>
+      <element name="TEditButton.DirectInput" link="#lcl.groupededit.TCustomAbstractGroupedEdit.DirectInput"/>
       <element name="TEditButton.EchoMode" link="#LCL.StdCtrls.TCustomEdit.EchoMode"/>
       <element name="TEditButton.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TEditButton.Flat" link="TCustomEditButton.Flat"/>
-      <element name="TEditButton.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TEditButton.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
+      <element name="TEditButton.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TEditButton.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TEditButton.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TEditButton.Images" link="TCustomEditButton.Images"/>
-      <element name="TEditButton.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TEditButton.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TEditButton.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TEditButton.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TEditButton.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TEditButton.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TEditButton.Layout"  link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Layout"/>
-      <element name="TEditButton.MaxLength" link="TCustomEdit.MaxLength"/>
-      <element name="TEditButton.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TEditButton.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
-      <element name="TEditButton.OnChange" link="TCustomEdit.OnChange"/>
+      <element name="TEditButton.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+      <element name="TEditButton.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TEditButton.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
+      <element name="TEditButton.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
       <element name="TEditButton.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TEditButton.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TEditButton.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
@@ -691,13 +691,13 @@
       <element name="TEditButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TEditButton.PasswordChar" link="#LCL.StdCtrls.TCustomEdit.PasswordChar"/>
       <element name="TEditButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TEditButton.ReadOnly" link="TCustomEdit.ReadOnly"/>
+      <element name="TEditButton.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
       <element name="TEditButton.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TEditButton.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TEditButton.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TEditButton.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TEditButton.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TEditButton.Text" link="#LCL.StdCtrls.TCustomEdit.Text"/>
-      <element name="TEditButton.TextHint" link="TCustomEdit.TextHint"/>
+      <element name="TEditButton.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
       <element name="TEditButton.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="TFilterStringOption">
@@ -1111,7 +1111,7 @@
         <short></short>
       </element>
 
-      <element name="TCustomControlFilterEdit.GetDefaultGlyphName" link="TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TCustomControlFilterEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName"/>
       <element name="TCustomControlFilterEdit.GetDefaultGlyphName.Result"/>
 
       <element name="TCustomControlFilterEdit.WSRegisterClass">
@@ -1302,15 +1302,15 @@
         </short>
       </element>
 
-      <element name="TCustomControlFilterEdit.ButtonCaption" link="TCustomEditButton.ButtonCaption"/>
-      <element name="TCustomControlFilterEdit.ButtonCursor" link="TCustomEditButton.ButtonCursor"/>
-      <element name="TCustomControlFilterEdit.ButtonHint" link="TCustomEditButton.ButtonHint"/>
-      <element name="TCustomControlFilterEdit.ButtonOnlyWhenFocused" link="TCustomEditButton.ButtonOnlyWhenFocused"/>
-      <element name="TCustomControlFilterEdit.ButtonWidth" link="TCustomEditButton.ButtonWidth"/>
+      <element name="TCustomControlFilterEdit.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
+      <element name="TCustomControlFilterEdit.ButtonCursor" link="#lcl.editbtn.TCustomEditButton.ButtonCursor"/>
+      <element name="TCustomControlFilterEdit.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
+      <element name="TCustomControlFilterEdit.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
+      <element name="TCustomControlFilterEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
       <element name="TCustomControlFilterEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TCustomControlFilterEdit.DirectInput" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.DirectInput"/>
-      <element name="TCustomControlFilterEdit.Flat" link="TCustomEditButton.Flat"/>
-      <element name="TCustomControlFilterEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TCustomControlFilterEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
+      <element name="TCustomControlFilterEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TCustomControlFilterEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TCustomControlFilterEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TCustomControlFilterEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
@@ -1323,11 +1323,11 @@
       <element name="TCustomControlFilterEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TCustomControlFilterEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TCustomControlFilterEdit.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TCustomControlFilterEdit.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TCustomControlFilterEdit.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TCustomControlFilterEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TCustomControlFilterEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TCustomControlFilterEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TCustomControlFilterEdit.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TCustomControlFilterEdit.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TCustomControlFilterEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TCustomControlFilterEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TCustomControlFilterEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TCustomControlFilterEdit.Layout" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Layout"/>
       <element name="TCustomControlFilterEdit.MaxLength" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.MaxLength"/>
       <element name="TCustomControlFilterEdit.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
@@ -1337,11 +1337,11 @@
       <element name="TCustomControlFilterEdit.PopUpMenu" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.PopUpMenu"/>
       <element name="TCustomControlFilterEdit.ReadOnly" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.ReadOnly"/>
       <element name="TCustomControlFilterEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TCustomControlFilterEdit.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TCustomControlFilterEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TCustomControlFilterEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TCustomControlFilterEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TCustomControlFilterEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TCustomControlFilterEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TCustomControlFilterEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TCustomControlFilterEdit.OnChange" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnChange"/>
       <element name="TCustomControlFilterEdit.OnClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnClick"/>
       <element name="TCustomControlFilterEdit.OnDblClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnDblClick"/>
@@ -1763,16 +1763,16 @@
       </element>
 
       <element name="TFileNameEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TFileNameEdit.DirectInput" link="TCustomEditButton.DirectInput"/>
-      <element name="TFileNameEdit.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TFileNameEdit.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TFileNameEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TFileNameEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TFileNameEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
-      <element name="TFileNameEdit.Flat" link="TCustomEditButton.Flat"/>
-      <element name="TFileNameEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TFileNameEdit.DirectInput" link="#lcl.editbtn.TCustomEditButton.DirectInput"/>
+      <element name="TFileNameEdit.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TFileNameEdit.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TFileNameEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TFileNameEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TFileNameEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
+      <element name="TFileNameEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
+      <element name="TFileNameEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TFileNameEdit.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TFileNameEdit.Alignment" link="TCustomAbstractGroupedEdit.Alignment"/>
+      <element name="TFileNameEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
       <element name="TFileNameEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TFileNameEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
       <element name="TFileNameEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
@@ -1784,7 +1784,7 @@
       <element name="TFileNameEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TFileNameEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TFileNameEdit.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TFileNameEdit.Layout" link="TCustomAbstractGroupedEdit.Layout"/>
+      <element name="TFileNameEdit.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
       <element name="TFileNameEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
       <element name="TFileNameEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TFileNameEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
@@ -1793,11 +1793,11 @@
       <element name="TFileNameEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TFileNameEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly"/>
       <element name="TFileNameEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TFileNameEdit.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TFileNameEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TFileNameEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TFileNameEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TFileNameEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TFileNameEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TFileNameEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TFileNameEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TFileNameEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TFileNameEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
@@ -2088,13 +2088,13 @@
       <element name="TDirectoryEdit.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth"/>
       <element name="TDirectoryEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TDirectoryEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput"/>
-      <element name="TDirectoryEdit.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TDirectoryEdit.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TDirectoryEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TDirectoryEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TDirectoryEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TDirectoryEdit.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TDirectoryEdit.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TDirectoryEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TDirectoryEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TDirectoryEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TDirectoryEdit.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat"/>
-      <element name="TDirectoryEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TDirectoryEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TDirectoryEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TDirectoryEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TDirectoryEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
@@ -2120,7 +2120,7 @@
       <element name="TDirectoryEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TDirectoryEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TDirectoryEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TDirectoryEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TDirectoryEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TDirectoryEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TDirectoryEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TDirectoryEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
@@ -2339,8 +2339,6 @@
         <seealso>
           <link id="TDateEdit.ButtonClick"/>
           <link id="TDateEdit.OnAcceptDate"/>
-          <link id="TDateEdit.GetDate"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="#LCL.CalendarPopup.ShowCalendarPopup"/>
           <link id="#LCL.CalendarPopup.ShowCalendarPopup.OnReturnDate"/>
@@ -2404,8 +2402,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDateEdit.GetDate"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.EditEditingDone"/>
           <link id="TDateEdit.RealSetText"/>
@@ -2443,7 +2439,7 @@
         <short>Resource name for the default glyph</short>
       </element>
 
-      <element name="TDateEdit.ButtonClick" link="TCustomEditButton.ButtonClick">
+      <element name="TDateEdit.ButtonClick" link="#lcl.editbtn.TCustomEditButton.ButtonClick">
         <short>
           Implements the handler executed when the Button for the control is clicked
         </short>
@@ -2479,8 +2475,6 @@
         </descr>
         <seealso>
           <link id="TDateEdit.DirectInput"/>
-          <link id="TDateEdit.GetDate"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.Text"/>
           <link id="TDateEdit.DefaultToday"/>
@@ -2500,8 +2494,6 @@
         </descr>
         <seealso>
           <link id="TDateEdit.DefaultToday"/>
-          <link id="TDateEdit.GetDate"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.Text"/>
         </seealso>
@@ -2559,7 +2551,7 @@
 
       <element name="TDateEdit.AutoSelected" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.AutoSelected"/>
 
-      <element name="TDateEdit.Date" link="#rtl.sysutils.TDateTime">
+      <element name="TDateEdit.Date">
         <short>Contains the TDateTime value for the control</short>
         <descr/>
         <seealso/>
@@ -2632,19 +2624,17 @@
           </p>
         </descr>
         <seealso>
-          <link id="TDateEdit.GetDate"/>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.DateOrder"/>
           <link id="TDateOrder"/>
         </seealso>
       </element>
 
-      <element name="TDateEdit.ButtonOnlyWhenFocused" link="TCustomEditButton.ButtonOnlyWhenFocused"/>
-      <element name="TDateEdit.ButtonCaption" link="TCustomEditButton.ButtonCaption"/>
-      <element name="TDateEdit.ButtonCursor" link="TCustomEditButton.ButtonCursor"/>
-      <element name="TDateEdit.ButtonHint" link="TCustomEditButton.ButtonHint"/>
-      <element name="TDateEdit.ButtonWidth" link="TCustomEditButton.ButtonWidth"/>
+      <element name="TDateEdit.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
+      <element name="TDateEdit.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
+      <element name="TDateEdit.ButtonCursor" link="#lcl.editbtn.TCustomEditButton.ButtonCursor"/>
+      <element name="TDateEdit.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
+      <element name="TDateEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
       <element name="TDateEdit.Action" link="#LCL.Controls.TControl.Action"/>
       <element name="TDateEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TDateEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
@@ -2658,20 +2648,20 @@
       <element name="TDateEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TDateEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput"/>
       <element name="TDateEdit.EchoMode" link="#LCL.StdCtrls.TCustomEdit.EchoMode"/>
-      <element name="TDateEdit.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TDateEdit.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TDateEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TDateEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TDateEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TDateEdit.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TDateEdit.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TDateEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TDateEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TDateEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TDateEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TDateEdit.EchoMode" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.EchoMode"/>
       <element name="TDateEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TDateEdit.Flat" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Flat"/>
-      <element name="TDateEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TDateEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TDateEdit.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TDateEdit.Layout" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Layout"/>
       <element name="TDateEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
-      <element name="TDateEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TDateEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TDateEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TDateEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TDateEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
@@ -2701,9 +2691,9 @@
       <element name="TDateEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TDateEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TDateEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TDateEdit.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TDateEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TDateEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TDateEdit.Text" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Text"/>
+      <element name="TDateEdit.Text" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Text"/>
       <element name="TDateEdit.TextHint" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.TextHint"/>
 
       <element name="TAcceptTimeEvent">
@@ -2944,7 +2934,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TTimeEdit.Button" link="TCustomEditButton.Button"/>
+      <element name="TTimeEdit.Button" link="#lcl.editbtn.TCustomEditButton.Button"/>
 
       <element name="TTimeEdit.DroppedDown">
         <short>Indicates if the popup dialog for the control is visible</short>
@@ -2986,11 +2976,11 @@
       </element>
 
       <element name="TTimeEdit.ReadOnly" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.ReadOnly"/>
-      <element name="TTimeEdit.ButtonCaption" link="TCustomEditButton.ButtonCaption"/>
-      <element name="TTimeEdit.ButtonCursor" link="TCustomEditButton.ButtonCursor"/>
-      <element name="TTimeEdit.ButtonHint" link="TCustomEditButton.ButtonHint"/>
-      <element name="TTimeEdit.ButtonOnlyWhenFocused" link="TCustomEditButton.ButtonOnlyWhenFocused"/>
-      <element name="TTimeEdit.ButtonWidth" link="TCustomEditButton.ButtonWidth"/>
+      <element name="TTimeEdit.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
+      <element name="TTimeEdit.ButtonCursor" link="#lcl.editbtn.TCustomEditButton.ButtonCursor"/>
+      <element name="TTimeEdit.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
+      <element name="TTimeEdit.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
+      <element name="TTimeEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
       <element name="TTimeEdit.Action" link="#LCL.Controls.TControl.Action"/>
       <element name="TTimeEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TTimeEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
@@ -3003,19 +2993,19 @@
       <element name="TTimeEdit.Color" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.Color"/>
       <element name="TTimeEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TTimeEdit.DirectInput" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.DirectInput"/>
-      <element name="TTimeEdit.Glyph" link="TCustomEditButton.Glyph"/>
-      <element name="TTimeEdit.NumGlyphs" link="TCustomEditButton.NumGlyphs"/>
-      <element name="TTimeEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TTimeEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TTimeEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TTimeEdit.Glyph" link="#lcl.editbtn.TCustomEditButton.Glyph"/>
+      <element name="TTimeEdit.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+      <element name="TTimeEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TTimeEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TTimeEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TTimeEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TTimeEdit.EchoMode" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.EchoMode"/>
       <element name="TTimeEdit.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TTimeEdit.Flat" link="TCustomEditButton.Flat"/>
-      <element name="TTimeEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TTimeEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
+      <element name="TTimeEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TTimeEdit.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TTimeEdit.MaxLength" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.MaxLength"/>
-      <element name="TTimeEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TTimeEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TTimeEdit.OnChange" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnChange"/>
       <element name="TTimeEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TTimeEdit.OnClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnClick"/>
@@ -3053,7 +3043,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TTimeEdit.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TTimeEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TTimeEdit.TabStop" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.TabStop"/>
       <element name="TTimeEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TTimeEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
@@ -3153,10 +3143,10 @@
         <seealso/>
       </element>
 
-      <element name="TCalcEdit.GetDefaultGlyphName" link="TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TCalcEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName"/>
       <element name="TCalcEdit.GetDefaultGlyphName.Result"/>
 
-      <element name="TCalcEdit.ButtonClick" link="TCustomEditButton.ButtonClick">
+      <element name="TCalcEdit.ButtonClick" link="#lcl.editbtn.TCustomEditButton.ButtonClick">
         <short>Performs actions needed when the button for the control is clicked</short>
         <descr>
           <p>
@@ -3242,11 +3232,11 @@
         <seealso/>
       </element>
 
-      <element name="TCalcEdit.ButtonCaption" link="TCustomEditButton.ButtonCaption"/>
-      <element name="TCalcEdit.ButtonCursor" link="TCustomEditButton.ButtonCursor"/>
-      <element name="TCalcEdit.ButtonHint" link="TCustomEditButton.ButtonHint"/>
+      <element name="TCalcEdit.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
+      <element name="TCalcEdit.ButtonCursor" link="#lcl.editbtn.TCustomEditButton.ButtonCursor"/>
+      <element name="TCalcEdit.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
       <element name="TCalcEdit.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
-      <element name="TCalcEdit.ButtonWidth" link="TCustomEditButton.ButtonWidth"/>
+      <element name="TCalcEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
       <element name="TCalcEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
 
       <element name="TCalcEdit.DialogPosition">
@@ -3272,11 +3262,11 @@
       <element name="TCalcEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput"/>
       <element name="TCalcEdit.Glyph" link="#LCL.EditBtn.TCustomEditButton.Glyph"/>
       <element name="TCalcEdit.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs"/>
-      <element name="TCalcEdit.Images" link="TCustomEditButton.Images"/>
-      <element name="TCalcEdit.ImageIndex" link="TCustomEditButton.ImageIndex"/>
-      <element name="TCalcEdit.ImageWidth" link="TCustomEditButton.ImageWidth"/>
+      <element name="TCalcEdit.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
+      <element name="TCalcEdit.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
+      <element name="TCalcEdit.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
       <element name="TCalcEdit.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat"/>
-      <element name="TCalcEdit.FocusOnButtonClick" link="TCustomEditButton.FocusOnButtonClick"/>
+      <element name="TCalcEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
       <element name="TCalcEdit.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TCalcEdit.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TCalcEdit.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
@@ -3298,11 +3288,11 @@
       <element name="TCalcEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TCalcEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly"/>
       <element name="TCalcEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TCalcEdit.Spacing" link="TCustomEditButton.Spacing"/>
+      <element name="TCalcEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
       <element name="TCalcEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TCalcEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TCalcEdit.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TCalcEdit.OnButtonClick" link="TCustomEditButton.OnButtonClick"/>
+      <element name="TCalcEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TCalcEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TCalcEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TCalcEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>

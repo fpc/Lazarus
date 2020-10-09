@@ -1891,20 +1891,20 @@
         </seealso>
       </element>
 
-      <element name="TSplitter.Align" link="TCustomSplitter.Align"/>
+      <element name="TSplitter.Align" link="#lcl.extctrls.TCustomSplitter.Align"/>
       <element name="TSplitter.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TSplitter.AutoSnap" link="TCustomSplitter.AutoSnap"/>
-      <element name="TSplitter.Beveled" link="TCustomSplitter.Beveled"/>
+      <element name="TSplitter.AutoSnap" link="#lcl.extctrls.TCustomSplitter.AutoSnap"/>
+      <element name="TSplitter.Beveled" link="#lcl.extctrls.TCustomSplitter.Beveled"/>
       <element name="TSplitter.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TSplitter.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TSplitter.Cursor" link="TCustomSplitter.Cursor"/>
+      <element name="TSplitter.Cursor" link="#lcl.extctrls.TCustomSplitter.Cursor"/>
       <element name="TSplitter.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TSplitter.Height" link="#LCL.Controls.TControl.Height"/>
-      <element name="TSplitter.MinSize" link="TCustomSplitter.MinSize"/>
-      <element name="TSplitter.OnCanOffset" link="TCustomSplitter.OnCanOffset"/>
-      <element name="TSplitter.OnCanResize" link="TCustomSplitter.OnCanResize"/>
+      <element name="TSplitter.MinSize" link="#lcl.extctrls.TCustomSplitter.MinSize"/>
+      <element name="TSplitter.OnCanOffset" link="#lcl.extctrls.TCustomSplitter.OnCanOffset"/>
+      <element name="TSplitter.OnCanResize" link="#lcl.extctrls.TCustomSplitter.OnCanResize"/>
       <element name="TSplitter.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
-      <element name="TSplitter.OnMoved" link="TCustomSplitter.OnMoved"/>
+      <element name="TSplitter.OnMoved" link="#lcl.extctrls.TCustomSplitter.OnMoved"/>
       <element name="TSplitter.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
       <element name="TSplitter.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
       <element name="TSplitter.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
@@ -1916,8 +1916,8 @@
       <element name="TSplitter.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TSplitter.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TSplitter.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TSplitter.ResizeAnchor" link="TCustomSplitter.ResizeAnchor"/>
-      <element name="TSplitter.ResizeStyle" link="TCustomSplitter.ResizeStyle"/>
+      <element name="TSplitter.ResizeAnchor" link="#lcl.extctrls.TCustomSplitter.ResizeAnchor"/>
+      <element name="TSplitter.ResizeStyle" link="#lcl.extctrls.TCustomSplitter.ResizeStyle"/>
       <element name="TSplitter.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TSplitter.Visible" link="#LCL.Controls.TControl.Visible"/>
       <element name="TSplitter.Width" link="#LCL.Controls.TControl.Width"/>
@@ -2547,14 +2547,14 @@
         </seealso>
       </element>
 
-      <element name="TImage.AntialiasingMode" link="TCustomImage.AntialiasingMode"/>
+      <element name="TImage.AntialiasingMode" link="#lcl.extctrls.TCustomImage.AntialiasingMode"/>
       <element name="TImage.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TImage.Anchors" link="#lcl.Controls.TControl.Anchors"/>
       <element name="TImage.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TImage.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TImage.Center" link="#lcl.ExtCtrls.TCustomImage.Center"/>
 
-      <element name="TImage.KeepOriginXWhenClipped" link="TCustomImage.KeepOriginXWhenClipped">
+      <element name="TImage.KeepOriginXWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginXWhenClipped">
         <short></short>
         <descr>
           <p>
@@ -2564,7 +2564,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TImage.KeepOriginYWhenClipped" link="TCustomImage.KeepOriginYWhenClipped">
+      <element name="TImage.KeepOriginYWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginYWhenClipped">
         <short></short>
         <descr>
           <p>
@@ -2597,7 +2597,7 @@
       <element name="TImage.OnMouseWheelRight" link="#LCL.Controls.TControl.OnMouseWheelRight"/>
       <element name="TImage.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint"/>
       <element name="TImage.OnPictureChanged" link="#LCL.ExtCtrls.TCustomImage.OnPictureChanged"/>
-      <element name="TImage.OnPaintBackground" link="TCustomImage.OnPaintBackground"/>
+      <element name="TImage.OnPaintBackground" link="#lcl.extctrls.TCustomImage.OnPaintBackground"/>
       <element name="TImage.OnResize" link="#LCL.Controls.TControl.OnResize"/>
       <element name="TImage.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TImage.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
@@ -5011,7 +5011,7 @@
       <element name="TPanel.Enabled" link="#lcl.Controls.TControl.Enabled"/>
       <element name="TPanel.Font" link="#lcl.Controls.TControl.Font"/>
       <element name="TPanel.FullRepaint" link="#lcl.ExtCtrls.TCustomPanel.FullRepaint"/>
-      <element name="TPanel.ParentBackground" link="TCustomPanel.ParentBackground"/>
+      <element name="TPanel.ParentBackground" link="#lcl.ExtCtrls.TCustomPanel.ParentBackground"/>
       <element name="TPanel.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TPanel.ParentColor" link="#lcl.Controls.TControl.ParentColor"/>
       <element name="TPanel.ParentFont" link="#lcl.Controls.TControl.ParentFont"/>
@@ -5022,7 +5022,7 @@
       <element name="TPanel.TabStop" link="#lcl.Controls.TWinControl.TabStop"/>
       <element name="TPanel.UseDockManager" link="#lcl.Controls.TWinControl.UseDockManager"/>
       <element name="TPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TPanel.WordWrap" link="TCustomPanel.WordWrap"/>
+      <element name="TPanel.WordWrap" link="#lcl.ExtCtrls.TCustomPanel.WordWrap"/>
       <element name="TPanel.OnClick" link="#lcl.Controls.TControl.OnClick"/>
       <element name="TPanel.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TPanel.OnDockDrop" link="#lcl.Controls.TWinControl.OnDockDrop"/>
@@ -5591,22 +5591,22 @@
         </descr>
       </element>
 
-      <element name="TFlowPanel.Align" link="TCustomPanel.Align"/>
-      <element name="TFlowPanel.Alignment" link="TCustomPanel.Alignment"/>
+      <element name="TFlowPanel.Align" link="#lcl.ExtCtrls.TCustomPanel.Align"/>
+      <element name="TFlowPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment"/>
       <element name="TFlowPanel.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TFlowPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TFlowPanel.AutoWrap" link="TCustomFlowPanel.AutoWrap"/>
-      <element name="TFlowPanel.BevelInner" link="TCustomPanel.BevelInner"/>
-      <element name="TFlowPanel.BevelOuter" link="TCustomPanel.BevelOuter"/>
-      <element name="TFlowPanel.BevelWidth" link="TCustomPanel.BevelWidth"/>
+      <element name="TFlowPanel.AutoWrap" link="#lcl.extctrls.TCustomFlowPanel.AutoWrap"/>
+      <element name="TFlowPanel.BevelInner" link="#lcl.extctrls.TCustomPanel.BevelInner"/>
+      <element name="TFlowPanel.BevelOuter" link="#lcl.extctrls.TCustomPanel.BevelOuter"/>
+      <element name="TFlowPanel.BevelWidth" link="#lcl.extctrls.TCustomPanel.BevelWidth"/>
       <element name="TFlowPanel.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TFlowPanel.BorderWidth" link="TWinControl.BorderWidth"/>
+      <element name="TFlowPanel.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
       <element name="TFlowPanel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TFlowPanel.BorderStyle" link="#LCL.Controls.TCustomControl.BorderStyle"/>
       <element name="TFlowPanel.Caption" link="#LCL.Controls.TControl.Caption"/>
-      <element name="TFlowPanel.Color" link="TCustomPanel.Color"/>
+      <element name="TFlowPanel.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
       <element name="TFlowPanel.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TFlowPanel.ControlList" link="TCustomFlowPanel.ControlList"/>
+      <element name="TFlowPanel.ControlList" link="#lcl.extctrls.TCustomFlowPanel.ControlList"/>
       <element name="TFlowPanel.UseDockManager"  link="#LCL.Controls.TWinControl.UseDockManager"/>
       <element name="TFlowPanel.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
       <element name="TFlowPanel.DoubleBuffered"  link="#LCL.Controls.TWinControl.DoubleBuffered"/>
@@ -5614,19 +5614,19 @@
       <element name="TFlowPanel.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TFlowPanel.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TFlowPanel.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TFlowPanel.FlowLayout" link="TCustomFlowPanel.FlowLayout"/>
-      <element name="TFlowPanel.FlowStyle" link="TCustomFlowPanel.FlowStyle"/>
-      <element name="TFlowPanel.FullRepaint" link="TCustomPanel.FullRepaint"/>
+      <element name="TFlowPanel.FlowLayout" link="#lcl.extctrls.TCustomFlowPanel.FlowLayout"/>
+      <element name="TFlowPanel.FlowStyle" link="#lcl.extctrls.TCustomFlowPanel.FlowStyle"/>
+      <element name="TFlowPanel.FullRepaint" link="#lcl.extctrls.TCustomPanel.FullRepaint"/>
       <element name="TFlowPanel.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TFlowPanel.ParentBiDiMode"  link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TFlowPanel.ParentColor" link="TCustomPanel.ParentColor"/>
+      <element name="TFlowPanel.ParentColor" link="#lcl.extctrls.TCustomPanel.ParentColor"/>
       <element name="TFlowPanel.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TFlowPanel.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TFlowPanel.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TFlowPanel.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TFlowPanel.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TFlowPanel.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TFlowPanel.TabStop" link="TCustomPanel.TabStop"/>
+      <element name="TFlowPanel.TabStop" link="#lcl.extctrls.TCustomPanel.TabStop"/>
       <element name="TFlowPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
       <element name="TFlowPanel.OnAlignInsertBefore" link="#LCL.Controls.TWinControl.OnAlignInsertBefore"/>
       <element name="TFlowPanel.OnAlignPosition" link="#LCL.Controls.TWinControl.OnAlignPosition"/>
@@ -7152,7 +7152,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomControlBar.Paint" link="TCustomPanel.Paint">
+      <element name="TCustomControlBar.Paint" link="#lcl.extctrls.TCustomPanel.Paint">
         <short>
           Draws the control with its image, decorations, and visible bands
         </short>
@@ -7510,45 +7510,45 @@
       </element>
 
       <element name="TControlBar.Canvas" link="#LCL.Controls.TCustomControl.Canvas"/>
-      <element name="TControlBar.Align" link="TCustomPanel.Align"/>
+      <element name="TControlBar.Align" link="#lcl.extctrls.TCustomPanel.Align"/>
       <element name="TControlBar.Anchors" link="#LCL.Controls.TCustomControl.Anchors"/>
-      <element name="TControlBar.AutoDock" link="TCustomControlBar.AutoDock"/>
-      <element name="TControlBar.AutoDrag" link="TCustomControlBar.AutoDrag"/>
-      <element name="TControlBar.AutoSize" link="TCustomControlBar.AutoSize"/>
-      <element name="TControlBar.BevelInner" link="TCustomPanel.BevelInner"/>
-      <element name="TControlBar.BevelOuter" link="TCustomPanel.BevelOuter"/>
-      <element name="TControlBar.BevelWidth" link="CustomPanel.BevelWidth"/>
+      <element name="TControlBar.AutoDock" link="#lcl.extctrls.TCustomControlBar.AutoDock"/>
+      <element name="TControlBar.AutoDrag" link="#lcl.extctrls.TCustomControlBar.AutoDrag"/>
+      <element name="TControlBar.AutoSize" link="#lcl.extctrls.TCustomControlBar.AutoSize"/>
+      <element name="TControlBar.BevelInner" link="#lcl.extctrls.TCustomPanel.BevelInner"/>
+      <element name="TControlBar.BevelOuter" link="#lcl.extctrls.TCustomPanel.BevelOuter"/>
+      <element name="TControlBar.BevelWidth" link="#lcl.extctrls.TCustomPanel.BevelWidth"/>
       <element name="TControlBar.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TControlBar.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
-      <element name="TControlBar.Color" link="TCustomPanel.Color"/>
+      <element name="TControlBar.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
       <element name="TControlBar.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TControlBar.DockSite" link="TCustomControlBar.DockSite"/>
+      <element name="TControlBar.DockSite" link="#lcl.extctrls.TCustomControlBar.DockSite"/>
       <element name="TControlBar.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TControlBar.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TControlBar.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TControlBar.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TControlBar.DrawingStyle" link="TCustomControlBar.DrawingStyle"/>
+      <element name="TControlBar.DrawingStyle" link="#lcl.extctrls.TCustomControlBar.DrawingStyle"/>
       <element name="TControlBar.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TControlBar.GradientDirection" link="TCustomControlBar.GradientDirection"/>
-      <element name="TControlBar.GradientEndColor" link="TCustomControlBar.GradientEndColor"/>
-      <element name="TControlBar.GradientStartColor" link="TCustomControlBar.GradientStartColor"/>
-      <element name="TControlBar.ParentColor" link="TCustomPanel.ParentColor"/>
+      <element name="TControlBar.GradientDirection" link="#lcl.extctrls.TCustomControlBar.GradientDirection"/>
+      <element name="TControlBar.GradientEndColor" link="#lcl.extctrls.TCustomControlBar.GradientEndColor"/>
+      <element name="TControlBar.GradientStartColor" link="#lcl.extctrls.TCustomControlBar.GradientStartColor"/>
+      <element name="TControlBar.ParentColor" link="#lcl.extctrls.TCustomPanel.ParentColor"/>
       <element name="TControlBar.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TControlBar.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TControlBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TControlBar.Picture" link="TCustomControlBar.Picture"/>
+      <element name="TControlBar.Picture" link="#lcl.extctrls.TCustomControlBar.Picture"/>
       <element name="TControlBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TControlBar.RowSize" link="TCustomControlBar.RowSize"/>
-      <element name="TControlBar.RowSnap" link="TCustomControlBar.RowSnap"/>
+      <element name="TControlBar.RowSize" link="#lcl.extctrls.TCustomControlBar.RowSize"/>
+      <element name="TControlBar.RowSnap" link="#lcl.extctrls.TCustomControlBar.RowSnap"/>
       <element name="TControlBar.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TControlBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TControlBar.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TControlBar.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TControlBar.OnBandDrag" link="TCustomControlBar.OnBandDrag"/>
-      <element name="TControlBar.OnBandInfo" link="TCustomControlBar.OnBandInfo"/>
-      <element name="TControlBar.OnBandMove" link="TCustomControlBar.OnBandMove"/>
-      <element name="TControlBar.OnBandPaint" link="TCustomControlBar.OnBandPaint"/>
-      <element name="TControlBar.OnCanResize" link="TCustomControlBar.OnCanResize"/>
+      <element name="TControlBar.OnBandDrag" link="#lcl.extctrls.TCustomControlBar.OnBandDrag"/>
+      <element name="TControlBar.OnBandInfo" link="#lcl.extctrls.TCustomControlBar.OnBandInfo"/>
+      <element name="TControlBar.OnBandMove" link="#lcl.extctrls.TCustomControlBar.OnBandMove"/>
+      <element name="TControlBar.OnBandPaint" link="#lcl.extctrls.TCustomControlBar.OnBandPaint"/>
+      <element name="TControlBar.OnCanResize" link="#lcl.extctrls.TCustomControlBar.OnCanResize"/>
       <element name="TControlBar.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <element name="TControlBar.OnConstrainedResize" link="#LCL.Controls.TControl.OnConstrainedResize"/>
       <element name="TControlBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
@@ -7570,7 +7570,7 @@
       <element name="TControlBar.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
       <element name="TControlBar.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
       <element name="TControlBar.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TControlBar.OnPaint" link="TCustomControlBar.OnPaint"/>
+      <element name="TControlBar.OnPaint" link="#lcl.extctrls.TCustomControlBar.OnPaint"/>
       <element name="TControlBar.OnResize" link="#LCL.Controls.TControl.OnResize"/>
       <element name="TControlBar.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TControlBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>

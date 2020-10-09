@@ -90,27 +90,30 @@
           <link id="TCustomTimer.UpdateTimer"/>
         </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomTimer.SetEnabled" link="TCustomTimer.Enabled">
+      <element name="TCustomTimer.SetEnabled">
         <short>Sets the value for the <var>Enabled</var> property</short>
+        <seealso>
+          <link id="TCustomTimer.Enabled"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetEnabled.Value">
         <short>True when the timer can be executed</short>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomTimer.SetInterval" link="TCustomTimer.Interval">
+      <element name="TCustomTimer.SetInterval">
         <short>Sets the value for the <var>Interval</var> property</short>
+        <seealso>
+          <link id="TCustomTimer.Interval"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetInterval.Value">
         <short>The <var>Value</var> of the <var>Interval</var> property in milliseconds</short>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomTimer.SetOnTimer" link="TCustomTimer.OnTimer">
+      <element name="TCustomTimer.SetOnTimer">
         <short>Sets the event handler for the <var>OnTimer</var> property</short>
+        <seealso>
+          <link id="TCustomTimer.OnTimer"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetOnTimer.Value">
         <short><var>TNotifyEvent</var> handler signalled when the timer has expired</short>
       </element>
@@ -154,7 +157,7 @@
             UpdateTimer signals the <var>OnStartTimer</var> event handler when it has been assigned for the class instance. The event handler is not signalled when it has not been assigned (contains <b>Nil</b>), <var>Enabled</var> contains <b>False</b>, or <var>Interval</var> contains the value <b>0</b> (<b>zero</b>).
           </p>
           <p>
-            UpdateTimer is called from the <var>Loaded</var> method during component streaming, and when the value in the <var>OnTimer</var> event handler is changed.
+            UpdateTimer is called from the <var>Loaded</var> method when component streaming has been completed, and when the value in the <var>OnTimer</var> event handler is changed.
           </p>
         </descr>
         <errors>

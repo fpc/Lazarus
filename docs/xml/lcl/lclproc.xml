@@ -47,7 +47,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TMethodList.FItems" link="TMethodList.Items"/>
+      <element name="TMethodList.FItems" link="#lcl.lclproc.TMethodList.Items"/>
       <!-- variable Visibility: private -->
       <element name="TMethodList.FCount">
         <short/>
@@ -55,7 +55,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMethodList.GetItems" link="TMethodList.Items"/>
+      <element name="TMethodList.GetItems" link="#lcl.lclproc.TMethodList.Items"/>
       <element name="TMethodList.GetItems.Result">
         <short/>
       </element>
@@ -63,7 +63,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetItems" link="TMethodList.Items"/>
+      <element name="TMethodList.SetItems" link="#lcl.lclproc.TMethodList.Items"/>
       <element name="TMethodList.SetItems.Index">
         <short/>
       </element>
@@ -299,7 +299,7 @@
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDebugLCLItems.FName" link="TDebugLCLItems.Name"/>
+      <element name="TDebugLCLItems.FName" link="#lcl.lclproc.TDebugLCLItems.Name"/>
       <!-- constructor Visibility: public -->
       <element name="TDebugLCLItems.Create">
         <short>Assigns TheName to the list.</short>
@@ -458,7 +458,7 @@
         </seealso>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PLineInfoCacheItem" link="TLineInfoCacheItem"/>
+      <element name="PLineInfoCacheItem" link="#lcl.lclproc.TLineInfoCacheItem"/>
       <!-- function Visibility: default -->
       <element name="CompareDebugLCLItemInfos">
         <short>Compare function for the TDebugLCLItems AVL tree

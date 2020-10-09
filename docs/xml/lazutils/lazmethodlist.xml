@@ -76,7 +76,7 @@
       <element name="TMethodList.FCount"/>
 
       <!-- function Visibility: private -->
-      <element name="TMethodList.GetItems" link="TMethodList.Items">
+      <element name="TMethodList.GetItems" link="#lazutils.lazmethodlist.TMethodList.Items">
         <short>Gets the value for the Items property</short>
       </element>
       <element name="TMethodList.GetItems.Result">
@@ -87,7 +87,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetAllowDuplicates" link="TMethodList.AllowDuplicates">
+      <element name="TMethodList.SetAllowDuplicates" link="#lazutils.lazmethodlist.TMethodList.AllowDuplicates">
         <short>Sets the value in the AllowDuplicates property</short>
       </element>
       <element name="TMethodList.SetAllowDuplicates.AValue">
@@ -95,7 +95,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetItems" link="TMethodList.Items">
+      <element name="TMethodList.SetItems" link="#lazutils.lazmethodlist.TMethodList.Items">
         <short>Sets the value for the Items property</short>
       </element>
       <element name="TMethodList.SetItems.Index">
@@ -105,7 +105,7 @@
         <short>New value for the item at the specified position</short>
       </element>
 
-      <element name="TMethodList.InternalInsert" link="TMethodList.Insert">
+      <element name="TMethodList.InternalInsert" link="#lazutils.lazmethodlist.TMethodList.Insert">
         <short>Performs actions needed to insert a method at the specified position</short>
       </element>
       <element name="TMethodList.InternalInsert.Index">

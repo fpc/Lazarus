@@ -1269,7 +1269,7 @@
         </seealso>
       </element>
 
-      <element name="TStringCellEditor.EditText" link="TCustomMaskEdit.EditText">
+      <element name="TStringCellEditor.EditText" link="#lcl.maskedit.TCustomMaskEdit.EditText">
         <short></short>
         <descr>
           EditText is a published in TStringCellEditor.
@@ -1277,7 +1277,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringCellEditor.OnEditingDone" link="TCustomMaskEdit.OnEditingDone">
+      <element name="TStringCellEditor.OnEditingDone" link="#lcl.maskedit.TCustomMaskEdit.OnEditingDone">
         <short></short>
         <descr>
           OnEditingDone is a published in TStringCellEditor.
@@ -2565,7 +2565,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumnTitle.GetAlignment" link="TGridColumnTitle.Alignment">
+      <element name="TGridColumnTitle.GetAlignment" link="#lcl.grids.TGridColumnTitle.Alignment">
         <short>Gets the value for the Alignment property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2699,7 +2699,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TGridColumnTitle.SetAlignment" link="TGridColumnTitle.Alignment">
+      <element name="TGridColumnTitle.SetAlignment" link="#lcl.grids.TGridColumnTitle.Alignment">
         <short>Sets the value in the Alignment property</short>
         <descr></descr>
         <seealso>
@@ -2712,7 +2712,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TGridColumnTitle.SetColor" link="TGridColumnTitle.Color">
+      <element name="TGridColumnTitle.SetColor" link="#lcl.grids.TGridColumnTitle.Color">
         <short>Sets the value in the Color property</short>
         <descr></descr>
         <seealso>
@@ -2725,7 +2725,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TGridColumnTitle.SetFont" link="TGridColumnTitle.Font">
+      <element name="TGridColumnTitle.SetFont" link="#lcl.grids.TGridColumnTitle.Font">
         <short>Sets the value in the Font property</short>
         <descr></descr>
         <seealso>
@@ -2738,7 +2738,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TGridColumnTitle.SetLayout" link="TGridColumnTitle.Layout">
+      <element name="TGridColumnTitle.SetLayout" link="#lcl.grids.TGridColumnTitle.Layout">
         <short>Sets the value in the Layout property</short>
         <descr></descr>
         <seealso>
@@ -3084,7 +3084,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetAlignment" link="TGridColumn.Alignment">
+      <element name="TGridColumn.GetAlignment" link="#lcl.grids.TGridColumn.Alignment">
         <short>Gets the value for the Alignment property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3095,7 +3095,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetColor" link="TGridColumn.Color">
+      <element name="TGridColumn.GetColor" link="#lcl.grids.TGridColumn.Color">
         <short>Gets the value for the Color property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3119,7 +3119,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetFont" link="TGridColumn.Font">
+      <element name="TGridColumn.GetFont" link="#lcl.grids.TGridColumn.Font">
         <short>Gets the value for the Font property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3130,7 +3130,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetGrid" link="TGridColumn.Grid">
+      <element name="TGridColumn.GetGrid" link="#lcl.grids.TGridColumn.Grid">
         <short>Gets the value for the Grid property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3141,7 +3141,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetLayout" link="TGridColumn.Layout">
+      <element name="TGridColumn.GetLayout" link="#lcl.grids.TGridColumn.Layout">
         <short>Gets the value for the Layout property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3152,7 +3152,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetMaxSize" link="TGridColumn.MaxSize">
+      <element name="TGridColumn.GetMaxSize" link="#lcl.grids.TGridColumn.MaxSize">
         <short>Gets the value for the MaxSize property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3163,7 +3163,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetMinSize" link="TGridColumn.MinSize">
+      <element name="TGridColumn.GetMinSize" link="#lcl.grids.TGridColumn.MinSize">
         <short>Gets the value for the MinSize property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3174,7 +3174,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetSizePriority" link="TGridColumn.SizePriority">
+      <element name="TGridColumn.GetSizePriority" link="#lcl.grids.TGridColumn.SizePriority">
         <short>Gets the value for the SizePriority property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3185,7 +3185,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetPickList" link="TGridColumn.PickList">
+      <element name="TGridColumn.GetPickList" link="#lcl.grids.TGridColumn.PickList">
         <short>
           <var>GetPickList</var> - returns the picklist as a list of strings
         </short>
@@ -3198,7 +3198,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetReadOnly" link="TGridColumn.ReadOnly">
+      <element name="TGridColumn.GetReadOnly" link="#lcl.grids.TGridColumn.ReadOnly">
         <short>Gets the value for the ReadOnly property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3209,7 +3209,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetVisible" link="TGridColumn.Visible">
+      <element name="TGridColumn.GetVisible" link="#lcl.grids.TGridColumn.Visible">
         <short>Gets the value for the Visible property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3220,7 +3220,7 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TGridColumn.GetWidth" link="TGridColumn.Width">
+      <element name="TGridColumn.GetWidth" link="#lcl.grids.TGridColumn.Width">
         <short>Gets the value for the Width property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3345,7 +3345,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TGridColumn.SetAlignment" link="TGridColumn.Alignment">
+      <element name="TGridColumn.SetAlignment" link="#lcl.grids.TGridColumn.Alignment">
         <short>Sets the value in the Alignment property</short>
         <descr></descr>
         <seealso>
@@ -4051,7 +4051,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TGridColumns.Update" link="#rtl.Classes.TCollection.Update">
+      <element name="TGridColumns.Update" link="#rtl.classes.TCollection.Update">
         <short>Notifies the Grid using the collection when a column is updated</short>
         <descr></descr>
         <seealso></seealso>
@@ -4284,15 +4284,14 @@
             <var>Grid</var> is a read-only <var>TCustomGrid</var> which provides access to the grid which owns the column collection. The value in Grid is set in the constructor to an argument passed to the method, and used as the value for the <var>Owner</var> property.
           </p>
           <p>
-            Grid can be used to access the properties, methods, and events in the grid class instance. It is used in the implementation of methods in the collection, such as <var>Update</var> and <var>InsertColumn</var>.
+            Grid can be used to access the properties, methods, and events in the grid class instance. It is used in the implementation of methods in the collection, such as <var>InsertColumn</var> and <var>Update</var>.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.CreateColumns"/>
-          <link id="TCustomGrid.ColumnsChanged"/>
           <link id="TGridColumns.InsertColumn"/>
-          <link id="TGridColumns.Update"/>
-          <link id="#RTL.Classes.TCollection.Owner"/>
+          <link id="TCustomGrid.ColumnsChanged"/>
+          <link id="#rtl.classes.TCollection.Owner"/>
         </seealso>
       </element>
 
@@ -5054,7 +5053,7 @@
         <short></short>
       </element>
 
-      <element name="TCustomGrid.GetSelectedColumn" link="TCustomGrid.SelectedColumn">
+      <element name="TCustomGrid.GetSelectedColumn" link="#lcl.grids.TCustomGrid.SelectedColumn">
         <short>Gets the value for the SelectedColumn property</short>
         <descr></descr>
         <seealso>
@@ -5065,7 +5064,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetAlternateColor" link="TCustomGrid.AlternateColor">
+      <element name="TCustomGrid.SetAlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor">
         <short>Sets the value in the AlternateColor property</short>
         <descr></descr>
         <seealso>
@@ -5077,7 +5076,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TCustomGrid.SetAutoFillColumns" link="TCustomGrid.AutoFillColumns">
+      <element name="TCustomGrid.SetAutoFillColumns" link="#lcl.grids.TCustomGrid.AutoFillColumns">
         <short>Sets the value in the AutoFillColumns property</short>
         <descr></descr>
         <seealso>
@@ -5089,7 +5088,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetBorderColor" link="TCustomGrid.BorderColor">
+      <element name="TCustomGrid.SetBorderColor" link="#lcl.grids.TCustomGrid.BorderColor">
         <short>Sets the value for the BorderColor property</short>
         <descr></descr>
         <seealso>
@@ -5100,7 +5099,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetColumnClickSorts" link="TCustomGrid.ColumnClickSorts">
+      <element name="TCustomGrid.SetColumnClickSorts" link="#lcl.grids.TCustomGrid.ColumnClickSorts">
         <short>Sets the value for the ColumnClickSorts property</short>
         <descr></descr>
         <seealso>
@@ -5111,7 +5110,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetColumns" link="TCustomGrid.Columns">
+      <element name="TCustomGrid.SetColumns" link="#lcl.grids.TCustomGrid.Columns">
         <short>Sets the value for the Columns property</short>
         <descr></descr>
         <seealso>
@@ -5122,7 +5121,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetEditorOptions" link="TCustomGrid.EditorOptions">
+      <element name="TCustomGrid.SetEditorOptions" link="#lcl.grids.TCustomGrid.EditorOptions">
         <short>Sets the value for the EditorOptions property</short>
         <descr></descr>
         <seealso>
@@ -5133,7 +5132,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetEditorBorderStyle" link="TCustomGrid.EditorBorderStyle">
+      <element name="TCustomGrid.SetEditorBorderStyle" link="#lcl.grids.TCustomGrid.EditorBorderStyle">
         <short>Sets the value for the EditorBorderStyle property</short>
         <descr></descr>
         <seealso>
@@ -5144,7 +5143,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomGrid.SetAltColorStartNormal" link="TCustomGrid.AltColorStartNormal">
+      <element name="TCustomGrid.SetAltColorStartNormal" link="#lcl.grids.TCustomGrid.AltColorStartNormal">
         <short>Sets the value for the AltColorStartNormal property</short>
         <descr></descr>
         <seealso>
@@ -5156,7 +5155,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TCustomGrid.SetFlat" link="TCustomGrid.Flat">
+      <element name="TCustomGrid.SetFlat" link="#lcl.grids.TCustomGrid.Flat">
         <short>Sets the value for the Flat property</short>
         <descr></descr>
         <seealso>
@@ -5409,7 +5408,7 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TCustomGrid.EditorSetMode" link="TCustomGrid.EditorMode">
+      <element name="TCustomGrid.EditorSetMode" link="#lcl.grids.TCustomGrid.EditorMode">
         <short>Sets the value for the EditorMode property</short>
         <descr></descr>
         <seealso>
@@ -7138,7 +7137,7 @@
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.ColCount"/>
           <link id="TCustomGrid.HeaderClick`"/>
-          <link id="#LCL.Controls.TWinControl.DialogChar"/>
+          <link id="#lcl.controls.TWinControl.DialogChar"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DialogChar.Result">
@@ -12495,9 +12494,9 @@
         </seealso>
       </element>
 
-      <element name="TDrawGrid.InplaceEditor" link="TCustomGrid.InplaceEditor"/>
+      <element name="TDrawGrid.InplaceEditor" link="#lcl.grids.TCustomGrid.InplaceEditor"/>
       <element name="TDrawGrid.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TDrawGrid.AlternateColor" link="TCustomGrid.AlternateColor"/>
+      <element name="TDrawGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
       <element name="TDrawGrid.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TDrawGrid.AutoAdvance" link="#LCL.Grids.TCustomGrid.AutoAdvance"/>
       <element name="TDrawGrid.AutoEdit" link="#LCL.Grids.TCustomGrid.AutoEdit"/>
@@ -12505,37 +12504,37 @@
       <element name="TDrawGrid.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TDrawGrid.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TDrawGrid.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TDrawGrid.ColCount" link="TCustomGrid.ColCount"/>
-      <element name="TDrawGrid.ColRowDraggingCursor" link="TCustomGrid.ColRowDraggingCursor"/>
+      <element name="TDrawGrid.ColCount" link="#lcl.grids.TCustomGrid.ColCount"/>
+      <element name="TDrawGrid.ColRowDraggingCursor" link="#lcl.grids.TCustomGrid.ColRowDraggingCursor"/>
 
-      <element name="TDrawGrid.ColRowDragIndicatorColor" link="TCustomGrid.ColRowDragIndicatorColor"/>
+      <element name="TDrawGrid.ColRowDragIndicatorColor" link="#lcl.grids.TCustomGrid.ColRowDragIndicatorColor"/>
 
-      <element name="TDrawGrid.ColSizingCursor" link="TCustomGrid.ColSizingCursor"/>
-      <element name="TDrawGrid.ColumnClickSorts" link="TCustomGrid.ColumnClickSorts"/>
-      <element name="TDrawGrid.Columns" link="TCustomGrid.Columns"/>
+      <element name="TDrawGrid.ColSizingCursor" link="#lcl.grids.TCustomGrid.ColSizingCursor"/>
+      <element name="TDrawGrid.ColumnClickSorts" link="#lcl.grids.TCustomGrid.ColumnClickSorts"/>
+      <element name="TDrawGrid.Columns" link="#lcl.grids.TCustomGrid.Columns"/>
       <element name="TDrawGrid.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TDrawGrid.DefaultColWidth" link="TCustomGrid.DefaultColWidth"/>
-      <element name="TDrawGrid.DefaultDrawing" link="TCustomGrid.DefaultDrawing"/>
-      <element name="TDrawGrid.DefaultRowHeight" link="TCustomGrid.DefaultRowHeight"/>
+      <element name="TDrawGrid.DefaultColWidth" link="#lcl.grids.TCustomGrid.DefaultColWidth"/>
+      <element name="TDrawGrid.DefaultDrawing" link="#lcl.grids.TCustomGrid.DefaultDrawing"/>
+      <element name="TDrawGrid.DefaultRowHeight" link="#lcl.grids.TCustomGrid.DefaultRowHeight"/>
       <element name="TDrawGrid.DoubleBuffered" link="#LCL.Controls.TControl.DoubleBuffered"/>
       <element name="TDrawGrid.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TDrawGrid.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TDrawGrid.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TDrawGrid.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TDrawGrid.ExtendedSelect" link="TCustomGrid.ExtendedSelect"/>
-      <element name="TDrawGrid.FixedColor" link="TCustomGrid.FixedColor"/>
-      <element name="TDrawGrid.FixedCols" link="TCustomGrid.FixedCols"/>
-      <element name="TDrawGrid.FixedRows" link="TCustomGrid.FixedRows"/>
+      <element name="TDrawGrid.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect"/>
+      <element name="TDrawGrid.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
+      <element name="TDrawGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
+      <element name="TDrawGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
       <element name="TDrawGrid.Flat" link="#LCL.Controls.TControl.Flat"/>
       <element name="TDrawGrid.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TDrawGrid.GridLineWidth" link="TCustomGrid.GridLineWidth"/>
-      <element name="TDrawGrid.HeaderHotZones" link="TCustomGrid.HeaderHotZones"/>
-      <element name="TDrawGrid.HeaderPushZones" link="TCustomGrid.HeaderPushZones"/>
-      <element name="TDrawGrid.ImageIndexSortAsc" link="TCustomGrid.ImageIndexSortAsc"/>
-      <element name="TDrawGrid.ImageIndexSortDesc" link="TCustomGrid.ImageIndexSortDesc"/>
-      <element name="TDrawGrid.MouseWheelOption" link="TCustomGrid.MouseWheelOption"/>
-      <element name="TDrawGrid.Options" link="TCustomGrid.Options"/>
-      <element name="TDrawGrid.Options2" link="TCustomGrid.Options2"/>
+      <element name="TDrawGrid.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth"/>
+      <element name="TDrawGrid.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
+      <element name="TDrawGrid.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
+      <element name="TDrawGrid.ImageIndexSortAsc" link="#lcl.grids.TCustomGrid.ImageIndexSortAsc"/>
+      <element name="TDrawGrid.ImageIndexSortDesc" link="#lcl.grids.TCustomGrid.ImageIndexSortDesc"/>
+      <element name="TDrawGrid.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption"/>
+      <element name="TDrawGrid.Options" link="#lcl.grids.TCustomGrid.Options"/>
+      <element name="TDrawGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
       <element name="TDrawGrid.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
 
       <element name="TDrawGrid.ParentDoubleBuffered" link="#LCL.Controls.TControl.ParentDoubleBuffered"/>
@@ -12543,50 +12542,50 @@
       <element name="TDrawGrid.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TDrawGrid.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TDrawGrid.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TDrawGrid.RangeSelectMode" link="TCustomGrid.RangeSelectMode"/>
-      <element name="TDrawGrid.RowCount" link="TCustomGrid.RowCount"/>
-      <element name="TDrawGrid.RowSizingCursor" link="TCustomGrid.RowSizingCursor"/>
-      <element name="TDrawGrid.ScrollBars" link="TCustomGrid.ScrollBars"/>
+      <element name="TDrawGrid.RangeSelectMode" link="#lcl.grids.TCustomGrid.RangeSelectMode"/>
+      <element name="TDrawGrid.RowCount" link="#lcl.grids.TCustomGrid.RowCount"/>
+      <element name="TDrawGrid.RowSizingCursor" link="#lcl.grids.TCustomGrid.RowSizingCursor"/>
+      <element name="TDrawGrid.ScrollBars" link="#lcl.grids.TCustomGrid.ScrollBars"/>
       <element name="TDrawGrid.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TDrawGrid.TabAdvance" link="TCustomGrid.TabAdvance"/>
+      <element name="TDrawGrid.TabAdvance" link="#lcl.grids.TCustomGrid.TabAdvance"/>
       <element name="TDrawGrid.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TDrawGrid.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TDrawGrid.TitleFont" link="TCustomGrid.TitleFont"/>
-      <element name="TDrawGrid.TitleImageList" link="TCustomGrid.TitleImageList"/>
-      <element name="TDrawGrid.TitleImageListWidth" link="TCustomGrid.TitleImageListWidth"/>
-      <element name="TDrawGrid.TitleStyle" link="TCustomGrid.TitleStyle"/>
-      <element name="TDrawGrid.UseXORFeatures" link="TCustomGrid.UseXORFeatures"/>
+      <element name="TDrawGrid.TitleFont" link="#lcl.grids.TCustomGrid.TitleFont"/>
+      <element name="TDrawGrid.TitleImageList" link="#lcl.grids.TCustomGrid.TitleImageList"/>
+      <element name="TDrawGrid.TitleImageListWidth" link="#lcl.grids.TCustomGrid.TitleImageListWidth"/>
+      <element name="TDrawGrid.TitleStyle" link="#lcl.grids.TCustomGrid.TitleStyle"/>
+      <element name="TDrawGrid.UseXORFeatures" link="#lcl.grids.TCustomGrid.UseXORFeatures"/>
       <element name="TDrawGrid.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TDrawGrid.VisibleColCount" link="TCustomGrid.VisibleColCount"/>
-      <element name="TDrawGrid.VisibleRowCount" link="TCustomGrid.VisibleRowCount"/>
-      <element name="TDrawGrid.OnAfterSelection" link="TCustomGrid.OnAfterSelection"/>
-      <element name="TDrawGrid.OnBeforeSelection" link="TCustomGrid.OnBeforeSelection"/>
-      <element name="TDrawGrid.OnCheckboxToggled" link="TCustomGrid.OnCheckboxToggled"/>
+      <element name="TDrawGrid.VisibleColCount" link="#lcl.grids.TCustomGrid.VisibleColCount"/>
+      <element name="TDrawGrid.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount"/>
+      <element name="TDrawGrid.OnAfterSelection" link="#lcl.grids.TCustomGrid.OnAfterSelection"/>
+      <element name="TDrawGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection"/>
+      <element name="TDrawGrid.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled"/>
       <element name="TDrawGrid.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TDrawGrid.OnColRowDeleted" link="TCustomGrid.OnColRowDeleted"/>
-      <element name="TDrawGrid.OnColRowExchanged" link="TCustomGrid.OnColRowExchanged"/>
-      <element name="TDrawGrid.OnColRowInserted" link="TCustomGrid.OnColRowInserted"/>
-      <element name="TDrawGrid.OnColRowMoved" link="TCustomGrid.OnColRowMoved"/>
-      <element name="TDrawGrid.OnCompareCells" link="TCustomGrid.OnCompareCells"/>
+      <element name="TDrawGrid.OnColRowDeleted" link="#lcl.grids.TCustomGrid.OnColRowDeleted"/>
+      <element name="TDrawGrid.OnColRowExchanged" link="#lcl.grids.TCustomGrid.OnColRowExchanged"/>
+      <element name="TDrawGrid.OnColRowInserted" link="#lcl.grids.TCustomGrid.OnColRowInserted"/>
+      <element name="TDrawGrid.OnColRowMoved" link="#lcl.grids.TCustomGrid.OnColRowMoved"/>
+      <element name="TDrawGrid.OnCompareCells" link="#lcl.grids.TCustomGrid.OnCompareCells"/>
       <element name="TDrawGrid.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TDrawGrid.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TDrawGrid.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TDrawGrid.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TDrawGrid.OnDrawCell" link="TCustomGrid.OnDrawCell"/>
-      <element name="TDrawGrid.OnEditButtonClick" link="TCustomGrid.OnEditButtonClick"/>
-      <element name="TDrawGrid.OnButtonClick" link="TCustomGrid.OnButtonClick"/>
-      <element name="TDrawGrid.OnEditingDone" link="TCustomGrid.OnEditingDone"/>
+      <element name="TDrawGrid.OnDrawCell" link="#lcl.grids.TCustomGrid.OnDrawCell"/>
+      <element name="TDrawGrid.OnEditButtonClick" link="#lcl.grids.TCustomGrid.OnEditButtonClick"/>
+      <element name="TDrawGrid.OnButtonClick" link="#lcl.grids.TCustomGrid.OnButtonClick"/>
+      <element name="TDrawGrid.OnEditingDone" link="#lcl.grids.TCustomGrid.OnEditingDone"/>
       <element name="TDrawGrid.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TDrawGrid.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TDrawGrid.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TDrawGrid.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TDrawGrid.OnGetCellHint" link="TCustomGrid.OnGetCellHint"/>
-      <element name="TDrawGrid.OnGetCheckboxState" link="TCustomGrid.OnGetCheckboxState"/>
-      <element name="TDrawGrid.OnGetEditMask" link="TCustomGrid.OnGetEditMask"/>
-      <element name="TDrawGrid.OnGetEditText" link="TCustomGrid.OnGetEditText"/>
-      <element name="TDrawGrid.OnHeaderClick" link="TCustomGrid.OnHeaderClick"/>
-      <element name="TDrawGrid.OnHeaderSized" link="TCustomGrid.OnHeaderSized"/>
-      <element name="TDrawGrid.OnHeaderSizing" link="TCustomGrid.OnHeaderSizing"/>
+      <element name="TDrawGrid.OnGetCellHint" link="#lcl.grids.TCustomGrid.OnGetCellHint"/>
+      <element name="TDrawGrid.OnGetCheckboxState" link="#lcl.grids.TCustomGrid.OnGetCheckboxState"/>
+      <element name="TDrawGrid.OnGetEditMask" link="#lcl.grids.TCustomGrid.OnGetEditMask"/>
+      <element name="TDrawGrid.OnGetEditText" link="#lcl.grids.TCustomGrid.OnGetEditText"/>
+      <element name="TDrawGrid.OnHeaderClick" link="#lcl.grids.TCustomGrid.OnHeaderClick"/>
+      <element name="TDrawGrid.OnHeaderSized" link="#lcl.grids.TCustomGrid.OnHeaderSized"/>
+      <element name="TDrawGrid.OnHeaderSizing" link="#lcl.grids.TCustomGrid.OnHeaderSizing"/>
       <element name="TDrawGrid.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TDrawGrid.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TDrawGrid.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
@@ -12595,26 +12594,26 @@
       <element name="TDrawGrid.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TDrawGrid.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TDrawGrid.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TDrawGrid.OnMouseWheel" link="TCustomGrid.OnMouseWheel"/>
-      <element name="TDrawGrid.OnMouseWheelDown" link="TCustomGrid.OnMouseWheelDown"/>
-      <element name="TDrawGrid.OnMouseWheelUp" link="TCustomGrid.OnMouseWheelUp"/>
-      <element name="TDrawGrid.OnMouseWheelHorz" link="TCustomGrid.OnMouseWheelHorz"/>
-      <element name="TDrawGrid.OnMouseWheelLeft" link="TCustomGrid.OnMouseWheelLeft"/>
-      <element name="TDrawGrid.OnMouseWheelRight" link="TCustomGrid.OnMouseWheelRight"/>
-      <element name="TDrawGrid.OnPickListSelect" link="TCustomGrid.OnPickListSelect"/>
-      <element name="TDrawGrid.OnPrepareCanvas" link="TCustomGrid.OnPrepareCanvas"/>
-      <element name="TDrawGrid.OnSelectEditor" link="TCustomGrid.OnSelectEditor"/>
-      <element name="TDrawGrid.OnSelection" link="TCustomGrid.OnSelection"/>
-      <element name="TDrawGrid.OnSelectCell" link="TCustomDrawGrid.OnSelectCell"/>
-      <element name="TDrawGrid.OnSetCheckboxState" link="TCustomGrid.OnSetCheckboxState"/>
-      <element name="TDrawGrid.OnSetEditText" link="TCustomGrid.OnSetEditText"/>
+      <element name="TDrawGrid.OnMouseWheel" link="#lcl.grids.TCustomGrid.OnMouseWheel"/>
+      <element name="TDrawGrid.OnMouseWheelDown" link="#lcl.grids.TCustomGrid.OnMouseWheelDown"/>
+      <element name="TDrawGrid.OnMouseWheelUp" link="#lcl.grids.TCustomGrid.OnMouseWheelUp"/>
+      <element name="TDrawGrid.OnMouseWheelHorz" link="#lcl.grids.TCustomGrid.OnMouseWheelHorz"/>
+      <element name="TDrawGrid.OnMouseWheelLeft" link="#lcl.grids.TCustomGrid.OnMouseWheelLeft"/>
+      <element name="TDrawGrid.OnMouseWheelRight" link="#lcl.grids.TCustomGrid.OnMouseWheelRight"/>
+      <element name="TDrawGrid.OnPickListSelect" link="#lcl.grids.TCustomGrid.OnPickListSelect"/>
+      <element name="TDrawGrid.OnPrepareCanvas" link="#lcl.grids.TCustomGrid.OnPrepareCanvas"/>
+      <element name="TDrawGrid.OnSelectEditor" link="#lcl.grids.TCustomGrid.OnSelectEditor"/>
+      <element name="TDrawGrid.OnSelection" link="#lcl.grids.TCustomGrid.OnSelection"/>
+      <element name="TDrawGrid.OnSelectCell" link="#lcl.grids.TCustomDrawGrid.OnSelectCell"/>
+      <element name="TDrawGrid.OnSetCheckboxState" link="#lcl.grids.TCustomGrid.OnSetCheckboxState"/>
+      <element name="TDrawGrid.OnSetEditText" link="#lcl.grids.TCustomGrid.OnSetEditText"/>
       <element name="TDrawGrid.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TDrawGrid.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TDrawGrid.OnTopleftChanged" link="TCustomGrid.OnTopLeftChanged"/>
-      <element name="TDrawGrid.OnUserCheckboxBitmap" link="TCustomGrid.OnUserCheckboxBitmap"/>
-      <element name="TDrawGrid.OnUserCheckboxImage" link="TCustomGrid.OnUserCheckBoxImage"/>
+      <element name="TDrawGrid.OnTopleftChanged" link="#lcl.grids.TCustomGrid.OnTopLeftChanged"/>
+      <element name="TDrawGrid.OnUserCheckboxBitmap" link="#lcl.grids.TCustomGrid.OnUserCheckboxBitmap"/>
+      <element name="TDrawGrid.OnUserCheckboxImage" link="#lcl.grids.TCustomGrid.OnUserCheckBoxImage"/>
       <element name="TDrawGrid.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TDrawGrid.OnValidateEntry" link="TCustomGrid.OnValidateEntry"/>
+      <element name="TDrawGrid.OnValidateEntry" link="#lcl.grids.TCustomGrid.OnValidateEntry"/>
 
       <!-- object Visibility: default -->
       <element name="TStringGridStrings">
@@ -12681,7 +12680,7 @@
         <short>Gets the number of strings in the class instance</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStringList.GetCount"/>
+          <link id="#rtl.classes.TStringList.Count"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetCount.Result">
@@ -12693,7 +12692,7 @@
         <short>Gets the object stored at the specified index position</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStringList.GetObject"/>
+          <link id="#rtl.classes.TStrings.Objects"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetObject.Result">
@@ -12707,9 +12706,7 @@
       <element name="TStringGridStrings.Put">
         <short>Stores a string at the specified index position</short>
         <descr></descr>
-        <seealso>
-          <link id="#RTL.Classes.TStringList.Put"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TStringGridStrings.Put.Index">
         <short></short>
@@ -12723,7 +12720,7 @@
         <short>Stores an Object at the specified index position</short>
         <descr></descr>
         <seealso>
-          <link id="#RTL.Classes.TStringList.PutObject"/>
+          <link id="#rtl.classes.TStrings.Objects"/>
         </seealso>
       </element>
       <element name="TStringGridStrings.PutObject.Index">
@@ -13040,7 +13037,7 @@
           <link id="TCustomGrid.AssignTo"/>
         </seealso>
       </element>
-      <element name="TCustomStringGrid.AssignTo.Dest" link="TCustomGrid.AssignTo.Dest"/>
+      <element name="TCustomStringGrid.AssignTo.Dest" link="#lcl.grids.TCustomGrid.AssignTo.Dest"/>
 
       <!-- procedure Visibility: protected -->
       <element name="TCustomStringGrid.AutoAdjustColumn">
@@ -13084,7 +13081,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element link="TCustomGrid.DoCompareCells" name="TCustomStringGrid.DoCompareCells"/>
+      <element link="#lcl.grids.TCustomGrid.DoCompareCells" name="TCustomStringGrid.DoCompareCells"/>
       <element name="TCustomStringGrid.DoCompareCells.Result">
         <short></short>
       </element>
@@ -13101,9 +13098,9 @@
         <short></short>
       </element>
 
-      <element name="TCustomStringGrid.DoCopyToClipboard" link="TCustomGrid.DoCopyToClipboard"/>
-      <element name="TCustomStringGrid.DoCutToClipboard" link="TCustomGrid.DoCutToClipboard"/>
-      <element name="TCustomStringGrid.DoPasteFromClipboard" link="TCustomGrid.DoPasteFromClipboard"/>
+      <element name="TCustomStringGrid.DoCopyToClipboard" link="#lcl.grids.TCustomGrid.DoCopyToClipboard"/>
+      <element name="TCustomStringGrid.DoCutToClipboard" link="#lcl.grids.TCustomGrid.DoCutToClipboard"/>
+      <element name="TCustomStringGrid.DoPasteFromClipboard" link="#lcl.grids.TCustomGrid.DoPasteFromClipboard"/>
 
       <element name="TCustomStringGrid.DoCellProcess">
         <short>Signals the OnCellProcess event handler when assigned</short>
@@ -13666,7 +13663,7 @@
       <element name="TStringGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
       <element link="#LCL.Grids.TCustomStringGrid.Modified" name="TStringGrid.Modified"/>
-      <element link="TCustomGrid.InplaceEditor" name="TStringGrid.InplaceEditor"/>
+      <element link="#lcl.grids.TCustomGrid.InplaceEditor" name="TStringGrid.InplaceEditor"/>
       <element link="#LCL.Controls.TControl.Align" name="TStringGrid.Align"/>
       <element link="#LCL.Grids.TCustomGrid.AlternateColor" name="TStringGrid.AlternateColor"/>
       <element link="#LCL.Controls.TControl.Anchors" name="TStringGrid.Anchors"/>
@@ -13697,18 +13694,18 @@
       <element name="TStringGrid.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TStringGrid.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element link="#LCL.Controls.TControl.Enabled" name="TStringGrid.Enabled"/>
-      <element name="TStringGrid.ExtendedSelect" link="TCustomGrid.ExtendedSelect"/>
+      <element name="TStringGrid.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect"/>
       <element link="#LCL.Grids.TCustomGrid.FixedColor" name="TStringGrid.FixedColor"/>
       <element link="#LCL.Grids.TCustomGrid.FixedCols" name="TStringGrid.FixedCols"/>
       <element link="#LCL.Grids.TCustomGrid.FixedRows" name="TStringGrid.FixedRows"/>
       <element link="#LCL.Grids.TCustomGrid.Flat" name="TStringGrid.Flat"/>
       <element name="TStringGrid.Font" link="LCL.Controls.TControl.Font"/>
       <element link="#LCL.Grids.TCustomGrid.GridLineWidth" name="TStringGrid.GridLineWidth"/>
-      <element name="TStringGrid.HeaderHotZones" link="TCustomGrid.HeaderHotZones"/>
-      <element name="TStringGrid.HeaderPushZones" link="TCustomGrid.HeaderPushZones"/>
-      <element name="TStringGrid.ImageIndexSortAsc" link="TCustomGrid.ImageIndexSortAsc"/>
-      <element name="TStringGrid.ImageIndexSortDesc" link="TCustomGrid.ImageIndexSortDesc"/>
-      <element name="TStringGrid.MouseWheelOption" link="TCustomGrid.MouseWheelOption"/>
+      <element name="TStringGrid.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
+      <element name="TStringGrid.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
+      <element name="TStringGrid.ImageIndexSortAsc" link="#lcl.grids.TCustomGrid.ImageIndexSortAsc"/>
+      <element name="TStringGrid.ImageIndexSortDesc" link="#lcl.grids.TCustomGrid.ImageIndexSortDesc"/>
+      <element name="TStringGrid.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption"/>
       <element link="#LCL.Grids.TCustomGrid.Options" name="TStringGrid.Options"/>
       <element link="#LCL.Grids.TCustomGrid.Options2" name="TStringGrid.Options2"/>
       <element name="TStringGrid.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
@@ -13717,16 +13714,16 @@
       <element name="TStringGrid.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element link="#LCL.Controls.TControl.ParentShowHint" name="TStringGrid.ParentShowHint"/>
       <element link="#LCL.Controls.TControl.PopupMenu" name="TStringGrid.PopupMenu"/>
-      <element name="TStringGrid.RangeSelectMode" link="TCustomGrid.RangeSelectMode"/>
+      <element name="TStringGrid.RangeSelectMode" link="#lcl.grids.TCustomGrid.RangeSelectMode"/>
       <element link="#LCL.Grids.TCustomGrid.RowCount" name="TStringGrid.RowCount"/>
-      <element name="TStringGrid.RowSizingCursor" link="TCustomGrid.RowSizingCursor"/>
+      <element name="TStringGrid.RowSizingCursor" link="#lcl.grids.TCustomGrid.RowSizingCursor"/>
       <element link="#LCL.Grids.TCustomGrid.ScrollBars" name="TStringGrid.ScrollBars"/>
       <element link="#LCL.Controls.TControl.ShowHint" name="TStringGrid.ShowHint"/>
-      <element name="TStringGrid.TabAdvance" link="TCustomGrid.TabAdvance"/>
+      <element name="TStringGrid.TabAdvance" link="#lcl.grids.TCustomGrid.TabAdvance"/>
       <element link="#LCL.Controls.TWinControl.TabOrder" name="TStringGrid.TabOrder"/>
       <element link="#LCL.Controls.TWinControl.TabStop" name="TStringGrid.TabStop"/>
       <element link="#LCL.Grids.TCustomGrid.TitleFont" name="TStringGrid.TitleFont"/>
-      <element name="TStringGrid.TitleImageList" link="TCustomGrid.TitleImageList"/>
+      <element name="TStringGrid.TitleImageList" link="#lcl.grids.TCustomGrid.TitleImageList"/>
       <element link="#LCL.Grids.TCustomGrid.TitleStyle" name="TStringGrid.TitleStyle"/>
       <element link="#LCL.Grids.TCustomGrid.UseXORFeatures" name="TStringGrid.UseXORFeatures"/>
       <element link="#LCL.Controls.TControl.Visible" name="TStringGrid.Visible"/>
@@ -13735,9 +13732,9 @@
        <element link="#LCL.Grids.TCustomGrid.VisibleRowCount"  name="TStringGrid.VisibleRowCount"/>
       <element link="#LCL.Grids.TCustomGrid.OnAfterSelection" name="TStringGrid.OnAfterSelection"/>
       <element link="#LCL.Grids.TCustomGrid.OnBeforeSelection" name="TStringGrid.OnBeforeSelection"/>
-      <element name="TStringGrid.OnCellProcess" link="TCustomGrid.OnCellProcess"/>
+      <element name="TStringGrid.OnCellProcess" link="#lcl.grids.TCustomGrid.OnCellProcess"/>
       <element link="#LCL.Controls.TControl.OnChangeBounds" name="TStringGrid.OnChangeBounds"/>
-      <element name="TStringGrid.OnCheckboxToggled" link="TCustomGrid.OnCheckboxToggled"/>
+      <element name="TStringGrid.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled"/>
       <element link="#LCL.Controls.TControl.OnClick" name="TStringGrid.OnClick"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnColRowDeleted" name="TStringGrid.OnColRowDeleted"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnColRowExchanged" name="TStringGrid.OnColRowExchanged"/>
@@ -13755,14 +13752,14 @@
         <short>Deprecated</short>
       </element>
 
-      <element name="TStringGrid.OnButtonClick" link="TCustomGrid.OnButtonClick"/>
+      <element name="TStringGrid.OnButtonClick" link="#lcl.grids.TCustomGrid.OnButtonClick"/>
       <element link="#LCL.Controls.TControl.OnEditingDone" name="TStringGrid.OnEditingDone"/>
       <element name="TStringGrid.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TStringGrid.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element link="#LCL.Controls.TWinControl.OnEnter" name="TStringGrid.OnEnter"/>
       <element link="#LCL.Controls.TWinControl.OnExit" name="TStringGrid.OnExit"/>
       <element name="TStringGrid.OnGetCellHint" link="#LCL.Grids.TCustomGrid.OnGetCellHint"/>
-      <element name="TStringGrid.OnGetCheckboxState" link="TCustomGrid.OnGetCheckboxState"/>
+      <element name="TStringGrid.OnGetCheckboxState" link="#lcl.grids.TCustomGrid.OnGetCheckboxState"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnGetEditMask"
         name="TStringGrid.OnGetEditMask"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnGetEditText"
@@ -13771,7 +13768,7 @@
         name="TStringGrid.OnHeaderClick"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnHeaderSized"
             name="TStringGrid.OnHeaderSized"/>
-      <element name="TStringGrid.OnHeaderSizing" link="TCustomGrid.OnHeaderSizing"/>
+      <element name="TStringGrid.OnHeaderSizing" link="#lcl.grids.TCustomGrid.OnHeaderSizing"/>
       <element link="#LCL.Controls.TWinControl.OnKeyDown" name="TStringGrid.OnKeyDown"/>
       <element link="#LCL.Controls.TWinControl.OnKeyPress" name="TStringGrid.OnKeyPress"/>
       <element link="#LCL.Controls.TWinControl.OnKeyUp" name="TStringGrid.OnKeyUp"/>
@@ -13793,16 +13790,16 @@
       <element link="#LCL.Grids.TCustomGrid.OnSelectEditor" name="TStringGrid.OnSelectEditor"/>
       <element link="#LCL.Grids.TCustomGrid.OnSelection" name="TStringGrid.OnSelection"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnSelectCell" name="TStringGrid.OnSelectCell"/>
-      <element name="TStringGrid.OnSetCheckboxState" link="TCustomDrawGrid.OnSetCheckboxState"/>
+      <element name="TStringGrid.OnSetCheckboxState" link="#lcl.grids.TCustomDrawGrid.OnSetCheckboxState"/>
       <element link="#LCL.Grids.TCustomDrawGrid.OnSetEditText"
         name="TStringGrid.OnSetEditText"/>
       <element link="#LCL.Controls.TControl.OnShowHint" name="TStringGrid.OnShowHint"/>
       <element link="#LCL.Controls.TControl.OnStartDock" name="TStringGrid.OnStartDock"/>
       <element link="#LCL.Controls.TControl.OnStartDrag" name="TStringGrid.OnStartDrag"/>
       <element link="#LCL.Grids.TCustomGrid.OnTopLeftChanged" name="TStringGrid.OnTopLeftChanged"/>
-      <element name="TStringGrid.OnUserCheckboxBitmap" link="TCustomGrid.OnUserCheckboxBitmap"/>
+      <element name="TStringGrid.OnUserCheckboxBitmap" link="#lcl.grids.TCustomGrid.OnUserCheckboxBitmap"/>
       <element link="#LCL.Controls.TWinControl.OnUTF8KeyPress" name="TStringGrid.OnUTF8KeyPress"/>
-      <element name="TStringGrid.OnValidateEntry" link="TCustomGrid.OnValidateEntry"/>
+      <element name="TStringGrid.OnValidateEntry" link="#lcl.grids.TCustomGrid.OnValidateEntry"/>
 
       <!-- procedure Visibility: default -->
       <element name="DrawRubberRect">

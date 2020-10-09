@@ -158,15 +158,15 @@
         </seealso>
       </element>
 
-      <element name="TPascalHelpContextList.FCount" link="TPascalHelpContextList.Count">
+      <element name="TPascalHelpContextList.FCount" link="#lcl.lazhelpintf.TPascalHelpContextList.Count">
         <short></short>
       </element>
 
-      <element name="TPascalHelpContextList.FItems" link="TPascalHelpContextList.Items">
+      <element name="TPascalHelpContextList.FItems" link="#lcl.lazhelpintf.TPascalHelpContextList.Items">
         <short></short>
       </element>
 
-      <element name="TPascalHelpContextList.GetItems" link="TPascalHelpContextList.Items">
+      <element name="TPascalHelpContextList.GetItems" link="#lcl.lazhelpintf.TPascalHelpContextList.Items">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -341,12 +341,12 @@
         </seealso>
       </element>
 
-      <element name="THelpNode.FContext" link="THelpNode.Context"/>
-      <element name="THelpNode.FURL" link="THelpNode.URL"/>
-      <element name="THelpNode.FHelpType" link="THelpNode.HelpType"/>
-      <element name="THelpNode.FID" link="THelpNode.ID"/>
-      <element name="THelpNode.FOwner" link="THelpNode.Owner"/>
-      <element name="THelpNode.FTitle" link="THelpNode.Title"/>
+      <element name="THelpNode.FContext" link="#lcl.lazhelpintf.THelpNode.Context"/>
+      <element name="THelpNode.FURL" link="#lcl.lazhelpintf.THelpNode.URL"/>
+      <element name="THelpNode.FHelpType" link="#lcl.lazhelpintf.THelpNode.HelpType"/>
+      <element name="THelpNode.FID" link="#lcl.lazhelpintf.THelpNode.ID"/>
+      <element name="THelpNode.FOwner" link="#lcl.lazhelpintf.THelpNode.Owner"/>
+      <element name="THelpNode.FTitle" link="#lcl.lazhelpintf.THelpNode.Title"/>
 
       <element name="THelpNode.Create">
         <short>Constructor for the class instance</short>
@@ -552,8 +552,8 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpNodeQuery.FNode" link="THelpNodeQuery.Node"/>
-      <element name="THelpNodeQuery.FQueryItem" link="THelpNodeQuery.QueryItem"/>
+      <element name="THelpNodeQuery.FNode" link="#lcl.lazhtmlintf.THelpNodeQuery.Node"/>
+      <element name="THelpNodeQuery.FQueryItem" link="#lcl.lazhtmlintf.THelpNodeQuery.QueryItem"/>
 
       <element name="THelpNodeQuery.Create">
         <short>Constructor for the class instance</short>
@@ -612,9 +612,9 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpNodeQueryList.FItems" link="THelpNodeQueryList.Items"/>
+      <element name="THelpNodeQueryList.FItems" link="#lcl.lazhtmlintf.THelpNodeQueryList.Items"/>
 
-      <element name="THelpNodeQueryList.GetItems" link="THelpNodeQueryList.Items">
+      <element name="THelpNodeQueryList.GetItems" link="#lcl.lazhtmlintf.THelpNodeQueryList.Items">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -626,7 +626,7 @@
         <short></short>
       </element>
 
-      <element name="THelpNodeQueryList.SetItems"  link="THelpNodeQueryList.Items">
+      <element name="THelpNodeQueryList.SetItems"  link="#lcl.lazhtmlintf.THelpNodeQueryList.Items">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -735,7 +735,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpDBItem.FNode" link="THelpDBItem.Node">
+      <element name="THelpDBItem.FNode" link="#lcl.lazhtmlintf.THelpDBItem.Node">
         <short></short>
       </element>
 
@@ -766,15 +766,15 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpDBISourceFile.FBasePathObject" link="THelpDBISourceFile.BasePathObject">
+      <element name="THelpDBISourceFile.FBasePathObject" link="#lcl.lazhtmlintf.THelpDBISourceFile.BasePathObject">
         <short></short>
       </element>
 
-      <element name="THelpDBISourceFile.FFilename" link="THelpDBISourceFile.Filename">
+      <element name="THelpDBISourceFile.FFilename" link="#lcl.lazhtmlintf.THelpDBISourceFile.Filename">
         <short></short>
       </element>
 
-      <element name="THelpDBISourceFile.SetFilename" link="THelpDBISourceFile.Filename">
+      <element name="THelpDBISourceFile.SetFilename" link="#lcl.lazhtmlintf.THelpDBISourceFile.Filename">
         <short>Sets the value for the Filename property</short>
       </element>
       <element name="THelpDBISourceFile.SetFilename.AValue">
@@ -843,11 +843,11 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpDBISourceDirectory.FFileMask" link="THelpDBISourceDirectory.FileMask">
+      <element name="THelpDBISourceDirectory.FFileMask" link="#lcl.lazhtmlintf.THelpDBISourceDirectory.FileMask">
         <short></short>
       </element>
 
-      <element name="THelpDBISourceDirectory.FWithSubDirectories" link="THelpDBISourceDirectory.WithSubDirectories">
+      <element name="THelpDBISourceDirectory.FWithSubDirectories" link="#lcl.lazhtmlintf.THelpDBISourceDirectory.WithSubDirectories">
         <short></short>
       </element>
 
@@ -966,10 +966,10 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpDatabase.FAutoRegister" link="THelpDatabase.AutoRegister"/>
-      <element name="THelpDatabase.FBasePathObject" link="THelpDatabase.BasePathObject"/>
-      <element name="THelpDatabase.FID" link="THelpDatabase.ID"/>
-      <element name="THelpDatabase.FDatabases" link="THelpDatabase.Databases"/>
+      <element name="THelpDatabase.FAutoRegister" link="#lcl.lazhtmlintf.THelpDatabase.AutoRegister"/>
+      <element name="THelpDatabase.FBasePathObject" link="#lcl.lazhelpintf.THelpDatabase.BasePathObject"/>
+      <element name="THelpDatabase.FID" link="#lcl.lazhelpintf.THelpDatabase.ID"/>
+      <element name="THelpDatabase.FDatabases" link="#lcl.lazhelpintf.THelpDatabase.Databases"/>
 
       <element name="THelpDatabase.FRefCount">
         <short></short>
@@ -982,8 +982,8 @@
         <short></short>
       </element>
 
-      <element name="THelpDatabase.FSupportedMimeTypes" link="THelpDatabase.SupportedMimeTypes"/>
-      <element name="THelpDatabase.FTOCNode" link="THelpDatabase.TOCNode"/>
+      <element name="THelpDatabase.FSupportedMimeTypes" link="#lcl.lazhelpintf.THelpDatabase.SupportedMimeTypes"/>
+      <element name="THelpDatabase.FTOCNode" link="#lcl.lazhelpintf.THelpDatabase.TOCNode"/>
 
       <element name="THelpDatabase.SetAutoRegister">
         <short></short>
@@ -1496,7 +1496,7 @@
         <short>List with class references for each registered help database</short>
       </element>
 
-      <element name="THelpDatabases.GetItems" link="THelpDatabases.Items">
+      <element name="THelpDatabases.GetItems" link="#lcl.lazhelpintf.THelpDatabases.Items">
         <short>Gets a value in the Items property by its ordinal position</short>
         <descr></descr>
         <seealso></seealso>
@@ -2158,23 +2158,23 @@
         </seealso>
       </element>
 
-      <element name="THelpViewer.FAutoRegister" link="THelpViewer.AutoRegister">
+      <element name="THelpViewer.FAutoRegister" link="#lcl.lazhelpintf.THelpViewer.AutoRegister">
         <short></short>
       </element>
 
-      <element name="THelpViewer.FParameterHelp" link="THelpViewer.ParameterHelp">
+      <element name="THelpViewer.FParameterHelp" link="#lcl.lazhelpintf.THelpViewer.ParameterHelp">
         <short></short>
       </element>
 
-      <element name="THelpViewer.FStorageName" link="THelpViewer.StorageName">
+      <element name="THelpViewer.FStorageName" link="#lcl.lazhelpintf.THelpViewer.StorageName">
         <short></short>
       </element>
 
-      <element name="THelpViewer.FSupportedMimeTypes" link="THelpViewer.SupportedMimeTypes">
+      <element name="THelpViewer.FSupportedMimeTypes" link="#lcl.lazhelpintf.THelpViewer.SupportedMimeTypes">
         <short></short>
       </element>
 
-      <element name="THelpViewer.SetAutoRegister" link="THelpViewer.AutoRegister">
+      <element name="THelpViewer.SetAutoRegister" link="#lcl.lazhelpintf.THelpViewer.AutoRegister">
         <short>Sets the value in the AutoRegister property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2183,7 +2183,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="THelpViewer.SetSupportedMimeTypes" link="THelpViewer.SupportedMimeTypes">
+      <element name="THelpViewer.SetSupportedMimeTypes" link="#lcl.lazhelpintf.THelpViewer.SupportedMimeTypes">
         <short>Sets the value in the SupportedMimeTypes property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2387,7 +2387,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpViewers.FItems" link="THelpViewers.Items">
+      <element name="THelpViewers.FItems" link="#lcl.lazhelpintf.THelpViewers.Items">
         <short></short>
       </element>
 
@@ -2395,7 +2395,7 @@
         <short>Indicates if the class is being freed</short>
       </element>
 
-      <element name="THelpViewers.GetItems" link="THelpViewers.Items">
+      <element name="THelpViewers.GetItems" link="#lcl.lazhelpintf.THelpViewers.Items">
         <short></short>
         <descr></descr>
         <seealso></seealso>
@@ -2532,11 +2532,11 @@
         </seealso>
       </element>
 
-      <element name="THelpBasePathObject.FBasePath" link="THelpBasePathObject.BasePath">
+      <element name="THelpBasePathObject.FBasePath" link="#lcl.lazhelpintf.THelpBasePathObject.BasePath">
         <short></short>
       </element>
 
-      <element name="THelpBasePathObject.SetBasePath" link="THelpBasePathObject.BasePath">
+      <element name="THelpBasePathObject.SetBasePath" link="#lcl.lazhelpintf.THelpBasePathObject.BasePath">
         <short>Sets the value for the BasePath property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2568,11 +2568,11 @@
         <seealso></seealso>
       </element>
 
-      <element name="THelpBaseURLObject.FBaseURL" link="THelpBaseURLObject.BaseURL">
+      <element name="THelpBaseURLObject.FBaseURL" link="#lcl.lazhelpintf.THelpBaseURLObject.BaseURL">
         <short></short>
       </element>
 
-      <element name="THelpBaseURLObject.SetBaseURL" link="THelpBaseURLObject.BaseURL">
+      <element name="THelpBaseURLObject.SetBaseURL" link="#lcl.lazhelpintf.THelpBaseURLObject.BaseURL">
         <short>Sets the value in the BaseURL property</short>
         <descr></descr>
         <seealso></seealso>

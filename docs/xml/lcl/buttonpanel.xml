@@ -96,7 +96,7 @@
           <link id="TCustomButtonPanel.CancelButton"/>
           <link id="TCustomButtonPanel.CloseButton"/>
           <link id="TCustomButtonPanel.HelpButton"/>
-          <link id="#LCL.Buttons.TCustomBitBtn"/>
+          <link id="#lcl.buttons.TCustomBitBtn"/>
         </seealso>
       </element>
 
@@ -865,42 +865,42 @@
         </seealso>
       </element>
 
-      <element name="TButtonPanel.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TButtonPanel.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TButtonPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TButtonPanel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TButtonPanel.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TButtonPanel.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TButtonPanel.OKButton" link="TCustomButtonPanel.OKButton"/>
-      <element name="TButtonPanel.HelpButton" link="TCustomButtonPanel.HelpButton"/>
-      <element name="TButtonPanel.CloseButton" link="TCustomButtonPanel.CloseButton"/>
-      <element name="TButtonPanel.CancelButton" link="TCustomButtonPanel.CancelButton"/>
-      <element name="TButtonPanel.Color" link="#LCL.ExtCtrls.TCustomPanel.Color"/>
-      <element name="TButtonPanel.ButtonOrder" link="TCustomButtonPanel.ButtonOrder"/>
-      <element name="TButtonPanel.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TButtonPanel.DefaultButton" link="TCustomButtonPanel.DefaultButton"/>
-      <element name="TButtonPanel.Spacing" link="TCustomButtonPanel.Spacing"/>
-      <element name="TButtonPanel.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TButtonPanel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TButtonPanel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TButtonPanel.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TButtonPanel.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TButtonPanel.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
-      <element name="TButtonPanel.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
-      <element name="TButtonPanel.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TButtonPanel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TButtonPanel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TButtonPanel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TButtonPanel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TButtonPanel.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TButtonPanel.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TButtonPanel.ShowButtons" link="TCustomButtonPanel.ShowButtons"/>
-      <element name="TButtonPanel.ShowGlyphs" link="TCustomButtonPanel.ShowGlyphs"/>
-      <element name="TButtonPanel.ShowBevel" link="TCustomButtonPanel.ShowBevel"/>
+      <element name="TButtonPanel.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TButtonPanel.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TButtonPanel.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TButtonPanel.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TButtonPanel.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TButtonPanel.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TButtonPanel.OKButton" link="#lcl.buttonpanel.TCustomButtonPanel.OKButton"/>
+      <element name="TButtonPanel.HelpButton" link="#lcl.buttonpanel.TCustomButtonPanel.HelpButton"/>
+      <element name="TButtonPanel.CloseButton" link="#lcl.buttonpanel.TCustomButtonPanel.CloseButton"/>
+      <element name="TButtonPanel.CancelButton" link="#lcl.buttonpanel.TCustomButtonPanel.CancelButton"/>
+      <element name="TButtonPanel.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
+      <element name="TButtonPanel.ButtonOrder" link="#lcl.buttonpanel.TCustomButtonPanel.ButtonOrder"/>
+      <element name="TButtonPanel.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TButtonPanel.DefaultButton" link="#lcl.buttonpanel.TCustomButtonPanel.DefaultButton"/>
+      <element name="TButtonPanel.Spacing" link="#lcl.buttonpanel.TCustomButtonPanel.Spacing"/>
+      <element name="TButtonPanel.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TButtonPanel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TButtonPanel.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TButtonPanel.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TButtonPanel.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TButtonPanel.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TButtonPanel.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TButtonPanel.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TButtonPanel.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TButtonPanel.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TButtonPanel.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TButtonPanel.ShowButtons" link="#lcl.buttonpanel.TCustomButtonPanel.ShowButtons"/>
+      <element name="TButtonPanel.ShowGlyphs" link="#lcl.buttonpanel.TCustomButtonPanel.ShowGlyphs"/>
+      <element name="TButtonPanel.ShowBevel" link="#lcl.buttonpanel.TCustomButtonPanel.ShowBevel"/>
       <element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="Register">
@@ -910,7 +910,7 @@
             <var>Register</var> is a procedure used to register the <var>TButtonPanel</var> component on the <b>Misc</b> tab in the Lazarus IDE.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
     </module>

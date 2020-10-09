@@ -693,7 +693,7 @@
       <element name="TDOMNode.FOwnerDocument"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetNodeName" link="TDOMNode.NodeName">
+      <element name="TDOMNode.GetNodeName" link="#lazutils.laz2_dom.TDOMNode.NodeName">
         <short>Gets the value for the NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -705,7 +705,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMNode.GetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Gets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -717,7 +717,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMNode.SetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMNode.SetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Sets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -729,7 +729,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetFirstChild" link="TDOMNode.FirstChild">
+      <element name="TDOMNode.GetFirstChild" link="#lazutils.laz2_dom.TDOMNode.FirstChild">
         <short>Gets the value for the FirstChild property</short>
         <descr></descr>
         <seealso></seealso>
@@ -741,7 +741,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetLastChild" link="TDOMNode.LastChild">
+      <element name="TDOMNode.GetLastChild" link="#lazutils.laz2_dom.TDOMNode.LastChild">
         <short>Gets the value for the LastChild property</short>
         <descr></descr>
         <seealso></seealso>
@@ -753,7 +753,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetAttributes"  link="TDOMNode.Attributes">
+      <element name="TDOMNode.GetAttributes"  link="#lazutils.laz2_dom.TDOMNode.Attributes">
         <short>Gets the value for the Attributes property</short>
         <descr></descr>
         <seealso></seealso>
@@ -777,7 +777,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMNode.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -789,7 +789,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetTextContent" link="TDOMNode.TextContent">
+      <element name="TDOMNode.GetTextContent" link="#lazutils.laz2_dom.TDOMNode.TextContent">
         <short>Gets the value for the TextContent property</short>
         <descr></descr>
         <seealso></seealso>
@@ -801,7 +801,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMNode.SetTextContent" link="TDOMNode.TextContent">
+      <element name="TDOMNode.SetTextContent" link="#lazutils.laz2_dom.TDOMNode.TextContent">
         <short>Sets the value in the TextContent property</short>
         <descr></descr>
                 <seealso></seealso>
@@ -813,7 +813,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetLocalName" link="TDOMNode.LocalName">
+      <element name="TDOMNode.GetLocalName" link="#lazutils.laz2_dom.TDOMNode.LocalName">
         <short>Gets the value for the LocalName property</short>
         <descr></descr>
                 <seealso></seealso>
@@ -825,7 +825,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetNamespaceURI" link="TDOMNode.NamespaceURI">
+      <element name="TDOMNode.GetNamespaceURI" link="#lazutils.laz2_dom.TDOMNode.NamespaceURI">
         <short>Gets the value for the NamespaceURI property</short>
         <descr></descr>
         <seealso></seealso>
@@ -837,7 +837,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetPrefix" link="TDOMNode.Prefix">
+      <element name="TDOMNode.GetPrefix" link="#lazutils.laz2_dom.TDOMNode.Prefix">
         <short>Gets the value for the Prefix property</short>
         <descr></descr>
         <seealso></seealso>
@@ -849,7 +849,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMNode.SetPrefix" link="TDOMNode.Prefix">
+      <element name="TDOMNode.SetPrefix" link="#lazutils.laz2_dom.TDOMNode.Prefix">
         <short>Sets the value for the Prefix property</short>
         <descr></descr>
         <seealso></seealso>
@@ -861,7 +861,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetOwnerDocument" link="TDOMNode.OwnerDocument">
+      <element name="TDOMNode.GetOwnerDocument" link="#lazutils.laz2_dom.TDOMNode.OwnerDocument">
         <short>Gets the value for the OwnerDocument property</short>
         <descr></descr>
         <seealso></seealso>
@@ -873,7 +873,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode.GetBaseURI" link="TDOMNode.BaseURI">
+      <element name="TDOMNode.GetBaseURI" link="#lazutils.laz2_dom.TDOMNode.BaseURI">
         <short>Gets the value for the BaseURI property</short>
         <descr></descr>
         <seealso></seealso>
@@ -963,7 +963,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode.GetChildNodes" link="TDOMNode.ChildNodes">
+      <element name="TDOMNode.GetChildNodes" link="#lazutils.laz2_dom.TDOMNode.ChildNodes">
         <short>Gets the value for the ChildNodes property</short>
         <descr></descr>
         <seealso></seealso>
@@ -1867,7 +1867,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode_WithChildren.GetTextContent" link="TDOMNode.TextContent">
+      <element name="TDOMNode_WithChildren.GetTextContent" link="#lazutils.laz2_dom.TDOMNode.TextContent">
         <short>Gets the value for the TextContent property</short>
         <descr></descr>
         <seealso></seealso>
@@ -1898,7 +1898,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode_WithChildren.InsertBefore" link="TDOMNode.InsertBefore">
+      <element name="TDOMNode_WithChildren.InsertBefore" link="#lazutils.laz2_dom.TDOMNode.InsertBefore">
         <short>Inserts a new child node immediately before the reference child node</short>
         <descr>
           <p>
@@ -1966,7 +1966,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode_WithChildren.ReplaceChild" link="TDOMNode.ReplaceChild">
+      <element name="TDOMNode_WithChildren.ReplaceChild" link="#lazutils.laz2_dom.TDOMNode.ReplaceChild">
         <short>Replace a DOM node with another DOM node</short>
         <descr></descr>
         <seealso></seealso>
@@ -1988,7 +1988,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode_WithChildren.DetachChild" link="TDOMNode.DetachChild">
+      <element name="TDOMNode_WithChildren.DetachChild" link="#lazutils.laz2_dom.TDOMNode.DetachChild">
         <short>Detached the specified DOM node from the sub-tree</short>
         <descr></descr>
         <seealso></seealso>
@@ -2005,7 +2005,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode_WithChildren.HasChildNodes" link="TDOMNode.HasChildNodes">
+      <element name="TDOMNode_WithChildren.HasChildNodes" link="#lazutils.laz2_dom.TDOMNode.HasChildNodes">
         <short>Indicates if the current DOM node has child nodes</short>
         <descr></descr>
         <seealso></seealso>
@@ -2017,7 +2017,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMNode_WithChildren.FindNode" link="TDOMNode.FindNode">
+      <element name="TDOMNode_WithChildren.FindNode" link="#lazutils.laz2_dom.TDOMNode.FindNode">
         <short>Finds a DOM node with the specified value in its NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2085,7 +2085,7 @@
       <element name="TDOMNodeList.FList"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNodeList.GetCount" link="TDOMNodeList.Length">
+      <element name="TDOMNodeList.GetCount" link="#lazutils.laz2_dom.TDOMNodeList.Length">
         <short>Gets the value for the Length property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2097,7 +2097,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNodeList.GetItem" link="TDOMNodeList.Item">
+      <element name="TDOMNodeList.GetItem" link="#lazutils.laz2_dom.TDOMNodeList.Item">
         <short>Gets the value for the Item property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2299,7 +2299,7 @@
       <element name="TDOMNamedNodeMap.FPosList"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNamedNodeMap.GetPosItem" link="TDOMNamedNodeMap.Item">
+      <element name="TDOMNamedNodeMap.GetPosItem" link="#lazutils.laz2_dom.TDOMNamedNodeMap.Item">
         <short>Gets the value for the Item property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2311,7 +2311,7 @@
         <short>Ordinal position for the Item</short>
       </element>
 
-      <element name="TDOMNamedNodeMap.GetSortedItem" link="TDOMNamedNodeMap.SortedItem">
+      <element name="TDOMNamedNodeMap.GetSortedItem" link="#lazutils.laz2_dom.TDOMNamedNodeMap.SortedItem">
         <short>Gets the value for the SortedItem property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2324,7 +2324,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNamedNodeMap.GetLength" link="TDOMNamedNodeMap.Length">
+      <element name="TDOMNamedNodeMap.GetLength" link="#lazutils.laz2_dom.TDOMNamedNodeMap.Length">
         <short>Gets the value for the Length property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2614,10 +2614,10 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDOMCharacterData.FNodeValue" link="TDOMCharacterData.NodeValue"/>
+      <element name="TDOMCharacterData.FNodeValue" link="#lazutils.laz2_dom.TDOMCharacterData.NodeValue"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMCharacterData.GetLength" link="TDOMNode.Length">
+      <element name="TDOMCharacterData.GetLength" link="#lazutils.laz2_dom.TDOMNode.Length">
         <short>Gets the value for the Length property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2629,7 +2629,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMCharacterData.GetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMCharacterData.GetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Gets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2641,7 +2641,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMCharacterData.SetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMCharacterData.SetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Sets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2866,7 +2866,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMDocumentFragment.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMDocumentFragment.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -2878,7 +2878,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMDocumentFragment.GetNodeName" link="TDOMNode.NodeName">
+      <element name="TDOMDocumentFragment.GetNodeName" link="#lazutils.laz2_dom.TDOMNode.NodeName">
         <short>Gets the value for the NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3940,10 +3940,10 @@
       </element>
 
       <!-- variable Visibility: protected -->
-      <element name="TDOMNode_NS.FNSI" link="TDOMNode_NS.NSI"/>
+      <element name="TDOMNode_NS.FNSI" link="#lazutils.laz2_dom.TDOMNode_NS.NSI"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode_NS.GetNodeName" link="TDOMNode.NodeName">
+      <element name="TDOMNode_NS.GetNodeName" link="#lazutils.laz2_dom.TDOMNode.NodeName">
         <short>Gets the value for the NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3955,7 +3955,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode_NS.GetLocalName" link="TDOMNode.LocalName">
+      <element name="TDOMNode_NS.GetLocalName" link="#lazutils.laz2_dom.TDOMNode.LocalName">
         <short>Gets the value for the LocalName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3967,7 +3967,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode_NS.GetNamespaceURI" link="TDOMNode.NamespaceURI">
+      <element name="TDOMNode_NS.GetNamespaceURI" link="#lazutils.laz2_dom.TDOMNode.NamespaceURI">
         <short>Gets the value for the NamespaceURI property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3979,7 +3979,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMNode_NS.GetPrefix" link="TDOMNode.Prefix">
+      <element name="TDOMNode_NS.GetPrefix" link="#lazutils.laz2_dom.TDOMNode.Prefix">
         <short>Gets the value for the Prefix property</short>
         <descr></descr>
         <seealso></seealso>
@@ -3991,7 +3991,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMNode_NS.SetPrefix" link="TDOMNode.Prefix">
+      <element name="TDOMNode_NS.SetPrefix" link="#lazutils.laz2_dom.TDOMNode.Prefix">
         <short>Sets the value for the Prefix property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4003,7 +4003,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TDOMNode_NS.SetNSI"  link="TDOMNode.NamespaceURI">
+      <element name="TDOMNode_NS.SetNSI"  link="#lazutils.laz2_dom.TDOMNode.NamespaceURI">
         <short>
           Stores the specified Namespace URI and Prefix length in the Namespace Information for the DOM Document
         </short>
@@ -4061,7 +4061,7 @@
       <element name="TDOMAttr.FDataType"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMAttr.GetNodeValue"  link="TDOMNode.NodeValue">
+      <element name="TDOMAttr.GetNodeValue"  link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Gets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4073,7 +4073,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMAttr.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMAttr.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4085,7 +4085,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMAttr.GetSpecified" link="TDOMAttr.Specified">
+      <element name="TDOMAttr.GetSpecified" link="#lazutils.laz2_dom.TDOMAttr.Specified">
         <short>Gets the value for the Specified property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4097,7 +4097,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMAttr.GetIsID" link="TDOMAttr.IsID">
+      <element name="TDOMAttr.GetIsID" link="#lazutils.laz2_dom.TDOMAttr.IsID">
         <short>Gets the value for the IsID property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4109,7 +4109,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMAttr.SetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMAttr.SetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Sets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4128,7 +4128,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMAttr.CloneNode" link="TDOMNode.CloneNode">
+      <element name="TDOMAttr.CloneNode" link="#lazutils.laz2_dom.TDOMNode.CloneNode">
         <short>Creates a copy of the DOM Attribute</short>
         <descr></descr>
         <seealso></seealso>
@@ -4215,10 +4215,10 @@
       </element>
 
       <!-- variable Visibility: protected -->
-      <element name="TDOMElement.FAttributes" link="TDOMElement.Attributes"/>
+      <element name="TDOMElement.FAttributes" link="#lazutils.laz2_dom.TDOMElement.Attributes"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMElement.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMElement.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4230,7 +4230,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMElement.GetAttributes" link="TDOMElement.Attributes">
+      <element name="TDOMElement.GetAttributes" link="#lazutils.laz2_dom.TDOMElement.Attributes">
         <short>Gets the value for the Attributes property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4292,7 +4292,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMElement.CloneNode" link="TDOMNode.CloneNode">
+      <element name="TDOMElement.CloneNode" link="#lazutils.laz2_dom.TDOMNode.CloneNode">
         <short>Creates a DOM Node that is a copy of the DOM Element</short>
         <descr></descr>
         <seealso></seealso>
@@ -4326,7 +4326,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TDOMElement.Normalize" link="TDOMNode.Normalize">
+      <element name="TDOMElement.Normalize" link="#lazutils.laz2_dom.TDOMNode.Normalize">
         <short>
           Performs normalization for Text nodes and Attributes in the DOM Element
         </short>
@@ -4342,7 +4342,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMElement.GetAttribute" link="TDOMElement.AttribStrings">
+      <element name="TDOMElement.GetAttribute" link="#lazutils.laz2_dom.TDOMElement.AttribStrings">
         <short>Gets the value for the AttribStrings property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4359,7 +4359,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TDOMElement.SetAttribute" link="TDOMElement.AttribStrings">
+      <element name="TDOMElement.SetAttribute" link="#lazutils.laz2_dom.TDOMElement.AttribStrings">
         <short>Sets the value in the AttribStrings property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4841,7 +4841,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMComment.CloneNode" link="TDOMNode.CloneNode">
+      <element name="TDOMComment.CloneNode" link="#lazutils.laz2_dom.TDOMNode.CloneNode">
         <short>Makes copy of the DOM Comment node</short>
         <descr></descr>
         <seealso></seealso>
@@ -4882,7 +4882,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMCDATASection.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMCDATASection.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4894,7 +4894,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMCDATASection.GetNodeName" link="TDOMNode.NodeName">
+      <element name="TDOMCDATASection.GetNodeName" link="#lazutils.laz2_dom.TDOMNode.NodeName">
         <short>Gets the value for the NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -4906,7 +4906,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMCDATASection.CloneNode" link="TDOMNode.CloneNode">
+      <element name="TDOMCDATASection.CloneNode" link="#lazutils.laz2_dom.TDOMNode.CloneNode">
         <short>Makes a copy of the DOM CDATA Section</short>
         <descr></descr>
         <seealso></seealso>
@@ -5277,11 +5277,11 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDOMProcessingInstruction.FTarget" link="TDOMProcessingInstruction.Target"/>
-      <element name="TDOMProcessingInstruction.FNodeValue" link="TDOMProcessingInstruction.Data"/>
+      <element name="TDOMProcessingInstruction.FTarget" link="#lazutils.laz2_dom.TDOMProcessingInstruction.Target"/>
+      <element name="TDOMProcessingInstruction.FNodeValue" link="#lazutils.laz2_dom.TDOMProcessingInstruction.Data"/>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMProcessingInstruction.GetNodeType" link="TDOMNode.NodeType">
+      <element name="TDOMProcessingInstruction.GetNodeType" link="#lazutils.laz2_dom.TDOMNode.NodeType">
         <short>Gets the value for the NodeType property</short>
         <descr></descr>
         <seealso></seealso>
@@ -5293,7 +5293,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMProcessingInstruction.GetNodeName" link="TDOMNode.NodeName">
+      <element name="TDOMProcessingInstruction.GetNodeName" link="#lazutils.laz2_dom.TDOMNode.NodeName">
         <short>Gets the value for the NodeName property</short>
         <descr></descr>
         <seealso></seealso>
@@ -5305,7 +5305,7 @@
       </element>
 
       <!-- function Visibility: protected -->
-      <element name="TDOMProcessingInstruction.GetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMProcessingInstruction.GetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Gets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -5317,7 +5317,7 @@
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TDOMProcessingInstruction.SetNodeValue" link="TDOMNode.NodeValue">
+      <element name="TDOMProcessingInstruction.SetNodeValue" link="#lazutils.laz2_dom.TDOMNode.NodeValue">
         <short>Sets the value for the NodeValue property</short>
         <descr></descr>
         <seealso></seealso>
@@ -5329,7 +5329,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TDOMProcessingInstruction.CloneNode" link="TDOMNode.CloneNode">
+      <element name="TDOMProcessingInstruction.CloneNode" link="#lazutils.laz2_dom.TDOMNode.CloneNode">
         <short>Makes a copy of the DOM Node</short>
         <descr></descr>
         <seealso></seealso>

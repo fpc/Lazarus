@@ -33,10 +33,10 @@
         <seealso>
           <link id="TFileListBox"/>
           <link id="TFileType"/>
-          <link id="#rt.sysutils.TSearchRec"/>
-          <link id="#rt.sysutils.FindFirst"/>
-          <link id="#rt.sysutils.FindNext"/>
-          <link id="#rt.sysutils.FindClose"/>
+          <link id="#rtl.sysutils.TSearchRec"/>
+          <link id="#rtl.sysutils.FindFirst"/>
+          <link id="#rtl.sysutils.FindNext"/>
+          <link id="#rtl.sysutils.FindClose"/>
         </seealso>
       </element>
       <element name="TFileAttr.ftReadOnly">
@@ -251,7 +251,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFileListBox.Items"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="#lazutils.lazfileutils.CompareFileNames"/>
         </seealso>
       </element>
@@ -270,8 +270,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFileListBox.UpdateSelectedFileName"/>
           <link id="TCustomFileListBox.FileName"/>
+          <link id="TCustomFileListBox.UpdateFileList"/>
            <link id="#LCL.Controls.TWinControl.KeyUp"/>
         </seealso>
       </element>
@@ -304,7 +304,7 @@
           <link id="TCustomFileListBox.Mask"/>
           <link id="TCustomFileListBox.Drive"/>
           <link id="TCustomFileListBox.Directory"/>
-          <link id="TCustomFileListBox.MultiSelect"/>
+          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
           <link id="TCustomFileListBox.Sorted"/>
           <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
@@ -341,7 +341,7 @@
           <link id="TCustomFileListBox.FileName"/>
           <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
-          <link id="TCustomFileListBox.MultiSelect"/>
+          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
           <link id="TCustomFileListBox.DoChangeFile"/>
           <link id="#lcl.controls.TControl.Click"/>
         </seealso>
@@ -360,7 +360,7 @@
             Values in <var>FileType</var> are used to construct the corresponding file attributes needed for use with <var>TSearchRec</var>. The <var>FindFirstUTF8</var> and <var>FindNextUTF8</var> routines from <file>LazFileUtils</file> are used to find matching file or directory names in the <var>Directory</var> for the control. Each value returned for the TSearchRec is compared to the <var>Mask</var> and <var>FileType</var> defined in the control. Acceptable values are added to the <var>Items</var> property. Please note: Directory names are surrounded by <b>square brackets</b> (<b>'[]'</b>) when added to the Items property.
           </p>
           <p>
-            The <var>UpdateSelectedFileName</var> method is called to include path information in <var>FileName</var> for the selected item in the control.
+            The private <var>UpdateSelectedFileName</var> method is called to include path information in <var>FileName</var> for the selected item in the control.
           </p>
           <p>
             UpdateFileList is called in the implementation of the <var>Create</var> and <var>Loaded</var> methods. It is also called when a new value is assigned to <var>Drive</var>, <var>Directory</var>, <var>FileType</var>, or <var>Mask</var>.
@@ -397,7 +397,7 @@
             <var>Directory</var> is a <var>String</var> property which contains the path on the local file system to the files or and/or directories displayed in the list box control. The initial value for Directory is assigned in the constructor and uses the current directory for the application.
           </p>
           <p>
-            The value in Directory is prepended to the value used in <var>Filename</var> in the <var>UpdateSelectedFileName</var> method.
+            The value in Directory is prepended to the value used in <var>Filename</var> in the private  <var>UpdateSelectedFileName</var> method.
           </p>
           <p>
             Changing the value in Directory causes the <var>UpdateFileList</var> method to be called to reload the file and or directory names stored in the <var>Items</var> property.
@@ -414,13 +414,13 @@
             <var>FileName</var> is a <var>String</var> property which contains the file name for the currently selected item in the list box control. The value in FileName is updated when an item in the control is selected, or when a new value is assigned to the <var>ItemIndex</var> property.
           </p>
           <p>
-            Assigning a new value to the property causes the <var>IndexOfFile</var> method to be called to locate the specified value in the <var>Items</var> for the control. <var>UpdateSelectedFileName</var> is called to ensure that the new file name includes the path information in <var>Directory</var>, and to signal the <var>OnChange</var> event handler (when assigned).
+            Assigning a new value to the property causes the <var>IndexOfFile</var> method to be called to locate the specified value in the <var>Items</var> for the control. The private <var>UpdateSelectedFileName</var> method is called to ensure that the new file name includes the path information in <var>Directory</var>, and to signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <seealso>
           <link id="TCustomFileListBox.Directory"/>
           <link id="TCustomFileListBox.IndexOfFile"/>
-          <link id="TCustomFileListBox.UpdateSelectedFileName"/>
+          <link id="TCustomFileListBox.UpdateFileList"/>
           <link id="TCustomFileListBox.OnChange"/>
           <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
           <link id="#lcl.stdctrls.TCustomListBox.Items"/>
@@ -467,7 +467,7 @@
         </descr>
         <seealso>
           <link id="TCustomFileListBox.UpdateFileList"/>
-          <link id="TCustomFileListBox.Items"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TCustomFilterComboBox.Mask"/>
         </seealso>
       </element>
@@ -484,7 +484,6 @@
         </descr>
         <seealso>
           <link id="TCustomFileListBox.FileName"/>
-          <link id="TCustomFileListBox.UpdateSelectedFileName"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
           <link id="TCustomFileListBox.DoChangeFile"/>
         </seealso>
@@ -720,8 +719,8 @@
         <descr>
         </descr>
         <seealso>
-          <link id="TCustomFilterComboBox.Filter"/>
-          <link id="TCustomFilterComboBox.ItemIndex"/>
+          <link id="TFilterComboBox.Filter"/>
+          <link id="TFilterComboBox.ItemIndex"/>
           <link id="TCustomFilterComboBox.Select"/>
         </seealso>
       </element>

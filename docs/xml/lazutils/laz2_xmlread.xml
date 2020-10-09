@@ -258,7 +258,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="laz2_DOM.TDOMNode"/>
+          <link id="#lazutils.laz2_DOM.TDOMNode"/>
           <link id="TXMLReaderFlag"/>
         </seealso>
       </element>
@@ -330,16 +330,16 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDOMParseOptions.FValidate" link="TDOMParseOptions.Validate"/>
-      <element name="TDOMParseOptions.FPreserveWhitespace" link="TDOMParseOptions.PreserveWhitespace"/>
-      <element name="TDOMParseOptions.FExpandEntities" link="TDOMParseOptions.ExpandEntities"/>
-      <element name="TDOMParseOptions.FIgnoreComments" link="TDOMParseOptions.IgnoreComments"/>
-      <element name="TDOMParseOptions.FCDSectionsAsText" link="TDOMParseOptions.CDSectionsAsText"/>
-      <element name="TDOMParseOptions.FResolveExternals" link="TDOMParseOptions.ResolveExternals"/>
-      <element name="TDOMParseOptions.FNamespaces" link="TDOMParseOptions.Namespaces"/>
-      <element name="TDOMParseOptions.FDisallowDoctype" link="TDOMParseOptions.DisallowDoctype"/>
-      <element name="TDOMParseOptions.FCanonical" link="TDOMParseOptions.CanonicalForm"/>
-      <element name="TDOMParseOptions.FMaxChars" link="TDOMParseOptions.MaxChars"/>
+      <element name="TDOMParseOptions.FValidate" link="#lazutils.laz2_xmlread.TDOMParseOptions.Validate"/>
+      <element name="TDOMParseOptions.FPreserveWhitespace" link="#lazutils.laz2_xmlread.TDOMParseOptions.PreserveWhitespace"/>
+      <element name="TDOMParseOptions.FExpandEntities" link="#lazutils.laz2_xmlread.TDOMParseOptions.ExpandEntities"/>
+      <element name="TDOMParseOptions.FIgnoreComments" link="#lazutils.laz2_xmlread.TDOMParseOptions.IgnoreComments"/>
+      <element name="TDOMParseOptions.FCDSectionsAsText" link="#lazutils.laz2_xmlread.TDOMParseOptions.CDSectionsAsText"/>
+      <element name="TDOMParseOptions.FResolveExternals" link="#lazutils.laz2_xmlread.TDOMParseOptions.ResolveExternals"/>
+      <element name="TDOMParseOptions.FNamespaces" link="#lazutils.laz2_xmlread.TDOMParseOptions.Namespaces"/>
+      <element name="TDOMParseOptions.FDisallowDoctype" link="#lazutils.laz2_xmlread.TDOMParseOptions.DisallowDoctype"/>
+      <element name="TDOMParseOptions.FCanonical" link="#lazutils.laz2_xmlread.TDOMParseOptions.CanonicalForm"/>
+      <element name="TDOMParseOptions.FMaxChars" link="#lazutils.laz2_xmlread.TDOMParseOptions.MaxChars"/>
 
       <!-- function Visibility: private -->
       <element name="TDOMParseOptions.GetCanonical">
@@ -488,13 +488,13 @@
         <short>Represents the input source for XML content</short>
         <descr>
           <p>
-            <var>TXMLInputSource</var> is a class used to represent an input source for XML content. TXMLInputSource is based on the DOM InputSource interface from DOM Level 3. It is not a fully compliant implementation of the interface. It does not implement separate byteStream and characterStream properties; the Stream and StringData properties are provided instead. In addition, it does not implement the Encoding property. All values in are expected  to use the UTF-8 encoding.
+            <var>TXMLInputSource</var> is a class used to represent an input source with XML content. TXMLInputSource is based on the DOM InputSource interface from DOM Level 3. It is not a fully compliant implementation of the interface. It does not implement separate byteStream and characterStream properties; the Stream and StringData properties are provided instead. In addition, it does not implement the Encoding property. All values in are expected to use the UTF-8 encoding.
           </p>
           <p>
             Use the overloaded constructors to create an input source with either a string or a stream as the storage for the XML content.
           </p>
           <p>
-            A TXMLInputSource instance is passed as an argument to the TDOMParser.Parse and TDOMParser.ParseWithContext methods. The instance is subsequently passed to the TXMLReader instance that reads XML content from the input source.
+            A TXMLInputSource instance is passed as an argument to the TDOMParser.Parse and TDOMParser.ParseWithContext methods. It is subsequently passed to the TXMLReader instance that reads XML content from the input source.
           </p>
         </descr>
         <seealso>
@@ -504,11 +504,11 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TXMLInputSource.FStream" link="TXMLInputSource.Stream"/>
-      <element name="TXMLInputSource.FStringData" link="TXMLInputSource.StringData"/>
-      <element name="TXMLInputSource.FBaseURI" link="TXMLInputSource.BaseURI"/>
-      <element name="TXMLInputSource.FSystemID" link="TXMLInputSource.SystemID"/>
-      <element name="TXMLInputSource.FPublicID" link="TXMLInputSource.PublicID"/>
+      <element name="TXMLInputSource.FStream" link="#lazutils.laz2_xmlread.TXMLInputSource.Stream"/>
+      <element name="TXMLInputSource.FStringData" link="#lazutils.laz2_xmlread.TXMLInputSource.StringData"/>
+      <element name="TXMLInputSource.FBaseURI" link="#lazutils.laz2_xmlread.TXMLInputSource.BaseURI"/>
+      <element name="TXMLInputSource.FSystemID" link="#lazutils.laz2_xmlread.TXMLInputSource.SystemID"/>
+      <element name="TXMLInputSource.FPublicID" link="#lazutils.laz2_xmlread.TXMLInputSource.PublicID"/>
 
       <!-- constructor Visibility: public -->
       <element name="TXMLInputSource.Create">
@@ -670,8 +670,8 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDOMParser.FOptions" link="TDOMParser.Options"/>
-      <element name="TDOMParser.FOnError" link="TDOMParser.OnError"/>
+      <element name="TDOMParser.FOptions" link="#lazutils.laz2_xmlread.TDOMParser.Options"/>
+      <element name="TDOMParser.FOnError" link="#lazutils.laz2_xmlread.TDOMParser.OnError"/>
 
       <!-- constructor Visibility: public -->
       <element name="TDOMParser.Create">
@@ -776,14 +776,14 @@
         </descr>
         <errors>
           <p>
-            An EDOMNotSupported is raised when Action contains xaReplaceChildren and the target node is also a DOM Document node. Replacing the DOM Document is not supported in TDOMParser.
+            An EDOMNotSupported exception is raised when Action contains xaReplaceChildren and the target node is also a DOM Document node. Replacing the DOM Document is not supported in TDOMParser.
           </p>
           <p>
             An EDOMHierarchyRequest exception is raised when the target node is not a DOM Element or Document Fragment node.
           </p>
         </errors>
         <seealso>
-          <link id="laz2_dom.TDOMNode"/>
+          <link id="#lazutils.laz2_DOM.TDOMNode"/>
           <link id="TXMLInputSource"/>
           <link id="TXMLContextAction"/>
         </seealso>

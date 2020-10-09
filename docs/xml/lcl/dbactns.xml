@@ -48,7 +48,7 @@
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDataSetAction.FDataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetAction.FDataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- procedure Visibility: private -->
       <element name="TDataSetAction.SetDataSource">
@@ -191,7 +191,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetFirst.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetFirst.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetLast">
@@ -250,7 +250,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetLast.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetLast.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetNext">
@@ -309,7 +309,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetNext.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetNext.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetPrior">
@@ -368,7 +368,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetPrior.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetPrior.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetRefresh">
@@ -426,7 +426,7 @@
         <short>DataSource object examined in the method</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDataSetRefresh.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetRefresh.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetCancel">
@@ -485,7 +485,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetCancel.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetCancel.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetDelete">
@@ -544,7 +544,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetDelete.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetDelete.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetEdit">
@@ -603,7 +603,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetEdit.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetEdit.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetInsert">
@@ -662,7 +662,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetInsert.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetInsert.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
       <!-- object Visibility: default -->
       <element name="TDataSetPost">
@@ -721,7 +721,7 @@
       </element>
 
       <!-- property Visibility: published -->
-      <element name="TDataSetPost.DataSource" link="TDataSetAction.DataSource"/>
+      <element name="TDataSetPost.DataSource" link="#lcl.dbactns.TDataSetAction.DataSource"/>
 
     </module>
     <!-- DBActns -->

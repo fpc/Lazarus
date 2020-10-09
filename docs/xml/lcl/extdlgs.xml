@@ -288,7 +288,7 @@
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.InitPreviewControl" link="TPreviewFileDialog.InitPreviewControl">
+      <element name="TOpenPictureDialog.InitPreviewControl" link="#lcl.extdlgs.TPreviewFileDialog.InitPreviewControl">
         <short>Initializes the PreviewFileControl for the dialog</short>
         <descr>
           <p>
@@ -308,11 +308,10 @@
         </short>
         <descr>
           <p>
-            <var>ClearPreview</var> is a procedure used to clear the image content and the caption displayed in the dialog. ClearPreview is called from the      <var>DoShow</var>, <var>DoClose</var>, and <var>UpdatePreview</var> methods.
+            <var>ClearPreview</var> is a procedure used to clear the image content and the caption displayed in the dialog. ClearPreview is called from the  <var>DoShow</var>, <var>DoClose</var>, and <var>UpdatePreview</var> methods.
           </p>
         </descr>
         <seealso>
-          <link id="TPreviewFileDialog.PictureGroupBox"/>
           <link id="TOpenPictureDialog.ImageCtrl"/>
           <link id="TOpenPictureDialog.DoShow"/>
           <link id="TOpenPictureDialog.DoClose"/>
@@ -500,7 +499,7 @@
         </seealso>
       </element>
 
-      <element name="TSavePictureDialog" link="TOpenPictureDialog">
+      <element name="TSavePictureDialog">
         <short>
           <var>TSavePictureDialog</var> - a dialog for saving the picture in the current buffer to a file
         </short>
@@ -517,7 +516,7 @@
 
       <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TSavePictureDialog.DefaultTitle" link="TOpenPictureDialog.DefaultTitle">
+      <element name="TSavePictureDialog.DefaultTitle">
         <short>Gets the default value for the Title property</short>
         <descr>
           <p>
@@ -527,7 +526,8 @@
         <seealso>
           <link id="#lcl.Dialogs.TCommonDialog.Create"/>
           <link id="#lcl.Dialogs.TCommonDialog.Title"/>
-          <link id="#lcl.LCLStrConsts.rsfdFileSaveAs"/>
+          <link id="#lcl.lclstrconsts.rsfdFileSaveAs"/>
+          <link id="TOpenPictureDialog.DefaultTitle"/>
         </seealso>
       </element>
       <element name="TSavePictureDialog.DefaultTitle.Result">
@@ -731,7 +731,7 @@
         </seealso>
       </element>
 
-      <element name="TCalculatorDialog" link="TExtCommonDialog">
+      <element name="TCalculatorDialog" link="#lcl.extdlgs.TExtCommonDialog">
         <short>
           Implements a pop-up calculator dialog used to perform simple calculations and return the value
         </short>
@@ -820,8 +820,8 @@
         </descr>
         <seealso>
           <link id="TCalculatorDialog.OnDialogClose"/>
-          <link id="#LCL.Forms.TForm.OnClose"/>
-          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnClose"/>
+          <link id="#lcl.dialogs.TCommonDialog.Execute"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogClose.Sender">
@@ -844,7 +844,7 @@
         <seealso>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalculatorDialog.OnDialogShow"/>
-          <link id="#LCL.Forms.TForm.OnShow"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnShow"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogShow.Sender">
@@ -864,8 +864,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
-          <link id="#LCL.Forms.TForm.OnCloseQuery"/>
+          <link id="#lcl.dialogs.TCommonDialog.Execute"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnCanClose"/>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
@@ -1240,7 +1240,7 @@
         <seealso/>
       </element>
 
-      <element name="TCalendarDialog" link="TExtCommonDialog">
+      <element name="TCalendarDialog" link="#lcl.extdlgs.TExtCommonDialog">
         <short>
           <var>TCalendarDialog</var> - a popup calendar dialog that allows a date to be selected and returned to the main program
         </short>

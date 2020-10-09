@@ -90,7 +90,7 @@
         <short>True when the property value is stored</short>
       </element>
 
-      <element name="THTMLHelpDatabase.SetBaseURL" link="THTMLHelpDatabase.BaseURL">
+      <element name="THTMLHelpDatabase.SetBaseURL" link="#lcl.lazhelphtml.THTMLHelpDatabase.BaseURL">
         <short>Sets the value in the BaseURL property</short>
         <seealso>
           <link id="THTMLHelpDatabase.BaseURL"/>
@@ -100,7 +100,7 @@
         <short>New value for the BaseURL property</short>
       </element>
 
-      <element name="THTMLHelpDatabase.SetDefaultBaseURL" link="THTMLHelpDatabase.DefaultBaseURL">
+      <element name="THTMLHelpDatabase.SetDefaultBaseURL" link="#lcl.lazhelphtml.THTMLHelpDatabase.DefaultBaseURL">
         <short>Sets the value for the DefaultBaseURL property</short>
         <seealso>
           <link id="THTMLHelpDatabase.DefaultBaseURL"/>
@@ -464,17 +464,17 @@
         </seealso>
       </element>
 
-      <element name="THTMLBrowserHelpViewer.FBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams"/>
+      <element name="THTMLBrowserHelpViewer.FBrowserParams" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.BrowserParams"/>
 
-      <element name="THTMLBrowserHelpViewer.FBrowserPath" link="THTMLBrowserHelpViewer.BrowserPath"/>
+      <element name="THTMLBrowserHelpViewer.FBrowserPath" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.BrowserPath"/>
 
-      <element name="THTMLBrowserHelpViewer.FDefaultBrowser" link="THTMLBrowserHelpViewer.FindDefaultBrowser"/>
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowser" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.FindDefaultBrowser"/>
 
-      <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams"/>
+      <element name="THTMLBrowserHelpViewer.FDefaultBrowserParams" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.BrowserParams"/>
 
-      <element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser" link="THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
+      <element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.OnFindDefaultBrowser"/>
 
-      <element name="THTMLBrowserHelpViewer.SetBrowserParams" link="THTMLBrowserHelpViewer.BrowserParams">
+      <element name="THTMLBrowserHelpViewer.SetBrowserParams" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.BrowserParams">
         <short>
           Sets the value in the BrowserParams property
         </short>
@@ -483,7 +483,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="THTMLBrowserHelpViewer.SetBrowserPath" link="THTMLBrowserHelpViewer.BrowserPath">
+      <element name="THTMLBrowserHelpViewer.SetBrowserPath" link="#lcl.lazhelphtml.THTMLBrowserHelpViewer.BrowserPath">
         <short>
           Sets the value in the BrowserPath property
         </short>

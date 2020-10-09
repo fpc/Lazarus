@@ -221,7 +221,7 @@
         <seealso>
           <link id="TScrollBar"/>
           <link id="#lcl.controls.TWinControl"/>
-          <link id="#lcl.controls.TScrollingWinControl"/>
+          <link id="#lcl.forms.TScrollingWinControl"/>
           <link id="#lcl.forms.TControlScrollBar"/>
         </seealso>
       </element>
@@ -285,12 +285,12 @@
       </element>
 
 
-      <element name="TCustomScrollBar.SetPosition" link="TCustomScrollBar.Position"/>
+      <element name="TCustomScrollBar.SetPosition" link="#lcl.stdctrls.TCustomScrollBar.Position"/>
       <element name="TCustomScrollBar.SetPosition.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomScrollBar.SetPageSize" link="TCustomScrollBar.PageSize"/>
+      <element name="TCustomScrollBar.SetPageSize" link="#lcl.stdctrls.TCustomScrollBar.PageSize"/>
       <element name="TCustomScrollBar.SetPageSize.Value">
         <short>New value for the property</short>
       </element>
@@ -744,8 +744,8 @@
         </descr>
         <seealso>
           <link id="TGroupBox"/>
-          <link id="TRadioGroup"/>
-          <link id="TCheckGroup"/>
+          <link id="#lcl.extctrls.TRadioGroup"/>
+          <link id="#lcl.extctrls.TCheckGroup"/>
         </seealso>
       </element>
 
@@ -929,7 +929,7 @@
         </short>
       </element>
 
-      <element name="TComboBoxAutoCompleteText" link="TComboBoxAutoCompleteTextOption">
+      <element name="TComboBoxAutoCompleteText" link="#lcl.stdctrls.TComboBoxAutoCompleteTextOption">
         <short>Set of <var>TComboBoxAutoCompleteTextOption</var> values</short>
         <descr>
           <p>
@@ -1685,7 +1685,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomComboBox.GetItems" link="TCustomComboBox.OnGetItems">
+      <element name="TCustomComboBox.GetItems">
         <short>Signals the <var>OnGetItems</var> event handler</short>
         <descr>
           <p>
@@ -1727,7 +1727,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomComboBox.OnEditingDone"/>
+          <link id="TComboBox.OnEditingDone"/>
           <link id="TCustomComboBox.OnCloseUp"/>
           <link id="TCustomComboBox.DroppedDown"/>
           <link id="TCustomComboBox.DropDown"/>
@@ -1748,13 +1748,13 @@
             AdjustDropDown does not perform any actions in the method if a handle has not been assigned for the control.
           </p>
           <p>
-            AdjustDropDown ensures that the value in <var>DropDownCount</var> is applied (when needed) to the drop-down list for the control. The minimum height and width for the list is calculated using the ItemWidth and <var>ItemHeight</var> properties. The dimensions are passed to the widgetset class using the SetComboMinDropDownSize routine in the LCL interface.
+            AdjustDropDown ensures that the value in <var>DropDownCount</var> is applied (when needed) to the drop-down list for the control. The minimum height and width for the list is calculated using the <var>ItemWidth</var> and <var>ItemHeight</var> properties. The dimensions are passed to the widgetset class using the SetComboMinDropDownSize routine in the LCL interface.
           </p>
         </descr>
         <seealso>
           <link id="TCustomComboBox.ItemWidth"/>
           <link id="TCustomComboBox.ItemHeight"/>
-          <link id="TCustomComboBox.Count"/>
+          <link id="TCustomComboBox.Items"/>
           <link id="TCustomComboBox.DropDownCount"/>
           <link id="TCustomComboBox.DropDown"/>
         </seealso>
@@ -1878,7 +1878,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetItemHeight" link="TCustomComboBox.ItemHeight">
+      <element name="TCustomComboBox.SetItemHeight" link="#lcl.stdctrls.TCustomComboBox.ItemHeight">
         <short>Sets the value for the ItemHeight property</short>
         <descr/>
         <seealso/>
@@ -1887,7 +1887,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetItemIndex" link="TCustomComboBox.ItemIndex">
+      <element name="TCustomComboBox.SetItemIndex" link="#lcl.stdctrls.TCustomComboBox.ItemIndex">
         <short>Sets the value for the ItemIndex property</short>
         <descr/>
         <seealso/>
@@ -1896,7 +1896,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetMaxLength" link="TCustomComboBox.MaxLength">
+      <element name="TCustomComboBox.SetMaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength">
         <short>Sets the value for the MaxLength property</short>
         <descr/>
         <seealso/>
@@ -1905,7 +1905,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetSelLength" link="TCustomComboBox.SelLength">
+      <element name="TCustomComboBox.SetSelLength" link="#lcl.stdctrls.TCustomComboBox.SelLength">
         <short>Sets the value for the SelLength property</short>
         <descr/>
         <seealso/>
@@ -1914,7 +1914,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetSelStart" link="TCustomComboBox.SelStart">
+      <element name="TCustomComboBox.SetSelStart" link="#lcl.stdctrls.TCustomComboBox.SelStart">
         <short>Sets the value for the SelStart property</short>
         <descr/>
         <seealso/>
@@ -1923,7 +1923,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetSelText" link="TCustomComboBox.SelText">
+      <element name="TCustomComboBox.SetSelText" link="#lcl.stdctrls.TCustomComboBox.SelText">
         <short>Sets the value for the SelText property</short>
         <descr/>
         <seealso/>
@@ -1932,7 +1932,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetSorted" link="TCustomComboBox.Sorted">
+      <element name="TCustomComboBox.SetSorted" link="#lcl.stdctrls.TCustomComboBox.Sorted">
         <short>Sets the value for the Sorted property</short>
         <descr/>
         <seealso/>
@@ -1941,7 +1941,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomComboBox.SetStyle" link="TCustomComboBox.Style">
+      <element name="TCustomComboBox.SetStyle" link="#lcl.stdctrls.TCustomComboBox.Style">
         <short>Sets the value for the Style property</short>
         <descr/>
         <seealso/>
@@ -2039,7 +2039,7 @@
         <short>Shift, Alt, or Ctrl modifier for the key code</short>
       </element>
 
-      <element name="TCustomComboBox.UTF8KeyPress" link="TCustomComboBox.KeyPress">
+      <element name="TCustomComboBox.UTF8KeyPress" link="#lcl.stdctrls.TCustomComboBox.KeyPress">
         <short>
           <var>UTF8KeyPress</var> converts character case if required then calls the inherited method
         </short>
@@ -2165,14 +2165,13 @@
             The property value is updated when the <var>LM_MeasureItem</var> message is handled for the control. When variable height items are enabled in Style, the <var>OnMeasureItem</var> event handler must be implemented to calculate the height for individual value in <var>Items</var>.
           </p>
           <p>
-            <var>ItemHeight</var>, <var>ItemWidth</var>, <var>ItemCount</var>, and <var>DropDownCount</var> are used in the <var>AdjustDropDown</var> method to determine the dimensions for the drop-down list in the control.
+            <var>ItemHeight</var>, <var>ItemWidth</var>, <var>Items</var>, and <var>DropDownCount</var> are used in the <var>AdjustDropDown</var> method to determine the dimensions for the drop-down list in the control.
           </p>
         </descr>
         <seealso>
           <link id="TCustomComboBox.OnMeasureItem"/>
           <link id="TCustomComboBox.Style"/>
           <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.ItemCount"/>
           <link id="TCustomComboBox.ItemWidth"/>
           <link id="TCustomComboBox.DropDownCount"/>
           <link id="TCustomComboBox.AdjustDropDown"/>
@@ -2224,15 +2223,14 @@
             The event applies to interactive changes to <var>Text</var> made by the user, not those made programmatically. Note that this differs from how other OnChange events work. For example:  TEdit.OnChange is triggered by text changes that occur in code. This event is also triggered when the item selection is changed using the drop-down list in the combo-box.
           </p>
           <p>
-            OnChange is signalled (when assigned) in the <var>Change</var> method called when the <b>LM_CHANGED</b> control message is handled. An application must implement and assign an object procedure using the signature in TNotifyEvent to respond to the event notification.
+            OnChange is signalled (when assigned) in the <var>Change</var> method called when the control messages are handled in the winow procedure. An application must implement and assign an object procedure using the signature in TNotifyEvent to respond to the event notification.
           </p>
         </descr>
         <seealso>
           <link id="TCustomEdit.OnChange"/>
           <link id="TCustomEdit.Change"/>
-          <link id="TCustomEdit.LMChanged"/>
           <link id="TCustomEdit.Text"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent"/>
         </seealso>
       </element>
 
@@ -2451,7 +2449,7 @@
         </descr>
         <seealso>
           <link id="TCustomComboBox.Items"/>
-          <link id="#RTL.Classes.TStrings.AddObject"/>
+          <link id="#rtl.classes.TStrings.AddObject"/>
         </seealso>
       </element>
       <element name="TCustomComboBox.AddItem.Item">
@@ -2473,7 +2471,7 @@
             AddHistoryItem calls the <var>InsertObject</var> method in Items to store the values at the initial position in the Items list (ordinal position 0). When Item exists at another position in Items, it is removed.
           </p>
           <p>
-            <var>MaxHistoryCount</var> contains the maximum number of entries allowed in the Items property. When <var>ItemCount</var> exceeds the value in MaxHistoryCount, the excess is removed from the end of Items.
+            <var>MaxHistoryCount</var> contains the maximum number of entries allowed in the Items property. When the number of entries in Items exceeds the value in MaxHistoryCount, the excess is removed from the end of the Items property.
           </p>
           <p>
             When <var>SetText</var> is <b>True</b>, the value in Item is stored to the <var>Text</var> property.
@@ -2481,7 +2479,6 @@
         </descr>
         <seealso>
           <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.ItemCount"/>
           <link id="TCustomComboBox.Text"/>
           <link id="#RTL.Classes.TStrings.InsertObject"/>
           <link id="#RTL.Classes.TStrings.Delete"/>
@@ -2776,7 +2773,7 @@
             <var>DropDownCount</var> is an <var>Integer</var> property which specifies the maximum number of values from <var>Items</var> that can be displayed in the drop-down list for the control. Setting a new value for the property causes the widgetset class to be notified using its <var>SetDropDownCount</var> method when a handle has been allocated for the control.
           </p>
           <p>
-            DropDownCount is used (along with <var>ItemCount</var> and <var>ItemHeight</var>) in the <var>AdjustDropDown</var> method to set the minimum dimensions for the drop-down list.
+            DropDownCount is used (along with the item count and <var>ItemHeight</var>) in the <var>AdjustDropDown</var> method to set the minimum dimensions for the drop-down list.
           </p>
           <p>
             The default value for the property is <b>8</b>.
@@ -2785,7 +2782,7 @@
         <seealso>
           <link id="TCustomComboBox.Items"/>
           <link id="TCustomComboBox.ItemHeight"/>
-          <link id="TCustomComboBox.ItemCount"/>
+          <link id="TCustomComboBox.GetItemCount"/>
           <link id="TCustomComboBox.AdjustDropDown"/>
         </seealso>
       </element>
@@ -2797,15 +2794,13 @@
             <var>EmulatedTextHintStatus</var> is a read-only <var>TEmulatedTextHintStatus</var> property which contains the status value for an emulated TextHint display in the control. EmulatedTextHintStatus is used when a value has been assigned to the <var>TextHint</var> property and the widgetset does not natively implement the capability. The LCL emulates the TextHint display by assigning the value in TextHint to the <var>Text</var> for the control.
           </p>
           <p>
-            EmulatedTextHintStatus is updated in the <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
+            EmulatedTextHintStatus is updated in the private <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
           </p>
         </descr>
         <seealso>
           <link id="TEmulatedTextHintStatus"/>
           <link id="TCustomComboBox.TextHint"/>
           <link id="TCustomComboBox.Text"/>
-          <link id="TCustomComboBox.ShowEmulatedTextHint"/>
-          <link id="TCustomComboBox.HideEmulatedTextHint"/>
         </seealso>
       </element>
 
@@ -2838,19 +2833,19 @@
         <short>The index of the currently selected item, or -1 if none is selected</short>
         <descr>
           <p>
-            <var>ItemIndex</var> is an <var>Integer</var> property which contains the ordinal position in <var>Items</var> for the current list box selection in the control. The first value in Items is at index position 0 (zero). The final value in Items is at the index position ItemCount-1. When no value is selected in the list box, ItemIndex is set to -1. The default value for the property is -1.
+            <var>ItemIndex</var> is an <var>Integer</var> property which contains the ordinal position in <var>Items</var> for the current list box selection in the control. The first value in Items is at index position <b>0</b> (<b>zero</b>). The final value in Items is at the index position <var>ItemCount</var><b>-1</b>. When no value is selected in the list box, ItemIndex is set to <b>-1</b>. The default value for the property is <b>-1</b>.
           </p>
           <p>
             When the value for the property is read, the widgetset class is queried when a handle has been assigned for the control.
           </p>
           <p>
-            Assigning a new value to the property causes the value in Text to be updated to reflect the new selection in the control. When ItemIndex is -1, Text is set to an empty string ('').
+            Assigning a new value to the property causes the value in <var>Text</var> to be updated to reflect the new selection in the control. When ItemIndex is <b>-1</b>, Text is set to an empty string ('').
           </p>
         </descr>
         <seealso>
           <link id="TCustomComboBox.Items"/>
-          <link id="TCustomComboBox.ItemCount"/>
           <link id="TCustomComboBox.AddItem"/>
+          <link id="TCustomComboBox.Text"/>
           <link id="TCustomComboBox.AddHistoryItem"/>
         </seealso>
       </element>
@@ -3019,48 +3014,48 @@
 
       <element name="TComboBox.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TComboBox.ArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
-      <element name="TComboBox.AutoComplete" link="TCustomComboBox.AutoComplete"/>
-      <element name="TComboBox.AutoCompleteText" link="TCustomComboBox.AutoCompleteText"/>
-      <element name="TComboBox.AutoDropDown" link="TCustomComboBox.AutoDropDown"/>
-      <element name="TComboBox.AutoSelect" link="TCustomComboBox.AutoSelect"/>
+      <element name="TComboBox.ArrowKeysTraverseList" link="#lcl.stdctrls.TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TComboBox.AutoComplete" link="#lcl.stdctrls.TCustomComboBox.AutoComplete"/>
+      <element name="TComboBox.AutoCompleteText" link="#lcl.stdctrls.TCustomComboBox.AutoCompleteText"/>
+      <element name="TComboBox.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TComboBox.AutoSelect" link="#lcl.stdctrls.TCustomComboBox.AutoSelect"/>
       <element name="TComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TComboBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TComboBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TComboBox.CharCase" link="TCustomComboBox.CharCase"/>
+      <element name="TComboBox.CharCase" link="#lcl.stdctrls.TCustomComboBox.CharCase"/>
       <element name="TComboBox.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TComboBox.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TComboBox.DropDownCount" link="TCustomComboBox.DropDownCount"/>
+      <element name="TComboBox.DropDownCount" link="#lcl.stdctrls.TCustomComboBox.DropDownCount"/>
       <element name="TComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TComboBox.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TComboBox.ItemHeight" link="TCustomComboBox.ItemHeight"/>
-      <element name="TComboBox.ItemIndex" link="TCustomComboBox.ItemIndex"/>
-      <element name="TComboBox.Items" link="TCustomComboBox.Items"/>
-      <element name="TComboBox.ItemWidth" link="TCustomComboBox.ItemWidth"/>
-      <element name="TComboBox.MaxLength" link="TCustomComboBox.MaxLength"/>
-      <element name="TComboBox.OnChange" link="TCustomComboBox.OnChange"/>
+      <element name="TComboBox.ItemHeight" link="#lcl.stdctrls.TCustomComboBox.ItemHeight"/>
+      <element name="TComboBox.ItemIndex" link="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
+      <element name="TComboBox.Items" link="#lcl.stdctrls.TCustomComboBox.Items"/>
+      <element name="TComboBox.ItemWidth" link="#lcl.stdctrls.TCustomComboBox.ItemWidth"/>
+      <element name="TComboBox.MaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength"/>
+      <element name="TComboBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
       <element name="TComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TComboBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TComboBox.OnCloseUp" link="TCustomComboBox.OnCloseUp"/>
+      <element name="TComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
       <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TComboBox.OnDrawItem" link="TCustomComboBox.OnDrawItem"/>
-      <element name="TComboBox.OnDropDown" link="TCustomComboBox.OnDropDown"/>
+      <element name="TComboBox.OnDrawItem" link="#lcl.stdctrls.TCustomComboBox.OnDrawItem"/>
+      <element name="TComboBox.OnDropDown" link="#lcl.stdctrls.TCustomComboBox.OnDropDown"/>
       <element name="TComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TComboBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
       <element name="TComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TComboBox.OnGetItems" link="TCustomComboBox.OnGetItems"/>
+      <element name="TComboBox.OnGetItems" link="#lcl.stdctrls.TCustomComboBox.OnGetItems"/>
       <element name="TComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TComboBox.OnMeasureItem" link="TCustomComboBox.OnMeasureItem"/>
+      <element name="TComboBox.OnMeasureItem" link="#lcl.stdctrls.TCustomComboBox.OnMeasureItem"/>
       <element name="TComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <element name="TComboBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
       <element name="TComboBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
@@ -3069,7 +3064,7 @@
       <element name="TComboBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
       <element name="TComboBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
       <element name="TComboBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TComboBox.OnSelect" link="TCustomComboBox.OnSelect"/>
+      <element name="TComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
       <element name="TComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
@@ -3078,14 +3073,14 @@
       <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TComboBox.ReadOnly" link="TCustomComboBox.ReadOnly"/>
+      <element name="TComboBox.ReadOnly" link="#lcl.stdctrls.TCustomComboBox.ReadOnly"/>
       <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TComboBox.Sorted" link="TCustomComboBox.Sorted"/>
-      <element name="TComboBox.Style" link="TCustomComboBox.Style"/>
+      <element name="TComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
+      <element name="TComboBox.Style" link="#lcl.stdctrls.TCustomComboBox.Style"/>
       <element name="TComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TComboBox.Text" link="TCustomComboBox.Text"/>
-      <element name="TComboBox.TextHint" link="TCustomComboBox.TextHint"/>
+      <element name="TComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
+      <element name="TComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
       <element name="TComboBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="TListBoxStyle">
@@ -3155,35 +3150,35 @@
       <element name="TCustomListBox.FCacheValid"/>
       <element name="TCustomListBox.FCanvas"/>
 
-      <element name="TCustomListBox.FClickOnSelChange" link="TCustomListBox.ClickOnSelChange"/>
+      <element name="TCustomListBox.FClickOnSelChange" link="#lcl.stdctrls.TCustomListBox.ClickOnSelChange"/>
       <element name="TCustomListBox.FClickTriggeredBySelectionChange"/>
-      <element name="TCustomListBox.FColumns" link="TCustomListBox.Columns"/>
-      <element name="TCustomListBox.FExtendedSelect" link="TCustomListBox.ExtendedSelect"/>
-      <element name="TCustomListBox.FIntegralHeight" link="TCustomListBox.IntegralHeight"/>
-      <element name="TCustomListBox.FItemHeight" link="TCustomListBox.ItemHeight"/>
-      <element name="TCustomListBox.FItemIndex" link="TCustomListBox.ItemIndex"/>
-      <element name="TCustomListBox.FItems" link="TCustomListBox.Items"/>
+      <element name="TCustomListBox.FColumns" link="#lcl.stdctrls.TCustomListBox.Columns"/>
+      <element name="TCustomListBox.FExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
+      <element name="TCustomListBox.FIntegralHeight" link="#lcl.stdctrls.TCustomListBox.IntegralHeight"/>
+      <element name="TCustomListBox.FItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
+      <element name="TCustomListBox.FItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
+      <element name="TCustomListBox.FItems" link="#lcl.stdctrls.TCustomListBox.Items"/>
       <element name="TCustomListBox.FLockSelectionChange"/>
-      <element name="TCustomListBox.FMultiSelect" link="TCustomListBox.MultiSelect"/>
-      <element name="TCustomListBox.FOnDrawItem" link="TCustomListBox.OnDrawItem"/>
-      <element name="TCustomListBox.FOnMeasureItem" link="TCustomListBox.OnMeasureItem"/>
-      <element name="TCustomListBox.FOnSelectionChange" link="TCustomListBox.OnSelectionChange"/>
-      <element name="TCustomListBox.FScrollWidth" link="TCustomListBox.ScrollWidth"/>
-      <element name="TCustomListBox.FSorted" link="TCustomListBox.Sorted"/>
-      <element name="TCustomListBox.FStyle" link="TCustomListBox.Style"/>
-      <element name="TCustomListBox.FTopIndex" link="TCustomListBox.TopIndex"/>
+      <element name="TCustomListBox.FMultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+      <element name="TCustomListBox.FOnDrawItem" link="#lcl.stdctrls.TCustomListBox.OnDrawItem"/>
+      <element name="TCustomListBox.FOnMeasureItem" link="#lcl.stdctrls.TCustomListBox.OnMeasureItem"/>
+      <element name="TCustomListBox.FOnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
+      <element name="TCustomListBox.FScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
+      <element name="TCustomListBox.FSorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+      <element name="TCustomListBox.FStyle" link="#lcl.stdctrls.TCustomListBox.Style"/>
+      <element name="TCustomListBox.FTopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
 
-      <element name="TCustomListBox.GetCount" link="TCustomListBox.Count"/>
+      <element name="TCustomListBox.GetCount" link="#lcl.stdctrls.TCustomListBox.Count"/>
       <element name="TCustomListBox.GetCount.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomListBox.GetScrollWidth" link="TCustomListBox.ScrollWidth"/>
+      <element name="TCustomListBox.GetScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
       <element name="TCustomListBox.GetScrollWidth.Result">
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomListBox.GetTopIndex" link="TCustomListBox.TopIndex"/>
+      <element name="TCustomListBox.GetTopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
       <element name="TCustomListBox.GetTopIndex.Result">
         <short>Value for the property</short>
       </element>
@@ -3199,17 +3194,17 @@
         <short>Index value generating the exception</short>
       </element>
 
-      <element name="TCustomListBox.SetColumns" link="TCustomListBox.Columns"/>
+      <element name="TCustomListBox.SetColumns" link="#lcl.stdctrls.TCustomListBox.Columns"/>
       <element name="TCustomListBox.SetColumns.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetScrollWidth" link="TCustomListBox.ScrollWidth"/>
+      <element name="TCustomListBox.SetScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
       <element name="TCustomListBox.SetScrollWidth.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetTopIndex" link="TCustomListBox.TopIndex"/>
+      <element name="TCustomListBox.SetTopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
       <element name="TCustomListBox.SetTopIndex.AValue">
         <short>New value for the property</short>
       </element>
@@ -3446,7 +3441,7 @@
         <short>Index position examined in the method</short>
       </element>
 
-      <element name="TCustomListBox.GetItemHeight" link="TCustomListBox.ItemHeight">
+      <element name="TCustomListBox.GetItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight">
         <short>Gets the value for the ItemHeight property</short>
         <descr/>
         <seealso/>
@@ -3455,7 +3450,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomListBox.GetItemIndex" link="TCustomListBox.ItemIndex">
+      <element name="TCustomListBox.GetItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex">
         <short>Gets the value for the ItemIndex property</short>
         <descr/>
         <seealso/>
@@ -3464,7 +3459,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomListBox.GetSelCount" link="TCustomListBox.SelCount">
+      <element name="TCustomListBox.GetSelCount" link="#lcl.stdctrls.TCustomListBox.SelCount">
         <short>Gets the value for the SelCount property</short>
         <descr/>
         <seealso/>
@@ -3473,10 +3468,12 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomListBox.GetSelected" link="TCustomListBox.Selected">
+      <element name="TCustomListBox.GetSelected">
         <short>Gets the value for the Selected property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListBox.Selected"/>
+        </seealso>
       </element>
       <element name="TCustomListBox.GetSelected.Result">
         <short>The selection state of the item</short>
@@ -3522,7 +3519,7 @@
         <short>Ordinal position in Items for the values retrieved in the method</short>
       </element>
 
-      <element name="TCustomListBox.SetExtendedSelect" link="TCustomListBox.ExtendedSelect">
+      <element name="TCustomListBox.SetExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect">
         <short>Sets the value for the ExtendedSelect property</short>
         <descr/>
         <seealso/>
@@ -3531,7 +3528,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetItemIndex" link="TCustomListBox.ItemIndex">
+      <element name="TCustomListBox.SetItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex">
         <short>Sets the value for the ItemIndex property</short>
         <descr/>
         <seealso/>
@@ -3540,7 +3537,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetItems" link="TCustomListBox.Items">
+      <element name="TCustomListBox.SetItems" link="#lcl.stdctrls.TCustomListBox.Items">
         <short>Sets the value for the Items property</short>
         <descr/>
         <seealso/>
@@ -3549,7 +3546,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetItemHeight" link="TCustomListBox.ItemHeight">
+      <element name="TCustomListBox.SetItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight">
         <short>Sets the value for the ItemHeight property</short>
         <descr/>
         <seealso/>
@@ -3558,7 +3555,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetMultiSelect" link="TCustomListBox.MultiSelect">
+      <element name="TCustomListBox.SetMultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect">
         <short>Sets the value for the MultiSelect property</short>
         <descr/>
         <seealso/>
@@ -3567,7 +3564,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetSelected" link="TCustomListBox.Selected">
+      <element name="TCustomListBox.SetSelected" link="#lcl.stdctrls.TCustomListBox.Selected">
         <short>Sets the value for the Selected property</short>
         <descr/>
         <seealso/>
@@ -3579,7 +3576,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetSorted" link="TCustomListBox.Sorted">
+      <element name="TCustomListBox.SetSorted" link="#lcl.stdctrls.TCustomListBox.Sorted">
         <short>Sets the value for the Sorted property</short>
         <descr/>
         <seealso/>
@@ -3588,7 +3585,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomListBox.SetStyle" link="TCustomListBox.Style">
+      <element name="TCustomListBox.SetStyle" link="#lcl.stdctrls.TCustomListBox.Style">
         <short>Sets the value for the Style property</short>
         <descr/>
         <seealso/>
@@ -3803,7 +3800,7 @@
         <short>The Y client coordinate</short>
       </element>
 
-      <element name="TCustomListBox.GetIndexAtY" link="TCustomListBox.GetIndexAtXY">
+      <element name="TCustomListBox.GetIndexAtY" link="#lcl.stdctrls.TCustomListBox.GetIndexAtXY">
         <short/>
         <descr/>
         <seealso/>
@@ -4203,14 +4200,14 @@
             <var>Items</var> is a <var>TStrings</var> property which contains the string values (and associated objects) displayed in the list box control. Reading allows access to the contents of the list (TStrings compatible). Assign another string list to the property to replace the Items in the control. Internally, Items is often cast to a <var>TExtendedStringList</var> to access the item attribute data for the entry.
           </p>
           <p>
-            Use <var>ItemIndex</var> to access the selected item in the list box control. Use the <var>Selected</var> property to select or de-select values in Items when <var>MultiSelect</var> is enabled. Use <var>SelRange</var> to select a range of Items in the control.
+            Use <var>ItemIndex</var> to access the selected item in the list box control. Use the <var>Selected</var> property to select or de-select values in Items when <var>MultiSelect</var> is enabled. Use <var>SelectRange</var> to select a range of Items in the control.
           </p>
         </descr>
         <seealso>
           <link id="TCustomListBox.ItemIndex"/>
           <link id="TCustomListBox.Selected"/>
-          <link id="TCustomListBox.SelRange"/>
           <link id="TCustomListBox.MultiSelect"/>
+          <link id="TCustomListBox.SelectRange"/>
           <link id="#rtl.Classes.TStrings"/>
         </seealso>
       </element>
@@ -4255,9 +4252,9 @@
           <link id="TCustomListBox.Style"/>
           <link id="TCustomListBox.Canvas"/>
           <link id="TCustomListBox.Font"/>
-          <link id="TCustomListBox.Color"/>
-          <link id="TCustomListBox.Layout"/>
-          <link id="TCustomListBox.Alignment"/>
+          <link id="#lcl.controls.TWinControl.Color"/>
+          <link id="#lcl.controls.TWinControl.Layout"/>
+          <link id="#lcl.controls.TWinControl.Alignment"/>
           <link id="TListBoxStyle"/>
           <link id="TDrawItemEvent"/>
         </seealso>
@@ -4411,13 +4408,12 @@
             Setting this property to <b>True</b> enables use of ascending alphanumeric case-insensitive sorting of items in the list. When <b>True</b>, new entries are added in sort order, and are not necessarily stored at the end of the list.
           </p>
           <p>
-            Setting a new value for the property causes <var>UpdateSorted</var> to be called to notify the widgetset class of the change in order, or to update the <var>Sorted</var> property in <var>Items</var> when needed.
+            Setting a new value for the property causes the private <var>UpdateSorted</var> method to be called to notify the widgetset class of the change in order, or to update the <var>Sorted</var> property in <var>Items</var> when needed.
           </p>
         </descr>
         <seealso>
           <link id="TCustomListBox.Items"/>
           <link id="TCustomListBox.AddItem"/>
-          <link id="TCustomListBox.UpdateSorted"/>
         </seealso>
       </element>
 
@@ -4542,7 +4538,7 @@
       <element name="TListBox.ParentShowHint"/>
       <element name="TListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TListBox.ScrollWidth" link="TCustomListBox.ScrollWidth"/>
+      <element name="TListBox.ScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
       <element name="TListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
       <element name="TListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
@@ -4594,12 +4590,12 @@
         </seealso>
       </element>
 
-      <element name="TCustomEdit.FAlignment" link="TCustomEdit.Alignment"/>
-      <element name="TCustomEdit.FAutoSelect" link="TCustomEdit.AutoSelect"/>
-      <element name="TCustomEdit.FAutoSelected" link="TCustomEdit.AutoSelected"/>
-      <element name="TCustomEdit.FCharCase" link="TCustomEdit.CharCase"/>
-      <element name="TCustomEdit.fCaretPos" link="TCustomEdit.CaretPos"/>
-      <element name="TCustomEdit.FEchoMode" link="TCustomEdit.EchoMode"/>
+      <element name="TCustomEdit.FAlignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
+      <element name="TCustomEdit.FAutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
+      <element name="TCustomEdit.FAutoSelected" link="#lcl.stdctrls.TCustomEdit.AutoSelected"/>
+      <element name="TCustomEdit.FCharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
+      <element name="TCustomEdit.fCaretPos" link="#lcl.stdctrls.TCustomEdit.CaretPos"/>
+      <element name="TCustomEdit.FEchoMode" link="#lcl.stdctrls.TCustomEdit.EchoMode"/>
 
       <element name="TCustomEdit.FEmulatedTextHintStatus">
         <short>Status for  the emulated TextHint for the control</short>
@@ -4607,19 +4603,19 @@
         <seealso/>
       </element>
 
-      <element name="TCustomEdit.FHideSelection" link="TCustomEdit.HideSelection"/>
-      <element name="TCustomEdit.FMaxLength" link="TCustomEdit.MaxLength"/>
-      <element name="TCustomEdit.FModified" link="TCustomEdit.Modified"/>
-      <element name="TCustomEdit.FOnChangeHandler" link="TCustomEdit.AddHandlerOnChange"/>
-      <element name="TCustomEdit.FPasswordChar" link="TCustomEdit.PasswordChar"/>
-      <element name="TCustomEdit.FReadOnly" link="TCustomEdit.ReadOnly"/>
-      <element name="TCustomEdit.FNumbersOnly" link="TCustomEdit.NumbersOnly"/>
-      <element name="TCustomEdit.FOnChange" link="TCustomEdit.OnChange"/>
-      <element name="TCustomEdit.FSelLength" link="TCustomEdit.SelLength"/>
-      <element name="TCustomEdit.FSelStart" link="TCustomEdit.SelStart"/>
-      <element name="TCustomEdit.FTextChangedByRealSetText" link="TCustomEdit.RealSetText"/>
-      <element name="TCustomEdit.FTextChangedLock" link="TCustomEdit.TextChanged"/>
-      <element name="TCustomEdit.FTextHint" link="TCustomEdit.TextHint"/>
+      <element name="TCustomEdit.FHideSelection" link="#lcl.stdctrls.TCustomEdit.HideSelection"/>
+      <element name="TCustomEdit.FMaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+      <element name="TCustomEdit.FModified" link="#lcl.stdctrls.TCustomEdit.Modified"/>
+      <element name="TCustomEdit.FOnChangeHandler" link="#lcl.stdctrls.TCustomEdit.AddHandlerOnChange"/>
+      <element name="TCustomEdit.FPasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+      <element name="TCustomEdit.FReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+      <element name="TCustomEdit.FNumbersOnly" link="#lcl.stdctrls.TCustomEdit.NumbersOnly"/>
+      <element name="TCustomEdit.FOnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
+      <element name="TCustomEdit.FSelLength" link="#lcl.stdctrls.TCustomEdit.SelLength"/>
+      <element name="TCustomEdit.FSelStart" link="#lcl.stdctrls.TCustomEdit.SelStart"/>
+      <element name="TCustomEdit.FTextChangedByRealSetText" link="#lcl.stdctrls.TCustomEdit.RealSetText"/>
+      <element name="TCustomEdit.FTextChangedLock" link="#lcl.stdctrls.TCustomEdit.TextChanged"/>
+      <element name="TCustomEdit.FTextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
 
       <element name="TCustomEdit.ShowEmulatedTextHintIfYouCan">
         <short/>
@@ -4648,7 +4644,6 @@
           <link id="TCustomEdit.ShowEmulatedTextHintIfYouCan"/>
           <link id="TCustomEdit.TextHint"/>
           <link id="TCustomEdit.Text"/>
-          <link id="TCustomEdit.HideEmulatedTextHint"/>
         </seealso>
       </element>
 
@@ -4660,7 +4655,7 @@
         <seealso/>
       </element>
 
-      <element name="TCustomEdit.SetAlignment" link="TCustomEdit.Alignment">
+      <element name="TCustomEdit.SetAlignment" link="#lcl.stdctrls.TCustomEdit.Alignment">
         <short>Sets the value for the Alignment property</short>
         <descr/>
         <seealso/>
@@ -4809,12 +4804,12 @@
             <var>CreateEmulatedTextHintFont</var> is a <var>TFont</var> function which gets the font instance used to display an emulated TextHint in the control. It is retrieved by calling the <var>CreateEmulatedTextHintFont</var> method in the widgetset class. Widgetset classes use the font assigned to the control, but change the font color to <b>clGrayText</b>.
           </p>
           <p>
-            CreateEmulatedTextHintFont is called from the <var>ShowEmulatedTextHint</var> and <var>FontChanged</var> methods.
+            CreateEmulatedTextHintFont is called from <var>FontChanged</var>, and the private <var>ShowEmulatedTextHint</var> method.
           </p>
         </descr>
         <seealso>
           <link id="TCustomEdit.FontChanged"/>
-          <link id="TCustomEdit.ShowEmulatedTextHint"/>
+          <link id="TCustomEdit.TextHint"/>
         </seealso>
       </element>
       <element name="TCustomEdit.CreateEmulatedTextHintFont.Result">
@@ -4926,7 +4921,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomEdit.GetCaretPos" link="TCustomEdit.CaretPos">
+      <element name="TCustomEdit.GetCaretPos" link="#lcl.stdctrls.TCustomEdit.CaretPos">
         <short>Gets the value for the CaretPos property</short>
         <descr/>
         <seealso>
@@ -4970,7 +4965,7 @@
         <short>The number of selected UTF-8 characters in the control</short>
       </element>
 
-      <element name="TCustomEdit.GetSelStart" link="TCustomEdit.SelStart">
+      <element name="TCustomEdit.GetSelStart" link="#lcl.stdctrls.TCustomEdit.SelStart">
         <short/>
         <descr/>
         <seealso/>
@@ -4979,7 +4974,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.GetSelText" link="TCustomEdit.SelText">
+      <element name="TCustomEdit.GetSelText" link="#lcl.stdctrls.TCustomEdit.SelText">
         <short/>
         <descr/>
         <seealso/>
@@ -4988,7 +4983,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetCaretPos" link="TCustomEdit.CaretPos">
+      <element name="TCustomEdit.SetCaretPos" link="#lcl.stdctrls.TCustomEdit.CaretPos">
         <short>Sets the value for the CaretPos property</short>
         <descr/>
         <seealso/>
@@ -5008,7 +5003,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetEchoMode" link="TCustomEdit.EchoMode">
+      <element name="TCustomEdit.SetEchoMode" link="#lcl.stdctrls.TCustomEdit.EchoMode">
         <short/>
         <descr/>
         <seealso/>
@@ -5017,7 +5012,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetNumbersOnly" link="TCustomEdit.TextHint">
+      <element name="TCustomEdit.SetNumbersOnly" link="#lcl.stdctrls.TCustomEdit.TextHint">
         <short/>
         <descr/>
         <seealso/>
@@ -5026,7 +5021,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetReadOnly" link="TCustomEdit.ReadOnly">
+      <element name="TCustomEdit.SetReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
@@ -5035,7 +5030,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetSelLength" link="TCustomEdit.SelLength">
+      <element name="TCustomEdit.SetSelLength" link="#lcl.stdctrls.TCustomEdit.SelLength">
         <short/>
         <descr/>
         <seealso/>
@@ -5044,7 +5039,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetSelStart" link="TCustomEdit.SelStart">
+      <element name="TCustomEdit.SetSelStart" link="#lcl.stdctrls.TCustomEdit.SelStart">
         <short/>
         <descr/>
         <seealso/>
@@ -5053,7 +5048,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetSelText" link="TCustomEdit.SelText">
+      <element name="TCustomEdit.SetSelText" link="#lcl.stdctrls.TCustomEdit.SelText">
         <short/>
         <descr/>
         <seealso/>
@@ -5062,7 +5057,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomEdit.SetTextHint" link="TCustomEdit.TextHint">
+      <element name="TCustomEdit.SetTextHint" link="#lcl.stdctrls.TCustomEdit.TextHint">
         <short/>
         <descr/>
         <seealso/>
@@ -5140,10 +5135,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomEdit.HideEmulatedTextHint"/>
           <link id="TCustomEdit.CanShowEmulatedTextHint"/>
           <link id="TCustomEdit.Modified"/>
           <link id="TCustomEdit.Text"/>
+          <link id="TCustomEdit.TextHint"/>
           <link id="#lcl.controls.TWinControl.RealSetText"/>
           <link id="#lcl.controls.TControl.Caption"/>
         </seealso>
@@ -5423,15 +5418,16 @@
         <short>Removes the specified OnChange event handler for the control</short>
         <descr>
           <p>
-            <var>RemoveHandlerOnChange</var> is a method used to remove the event handler specified in <var>AnOnChangeEvent</var> from the list of <var>OnChange</var> handlers for the control. AnOnChangeEvent is a <var>TNotifyEvent</var> instance, and its <var>Remove</var> method is used to locate and remove the <var>TMethod</var> entry for the handler. RemoveHandlerOnChange reverses the actions performed in <var>AddHandlerOnChange</var>, called when an OnChange event handler is assigned to the control.
+            <var>RemoveHandlerOnChange</var> is a method used to remove the event handler specified in <var>AnOnChangeEvent</var> from the list of <var>OnChange</var> handlers for the control. AnOnChangeEvent is a <var>TNotifyEvent</var> instance, and it is used to locate and remove the <var>TMethod</var> entry registered for the handler. RemoveHandlerOnChange reverses the actions performed in <var>AddHandlerOnChange</var>, called when an OnChange event handler is assigned to the control.
           </p>
           <p>
-            No actions are performed in the method when the internal OnChange method list has not been assigned (contains Nil).
+            No actions are performed in the method when the internal OnChange method list has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
         <seealso>
-          <link id="TNotifyEvent.Remove"/>
-          <link id="#lazutis.lazmethodlist.TMethodList"/>
+          <link id="TNotifyEvent"/>
+          <link id="#lazutils.lazmethodlist.TMethodList"/>
+          <link id="#lazutils.lazmethodlist.TMethodList.Remove"/>
           <link id="#rtl.system.TMethod"/>
         </seealso>
       </element>
@@ -5537,8 +5533,6 @@
           <link id="TEmulatedTextHintStatus"/>
           <link id="TCustomEdit.TextHint"/>
           <link id="TCustomEdit.Text"/>
-          <link id="TCustomEdit.ShowEmulatedTextHint"/>
-          <link id="TCustomEdit.HideEmulatedTextHint"/>
         </seealso>
       </element>
 
@@ -5850,17 +5844,17 @@
         </seealso>
       </element>
 
-      <element name="TCustomMemo.FHorzScrollBar" link="TCustomMemo.HorzScrollBar"/>
-      <element name="TCustomMemo.FLines" link="TCustomMemo.Lines"/>
-      <element name="TCustomMemo.FScrollBars" link="TCustomMemo.ScrollBars"/>
-      <element name="TCustomMemo.FVertScrollBar" link="TCustomMemo.VertScrollBar"/>
-      <element name="TCustomMemo.FWantReturns" link="TCustomMemo.WantReturns"/>
-      <element name="TCustomMemo.FWantTabs" link="TCustomMemo.WantTabs"/>
-      <element name="TCustomMemo.FWordWrap" link="TCustomMemo.WordWrap"/>
+      <element name="TCustomMemo.FHorzScrollBar" link="#lcl.stdctrls.TCustomMemo.HorzScrollBar"/>
+      <element name="TCustomMemo.FLines" link="#lcl.stdctrls.TCustomMemo.Lines"/>
+      <element name="TCustomMemo.FScrollBars" link="#lcl.stdctrls.TCustomMemo.ScrollBars"/>
+      <element name="TCustomMemo.FVertScrollBar" link="#lcl.stdctrls.TCustomMemo.VertScrollBar"/>
+      <element name="TCustomMemo.FWantReturns" link="#lcl.stdctrls.TCustomMemo.WantReturns"/>
+      <element name="TCustomMemo.FWantTabs" link="#lcl.stdctrls.TCustomMemo.WantTabs"/>
+      <element name="TCustomMemo.FWordWrap" link="#lcl.stdctrls.TCustomMemo.WordWrap"/>
 
       <element name="TCustomMemo.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TCustomMemo.CreateParams" link="TCustomEdit.CreateParams">
+      <element name="TCustomMemo.CreateParams" link="#lcl.stdctrls.TCustomEdit.CreateParams">
         <short>Updates creation flags used to create the handle for the control</short>
         <descr>
           <p>
@@ -5880,7 +5874,7 @@
         <short>Creation parameters for the control</short>
       </element>
 
-      <element name="TCustomMemo.InitializeWnd" link="TCustomEdit.InitializeWnd">
+      <element name="TCustomMemo.InitializeWnd" link="#lcl.stdctrls.TCustomEdit.InitializeWnd">
         <short>Copies existing string values from the widgetset class</short>
         <descr>
           <p>
@@ -5967,9 +5961,9 @@
           </p>
         </descr>
         <seealso>
-           <link id="TCustomMemo.CaretPos"/>
+           <link id="TCustomEdit.CaretPos"/>
+           <link id="TCustomMemo.GetCaretPos"/>
            <link id="TCustomMemo.SetCaretPos"/>
-           <link id="#LCL.StdCtrls.TCustomEdit.GetCaretPos"/>
         </seealso>
       </element>
       <element name="TCustomMemo.GetCaretPos.Result">
@@ -6079,7 +6073,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomMemo.CMWantSpecialKey" link="TCustomEdit.CMWantSpecialKey">
+      <element name="TCustomMemo.CMWantSpecialKey" link="#lcl.stdctrls.TCustomEdit.CMWantSpecialKey">
         <short>Handles control messages for Return and Tab keys when enabled in the control</short>
         <descr>
           <p>
@@ -6464,7 +6458,7 @@
       <element name="TMemo.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TMemo.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TMemo.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TMemo.CharCase" link="TCustomEdit.CharCase"/>
+      <element name="TMemo.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
       <element name="TMemo.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TMemo.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TMemo.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
@@ -6472,7 +6466,7 @@
       <element name="TMemo.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TMemo.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TMemo.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TMemo.HideSelection" link="TCustomMemo.HideSelection"/>
+      <element name="TMemo.HideSelection" link="#lcl.stdctrls.TCustomMemo.HideSelection"/>
 
       <element name="TMemo.Lines" link="#LCL.StdCtrls.TCustomMemo.Lines">
         <short>The lines of text stored in the memo control</short>
@@ -6524,11 +6518,11 @@
         <short>Contains border styles used for static text controls</short>
         <descr>
           <p>
-            <var>TStaticBorderStyle</var> is an enumerated type with values that represents border styles used for static text controls. TStaticBorderStyle is the type used for the <var>Style</var> property in <var>TCustomStaticText</var> and decendants.
+            <var>TStaticBorderStyle</var> is an enumerated type with values that represents border styles used for static text controls. TStaticBorderStyle is the type used for the <var>BorderStyle</var> property in <var>TCustomStaticText</var> and decendants.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomStaticText.Style"/>
+          <link id="TCustomStaticText.BorderStyle"/>
         </seealso>
       </element>
       <element name="TStaticBorderStyle.sbsNone">
@@ -6552,12 +6546,12 @@
         <notes><note>Required where?</note></notes>
       </element>
 
-      <element name="TCustomStaticText.FAlignment" link="TCustomStaticText.Alignment"/>
-      <element name="TCustomStaticText.FFocusControl" link="TCustomStaticText.FocusControl"/>
-      <element name="TCustomStaticText.FShowAccelChar" link="TCustomStaticText.ShowAccelChar"/>
-      <element name="TCustomStaticText.FStaticBorderStyle" link="TCustomStaticText.BorderStyle"/>
+      <element name="TCustomStaticText.FAlignment" link="#lcl.stdctrls.TCustomStaticText.Alignment"/>
+      <element name="TCustomStaticText.FFocusControl" link="#lcl.stdctrls.TCustomStaticText.FocusControl"/>
+      <element name="TCustomStaticText.FShowAccelChar" link="#lcl.stdctrls.TCustomStaticText.ShowAccelChar"/>
+      <element name="TCustomStaticText.FStaticBorderStyle" link="#lcl.stdctrls.TCustomStaticText.BorderStyle"/>
 
-      <element name="TCustomStaticText.GetTransparent" link="TCustomStaticText.Transparent">
+      <element name="TCustomStaticText.GetTransparent" link="#lcl.stdctrls.TCustomStaticText.Transparent">
         <short>Gets the value for the Transparent property</short>
         <descr/>
         <seealso/>
@@ -6566,7 +6560,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomStaticText.SetAlignment" link="TCustomStaticText.Alignment">
+      <element name="TCustomStaticText.SetAlignment" link="#lcl.stdctrls.TCustomStaticText.Alignment">
         <short>Sets the value for the Alignment property</short>
         <descr/>
         <seealso/>
@@ -6575,7 +6569,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomStaticText.SetStaticBorderStyle" link="TCustomStaticText.BorderStyle">
+      <element name="TCustomStaticText.SetStaticBorderStyle" link="#lcl.stdctrls.TCustomStaticText.BorderStyle">
         <short>Sets the value for the BorderStyle property</short>
         <descr/>
         <seealso/>
@@ -6584,7 +6578,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomStaticText.SetTransparent" link="TCustomStaticText.Transparent">
+      <element name="TCustomStaticText.SetTransparent" link="#lcl.stdctrls.TCustomStaticText.Transparent">
         <short>Sets the value for the Transparent property</short>
         <descr/>
         <seealso/>
@@ -6634,7 +6628,7 @@
         <short>Operation for the notification</short>
       </element>
 
-      <element name="TCustomStaticText.SetFocusControl" link="TCustomStaticText.FocusControl">
+      <element name="TCustomStaticText.SetFocusControl" link="#lcl.stdctrls.TCustomStaticText.FocusControl">
         <short>Sets the value for the FocusControl property</short>
         <descr/>
         <seealso/>
@@ -6643,7 +6637,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomStaticText.SetShowAccelChar" link="TCustomStaticText.ShowAccelChar">
+      <element name="TCustomStaticText.SetShowAccelChar" link="#lcl.stdctrls.TCustomStaticText.ShowAccelChar">
         <short>Sets the value for the ShowAccelChar property</short>
         <descr/>
         <seealso/>
@@ -6753,7 +6747,7 @@
       <element name="TStaticText.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TStaticText.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TStaticText.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TStaticText.BorderStyle" link="TCustomStaticText.BorderStyle"/>
+      <element name="TStaticText.BorderStyle" link="#lcl.stdctrls.TCustomStaticText.BorderStyle"/>
 
       <element name="TStaticText.Caption" link="#lcl.controls.TControl.Caption">
         <short>Text displayed in the control</short>
@@ -6789,7 +6783,7 @@
       <element name="TStaticText.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TStaticText.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TStaticText.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TStaticText.Transparent" link="TCustomStaticText.Transparent"/>
+      <element name="TStaticText.Transparent" link="#lcl.stdctrls.TCustomStaticText.Transparent"/>
       <element name="TStaticText.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="TButtonControl">
@@ -6809,10 +6803,10 @@
         </seealso>
       </element>
 
-      <element name="TButtonControl.FClicksDisabled" link="TButtonControl.ClicksDisabled"/>
-      <element name="TButtonControl.FOnChange" link="TButtonControl.OnChange"/>
+      <element name="TButtonControl.FClicksDisabled" link="#lcl.stdctrls.TButtonControl.ClicksDisabled"/>
+      <element name="TButtonControl.FOnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
 
-      <element name="TButtonControl.IsCheckedStored" link="TButtonControl.Checked"/>
+      <element name="TButtonControl.IsCheckedStored" link="#lcl.stdctrls.TButtonControl.Checked"/>
       <element name="TButtonControl.IsCheckedStored.Result">
         <short>True when the value in Checked is included in the LCL streaming mechanism</short>
       </element>
@@ -6826,7 +6820,7 @@
 
       <element name="TButtonControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TButtonControl.GetChecked" link="TButtonControl.Checked">
+      <element name="TButtonControl.GetChecked" link="#lcl.stdctrls.TButtonControl.Checked">
         <short/>
         <descr/>
         <seealso/>
@@ -6835,7 +6829,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TButtonControl.SetChecked" link="TButtonControl.Checked">
+      <element name="TButtonControl.SetChecked" link="#lcl.stdctrls.TButtonControl.Checked">
         <short/>
         <descr/>
         <seealso/>
@@ -6955,7 +6949,7 @@
         <short/>
       </element>
 
-      <element name="TButtonActionLinkClass" link="TButtonActionLink">
+      <element name="TButtonActionLinkClass" link="#lcl.stdctrls.TButtonActionLink">
         <short>Class reference used to create new instances of <var>TButtonActionLink</var></short>
         <descr/>
         <seealso/>
@@ -6970,24 +6964,24 @@
         <notes><note>Needs description.</note></notes>
       </element>
 
-      <element name="TCustomButton.FModalResult" link="TCustomButton.ModalResult"/>
-      <element name="TCustomButton.FShortCut" link="TCustomButton.ShortCut"/>
-      <element name="TCustomButton.FShortCutKey2" link="TCustomButton.ShortCutKey2"/>
-      <element name="TCustomButton.FCancel" link="TCustomButton.Cancel"/>
-      <element name="TCustomButton.FDefault" link="TCustomButton.Default"/>
-      <element name="TCustomButton.FActive" link="TCustomButton.Active"/>
+      <element name="TCustomButton.FModalResult" link="#lcl.stdctrls.TCustomButton.ModalResult"/>
+      <element name="TCustomButton.FShortCut" link="#lcl.stdctrls.TCustomButton.ShortCut"/>
+      <element name="TCustomButton.FShortCutKey2" link="#lcl.stdctrls.TCustomButton.ShortCutKey2"/>
+      <element name="TCustomButton.FCancel" link="#lcl.stdctrls.TCustomButton.Cancel"/>
+      <element name="TCustomButton.FDefault" link="#lcl.stdctrls.TCustomButton.Default"/>
+      <element name="TCustomButton.FActive" link="#lcl.stdctrls.TCustomButton.Active"/>
 
-      <element name="TCustomButton.SetCancel" link="TCustomButton.Cancel"/>
+      <element name="TCustomButton.SetCancel" link="#lcl.stdctrls.TCustomButton.Cancel"/>
       <element name="TCustomButton.SetCancel.NewCancel">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomButton.SetDefault" link="TCustomButton.Default"/>
+      <element name="TCustomButton.SetDefault" link="#lcl.stdctrls.TCustomButton.Default"/>
       <element name="TCustomButton.SetDefault.Value">
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomButton.SetModalResult" link="TCustomButton.ModalResult"/>
+      <element name="TCustomButton.SetModalResult" link="#lcl.stdctrls.TCustomButton.ModalResult"/>
       <element name="TCustomButton.SetModalResult.AValue">
         <short>New value for the property</short>
       </element>
@@ -7225,7 +7219,7 @@
 
       <element name="TCustomButton.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
 
-      <element name="TButton" link="TCustomButton">
+      <element name="TButton" link="#lcl.stdctrls.TCustomButton">
         <short>Implements a push button control</short>
         <descr>
           <p>
@@ -7325,10 +7319,10 @@
         </seealso>
       </element>
 
-      <element name="TCustomCheckBox.FAllowGrayed" link="TCustomCheckBox.AllowGrayed"/>
-      <element name="TCustomCheckBox.FState" link="TCustomCheckBox.State"/>
-      <element name="TCustomCheckBox.FShortCut" link="TCustomCheckBox.ShortCut"/>
-      <element name="TCustomCheckBox.FShortCutKey2" link="TCustomCheckBox.ShortCutKey2"/>
+      <element name="TCustomCheckBox.FAllowGrayed" link="#lcl.stdctrls.TCustomCheckBox.AllowGrayed"/>
+      <element name="TCustomCheckBox.FState" link="#lcl.stdctrls.TCustomCheckBox.State"/>
+      <element name="TCustomCheckBox.FShortCut" link="#lcl.stdctrls.TCustomCheckBox.ShortCut"/>
+      <element name="TCustomCheckBox.FShortCutKey2" link="#lcl.stdctrls.TCustomCheckBox.ShortCutKey2"/>
 
       <element name="TCustomCheckBox.SetState">
         <short>Sets the value for the State property</short>
@@ -7391,10 +7385,10 @@
           <link id="TButtonControl.Click"/>
           <link id="TButtonControl.Checked"/>
           <link id="TButtonControl.DoOnChange"/>
+          <link id="TButtonControl.OnChange"/>
           <link id="#lcl.controls.TControl.Changed"/>
           <link id="#lcl.controls.TControl.EditingDone"/>
           <link id="#lcl.controls.TControl.OnEditingDone"/>
-          <link id="#lcl.controls.TControl.OnChange"/>
         </seealso>
       </element>
 
@@ -7568,7 +7562,7 @@
       <element name="TCustomCheckBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TCustomCheckBox.OnChange" link="#LCL.StdCtrls.TButtonControl.OnChange"/>
 
-      <element name="TCheckBox" link="TCustomCheckBox">
+      <element name="TCheckBox">
         <short>A label with a box which can contain a check mark</short>
         <descr>
           <p>
@@ -7675,7 +7669,7 @@
 
       <element name="TToggleBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TToggleBox.GetControlClassDefaultSize" link="TCustomCheckBox.GetControlClassDefaultSize">
+      <element name="TToggleBox.GetControlClassDefaultSize" link="#lcl.stdctrls.TCustomCheckBox.GetControlClassDefaultSize">
         <short>Gets the Bounds used for new instances of the class</short>
         <descr/>
         <seealso/>
@@ -7684,7 +7678,7 @@
         <short>Bounds used for new instances of the class</short>
       </element>
 
-      <element name="TToggleBox.CreateParams" link="TCustomCheckBox.CreateParams">
+      <element name="TToggleBox.CreateParams" link="#lcl.stdctrls.TCustomCheckBox.CreateParams">
         <short/>
         <descr/>
         <seealso/>
@@ -7704,7 +7698,7 @@
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TToggleBox.AllowGrayed" link="TCustomCheckBox.AllowGrayed"/>
+      <element name="TToggleBox.AllowGrayed" link="#lcl.stdctrls.TCustomCheckBox.AllowGrayed"/>
       <element name="TToggleBox.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TToggleBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TToggleBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
@@ -7773,7 +7767,7 @@
 
       <element name="TRadioButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TRadioButton.ApplyChanges" link="TCustomCheckBox.ApplyChanges">
+      <element name="TRadioButton.ApplyChanges" link="#lcl.stdctrls.TCustomCheckBox.ApplyChanges">
         <short>Updates the state for sibling radio buttons in the parent control</short>
         <descr>
           <p>
@@ -7795,7 +7789,7 @@
       </element>
 
 
-      <element name="TRadioButton.DialogChar" link="TCustomCheckBox.DialogChar">
+      <element name="TRadioButton.DialogChar" link="#lcl.stdctrls.TCustomCheckBox.DialogChar">
         <short/>
         <descr/>
         <seealso/>
@@ -7808,7 +7802,7 @@
       </element>
 
 
-      <element name="TRadioButton.RealSetText" link="TCustomCheckBox.RealSetText">
+      <element name="TRadioButton.RealSetText" link="#lcl.stdctrls.TCustomCheckBox.RealSetText">
         <short/>
         <descr/>
         <seealso/>
@@ -7833,7 +7827,7 @@
         </descr>
         <seealso>
            <link id="TCustomCheckBox.DoClickOnChange"/>
-           <link id="TCustomCheckBox.DoOnChange"/>
+           <link id="TButtonControl.DoOnChange"/>
         </seealso>
       </element>
 
@@ -7941,12 +7935,12 @@
         </seealso>
       </element>
 
-      <element name="TCustomLabel.FAlignment" link="TCustomLabel.Alignment"/>
-      <element name="TCustomLabel.FFocusControl" link="TCustomLabel.FocusControl"/>
-      <element name="TCustomLabel.FOptimalFill" link="TCustomLabel.OptimalFill"/>
-      <element name="TCustomLabel.FShowAccelChar" link="TCustomLabel.ShowAccelChar"/>
-      <element name="TCustomLabel.FWordWrap" link="TCustomLabel.WordWrap"/>
-      <element name="TCustomLabel.FLayout" link="TCustomLabel.Layout"/>
+      <element name="TCustomLabel.FAlignment" link="#lcl.stdctrls.TCustomLabel.Alignment"/>
+      <element name="TCustomLabel.FFocusControl" link="#lcl.stdctrls.TCustomLabel.FocusControl"/>
+      <element name="TCustomLabel.FOptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
+      <element name="TCustomLabel.FShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
+      <element name="TCustomLabel.FWordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
+      <element name="TCustomLabel.FLayout" link="#lcl.stdctrls.TCustomLabel.Layout"/>
       <element name="TCustomLabel.FInternalSetBounds"/>
 
       <element name="TCustomLabel.SetAlignment">
@@ -8016,9 +8010,9 @@
         </descr>
         <seealso>
           <link id="TCustomLabel.Layout"/>
-          <link id="TCustomLabel.Height"/>
           <link id="TCustomLabel.CalculateSize"/>
           <link id="TCustomLabel.Paint"/>
+          <link id="#lcl.controls.TControl.Height"/>
         </seealso>
       </element>
       <element name="TCustomLabel.DoMeasureTextPosition.TextTop">
@@ -8222,7 +8216,7 @@
         <short>Text displayed in the control</short>
       </element>
 
-      <element name="TCustomLabel.GetTransparent" link="TCustomLabel.Transparent">
+      <element name="TCustomLabel.GetTransparent" link="#lcl.stdctrls.TCustomLabel.Transparent">
         <short>Gets the value for the Transparent property</short>
         <descr/>
         <seealso/>
@@ -8240,7 +8234,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomLabel.SetFocusControl" link="TCustomLabel.FocusControl">
+      <element name="TCustomLabel.SetFocusControl" link="#lcl.stdctrls.TCustomLabel.FocusControl">
         <short>Sets the value for the FocusControl property</short>
         <descr/>
         <seealso/>
@@ -8249,7 +8243,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomLabel.SetLayout" link="TCustomLabel.Layout">
+      <element name="TCustomLabel.SetLayout" link="#lcl.stdctrls.TCustomLabel.Layout">
         <short>Sets the value for the Layout property</short>
         <descr/>
         <seealso/>
@@ -8258,7 +8252,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomLabel.SetShowAccelChar" link="TCustomLabel.ShowAccelChar">
+      <element name="TCustomLabel.SetShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar">
         <short>Sets the value for the ShowAccelChar property</short>
         <descr/>
         <seealso/>
@@ -8267,7 +8261,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomLabel.SetTransparent" link="TCustomLabel.Transparent">
+      <element name="TCustomLabel.SetTransparent" link="#lcl.stdctrls.TCustomLabel.Transparent">
         <short>Sets the value for the Transparent property</short>
         <descr/>
         <seealso/>
@@ -8276,7 +8270,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCustomLabel.SetWordWrap" link="TCustomLabel.WordWrap">
+      <element name="TCustomLabel.SetWordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap">
         <short>Sets the value for the WordWrap property</short>
         <descr/>
         <seealso/>
@@ -8418,7 +8412,8 @@
         </descr>
         <seealso>
           <link id="TCustomLabel.GetLabelText"/>
-          <link id="TCustomLabel.Canvas"/>
+          <link id="#lcl.controls.TControl.Caption"/>
+          <link id="#lcl.controls.TGraphicControl.Canvas"/>
           <link id="#lcl.controls.TGraphicControl.Paint"/>
         </seealso>
       </element>

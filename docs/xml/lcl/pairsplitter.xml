@@ -450,7 +450,7 @@
       </element>
 
       <!-- object Visibility: default -->
-      <element name="TPairSplitter" link="TCustomPairSplitter">
+      <element name="TPairSplitter" link="#lcl.pairsplitter.TCustomPairSplitter">
         <short>
           Implements the TPairSplitter component
         </short>
@@ -480,9 +480,9 @@
       <element name="TPairSplitter.OnChangeBounds" link="#lcl.Controls.TControl.OnChangeBounds"/>
       <element name="TPairSplitter.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
       <element name="TPairSplitter.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
-      <element name="TPairSplitter.Position" link="TCustomPairSplitter.Position"/>
+      <element name="TPairSplitter.Position" link="#lcl.pairsplitter.TCustomPairSplitter.Position"/>
       <element name="TPairSplitter.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
-      <element name="TPairSplitter.SplitterType" link="TCustomPairSplitter.SplitterType"/>
+      <element name="TPairSplitter.SplitterType" link="#lcl.pairsplitter.TCustomPairSplitter.SplitterType"/>
       <element name="TPairSplitter.Visible" link="#lcl.Controls.TControl.Visible"/>
 
       <!-- procedure Visibility: default -->

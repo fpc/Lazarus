@@ -3018,7 +3018,7 @@
       <element name="TTabSheet.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TTabSheet.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TTabSheet.Height" link="#LCL.Controls.TControl.Height"/>
-      <element name="TTabSheet.ImageIndex" link="TCustomPage.ImageIndex"/>
+      <element name="TTabSheet.ImageIndex" link="#lcl.comctrls.TCustomPage.ImageIndex"/>
       <element name="TTabSheet.Left" link="#LCL.Controls.TControl.Left"/>
       <element name="TTabSheet.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TTabSheet.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
@@ -3026,7 +3026,7 @@
       <element name="TTabSheet.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TTabSheet.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TTabSheet.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TTabSheet.OnHide" link="TCustomPage.OnHide"/>
+      <element name="TTabSheet.OnHide" link="#lcl.comctrls.TCustomPage.OnHide"/>
       <element name="TTabSheet.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <element name="TTabSheet.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
       <element name="TTabSheet.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
@@ -3036,15 +3036,15 @@
       <element name="TTabSheet.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
       <element name="TTabSheet.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TTabSheet.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TTabSheet.OnShow" link="TCustomPage.OnShow"/>
+      <element name="TTabSheet.OnShow" link="#lcl.comctrls.TCustomPage.OnShow"/>
       <element name="TTabSheet.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TTabSheet.PageIndex" link="TCustomPage.PageIndex"/>
+      <element name="TTabSheet.PageIndex" link="#lcl.comctrls.TCustomPage.PageIndex"/>
       <element name="TTabSheet.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TTabSheet.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TTabSheet.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TTabSheet.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <element name="TTabSheet.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TTabSheet.TabVisible" link="TCustomPage.TabVisible"/>
+      <element name="TTabSheet.TabVisible" link="#lcl.comctrls.TCustomPage.TabVisible"/>
       <element name="TTabSheet.Top" link="#LCL.Controls.TControl.Top"/>
       <element name="TTabSheet.Width" link="#LCL.Controls.TControl.Width"/>
 
@@ -3256,13 +3256,13 @@
         <short/>
       </element>
 
-      <element name="TPageControl.IndexOfTabAt" link="TCustomTabControl.IndexOfTabAt"/>
+      <element name="TPageControl.IndexOfTabAt" link="#lcl.comctrls.TCustomTabControl.IndexOfTabAt"/>
       <element name="TPageControl.IndexOfTabAt.Result"/>
       <element name="TPageControl.IndexOfTabAt.X"/>
       <element name="TPageControl.IndexOfTabAt.Y"/>
       <element name="TPageControl.IndexOfTabAt.P"/>
 
-      <element name="TPageControl.IndexOfPageAt" link="TCustomTabControl.IndexOfPageAt"/>
+      <element name="TPageControl.IndexOfPageAt" link="#lcl.comctrls.TCustomTabControl.IndexOfPageAt"/>
       <element name="TPageControl.IndexOfPageAt.Result"/>
       <element name="TPageControl.IndexOfPageAt.X"/>
       <element name="TPageControl.IndexOfPageAt.Y"/>
@@ -3331,26 +3331,26 @@
       <element name="TPageControl.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TPageControl.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TPageControl.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TPageControl.HotTrack" link="TCustomTabControl.HotTrack"/>
-      <element name="TPageControl.Images" link="TCustomTabControl.Images"/>
-      <element name="TPageControl.ImagesWidth" link="TCustomTabControl.ImagesWidth"/>
-      <element name="TPageControl.MultiLine" link="TCustomTabControl.MultiLine"/>
+      <element name="TPageControl.HotTrack" link="#lcl.comctrls.TCustomTabControl.HotTrack"/>
+      <element name="TPageControl.Images" link="#lcl.comctrls.TCustomTabControl.Images"/>
+      <element name="TPageControl.ImagesWidth" link="#lcl.comctrls.TCustomTabControl.ImagesWidth"/>
+      <element name="TPageControl.MultiLine" link="#lcl.comctrls.TCustomTabControl.MultiLine"/>
       <element name="TPageControl.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TPageControl.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TPageControl.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TPageControl.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TPageControl.RaggedRight" link="TCustomTabControl.RaggedRight"/>
-      <element name="TPageControl.ScrollOpposite" link="TCustomTabControl.ScrollOpposite"/>
+      <element name="TPageControl.RaggedRight" link="#lcl.comctrls.TCustomTabControl.RaggedRight"/>
+      <element name="TPageControl.ScrollOpposite" link="#lcl.comctrls.TCustomTabControl.ScrollOpposite"/>
       <element name="TPageControl.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TPageControl.ShowTabs" link="TCustomTabControl.ShowTabs"/>
-      <element name="TPageControl.Style" link="TCustomTabControl.Style"/>
-      <element name="TPageControl.TabHeight" link="TCustomTabControl.TabHeight"/>
-      <element name="TPageControl.TabIndex" link="TCustomTabControl.TabIndex"/>
+      <element name="TPageControl.ShowTabs" link="#lcl.comctrls.TCustomTabControl.ShowTabs"/>
+      <element name="TPageControl.Style" link="#lcl.comctrls.TCustomTabControl.Style"/>
+      <element name="TPageControl.TabHeight" link="#lcl.comctrls.TCustomTabControl.TabHeight"/>
+      <element name="TPageControl.TabIndex" link="#lcl.comctrls.TCustomTabControl.TabIndex"/>
 
       <element name="TPageControl.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TPageControl.TabPosition" link="TCustomTabControl.TabPosition"/>
+      <element name="TPageControl.TabPosition" link="#lcl.comctrls.TCustomTabControl.TabPosition"/>
       <element name="TPageControl.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TPageControl.TabWidth" link="TCustomTabControl.TabWidth"/>
+      <element name="TPageControl.TabWidth" link="#lcl.comctrls.TCustomTabControl.TabWidth"/>
       <element name="TPageControl.Visible" link="#LCL.Controls.TControl.Visible"/>
 
       <element name="TPageControl.OnChange">
@@ -3359,8 +3359,8 @@
         <seealso/>
       </element>
 
-      <element name="TPageControl.OnChanging" link="TCustomTabControl.OnChanging"/>
-      <element name="TPageControl.OnCloseTabClicked" link="TCustomTabControl.OnCloseTabClicked"/>
+      <element name="TPageControl.OnChanging" link="#lcl.comctrls.TCustomTabControl.OnChanging"/>
+      <element name="TPageControl.OnCloseTabClicked" link="#lcl.comctrls.TCustomTabControl.OnCloseTabClicked"/>
       <element name="TPageControl.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TPageControl.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
       <element name="TPageControl.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
@@ -3370,7 +3370,7 @@
       <element name="TPageControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TPageControl.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TPageControl.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TPageControl.OnGetImageIndex" link="TCustomTabControl.OnGetImageIndex"/>
+      <element name="TPageControl.OnGetImageIndex" link="#lcl.comctrls.TCustomTabControl.OnGetImageIndex"/>
       <element name="TPageControl.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
       <element name="TPageControl.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <element name="TPageControl.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
@@ -3384,7 +3384,7 @@
       <element name="TPageControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TPageControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TPageControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TPageControl.Options" link="TCustomTabControl.Options"/>
+      <element name="TPageControl.Options" link="#lcl.comctrls.TCustomTabControl.Options"/>
 
       <element name="TTabControlStrings">
         <short>
@@ -4169,7 +4169,7 @@
         <short/>
       </element>
 
-      <element name="TTabControlNoteBookStrings.GetSize" link="TTabControlStrings.GetSize"/>
+      <element name="TTabControlNoteBookStrings.GetSize" link="#lcl.comctrls.TTabControlStrings.GetSize"/>
       <element name="TTabControlNoteBookStrings.GetSize.Result"/>
 
       <element name="TTabControlNoteBookStrings.TabControlBoundsChange" link="#LCL.ComCtrls.TTabControlStrings.TabControlBoundsChange">
@@ -4178,7 +4178,7 @@
         <seealso/>
       </element>
 
-      <element name="TTabControlNoteBookStrings.IndexOfTabAt" link="TTabControlStrings.IndexOfTabAt"/>
+      <element name="TTabControlNoteBookStrings.IndexOfTabAt" link="#lcl.comctrls.TTabControlStrings.IndexOfTabAt"/>
       <element name="TTabControlNoteBookStrings.IndexOfTabAt.Result"/>
       <element name="TTabControlNoteBookStrings.IndexOfTabAt.X"/>
       <element name="TTabControlNoteBookStrings.IndexOfTabAt.Y"/>
@@ -4857,22 +4857,22 @@
 
       <element name="TTabControl.HotTrack" link="#LCL.ComCtrls.TCustomTabControl.HotTrack"/>
       <element name="TTabControl.Images" link="#LCL.ComCtrls.TCustomTabControl.Images"/>
-      <element name="TTabControl.ImagesWidth" link="TCustomTabControl.ImagesWidth"/>
-      <element name="TTabControl.MultiLine" link="TCustomTabControl.MultiLine"/>
-      <element name="TTabControl.MultiSelect" link="TCustomTabControl.MultiSelect"/>
-      <element name="TTabControl.OnChange" link="TCustomTabControl.OnChange"/>
-      <element name="TTabControl.OnChanging" link="TCustomTabControl.OnChanging"/>
-      <element name="TTabControl.OnGetImageIndex" link="TCustomTabControl.OnGetImageIndex"/>
-      <element name="TTabControl.OwnerDraw" link="TCustomTabControl.OwnerDraw"/>
-      <element name="TTabControl.RaggedRight" link="TCustomTabControl.RaggedRight"/>
-      <element name="TTabControl.ScrollOpposite" link="TCustomTabControl.ScrollOpposite"/>
-      <element name="TTabControl.Style" link="TCustomTabControl.Style"/>
-      <element name="TTabControl.TabPosition" link="TCustomTabControl.TabPosition"/>
-      <element name="TTabControl.TabHeight" link="TCustomTabControl.TabHeight"/>
-      <element name="TTabControl.TabIndex" link="TCustomTabControl.TabIndex"/>
-      <element name="TTabControl.Tabs" link="TCustomTabControl.Tabs"/>
+      <element name="TTabControl.ImagesWidth" link="#lcl.comctrls.TCustomTabControl.ImagesWidth"/>
+      <element name="TTabControl.MultiLine" link="#lcl.comctrls.TCustomTabControl.MultiLine"/>
+      <element name="TTabControl.MultiSelect" link="#lcl.comctrls.TCustomTabControl.MultiSelect"/>
+      <element name="TTabControl.OnChange" link="#lcl.comctrls.TCustomTabControl.OnChange"/>
+      <element name="TTabControl.OnChanging" link="#lcl.comctrls.TCustomTabControl.OnChanging"/>
+      <element name="TTabControl.OnGetImageIndex" link="#lcl.comctrls.TCustomTabControl.OnGetImageIndex"/>
+      <element name="TTabControl.OwnerDraw" link="#lcl.comctrls.TCustomTabControl.OwnerDraw"/>
+      <element name="TTabControl.RaggedRight" link="#lcl.comctrls.TCustomTabControl.RaggedRight"/>
+      <element name="TTabControl.ScrollOpposite" link="#lcl.comctrls.TCustomTabControl.ScrollOpposite"/>
+      <element name="TTabControl.Style" link="#lcl.comctrls.TCustomTabControl.Style"/>
+      <element name="TTabControl.TabPosition" link="#lcl.comctrls.TCustomTabControl.TabPosition"/>
+      <element name="TTabControl.TabHeight" link="#lcl.comctrls.TCustomTabControl.TabHeight"/>
+      <element name="TTabControl.TabIndex" link="#lcl.comctrls.TCustomTabControl.TabIndex"/>
+      <element name="TTabControl.Tabs" link="#lcl.comctrls.TCustomTabControl.Tabs"/>
       <element name="TTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TTabControl.TabWidth" link="TCustomTabControl.TabWidth"/>
+      <element name="TTabControl.TabWidth" link="#lcl.comctrls.TCustomTabControl.TabWidth"/>
       <element name="TTabControl.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TTabControl.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TTabControl.BIdiMode" link="#LCL.Controls.TControl.BiDiMode"/>
@@ -9412,83 +9412,83 @@
       </element>
 
       <element name="TListView.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TListView.AllocBy" link="TCustomListView.AllocBy"/>
+      <element name="TListView.AllocBy" link="#lcl.comctrls.TCustomListView.AllocBy"/>
       <element name="TListView.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TListView.AutoSort" link="TCustomListView.AutoSort"/>
-      <element name="TListView.AutoSortIndicator" link="TCustomListView.AutoSortIndicator"/>
-      <element name="TListView.AutoWidthLastColumn" link="TCustomListView.AutoWidthLastColumn"/>
+      <element name="TListView.AutoSort" link="#lcl.comctrls.TCustomListView.AutoSort"/>
+      <element name="TListView.AutoSortIndicator" link="#lcl.comctrls.TCustomListView.AutoSortIndicator"/>
+      <element name="TListView.AutoWidthLastColumn" link="#lcl.comctrls.TCustomListView.AutoWidthLastColumn"/>
       <element name="TListView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TListView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
-      <element name="TListView.Checkboxes" link="TCustomListView.Checkboxes"/>
+      <element name="TListView.Checkboxes" link="#lcl.comctrls.TCustomListView.Checkboxes"/>
       <element name="TListView.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TListView.Columns" link="TCustomListView.Columns"/>
-      <element name="TListView.ColumnClick" link="TCustomListView.ColumnClick"/>
+      <element name="TListView.Columns" link="#lcl.comctrls.TCustomListView.Columns"/>
+      <element name="TListView.ColumnClick" link="#lcl.comctrls.TCustomListView.ColumnClick"/>
       <element name="TListView.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TListView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TListView.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TListView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TListView.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TListView.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TListView.GridLines" link="TCustomListView.GridLines"/>
-      <element name="TListView.HideSelection" link="TCustomListView.HideSelection"/>
-      <element name="TListView.IconOptions" link="TCustomListView.IconOptions"/>
-      <element name="TListView.Items" link="TCustomListView.Items"/>
-      <element name="TListView.LargeImages" link="TCustomListView.LargeImages"/>
-      <element name="TListView.LargeImagesWidth" link="TCustomListView.LargeImagesWidth"/>
-      <element name="TListView.MultiSelect" link="TCustomListView.MultiSelect"/>
-      <element name="TListView.OwnerData" link="TCustomListView.OwnerData"/>
-      <element name="TListView.OwnerDraw" link="TCustomListView.OwnerDraw"/>
+      <element name="TListView.GridLines" link="#lcl.comctrls.TCustomListView.GridLines"/>
+      <element name="TListView.HideSelection" link="#lcl.comctrls.TCustomListView.HideSelection"/>
+      <element name="TListView.IconOptions" link="#lcl.comctrls.TCustomListView.IconOptions"/>
+      <element name="TListView.Items" link="#lcl.comctrls.TCustomListView.Items"/>
+      <element name="TListView.LargeImages" link="#lcl.comctrls.TCustomListView.LargeImages"/>
+      <element name="TListView.LargeImagesWidth" link="#lcl.comctrls.TCustomListView.LargeImagesWidth"/>
+      <element name="TListView.MultiSelect" link="#lcl.comctrls.TCustomListView.MultiSelect"/>
+      <element name="TListView.OwnerData" link="#lcl.comctrls.TCustomListView.OwnerData"/>
+      <element name="TListView.OwnerDraw" link="#lcl.comctrls.TCustomListView.OwnerDraw"/>
       <element name="TListView.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TListView.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TListView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TListView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TListView.ReadOnly" link="TCustomListView.ReadOnly"/>
-      <element name="TListView.RowSelect" link="TCustomListView.RowSelect"/>
-      <element name="TListView.ScrollBars"  link="TCustomListView.ScrollBars"/>
-      <element name="TListView.ShowColumnHeaders"  link="TCustomListView.ShowColumnHeaders"/>
+      <element name="TListView.ReadOnly" link="#lcl.comctrls.TCustomListView.ReadOnly"/>
+      <element name="TListView.RowSelect" link="#lcl.comctrls.TCustomListView.RowSelect"/>
+      <element name="TListView.ScrollBars"  link="#lcl.comctrls.TCustomListView.ScrollBars"/>
+      <element name="TListView.ShowColumnHeaders"  link="#lcl.comctrls.TCustomListView.ShowColumnHeaders"/>
       <element name="TListView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TListView.SmallImages"  link="TCustomListView.SmallImages"/>
-      <element name="TListView.SmallImagesWidth" link="TCustomListView.SmallImagesWidth"/>
-      <element name="TListView.SortColumn" link="TCustomListView.SortColumn"/>
-      <element name="TListView.SortDirection" link="TCustomListView.SortDirection"/>
-      <element name="TListView.SortType" link="TCustomListView.SortType"/>
-      <element name="TListView.StateImages" link="TCustomListView.StateImages"/>
-      <element name="TListView.StateImagesWidth" link="TCustomListView.StateImagesWidth"/>
+      <element name="TListView.SmallImages"  link="#lcl.comctrls.TCustomListView.SmallImages"/>
+      <element name="TListView.SmallImagesWidth" link="#lcl.comctrls.TCustomListView.SmallImagesWidth"/>
+      <element name="TListView.SortColumn" link="#lcl.comctrls.TCustomListView.SortColumn"/>
+      <element name="TListView.SortDirection" link="#lcl.comctrls.TCustomListView.SortDirection"/>
+      <element name="TListView.SortType" link="#lcl.comctrls.TCustomListView.SortType"/>
+      <element name="TListView.StateImages" link="#lcl.comctrls.TCustomListView.StateImages"/>
+      <element name="TListView.StateImagesWidth" link="#lcl.comctrls.TCustomListView.StateImagesWidth"/>
       <element name="TListView.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TListView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TListView.ToolTips" link="TCustomListView.ToolTips"/>
+      <element name="TListView.ToolTips" link="#lcl.comctrls.TCustomListView.ToolTips"/>
       <element name="TListView.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TListView.ViewStyle" link="TCustomListView.ViewStyle"/>
-      <element name="TListView.OnAdvancedCustomDraw" link="TCustomListView.OnAdvancedCustomDraw"/>
-      <element name="TListView.OnAdvancedCustomDrawItem" link="TCustomListView.OnAdvancedCustomDrawItem"/>
-      <element name="TListView.OnAdvancedCustomDrawSubItem" link="TCustomListView.OnAdvancedCustomDrawSubItem"/>
-      <element name="TListView.OnChange" link="TCustomListView.OnChange"/>
+      <element name="TListView.ViewStyle" link="#lcl.comctrls.TCustomListView.ViewStyle"/>
+      <element name="TListView.OnAdvancedCustomDraw" link="#lcl.comctrls.TCustomListView.OnAdvancedCustomDraw"/>
+      <element name="TListView.OnAdvancedCustomDrawItem" link="#lcl.comctrls.TCustomListView.OnAdvancedCustomDrawItem"/>
+      <element name="TListView.OnAdvancedCustomDrawSubItem" link="#lcl.comctrls.TCustomListView.OnAdvancedCustomDrawSubItem"/>
+      <element name="TListView.OnChange" link="#lcl.comctrls.TCustomListView.OnChange"/>
       <element name="TListView.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TListView.OnColumnClick" link="TCustomListView.OnColumnClick"/>
-      <element name="TListView.OnCompare" link="TCustomListView.OnCompare"/>
+      <element name="TListView.OnColumnClick" link="#lcl.comctrls.TCustomListView.OnColumnClick"/>
+      <element name="TListView.OnCompare" link="#lcl.comctrls.TCustomListView.OnCompare"/>
       <element name="TListView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TListView.OnCreateItemClass" link="TCustomListView.OnCreateItemClass"/>
-      <element name="TListView.OnCustomDraw" link="TCustomListView.OnCustomDraw"/>
-      <element name="TListView.OnCustomDrawItem" link="TCustomListView.OnCustomDrawItem"/>
-      <element name="TListView.OnCustomDrawSubItem" link="TCustomListView.OnCustomDrawSubItem"/>
-      <element name="TListView.OnData" link="TCustomListView.OnData"/>
-      <element name="TListView.OnDataFind" link="TCustomListView.OnDataFind"/>
-      <element name="TListView.OnDataHint" link="TCustomListView.OnDataHint"/>
-      <element name="TListView.OnDataStateChange" link="TCustomListView.OnDataStateChange"/>
+      <element name="TListView.OnCreateItemClass" link="#lcl.comctrls.TCustomListView.OnCreateItemClass"/>
+      <element name="TListView.OnCustomDraw" link="#lcl.comctrls.TCustomListView.OnCustomDraw"/>
+      <element name="TListView.OnCustomDrawItem" link="#lcl.comctrls.TCustomListView.OnCustomDrawItem"/>
+      <element name="TListView.OnCustomDrawSubItem" link="#lcl.comctrls.TCustomListView.OnCustomDrawSubItem"/>
+      <element name="TListView.OnData" link="#lcl.comctrls.TCustomListView.OnData"/>
+      <element name="TListView.OnDataFind" link="#lcl.comctrls.TCustomListView.OnDataFind"/>
+      <element name="TListView.OnDataHint" link="#lcl.comctrls.TCustomListView.OnDataHint"/>
+      <element name="TListView.OnDataStateChange" link="#lcl.comctrls.TCustomListView.OnDataStateChange"/>
       <element name="TListView.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TListView.OnDeletion" link="TCustomListView.OnDeletion"/>
+      <element name="TListView.OnDeletion" link="#lcl.comctrls.TCustomListView.OnDeletion"/>
       <element name="TListView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TListView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TListView.OnDrawItem" link="TCustomListView.OnDrawItem"/>
-      <element name="TListView.OnEdited" link="TCustomListView.OnEdited"/>
-      <element name="TListView.OnEditing" link="TCustomListView.OnEditing"/>
+      <element name="TListView.OnDrawItem" link="#lcl.comctrls.TCustomListView.OnDrawItem"/>
+      <element name="TListView.OnEdited" link="#lcl.comctrls.TCustomListView.OnEdited"/>
+      <element name="TListView.OnEditing" link="#lcl.comctrls.TCustomListView.OnEditing"/>
       <element name="TListView.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TListView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TListView.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TListView.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TListView.OnInsert" link="TCustomListView.OnInsert"/>
-      <element name="TListView.OnItemChecked" link="TCustomListView.OnItemChecked"/>
+      <element name="TListView.OnInsert" link="#lcl.comctrls.TCustomListView.OnInsert"/>
+      <element name="TListView.OnItemChecked" link="#lcl.comctrls.TCustomListView.OnItemChecked"/>
       <element name="TListView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TListView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TListView.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
@@ -9504,7 +9504,7 @@
       <element name="TListView.OnMouseWheelLeft" link="#LCL.Controls.TControl.OnMouseWheelLeft"/>
       <element name="TListView.OnMouseWheelRight" link="#LCL.Controls.TControl.OnMouseWheelRight"/>
       <element name="TListView.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TListView.OnSelectItem" link="TCustomListView.OnSelectItem"/>
+      <element name="TListView.OnSelectItem" link="#lcl.comctrls.TCustomListView.OnSelectItem"/>
       <element name="TListView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TListView.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TListView.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
@@ -10626,9 +10626,9 @@
       <element name="TUpDown.Increment" link="#LCL.ComCtrls.TCustomUpDown.Increment"/>
       <element name="TUpDown.Max" link="#LCL.ComCtrls.TCustomUpDown.Max"/>
       <element name="TUpDown.Min" link="#LCL.ComCtrls.TCustomUpDown.Min"/>
-      <element name="TUpDown.MinRepeatInterval" link="TCustomUpDown.MinRepeatInterval"/>
-      <element name="TUpDown.OnChanging" link="TCustomUpDown.OnChanging"/>
-      <element name="TUpDown.OnChangingEx" link="TCustomUpDown.OnChangingEx"/>
+      <element name="TUpDown.MinRepeatInterval" link="#lcl.comctrls.TCustomUpDown.MinRepeatInterval"/>
+      <element name="TUpDown.OnChanging" link="#lcl.comctrls.TCustomUpDown.OnChanging"/>
+      <element name="TUpDown.OnChangingEx" link="#lcl.comctrls.TCustomUpDown.OnChangingEx"/>
       <element name="TUpDown.OnClick" link="#LCL.ComCtrls.TCustomUpDown.OnClick"/>
       <element name="TUpDown.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TUpDown.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
@@ -20889,83 +20889,83 @@
 
       <element name="TTreeView.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TTreeView.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TTreeView.AutoExpand" link="TCustomTreeView.AutoExpand"/>
+      <element name="TTreeView.AutoExpand" link="#lcl.comctrls.TCustomTreeView.AutoExpand"/>
       <element name="TTreeView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TTreeView.BackgroundColor" link="TCustomTreeView.BackgroundColor"/>
+      <element name="TTreeView.BackgroundColor" link="#lcl.comctrls.TCustomTreeView.BackgroundColor"/>
       <element name="TTreeView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TTreeView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
       <element name="TTreeView.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TTreeView.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TTreeView.DefaultItemHeight" link="TCustomTreeView.DefaultItemHeight"/>
-      <element name="TTreeView.DisabledFontColor" link="TCustomTreeView.DisabledFontColor"/>
+      <element name="TTreeView.DefaultItemHeight" link="#lcl.comctrls.TCustomTreeView.DefaultItemHeight"/>
+      <element name="TTreeView.DisabledFontColor" link="#lcl.comctrls.TCustomTreeView.DisabledFontColor"/>
       <element name="TTreeView.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TTreeView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TTreeView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TTreeView.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TTreeView.ExpandSignColor" link="TCustomTreeView.ExpandSignColor"/>
-      <element name="TTreeView.ExpandSignSize" link="TCustomTreeView.ExpandSignSize"/>
-      <element name="TTreeView.ExpandSignType" link="TCustomTreeView.ExpandSignType"/>
+      <element name="TTreeView.ExpandSignColor" link="#lcl.comctrls.TCustomTreeView.ExpandSignColor"/>
+      <element name="TTreeView.ExpandSignSize" link="#lcl.comctrls.TCustomTreeView.ExpandSignSize"/>
+      <element name="TTreeView.ExpandSignType" link="#lcl.comctrls.TCustomTreeView.ExpandSignType"/>
       <element name="TTreeView.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TTreeView.HideSelection" link="TCustomTreeView.HideSelection"/>
-      <element name="TTreeView.HotTrack" link="TCustomTreeView.HotTrack"/>
-      <element name="TTreeView.Images" link="TCustomTreeView.Images"/>
-      <element name="TTreeView.ImagesWidth" link="TCustomTreeView.ImagesWidth"/>
-      <element name="TTreeView.Indent" link="TCustomTreeView.Indent"/>
-      <element name="TTreeView.MultiSelect" link="TCustomTreeView.MultiSelect"/>
-      <element name="TTreeView.MultiSelectStyle" link="TCustomTreeView.MultiSelectStyle"/>
+      <element name="TTreeView.HideSelection" link="#lcl.comctrls.TCustomTreeView.HideSelection"/>
+      <element name="TTreeView.HotTrack" link="#lcl.comctrls.TCustomTreeView.HotTrack"/>
+      <element name="TTreeView.Images" link="#lcl.comctrls.TCustomTreeView.Images"/>
+      <element name="TTreeView.ImagesWidth" link="#lcl.comctrls.TCustomTreeView.ImagesWidth"/>
+      <element name="TTreeView.Indent" link="#lcl.comctrls.TCustomTreeView.Indent"/>
+      <element name="TTreeView.MultiSelect" link="#lcl.comctrls.TCustomTreeView.MultiSelect"/>
+      <element name="TTreeView.MultiSelectStyle" link="#lcl.comctrls.TCustomTreeView.MultiSelectStyle"/>
       <element name="TTreeView.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TTreeView.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TTreeView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TTreeView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TTreeView.ReadOnly" link="TCustomTreeView.ReadOnly"/>
-      <element name="TTreeView.RightClickSelect" link="TCustomTreeView.RightClickSelect"/>
-      <element name="TTreeView.RowSelect" link="TCustomTreeView.RowSelect"/>
-      <element name="TTreeView.ScrollBars" link="TCustomTreeView.ScrollBars"/>
-      <element name="TTreeView.SelectionColor" link="TCustomTreeView.SelectionColor"/>
-      <element name="TTreeView.SelectionFontColor" link="TCustomTreeView.SelectionFontColor"/>
-      <element name="TTreeView.SelectionFontColorUsed" link="TCustomTreeView.SelectionFontColorUsed"/>
-      <element name="TTreeView.SeparatorColor" link="TCustomTreeView.SeparatorColor"/>
-      <element name="TTreeView.ShowButtons" link="TCustomTreeView.ShowButtons"/>
+      <element name="TTreeView.ReadOnly" link="#lcl.comctrls.TCustomTreeView.ReadOnly"/>
+      <element name="TTreeView.RightClickSelect" link="#lcl.comctrls.TCustomTreeView.RightClickSelect"/>
+      <element name="TTreeView.RowSelect" link="#lcl.comctrls.TCustomTreeView.RowSelect"/>
+      <element name="TTreeView.ScrollBars" link="#lcl.comctrls.TCustomTreeView.ScrollBars"/>
+      <element name="TTreeView.SelectionColor" link="#lcl.comctrls.TCustomTreeView.SelectionColor"/>
+      <element name="TTreeView.SelectionFontColor" link="#lcl.comctrls.TCustomTreeView.SelectionFontColor"/>
+      <element name="TTreeView.SelectionFontColorUsed" link="#lcl.comctrls.TCustomTreeView.SelectionFontColorUsed"/>
+      <element name="TTreeView.SeparatorColor" link="#lcl.comctrls.TCustomTreeView.SeparatorColor"/>
+      <element name="TTreeView.ShowButtons" link="#lcl.comctrls.TCustomTreeView.ShowButtons"/>
       <element name="TTreeView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TTreeView.ShowLines" link="TCustomTreeView.ShowLines"/>
-      <element name="TTreeView.ShowRoot" link="TCustomTreeView.ShowRoot"/>
-      <element name="TTreeView.SortType" link="TCustomTreeView.SortType"/>
-      <element name="TTreeView.StateImages" link="TCustomTreeView.StateImages"/>
-      <element name="TTreeView.StateImagesWidth" link="TCustomTreeView.StateImagesWidth"/>
+      <element name="TTreeView.ShowLines" link="#lcl.comctrls.TCustomTreeView.ShowLines"/>
+      <element name="TTreeView.ShowRoot" link="#lcl.comctrls.TCustomTreeView.ShowRoot"/>
+      <element name="TTreeView.SortType" link="#lcl.comctrls.TCustomTreeView.SortType"/>
+      <element name="TTreeView.StateImages" link="#lcl.comctrls.TCustomTreeView.StateImages"/>
+      <element name="TTreeView.StateImagesWidth" link="#lcl.comctrls.TCustomTreeView.StateImagesWidth"/>
       <element name="TTreeView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TTreeView.Tag" link="#rtl.Classes.TComponent.Tag"/>
-      <element name="TTreeView.ToolTips" link="TCustomTreeView.ToolTips"/>
+      <element name="TTreeView.ToolTips" link="#lcl.comctrls.TCustomTreeView.ToolTips"/>
       <element name="TTreeView.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TTreeView.OnAddition" link="TCustomTreeView.OnAddition"/>
-      <element name="TTreeView.OnAdvancedCustomDraw" link="TCustomTreeView.OnAdvancedCustomDraw"/>
-      <element name="TTreeView.OnAdvancedCustomDrawItem" link="TCustomTreeView.OnAdvancedCustomDrawItem"/>
-      <element name="TTreeView.OnChange" link="TCustomTreeView.OnChange"/>
-      <element name="TTreeView.OnChanging" link="TCustomTreeView.OnChanging"/>
+      <element name="TTreeView.OnAddition" link="#lcl.comctrls.TCustomTreeView.OnAddition"/>
+      <element name="TTreeView.OnAdvancedCustomDraw" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDraw"/>
+      <element name="TTreeView.OnAdvancedCustomDrawItem" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDrawItem"/>
+      <element name="TTreeView.OnChange" link="#lcl.comctrls.TCustomTreeView.OnChange"/>
+      <element name="TTreeView.OnChanging" link="#lcl.comctrls.TCustomTreeView.OnChanging"/>
       <element name="TTreeView.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TTreeView.OnCollapsed" link="TCustomTreeView.OnCollapsed"/>
-      <element name="TTreeView.OnCollapsing" link="TCustomTreeView.OnCollapsing"/>
-      <element name="TTreeView.OnCompare" link="TCustomTreeView.OnCompare"/>
+      <element name="TTreeView.OnCollapsed" link="#lcl.comctrls.TCustomTreeView.OnCollapsed"/>
+      <element name="TTreeView.OnCollapsing" link="#lcl.comctrls.TCustomTreeView.OnCollapsing"/>
+      <element name="TTreeView.OnCompare" link="#lcl.comctrls.TCustomTreeView.OnCompare"/>
       <element name="TTreeView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TTreeView.OnCreateNodeClass" link="TCustomTreeView.OnCreateNodeClass"/>
-      <element name="TTreeView.OnCustomCreateItem" link="TCustomTreeView.OnCustomCreateItem"/>
-      <element name="TTreeView.OnCustomDraw" link="TCustomTreeView.OnCustomDraw"/>
-      <element name="TTreeView.OnCustomDrawItem" link="TCustomTreeView.OnCustomDrawItem"/>
-      <element name="TTreeView.OnCustomDrawArrow" link="TCustomTreeView.OnCustomDrawArrow"/>
+      <element name="TTreeView.OnCreateNodeClass" link="#lcl.comctrls.TCustomTreeView.OnCreateNodeClass"/>
+      <element name="TTreeView.OnCustomCreateItem" link="#lcl.comctrls.TCustomTreeView.OnCustomCreateItem"/>
+      <element name="TTreeView.OnCustomDraw" link="#lcl.comctrls.TCustomTreeView.OnCustomDraw"/>
+      <element name="TTreeView.OnCustomDrawItem" link="#lcl.comctrls.TCustomTreeView.OnCustomDrawItem"/>
+      <element name="TTreeView.OnCustomDrawArrow" link="#lcl.comctrls.TCustomTreeView.OnCustomDrawArrow"/>
       <element name="TTreeView.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TTreeView.OnDeletion" link="TCustomTreeView.OnDeletion"/>
+      <element name="TTreeView.OnDeletion" link="#lcl.comctrls.TCustomTreeView.OnDeletion"/>
       <element name="TTreeView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TTreeView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TTreeView.OnEdited" link="TCustomTreeView.OnEdited"/>
-      <element name="TTreeView.OnEditing" link="TCustomTreeView.OnEditing"/>
-      <element name="TTreeView.OnEditingEnd" link="TCustomTreeView.OnEditingEnd"/>
+      <element name="TTreeView.OnEdited" link="#lcl.comctrls.TCustomTreeView.OnEdited"/>
+      <element name="TTreeView.OnEditing" link="#lcl.comctrls.TCustomTreeView.OnEditing"/>
+      <element name="TTreeView.OnEditingEnd" link="#lcl.comctrls.TCustomTreeView.OnEditingEnd"/>
       <element name="TTreeView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TTreeView.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TTreeView.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TTreeView.OnExpanded" link="TCustomTreeView.OnExpanded"/>
-      <element name="TTreeView.OnExpanding" link="TCustomTreeView.OnExpanding"/>
-      <element name="TTreeView.OnGetImageIndex" link="TCustomTreeView.OnGetImageIndex"/>
-      <element name="TTreeView.OnGetSelectedIndex" link="TCustomTreeView.OnGetSelectedIndex"/>
+      <element name="TTreeView.OnExpanded" link="#lcl.comctrls.TCustomTreeView.OnExpanded"/>
+      <element name="TTreeView.OnExpanding" link="#lcl.comctrls.TCustomTreeView.OnExpanding"/>
+      <element name="TTreeView.OnGetImageIndex" link="#lcl.comctrls.TCustomTreeView.OnGetImageIndex"/>
+      <element name="TTreeView.OnGetSelectedIndex" link="#lcl.comctrls.TCustomTreeView.OnGetSelectedIndex"/>
       <element name="TTreeView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TTreeView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TTreeView.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
@@ -20980,16 +20980,16 @@
       <element name="TTreeView.OnMouseWheelHorz" link="#LCL.Controls.TControl.OnMouseWheelHorz"/>
       <element name="TTreeView.OnMouseWheelLeft" link="#LCL.Controls.TControl.OnMouseWheelLeft"/>
       <element name="TTreeView.OnMouseWheelRight" link="#LCL.Controls.TControl.OnMouseWheelRight"/>
-      <element name="TTreeView.OnNodeChanged" link="TCustomTreeView.OnNodeChanged"/>
+      <element name="TTreeView.OnNodeChanged" link="#lcl.comctrls.TCustomTreeView.OnNodeChanged"/>
       <element name="TTreeView.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TTreeView.OnSelectionChanged" link="TCustomTreeView.OnSelectionChanged"/>
+      <element name="TTreeView.OnSelectionChanged" link="#lcl.comctrls.TCustomTreeView.OnSelectionChanged"/>
       <element name="TTreeView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TTreeView.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TTreeView.Options" link="TCustomTreeView.Options"/>
-      <element name="TTreeView.Items" link="TCustomTreeView.Items"/>
-      <element name="TTreeView.TreeLineColor" link="TCustomTreeView.TreeLineColor"/>
-      <element name="TTreeView.TreeLinePenStyle" link="TCustomTreeView.TreeLinePenStyle"/>
+      <element name="TTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
+      <element name="TTreeView.Items" link="#lcl.comctrls.TCustomTreeView.Items"/>
+      <element name="TTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
+      <element name="TTreeView.TreeLinePenStyle" link="#lcl.comctrls.TCustomTreeView.TreeLinePenStyle"/>
 
       <element name="TTVGetNodeText">
         <short/>
@@ -21978,8 +21978,8 @@
       <element name="THeaderControl.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="THeaderControl.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="THeaderControl.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="THeaderControl.Images" link="TCustomHeaderControl.Images"/>
-      <element name="THeaderControl.ImagesWidth" link="TCustomHeaderControl.ImagesWidth"/>
+      <element name="THeaderControl.Images" link="#lcl.comctrls.TCustomHeaderControl.Images"/>
+      <element name="THeaderControl.ImagesWidth" link="#lcl.comctrls.TCustomHeaderControl.ImagesWidth"/>
       <element name="THeaderControl.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="THeaderControl.Sections" link="#LCL.ComCtrls.TCustomHeaderControl.Sections"/>
       <element name="THeaderControl.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>

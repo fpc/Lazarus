@@ -2301,7 +2301,7 @@
           <link id="#FCL.Db.TDataLink.ReadOnly"/>
         </seealso>
       </element>
-      <element name="TDBListBox" link="TCustomDBListBox">
+      <element name="TDBListBox" link="#lcl.dbctrls.TCustomDBListBox">
         <short>Implements a data-aware version of <var>TListBox</var></short>
         <descr>
           <p>
@@ -2569,7 +2569,7 @@
       <element name="TDBListBox.ParentDoubleBuffered" link="#LCL.Controls.TControl.ParentDoubleBuffered"/>
       <element name="TDBListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TDBListBox.PopupMenu" link="#LCL.StdCtrls.TCustomDBListBox.PopupMenu"/>
-      <element name="TDBListBox.ReadOnly" link="TCustomDBListBox.ReadOnly"/>
+      <element name="TDBListBox.ReadOnly" link="#lcl.dbctrls.TCustomDBListBox.ReadOnly"/>
       <element name="TDBListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>
           <p>
@@ -2685,7 +2685,7 @@
       <element name="TDBLookupListBox.SetScrollListDataset"/>
       <element name="TDBLookupListBox.SetScrollListDataset.AValue"/>
       <element name="TDBLookupListBox.UpdateLookup"/>
-      <element name="TDBLookupListBox.DataChange" link="TCustomDBListBox.DataChange">
+      <element name="TDBLookupListBox.DataChange">
         <short>
           Performs actions needed when a new DataField value is selected using the lookup dataset
         </short>
@@ -2710,7 +2710,7 @@
           <link id="TDBLookup.GetKeyIndex"/>
         </seealso>
       </element>
-      <element name="TDBLookupListBox.DoSelectionChange" link="TCustomDBListBox.DoSelectionChange">
+      <element name="TDBLookupListBox.DoSelectionChange">
         <short>
           Performs actions needed when the selected item in the listbox is changed
         </short>
@@ -2808,7 +2808,7 @@
           <link id="#RTL.Classes.TComponent.Loaded"/>
         </seealso>
       </element>
-      <element name="TDBLookupListBox.UpdateData" link="TCustomDBListBox.UpdateData">
+      <element name="TDBLookupListBox.UpdateData">
         <short>Updates the data in the lookup dataset for the control</short>
         <descr>
           <p>
@@ -2893,8 +2893,8 @@
       <element name="TDBLookupListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TDBLookupListBox.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TDBLookupListBox.Constraints" link="#LCL.StdCtrls.TCustomListBox.Constraints"/>
-      <element name="TDBLookupListBox.DataField" link="TCustomDBListBox.DataField"/>
-      <element name="TDBLookupListBox.DataSource" link="TCustomDBListBox.DataSource"/>
+      <element name="TDBLookupListBox.DataField" link="#lcl.dbctrls.TCustomDBListBox.DataField"/>
+      <element name="TDBLookupListBox.DataSource" link="#lcl.dbctrls.TCustomDBListBox.DataSource"/>
       <element name="TDBLookupListBox.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TDBLookupListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TDBLookupListBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
@@ -3032,7 +3032,7 @@
       <element name="TDBLookupListBox.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TDBLookupListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TDBLookupListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TDBLookupListBox.ReadOnly" link="TCustomDBListBox.ReadOnly"/>
+      <element name="TDBLookupListBox.ReadOnly" link="#lcl.dbctrls.TCustomDBListBox.ReadOnly"/>
       <element name="TDBLookupListBox.ScrollListDataset">
         <short></short>
         <descr>
@@ -3449,8 +3449,8 @@
       </element>
       <element name="TDBRadioGroup.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
       <element name="TDBRadioGroup.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TDBRadioGroup.ColumnLayout" link="TCustomRadioGroup.ColumnLayout"/>
-      <element name="TDBRadioGroup.Columns" link="#LCL.ExtCtrls.TCustomRadioGroup.Columns">
+      <element name="TDBRadioGroup.ColumnLayout" link="#lcl.extctrls.TCustomRadioGroup.ColumnLayout"/>
+      <element name="TDBRadioGroup.Columns" link="#lcl.extctrls.TCustomRadioGroup.Columns">
         <descr>
           <p>
             Don't confuse this with the Columns entity in a DBGrid, nor with the COLUMNS entity in a SQL database - it simply refers to the number of columns of radiobuttons to be displayed.
@@ -4769,7 +4769,7 @@
           <link id="TFieldDataLink.Field"/>
         </seealso>
       </element>
-      <element name="TDBComboBox" link="TCustomDBComboBox">
+      <element name="TDBComboBox" link="#lcl.dbctrls.TCustomDBComboBox">
         <short>
           <var>TDBComboBox</var> - a data-aware version of <var>TComboBox</var> to allow selection of a value from a list of entries into a database field
         </short>
@@ -4789,7 +4789,7 @@
           <link id="TCustomDBComboBox"/>
         </seealso>
       </element>
-      <element name="TDBComboBox.DataChange" link="TCustomDBComboBox.DataChange">
+      <element name="TDBComboBox.DataChange">
         <short>
           <var>DataChange</var> - updates the text if it has changed
         </short>
@@ -4804,6 +4804,7 @@
         <seealso>
           <link id="TCustomDBComboBox.Text"/>
           <link id="TCustomDBComboBox.Field"/>
+          <link id="TCustomDBComboBox.DataChange"/>
           <link id="TFieldDataLink.Field"/>
           <link id="TFieldDataLink.OnDataChange"/>
           <link id="#FCL.Db.TField"/>
@@ -4828,7 +4829,7 @@
       <element name="TDBComboBox.KeyPress.Key">
         <short>Keystroke character examined in the method</short>
       </element>
-      <element name="TDBComboBox.UpdateData" link="TCustomDBComboBox.UpdateData">
+      <element name="TDBComboBox.UpdateData" link="#lcl.dbctrls.TCustomDBComboBox.UpdateData">
         <short>
           Applies the changed value for the control to the field in its linked dataset
         </short>
@@ -4875,8 +4876,8 @@
       <element name="TDBComboBox.CharCase" link="#LCL.StdCtrls.TCustomComboBox.CharCase"/>
       <element name="TDBComboBox.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TDBComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TDBComboBox.DataField" link="TCustomDBComboBox.DataField"/>
-      <element name="TDBComboBox.DataSource" link="TCustomDBComboBox.DataSource"/>
+      <element name="TDBComboBox.DataField" link="#lcl.dbctrls.TCustomDBComboBox.DataField"/>
+      <element name="TDBComboBox.DataSource" link="#lcl.dbctrls.TCustomDBComboBox.DataSource"/>
       <element name="TDBComboBox.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TDBComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TDBComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
@@ -4970,7 +4971,7 @@
       <element name="TDBComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TDBComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
       <element name="TDBComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TDBComboBox.ReadOnly" link="TCustomDBComboBox.ReadOnly"/>
+      <element name="TDBComboBox.ReadOnly" link="#lcl.dbctrls.TCustomDBComboBox.ReadOnly"/>
       <element name="TDBComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TDBComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted"/>
       <element name="TDBComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
@@ -5089,7 +5090,7 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="TDBLookupComboBox.KeyDown" link="TCustomDBComboBox.KeyDown">
+      <element name="TDBLookupComboBox.KeyDown">
         <short>Handles the Null key shortcut in key down events</short>
         <descr>
           <p>
@@ -5191,8 +5192,8 @@
       <element name="TDBLookupComboBox.CharCase" link="#LCL.StdCtrls.TCustomComboBox.CharCase"/>
       <element name="TDBLookupComboBox.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TDBLookupComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TDBLookupComboBox.DataField" link="TCustomDBComboBox.DataField"/>
-      <element name="TDBLookupComboBox.DataSource" link="TCustomDBComboBox.DataSource"/>
+      <element name="TDBLookupComboBox.DataField" link="#lcl.dbctrls.TCustomDBComboBox.DataField"/>
+      <element name="TDBLookupComboBox.DataSource" link="#lcl.dbctrls.TCustomDBComboBox.DataSource"/>
       <element name="TDBLookupComboBox.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TDBLookupComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TDBLookupComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
@@ -7882,7 +7883,7 @@
       <element name="TDBNavDataLink.Create.TheNavigator">
         <short>TDBCustomNavigator control for the data link</short>
       </element>
-      <element name="TDBNavigator" link="TDBCustomNavigator">
+      <element name="TDBNavigator" link="#lcl.dbctrls.TDBCustomNavigator">
         <short>
           <var>TDBNavigator </var>- a data-aware Button-Bar to facilitate navigating between records of a dataset
         </short>
@@ -7922,7 +7923,7 @@
       <element name="TDBNavigator.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TDBNavigator.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TDBNavigator.BiDiMode" link="#LCL.Controls.TControl.BiDIMode"/>
-      <element name="TDBNavigator.BeforeAction" link="TDBCustomNavigator.BeforeAction"/>
+      <element name="TDBNavigator.BeforeAction" link="#lcl.dbctrls.TDBCustomNavigator.BeforeAction"/>
       <element name="TDBNavigator.BevelInner" link="#LCL.ExtCtrls.TCustomPanel.BevelInner"/>
       <element name="TDBNavigator.BevelOuter" link="#LCL.ExtCtrls.TCustomPanel.BevelOuter"/>
       <element name="TDBNavigator.BevelWidth" link="#LCL.ExtCtrls.TCustomPanel.BevelWidth"/>
@@ -7935,9 +7936,9 @@
       <element name="TDBNavigator.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TDBNavigator.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TDBNavigator.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TDBNavigator.ConfirmDelete" link="TDBCustomNavigator.ConfirmDelete"/>
-      <element name="TDBNavigator.DataSource" link="TDBCustomNavigator.DataSource"/>
-      <element name="TDBNavigator.Direction" link="TDBCustomNavigator.Direction"/>
+      <element name="TDBNavigator.ConfirmDelete" link="#lcl.dbctrls.TDBCustomNavigator.ConfirmDelete"/>
+      <element name="TDBNavigator.DataSource" link="#lcl.dbctrls.TDBCustomNavigator.DataSource"/>
+      <element name="TDBNavigator.Direction" link="#lcl.dbctrls.TDBCustomNavigator.Direction"/>
       <element name="TDBNavigator.DoubleBuffered" link="#LCL.Controls.TWinControl.DoubleBuffered"/>
       <element name="TDBNavigator.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TDBNavigator.DragMode" link="#LCL.Controls.TControl.DragMode"/>
@@ -7962,7 +7963,7 @@
       <element name="TDBNavigator.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TDBNavigator.OnResize" link="#LCL.Controls.TControl.OnResize"/>
       <element name="TDBNavigator.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TDBNavigator.Options" link="TDBCustomNavigator.Options"/>
+      <element name="TDBNavigator.Options" link="#lcl.dbctrls.TDBCustomNavigator.Options"/>
       <element name="TDBNavigator.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TDBNavigator.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TDBNavigator.ParentDoubleBuffered" link="#LCL.Controls.TWinControl.ParentDoubleBuffered"/>
@@ -7973,8 +7974,8 @@
       <element name="TDBNavigator.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TDBNavigator.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TDBNavigator.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TDBNavigator.VisibleButtons" link="TDBCustomNavigator.VisibleButtons"/>
-      <element name="TDBNavigator.Images" link="TDBCustomNavigator.Images"/>
+      <element name="TDBNavigator.VisibleButtons" link="#lcl.dbctrls.TDBCustomNavigator.VisibleButtons"/>
+      <element name="TDBNavigator.Images" link="#lcl.dbctrls.TDBCustomNavigator.Images"/>
       <element name="ChangeDataSource">
         <short>
           Performs actions needed when the datasource in a control with the specified data link is changed
