@@ -145,7 +145,7 @@ type
     procedure DoFileFound; virtual;
   public
     constructor Create;
-    procedure Search(ASearchPath: String; ASearchMask: String = '';
+    procedure Search(const ASearchPath: String; const ASearchMask: String = '';
       ASearchSubDirs: Boolean = True; CaseSensitive: Boolean = False);
   public
     property MaskSeparator: char read FMaskSeparator write FMaskSeparator;
@@ -180,11 +180,11 @@ type
     constructor Create(AList: TStrings);
   end;
 
-function FindAllFiles(const SearchPath: String; SearchMask: String = '';
+function FindAllFiles(const SearchPath: String; const SearchMask: String = '';
   SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory;
   MaskSeparator: char = ';'; PathSeparator: char = ';'): TStringList; overload;
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String = ''; SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory;
+  const SearchMask: String = ''; SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory;
   MaskSeparator: char = ';'; PathSeparator: char = ';'); overload;
 
 function FindAllDirectories(const SearchPath: string;

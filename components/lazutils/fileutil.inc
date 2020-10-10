@@ -656,7 +656,7 @@ begin
 end;
 
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String; SearchSubDirs: Boolean; DirAttr: Word;
+  const SearchMask: String; SearchSubDirs: Boolean; DirAttr: Word;
   MaskSeparator: char; PathSeparator: char);
 var
   Searcher: TListFileSearcher;
@@ -672,7 +672,7 @@ begin
   end;
 end;
 
-function FindAllFiles(const SearchPath: String; SearchMask: String;
+function FindAllFiles(const SearchPath: String; const SearchMask: String;
   SearchSubDirs: Boolean; DirAttr: Word;
   MaskSeparator: char; PathSeparator: char): TStringList;
 begin
@@ -765,7 +765,7 @@ begin
   FSearching := False;
 end;
 
-procedure TFileSearcher.Search(ASearchPath: String; ASearchMask: String;
+procedure TFileSearcher.Search(const ASearchPath: String; const ASearchMask: String;
   ASearchSubDirs: Boolean; CaseSensitive: Boolean = False);
 var
   MaskList: TMaskList;
@@ -836,9 +836,9 @@ var
   end;
 
 var
-  p: SizeInt;
-  Dir: String;
+  p1, p2: SizeInt;
   i: Integer;
+  Dir: String;
   OtherDir: String;
   MaskOptions: TMaskOptions;
 begin
@@ -855,12 +855,14 @@ begin
   FSearching := True;
   SearchDirectories:=TStringList.Create;
   try
-    while ASearchPath<>'' do begin
-      p:=Pos(FPathSeparator,ASearchPath);
-      if p<1 then
-        p:=length(ASearchPath)+1;
-      Dir:=ResolveDots(LeftStr(ASearchPath,p-1));
-      Delete(ASearchPath,1,p);
+    p1:=1;
+    while p1<=Length(ASearchPath) do
+    begin
+      p2:=PosEx(FPathSeparator,ASearchPath,p1);
+      if p2<1 then
+        p2:=length(ASearchPath)+1;
+      Dir:=ResolveDots(Copy(ASearchPath,p1,p2-p1));
+      p1:=p2+1;
       if Dir='' then continue;
       Dir:=ChompPathDelim(Dir);
       for i:=SearchDirectories.Count-1 downto 0 do
