@@ -299,6 +299,11 @@ type
     property Spacing;
     property UpDownVisible;
     property Value;
+    property DisplayMode;
+    property ExponentialFormatLimitPos;
+    property ExponentialFormatLimitNeg;
+    property Precision;
+    property ExponentDigits;
   end;
 
 
