@@ -401,6 +401,7 @@ type
     property NullValue;
     property NullValueBehaviour;
     property Spacing;
+    property ThousandSeparator;
     property UpDownVisible;
     property Value;
   end;
