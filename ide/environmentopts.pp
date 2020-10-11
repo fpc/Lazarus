@@ -300,6 +300,7 @@ type
     FFLags: set of (dpcLoaded, dpcDeleted);
     FActive: Boolean;
     FConfigClass: String;
+    FConfigClassInOldXml: String; // The ConfigClass in the xml file. In case the class in memory is changed
     FConfigName: String;
     FDebuggerClass: TDebuggerClass;
     FDebuggerFilename: string;
@@ -1305,6 +1306,7 @@ begin
   AXMLCfg.ReadObject(p, Self);  // read FDebuggerFilename;
 
   FConfigClass := ADebuggerClass.ClassName;
+  FConfigClassInOldXml := FConfigClass;
   FConfigName := '';
   FXmlIndex := -1;
 
@@ -1336,6 +1338,7 @@ begin
   AXMLCfg.ReadObject(p, Self);  // read FDebuggerFilename;
 
   FConfigClass := ADebuggerClassName;
+  FConfigClassInOldXml := FConfigClass;
   FConfigName := '';
   FXmlIndex := -1;
 
@@ -1386,7 +1389,8 @@ end;
 procedure TDebuggerPropertiesConfig.CopyFrom(
   ASource: TDebuggerPropertiesConfig; ACopyPropValues: Boolean);
 begin
-  FConfigClass      := ASource.FConfigClass;
+  FConfigClass         := ASource.FConfigClass;
+  FConfigClassInOldXml := ASource.FConfigClassInOldXml;
   FConfigName       := ASource.FConfigName;
   FDebuggerClass    := ASource.FDebuggerClass;
   FDebuggerFilename := ASource.FDebuggerFilename;
@@ -1480,8 +1484,19 @@ end;
 procedure TDebuggerPropertiesConfig.DeleteFromOldXml(AXMLCfg: TRttiXMLConfig;
   APath: String);
 begin
-  AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Config']));
-  AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Properties']));
+  if FConfigClassInOldXml = '' then begin
+    debugln(['Debugger was loaded, but has no ConfigClass in XML', DebugText]);
+    FConfigClassInOldXml := FConfigClass;
+  end;
+
+  AXMLCfg.DeletePath(Format(APath, [FConfigClassInOldXml, 'Config']));
+  AXMLCfg.DeletePath(Format(APath, [FConfigClassInOldXml, 'Properties']));
+
+  if FConfigClassInOldXml <> FConfigClass then begin
+    AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Config']));
+    AXMLCfg.DeletePath(Format(APath, [FConfigClass, 'Properties']));
+  end;
+  FConfigClassInOldXml := FConfigClass;
   FXmlIndex := -1;
   FIsFromOldXml := False;
 end;
@@ -1514,6 +1529,7 @@ var
   OptDef: TDebuggerPropertiesConfig;
 begin
   FIsFromOldXml := True;
+  FConfigClassInOldXml := FConfigClass;
   FXmlIndex := -1;
 
   OptDef := TDebuggerPropertiesConfig.Create;
@@ -3455,6 +3471,13 @@ var
   i, ConfCount: Integer;
   Entry: TDebuggerPropertiesConfig;
 begin
+  (* Delete old entries
+     If an entry was loaded for a DebuggerClass that is currently unknown (package not compiled into IDE)
+     then the entry did not load its properties. Therefore such entries "not Entry.IsLoaded"
+     must not be deleted.
+     Loop from the highest Index, so deleting an entry will not change the Xml-Index of
+     the Indexes still to loop over.
+   *)
   for i := FDebuggerProperties.Count - 1 downto 0 do begin
     // Delete last entry first
     Entry := FDebuggerProperties.Opt[i];
@@ -3465,7 +3488,8 @@ begin
       Entry.DeleteFromXml(FXMLCfg, XML_PATH_DEBUGGER_CONF) // will be rewritten
     else
     if Entry.IsDeleted or
-       (Entry.ConfigName <> '') // Moved to named list
+       (Entry.ConfigName <> '') or // Moved to named list
+       (Entry.ConfigClass <> Entry.FConfigClassInOldXml)
     then
       Entry.DeleteFromOldXml(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD);
 
