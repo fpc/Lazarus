@@ -70,8 +70,9 @@ uses
   // IDE
   LazarusIDEStrConsts, MainIntf, IDEProcs, DialogProcs, IDEOptionDefs,
   PackageDefs, Project, InputHistory, MainBase, EnvironmentOpts,
-  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg,
-  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageSystem;
+  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks,
+  ProjPackEditing, ProjPackFilePropGui, PackageSystem, ToolBarIntf,
+  BuildManager;
 
 type
   TOnAddUnitToProject =
@@ -254,6 +255,24 @@ type
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+  end;
+
+  { TSetBuildModeToolButton }
+
+  TSetBuildModeToolButton = class(TIDEToolButton)
+  public type
+    TBuildModeMenuItem = class(TMenuItem)
+    public
+      BuildModeIndex: Integer;
+      procedure Click; override;
+    end;
+
+    TBuildModeMenu = class(TPopupMenu)
+    protected
+      procedure DoPopup(Sender: TObject); override;
+    end;
+  public
+    procedure DoOnAdded; override;
   end;
 
 var
@@ -1659,6 +1678,79 @@ begin
   NodeData:=GetNodeData(TVNode);
   Item:=GetNodeItem(NodeData);
   Result:=Item<>nil;
+end;
+
+{ TSetBuildModeToolButton.TBuildModeMenu }
+
+procedure TSetBuildModeToolButton.TBuildModeMenu.DoPopup(Sender: TObject);
+var
+  CurIndex: Integer;
+  i: Integer;
+
+  procedure AddMode(BuildModeIndex: Integer; CurMode: TProjectBuildMode);
+  var
+    AMenuItem: TBuildModeMenuItem;
+  begin
+    if Items.Count > CurIndex then
+      AMenuItem := Items[CurIndex] as TBuildModeMenuItem
+    else
+    begin
+      AMenuItem := TBuildModeMenuItem.Create(Self);
+      AMenuItem.Name := Name + 'Mode' + IntToStr(CurIndex);
+      Items.Add(AMenuItem);
+    end;
+    AMenuItem.BuildModeIndex := BuildModeIndex;
+    AMenuItem.Caption := CurMode.GetCaption;
+    AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
+    AMenuItem.ShowAlwaysCheckable:=true;
+    inc(CurIndex);
+  end;
+
+begin
+  // fill the PopupMenu
+  CurIndex := 0;
+  if Project1<>nil then
+    for i:=0 to Project1.BuildModes.Count-1 do
+      AddMode(i, Project1.BuildModes[i]);
+  // remove unused menuitems
+  while Items.Count > CurIndex do
+    Items[Items.Count - 1].Free;
+
+  inherited DoPopup(Sender);
+end;
+
+{ TSetBuildModeToolButton.TBuildModeMenuItem }
+
+procedure TSetBuildModeToolButton.TBuildModeMenuItem.Click;
+var
+  NewMode: TProjectBuildMode;
+begin
+  inherited Click;
+
+  NewMode := Project1.BuildModes[BuildModeIndex];
+  if NewMode = Project1.ActiveBuildMode then exit;
+  if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
+    IDEMessageDialog(dlgMsgWinColorUrgentError,
+      lisYouCanNotChangeTheBuildModeWhileCompiling,
+      mtError,[mbOk]);
+    exit;
+  end;
+
+  Project1.ActiveBuildMode := NewMode;
+  MainBuildBoss.SetBuildTargetProject1(false);
+  MainIDE.UpdateCaption;
+  if Assigned(ProjInspector) then
+    ProjInspector.UpdateTitle;
+end;
+
+{ TSetBuildModeToolButton }
+
+procedure TSetBuildModeToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+
+  DropdownMenu := TBuildModeMenu.Create(Self);
+  Style := tbsDropDown;
 end;
 
 end.
