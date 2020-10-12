@@ -9,7 +9,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: synunidesigner.sunifiledescription
+#: synunistrconst.sedituni
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
+msgstr "Edit..."
+
+#: synunistrconst.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr "Sintaks UniHighlighter"
 

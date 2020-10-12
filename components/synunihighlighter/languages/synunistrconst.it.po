@@ -6,11 +6,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.5.4\n"
 
-#: synunireg.sedituni
+#: synunistrconst.sedituni
 msgid "Edit ..."
-msgstr "Upravit..."
+msgstr "Modifica..."
+
+#: synunistrconst.sunifiledescription
+msgid "UniHighlighter Syntax"
+msgstr "Sintassi UniHighlighter"
 

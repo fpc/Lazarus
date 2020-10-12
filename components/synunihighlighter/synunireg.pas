@@ -16,7 +16,8 @@ uses
   componenteditors, ////TL added
   Classes,
   SynUniHighlighter,
-  SynUniDesigner;
+  SynUniDesigner,
+  synunistrconst;
 
 type
   ////TL! TDefaultEditor doesn't appear to exist... changed to TDefaultComponentEditor
@@ -50,10 +51,6 @@ procedure TSynUniEditor.ExecuteVerb(Index: Integer);
 begin
   Edit;
 end;
-
-////TL FPC wants resources defined globally... moved from the function below
-resourcestring
-  sEditUni = 'Edit ...';
 
 function TSynUniEditor.GetVerb(Index: Integer): string;
 ////TL resourcestring

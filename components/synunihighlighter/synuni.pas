@@ -8,7 +8,8 @@ unit SynUni;
 interface
 
 uses
-  SynUniDesigner, SynUniHighlighter, SynUniReg, LazarusPackageIntf;
+  SynUniDesigner, SynUniHighlighter, SynUniReg, synunistrconst, 
+  LazarusPackageIntf;
 
 implementation
 

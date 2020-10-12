@@ -65,7 +65,8 @@ uses
   SysUtils,
   SynEdit,
   SynEditHighlighter,
-  SynUniHighlighter;
+  SynUniHighlighter,
+  synunistrconst;
 
 type
   TNodeText = String;
@@ -973,10 +974,6 @@ begin
       free;
     end;
 end;
-
-////TL FPC wanted this global... moved from just inside the procedure below
-resourcestring
-  sUniFileDescription = 'UniHighlighter Syntax';
 
 procedure TSynUniDesigner.LoadFromFileClick(Sender: TObject);
 ////TL resourcestring

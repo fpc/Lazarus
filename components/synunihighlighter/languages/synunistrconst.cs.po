@@ -10,7 +10,11 @@ msgstr ""
 "Language-Team: \n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: synunidesigner.sunifiledescription
+#: synunistrconst.sedituni
+msgid "Edit ..."
+msgstr "Upravit..."
+
+#: synunistrconst.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr "Syntax UniZvýrazňovače"
 

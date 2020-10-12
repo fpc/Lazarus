@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: synunistrconst.sedituni
+msgid "Edit ..."
+msgstr ""
+
+#: synunistrconst.sunifiledescription
+msgid "UniHighlighter Syntax"
+msgstr ""
+

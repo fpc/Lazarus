@@ -11,7 +11,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: synunidesigner.sunifiledescription
+#: synunistrconst.sedituni
+msgid "Edit ..."
+msgstr "Szerkesztés ..."
+
+#: synunistrconst.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr "UniHighlighter szintaxiskiemelés"
 
