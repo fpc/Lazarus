@@ -9,19 +9,27 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: threadoptionsdialog.screateunitbuttoncaption
+#: lazthreadstrconst.screateunitbuttoncaption
 msgid "Create Unit"
 msgstr "Создать модуль"
 
-#: threadoptionsdialog.soptionsgroupboxcaption
+#: lazthreadstrconst.soptionsgroupboxcaption
 msgid "Options"
 msgstr "Параметры"
 
-#: threadoptionsdialog.sthreaddialogtitle
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "Модуль Паскаля с потомком класса TThread."
+
+#: lazthreadstrconst.sthreaddialogtitle
 msgid "Thread Class Options"
 msgstr "Параметры класса потока исполнения"
 
-#: threadoptionsdialog.sthreadnamelabelcaption
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr "Объект потока исполнения"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Имя класса потока исполнения"
 

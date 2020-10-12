@@ -12,7 +12,7 @@ unit RegLazThread;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf, LazIdeIntf;
+  Classes, SysUtils, ProjectIntf, LazIdeIntf, lazthreadstrconst;
 
 type
   { TThreadFileDescriptor }
@@ -36,10 +36,6 @@ implementation
 
 uses
   Controls, ThreadOptionsDialog;
-
-resourcestring
-  SThreadName        = 'Thread Object';
-  SThreadDescription = 'A Pascal unit with a subclass of TThread class.';
 
 //---------------//
 procedure register;

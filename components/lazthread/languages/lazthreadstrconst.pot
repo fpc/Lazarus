@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lazthreadstrconst.screateunitbuttoncaption
+msgid "Create Unit"
+msgstr ""
+
+#: lazthreadstrconst.soptionsgroupboxcaption
+msgid "Options"
+msgstr ""
+
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr ""
+
+#: lazthreadstrconst.sthreaddialogtitle
+msgid "Thread Class Options"
+msgstr ""
+
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr ""
+
+#: lazthreadstrconst.sthreadnamelabelcaption
+msgid "Thread Class Name"
+msgstr ""
+

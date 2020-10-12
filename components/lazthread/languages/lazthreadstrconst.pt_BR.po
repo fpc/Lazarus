@@ -11,11 +11,27 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.13\n"
 
-#: reglazthread.sthreaddescription
+#: lazthreadstrconst.screateunitbuttoncaption
+msgid "Create Unit"
+msgstr "Criar Unidade"
+
+#: lazthreadstrconst.soptionsgroupboxcaption
+msgid "Options"
+msgstr "Opções"
+
+#: lazthreadstrconst.sthreaddescription
 msgid "A Pascal unit with a subclass of TThread class."
 msgstr "Uma unidade Pascal com uma subclasse da classe TThread."
 
-#: reglazthread.sthreadname
+#: lazthreadstrconst.sthreaddialogtitle
+msgid "Thread Class Options"
+msgstr "Opções Classe Thread"
+
+#: lazthreadstrconst.sthreadname
 msgid "Thread Object"
 msgstr "Objeto Thread"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
+msgid "Thread Class Name"
+msgstr "Nome Classe Thread"
 

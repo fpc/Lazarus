@@ -10,19 +10,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: threadoptionsdialog.screateunitbuttoncaption
+#: lazthreadstrconst.screateunitbuttoncaption
 msgid "Create Unit"
 msgstr "Unit erzeugen"
 
-#: threadoptionsdialog.soptionsgroupboxcaption
+#: lazthreadstrconst.soptionsgroupboxcaption
 msgid "Options"
 msgstr "Einstellungen"
 
-#: threadoptionsdialog.sthreaddialogtitle
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "Eine Pascal-Unit mit einer Unterklasse der TThread-Klasse."
+
+#: lazthreadstrconst.sthreaddialogtitle
 msgid "Thread Class Options"
 msgstr "Thread-Klasseneinstellungen"
 
-#: threadoptionsdialog.sthreadnamelabelcaption
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr "Thread-Objekt"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Thread-Klassenname"
 

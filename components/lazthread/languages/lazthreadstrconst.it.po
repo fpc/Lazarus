@@ -1,7 +1,7 @@
 # Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2014-10-17 10:19+0200\n"
+"PO-Revision-Date: 2014-10-17 10:20+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: Lazarus\n"
 "Language: it\n"
@@ -10,19 +10,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.6.1\n"
 
-#: threadoptionsdialog.screateunitbuttoncaption
+#: lazthreadstrconst.screateunitbuttoncaption
 msgid "Create Unit"
 msgstr "Creare la unit"
 
-#: threadoptionsdialog.soptionsgroupboxcaption
+#: lazthreadstrconst.soptionsgroupboxcaption
 msgid "Options"
 msgstr "Opzioni"
 
-#: threadoptionsdialog.sthreaddialogtitle
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "Una unit Pascal con una classe derivata da TThread"
+
+#: lazthreadstrconst.sthreaddialogtitle
 msgid "Thread Class Options"
 msgstr "Opzioni della classe Thread"
 
-#: threadoptionsdialog.sthreadnamelabelcaption
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr "Oggetto Thread"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Nome della classe Thread"
 

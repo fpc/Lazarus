@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 17:37+0200\n"
+"PO-Revision-Date: 2017-07-05 17:38+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -12,11 +12,27 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: reglazthread.sthreaddescription
+#: lazthreadstrconst.screateunitbuttoncaption
+msgid "Create Unit"
+msgstr "Kurti modulį"
+
+#: lazthreadstrconst.soptionsgroupboxcaption
+msgid "Options"
+msgstr "Nuostatos"
+
+#: lazthreadstrconst.sthreaddescription
 msgid "A Pascal unit with a subclass of TThread class."
 msgstr "„Pascal“ modulis su klasės „TThread“ poklasiu."
 
-#: reglazthread.sthreadname
+#: lazthreadstrconst.sthreaddialogtitle
+msgid "Thread Class Options"
+msgstr "Gijos klasės nuostatos"
+
+#: lazthreadstrconst.sthreadname
 msgid "Thread Object"
 msgstr "Gijos objektas"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
+msgid "Thread Class Name"
+msgstr "Gijos klasės pavadinimas"
 

@@ -12,19 +12,27 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: threadoptionsdialog.screateunitbuttoncaption
+#: lazthreadstrconst.screateunitbuttoncaption
 msgid "Create Unit"
 msgstr "创建单元"
 
-#: threadoptionsdialog.soptionsgroupboxcaption
+#: lazthreadstrconst.soptionsgroupboxcaption
 msgid "Options"
 msgstr "选项"
 
-#: threadoptionsdialog.sthreaddialogtitle
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "一个带有TThread 类的子类的Pascal unit"
+
+#: lazthreadstrconst.sthreaddialogtitle
 msgid "Thread Class Options"
 msgstr "Thread类选项"
 
-#: threadoptionsdialog.sthreadnamelabelcaption
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr "Thread对象"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Thread类名称"
 

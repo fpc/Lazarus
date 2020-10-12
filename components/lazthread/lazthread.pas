@@ -8,7 +8,7 @@ unit lazthread;
 interface
 
 uses
-  RegLazThread, ThreadOptionsDialog, LazarusPackageIntf;
+  RegLazThread, ThreadOptionsDialog, lazthreadstrconst, LazarusPackageIntf;
 
 implementation
 

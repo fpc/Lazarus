@@ -12,7 +12,7 @@ unit ThreadOptionsDialog;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, lazthreadstrconst;
 
 type
 
@@ -33,12 +33,6 @@ type
 implementation
 
 {$R threadoptionsdialog.lfm}
-
-resourcestring
-  SThreadDialogTitle       = 'Thread Class Options';
-  SOptionsGroupBoxCaption  = 'Options';
-  SThreadNameLabelCaption  = 'Thread Class Name';
-  SCreateUnitButtonCaption = 'Create Unit';
 
 { TThreadOptionsDialog }
 
