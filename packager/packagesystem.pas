@@ -2230,6 +2230,7 @@ begin
   LoadLazarusBasePackage('LCLBase');
   LoadLazarusBasePackage('LCL');
   LoadLazarusBasePackage('SynEdit');
+  LoadLazarusBasePackage('BuildIntf');
   LoadLazarusBasePackage('IDEIntf');
   LoadLazarusBasePackage('DebuggerIntf');
   LoadLazarusBasePackage('LazDebuggerGdbmi');
@@ -5681,10 +5682,12 @@ end;
 procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
-  
   // IDE built-in packages
-  if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
-
+  if Assigned(OnTranslatePackage) then
+  begin
+    OnTranslatePackage(BuildIntfPackage);
+    OnTranslatePackage(CodeToolsPackage);
+  end;
   EndUpdate;
 end;
 
