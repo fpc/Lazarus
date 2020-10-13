@@ -101,6 +101,7 @@ type
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
     procedure ShowLinksCheckBoxChange(Sender: TObject);
+    procedure ShowOnlineLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
   private
     FCountGlobalLinks: integer;
@@ -108,7 +109,7 @@ type
     FCountLPKInvalid: integer;
     FCountOnlineLinks: Integer;
     FCountUserLinks: Integer;
-    FLinks: TAVLTree;// tree of TPkgLinkInfo sorted for name and version
+    FLinks: TAVLTree; // tree of TPkgLinkInfo sorted for name and version
     FCollectingOrigin: TPkgLinkOrigin;
     procedure RescanGlobalLinks;
     procedure UpdateFacets;
@@ -118,6 +119,7 @@ type
     function GetLinkAtRow(Row: integer): TPkgLinkInfo;
     function GetLinkWithEffectiveFilename(Filename: string;
       Origins: TPkgLinkOrigins): TPkgLinkInfo;
+    procedure PackageListAvailable(Sender: TObject);
   public
     property CountLPKValid: integer read FCountLPKValid;
     property CountLPKInvalid: integer read FCountLPKInvalid;
@@ -161,7 +163,25 @@ begin
   LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   LPKInfoCache.StartLPKReaderWithAllAvailable;
 
+  if Assigned(OPMInterface) then
+    ShowOnlineLinksCheckBox.Checked := OPMInterface.IsPackageListLoaded
+  else
+    ShowOnlineLinksCheckBox.Enabled := False;
+  // Set handler after setting Checked.
+  ShowOnlineLinksCheckBox.OnChange := @ShowOnlineLinksCheckBoxChange;
+
   UpdatePackageList;
+  if OPMInterface <> nil then
+    OPMInterface.AddPackageListNotification(@PackageListAvailable);
+end;
+
+procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
+begin
+  if OPMInterface <> nil then
+    OPMInterface.RemovePackageListNotification(@PackageListAvailable);
+  LPKInfoCache.EndLPKReader;
+  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
+  ClearLinks;
 end;
 
 procedure TPackageLinksDialog.FilterEditChange(Sender: TObject);
@@ -221,13 +241,6 @@ begin
   if HasOnline then;
 end;
 
-procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
-begin
-  LPKInfoCache.EndLPKReader;
-  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
-  ClearLinks;
-end;
-
 procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);
 begin
   UpdatePackageList;
@@ -254,6 +267,15 @@ end;
 procedure TPackageLinksDialog.ShowLinksCheckBoxChange(Sender: TObject);
 begin
   UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.ShowOnlineLinksCheckBoxChange(Sender: TObject);
+begin
+  Assert(Assigned(OPMInterface), 'TPackageLinksDialog: OPMInterface=Nil.');
+  if (Sender as TCheckBox).Checked and not OPMInterface.IsPackageListLoaded then
+    OPMInterface.GetPackageList  // ListBox will be updated later by an event.
+  else
+    UpdatePackageList;
 end;
 
 procedure TPackageLinksDialog.UpdateGlobalLinksButtonClick(Sender: TObject);
@@ -503,6 +525,12 @@ begin
     Node:=Node.Successor;
   end;
   Result:=nil;
+end;
+
+procedure TPackageLinksDialog.PackageListAvailable(Sender: TObject);
+begin
+  DebugLn('TPackageLinksDialog.PackageListAvailable.');
+  UpdatePackageList;
 end;
 
 { TPkgLinkInfo }
