@@ -1,4 +1,4 @@
-unit LazMsgDialogs;
+unit LazMsgWorker;
 
 {$mode objfpc}{$H+}
 
@@ -9,16 +9,16 @@ uses
   UITypes;
 
 type
-  TLazMessageDialog = function(const aCaption, aMsg: string;
+  TLazMessageWorker = function(const aCaption, aMsg: string;
                                DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
                                const HelpKeyword: string = ''): Integer of object;
-  TLazQuestionDialog = function(const aCaption, aMsg: string;
+  TLazQuestionWorker = function(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: array of const;
                                 const HelpKeyword: string = ''): Integer of object;
 
 var  // set by the IDE
-  LazMessageDialog: TLazMessageDialog = nil;
-  LazQuestionDialog: TLazQuestionDialog = nil;
+  LazMessageWorker: TLazMessageWorker = nil;
+  LazQuestionWorker: TLazQuestionWorker = nil;
 
 implementation
 

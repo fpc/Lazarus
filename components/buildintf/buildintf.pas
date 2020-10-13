@@ -9,7 +9,7 @@ interface
 
 uses
   BaseIDEIntf, BuildStrConsts, CompOptsIntf, FppkgIntf, IDEExternToolIntf, 
-  IDEOptionsIntf, LazMsgDialogs, MacroDefIntf, MacroIntf, NewItemIntf, 
+  IDEOptionsIntf, LazMsgWorker, MacroDefIntf, MacroIntf, NewItemIntf, 
   PackageDependencyIntf, PackageIntf, PackageLinkIntf, ProjectIntf, 
   ProjectResourcesIntf, ProjPackIntf, LazarusPackageIntf;
 

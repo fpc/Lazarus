@@ -23,7 +23,7 @@ uses
   // LazUtils
   UITypes, LazFileCache,
   // BuildIntf
-  LazMsgDialogs;
+  LazMsgWorker;
 
 type
 
@@ -59,11 +59,11 @@ var  // set by the IDE
 // Wrapper function for LazIDESelectDirectory with a default parameter.
 function LazSelectDirectory(const Title: string; const InitialDir: string = ''): string;
 
-// Wrapper function for LazMessageDialog in LazMsgDialogs.
+// Wrapper function for LazMessageWorker in LazMsgWorker.
 function IDEMessageDialog(const aCaption, aMsg: string;
                           DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
                           const HelpKeyword: string = ''): Integer;
-// Wrapper function for LazQuestionDialog in LazMsgDialogs.
+// Wrapper function for LazQuestionWorker in LazMsgWorker.
 function IDEQuestionDialog(const aCaption, aMsg: string;
                            DlgType: TMsgDlgType; Buttons: array of const;
                            const HelpKeyword: string = ''): Integer;
@@ -121,14 +121,14 @@ function IDEMessageDialog(const aCaption, aMsg: string;
                           DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
                           const HelpKeyword: string = ''): Integer;
 begin
-  Result := LazMessageDialog(aCaption, aMsg, DlgType, Buttons, HelpKeyword);
+  Result := LazMessageWorker(aCaption, aMsg, DlgType, Buttons, HelpKeyword);
 end;
 
 function IDEQuestionDialog(const aCaption, aMsg: string;
                            DlgType: TMsgDlgType; Buttons: array of const;
                            const HelpKeyword: string = ''): Integer;
 begin
-  Result := LazQuestionDialog(aCaption, aMsg, DlgType, Buttons, HelpKeyword);
+  Result := LazQuestionWorker(aCaption, aMsg, DlgType, Buttons, HelpKeyword);
 end;
 
 function IDEMessageDialogAb(const aCaption, aMsg: string; DlgType: TMsgDlgType;

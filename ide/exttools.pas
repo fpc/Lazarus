@@ -39,8 +39,8 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazLoggerBase, UTF8Process, LazUTF8,
   UITypes, AvgLvlTree,
-  // IDEIntf
-  IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgDialogs,
+  // BuildIntf
+  IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgWorker,
   // IDE
   IDECmdLine, TransferMacros, LazarusIDEStrConsts;
 
@@ -930,7 +930,7 @@ function TExternalTool.ResolveMacros: boolean;
     if Result then exit;
     if ErrorMessage='' then
       ErrorMessage:=Format(lisInvalidMacrosIn, [aValue]);
-    LazMessageDialog(lisCCOErrorCaption, Format(lisInvalidMacrosInExternalTool,
+    LazMessageWorker(lisCCOErrorCaption, Format(lisInvalidMacrosInExternalTool,
       [aValue, Title]),
       mtError,[mbCancel]);
   end;

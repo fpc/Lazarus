@@ -47,7 +47,7 @@ begin
     t.Dependencies.AddUnit('fppkgintf');
     t.Dependencies.AddUnit('ideexterntoolintf');
     t.Dependencies.AddUnit('ideoptionsintf');
-    t.Dependencies.AddUnit('lazmsgdialogs');
+    t.Dependencies.AddUnit('lazmsgworker');
     t.Dependencies.AddUnit('macrodefintf');
     t.Dependencies.AddUnit('macrointf');
     t.Dependencies.AddUnit('newitemintf');
@@ -64,7 +64,7 @@ begin
     T:=P.Targets.AddUnit('fppkgintf.pas');
     T:=P.Targets.AddUnit('ideexterntoolintf.pas');
     T:=P.Targets.AddUnit('ideoptionsintf.pas');
-    T:=P.Targets.AddUnit('lazmsgdialogs.pas');
+    T:=P.Targets.AddUnit('lazmsgworker.pas');
     T:=P.Targets.AddUnit('macrodefintf.pas');
     T:=P.Targets.AddUnit('macrointf.pas');
     T:=P.Targets.AddUnit('newitemintf.pas');

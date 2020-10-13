@@ -42,8 +42,8 @@
         <UnitName Value="IDEOptionsIntf"/>
       </Item>
       <Item>
-        <Filename Value="lazmsgdialogs.pas"/>
-        <UnitName Value="LazMsgDialogs"/>
+        <Filename Value="lazmsgworker.pas"/>
+        <UnitName Value="LazMsgWorker"/>
       </Item>
       <Item>
         <Filename Value="macrodefintf.pas"/>

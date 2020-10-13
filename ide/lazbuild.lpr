@@ -37,8 +37,8 @@ uses
   LCLPlatformDef, Forms,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
-  // IDEIntf
-  BaseIDEIntf, MacroIntf, PackageIntf, LazMsgDialogs, ProjectIntf, IDEExternToolIntf,
+  // BuildIntf
+  BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IDE
   InitialSetupProc, ExtToolsConsole, CompilerOptions,
@@ -1263,8 +1263,8 @@ end;
 
 procedure TLazBuildApplication.SetupDialogs;
 begin
-  LazMessageDialog:=@OnIDEMessageDialog;
-  LazQuestionDialog:=@OnIDEQuestionDialog;
+  LazMessageWorker:=@OnIDEMessageDialog;
+  LazQuestionWorker:=@OnIDEQuestionDialog;
 end;
 
 procedure TLazBuildApplication.StoreBaseSettings;

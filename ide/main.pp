@@ -76,13 +76,14 @@ uses
   LCLExceptionStacktrace,
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
+  // BuildIntf
+  BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker,
+  PackageIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
-  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs,
-  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, LazMsgDialogs,
-  PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, BaseIDEIntf, LazIDEIntf,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
-  SelEdits,
+  IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
+  MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
+  ToolBarIntf, SelEdits,
   // protocol
   IDEProtocol,
   // compile
@@ -2130,8 +2131,8 @@ begin
   LazIDESelectDirectory:=@SelectDirectoryHandler;
   InitIDEFileDialog:=@InitIDEFileDialogHandler;
   StoreIDEFileDialog:=@StoreIDEFileDialogHandler;
-  LazMessageDialog:=@IDEMessageDialogHandler;
-  LazQuestionDialog:=@IDEQuestionDialogHandler;
+  LazMessageWorker:=@IDEMessageDialogHandler;
+  LazQuestionWorker:=@IDEQuestionDialogHandler;
   TestCompilerOptions:=@CompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@CheckForNewUnit;
 end;
