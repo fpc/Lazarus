@@ -50,7 +50,7 @@ uses
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
-  EnvironmentOpts, TransferMacros, CompilerOptions, PublishModule,
+  EnvironmentOpts, TransferMacros, CompilerOptions, PublishModuleIntf,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;

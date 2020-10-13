@@ -3,7 +3,7 @@
 
    fpmake.pp for BuildIntf 1.0
 
-   This file was generated on 21.03.2020
+   This file was generated on 13.10.2020
 }
 
 {$ifndef ALLPACKAGES} 
@@ -24,9 +24,13 @@ begin
   with Installer do
     begin
     P:=AddPackage('buildintf');
-    P.Version:='1.0';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
+
+    P.Author:='Lazarus';
+    P.License:='Modified LGPL2';
+    P.Description:='BuildIntf - Non-GUI interface units.';
 
     P.Flags.Add('LazarusDsgnPkg');
 
@@ -57,6 +61,7 @@ begin
     t.Dependencies.AddUnit('projectintf');
     t.Dependencies.AddUnit('projectresourcesintf');
     t.Dependencies.AddUnit('projpackintf');
+    t.Dependencies.AddUnit('publishmoduleintf');
 
     T:=P.Targets.AddUnit('baseideintf.pas');
     T:=P.Targets.AddUnit('buildstrconsts.pas');
@@ -74,8 +79,10 @@ begin
     T:=P.Targets.AddUnit('projectintf.pas');
     T:=P.Targets.AddUnit('projectresourcesintf.pas');
     T:=P.Targets.AddUnit('projpackintf.pas');
+    T:=P.Targets.AddUnit('publishmoduleintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
+    P.Sources.AddSrc('BuildIntf.compiled');
     P.InstallFiles.Add('BuildIntf.compiled',AllOSes,'$(unitinstalldir)');
 
     end;

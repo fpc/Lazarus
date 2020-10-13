@@ -54,7 +54,7 @@ uses
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
-  PublishModule, FppkgHelper;
+  PublishModuleIntf, FppkgHelper;
 
 type
   TLazPackage = class;

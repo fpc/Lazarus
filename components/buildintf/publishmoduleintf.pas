@@ -1,11 +1,4 @@
 {
- /***************************************************************************
-                            publishmodule.pas
-                            -----------------
-
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -28,7 +21,7 @@
   Author: Mattias Gaertner, Juha Manninen
 
 }
-unit PublishModule;
+unit PublishModuleIntf;
 
 {$mode objfpc}{$H+}
 
@@ -38,10 +31,8 @@ uses
   Classes, SysUtils, RegExpr,
   // LazUtils
   LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils, Laz2_XMLCfg,
-  // IdeIntf
-  MacroIntf,
-  // IDE
-  IDEProcs;
+  // BuildIntf
+  MacroIntf;
 
 type
   { TPublishModuleOptions }

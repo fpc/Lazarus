@@ -47,7 +47,7 @@ uses
   // IdeIntf
   ProjectIntf,
   // IDE
-  PublishModule;
+  PublishModuleIntf;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;

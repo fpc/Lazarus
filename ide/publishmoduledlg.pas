@@ -41,7 +41,7 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf,
   LazIDEIntf, LCLIntf,
   // IDE
-  ProjectDefs, Project, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
+  ProjectDefs, Project, PackageDefs, PublishModuleIntf, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions;
 
 type

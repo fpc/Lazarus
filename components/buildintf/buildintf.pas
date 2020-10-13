@@ -11,7 +11,7 @@ uses
   BaseIDEIntf, BuildStrConsts, CompOptsIntf, FppkgIntf, IDEExternToolIntf, 
   IDEOptionsIntf, LazMsgWorker, MacroDefIntf, MacroIntf, NewItemIntf, 
   PackageDependencyIntf, PackageIntf, PackageLinkIntf, ProjectIntf, 
-  ProjectResourcesIntf, ProjPackIntf, LazarusPackageIntf;
+  ProjectResourcesIntf, ProjPackIntf, PublishModuleIntf, LazarusPackageIntf;
 
 implementation
 

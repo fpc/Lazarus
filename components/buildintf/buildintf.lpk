@@ -81,6 +81,10 @@
         <Filename Value="projpackintf.pas"/>
         <UnitName Value="ProjPackIntf"/>
       </Item>
+      <Item>
+        <Filename Value="publishmoduleintf.pas"/>
+        <UnitName Value="PublishModuleIntf"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
