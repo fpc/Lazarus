@@ -50,8 +50,8 @@ procedure RegisterLazUtilsComponents;
 implementation
 
 procedure RegisterDB;
-begin
-  RegisterComponents('Data Access',[TDatasource,TBufDataset, TCSVDataset]); // this bites dbflaz
+begin                                                   // this bites dbflaz
+  RegisterComponents('Data Access',[TDatasource, TBufDataset, TCSVDataset]);
 end;
 
 procedure RegisterSimpleIPC;

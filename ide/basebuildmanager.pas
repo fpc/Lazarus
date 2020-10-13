@@ -32,7 +32,10 @@ unit BaseBuildManager;
 interface
 
 uses
-  Classes, SysUtils, Forms,
+  Classes, SysUtils,
+  // LCL
+  Forms,
+  // IDE
   Project;
   
 type

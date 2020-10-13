@@ -66,13 +66,12 @@ uses
   // BuildIntf
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
-  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf,
+  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
-  LazarusIDEStrConsts, MainIntf, IDEProcs, DialogProcs, IDEOptionDefs,
+  LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
   PackageDefs, Project, InputHistory, MainBase, EnvironmentOpts,
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks,
-  ProjPackEditing, ProjPackFilePropGui, PackageSystem, ToolBarIntf,
-  BuildManager;
+  ProjPackEditing, ProjPackFilePropGui, PackageSystem, BuildManager;
 
 type
   TOnAddUnitToProject =

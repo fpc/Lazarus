@@ -40,7 +40,7 @@ uses
   // FCL
   Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
   // LCL
-  Forms,
+  Forms, ImgList,
   // Codetools
   LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs,
@@ -48,13 +48,13 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
   LazTracer, LazLoggerBase, UITypes, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
-  MacroIntf, MacroDefIntf, IDEOptionsIntf, PackageDependencyIntf, PackageIntf,
+  MacroIntf, MacroDefIntf, IDEOptionsIntf, PackageDependencyIntf, PackageIntf, FppkgIntf,
   // IDEIntf
   LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
-  PublishModule, ImgList, FppkgHelper, FppkgIntf;
+  PublishModule, FppkgHelper;
 
 type
   TLazPackage = class;
