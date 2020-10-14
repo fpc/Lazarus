@@ -4067,11 +4067,13 @@ function GetControlWindow(Widget: Pointer) : PGDKWindow;
 begin
   if Widget <> nil then 
   begin
-    gtk_widget_realize(Widget); // associate with window
     If not GTKWidgetIsA(PGTKWidget(Widget), GTK_Layout_Get_Type) then
       Result := PGTKWidget(Widget)^.Window
     else
+    begin
+      gtk_widget_realize(Widget); // associate with window
       Result := PGtkLayout(Widget)^.bin_window;
+    end;
     if (Result=nil) and (GTK_WIDGET_NO_WINDOW(Widget)) then
       Result:=gtk_widget_get_parent_window(Widget);
   end else
