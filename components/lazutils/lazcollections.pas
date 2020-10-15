@@ -42,10 +42,11 @@ type
   private
     FList: array of T;
     FQueueSize: integer;
+  protected
     FTotalItemsPopped: QWord;
     FTotalItemsPushed: QWord;
-    function GetIsEmpty: Boolean;
-    function GetIsFull: Boolean;
+    function GetIsEmpty: Boolean; virtual;
+    function GetIsFull: Boolean; virtual;
   public
     constructor create(AQueueDepth: Integer = 10);
     procedure Grow(ADelta: integer);
@@ -66,7 +67,7 @@ type
     TLazTypedFifoQueue = specialize TLazFifoQueue<T>;
   private
     FMonitor: TLazMonitor;
-    FFifoList: TLazTypedFifoQueue;
+    FFifoQueue: TLazTypedFifoQueue;
     FPushTimeout: Cardinal;
     FPopTimeout: Cardinal;
     FHasRoomEvent: PRTLEvent;
@@ -83,6 +84,7 @@ type
     procedure Lock;
     procedure Unlock;
     function CreateFifoQueue(AQueueDepth: Integer): TLazTypedFifoQueue; virtual;
+    property FifoQueue: TLazTypedFifoQueue read FFifoQueue;
   public
     constructor create(AQueueDepth: Integer = 10; PushTimeout: cardinal = INFINITE; PopTimeout: cardinal = INFINITE);
     destructor Destroy; override;
@@ -243,17 +245,17 @@ end;
 
 function TLazThreadedQueue.GetQueueSize: integer;
 begin
-  Result := FFifoList.QueueSize;
+  Result := FFifoQueue.QueueSize;
 end;
 
 function TLazThreadedQueue.GetTotalItemsPopped: QWord;
 begin
-  Result := FFifoList.TotalItemsPopped;
+  Result := FFifoQueue.TotalItemsPopped;
 end;
 
 function TLazThreadedQueue.GetTotalItemsPushed: QWord;
 begin
-  Result := FFifoList.TotalItemsPushed;
+  Result := FFifoQueue.TotalItemsPushed;
 end;
 
 function TLazThreadedQueue.TryPopItem(out AItem: T): boolean;
@@ -268,23 +270,23 @@ end;
 
 function TLazThreadedQueue.TryPushItemUnprotected(const AItem: T): boolean;
 begin
-  result := FFifoList.PushItem(AItem);
+  result := FFifoQueue.PushItem(AItem);
   if result then
     RTLeventSetEvent(FHasItemEvent);
 
   RTLeventResetEvent(FHasRoomEvent);
-  if not FFifoList.IsFull then
+  if not FFifoQueue.IsFull then
     RTLeventSetEvent(FHasRoomEvent);
 end;
 
 function TLazThreadedQueue.TryPopItemUnprotected(out AItem: T): boolean;
 begin
-  result := FFifoList.PopItem(AItem);
+  result := FFifoQueue.PopItem(AItem);
   if result then
     RTLeventSetEvent(FHasRoomEvent);
 
   RTLeventResetEvent(FHasItemEvent);
-  if not FFifoList.IsEmpty then
+  if not FFifoQueue.IsEmpty then
     RTLeventSetEvent(FHasItemEvent);
 end;
 
@@ -307,7 +309,7 @@ end;
 constructor TLazThreadedQueue.create(AQueueDepth: Integer; PushTimeout: cardinal; PopTimeout: cardinal);
 begin
   FMonitor:=TLazMonitor.create;
-  FFifoList := CreateFifoQueue(AQueueDepth);
+  FFifoQueue := CreateFifoQueue(AQueueDepth);
   Grow(AQueueDepth);
   FHasRoomEvent:=RTLEventCreate;
   RTLeventSetEvent(FHasRoomEvent);
@@ -322,7 +324,7 @@ begin
   RTLeventdestroy(FHasRoomEvent);
   RTLeventdestroy(FHasItemEvent);
   FMonitor.Free;
-  FFifoList.Free;
+  FFifoQueue.Free;
   inherited Destroy;
 end;
 
@@ -334,7 +336,7 @@ var
 begin
   FMonitor.Enter;
   try
-    FFifoList.Grow(ADelta);
+    FFifoQueue.Grow(ADelta);
   finally
     FMonitor.Leave;
   end;
