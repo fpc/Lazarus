@@ -102,6 +102,10 @@ type
   TFpThreadWorkerQueue = class(specialize TLazThreadedQueue<TFpThreadWorkerItem>)
   private type
     TFpWorkerThreadList = specialize TFPGObjectList<TFpWorkerThread>;
+  protected type
+    TFpDbgTypedFifoQueue = class(TLazTypedFifoQueue)
+      function PushItem(const AItem: TFpThreadWorkerItem): Boolean; override;
+    end;
   strict private
     FWantedCount, FCurrentCount: Integer;
     FThreadMonitor: TLazMonitor;
@@ -110,6 +114,7 @@ type
     function GetCurrentCount: Integer;
     function GetIdleThreadCount: integer;
     function GetThreadCount: integer;
+    function GetThreads(AnIndex: Integer): TThread;
     function GetWantedCount: Integer;
     procedure SetThreadCount(AValue: integer);
   protected
@@ -118,6 +123,7 @@ type
     property WantedCount: Integer read GetWantedCount;
     property CurrentCount: Integer read GetCurrentCount;
     property ThreadMonitor: TLazMonitor read FThreadMonitor;
+    function CreateFifoQueue(AQueueDepth: Integer): TLazTypedFifoQueue; override;
   public
     constructor Create(AQueueDepth: Integer = 10; PushTimeout: cardinal = INFINITE; PopTimeout: cardinal = INFINITE);
     destructor Destroy; override; // Will not wait for the threads.
@@ -130,6 +136,7 @@ type
     procedure RemoveItem(const AItem: TFpThreadWorkerItem); // wait if already running
 
     property ThreadCount: integer read GetThreadCount write SetThreadCount; // Not thread safe
+    property Threads[AnIndex: Integer]: TThread read GetThreads;
     property IdleThreadCount: integer read GetIdleThreadCount;
     property MainWaitEvent: PRTLEvent read FMainWaitEvent;
   end;
@@ -144,7 +151,28 @@ type
     procedure AddRef;
     procedure DecRef;
   end;
-  
+
+  { TFpDbgLockList }
+
+  TFpDbgLockList = class
+  private type
+    TEventList = specialize TFPGList<PRTLEvent>;
+  private
+    FMonitor: TLazMonitor;
+    FCachedEvent: PRTLEvent;
+    FWaitList: TEventList;
+    FList: TFPList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Lock;
+    procedure UnLock;
+    procedure GetLockFor(AnId: Pointer);
+    procedure GetLockFor(AnId: TObject);
+    procedure FreeLockFor(AnId: Pointer);
+    procedure FreeLockFor(AnId: TObject);
+  end;
+
 const
   DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
 
@@ -361,6 +389,97 @@ type
 
   TFpThreadWorkerTerminateItem = class(TFpThreadWorkerItem)
   end;
+
+{ TFpDbgLockList }
+
+constructor TFpDbgLockList.Create;
+begin
+  FMonitor := TLazMonitor.create;
+  FCachedEvent := RTLEventCreate;
+  FWaitList := TEventList.Create;
+  FList := TFPList.Create;
+end;
+
+destructor TFpDbgLockList.Destroy;
+begin
+  FMonitor.Free;
+  if FCachedEvent <> nil then
+    RTLeventdestroy(FCachedEvent);
+  FWaitList.Free;
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TFpDbgLockList.Lock;
+begin
+  FMonitor.Enter;
+end;
+
+procedure TFpDbgLockList.UnLock;
+begin
+  FMonitor.Leave;
+end;
+
+procedure TFpDbgLockList.GetLockFor(AnId: Pointer);
+var
+  WaitEvent: PRTLEvent;
+begin
+  WaitEvent := nil;
+  while true do begin
+    FMonitor.Enter;
+    try
+      if FList.IndexOf(AnId) < 0 then begin
+        FList.Add(AnId);
+        if WaitEvent <> nil then begin
+          FWaitList.Remove(WaitEvent);
+          if FCachedEvent = nil then begin
+            RTLeventResetEvent(WaitEvent);
+            FCachedEvent := WaitEvent;
+          end
+          else
+            RTLeventdestroy(WaitEvent);
+        end;
+        break;
+      end;
+      if WaitEvent = nil then begin
+        WaitEvent := FCachedEvent;
+        FCachedEvent := nil;
+        if WaitEvent = nil then
+          WaitEvent := RTLEventCreate;
+        FWaitList.Add(WaitEvent);
+      end
+      else
+        RTLeventdestroy(WaitEvent);
+    finally
+      FMonitor.Leave;
+    end;
+    RTLeventWaitFor(WaitEvent);
+  end;
+end;
+
+procedure TFpDbgLockList.GetLockFor(AnId: TObject);
+begin
+  GetLockFor(Pointer(AnId));
+end;
+
+procedure TFpDbgLockList.FreeLockFor(AnId: Pointer);
+var
+  i: Integer;
+begin
+  FMonitor.Enter;
+  try
+    FList.Remove(AnId);
+    for i := 0 to FWaitList.Count - 1 do
+      RTLeventSetEvent(FWaitList[i]);
+  finally
+    FMonitor.Leave;
+  end;
+end;
+
+procedure TFpDbgLockList.FreeLockFor(AnId: TObject);
+begin
+  FreeLockFor(Pointer(AnId));
+end;
 
 { TFpGlobalThreadWorkerQueue }
 
@@ -596,6 +715,17 @@ begin
   FQueue.RemoveThread(Self);
 end;
 
+{ TFpThreadWorkerQueue.TFpDbgTypedFifoQueue }
+
+function TFpThreadWorkerQueue.TFpDbgTypedFifoQueue.PushItem(
+  const AItem: TFpThreadWorkerItem): Boolean;
+begin
+  if IsFull then
+    Grow(Min(QueueSize, 100));
+  Result := inherited PushItem(AItem);
+  assert(Result, 'TFpThreadWorkerQueue.TFpDbgTypedFifoQueue.PushItem: Result');
+end;
+
 { TFpThreadWorkerQueue }
 
 function TFpThreadWorkerQueue.GetThreadCount: integer;
@@ -606,6 +736,14 @@ begin
   finally
     FThreadMonitor.Leave;
   end;
+end;
+
+function TFpThreadWorkerQueue.GetThreads(AnIndex: Integer): TThread;
+begin
+  if AnIndex >= FWorkerThreadList.Count then
+    Result := nil
+  else
+    Result := FWorkerThreadList[AnIndex];
 end;
 
 function TFpThreadWorkerQueue.GetCurrentCount: Integer;
@@ -665,6 +803,12 @@ begin
   finally
     FThreadMonitor.Leave;
   end;
+end;
+
+function TFpThreadWorkerQueue.CreateFifoQueue(AQueueDepth: Integer
+  ): TLazTypedFifoQueue;
+begin
+  Result := TFpDbgTypedFifoQueue.create(AQueueDepth);
 end;
 
 constructor TFpThreadWorkerQueue.Create(AQueueDepth: Integer;
@@ -729,14 +873,7 @@ end;
 procedure TFpThreadWorkerQueue.PushItem(const AItem: TFpThreadWorkerItem);
 begin
   AItem.AddRef;
-  Lock;
-  try
-    if TotalItemsPushed - TotalItemsPopped = QueueSize then
-      Grow(Min(QueueSize, 100));
-    inherited TryPushItemUnprotected(AItem);
-  finally
-    Unlock;
-  end;
+  inherited PushItem(AItem);
 end;
 
 procedure TFpThreadWorkerQueue.PushItemIdleOrRun(
@@ -748,11 +885,8 @@ begin
   Lock;
   try
     q := IdleThreadCount > 0;
-    if q then begin
-      if TotalItemsPushed - TotalItemsPopped = QueueSize then
-        Grow(Min(QueueSize, 100));
+    if q then
       inherited TryPushItemUnprotected(AItem);
-    end;
   finally
     Unlock;
   end;
