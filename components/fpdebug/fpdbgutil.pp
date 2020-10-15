@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
-  UTF8Process, syncobjs;
+  UTF8Process, LazLoggerBase, syncobjs;
 
 type
   TFPDMode = (dm32, dm64);
@@ -65,6 +65,7 @@ type
     FError: Exception;
     FRefCnt: LongInt;
     FStopRequested: Boolean;
+    FLogGroup: PLazLoggerLogGroup;
     function GetIsCancelled: Boolean;
     function GetIsDone: Boolean;
   protected
@@ -80,6 +81,7 @@ type
     procedure DecRef;
     function  RefCount: Integer;
     procedure RequestStop;
+    function DebugText: String; virtual;
     property Error: Exception read FError;
     property IsDone: Boolean read GetIsDone;
     property IsCancelled: Boolean read GetIsCancelled;
@@ -118,6 +120,8 @@ type
     function GetWantedCount: Integer;
     procedure SetThreadCount(AValue: integer);
   protected
+    FLogGroup: PLazLoggerLogGroup;
+
     FIdleThreadCount: integer;
     function RemoveThread(Item: TFpWorkerThread): Integer;
     property WantedCount: Integer read GetWantedCount;
@@ -199,12 +203,14 @@ function GetFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue;
 
 property FpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue read GetFpDbgGlobalWorkerQueue;
 
+function dbgsThread: String;
+function dbgsWorkItemState(AState: Integer): String;
+
 implementation
 
-uses
-  LazLoggerBase;
 
 var
+  FPDBG_THREADS, DBG_VERBOSE, DBG_ERRORS: PLazLoggerLogGroup;
   TheFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue = nil;
 
 function GetFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue;
@@ -213,6 +219,27 @@ begin
     TheFpDbgGlobalWorkerQueue := TFpGlobalThreadWorkerQueue.Create(50);
 
   Result := TheFpDbgGlobalWorkerQueue;
+end;
+
+function dbgsThread: String;
+begin
+  if system.ThreadID = Classes.MainThreadID then
+    Result := '<MAIN>'
+  else
+    Result := DbgS(system.ThreadID);
+end;
+
+function dbgsWorkItemState(AState: Integer): String;
+begin
+  case AState of
+    TFpThreadWorkerItem.TWSTATE_NEW         : Result := 'TWSTATE_NEW';
+    TFpThreadWorkerItem.TWSTATE_RUNNING     : Result := 'TWSTATE_RUNNING';
+    TFpThreadWorkerItem.TWSTATE_WAITING     : Result := 'TWSTATE_WAITING';
+    TFpThreadWorkerItem.TWSTATE_WAIT_WORKER : Result := 'TWSTATE_WAIT_WORKER';
+    TFpThreadWorkerItem.TWSTATE_DONE        : Result := 'TWSTATE_DONE';
+    TFpThreadWorkerItem.TWSTATE_CANCEL      : Result := 'TWSTATE_CANCEL';
+    else                  RESULT := dbgs(AState)+'???';
+  end;
 end;
 
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
@@ -536,14 +563,16 @@ var
   OldState: Cardinal;
 begin
   OldState := InterlockedCompareExchange(FState, TWSTATE_RUNNING, TWSTATE_NEW);
+  DebugLn(FLogGroup, '%s!%s Executing WorkItem: %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
 
   if (OldState in [TWSTATE_NEW, TWSTATE_WAIT_WORKER]) then begin
     (* State is now either TWSTATE_RUNNING or TWSTATE_WAIT_WORKER  *)
     try
+      DebugLnEnter(FLogGroup);
       if not StopRequested then
         DoExecute;
-
     finally
+      DebugLnExit(FLogGroup);
       OldState := InterLockedExchange(FState, TWSTATE_DONE);
       if (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]) then
         RTLeventSetEvent(MyWorkerThread.Queue.MainWaitEvent)
@@ -551,6 +580,7 @@ begin
       // If other threads have a ref, they may call WaitForFinish and read data from this.
       if (InterLockedExchangeAdd(FRefCnt, 0) > 1) then
         WriteBarrier;
+      DebugLn(FLogGroup, '%s!%s Finished WorkItem: %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     end;
   end;
 end;
@@ -568,10 +598,13 @@ begin
     //  TWSTATE_DONE        : KEEP (will be restored at exit)
     //  TWSTATE_CANCEL      : not allowed
     OldState := InterLockedExchange(FState, TWSTATE_WAIT_WORKER);
+    DebugLn(FLogGroup, '%s!%s WaitForFinish (WITH exe): %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]), 'TFpThreadWorkerItem.WaitForFinish: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL])');
     if (OldState in [TWSTATE_NEW, TWSTATE_RUNNING]) then begin
+      DebugLnEnter(FLogGroup);
       RTLeventWaitFor(AnMainWaitEvent);
       RTLeventResetEvent(AnMainWaitEvent);
+      DebugLnExit(FLogGroup, '%s!%s DONE WaitForFinish (WITH exe): "%s" StopRequested=%s', [dbgsThread, DbgSTime, DebugText, dbgs(StopRequested)]);
     end
     else
       ReadBarrier;
@@ -579,14 +612,17 @@ begin
   else
   begin
     OldState := InterLockedExchange(FState, TWSTATE_WAITING);
+    DebugLn(FLogGroup, '%s!%s WaitForFinish (NO exe): %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]), 'TFpThreadWorkerItem.WaitForFinish: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL])');
     if OldState = TWSTATE_NEW then begin
       DoExecute;
     end
     else
     if OldState = TWSTATE_RUNNING then begin
+      DebugLnEnter(FLogGroup);
       RTLeventWaitFor(AnMainWaitEvent);
       RTLeventResetEvent(AnMainWaitEvent);
+      DebugLnExit(FLogGroup, '%s!%s DONE WaitForFinish (NO exe): "%s" StopRequested=%s', [dbgsThread, DbgSTime, DebugText, dbgs(StopRequested)]);
     end
     else
       ReadBarrier;
@@ -606,10 +642,13 @@ begin
   //  TWSTATE_CANCEL      : KEEP
   RequestStop;
   OldState := InterLockedExchange(FState, TWSTATE_CANCEL); // Prevent thread form executing this
+  Debugln(FLogGroup, '%s!%s WaitForCancel: %s "%s"', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText]);
   assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER]), 'TFpThreadWorkerItem.WaitForCancel: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER])');
   if OldState = TWSTATE_RUNNING then begin
+    DebugLnEnter(FLogGroup);
     RTLeventWaitFor(AnMainWaitEvent);
     RTLeventResetEvent(AnMainWaitEvent);
+    DebugLnExit(FLogGroup, '%s!%s DONE WaitForCancel: "%s"', [dbgsThread, DbgSTime, DebugText]);
   end
   else
   if OldState = TWSTATE_DONE then begin
@@ -645,6 +684,11 @@ procedure TFpThreadWorkerItem.RequestStop;
 begin
   FStopRequested := True;
   InterlockedCompareExchange(FState, TWSTATE_CANCEL, TWSTATE_NEW); // if not running, then WaitForcancel
+end;
+
+function TFpThreadWorkerItem.DebugText: String;
+begin
+  Result := DbgSName(Self);
 end;
 
 { TFpWorkerThread }
@@ -700,19 +744,22 @@ begin
     try
       WorkItem.ExecuteInThread(Self);
     except
-      on E: Exception do
+      on E: Exception do begin
         WorkItem.FError := E;
+        DebugLn(FQueue.FLogGroup or DBG_ERRORS, '%s!%s Thread-Workitem raised exception: "%s" => %s: "%s"', [dbgsThread, DbgSTime, WorkItem.DebugText, E.Classname, E.Message]);
+      end;
     end;
     try
       WorkItem.DecRef;
     except
       on E: Exception do
-        debugln('Exception in WorkItem.DecRef: %s', [E.Message]);
+        debugln(FQueue.FLogGroup or DBG_ERRORS, '%s!%s Exception in WorkItem.DecRef: %s', [dbgsThread, DbgSTime, E.Message]);
     end;
   end;
   if IsMarkedIdle then
     InterLockedDecrement(FQueue.FIdleThreadCount);
   FQueue.RemoveThread(Self);
+  debugln(FQueue.FLogGroup, '%s!%s WorkerThread-Exit', [dbgsThread, DbgSTime]);
 end;
 
 { TFpThreadWorkerQueue.TFpDbgTypedFifoQueue }
@@ -814,6 +861,7 @@ end;
 constructor TFpThreadWorkerQueue.Create(AQueueDepth: Integer;
   PushTimeout: cardinal; PopTimeout: cardinal);
 begin
+  FLogGroup := FPDBG_THREADS;
   FThreadMonitor:=TLazMonitor.create;
   inherited create(AQueueDepth, PushTimeout, PopTimeout);
   FMainWaitEvent := RTLEventCreate;
@@ -872,6 +920,8 @@ end;
 
 procedure TFpThreadWorkerQueue.PushItem(const AItem: TFpThreadWorkerItem);
 begin
+  DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSH WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
+  AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
   inherited PushItem(AItem);
 end;
@@ -881,6 +931,8 @@ procedure TFpThreadWorkerQueue.PushItemIdleOrRun(
 var
   q: Boolean;
 begin
+  DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSHorRUN WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
+  AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
   Lock;
   try
@@ -907,6 +959,11 @@ procedure TFpThreadWorkerQueue.WaitForItem(const AItem: TFpThreadWorkerItem;
 begin
   AItem.WaitForFinish(Self.MainWaitEvent, AWaitForExecInThread);
 end;
+
+initialization
+  FPDBG_THREADS := DebugLogger.FindOrRegisterLogGroup('FPDBG_THREADS' {$IFDEF FPDBG_THREADS} , True {$ENDIF} );
+  DBG_VERBOSE   := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE'   {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_ERRORS    := DebugLogger.FindOrRegisterLogGroup('DBG_ERRORS'    {$IFDEF DBG_ERRORS} , True {$ENDIF} );
 
 finalization
   TheFpDbgGlobalWorkerQueue.Free;
