@@ -483,7 +483,6 @@ begin
   {Disallow any key that is not a digit or -
    Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
   }
-  inherited EditKeyPress(Key);
   if not (Key in (Digits + AllowedControlChars + ['-'])) then Key := #0;
   if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
