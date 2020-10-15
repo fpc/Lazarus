@@ -952,6 +952,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetFlags: TDbgSymbolFlags; override;
     procedure TypeInfoNeeded; override;
 
+    function GetParent: TFpSymbol; override;
     function GetColumn: Cardinal; override;
     function GetFile: String; override;
 //    function GetFlags: TDbgSymbolFlags; override;
@@ -5733,6 +5734,26 @@ begin
   t := TFpSymbolDwarfTypeProc.Create('', InformationEntry, FAddressInfo);
   SetTypeInfo(t); // TODO: avoid adding a reference, already got one....
   t.ReleaseReference;
+end;
+
+function TFpSymbolDwarfDataProc.GetParent: TFpSymbol;
+var
+  InfoEntry: TDwarfInformationEntry;
+  tg: Cardinal;
+  c: TDbgDwarfSymbolBaseClass;
+begin
+  // special: search "self"
+  // Todo nested procs
+  Result := nil;
+  InfoEntry := InformationEntry.Clone;
+  InfoEntry.GoParent;
+  tg := InfoEntry.AbbrevTag;
+  if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+    c := InfoEntry.CompUnit.DwarfSymbolClassMap.GetDwarfSymbolClass(tg);
+    if c <> nil then
+      Result := c.Create('', InfoEntry);
+  end;
+  InfoEntry.ReleaseReference;
 end;
 
 var

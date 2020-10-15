@@ -1151,6 +1151,7 @@ end;
 procedure TFpThreadWorkerCallEntry.UpdateCallstackEntry_DecRef(Data: PtrInt);
 var
   dbg: TFpDebugDebugger;
+  c: String;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerCallEntry.UpdateCallstackEntry_DecRef: system.ThreadID = classes.MainThreadID');
 
@@ -1163,10 +1164,14 @@ begin
     if FCallstackEntry.Validity = ddsRequested then begin
       if FDbgCallStack = nil then
         FCallstackEntry.Validity := ddsInvalid
-      else
+      else begin
+        c := FDbgCallStack.SrcClassName;
+        if c <> '' then
+          c := c + '.';
         FCallstackEntry.Init(FDbgCallStack.AnAddress, nil,
-          FDbgCallStack.FunctionName + FParamAsString,
+          c + FDbgCallStack.FunctionName + FParamAsString,
           FDbgCallStack.SourceFile, '', FDbgCallStack.Line, ddsValid);
+      end;
     end;
 
     if FCallstack <> nil then
@@ -4604,8 +4609,8 @@ begin
     result.SrcFullName := sym.FileName;
 
     symproc := sym;
-    while not (symproc.kind in [skProcedure, skFunction]) do
-      symproc := symproc.Parent;
+    //while not (symproc.kind in [skProcedure, skFunction]) do
+    //  symproc := symproc.Parent;
 
     if assigned(symproc) then
       result.FuncName:=symproc.Name;

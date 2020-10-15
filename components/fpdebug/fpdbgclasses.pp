@@ -105,6 +105,7 @@ type
     function GetProcSymbol: TFpSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
+    function GetSrcClassName: string;
   public
     constructor create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
     destructor Destroy; override;
@@ -113,6 +114,7 @@ type
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
     property FunctionName: string read GetFunctionName;
+    property SrcClassName: string read GetSrcClassName;
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
     property ProcSymbol: TFpSymbol read GetProcSymbol;
@@ -1199,6 +1201,21 @@ begin
     result := Symbol.FileName
   else
     result := '';
+end;
+
+function TDbgCallstackEntry.GetSrcClassName: string;
+var
+  Symbol: TFpSymbol;
+begin
+  result := '';
+  Symbol := GetProcSymbol;
+  if assigned(Symbol) then begin
+    Symbol := Symbol.Parent;
+    if assigned(Symbol) then begin
+      result := Symbol.Name;
+      Symbol.ReleaseReference;
+    end;
+  end;
 end;
 
 constructor TDbgCallstackEntry.create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
