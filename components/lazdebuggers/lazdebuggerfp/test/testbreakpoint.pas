@@ -5,10 +5,9 @@ unit TestBreakPoint;
 interface
 
 uses
-  Classes, SysUtils, math,
-  TestDbgControl, TestDbgTestSuites,
-  TTestWatchUtilities, TestCommonSources, TestDbgConfig, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, LazLoggerBase, Forms;
+  Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites,
+  TTestWatchUtilities, TestCommonSources, TestDbgConfig, TTestDebuggerClasses,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase, Forms;
 
 type
 
@@ -306,6 +305,15 @@ begin
     (* Initialize
        Find all threads
     *)
+  dbg.Threads.CurrentThreads.Count;
+  j := 0;
+  while TTestThreads(dbg.Threads.CurrentThreads).DataValidity <> ddsValid do begin
+    sleep(50);
+    Application.ProcessMessages;
+    inc(j);
+    if j > 100 then break;
+  end;
+
   j := 0;
   for i := 0 to dbg.Threads.CurrentThreads.Count-1 do begin
     t := dbg.Threads.CurrentThreads.Entries[i];
@@ -339,6 +347,15 @@ var
   r: TRegisters;
   ax, bx: TRegisterValue;
 begin
+  dbg.Threads.CurrentThreads.Count;
+  j := 0;
+  while TTestThreads(dbg.Threads.CurrentThreads).DataValidity <> ddsValid do begin
+    sleep(50);
+    Application.ProcessMessages;
+    inc(j);
+    if j > 100 then break;
+  end;
+
   for i := -1 to Min(9, dbg.Threads.CurrentThreads.Count-1) do begin
     t := dbg.Threads.CurrentThreads.EntryById[FThrPrgInfo.Threads[i].ID];
     TestTrue(ATestName+' thread for '+inttostr(FThrPrgInfo.Threads[i].ID), t<> nil);

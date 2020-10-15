@@ -62,6 +62,7 @@ type
     function  Count: Integer; override;
     procedure Clear; override;
     procedure SetValidity(AValidity: TDebuggerDataState); override;
+    property DataValidity: TDebuggerDataState read FDataValidity;
   end;
 
   { TTestThreadsMonitor }
