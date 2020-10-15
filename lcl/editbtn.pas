@@ -321,6 +321,7 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -437,6 +438,7 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -534,6 +536,7 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -644,6 +647,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnEditingDone;
     property OnEnter;
@@ -748,6 +752,7 @@ type
       property OnChangeBounds;
       property OnClick;
       property OnDblClick;
+      property OnContextPopup;
       property OnEditingDone;
       property OnEnter;
       property OnExit;
@@ -859,6 +864,7 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
