@@ -14,14 +14,16 @@ unit UTF8Process;
 {$mode objfpc}{$H+}
 
 {$IFDEF MSWINDOWS}
+{$IF FPC_FULLVERSION < 30200}
   {$DEFINE UseTProcessW}
+{$ENDIF}
 {$ENDIF}
 
 interface
 
 uses
   Classes, SysUtils, Process,
-  {$IF defined(UseSeparateTProcessW) or defined(UseTProcessW)}
+  {$IFDEF UseTProcessW}
   pipes,
   {$ENDIF}
   FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
@@ -199,9 +201,6 @@ Const
   PriorityConstants : Array [TProcessPriority] of Cardinal =
                       (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
                        NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS
-                       {$if (FPC_FULLVERSION >= 30200) and not defined(WinCE)}
-                       ,BELOW_NORMAL_PRIORITY_CLASS,ABOVE_NORMAL_PRIORITY_CLASS
-                       {$endif}
                        );
 
 function WStrAsUniquePWideChar(var s: UnicodeString): PWideChar; inline;
