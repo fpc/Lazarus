@@ -295,6 +295,8 @@ type
 
   TWindowProcHelper = class
   private
+    procedure SetlWinControl(AValue: TWinControl);
+  private
     // WindowProc parameters
     Window: HWnd;            // DWord / QWord
     Msg: UInt;               // LongWord
@@ -303,7 +305,7 @@ type
     // Other variables
     LMessage: TLMessage;
     PLMsg: PLMessage;
-    lWinControl: TWinControl;
+    FlWinControl: TWinControl;
     WinProcess: Boolean;
     NotifyUserInput: Boolean;
     WindowInfo: PWin32WindowInfo;
@@ -370,7 +372,16 @@ type
     procedure UpdateLMMovePos(X, Y: Smallint);
     procedure UpdateUIState(CharCode: Word);
     function DoWindowProc: LResult;    // Called from the actual WindowProc.
+    property lWinControl: TWinControl read FlWinControl write SetlWinControl;
   end;
+  PWindowProcHelper = ^TWindowProcHelper;
+
+  { TWindProcNotificationReceiver }
+
+  TWindProcNotificationReceiver = class
+    procedure ReceiveDestroyNotify(Sender: TObject);
+  end;
+
 
 // Implementation of TWindowProcHelper
 
@@ -487,6 +498,18 @@ begin
   {$ifdef MSG_DEBUG}
     DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2));
   {$endif}
+end;
+
+procedure TWindowProcHelper.SetlWinControl(AValue: TWinControl);
+begin
+  if FlWinControl = AValue then Exit;
+  if FlWinControl <> nil then
+    FlWinControl.RemoveHandlerOnBeforeDestruction(@TWindProcNotificationReceiver(@Self).ReceiveDestroyNotify);
+
+  FlWinControl := AValue;
+
+  if FlWinControl <> nil then
+    FlWinControl.AddHandlerOnBeforeDestruction(@TWindProcNotificationReceiver(@Self).ReceiveDestroyNotify);
 end;
 
 procedure TWindowProcHelper.CalcClipRgn(PaintRegion: HRGN);
@@ -1926,6 +1949,14 @@ begin
   end;
 end;
 
+{ TWindProcNotificationReceiver }
+
+procedure TWindProcNotificationReceiver.ReceiveDestroyNotify(Sender: TObject);
+begin
+  assert(PWindowProcHelper(Self)^.FlWinControl = Sender, 'TWindProcNotificationReceiver.ReceiveDestroyNotify: PWindowProcHelper(Self)^.FlWinControl = Sender');
+  PWindowProcHelper(Self)^.lWinControl := nil;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1945,6 +1976,7 @@ const
   WM_DPICHANGED = $02E0;
 {$ENDIF}
 begin
+  try
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
   WinProcess := True;
@@ -1957,6 +1989,7 @@ begin
   end else begin
     lWinControl := WindowInfo^.WinControl;
   end;
+
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then
@@ -2643,6 +2676,10 @@ begin
   else if PLMsg = @LMNotify     then Result := LMNotify.Result
   else if PLMsg = @LMMouseEvent then Result := LMMouseEvent.Result
   else                               Result := PLMsg^.Result;
+
+  finally
+    lWinControl := nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2677,6 +2714,7 @@ begin
   finally
     Helper.Free;
   end;
+  Helper.lWinControl := nil;
 end;
 
 {$ifdef MSG_DEBUG}
