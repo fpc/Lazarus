@@ -2515,7 +2515,8 @@ end;
 procedure TThreadEntry.Assign(AnOther: TThreadEntry);
 begin
   FTopFrame.Free;
-  FTopFrame    := AnOther.TopFrame.CreateCopy;
+  FTopFrame    := CreateStackEntry;  //   .CreateCopy;
+  FTopFrame.Assign(AnOther.TopFrame);
   FThreadId    := AnOther.FThreadId;
   FThreadName  := AnOther.FThreadName;
   FThreadState := AnOther.FThreadState;
