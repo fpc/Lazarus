@@ -1076,7 +1076,7 @@ type
 
   { TCallStackEntryBase }
 
-  TCallStackEntry = class(TObject)
+  TCallStackEntry = class(TFreeNotifyingObject)
   private
     FValidity: TDebuggerDataState;
     FIndex: Integer;
@@ -1476,6 +1476,13 @@ type
   public
     constructor Create;
     constructor Create(const AnAdress: TDbgPtr;
+                       const AnArguments: TStrings; const AFunctionName: String;
+                       const FileName, FullName: String;
+                       const ALine: Integer;
+                       const AThreadId: Integer; const AThreadName: String;
+                       const AThreadState: String;
+                       AState: TDebuggerDataState = ddsValid);
+    procedure Init(const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
@@ -2494,6 +2501,18 @@ constructor TThreadEntry.Create(const AnAdress: TDbgPtr; const AnArguments: TStr
   AState: TDebuggerDataState);
 begin
   Create;
+  TopFrame.Init(AnAdress, AnArguments, AFunctionName, FileName, FullName, ALine, AState);
+  FThreadId    := AThreadId;
+  FThreadName  := AThreadName;
+  FThreadState := AThreadState;
+end;
+
+procedure TThreadEntry.Init(const AnAdress: TDbgPtr;
+  const AnArguments: TStrings; const AFunctionName: String; const FileName,
+  FullName: String; const ALine: Integer; const AThreadId: Integer;
+  const AThreadName: String; const AThreadState: String;
+  AState: TDebuggerDataState);
+begin
   TopFrame.Init(AnAdress, AnArguments, AFunctionName, FileName, FullName, ALine, AState);
   FThreadId    := AThreadId;
   FThreadName  := AThreadName;

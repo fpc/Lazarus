@@ -2618,6 +2618,7 @@ components/lazdebuggers/lazdebuggerfp/Makefile svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/Makefile.compiled svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/Makefile.fpc svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/fpdebugdebugger.pas svneol=native#text/plain
+components/lazdebuggers/lazdebuggerfp/fpdebugdebuggerutils.pas svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/lazdebuggerfp.lpk svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/lazdebuggerfp.pas svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/test/LazDebFpTest.lpi svneol=native#text/plain

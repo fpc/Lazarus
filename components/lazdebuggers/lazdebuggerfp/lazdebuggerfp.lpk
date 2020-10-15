@@ -19,23 +19,27 @@
 "/>
     <License Value="GPLv2"/>
     <Version Minor="9"/>
-    <Files Count="1">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="fpdebugdebugger.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="FpDebugDebugger"/>
-      </Item1>
+      </Item>
+      <Item>
+        <Filename Value="fpdebugdebuggerutils.pas"/>
+        <UnitName Value="FpDebugDebuggerUtils"/>
+      </Item>
     </Files>
-    <RequiredPkgs Count="3">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="fpdebug"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="DebuggerIntf"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item3>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -119,7 +119,17 @@ type
     property Index: integer read FIndex;
   end;
 
-  TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
+  { TDbgCallstackEntryList }
+
+  TDbgCallstackEntryList = class(specialize TFPGObjectList<TDbgCallstackEntry>)
+  private
+    FHasReadAllAvailableFrames: boolean;
+  protected
+    procedure SetHasReadAllAvailableFrames;
+  public
+    procedure Clear;
+    property HasReadAllAvailableFrames: boolean read FHasReadAllAvailableFrames;
+  end;
 
   TDbgProcess = class;
   TFpWatchPointData = class;
@@ -646,6 +656,7 @@ public
     property MainThread: TDbgThread read FMainThread;
     property GotExitProcess: Boolean read FGotExitProcess write FGotExitProcess;
     property Disassembler: TDbgAsmDecoder read GetDisassembler;
+    property ThreadMap: TThreadMap read FThreadMap;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -747,6 +758,19 @@ begin
     RegisteredDbgProcessClasses := TOSDbgClassesList.Create;
   if RegisteredDbgProcessClasses.Find(ADbgOsClasses) < 0 then // TODO: by content
     RegisteredDbgProcessClasses.Add(ADbgOsClasses);
+end;
+
+{ TDbgCallstackEntryList }
+
+procedure TDbgCallstackEntryList.SetHasReadAllAvailableFrames;
+begin
+  FHasReadAllAvailableFrames := True;
+end;
+
+procedure TDbgCallstackEntryList.Clear;
+begin
+  inherited Clear;
+  FHasReadAllAvailableFrames := False;
 end;
 
 { TOSDbgClasses }
@@ -2674,6 +2698,9 @@ begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
     FCallStackEntryList := TDbgCallstackEntryList.Create;
+  if AFrameRequired = -2 then
+    exit;
+
   if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
     exit;
 
@@ -2776,6 +2803,8 @@ begin
     If (NextIdx > MAX_FRAMES) then
       break;
   end;
+  if CountNeeded > 0 then // there was an error / not possible to read more frames
+    FCallStackEntryList.SetHasReadAllAvailableFrames;
 end;
 
 function TDbgThread.FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr;

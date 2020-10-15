@@ -8,7 +8,7 @@ unit LazDebuggerFp;
 interface
 
 uses
-  FpDebugDebugger, LazarusPackageIntf;
+  FpDebugDebugger, FpDebugDebuggerUtils, LazarusPackageIntf;
 
 implementation
 
