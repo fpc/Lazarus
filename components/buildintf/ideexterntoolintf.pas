@@ -234,8 +234,8 @@ type
     constructor Create(aOwner: TObject; aMsgLineClass: TMessageLineClass);
     destructor Destroy; override;
     property Owner: TObject read FOwner;
-    procedure EnterCriticalSection; virtual; // always use before access
-    procedure LeaveCriticalSection; virtual;
+    procedure EnterCriticalSection; // always use before access
+    procedure LeaveCriticalSection;
     function Count: integer; inline;
     procedure Clear;
     property Items[Index: integer]: TMessageLine read GetItems; default;
@@ -407,8 +407,8 @@ type
     function ApplyPending: boolean; virtual; // true if something changed (main thread)
     procedure InputClosed; virtual; // called by Tool when source closed (main thread)
     function LineFits(Line: TMessageLine): boolean; virtual; // called by ProcessNewMessages (worker thread)
-    procedure EnterCriticalSection; virtual; // Note: when using Tool and View: always lock Tool before View
-    procedure LeaveCriticalSection; virtual;
+    procedure EnterCriticalSection; // Note: when using Tool and View: always lock Tool before View
+    procedure LeaveCriticalSection;
     procedure ConsistencyCheck; virtual;
   public
     property Running: boolean read FRunning write FRunning;
@@ -513,8 +513,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EnterCriticalSection; virtual; // always use before access, when using Tool and View: always lock Tool before View
-    procedure LeaveCriticalSection; virtual;
+    procedure EnterCriticalSection; // always use before access, when using Tool and View: always lock Tool before View
+    procedure LeaveCriticalSection;
     property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
     procedure AutoFree; // (only main thread) free if not in use
@@ -645,7 +645,7 @@ type
     function Add(Title: string): TAbstractExternalTool; virtual; abstract;
     function AddDummy(Title: string): TAbstractExternalTool; // a tool, not run, usable for dependencies
     function IndexOf(Tool: TAbstractExternalTool): integer; virtual; abstract;
-    procedure ConsistencyCheck; virtual;
+    procedure ConsistencyCheck;
     procedure EnterCriticalSection; virtual; abstract;
     procedure LeaveCriticalSection; virtual; abstract;
     function GetIDEObject(ToolData: TIDEExternalToolData): TObject; virtual; abstract;
@@ -1203,9 +1203,6 @@ destructor TAbstractExternalTool.Destroy;
 var
   h: TExternalToolHandler;
 begin
-  {$IFDEF VerboseCheckInterPkgFiles}
-  debugln(['TAbstractExternalTool.Destroy ',Title]);
-  {$ENDIF}
   EnterCriticalSection;
   try
     if FreeData then FreeAndNil(FData);
@@ -1604,26 +1601,16 @@ constructor TExternalToolsBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   fItems:=TFPList.Create;
-  if ExternalToolList=nil then begin
+  if ExternalToolList=nil then
     ExternalToolList:=Self;
-    //DebugLn(['TExternalToolsBase.Create: Setting ExternalToolList to ', ExternalToolList]);
-  end
-  else begin
-    //DebugLn(['TExternalToolsBase.Create: ExternalToolList ', ExternalToolList, ' is already set.']);
-  end;
 end;
 
 destructor TExternalToolsBase.Destroy;
 begin
-  inherited Destroy;
   FreeAndNil(fItems);
-  if ExternalToolList=Self then begin
-    //DebugLn(['TExternalToolsBase.Destroy: Resetting ExternalToolList, was ', ExternalToolList]);
+  if ExternalToolList=Self then
     ExternalToolList:=nil;
-  end
-  else begin
-    //DebugLn(['TExternalToolsBase.Destroy: ExternalToolList ', ExternalToolList, ' differs from Self.']);
-  end;
+  inherited Destroy;
 end;
 
 procedure TExternalToolsBase.ConsistencyCheck;
@@ -1686,8 +1673,7 @@ begin
     fChangedHandler.CallNotifyEvents(Line);
 end;
 
-constructor TMessageLines.Create(aOwner: TObject;
-  aMsgLineClass: TMessageLineClass);
+constructor TMessageLines.Create(aOwner: TObject; aMsgLineClass: TMessageLineClass);
 begin
   FOwner:=aOwner;
   InitCriticalSection(FCritSec);
@@ -1807,7 +1793,6 @@ end;
 
 procedure TMessageLines.MarkFixed(MsgLine: TMessageLine);
 begin
-  //debugln(['TMessageLines.MarkFixed ',MsgLine.Msg,' ',MsgLine.Line,',',MsgLine.Column]);
   if fMarkedFixed=nil then
     fMarkedFixed:=TAvlTree.Create;
   if fMarkedFixed.Find(MsgLine)=nil then
@@ -1820,7 +1805,6 @@ var
   Msg: TMessageLine;
   List: TFPList;
 begin
-  //debugln(['TMessageLines.ApplyFixedMarks ']);
   if fMarkedFixed=nil then exit;
   List:=TFPList.Create;
   try
@@ -1849,7 +1833,6 @@ begin
   SrcLines.FSortedForSrcPos.Clear;
   for i:=0 to SrcLines.Count-1 do begin
     MsgLine:=SrcLines[i];
-    //debugln(['TMessageLines.FetchAll ',MsgLine.Msg]);
     MsgLine.FLines:=Self;
     MsgLine.FIndex:=fItems.Add(MsgLine);
     FSortedForSrcPos.Add(MsgLine);

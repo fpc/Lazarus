@@ -1226,9 +1226,7 @@ end;
 destructor TExternalTools.Destroy;
 begin
   RunExternalTool:=nil;
-  //DebugLn('TExternalTools.Destroy: Terminating All.');
   TerminateAll;
-  //DebugLn('TExternalTools.Destroy: Entering critical section.');
   EnterCriticalSection;
   try
     if fRunning.Count>0 then
