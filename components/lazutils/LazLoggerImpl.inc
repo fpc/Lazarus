@@ -509,6 +509,16 @@ begin
   {$ENDIF}
 end;
 
+function DbgSTime(): string;
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  Result:= IntToStr(GetTickCount64);
+  Insert(':', Result, Length(Result)-2);
+  {$ELSE}
+  Result := '';
+  {$ENDIF}
+end;
+
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}

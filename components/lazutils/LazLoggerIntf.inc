@@ -110,6 +110,8 @@ function DbgSName(const p: TClass): string; overload;
 function dbgObjMem(AnObject: TObject): string; overload;
 function dbghex(i: Int64): string; overload;
 
+function DbgSTime(): string;
+
 function dbgMemRange(P: Pointer; Count: integer; Width: integer = 0): string; overload;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 
