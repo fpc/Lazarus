@@ -1225,12 +1225,14 @@ end;
 
 procedure TAbstractExternalTool.EnterCriticalSection;
 begin
+  Sleep(1); // Force context switch to prevent occational crash. Issue #36318, #37883 etc.
   FWorkerMessages.EnterCriticalSection;
 end;
 
 procedure TAbstractExternalTool.LeaveCriticalSection;
 begin
   Assert(Assigned(FWorkerMessages), 'TAbstractExternalTool.LeaveCriticalSection: FWorkerMessages=Nil.');
+  Sleep(1);
   FWorkerMessages.LeaveCriticalSection;
 end;
 
