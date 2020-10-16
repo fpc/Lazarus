@@ -2400,7 +2400,7 @@ var
   HintType: TPropEditHint;
   fPropRow: TOIPropertyGridRow;
 
-  procedure DoShow(pt: TPoint); inline;
+  procedure ShowShortHint(pt: TPoint); inline;
   //var HintFont: TFont;
   begin
     if WidgetSet.GetLCLCapability(lcTransparentWindow)=LCL_CAPABILITY_NO then
@@ -2423,9 +2423,10 @@ var
 
 var
   SplitDistance, Index, TextLeft: Integer;
+  HintWillChange: Boolean;
 begin
   inherited MouseMove(Shift,X,Y);
-  SplitDistance:=X-SplitterX;
+  SplitDistance := X-SplitterX;
   if FDragging then
   begin
     HideHint;
@@ -2435,24 +2436,29 @@ begin
       EndDragSplitter;
   end
   else begin
-    if (abs(SplitDistance)<=2) then
-      Cursor:=crHSplit
+    if abs(SplitDistance) <= 2 then
+      Cursor := crHSplit
     else
-      Cursor:=crDefault;
+      Cursor := crDefault;
     if ssLeft in Shift then
     begin
       Index := MouseToIndex(Y, False);
       SetItemIndexAndFocus(Index);
       SetCaptureControl(Self);
     end;
-    // hide the hint of an earlier row
+    // The following code handler 2 kinds of hints :
+    // 1. Property's name / value when it does not fit in the cell.
+    // 2. Long description of a property / value, only when ShowHint option is set.
     Index := MouseToIndex(y,false);
     HintType := GetHintTypeAt(Index, x);
-    if (Index<>FHintIndex) or (HintType<>FHintType) then
-      HideHint;
-    if (Index > -1) and not FShowingLongHint
-    and not (FHintManager.HintIsVisible and (Index=FHintIndex) and (HintType=FHintType)) then
-    begin      // check if the property text fits in its box, if not show a hint
+    HintWillChange := (Index<>FHintIndex) or (HintType<>FHintType);
+    if HintWillChange then
+      HideHint;                        // hide the hint of an earlier row
+    // Don't show any more hints if the long hint is there.
+    if FShowingLongHint or (Index = -1) then Exit;
+    // Show the property text as a hint if it does not fit in its box.
+    if HintWillChange or not FHintManager.HintIsVisible then
+    begin
       FHintIndex := Index;
       FHintType := HintType;
       fPropRow := GetRow(Index);
@@ -2461,7 +2467,7 @@ begin
         TheHint := fPropRow.Name;
         TextLeft := BorderWidth + GetTreeIconX(Index) + Indent + 5;
         if (Canvas.TextWidth(TheHint) + TextLeft) >= SplitterX-2 then
-          DoShow(Point(TextLeft - 3, fPropRow.Top-TopY-1));
+          ShowShortHint(Point(TextLeft-3, fPropRow.Top-TopY-1));
       end else
       if HintType in [pehValue,pehEditButton] then
       begin                            // Mouse is over property value...
@@ -2470,31 +2476,28 @@ begin
           TheHint := copy(TheHint, 1, 100) + '...';
         TextLeft := SplitterX+2;
         if Canvas.TextWidth(TheHint) > (ClientWidth - BorderWidth - TextLeft) then
-          DoShow(Point(TextLeft - 3, fPropRow.Top-TopY-1));
+          ShowShortHint(Point(TextLeft-3, fPropRow.Top-TopY-1));
       end;
     end;
-    if ShowHint then
-    begin  // Initialize timer for a long hint describing the property and value.
-      if FLongHintTimer = nil then
-      begin
-        FHintIndex := -1;
-        Assert(not FShowingLongHint, 'TOICustomPropertyGrid.MouseMove: ShowingLongHint!');
-        FLongHintTimer := TTimer.Create(nil);
-        FLongHintTimer.Interval := 500;
-        FLongHintTimer.Enabled := False;
-        FLongHintTimer.OnTimer := @HintTimer;
-        FHintManager.OnMouseDown := @HintMouseDown;
-        FHintManager.WindowName := 'This_is_a_hint_window';
-        FHintManager.HideInterval := 4000;
-        FHintManager.AutoHide := True;
-      end;
-      if not FShowingLongHint then
-        FLongHintTimer.Enabled := RowCount > 0;
+    // Initialize timer for a long hint describing the property and value.
+    if not ShowHint then Exit;
+    if FLongHintTimer = nil then
+    begin
+      FHintIndex := -1;
+      FLongHintTimer := TTimer.Create(nil);
+      FLongHintTimer.Interval := 500;
+      FLongHintTimer.Enabled := False;
+      FLongHintTimer.OnTimer := @HintTimer;
+      FHintManager.OnMouseDown := @HintMouseDown;
+      FHintManager.WindowName := 'This_is_a_hint_window';
+      FHintManager.HideInterval := 4000;
+      FHintManager.AutoHide := True;
     end;
+    FLongHintTimer.Enabled := RowCount > 0;
   end; // not FDragging
 end;
 
-procedure TOICustomPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
+procedure TOICustomPropertyGrid.MouseUp(Button:TMouseButton; Shift:TShiftState;
   X,Y:integer);
 begin
   if FDragging then EndDragSplitter;
