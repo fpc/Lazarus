@@ -2818,6 +2818,7 @@ type
     procedure SelectAll;
     procedure DeselectAll;
     procedure SetHtml(NewHtml : TIpHtml);
+    procedure SetHtmlFromFile(const AFileName: String);
     procedure SetHtmlFromStr(NewHtml : string);
     procedure SetHtmlFromStream(NewHtml : TStream);
     procedure Stop;
@@ -16063,16 +16064,28 @@ begin
   end;
 end;
 
+procedure TIpHtmlCustomPanel.SetHtmlFromFile(const AFileName: String);
+var
+  strm: TFileStream;
+begin
+  strm := TFileStream.Create(AFileName, fmOpenRead + fmShareDenyNone);
+  try
+    SetHtmlFromStream(strm);
+  finally
+    strm.Free;
+  end;
+end;
+
 procedure TIpHtmlCustomPanel.SetHtmlFromStr(NewHtml: string);
 var
-   iphtml: TIpHtml;
-   strm: TStringStream;
+  strm: TStringStream;
 begin
-     iphtml:= TIpHtml.Create;
-     strm:= TStringStream.Create(NewHtml);
-     iphtml.LoadFromStream(strm);
-     SetHtml(iphtml);
-     strm.Free;
+  strm:= TStringStream.Create(NewHtml);
+  try
+    SetHtmlFromStream(strm);
+  finally
+    strm.Free;
+  end;
 end;
 
 procedure TIpHtmlCustomPanel.SetHtmlFromStream(NewHtml: TStream);
