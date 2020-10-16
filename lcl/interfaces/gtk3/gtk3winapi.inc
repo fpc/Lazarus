@@ -632,7 +632,7 @@ begin
       exit;
     end;
     with aRect do
-      gtk_render_focus(Context ,TGtk3DeviceContext(DC).Widget, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_focus(Context ,TGtk3DeviceContext(DC).pcr, Left, Top, Right - Left, Bottom - Top);
 
     Result := True;
   end;
@@ -1522,7 +1522,7 @@ begin
             exit;
           end;
           // get existing clip
-          gdk_cairo_get_clip_rectangle(GtkDC.Widget, @ARect);
+          gdk_cairo_get_clip_rectangle(GtkDC.pcr, @ARect);
           R := RectFromGdkRect(ARect);
           if IsRectEmpty(R) then
           begin
@@ -1557,7 +1557,7 @@ begin
         //exit;
         // when substracting we must have active clipregion
         // with all of its rects.
-        gdk_cairo_get_clip_rectangle(GtkDC.Widget, @ARect);
+        gdk_cairo_get_clip_rectangle(GtkDC.pcr, @ARect);
         R := RectFromGdkRect(ARect);
         if IsRectEmpty(R) then
         begin
@@ -1663,7 +1663,7 @@ begin
       end;
   end;
 
-  cr := TGtk3DeviceContext(DC).Widget;
+  cr := TGtk3DeviceContext(DC).pcr;
   cairo_save(cr);
   try
     cairo_set_line_width(cr, 1);
@@ -1705,7 +1705,7 @@ begin
   Result := 0;
   if not IsValidDC(DC) then
     exit;
-  cr := TGtk3DeviceContext(DC).Widget;
+  cr := TGtk3DeviceContext(DC).pcr;
   cairo_rectangle(cr, ARect.Left+PixelOffset, ARect.Top+PixelOffset, ARect.Right-ARect.Left-1, ARect.Bottom-ARect.Top-1);
   if IsValidGDIObject(hBr) then
     TGtk3DeviceContext(DC).SetSourceColor(TGtk3Brush(HBR).Color);
@@ -1842,7 +1842,7 @@ begin
 
   if Result <> ERROR then
   begin
-    cr := GtkDC.Widget;
+    cr := GtkDC.pcr;
     if gdk_cairo_get_clip_rectangle(cr, @ARect) then
     begin
       lpRect^ := RectFromGdkRect(ARect);
@@ -1861,7 +1861,7 @@ begin
   Result := -1;
   if not IsValidDC(DC) or (RGN = 0) then
     exit;
-  gdk_cairo_get_clip_rectangle(TGtk3DeviceContext(DC).Widget, @ARect);
+  gdk_cairo_get_clip_rectangle(TGtk3DeviceContext(DC).pcr, @ARect);
   // DebugLn('GetClipRgn ',dbgs(TGtk3Region(RGN).GetExtents),' clipRect ',dbgs(RectFromGdkRect(ARect)));
   if IsRectEmpty(RectFromGdkRect(ARect)) then
     exit(0)
@@ -2026,9 +2026,9 @@ begin
     p.Y := TGtk3DeviceContext(DC).ParentPixmap^.get_height;
     Result := True;
   end else
-  if TGtk3DeviceContext(DC).Widget <> nil then
+  if TGtk3DeviceContext(DC).pcr <> nil then
   begin
-    gdk_cairo_get_clip_rectangle(TGtk3DeviceContext(DC).Widget, @ARect);
+    gdk_cairo_get_clip_rectangle(TGtk3DeviceContext(DC).pcr, @ARect);
     p.X := ARect.Width;
     p.Y := ARect.Height;
     Result := True;
@@ -2777,7 +2777,7 @@ begin
     {$endif}
     exit;
   end;
-  cairo_get_matrix(TGtk3DeviceContext(DC).Widget, @Matrix);
+  cairo_get_matrix(TGtk3DeviceContext(DC).pcr, @Matrix);
   dx := 0;
   dy := 0;
   cairo_matrix_transform_point(@Matrix, @dx, @dy);
@@ -2946,7 +2946,7 @@ begin
   // inherited LPtoDP(DC, Points, Count);
   if not IsValidDC(DC) then
     exit;
-  cr := TGtk3DeviceContext(DC).Widget;
+  cr := TGtk3DeviceContext(DC).pcr;
 
   P := @Points;
   while Count > 0 do
@@ -3265,7 +3265,7 @@ begin
   Result := False;
   if not IsValidDC(DC) then
     exit;
-  cairo_restore(TGtk3DeviceContext(DC).Widget);
+  cairo_restore(TGtk3DeviceContext(DC).pcr);
   Result := True;
 end;
 
@@ -3286,7 +3286,7 @@ begin
   Result := 0;
   if not IsValidDC(DC) then
     exit;
-  cairo_save(TGtk3DeviceContext(DC).Widget);
+  cairo_save(TGtk3DeviceContext(DC).pcr);
   Result := 1;
 end;
 
@@ -3813,14 +3813,14 @@ begin
   if IsValidDC(DC) then
   begin
     GetWindowOrgEx(dc, OldPoint);
-    cairo_get_matrix(TGtk3DeviceContext(DC).Widget, @Matrix);
+    cairo_get_matrix(TGtk3DeviceContext(DC).pcr, @Matrix);
     //dx := 0;
     //dy := 0;
     // cairo_matrix_init_translate(Matrix, -NewX, -NewY);
     cairo_matrix_translate(@Matrix,
     	-NewX - TGtk3DeviceContext(DC).fncOrigin.x,
         -NewY - TGtk3DeviceContext(DC).fncOrigin.Y);
-    cairo_transform(TGtk3DeviceContext(DC).Widget, @Matrix);
+    cairo_transform(TGtk3DeviceContext(DC).pcr, @Matrix);
     // cairo_set_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
     // DebugLn('TGtk3WidgetSet.SetWindowOrgEx NewX=',dbgs(NewX),' NewY=',dbgs(NewY));
     Result := True;

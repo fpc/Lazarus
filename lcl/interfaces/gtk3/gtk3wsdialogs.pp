@@ -1212,12 +1212,19 @@ class procedure TGtk3WSOpenDialog.CreatePreviewDialogControl(
 var
   PreviewWidget: PGtkWidget;
   AControl: TPreviewFileControl;
+  alloc:TGtkAllocation;
 begin
   AControl := PreviewDialog.PreviewFileControl;
   if AControl = nil then Exit;
   PreviewWidget := TGtk3CustomControl(AControl.Handle).Widget;
   g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',PreviewWidget);
   gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
+  {alloc.height:=AControl.Height;
+  alloc.width:=AControl.Width;
+  alloc.x:=0;
+  alloc.y:=0;
+  PreviewWidget^.size_allocate(@alloc);
+  PreviewWidget^.queue_resize;}
   gtk_file_chooser_set_preview_widget(Chooser, PreviewWidget);
   gtk_widget_show(PreviewWidget);
 end;

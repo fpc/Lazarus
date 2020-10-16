@@ -617,10 +617,7 @@ begin
   // inherited DCSetAntialiasing(CanvasHandle, AEnabled);
   if IsValidDC(CanvasHandle) then
   begin
-    if AEnabled then
-      cairo_set_antialias(TGtk3DeviceContext(CanvasHandle).Widget, CAIRO_ANTIALIAS_DEFAULT)
-    else
-      cairo_set_antialias(TGtk3DeviceContext(CanvasHandle).Widget, CAIRO_ANTIALIAS_NONE);
+    TGtk3DeviceContext(CanvasHandle).set_antialiasing(AEnabled);
   end;
 end;
 

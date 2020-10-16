@@ -1362,8 +1362,8 @@ begin
   begin
     // do resize to lcl size when mapping widget
     gdk_window_set_events(AWindow, GDK_DEFAULT_EVENTS_MASK);
-    if not (wtWindow in TGtk3Widget(Data).WidgetType) then
-    begin
+  {  if not (wtWindow in TGtk3Widget(Data).WidgetType) then
+    begin }
       with TGtk3Widget(Data).LCLObject do
       begin
         xx := Left;
@@ -1375,12 +1375,12 @@ begin
       AWindow^.move(xx, yy);
       AWindow^.resize(w, h);
       TGtk3Widget(Data).EndUpdate;
-    end else
+  {  end else
     begin
       // DebugLn('TGtk3Window is mapped , setting lclwidget property to PGdkWindow ...');
       // now we set 'lclwidget' to our window.
       // g_object_set_data(AWindow,'lclwidget', TGtk3Widget(Data));
-    end;
+    end;}
   end else
   begin
     if wtMemo in TGtk3Widget(Data).WidgetType then
@@ -1389,6 +1389,7 @@ begin
       // gdk_window_get_position(AWindow, @xx,@yy);
       // DebugLn(' ***** Window ',Format('x %d y %d w %d h %d',[xx,yy,w,h]),' lclobject ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
+
   end;
 end;
 
@@ -4151,8 +4152,11 @@ begin
   	  else
     	  gtb:=TGtkToolButton.new(wicon,PgChar(bs));
  		  end;
-      gtb^.set_tooltip_text(PgChar(btn.Hint));
-      PgtkToolButton(gtb)^.set_use_underline(true);
+      if not (btn.Style in [tbsSeparator,tbsDivider]) then
+      begin
+        gtb^.set_tooltip_text(PgChar(btn.Hint));
+        PgtkToolButton(gtb)^.set_use_underline(true);
+      end;
       PGtkToolBar(Result)^.add(gtb);
 
       if not (btn.Style in [tbsSeparator,tbsDivider]) then

@@ -328,7 +328,7 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
   AWidget := TGtk3Widget(AWinControl.Handle);
-  cr := TGtk3DeviceContext(ADC).Widget;
+  cr := TGtk3DeviceContext(ADC).pcr;
   cairo_save(cr);
   cairo_translate(cr, X, Y);
   gtk_widget_draw(AWidget.Widget, cr);
@@ -537,20 +537,25 @@ begin
 end;
 
 class procedure TGtk3WSWinControl.ShowHide(const AWinControl: TWinControl);
+var
+  wgt:TGtk3Widget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSWinControl.ShowHide ',dbgsName(AWinControl));
   {$ENDIF}
-  TGtk3Widget(AWinControl.Handle).Visible := AWinControl.HandleObjectShouldBeVisible;
-  if TGtk3Widget(AWinControl.Handle).Visible then
+  wgt:=TGtk3Widget(AWinControl.Handle);
+  wgt.Visible := AWinControl.HandleObjectShouldBeVisible;
+  if wgt.Visible then
   begin
-    TGtk3Widget(AWinControl.Handle).ShowAll;
+    wgt.ShowAll;
     // imediatelly realize (create widget handles), so we'll get updated bounds
     // and everything just on time.
-    if not (wtScrollingWin in TGtk3Widget(AWinControl.Handle).WidgetType) then
-      PGtkWidget(TGtk3Widget(AWinControl.Handle).GetContainerWidget)^.realize;
+    if not (wtScrollingWin in wgt.WidgetType) then
+    begin
+      wgt.GetContainerWidget^.realize;
+    end;
   end;
 end;
 
