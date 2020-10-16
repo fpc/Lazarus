@@ -44,13 +44,15 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   LazUtilities, LazStringUtils, LazMethodList,
+  // BuildIntf
+  BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
+  IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
-  BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
-  CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
+  IDEDialogs, LazIDEIntf, IDEMsgIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
-  EnvironmentOpts, TransferMacros, CompilerOptions, PublishModuleIntf,
+  EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;

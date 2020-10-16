@@ -47,6 +47,18 @@
         <UnitName Value="AvgLvlTree"/>
       </Item>
       <Item>
+        <Filename Value="codepagesasian.pas"/>
+        <UnitName Value="CodepagesAsian"/>
+      </Item>
+      <Item>
+        <Filename Value="codepagescommon.pas"/>
+        <UnitName Value="CodepagesCommon"/>
+      </Item>
+      <Item>
+        <Filename Value="compwriterpas.pas"/>
+        <UnitName Value="CompWriterPas"/>
+      </Item>
+      <Item>
         <Filename Value="dynamicarray.pas"/>
         <UnitName Value="DynamicArray"/>
       </Item>
@@ -63,6 +75,10 @@
         <UnitName Value="ExtendedStrings"/>
       </Item>
       <Item>
+        <Filename Value="filereferencelist.pas"/>
+        <UnitName Value="FileReferenceList"/>
+      </Item>
+      <Item>
         <Filename Value="fileutil.pas"/>
         <UnitName Value="FileUtil"/>
       </Item>
@@ -73,6 +89,18 @@
       <Item>
         <Filename Value="fpcadds.pas"/>
         <UnitName Value="FPCAdds"/>
+      </Item>
+      <Item>
+        <Filename Value="graphtype.pp"/>
+        <UnitName Value="GraphType"/>
+      </Item>
+      <Item>
+        <Filename Value="html2textrender.pas"/>
+        <UnitName Value="HTML2TextRender"/>
+      </Item>
+      <Item>
+        <Filename Value="integerlist.pas"/>
+        <UnitName Value="IntegerList"/>
       </Item>
       <Item>
         <Filename Value="laz2_dom.pas"/>
@@ -101,6 +129,10 @@
       <Item>
         <Filename Value="laz2_xpath.pas"/>
         <UnitName Value="laz2_xpath"/>
+      </Item>
+      <Item>
+        <Filename Value="laz_avl_tree.pp"/>
+        <UnitName Value="Laz_AVL_Tree"/>
       </Item>
       <Item>
         <Filename Value="laz_dom.pas"/>
@@ -183,6 +215,22 @@
         <UnitName Value="LazMethodList"/>
       </Item>
       <Item>
+        <Filename Value="lazpasreadutil.pas"/>
+        <UnitName Value="LazPasReadUtil"/>
+      </Item>
+      <Item>
+        <Filename Value="lazstringutils.pas"/>
+        <UnitName Value="LazStringUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="lazsysutils.pas"/>
+        <UnitName Value="LazSysUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="laztracer.pas"/>
+        <UnitName Value="LazTracer"/>
+      </Item>
+      <Item>
         <Filename Value="lazunicode.pas"/>
         <UnitName Value="LazUnicode"/>
       </Item>
@@ -199,8 +247,8 @@
         <UnitName Value="LazUTF8Classes"/>
       </Item>
       <Item>
-        <Filename Value="lazsysutils.pas"/>
-        <UnitName Value="LazSysUtils"/>
+        <Filename Value="lazutf8sysutils.pas"/>
+        <UnitName Value="LazUTF8SysUtils"/>
       </Item>
       <Item>
         <Filename Value="lazutilities.pas"/>
@@ -213,6 +261,10 @@
       <Item>
         <Filename Value="lazutilsstrconsts.pas"/>
         <UnitName Value="LazUtilsStrConsts"/>
+      </Item>
+      <Item>
+        <Filename Value="lazversion.pas"/>
+        <UnitName Value="LazVersion"/>
       </Item>
       <Item>
         <Filename Value="lconvencoding.pas"/>
@@ -235,6 +287,10 @@
         <UnitName Value="Masks"/>
       </Item>
       <Item>
+        <Filename Value="objectlists.pas"/>
+        <UnitName Value="ObjectLists"/>
+      </Item>
+      <Item>
         <Filename Value="paswstring.pas"/>
         <UnitName Value="PasWString"/>
       </Item>
@@ -249,6 +305,10 @@
       <Item>
         <Filename Value="translations.pas"/>
         <UnitName Value="Translations"/>
+      </Item>
+      <Item>
+        <Filename Value="uitypes.pas"/>
+        <UnitName Value="UITypes"/>
       </Item>
       <Item>
         <Filename Value="unixfileutil.inc"/>
@@ -277,62 +337,6 @@
       <Item>
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="html2textrender.pas"/>
-        <UnitName Value="HTML2TextRender"/>
-      </Item>
-      <Item>
-        <Filename Value="laz_avl_tree.pp"/>
-        <UnitName Value="Laz_AVL_Tree"/>
-      </Item>
-      <Item>
-        <Filename Value="compwriterpas.pas"/>
-        <UnitName Value="CompWriterPas"/>
-      </Item>
-      <Item>
-        <Filename Value="lazpasreadutil.pas"/>
-        <UnitName Value="LazPasReadUtil"/>
-      </Item>
-      <Item>
-        <Filename Value="integerlist.pas"/>
-        <UnitName Value="IntegerList"/>
-      </Item>
-      <Item>
-        <Filename Value="lazversion.pas"/>
-        <UnitName Value="LazVersion"/>
-      </Item>
-      <Item>
-        <Filename Value="uitypes.pas"/>
-        <UnitName Value="UITypes"/>
-      </Item>
-      <Item>
-        <Filename Value="graphtype.pp"/>
-        <UnitName Value="GraphType"/>
-      </Item>
-      <Item>
-        <Filename Value="laztracer.pas"/>
-        <UnitName Value="LazTracer"/>
-      </Item>
-      <Item>
-        <Filename Value="lazstringutils.pas"/>
-        <UnitName Value="LazStringUtils"/>
-      </Item>
-      <Item>
-        <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="LazUTF8SysUtils"/>
-      </Item>
-      <Item>
-        <Filename Value="objectlists.pas"/>
-        <UnitName Value="ObjectLists"/>
-      </Item>
-      <Item>
-        <Filename Value="codepagesasian.pas"/>
-        <UnitName Value="CodepagesAsian"/>
-      </Item>
-      <Item>
-        <Filename Value="codepagescommon.pas"/>
-        <UnitName Value="CodepagesCommon"/>
       </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

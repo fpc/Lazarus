@@ -438,8 +438,6 @@ begin
     T:=P.Targets.AddUnit('environmentopts.pp');
     T:=P.Targets.AddUnit('compileroptions.pp');
     T:=P.Targets.AddUnit('../packager/projpackcommon.pas');
-    T.Dependencies.AddUnit('filereferencelist');
-    T:=P.Targets.AddUnit('filereferencelist.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('ide.compiled',AllOSes,'$(unitinstalldir)');

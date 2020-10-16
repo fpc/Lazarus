@@ -8,18 +8,19 @@ unit LazUtils;
 interface
 
 uses
-  AvgLvlTree, DynamicArray, DynHashArray, DynQueue, ExtendedStrings, FileUtil, 
-  FPCAdds, Laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, 
-  laz2_xpath, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, 
-  Laz_XMLWrite, LazClasses, lazCollections, LazConfigStorage, LazDbgLog, 
-  lazfglhash, LazFileCache, LazFileUtils, LazLinkedList, LazListClasses, 
-  LazLogger, LazLoggerBase, LazLoggerDummy, LazLoggerProfiling, LazMethodList, 
-  LazUnicode, LazUTF16, LazUTF8, LazUTF8Classes, LazSysUtils, LazUtilities, 
-  LazUtilsStrConsts, LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, 
-  PasWString, StringHashList, TextStrings, Translations, UTF8Process, 
-  HTML2TextRender, Laz_AVL_Tree, CompWriterPas, LazPasReadUtil, IntegerList, 
-  LazVersion, UITypes, GraphType, LazTracer, LazStringUtils, LazUTF8SysUtils, 
-  ObjectLists, CodepagesAsian, CodepagesCommon, LazarusPackageIntf;
+  AvgLvlTree, CodepagesAsian, CodepagesCommon, CompWriterPas, DynamicArray, 
+  DynHashArray, DynQueue, ExtendedStrings, FileReferenceList, FileUtil, 
+  FPCAdds, GraphType, HTML2TextRender, IntegerList, Laz2_DOM, Laz2_XMLCfg, 
+  laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, laz2_xpath, Laz_AVL_Tree, 
+  Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, Laz_XMLWrite, 
+  LazClasses, lazCollections, LazConfigStorage, LazDbgLog, lazfglhash, 
+  LazFileCache, LazFileUtils, LazLinkedList, LazListClasses, LazLogger, 
+  LazLoggerBase, LazLoggerDummy, LazLoggerProfiling, LazMethodList, 
+  LazPasReadUtil, LazStringUtils, LazSysUtils, LazTracer, LazUnicode, 
+  LazUTF16, LazUTF8, LazUTF8Classes, LazUTF8SysUtils, LazUtilities, 
+  LazUtilsStrConsts, LazVersion, LConvEncoding, lcsvutils, LookupStringList, 
+  Maps, Masks, ObjectLists, PasWString, StringHashList, TextStrings, 
+  Translations, UITypes, UTF8Process, LazarusPackageIntf;
 
 implementation
 

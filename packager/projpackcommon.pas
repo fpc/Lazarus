@@ -8,11 +8,11 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazTracer,
+  LazTracer, FileReferenceList,
   // Codetools
   DefineTemplates, CodeToolManager,
   // IDE
-  CompilerOptions, FileReferenceList;
+  CompilerOptions;
 
 type
 

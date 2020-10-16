@@ -1,11 +1,4 @@
 {
- /***************************************************************************
-                            filereferencelist.pas
-                            ---------------------
-
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -39,10 +32,8 @@ interface
 
 uses
   Classes, SysUtils, Laz_AVL_Tree,
-  // Codetools
-  FileProcs,
   // LazUtils
-  LazFileUtils, LazTracer;
+  LazFileUtils, LazFileCache, LazTracer;
 
 type
   { TFileReference }
@@ -164,7 +155,7 @@ end;
 
 procedure TFileReferenceList.IncreaseTimeStamp;
 begin
-  CTIncreaseChangeStamp(FTimeStamp);
+  LUIncreaseChangeStamp(FTimeStamp);
   //DebugLn('TFileReferenceList.IncreaseTimeStamp ',dbgs(FTimeStamp));
 end;
 
@@ -180,7 +171,7 @@ end;
 
 constructor TFileReferenceList.Create;
 begin
-  FTimeStamp:=CTInvalidChangeStamp;
+  FTimeStamp:=LUInvalidChangeStamp;
 end;
 
 destructor TFileReferenceList.Destroy;

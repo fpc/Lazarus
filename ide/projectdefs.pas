@@ -44,10 +44,8 @@ uses
   FileProcs,
   // LazUtils
   LazFileUtils, LazUTF8, Laz2_XMLCfg,
-  // IdeIntf
-  ProjectIntf,
-  // IDE
-  PublishModuleIntf;
+  // BuildIntf
+  ProjectIntf, PublishModuleIntf;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;

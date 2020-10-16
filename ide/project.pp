@@ -55,7 +55,7 @@ uses
   LinkScanner, CodeToolManager, CodeCache, CodeTree, FileProcs, StdCodeTools,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
-  LazLoggerBase, LazUTF8, Laz2_XMLCfg, Maps,
+  LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
@@ -63,7 +63,7 @@ uses
   // IDE
   CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
-  TransferMacros, ProjectDefs, FileReferenceList, EditDefineTree,
+  TransferMacros, ProjectDefs, EditDefineTree,
   LazarusIDEStrConsts, InputHistory, ProjPackCommon, PackageDefs, PackageSystem;
 
 type

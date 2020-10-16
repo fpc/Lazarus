@@ -12,10 +12,8 @@ uses
   fprepos,
   LazarusIDEStrConsts,
   {$ENDIF}
-  LazLogger,
-  LazFileCache,
-  FileUtil,
-  LazFileUtils;
+  // LazUtils
+  LazLogger, LazFileCache, FileUtil, LazFileUtils;
 
 type
 

@@ -45,16 +45,16 @@ uses
   LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs,
   // LazUtils
-  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
+  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, FileReferenceList,
   LazTracer, LazLoggerBase, UITypes, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
-  MacroIntf, MacroDefIntf, IDEOptionsIntf, PackageDependencyIntf, PackageIntf, FppkgIntf,
+  MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf,
+  PackageDependencyIntf, PackageIntf, FppkgIntf,
   // IDEIntf
   LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
-  PublishModuleIntf, FppkgHelper;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, FppkgHelper;
 
 type
   TLazPackage = class;
