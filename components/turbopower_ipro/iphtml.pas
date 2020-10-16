@@ -3841,6 +3841,7 @@ end;
 
 constructor TIpHtmlInteger.Create(AValue: Integer);
 begin
+  inherited Create;
   FValue := AValue;
 end;
 
@@ -3981,6 +3982,7 @@ end;
 
 constructor TIpHtmlMultiLengthList.Create;
 begin
+  inherited Create;
   List := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
 end;
 
@@ -4007,6 +4009,7 @@ end;
 
 constructor TIpHtmlBaseLayouter.Create(AOwner: TIpHtmlNodeCore);
 begin
+  inherited Create;
   FOwner := AOwner;
   FBlockMin := -1;
   FBlockMax := -1;
@@ -4111,6 +4114,7 @@ end;
 
 constructor TIpHtmlNode.Create(ParentNode : TIpHtmlNode);
 begin
+  inherited Create;
   if assigned(ParentNode) then
     if ParentNode is TIpHtmlNodeMulti then
       TIpHtmlNodeMulti(ParentNode).FChildren.Add(Self)
@@ -9161,6 +9165,7 @@ end;
 
 constructor TIpHtmlGifQueueEntry.Create(AGraphic: TGraphic; ARect: TRect);
 begin
+  inherited Create;
   {$IFDEF IP_LAZARUS_DBG}
   DebugLn('TIpHtmlGifQueueEntry.Create ToDo NOT IMPLEMENTED YET');
   {$ELSE}
@@ -14781,6 +14786,7 @@ constructor TIpHtmlFrame.Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel
   DataProvider : TIpAbstractHtmlDataProvider; FlagErrors, NoScroll: Boolean;
       MarginWidth, MarginHeight: Integer);
 begin
+  inherited Create;
   FNoScroll := NoScroll;
   FParent := Parent;
   FViewer := Viewer;
@@ -15461,6 +15467,7 @@ end;
 constructor TIpHtmlNvFrame.Create(Scanner: TIpHtmlCustomScanner;
   DataProvider : TIpAbstractHtmlDataProvider; FlagErrors: Boolean);
 begin
+  inherited Create;
   FScanner := Scanner;
   FDataProvider := DataProvider;
   FHtml := TIpHtml.Create;

@@ -361,6 +361,7 @@ end;
 
 constructor TIpHtmlProps.Create(APropsAList: TIpHtmlPropsAList; APropsBList: TIpHtmlPropsBList);
 begin
+  inherited Create;
   FPropsACache := APropsAList;
   FPropsBCache := APropsBList;
   FPropA := FPropsACache.FDummyA;
