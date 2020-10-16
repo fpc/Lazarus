@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2019-11-25 14:02+0100\n"
+"PO-Revision-Date: 2020-08-10 10:46+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -805,7 +805,6 @@ msgid "Behind methods"
 msgstr "Za metódy"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Výber"
@@ -882,11 +881,9 @@ msgid "Caret (Text Cursor)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
-#, fuzzy
-#| msgid "&Case Sensitive"
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
-msgstr "&Citlivé na veľkosť"
+msgstr "&Rozlišovať veľkosť písmen"
 
 #: lazarusidestrconsts.dlgccocaption
 msgid "Checking compiler options"
@@ -1532,8 +1529,6 @@ msgid "Display"
 msgstr "Zobraziť"
 
 #: lazarusidestrconsts.dlgedfiles
-#, fuzzy
-#| msgid "Editor files"
 msgid "Editor Files"
 msgstr "Súbory editora"
 
@@ -2002,10 +1997,9 @@ msgstr "Program"
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
-msgstr ""
+msgstr "Záznam"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Opakovať"
@@ -2120,11 +2114,9 @@ msgstr "Editor formulára"
 
 #: lazarusidestrconsts.dlgfrombeginning
 msgid "From b&eginning"
-msgstr ""
+msgstr "Od začiatku"
 
 #: lazarusidestrconsts.dlgfromcursor
-#, fuzzy
-#| msgid "&From Cursor"
 msgid "&From cursor"
 msgstr "&Od kurzora"
 
@@ -2622,7 +2614,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
 msgid "Case sensitive"
-msgstr ""
+msgstr "Rozlišovať veľkosť písmen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
 msgid "Set bound at term end"
@@ -3430,17 +3422,15 @@ msgstr "Voľby projektu"
 
 #: lazarusidestrconsts.dlgprojectoptionsfor
 msgid "Options for Project: %s"
-msgstr ""
+msgstr "Voľby projektu: %s"
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"
 msgstr "Súbory projektu"
 
 #: lazarusidestrconsts.dlgpromptonreplace
-#, fuzzy
-#| msgid "&Prompt On Replace"
 msgid "&Prompt on replace"
-msgstr "&Spýtať sa pri nahradení"
+msgstr "O&pýtať sa pred nahradením"
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
@@ -3477,8 +3467,6 @@ msgid "Reference"
 msgstr "Odkazy"
 
 #: lazarusidestrconsts.dlgregularexpressions
-#, fuzzy
-#| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "&Regulárne výrazy"
 
@@ -3491,8 +3479,6 @@ msgid "Replace &All"
 msgstr "N&ahradiť všetko"
 
 #: lazarusidestrconsts.dlgreplacewith
-#, fuzzy
-#| msgid "&Replace with"
 msgid "Replace wit&h"
 msgstr "Na&hradiť s"
 
@@ -3649,7 +3635,7 @@ msgstr "Cesty"
 
 #: lazarusidestrconsts.dlgsearchscope
 msgid "Search scope"
-msgstr ""
+msgstr "Rozsah vyhľadávania"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -3842,7 +3828,7 @@ msgstr "Editor kódu"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
-msgstr "Originál"
+msgstr "Počiatok"
 
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
@@ -3929,11 +3915,9 @@ msgid "Text-Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind
-#, fuzzy
-#| msgid "&Text to Find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
-msgstr "&Hľadaný text"
+msgstr "Nájsť &text"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktop
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktop"
@@ -4074,10 +4058,8 @@ msgid "Visible right margin"
 msgstr "Viditeľný pravý okraj"
 
 #: lazarusidestrconsts.dlgwholewordsonly
-#, fuzzy
-#| msgid "&Whole Words Only"
 msgid "&Whole words only"
-msgstr "Len &celé slová"
+msgstr "Iba &celé slová"
 
 #: lazarusidestrconsts.dlgwidthpos
 msgid "Width:"
@@ -4808,10 +4790,9 @@ msgid "The package %s is read only."
 msgstr "Balíček %s je len na čítanie."
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy,badformat
-#| msgid "A file %s%s%s already exists.%sReplace it?"
+#, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "Súbor %s%s%s už existuje.%sNahradiť ho?"
+msgstr "Súbor \"%s\" už existuje.%sNahradiť ho?"
 
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 msgid "A filter with the name \"%s\" already exists."
@@ -5288,7 +5269,7 @@ msgstr "&Povolené"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
-msgstr ""
+msgstr "Nájsť"
 
 #: lazarusidestrconsts.lisbtnquit
 msgctxt "lazarusidestrconsts.lisbtnquit"
@@ -5306,7 +5287,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
-msgstr ""
+msgstr "Na&hradiť"
 
 #: lazarusidestrconsts.lisbuild
 msgctxt "lazarusidestrconsts.lisbuild"
@@ -8076,7 +8057,7 @@ msgstr "Vlastné voľby"
 
 #: lazarusidestrconsts.liscustomoptions3
 msgid "Custom Options"
-msgstr ""
+msgstr "Vlastné voľby"
 
 #: lazarusidestrconsts.liscustomprogram
 msgid "Custom Program"
@@ -11318,62 +11299,42 @@ msgid "Find Incremental"
 msgstr "Nájsť narastajúco"
 
 #: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
 msgid "Go to bookmark 0"
 msgstr "Choď na značku 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
 msgid "Go to bookmark 1"
 msgstr "Choď na značku 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
 msgid "Go to bookmark 2"
 msgstr "Choď na značku 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
 msgid "Go to bookmark 3"
 msgstr "Choď na značku 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
 msgid "Go to bookmark 4"
 msgstr "Choď na značku 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
 msgid "Go to bookmark 5"
 msgstr "Choď na značku 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
 msgid "Go to bookmark 6"
 msgstr "Choď na značku 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
 msgid "Go to bookmark 7"
 msgstr "Choď na značku 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
 msgid "Go to bookmark 8"
 msgstr "Choď na značku 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
 msgid "Go to bookmark 9"
 msgstr "Choď na značku 9"
 
@@ -13144,8 +13105,6 @@ msgid "Find Identifier References ..."
 msgstr "Nájsť odkazy na identifikátor ..."
 
 #: lazarusidestrconsts.lismenufindinfiles
-#, fuzzy
-#| msgid "Find &in files ..."
 msgid "Find &in Files ..."
 msgstr "Nájsť v &súboroch ..."
 
@@ -14724,7 +14683,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
-msgstr "Hľadať len celé slová"
+msgstr "Hľadať iba celé slová"
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -14842,7 +14801,6 @@ msgid "Open XML"
 msgstr ""
 
 #: lazarusidestrconsts.lisoptions
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
 msgstr "Voľby"
@@ -17022,9 +16980,10 @@ msgid "Recent tabs"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecord
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisrecord"
 msgid "Record"
-msgstr ""
+msgstr "Záznam"
 
 #: lazarusidestrconsts.lisrecordedmacros
 msgid "Recorded"
@@ -17222,7 +17181,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisreplacewholeidentifier
 msgid "Replace whole identifier"
-msgstr ""
+msgstr "Nahradiť celý identifikátor"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -17949,7 +17908,7 @@ msgstr "Vzostupne"
 #: lazarusidestrconsts.lissortselcasesensitive
 msgctxt "lazarusidestrconsts.lissortselcasesensitive"
 msgid "&Case Sensitive"
-msgstr "&Citlivé na veľkosť"
+msgstr "&Rozlišovať veľkosť písmen"
 
 #: lazarusidestrconsts.lissortseldescending
 msgid "Descending"
@@ -19240,10 +19199,9 @@ msgid "Not found"
 msgstr "Nenájdené"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy,badformat
-#| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+#, object-pascal-format
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
-msgstr "Nahradiť tento výskyt %s%s%s%s týmto %s%s%s?"
+msgstr "Nahradiť tento výskyt \"%s\"%s za \"%s\"?"
 
 #: lazarusidestrconsts.lisuesearching
 msgid "Searching: %s"
