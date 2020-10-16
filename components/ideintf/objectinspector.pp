@@ -2401,14 +2401,17 @@ var
   fPropRow: TOIPropertyGridRow;
 
   procedure DoShow(pt: TPoint); inline;
-  //var
-  //  HintFont: TFont;
+  //var HintFont: TFont;
   begin
     if WidgetSet.GetLCLCapability(lcTransparentWindow)=LCL_CAPABILITY_NO then
       Inc(pt.Y, fPropRow.Height);
-{    if HintType<>pehValue then      By Juha :
-      HintFont := Screen.HintFont <- This is not usable at least in my Linux+KDE.
-    else                             Tested with GTK2 and QT5 bindings.
+{ By Juha :
+  FValueFont and FDefaultValueFont are nearly unreadable.
+  We should maybe get their negated color as the hint background is black.
+
+    if HintType<>pehValue then
+      HintFont := Screen.HintFont
+    else
     if fPropRow.Editor.ValueIsStreamed then
       HintFont:=FValueFont
     else
