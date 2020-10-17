@@ -1267,6 +1267,7 @@ var
   P : TPoint;
   R : TRect;
   {$IFDEF IP_LAZARUS}
+  TextStyle: TTextStyle;
   OldBrushcolor: TColor;
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
@@ -1304,26 +1305,30 @@ begin
   {$IFDEF IP_LAZARUS}
   //if (LastOwner <> aCurWord.Owner) then LastPoint := P;
   saveCanvasProperties;
+  TextStyle := FCanvas.TextStyle;
+  //debugln(['TIpHtmlNodeBlock.RenderQueue ',aCurWord.AnsiWord]);
+  FIpHtml.PageRectToScreen(aCurWord.WordRect2, R);
   if aCurWord.IsSelected or FIpHtml.AllSelected then begin
-    FCanvas.Font.color := clHighlightText;
+    FCanvas.Font.Color := clHighlightText;
     FCanvas.brush.Style := bsSolid;
-    FCanvas.brush.color := clHighLight;
-    FIpHtml.PageRectToScreen(aCurWord.WordRect2, R);
+    FCanvas.brush.Color := clHighLight;
     FCanvas.FillRect(R);
   end
-  else if FCurProps.BgColor > 0 then
+  else if FCurProps.BgColor <> -1 then
   begin
     FCanvas.brush.Style := bsSolid;
-    FCanvas.brush.color := FCurProps.BgColor;
+    FCanvas.brush.Color := FCurProps.BgColor;
+    TextStyle.Opaque := True;
   end
   else
+  begin
+    TextStyle.Opaque := True;
   {$ENDIF}
     FCanvas.Brush.Style := bsClear;
 
-  //debugln(['TIpHtmlNodeBlock.RenderQueue ',aCurWord.AnsiWord]);
-  FIpHtml.PageRectToScreen(aCurWord.WordRect2, R);
-
   {$IFDEF IP_LAZARUS}
+  end;
+
   if aCurWord.Owner.ParentNode = aCurTabFocus then
     FCanvas.DrawFocusRect(R);
   if FCanvas.Font.color = -1 then
@@ -1331,7 +1336,11 @@ begin
   FCanvas.Font.Quality := FOwner.Owner.FontQuality;
   {$ENDIF}
   if aCurWord.AnsiWord <> NAnchorChar then
-    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
+  {$IFDEF IP_LAZARUS}
+    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord), TextStyle);
+  {$ELSE}
+  FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
+  {$ENDIF}
   {$IFDEF IP_LAZARUS}
   RestoreCanvasProperties;
   {$ENDIF}
