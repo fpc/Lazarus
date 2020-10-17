@@ -20,7 +20,7 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase;
+  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase, CustApp;
 
 type
 
@@ -147,7 +147,11 @@ begin
   DebugLn(['TCustomTimer.Timer ',dbgsName(Self),' ',FEnabled,' ',FInterval]);
   {$ENDIF}
   if (FEnabled) and (FInterval > 0) then
-    DoOnTimer;
+    try
+      DoOnTimer;
+    except
+      CustomApplication.HandleException(nil);
+    end;
 end;
 
 {------------------------------------------------------------------------------
