@@ -239,7 +239,7 @@ type
      procedure DoNewPage; virtual;
      procedure DoBeginPage; virtual;
      procedure DoEndPage; virtual;
-     procedure DoEndDoc(aAborded : Boolean); virtual;
+     procedure DoEndDoc(aAborted : Boolean); virtual;
      procedure DoAbort; virtual;
      procedure DoResetPrintersList; virtual;
      procedure DoResetFontsList; virtual;
@@ -828,7 +828,7 @@ begin
   //Override this method
 end;
 
-procedure TPrinter.DoEndDoc(aAborded : Boolean);
+procedure TPrinter.DoEndDoc(aAborted : Boolean);
 begin
   //Override this method
 end;

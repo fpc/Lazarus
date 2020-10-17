@@ -383,12 +383,12 @@ begin
   QtDefaultPrinter.NewPage;
 end;
 
-procedure TQtPrinters.DoEndDoc(aAborded: Boolean);
+procedure TQtPrinters.DoEndDoc(aAborted: Boolean);
 begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoEndDoc()');
   {$ENDIF}
-  inherited DoEndDoc(aAborded);
+  inherited DoEndDoc(aAborted);
   EndPage;
 end;
 

@@ -636,7 +636,7 @@ begin
     Error('Error on getting DestinationType');
 end;
 
-procedure TCocoaPrinter.DoEndDoc(aAborded: Boolean);
+procedure TCocoaPrinter.DoEndDoc(aAborted: Boolean);
 var
   preview: TCocoaPrinterView;
   op: NSPrintOperation;
@@ -647,7 +647,7 @@ begin
   if not fDocStarted then
     exit;
 
-  if aAborded then
+  if aAborted then
   begin
     // TODO: check leaks ...
   end;

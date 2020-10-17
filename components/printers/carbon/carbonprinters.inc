@@ -432,9 +432,9 @@ begin
   BeginPage;
 end;
 
-procedure TCarbonPrinter.DoEndDoc(aAborded: Boolean);
+procedure TCarbonPrinter.DoEndDoc(aAborted: Boolean);
 begin
-  inherited DoEndDoc(aAborded);
+  inherited DoEndDoc(aAborted);
 
   EndPage;
   if FBeginDocumentStatus = noErr then

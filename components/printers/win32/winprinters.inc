@@ -326,9 +326,9 @@ begin
     Windows.EndPage(fDC);
 end;
 
-procedure TWinPrinter.DoEndDoc(aAborded: Boolean);
+procedure TWinPrinter.DoEndDoc(aAborted: Boolean);
 begin
-  inherited DoEndDoc(aAborded);
+  inherited DoEndDoc(aAborted);
 
   if RawMode then begin
 
@@ -340,7 +340,7 @@ begin
     }
   end else begin
     Windows.EndPage(fDC);
-    if not aAborded then
+    if not aAborted then
       WinUtilPrn.EndDoc(fDC);
   end;
 end;

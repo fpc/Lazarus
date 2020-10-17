@@ -46,7 +46,7 @@ Type
     procedure DoNewPage; override;
     procedure DoBeginPage; override;
     procedure DoEndPage; override;
-    procedure DoEndDoc(aAborded : Boolean); override;
+    procedure DoEndDoc(aAborted : Boolean); override;
     procedure DoAbort; override;
 
     procedure DoEnumPrinters(Lst : TStrings); override;

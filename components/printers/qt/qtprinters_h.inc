@@ -46,7 +46,7 @@ type
   protected
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
-    procedure DoEndDoc(aAborded : Boolean); override;
+    procedure DoEndDoc(aAborted : Boolean); override;
     procedure DoAbort; override;
 
     procedure DoEnumPrinters(Lst : TStrings); override;
