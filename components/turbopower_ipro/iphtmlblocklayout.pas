@@ -1314,7 +1314,7 @@ begin
     FCanvas.brush.Color := clHighLight;
     FCanvas.FillRect(R);
   end
-  else if FCurProps.BgColor <> -1 then
+  else if FCurProps.BgColor <> clNone then
   begin
     FCanvas.brush.Style := bsSolid;
     FCanvas.brush.Color := FCurProps.BgColor;
@@ -1331,8 +1331,8 @@ begin
 
   if aCurWord.Owner.ParentNode = aCurTabFocus then
     FCanvas.DrawFocusRect(R);
-  if FCanvas.Font.color = -1 then
-    FCanvas.Font.color := clBlack;
+  if FCanvas.Font.Color = clNone then
+    FCanvas.Font.Color := clBlack;
   FCanvas.Font.Quality := FOwner.Owner.FontQuality;
   {$ENDIF}
   if aCurWord.AnsiWord <> NAnchorChar then
@@ -1500,7 +1500,7 @@ begin
     Props.VAlignment := FTableElemOwner.VAlign;
   end;
 
-  if FTableElemOwner.BgColor <> -1 then
+  if FTableElemOwner.BgColor <> clNone then
     Props.BgColor := FTableElemOwner.BgColor;
 
   inherited Layout(Props, TargetRect);
@@ -1537,7 +1537,7 @@ begin
   FOwner.LoadAndApplyCSSProps;
   {$ENDIF}
 //DebugLn('td :', IntToStr(Integer(Props.Alignment)));
-  if FTableElemOwner.BgColor <> -1 then
+  if FTableElemOwner.BgColor <> clNone then
     Props.BgColor := FTableElemOwner.BgColor;
   if FTableElemOwner.Align <> haDefault then
     Props.Alignment := FTableElemOwner.Align
@@ -1558,7 +1558,7 @@ begin
   {$ENDIF}
   if FOwner.PageRectToScreen(FTableElemOwner.PadRect, R) then
   begin
-    if (Props.BgColor <> -1) then
+    if (Props.BgColor <> clNone) then
     begin
       FIpHtml.Target.Brush.Color := Props.BGColor;
       FIpHtml.Target.FillRect(R);

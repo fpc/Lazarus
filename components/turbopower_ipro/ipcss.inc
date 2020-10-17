@@ -839,8 +839,8 @@ end;
 constructor TCSSProps.Create;
 begin
   FFont := TCSSFont.Create;
-  FBGColor := -1;
-  FColor := -1;
+  FBGColor := clNone;
+  FColor := clNone;
   FAlignment := haUnknown;
   FBorder := TCSSBorder.Create;
   FWidth.LengthType := cltUndefined;
@@ -989,8 +989,8 @@ end;
 
 procedure TCSSProps.MergeAdditionalProps(AProps: TCSSProps);
 begin
-  if AProps.Color <> -1 then Color := AProps.Color;
-  if AProps.BGColor <> -1 then BGColor := AProps.BGColor;
+  if AProps.Color <> clNone then Color := AProps.Color;
+  if AProps.BGColor <> clNone then BGColor := AProps.BGColor;
   if AProps.Alignment <> haUnknown then Alignment := AProps.Alignment;
   if AProps.Font.Name <> '' then Font.Name := AProps.Font.Name;
   if AProps.Font.Size <> '' then Font.Size := AProps.Font.Size;

@@ -4694,12 +4694,12 @@ begin
   begin
     //DebugLn('MouseOver: ', classname);
     Props.DelayCache:=True;
-    if Props.HoverColor <> -1 then
+    if Props.HoverColor <> clNone then
     begin
       savedColor := Props.FontColor;
       Props.FontColor := Props.HoverColor;
     end;
-    if Props.HoverBgColor <> -1 then
+    if Props.HoverBgColor <> clNone then
     begin
       savedBgColor := Props.BgColor;
       Props.BgColor := Props.HoverBgColor;
@@ -4717,8 +4717,8 @@ begin
   if IsMouseOver then
   begin
     Props.DelayCache:=True;
-    if Props.HoverColor <> -1 then Props.FontColor := savedColor;
-    if Props.HoverBgColor <> -1 then Props.BgColor := savedBgColor;
+    if Props.HoverColor <> clNone then Props.FontColor := savedColor;
+    if Props.HoverBgColor <> clNone then Props.BgColor := savedBgColor;
     Props.DelayCache:=False;
   end;
 end;
@@ -4778,9 +4778,9 @@ constructor TIpHtmlNodeBODY.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
   FElementName := 'body';
-  FLink := -1;
-  FVLink := -1;
-  FALink := -1;
+  FLink := clNone;
+  FVLink := clNone;
+  FALink := clNone;
   Owner.Body := Self;
 end;
 
@@ -4796,7 +4796,7 @@ begin
   end else begin
     {$IFDEF IP_LAZARUS}
     if BackGround = '' then begin
-      if BGColor <> -1 then begin
+      if BGColor <> clNone then begin
         Owner.Target.Brush.Color := BGColor;
         Owner.Target.FillRect(Owner.ClientRect);
       end else begin
@@ -4809,7 +4809,7 @@ begin
       Owner.Target.Brush.Color := clWhite;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
-    if BGColor <> -1 then begin
+    if BGColor <> clNone then begin
       Owner.Target.Brush.Color := BGColor;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
@@ -4855,13 +4855,13 @@ begin
   Props.DelayCache := True;
   inherited LoadAndApplyCSSProps;
   LinkProps := Owner.CSS.GetPropsObject('a:link', '');
-  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+  if (LinkProps <> nil) and (LinkProps.Color <> clNone) then
     Link := LinkProps.Color;
   LinkProps := Owner.CSS.GetPropsObject('a:visited', '');
-  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+  if (LinkProps <> nil) and (LinkProps.Color <> clNone) then
     VLink := LinkProps.Color;
   LinkProps := Owner.CSS.GetPropsObject('a:active', '');
-  if (LinkProps <> nil) and (LinkProps.Color <> -1) then
+  if (LinkProps <> nil) and (LinkProps.Color <> clNone) then
     ALink := LinkProps.Color;
   Props.DelayCache := True;
 end;
@@ -7620,7 +7620,7 @@ function TIpHtml.ColorFromString(S : string) : TColor;
 var
   R, G, B, Err : Integer;
 begin
-  Result := -1;
+  Result := clNone;
   if S = '' then
     Exit;
   S := UpperCase(S);
@@ -7660,7 +7660,7 @@ begin
       if FlagErrors then
         ReportError(SHtmlInvColor + S)
       else
-        Result := -1;
+        Result := clNone;
     end;
 end;
 
@@ -7953,7 +7953,7 @@ begin
   FStartSel.x := -1;
   FEndSel.x := -1;
   //FixedTypeface := 'Courier New';
-  FBgColor := -1;
+  FBgColor := clNone;
   FFactBAParag := 1;
 end;
 
@@ -8188,15 +8188,15 @@ begin
   DefaultProps.Preformatted := False;
   DefaultProps.NoBreak := False;
   if Body <> nil then begin
-    if Body.TextColor <> -1 then
+    if Body.TextColor <> clNone then
       DefaultProps.FontColor := Body.TextColor;
-    if Body.Link <> -1 then
+    if Body.Link <> clNone then
       DefaultProps.LinkColor := Body.Link;
-    if Body.VLink <> -1 then
+    if Body.VLink <> clNone then
       DefaultProps.VLinkColor := Body.VLink;
-    if Body.ALink <> -1 then
+    if Body.ALink <> clNone then
       DefaultProps.ALinkColor := Body.ALink;
-    if Body.BgColor <> -1 then
+    if Body.BgColor <> clNone then
       DefaultProps.BgColor := Body.BgColor;
   end;
 end;
@@ -9419,7 +9419,7 @@ begin
         Props.FontSize := FONTSIZESVALUESARRAY[TmpSize-1];
     end;
   end;
-  if Color <> -1 then
+  if Color <> clNone then
     Props.FontColor := Color;
 end;
 
@@ -9513,8 +9513,8 @@ constructor TIpHtmlNodeBlock.Create(ParentNode: TIpHtmlNode;
   LayouterClass: TIpHtmlBaseLayouterClass);
 begin
   inherited Create(ParentNode);
-  FBgColor := -1;
-  FTextColor := -1;
+  FBgColor := clNone;
+  FTextColor := clNone;
   FBackground := '';
   FLayouter := LayouterClass.Create(Self);
 end;
@@ -9574,9 +9574,9 @@ procedure TIpHtmlNodeBlock.LoadAndApplyCSSProps;
 begin
   inherited LoadAndApplyCSSProps;
   if FCombinedCSSProps <> nil then begin
-    if FCombinedCSSProps.Color <> -1 then
+    if FCombinedCSSProps.Color <> clNone then
       TextColor := FCombinedCSSProps.Color;
-    if FCombinedCSSProps.BgColor <> -1 then
+    if FCombinedCSSProps.BgColor <> clNone then
       BgColor := FCombinedCSSProps.BGColor;
   end;
 end;
@@ -10222,7 +10222,7 @@ end;
 constructor TIpHtmlNodeHR.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  FColor := -1;
+  FColor := clNone;
   Align := hiaCenter;
   SizeWidth := TIpHtmlPixels.Create;
 end;
@@ -10244,10 +10244,10 @@ begin
   R.Bottom := TopLeft.y + Dim.cy;
   if not PageRectToScreen(R, R) then
     Exit;
-  if NoShade or (Color <> -1) then begin
+  if NoShade or (Color <> clNone) then begin
     SavePenColor := aCanvas.Pen.Color;
     SaveBrushColor := aCanvas.Brush.Color;
-    if Color = -1 then begin
+    if Color = clNone then begin
       aCanvas.Pen.Color := clBlack;
       aCanvas.Brush.Color := clBlack;
     end else begin
@@ -10647,7 +10647,7 @@ constructor TIpHtmlNodeTABLE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
   FElementName := 'table';
-  BgColor := -1;
+  BgColor := clNone;
   SizeWidth := TIpHtmlPixels.Create;
   SizeWidth.PixelsType := hpUndefined;
   FBorderColor := $808080;
@@ -10722,7 +10722,7 @@ begin
   if (FOwner.Body.BgPicture <> nil) or (Props.BGColor = 1) then
     aCanvas.Brush.Style := bsClear
   else
-  if (Props.BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
+  if (Props.BGColor <> clNone) and PageRectToScreen(BorderRect, R) then begin
     aCanvas.Brush.Color :=Props.BGColor;
     aCanvas.FillRect(R);
   end;
@@ -11050,8 +11050,8 @@ begin
   FElementName := 'tr';
   FAlign := haDefault;
   FValign := hvaMiddle;
-  FBgColor := -1;
-  FTextColor := -1;
+  FBgColor := clNone;
+  FTextColor := clNone;
 end;
 
 function TIpHtmlNodeTR.GetAlign: TIpHtmlAlign;
@@ -11066,7 +11066,7 @@ begin
   if Assigned(FCombinedCSSProps) then begin
     if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
       Align := FCombinedCSSProps.Alignment;
-    if FCombinedCSSProps.BgColor <> -1 then
+    if FCombinedCSSProps.BgColor <> clNone then
       BgColor := FCombinedCSSProps.BGColor;
     // wp: what about VAlign?
   end;
@@ -12194,13 +12194,13 @@ begin
 {
   if Assigned(FInlineCSSProps) then
   begin
-       if FInlineCSSProps.BGColor <> -1 then FControl.Color := FInlineCSSProps.BGColor;
-       if FInlineCSSProps.Color <> -1 then FControl.Font.Color := FInlineCSSProps.Color;
+       if FInlineCSSProps.BGColor <> clNone then FControl.Color := FInlineCSSProps.BGColor;
+       if FInlineCSSProps.Color <> clNone then FControl.Font.Color := FInlineCSSProps.Color;
        if FInlineCSSProps.Font.Size <> '' then FControl.Font.size := GetFontSizeFromCSS(FControl.Font.size, FInlineCSSProps.Font.Size);
   end;
 }
   inherited;
-  if (Props.BgColor <> -1) and (
+  if (Props.BgColor <> clNone) and (
     (FControl is {$IFDEF VERSION3ONLY}TRadioButton{$ELSE}THtmlRadioButton{$ENDIF}) or
     (FControl is TCustomEdit)) then
     FControl.Color := Props.BgColor;
@@ -12829,9 +12829,9 @@ begin
   if FHoverPropsRef <> nil then
   begin
     Props.DelayCache:=True;
-    if FHoverPropsRef.Color <> -1 then
+    if FHoverPropsRef.Color <> clNone then
       Props.HoverColor := FHoverPropsRef.Color;
-    if FHoverPropsRef.BgColor <> -1 then
+    if FHoverPropsRef.BgColor <> clNone then
       Props.HoverBgColor := FHoverPropsRef.BgColor;
     Props.DelayCache:=False;
   end;
@@ -12910,11 +12910,11 @@ begin
   begin
     props.DelayCache:=True;
     {$WARNING Setting these font colors and name messes up the alignment for some reason}
-    if ACSSProps.Color <> -1 then begin
+    if ACSSProps.Color <> clNone then begin
       Props.FontColor := ACSSProps.Color;
     end;
 
-    if ACSSProps.BGColor <> -1 then begin
+    if ACSSProps.BGColor <> clNone then begin
       Props.BgColor := ACSSProps.BGColor;
     end;
 
@@ -13383,7 +13383,7 @@ begin
   FColSpan := 1;
   FAlign := haDefault;
   FVAlign := hva3Middle;
-  BgColor := -1;
+  BgColor := clNone;
 end;
 
 destructor TIpHtmlNodeTableHeaderOrCell.Destroy;
@@ -13547,9 +13547,9 @@ begin
    LoadAndApplyCSSProps;
    if (props.FontSize <> -1) then
      FControl.Font.Size:= Props.FontSize;
-     if Props.FontColor <> -1 then
+     if Props.FontColor <> clNone then
        FControl.Font.Color:= Props.FontColor;
-     if Props.BGColor <> -1 then
+     if Props.BGColor <> clNone then
        FControl.Brush.Color:= Props.BGColor;
    result := True;
    {$ENDIF}
