@@ -2,1270 +2,3064 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    Printers
-  ====================================================================
--->
+      ====================================================================
+        Printers
+      ====================================================================
+    -->
     <module name="Printers">
-      <short>Defines Printers to be used as output from Lazarus applications</short>
-      <descr/>
+      <short>Defines printer output devices for Lazarus applications</short>
+      <descr>
+        <p>
+          <file>Printers.pas</file> implements basic facilities needed for the <var>TPrinter</var> print device. A <var>TPrinterCanvas</var> class is included to position, format, and render pages for the print device.
+        </p>
+        <p>
+          <file>Printers.pas</file> is a required unit for use with the <file>printer4lazarus</file> package. See the Lazarus Wiki for more information about the <file>printer4lazarus</file> package:
+        </p>
+        <dl>
+          <dt>Printing</dt>
+          <dd>
+            <url href="https://wiki.lazarus.freepascal.org/Printing">
+              https://wiki.lazarus.freepascal.org/Printing
+            </url>
+          </dd>
+          <dt>Using the Printer</dt>
+          <dd>
+            <url href="https://wiki.lazarus.freepascal.org/Using_the_printer">
+              https://wiki.lazarus.freepascal.org/Using_the_printer
+            </url>
+          </dd>
+        </dl>
+      </descr>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLProc"/>
+      <element name="Graphics"/>
+
       <element name="EPrinter">
-        <short>
-          <var>EPrinter</var> - Exception handler for printer error</short>
+        <short>Exception raised for errors in TPrinter methods</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinter"/>
+        </seealso>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TPrinterOrientation">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Represents page orientations for printers</short>
+        <descr>
+          <p>
+            <var>TPrinterOrientation</var> is an enumerated type with values that represent page orientations used for print devices and their canvases. TPrinterOrientation is the type used to implement <var>TPrinter.Orientation</var> and <var>TPrinterCanvas.Orientation</var> properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Orientation"/>
+          <link id="TPrinterCanvas.Orientation"/>
+        </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterOrientation.poPortrait">
-        <short/>
+        <short>Output uses Portrait orientation</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterOrientation.poLandscape">
-        <short/>
+        <short>Output uses Landscape orientation</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterOrientation.poReverseLandscape">
-        <short/>
+        <short>Output uses Landscape orientation with coordinates rotated 180 degrees</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterOrientation.poReversePortrait">
-        <short/>
+        <short>Output uses Portrait orientation with coordinates rotated 180 degrees</short>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TPrinterCapability">
-        <short/>
-        <descr/>
+        <short>Represents capabilities for print devices</short>
+        <descr>
+          <p>
+            Not implemented in the current LCL version.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterCapability.pcCopies">
-        <short/>
+        <short>Devices supports copy mode</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterCapability.pcOrientation">
-        <short/>
+        <short>Device supports page orientations</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterCapability.pcCollation">
-        <short/>
+        <short>Device supports custom collation for printed pages</short>
       </element>
-      <!-- set type Visibility: default -->
+
       <element name="TPrinterCapabilities">
-        <short/>
-        <descr/>
+        <short>Stores a set of capability values for a print device</short>
+        <descr>
+          <p>
+            Not implemented in the current LCL version.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TPrinterState">
-        <short/>
+        <short>Represents state values for a print device</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterState.psNoDefine">
-        <short/>
+        <short>State is not defined or unknown</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterState.psReady">
-        <short/>
+        <short>Device is ready</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterState.psPrinting">
-        <short/>
+        <short>Device is printing</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterState.psStopped">
-        <short/>
+        <short>Device has been stopped</short>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TPrinterType">
-        <short/>
+        <short>Represents connection types for a print device</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterType.ptLocal">
-        <short/>
+        <short>Device is attached to the local computer system</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPrinterType.ptNetWork">
-        <short/>
+        <short>Device is a network-enabled printer</short>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TPrinterCanvas">
-        <short>
-          <var>TPrinterCanvas</var> - instance of <var>TCanvas</var> specially designed for printers</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Implements a canvas used for TPrinter device output</short>
+        <descr>
+          <p>
+            <var>TPrinterCanvas</var> is a <var>TCanvas</var> descendant which implements a canvas used to position, format, and output values from a TPrinter print device. The TPrinter instance which provides the capabilities for the device is passed as an argument to the constructor, and stored in the <var>Printer</var> property.
+          </p>
+          <p>
+            TPrinterCanvas provides methods which mirror the operations performed in TPrinter, like: <var>BeginDoc</var>, <var>NewPage</var>, <var>BeginPage</var>, <var>EndPage</var> and <var>EndDoc</var>. Methods in the canvas are called from the corresponding methods in  TPrinter when its RawMode property is set to False.
+          </p>
+          <p>
+            A TPrinterCanvas (or descendant) class reference is used to implement the <var>TPrinter.CanvasClass</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFilePrinterCanvas"/>
+          <link id="TPrinter"/>
+          <link id="TPrinter.CanvasClass"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fPrinter">
-        <short/>
+
+      <element name="TPrinterCanvas.fPrinter"/>
+      <element name="TPrinterCanvas.fTitle"/>
+      <element name="TPrinterCanvas.fPageNum"/>
+      <element name="TPrinterCanvas.fTopMargin"/>
+      <element name="TPrinterCanvas.fLeftMargin"/>
+      <element name="TPrinterCanvas.fBottomMargin"/>
+      <element name="TPrinterCanvas.fRightMargin"/>
+      <element name="TPrinterCanvas.fPaperWidth"/>
+      <element name="TPrinterCanvas.fPaperHeight"/>
+      <element name="TPrinterCanvas.fOrientation"/>
+      <element name="TPrinterCanvas.fXDPI"/>
+      <element name="TPrinterCanvas.fYDPI"/>
+
+      <element name="TPrinterCanvas.GetOrientation">
+        <short>Gets the value for the Orientation property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.Orientation"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fTitle">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TPrinterCanvas.GetOrientation.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fPageNum">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fTopMarging">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinterCanvas.fLeftMarging">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
+
       <element name="TPrinterCanvas.GetPageHeight">
-        <short/>
+        <short>Gets the value for the PageHeight property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.PageHeight"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPrinterCanvas.GetPageHeight.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TPrinterCanvas.GetPageWidth">
-        <short/>
+        <short>Gets the value for the PageWidth property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.PageWidth"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPrinterCanvas.GetPageWidth.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
+      <element name="TPrinterCanvas.GetPaperHeight">
+        <short>Gets the value for the PaperHeight property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.PaperHeight"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.GetPaperHeight.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.GetPaperWidth">
+        <short>Gets the value for the PaperWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.PaperWidth"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.GetPaperWidth.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinterCanvas.GetTitle">
-        <short/>
+        <short>Gets the value for the Title property</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.Title"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPrinterCanvas.GetTitle.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinterCanvas.SetPageHeight">
-        <short/>
+
+      <element name="TPrinterCanvas.GetXDPI">
+        <short>Gets the value for the XDPI property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.XDPI"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinterCanvas.SetPageHeight.AValue">
-        <short/>
+      <element name="TPrinterCanvas.GetXDPI.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinterCanvas.SetPageWidth">
-        <short/>
+
+      <element name="TPrinterCanvas.GetYDPI">
+        <short>Gets the value for the YDPI property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.YDPI"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinterCanvas.SetPageWidth.AValue">
-        <short/>
+      <element name="TPrinterCanvas.GetYDPI.Result">
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
+
+      <element name="TPrinterCanvas.SetOrientation">
+        <short>Sets the value for the Orientation property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.Orientation"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.SetOrientation.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.SetPaperHeight">
+        <short>Sets the value for the PaperHeight property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.PaperHeight"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.SetPaperHeight.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.SetPaperWidth">
+        <short>Sets the value for the PaperWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.PaperWidth"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.SetPaperWidth.AValue">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TPrinterCanvas.SetTitle">
-        <short/>
+        <short>Sets the value for the Title property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.Title"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPrinterCanvas.SetTitle.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinterCanvas.BeginDoc">
-        <short>
-          <var>BeginDoc</var> - method to start printing a document</short>
+
+      <element name="TPrinterCanvas.HasDefaultMargins">
+        <short>Indicates if the default values are used for page margins</short>
+        <descr>
+          <p>
+            <var>HasDefaultMargins</var> is a <var>Boolean</var> function used to determine if the default values are being used in the page margin properties: <var>LeftMargin</var>, <var>RightMargin</var>, <var>TopMargin</var>, <var>BottomMargin</var>. The return value is <b>True</b> when each of the properties contains the value <b>0</b> (<b>zero</b>).
+          </p>
+          <p>
+            HasDefaultMargins is used when getting the values for the <var>PageHeight</var> and   <var>PageWidth</var> properties. When False, the page dimensions are adjusted to reserve space needed for the page margin properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.PageHeight"/>
+          <link id="TPrinterCanvas.LeftMargin"/>
+          <link id="TPrinterCanvas.RightMargin"/>
+          <link id="TPrinterCanvas.TopMargin"/>
+          <link id="TPrinterCanvas.BottomMargin"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.PaperWidth"/>
+          <link id="TPrinter.PageHeight"/>
+          <link id="TPrinter.PageWidth"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.HasDefaultMargins.Result">
+        <short>True when the default values (0) are used in the page margin properties</short>
+      </element>
+
+      <element name="TPrinterCanvas.SetXDPI">
+        <short>Sets the value for the XDPI property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.XDPI"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinterCanvas.NewPage">
-        <short>
-          <var>NewPage</var> - method to start printing a new page</short>
+      <element name="TPrinterCanvas.SetXDPI.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.SetYDPI">
+        <short>Sets the value for the YDPI property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.YDPI"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinterCanvas.EndDoc">
-        <short>
-          <var>EndDoc</var> - method to finish printing a document</short>
+      <element name="TPrinterCanvas.SetYDPI.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.GetLeftMargin">
+        <short>Gets the value for the LeftMargin property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPrinterCanvas.LeftMargin"/>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinter.PaperSize"/>
+        </seealso>
       </element>
-      <!-- constructor Visibility: public -->
+      <element name="TPrinterCanvas.GetLeftMargin.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.GetTopMargin">
+        <short>Gets the value for the TopMargin property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.TopMargin"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.GetTopMargin.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.GetBottomMargin">
+        <short>Gets the value for the BottomMargin property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.BottomMargin"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.GetBottomMargin.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinterCanvas.GetRightMargin">
+        <short>Gets the value for the RightMargin property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinterCanvas.RightMargin"/>
+        </seealso>
+      </element>
+      <element name="TPrinterCanvas.GetRightMargin.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinterCanvas.Create">
-        <short>
-          <var>Create</var> - constructor to make a canvas for the specified printer type, <var>APrinter</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor on entry. Create sets the value for the <var>Printer</var> property to the value in the <var>APrinter</var> parameter.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPrinterCanvas.Create.APrinter">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinterCanvas.Changing">
-        <short>
-          <var>Changing</var> - method for dealing with changes in printing status</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="TPrinterCanvas.BeginDoc">
+        <short>Performs actions needed to start printing a document</short>
+        <descr>
+          <p>
+            <var>BeginDoc</var> performs actions needed to start printing a document using the printer canvas. BeginDoc sets the value in the <var>PageNumber</var> property to <b>1</b>. The <var>NewPage</var> method is called when each subsequent page is started.
+          </p>
+          <p>
+            BeginDoc is called from the <var>TPrinter.BeginDoc</var> method when its <var>RawMode</var> property is set to <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.PageNumber"/>
+          <link id="TPrinterCanvas.NewPage"/>
+          <link id="TPrinterCanvas.EndDoc"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
+
+      <element name="TPrinterCanvas.NewPage">
+        <short>Performs actions needed when a new page is started</short>
+        <descr>
+          <p>
+            <var>NewPage</var> is procedure used to perform actions needed when a new page is started. NewPage calls the <var>BeginPage</var> method which increments the value in <var>PageNumber</var>. <var>EndPage</var> is called when the page has been completed.
+          </p>
+          <p>
+            NewPage is called from the <var>TPrinter.NewPage</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.BeginPage"/>
+          <link id="TPrinterCanvas.EndPage"/>
+          <link id="TPrinterCanvas.PageNumber"/>
+          <link id="TPrinter.NewPage"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.BeginPage">
+        <short>Performs actions needed when a page is started</short>
+        <descr>
+          <p>
+            <var>BeginPage</var> is a procedure used to perform actions needed when  page is started for the canvas. BeginPage increments the value in the <var>PageNumber</var> property.
+          </p>
+          <p>
+            BeginPage is called from the TPrinter.BeginPage method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.PageNumber"/>
+          <link id="TPrinterCanvas.NewPage"/>
+          <link id="TPrinter.BeginPage"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.EndPage">
+        <short>Performs actions needed when a page is completed</short>
+        <descr>
+          <p>EndPage has an empty implementation in TPrinterCanvas.</p>
+          <p>EndPage is called from the TPrinter.EndPage method.</p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.EndPage"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.EndDoc">
+        <short>Performs actions needed when a document has finished printing</short>
+        <descr>
+          <p>
+            <var>EndDoc</var> is a procedure used to perform actions needed when a document has finished printing. EndDoc has an empty implementation in <var>TPrinterCanvas</var>.
+          </p>
+          <p>
+            EndDoc is called from both the <var>EndDoc</var> and the <var>Abort</var> methods in <var>TPrinter</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.EndDoc"/>
+          <link id="TPrinter.Abort"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.Changing" link="#lcl.graphics.TCanvas.Changing">
+        <short>
+          Signals the OnChanging event when the printer status is changed
+        </short>
+        <descr>
+          <p>
+            <var>Changing</var> is an overridden procedure used to signal the <var>OnChanging</var> event handler (when assigned) for the canvas. Changing is overridden to ensure that an assigned <var>Printer</var> in the class instance has the value <var>pfPrinting</var> in its internal Flags. This is done by calling the <var>CheckPrinting</var> method in <var>TPrinter</var>, which can raise an <var>EPrinter</var> exception if it does not have the expected value in its <var>Printing</var> property.
+          </p>
+          <p>
+            Changing calls the inherited method to signal the <var>OnChanging</var> event handler prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.Printing"/>
+          <link id="#lcl.graphics.TCanvas.OnChanging"/>
+          <link id="EPrinter"/>
+        </seealso>
+      </element>
+
       <element name="TPrinterCanvas.Printer">
-        <short>The type of <var>Printer</var> for which this canvas is preparing the document</short>
-        <descr/>
-        <seealso/>
+        <short>Device which uses the canvas to print a document</short>
+        <descr>
+          <p>
+            <var>Printer</var> is a read-only <var>TPrinter</var> property which contains the printer device for the canvas. Printer is used to determine the capabilities selected/enabled for the output device, such as:
+          </p>
+          <dl>
+            <dt>Status</dt>
+            <dd>Ready, Printing, Stopped, et. al.</dd>
+            <dt>Paper Size</dt>
+            <dd>
+              Printable area is determined by the page dimensions and values in the margin properties.
+            </dd>
+            <dt>Resolution</dt>
+            <dd>Number of DPI (Dots per Inch) for the device</dd>
+          </dl>
+          <p>
+            The value for the property is passed as an argument to the <var>Create</var> constructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter"/>
+          <link id="TPrinterCanvas.Create"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPrinterCanvas.Title">
-        <short>The <var>Title</var> of the current printer canvas</short>
-        <descr/>
-        <seealso/>
+        <short>Title for the document rendered using the printer canvas</short>
+        <descr>
+          <p>
+            <var>Title</var> is a <var>String</var> property which contains the title for the current document. The value for the property is read from the corresponding property in <var>Printer</var> (when available). Setting a new value for the property causes the Title property in the assigned Printer to be updated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinter.Title"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPrinterCanvas.PageHeight">
-        <short>The <var>PageHeight</var> to be used for the current canvas</short>
-        <descr/>
-        <seealso/>
+        <short>Size of the printable area for the page on the vertical axis</short>
+        <descr>
+          <p>
+            <var>PageHeight</var> is a read-only <var>Integer</var> property with the size for the printable page area on the vertical axis of the page orientation. The value is expressed as the number of <b>"Dots"</b> on the device in <var>Printer</var>.
+          </p>
+          <p>
+            When Printer has been assigned and <var>HasDefaultMargins</var> is <b>True</b>, the PageHeight property in the device is used. Otherwise, the property value is calculated by subtracting the values in <var>TopMargin</var> and <var>BottomMargin</var> from the <var>PaperHeight</var> for the printer <var>Canvas</var>.
+          </p>
+          <p>
+            Use <var>PageWidth</var> to get size of the printable page on the horizontal axis for the page orientation.
+          </p>
+          <p>
+            Use <var>PaperHeight</var> and <var>PaperWidth</var> to get the dimensions for the selected paper in Printer.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.TopMargin"/>
+          <link id="TPrinterCanvas.BottomMargin"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.Orientation"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinterCanvas.XDPI"/>
+          <link id="TPrinter.PageHeight"/>
+          <link id="TPrinter.PageWidth"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPrinterCanvas.PageWidth">
-        <short>The <var>PageWidth</var> to be used for the current canvas</short>
-        <descr/>
-        <seealso/>
+        <short>Size of the printable area for the page on the horizontal axis</short>
+        <descr>
+          <p>
+            <var>PageWidth</var> is a read-only <var>Integer</var> property with the size for the printable page area on the horizontal axis of the page orientation. The value is expressed as the number of <b>"Dots"</b> on the device in <var>Printer</var>.
+          </p>
+          <p>
+            When Printer has been assigned and <var>HasDefaultMargins</var> is <b>True</b>, the PageWidth  property in the device is used. Otherwise, the property value is calculated by subtracting the values in <var>LeftMargin</var> and <var>RightMargin</var> from the <var>PaperWidth</var> for the printer <var>Canvas</var>.
+          </p>
+          <p>
+            Use <var>PageHeight</var> to get size of the printable page on the vertical axis for the page orientation.
+          </p>
+          <p>
+            Use <var>PaperHeight</var> and <var>PaperWidth</var> to get the dimensions for the selected paper in Printer.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.LeftMargin"/>
+          <link id="TPrinterCanvas.RightMargin"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.Orientation"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinterCanvas.XDPI"/>
+          <link id="TPrinter.PageHeight"/>
+          <link id="TPrinter.PageWidth"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
+
+      <element name="TPrinterCanvas.PaperWidth">
+        <short>Horizontal size for the paper selected in the print device</short>
+        <descr>
+          <p>
+            <var>PaperWidth</var> is an <var>Integer</var> property which contains the width for the current paper as the number of <b>"Dots"</b> along its horizontal axis.
+          </p>
+          <p>
+            When <var>Printer</var> has been assigned, the <var>Width</var> in its <var>PaperSize</var> property is used as the property value. Otherwise, the existing property value is returned. If the existing value is <b>0</b> (<b>zero</b>), the width (in Dots) for the "A4" paper size (in portrait orientation) is used as the property value.
+          </p>
+          <p>
+            Use <var>PaperHeight</var> to get the height for the paper in Dots along its vertical axis.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinter.PaperSize"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.PaperHeight">
+        <short>Vertical size for the paper selected in the print device</short>
+        <descr>
+          <p>
+            <var>PaperHeight</var> is an <var>Integer</var> property which contains the height for the current paper as the number of <b>"Dots"</b> along its vertical axis.
+          </p>
+          <p>
+            When <var>Printer</var> has been assigned, the <var>Height</var> in its <var>PaperSize</var> property is used as the property value. Otherwise, the existing property value is returned. If the existing value is <b>0</b> (<b>zero</b>), the height (in Dots) for the "A4" paper size (in portrait orientation) is used as the property value.
+          </p>
+          <p>
+            Use <var>PaperWidth</var> to get the width for the paper in Dots along its horizontal axis.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PaperWidth"/>
+          <link id="TPrinter.PaperSize"/>
+        </seealso>
+      </element>
+
       <element name="TPrinterCanvas.PageNumber">
-        <short>
-          <var>PageNumber</var> - the number of the current page being prepared for printing</short>
-        <descr/>
-        <seealso/>
+        <short>The number for the current page in the printer canvas</short>
+        <descr>
+          <p>
+            <var>PageNumber</var> is a read-only <var>Integer</var> property which contains the current page number for the document being rendered to the printer canvas. The value in the property is incremented each time the <var>BeginPage</var> method is called for the printer canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.NewPage"/>
+          <link id="TPrinterCanvas.BeginPage"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinterCanvas.TopMarging">
-        <short>
-          <var>TopMarging</var> - the size of the margin at the top of each page</short>
-        <descr/>
-        <seealso/>
+
+      <element name="TPrinterCanvas.TopMargin">
+        <short>The size of the margin at the top of the canvas</short>
+        <descr>
+          <p>
+            <var>TopMargin</var> is an <var>Integer</var> property which contains the size for the area between the edge of the paper and the top of the content on the page. Margin values are expressed as the number of "Dots" for the native printer resolution (<var>YDPI</var>). To achieve a .5in margin on a 300DPI laser printer, use the value <b>150</b>.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> using the canvas to render document pages. When the property contains <b>0</b> (<b>zero</b>)  and the Printer is assigned, its <var>PaperRect</var> property is examined to get the <var>Top</var> of the printable area for the paper size. Otherwise, the existing value in the property is used.
+          </p>
+          <p>
+            Changes to the property value are not applied to the Printer device.
+          </p>
+          <p>
+            Use <var>BottomMargin</var> for the unused area at the bottom edge of the canvas. Values in TopMargin, BottomMargin, and <var>PaperHeight</var> are used to calculate the <var>PageHeight</var> for the printer canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.BottomMargin"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.PageHeight"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinter.PaperRect"/>
+          <link id="TPrinter.YDPI"/>
+          <link id="TPaperRect.PhysicalRect"/>
+          <link id="TPaperRect.WorkRect"/>
+        </seealso>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinterCanvas.LeftMarging">
-        <short>
-          <var>LeftMarging</var> - the size of the margin at the left of each page</short>
-        <descr/>
-        <seealso/>
+
+      <element name="TPrinterCanvas.LeftMargin">
+        <short>The size of the margin at the left edge of the canvas</short>
+        <descr>
+          <p>
+            <var>LeftMargin</var> is an <var>Integer</var> property which contains the size for the area between the edge of the paper and the left edge of the content on the page. Margin values are expressed as the number of "Dots" for the native printer resolution (<var>XDPI</var>). To achieve a .5in margin on a 300DPI laser printer, use the value <b>150</b>.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> using the canvas to render document pages. When the property contains <b>0</b> (<b>zero</b>)  and the Printer is assigned, its <var>PaperRect</var> property is examined to get the <var>Left</var> of the printable area for the paper size. Otherwise, the existing value in the property is used.
+          </p>
+          <p>
+            Changes to the property value are not applied to the Printer device.
+          </p>
+          <p>
+            Use <var>RightMargin</var> for the unused area at the right edge of the canvas. Values in LeftMargin, RightMargin, and <var>PaperWidth</var> are used to calculate the <var>PageWidth</var> for the printer canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.RightMargin"/>
+          <link id="TPrinterCanvas.PaperWidth"/>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.XDPI"/>
+          <link id="TPrinter.PaperRect"/>
+          <link id="TPrinter.XDPI"/>
+          <link id="TPaperRect.PhysicalRect"/>
+          <link id="TPaperRect.WorkRect"/>
+        </seealso>
       </element>
-      <!-- "class of" type Visibility: default -->
+
+      <element name="TPrinterCanvas.BottomMargin">
+        <short>The size of the margin at the bottom edge of the canvas</short>
+        <descr>
+          <p>
+            <var>BottomMargin</var> is an <var>Integer</var> property which contains the size for the area between the edge of the paper and the bottom of the content on the page. Margin values are expressed as the number of "Dots" for the native printer resolution (<var>YDPI</var>). To achieve a .5in margin on a 300DPI laser printer, use the value <b>150</b>.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> using the canvas to render document pages. When the property contains <b>0</b> (<b>zero</b>)  and the Printer is assigned, its <var>PaperRect</var> property is examined to get the <var>Top</var> of the printable area for the paper size. Otherwise, the existing value in the property is used.
+          </p>
+          <p>
+            Changes to the property value are not applied to the Printer device.
+          </p>
+          <p>
+            Use <var>Topargin</var> for the unused area at the top edge of the canvas. Values in TopMargin, BottomMargin, and <var>PaperHeight</var> are used to calculate the <var>PageHeight</var> for the printer canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.TopMargin"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.PageHeight"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinter.PaperRect"/>
+          <link id="TPrinter.YDPI"/>
+          <link id="TPaperRect.PhysicalRect"/>
+          <link id="TPaperRect.WorkRect"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.RightMargin">
+        <short>The size of the margin at the right edge of the canvas</short>
+        <descr>
+          <p>
+            <var>RightMargin</var> is an <var>Integer</var> property which contains the size for the area between the edge of the paper and the right edge of the content on the page. Margin values are expressed as the number of "Dots" for the native printer resolution (<var>XDPI</var>). To achieve a .5in margin on a 300DPI laser printer, use the value <b>150</b>.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> using the canvas to render document pages. When the property contains <b>0</b> (<b>zero</b>)  and the Printer is assigned, its <var>PaperRect</var> property is examined to get the <var>Left</var> of the printable area for the paper size. Otherwise, the existing value in the property is used.
+          </p>
+          <p>
+            Changes to the property value are not applied to the Printer device.
+          </p>
+          <p>
+            Use <var>LeftMargin</var> for the unused area at the left edge of the canvas. Values in LeftMargin, RightMargin, and <var>PaperWidth</var> are used to calculate the <var>PageWidth</var> for the printer canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.LeftMargin"/>
+          <link id="TPrinterCanvas.PaperWidth"/>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.XDPI"/>
+          <link id="TPrinter.PaperRect"/>
+          <link id="TPrinter.XDPI"/>
+          <link id="TPaperRect.PhysicalRect"/>
+          <link id="TPaperRect.WorkRect"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.Orientation">
+        <short>Orientation of the page on the selected paper</short>
+        <descr>
+          <p>
+            <var>Orientation</var> is a <var>TPrinterOrientation</var> property which indicates the orientation for the content on a page (canvas). For example:
+          </p>
+          <dl>
+            <dt>poPortrait</dt>
+            <dd>Long edge of the canvas is oriented to the vertical axis.</dd>
+            <dt>poReversePortrait</dt>
+            <dd>Long edge of the canvas is oriented to the vertical axis with coordinates rotated 180 degrees. This is often referred to as "Mirror Printing".</dd>
+            <dt>poLandscape</dt>
+            <dd>Long edge of the canvas is oriented to the horizontal axis.</dd>
+            <dt>poReverseLandscape</dt>
+            <dd>Long edge of the canvas is oriented to the horizontal axis with coordinates rotated 180 degrees. This is often referred to as "Mirror Printing".</dd>
+          </dl>
+          <p>
+            The value for the property is supplied by the Printer using the canvas to render document pages (when assigned). If Printer has not been assigned, an existing value in the property is used.
+          </p>
+          <p>
+            If the value for the property is changed, it is applied to the Printer device (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Orientation"/>
+          <link id="TPrinterOrientation"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.XDPI">
+        <short>DPI (Dots per Inch) in the horizontal direction for the print device</short>
+        <descr>
+          <p>
+            <var>XDPI</var> is an <var>Integer</var> property which indicates the DPI (Dots per Inch) resolution for the horizontal axis on the print device.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> device using the canvas to render document pages. When Printer is assigned, the XDPI value in the print device is used as the property value. If Printer is not assigned, the existing value in the property is used. When the existing value is <b>0</b> (<b>zero</b>) or a negative number, the value <b>300</b> is assumed.
+          </p>
+          <p>
+            A new value assigned to the property is not applied to the Printer device.
+          </p>
+          <p>
+            XDPI is used to calculate the default value for the <var>PaperWidth</var> property.
+          </p>
+          <p>
+            Use YDPI for the resolution of the print device along the vertical axis.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PaperWidth"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinter.XDPI"/>
+          <link id="TPrinter.YDPI"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinterCanvas.YDPI">
+        <short>DPI (Dots per Inch) in the vertical direction for the print device</short>
+        <descr>
+          <p>
+            <var>YDPI</var> is an <var>Integer</var> property which indicates the DPI (Dots per Inch) resolution for the vertical axis on the print device.
+          </p>
+          <p>
+            The value for the property is normally provided by the <var>Printer</var> device using the canvas to render document pages. When Printer is assigned, the YDPI value in the print device is used as the property value. If Printer is not assigned, the existing value in the property is used. When the existing value is <b>0</b> (<b>zero</b>) or a negative number, the value <b>300</b> is assumed.
+          </p>
+          <p>
+            A new value assigned to the property is not applied to the Printer device.
+          </p>
+          <p>
+            YDPI is used to calculate the default value for the <var>PaperHeight</var> property.
+          </p>
+          <p>
+            Use XDPI for the resolution of the print device along the horizontal axis.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PaperHeight"/>
+          <link id="TPrinterCanvas.XDPI"/>
+          <link id="TPrinter.XDPI"/>
+          <link id="TPrinter.YDPI"/>
+        </seealso>
+      </element>
+
       <element name="TPrinterCanvasRef">
         <short>
           <var>TPrinterCanvasRef</var> - class of <var>TPrinterCanvas</var>: referenced class</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- record type Visibility: default -->
-      <element name="TPaperRect">
-        <short>
-          <var>TPaperRect</var> - a record holding details of physical and working dimensions for paper</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TPaperRect.PhysicalRect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TPaperRect.WorkRect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TPaperSize">
-        <short>
-          <var>TPaperSize</var> - the size of the paper to be used for the current document with the current printer</short>
+
+      <element name="TFilePrinterCanvas">
+        <short>Defines a printer canvas with an associated file for its output</short>
         <descr>
           <p>
-            <var>TPaperSize</var> - the size of paper to be used for the current document with the current printer</p>
-          <p>The width and length are in points; there are 72 points per inch. </p>
+            <var>TFilePrinterCanvas</var> is a <var>TPrinterCanvas</var> descendant which defines a printer canvas with an associated file name for its output.
+          </p>
+          <p>
+            Please note, TFilePrinterCanvas does not perform any output to the specified file. It is used as a base class for descendants which use a page description language or other printer-related technologies, like: <var>TPostscriptPrinterCanvas</var>, <var>TCairoPrinterCanvas</var>, <var>TCocoaPrinterCanvas</var>, et. al.
+          </p>
         </descr>
-        <errors/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPaperSize.fOwnedPrinter">
-        <short/>
+
+      <element name="TFilePrinterCanvas.FOutputFileName"/>
+
+      <element name="TFilePrinterCanvas.OutputFileName">
+        <short>File name where output for the printer canvas is stored</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPaperSize.fSupportedPapers">
-        <short/>
+
+      <element name="TFilePrinterCanvasClass">
+        <short>Class reference used to create instances of the TFilePrinterCanvas class</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TPaperSize.fLastPrinterIndex">
-        <short/>
+
+      <element name="TPaperRect">
+        <short>Holds the physical and working dimensions for a paper size</short>
+        <descr>
+          <p>
+            <var>TPaperRect</var> is a record type with members used to store the physical and working rectangles for a paper size. Coordinates values in the physical and working rectangles are expressed in Points (1/72 of an Inch).
+          </p>
+          <p>
+            TPaperRect is the type used to implement <var>PaperRect</var>, <var>PaperRectOf</var> and <var>GetDefaultPaperRect</var> in <var>TPaperSize</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPaperSize.PaperRect"/>
+          <link id="TPaperSize.PaperRectOf"/>
+          <link id="TPaperSize.GetDefaultPaperRect"/>
+        </seealso>
+      </element>
+
+      <element name="TPaperRect.PhysicalRect">
+        <short>Rectangle for the physical paper size</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: private -->
+
+      <element name="TPaperRect.WorkRect">
+        <short>Rectangle for the usable print area on the paper</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TPaperItem">
+        <short>Represents a paper size definition used for print devices</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TPaperItem.PaperName">
+        <short>Common name for the paper size</short>
+        <descr>
+          <p>
+            Contains values like: "Letter", "Legal" or "A4". Limited to 40 characters maximum.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPaperItem.PaperRect">
+        <short>Contains boundaries for the physical paper size and its available working area</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomPaperItem">
+        <short>Contains a custom paper size defined in TPaperSize</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomPaperItem.PaperSet">
+        <short>True when a TPaperItem instance is in the Item member</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomPaperItem.Item">
+        <short>Contains physical and work area rectangles for a custom paper size</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TPaperSize">
+        <short>
+          Size for a paper used for the current document with the current printer
+        </short>
+        <descr>
+          <p>
+            <var>TPaperSize</var> represents the size of the paper used for the current document with the current printer. The width and length are represented in Points (72 points per inch).
+          </p>
+          <p>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPaperSize.fOwnedPrinter"/>
+      <element name="TPaperSize.fSupportedPapers"/>
+      <element name="TPaperSize.fLastPrinterIndex"/>
+
       <element name="TPaperSize.GetDefaultPaperName">
-        <short/>
+        <short>Gets the value for the DefaultPaperName property</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPaperSize.GetDefaultPaperName.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
+      <element name="TPaperSize.GetPhysPaperHeight">
+        <short>Gets the value for the Height property</short>
+        <descr/>
+        <seealso>
+          <link id="TPaperSize.Height"/>
+        </seealso>
+      </element>
+      <element name="TPaperSize.GetPhysPaperHeight.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPaperSize.GetPaperName">
-        <short/>
+        <short>Gets the value for the PaperName property</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPaperSize.PaperName"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPaperSize.GetPaperName.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TPaperSize.GetPaperRect">
-        <short/>
+        <short>Gets the value for the PaperRect property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPaperSize.PaperRect"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPaperSize.GetPaperRect.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
+      <element name="TPaperSize.GetPhysPaperWidth">
+        <short>Gets the value for the Width property</short>
+        <descr/>
+        <seealso>
+          <link id="TPaperSize.Width"/>
+        </seealso>
+      </element>
+      <element name="TPaperSize.GetPhysPaperWidth.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPaperSize.GetSupportedPapers">
-        <short/>
+        <short>Gets the value for the SupportedPapers property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPaperSize.SupportedPapers"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPaperSize.GetSupportedPapers.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
+
       <element name="TPaperSize.SetPaperName">
-        <short/>
+        <short>Sets the value for the PaperName property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPaperSize.PaperName"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPaperSize.SetPaperName.AName">
-        <short/>
+        <short>New value for the property</short>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TPaperSize.PaperRectOfName">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Provides indexed access to the rectangle for the specified paper name</short>
+        <descr>
+          <p>
+            <var>PaperRectOfName</var> is an indexed <var>TPaperRect</var> property which provides access to the rectangle for the specified paper name. aName contains the name for the requested paper. The property value contain rectangles with both the physical dimensions for the paper and the available work area for the page.
+          </p>
+          <p>
+            If a custom paper size has been defined with the name in aName, its rectangle is used as the value for the property. Otherwise, the papers defined in the SupportedPapers property are search for the requested name.
+          </p>
+          <p>
+            An EPrinter exception is raised when aName contains a value not located in SupportedPapers. An EPrinter exception is also raised when a rectangle cannot be determined for the specified name.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            Raises an EPrinter exception with the message ''The paper "%s" has no defined rectangle!''.
+          </p>
+          <p>
+            Raises an EPrinter exception with the message 'Paper "%s" is not supported!'.
+          </p>
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TPaperSize.PaperRectOfName.Result">
-        <short/>
+        <short>TPaperRect value for the paper with the given name</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPaperSize.PaperRectOfName.AName">
-        <short/>
+        <short>
+          Paper name to locate in the SupportedPapers property or a custom Paper defined in the paper size
+        </short>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TPaperSize.Create" link="#rtl.System.TObject.Create">
-        <short/>
+
+      <element name="TPaperSize.CheckSupportedPapers">
+        <short>Ensures that a printer is selected and the default paper sizes are available</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
+
+      <element name="TPaperSize.fInternalPapers"/>
+      <element name="TPaperSize.fDefaultPapers"/>
+      <element name="TPaperSize.fDefaultPaperIndex"/>
+      <element name="TPaperSize.fCustomPaper"/>
+      <element name="TPaperSize.CreateInternalPapers"/>
+      <element name="TPaperSize.FillDefaultPapers"/>
+
+      <element name="TPaperSize.GetDefaultPaperRect">
+        <short>Gets the rectangles for the specified default paper name</short>
+        <descr>
+          <p>
+            <var>GetDefaultPaperRect</var> is an <var>Integer</var> function used to get a <var>TPaperRect</var> with the dimensions for the default paper name specified in <var>AName</var>. The return value contains the ordinal position in the default paper sizes defined in the class, or -1 when a default paper size with the specified name could not be located. The rectangles for the requested paper name are returned in the <var>APaperRect</var> parameter.
+          </p>
+          <p>
+            The Orientation for the printer device is used to determine if the rectangle bounds must be  translated to the selected orientation. No actions are needed for <var>poPortrait</var> or <var>poReversePortrait</var> orientations. For <var>poLandscape</var> and <var>poReverseLandscape</var> orientations, the value in <var>Left</var> and <var>Right</var> become the values in <var>Top</var> and <var>Bottom</var> (respectively). The values in Top and Bottom become the values in Left and Right (respectively).
+          </p>
+          <p>
+            GetDefaultPaperRect is called from the implementation of the <var>PaperRectOfName</var> method.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPaperSize.GetDefaultPaperRect.Result">
+        <short>Position for the requested paper name in the list of default papers</short>
+      </element>
+      <element name="TPaperSize.GetDefaultPaperRect.AName">
+        <short>Name for the default paper size located in the method</short>
+      </element>
+      <element name="TPaperSize.GetDefaultPaperRect.APaperRect">
+        <short>Contains the physical and working areas for the paper</short>
+      </element>
+
+      <element name="TPaperSize.IndexOfDefaultPaper">
+        <short>Gets the ordinal position for a default paper size with the specified name</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPaperSize.IndexOfDefaultPaper.Result">
+        <short>Ordinal position in the list of default papers for the specified paper name</short>
+      </element>
+      <element name="TPaperSize.IndexOfDefaultPaper.AName">
+        <short>Paper name to locate in the method</short>
+      </element>
+
+      <element name="TPaperSize.SetPaperRect">
+        <short>Sets the value for the PaperRect property</short>
+        <descr/>
+        <seealso>
+          <link id="TPaperSize.PaperRect"/>
+        </seealso>
+      </element>
+      <element name="TPaperSize.SetPaperRect.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPaperSize.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overloaded constructor for the class instance.
+          </p>
+          <p>
+            <var>AOwner</var> is the <var>TPrinter</var> device which owns the class instance. It is used  to get device capabilities such as DPI (Dots per Inch), and to calculate the page rectangle for the paper size. An exception is raised if AOwner has not been assigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            Create calls the inherited constructor.
+          </p>
+          <p>
+            Create allocates resources and initializes internal members used in the class instance.
+          </p>
+        </descr>
+        <errors>
+          <dl>
+            <dt>Exception</dt>
+            <dd>
+              Raised with the message 'TMediaSize.Create, aOwner must be defined!' when <var>AOwner</var> has not been assigned.
+            </dd>
+          </dl>
+        </errors>
+        <seealso/>
+        <notes>
+          <note>
+            Exception message text does not match the actual name for the method. Refactoring oversight?
+          </note>
+        </notes>
+      </element>
       <element name="TPaperSize.Create.aOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TPaperSize.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
+
+      <element name="TPaperSize.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy frees resources allocated to internal members in the class instance, and calls the inherited destructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.TObject.Destroy"/>
+        </seealso>
+      </element>
+
+      <element name="TPaperSize.DefaultPapers">
+        <short>Indicates if default paper sizes have been defined and added to SupportedPapers</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
+      <element name="TPaperSize.Width">
+        <short>Physical width for the selected paper size</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TPaperSize.Height">
+        <short>Physical height for the selected paper size</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TPaperSize.PaperName">
         <short>
           <var>PaperName</var> - the name for the paper being used</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPaperSize.DefaultPaperName">
         <short>
           <var>DefaultPaperName</var> - the default name for this size of paper</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPaperSize.PaperRect">
         <short>
           <var>PaperRect</var> - the rectangle dimensions for this paper</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPaperSize.SupportedPapers">
         <short>
           <var>SupportedPapers</var> - the list of supported papers for this paper size</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TPaperSize.PaperRectOf">
         <short>
           <var>PaperRectOf</var> - the Paper Rect corresponding to the given name</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPaperSize.PaperRectOf.aName">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
+      <element name="TPrinterFlags">
+        <short>Represents status flag values used for printer devices</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinterFlags.pfPrinting">
+        <short>Device is printing</short>
+      </element>
+      <element name="TPrinterFlags.pfAborted">
+        <short>Abort process</short>
+      </element>
+      <element name="TPrinterFlags.pfDestroying">
+        <short>Printer object is being destroyed</short>
+      </element>
+      <element name="TPrinterFlags.pfPrintersValid">
+        <short>Printer list is valid</short>
+      </element>
+      <element name="TPrinterFlags.pfRawMode">
+        <short>Printer is in raw mode</short>
+      </element>
+
       <element name="TPrinter">
         <short>
-          <var>TPrinter</var> - class defining printer to be used in Lazarus applications</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fCanvas">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fFonts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fPageNumber">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fPrinters">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fPrinterIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fTitle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fPrinting">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fAborted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPrinter.fPaperSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetCanvas">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetCanvas.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinter.CheckPrinting">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.CheckPrinting.Value">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetCopies">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetCopies.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetFonts">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetFonts.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetOrientation">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetOrientation.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetPageHeight">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPageHeight.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetPageWidth">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPageWidth.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetPaperSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPaperSize.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetPrinterIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPrinterIndex.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPrinter.GetPrinters">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPrinters.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinter.SetCopies">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.SetCopies.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinter.SetOrientation">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.SetOrientation.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPrinter.SetPrinterIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.SetPrinterIndex.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.SelectCurrentPrinterOrDefault">
-        <short>
-          <var>SelectCurrentPrinterOrDefault</var> method for selecting either the current printer or the default</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.GetCanvasRef">
-        <short>
-          <var>GetCanvasRef</var> - returns a reference to a printer canvas</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetCanvasRef.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoBeginDoc">
-        <short>
-          <var>DoBeginDoc</var> - method to begin printing the document</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoNewPage">
-        <short>
-          <var>DoNewPage</var> - method for beginning a new page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoEndDoc">
-        <short>
-          <var>DoEndDoc</var> - method for finishing printing document. aAborded is True if printing has been aborted (e.g. by operator)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoEndDoc.aAborded">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoAbort">
-        <short>
-          <var>DoAbort</var> - method for aborting the printing</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoResetPrintersList">
-        <short>
-          <var>DoResetPrintersList</var> - method for resetting the list of printers</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoResetFontsList">
-        <short>
-          <var>DoResetFontsList</var> - method for resetting the list of fonts</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoEnumPrinters">
-        <short>
-          <var>DoEnumPrinters</var> - method for producing an enumerated list of printers</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoEnumPrinters.Lst">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoEnumFonts">
-        <short>
-          <var>DoEnumFonts</var> - method for producing an enumerated list of fonts</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoEnumFonts.Lst">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoEnumPapers">
-        <short>
-          <var>DoEnumPapers</var> - method for producing an enumerated list of papers</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoEnumPapers.Lst">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoSetPrinter">
-        <short>
-          <var>DoSetPrinter</var> - returns integer corresponding to specified named  printer</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoSetPrinter.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoSetPrinter.aName">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetCopies">
-        <short>
-          <var>DoGetCopies</var> - returns the number of copies required</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetCopies.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoSetCopies">
-        <short>
-          <var>DoSetCopies</var> - specifies the number of copies required</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoSetCopies.aValue">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetOrientation">
-        <short>
-          <var>DoGetOrientation</var> - returns the required orientation for printing (landscape of portrait)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetOrientation.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoSetOrientation">
-        <short>
-          <var>DoSetOrientation</var> - specifies the orientation for printing (landscape or portrait)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoSetOrientation.aValue">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetDefaultPaperName">
-        <short>
-          <var>DoGetDefaultPaperName</var> - returns the default name for the paper</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetDefaultPaperName.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetPaperName">
-        <short>
-          <var>DoGetPaperName</var> - returns the name of the current paper</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetPaperName.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPrinter.DoSetPaperName">
-        <short>
-          <var>DoSetPaperName</var> - specifies the name of the paper</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoSetPaperName.aName">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetPaperRect">
-        <short>
-          <var>DoGetPaperRect</var> - returns the dimensions of the rectangle for the named paper</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetPaperRect.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoGetPaperRect.aName">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.DoGetPaperRect.aPaperRc">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.DoGetPrinterState">
-        <short>
-          <var>DoGetPrinterState</var> - returns the printer state</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.DoGetPrinterState.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.GetPrinterType">
-        <short>
-          <var>GetPrinterType</var> - returns the printer type</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetPrinterType.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TPrinter.GetCanPrint">
-        <short>
-          <var>GetCanPrint</var> - returns True if the printer is able to print</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.GetCanPrint.Result">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TPrinter.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TPrinter.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.Abort">
-        <short>
-          <var>Abort</var> - terminate the current printing event (even if it hasn't finished)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.BeginDoc">
-        <short>
-          <var>BeginDoc</var> - start printing the currently selected document</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.EndDoc">
-        <short>
-          <var>EndDoc</var> - finish printing the current document</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.NewPage">
-        <short>
-          <var>NewPage</var> - start printing on a new page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.Refresh">
-        <short>
-          <var>Refresh</var> the data for printing, e.g. after a change </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TPrinter.SetPrinter">
-        <short>
-          <var>SetPrinter</var> - specify use of the named printer</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TPrinter.SetPrinter.aName">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TPrinter.ExecuteSetup">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.ExecuteSetup.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TPrinter.ExecuteProperties">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TPrinter.ExecuteProperties.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PrinterIndex">
-        <short>
-          <var>PrinterIndex</var> - the printer's index in the list of printers</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PaperSize">
-        <short>
-          <var>PaperSize</var> - the size of paper to be used for the current document</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Orientation">
-        <short>The <var>Orientation</var> - for printing the current document (landscape or portrait, normal or reversed)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PrinterState">
-        <short>
-          <var>PrinterState</var> - ready, printing, stopped or undefined</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Copies">
-        <short>Number of <var>Copies</var> of the current document</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Printers">
-        <short>
-          <var>Printers</var> - the list of available printers for printing the current document</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Fonts">
-        <short>the list of available <var>Fonts</var> for the current printer</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Canvas">
-        <short>The <var>Canvas</var> to be used for laying out the current document ready for printing</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PageHeight">
-        <short>
-          <var>PageHeight</var> - for printing the current document with the defined <var>PaperSize</var>
+          <var>TPrinter</var> - class defining printer to be used in Lazarus applications
         </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PageWidth">
-        <short>The <var>PageWidth</var> for the current document with the defined <var>PaperSize</var>
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PageNumber">
-        <short>
-          <var>PageNumber</var> - the number of the current page being printed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Aborted">
-        <short>
-          <var>Aborted</var> - True if printing of the document has been prematurely terminated by operator command</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Printing">
-        <short>
-          <var>Printing</var> - True if document is in process of being printed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.Title">
-        <short>
-          <var>Title</var> - name for this printer</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.PrinterType">
-        <short>
-          <var>PrinterType</var> - whether a local or network printer</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPrinter.CanPrint">
-        <short>
-          <var>CanPrint</var> - True if printing is enabled or not disabled</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="Printer">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPrinter.CanRenderCopies">
-        <short>
-          <var>CanRenderCopies</var> - True if the printer device can render copies</short>
-        <descr>
-          <var>CanRenderCopies</var> - True if the printer device can render copies, i.e. if <var>TPrinterCapability</var> includes pcCopies
-</descr>
-      </element>
-      <element name="TPrinter.XDPI">
-        <short>
-          <var>XDPI</var> - number of dots per inch in X-direction</short>
-      </element>
-      <element name="TPrinter.YDPI">
-        <short>
-          <var>YDPI</var> - number of dots per inch in Y direction</short>
-      </element>
-      <element name="TPrinter.RawMode">
-        <short>
-          <var>RawMode</var> - true if printer operates in Raw Mode (as opposed to PostScript or some other page description language)</short>
         <descr>
           <p>
-            <var>RawMode</var> - true if printer operates in Raw Mode (as opposed to PostScript or some other page description language)</p>
-          <p>If Raw Mode is being used, text is sent directly to the printer device without formatting, and the Canvas is not used for setting up the pages</p>
+            <var>TPrinter</var> is a <var>TObject</var> descendant which defines an API for a printer device.
+          </p>
+          <p>
+            TPrinter provides properties and methods used to select, configure, and control the printer device. Most of the methods are declared as virtual, and can be overridden in descendent classes which implement specific features like: page description languages, networking protocols, support for graphics libraries, etc.
+          </p>
+          <p>
+            TPrinter uses a <var>Canvas</var> to position, format, and render output for the print device. A  <var>TPrinterCanvas</var> class is provided which extends the familiar TCanvas class with features for printer-specific usage. The <var>CanvasClass</var> property allows the printer to create instances of TPrinterCanvas or descendent classes.
+          </p>
+          <p>
+            TPrinter also provides a <var>RawMode</var> property which indicates that output does not use formatting or a page description language, and bypasses use of the Canvas class. Think of this as "Dot Matrix Mode".
+          </p>
+          <p>
+            Properties are provided which allow the printer device to be configure its output resolution, paper selection, page margins, etc. Methods are provided to perform printer control when processing print jobs, documents, and pages.
+          </p>
+          <p>
+            TPrinter is a base class. Do not create instances of TPrinter; an exception is raised when the ClassType for the class instance is TPrinter (and not one of its descendants). Use one of the descendants provided in the <file>printer4lazarus</file> package, like: <var>TWinPrinter</var>, <var>TCarbonPrinter</var>, <var>TQtPrinters</var>, <var>TCUPSPrinter</var>, et. al.
+          </p>
         </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.GetLeftMargin">
+
+      <element name="TPrinter.fCanvas"/>
+      <element name="TPrinter.fFilename"/>
+      <element name="TPrinter.fFonts"/>
+      <element name="TPrinter.fPageNumber"/>
+      <element name="TPrinter.fPrinters"/>
+      <element name="TPrinter.fPrinterIndex"/>
+      <element name="TPrinter.fTitle"/>
+      <element name="TPrinter.fPaperSize"/>
+      <element name="TPrinter.fCanvasClass"/>
+      <element name="TPrinter.fBins"/>
+      <element name="TPrinter.fFlags"/>
+
+      <element name="TPrinter.GetAborted">
+        <short>Gets the value for the Aborted property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetAborted.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetCanvas">
+        <short>Gets the value for the Canvas property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetCanvas.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.CheckPrinting">
+        <short>Ensures that the Printing property contains the specified value</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.CheckPrinting.Value">
+        <short>Value required for the property</short>
+      </element>
+
+      <element name="TPrinter.GetCanvasClass">
+        <short>Gets the value for the CanvasClass property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetCanvasClass.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetCopies">
+        <short>Gets the value for the Copies property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetCopies.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetFonts">
+        <short>Gets the value for the Fonts property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetFonts.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetOrientation">
+        <short>Gets the value for the Orientation property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetOrientation.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPageHeight">
+        <short>Gets the value for the PageHeight property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPageHeight.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPageWidth">
+        <short>Gets the value for the PageWidth property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPageWidth.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPaperSize">
+        <short>Gets the value for the PaperSize property</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPaperSize.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetBinName">
+        <short>Gets the value for the BinName property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetBinName.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetDefaultBinName">
+        <short>Gets the value for the DefaultBinName property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetDefaultBinName.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPrinterIndex">
+        <short>Gets the value for the PrinterIndex property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPrinterIndex.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPrinterName">
+        <short>Gets the value for the PrinterName property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPrinterName.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPrinters">
+        <short>Gets the value for the Printers property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPrinters.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetPrinting">
+        <short>Gets the value for the Printing property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetPrinting.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetRawMode">
+        <short>Gets the value for the RawMode property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.GetRawMode.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetCanvasClass">
+        <short>Sets the value for the CanvasClass property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetCanvasClass.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetCopies">
+        <short>Sets the value for the Copies property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetCopies.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetOrientation">
+        <short>Sets the value for the Orientation property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetOrientation.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetPrinterIndex">
+        <short>Sets the value for the PrinterIndex</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetPrinterIndex.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetRawMode">
+        <short>Sets the value for the RawMode property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetRawMode.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SetBinName">
+        <short>Sets the value for the BinName property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetBinName.aName">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TPrinter.SelectCurrentPrinterOrDefault">
         <short>
-          <var>GetLeftMargin</var> - returns the size of the left margin</short>
+          Selects the default printer when a printer has not been selected
+        </short>
+        <descr>
+          <p>
+            <var>SelectCurrentPrinterOrDefault</var> ensures that a valid print device is selected. The default printer (the first device in Printers) is used when <var>PrinterIndex</var> has not been assigned and the number of devices in <var>Printers</var> is not <b>0</b>
+             (<b>zero</b>).
+          </p>
+          <p>
+            SelectCurrentPrinterOrDefault is called from the implementation of the <var>BeginDoc</var> method, and when the list in Printers is loaded in the <var>GetPrinters</var> method. It is also called when the paper size for a print device is validated in the <var>TPaperSize.CheckSupportedPapers</var> method.
+          </p>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.GetTopMargin">
+
+      <element name="TPrinter.DoBeginDoc">
+        <short>Performs actions needed when printing is started for a document</short>
+        <descr>
+          <p>
+            <var>DoBeginDoc</var> is a virtual procedure which performs actions needed when printing is started for a document. DoBeginDoc is called from the <var>BeginDoc</var> method, and occurs after checking the printer status and updating values in <var>PrinterFlags</var>. When <var>RawMode</var> is <b>False</b>, the <var>Canvas</var> has already been refreshed and its BeginDoc method has been called.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoBeginDoc has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinterCanvas.Refresh"/>
+          <link id="TPrinterCanvas.BeginDoc"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.DoNewPage">
+        <short>Performs actions needed to start a new page for the print device</short>
+        <descr>
+          <p>
+            <var>DoNewPage</var> is a virtual procedure used to perform actions needed to start a new page for the print device. DoNewPage is called from the <var>NewPage</var> method when an overridden method has been provided in the class implementation. It occurs after checking the printer status and incrementing the value in <var>PageNumber</var>.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoNewPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.DoBeginPage">
+        <short>Performs actions needed to begin a page for the print device</short>
+        <descr>
+          <p>
+            <var>DoBeginPage</var> is a virtual procedure used to perform actions needed to begin a page for the selected print device. DoBeginPage is called from the <var>BeginPage</var> method, and occurs after checking the printer status and incrementing the <var>PageNumber</var>.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoBeginPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.DoEndPage">
+        <short>Performs actions needed to end the current page for the print device</short>
+        <descr>
+          <p>
+            <var>DoEndPage</var> is a virtual procedure used to perform actions needed to end the current page for the print device. DoEndPage is called from the <var>EndPage</var> method, and occurs after synchronizing the printer canvas when <var>RawMode</var> is <b>False</b>.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoEndPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.EndPage"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.RawMode"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.DoEndDoc">
+        <short>Performs actions need to end printing for the current document</short>
+        <descr>
+          <p>
+            <var>DoEndDoc</var> is a vitual method used to finishing printing the current document. <var>aAborted</var> is <b>True</b> if printing has been halted by calling the <var>Abort</var> method.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoEndDoc has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoEndDoc.aAborted">
+        <short>True if document printing was aborted rather than ended normally</short>
+      </element>
+
+      <element name="TPrinter.DoAbort">
         <short>
-          <var>GetTopMargin</var> - returns the size of the top margin</short>
+          Performs actions needed to abort printing for the current document
+        </short>
+        <descr>
+          <p>
+            <var>DoAbort</var> is a virutal procedure used to perform actions needed to abort printing for the current document. DoAbort is called from the <var>Abort</var> method, and occurs after checking the printer status and before setting values in <var>PrinterFlags</var>.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoAbort has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.GetBottomMargin">
+
+      <element name="TPrinter.DoResetPrintersList">
         <short>
-          <var>GetBottomMargin</var> - returns the size of the bottom margin</short>
+          Performs actions needed to reset the status for the list of Printers
+        </short>
+        <descr>
+          <p>
+            <var>DoResetPrintersList</var> is a virtual method which performs actions needed to reset the status for the list of available devices in the <var>Printers</var> property. DoResetPrintersList removes the value <var>pfPrintersValid</var> from the <var>PrinterFlags</var> property.
+          </p>
+          <p>
+            DoResetPrintersList is called from the <var>Refresh</var> method, and occurs prior to clearing and re-populating values in the Printers property. It is also called from the <var>DoDestroy</var> method when the class instance is freed.
+          </p>
+          <remark>
+            Please note: DoResetPrintersList can be overridden in a descendent class to perform actions  needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.GetRightMargin">
+
+      <element name="TPrinter.DoResetFontsList">
         <short>
-          <var>GetRightMargin</var> - returns the size of the right margin</short>
-      </element>
-      <element name="TPrinterCanvas.TopMargin">
-        <short>The size of the <var>TopMargin</var>
+          Performs actions needed to reset the list of Fonts for the selected printer
         </short>
+        <descr>
+          <p>
+            <var>DoResetFontsList</var> is a virtual method used to perform actions needed to reset the list of Fonts for the selected print device. DoResetFontsList clears any values stored in the Fonts property (when assigned).
+          </p>
+          <p>
+            DoResetFontsList is called from the Refresh method, and from DoDestroy when the class instance is freed.
+          </p>
+          <remark>
+            Please note: DoResetFontsList can be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.LeftMargin">
-        <short>The size of the <var>LeftMargin</var>
+
+      <element name="TPrinter.DoEnumPrinters">
+        <short>
+          Performs actions needed to populate the specified list with available printers
         </short>
+        <descr>
+          <p>
+            <var>DoEnumPrinters</var> is a virtual procedure used to performs actions needed to populate the list in <var>Lst</var> with the printers available in the class instance. DoEnumPrinters has an empty implementation in <var>TPrinter</var>. It must be overridden in a descendent class to perform the actions required for the implementation.
+          </p>
+          <remark>
+            Please note: The method must ensure that the first printer (stored at position <b>0</b>) in Lst is the "<b>default</b>" printer for the operating system / widgetset / printer-related technology.
+          </remark>
+          <p>
+            DoEnumPrinters is called from the <var>GetPrinters</var> method, and passes the member for the <var>Printers</var> property as the list storage for the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.GetPrinters"/>
+        </seealso>
       </element>
-      <element name="TPrinterCanvas.BottomMargin">
-        <short>The size of the <var>BottomMargin</var>
+      <element name="TPrinter.DoEnumPrinters.Lst">
+        <short>TStrings instance where names for defined printers are stored</short>
+      </element>
+
+      <element name="TPrinter.DoEnumFonts">
+        <short>
+          Performs actions needed to get a list of fonts supported for a print device
         </short>
+        <descr>
+          <p>
+            <var>DoEnumFonts</var> is a virtual method used to perform actions needed to populate the specified list with font names supported for the selected print device. DoEnumFonts is called from the GetFonts method when the Fonts property is empty.
+          </p>
+          <remark>
+            Please note: In TPrinter, DoEnumFonts has an empty implementation. It must be overridden in a descendent class to perform actions needed to get the list of font names using the facilities available for the operating system / widgetset / printer-related technology.
+          </remark>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TPrinterCanvas.RightMargin">
-        <short>the size of the <var>RightMargin</var>
-        </short>
+      <element name="TPrinter.DoEnumFonts.Lst">
+        <short>TStrings instance where the list of font names is stored</short>
       </element>
+
+      <element name="TPrinter.DoEnumPapers">
+        <short>Performs actions needed to get the supported papers for the print device</short>
+        <descr>
+          <p>
+            <var>DoEnumPapers</var> has an empty implementation in TPrinter; it must be overridden in a descendent class to implement the functionality.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PaperSize"/>
+          <link id="TPrinter.CheckSupportedPapers"/>
+          <link id="TPaperSize"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoEnumPapers.Lst">
+        <short>TStrings instance with the list of paper supported for the print device</short>
+      </element>
+
+      <element name="TPrinter.DoEnumBins">
+        <short>Performs action needed to get the Paper Bins for the printer device</short>
+        <descr>
+          <p>
+            <var>DoEnumBins</var> has an empty implementation in TPrinter; it must be overridden in a descendent class to implement the functionality.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.SupportedBins"/>
+          <link id="TPrinter.BinName"/>
+          <link id="TPrinter.DefaultBinName"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoEnumBins.Lst">
+        <short>TStrings instance with the Paper Bins for the printer</short>
+      </element>
+
       <element name="TPrinter.DoInitialization">
         <short>
-          <var>DoInitialization</var> - method for performing initialization</short>
+          Performs intializations after the list of Printers has been populated
+        </short>
+        <descr>
+          <p>
+            <var>DoInitialization</var> is a method used to initialize the class instance after the list of supported <var>Printers</var> has been retrieved. DoInitialization has an empty implementation in <var>TPrinter</var>, and must overridden in a descendent class to implement the functionality.
+          </p>
+          <p>
+            DoInitialization is called from the <var>GetPrinters</var> method, and occurs only once when the <var>PrinterFlags</var> does <b>NOT</b> include the values <var>pfPrintersValid</var> and <var>pfDestroying</var>. When called, the <var>DoEnumPrinters</var> method has successfully completed and the default printer has been selected using the <var>SelectCurrentPrinterOrDefault</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.DoEnumPrinters"/>
+          <link id="TPrinter.SelectCurrentPrinterOrDefault"/>
+          <link id="TPrinterFlags.pfPrintersValid"/>
+          <link id="TPrinterFlags.pfDestroying"/>
+        </seealso>
       </element>
+
+      <element name="TPrinter.DoSetPrinter">
+        <short>Performs actions needed to select the specified printer name</short>
+        <descr>
+          <p>
+            <var>DoSetPrinter</var> is a virtual <var>Integer</var> function used to perform actions needed to set the selected printer to the name specified in <var>aName</var>. The return value contains the ordinal position in <var>Printers</var> where the name is located, or <b>-1</b> when the specified name was not found.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetPrinter always returns the value <b>-1</b>. It must be overridden in a descendent class to perform the actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+          <p>
+            DoSetPrinter is called from the <var>SetPrinter</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.SetPrinter"/>
+          <link id="TPrinter.PrinterIndex"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoSetPrinter.Result">
+        <short>Ordinal position for the specified printer name, or -1 when not found</short>
+      </element>
+      <element name="TPrinter.DoSetPrinter.aName">
+        <short>Printer name to use as the selected print device</short>
+      </element>
+
+      <element name="TPrinter.DoGetCopies">
+        <short>
+          Performs actions needed to get the number of copies currently set for the print device
+        </short>
+        <descr>
+          <p>
+            <var>DoGetCopies</var> is a virtual <var>Integer</var> function used to perform actions needed to get the number of copies currently set for the print device. DoGetCopies is called when the value for the <var>Copies</var> property is read.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetCopies always returns the value <b>1</b>. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used to implement the printer capability.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Copies"/>
+          <link id="TPrinter.GetCopies"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetCopies.Result">
+        <short>Number of copies currently in use</short>
+      </element>
+
+      <element name="TPrinter.DoSetCopies">
+        <short>Performs actions needed to set the number of copies for each printed page</short>
+        <descr>
+          <p>
+            <var>DoSetCopies</var> is a virtual procedure used to perform actions needed to set the number of copies for each page printed on the device. DoSetCopies is called when a new value is assigned to the <var>Copies</var> property.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetCopies has an empty implementation. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used to implement the printer capability.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Copies"/>
+          <link id="TPrinter.SetCopies"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoSetCopies.aValue">
+        <short>Number of copies to use for the print device</short>
+      </element>
+
+      <element name="TPrinter.DoGetOrientation">
+        <short>
+          Performs actions needed to get the page orientation for the print device
+        </short>
+        <descr>
+          <p>
+            <var>DoGetOrientation</var> is a virtual <var>TPrinterOrientation</var> function used to perform actions needed to get the page orientation for the print device. DoGetOrientation is called when the value for the <var>Orientation</var> property is retrieved, and provides the value used in the property.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetOrientation always returns the value <var>poPortrait</var>. It must be overridden in a descendent class to perform the actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Orientation"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetOrientation.Result">
+        <short>TPrinterOrientation value for the page orientation</short>
+      </element>
+
+      <element name="TPrinter.DoSetOrientation">
+        <short>Sets the page orientation for a printer device</short>
+        <descr>
+          <p>
+            <var>DoSetOrientation</var> is a virtual procedure used to perform actions needed to set the page orientation for a print device. <var>AValue</var> is a value from the <var>TPrinterOrientation</var> enumeration applied to the print device. See <link id="TPrinterOrientation">TPrinterOrientation</link> for more information about the enumeration values and their meanings. DoSetOrientation is called when a new value is assigned to the <var>Orientation</var> property.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetOrientation has an empty implementation. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Orientation"/>
+          <link id="TPrinter.SetOrientation"/>
+          <link id="TPrinterOrientation"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoSetOrientation.aValue">
+        <short>Page orientation applied to the print device</short>
+      </element>
+
+      <element name="TPrinter.DoGetDefaultPaperName">
+        <short>
+          Performs actions needed to get the name for the default paper on the print device
+        </short>
+        <descr>
+          <p>
+            <var>DoGetDefaultPaperName</var> is a virtual <var>String</var> function which performs action needed to get the name for the default paper on the selected print device. The return value contains the name for the default paper, such as: "Letter", "Legal", or "A4". DoGetDefaultPaperName is called when the value for the <var>TPaperSize.DefaultPaperName</var> property is read.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetDefaultPaperName always returns an empty string (<b>''</b>). It must be overridden in a descendent class to perform the actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PaperSize"/>
+          <link id="TPaperSize.DefaultPaperName"/>
+          <link id="TPaperSize.DefaultPapers"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetDefaultPaperName.Result">
+        <short>Name for the default paper on the selected print device</short>
+      </element>
+
+      <element name="TPrinter.DoGetPaperName">
+        <short>
+          Performs action needed to get the selected paper name for the current printer
+        </short>
+        <descr>
+          <p>
+            <var>DoGetPaperName</var> is a virtual <var>String</var> function which performs action needed to get the selected paper name for the current printer. DoGetPaperName is called when the value for the <var>TPaperSize.PaperName</var> property in the printer is read.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetPaperName always returns an empty string (<b>''</b>). It must be overridden in a descendent class to perform actions needed for the operating system /  widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PaperSize"/>
+          <link id="TPaperSize.PaperName"/>
+          <link id="TPaperSize.GetPaperName"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetPaperName.Result">
+        <short>Name of the paper selected for the current printer</short>
+      </element>
+
+      <element name="TPrinter.DoSetPaperName">
+        <short>
+          Performs actions needed to set the paper for the current printer to the specified name
+        </short>
+        <descr>
+          <p>
+            <var>DoSetPaperName</var> performs actions needed to set the paper for the current printer to the specified name. DoSetPaperName is called when the paper name is assigned to the <var>PaperName</var> property in <var>PaperSize</var>.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetPaperName has an empty implementation. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoSetPaperName.aName">
+        <short>Paper name selected for the printer</short>
+      </element>
+
+      <element name="TPrinter.DoGetDefaultBinName">
+        <short>Performs actions needed to get the name for the default bin on the selected printer</short>
+        <descr>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetDefaultBinName always returns an empty string('').  It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoGetDefaultBinName.Result">
+        <short>Name for the default paper bin on the current printer</short>
+      </element>
+
+      <element name="TPrinter.DoGetBinName">
+        <short>Performs actions needed to get the current paper bin selected for the print device</short>
+        <descr>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetBinName always returns an empty string('').  It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoGetBinName.Result">
+        <short>Name for the paper bin selected on the current printer</short>
+      </element>
+
+      <element name="TPrinter.DoSetBinName">
+        <short>Performs actions needed to set the selected paper bin for the current printer</short>
+        <descr>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetBinName has an empty implementation. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+        <notes><note>??? Includes DebugLn output.</note></notes>
+      </element>
+      <element name="TPrinter.DoSetBinName.aName">
+        <short>Name for the paper bin selected in the method</short>
+      </element>
+
+      <element name="TPrinter.DoGetPaperRect">
+        <short>
+          Performs actions needed to get the dimensions (rectangle) for the specified paper
+        </short>
+        <descr>
+          <p>
+            <var>DoGetPaperRect</var> is an <var>Integer</var> function used to get the dimensions (or rectangle) for the specified paper name. The return value indicates whether the rectangle represents the margins or the actual work area for the specified paper name.
+          </p>
+          <dl>
+            <dt>0</dt>
+            <dd>aPaperRc is the margins for the specified paper name.</dd>
+            <dt>1</dt>
+            <dd>aPaperRc is the physical dimensions for the work area in the paper.</dd>
+            <dt>-1</dt>
+            <dd>A paper with the specified name was not found, or its dimension are not known.</dd>
+          </dl>
+          <remark>
+            Please note: In TPrinter, DoGetPaperRect always returns -1. It must be overridden in a descendant class to use the facilities for the printer type to get page areas.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.SupportedPapers"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetPaperRect.Result">
+        <short>0 for margins, 1 for physical paper, -1 when not found</short>
+      </element>
+      <element name="TPrinter.DoGetPaperRect.aName">
+        <short>Paper name to locate for the selected printer</short>
+      </element>
+      <element name="TPrinter.DoGetPaperRect.aPaperRc">
+        <short>Rectangle with the dimensions for the paper</short>
+      </element>
+
+      <element name="TPrinter.DoSetPaperRect">
+        <short>Performs actions needed to set the dimensions for the paper</short>
+        <descr>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoSetPaperRect always returns False. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoSetPaperRect.Result">
+        <short>True if the dimension for the paper were successfully applied</short>
+      </element>
+      <element name="TPrinter.DoSetPaperRect.aPaperRc">
+        <short>Rectangle with the physical dimensions for the paper</short>
+      </element>
+
+      <element name="TPrinter.DoGetPrinterState">
+        <short>Gets the value for the PrinterState property</short>
+        <descr>
+          <p>
+            <var>DoGetPrinterState</var> returns the printer state. DoGetPrinterState is declared as a virtual method so that it may be overridden in a descendent class to perform the actions needed to determine the printer state for the implementation.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, DoGetPrinterState always returns the value psNoDefine. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PrinterState"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.DoGetPrinterState.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.DoDestroy">
+        <short>Performs actions needed when the print device is freed</short>
+        <descr>
+          <p>
+            <var>DoDestroy</var> is a virtual procedure used to perform actions needed when the print device is freed. In <var>TPrinter</var>, the following actions are performed:
+          </p>
+          <ul>
+            <li>When Printing is True, Abort is called.</li>
+            <li>Frees resources allocated to the internal member used for Paper Bins.</li>
+            <li>Frees the Canvas (when assigned).</li>
+            <li>Frees PaperSize (when assigned).</li>
+            <li>Resets and frees the list of Printers (when assigned).</li>
+            <li>Resets and frees Fonts (when assigned).</li>
+          </ul>
+          <p>
+            DoDestroy is normally overridden in a descendent class to perform additional actions required for the implementation.
+          </p>
+          <p>
+            DoDestroy is called from the Destroy destructor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Destroy"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.GetPrinterType">
+        <short>Gets the value for the PrinterType property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.PrinterType"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.GetPrinterType.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetCanPrint">
+        <short>Gets the value for the CanPrint property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.CanPrint"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.GetCanPrint.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinter.GetCanRenderCopies">
-        <short>
-          <var>GetCanRenderCopies</var> - returns True if the printer is able to render copies</short>
+        <short>Gets the value for the CanRenderCopies property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.CanRenderCopies"/>
+        </seealso>
       </element>
+      <element name="TPrinter.GetCanRenderCopies.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinter.GetXDPI">
-        <short>
-          <var>GetXDPI</var> - returns the number of Dots Per Inch in the X plane</short>
+        <short>Gets the value for the XDPI property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.XDPI"/>
+        </seealso>
       </element>
+      <element name="TPrinter.GetXDPI.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinter.GetYDPI">
-        <short>
-          <var>GetYDPI</var> - returns the number of Dots Per Inch in the Y plane</short>
+        <short>Gets the value for the YDPI property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.YDPI"/>
+        </seealso>
       </element>
+      <element name="TPrinter.GetYDPI.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TPrinter.GetBins">
+        <short>Gets the value for the SupportedBins property</short>
+        <descr/>
+        <seealso>
+          <link id="TPrinter.SupportedBins"/>
+        </seealso>
+      </element>
+      <element name="TPrinter.GetBins.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPrinter.CheckRawMode">
-        <short>
-          <var>CheckRawMode</var> - check whether the printer operates in Raw mode (as opposed to PostScript etc)</short>
+        <short>Ensures that RawMode contains the specified value</short>
+        <descr>
+          <p>
+            <var>CheckRawMode</var> is a procedure used to ensure that the <var>RawMode</var> property contains the specified <var>Value</var>. If RawMode does not have the requested value, an <var>EPrinter</var> exception is raised. <var>Msg</var> contains the message text for the exception. When Msg is not specified, or contains an empty strng (<b>''</b>), a default message is used:
+          </p>
+          <dl>
+            <dt>Value is True</dt>
+            <dd>Msg contains 'Printer is in Raw Mode'</dd>
+            <dt>Value is False</dt>
+            <dd>Msg contains 'Printer is not in Raw Mode'</dd>
+          </dl>
+          <p>
+            CheckRawMode is called when getting the value for the <var>Canvas</var> property.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            Raises an <var>EPrinter</var> exception when <var>RawMode</var> does not contain the required value.
+          </p>
+        </errors>
+        <seealso>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.GetCanvas"/>
+          <link id="EPrinter"/>
+        </seealso>
       </element>
+      <element name="TPrinter.CheckRawMode.Value">
+        <short>Value required in the RawMode property</short>
+      </element>
+      <element name="TPrinter.CheckRawMode.Msg">
+        <short>Message text for an exception raised in the method</short>
+      </element>
+
       <element name="TPrinter.RawModeChanging">
         <short>
-          <var>RawModeChanging</var> - the raw mode is changing (e.g. PostScript is being invoked)</short>
+          Performs actions needed when a new value is assigned to RawMode
+        </short>
+        <descr>
+          <p>
+            <var>RawModeChanging</var> is a virtual procedure used to perform actions needed when a new value is assigned for the <var>RawMode</var> property. RawModeChanging is called from the <var>SetRawMode</var> method, and occurs after checking the value in <var>Printing</var> and before changing values in <var>PrinterFlags</var>. It is useful when switching from RawMode (which does not require a printer <var>Canvas</var>) to using a page description language like Postscript (which requires a specialized printer Canvas).
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, RawModeChanging has an empty implementation. It must be overridden in a desecendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.SetRawMode"/>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinterCanvas"/>
+        </seealso>
       </element>
+
       <element name="TPrinter.PrinterSelected">
         <short>
-          <var>PrinterSelected</var> - method for dealing with a printer that has been selected</short>
+          Performs actions needed when a new printer has been selected
+        </short>
+        <descr>
+          <p>
+            <var>PrinterSelected</var> is a virtual procedure used to perform actions needed when a new printer has been selected in the class instance. PrinterSelected is called from the <var>SetPrinter</var> method to signal that a printer has been successfully selected from the list of <var>Printers</var>, and that the value in <var>PrinterIndex</var> has been updated.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, PrinterSelected has an empty implementation. It must be overridden in a descendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.SetPrinter"/>
+          <link id="TPrinter.PrinterIndex"/>
+          <link id="TPrinter.Printers"/>
+        </seealso>
       </element>
-      <element name="TPrinter.Write">
+
+      <element name="TPrinter.DoGetDefaultCanvasClass">
+        <short>Performs actions to get the default class used for the Canvas property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPrinter.DoGetDefaultCanvasClass.Result">
+        <short>Class reference used to create new instances of the Canvas for the print device</short>
+      </element>
+
+      <element name="TPrinter.PrinterFlags">
+        <short>Status flags currently enabled for the print device</short>
+        <descr>
+          <p>
+            <var>PrinterFlags</var> is a <var>TPrinterFlags</var> property which contains the flags currently enabled for a print device. Flag values are removed from PrinterFlags when they are disabled.
+          </p>
+          <dl>
+            <dt>pfDestroying</dt>
+            <dd>Set in Destroy.</dd>
+            <dt>pfAborted</dt>
+            <dd>
+              Set in Aborted.  Removed in BeginDoc, EndDoc. Provides the value for the Aborted property.
+            </dd>
+            <dt>pfPrinting</dt>
+            <dd>
+              Set in BeginDoc. Removed in EndDoc. Provides the value for the Printing property.
+            </dd>
+            <dt>pfPrintersValid</dt>
+            <dd>Set in GetPrinters. Removed in DoResetPrintersList.</dd>
+            <dt>pfRawMode</dt>
+            <dd>
+              Set or removed when the value for RawMode is changed. Provides the value for the RawMode property.
+            </dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TPrinterFlags"/>'
+          <link id="TPrinter.Destroy"/>'
+          <link id="TPrinter.DoResetPrintersList"/>'
+          <link id="TPrinter.Printers"/>'
+          <link id="TPrinter.RawMode"/>'
+          <link id="TPrinter.BeginDoc"/>'
+          <link id="TPrinter.EndDoc"/>'
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor on entry.
+          </p>
+          <p>
+            Create sets the value in <var>PrinterIndex</var> to <b>-1</b> which indicates that the default printer in <var>Printers</var> should be used.
+          </p>
+          <p>
+            Create stores an unassigned value (<b>Nil</b>) in the <var>Canvas</var>, <var>PaperSize</var>, and <var>Bins</var> properties. The <var>Title</var> property is set to an empty String (<b>''</b>).
+          </p>
+          <remark>
+            Please note: TPrinter is an abstract base class, and an exception is raised if an instance of the class is created. Use one of the descendant classes defined in the <file>printer4lazarus</file> package.
+          </remark>
+        </descr>
+        <errors>
+          <p>
+            Raises an exception with the message 'TPrinter is an abstract base class.' when TPrinter is the ClassType for the new instance.
+          </p>
+        </errors>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy updates the status flags for the device to include the value <var>pfDestroying</var>. It calls the <var>DoDestroy</var> method to cancel an active print job and free resources allocated in the class instance. Destroy calls the inherited destructor prior to exit.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Abort">
         <short>
-          <var>Write</var> to a specified <var>Buffer</var>: <var>Count</var> contains the number of bytes for writing, <var>Written</var> contains the number that have been written. Returns True if successful</short>
+          Terminates printing of the current document (when active)
+        </short>
+        <descr>
+            <p>
+              <var>Abort</var> is a procedure used to terminate printing of the current document (when active). Aborts calls <var>CheckPrinting</var> to ensure that <var>Printing</var> contains <b>True</b>. CheckPrinting raises an exception if Abort is called when <var>BeginDoc</var> has not been called.
+            </p>
+            <p>
+              Abort calls the <var>DoAbort</var> method to perform any actions needed for the class implementation.
+            </p>
+            <p>
+              Abort updates the <var>PrinterFlags</var> property to include the value <var>pfAborted</var>, and calls the <var>EndDoc</var> method to end printing for the current document.
+            </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.DoAbort"/>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinter.EndDoc"/>
+          <link id="TPrinterFlags.pfAborted"/>
+        </seealso>
       </element>
+
+      <element name="TPrinter.BeginDoc">
+        <short>Starts printing for the current document</short>
+        <descr>
+          <p>
+            <var>BeginDoc</var> is a procedure used to start printing for the current document. BeginDoc  calls <var>CheckPrinting</var> to ensure that the print device has not already started printing for the document. CheckPrinting raises an exception if the value in <var>Printing</var> is True.
+          </p>
+          <p>
+            BeginDoc calls <var>SelectCurrentPrinterOrDefault</var> to ensure a valid printer is selected for the class instance. If the current selection is invalid, the "default" printer is selected. The default printer is the first one in Printers.
+          </p>
+          <p>
+            BeginDoc updates <var>PrinterFlags</var> to include the value <var>pfPrinting</var>, and removes the value <var>pfAborted</var> (if present). The <var>PageNumber</var> property is set to <b>1</b> (<b>one</b>) for the newly started printing operation.
+          </p>
+          <p>
+            BeginDoc uses the value in <var>RawMode</var> to determine if a printer canvas is in used for the class instance. When RawMode is <b>False</b>, a <var>TPrinterCanvas</var> instance exists in <var>Canvas</var>. Its <var>Refresh</var> method is called, and the <var>BeginDoc</var> method in the printer canvas is called to synchronize the canvas. The value in <var>YDPI</var> is assigned to the PPI (Pixels per Inch) setting for the canvas font. No actions are performed for the printer canvas when RawMode is <b>True</b>.
+          </p>
+          <p>
+            BeginDoc calls the <var>DoBeginDoc</var> method to perform any actions specific to the current class implementation. <var>BeginPage</var> is called to increment the <var>PageNumber</var> for the print device.
+          </p>
+          <p>
+            Use <var>EndDoc</var> to finish printing for the current document.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.SelectCurrentPrinterOrDefault"/>
+          <link id="TPrinter.PrinterIndex"/>
+          <link id="TPrinter.PageNumber"/>
+          <link id="TPrinter.BeginPage"/>
+          <link id="TPrinter.SetPrinter"/>
+          <link id="TPrinter.EndDoc"/>
+          <link id="TPrinterCanvas"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.EndDoc">
+        <short>Ends printing for the current document</short>
+        <descr>
+          <p>
+            <var>EndDoc</var> is a procedure used to end printing for the current document. EndDoc calls <var>CheckPrinting</var> to ensure that <var>Printing</var> contains <b>True</b>. An exception is raised in CheckPrinting if Printing contains <b>False</b>.
+          </p>
+          <p>
+            EndDoc calls the <var>EndPage</var> method to synchronize the printer <var>Canvas</var> (when used) and to perform any actions required for the class implementation. The EndDoc method for the Canvas is called when <var>RawMode</var> is <b>False</b>.
+          </p>
+          <p>
+            <var>DoEndDoc</var> is called using the value in <var>Aborted</var> as an argument, and allows any actions needed for the class implementation to be performed.
+          </p>
+          <p>
+            EndDoc updates values in the <var>PrinterFlags</var> property to reflect the current printer and document state. The values <var>pfPrinting</var> and <var>pfAborted</var> are removed from PrinterFlags.
+          </p>
+          <p>
+            The value in the <var>PageNumber</var> is reset to <b>0</b> (<b>zero</b>).
+          </p>
+          <p>
+            Use <var>BeginDoc</var> to start printing a document. Use <var>Abort</var> to abandon printing the current document.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.PageNumber"/>
+          <link id="TPrinter.Aborted"/>
+          <link id="TPrinter.Abort"/>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinterFlags.pfPrinting"/>
+          <link id="TPrinterFlags.pfAborted"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.NewPage">
+        <short>Creates a new page for the current document</short>
+        <descr>
+          <p>
+            <var>NewPage</var> is a procedure used to create a new page for the document currently printing on the selected device.
+          </p>
+          <p>
+            NewPage checks the current class instance to see if it is a <var>TPrinter</var> descendant with an overriden <var>DoNewPage</var> method. If it has <b>not</b> been overridden, the following methods are called:
+          </p>
+          <ul>
+            <li>EndPage</li>
+            <li>BeginPage</li>
+          </ul>
+          <p>
+            When it has been overridden, the following actions are performed:
+          </p>
+          <ul>
+            <li>Call CheckPrinting to ensure that Printing is True.</li>
+            <li>Increment the value in PageNumber.</li>
+            <li>Call the NewPage method in Canvas when RawMode is False.</li>
+            <li>Call DoNewPage to execute the code for the class implementation.</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.PageNumber"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.BeginPage"/>
+          <link id="TPrinter.EndPage"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.BeginPage">
+        <short>Begins a page on the print device</short>
+        <descr>
+          <p>
+            BeginPage is a procedure used to perform action when a page is started on the print device. BeginPage calls CheckPrinting to ensure that Printing contains True. An exception is raised in CheckPrinting when Printing contains False.
+          </p>
+          <p>
+            BeginPage increments the value in the PageNumber property. When RawMode is False, the BeginPage method in Canvas is called to synchronize the printer canvas.
+          </p>
+          <p>
+            BeginPage calls the DoBeginPage method to perform any actions needed for the class implementation.
+          </p>
+          <p>
+            BeginPage is called from the BeginDoc method, and from the NewPage method when DoNewPage has not been overridden.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.EndPage">
+        <short>Ends the current page for the document</short>
+        <descr>
+          <p>
+            EndPage is a procedure used to end the current page for the document.
+          </p>
+          <p>
+            EndPage uses the value in RawMode to determine if a printer canvas is used. When RawMode is False,  the EndPage method in Canvas is called to synchronize the printer canvas.
+          </p>
+          <p>
+            EndPage calls the DoEndPage method to perform actions needed for the class implementation.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Refresh">
+        <short>Refreshes the printer list, fonts, and current device selection</short>
+        <descr>
+          <p>
+            <var>Refresh</var> performs actions needed to update the list or printers or fonts when the <var>SetPrinter</var> method is used to change the selected printer, such as:
+          </p>
+          <ul>
+            <li>Raises an exception if the printer is currently Printing.</li>
+            <li>Clears and reloads values in the Printers property.</li>
+            <li>Clears and reloads values in the Fonts property.</li>
+            <li>Saves and restores the current printer selection when possible.</li>
+          </ul>
+          <p>
+            <var>PrinterIndex</var> is set to <b>-1</b> if the previous printer cannot be re-selected after loading values in Printers. The selects the default printer when the previous selection becomes unavailable.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.SetPrinter">
+        <short>Makes the device with the specified name the current printer</short>
+        <descr>
+          <p>
+            <var>aName</var> contains the name of the printer to use as the active print device. It can contain a "wild-card" value <b> '*'</b> which selects the default printer (the first one in the list of available printers) as the active print device.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.SetPrinter.aName">
+        <short>Name of the print device selected in the method</short>
+      </element>
+
+      <element name="TPrinter.RestoreDefaultBin">
+        <short>Restores the selected Bin for the device to the default value</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Write">
+        <short>Writes the specified values to the print device</short>
+        <descr>
+          <p>
+            <var>Write</var> is an <var>Boolean</var> function used to write the specified values to the printer device. Overloaded variants of the method allow the values to be specified as an <var>AnsiString</var> data type or an untyped buffer.
+          </p>
+          <p>
+            <var>Buffer</var> is the untyped buffer written in the method.
+          </p>
+          <p>
+            <var>Count</var> indicates the number of bytes in Buffer to use in the write operation.
+          </p>
+          <p>
+            <var>Written</var> contains the actual number of bytes handled in the write operation.
+          </p>
+          <p>
+            <var>S</var> is the AnsiString value written in the method.
+          </p>
+          <p>
+            The return value is <b>True</b> when the specified values are successfully written in the method.
+          </p>
+          <remark>
+            Please note: Neither variant of the Write method actually performs any output in TPrinter. The return value is always <b>False</b>, and Written always contains the value <b>0</b> (<b>zero</b>). Write must be re-implemented in a descendent class to perform the actions needed for the implementation.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TPrinter.Write.Result">
+        <short>True when the specified value are successfully written in the method</short>
+      </element>
+      <element name="TPrinter.Write.Buffer">
+        <short>Untyped buffer written in the method</short>
+      </element>
+      <element name="TPrinter.Write.Count">
+        <short>Number of bytes from the buffer written in the method</short>
+      </element>
+      <element name="TPrinter.Write.Written">
+        <short>Number of bytes actually written in the method</short>
+      </element>
+      <element name="TPrinter.Write.s">
+        <short>AnsiString value written in the method</short>
+      </element>
+
+      <element name="TPrinter.PrinterIndex">
+        <short>
+          Contains the ordinal position in Printers for the selected print device
+        </short>
+        <descr>
+          <p>
+            <var>PrinterIndex</var> is an <var>Integer</var> property which contains the ordinal position in <var>Printers</var> for the selected print device. The default value for the property is <b>-1</b>, and indicates that a print device has not been selected and that the default printer should be used. (Nota bene: The default printer is the first one in the Printers property).
+          </p>
+          <p>
+            Setting a new value in PrinterIndex causes the <var>CheckPrinting</var> method to be called to ensure that the value in <var>Printing</var> is <b>False</b>. An exception is raised in CheckPrinting when Printing is set to <b>True</b>. Set the value for the property prior to calling the <var>BeginDoc</var> method.
+          </p>
+          <p>
+            An exception may also be raised for the following conditions:
+          </p>
+          <ul>
+            <li>PrinterIndex is set to a value &amp;= 0 and the list of Printers is empty.</li>
+            <li>PrinterIndex is set to a value larger than the number of values in Printers.</li>
+          </ul>
+          <p>
+            The <var>SetPrinter</var> method is called to make the named device the selected print device. <var>DoResetFontsList</var> is called to reload the values in the <var>Fonts</var> property.
+          </p>
+        </descr>
+        <errors>
+          <dl>
+            <dt>EPrinter</dt>
+            <dd>Raised with the message 'Printer is printing'.</dd>
+            <dd>Raised with the message 'No printers defined!'.</dd>
+            <dd>Raised with the message 'Printer index out of range!'.</dd>
+          </dl>
+        </errors>
+        <seealso>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.DoResetFontsList"/>
+          <link id="TPrinter.Fonts"/>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.SetPrinter"/>
+          <link id="EPrinter"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PrinterName">
+        <short>Name for the selected print device</short>
+        <descr>
+          <p>
+            <var>PrinterName</var> is a read-only <var>String</var> property which contains the name for the currently selected print device. The property value  is retrieved from <var>Printers</var> using the value in <var>PrinterIndex</var>. When PrinterIndex contains a negative value, an empty string (<b>''</b>) is returned as the value for the property.
+          </p>
+          <p>
+            Use <var>SetPrinter</var> to select a print device with a given name in Printers. Or, assign a new value to the PrinterIndex property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printers"/>
+          <link id="TPrinter.PrinterIndex"/>
+          <link id="TPrinter.SetPrinter"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PaperSize">
+        <short>Contains paper sizes available and/or selected for the print device</short>
+        <descr>
+          <p>
+            <var>PaperSize</var> is a read-only <var>TPaperSize</var> property which contains information about papers names and sizes available and/or selected for the print device. PaperSize is used to get a rectangle with the physical size of the paper, or its working area. The rectangle is used to calculate the vales for the <var>PageHeight</var> and <var>PageWidth</var> properties.
+          </p>
+          <p>
+            PaperSize always contains common page sizes like "Letter", "Legal" and "A4". Other papers may be available depending on the printer selection or the implementation for the print device in a descendent class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PageHeight"/>
+          <link id="TPrinter.PageWidth"/>
+          <link id="TPaperSize"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Orientation">
+        <short>Orientation for the page on the paper</short>
+        <descr>
+          <p>
+            <var>Orientation</var> is a <var>TPrinterOrientation</var> property which indicates the orientation for the page content on its paper. For example:
+          </p>
+          <dl>
+            <dt>poPortrait</dt>
+            <dd>Long edge of the canvas is oriented to the vertical axis.</dd>
+            <dt>poReversePortrait</dt>
+            <dd>Long edge of the canvas is oriented to the vertical axis with coordinates rotated 180 degrees. This is often referred to as "Mirror Printing".</dd>
+            <dt>poLandscape</dt>
+            <dd>Long edge of the canvas is oriented to the horizontal axis.</dd>
+            <dt>poReverseLandscape</dt>
+            <dd>Long edge of the canvas is oriented to the horizontal axis with coordinates rotated 180 degrees. This is often referred to as "Mirror Printing".</dd>
+          </dl>
+          <p>
+            For TPrinter, the property value is always <var>poPortrait</var>. The DoGetOrientation and DoSetOrientation methods are called when the property value is read/written. They are declared as virtual methods, and must be overridden in a descendent class to perform actions specific to the implementation.
+          </p>
+          <p>
+            Orientation determines how the rectangle coordinate values in a paper size are interpreted. The paper size gives it coordinates in a portrait orientation. When one of the Landscape orientations is used, the values must be translated (or rotated) to reflection the page orientation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterOrientation"/>
+          <link id="TPrinterCanvas.Orientation"/>
+          <link id="TPrinterCanvas.Printer"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PrinterState">
+        <short>Indicates the current state for the print device</short>
+        <descr>
+          <p>
+            <var>PrinterState</var> is a read-only TPrinterState property which contains a value with the current state for the print device. See <link id="TPrinterState">TPrinterState</link> for the enumeration values and their meanings.
+          </p>
+          <p>
+            The read access specifier for the property is declared as a virtual method. It may be overridden in a descendent class to perform actions needed to determine the printer state for the implementation.
+          </p>
+          <p>
+            In TPrinter, the value for the property is always psNoDefine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.DoGetPrinterState"/>
+          <link id="TPrinterState"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Copies">
+        <short>Number of <var>Copies</var> of the current document</short>
+        <descr>
+          <p>
+            <var>Copies</var> is an <var>Integer</var> property which indicates the number of times a page is duplicated during the printing process. Copies is one the <var>TPrinterCapabilities</var> which may be supported for a print device.
+          </p>
+          <p>
+            In <var>TPrinter</var>, Copies always contains the value <b>1</b>. The <var>DoGetCopies</var> and <var>DoSetCopies</var> methods are used to provide support for the printer capability. They are declared as virtual methods, and must be overridden in a descendent class to implement the feature.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Printers">
+        <short>Contains the names for devices that can be selected for printing</short>
+        <descr>
+          <p>
+            <var>Printers</var> is a read-only <var>TStrings</var> property which contains the names for print devices that can be selected in the class instance. By convention, the first print device in Printers is the "<b>default</b>" printer.
+          </p>
+          <p>
+            Values in Printers are retrieved and stored using the <var>DoEnumPrinters</var> method. This method is called when the property value is retrieved and <var>PrinterFlags</var> does not include the <var>pfPrintersValid</var> flag. It is normally called only once - unless the <var>Refresh</var> or <var>DoResetPrintersList</var> methods are called.
+          </p>
+          <p>
+            Printers is used in the <var>SetPrinter</var> method to validate the name for the selected printer device. Its <var>Count</var> property is used in other methods to ensure that valid printer devices exist in the class instance.
+          </p>
+          <p>
+            Use <var>SetPrinter</var> to select a print device by its name. Use <var>PrinterIndex</var> to change the selected device to the printer at the specified ordinal position in Printers.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.FileName">
+        <short>File name used to store output from the print device</short>
+        <descr>
+          <p>
+            <var>FileName</var> is a <var>String</var> property which contains the path and file name on the local file system where output from the print device is stored.
+          </p>
+          <remark>
+            Please note: FileName is not used in the implementation of <var>TPrinter</var>. It is provided for use in descendent classes.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Fonts">
+        <short>the list of available <var>Fonts</var> for the current printer</short>
+        <descr>
+          <p>
+            <var>Fonts</var> is a read-only <var>TStrings</var> property which contains a list of font names available for the selected print device. Values in Fonts are retrieved and stored using the <var>DoEnumFonts</var> method. It is called when the number of items in Fonts is <b>0</b>, and when <var>Refresh</var> or <var>DoResetFontsList</var> is called.
+          </p>
+          <remark>
+            Please note: DoEnumFonts has an empty implementation in <var>TPrinter</var>. It must be overridden in a descendant to implement the functionality for the operating system / widgetset / printer-related technology.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.Canvas">
+        <short>
+          The <var>Canvas</var> to be used for laying out the current document ready for printing
+        </short>
+        <descr>
+          <p>
+            <var>Canvas</var> is a read-only <var>TCanvas</var> property which provides properties and methods used to position and format content on a page.
+          </p>
+          <p>
+            In <var>TPrinter</var>, and descendants, a printer-aware class derived from TCanvas is used: <var>TPrinterCanvas</var>. A descendent class may also introduce its own canvas class with specific features for the page description language, or printer-related technology used in its implementation. The <var>CanvasClass</var> property identifies the class reference used to create the member for the Canvas property.
+          </p>
+          <p>
+            Canvas is used in methods like <var>BeginDoc</var>, <var>EndDoc</var>, <var>BeginPage</var>, and <var>EndPage</var> to synchronized the rendering surface to the current state for the print device. Canvas is used <b>only</b> when <var>RawMode</var> is set to <b>False</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TPrinter.CanvasClass">
+        <short>Class reference used to create new instances of the printer canvas</short>
+        <descr>
+          <p>
+            <var>CanvasClass</var> is a <var>TPrinterCanvasRef</var> property which contains the class reference used to create new instances of the class for the <var>Canvas</var> property.  In <var>TPrinter</var>, the <var>TPrinterCanvas</var> class is used for the Canvas property. In a descendent class, a different printer canvas may be needed. CanvasClass allows the descendant to determine the correct class type in its <var>DoGetDefaultCanvasClass</var> method. The property value is always returns <b>Nil</b> when <var>RawMode</var> is set to <b>True</b>.
+          </p>
+          <p>
+            CanvasClass is used in the read access specifier for the Canvas property to create a new instance of the class reference and assign it to the Canvas member (when needed).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvasRef"/>
+          <link id="TPrinter.Canvas"/>
+          <link id="TPrinter.RawMode"/>
+          <link id="TPrinter.DoGetDefaultCanvasClass"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PageHeight">
+        <short>Height of the usable area on the selected paper size in "Dots"</short>
+        <descr>
+          <p>
+            <var>PageHeight</var> is a read-only <var>Integer</var> property which contains the usable height for the selected paper size as a number of "Dots" for the native printer resolution.
+          </p>
+          <p>
+            PageHeight uses the <var>PaperSize</var> property to retrieve the work area for the selected paper size. The property value contains the difference between the <var>Bottom</var> and <var>Top</var> coordinates in the work area rectangle.
+          </p>
+          <p>
+            The property value is <b>0</b> (<b>zero</b>) when the <var>Printers</var> property is empty. You cannot access a selected paper size without a selected printer.
+          </p>
+          <p>
+            PageHeight is used to derive the page height in <var>TPrinterCanvas</var> when a <var>TPrinter</var> instance has been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PaperSize"/>
+          <link id="TPrinter.Printers"/>
+          <link id="TPaperSize.PaperRect"/>
+          <link id="TPaperRect.WorkRect"/>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PageHeight"/>
+          <link id="TPrinterCanvas.GetPageHeight"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PageWidth">
+        <short>Width of the usable area on the selected paper size in "Dots"</short>
+        <descr>
+          <p>
+            <var>PageWidth</var> is a read-only <var>Integer</var> property which contains the usable width for the selected paper size as a number of "Dots" for the native printer resolution.
+          </p>
+          <p>
+            PageWidth uses the <var>PaperSize</var> property to retrieve the work area for the selected paper size. The property value contains the difference between the <var>Right</var> and <var>Left</var> coordinates in the work area rectangle.
+          </p>
+          <p>
+            The property value is <b>0</b> (<b>zero</b>) when the <var>Printers</var> property is empty. You cannot access a selected paper size without a selected printer.
+          </p>
+          <p>
+            PageWidth is used to derive the page width in <var>TPrinterCanvas</var> when a <var>TPrinter</var> instance has been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PaperSize"/>
+          <link id="TPrinter.Printers"/>
+          <link id="TPaperSize.PaperRect"/>
+          <link id="TPaperRect.WorkRect"/>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.PageWidth"/>
+          <link id="TPrinterCanvas.GetPageWidth"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PageNumber">
+        <short>Current page number in the document being printed to the device</short>
+        <descr>
+          <p>
+            <var>PageNumber</var> is a read-only <var>Integer</var> property which contains the current page number in the document being printed to the device. The value in the property is maintained in methods which process the document or its pages, like: <var>BeginDoc</var>, <var>EndDoc</var>, <var>NewPage</var> and <var>BeginPage</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinter.EndDoc"/>
+          <link id="TPrinter.NewPage"/>
+          <link id="TPrinter.BeginPage"/>
+          <link id="TPrinterCanvas.PageNumber"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Aborted">
+        <short>
+          <var>Aborted</var> - True if printing of the document has been prematurely terminated by operator command
+        </short>
+        <descr>
+          <p>
+            <var>Aborted</var> is a read-only <var>Boolean</var> property which indicates if the current print job has been terminated. The value for the property is determined by examining the values in the <var>PrinterFlags</var> property. When PrinterFlags includes the value <var>pfAborted</var>, the property value is <b>True</b>.
+          </p>
+          <p>
+            The status value is included in PrinterFlags when the <var>Abort</var> method is called. It is removed from PrinterFlags when the <var>BeginDoc</var> method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Abort"/>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinterFlags"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Printing">
+        <short>
+          <var>Printing</var> - True if document is in process of being printed
+        </short>
+        <descr>
+          <p>
+            <var>Printing</var> is a read-only <var>Boolean</var> property which indicates if the device is currently printing a document. The value for the property is determined by examining the <var>PrinterFlags</var> for the device. When PrinterFlags includes the value <var>pfPrinting</var>, the property value is <b>True</b>.
+          </p>
+          <p>
+            The status value is included in PrinterFlags when the <var>BeginDoc</var> method is called, and removed from PrinterFlags when the <var>EndDoc</var> method is called.
+          </p>
+          <p>
+            Use <var>Abort</var> to halt the current printing process.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.PrinterFlags"/>
+          <link id="TPrinter.Abort"/>
+          <link id="TPrinter.BeginDoc"/>
+          <link id="TPrinter.EndDoc"/>
+          <link id="TPrinterFlags"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.Title">
+        <short>Title of the current document for the print device</short>
+        <descr>
+          <p>
+            <var>Title</var> is a <var>String</var> property which contains the title of the current document for the print device. The default value assigned in the constructor is an empty string (<b>''</b>).
+          </p>
+          <p>
+            Set the value in Title prior to calling the <var>BeginDoc</var> method. It may also be assigned using the Title property in the <var>Canvas</var> (<var>TPrinterCanvas</var>) for the print device. In this case, the value is applied to the print device as well.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterCanvas.Title"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.PrinterType">
+        <short>Indicates whether the print device is a local or a network printer</short>
+        <descr>
+          <p>
+            <var>PrinterType</var> is a <var>TPrinterType</var> property which indicates whether the print device is locally attached, or network enabled. In TPrinter, the value for the property is always <var>ptLocal</var>. A descendent class (like <var>TCUPSPrinter</var>) may return another value from the TPrinterType enumeration.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinterType"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.CanPrint">
+        <short>
+          <var>CanPrint</var> - True if printing is enabled or not disabled
+        </short>
+        <descr>
+          <p>
+            <var>CanPrint</var> is a read-only <var>Boolean</var> property which indicates if the print device is enabled and ready to print.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>,  the property value is always <b>True</b>. The read access specifier (<var>GetCanPrint</var>) can be overridden in a descendnet class to use the facilities for the operating system /  widgetset / printer-related technology in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.GetCanPrint"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.CanRenderCopies">
+        <short>
+          <var>CanRenderCopies</var> - True if the printer device can render copies
+        </short>
+        <descr>
+          <p>
+            <var>CanRenderCopies</var> is a read-only <var>Boolean</var> property which indicates if the print device can print more than one copy of pages in the document. The property value is <b>True</b> when the print device includes the <var>pcCopies</var> printer capability.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, the property value is always <b>True</b>. The read access speciifer (<var>GetCanRenderCopies</var>) can be overridden in a descendent class to use the facilities in the operating system / widgetset / printer-related technology in the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.GetCanRenderCopies"/>
+          <link id="TPrinterCapability"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.XDPI">
+        <short>
+          Number of DPI (Dots per Inch) on the horizontal axis for the selected device
+        </short>
+        <descr>
+          <p>
+            <var>XDPI</var> is a read-only <var>Integer</var> property that contains the horizontal resolution for the print device in DPI (Dots per Inch). The value in XDPI is passed to the <var>Canvas</var> for the print device, and used to determine the paper width for the printer canvas.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, the value for the property is always <b>1</b>. The read access specifier (<var>GetXDPI</var>) must be overridden in a descendent class to get the property value using the facilities available in the operating system / widgetset / printer-related technology for the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.GetXDPI"/>
+          <link id="TPrinter.YDPI"/>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.XDPI"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.YDPI">
+        <short>
+          Number of DPI (Dots per Inch) on the vertical axis for the selected device
+        </short>
+        <descr>
+          <p>
+            <var>YDPI</var> is a read-only <var>Integer</var> property that contains the vertical  resolution for the print device in DPI (Dots per Inch). The value in YDPI is passed to the <var>Canvas</var> for the print device, and used to determine the paper width for the printer canvas and the PPI (Pixels per Inch) value for its Font.
+          </p>
+          <remark>
+            Please note: In <var>TPrinter</var>, the value for the property is always <b>1</b>. The read access specifier (<var>GetYDPI</var>) must be overridden in a descendent class to get the property value using the facilities available in the operating system / widgetset / printer-related technology for the implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.GetYDPI"/>
+          <link id="TPrinter.XDPI"/>
+          <link id="TPrinterCanvas.YDPI"/>
+          <link id="TPrinterCanvas.Printer"/>
+          <link id="TPrinterCanvas.Font"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.RawMode">
+        <short>
+          Indicates if raw output is used for the device (as opposed to a page description language)
+        </short>
+        <descr>
+          <p>
+            Set <var>RawMode</var> to <b>True</b> if the printer operates in Raw Mode (as opposed to PostScript or some other page description language).
+          </p>
+          <p>
+            When RawMode is <b>True</b>, text is sent directly to the printer device without formatting and the Canvas is not used to layout or position content on the page.
+          </p>
+        </descr>
+      </element>
+
+      <element name="TPrinter.DefaultBinName">
+        <short>Name for the default Paper Bin on the print device</short>
+        <descr>
+          <p>
+            <var>DefaultBinName</var> is a read-only <var>String</var> property which contains the name for the defauilt Paper Bin on the selected print device. The value for the property is retrieved using the <var>DoGetDefaultBinName</var> method.
+          </p>
+          <p>
+            DefaultBinName is used in the implementation of the <var>RestoreDefaultBin</var> method.
+          </p>
+          <p>
+            Use <var>BinName</var> to read or write the value for the selected paper bin on the print device.
+          </p>
+          <remark>
+            Please note: The property value is always an empty string (<b>''</b>) in TPrinter. The DoGetDefaultBinName method must be overridden in a descendent class to provide a property value using the facilities available in the operating system / widgetset / printer-related technology.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TPrinter.DoGetDefaultBinName"/>
+          <link id="TPrinter.RestoreDefaultBin"/>
+          <link id="TPrinter.BinName"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.BinName">
+        <short>Name of the Paper Bin currently selected for the print device</short>
+        <descr>
+          <p>
+            <var>BinName</var> is a <var>String</var> property with the name for the Paper Bin selected for the print device. BinName contains one of the values found in the <var>SupportedBins</var> property.
+          </p>
+          <p>
+            The value for the property is retrieved using the <var>DoGetBinName</var> method. Setting a new value for the property requires <var>Printing</var> to be set to <b>False</b>; an exception is raised in <var>CheckPrinting</var> when Printing contains <b>True</b>. The property value is applied using the <var>DoSetBinName</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.Printing"/>
+          <link id="TPrinter.CheckPrinting"/>
+          <link id="TPrinter.DoGetBinName"/>
+          <link id="TPrinter.DoSetBinName"/>
+          <link id="TPrinter.SupportedBins"/>
+        </seealso>
+      </element>
+
+      <element name="TPrinter.SupportedBins">
+        <short>Names for the Paper Bins supported on the print device</short>
+        <descr>
+          <p>
+            <var>SupportedBins</var> is a read-only <var>TStrings</var> property which contains  the names for the Paper Bins supported on the selected print device. The value for the property is retrieved in the <var>GetBins</var> method by calling <var>DoEnumBins</var>.
+          </p>
+          <p>
+            Assign a value from <var>SupportedBins</var> to the <var>BinName</var> property to select a specific paper bin.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPrinter.GetBins"/>
+          <link id="TPrinter.DoEnumBins"/>
+          <link id="TPrinter.BinName"/>
+        </seealso>
+      </element>
+
+      <element name="Printer">
+        <short>Provides access to a TPrinter instance</short>
+        <descr>
+          <p>
+            <var>Printer</var> is a <var>TPrinter</var> variable which can be used to store a unit global printer instance. The value in Printer may contain a derived class instance which implements a specific page description language or printer-related technologies like CUPS. Its value may be assigned in classes which have a specific implementation for a printer device. The value in Printer is freed (when assigned) during finalization of the unit.
+          </p>
+          <p>
+            Additional printer types and OS-specific implementations are available in the <file>components/printers/</file> directory in the <file>printer4lazarus</file> package.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
     </module>
     <!-- Printers -->
   </package>
