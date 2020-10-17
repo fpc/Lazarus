@@ -248,12 +248,10 @@ var i: integer;
 begin
   if Filename<>'' then
     Filename:=GetPhysicalFilename(FileName,pfeOriginal);
-  if Files<>nil then begin
-    for i:=0 to Files.Count-1 do begin
+  if Files<>nil then
+    for i:=0 to Files.Count-1 do
       if Files[i]<>'' then
         Files[i]:=GetPhysicalFilename(Files[i],pfeOriginal);
-    end;
-  end;
 end;
 
 procedure TOpenDialog.DereferenceLinks;
@@ -407,14 +405,16 @@ end;
 function TOpenDialog.DoExecute: boolean;
 begin
   Result:=inherited DoExecute;
-  if (not (ofNoResolveLinks in Options)) then begin
-    if TMethod(@Self.DereferenceLinks).Code <> Pointer(@TOpenDialog.DereferenceLinks)
-    then begin
-      DereferenceLinks{%H-}; // call for compatibility
-    end else
-      ResolveLinks;
+  if not (ofNoResolveLinks in Options) then begin
+    Assert(TMethod(@Self.DereferenceLinks).Code = Pointer(@TOpenDialog.DereferenceLinks),
+           'TOpenDialog.DoExecute: DereferenceLinks mismatch.');
+    //if TMethod(@Self.DereferenceLinks).Code <> Pointer(@TOpenDialog.DereferenceLinks)
+    //then begin
+    //  DereferenceLinks{%H-}; // call for compatibility
+    //end else
+    ResolveLinks;
   end;
-  if (not (ofNoChangeDir in Options)) then begin
+  if not (ofNoChangeDir in Options) then begin
     if (ExtractFilePath(Filename)<>'') then
       InitialDir:=ExtractFilePath(Filename)
     else if (Files.Count>0) and (ExtractFilePath(Files[0])<>'') then

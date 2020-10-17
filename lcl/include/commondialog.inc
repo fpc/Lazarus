@@ -184,7 +184,7 @@ begin
   end;
   Result := (FUserChoice = mrOk);
   {$ifdef DebugCommonDialogEvents}
-  debugln(['TCommonDialog.DoExecute End']);
+  debugln(['TCommonDialog.DoExecute End, Result=', Result]);
   {$endif}
 end;
 
