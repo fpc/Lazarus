@@ -2939,7 +2939,12 @@ begin
     dec(n);
     TimerInfo := FTimerData[n];
     if TimerInfo^.TimerID=idEvent then begin
-      TimerInfo^.TimerFunc;
+      try
+        TimerInfo^.TimerFunc;
+      except
+        Application.HandleException(nil);
+      end;
+
       break;
     end;
   end;
