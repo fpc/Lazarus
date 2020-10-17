@@ -2042,10 +2042,12 @@
       <element name="TCustomForm.FShowInTaskbar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
       <element name="TCustomForm.FWindowState" link="#lcl.forms.TCustomForm.WindowState"/>
       <element name="TCustomForm.FDelayedEventCtr"/>
-      <element name="TCustomForm.FDelayedWMMove"/>
-      <element name="TCustomForm.FDelayedWMSize"/>
+      <element name="TCustomForm.FDelayedOnChangeBounds"/>
+      <element name="TCustomForm.FDelayedOnResize"/>
       <element name="TCustomForm.FIsFirstOnShow"/>
       <element name="TCustomForm.FIsFirstOnActivate"/>
+      <element name="TCustomForm.FIsFirstRestore"/>
+      <element name="TCustomForm.FWindowStateChanged"/>
       <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
       <element name="TCustomForm.GetClientHandle.Result">
         <short/>
@@ -2156,13 +2158,13 @@
         </short>
         <descr>
           <p>
-            <var>DelayedEvent</var> are a mechanism used to reduce the number of move, resize, show, and activate messages that occur for forms and their child controls.
+            <var>DelayedEvent</var> is a mechanism used to reduce the number of move, resize, show, and activate messages that occur for forms and their child controls.
           </p>
           <p>
             <var>DelayedEvent</var> discards duplicate calls to the method; only the most recent message is processed. It is used in conjunction with the <var>QueueAsyncCall</var> method in <var>TApplication</var>. DelayedEvent decrements an internal counter used to track the number of pending delayed event messages. When the counter reaches zero (0), the message is applied.
           </p>
           <p>
-            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored and <var>DoOnChangeBounds</var> is called. For delayed <var>WMSize</var> messages, the <var>DoOnShow</var> and/or <var>Activate</var> methods are called for the message.
+            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored for the delayed event. For delayed <var>OnChangeBounds</var>  and <var>OnChangeBounds</var> messages,  the <var>DoOnShow</var> and/or <var>Activate</var> methods are called for the corresponding message when the form is <var>Active</var>. If the form has not already been displayed and activated, the Activate, DoOnResize, or the DoOnChangeBounds method is called for the corresponding delayed message.
           </p>
           <p>
             DelayedEvent is used in the implementation of the <var>WMSize</var> and <var>WMMove</var> methods.
@@ -2287,10 +2289,20 @@
           <link id="TCustomForm.Active"/>
         </seealso>
       </element>
-      <element name="TCustomForm.SetWindowState" link="#lcl.forms.TCustomForm.WindowState"/>
-      <element name="TCustomForm.SetWindowState.Value">
-        <short/>
+
+      <element name="TCustomForm.SetWindowState">
+        <short>Sets the value for the WindowState property</short>
+        <descr>
+          <p>
+            SetWindowState sets the value for the WindowState property.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCustomForm.SetWindowState.Value">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TCustomForm.AddHandler">
         <short>Adds a form notification handler with the specified type and code</short>
         <descr>
@@ -2317,7 +2329,9 @@
           </p>
         </descr>
         <errors>
-          Raises a catchable exception if the Code has not been assigned for the form Handler.
+          <p>
+            Raises a catchable exception if the Code property has not been assigned for the TMethod instance in  Handler. Raised with the message 'TCustomForm.AddHandler'.
+          </p>
         </errors>
         <seealso>
           <link id="TCustomForm.AddHandlerClose"/>
@@ -2742,6 +2756,9 @@
             <dt>wsMinimized</dt>
             <dd>Calls the Minimize method in Application, or Restore if the Form is already minimized</dd>
           </dl>
+          <p>
+            If the value in WindowState has been changed, the method honors the value in the Position property if it was set to maximized  at design-time.
+          </p>
           <p>
             When the <var>OnWindowStateChange</var> event handler has been assigned for the form, it is signalled for the current class instance.
           </p>
@@ -4242,7 +4259,7 @@
           <link id="#LCL.Controls.TControl.DoOnChangeBounds"/>
         </seealso>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCustomForm.ShowInTaskBar">
         <short>How the form is represented in the system Task Bar</short>
         <descr>
@@ -4262,24 +4279,41 @@
           <link id="TApplication.TaskBarBehavior"/>
         </seealso>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <!-- property Visibility: public -->
+
       <element name="TCustomForm.WindowState">
-        <short>Whether the form is currently minimized, maximized or normal (restored).
+        <short>
+          Indicates whether the form is displayed in a minimized, maximized, fullscreen or normal state
         </short>
-        <descr>Default is 'normal' (i.e. not minimized nor maximized)</descr>
+        <descr>
+          <p>
+            <var>WindowState</var> is a <var>TWindowState</var> property which indicates whether the form is currently displayed minimized, maximized, fullscreen or normal (restored) state. The default value is <var>wsNormal</var> (i. e. neither minimized nor maximized).
+          </p>
+          <p>
+            Changing the value for the property at run-time causes the <var>ShowWindow</var> routine to be called with the Integer display command representing the new property value. The action is not performed at design-time, or when <var>Showing</var> is set to <b>False</b>.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomForm.Showing"/>
           <link id="TWindowState"/>
+          <link id="#lcl.lclintf.ShowWindow"/>
         </seealso>
       </element>
 
-      <!-- "class of" type Visibility: default -->
-      <element name="TCustomFormClass" link="#lcl.forms.TCustomForm"/>
+      <element name="TCustomFormClass">
+        <short>Class reference for the TCustomForm class</short>
+        <descr>
+          <p>
+            Used primarily in the implementation of window classes for the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TCustomForm"/>
+        </seealso>
+      </element>
 
-      <!-- object Visibility: default -->
       <element name="TForm" link="#lcl.forms.TCustomForm"/>
-
       <element name="TForm.FLCLVersion" link="#lcl.forms.TForm.LCLVersion"/>
       <element name="TForm.LCLVersionIsStored" link="#lcl.forms.TForm.LCLVersion"/>
       <element name="TForm.LCLVersionIsStored.Result">

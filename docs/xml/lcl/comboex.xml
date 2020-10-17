@@ -50,7 +50,7 @@
         <short>Enables auto suggest</short>
       </element>
       <element name="TAutoCompleteOption.acoAutoAppend">
-        <short>Enables auto appending items to the combo box box</short>
+        <short>Enables auto appending items to the combo-box</short>
       </element>
       <element name="TAutoCompleteOption.acoSearch">
         <short>Enables searching items for the current value in the edit control</short>
@@ -93,7 +93,7 @@
             <var>TComboBoxExStyle</var> is an enumerated type with values representing the display styles available in <var>TCustomComboBoxEx</var>. TComboBoxExStyle is the type used to implement the <var>Style</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>.
           </p>
           <p>
-            TComboBoxExStyle replaces the values used in the ancestor class; there is no need for the various owner-drawn styles from the ancestor control. The extended combo box  controls are always owner-drawn using the fixed style in its <var>DrawItem</var> method.
+            TComboBoxExStyle replaces the values used in the ancestor class; there is no need for the various owner-drawn styles from the ancestor control. The extended combo-box controls are always owner-drawn using the fixed style in its <var>DrawItem</var> method.
           </p>
         </descr>
         <seealso>
@@ -492,10 +492,10 @@
         <short>Space reserved between the Image and the caption for the item</short>
         <descr>
           <p>
-            The default value for the property is <b>-1</b> and indicates that indent spacing is not used for the Combo Box item. The value is assigned when the    <var>AddItem</var> method in <var>TComboExItems</var> is used to create the item using the parameter value passed to the method. Changing the value for the property causes the <var>Changed</var> method to be called to update the current item.
+            The default value for the property is <b>-1</b> and indicates that indent spacing is not used for the Combo-Box item. The value is assigned when the    <var>AddItem</var> method in <var>TComboExItems</var> is used to create the item using the parameter value passed to the method. Changing the value for the property causes the <var>Changed</var> method to be called to update the current item.
           </p>
           <p>
-            The value in Indent is used when the <var>DrawItem</var> method in <var>TCustomComboBoxEx</var> is called to render an extended item in the Combo Box.
+            The value in Indent is used when the <var>DrawItem</var> method in <var>TCustomComboBoxEx</var> is called to render an extended item in the Combo-Box.
           </p>
         </descr>
         <seealso>
@@ -506,7 +506,7 @@
 
       <element name="TComboExItem.OverlayImageIndex">
         <short>
-          Ordinal position for the image drawn as an overlay for the Image in the combo box item
+          Ordinal position for the image drawn as an overlay for the Image in the combo-box item
         </short>
         <descr>
           <p>
@@ -522,7 +522,7 @@
 
       <element name="TComboExItem.SelectedImageIndex">
         <short>
-          Ordinal position for the image drawn when the item is selected in the Combo Box
+          Ordinal position for the image drawn when the item is selected in the Combo-Box
         </short>
         <descr/>
         <seealso></seealso>
@@ -971,14 +971,14 @@
 
       <element name="TCustomComboBoxEx">
         <short>
-          Implements the base class for an extended/enhanced combo box
+          Implements the base class for an extended/enhanced combo-box
         </short>
         <descr>
           <p>
             <var>TCustomComboBoxEx</var> is a <var>TCustomComboBox</var> descendant which implements the base class for <var>TComboBoxEx</var>.
           </p>
           <p>
-            TCustomComboBoxEx provides an extended combo box with added features and capabilities like auto completion, additional display styles, more editing options, and a list with Images used in the control. Another key feature in the class is an extended Items property which provides normal, selected, and overlay image indexes and allows indentation between the image and caption for items in the combo box. A pointer to arbitrary data for Items used in sort operations is also provided.
+            TCustomComboBoxEx provides an extended combo-box with added features and capabilities like auto completion, additional display styles, more editing options, and a list with Images used in the control. Another key feature in the class is an extended Items property which provides normal, selected, and overlay image indexes and allows indentation between the image and caption for items in the combo-box. A pointer to arbitrary data for Items used in sort operations is also provided.
           </p>
         </descr>
         <seealso>
@@ -1069,7 +1069,7 @@
       </element>
 
       <element name="TCustomComboBoxEx.FTextHeight">
-        <short>Internal derived text height for an item in the combo box</short>
+        <short>Internal derived text height for an item in the combo-box</short>
         <descr/>
         <seealso></seealso>
       </element>
@@ -1089,7 +1089,7 @@
         <short>Draws an item in the control</short>
         <descr>
           <p>
-            <var>DrawItem</var> is an overridden procedure used to draw an item in the extended combo box control.
+            <var>DrawItem</var> is an overridden procedure used to draw an item in the extended combo-box control.
           </p>
           <p>
             Index contains the ordinal position for the TComboExItem instance in ItemsEx that is drawn in the method.
@@ -1101,7 +1101,7 @@
             <var>State</var> contains the owner draw state used to render the item, and determines the window, border, and font colors for the control.
           </p>
           <p>
-            DrawItem uses <var>ThemeServices</var> to get theme details applied to enabled items in the combo box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the item.
+            DrawItem uses <var>ThemeServices</var> to get theme details applied to enabled items in the combo-box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the item.
           </p>
           <p>
             When <var>Images</var> have been assigned for the control, the image index appropriate to the value in State is determined. The value <var>odSelected</var> causes the <var>SelectedImageIndex</var> for the item is be used. Otherwise, the <var>ImageIndex</var> for the item is used.
@@ -1216,11 +1216,11 @@
 
       <element name="TCustomComboBoxEx.Add">
         <short>
-          Adds a new item to the extended combo box control
+          Adds a new item to the extended combo-box control
         </short>
         <descr>
           <p>
-            <var>Add</var> is an overloaded method used to add a new item to the extended combo box control. Both procedure and function variants are provided.
+            <var>Add</var> is an overloaded method used to add a new item to the extended combo-box control. Both procedure and function variants are provided.
           </p>
           <p>
             The function variant accepts no arguments, and returns an Integer value with the ordinal position in ItemsEx where the new item was inserted. The caption for the new item is set to the TComboExItem.cDefCaption constant.
@@ -1254,7 +1254,7 @@
         <short>Adds the specified item and object instance to the control</short>
         <descr>
           <p>
-            <var>AddItem</var> is a procedure used to create a new item in the extended combo box control with the specified caption and object data. <var>Item</var> contains the caption assigned to the new <var>TComboExItem</var> instance. AnObject is an object with the data stored in the new TComboExItem instance.
+            <var>AddItem</var> is a procedure used to create a new item in the extended combo-box control with the specified caption and object data. <var>Item</var> contains the caption assigned to the new <var>TComboExItem</var> instance. AnObject is an object with the data stored in the new TComboExItem instance.
           </p>
           <p>
             AddItem calls <var>Insert</var> to create, update, and store the item in the <var>ItemsEx</var> property.
@@ -1352,19 +1352,19 @@
         <short>Ordinal position where the new item is stored</short>
       </element>
       <element name="TCustomComboBoxEx.Insert.ACaption">
-        <short>Caption for the new combo box item</short>
+        <short>Caption for the new combo-box item</short>
       </element>
       <element name="TCustomComboBoxEx.Insert.AIndent">
-        <short>Indent spacing for the new combo box item</short>
+        <short>Indent spacing for the new combo-box item</short>
       </element>
       <element name="TCustomComboBoxEx.Insert.AImgIdx">
-        <short>Image index for the new combo box item</short>
+        <short>Image index for the new combo-box item</short>
       </element>
       <element name="TCustomComboBoxEx.Insert.AOverlayImgIdx">
-        <short>Overlay image index for the new combo box item</short>
+        <short>Overlay image index for the new combo-box item</short>
       </element>
       <element name="TCustomComboBoxEx.Insert.ASelectedImgIdx">
-        <short>Selected image index for the new combo box item</short>
+        <short>Selected image index for the new combo-box item</short>
       </element>
 
       <element name="TCustomComboBoxEx.AutoCompleteOptions">
@@ -1385,7 +1385,7 @@
         <short>Specifies the width for images displayed in the control</short>
         <descr>
           <p>
-            <var>ImagesWidth</var> is an <var>Integer</var> property used to specify the width for <var>Images</var> displayed in the extended combo box control. The property value is the image size used at the design-time display density (PPI). The value may be adjusted in the <var>DrawItem</var> method to a scaled value relative to the PPI setting for the current <var>Font</var> in the control. The scaled value determines the image resolution requested when accessing the Images assigned for the control.
+            <var>ImagesWidth</var> is an <var>Integer</var> property used to specify the width for <var>Images</var> displayed in the extended combo-box control. The property value is the image size used at the design-time display density (PPI). The value may be adjusted in the <var>DrawItem</var> method to a scaled value relative to the PPI setting for the current <var>Font</var> in the control. The scaled value determines the image resolution requested when accessing the Images assigned for the control.
           </p>
           <p>
             The default value for the property is zero (<b>0</b>) and indicates that an explicit value has not been assigned for the property.
@@ -1408,7 +1408,7 @@
         </short>
         <descr>
           <p>
-            <var>ItemsEx</var> is a <var>TComboExItems</var> property which provides access to the extended items defined for the combo box control.  ItemsEx uses <var>TComboExItem</var> as the <var>ItemClass</var> for the collection. The collection is maintained using the <var>Add</var>, <var>AddItem</var>, <var>Delete</var>, <var>DeleteSelected</var>, and <var>Clear</var> methods. Use <var>AssignItemsEx</var> to set the values in the collection to the values from a specific source.
+            <var>ItemsEx</var> is a <var>TComboExItems</var> property which provides access to the extended items defined for the combo-box control.  ItemsEx uses <var>TComboExItem</var> as the <var>ItemClass</var> for the collection. The collection is maintained using the <var>Add</var>, <var>AddItem</var>, <var>Delete</var>, <var>DeleteSelected</var>, and <var>Clear</var> methods. Use <var>AssignItemsEx</var> to set the values in the collection to the values from a specific source.
           </p>
           <p>
             Values in ItemsEx are used in the <var>DrawItem</var> method to render the item(s) using the theme details for the control.
@@ -1428,7 +1428,7 @@
 
       <element name="TCustomComboBoxEx.Style">
         <short>
-          Specifies the control style used for the edit in the combo box control
+          Specifies the control style used for the edit in the combo-box control
         </short>
         <descr>
           <p>
@@ -1451,11 +1451,11 @@
 
       <element name="TCustomComboBoxEx.StyleEx">
         <short>
-          Enables feature or behaviors in the extended combo box control
+          Enables feature or behaviors in the extended combo-box control
         </short>
         <descr>
           <p>
-            <var>StyleEx</var> is a <var>TComboBoxExStyles</var> property used to store <var>TComboBoxExStyleEx</var> values which enable features in the extended combo box control. Including a value from the enumeration enables the corresponding feature or behavior in the control. See  <link id="TComboBoxExStyleEx"/> for more information on the enumeration values and their meanings.
+            <var>StyleEx</var> is a <var>TComboBoxExStyles</var> property used to store <var>TComboBoxExStyleEx</var> values which enable features in the extended combo-box control. Including a value from the enumeration enables the corresponding feature or behavior in the control. See  <link id="TComboBoxExStyleEx"/> for more information on the enumeration values and their meanings.
           </p>
           <p>
             The default value for the property is an empty set ([]).
@@ -1468,7 +1468,7 @@
       </element>
 
       <element name="TComboBoxEx" link="#lcl.comboex.TCustomComboBoxEx">
-        <short>Implements an extended Combo Box component</short>
+        <short>Implements an extended combo-box component</short>
         <descr></descr>
         <seealso>
           <link id="TCustomComboBoxEx"/>
@@ -1605,7 +1605,7 @@
 
       <element name="TCustomCheckCombo">
         <short>
-          Implements the base class for a combo box which displays checkboxes for items in the control
+          Implements the base class for a combo-box which displays checkboxes for items in the control
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -1879,7 +1879,7 @@
 
       <element name="TCustomCheckCombo.DrawItem">
         <short>
-          Draws a checkbox item defined in the combo box control
+          Draws a checkbox item defined in the combo-box control
         </short>
         <descr>
           <p>
@@ -1895,7 +1895,7 @@
             <var>State</var> contains the owner draw state used to render the checkbox item, and determines the window and font colors for the checkbox.
           </p>
           <p>
-            DrawItem uses <var>ThemeServices</var> to get theme element details applied to checkbox items in the combo box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the check box.
+            DrawItem uses <var>ThemeServices</var> to get theme element details applied to checkbox items in the combo-box. DrawItem ensures that a valid text height is available for the control <var>Canvas</var>, and is used to draw the text for the check box.
           </p>
           <p>
             DrawItem configures the Canvas to use the brush style and font color needed for the value in State. Text drawing flags are derived for the item, and the text is rendered by calling the <var>DrawText</var> method in ThemeServices.
@@ -1917,10 +1917,10 @@
       </element>
 
       <element name="TCustomCheckCombo.DropDown" link="#lcl.StdCtrls.TCustomComboBox.DropDown">
-        <short>Displays the drop down for the combo box</short>
+        <short>Displays the drop down for the combo-box</short>
         <descr>
           <p>
-            <var>DropDown</var> is an overridden method used to display the drop down for the combo box if it is not already visible. DropDown calls the inherited method to trigger the <var>OnDropDown</var> method (when assigned). When the drop down is already visible, the value in an enabled at <var>ItemIndex</var> is   <var>Toggle</var>d.
+            <var>DropDown</var> is an overridden method used to display the drop down for the combo-box if it is not already visible. DropDown calls the inherited method to trigger the <var>OnDropDown</var> method (when assigned). When the drop down is already visible, the value in an enabled at <var>ItemIndex</var> is   <var>Toggle</var>d.
           </p>
         </descr>
         <seealso>
@@ -2012,7 +2012,7 @@
         <short>Handles key down events for the control</short>
         <descr>
           <p>
-            <var>KeyDown</var> is the overridden method used to handle key down events for the control. KeyDown ensures that Return (<var>VK_RETURN</var>) and Space (<var>VK_SPACE</var>) are applied to the control. Return causes the value for an enabled item to be toggled when highlighted. Space also toggles the value in an enabled checkbox,  and makes the item selected before hiding the drop down for  the combo box.
+            <var>KeyDown</var> is the overridden method used to handle key down events for the control. KeyDown ensures that Return (<var>VK_RETURN</var>) and Space (<var>VK_SPACE</var>) are applied to the control. Return causes the value for an enabled item to be toggled when highlighted. Space also toggles the value in an enabled checkbox,  and makes the item selected before hiding the drop down for  the combo-box.
           </p>
           <p>
             KeyDown calls the inherited method.
@@ -2098,13 +2098,13 @@
         <short>Toggles the value for the current item selected in the control</short>
         <descr>
           <p>
-            <var>Select</var> is an overridden procedure used to toggle the value for the current item in the combo box. Select calls the inherited method.
+            <var>Select</var> is an overridden procedure used to toggle the value for the current item in the combo-box. Select calls the inherited method.
           </p>
           <p>
-            For the Windows platform, the value for the selection cannot be changed if the combo box is not in a dropped down state. This can be achieved in code by calling the <var>DropDown</var> method.
+            For the Windows platform, the value for the selection cannot be toggled if the combo-box is already in a dropped-down state (when the <var>DropDown</var> method has been called).
           </p>
           <p>
-            Select calls the <var>Toggle</var> method using the value in <var>ItemIndex</var> as the affected checkbox item. The internal flag used to track drop down state is reset prior to exiting from the method.
+            Select calls the <var>Toggle</var> method using the value in <var>ItemIndex</var> as the affected checkbox item. The internal flag used to track drop down state is reset prior to exiting from the method. Toggle is not called when ItemIndex contains a negative value, or when the item at the position in ItemIndex is not enabled.
           </p>
           <p>
             Alternatively, you can use the <var>Checked</var> property to assign an explicit <var>Boolean</var> value for the checkbox in ItemIndex.
@@ -2305,10 +2305,10 @@
         </short>
         <descr>
           <p>
-            <var>Checked</var> is an indexed <var>Boolean</var> property which provides access to the checked state for a checkbox item defined in the control. AIndex specifies the ordinal position in Items for the checkbox. Checked uses the value from the TCheckComboItemState object stored in the Items property. True indicates that TCheckComboItemState.Checked contains the value cbChecked. False indicates that it contains the value cbUnchecked.
+            <var>Checked</var> is an indexed <var>Boolean</var> property which provides access to the checked state for a checkbox item defined in the control. <var>AIndex</var> specifies the ordinal position in Items for the checkbox. Checked uses the value from the <var>TCheckComboItemState</var> object stored in the <var>Items</var> property. <b>True</b> indicates that TCheckComboItemState.Checked contains the value <var>cbChecked</var>. <b>False</b> indicates that it contains the value <var>cbUnchecked</var>.
           </p>
           <p>
-            Changing the value for the property causes the OnItemChange event handler to be signalled, and the Invalidate method is called when AIndex is also the selected ItemIndex for the control.
+            Changing the value for the property causes the <var>OnItemChange</var> event handler to be signalled, and the <var>Invalidate</var> method is called when <var>AIndex</var> is also the selected <var>ItemIndex</var> for the control.
           </p>
         </descr>
         <seealso>
@@ -2393,7 +2393,7 @@
       </element>
 
       <element name="TCheckComboBox" link="#lcl.comboex.TCustomCheckCombo">
-        <short>Custom combo box which displays checkboxes for the items in the control</short>
+        <short>Custom combo-box which displays checkboxes for the items in the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -2466,7 +2466,7 @@
         <short>Registers components for use in the Lazarus IDE</short>
         <descr>
           <p>
-            <var>Register</var> is a procedure used to register components in the <file>comboex.pas</file> unit for use in the Lazarus IDE. Register adds the <var>TComboBoxEx</var> and <var>TCheckComboBox</var> components to the    <b>Misc</b> tab in the Lazarus IDE.
+            <var>Register</var> is a procedure used to register components in the <file>comboex.pas</file> unit for use in the Lazarus IDE. Register adds the <var>TComboBoxEx</var> and <var>TCheckComboBox</var> components to the  <b>Misc</b> tab in the Lazarus IDE.
           </p>
         </descr>
         <seealso/>

@@ -711,7 +711,7 @@
       </element>
 
       <element name="TFileSearcher.Create">
-        <short>Creates new file searcher object</short>
+        <short>Creates a new file searcher object</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -723,16 +723,43 @@
         </short>
         <descr>
           <p>
-            Searches for files in the specified path. When a matching file is found, the OnFileFound event is invoked. For directories, the OnDirectoryFound event is signalled. You can abort the search process by calling the Stop method in either of these events.
+            Searches for files matching a specified mask found in the specified search paths. <var>ASearchPath</var> contains the locations examined in the method, and can contain multiple path names separated by the value in <var>PathSeparator</var>. Each delimited path value in <var>ASearchPath</var> is resolved by calling the <var>ResolveDots</var> function, and processed in the method.
+          </p>
+          <p>
+            The value in the <var>CaseSensitive</var> argument is used to add or remove mask options for the search mask in ASearchMask. Set CaseSensitive to <b>True</b> before calling Search to perform file name comparisions with case sensitivity.
+          </p>
+          <p>
+            <var>ASearchSubDirs</var> includes subdirectories found in ASearchMask in the search process when set to <b>True</b>.
+          </p>
+          <p>
+            Set the value in <var>FileAttribute</var> to control the file attributes included in the search process. The default value (<var>faAnyFile</var>) allows all files to be considered.
+          </p>
+          <p>
+            Set the value in <var>DirectoryAttribute</var> to control whether directory names are included in the search process. The default value (<var>faDirectory</var>) includes directory names.
+          </p>
+          <p>
+            Set the value in <var>FollowSymLink</var> to indicate whether symbolic links in the file system are followed in the method.
+          </p>
+          <p>
+            When a matching file is found, the OnFileFound event is signalled. For directories, the OnDirectoryFound event is signalled. When a new directory is processed in the method, the OnDirectoryEnter events is signalled. Applications must assign a handler to the events to respond to the notifications. You can abort the search process by calling the Stop method in the handler for these events.
           </p>
         </descr>
+        <errors>
+          <p>Calls RaiseSearchingError to raise an exception if the Search method has already been called and has not completed.
+          </p>
+        </errors>
         <seealso>
           <link id="TFileSearcher.OnFileFound"/>
           <link id="TFileSearcher.OnDirectoryFound"/>
+          <link id="TFileSearcher.OnDirectoryEnter"/>
+          <link id="TFileSearcher.FileAttribute"/>
+          <link id="TFileSearcher.DirectoryAttribute"/>
+          <link id="TFileSearcher.FollowSymLink"/>
+          <link id="TFileSearcher.PathSeparator"/>
+          <link id="TFileSearcher.MaskSeparator"/>
           <link id="TFileIterator.Stop"/>
         </seealso>
       </element>
-
       <element name="TFileSearcher.Search.ASearchPath">
         <short>Base path for searching files</short>
       </element>
@@ -740,7 +767,7 @@
         <short>Mask used to determine file names that match in the search</short>
       </element>
       <element name="TFileSearcher.Search.ASearchSubDirs">
-        <short>Indicates if sub directories are searched recursively</short>
+        <short>Indicates if subdirectories are searched recursively</short>
       </element>
       <element name="TFileSearcher.Search.CaseSensitive">
         <short>Indicates if file names are compared using case sensitivity</short>

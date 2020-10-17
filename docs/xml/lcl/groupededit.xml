@@ -107,6 +107,7 @@
       <element name="TCustomAbstractGroupedEdit.FOnBuddyClick"/>
       <element name="TCustomAbstractGroupedEdit.FOnEditClick"/>
       <element name="TCustomAbstractGroupedEdit.FOnEditChange"/>
+      <element name="TCustomAbstractGroupedEdit.FOnEditContextPopup"/>
       <element name="TCustomAbstractGroupedEdit.FOnEditDblClick"/>
       <element name="TCustomAbstractGroupedEdit.FOnEditDragDrop"/>
       <element name="TCustomAbstractGroupedEdit.FOnEditDragOver"/>
@@ -440,6 +441,21 @@
       </element>
       <element name="TCustomAbstractGroupedEdit.InternalOnEditChange.Sender">
         <short>Object instance for the event notification</short>
+      </element>
+
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditContextPopup">
+        <short>Executes the OnEditContextPopup handler for the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditContextPopup.Sender">
+        <short/>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditContextPopup.MousePos">
+        <short/>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.InternalOnEditContextPopup.Handled">
+        <short/>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.InternalOnEditDragDrop">
@@ -1318,6 +1334,18 @@
         </seealso>
       </element>
 
+      <element name="TCustomAbstractGroupedEdit.EditContextPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditContextPopup.MousePos">
+        <short/>
+      </element>
+      <element name="TCustomAbstractGroupedEdit.EditContextPopup.Handled">
+        <short/>
+      </element>
+
       <element name="TCustomAbstractGroupedEdit.EditDblClick">
         <short></short>
         <descr></descr>
@@ -2187,6 +2215,7 @@
       </element>
 
       <element name="TCustomAbstractGroupedEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TCustomAbstractGroupedEdit.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TCustomAbstractGroupedEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TCustomAbstractGroupedEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TCustomAbstractGroupedEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>

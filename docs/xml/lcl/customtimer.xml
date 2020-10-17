@@ -10,24 +10,14 @@
       <short>Contains the definition of the base class for <var>TTimer</var></short>
       <descr/>
 
-      <!-- unresolved external references -->
-      <element name="Classes">
-        <short/>
-      </element>
-      <element name="SysUtils">
-        <short/>
-      </element>
-      <element name="LCLStrConsts">
-        <short/>
-      </element>
-      <element name="LCLType">
-        <short/>
-      </element>
-      <element name="InterfaceBase">
-        <short/>
-      </element>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLProc"/>
+      <element name="LCLStrConsts"/>
+      <element name="LCLType"/>
+      <element name="InterfaceBase"/>
+      <element name="CustApp"/>
 
-      <!-- object Visibility: default -->
       <element name="TCustomTimer">
         <short>
           Defines the base class for <var>TTimer</var>
@@ -59,7 +49,6 @@
         </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TCustomTimer.FInterval"/>
       <element name="TCustomTimer.FOnStartTimer"/>
       <element name="TCustomTimer.FOnStopTimer"/>
@@ -67,7 +56,6 @@
       <element name="TCustomTimer.FOnTimer"/>
       <element name="TCustomTimer.FEnabled"/>
 
-      <!-- procedure Visibility: private -->
       <element name="TCustomTimer.Timer">
         <short>
            Procedure called when the timer interval has elapsed
@@ -77,7 +65,10 @@
             <var>Timer</var> is a private procedure called when the <var>Interval</var> for the timer has elapsed. Timer calls the <var>DoOnTimer</var> method to perform a notification using the <var>OnTimer</var> event (when assigned). Assign a procedure to the <var>OnTimer</var> event handler to perform actions needed when the <var>Interval</var> for the timer has elapsed.
           </p>
           <p>
-            The <var>Timer</var> procedure is passed as an argument when the timer handle is created in the underlying widget set for the platform or OS in the UpdateTimer method.
+            If an exception occurs in DoOnTimer, the <var>HandleException</var> method in the <var>CustomApplication</var> singleton is called.
+          </p>
+          <p>
+            The <var>Timer</var> procedure is passed as an argument when the timer handle is created for the widget set in its UpdateTimer method.
           </p>
           <remark>
             Please note that the <var>OnTimer</var> event notification is not performed when <var>Enabled</var> contains <b>False</b> or when <var>Interval</var> contains the value <b>0</b> (<b>zero</b>).
@@ -88,6 +79,8 @@
           <link id="TCustomTimer.Enabled"/>
           <link id="TCustomTimer.Interval"/>
           <link id="TCustomTimer.UpdateTimer"/>
+          <link id="#fcl.CustApp.TCustomApplication.HandleException"/>
+          <link id="#fcl.CustApp.CustomApplication"/>
         </seealso>
       </element>
       <element name="TCustomTimer.SetEnabled">
@@ -117,7 +110,6 @@
       <element name="TCustomTimer.SetOnTimer.Value">
         <short><var>TNotifyEvent</var> handler signalled when the timer has expired</short>
       </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.DoOnTimer">
         <short><var>DoOnTimer</var> signals the <var>OnTimer</var> event handler</short>
         <descr>
@@ -143,7 +135,6 @@
           <link id="TCustomTimer.Interval"/>
         </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.UpdateTimer">
         <short>Updates the Timer to reflect the current properties</short>
         <descr>
@@ -174,7 +165,6 @@
           <link id="TCustomTimer.Loaded"/>
         </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.KillTimer">
         <short>Stops execution of the timer class instance</short>
         <descr>
@@ -191,9 +181,7 @@
           <link id="TCustomTimer.Destroy"/>
         </seealso>
       </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
-      <!-- constructor Visibility: public -->
       <element name="TCustomTimer.Create">
         <short>
           <var>Create</var> - constructor for <var>TCustomTimer</var>: calls inherited <var>Create</var>, sets up handle and initializes timer interval</short>
@@ -219,11 +207,9 @@
           <link id="TCustomTimer.OnTimer"/>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomTimer.Create.AOwner">
         <short>Component which owns the timer class instance</short>
       </element>
-      <!-- destructor Visibility: public -->
       <element name="TCustomTimer.Destroy">
         <short>Destructor for the timer class instance</short>
         <descr>
@@ -246,7 +232,6 @@
           <link id="TCustomTimer.OnStopTimer"/>
         </seealso>
       </element>
-      <!-- property Visibility: published -->
       <element name="TCustomTimer.Enabled">
         <short>Indicates if the timer is ready to start</short>
         <descr>
@@ -264,7 +249,6 @@
           <link id="TCustomTimer.OnTimer"/>
         </seealso>
       </element>
-      <!-- property Visibility: published -->
       <element name="TCustomTimer.Interval">
         <short>The <var>Interval</var> (in milliseconds) for timer notifications</short>
         <descr>
@@ -289,7 +273,6 @@
           <link id="TCustomTimer.OnTimer"/>
         </seealso>
       </element>
-      <!-- property Visibility: published -->
       <element name="TCustomTimer.OnTimer">
         <short>Event handler signalled when the Interval for the timer has elapsed</short>
         <descr>
@@ -317,7 +300,6 @@
           <link id="TCustomTimer.UpdateTimer"/>
         </seealso>
       </element>
-      <!-- property Visibility: published -->
       <element name="TCustomTimer.OnStartTimer">
         <short>Event handler signalled when the timer is started</short>
         <descr>
@@ -344,7 +326,6 @@
           <link id="TCustomTimer.OnTimer"/>
         </seealso>
       </element>
-      <!-- property Visibility: published -->
       <element name="TCustomTimer.OnStopTimer">
         <short>
           <var>OnStopTimer</var> - event handler for stopping the timer</short>

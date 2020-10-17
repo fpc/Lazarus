@@ -13,6 +13,14 @@
 <descr>
 </descr>
 
+<!-- unresolved externals -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Types"/>
+<element name="Math"/>
+<element name="LazClasses"/>
+<element name="LazUTF8"/>
+
 <!-- enumeration type Visibility: default -->
 <element name="TLazLoggerLogGroupFlag">
 <short></short>
@@ -2185,6 +2193,15 @@
 <!-- argument Visibility: default -->
 <element name="dbghex.i">
 <short></short>
+</element>
+
+<element name="DbgSTime">
+  <short/>
+  <descr/>
+  <seealso/>
+</element>
+<element name="DbgSTime.Result">
+  <short/>
 </element>
 
 <!-- function Visibility: default -->

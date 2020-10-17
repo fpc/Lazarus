@@ -1344,10 +1344,11 @@
       <element name="TCustomControlFilterEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TCustomControlFilterEdit.OnChange" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnChange"/>
       <element name="TCustomControlFilterEdit.OnClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnClick"/>
+      <element name="TCustomControlFilterEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TCustomControlFilterEdit.OnDblClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnDblClick"/>
       <element name="TCustomControlFilterEdit.OnDragDrop" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnDragDrop"/>
       <element name="TCustomControlFilterEdit.OnDragOver" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnDragOver"/>
-      <element name="TCustomControlFilterEdit.OnEditingDone" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnEditingDone"/>
+      <element name="TCustomControlFilterEdit.OnEditingDone" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditingDone"/>
       <element name="TCustomControlFilterEdit.OnEndDrag" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnEndDrag"/>
       <element name="TCustomControlFilterEdit.OnEnter" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnEnter"/>
       <element name="TCustomControlFilterEdit.OnExit" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnExit"/>
@@ -1800,6 +1801,7 @@
       <element name="TFileNameEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TFileNameEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TFileNameEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TFileNameEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TFileNameEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TFileNameEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TFileNameEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
@@ -2123,6 +2125,7 @@
       <element name="TDirectoryEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TDirectoryEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TDirectoryEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TDirectoryEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TDirectoryEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TDirectoryEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TDirectoryEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
@@ -2665,6 +2668,7 @@
       <element name="TDateEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TDateEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TDateEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TDateEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TDateEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TDateEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
       <element name="TDateEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
@@ -3010,6 +3014,7 @@
       <element name="TTimeEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TTimeEdit.OnClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnClick"/>
       <element name="TTimeEdit.OnDblClick" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnDblClick"/>
+      <element name="TTimeEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TTimeEdit.OnEditingDone" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnEditingDone"/>
       <element name="TTimeEdit.OnEnter" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnEnter"/>
       <element name="TTimeEdit.OnExit" link="#LCL.GroupedEdit.TCustomAbstractGroupedEdit.OnExit"/>
@@ -3295,6 +3300,7 @@
       <element name="TCalcEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
       <element name="TCalcEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TCalcEdit.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TCalcEdit.OnContextPopup" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnContextPopup"/>
       <element name="TCalcEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
       <element name="TCalcEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TCalcEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>

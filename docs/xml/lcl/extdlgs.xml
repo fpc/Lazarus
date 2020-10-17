@@ -131,6 +131,21 @@
 
       <element name="TPreviewFileDialog.FPreviewFileControl"/>
 
+      <element name="TPreviewFileDialog.GetPreviewFileControl">
+        <short>Gets the value for the PreviewFileControl property</short>
+        <descr>
+          <p>
+            Calls <var>CreatePreviewControl</var> if a <var>TPreviewFileControl</var> instance has not already been created for the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPreviewFileDialog.PreviewFileControl"/>
+        </seealso>
+      </element>
+      <element name="TPreviewFileDialog.GetPreviewFileControl.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TPreviewFileDialog.CreatePreviewControl">

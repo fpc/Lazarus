@@ -2941,6 +2941,8 @@
       <element name="TCustomRadioGroup.FItems"/>
       <element name="TCustomRadioGroup.FLastClickedItemIndex"/>
       <element name="TCustomRadioGroup.FOnClick"/>
+      <element name="TCustomRadioGroup.FOnItemEnter"/>
+      <element name="TCustomRadioGroup.FOnItemExit"/>
       <element name="TCustomRadioGroup.FOnSelectionChanged"/>
       <element name="TCustomRadioGroup.FReading"/>
       <element name="TCustomRadioGroup.FUpdatingItems"/>
@@ -2975,7 +2977,6 @@
       <element name="TCustomRadioGroup.ItemEnter" link="#LCL.Controls.TWinControl.DoEnter">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemEnter.Sender">
@@ -2985,7 +2986,6 @@
       <element name="TCustomRadioGroup.ItemExit" link="#LCL.Controls.TWinControl.DoExit">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemExit.Sender">
@@ -3387,6 +3387,40 @@
         </seealso>
       </element>
 
+      <element name="TCustomRadioGroup.OnItemEnter">
+        <short>Event handler signalled when a radio button in the group receives focus</short>
+        <descr>
+          <p>
+            <var>OnItemEnter</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when a radio button in the group receives focus. An application must implement and assign an object procedure to the property to respond to the event notification.
+          </p>
+          <p>
+            OnItemEnter is signalled from the <var>ItemEnter</var> method (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomRadioGroup.ItemEnter"/>
+          <link id="TCustomRadioGroup.UpdateItems"/>
+          <link id="#lcl.stdctrls.TRadioButton.OnEnter"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomRadioGroup.OnItemExit">
+        <short>Event handler signalled when a radio button in the group loses focus</short>
+        <descr>
+          <p>
+            OnItemExit is a TNotifyEvent property which implements an event handler signalled when a radio button in the group loses focus. An application must implement and assign an object procedure to the property to respond to the event notification.
+          </p>
+          <p>
+            OnItemExit is signalled from the <var>ItemExit</var> method (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomRadioGroup.ItemExit"/>
+          <link id="TCustomRadioGroup.UpdateItems"/>
+          <link id="#lcl.stdctrls.TRadioButton.OnExit"/>
+        </seealso>
+      </element>
+
       <element name="TCustomRadioGroup.OnSelectionChanged">
         <short>Event called when the selected item changes</short>
         <descr>
@@ -3477,6 +3511,8 @@
       <element name="TRadioGroup.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TRadioGroup.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <element name="TRadioGroup.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TRadioGroup.OnItemEnter" link="#lcl.extctrls.TCustomRadioGroup.OnItemEnter"/>
+      <element name="TRadioGroup.OnItemExit" link="#lcl.extctrls.TCustomRadioGroup.OnItemExit"/>
       <element name="TRadioGroup.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TRadioGroup.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TRadioGroup.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>

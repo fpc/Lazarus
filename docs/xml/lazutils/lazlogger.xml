@@ -219,6 +219,15 @@
         <short></short>
       </element>
 
+      <element name="DbgSTime">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DbgSTime.Result">
+        <short/>
+      </element>
+
       <element name="dbgMemRange">
         <short></short>
         <descr></descr>

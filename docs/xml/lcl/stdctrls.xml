@@ -4983,6 +4983,17 @@
         <short>Value for the property</short>
       </element>
 
+      <element name="TCustomEdit.GetTextHint">
+        <short>Gets the value for the TextHint property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomEdit.TextHint"/>
+        </seealso>
+      </element>
+      <element name="TCustomEdit.GetTextHint.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element name="TCustomEdit.SetCaretPos" link="#lcl.stdctrls.TCustomEdit.CaretPos">
         <short>Sets the value for the CaretPos property</short>
         <descr/>

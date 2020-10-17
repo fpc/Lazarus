@@ -153,7 +153,107 @@
         </seealso>
       </element>
 
-      <!-- generic class Visibility: default -->
+      <element name="TLazFifoQueue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazFifoQueue.FList"/>
+      <element name="TLazFifoQueue.FQueueSize"/>
+      <element name="TLazFifoQueue.FTotalItemsPopped"/>
+      <element name="TLazFifoQueue.FTotalItemsPushed"/>
+
+      <element name="TLazFifoQueue.GetIsEmpty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.GetIsEmpty.Result">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.GetIsFull">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.GetIsFull.Result">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.Create.AQueueDepth">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.Grow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.Grow.ADelta">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.PushItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.PushItem.Result">
+        <short/>
+      </element>
+      <element name="TLazFifoQueue.PushItem.AItem">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.PopItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazFifoQueue.PopItem.Result">
+        <short/>
+      </element>
+      <element name="TLazFifoQueue.PopItem.AItem">
+        <short/>
+      </element>
+
+      <element name="TLazFifoQueue.QueueSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazFifoQueue.TotalItemsPopped">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazFifoQueue.TotalItemsPushed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazFifoQueue.IsEmpty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazFifoQueue.IsFull">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TLazThreadedQueue">
         <short>
           Implements a thread-safe FIFO queue for items of a generic type
@@ -179,17 +279,47 @@
         </seealso>
       </element>
 
+      <element name="TLazThreadedQueue.TLazTypedFifoQueue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <!-- variable Visibility: private -->
       <element name="TLazThreadedQueue.FMonitor"/>
-      <element name="TLazThreadedQueue.FList"/>
+      <element name="TLazThreadedQueue.FFifoQueue"/>
       <element name="TLazThreadedQueue.FPushTimeout"/>
       <element name="TLazThreadedQueue.FPopTimeout"/>
-      <element name="TLazThreadedQueue.FQueueSize"/>
-      <element name="TLazThreadedQueue.FTotalItemsPopped"/>
-      <element name="TLazThreadedQueue.FTotalItemsPushed"/>
       <element name="TLazThreadedQueue.FHasRoomEvent"/>
       <element name="TLazThreadedQueue.FHasItemEvent"/>
       <element name="TLazThreadedQueue.FShutDown"/>
+
+      <element name="TLazThreadedQueue.GetQueueSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.GetQueueSize.Result">
+        <short/>
+      </element>
+
+      <element name="TLazThreadedQueue.GetTotalItemsPopped">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.GetTotalItemsPopped.Result">
+        <short/>
+      </element>
+
+      <element name="TLazThreadedQueue.GetTotalItemsPushed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.GetTotalItemsPushed.Result">
+        <short/>
+      </element>
 
       <element name="TLazThreadedQueue.TryPushItem">
         <short>Tries to add the specified item to the queue</short>
@@ -224,7 +354,60 @@
         <short>Item removed from the queue in the method</short>
       </element>
 
-      <!-- constructor Visibility: public -->
+      <element name="TLazThreadedQueue.TryPushItemUnprotected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.TryPushItemUnprotected.Result">
+        <short/>
+      </element>
+      <element name="TLazThreadedQueue.TryPushItemUnprotected.AItem">
+        <short/>
+      </element>
+
+      <element name="TLazThreadedQueue.TryPopItemUnprotected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.TryPopItemUnprotected.Result">
+        <short/>
+      </element>
+      <element name="TLazThreadedQueue.TryPopItemUnprotected.AItem">
+        <short/>
+      </element>
+
+      <element name="TLazThreadedQueue.Lock">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazThreadedQueue.Unlock">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLazThreadedQueue.CreateFifoQueue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazThreadedQueue.CreateFifoQueue.Result">
+        <short/>
+      </element>
+      <element name="TLazThreadedQueue.CreateFifoQueue.AQueueDepth">
+        <short/>
+      </element>
+
+      <element name="TLazThreadedQueue.FifoQueue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TLazThreadedQueue.Create">
         <short>Constructor for the class instance</short>
         <descr>
