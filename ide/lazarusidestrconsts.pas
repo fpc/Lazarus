@@ -5490,7 +5490,8 @@ resourcestring
 
   // View Search Results dialog
   rsFoundButNotListedHere = 'Found but not listed here: ';
-  rsStartANewSearch = 'Start a new search';
+  rsRefreshTheSearch = 'Refresh the search';
+  rsNewSearchWithSameCriteria = 'New search with same criteria';
   rsCloseCurrentPage = 'Close current page';
   rsFilterTheListWithString = 'Filter the lines in list with a string';
   rsCloseLeft = 'Close page(s) on the left';

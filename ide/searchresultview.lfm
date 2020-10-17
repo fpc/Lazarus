@@ -1,5 +1,5 @@
 object SearchResultsView: TSearchResultsView
-  Left = 344
+  Left = 374
   Height = 275
   Top = 327
   Width = 722
@@ -25,27 +25,38 @@ object SearchResultsView: TSearchResultsView
     ClientWidth = 722
     TabOrder = 1
     TabStop = True
-    object ToolBar: TToolBar
-      Left = 3
+    object PageToolBar: TToolBar
+      AnchorSideLeft.Control = PageLabel
+      AnchorSideLeft.Side = asrBottom
+      Left = 40
       Height = 22
       Top = 2
-      Width = 47
+      Width = 70
       Align = alNone
       Anchors = [akTop, akLeft, akBottom]
       AutoSize = True
+      BorderSpacing.Left = 3
       EdgeInner = esNone
       EdgeOuter = esNone
       TabOrder = 0
-      object NewSearchButton: TToolButton
+      object RefreshButton: TToolButton
         Left = 1
         Top = 0
         AutoSize = True
-        Caption = 'NewSearchButton'
+        Caption = 'RefreshButton'
+        ImageIndex = 2
+        OnClick = RefreshButtonClick
+      end
+      object SearchAgainButton: TToolButton
+        Left = 24
+        Top = 0
+        AutoSize = True
+        Caption = 'SearchAgainButton'
         ImageIndex = 0
-        OnClick = NewSearchButtonClick
+        OnClick = SearchAgainButtonClick
       end
       object ClosePageButton: TToolButton
-        Left = 24
+        Left = 47
         Top = 0
         Caption = 'ClosePageButton'
         ImageIndex = 1
@@ -53,13 +64,17 @@ object SearchResultsView: TSearchResultsView
       end
     end
     object SearchInListEdit: TTreeFilterEdit
-      Left = 53
+      AnchorSideLeft.Control = PageToolBar
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = CloseTabs
+      Left = 133
       Height = 23
       Top = 2
-      Width = 550
+      Width = 460
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Left = 2
+      BorderSpacing.Left = 21
+      BorderSpacing.Right = 21
       BorderSpacing.Bottom = 1
       BorderSpacing.Around = 2
       AutoSize = False
@@ -87,15 +102,15 @@ object SearchResultsView: TSearchResultsView
         Top = 0
         Action = actCloseLeft
       end
-      object tbbCloseRight: TToolButton
-        Left = 48
-        Top = 0
-        Action = actCloseRight
-      end
       object tbbCloseOthers: TToolButton
         Left = 25
         Top = 0
         Action = actCloseOthers
+      end
+      object tbbCloseRight: TToolButton
+        Left = 48
+        Top = 0
+        Action = actCloseRight
       end
       object ToolButton3: TToolButton
         Left = 71
@@ -108,6 +123,16 @@ object SearchResultsView: TSearchResultsView
         Top = 0
         Action = actCloseAll
       end
+    end
+    object PageLabel: TLabel
+      AnchorSideTop.Control = ControlBar1
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 18
+      Top = 4
+      Width = 31
+      Caption = 'Page'
+      ParentColor = False
     end
   end
   object ResultsNoteBook: TExtendedNotebook

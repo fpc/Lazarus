@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, strutils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
-  ActnList, ExtCtrls,
+  ActnList, ExtCtrls, StdCtrls, Dialogs,
   // LazControls
   TreeFilterEdit, ExtendedNotebook,
   // LazUtils
@@ -141,8 +141,8 @@ type
     actNextPage: TAction;
     actPrevPage: TAction;
     ActionList: TActionList;
-    ClosePageButton1: TToolButton;
     ControlBar1: TPanel;
+    PageLabel: TLabel;
     MenuItem1: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;
@@ -155,21 +155,24 @@ type
     tbbCloseLeft: TToolButton;
     tbbCloseOthers: TToolButton;
     tbbCloseRight: TToolButton;
-    ToolBar: TToolBar;
-    NewSearchButton: TToolButton;
+    PageToolBar: TToolBar;
     CloseTabs: TToolBar;
+    RefreshButton: TToolButton;
+    SearchAgainButton: TToolButton;
     ClosePageButton: TToolButton;
     SearchInListEdit: TTreeFilterEdit;
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
     procedure actNextPageExecute(Sender: TObject);
     procedure actPrevPageExecute(Sender: TObject);
+    procedure RefreshButtonClick(Sender: TObject);
+    procedure SearchAgainButtonClick(Sender: TObject);
+    procedure ClosePageButtonClick(Sender: TObject);
     procedure ResultsNoteBookResize(Sender: TObject);
     procedure tbbCloseAllClick(Sender: TObject);
     procedure tbbCloseLeftClick(Sender: TObject);
     procedure tbbCloseOthersClick(Sender: TObject);
     procedure tbbCloseRightClick(Sender: TObject);
-    procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -183,7 +186,6 @@ type
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
-    procedure NewSearchButtonClick(Sender: TObject);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
@@ -322,8 +324,9 @@ begin
   Name:=NonModalIDEWindowNames[nmiwSearchResultsView];
   Caption:=lisMenuViewSearchResults;
 
-  NewSearchButton.Hint:=rsStartANewSearch;
-  ClosePageButton.Hint := rsCloseCurrentPage;
+  RefreshButton.Hint:=rsRefreshTheSearch;
+  SearchAgainButton.Hint:=rsNewSearchWithSameCriteria;
+  ClosePageButton.Hint:=rsCloseCurrentPage;
   SearchInListEdit.Hint:=rsFilterTheListWithString;
   { Close tabs buttons }
   actCloseLeft.Hint:=rsCloseLeft;
@@ -350,9 +353,10 @@ begin
   mniExpandAll.Caption := lisExpandAll;
   mniCollapseAll.Caption := lisCollapseAll;
 
-  ToolBar.Images := IDEImages.Images_16;
-  NewSearchButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
-  ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
+  PageToolBar.Images := IDEImages.Images_16;
+  RefreshButton.ImageIndex     := IDEImages.LoadImage('laz_refresh');
+  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
+  ClosePageButton.ImageIndex   := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
   { Close tabs buttons }
@@ -448,6 +452,26 @@ begin
     TabIndex := ResultsNoteBook.IndexOfPageAt(Point(X,Y));
     if TabIndex >= 0 then
       ResultsNoteBookClosetabclicked(ResultsNoteBook.Page[TabIndex]);
+  end;
+end;
+
+procedure TSearchResultsView.RefreshButtonClick(Sender: TObject);
+begin
+  ShowMessage('ToDo: Refresh the search in current page.');
+end;
+
+procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
+var
+  CurrentTV: TLazSearchResultTV;
+  SearchObj: TLazSearch;
+begin
+  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
+  if not Assigned(CurrentTV) then
+    MainIDEInterface.FindInFilesPerDialog(Project1)
+  else begin
+    SearchObj:= CurrentTV.SearchObject;
+    OnSearchAgainClicked(SearchObj);
+    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
   end;
 end;
 
@@ -844,7 +868,8 @@ var
 begin
   CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
   state := Assigned(CurrentTV) and not CurrentTV.Updating;
-  NewSearchButton.Enabled := state;
+  RefreshButton.Enabled := state;
+  SearchAgainButton.Enabled := state;
   ClosePageButton.Enabled := state;
   SearchInListEdit.Enabled := state;
   if state then
@@ -936,22 +961,6 @@ procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
 begin
   if (Sender is TTabSheet) then
     ClosePage(TTabSheet(Sender).PageIndex)
-end;
-
-procedure TSearchResultsView.NewSearchButtonClick(Sender: TObject);
-var
-  CurrentTV: TLazSearchResultTV;
-  SearchObj: TLazSearch;
-begin
-  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
-  if not Assigned(CurrentTV) then begin
-    MainIDEInterface.FindInFilesPerDialog(Project1);
-  end
-  else begin
-    SearchObj:= CurrentTV.SearchObject;
-    OnSearchAgainClicked(SearchObj);
-    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
-  end;
 end;
 
 procedure TSearchResultsView.TreeViewKeyDown(Sender: TObject; var Key: Word;
