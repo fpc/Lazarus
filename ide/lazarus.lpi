@@ -1263,7 +1263,9 @@
       <Unit210>
         <Filename Value="searchresultview.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SearchResultsView"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="SearchResultView"/>
       </Unit210>
       <Unit211>

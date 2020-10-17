@@ -5614,8 +5614,7 @@ var
   CurGrid: TOICustomPropertyGrid;
 begin
   // ToDo: Allow TAB key to FilterEdit, TreeView and Grid. Now the Grid gets seleted always.
-  DebugLn(['TObjectInspectorDlg.KeyDown: Key=', Key, ', ActiveControl=', ActiveControl]);
-
+  //DebugLn(['TObjectInspectorDlg.KeyDown: Key=', Key, ', ActiveControl=', ActiveControl]);
   //Do not disturb the combobox navigation while it has focus
   if not AvailPersistentComboBox.DroppedDown then begin
     CurGrid:=GetActivePropertyGrid;

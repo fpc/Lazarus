@@ -13,20 +13,7 @@ object SearchResultsView: TSearchResultsView
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  object ResultsNoteBook: TPageControl
-    Left = 0
-    Height = 249
-    Top = 26
-    Width = 722
-    Align = alClient
-    MultiLine = True
-    TabOrder = 0
-    OnChange = ResultsNoteBookPageChanged
-    OnCloseTabClicked = ResultsNoteBookClosetabclicked
-    OnMouseDown = ResultsNoteBookMouseDown
-    OnResize = ResultsNoteBookResize
-    Options = [nboShowCloseButtons, nboMultiLine, nboDoChangeOnSetIndex]
-  end
+  LCLVersion = '2.1.0.0'
   object ControlBar1: TPanel
     Left = 0
     Height = 26
@@ -49,13 +36,13 @@ object SearchResultsView: TSearchResultsView
       EdgeInner = esNone
       EdgeOuter = esNone
       TabOrder = 0
-      object SearchAgainButton: TToolButton
+      object NewSearchButton: TToolButton
         Left = 1
         Top = 0
         AutoSize = True
-        Caption = 'SearchAgainButton'
+        Caption = 'NewSearchButton'
         ImageIndex = 0
-        OnClick = SearchAgainButtonClick
+        OnClick = NewSearchButtonClick
       end
       object ClosePageButton: TToolButton
         Left = 24
@@ -123,9 +110,25 @@ object SearchResultsView: TSearchResultsView
       end
     end
   end
+  object ResultsNoteBook: TExtendedNotebook
+    Left = 0
+    Height = 249
+    Top = 26
+    Width = 722
+    Align = alClient
+    MultiLine = True
+    TabOrder = 0
+    OnChange = ResultsNoteBookPageChanged
+    OnCloseTabClicked = ResultsNoteBookClosetabclicked
+    OnMouseDown = ResultsNoteBookMouseDown
+    OnResize = ResultsNoteBookResize
+    Options = [nboShowCloseButtons, nboMultiLine, nboDoChangeOnSetIndex]
+    TabDragMode = dmAutomatic
+    TabDragAcceptMode = dmAutomatic
+  end
   object popList: TPopupMenu
-    left = 129
-    top = 48
+    Left = 129
+    Top = 48
     object mniCopyItem: TMenuItem
       Caption = 'Copy Item'
       OnClick = mniCopyItemClick
@@ -151,8 +154,8 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object ActionList: TActionList
-    left = 32
-    top = 48
+    Left = 32
+    Top = 48
     object actClosePage: TAction
       ImageIndex = 1
       OnExecute = ClosePageButtonClick

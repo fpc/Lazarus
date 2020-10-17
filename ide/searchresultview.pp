@@ -42,7 +42,7 @@ uses
   LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
   ActnList, ExtCtrls,
   // LazControls
-  TreeFilterEdit,
+  TreeFilterEdit, ExtendedNotebook,
   // LazUtils
   LazUTF8, LazFileUtils, LazLoggerBase, LazStringUtils,
   // IdeIntf
@@ -151,12 +151,12 @@ type
     mniCopyItem: TMenuItem;
     pnlToolBars: TPanel;
     popList: TPopupMenu;
-    ResultsNoteBook: TPageControl;
+    ResultsNoteBook: TExtendedNotebook;
     tbbCloseLeft: TToolButton;
     tbbCloseOthers: TToolButton;
     tbbCloseRight: TToolButton;
     ToolBar: TToolBar;
-    SearchAgainButton: TToolButton;
+    NewSearchButton: TToolButton;
     CloseTabs: TToolBar;
     ClosePageButton: TToolButton;
     SearchInListEdit: TTreeFilterEdit;
@@ -183,7 +183,7 @@ type
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
-    procedure SearchAgainButtonClick(Sender: TObject);
+    procedure NewSearchButtonClick(Sender: TObject);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
@@ -322,7 +322,7 @@ begin
   Name:=NonModalIDEWindowNames[nmiwSearchResultsView];
   Caption:=lisMenuViewSearchResults;
 
-  SearchAgainButton.Hint:=rsStartANewSearch;
+  NewSearchButton.Hint:=rsStartANewSearch;
   ClosePageButton.Hint := rsCloseCurrentPage;
   SearchInListEdit.Hint:=rsFilterTheListWithString;
   { Close tabs buttons }
@@ -351,7 +351,7 @@ begin
   mniCollapseAll.Caption := lisCollapseAll;
 
   ToolBar.Images := IDEImages.Images_16;
-  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
+  NewSearchButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
   ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
@@ -844,7 +844,7 @@ var
 begin
   CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
   state := Assigned(CurrentTV) and not CurrentTV.Updating;
-  SearchAgainButton.Enabled := state;
+  NewSearchButton.Enabled := state;
   ClosePageButton.Enabled := state;
   SearchInListEdit.Enabled := state;
   if state then
@@ -938,7 +938,7 @@ begin
     ClosePage(TTabSheet(Sender).PageIndex)
 end;
 
-procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
+procedure TSearchResultsView.NewSearchButtonClick(Sender: TObject);
 var
   CurrentTV: TLazSearchResultTV;
   SearchObj: TLazSearch;
