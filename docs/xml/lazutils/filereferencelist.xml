@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+      ====================================================================
+        FileReferenceList
+      ====================================================================
+    -->
+    <module name="FileReferenceList">
+      <short>Contains types and classes used to implement a list of file references</short>
+      <descr>
+        <p>
+          Implements the TFileReference and TFileReferenceList classes. Provides a list of file references with counters and a search path for all files.
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element id="Classes"/>
+      <element id="SysUtils"/>
+      <element id="Laz_AVL_Tree"/>
+      <element id="LazFileUtils"/>
+      <element id="LazFileCache"/>
+      <element id="LazTracer"/>
+
+      <element name="TFileReference">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReference.fFilename"/>
+      <element name="TFileReference.fReferenceCount"/>
+
+      <element name="TFileReference.Filename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReference.ReferenceCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceFlag.frfSearchPathValid">
+        <short/>
+      </element>
+      <element name="TFileReferenceFlag.frfChanged">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.FOnChanged"/>
+      <element name="TFileReferenceList.FTimeStamp"/>
+      <element name="TFileReferenceList.FTree">
+        <short>Tree of TFileReference instances sorted by file name</short>
+      </element>
+      <element name="TFileReferenceList.FFlags"/>
+      <element name="TFileReferenceList.FSearchPath"/>
+      <element name="TFileReferenceList.FUpdateLock"/>
+
+      <element name="TFileReferenceList.UpdateSearchPath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.IncreaseTimeStamp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.Invalidate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.Clear">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.BeginUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.EndUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.AddFilename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceList.AddFilename.Filename">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceList.RemoveFilename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceList.RemoveFilename.Filename">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceList.GetFileReference">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceList.GetFileReference.Result">
+        <short/>
+      </element>
+      <element name="TFileReferenceList.GetFileReference.Filename">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceList.CreateSearchPathFromAllFiles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceList.CreateSearchPathFromAllFiles.Result">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceList.CreateFileList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFileReferenceList.CreateFileList.Result">
+        <short/>
+      </element>
+
+      <element name="TFileReferenceList.TimeStamp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.OnChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFileReferenceList.UpdateLock">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+    <!-- FileReferenceList -->
+  </package>
+</fpdoc-descriptions>

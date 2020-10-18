@@ -6072,6 +6072,7 @@ docs/xml/lazutils/dynamicarray.xml svneol=native#text/plain
 docs/xml/lazutils/dynhasharray.xml svneol=native#text/plain
 docs/xml/lazutils/dynqueue.xml svneol=native#text/plain
 docs/xml/lazutils/extendedstrings.xml svneol=native#text/plain
+docs/xml/lazutils/filereferencelist.xml -text svneol=native#text/plain
 docs/xml/lazutils/fileutil.xml svneol=native#text/plain
 docs/xml/lazutils/fpcadds.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/fpmake.xml svneol=native#text/plain
