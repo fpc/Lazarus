@@ -471,12 +471,15 @@ type
     FControl : TWinControl;
     Shown : Boolean;
     FAlt: string;
+    FDisabled: Boolean;
     procedure HideUnmarkedControl; override;
     procedure UnmarkControl; override;
     procedure AddValues(NameList, ValueList : TStringList); virtual; abstract;
     procedure Reset; virtual; abstract;
     function Successful: Boolean; virtual; abstract;
     function adjustFromCss: boolean;
+    procedure SetDisabled(const AValue: Boolean); virtual;
+    property Disabled: Boolean read FDisabled write SetDisabled default false;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1761,7 +1764,6 @@ type
   TIpHtmlNodeINPUT = class(TIpHtmlNodeControl)
   private
     FChecked: Boolean;
-    FDisabled: Boolean;
     FInputType: TIpHtmlInputType;
     FMaxLength: Integer;
     FName: string;
@@ -1797,7 +1799,7 @@ type
   {$ENDIF}
     property Alt;
     property Checked : Boolean read FChecked write FChecked;
-    property Disabled : Boolean read FDisabled write FDisabled;
+    property Disabled;
     property InputType : TIpHtmlInputType read FInputType write FInputType;
     property MaxLength : Integer read FMaxLength write FMaxLength;
     property Name : string read FName write FName;
@@ -1812,12 +1814,14 @@ type
 
   TIpHtmlNodeBUTTON = class(TIpHtmlNodeControl)
   private
-    FDisabled: Boolean;
     FTabIndex: Integer;
     FValue: string;
     FName: string;
     FInputType: TIpHtmlButtonType;
+    procedure SetInputType(const AValue: TIpHtmlButtonType);
+    procedure SetValue(const AValue: String);
   protected
+    procedure CalcSize;
     procedure SubmitClick(Sender: TObject);
     procedure ResetClick(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
@@ -1831,16 +1835,15 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property ButtonType : TIpHtmlButtonType read FInputType write FInputType;
-    property Disabled : Boolean read FDisabled write FDisabled;
+    property ButtonType : TIpHtmlButtonType read FInputType write SetInputType;
+    property Disabled;
     property Name : string read FName write FName;
     property TabIndex : Integer read FTabIndex write FTabIndex;
-    property Value : string read FValue write FValue;
+    property Value : string read FValue write SetValue;
   end;
 
   TIpHtmlNodeSELECT = class(TIpHtmlNodeControl)
   private
-    FDisabled: Boolean;
     FMultiple: Boolean;
     FComboBox: Boolean;
     FName: string;
@@ -1863,7 +1866,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Disabled : Boolean read FDisabled write FDisabled;
+    property Disabled;
     property Multiple : Boolean read FMultiple write FMultiple;
     property ComboBox : Boolean read FComboBox write FComboBox;
     property Name : string read FName write FName;
@@ -1903,7 +1906,6 @@ type
 
   TIpHtmlNodeTEXTAREA = class(TIpHtmlNodeControl)
   private
-    FDisabled: Boolean;
     FReadOnly: Boolean;
     FTabIndex: Integer;
     FCols: Integer;
@@ -1922,7 +1924,7 @@ type
   published
   {$ENDIF}
     property Cols : Integer read FCols write FCols;
-    property Disabled : Boolean read FDisabled write FDisabled;
+    property Disabled;
     property Name : string read FName write FName;
     property ReadOnly : Boolean read FReadOnly write FReadOnly;
     property Rows : Integer read FRows write FRows;
@@ -2054,7 +2056,7 @@ type
     FPageViewBottom : Integer; {the lower end of the page, may be different from PageViewRect.Bottom }
     FPageViewTop: Integer; { the upper end of the page }
     DefaultProps : TIpHtmlProps;
-    Body : TIpHtmlNodeBODY;
+    FBody : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
    {$IFDEF IP_LAZARUS}
       FDataProvider: TIpAbstractHtmlDataProvider;
@@ -2329,6 +2331,7 @@ type
     procedure DebugAll;
     {$ENDIF}
     property AllSelected : Boolean read FAllSelected;
+    property Body: TIpHtmlNodeBODY read FBody;
     property FlagErrors : Boolean read FFlagErrors write FFlagErrors;
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
     property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
@@ -2799,6 +2802,7 @@ type
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
 
+    procedure AddNodeControl(AControlNode: TIpHtmlNodeControl);
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure GoBack;
@@ -4781,7 +4785,7 @@ begin
   FLink := clNone;
   FVLink := clNone;
   FALink := clNone;
-  Owner.Body := Self;
+  Owner.FBody := Self;
 end;
 
 procedure TIpHtmlNodeBODY.Render(RenderProps: TIpHtmlProps);
@@ -12018,7 +12022,9 @@ var
   end;
 
 begin
+  inherited;
   Owner.ControlCreate(Self);
+
   aCanvas := TFriendPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   case InputType of
@@ -12435,7 +12441,9 @@ var
   i, j, iCurFontSize: integer;
   OptGroup: TIpHtmlNodeOPTGROUP;
 begin
+  inherited;
   Owner.ControlCreate(Self);
+
   aCanvas := TFriendPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   if Multiple then begin
@@ -12599,7 +12607,9 @@ var
   iCurFontSize: integer;
   aCanvas : TCanvas;
 begin
+  inherited;
   Owner.ControlCreate(Self);
+
   aCanvas := TFriendPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   FControl := TMemo.Create(Parent);
@@ -13232,13 +13242,10 @@ begin
 end;
 
 procedure TIpHtmlNodeBUTTON.CreateControl(Parent: TWinControl);
-var
-   iCurFontSize: integer;
-   aCanvas : TCanvas;
 begin
+  inherited;
   Owner.ControlCreate(Self);
-  aCanvas := TFriendPanel(Parent).Canvas;
-  iCurFontSize := aCanvas.Font.Size;
+
   FControl := TButton.Create(Parent);
   FControl.Visible := False;
   FControl.Parent := Parent;
@@ -13247,6 +13254,7 @@ begin
   with TButton(FControl) do begin
     Enabled := not Self.Disabled;
     Caption := Value;
+    OnClick := ButtonClick;
     case ButtonType of
     hbtSubmit :
       begin
@@ -13265,10 +13273,8 @@ begin
         OnClick := ButtonClick;
       end;
     end;
-    Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-    Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+    CalcSize;
   end;
-  aCanvas.Font.Size := iCurFontSize;
 end;
 
 procedure TIpHtmlNodeBUTTON.Reset;
@@ -13293,6 +13299,45 @@ end;
 function TIpHtmlNodeBUTTON.Successful: Boolean;
 begin
   Result := False;
+end;
+
+procedure TIpHtmlNodeBUTTON.CalcSize;
+var
+  oldFontSize: integer;
+  lCanvas: TCanvas;
+begin
+  with Control as TButton do
+  begin
+    lCanvas := TFriendPanel(Parent).Canvas;
+    oldFontSize := lCanvas.Font.Size;
+    Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
+    Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+    lCanvas.Font.Size := oldFontSize;
+  end;
+end;
+
+procedure TIpHtmlNodeBUTTON.SetInputType(const AValue: TIpHtmlButtonType);
+begin
+  if FInputType = AValue then Exit;
+  FInputType := AValue;
+
+  if Owner.DoneLoading and (FControl <> nil) and (Self.Value = '') then;
+    case FInputType of
+      hbtSubmit : SetValue(SHtmlDefSubmitCaption);
+      hbtReset  : SetValue(SHtmlDefResetCaption);
+      hbtButton :  ;
+    end;
+end;
+
+procedure TIpHtmlNodeBUTTON.SetValue(const AValue: String);
+begin
+  if FValue = AValue then Exit;
+  FValue := AValue;
+  if Owner.DoneLoading and (FControl <> nil) then
+  begin
+    (FControl as TButton).Caption := AValue;
+    CalcSize;
+  end;
 end;
 
 { TIpHtmlNodeCOL }
@@ -13553,6 +13598,13 @@ begin
        FControl.Brush.Color:= Props.BGColor;
    result := True;
    {$ENDIF}
+end;
+
+procedure TIpHtmlNodeControl.SetDisabled(const AValue: Boolean);
+begin
+  if FDisabled = AValue then exit;
+  FDisabled := AValue;
+  FControl.Enabled := not FDisabled;
 end;
 
 procedure TIpHtmlNodeControl.SetProps(const RenderProps: TIpHtmlProps);
@@ -16349,6 +16401,12 @@ begin
   if  (FMasterFrame <> nil) and (Value >= 0)
   then  FMasterFrame.HyperPanel.VScroll.Position := Value;
 end;
+
+procedure TIpHtmlCustomPanel.AddNodeControl(AControlNode: TIpHtmlNodeControl);
+begin
+  AControlNode.CreateControl(FMasterFrame.HyperPanel);
+end;
+
 
 { TIpHtmlCustomScanner }
 
