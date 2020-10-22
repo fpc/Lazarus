@@ -34,9 +34,9 @@ interface
 uses
   Classes, SysUtils, StrUtils, Zipper,
   // LCL
-  LCLType, Forms, Controls, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
+  LCLType, Forms, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase,
+  FileUtil, LazFileUtils, LazLoggerBase, UITypes,
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
@@ -545,21 +545,21 @@ begin
   OptionsGroupbox.Caption:=lisOptions;
   CompressCheckbox.Caption:=lisCompress;
   CompressCheckbox.Hint:=lisCompressHint;
-  OpenInFileManCheckbox.Caption := lisOpenInFileMan;
-  OpenInFileManCheckbox.Hint := lisOpenInFileManHint;
+  OpenInFileManCheckbox.Caption:=lisOpenInFileMan;
+  OpenInFileManCheckbox.Hint:=lisOpenInFileManHint;
 
-  ButtonPanel1.OkButton.Caption := lisMenuOk;
-  ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
-  ButtonPanel1.CloseButton.Caption := lisSaveSettings;
-  ButtonPanel1.CloseButton.ModalResult := mrNone;
-  ButtonPanel1.CloseButton.Kind := bkCustom;
+  ButtonPanel1.OkButton.Caption:=lisMenuOk;
+  ButtonPanel1.OKButton.OnClick:=@OkButtonCLICK;
+  ButtonPanel1.CloseButton.Caption:=lisSaveSettings;
+  ButtonPanel1.CloseButton.ModalResult:=mrNone;
+  ButtonPanel1.CloseButton.Kind:=bkCustom;
   ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
   if ButtonPanel1.CloseButton.Glyph.Empty then
     IDEImages.AssignImage(ButtonPanel1.CloseButton, 'laz_save');
-  ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
-  ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
-  DestDirComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
-  FilterCombobox.DropDownCount := EnvironmentOptions.DropDownCount;
+  ButtonPanel1.CloseButton.OnClick:=@SaveSettingsButtonCLICK;
+  ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
+  DestDirComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+  FilterCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
 
 procedure TPublishModuleDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
