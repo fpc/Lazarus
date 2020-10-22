@@ -112,6 +112,7 @@ type
     PgDown: TSpeedButton;
     PgUp: TSpeedButton;
     PopupMenu1: TPopupMenu;
+    SettingsBtn: TBitBtn;
     prnDialog: TPrintDialog;
     ProcMenu: TPopupMenu;
     N2001: TMenuItem;
@@ -135,6 +136,7 @@ type
     RPanel: TPanel;
     BtPgFirst: TSpeedButton;
     BtPgLast: TSpeedButton;
+    PageSetupBtn: TBitBtn;
     SpeedButton1: TSpeedButton;
     VScrollBar: TScrollBar;
     BPanel: TPanel;
@@ -150,6 +152,8 @@ type
     procedure FormResize(Sender: TObject);
     procedure BtPgFirstClick(Sender: TObject);
     procedure BtPgLastClick(Sender: TObject);
+    procedure PageSetupBtnClick(Sender: TObject);
+    procedure SettingsBtnClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
@@ -215,13 +219,14 @@ type
     function Print: boolean;
     procedure CreateExportFilterItems;
     procedure ExportFilterItemExecClick(Sender: TObject);
+    function ShowReportoptions(const CurReport: TObject): Boolean;
   public
     procedure Show_Modal(ADoc: Pointer);
   end;
 
 
 implementation
-uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, lr_PreviewToolsAbstract;
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, lr_PreviewToolsAbstract,LR_Dopt,LR_pgopt;
 
 {$R *.lfm}
 
@@ -1137,6 +1142,174 @@ begin
   ShowPageNum;
   SetToCurPage;
 end;
+
+procedure TfrPreviewForm.PageSetupBtnClick(Sender: TObject);
+var
+  w, h, p, Ind: Integer;
+  CurrentPage : TfrPage;
+  WasOk: Boolean;
+  R: TfrReport;
+  lOrientation : TPrinterOrientation;
+  function PointsToMMStr(value:Integer): string;
+  begin
+    result := IntToStr(Trunc(value*5/18+0.5));
+  end;
+  function MMStrToPoints(value:string): Integer;
+  begin
+    result := Trunc(Trunc(StrToFloatDef(value, 0.0))*18/5+0.5)
+  end;
+begin
+  if TfrEMFPages(EMFPages).Count = 0 then
+    Exit;
+  if (Doc = nil) or not TfrReport(Doc).ModifyPrepared then Exit;
+  R := TfrReport(Doc);
+  TfrEMFPages(EMFPages).ObjectsToPage(CurPage -1);
+  CurrentPage := TfrEMFPages(EMFPages)[ CurPage -1 ]^.Page;
+  frPgoptForm := TfrPgoptForm.Create(nil);
+  with frPgoptForm, CurrentPage do
+  begin
+    CB1.Checked := PrintToPrevPage;
+    CB5.Checked := not UseMargins;
+    if Orientation = poPortrait then
+      RB1.Checked := True
+    else
+      RB2.Checked := True;
+    Prn.FillPapers(COMB1.Items);
+    Ind := COMB1.Items.IndexOfObject(TObject(PtrInt(pgSize)));
+    if Ind >= 0 then
+      ComB1.ItemIndex := Ind
+    else
+      if COMB1.Items.count > 0 then
+        COMB1.ItemIndex := 0;
+    E1.Text := ''; E2.Text := '';
+
+    if pgSize = $100 then
+    begin
+      PaperWidth := round(Width * 25.4 / 72);      // pt to mm
+      PaperHeight := round(Height * 25.4 / 72);    // pt to mm
+    end;
+
+    E3.Text := PointsToMMStr(Margins.Left);
+    E4.Text := PointsToMMStr(Margins.Top);
+    E5.Text := PointsToMMStr(Margins.Right);
+    E6.Text := PointsToMMStr(Margins.Bottom);
+    E7.Text := PointsToMMStr(ColGap);
+
+    ecolCount.Value := ColCount;
+    if LayoutOrder = loColumns then
+      RBColumns.Checked := true
+    else
+      RBRows.Checked := true;
+    WasOk := False;
+    if ShowModal = mrOk then
+    begin
+      WasOk := True;
+      PrintToPrevPage :=  CB1.Checked;
+      UseMargins := not CB5.Checked;
+      if RB1.Checked then
+        lOrientation := poPortrait
+      else
+        lOrientation := poLandscape;
+      Orientation := lOrientation;
+      if RBColumns.Checked then
+        LayoutOrder := loColumns
+      else
+        LayoutOrder := loRows;
+
+      p := frPgoptForm.pgSize;
+      w := 0; h := 0;
+      if p = $100 then
+        try
+          w := round(PaperWidth * 72 / 25.4);    // mm to pt
+          h := round(PaperHeight * 72 / 25.4);   // mm to pt
+        except
+          on exception do p := 9; // A4
+        end;
+
+      Margins.Left := MMStrToPoints(E3.Text);
+      Margins.Top := MMStrToPoints(E4.Text);
+      Margins.Right := MMStrToPoints(E5.Text);
+      Margins.Bottom := MMStrToPoints(E6.Text);
+      ColGap := MMStrToPoints(E7.Text);
+
+      ColCount := ecolCount.Value;
+      ChangePaper(p, w, h, Orientation);
+    end;
+  end;
+  frPgoptForm.Free;
+if WasOk then begin
+  TfrReport( CurReport ).Pages[CurPage -1].ChangePaper(p, w, h, lOrientation);
+  R.PrepareReport;
+  Connect(R);
+  RedrawAll;
+  HScrollBar.Position := 0;
+  VScrollBar.Position := 0;
+  end;
+
+end;
+
+procedure TfrPreviewForm.SettingsBtnClick(Sender: TObject);
+var
+  R: TfrReport;
+begin
+  if (Doc = nil) or not TfrReport(Doc).ModifyPrepared then Exit;
+  R := TfrReport(Doc);
+  if ShowReportoptions(R) then begin
+    R.PrepareReport;
+    Connect(R);
+    RedrawAll;
+    HScrollBar.Position := 0;
+    VScrollBar.Position := 0;    ;
+  end;
+
+end;
+
+
+Function TfrPreviewForm.ShowReportoptions( const CurReport : TObject ) : Boolean;
+var
+  OldIndex: Integer;
+begin
+frDocOptForm := TfrDocOptForm.Create(nil);
+with frDocOptForm do
+begin
+  Result := False;
+  CB1.Checked     := not TfrReport( CurReport ).PrintToDefault;
+  CB2.Checked     := TfrReport( CurReport ).DoublePass;
+  edTitle.Text    := TfrReport( CurReport ).Title;
+  edComments.Text := TfrReport( CurReport ).Comments.Text;
+  edKeyWords.Text := TfrReport( CurReport ).KeyWords;
+  edSubject.Text  := TfrReport( CurReport ).Subject;
+  edAutor.Text    := TfrReport( CurReport ).ReportAutor;
+  edtMaj.Text     := TfrReport( CurReport ).ReportVersionMajor;
+  edtMinor.Text   := TfrReport( CurReport ).ReportVersionMinor;
+  edtRelease.Text := TfrReport( CurReport ).ReportVersionRelease;
+  edtBuild.Text   := TfrReport( CurReport ).ReportVersionBuild;
+  edtRepCreateDate.Text   := DateTimeToStr(TfrReport( CurReport ).ReportCreateDate);
+  edtRepLastChangeDate.Text   := DateTimeToStr(TfrReport( CurReport ).ReportLastChange);
+  if ShowModal = mrOk then
+  begin
+    TfrReport( CurReport ).PrintToDefault := not CB1.Checked;
+    TfrReport( CurReport ).DoublePass := CB2.Checked;
+    OldIndex := Prn.PrinterIndex;
+    Prn.PrinterIndex := -1;
+    TfrReport( CurReport ).ChangePrinter(OldIndex, ListBox1.ItemIndex);
+    TfrReport( CurReport ).Title:=edTitle.Text;
+    TfrReport( CurReport ).Subject:=edSubject.Text;
+    TfrReport( CurReport ).KeyWords:=edKeyWords.Text;
+    TfrReport( CurReport ).Comments.Text:=edComments.Text;
+    TfrReport( CurReport ).ReportVersionMajor:=edtMaj.Text;
+    TfrReport( CurReport ).ReportVersionMinor:=edtMinor.Text;
+    TfrReport( CurReport ).ReportVersionRelease:=edtRelease.Text;
+    TfrReport( CurReport ).ReportVersionBuild:=edtBuild.Text;
+    TfrReport( CurReport ).ReportAutor:=edAutor.Text;
+    Result := True;
+  end;
+  CurPage := CurPage;
+  Free;
+end;
+
+end;
+
 
 procedure TfrPreviewForm.SpeedButton1Click(Sender: TObject);
 var

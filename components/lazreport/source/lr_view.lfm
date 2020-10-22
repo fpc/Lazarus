@@ -22,7 +22,7 @@ object frPreviewForm: TfrPreviewForm
   OnMouseDown = FormMouseDown
   OnResize = FormResize
   ShowHint = True
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   WindowState = wsMaximized
   object PanTop: TPanel
     Left = 0
@@ -49,10 +49,10 @@ object frPreviewForm: TfrPreviewForm
       TabOrder = 0
       object ZoomBtn: TBitBtn
         Tag = 200
-        Left = 182
+        Left = 292
         Height = 28
         Top = 1
-        Width = 76
+        Width = 78
         Align = alLeft
         AutoSize = True
         BorderSpacing.InnerBorder = 2
@@ -103,7 +103,7 @@ object frPreviewForm: TfrPreviewForm
         Left = 1
         Height = 28
         Top = 1
-        Width = 32
+        Width = 50
         Align = alLeft
         AutoSize = True
         BorderSpacing.InnerBorder = 2
@@ -149,10 +149,10 @@ object frPreviewForm: TfrPreviewForm
       end
       object SaveBtn: TBitBtn
         Tag = 202
-        Left = 33
+        Left = 51
         Height = 28
         Top = 1
-        Width = 32
+        Width = 50
         Align = alLeft
         AutoSize = True
         BorderSpacing.InnerBorder = 2
@@ -198,7 +198,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object PrintBtn: TBitBtn
         Tag = 203
-        Left = 101
+        Left = 137
         Height = 28
         Top = 1
         Width = 28
@@ -293,7 +293,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 6
       end
       object frTBSeparator1: TPanel
-        Left = 76
+        Left = 112
         Height = 28
         Top = 1
         Width = 25
@@ -303,7 +303,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 7
       end
       object frTBSeparator2: TPanel
-        Left = 129
+        Left = 221
         Height = 28
         Top = 1
         Width = 25
@@ -313,7 +313,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 8
       end
       object frTBSeparator3: TPanel
-        Left = 286
+        Left = 416
         Height = 28
         Top = 1
         Width = 25
@@ -323,7 +323,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 9
       end
       object PgUp: TSpeedButton
-        Left = 331
+        Left = 461
         Height = 28
         Top = 1
         Width = 20
@@ -369,7 +369,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgUpClick
       end
       object PgDown: TSpeedButton
-        Left = 454
+        Left = 584
         Height = 28
         Top = 1
         Width = 20
@@ -415,7 +415,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgDownClick
       end
       object LbPanel: TPanel
-        Left = 351
+        Left = 481
         Height = 28
         Top = 1
         Width = 103
@@ -429,7 +429,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 10
       end
       object BtPgFirst: TSpeedButton
-        Left = 311
+        Left = 441
         Height = 28
         Top = 1
         Width = 20
@@ -475,7 +475,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = BtPgFirstClick
       end
       object BtPgLast: TSpeedButton
-        Left = 474
+        Left = 604
         Height = 28
         Top = 1
         Width = 20
@@ -521,10 +521,10 @@ object frPreviewForm: TfrPreviewForm
         OnClick = BtPgLastClick
       end
       object BtZoomOut: TBitBtn
-        Left = 154
+        Left = 246
         Height = 28
         Top = 1
-        Width = 28
+        Width = 46
         Align = alLeft
         AutoSize = True
         Glyph.Data = {
@@ -568,10 +568,10 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 3
       end
       object BtZoomIn: TBitBtn
-        Left = 258
+        Left = 370
         Height = 28
         Top = 1
-        Width = 28
+        Width = 46
         Align = alLeft
         AutoSize = True
         Glyph.Data = {
@@ -615,7 +615,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 5
       end
       object frTBSeparator4: TPanel
-        Left = 494
+        Left = 624
         Height = 28
         Top = 1
         Width = 25
@@ -625,7 +625,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 11
       end
       object FindBtn: TBitBtn
-        Left = 519
+        Left = 649
         Height = 28
         Top = 1
         Width = 28
@@ -671,7 +671,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 12
       end
       object SpeedButton1: TSpeedButton
-        Left = 65
+        Left = 101
         Height = 28
         Top = 1
         Width = 11
@@ -686,6 +686,102 @@ object frPreviewForm: TfrPreviewForm
           0FF0FF000FF0F00000F0F00000F00000000000000000
         }
         OnClick = SpeedButton1Click
+      end
+      object SettingsBtn: TBitBtn
+        Tag = 203
+        Left = 165
+        Height = 28
+        Top = 1
+        Width = 28
+        Align = alLeft
+        BorderSpacing.InnerBorder = 2
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000C8D0D400C8D0
+          D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFB89888FFB89888FFB89888FFB89888FFB89888FFB89888FFB898
+          88FFB89888FFB89888FFB89888FFB89888FFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFFFFFFFFFCF9F0FFFFFFF5FFAD8987FFDED0C9FFFCFA
+          EFFFFFFFFFFFFFFFFFFFFFFFFFFFB89888FFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFFFFFFFFB08887FFD1BFB7FFCB9C9EFFA07472FFD0AB
+          A8FF986464FFFFFFFFFFFFFFFFFFB89888FFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFAFFD7C5C1FFE1C5C5FFD1A5A6FFE5C8C8FFD3B1B1FFD9B0
+          B0FFBE9695FFFFFFF7FFFFFFFFFFB89888FFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFEFFCDB0ADFFC6A4A4FFE6CECEFFE2C7C7FFDEBFBFFFE4CB
+          CBFFB88A8AFFB78080FFFFFFFFFFBDA08BFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFE2D4D1FFEBD2D3FFE7CFCFFFE5D0D1FFFFFFFFFFFFFFFFFFDCBA
+          BAFFE4C9C9FFC29899FFFFFFFFFFBEA08DFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFAF7F8FFDDC9C8FFE3CCCCFFE8D5D6FFB89695FFE3D0CDFFE0C3
+          C4FFDDBEBEFFAA8582FFDFD1CBFFBC9E8BFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFE6D1D1FFF3E8E8FFE6CECEFFEEDCDCFFEED7D7FFE2C8
+          C8FFDFC1C1FFC49B9BFFFFFEF7FFBD9F8BFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFEFE2E2FFEBDADAFFE9D7D7FFE8D3D3FFDFC4C4FFD5B6
+          B7FFDFD1CBFFEEE3DEFFFFFFFFFFBD9F8EFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFFFFFFFFFFFFFFFFEBD8D8FFDFC5C6FFFFFFFFFFD2B4
+          B4FFFFFCFBFFFFFEFAFFFFFFFAFFC1A493FFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFDFCE
+          C2FFC9B7ADFFC6B3A9FFC3AA94FFB0A59FFFC8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFFFFFFFFFFFFFFFFFDFEFEFFFEFDFDFFFCFCFAFFDFCE
+          C2FFF8F3F1FFF8F3F1FFB0A59FFFC8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFFFFFFFFFFEFEFEFFFEFEFEFFFEFDFDFFFDFCFBFFFCFBFAFFDFCE
+          C2FFF8F3F1FFB0A59FFFC8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400B89888FFB89888FFB89888FFB89888FFB89888FFB89888FFB89888FFB898
+          88FFB0A59FFFC8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0
+          D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400C8D0D400
+        }
+        GlyphShowMode = gsmAlways
+        OnClick = SettingsBtnClick
+        TabOrder = 13
+      end
+      object PageSetupBtn: TBitBtn
+        Tag = 203
+        Left = 193
+        Height = 28
+        Top = 1
+        Width = 28
+        Align = alLeft
+        BorderSpacing.InnerBorder = 2
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF009B7C6BFF9D7E6DFF9C7E6DFF9C7E6DFF9C7E6DFF9C7D6DFF9C7D6CFF9B7C
+          6BFF9B7C6BFF9A7C6AFF997B68FF9B7C6BFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF009B7766FFF8F0E6FFC2BCD0FFAEA7C8FFECE3D8FFE6DDD5FFE6DDD5FFE3DA
+          D2FFE3D8D1FFE1D7CEFFE3D9CFFF977967FFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00A27F6FFF7A756DFFC6C3D4FFAFAACDFFF0E8DAFFE9E1D6FFE8E1D6FFE8DF
+          D2FFE5DBD1FFE4DACEFFE8DACEFF987968FFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00A38070FFD5C0A4FFD7C6C5FFC3B2BFFFF8E2C6FFF3DDC3FFF2DCC2FFF2DA
+          C0FFF0D8BEFFEFD6BDFFF2D7BBFF997A6AFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00A98778FFFCFDFCFFC7CAE9FFB0B6E4FFF3F3F3FFECEEEFFFEAECEEFFE8E8
+          EAFFE5E5E7FFE1E3E5FFE2E2E3FF997B6BFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00AB897AFFFFFFE9FFD0C9D8FFB8B3D4FFFDEFDAFFF7E8D7FFF5E6D6FFF3E3
+          D2FFF2E0D0FFEFDDCCFFF3DECAFF9A7C6BFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00AF8E7FFF7D7871FFDDCCCFFFC8BACBFFFFE9CDFFF9E4CBFFF8E2C8FFF6E0
+          C6FFF5DEC3FFF4DAC2FFF5DABFFF9B7C6BFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00AF8F80FFE5E7E5FFD8DEFFFFBCC5F5FFFFFFFF00F9FCFFFFF5F8FBFFF1F3
+          F7FFEDEFF3FFE9ECEFFFE9EBECFF9B7C6CFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00AF8F80FFFFFFEAFFD4CEDFFFBDBBDEFFFFF5DFFFFEEFDDFFFAECDAFFF9E8
+          D5FFF6E5D1FFF4E1CEFFF8E1CDFF9C7C6DFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00B19080FFFFFFF3FFDDD0D5FFCABFD2FFFFEED3FFFFEAD1FFFDE6CFFFFDE6
+          CFFFFEE7CFFFF9E2CBFFF9DDC5FF9F8070FFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00B79787FF78746DFFD2DBFDFFBDC9FDFFFFFFFF00FFFFFF00FEFFFFFFFDFB
+          F9FFA78270FFA78270FFA78270FFA78270FFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00B89888FFFFEECFFFDFD1D4FFCAC0D2FFFFEBCEFFFEE6CBFFFEE5CBFFFEE3
+          BFFFA78270FFF5E2D9FFB18E7EFFE0D3CDFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00B89888FFFFFFFF00D9E2FFFFC1CEFFFFFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00A78270FFB18E7EFFE0D3CDFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00B89888FFB89888FFB49383FFB49383FFB08E7DFFB08E7DFFAC8877FFAC88
+          77FFA78270FFE0D3CDFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
+        GlyphShowMode = gsmAlways
+        OnClick = PageSetupBtnClick
+        TabOrder = 14
       end
     end
   end
@@ -768,8 +864,8 @@ object frPreviewForm: TfrPreviewForm
     end
   end
   object ProcMenu: TPopupMenu
-    left = 84
-    top = 99
+    Left = 84
+    Top = 99
     object N2001: TMenuItem
       Tag = 200
       Caption = '200%'
@@ -865,23 +961,23 @@ object frPreviewForm: TfrPreviewForm
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]
-    left = 124
-    top = 99
+    Left = 124
+    Top = 99
   end
   object SaveDialog: TSaveDialog
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]
-    left = 164
-    top = 99
+    Left = 164
+    Top = 99
   end
   object prnDialog: TPrintDialog
-    left = 86
-    top = 48
+    Left = 86
+    Top = 48
   end
   object PopupMenu1: TPopupMenu
-    left = 84
-    top = 184
+    Left = 84
+    Top = 184
     object MenuItem1: TMenuItem
       Caption = 'New Item1'
     end
