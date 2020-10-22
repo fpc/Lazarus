@@ -4253,7 +4253,7 @@ resourcestring
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
     +'above items to see the diff';
-  lisDiskDiffSomeFilesChangedLocally = 'Some files changed locally.'
+  lisDiskDiffSomeFilesHaveLocalChanges = 'Some files have local changes.'
     +' Either local or external changes will be overwritten.';
   lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
   lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';

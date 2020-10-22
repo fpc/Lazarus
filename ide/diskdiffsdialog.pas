@@ -390,7 +390,7 @@ begin
   BtnPanel.CancelButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
 
   IDEImages.AssignImage(WarnSpeedButton, 'state_warning');
-  WarnLabel.Caption:=lisDiskDiffSomeFilesChangedLocally;
+  WarnLabel.Caption:=lisDiskDiffSomeFilesHaveLocalChanges;
   WarnLabel.Visible:=False;
   WarnSpeedButton.Visible:=False;
 
