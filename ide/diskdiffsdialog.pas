@@ -60,12 +60,13 @@ type
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
     FilesListBox: TCheckListBox;
+    WarnImage: TPaintBox;
     WarnLabel: TLabel;
-    WarnSpeedButton: TSpeedButton;
     Splitter: TSplitter;
     SynDiffSyn1: TSynDiffSyn;
     procedure FilesListBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
+    procedure WarnImagePaint(Sender: TObject);
   private
     FIgnoreList: TFPList;
     FPackageList: TStringList;
@@ -232,6 +233,18 @@ begin
   EnvironmentOptions.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
 end;
 
+procedure TDiskDiffsDlg.WarnImagePaint(Sender: TObject);
+var
+  ppi: Integer;
+  imgIndex: Integer;
+  paintbx: TPaintBox;
+begin
+  paintbx := Sender as TPaintbox;
+  ppi := Font.PixelsPerInch;
+  imgIndex := IDEImages.GetImageIndex('state_warning');
+  IDEImages.Images_16.DrawForPPI(paintbx.Canvas, 0, 0, imgIndex, 16, ppi, GetCanvasScaleFactor);
+end;
+
 procedure TDiskDiffsDlg.AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
 var
   i: Integer;
@@ -269,7 +282,7 @@ begin
     end;
   end;
   FilesListBox.Items.EndUpdate;
-  WarnSpeedButton.Visible:=FHasLocalModifications;
+  WarnImage.Visible:=FHasLocalModifications;
   WarnLabel.Visible:=FHasLocalModifications;
 end;
 
@@ -389,10 +402,9 @@ begin
   // Cancel button now means Ignore All Disk Changes
   BtnPanel.CancelButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
 
-  IDEImages.AssignImage(WarnSpeedButton, 'state_warning');
   WarnLabel.Caption:=lisDiskDiffSomeFilesHaveLocalChanges;
   WarnLabel.Visible:=False;
-  WarnSpeedButton.Visible:=False;
+  WarnImage.Visible:=False;
 
   CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContent;
   CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
