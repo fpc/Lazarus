@@ -2107,6 +2107,7 @@ type
     FDefaultFontSize: integer;
     ParmBuf: PChar;
     ParmBufSize: Integer;
+    FParent: TWinControl;
     procedure ResetCanvasData;
     procedure ResetWordLists;
     procedure ResetBlocks(Node: TIpHtmlNode);
@@ -2802,7 +2803,6 @@ type
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
 
-    procedure AddNodeControl(AControlNode: TIpHtmlNodeControl);
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure GoBack;
@@ -13233,6 +13233,8 @@ begin
   inherited Create(ParentNode);
   FElementName := 'button';
   Owner.FControlList.Add(Self);
+  if Owner.DoneLoading then
+    CreateControl(Owner.FParent);
 end;
 
 destructor TIpHtmlNodeBUTTON.Destroy;
@@ -13255,24 +13257,6 @@ begin
     Enabled := not Self.Disabled;
     Caption := Value;
     OnClick := ButtonClick;
-    case ButtonType of
-    hbtSubmit :
-      begin
-        OnClick := SubmitClick;
-        if Caption = '' then
-          Caption := SHtmlDefSubmitCaption;
-      end;
-    hbtReset :
-      begin
-        OnClick := ResetClick;
-        if Caption = '' then
-          Caption := SHtmlDefResetCaption;
-      end;
-    hbtButton :
-      begin
-        OnClick := ButtonClick;
-      end;
-    end;
     CalcSize;
   end;
 end;
@@ -13293,7 +13277,20 @@ end;
 
 procedure TIpHtmlNodeBUTTON.ButtonClick(Sender: TObject);
 begin
-  Owner.ControlClick(Self);
+  case ButtonType of
+  hbtSubmit :
+    begin
+      SubmitRequest;
+    end;
+  hbtReset :
+    begin
+      ResetRequest;
+    end;
+  hbtButton :
+    begin
+      Owner.ControlClick(Self);
+    end;
+  end;
 end;
 
 function TIpHtmlNodeBUTTON.Successful: Boolean;
@@ -13318,7 +13315,6 @@ end;
 
 procedure TIpHtmlNodeBUTTON.SetInputType(const AValue: TIpHtmlButtonType);
 begin
-  if FInputType = AValue then Exit;
   FInputType := AValue;
 
   if Owner.DoneLoading and (FControl <> nil) and (Self.Value = '') then;
@@ -15103,6 +15099,7 @@ begin
     HyperPanel.OnHotClick := FViewer.HotClick;
     HyperPanel.OnClick := FViewer.ClientClick;
     HyperPanel.TabStop := FViewer.WantTabs;
+    FHtml.FParent := HyperPanel;
     FHtml.OnScroll := HyperPanel.ScrollRequest;
     FHtml.OnControlClick := ControlClick;
     FHtml.OnControlClick2 := ControlClick2;
@@ -16400,11 +16397,6 @@ procedure TIpHtmlCustomPanel.SetVScrollPos(const Value: Integer);
 begin
   if  (FMasterFrame <> nil) and (Value >= 0)
   then  FMasterFrame.HyperPanel.VScroll.Position := Value;
-end;
-
-procedure TIpHtmlCustomPanel.AddNodeControl(AControlNode: TIpHtmlNodeControl);
-begin
-  AControlNode.CreateControl(FMasterFrame.HyperPanel);
 end;
 
 
