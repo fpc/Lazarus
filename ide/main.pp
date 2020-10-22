@@ -679,7 +679,7 @@ type
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
-    procedure InvalidateAllDesignerForms;
+    procedure UpdateAndInvalidateDesigners;
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
@@ -3810,19 +3810,30 @@ begin
     AnUnitInfo.LoadedDesigner:=true;
 end;
 
-procedure TMainIDE.InvalidateAllDesignerForms;
-// Calls 'Invalidate' in all designer forms.
+procedure TMainIDE.UpdateAndInvalidateDesigners;
+// Update some options in designer and 'Invalidate' all designer forms.
 var
   AnUnitInfo: TUnitInfo;
   CurDesignerForm: TCustomForm;
+  ADesigner: TDesigner;
 begin
   if Project1=nil then exit;
   AnUnitInfo:=Project1.FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
-    if AnUnitInfo.Component<>nil then begin
+  while AnUnitInfo<>nil do
+  begin
+    if AnUnitInfo.Component<>nil then
+    begin
       CurDesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
       if CurDesignerForm<>nil then
+      begin
+        ADesigner:=TDesigner(CurDesignerForm.Designer);
+        if ADesigner<>nil then
+        begin
+          ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
+          ADesigner.ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
+        end;
         CurDesignerForm.Invalidate;
+      end;
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
@@ -5092,45 +5103,6 @@ var
     MacroValueChanged:=true;
   end;
 
-  procedure UpdateDesigners;
-  var
-    AForm: TCustomForm;
-    AnUnitInfo: TUnitInfo;
-    ADesigner: TDesigner;
-  begin
-    if Project1=nil then exit;
-    AnUnitInfo := Project1.FirstUnitWithComponent;
-    while AnUnitInfo <> nil do
-    begin
-      if (AnUnitInfo.Component<>nil) then
-      begin
-        AForm := FormEditor1.GetDesignerForm(AnUnitInfo.Component);
-        if AForm <> nil then
-        begin
-          ADesigner := TDesigner(AForm.Designer);
-          if ADesigner <> nil then
-          begin
-            ADesigner.ShowEditorHints := EnvironmentOptions.ShowEditorHints;
-            ADesigner.ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
-          end;
-        end;
-      end;
-      AnUnitInfo := AnUnitInfo.NextUnitWithComponent;
-    end;
-    InvalidateAllDesignerForms;
-  end;
-
-  procedure UpdateObjectInspector;
-  begin
-    if ObjectInspector1<>nil then
-      EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  end;
-
-  procedure UpdateMessagesView;
-  begin
-    MessagesView.ApplyIDEOptions;
-  end;
-
 begin
   if Restore then exit;
   // invalidate cached substituted macros
@@ -5158,9 +5130,10 @@ begin
     MainBuildBoss.SetBuildTargetProject1(false);
 
   // update environment
-  UpdateDesigners;
-  UpdateObjectInspector;
-  UpdateMessagesView;
+  UpdateAndInvalidateDesigners;
+  if ObjectInspector1<>nil then
+    EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  MessagesView.ApplyIDEOptions;
   MainIDEBar.SetupHints;
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;

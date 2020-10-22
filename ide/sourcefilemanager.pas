@@ -1309,10 +1309,7 @@ begin
 
   if (FNewEditorInfo <> nil) and (FFlags * [ofProjectLoading, ofRevert] = [])
   and (FNewEditorInfo.EditorComponent <> nil) then
-  begin
-    Result := ChangeEditorPage;
-    exit;
-  end;
+    exit(ChangeEditorPage);
 
   Reverting:=ofRevert in FFlags;
   if Reverting then
@@ -1968,7 +1965,7 @@ function FileExistsInIDE(const Filename: string;
   SearchFlags: TProjectFileSearchFlags): boolean;
 begin
   Result:=FileExistsCached(Filename)
-          or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
+    or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
 end;
 
 function BeautifySrc(const s: string): string;
@@ -5903,28 +5900,23 @@ function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
   CloseFlags: TCloseFlags): TModalResult;
 // if there is a .lfm file, open the resource
 var
-  UnitResourceFilename: string;
-  UnitResourceFileformat: TUnitResourcefileFormatClass;
+  ResFilename: string;
   LFMBuf: TCodeBuffer;
   CanAbort: boolean;
 begin
   CanAbort:=[ofProjectLoading,ofMultiOpen]*OpenFlags<>[];
-
-  UnitResourceFileformat:=AnUnitInfo.UnitResourceFileformat;
   // Note: think about virtual and normal .lfm files.
-  UnitResourceFilename:=UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
+  with AnUnitInfo.UnitResourceFileformat do
+    ResFilename:=GetUnitResourceFilename(AnUnitInfo.Filename,true);
   LFMBuf:=nil;
-  if not FileExistsInIDE(UnitResourceFilename,[pfsfOnlyEditorFiles]) then begin
-    // there is no LFM file -> ok
+  if not FileExistsInIDE(ResFilename,[pfsfOnlyEditorFiles]) then begin
     {$IFDEF IDE_DEBUG}
     debugln('LoadLFM there is no LFM file for "',AnUnitInfo.Filename,'"');
     {$ENDIF}
-    Result:=mrOk;
-    exit;
+    exit(mrOk);       // there is no LFM file -> ok
   end;
-
   // there is a lazarus form text file -> load it
-  Result:=LoadIDECodeBuffer(LFMBuf,UnitResourceFilename,[lbfUpdateFromDisk],CanAbort);
+  Result:=LoadIDECodeBuffer(LFMBuf,ResFilename,[lbfUpdateFromDisk],CanAbort);
   if Result<>mrOk then begin
     DebugLn(['LoadLFM LoadIDECodeBuffer failed']);
     exit;
@@ -6290,15 +6282,13 @@ function OpenComponent(const UnitFilename: string;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
-  LFMFilename: String;
-  UnitCode: TCodeBuffer;
-  LFMCode: TCodeBuffer;
-  AFilename: String;
+  AFilename, LFMFilename: String;
+  UnitCode, LFMCode: TCodeBuffer;
 begin
   if Project1=nil then exit(mrCancel);
   // try to find a unit name without expaning the path. this is required if unit is virtual
   // in other case file name will be expanded with the wrong path
-  AFilename := UnitFilename;
+  AFilename:=UnitFilename;
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
   if AnUnitInfo = nil then
   begin
@@ -6313,8 +6303,7 @@ begin
   and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
     // already open
     Component:=AnUnitInfo.Component;
-    Result:=mrOk;
-    exit;
+    exit(mrOk);
   end;
 
   // ToDo: use UnitResources

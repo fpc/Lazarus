@@ -1411,8 +1411,8 @@ begin
     FCodeCache.IncreaseChangeStamp;
 end;
 
-procedure TCodeBuffer.DecodeLoaded(const AFilename: string; var ASource,
-  ADiskEncoding, AMemEncoding: string);
+procedure TCodeBuffer.DecodeLoaded(const AFilename: string;
+  var ASource, ADiskEncoding, AMemEncoding: string);
 begin
   inherited DecodeLoaded(AFilename,ASource,ADiskEncoding,AMemEncoding);
   if CodeCache<>nil then
@@ -1487,20 +1487,13 @@ end;
 function TCodeBuffer.FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean): boolean;
 // file on disk has changed since last load/save
 begin
-  if IsVirtual then exit(false);
-  if IgnoreModifiedFlag then
-  begin
-    if FileExistsCached(Filename) then
-      Result:=(FileDateOnDisk<>LoadDate) // ignore LoadDateValid because it is set to false after edit
-    else
-      Result:=false;
-  end else
-  begin
-    if LoadDateValid and FileExistsCached(Filename) then
-      Result:=(FileDateOnDisk<>LoadDate)
-    else
-      Result:=false;
-  end;
+  Result:=false;
+  if IsVirtual then exit;
+  // LoadDateValid is set to false after edit
+  if (IgnoreModifiedFlag or LoadDateValid) and FileExistsCached(Filename) then
+    Result:=(FileDateOnDisk<>LoadDate);
+  if Result then
+    DebugLn(['TCodeBuffer.FileOnDiskHasChanged ',Filename,' LoadDate=',LoadDate]);
 end;
 
 function TCodeBuffer.FileOnDiskIsEqual: boolean;

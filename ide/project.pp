@@ -266,8 +266,7 @@ type
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
-         even if the unit is not loaded,
-         or the designer form is not created.
+         even if the unit is not loaded, or the designer form is not created.
          A component can be for example a TForm or a TDataModule }
     fComponentResourceName: string;
     FComponentLastBinStreamSize: TStreamSeekType;
@@ -296,7 +295,7 @@ type
     FSessionModified: boolean;
     fSource: TCodeBuffer;
     fUsageCount: extended;
-    fUserReadOnly:  Boolean;
+    fUserReadOnly: Boolean;
     fSourceChangeStep: LongInt;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
@@ -400,8 +399,7 @@ type
     function FindUsedByComponentDependency(MinTypes: TUnitCompDependencyTypes
                                      ): TUnitComponentDependency;
     function FindAncestorUnit: TUnitInfo;
-    procedure ClearUnitComponentDependencies(
-                     ClearTypes: TUnitCompDependencyTypes);
+    procedure ClearUnitComponentDependencies(ClearTypes: TUnitCompDependencyTypes);
     // Bookmarks
     function  AddBookmark(X, Y, ID: integer):integer;
     procedure DeleteBookmark(ID: integer);
@@ -1690,13 +1688,15 @@ end;
 
 function TUnitInfo.GetUsesUnitName: string;
 begin
-  if not FilenameIsPascalUnit(Filename) then
-    Result:=''
-  else begin
-    Result:=FUnitName;
-    if (Result='') or (CompareText(Result,ExtractFileNameOnly(Filename))<>0) then
+  if FilenameIsPascalUnit(Filename) then
+  begin
+    if FUnitName<>'' then
+      Result:=FUnitName
+    else
       Result:=ExtractFileNameOnly(Filename);
-  end;
+  end
+  else
+    Result:='';
 end;
 
 function TUnitInfo.CreateUnitName: string;
@@ -1802,8 +1802,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',FDisableI18NForLFM,false);
 
   // context data (project/session)
-  if (IsPartOfProject and SaveData)
-  or ((not IsPartOfProject) and SaveSession)
+  if (IsPartOfProject and SaveData) or ((not IsPartOfProject) and SaveSession)
   then begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
@@ -2112,9 +2111,9 @@ end;
 procedure TUnitInfo.IncreaseAutoRevertLock;
 begin
   inc(fAutoRevertLockCount);
-  if (fAutoRevertLockCount=1) then begin
+  if fAutoRevertLockCount=1 then begin
     // activate lock
-    if (Source<>nil) then
+    if Source<>nil then
       Source.LockAutoDiskRevert;
     if Project<>nil then
       Project.AddToOrRemoveFromAutoRevertLockedList(Self);
@@ -2124,9 +2123,9 @@ end;
 procedure TUnitInfo.DecreaseAutoRevertLock;
 begin
   dec(fAutoRevertLockCount);
-  if (fAutoRevertLockCount=0) then begin
+  if fAutoRevertLockCount=0 then begin
     // deactivate lock
-    if (Source<>nil) then
+    if Source<>nil then
       Source.LockAutoDiskRevert;
     if Project<>nil then
       Project.AddToOrRemoveFromAutoRevertLockedList(Self);
@@ -2192,8 +2191,7 @@ begin
   if fUsageCount<Min then fUsageCount:=Min;
 end;
 
-procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage;
-  const Factor: TDateTime);
+procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
 begin
   case TheUsage of
   uuIsPartOfProject: UpdateUsageCount(20,200,2*Factor);
@@ -2644,10 +2642,14 @@ begin
   FProject:=AValue;
   if FProject<>nil then begin
     UpdatePageIndex;
-    if Component<>nil then Project.AddToList(Self,uilWithComponent);
-    if Loaded then Project.AddToList(Self,uilLoaded);
-    if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
-    if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
+    if Component<>nil then
+      Project.AddToList(Self,uilWithComponent);
+    if Loaded then
+      Project.AddToList(Self,uilLoaded);
+    if IsAutoRevertLocked then
+      Project.AddToList(Self,uilAutoRevertLocked);
+    if IsPartOfProject then
+      Project.AddToList(Self,uilPartOfProject);
     for i := 0 to FEditorInfoList.Count - 1 do
       FProject.EditorInfoAdd(FEditorInfoList[i]);
   end;
@@ -4490,7 +4492,8 @@ begin
 end;
 
 function TProject.RemoveProjectPathFromFilename(const AFilename: string): string;
-var ProjectPath:string;
+var
+  ProjectPath:string;
 begin
   ProjectPath:=Directory;
   if ProjectPath='' then ProjectPath:=GetCurrentDirUTF8;
@@ -4498,8 +4501,7 @@ begin
   ForcePathDelims(Result);
   // try making filename relative to project file
   if FilenameIsAbsolute(Result)
-  and (CompareFileNames(copy(Result,1,length(ProjectPath)),ProjectPath)=0)
-  then
+  and (CompareFileNames(copy(Result,1,length(ProjectPath)),ProjectPath)=0) then
     Result:=copy(Result,length(ProjectPath)+1,
          length(Result)-length(ProjectPath));
 end;

@@ -713,7 +713,7 @@ begin
   NewLen:=length(Result);
   while (NewLen>0) and (Result[NewLen] in ['0'..'9']) do
     dec(NewLen);
-  Result:=copy(Result,1,NewLen);
+  SetLength(Result,NewLen);
 end;
 
 function FindFirstFileWithExt(const Directory, Ext: string): string;

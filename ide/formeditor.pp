@@ -31,9 +31,10 @@ unit FormEditor;
 interface
 
 uses
-  Classes, LCLProc, Controls, Forms, Buttons, SysUtils, Graphics,
-  // register IDE base packages
-  LazarusPackageIntf, RegisterLCL, PkgRegisterBase, allsynedit, LazControls,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Controls, Forms,
+  RegisterLCL,  // register IDE base packages
   // IDE
   ObjectInspector, Designer, IDECommands, FormEditingIntf, CustomFormEditor;
 
