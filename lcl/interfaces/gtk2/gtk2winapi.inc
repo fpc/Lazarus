@@ -9411,7 +9411,8 @@ begin
   end;
   if Widget = nil then
     Exit(0);
-  if GTKWidgetIsA(Widget, GTK_Layout_Get_Type) then
+  if GtkWidgetIsA(gtk_widget_get_toplevel(Widget), gtk_window_get_type)
+      and not gtk_widget_realized(Widget) then
     gtk_widget_realize(Widget); // associate with window
   Window := GetControlWindow(Widget);
   if Window = nil then
