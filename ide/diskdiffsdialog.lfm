@@ -26,6 +26,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     TopIndex = -1
   end
   inline DiffSynEdit: TSynEdit
+    AnchorSideTop.Control = Splitter
     AnchorSideBottom.Control = WarnSpeedButton
     Left = 6
     Height = 145
