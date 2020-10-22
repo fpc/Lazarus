@@ -268,6 +268,7 @@ type
          this attribute contains the component name,
          even if the unit is not loaded, or the designer form is not created.
          A component can be for example a TForm or a TDataModule }
+    fComponentLFMLoadDate: longint;  // Load time of associated LFM form file.
     fComponentResourceName: string;
     FComponentLastBinStreamSize: TStreamSeekType;
     FComponentLastLFMStreamSize: TStreamSeekType;
@@ -303,6 +304,7 @@ type
     FSetBookmarLock: Integer;
     FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
+    function ComponentLFMOnDiskHasChanged: boolean;
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetHasResources: boolean;
     function GetModified: boolean;
@@ -332,6 +334,7 @@ type
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
+    procedure SetTimeStamps;
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
     function GetFileName: string; override;
@@ -2142,20 +2145,43 @@ begin
   Result:=FRevertLockCount>0;
 end;
 
+function TUnitInfo.ComponentLFMOnDiskHasChanged: boolean;
+// Associated LFM resource file on disk has changed since last load/save
+var
+  ResFilename: String;
+begin
+  if fComponentLFMLoadDate=0 then Exit(false);   // 0 means there is no LFM file.
+  ResFilename:=UnitResourceFileformat.GetUnitResourceFilename(Filename,true);
+  Result:=fComponentLFMLoadDate<>FileAgeCached(ResFilename);
+  if Result then
+    DebugLn(['TUnitInfo.ComponentLFMOnDiskHasChanged ', ResFilename, ' changed on disk.']);
+end;
+
+procedure TUnitInfo.SetTimeStamps;
+var
+  ResFilename: String;
+begin
+  fSourceChangeStep:=FSource.ChangeStep;   // Indicates any change is source
+  // Associated LFM resource file timestamp
+  //if Component=nil then exit;  <- Component is here always nil for some reason.
+  ResFilename:=UnitResourceFileformat.GetUnitResourceFilename(Filename,true);
+  if FileExistsCached(ResFilename) then
+    fComponentLFMLoadDate:=FileAgeCached(ResFilename);
+end;
+
 function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean;
   IgnoreModifiedFlag: boolean): boolean;
 begin
   Result:=(Source<>nil) and Source.FileOnDiskHasChanged(IgnoreModifiedFlag);
-  //if Result then debugln(['TUnitInfo.ChangedOnDisk ',Filename,' FileAgeCached=',FileAgeCached(Source.Filename)]);
+  if not Result then
+    Result:=ComponentLFMOnDiskHasChanged;
   if Result
   and (not CompareOnlyLoadSaveTime)
   and FIgnoreFileDateOnDiskValid
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
-  if (not IsVirtual) and FileExistsCached(Filename) then
-    FileReadOnly:=not FileIsWritableCached(Filename)
-  else
-    FileReadOnly:=false;
+  FileReadOnly:=(not IsVirtual) and FileExistsCached(Filename)
+                 and not FileIsWritableCached(Filename);
 end;
 
 procedure TUnitInfo.IgnoreCurrentFileDateOnDisk;
@@ -2391,7 +2417,7 @@ procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then begin
     if fSource<>nil then
-      fSourceChangeStep:=FSource.ChangeStep;
+      SetTimeStamps;
     exit;
   end;
   if (fSource<>nil) and IsAutoRevertLocked then
@@ -2399,7 +2425,7 @@ begin
   fSource:=ABuffer;
   FIgnoreFileDateOnDiskValid:=false;
   if (fSource<>nil) then begin
-    fSourceChangeStep:=FSource.ChangeStep;
+    SetTimeStamps;
     if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
     SetInternalFilename(fSource.FileName);
@@ -2624,7 +2650,7 @@ begin
   {$ENDIF}
   fModified:=AValue;
   if (not fModified) and Assigned(Source) then
-    fSourceChangeStep:=Source.ChangeStep;
+    SetTimeStamps;
 end;
 
 procedure TUnitInfo.SetProject(const AValue: TProject);

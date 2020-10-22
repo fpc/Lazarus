@@ -1299,9 +1299,8 @@ resourcestring
   lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt = 'Elevate the message'
     +' priority to always show it (by default it has low priority "verbose")';
   lisMessagesWindow = 'Messages Window';
-  lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
-    +'rather than timestamp';
-  lisAutoCheckModifiedFiles = 'Automatically check (select) modified files';
+  lisCheckForDiskFileChangesViaContent =
+    'Check for disk file changes via content rather than timestamp';
   lisSlowerButMoreAccurate = 'Slower but more accurate.';
 
   // Search dialog
@@ -4254,6 +4253,8 @@ resourcestring
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
     +'above items to see the diff';
+  lisDiskDiffSomeFilesChangedLocally = 'Some files changed locally.'
+    +' Either local or external changes will be overwritten.';
   lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
   lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';
   

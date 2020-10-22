@@ -1,16 +1,16 @@
 object DiskDiffsDlg: TDiskDiffsDlg
-  Left = 314
-  Height = 353
-  Top = 351
+  Left = 396
+  Height = 361
+  Top = 348
   Width = 600
   ActiveControl = FilesListBox
   Caption = 'DiskDiffsDlg'
-  ClientHeight = 353
+  ClientHeight = 361
   ClientWidth = 600
   KeyPreview = True
   OnClose = FormClose
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object FilesListBox: TCheckListBox
     Left = 6
     Height = 86
@@ -23,16 +23,15 @@ object DiskDiffsDlg: TDiskDiffsDlg
     ItemHeight = 0
     OnClick = FilesListBoxClick
     TabOrder = 0
+    TopIndex = -1
   end
   inline DiffSynEdit: TSynEdit
-    AnchorSideBottom.Control = CheckDiskChangesWithLoadingCheckBox
+    AnchorSideBottom.Control = WarnSpeedButton
     Left = 6
-    Height = 167
+    Height = 145
     Top = 97
     Width = 588
-    Align = alTop
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
+    BorderSpacing.Around = 6
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -12
     Font.Name = 'courier'
@@ -43,7 +42,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     TabOrder = 2
     BookMarkOptions.Xoffset = -18
     Gutter.Visible = False
-    Gutter.Width = 59
+    Gutter.Width = 55
     Gutter.MouseActions = <    
       item
         ClickCount = ccAny
@@ -468,6 +467,10 @@ object DiskDiffsDlg: TDiskDiffsDlg
     SelectedColor.ItalicPriority = 50
     SelectedColor.UnderlinePriority = 50
     SelectedColor.StrikeOutPriority = 50
+    ScrollOnEditLeftOptions.ScrollExtraPercent = 20
+    ScrollOnEditLeftOptions.ScrollExtraMax = 10
+    ScrollOnEditRightOptions.ScrollExtraPercent = 30
+    ScrollOnEditRightOptions.ScrollExtraMax = 25
     BracketHighlightStyle = sbhsBoth
     BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
@@ -486,7 +489,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
         MouseActions = <>
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
-        Width = 19
+        Width = 15
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
@@ -573,68 +576,143 @@ object DiskDiffsDlg: TDiskDiffsDlg
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 19
-    Top = 270
-    Width = 241
-    Anchors = [akLeft]
+    Height = 21
+    Top = 286
+    Width = 278
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
     TabOrder = 3
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 37
-    Top = 316
-    Width = 600
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 37
-    ClientWidth = 600
-    TabOrder = 5
-    object RevertButton: TButton
-      Left = 499
-      Height = 25
-      Top = 6
-      Width = 95
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'RevertButton'
-      Default = True
-      ModalResult = 6
-      TabOrder = 1
-    end
-    object IgnoreDiskChangesButton: TButton
-      Left = 329
-      Height = 25
-      Top = 6
-      Width = 164
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'IgnoreDiskChangesButton'
-      ModalResult = 5
-      TabOrder = 0
-    end
-  end
-  object AutoCheckModifiedFilesCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = BtnPanel
+  object BtnPanel: TButtonPanel
     Left = 6
-    Height = 15
-    Top = 295
-    Width = 202
-    Anchors = [akTop, akLeft, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'AutoCheckModifiedFilesCheckBox'
+    Height = 42
+    Top = 313
+    Width = 588
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object WarnLabel: TLabel
+    AnchorSideLeft.Control = WarnSpeedButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = WarnSpeedButton
+    AnchorSideTop.Side = asrCenter
+    Left = 45
+    Height = 19
+    Top = 255
+    Width = 66
+    BorderSpacing.Around = 6
+    Caption = 'WarnLabel'
+    Font.Color = clMaroon
+    ParentColor = False
+    ParentFont = False
+  end
+  object WarnSpeedButton: TSpeedButton
+    AnchorSideLeft.Control = CheckDiskChangesWithLoadingCheckBox
+    AnchorSideBottom.Control = CheckDiskChangesWithLoadingCheckBox
+    Left = 6
+    Height = 32
+    Top = 248
+    Width = 33
+    Anchors = [akLeft, akBottom]
+    Flat = True
+    Transparent = False
   end
   object SynDiffSyn1: TSynDiffSyn
     Enabled = False
-    left = 135
-    top = 138
+    UnknownAttri.BackPriority = 0
+    UnknownAttri.ForePriority = 0
+    UnknownAttri.FramePriority = 0
+    UnknownAttri.BoldPriority = 0
+    UnknownAttri.ItalicPriority = 0
+    UnknownAttri.UnderlinePriority = 0
+    UnknownAttri.StrikeOutPriority = 0
+    SpaceAttri.BackPriority = 0
+    SpaceAttri.ForePriority = 0
+    SpaceAttri.FramePriority = 0
+    SpaceAttri.BoldPriority = 0
+    SpaceAttri.ItalicPriority = 0
+    SpaceAttri.UnderlinePriority = 0
+    SpaceAttri.StrikeOutPriority = 0
+    OrigFileAttri.BackPriority = 0
+    OrigFileAttri.ForePriority = 0
+    OrigFileAttri.FramePriority = 0
+    OrigFileAttri.BoldPriority = 0
+    OrigFileAttri.ItalicPriority = 0
+    OrigFileAttri.UnderlinePriority = 0
+    OrigFileAttri.StrikeOutPriority = 0
+    NewFileAttri.BackPriority = 0
+    NewFileAttri.ForePriority = 0
+    NewFileAttri.FramePriority = 0
+    NewFileAttri.BoldPriority = 0
+    NewFileAttri.ItalicPriority = 0
+    NewFileAttri.UnderlinePriority = 0
+    NewFileAttri.StrikeOutPriority = 0
+    ChunkMarkerAttri.BackPriority = 0
+    ChunkMarkerAttri.ForePriority = 0
+    ChunkMarkerAttri.FramePriority = 0
+    ChunkMarkerAttri.BoldPriority = 0
+    ChunkMarkerAttri.ItalicPriority = 0
+    ChunkMarkerAttri.UnderlinePriority = 0
+    ChunkMarkerAttri.StrikeOutPriority = 0
+    ChunkNewAttri.BackPriority = 0
+    ChunkNewAttri.ForePriority = 0
+    ChunkNewAttri.FramePriority = 0
+    ChunkNewAttri.BoldPriority = 0
+    ChunkNewAttri.ItalicPriority = 0
+    ChunkNewAttri.UnderlinePriority = 0
+    ChunkNewAttri.StrikeOutPriority = 0
+    ChunkOldAttri.BackPriority = 0
+    ChunkOldAttri.ForePriority = 0
+    ChunkOldAttri.FramePriority = 0
+    ChunkOldAttri.BoldPriority = 0
+    ChunkOldAttri.ItalicPriority = 0
+    ChunkOldAttri.UnderlinePriority = 0
+    ChunkOldAttri.StrikeOutPriority = 0
+    ChunkMixedAttri.BackPriority = 0
+    ChunkMixedAttri.ForePriority = 0
+    ChunkMixedAttri.FramePriority = 0
+    ChunkMixedAttri.BoldPriority = 0
+    ChunkMixedAttri.ItalicPriority = 0
+    ChunkMixedAttri.UnderlinePriority = 0
+    ChunkMixedAttri.StrikeOutPriority = 0
+    LineAddedAttri.BackPriority = 0
+    LineAddedAttri.ForePriority = 0
+    LineAddedAttri.FramePriority = 0
+    LineAddedAttri.BoldPriority = 0
+    LineAddedAttri.ItalicPriority = 0
+    LineAddedAttri.UnderlinePriority = 0
+    LineAddedAttri.StrikeOutPriority = 0
+    LineRemovedAttri.BackPriority = 0
+    LineRemovedAttri.ForePriority = 0
+    LineRemovedAttri.FramePriority = 0
+    LineRemovedAttri.BoldPriority = 0
+    LineRemovedAttri.ItalicPriority = 0
+    LineRemovedAttri.UnderlinePriority = 0
+    LineRemovedAttri.StrikeOutPriority = 0
+    LineChangedAttri.BackPriority = 0
+    LineChangedAttri.ForePriority = 0
+    LineChangedAttri.FramePriority = 0
+    LineChangedAttri.BoldPriority = 0
+    LineChangedAttri.ItalicPriority = 0
+    LineChangedAttri.UnderlinePriority = 0
+    LineChangedAttri.StrikeOutPriority = 0
+    LineContextAttri.BackPriority = 0
+    LineContextAttri.ForePriority = 0
+    LineContextAttri.FramePriority = 0
+    LineContextAttri.BoldPriority = 0
+    LineContextAttri.ItalicPriority = 0
+    LineContextAttri.UnderlinePriority = 0
+    LineContextAttri.StrikeOutPriority = 0
+    Left = 135
+    Top = 138
   end
 end

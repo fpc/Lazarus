@@ -8552,11 +8552,10 @@ begin
         Format(lisTheProjectInformationFileHasChangedOnDisk,[Project1.ProjectInfoFile,LineEnding]),
         mtConfirmation, [mrYes, lisReopenProject,
                          mrIgnore], '') = mrYes
-      then begin
-        DoOpenProjectFile(Project1.ProjectInfoFile,[ofRevert]);
-      end else begin
+      then
+        DoOpenProjectFile(Project1.ProjectInfoFile,[ofRevert])
+      else
         Project1.IgnoreProjectInfoFileOnDisk;
-      end;
       exit(mrOk);
     end;
 
@@ -8564,23 +8563,24 @@ begin
     PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
     if (AnUnitList=nil) and (APackageList=nil) then exit;
     Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
-    if Result in [mrYes,mrYesToAll] then
-      Result:=mrOk;
 
     // reload units
     if AnUnitList<>nil then begin
       for i:=0 to AnUnitList.Count-1 do begin
         CurUnit:=TUnitInfo(AnUnitList[i]);
-        //DebugLn(['DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
         if (Result=mrOk)
         and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
         begin
-          if CurUnit.OpenEditorInfoCount > 0 then begin
+          if CurUnit.OpenEditorInfoCount > 0 then
+          begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
-              CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
-            //DebugLn(['DoCheckFilesOnDisk OpenEditorFile=',Result]);
-          end else if CurUnit.IsMainUnit then begin
+                      CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
+            // Reload the form file in designer if there is one
+            if Assigned(CurUnit.Component) then
+              LoadLFM(CurUnit,[ofOnlyIfExists,ofRevert],[]);
+          end else if CurUnit.IsMainUnit then
+          begin
             Result:=RevertMainUnit;
             //DebugLn(['DoCheckFilesOnDisk RevertMainUnit=',Result]);
           end else

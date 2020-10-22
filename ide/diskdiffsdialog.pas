@@ -1,10 +1,4 @@
 {
- /***************************************************************************
-   diskdiffsdialog.pas
-     -  form for showing the diffs of editor files changed on disk
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -24,6 +18,8 @@
  *                                                                         *
  ***************************************************************************
 
+ Abstract:
+   form for showing the diffs of editor files changed on disk
 }
 unit DiskDiffsDialog;
 
@@ -35,11 +31,13 @@ uses
   // RTL + FCL
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Forms, Controls, StdCtrls, ExtCtrls, CheckLst,
+  LCLProc, LCLType, Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
-  LazUTF8Classes, LazFileUtils,
+  LazUTF8Classes, LazFileUtils, UITypes,
+  // IdeIntf
+  IDEImagesIntf,
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IDE
@@ -58,13 +56,12 @@ type
   { TDiskDiffsDlg }
 
   TDiskDiffsDlg = class(TForm)
-    BtnPanel: TPanel;
+    BtnPanel: TButtonPanel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
-    AutoCheckModifiedFilesCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
     FilesListBox: TCheckListBox;
-    RevertButton: TButton;
-    IgnoreDiskChangesButton: TButton;
+    WarnLabel: TLabel;
+    WarnSpeedButton: TSpeedButton;
     Splitter: TSplitter;
     SynDiffSyn1: TSynDiffSyn;
     procedure FilesListBoxClick(Sender: TObject);
@@ -73,7 +70,9 @@ type
     FIgnoreList: TFPList;
     FPackageList: TStringList;
     FUnitList: TFPList;
+    FHasLocalModifications: Boolean;
     FCachedDiffs: TFPList; // List of PDiffItem
+    procedure AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
     procedure FillFilesListBox;
     procedure ApplyChecks;
     procedure ShowDiff;
@@ -97,6 +96,96 @@ implementation
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
+// Procedures used by ShowDiskDiffsDialog
+
+procedure CheckUnitsWithLoading(AnUnitList: TFPList);
+var
+  i: Integer;
+  CurUnit: TUnitInfo;
+  CodeOk: Boolean;
+  MemCode: TCodeBuffer;
+  s, DiskEncoding, MemEncoding: String;
+  fs: TFileStreamUTF8;
+begin
+  for i:=AnUnitList.Count-1 downto 0 do
+  begin
+    CurUnit:=TUnitInfo(AnUnitList[i]);
+    MemCode:=CurUnit.Source;
+    CodeOk:=false;
+    try
+      fs := TFileStreamUTF8.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
+      try
+        SetLength(s, fs.Size);
+        if s <> '' then
+          fs.Read(s[1], length(s));
+        DiskEncoding := '';
+        MemEncoding := '';
+        MemCode.CodeCache.OnDecodeLoaded(MemCode,MemCode.Filename,
+          s,DiskEncoding,MemEncoding);
+        //debugln(['CheckUnitsWithLoading ',MemCode.Filename,
+        //  ' ',length(s),'=',MemCode.SourceLength]);
+        if (MemEncoding=MemCode.MemEncoding)
+        and (DiskEncoding=MemCode.DiskEncoding)
+        and (length(s)=MemCode.SourceLength)
+        and (s=MemCode.Source) then begin
+          CodeOk:=true;
+        end;
+      finally
+        fs.Free;
+      end;
+    except
+      // unable to load
+    end;
+    if CodeOk then begin
+      if CurUnit.Source<>nil then
+        CurUnit.Source.MakeFileDateValid;
+      AnUnitList.Delete(i);
+    end;
+  end;
+end;
+
+procedure CheckPackagesWithLoading(APackageList: TStringList);
+var
+  i: Integer;
+  CurPackage: TLazPackage;
+  PackageOk: Boolean;
+  fs: TFileStreamUTF8;
+  CurSource, DiskSource: string;
+  AltFilename: String;
+begin
+  for i:=APackageList.Count-1 downto 0 do
+  begin
+    AltFilename:=APackageList[i];
+    CurPackage:=TLazPackage(APackageList.Objects[i]);
+    PackageOk:=false;
+    if CurPackage.LPKSource=nil then
+      continue; // this package was not loaded/saved
+    if CompareFilenames(CurPackage.Filename,AltFilename)<>0 then
+      continue; // lpk has vanished, an alternative lpk was found => show
+    try
+      CurPackage.SaveToString(CurSource);
+      fs:=TFileStreamUTF8.Create(CurPackage.Filename,fmOpenRead);
+      try
+        if fs.Size=length(CurSource) then begin
+          // size has not changed => load to see difference
+          SetLength(DiskSource,fs.Size);
+          fs.Read(DiskSource[1],length(DiskSource));
+          if DiskSource=CurSource then
+            PackageOk:=true;
+        end;
+      finally
+        fs.Free;
+      end;
+    except
+      // unable to load
+      on E: Exception do
+        DebugLn(['CheckPackagesWithLoading Filename=',CurPackage.Filename,' Error=',E.Message]);
+    end;
+    if PackageOk then
+      APackageList.Delete(i);
+  end;
+end;
+
 function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
   AnIgnoreList: TFPList): TModalResult;
 
@@ -106,103 +195,14 @@ function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
         and ((APackageList=nil) or (APackageList.Count=0));
   end;
 
-  procedure CheckUnitsWithLoading;
-  var
-    i: Integer;
-    CurUnit: TUnitInfo;
-    Changed: Boolean;
-    MemCode: TCodeBuffer;
-    s, DiskEncoding, MemEncoding: String;
-    fs: TFileStreamUTF8;
-  begin
-    if AnUnitList=nil then exit;
-    for i:=AnUnitList.Count-1 downto 0 do begin
-      CurUnit:=TUnitInfo(AnUnitList[i]);
-      MemCode:=CurUnit.Source;
-      Changed:=true;
-      try
-        fs := TFileStreamUTF8.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
-        try
-          SetLength(s, fs.Size);
-          if s <> '' then
-            fs.Read(s[1], length(s));
-          DiskEncoding := '';
-          MemEncoding := '';
-          MemCode.CodeCache.OnDecodeLoaded(MemCode,MemCode.Filename,
-            s,DiskEncoding,MemEncoding);
-          //debugln(['CheckUnitsWithLoading ',MemCode.Filename,
-          //  ' ',length(s),'=',MemCode.SourceLength]);
-          if (MemEncoding=MemCode.MemEncoding)
-          and (DiskEncoding=MemCode.DiskEncoding)
-          and (length(s)=MemCode.SourceLength)
-          and (s=MemCode.Source) then begin
-            Changed:=false;
-          end;
-        finally
-          fs.Free;
-        end;
-      except
-        // unable to load
-      end;
-      if not Changed then begin
-        if (CurUnit.Source<>nil) then CurUnit.Source.MakeFileDateValid;
-        AnUnitList.Delete(i);
-      end;
-    end;
-  end;
-  
-  procedure CheckPackagesWithLoading;
-  var
-    i: Integer;
-    CurPackage: TLazPackage;
-    PackageDidNotChange: Boolean;
-    fs: TFileStreamUTF8;
-    CurSource, DiskSource: string;
-    AltFilename: String;
-  begin
-    if APackageList=nil then exit;
-    for i:=APackageList.Count-1 downto 0 do begin
-      AltFilename:=APackageList[i];
-      CurPackage:=TLazPackage(APackageList.Objects[i]);
-      PackageDidNotChange:=false;
-      if CurPackage.LPKSource=nil then
-        continue;// this package was not loaded/saved
-      if CompareFilenames(CurPackage.Filename,AltFilename)<>0 then
-        continue; // lpk has vanished, an alternative lpk was found => show
-      try
-        CurPackage.SaveToString(CurSource);
-        fs:=TFileStreamUTF8.Create(CurPackage.Filename,fmOpenRead);
-        try
-          if fs.Size=length(CurSource) then begin
-            // size has not changed => load to see difference
-            SetLength(DiskSource,fs.Size);
-            fs.Read(DiskSource[1],length(DiskSource));
-            if DiskSource=CurSource then
-              PackageDidNotChange:=true;
-          end;
-        finally
-          fs.Free;
-        end;
-      except
-        // unable to load
-        on E: Exception do begin
-          DebugLn(['CheckPackagesWithLoading Filename=',CurPackage.Filename,' Error=',E.Message]);
-        end;
-      end;
-      if PackageDidNotChange then begin
-        APackageList.Delete(i);
-      end;
-    end;
-  end;
-  
 begin
-  if (DiskDiffsDlg<>nil) or ListsAreEmpty then begin
-    Result:=mrIgnore;
-    exit;
-  end;
+  if (DiskDiffsDlg<>nil) or ListsAreEmpty then
+    exit(mrIgnore);
   if EnvironmentOptions.CheckDiskChangesWithLoading then begin
-    CheckUnitsWithLoading;
-    CheckPackagesWithLoading;
+    if Assigned(AnUnitList) then
+      CheckUnitsWithLoading(AnUnitList);
+    if Assigned(APackageList) then
+      CheckPackagesWithLoading(APackageList);
     if ListsAreEmpty then exit(mrIgnore);
   end;
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
@@ -211,10 +211,13 @@ begin
   DiskDiffsDlg.IgnoreList:=AnIgnoreList;
   DiskDiffsDlg.FillFilesListBox;
   Result:=DiskDiffsDlg.ShowModal;
-  if Result=mrYes then
-    DiskDiffsDlg.ApplyChecks;
+  case Result of
+    mrOK : DiskDiffsDlg.ApplyChecks;
+    mrCancel : Result:=mrIgnore;
+  end;
   DiskDiffsDlg.Free;
   DiskDiffsDlg:=nil;
+  Assert(Result in [mrOK,mrIgnore], 'ShowDiskDiffsDialog: Invalid result '+IntToStr(Result));
 end;
 
 { TDiskDiffsDlg }
@@ -227,42 +230,47 @@ end;
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
-  EnvironmentOptions.DiskChangesAutoCheckModified:=AutoCheckModifiedFilesCheckBox.Checked;
+end;
+
+procedure TDiskDiffsDlg.AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
+var
+  i: Integer;
+begin
+  if AModified then
+    AFileName:='*'+AFileName;
+  i:=FilesListBox.Items.AddObject(AFileName,AInfo);
+  if AModified then
+    FHasLocalModifications:=True
+  else
+    FilesListBox.Checked[i]:=True;
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
-var i, ii: integer;
-  AnUnitInfo: TUnitInfo;
+var
+  i: integer;
+  UInfo: TUnitInfo;
   APackage: TLazPackage;
-  AFileName: string;
 begin
+  FHasLocalModifications:=False;
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
   if UnitList<>nil then
   begin
     for i:=0 to UnitList.Count-1 do begin
-      AnUnitInfo:=TUnitInfo(UnitList[i]);
-      AFileName:=AnUnitInfo.ShortFilename;
-      if AnUnitInfo.Modified then
-        AFileName:='*'+AFileName;
-      ii := FilesListBox.Items.AddObject(AFileName,AnUnitInfo);
-      if AutoCheckModifiedFilesCheckBox.Checked or not AnUnitInfo.Modified then
-        FilesListBox.Checked[ii] := True;
+      UInfo:=TUnitInfo(UnitList[i]);
+      AddFile2Box(UInfo, UInfo.ShortFilename, UInfo.Modified);
     end;
   end;
   if PackageList<>nil then
   begin
     for i:=0 to PackageList.Count-1 do begin
       APackage:=TLazPackage(PackageList.Objects[i]);
-      AFileName:=APackage.Filename;
-      if APackage.Modified then
-        AFileName:='*'+AFileName;
-      ii := FilesListBox.Items.AddObject(AFileName,APackage);
-      if AutoCheckModifiedFilesCheckBox.Checked or not APackage.Modified then
-        FilesListBox.Checked[ii] := True;
+      AddFile2Box(APackage, APackage.Filename, APackage.Modified);
     end;
   end;
   FilesListBox.Items.EndUpdate;
+  WarnSpeedButton.Visible:=FHasLocalModifications;
+  WarnLabel.Visible:=FHasLocalModifications;
 end;
 
 procedure TDiskDiffsDlg.ShowDiff;
@@ -375,15 +383,19 @@ begin
   Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
   EditorOpts.GetSynEditSettings(DiffSynEdit);
   DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
-  RevertButton.Caption:=lisDiskDiffReloadCheckedFilesFromDisk;
-  IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
+
+  BtnPanel.OkButton.Caption:=lisDiskDiffReloadCheckedFilesFromDisk;
+  Assert(BtnPanel.OKButton.ModalResult=mrOK, 'OKButton.ModalResult<>mrOK');
+  // Cancel button now means Ignore All Disk Changes
+  BtnPanel.CancelButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
+
+  IDEImages.AssignImage(WarnSpeedButton, 'state_warning');
+  WarnLabel.Caption:=lisDiskDiffSomeFilesChangedLocally;
+  WarnLabel.Visible:=False;
+  WarnSpeedButton.Visible:=False;
+
   CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContent;
   CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
-  AutoCheckModifiedFilesCheckBox.Caption:=lisAutoCheckModifiedFiles;
-  AutoCheckModifiedFilesCheckBox.Checked:=EnvironmentOptions.DiskChangesAutoCheckModified;
-
-  DefaultControl:=RevertButton;
-  CancelControl:=IgnoreDiskChangesButton;
 end;
 
 procedure TDiskDiffsDlg.ApplyChecks;
