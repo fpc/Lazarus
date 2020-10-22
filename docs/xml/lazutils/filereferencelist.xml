@@ -18,12 +18,12 @@
       </descr>
 
       <!-- unresolved external references -->
-      <element id="Classes"/>
-      <element id="SysUtils"/>
-      <element id="Laz_AVL_Tree"/>
-      <element id="LazFileUtils"/>
-      <element id="LazFileCache"/>
-      <element id="LazTracer"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Laz_AVL_Tree"/>
+      <element name="LazFileUtils"/>
+      <element name="LazFileCache"/>
+      <element name="LazTracer"/>
 
       <element name="TFileReference">
         <short/>

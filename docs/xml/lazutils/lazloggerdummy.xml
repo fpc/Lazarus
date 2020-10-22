@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
 
@@ -14,11 +14,11 @@
 </descr>
 
 <!-- unresolved externals -->
-<element id="Classes"/>
-<element id="SysUtils"/>
-<element id="FileUtil"/>
-<element id="Types"/>
-<element id="LazClasses"/>
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="FileUtil"/>
+<element name="Types"/>
+<element name="LazClasses"/>
 
 <!-- enumeration type Visibility: default -->
 <element name="TLazLoggerLogGroupFlag">
