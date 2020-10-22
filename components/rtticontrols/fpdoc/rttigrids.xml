@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="RunTimeTypeInfoControls">
+    <module name="RTTIGrids">
+      <short>Contains controls which access properties in TPersistent objects using RTTI</short>
+      <descr>
+        <p>
+          Provides LCL controls that access properties of TPersistent objects via RTTI (the FreePascal Run
+          Time Type Information). Every published property can be edited in the Object Inspector. There
+          you have a TOIPropertyGrid working with TEdit, TComboBox and TButton. These controls extends the
+          possibilities to edit single properties and the developer can choose how to represent the
+          property.
+        </p>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Controls"/>
+      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="ObjectInspector"/>
+      <element name="PropEdits"/>
+      <element name="GraphPropEdits"/>
+      <element name="TypInfo"/>
+      <element name="RTTICtrls"/>
+      <element name="Grids"/>
+
+      <element name="TTICustomPropertyGrid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- TODO: Add published properties with links to ancestors -->
+      <element name="TTIPropertyGrid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty.FEditor"/>
+      <element name="TTIGridProperty.FEditorControl"/>
+      <element name="TTIGridProperty.FButtonEditorControl"/>
+      <element name="TTIGridProperty.FGrid"/>
+      <element name="TTIGridProperty.FIndex"/>
+      <element name="TTIGridProperty.FTitle"/>
+
+      <element name="TTIGridProperty.SetTitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.SetTitle.AValue">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.EditorControlKeyUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.EditorControlKeyUp.Sender">
+        <short/>
+      </element>
+      <element name="TTIGridProperty.EditorControlKeyUp.Key">
+        <short/>
+      </element>
+      <element name="TTIGridProperty.EditorControlKeyUp.Shift">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.Create.TheGrid">
+        <short/>
+      </element>
+      <element name="TTIGridProperty.Create.TheEditor">
+        <short/>
+      </element>
+      <element name="TTIGridProperty.Create.TheIndex">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty.PropInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.PropInfo.Result">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.GetEditorControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.GetEditorControl.Result">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.GetButtonEditorControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.GetButtonEditorControl.Result">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.PropName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridProperty.PropName.Result">
+        <short/>
+      </element>
+
+      <element name="TTIGridProperty.Editor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty.Grid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty.Index">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridProperty.Title">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIListDirection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIListDirection.tldObjectsAsRows">
+        <short/>
+      </element>
+      <element name="TTIListDirection.tldObjectsAsColumns">
+        <short/>
+      </element>
+
+      <element name="TTIGridState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridState.tgsRebuildTIListNeeded">
+        <short/>
+      </element>
+      <element name="TTIGridState.tgsRebuildingTIList">
+        <short/>
+      </element>
+      <element name="TTIGridState.tgsDefaultDrawing">
+        <short>
+          Set during default drawing.
+        </short>
+      </element>
+
+      <element name="TTIGridStates">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+
+      <element name="TTIGridCellType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridCellType.tgctNone">
+        <short>
+          Out or undfined
+        </short>
+      </element>
+      <element name="TTIGridCellType.tgctValue">
+        <short>
+          A normal property cell
+        </short>
+      </element>
+      <element name="TTIGridCellType.tgctPropName">
+        <short>
+          Header cell for property name
+        </short>
+      </element>
+      <element name="TTIGridCellType.tgctPropNameAlt">
+        <short>
+          Header cell for alternative property name (e. g. FixedRows&gt;1)
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridCellType.tgctObjectName">
+        <short>
+          Header cell for the object name
+        </short>
+      </element>
+      <element name="TTIGridCellType.tgctObjectNameAlt">
+        <short>
+          Header cell for an alternative object name (e. g. FixedCols&gt;1)
+        </short>
+      </element>
+      <element name="TTIGridCellType.tgctCorner">
+        <short>
+          Corner cell at the left, top of the grid
+        </short>
+      </element>
+
+      <element name="TTIGridCellTypes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridOption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridOption.tgoStartIndexAtOne">
+        <short>
+          Start object index at 1 for displayed object
+        </short>
+      </element>
+      <element name="TTIGridOption.tgoShowOnlyProperties">
+        <short>
+          Show only those properties in ShowOnlyProperties
+        </short>
+      </element>
+
+      <element name="TTIGridOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTIGridGetObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridGetObject.Sender">
+        <short/>
+      </element>
+      <element name="TTIGridGetObject.Index">
+        <short/>
+      </element>
+      <element name="TTIGridGetObject.TIObject">
+        <short/>
+      </element>
+
+      <element name="TTIGridGetObjectCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridGetObjectCount.Sender">
+        <short/>
+      </element>
+      <element name="TTIGridGetObjectCount.ListObject">
+        <short/>
+      </element>
+      <element name="TTIGridGetObjectCount.ObjCount">
+        <short/>
+      </element>
+
+      <element name="TTIGridGetObjectName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridGetObjectName.Sender">
+        <short/>
+      </element>
+      <element name="TTIGridGetObjectName.Index">
+        <short/>
+      </element>
+      <element name="TTIGridGetObjectName.TIObject">
+        <short/>
+      </element>
+      <element name="TTIGridGetObjectName.ObjName">
+        <short/>
+      </element>
+
+      <element name="TTIGridCreateCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridCreateCellEditor.GridProp">
+        <short/>
+      </element>
+      <element name="TTIGridCreateCellEditor.NewEditorControl">
+        <short/>
+      </element>
+
+      <element name="TTIGridInitCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTIGridInitCellEditor.GridProp">
+        <short/>
+      </element>
+      <element name="TTIGridInitCellEditor.TheEditorControl">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.FAliasPropertyNames"/>
+      <element name="TTICustomGrid.FFilter"/>
+      <element name="TTICustomGrid.FHideProperties"/>
+      <element name="TTICustomGrid.FListDirection"/>
+      <element name="TTICustomGrid.FListObject"/>
+      <element name="TTICustomGrid.FOnCreateCellEditor"/>
+      <element name="TTICustomGrid.FOnGetObject"/>
+      <element name="TTICustomGrid.FOnGetObjectCount"/>
+      <element name="TTICustomGrid.FOnGetObjectName"/>
+      <element name="TTICustomGrid.FOnHeaderClick"/>
+      <element name="TTICustomGrid.FOnHeaderSized"/>
+      <element name="TTICustomGrid.FHeaderPropHook"/>
+      <element name="TTICustomGrid.FOnInitCellEditor"/>
+      <element name="TTICustomGrid.FOnPropertiesCreated"/>
+      <element name="TTICustomGrid.FPropertyOrder"/>
+      <element name="TTICustomGrid.FShowOnlyProperties"/>
+      <element name="TTICustomGrid.FTIOptions"/>
+      <element name="TTICustomGrid.FTIStates"/>
+      <element name="TTICustomGrid.FTIObjectCount"/>
+      <element name="TTICustomGrid.FProperties"/>
+      <element name="TTICustomGrid.FExtraBtnEditor"/>
+
+      <element name="TTICustomGrid.GetProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetProperties.Result">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetProperties.Index">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GetPropertyCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetPropertyCount.Result">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetAliasPropertyNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetAliasPropertyNames.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetFilter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetFilter.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetHideProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetHideProperties.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetListDirection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetListDirection.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetListObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetListObject.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetPropertyOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetPropertyOrder.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetShowOnlyProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetShowOnlyProperties.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetTIOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetTIOptions.NewOptions">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.DebugEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.DebugEditor.msg">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DebugEditor.aEditor">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.RebuildGridLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.AddHeaderPropertyEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.AddHeaderPropertyEditor.Prop">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.BeforeMoveSelection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.BeforeMoveSelection.DCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.BeforeMoveSelection.DRow">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.CalcCellExtent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.CalcCellExtent.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.CalcCellExtent.aRow">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.CalcCellExtent.aRect">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.DoEditorHide">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.DoEditorShow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.DrawCell">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.DrawCell.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DrawCell.aRow">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DrawCell.aRect">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DrawCell.aState">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.EditorPosChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.EditorPosChanged.aEditor">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.EditorWidthChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.EditorWidthChanged.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.EditorWidthChanged.aWidth">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.HeaderClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.HeaderClick.IsColumn">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.HeaderClick.Index">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.HeaderSized">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.HeaderSized.IsColumn">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.HeaderSized.Index">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GetAutoFillColumnInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetAutoFillColumnInfo.Index">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetAutoFillColumnInfo.aMin">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetAutoFillColumnInfo.aMax">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetAutoFillColumnInfo.aPriority">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SelectEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.DoEditorControlKeyUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.DoEditorControlKeyUp.Sender">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DoEditorControlKeyUp.Key">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DoEditorControlKeyUp.Shift">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.WriteCellText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.WriteCellText.aRect">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.WriteCellText.aText">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.UnlinkPropertyEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.UnlinkPropertyEditor.aEditor">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetFixedCols">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetFixedCols.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.SetFixedRows">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.SetFixedRows.AValue">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.Create.TheOwner">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.Loaded">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.ReloadTIList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.ClearProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.DefaultDrawCell">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.DefaultDrawCell.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DefaultDrawCell.aRow">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DefaultDrawCell.aRect">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DefaultDrawCell.aState">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.DrawObjectName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.DrawObjectName.Index">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DrawObjectName.aRect">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.DrawObjectName.aState">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GetCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetCellEditor.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetCellEditor.aRow">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetCellEditor.aPropEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetCellEditor.aIndependentEditor">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.FreeCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.FreeCellEditor.PropEditor">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GridStateToPropEditState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GridStateToPropEditState.Index">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GridStateToPropEditState.GridState">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GetTIObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetTIObject.Result">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.GetTIObject.Index">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.MapCell">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.MapCell.aCol">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.MapCell.aRow">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.MapCell.ObjectIndex">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.MapCell.PropertyIndex">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.MapCell.CellType">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.GetCurrentGridProperty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.GetCurrentGridProperty.Result">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.IndexOfGridProperty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.IndexOfGridProperty.Result">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.IndexOfGridProperty.PropName">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.FindGridProperty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.FindGridProperty.Result">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.FindGridProperty.PropName">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.MoveProperty">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.MoveProperty.FromID">
+        <short/>
+      </element>
+      <element name="TTICustomGrid.MoveProperty.ToID">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.AliasPropertyNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.DefaultRowHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.Filter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.HideProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.ListDirection">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.ListObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnCreateCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnGetObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnGetObjectCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnGetObjectName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnHeaderClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnHeaderSized">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnInitCellEditor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.OnPropertiesCreated">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.Properties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTICustomGrid.Properties.Index">
+        <short/>
+      </element>
+
+      <element name="TTICustomGrid.PropertyCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.PropertyOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.ShowOnlyProperties">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.TIObjectCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTICustomGrid.TIOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <!-- TODO: Add published properties with links to ancestors -->
+      <element name="TTIGrid">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRegisteredTIGridControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRegisteredTIGridControl.FPropEditorClass"/>
+      <element name="TRegisteredTIGridControl.FWinControlClass"/>
+
+      <element name="TRegisteredTIGridControl.PropEditorClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRegisteredTIGridControl.WinControlClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="RegisterTIGridControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="RegisterTIGridControl.PropEditorClass">
+        <short/>
+      </element>
+      <element name="RegisterTIGridControl.WinControlClass">
+        <short/>
+      </element>
+
+      <element name="FindTIGridControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="FindTIGridControl.PropEditorClass">
+        <short/>
+      </element>
+
+      <element name="Register">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+  </package>
+</fpdoc-descriptions>
