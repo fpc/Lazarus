@@ -1818,6 +1818,7 @@ type
     FValue: string;
     FName: string;
     FInputType: TIpHtmlButtonType;
+    function GetButtonCaption: String;
     procedure SetInputType(const AValue: TIpHtmlButtonType);
     procedure SetValue(const AValue: String);
   protected
@@ -2107,7 +2108,7 @@ type
     FDefaultFontSize: integer;
     ParmBuf: PChar;
     ParmBufSize: Integer;
-    FParent: TWinControl;
+    FControlParent: TWinControl;
     procedure ResetCanvasData;
     procedure ResetWordLists;
     procedure ResetBlocks(Node: TIpHtmlNode);
@@ -13234,7 +13235,7 @@ begin
   FElementName := 'button';
   Owner.FControlList.Add(Self);
   if Owner.DoneLoading then
-    CreateControl(Owner.FParent);
+    CreateControl(Owner.FControlParent);
 end;
 
 destructor TIpHtmlNodeBUTTON.Destroy;
@@ -13255,10 +13256,22 @@ begin
 
   with TButton(FControl) do begin
     Enabled := not Self.Disabled;
-    Caption := Value;
+    Caption := GetButtonCaption;
     OnClick := ButtonClick;
     CalcSize;
   end;
+end;
+
+function TIpHtmlNodeBUTTON.GetButtonCaption: String;
+begin
+  if FValue = '' then
+    case FInputType of
+      hbtSubmit: Result := SHtmlDefSubmitCaption;
+      hbtReset: Result := SHtmlDefResetCaption;
+      hbtButton: Result := '';
+    end
+  else
+    Result := FValue;
 end;
 
 procedure TIpHtmlNodeBUTTON.Reset;
@@ -13308,21 +13321,17 @@ begin
     lCanvas := TFriendPanel(Parent).Canvas;
     oldFontSize := lCanvas.Font.Size;
     Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-    Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+    Height := TFriendPanel(Parent).Canvas.TextHeight('Tg') + 10;
     lCanvas.Font.Size := oldFontSize;
   end;
 end;
 
 procedure TIpHtmlNodeBUTTON.SetInputType(const AValue: TIpHtmlButtonType);
 begin
+  if FInputType = AValue then exit;
   FInputType := AValue;
-
-  if Owner.DoneLoading and (FControl <> nil) and (Self.Value = '') then;
-    case FInputType of
-      hbtSubmit : SetValue(SHtmlDefSubmitCaption);
-      hbtReset  : SetValue(SHtmlDefResetCaption);
-      hbtButton :  ;
-    end;
+  if Owner.DoneLoading and (FControl <> nil) and (Self.Value = '') then
+    SetValue(GetButtonCaption);
 end;
 
 procedure TIpHtmlNodeBUTTON.SetValue(const AValue: String);
@@ -13331,7 +13340,7 @@ begin
   FValue := AValue;
   if Owner.DoneLoading and (FControl <> nil) then
   begin
-    (FControl as TButton).Caption := AValue;
+    (FControl as TButton).Caption := GetButtonCaption;
     CalcSize;
   end;
 end;
@@ -15099,7 +15108,7 @@ begin
     HyperPanel.OnHotClick := FViewer.HotClick;
     HyperPanel.OnClick := FViewer.ClientClick;
     HyperPanel.TabStop := FViewer.WantTabs;
-    FHtml.FParent := HyperPanel;
+    FHtml.FControlParent := HyperPanel;
     FHtml.OnScroll := HyperPanel.ScrollRequest;
     FHtml.OnControlClick := ControlClick;
     FHtml.OnControlClick2 := ControlClick2;
