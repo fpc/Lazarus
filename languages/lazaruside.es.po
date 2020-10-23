@@ -5175,10 +5175,6 @@ msgstr "Mostrar la paleta de componentes completa"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Si la paleta de componentes abarca más líneas, mostrar todas y no solo una."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Automáticamente verifica (seleccionados) los archivos modificados"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Completar Automáticamente: desactivado"
@@ -9059,6 +9055,10 @@ msgstr "Recargar los archivos verificados desde el disco"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Algunos archivos han cambiado en el disco:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21540,6 +21540,10 @@ msgstr "Versión &Mayor:"
 msgid "Mi&nor version:"
 msgstr "Versión Me&nor:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Más información"
@@ -21547,6 +21551,10 @@ msgstr "Más información"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Directorio de salida del archivo PO:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21572,10 +21580,6 @@ msgstr "&Revisión:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Seleccionar un elemento heredado"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Comenzar una nueva busqueda"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

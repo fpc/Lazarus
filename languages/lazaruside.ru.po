@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-09 02:23+0300\n"
+"PO-Revision-Date: 2020-10-24 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5017,10 +5017,6 @@ msgstr "Показывать палитру компонентов полнос�
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Показывать все строки палитры компонентов, если она занимает несколько."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Автоматически выбирать изменённые файлы"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Автодополнение: выключено"
@@ -8873,6 +8869,10 @@ msgstr "Перечитать выбранные файлы с диска"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Некоторые файлы изменены на диске:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr "Некоторые файлы были изменены локально. Будут отброшены локальные либо внешние изменения."
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21102,6 +21102,10 @@ msgstr "&Старшая:"
 msgid "Mi&nor version:"
 msgstr "&Младшая:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr "Новый поиск по тем же условиям"
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Прочие сведения"
@@ -21109,6 +21113,10 @@ msgstr "Прочие сведения"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Каталог вывода файлов PO:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr "Обновить результаты поиска"
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21134,10 +21142,6 @@ msgstr "&Ревизия:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Выбрать унаследованный элемент"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Начать новый поиск"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

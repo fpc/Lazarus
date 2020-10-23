@@ -4979,10 +4979,6 @@ msgstr "Komple bileşen paletini göster"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Bileşen paleti daha fazla çizgiye yayılmışsa, hepsini göster, sadece bir tane değil."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Değiştirilen dosyaları otomatik olarak kontrol et (seç)"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Otomatik tamamlama: kapalı"
@@ -8838,6 +8834,10 @@ msgstr "Dosyayı tekrar yükle"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Bazı dosyalarda değişiklik yapıldı:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21005,6 +21005,10 @@ msgstr "&Ana sürüm::"
 msgid "Mi&nor version:"
 msgstr "Küçü&k sürüm:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Diğer bilgi"
@@ -21012,6 +21016,10 @@ msgstr "Diğer bilgi"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO Çıktı klasörü:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21037,10 +21045,6 @@ msgstr "&Revizyon:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Devralınan bir girişi seçin"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Yeni bir arama başlat"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

@@ -5138,10 +5138,6 @@ msgstr "Rodyti visą komponenčių paletę"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Kai komponentėms paletėje reikia kelių eilučių, rodyti jas vis, o ne tik vieną."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Automatiškai pažymėti pakeistus failus"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatinis baigimas: išjungtas"
@@ -9008,6 +9004,10 @@ msgstr "Pažymėtus failus iš disko įkelti iš naujo"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Kai kurie failai buvo pakeisti iš išorės:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21399,6 +21399,10 @@ msgstr "&Pagrindinė laida:"
 msgid "Mi&nor version:"
 msgstr "&Mažoji laida:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Kita informacija"
@@ -21406,6 +21410,10 @@ msgstr "Kita informacija"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO išvesties aplankas:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21431,10 +21439,6 @@ msgstr "&Poversijis:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Pažymėti paveldėtą įrašą"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Pradėti naują paiešką"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

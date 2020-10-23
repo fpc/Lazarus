@@ -5205,10 +5205,6 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr ""
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr ""
@@ -9119,6 +9115,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Alguns fitxers han canviat al disc:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21659,12 +21659,20 @@ msgstr ""
 msgid "Mi&nor version:"
 msgstr ""
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr ""
 
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
+msgstr ""
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
 msgstr ""
 
 #: lazarusidestrconsts.rsresource
@@ -21690,10 +21698,6 @@ msgstr ""
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
-msgstr ""
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
 msgstr ""
 
 #: lazarusidestrconsts.rsversionnumbering

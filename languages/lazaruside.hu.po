@@ -5017,10 +5017,6 @@ msgstr "Teljes komponens paletta megjelenítése"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Ha a komponens paletta több sort foglal el akkor mind jelenjen meg, ne csak egy."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Megváltozott fájlok automatikus kijelölése"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatikus kiegészítés: ki"
@@ -8876,6 +8872,10 @@ msgstr "Kijelölt fájlok újratöltése a lemezről"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Néhány fájl megváltozott a lemezen:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21105,6 +21105,10 @@ msgstr "Főváltozat:"
 msgid "Mi&nor version:"
 msgstr "Alváltozat:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Egyéb információk"
@@ -21112,6 +21116,10 @@ msgstr "Egyéb információk"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO kimenti könyvtár:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21137,10 +21145,6 @@ msgstr "Revízió:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Minden öröklött bejegyzés kijelölése"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Új keresés indítása"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

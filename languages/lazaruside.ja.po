@@ -5134,10 +5134,6 @@ msgstr "完全なコンポーネントパレットを表示"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "もしコンポーネントパレットが行を超過した場合、１つだけではなく全て表示する。"
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "修正されたファイルを自動的にチェック（選択）"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "自動補完:off"
@@ -9004,6 +9000,10 @@ msgstr "チェックしたファイルをディスクから再読み込み"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "ディスク上のいくつかのファイルが変更されました。"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21363,6 +21363,10 @@ msgstr "メジャーバージョン(&M)"
 msgid "Mi&nor version:"
 msgstr "マイナーバージョン(&n)"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "その他の情報"
@@ -21370,6 +21374,10 @@ msgstr "その他の情報"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO出力ディレクトリ"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21395,10 +21403,6 @@ msgstr "改訂(&R)"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "継承されたエントリを選択"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "新しい検索を開始"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

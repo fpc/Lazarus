@@ -5059,10 +5059,6 @@ msgstr "Ukázat celou paletu komponent"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Pokud je paleta komponent roztažena přes více řádek, zobrazit je všechny a ne pouze jednu."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Automaticky zaškrtni (vyber) změněné soubory"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatické dokončení: vypnuto"
@@ -8919,6 +8915,10 @@ msgstr "Znovu načíst ozančené soubory z disku"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Některé soubory se na disku změnily:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21184,6 +21184,10 @@ msgstr "&Hlavní verze:"
 msgid "Mi&nor version:"
 msgstr "Ve&dlejší verze:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Jiné informace"
@@ -21191,6 +21195,10 @@ msgstr "Jiné informace"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Výstupní adresář pro PO:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21216,10 +21224,6 @@ msgstr "&Revize:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Vybrat zděděnou položku"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Začít nové hledání"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

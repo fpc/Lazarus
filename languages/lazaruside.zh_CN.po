@@ -5151,10 +5151,6 @@ msgstr "显示完整的组件调色板(palette)"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "自动地检查(选择)已修改是文件"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "自动完成:关"
@@ -9066,6 +9062,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "一些文件已经更改在磁盘上:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 #, fuzzy
@@ -21402,6 +21402,10 @@ msgstr "主要版本:(&M)"
 msgid "Mi&nor version:"
 msgstr "次要版本:(&n)"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "其他信息"
@@ -21409,6 +21413,10 @@ msgstr "其他信息"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO输出目录:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21435,10 +21443,6 @@ msgstr "修订版本:(&R)"
 #, fuzzy
 msgid "Select an inherited entry"
 msgstr "继承:"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "开始一个新的搜索"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

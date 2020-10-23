@@ -5022,10 +5022,6 @@ msgstr "Näytä koko komponenttipaletti"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Jos komponenttipaletti menee monelle riville, näytä kaikki rivit."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Automaattisesti valitse muuttuneet tiedostot"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automaattinen täydennys: pois"
@@ -8867,6 +8863,10 @@ msgstr "Lataa valitut tiedostot uudestaan levyltä"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Seuraavat tiedostot ovat muuttuneet:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -20991,6 +20991,10 @@ msgstr "&Iso versio:"
 msgid "Mi&nor version:"
 msgstr "&Pieni versio:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Muuta tietoa"
@@ -20998,6 +21002,10 @@ msgstr "Muuta tietoa"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO-kirjoitushakemisto"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21023,10 +21031,6 @@ msgstr "&Revisio:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Valitse periytyvä kohta"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Aloita uusi etsintä"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

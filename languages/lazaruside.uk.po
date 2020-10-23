@@ -5019,10 +5019,6 @@ msgstr "Показати повну палітру компонентів"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Якщо палітра компонентів ділиться на декілька рядків, показувати їх всі, а не лише один."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Автоматично перевіряти (вибирати) змінені файли"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Автозавершення: вимкн."
@@ -8878,6 +8874,10 @@ msgstr "Перезавантажити змінені файли з диска"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Деякі файли змінені на диску:"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21106,6 +21106,10 @@ msgstr "&Основна версія:"
 msgid "Mi&nor version:"
 msgstr "&Другорядна версія:"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Інша інформація"
@@ -21113,6 +21117,10 @@ msgstr "Інша інформація"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Результуюча тека PO:"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21138,10 +21146,6 @@ msgstr "&Ревізія:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Виберіть успадкований елемент"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Почати новий пошук"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

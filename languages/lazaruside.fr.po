@@ -5019,10 +5019,6 @@ msgstr "Montrer la totalité de la palette des composants"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Si la palette de composants s'étend sur plus de lignes, tous les montrer et non pas un seul."
 
-#: lazarusidestrconsts.lisautocheckmodifiedfiles
-msgid "Automatically check (select) modified files"
-msgstr "Cocher (sélectionner) automatiquement les fichiers modifiés"
-
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Complétion automatique inactive"
@@ -8878,6 +8874,10 @@ msgstr "Recharger les fichiers cochés depuis le disque"
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Certains fichiers ont changé sur le disque :"
+
+#: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
+msgid "Some files have local changes. Either local or external changes will be overwritten."
+msgstr ""
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -21113,6 +21113,10 @@ msgstr "Version &majeure :"
 msgid "Mi&nor version:"
 msgstr "Version mi&neure :"
 
+#: lazarusidestrconsts.rsnewsearchwithsamecriteria
+msgid "New search with same criteria"
+msgstr ""
+
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
 msgstr "Autres informations"
@@ -21120,6 +21124,10 @@ msgstr "Autres informations"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Répertoire de sortie PO :"
+
+#: lazarusidestrconsts.rsrefreshthesearch
+msgid "Refresh the search"
+msgstr ""
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -21145,10 +21153,6 @@ msgstr "&Révision :"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Sélectionner une entrée héritée"
-
-#: lazarusidestrconsts.rsstartanewsearch
-msgid "Start a new search"
-msgstr "Démarrer une nouvelle recherche"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
