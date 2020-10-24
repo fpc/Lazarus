@@ -1429,16 +1429,17 @@ var
   {$ENDIF}
 
 
-function GetCommandAndButton(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
-function GetCommandOnly(ACommand: word): TIDECommand;
 procedure RegisterStandardSourceTabMenuItems;
 procedure RegisterStandardSourceEditorMenuItems;
 function dbgSourceNoteBook(snb: TSourceNotebook): string;
+
+var
+  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
+
 function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 
 var
-  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   EnglishGPLNotice: string;
   EnglishLGPLNotice: string;
   EnglishModifiedLGPLNotice: string;
@@ -1487,20 +1488,6 @@ begin
       Result := Result + dbgs(i);
     end;
   Result := '['+ Result + ']';
-end;
-
-function GetCommandAndButton(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
-begin
-  Result:=IDECommandList.FindIDECommand(ACommand);
-  if Result<>nil then
-    ToolButton := RegisterIDEButtonCommand(Result)
-  else
-    ToolButton := nil;
-end;
-
-function GetCommandOnly(ACommand: word): TIDECommand;
-begin
-  Result:=IDECommandList.FindIDECommand(ACommand);
 end;
 
 function SourceEditorManager: TSourceEditorManager;
@@ -10772,11 +10759,27 @@ end;
 
 procedure TSourceEditorManager.SetupShortCuts;
 
+  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
+  begin
+    Result:=IDECommandList.FindIDECommand(ACommand);
+    if Result<>nil then
+      ToolButton := RegisterIDEButtonCommand(Result)
+    else
+      ToolButton := nil;
+  end;
+
+  function GetCommand(ACommand: word): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
+  end;
+
   function GetCommand(ACommand: word; ToolButtonClass: TIDEToolButtonClass): TIDECommand;
   var
     ToolButton: TIDEButtonCommand;
   begin
-    Result:=GetCommandAndButton(ACommand, ToolButton);
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
     if ToolButton<>nil then
       ToolButton.ToolButtonClass := ToolButtonClass;
   end;
@@ -10789,44 +10792,44 @@ var
   i: Integer;
 begin
   {%region *** first static section *** }
-    SrcEditMenuFindDeclaration.Command := GetCommandOnly(ecFindDeclaration);
+    SrcEditMenuFindDeclaration.Command := GetCommand(ecFindDeclaration);
     {%region *** Submenu: Find Section *** }
-      SrcEditMenuProcedureJump.Command          := GetCommandOnly(ecFindProcedureDefinition);
+      SrcEditMenuProcedureJump.Command          := GetCommand(ecFindProcedureDefinition);
       SrcEditMenuProcedureJump.OnRequestCaptionHint := @SrcEditMenuProcedureJumpGetCaption;
-      SrcEditMenuFindNextWordOccurrence.Command := GetCommandOnly(ecFindNextWordOccurrence);
-      SrcEditMenuFindPrevWordOccurrence.Command := GetCommandOnly(ecFindPrevWordOccurrence);
-      SrcEditMenuFindInFiles.Command            := GetCommandOnly(ecFindInFiles);
-      SrcEditMenuFindIdentifierReferences.Command:=GetCommandOnly(ecFindIdentifierRefs);
-      SrcEditMenuFindUsedUnitReferences.Command:=GetCommandOnly(ecFindUsedUnitRefs);
+      SrcEditMenuFindNextWordOccurrence.Command := GetCommand(ecFindNextWordOccurrence);
+      SrcEditMenuFindPrevWordOccurrence.Command := GetCommand(ecFindPrevWordOccurrence);
+      SrcEditMenuFindInFiles.Command            := GetCommand(ecFindInFiles);
+      SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
+      SrcEditMenuFindUsedUnitReferences.Command:=GetCommand(ecFindUsedUnitRefs);
     {%endregion}
   {%endregion}
 
   {%region *** Pages section ***}
-    SrcEditMenuClosePage.Command       := GetCommandOnly(ecClose);
+    SrcEditMenuClosePage.Command       := GetCommand(ecClose);
     SrcEditMenuCloseOtherPages.OnClick := @SourceEditorManager.CloseOtherPagesClicked;
     SrcEditMenuCloseOtherPagesToRight.OnClick := @SourceEditorManager.CloseRightPagesClicked;
 
     {$IFnDEF SingleSrcWindow}
-    SrcEditMenuEditorLock.Command           := GetCommandOnly(ecLockEditor);
+    SrcEditMenuEditorLock.Command           := GetCommand(ecLockEditor);
     SrcEditMenuMoveToNewWindow.SyncProperties := False;
-    SrcEditMenuMoveToNewWindow.Command      := GetCommandOnly(ecMoveEditorNewWindow);
+    SrcEditMenuMoveToNewWindow.Command      := GetCommand(ecMoveEditorNewWindow);
     SrcEditMenuMoveToOtherWindowNew.SyncProperties := False;
-    SrcEditMenuMoveToOtherWindowNew.Command := GetCommandOnly(ecMoveEditorNewWindow);
+    SrcEditMenuMoveToOtherWindowNew.Command := GetCommand(ecMoveEditorNewWindow);
     SrcEditMenuCopyToNewWindow.SyncProperties := False;
-    SrcEditMenuCopyToNewWindow.Command      := GetCommandOnly(ecCopyEditorNewWindow);
+    SrcEditMenuCopyToNewWindow.Command      := GetCommand(ecCopyEditorNewWindow);
     SrcEditMenuCopyToOtherWindowNew.SyncProperties := False;
-    SrcEditMenuCopyToOtherWindowNew.Command := GetCommandOnly(ecCopyEditorNewWindow);
+    SrcEditMenuCopyToOtherWindowNew.Command := GetCommand(ecCopyEditorNewWindow);
     {$ENDIF}
   {%endregion}
 
   {%region * Move Page (left/right) *}
-    SrcEditMenuMoveEditorLeft.Command  := GetCommandOnly(ecMoveEditorLeft);
-    SrcEditMenuMoveEditorRight.Command := GetCommandOnly(ecMoveEditorRight);
-    SrcEditMenuMoveEditorFirst.Command := GetCommandOnly(ecMoveEditorLeftmost);
-    SrcEditMenuMoveEditorLast.Command  := GetCommandOnly(ecMoveEditorRightmost);
+    SrcEditMenuMoveEditorLeft.Command  := GetCommand(ecMoveEditorLeft);
+    SrcEditMenuMoveEditorRight.Command := GetCommand(ecMoveEditorRight);
+    SrcEditMenuMoveEditorFirst.Command := GetCommand(ecMoveEditorLeftmost);
+    SrcEditMenuMoveEditorLast.Command  := GetCommand(ecMoveEditorRightmost);
   {%endregion}
 
-  SrcEditMenuOpenFileAtCursor.Command := GetCommandOnly(ecOpenFileAtCursor);
+  SrcEditMenuOpenFileAtCursor.Command := GetCommand(ecOpenFileAtCursor);
 
   {%region * sub menu Flags section *}
     SrcEditMenuReadOnly.OnClick          := @ReadOnlyClicked;
@@ -10836,44 +10839,44 @@ begin
   {%endregion}
 
   {%region *** Clipboard section ***}
-    SrcEditMenuCut.Command:=GetCommandOnly(ecCut);
-    SrcEditMenuCopy.Command:=GetCommandOnly(ecCopy);
-    SrcEditMenuPaste.Command:=GetCommandOnly(ecPaste);
-    SrcEditMenuMultiPaste.Command:=GetCommandOnly(ecMultiPaste);
+    SrcEditMenuCut.Command:=GetCommand(ecCut);
+    SrcEditMenuCopy.Command:=GetCommand(ecCopy);
+    SrcEditMenuPaste.Command:=GetCommand(ecPaste);
+    SrcEditMenuMultiPaste.Command:=GetCommand(ecMultiPaste);
     SrcEditMenuCopyFilename.OnClick:=@CopyFilenameClicked;
-    SrcEditMenuSelectAll.Command:=GetCommandOnly(ecSelectAll);
+    SrcEditMenuSelectAll.Command:=GetCommand(ecSelectAll);
   {%endregion}
 
-  SrcEditMenuNextBookmark.Command:=GetCommandOnly(ecNextBookmark);
-  SrcEditMenuPrevBookmark.Command:=GetCommandOnly(ecPrevBookmark);
-  SrcEditMenuSetFreeBookmark.Command:=GetCommandOnly(ecSetFreeBookmark);
-  SrcEditMenuClearFileBookmark.Command:=GetCommandOnly(ecClearBookmarkForFile);
-  SrcEditMenuClearAllBookmark.Command:=GetCommandOnly(ecClearAllBookmark);
+  SrcEditMenuNextBookmark.Command:=GetCommand(ecNextBookmark);
+  SrcEditMenuPrevBookmark.Command:=GetCommand(ecPrevBookmark);
+  SrcEditMenuSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
+  SrcEditMenuClearFileBookmark.Command:=GetCommand(ecClearBookmarkForFile);
+  SrcEditMenuClearAllBookmark.Command:=GetCommand(ecClearAllBookmark);
 
   for i in TBookmarkNumRange do
-    SrcEditMenuGotoBookmark[i].Command := GetCommandOnly(ecGotoMarker0 + i);
+    SrcEditMenuGotoBookmark[i].Command := GetCommand(ecGotoMarker0 + i);
   GetCommand_ButtonDrop(ecGotoBookmarks ,SrcEditSubMenuGotoBookmarks);        // [ ▼]
 
   for i in TBookmarkNumRange do
-    SrcEditMenuToggleBookmark[i].Command := GetCommandOnly(ecToggleMarker0 + i);
+    SrcEditMenuToggleBookmark[i].Command := GetCommand(ecToggleMarker0 + i);
   GetCommand_ButtonDrop(ecToggleBookmarks ,SrcEditSubMenuToggleBookmarks);    // [ ▼]
 
   {%region *** Source Section ***}
-    SrcEditMenuEncloseSelection.Command:=GetCommandOnly(ecSelectionEnclose);
-    SrcEditMenuEncloseInIFDEF.Command:=GetCommandOnly(ecSelectionEncloseIFDEF);
-    SrcEditMenuCompleteCode.Command:=GetCommandOnly(ecCompleteCode);
-    SrcEditMenuUseUnit.Command:=GetCommandOnly(ecUseUnit);
+    SrcEditMenuEncloseSelection.Command:=GetCommand(ecSelectionEnclose);
+    SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
+    SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
+    SrcEditMenuUseUnit.Command:=GetCommand(ecUseUnit);
   {%endregion}
 
   {%region *** Refactoring Section ***}
-    SrcEditMenuRenameIdentifier.Command:=GetCommandOnly(ecRenameIdentifier);
-    SrcEditMenuExtractProc.Command:=GetCommandOnly(ecExtractProc);
-    SrcEditMenuInvertAssignment.Command:=GetCommandOnly(ecInvertAssignment);
-    SrcEditMenuShowAbstractMethods.Command:=GetCommandOnly(ecShowAbstractMethods);
-    SrcEditMenuShowEmptyMethods.Command:=GetCommandOnly(ecRemoveEmptyMethods);
-    SrcEditMenuShowUnusedUnits.Command:=GetCommandOnly(ecRemoveUnusedUnits);
-    SrcEditMenuFindOverloads.Command:=GetCommandOnly(ecFindOverloads);
-    SrcEditMenuMakeResourceString.Command:=GetCommandOnly(ecMakeResourceString);
+    SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
+    SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
+    SrcEditMenuInvertAssignment.Command:=GetCommand(ecInvertAssignment);
+    SrcEditMenuShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
+    SrcEditMenuShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
+    SrcEditMenuShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
+    SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
+    SrcEditMenuMakeResourceString.Command:=GetCommand(ecMakeResourceString);
   {%endregion}
 
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
