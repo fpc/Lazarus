@@ -37,7 +37,7 @@ uses
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   Buttons, ButtonPanel, Menus, Spin, XMLPropStorage,
   // IdeIntf
-  IDECommands, MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
+  IDECommands, MenuIntf, ToolBarIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
   // TodoList
   ToDoList, ToDoListStrConsts, ToDoListCore;
 
@@ -92,6 +92,8 @@ procedure Register;
 var
   Key: TIDEShortCut;
   Cat: TIDECommandCategory;
+  MenuCmd: TIDEMenuCommand;
+  ButtonCmd: TIDEButtonCommand;
 begin
   // mattias: move icon resource item_todo to package
   // mattias: add menu item to package editor
@@ -107,8 +109,10 @@ begin
   RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
   // add a menu item in the Edit / Insert Text section
-  RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',lisTDDInsertToDo,
-    nil,nil,InsertToDoCmd,'item_todo');
+  MenuCmd:=RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',
+    lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
+  ButtonCmd:=RegisterIDEButtonCommand(InsertToDoCmd);    // toolbutton
+  ButtonCmd.ImageIndex:=MenuCmd.ImageIndex;
 
   // register shortcut for view todo list
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -117,12 +121,14 @@ begin
     Key,nil,@ViewToDoList);
 
   // add a menu item in the view menu
-  RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
-    lisToDoList, nil, nil, ViewToDoListCmd, 'item_todo');
+  MenuCmd:=RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
+    lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
+  ButtonCmd:=RegisterIDEButtonCommand(ViewToDoListCmd);    // toolbutton
+  ButtonCmd.ImageIndex:=MenuCmd.ImageIndex;
 
   // add a menu item in the package editor
   RegisterIDEMenuCommand(PkgEditMenuSectionMisc, 'ViewPkgToDoList',
-    lisToDoList, nil, nil, ViewToDoListCmd, 'item_todo');
+    lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
 
   // register window creator
   IDEWindowCreators.Add(ToDoWindowName,@CreateIDEToDoWindow,nil,'250','250','','');
