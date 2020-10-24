@@ -157,7 +157,7 @@ type
                         AComponent: TComponent): TCustomForm; virtual; abstract;
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); virtual; abstract;
 
-    procedure DoMergeDefaultProjectOptions(AProject: TProject);
+    procedure DoMergeDefaultProjectOptions;
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
     procedure DoSwitchToFormSrc(ADesigner: TIDesigner;
@@ -284,8 +284,9 @@ type
     procedure DoOnAdded; override;
   end;
 
-function  GetMainIde: TMainIDEBase;
+function GetMainIde: TMainIDEBase;
 function PrepareForCompileWithMsg: TModalResult; // Ensure starting compilation is OK.
+function UpdateTargetFilename(const ABaseFN: String): Boolean;
 
 property MainIDE: TMainIDEBase read GetMainIde;
 
@@ -310,6 +311,25 @@ begin
     IDEMessageDialog(lisCanNotCompileProject,lisTheProjectHasNoMainSourceFile,mtError,[mbCancel])
   else
     Result:=MainIDE.PrepareForCompile;
+end;
+
+function UpdateTargetFilename(const ABaseFN: String): Boolean;
+// Return True if Project1.TargetFilename was actually changed.
+var
+  TargetF, StemFN, NewTargetFN: String;
+  i: Integer;
+begin
+  TargetF:=ExtractFileName(Project1.TargetFilename);
+  StemFN:=ExtractFileNameOnly(ABaseFN);
+  if (TargetF='') or (StemFN='') then exit(False);   // Using default -> ok
+  Result:=CompareFilenames(TargetF,StemFN)<>0;       // Names differ -> update.
+  if Result then
+  begin
+    NewTargetFN:=ExtractFilePath(Project1.TargetFilename) + StemFN
+               + ExtractFileExt(TargetF);
+    for i := 0 to Project1.BuildModes.Count-1 do     // Update all buildmodes.
+      Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTargetFN;
+  end;
 end;
 
 { TNewFormUnitToolButton }
@@ -731,33 +751,23 @@ begin
   Result:=ToolStatus<>itCodeTools;
 end;
 
-procedure TMainIDEBase.DoMergeDefaultProjectOptions(AProject: TProject);
+procedure TMainIDEBase.DoMergeDefaultProjectOptions;
 var
   AFilename: String;
-  ShortFilename: String;
 begin
   // load default project options if exists
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
   if not FileExistsUTF8(AFilename) then
     CopySecondaryConfigFile(DefaultProjectOptionsFilename);
   if FileExistsUTF8(AFilename) then
-    if AProject.ReadProject(AFilename,nil,False)<>mrOk then
+    if Project1.ReadProject(AFilename,nil,False)<>mrOk then
       DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
 
   // change target file name
-  AFilename:=ExtractFileName(AProject.CompilerOptions.TargetFilename);
-  if AFilename='' then
-    exit; // using default -> ok
-  if CompareFilenames(AFilename,ExtractFilename(AProject.ProjectInfoFile))=0
-  then exit; // target file name and project name fit -> ok
-
-  // change target file to project name
-  ShortFilename:=ExtractFileNameOnly(AProject.ProjectInfoFile);
-  if ShortFilename<>'' then
-    AProject.CompilerOptions.TargetFilename:=
-      ExtractFilePath(AProject.CompilerOptions.TargetFilename)
-        +ShortFilename+ExtractFileExt(AFilename);
-  AProject.CompilerOptions.Modified:=false;
+  Assert(Project1.CompilerOptions.TargetFilename = Project1.TargetFilename,
+         'DoMergeDefaultProjectOptions: TargetFilename mismatch.');
+  if UpdateTargetFilename(Project1.ProjectInfoFile) then
+    Project1.CompilerOptions.Modified:=false;
 end;
 
 procedure TMainIDEBase.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;

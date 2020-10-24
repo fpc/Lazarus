@@ -3604,7 +3604,7 @@ begin
       if Project1.CompilerOptions.CompilerPath='' then
         Project1.CompilerOptions.CompilerPath:=DefaultCompilerPath;
       if pfUseDefaultCompilerOptions in Project1.Flags then begin
-        MainIDE.DoMergeDefaultProjectOptions(Project1);
+        MainIDE.DoMergeDefaultProjectOptions;
         Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];
       end;
       Project1.AutoAddOutputDirToIncPath;
@@ -3849,11 +3849,9 @@ Begin
           mtError,[mbOk],'');
         exit;
       end;
-      if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
-                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert],false)
-      then
-        exit;
-      if CreateProjectForProgram(PreReadBuf)=mrOk then
+      if (LoadCodeBuffer(PreReadBuf,AFileName,
+                       [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert],false)<>mrOk)
+      or (CreateProjectForProgram(PreReadBuf)=mrOk) then
         exit;
     end;
   finally
@@ -3904,12 +3902,13 @@ var
 begin
   Project1.BeginUpdate(true);
   try
-    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    if ProjInspector<>nil then
+      ProjInspector.LazProject:=Project1;
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
     Project1.CompilerOptions.TargetFilename:=ExtractFileNameOnly(ProgramBuf.Filename);
-    MainIDE.DoMergeDefaultProjectOptions(Project1);
+    MainIDE.DoMergeDefaultProjectOptions;
     MainIDE.UpdateCaption;
     IncreaseCompilerParseStamp;
     // add and load default required packages
@@ -7618,10 +7617,9 @@ var
   SaveDialog: TSaveDialog;
   NewBuf, OldBuf: TCodeBuffer;
   TitleWasDefault: Boolean;
-  NewLPIFilename, NewProgramFN, NewProgramName, AFilename, NewTargetFN: String;
+  NewLPIFilename, NewProgramFN, NewProgramName, AFilename: String;
   AText, ACaption, Ext: string;
   OldSourceCode, OldProjectDir, prDir: string;
-  i: Integer;
 begin
   Project1.BeginUpdate(false);
   try
@@ -7688,9 +7686,8 @@ begin
 
         // append default extension
         if UseMainSourceFile then
-        begin
-          NewLPIFilename:=ChangeFileExt(AFilename,'.lpi');
-        end else
+          NewLPIFilename:=ChangeFileExt(AFilename,'.lpi')
+        else
         begin
           NewLPIFilename:=AFilename;
           if ExtractFileExt(NewLPIFilename)='' then
@@ -7754,8 +7751,7 @@ begin
         if Result=mrCancel then exit;
       end;
     end
-    else
-    begin
+    else begin
       if FileExistsUTF8(NewProgramFN) then
       begin
         ACaption:=lisOverwriteFile;
@@ -7766,21 +7762,7 @@ begin
     end;
 
     TitleWasDefault := Project1.TitleIsDefault(true);
-
-    // set new project target filename
-    if (Project1.TargetFilename<>'')
-    and ( (CompareText(ExtractFileNameOnly(Project1.TargetFilename),
-                       ExtractFileNameOnly(Project1.ProjectInfoFile))=0)
-        or (Project1.ProjectInfoFile='') ) then
-    begin
-      // target file is default => change to all build modes, but keep sub directories
-      // And keep old extension.
-      NewTargetFN:=ExtractFilePath(Project1.TargetFilename)+ExtractFileNameOnly(NewProgramFN)
-        +ExtractFileExt(Project1.TargetFilename);
-      for i := 0 to Project1.BuildModes.Count-1 do
-        Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTargetFN;
-      //DebugLn(['ShowSaveProjectAsDialog changed targetfilename to ',Project1.TargetFilename]);
-    end;
+    UpdateTargetFilename(NewProgramFN);   // set new project target filename
 
     // set new project filename
     Project1.ProjectInfoFile:=NewLPIFilename;
