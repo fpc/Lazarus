@@ -2842,6 +2842,26 @@ components/lazreport/samples/barcode/cb.res -text
 components/lazreport/samples/barcode/cbunit.lfm svneol=native#text/plain
 components/lazreport/samples/barcode/cbunit.pas svneol=native#text/pascal
 components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text/xml
+components/lazreport/samples/console_cgi_http/README.txt svneol=native#text/plain
+components/lazreport/samples/console_cgi_http/conapp.pas svneol=native#text/pascal
+components/lazreport/samples/console_cgi_http/data/SalesCustomer.dbf -text
+components/lazreport/samples/console_cgi_http/data/disco.dbf -text
+components/lazreport/samples/console_cgi_http/data/disco.mdx -text
+components/lazreport/samples/console_cgi_http/demo_cross.lrf svneol=native#text/xml
+components/lazreport/samples/console_cgi_http/deploy.bat svneol=native#text/x-msdos-program
+components/lazreport/samples/console_cgi_http/disks.lrf svneol=native#text/xml
+components/lazreport/samples/console_cgi_http/favicon.ico -text
+components/lazreport/samples/console_cgi_http/frroundrecttester.lrf svneol=native#text/xml
+components/lazreport/samples/console_cgi_http/images.lrf svneol=native#text/xml
+components/lazreport/samples/console_cgi_http/images/splash_logo.png -text
+components/lazreport/samples/console_cgi_http/index.html svneol=native#text/plain
+components/lazreport/samples/console_cgi_http/reporter.lpi svneol=native#text/plain
+components/lazreport/samples/console_cgi_http/reporter.lpr svneol=native#text/pascal
+components/lazreport/samples/console_cgi_http/reporter.res -text
+components/lazreport/samples/console_cgi_http/runtest.sh svneol=native#text/plain
+components/lazreport/samples/console_cgi_http/unitreporter.pas svneol=native#text/pascal
+components/lazreport/samples/console_cgi_http/unitweb.lfm svneol=native#text/plain
+components/lazreport/samples/console_cgi_http/unitweb.pas svneol=native#text/pascal
 components/lazreport/samples/detail_reports/ReportImport.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/detail_reports/ReportWithDBF.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/detail_reports/ReportWithSQLDB.lrf svneol=LF#text/xml eol=lf
@@ -2916,26 +2936,6 @@ components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.res -t
 components/lazreport/samples/enduser_reports/test_lr_formstorage/unit1.lfm svneol=native#text/plain
 components/lazreport/samples/enduser_reports/test_lr_formstorage/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/index.txt svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/README.txt svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/conapp.pas svneol=native#text/pascal
-components/lazreport/samples/nogui_cgi/data/SalesCustomer.dbf -text
-components/lazreport/samples/nogui_cgi/data/disco.dbf -text
-components/lazreport/samples/nogui_cgi/data/disco.mdx -text
-components/lazreport/samples/nogui_cgi/demo_cross.lrf svneol=native#text/xml
-components/lazreport/samples/nogui_cgi/deploy.bat svneol=native#text/x-msdos-program
-components/lazreport/samples/nogui_cgi/disks.lrf svneol=native#text/xml
-components/lazreport/samples/nogui_cgi/favicon.ico -text
-components/lazreport/samples/nogui_cgi/frroundrecttester.lrf svneol=native#text/xml
-components/lazreport/samples/nogui_cgi/images.lrf svneol=native#text/xml
-components/lazreport/samples/nogui_cgi/images/splash_logo.png -text
-components/lazreport/samples/nogui_cgi/index.html svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/reporter.lpi svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/reporter.lpr svneol=native#text/pascal
-components/lazreport/samples/nogui_cgi/reporter.res -text
-components/lazreport/samples/nogui_cgi/runtest.sh svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/unitreporter.pas svneol=native#text/pascal
-components/lazreport/samples/nogui_cgi/unitweb.lfm svneol=native#text/plain
-components/lazreport/samples/nogui_cgi/unitweb.pas svneol=native#text/pascal
 components/lazreport/samples/report_url/report_url.lpi svneol=native#text/plain
 components/lazreport/samples/report_url/report_url.lpr svneol=native#text/pascal
 components/lazreport/samples/report_url/unit1.lfm svneol=native#text/plain
