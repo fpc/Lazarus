@@ -2873,28 +2873,12 @@ end;
 
 procedure TMainIDE.LoadMenuShortCuts;
 
-  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
-  begin
-    Result:=IDECommandList.FindIDECommand(ACommand);
-    if Result<>nil then
-      ToolButton := RegisterIDEButtonCommand(Result)
-    else
-      ToolButton := nil;
-  end;
-
-  function GetCommand(ACommand: word): TIDECommand;
-  var
-    ToolButton: TIDEButtonCommand;
-  begin
-    Result:=GetCmdAndBtn(ACommand, ToolButton);
-  end;
-
   function GetCommand(ACommand: word; const OnExecute: TNotifyEvent;
     ToolButtonClass: TIDEToolButtonClass = nil): TIDECommand;
   var
     ToolButton: TIDEButtonCommand;
   begin
-    Result:=GetCmdAndBtn(ACommand, ToolButton);
+    Result:=GetCommandAndButton(ACommand, ToolButton);
     if OnExecute<>nil then begin
       if Result.OnExecute<>nil then
         debugln(['WARNING: GetCommand ',ACommand,' OnExecute set twice. Different=',OnExecute<>Result.OnExecute]);
@@ -2915,172 +2899,172 @@ begin
     // file menu
     itmFileNewUnit.Command:=GetCommand(ecNewUnit, nil, TNewUnitToolButton);
     itmFileNewForm.Command:=GetCommand(ecNewForm, nil, TNewFormToolButton);
-    itmFileNewOther.Command:=GetCommand(ecNew);
+    itmFileNewOther.Command:=GetCommandOnly(ecNew);
     itmFileOpen.Command:=GetCommand(ecOpen, nil, TOpenFileToolButton);
-    itmFileOpenUnit.Command:=GetCommand(ecOpenUnit);
+    itmFileOpenUnit.Command:=GetCommandOnly(ecOpenUnit);
     GetCommand_ButtonDrop(ecOpenRecent, itmFileRecentOpen);
-    itmFileRevert.Command:=GetCommand(ecRevert);
-    itmFileSave.Command:=GetCommand(ecSave);
-    itmFileSaveAs.Command:=GetCommand(ecSaveAs);
-    itmFileSaveAll.Command:=GetCommand(ecSaveAll);
-    itmFileClose.Command:=GetCommand(ecClose);
-    itmFileCloseAll.Command:=GetCommand(ecCloseAll);
-    itmFileCleanDirectory.Command:=GetCommand(ecCleanDirectory);
-    itmFileQuit.Command:=GetCommand(ecQuit);
+    itmFileRevert.Command:=GetCommandOnly(ecRevert);
+    itmFileSave.Command:=GetCommandOnly(ecSave);
+    itmFileSaveAs.Command:=GetCommandOnly(ecSaveAs);
+    itmFileSaveAll.Command:=GetCommandOnly(ecSaveAll);
+    itmFileClose.Command:=GetCommandOnly(ecClose);
+    itmFileCloseAll.Command:=GetCommandOnly(ecCloseAll);
+    itmFileCleanDirectory.Command:=GetCommandOnly(ecCleanDirectory);
+    itmFileQuit.Command:=GetCommandOnly(ecQuit);
 
     // edit menu
-    itmEditUndo.Command:=GetCommand(ecUndo);
-    itmEditRedo.Command:=GetCommand(ecRedo);
-    itmEditCut.Command:=GetCommand(ecCut);
-    itmEditCopy.Command:=GetCommand(ecCopy);
-    itmEditPaste.Command:=GetCommand(ecPaste);
-    itmEditMultiPaste.Command:=GetCommand(ecMultiPaste);
+    itmEditUndo.Command:=GetCommandOnly(ecUndo);
+    itmEditRedo.Command:=GetCommandOnly(ecRedo);
+    itmEditCut.Command:=GetCommandOnly(ecCut);
+    itmEditCopy.Command:=GetCommandOnly(ecCopy);
+    itmEditPaste.Command:=GetCommandOnly(ecPaste);
+    itmEditMultiPaste.Command:=GetCommandOnly(ecMultiPaste);
 
-    itmEditSelectAll.Command:=GetCommand(ecSelectAll);
-    itmEditSelectToBrace.Command:=GetCommand(ecSelectToBrace);
-    itmEditSelectCodeBlock.Command:=GetCommand(ecSelectCodeBlock);
-    itmEditSelectWord.Command:=GetCommand(ecSelectWord);
-    itmEditSelectLine.Command:=GetCommand(ecSelectLine);
-    itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
+    itmEditSelectAll.Command:=GetCommandOnly(ecSelectAll);
+    itmEditSelectToBrace.Command:=GetCommandOnly(ecSelectToBrace);
+    itmEditSelectCodeBlock.Command:=GetCommandOnly(ecSelectCodeBlock);
+    itmEditSelectWord.Command:=GetCommandOnly(ecSelectWord);
+    itmEditSelectLine.Command:=GetCommandOnly(ecSelectLine);
+    itmEditSelectParagraph.Command:=GetCommandOnly(ecSelectParagraph);
 
-    itmEditIndentBlock.Command:=GetCommand(ecBlockIndent);
-    itmEditUnindentBlock.Command:=GetCommand(ecBlockUnindent);
-    itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
-    itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
-    itmEditSwapCaseBlock.Command:=GetCommand(ecSelectionSwapCase);
-    itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
-    itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
-    itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
+    itmEditIndentBlock.Command:=GetCommandOnly(ecBlockIndent);
+    itmEditUnindentBlock.Command:=GetCommandOnly(ecBlockUnindent);
+    itmEditUpperCaseBlock.Command:=GetCommandOnly(ecSelectionUpperCase);
+    itmEditLowerCaseBlock.Command:=GetCommandOnly(ecSelectionLowerCase);
+    itmEditSwapCaseBlock.Command:=GetCommandOnly(ecSelectionSwapCase);
+    itmEditSortBlock.Command:=GetCommandOnly(ecSelectionSort);
+    itmEditTabsToSpacesBlock.Command:=GetCommandOnly(ecSelectionTabs2Spaces);
+    itmEditSelectionBreakLines.Command:=GetCommandOnly(ecSelectionBreakLines);
 
-    itmEditInsertCharacter.Command:=GetCommand(ecInsertCharacter);
+    itmEditInsertCharacter.Command:=GetCommandOnly(ecInsertCharacter);
 
     // search menu
-    itmSearchFind.Command:=GetCommand(ecFind);
-    itmSearchFindNext.Command:=GetCommand(ecFindNext);
-    itmSearchFindPrevious.Command:=GetCommand(ecFindPrevious);
-    itmSearchFindInFiles.Command:=GetCommand(ecFindInFiles);
-    itmSearchFindIdentifierRefs.Command:=GetCommand(ecFindIdentifierRefs);
-    itmSearchReplace.Command:=GetCommand(ecReplace);
-    itmIncrementalFind.Command:=GetCommand(ecIncrementalFind);
-    itmGotoLine.Command:=GetCommand(ecGotoLineNumber);
-    itmJumpBack.Command:=GetCommand(ecJumpBack);
-    itmJumpForward.Command:=GetCommand(ecJumpForward);
-    itmAddJumpPoint.Command:=GetCommand(ecAddJumpPoint);
-    itmJumpToNextError.Command:=GetCommand(ecJumpToNextError);
-    itmJumpToPrevError.Command:=GetCommand(ecJumpToPrevError);
-    itmSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
-    itmJumpToNextBookmark.Command:=GetCommand(ecNextBookmark);
-    itmJumpToPrevBookmark.Command:=GetCommand(ecPrevBookmark);
+    itmSearchFind.Command:=GetCommandOnly(ecFind);
+    itmSearchFindNext.Command:=GetCommandOnly(ecFindNext);
+    itmSearchFindPrevious.Command:=GetCommandOnly(ecFindPrevious);
+    itmSearchFindInFiles.Command:=GetCommandOnly(ecFindInFiles);
+    itmSearchFindIdentifierRefs.Command:=GetCommandOnly(ecFindIdentifierRefs);
+    itmSearchReplace.Command:=GetCommandOnly(ecReplace);
+    itmIncrementalFind.Command:=GetCommandOnly(ecIncrementalFind);
+    itmGotoLine.Command:=GetCommandOnly(ecGotoLineNumber);
+    itmJumpBack.Command:=GetCommandOnly(ecJumpBack);
+    itmJumpForward.Command:=GetCommandOnly(ecJumpForward);
+    itmAddJumpPoint.Command:=GetCommandOnly(ecAddJumpPoint);
+    itmJumpToNextError.Command:=GetCommandOnly(ecJumpToNextError);
+    itmJumpToPrevError.Command:=GetCommandOnly(ecJumpToPrevError);
+    itmSetFreeBookmark.Command:=GetCommandOnly(ecSetFreeBookmark);
+    itmJumpToNextBookmark.Command:=GetCommandOnly(ecNextBookmark);
+    itmJumpToPrevBookmark.Command:=GetCommandOnly(ecPrevBookmark);
     GetCommand_ButtonDrop(ecJumpToSection, itmJumpToSection);
     itmJumpToInterface.Command:=GetCommand_DropDown(ecJumpToInterface, itmJumpToSection);
     itmJumpToInterfaceUses.Command:=GetCommand_DropDown(ecJumpToInterfaceUses, itmJumpToSection);
     itmJumpToImplementation.Command:=GetCommand_DropDown(ecJumpToImplementation, itmJumpToSection);
     itmJumpToImplementationUses.Command:=GetCommand_DropDown(ecJumpToImplementationUses, itmJumpToSection);
     itmJumpToInitialization.Command:=GetCommand_DropDown(ecJumpToInitialization, itmJumpToSection);
-    GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
+    GetCommandAndButton(ecJumpToProcedureHeader, xBtnItem);
     xBtnItem.Caption := lisMenuJumpToProcedureHeader;
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
     xBtnItem.ImageIndex := IDEImages.LoadImage('menu_jumpto_procedureheader');
-    GetCmdAndBtn(ecJumpToProcedureBegin, xBtnItem);
+    GetCommandAndButton(ecJumpToProcedureBegin, xBtnItem);
     xBtnItem.Caption := lisMenuJumpToProcedureBegin;
     xBtnItem.ImageIndex := IDEImages.LoadImage('menu_jumpto_procedurebegin');
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
-    itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
-    itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
-    itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);
-    itmOpenFileAtCursor.Command:=GetCommand(ecOpenFileAtCursor);
-    itmGotoIncludeDirective.Command:=GetCommand(ecGotoIncludeDirective);
-    itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
+    itmFindBlockOtherEnd.Command:=GetCommandOnly(ecFindBlockOtherEnd);
+    itmFindBlockStart.Command:=GetCommandOnly(ecFindBlockStart);
+    itmFindDeclaration.Command:=GetCommandOnly(ecFindDeclaration);
+    itmOpenFileAtCursor.Command:=GetCommandOnly(ecOpenFileAtCursor);
+    itmGotoIncludeDirective.Command:=GetCommandOnly(ecGotoIncludeDirective);
+    itmSearchProcedureList.Command:=GetCommandOnly(ecProcedureList);
 
     // view menu
-    itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
-    itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
-    itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
-    itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
-    itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
-    itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
-    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
-    itmViewComponents.Command:=GetCommand(ecViewComponents);
-    itmMacroListView.Command:=GetCommand(ecViewMacroList);
-    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
-    itmViewMessage.Command:=GetCommand(ecToggleMessages);
-    itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
-    itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
-    itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
-    //itmPkgPackageLinks.Command:=GetCommand(ec?);
+    itmViewToggleFormUnit.Command:=GetCommandOnly(ecToggleFormUnit);
+    itmViewInspector.Command:=GetCommandOnly(ecToggleObjectInsp);
+    itmViewSourceEditor.Command:=GetCommandOnly(ecToggleSourceEditor);
+    itmViewCodeExplorer.Command:=GetCommandOnly(ecToggleCodeExpl);
+    itmViewFPDocEditor.Command:=GetCommandOnly(ecToggleFPDocEditor);
+    itmViewCodeBrowser.Command:=GetCommandOnly(ecToggleCodeBrowser);
+    itmViewRestrictionBrowser.Command:=GetCommandOnly(ecToggleRestrictionBrowser);
+    itmViewComponents.Command:=GetCommandOnly(ecViewComponents);
+    itmMacroListView.Command:=GetCommandOnly(ecViewMacroList);
+    itmJumpHistory.Command:=GetCommandOnly(ecViewJumpHistory);
+    itmViewMessage.Command:=GetCommandOnly(ecToggleMessages);
+    itmViewSearchResults.Command:=GetCommandOnly(ecToggleSearchResults);
+    itmViewAnchorEditor.Command:=GetCommandOnly(ecViewAnchorEditor);
+    itmViewTabOrder.Command:=GetCommandOnly(ecViewTabOrder);
+    //itmPkgPackageLinks.Command:=GetCommandOnly(ec?);
 
     // source menu
-    itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
-    itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
-    itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
-    itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
-    itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
-    itmSourceCompleteCodeInteractive.Command:=GetCommand(ecCompleteCodeInteractive);
-    itmSourceUseUnit.Command:=GetCommand(ecUseUnit);
+    itmSourceCommentBlock.Command:=GetCommandOnly(ecSelectionComment);
+    itmSourceUncommentBlock.Command:=GetCommandOnly(ecSelectionUncomment);
+    itmSourceToggleComment.Command:=GetCommandOnly(ecToggleComment);
+    itmSourceEncloseBlock.Command:=GetCommandOnly(ecSelectionEnclose);
+    itmSourceEncloseInIFDEF.Command:=GetCommandOnly(ecSelectionEncloseIFDEF);
+    itmSourceCompleteCodeInteractive.Command:=GetCommandOnly(ecCompleteCodeInteractive);
+    itmSourceUseUnit.Command:=GetCommandOnly(ecUseUnit);
 
-    itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
-    itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);
+    itmSourceSyntaxCheck.Command:=GetCommandOnly(ecSyntaxCheck);
+    itmSourceGuessUnclosedBlock.Command:=GetCommandOnly(ecGuessUnclosedBlock);
     {$IFDEF GuessMisplacedIfdef}
-    itmSourceGuessMisplacedIFDEF.Command:=GetCommand(ecGuessMisplacedIFDEF);
+    itmSourceGuessMisplacedIFDEF.Command:=GetCommandOnly(ecGuessMisplacedIFDEF);
     {$ENDIF}
 
-    itmSourceInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
-    itmSourceInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
-    itmSourceInsertCVSHeader.Command:=GetCommand(ecInsertCVSHeader);
-    itmSourceInsertCVSID.Command:=GetCommand(ecInsertCVSID);
-    itmSourceInsertCVSLog.Command:=GetCommand(ecInsertCVSLog);
-    itmSourceInsertCVSName.Command:=GetCommand(ecInsertCVSName);
-    itmSourceInsertCVSRevision.Command:=GetCommand(ecInsertCVSRevision);
-    itmSourceInsertCVSSource.Command:=GetCommand(ecInsertCVSSource);
+    itmSourceInsertCVSAuthor.Command:=GetCommandOnly(ecInsertCVSAuthor);
+    itmSourceInsertCVSDate.Command:=GetCommandOnly(ecInsertCVSDate);
+    itmSourceInsertCVSHeader.Command:=GetCommandOnly(ecInsertCVSHeader);
+    itmSourceInsertCVSID.Command:=GetCommandOnly(ecInsertCVSID);
+    itmSourceInsertCVSLog.Command:=GetCommandOnly(ecInsertCVSLog);
+    itmSourceInsertCVSName.Command:=GetCommandOnly(ecInsertCVSName);
+    itmSourceInsertCVSRevision.Command:=GetCommandOnly(ecInsertCVSRevision);
+    itmSourceInsertCVSSource.Command:=GetCommandOnly(ecInsertCVSSource);
 
-    itmSourceInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
-    itmSourceInsertGPLNoticeTranslated.Command:=GetCommand(ecInsertGPLNoticeTranslated);
-    itmSourceInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
-    itmSourceInsertLGPLNoticeTranslated.Command:=GetCommand(ecInsertLGPLNoticeTranslated);
-    itmSourceInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
-    itmSourceInsertModifiedLGPLNoticeTranslated.Command:=GetCommand(ecInsertModifiedLGPLNoticeTranslated);
-    itmSourceInsertMITNotice.Command:=GetCommand(ecInsertMITNotice);
-    itmSourceInsertMITNoticeTranslated.Command:=GetCommand(ecInsertMITNoticeTranslated);
-    itmSourceInsertUsername.Command:=GetCommand(ecInsertUserName);
-    itmSourceInsertDateTime.Command:=GetCommand(ecInsertDateTime);
-    itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
-    itmSourceInsertGUID.Command:=GetCommand(ecInsertGUID);
-    itmSourceInsertFilename.Command:=GetCommand(ecInsertFilename);
+    itmSourceInsertGPLNotice.Command:=GetCommandOnly(ecInsertGPLNotice);
+    itmSourceInsertGPLNoticeTranslated.Command:=GetCommandOnly(ecInsertGPLNoticeTranslated);
+    itmSourceInsertLGPLNotice.Command:=GetCommandOnly(ecInsertLGPLNotice);
+    itmSourceInsertLGPLNoticeTranslated.Command:=GetCommandOnly(ecInsertLGPLNoticeTranslated);
+    itmSourceInsertModifiedLGPLNotice.Command:=GetCommandOnly(ecInsertModifiedLGPLNotice);
+    itmSourceInsertModifiedLGPLNoticeTranslated.Command:=GetCommandOnly(ecInsertModifiedLGPLNoticeTranslated);
+    itmSourceInsertMITNotice.Command:=GetCommandOnly(ecInsertMITNotice);
+    itmSourceInsertMITNoticeTranslated.Command:=GetCommandOnly(ecInsertMITNoticeTranslated);
+    itmSourceInsertUsername.Command:=GetCommandOnly(ecInsertUserName);
+    itmSourceInsertDateTime.Command:=GetCommandOnly(ecInsertDateTime);
+    itmSourceInsertChangeLogEntry.Command:=GetCommandOnly(ecInsertChangeLogEntry);
+    itmSourceInsertGUID.Command:=GetCommandOnly(ecInsertGUID);
+    itmSourceInsertFilename.Command:=GetCommandOnly(ecInsertFilename);
 
-    itmSourceUnitInfo.Command:=GetCommand(ecViewUnitInfo);
-    itmSourceUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
+    itmSourceUnitInfo.Command:=GetCommandOnly(ecViewUnitInfo);
+    itmSourceUnitDependencies.Command:=GetCommandOnly(ecViewUnitDependencies);
 
     // refactor menu
-    itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
-    itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
-    itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);
+    itmRefactorRenameIdentifier.Command:=GetCommandOnly(ecRenameIdentifier);
+    itmRefactorExtractProc.Command:=GetCommandOnly(ecExtractProc);
+    itmRefactorInvertAssignment.Command:=GetCommandOnly(ecInvertAssignment);
 
-    itmRefactorShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
-    itmRefactorShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
-    itmRefactorShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
+    itmRefactorShowAbstractMethods.Command:=GetCommandOnly(ecShowAbstractMethods);
+    itmRefactorShowEmptyMethods.Command:=GetCommandOnly(ecRemoveEmptyMethods);
+    itmRefactorShowUnusedUnits.Command:=GetCommandOnly(ecRemoveUnusedUnits);
     {$IFDEF EnableFindOverloads}
-    itmRefactorFindOverloads.Command:=GetCommand(ecFindOverloads);
+    itmRefactorFindOverloads.Command:=GetCommandOnly(ecFindOverloads);
     {$ENDIF}
-    itmRefactorMakeResourceString.Command:=GetCommand(ecMakeResourceString);
+    itmRefactorMakeResourceString.Command:=GetCommandOnly(ecMakeResourceString);
 
     // project menu
-    itmProjectNew.Command:=GetCommand(ecNewProject);
-    itmProjectNewFromFile.Command:=GetCommand(ecNewProjectFromFile);
+    itmProjectNew.Command:=GetCommandOnly(ecNewProject);
+    itmProjectNewFromFile.Command:=GetCommandOnly(ecNewProjectFromFile);
     itmProjectOpen.Command:=GetCommand_DropDown(ecOpenProject, itmProjectRecentOpen);
     GetCommand_ButtonDrop(ecOpenRecentProject, itmProjectRecentOpen);
-    itmProjectClose.Command:=GetCommand(ecCloseProject);
-    itmProjectSave.Command:=GetCommand(ecSaveProject);
-    itmProjectSaveAs.Command:=GetCommand(ecSaveProjectAs);
-    itmProjectResaveFormsWithI18n.Command:=GetCommand(ecProjectResaveFormsWithI18n);
-    itmProjectPublish.Command:=GetCommand(ecPublishProject);
-    itmProjectInspector.Command:=GetCommand(ecProjectInspector);
-    itmProjectOptions.Command:=GetCommand(ecProjectOptions);
-    itmProjectAddTo.Command:=GetCommand(ecAddCurUnitToProj);
-    itmProjectRemoveFrom.Command:=GetCommand(ecRemoveFromProj);
-    itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
-    itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
-    itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
-    GetCmdAndBtn(ecProjectChangeBuildMode, xBtnItem);
+    itmProjectClose.Command:=GetCommandOnly(ecCloseProject);
+    itmProjectSave.Command:=GetCommandOnly(ecSaveProject);
+    itmProjectSaveAs.Command:=GetCommandOnly(ecSaveProjectAs);
+    itmProjectResaveFormsWithI18n.Command:=GetCommandOnly(ecProjectResaveFormsWithI18n);
+    itmProjectPublish.Command:=GetCommandOnly(ecPublishProject);
+    itmProjectInspector.Command:=GetCommandOnly(ecProjectInspector);
+    itmProjectOptions.Command:=GetCommandOnly(ecProjectOptions);
+    itmProjectAddTo.Command:=GetCommandOnly(ecAddCurUnitToProj);
+    itmProjectRemoveFrom.Command:=GetCommandOnly(ecRemoveFromProj);
+    itmProjectViewUnits.Command:=GetCommandOnly(ecViewProjectUnits);
+    itmProjectViewForms.Command:=GetCommandOnly(ecViewProjectForms);
+    itmProjectViewSource.Command:=GetCommandOnly(ecViewProjectSource);
+    GetCommandAndButton(ecProjectChangeBuildMode, xBtnItem);
     xBtnItem.Caption := lisChangeBuildMode;
     xBtnItem.ToolButtonClass:=TSetBuildModeToolButton;
     xBtnItem.ImageIndex := IDEImages.LoadImage('menu_compiler_options');
@@ -3105,52 +3089,52 @@ begin
     itmRunMenuStop.Command:=GetCommand(ecStopProgram, @mnuStopProjectClicked);
     itmRunMenuAttach.Command:=GetCommand(ecAttach, @mnuAttachDebuggerClicked);
     itmRunMenuDetach.Command:=GetCommand(ecDetach, @mnuDetachDebuggerClicked);
-    itmRunMenuResetDebugger.Command:=GetCommand(ecResetDebugger);
+    itmRunMenuResetDebugger.Command:=GetCommandOnly(ecResetDebugger);
     itmRunMenuRunParameters.Command:=GetCommand(ecRunParameters, @mnuRunParametersClicked);
     itmRunMenuBuildFile.Command:=GetCommand(ecBuildFile, @mnuBuildFileClicked);
     itmRunMenuRunFile.Command:=GetCommand(ecRunFile, @mnuRunFileClicked);
     itmRunMenuConfigBuildFile.Command:=GetCommand(ecConfigBuildFile, @mnuConfigBuildFileClicked);
 
     // package menu
-    itmPkgNewPackage.Command:=GetCommand(ecNewPackage);
-    itmPkgOpenLoadedPackage.Command:=GetCommand(ecOpenPackage);
+    itmPkgNewPackage.Command:=GetCommandOnly(ecNewPackage);
+    itmPkgOpenLoadedPackage.Command:=GetCommandOnly(ecOpenPackage);
     itmPkgOpenPackageFile.Command:=GetCommand_DropDown(ecOpenPackageFile, itmPkgOpenRecent);
-    itmPkgOpenPackageOfCurUnit.Command:=GetCommand(ecOpenPackageOfCurUnit);
+    itmPkgOpenPackageOfCurUnit.Command:=GetCommandOnly(ecOpenPackageOfCurUnit);
     GetCommand_ButtonDrop(ecOpenRecentPackage, itmPkgOpenRecent);
-    itmPkgAddCurFileToPkg.Command:=GetCommand(ecAddCurFileToPkg);
-    itmPkgAddNewComponentToPkg.Command:=GetCommand(ecNewPkgComponent);
-    itmPkgPkgGraph.Command:=GetCommand(ecPackageGraph);
-    itmPkgPackageLinks.Command:=GetCommand(ecPackageLinks);
-    itmPkgEditInstallPkgs.Command:=GetCommand(ecEditInstallPkgs);
+    itmPkgAddCurFileToPkg.Command:=GetCommandOnly(ecAddCurFileToPkg);
+    itmPkgAddNewComponentToPkg.Command:=GetCommandOnly(ecNewPkgComponent);
+    itmPkgPkgGraph.Command:=GetCommandOnly(ecPackageGraph);
+    itmPkgPackageLinks.Command:=GetCommandOnly(ecPackageLinks);
+    itmPkgEditInstallPkgs.Command:=GetCommandOnly(ecEditInstallPkgs);
 
     // tools menu
-    itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);
-    itmToolRescanFPCSrcDir.Command:=GetCommand(ecRescanFPCSrcDir);
-    itmEnvCodeTemplates.Command:=GetCommand(ecEditCodeTemplates);
-    itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
+    itmEnvGeneralOptions.Command:=GetCommandOnly(ecEnvironmentOptions);
+    itmToolRescanFPCSrcDir.Command:=GetCommandOnly(ecRescanFPCSrcDir);
+    itmEnvCodeTemplates.Command:=GetCommandOnly(ecEditCodeTemplates);
+    itmEnvCodeToolsDefinesEditor.Command:=GetCommandOnly(ecCodeToolsDefinesEd);
 
-    itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
+    itmToolConfigure.Command:=GetCommandOnly(ecExtToolSettings);
 
     itmToolManageDesktops.Command:=GetCommand(ecManageDesktops, nil, TShowDesktopsToolButton);
-    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
-    itmToolDiff.Command:=GetCommand(ecDiff);
+    itmToolManageExamples.Command:=GetCommandOnly(ecManageExamples);
+    itmToolDiff.Command:=GetCommandOnly(ecDiff);
 
-    itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
-    itmToolCheckLFM.Command:=GetCommand(ecCheckLFM);
-    itmToolConvertDelphiUnit.Command:=GetCommand(ecConvertDelphiUnit);
-    itmToolConvertDelphiProject.Command:=GetCommand(ecConvertDelphiProject);
-    itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
-    itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
-    itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
-    itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
+    itmToolConvertDFMtoLFM.Command:=GetCommandOnly(ecConvertDFM2LFM);
+    itmToolCheckLFM.Command:=GetCommandOnly(ecCheckLFM);
+    itmToolConvertDelphiUnit.Command:=GetCommandOnly(ecConvertDelphiUnit);
+    itmToolConvertDelphiProject.Command:=GetCommandOnly(ecConvertDelphiProject);
+    itmToolConvertDelphiPackage.Command:=GetCommandOnly(ecConvertDelphiPackage);
+    itmToolConvertEncoding.Command:=GetCommandOnly(ecConvertEncoding);
+    itmToolBuildLazarus.Command:=GetCommandOnly(ecBuildLazarus);
+    itmToolConfigureBuildLazarus.Command:=GetCommandOnly(ecConfigBuildLazarus);
 
     // window menu
-    itmWindowManager.Command:=GetCommand(ecManageSourceEditors);
+    itmWindowManager.Command:=GetCommandOnly(ecManageSourceEditors);
 
     // help menu
-    itmHelpAboutLazarus.Command:=GetCommand(ecAboutLazarus);
-    itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
-    itmHelpReportingBug.Command:=GetCommand(ecReportingBug);
+    itmHelpAboutLazarus.Command:=GetCommandOnly(ecAboutLazarus);
+    itmHelpOnlineHelp.Command:=GetCommandOnly(ecOnlineHelp);
+    itmHelpReportingBug.Command:=GetCommandOnly(ecReportingBug);
   end;
 
   SourceEditorManager.SetupShortCuts;
