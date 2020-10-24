@@ -7262,47 +7262,21 @@ begin
   FHasPaint := True;
   AForm := THintWindow(LCLObject);
 
-  FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtWindow, wtHintWindow];
+  FWidgetType := [wtWidget, wtContainer, wtWindow, wtHintWindow];
 
   Result := TGtkWindow.new(GTK_WINDOW_POPUP);
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
-
-  if (AForm.Menu <> nil) then
-  begin
-    FMenuBar := TGtkMenuBar.new; // our menubar (needed for main menu)
-    // MenuBar
-    //  -> Menu    Menu2
-    //    Item 1   Item 3
-    //    Item 2
-    g_object_set_data(Result,'lclmenubar',GPointer(1));
-    FBox^.pack_start(FMenuBar, False, False, 0);
-  end;
-
-  FScrollWin := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-  g_object_set_data(FScrollWin,'lclscrollingwindow',GPointer(1));
-  g_object_set_data(PGObject(FScrollWin), 'lclwidget', Self);
-
-
-  //FCentralWidget := TGtkLayout.new(nil, nil);
-  FCentralWidget := TGtkFixed.new;
-  FCentralWidget^.set_has_window(True);
-  FCentralWidget^.show;
-
-  FScrollWin^.add_with_viewport(FCentralWidget);
-  // FScrollWin^.add(FCentralWidget);
-  FScrollWin^.show;
-  FBox^.pack_end(FScrollWin, True, True, 0);
-  FBox^.show;
-
-  FScrollWin^.get_vscrollbar^.set_can_focus(False);
-  FScrollWin^.get_hscrollbar^.set_can_focus(False);
-  FScrollWin^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   PGtkContainer(Result)^.add(FBox);
-  // FWidgetType := FWidgetType + [wtContainer, wtWindow];
-  // Result := TGtkWindow.new(GTK_WINDOW_POPUP);
-  // FCentralWidget := TGtkFixed.new;
-  // PGtkWindow(Result)^.add(FCentralWidget);
+
+  FCentralWidget := TGtkFixed.new;
+
+  FCentralWidget^.set_size_request(AForm.Width,AForm.Height+1);
+
+  fBox^.pack_start(fCentralWidget, true, true, 0);
+
+  PGtkWindow(Result)^.set_can_focus(false);
+
 end;
 
 { TGtk3Dialog }

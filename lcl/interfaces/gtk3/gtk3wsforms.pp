@@ -219,7 +219,7 @@ begin
     PGtkWindow(AWidget)^.get_preferred_height(@AMinSize, @ANaturalSize);
 
     AWidget^.size_allocate(@ARect);
-    if not (csDesigning in AForm.ComponentState) and (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
+    if not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
     begin
       AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
       with Geometry do
@@ -269,6 +269,7 @@ begin
     end;
     PGtkWindow(AWidget)^.resize(AWidth, AHeight);
     PGtkWindow(AWidget)^.move(ALeft, ATop);
+    PGtkWindow(AWidget)^.set_size_request(AWidth,AHeight);
   finally
     TGtk3Widget(AWinControl.Handle).EndUpdate;
   end;
