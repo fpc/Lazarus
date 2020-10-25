@@ -2301,28 +2301,27 @@ begin
   PushNode(nFunctionHeading);
   Recognise(ttClass);
   Recognise(ttOperator);
-
   RecogniseMethodName(False);
-
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     RecogniseFormalParameters;
 
-  Recognise(ttColon);
-  PushNode(nFunctionReturnType);
-  RecogniseType;
-  PopNode;
-
+  //Managed records have operators without return
+  // Initialize, Finalize, Copy, AddRef.
+  if fcTokenList.FirstSolidTokenType = ttColon then
+  begin
+    Recognise(ttColon);
+    PushNode(nFunctionReturnType);
+    RecogniseType;
+    PopNode;
+  end;
   RecogniseProcedureDirectives;
-
   PopNode;
-
   if pbHasBody then
   begin
     Recognise(ttSemiColon);
     RecogniseBlock;
     Recognise(ttSemiColon);
   end;
-
   PopNode;
 end;
 
