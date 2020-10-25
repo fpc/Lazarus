@@ -2161,7 +2161,10 @@ procedure TUnitInfo.SetTimeStamps;
 var
   ResFilename: String;
 begin
-  fSourceChangeStep:=FSource.ChangeStep;     // Indicates any change is source
+  if FSource<>nil then
+    fSourceChangeStep:=FSource.ChangeStep  // Indicates any change is source
+  else
+    fSourceChangeStep:=CTInvalidChangeStamp;
   // Associated LFM resource file timestamp
   //if Component=nil then exit;  <- Component is here always nil for some reason.
   if UnitResourceFileformat=nil then exit;   // Happens with LazBuild
