@@ -1,21 +1,24 @@
 object FieldsListFrm: TFieldsListFrm
-  Left = 358
-  Height = 271
-  Top = 99
-  Width = 173
+  Left = 414
+  Height = 280
+  Top = 116
+  Width = 195
   ActiveControl = BitBtnOk
   Caption = 'FieldsListFrm'
-  ClientHeight = 271
-  ClientWidth = 173
+  ClientHeight = 280
+  ClientWidth = 195
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object BitBtnOk: TBitBtn
+    AnchorSideBottom.Side = asrBottom
     Left = 9
-    Height = 25
+    Height = 34
     Top = 241
-    Width = 75
+    Width = 77
     Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = '&Create'
     Default = True
     Kind = bkOK
@@ -24,11 +27,16 @@ object FieldsListFrm: TFieldsListFrm
     TabOrder = 0
   end
   object BitBtnCancel: TBitBtn
-    Left = 89
-    Height = 25
+    AnchorSideLeft.Control = BitBtnOk
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BitBtnOk
+    AnchorSideTop.Side = asrCenter
+    Left = 92
+    Height = 34
     Top = 241
-    Width = 75
-    Anchors = [akLeft, akBottom]
+    Width = 76
+    AutoSize = True
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
@@ -36,14 +44,16 @@ object FieldsListFrm: TFieldsListFrm
     TabOrder = 1
   end
   object ListBox1: TListBox
+    AnchorSideBottom.Control = BitBtnOk
     Left = 0
-    Height = 232
+    Height = 235
     Top = 0
-    Width = 173
-    Align = alTop
+    Width = 192
     Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
     MultiSelect = True
+    ScrollWidth = 190
     TabOrder = 2
+    TopIndex = -1
   end
 end
