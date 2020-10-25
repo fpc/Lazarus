@@ -543,6 +543,7 @@ begin
           else
             wnd := nil;
 
+          {$ifndef CPUPOWERPC}
           if (theEvent.type_ = NSKeyDown)
             and not (win.firstResponder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol))) then
           begin
@@ -553,6 +554,7 @@ begin
             end;
             inputctx.handleEvent(theEvent);
           end;
+          {$endif}
 
           cb.KeyEvBefore(theEvent, allowcocoa);
           if allowcocoa then
