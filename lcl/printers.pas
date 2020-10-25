@@ -376,8 +376,8 @@ begin
 
   Include(fFlags, pfPrinting);
   Exclude(fFlags, pfAborted);
-  fPageNumber := 1;
-  
+  fPageNumber := 0;
+
   if not RawMode then begin
     Canvas.Refresh;
     TPrinterCanvas(Canvas).BeginDoc;
