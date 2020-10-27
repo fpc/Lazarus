@@ -7840,7 +7840,7 @@ begin
     ListLevel := 0;
     StartPos := CharStream.Position;
     {$IFDEF IP_LAZARUS}
-    FDocCharset := 'ISO-8859-1';
+    FDocCharset := 'UTF-8';
     FHasBOM := false;
     Ch1 := GetChar;
     Ch2 := GetChar;
