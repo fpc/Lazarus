@@ -5799,8 +5799,8 @@ begin
   {$IFDEF IP_LAZARUS}
   Lst := TStringList.Create;
   GetSupportedEncodings(Lst);
-  if Lst.IndexOf(FDocCharset)=0 then
-    FDocCharset := 'UTF-8';
+  if Lst.IndexOf(FDocCharset)=-1 then
+    FDocCharset := '';
   Lst.Free;
   {$ENDIF}
 end;
