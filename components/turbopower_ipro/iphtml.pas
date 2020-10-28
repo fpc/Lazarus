@@ -5800,7 +5800,7 @@ begin
   Lst := TStringList.Create;
   GetSupportedEncodings(Lst);
   if Lst.IndexOf(FDocCharset)=0 then
-    FDocCharset := '';
+    FDocCharset := 'UTF-8';
   Lst.Free;
   {$ENDIF}
 end;
