@@ -1,468 +1,487 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    TTFile
-  ====================================================================
--->
-
-<module name="TTFile">
-<short></short>
-<descr>
-</descr>
-
-<!-- function Visibility: default -->
-<element name="TTFile_Init">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTFile_Init.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TTFile_Done">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Open_Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Open_Stream.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Stream.name">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Stream.stream">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TT_Close_Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Close_Stream.stream">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Use_Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Use_Stream.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Use_Stream.org_stream">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Use_Stream.stream">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TT_Flush_Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Flush_Stream.stream">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TT_Done_Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Done_Stream.stream">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Read_File">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Read_File.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Read_File.ABuff">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Read_File.ACount">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Seek_File">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Seek_File.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Seek_File.APos">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Skip_File">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Skip_File.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Skip_File.ADist">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Read_At_File">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Read_At_File.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Read_At_File.APos">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Read_At_File.ABuff">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Read_At_File.ACount">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_File_Size">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_File_Size.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_File_Pos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_File_Pos.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Stream_Size">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Stream_Size.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Stream_Size.stream">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Access_Frame">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Access_Frame.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Access_Frame.aSize">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Check_And_Access_Frame">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Check_And_Access_Frame.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Check_And_Access_Frame.aSize">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Forget_Frame">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Forget_Frame.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_Byte">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_Byte.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_Char">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_Char.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_Short">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_Short.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_UShort">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_UShort.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_Long">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_Long.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_ULong">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_ULong.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GET_Tag4">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GET_Tag4.Result">
-<short></short>
-</element>
-
-</module> <!-- TTFile -->
-
-</package>
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTFile
+    ====================================================================
+    -->
+    <module name="TTFile">
+      <short>File I/O specification</short>
+      <descr>
+        <p>
+          Copyright 1996 David Turner, Robert Wilhelm and Werner Lemberg.
+        </p>
+
+        <p>
+          This file is part of the FreeType project, and may only be used modified and distributed under the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or distribute this file you indicate that you have read the license and understand and accept it fully.
+        </p>
+        <p>
+          <b>Notes:</b>
+        </p>
+        <p>
+          Changes from 1.2 to 1.3:
+        </p>
+        <ul>
+          <li>Moved stream into TFreeTypeStream object</li>
+        </ul>
+        <p>
+          Changes from 1.1 to 1.2:
+        </p>
+        <ul>
+          <li>Changes the stream operations semantics. See changes.txt</li>
+          <li>Stream records are now allocated on demand in the heap</li>
+          <li>Introduced the 'frame cache' to avoid Allocating/Freeing each frame, even tiny ones.</li>
+          <li>Support for thread-safety and re-entrancy (for information only)</li>
+        </ul>
+        <p>
+          Changes from 1.0 to 1.1:
+        </p>
+        <ul>
+          <li>Defined the type TT_Stream for file handles</li>
+          <li>Renamed (and cleaned) the API</li>
+          <li>Caching and memory-mapped files use the same API as TT_Access_Frame to notify</li>
+          <li>Only the interface was really rewritten. This component still only supports one opened file at a time.</li>
+        </ul>
+      </descr>
+
+      <!-- unresolved external references -->
+      <element name="TTTypes"/>
+      <element name="TTError"/>
+      <element name="Classes"/>
+
+      <element name="TFreeTypeStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.GetSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GetSize.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.FCurrentFrame"/>
+      <element name="TFreeTypeStream.FFrameCursor"/>
+
+      <element name="TFreeTypeStream.FFrameSize"/>
+      <element name="TFreeTypeStream.FFrameCache"/>
+      <element name="TFreeTypeStream.FName"/>
+      <element name="TFreeTypeStream.FStream"/>
+      <element name="TFreeTypeStream.FBase"/>
+      <element name="TFreeTypeStream.FStoredSize"/>
+      <element name="TFreeTypeStream.FPosit"/>
+      <element name="TFreeTypeStream.FOwnedStream"/>
+      <element name="TFreeTypeStream.FOpen"/>
+      <element name="TFreeTypeStream.FUsed"/>
+
+      <element name="TFreeTypeStream.GetFilePos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GetFilePos.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GetFileSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GetFileSize.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GetPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GetPosition.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Init">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.Create.APathName">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.Create.AStream">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.Create.AStreamOwner">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Activate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.Activate.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.Deactivate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.Deactivate.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.SeekFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.SeekFile.Return">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.SeekFile.APos">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.SkipFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.SkipFile.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.SkipFile.ADist">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.ReadFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.ReadFile.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.ReadFile.ABuff">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.ReadFile.ACount">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.ReadAtFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.ReadAtFile.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.ReadAtFile.APos">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.ReadAtFile.ABuff">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.ReadAtFile.ACount">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.AccessFrame">
+        <short>
+          Access the next aSize bytes
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.AccessFrame.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.AccessFrame.ASize">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.CheckAndAccessFrame">
+        <short>
+          Access the next min(aSize ,file_size - file_pos) bytes
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.CheckAndAccessFrame.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeStream.CheckAndAccessFrame.ASize">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.ForgetFrame">
+        <short>
+          Discards the previously cached frame
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.ForgetFrame.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_Byte">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_Byte.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_Char">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_Char.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_Short">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_Short.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_UShort">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_UShort.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_Long">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_Long.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_ULong">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_ULong.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.GET_Tag4">
+        <short/>
+        <descr>
+          <p>
+            The following functions should only be used after a AccessFrame and before a ForgetFrame. They do not provide error handling, intentionnaly, and are much faster moreover, they could be converted to MACROS in the C version.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeStream.GET_Tag4.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeStream.Open">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Name">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Base">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Position">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeStream.Used">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTFile_Init">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTFile_Init.Result">
+        <short/>
+      </element>
+
+      <element name="TTFile_Done">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_Open_Stream">
+        <short/>
+        <descr>
+          <p>
+            Open a file and return a stream handle for it. Should only be used for the main stream in a new typeface object.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Open_Stream.Result">
+        <short/>
+      </element>
+      <element name="TT_Open_Stream.name">
+        <short/>
+      </element>
+      <element name="TT_Open_Stream.stream">
+        <short/>
+      </element>
+
+      <element name="TT_Close_Stream">
+        <short/>
+        <descr>
+          <p>
+            Closes and discards a stream when it is no longer needed. Should only be used for the main stream in a typeface object.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Close_Stream.stream">
+        <short/>
+      </element>
+
+      <element name="TT_Use_Stream">
+        <short/>
+        <descr>
+          <p>
+            Notifies he component that we're going to use the file opened in 'org_stream', and report errors to the 'error' variable. The 'stream' variable is untouched, except in re-entrant builds.
+          </p>
+           <p>
+            In re-entrant builds, the original file handle is duplicated to a new stream which reference is passed to the 'stream' variable. Thus, each thread can have its own file cursor to access the same file concurrently.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Use_Stream.Result">
+        <short/>
+      </element>
+      <element name="TT_Use_Stream.org_stream">
+        <short/>
+      </element>
+      <element name="TT_Use_Stream.stream">
+        <short/>
+      </element>
+
+      <element name="TT_Flush_Stream">
+        <short/>
+        <descr>
+          <p>
+            Closes a stream's font handle. This is useful to save system resources.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Flush_Stream.stream">
+        <short/>
+      </element>
+
+      <element name="TT_Done_Stream">
+        <short/>
+        <descr>
+          <p>
+            Notifies the file component that we don't need to perform file ops on the stream anymore. In re-entrant builds, should also discard the stream.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Done_Stream.stream">
+        <short/>
+      </element>
+
+      <element name="TT_Stream_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TT_Stream_Size.Result">
+        <short/>
+      </element>
+      <element name="TT_Stream_Size.stream">
+        <short/>
+      </element>
+
+    </module>
+    <!-- TTFile -->
+  </package>
 </fpdoc-descriptions>

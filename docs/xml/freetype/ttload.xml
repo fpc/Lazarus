@@ -1,369 +1,272 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTLoad
+    ====================================================================
+    -->
+    <module name="TTLoad">
+      <short>TrueType Table loaders used in the FreeType library</short>
+      <descr>
+        <p>
+          Copyright 1996 David Turner, Robert Wilhelm and Werner Lemberg.
+        </p>
+        <p>
+          This file is part of the FreeType project, and may only be used modified and distributed under
+          the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or
+          distribute this file you indicate that you have read the license and understand and accept it
+          fully.
+        </p>
+        <p>
+          Difference between 1.0 and 1.1: HUGE!!!
+        </p>
+        <ul>
+          <li>Changed the load model to get in touch with TTFile 1.1</li>
+          <li>Now loads one whole resident table in one call</li>
+          <li>Defined resident and instance records/data</li>
+        </ul>
+      </descr>
 
-<!--
-  ====================================================================
-    TTLoad
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="TTTypes"/>
+      <element name="TTTables"/>
+      <element name="TTCMap"/>
+      <element name="TTObjs"/>
+      <element name="TTFile"/>
 
-<module name="TTLoad">
-<short></short>
-<descr>
-</descr>
+      <element name="LookUp_TrueType_Table">
+        <short>Looks for a TrueType table by name</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LookUp_TrueType_Table.Result">
+        <short>Index of the table if found, -1 otherwise</short>
+      </element>
+      <element name="LookUp_TrueType_Table.face">
+        <short>Resident table to look for</short>
+      </element>
+      <element name="LookUp_TrueType_Table.aTag">
+        <short>Searched tag</short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="LookUp_TrueType_Table">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Load_TrueType_Directory">
+        <short/>
+        <descr>
+          <remark>
+            Please notes: A table directory doesn't own subttables. There is no constructor or destructor for it.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Directory.Result">
+        <short>True on success, or False on failure</short>
+      </element>
+      <element name="Load_TrueType_Directory.face">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Directory.faceIndex">
+        <short/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="LookUp_TrueType_Table.Result">
-<short></short>
-</element>
+      <element name="Load_TrueType_MaxProfile">
+        <short/>
+        <descr>
+          <remark>
+            Please notes : A maximum profile is a static table that owns no subttable. It has then no constructor nor destructor.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_MaxProfile.Result">
+        <short>True on success, or False on failure</short>
+      </element>
+      <element name="Load_TrueType_MaxProfile.face">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="LookUp_TrueType_Table.face">
-<short></short>
-</element>
+      <element name="Load_TrueType_Header">
+        <short>Load the TrueType header table in the resident table</short>
+        <descr>
+          <remarkl>
+            Please note: A font header is a static table that owns no subttable. It has then no constructor nor destructor.
+          </remarkl>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Header.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Header.face">
+        <short>Current leading segment</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="LookUp_TrueType_Table.aTag">
-<short></short>
-</element>
+      <element name="Load_TrueType_Locations">
+        <short>Loads the location table in resident table</short>
+        <descr>
+          <remark>
+            Please note: The Font Header <b>must</b> be loaded in the leading segment before calling this function. This table is destroyed directly by the resident destructor.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Locations.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Locations.face">
+        <short>Current Resident Leading Segment</short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Directory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Load_TrueType_CVT">
+        <short/>
+        <descr>
+          <remark>
+            Please note : This attribute table is destroyed by the resident destructor.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_CVT.Result">
+        <short>True on success, False on failur</short>
+      </element>
+      <element name="Load_TrueType_CVT.face">
+        <short/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Directory.Result">
-<short></short>
-</element>
+      <element name="Load_TrueType_CMap">
+        <short/>
+        <descr>
+          <remark>
+            Please note:  The Cmap table directory is destroyed by the resident destructor. The Cmap subtables must be destroyed by Free_CMap_Table.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_CMap.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_CMap.face">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Directory.face">
-<short></short>
-</element>
+      <element name="Load_TrueType_Gasp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Gasp.Result">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Gasp.face">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Directory.faceIndex">
-<short></short>
-</element>
+      <element name="Load_TrueType_Names">
+        <short>Loads the name table into the face table</short>
+        <descr>
+          <remark>
+            Please note: This attribute table is destroyed by the resident destructor.
+          </remark>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Names.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Names.face">
+        <short/>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Load_TrueType_MaxProfile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Load_TrueType_Programs">
+        <short>Load the Font and CVT programs in the resident table</short>
+        <descr/>
+        <seealso/>
+      </element>
+       <element name="Load_TrueType_Programs.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Programs.face">
+        <short/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_MaxProfile.Result">
-<short></short>
-</element>
+      <element name="Load_TrueType_Postscript">
+        <short>Loads the Postscript table</short>
+        <descr/>
+        <seealso/>
+      </element>
+       <element name="Load_TrueType_Postscript.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Postscript.face">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_MaxProfile.face">
-<short></short>
-</element>
+      <element name="Load_TrueType_OS2">
+        <short>Load the OS/2 Table</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_OS2.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_OS2.face">
+        <short/>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Header">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Load_TrueType_HDMX">
+        <short>Load the 'hdmx' tables</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_HDMX.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_HDMX.face">
+        <short/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Header.Result">
-<short></short>
-</element>
+      <element name="Load_TrueType_Metrics_Header">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Metrics_Header.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Metrics_Header.face">
+        <short>
+          When True, try to load the vertical header
+        </short>
+      </element>
+      <element name="Load_TrueType_Metrics_Header.vertical">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Header.face">
-<short></short>
-</element>
+      <element name="Load_TrueType_Any">
+        <short>Load any TrueType table in user memory</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Any.Result">
+        <short>True on success, False on failure</short>
+      </element>
+      <element name="Load_TrueType_Any.face">
+        <short>The face object for the font file</short>
+      </element>
+      <element name="Load_TrueType_Any.tag">
+        <short>The table</short>
+      </element>
+      <element name="Load_TrueType_Any.offset">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Any.buffer">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Any.length">
+        <short/>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Locations">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Locations.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Locations.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_CVT">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_CVT.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_CVT.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_CMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_CMap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_CMap.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Gasp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Gasp.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Gasp.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Names">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Names.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Names.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Programs">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Programs.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Programs.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_trueType_Postscript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_trueType_Postscript.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_trueType_Postscript.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_OS2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_OS2.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_OS2.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_HDMX">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_HDMX.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_HDMX.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Metrics_Header">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Metrics_Header.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Metrics_Header.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Metrics_Header.vertical">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Any">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Any.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Any.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Any.tag">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Any.offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Any.buffer">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Any.length">
-<short></short>
-</element>
-
-</module> <!-- TTLoad -->
-
-</package>
+    </module>
+    <!-- TTLoad -->
+  </package>
 </fpdoc-descriptions>

@@ -1,1126 +1,732 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    LazFreeTypeFontCollection
-  ====================================================================
--->
-
-<module name="LazFreeTypeFontCollection">
-<short></short>
-<descr>
-</descr>
-
-<!-- class Visibility: default -->
-<element name="TFontCollectionItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FFilename">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FInformation">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FVersionNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FStyleList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FFace">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FFaceUsage">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFontCollectionItem.FUsePostscriptStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TFontCollectionItem.UpdateStyles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TFontCollectionItem.SetInformation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.SetInformation.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.SetInformation.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TFontCollectionItem.SetUsePostscriptStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.SetUsePostscriptStyle.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetFilename.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetBold">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetBold.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetInformation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetInformation.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.GetInformation.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetItalic">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetItalic.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetStyleCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetStyleCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetStyles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetStyles.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetStyle.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.GetStyle.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontCollectionItem.GetVersionNumber">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.GetVersionNumber.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TFontCollectionItem.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.Create.AFilename">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TFontCollectionItem.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFontCollectionItem.HasStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.HasStyle.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.HasStyle.AStyle">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TFontCollectionItem.Information">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFontCollectionItem.Information.AIndex">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TFontCollectionItem.VersionNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFontCollectionItem.CreateFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.CreateFont.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFontCollectionItem.QueryFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontCollectionItem.QueryFace.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFontCollectionItem.ReleaseFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TFontCollectionItem.UsePostscriptStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TFamilyCollectionItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FFamilyName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FFonts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FFontCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FStyles">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FStyleCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFamilyCollectionItem.FUsePostscriptStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetFontByIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontByIndex.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontByIndex.AIndex">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetFontByStyles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontByStyles.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontByStyles.AStyles">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetFontIndexByStyles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndexByStyles.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndexByStyles.AStyles">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetStyle.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetStyle.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TFamilyCollectionItem.AddStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.AddStyle.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetStyles">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetStyles.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetFamilyName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFamilyName.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetFontCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFamilyCollectionItem.GetStyleCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetStyleCount.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TFamilyCollectionItem.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.Create.AName">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFamilyCollectionItem.AddFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.AddFont.AFontItem">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFamilyCollectionItem.GetFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFont.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFont.AStyles">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFont.NeedAllStyles">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFont.NoMoreStyle">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFont.AStyle">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFamilyCollectionItem.GetFontIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndex.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndex.AStyles">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndex.NeedAllStyles">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndex.NoMoreStyle">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.GetFontIndex.AStyle">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFamilyCollectionItem.HasStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFamilyCollectionItem.HasStyle.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFamilyCollectionItem.HasStyle.AName">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TFreeTypeFontCollection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFreeTypeFontCollection.FFontList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFreeTypeFontCollection.FTempFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFreeTypeFontCollection.FUpdateCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFreeTypeFontCollection.FFamilyList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFreeTypeFontCollection.AddFamily">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.AddFamily.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.AddFamily.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFreeTypeFontCollection.FindFamily">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.FindFamily.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.FindFamily.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFreeTypeFontCollection.FindFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.FindFont.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.FindFont.AFileName">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFreeTypeFontCollection.CompareFontFileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFontFileName.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFontFileName.Tree">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFontFileName.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFontFileName.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFreeTypeFontCollection.CompareFamilyName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFamilyName.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFamilyName.Tree">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFamilyName.Data1">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.CompareFamilyName.Data2">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFreeTypeFontCollection.GetFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFont.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFont.AFileName">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFreeTypeFontCollection.GetFamily">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFamily.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFamily.AName">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFreeTypeFontCollection.GetFamilyCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFamilyCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFreeTypeFontCollection.GetFontCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.GetFontCount.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TFreeTypeFontCollection.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFreeTypeFontCollection.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFreeTypeFontCollection.BeginUpdate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFreeTypeFontCollection.AddFolder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.AddFolder.AFolder">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFreeTypeFontCollection.AddFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.AddFile.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFreeTypeFontCollection.AddFile.AFilename">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFreeTypeFontCollection.EndUpdate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TFreeTypeFontCollection.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFreeTypeFontCollection.FontFileEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.FontFileEnumerator.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFreeTypeFontCollection.FamilyEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFreeTypeFontCollection.FamilyEnumerator.Result">
-<short></short>
-</element>
-
-</module> <!-- LazFreeTypeFontCollection -->
-
-</package>
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      LazFreeTypeFontCollection
+    ====================================================================
+    -->
+    <module name="LazFreeTypeFontCollection">
+      <short>
+        Contains a font collection and font collection items used in the FreeType library
+      </short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Laz_AVL_Tree"/>
+      <element name="EasyLazFreeType"/>
+      <element name="LazFreeType"/>
+      <element name="TTTypes"/>
+
+      <element name="TFontCollectionItem">
+        <short>Implements a collection item for a font used in the FreeType library</short>
+        <descr>
+          <p>
+            Used in the implementation of the TFamilyCollectionItem and TFreeTypeFontCollection classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFamilyCollectionItem"/>
+          <link id="TFreeTypeFontCollection"/>
+        </seealso>
+      </element>
+
+      <element name="TFontCollectionItem.FFilename"/>
+      <element name="TFontCollectionItem.FSourceStream"/>
+      <element name="TFontCollectionItem.FSourceStreamOwned"/>
+      <element name="TFontCollectionItem.FInformation"/>
+      <element name="TFontCollectionItem.FVersionNumber"/>
+      <element name="TFontCollectionItem.FStyleList"/>
+      <element name="TFontCollectionItem.FFace"/>
+      <element name="TFontCollectionItem.FFaceUsage"/>
+      <element name="TFontCollectionItem.FUsePostscriptStyle"/>
+      <element name="TFontCollectionItem.FDestroyListeners"/>
+
+      <element name="TFontCollectionItem.UpdateStyles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFontCollectionItem.SetInformation">
+        <short>Sets the value for the indexed Information property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.SetInformation.AIndex">
+        <short>Ordinal position where the new value is stored</short>
+      </element>
+      <element name="TFontCollectionItem.SetInformation.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.SetUsePostscriptStyle">
+        <short>Sets the value for the UsePostscriptStyle property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.SetUsePostscriptStyle.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetFilename">
+        <short>Gets the value for the Filename property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetFilename.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetBold">
+        <short>Indicates whether the Bold style is included in the list of styles for the font face</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetBold.Result">
+        <short>True when Bold is included in the list of styles for the font</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetInformation">
+        <short>Gets the value for the indexed Information property</short>
+        <descr/>
+        <seealso>
+          <link id="TFontCollectionItem.Information"/>
+          <link id="TFreeTypeInformation"/>
+        </seealso>
+      </element>
+      <element name="TFontCollectionItem.GetInformation.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TFontCollectionItem.GetInformation.AIndex">
+        <short>Identifies the datum retrieved for the property value</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetItalic">
+        <short>
+          Indicates whether the Italic style is included in the list of styles for the font face
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetItalic.Result">
+        <short/>
+      </element>
+
+      <element name="TFontCollectionItem.GetStyleCount">
+        <short>Gets the value for the StyleCount property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetStyleCount.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetStyles">
+        <short>Gets the value for the Styles property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetStyles.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetStyle">
+        <short>Gets the value for the indexed Style property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetStyle.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TFontCollectionItem.GetStyle.AIndex">
+        <short>Ordinal position for the style used in the property value</short>
+      </element>
+
+      <element name="TFontCollectionItem.GetVersionNumber">
+        <short>Gets the value for the VersionNumber property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.GetVersionNumber.Result">
+        <short>Value for the property</short>
+      </element>
+
+      <element name="TFontCollectionItem.NotifyDestroy">
+        <short>Executes the notification procedure in listeners when the collection item is freed</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFontCollectionItem.Init">
+        <short>Sets the default values for members in the collection item</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFontCollectionItem.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.Create.AFilename">
+        <short>File name for the font in the collection item</short>
+      </element>
+      <element name="TFontCollectionItem.Create.AStream">
+        <short>Stream instance with the font for the collection item</short>
+      </element>
+      <element name="TFontCollectionItem.Create.AOwner">
+        <short>Owner of the stream instance</short>
+      </element>
+
+      <element name="TFontCollectionItem.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFontCollectionItem.HasStyle">
+        <short>Indicates if the specified style name is available for he font</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.HasStyle.Result">
+        <short>True when the style name is present in the list of styles for the font</short>
+      </element>
+      <element name="TFontCollectionItem.HasStyle.AStyle">
+        <short>Style name to locate in the styles for the font</short>
+      </element>
+
+      <element name="TFontCollectionItem.Information">
+        <short>Provides access to embedded data for the font</short>
+        <descr/>
+        <seealso>
+          <link id="TFreeTypeInformation"/>
+        </seealso>
+      </element>
+      <element name="TFontCollectionItem.Information.AIndex">
+        <short>Data item accessed in the font</short>
+      </element>
+
+      <element name="TFontCollectionItem.VersionNumber">
+        <short>Gets the value for the VersionNumber property</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFontCollectionItem.CreateFont">
+        <short>Creates a TFreeTypeFont instance for the stream or file name</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.CreateFont.Result">
+        <short>TFreeTypeFont instance created in the method</short>
+      </element>
+
+      <element name="TFontCollectionItem.QueryFace">
+        <short>Opens the font face for the specified listener using the FreeType library</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.QueryFace.Result">
+        <short>Handle for the font face when available</short>
+      </element>
+      <element name="TFontCollectionItem.QueryFace.AListener">
+        <short>Listener notifed when the font face is destroyed</short>
+      </element>
+
+      <element name="TFontCollectionItem.ReleaseFace">
+        <short>Frees the handle for the font face and updates the list of listeners</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFontCollectionItem.ReleaseFace.AListener">
+        <short>Listener removed form thelist of listeners</short>
+      </element>
+
+      <element name="TFontCollectionItem.UsePostscriptStyle">
+        <short>Indicates if Postscript style names are used in the style list for the font</short>
+        <descr/>
+        <seealso>
+          <link id="TFontCollectionItem.Information"/>
+          <link id="TFontCollectionItem.HasStyle"/>
+        </seealso>
+      </element>
+
+      <element name="TFamilyCollectionItem">
+        <short>Implements a font collection item with styles mapped to font family names</short>
+        <descr/>
+        <seealso>
+          <link id="#freetypelaz.EasyLazFreeType.TCustomFamilyCollectionItem"/>
+        </seealso>
+      </element>
+
+      <element name="TFamilyCollectionItem.FFamilyName"/>
+      <element name="TFamilyCollectionItem.FFonts"/>
+      <element name="TFamilyCollectionItem.FFontCount"/>
+      <element name="TFamilyCollectionItem.FStyles"/>
+      <element name="TFamilyCollectionItem.FStyleCount"/>
+      <element name="TFamilyCollectionItem.FUsePostscriptStyle"/>
+
+      <element name="TFamilyCollectionItem.GetFontByIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontByIndex.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontByIndex.AIndex">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFontByStyles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontByStyles.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontByStyles.AStyles">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFontIndexByStyles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndexByStyles.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndexByStyles.AStyles">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetStyle.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetStyle.AIndex">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.AddStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.AddStyle.AName">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.RemoveStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.RemoveStyle.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.RemoveStyle.AName">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetStyles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetStyles.Result">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFamilyName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFamilyName.Result">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFontCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontCount.Result">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetStyleCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetStyleCount.Result">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.RebuildStyleList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.RebuildStyleList.ADuplicates">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.Create.AName">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.AddFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.AddFont.AFontItem">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.RemoveFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.RemoveFont.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.RemoveFont.AFontItem">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFont.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFont.AStyles">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFont.NeedAllStyles">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFont.NoMoreStyle">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFont.AStyle">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.GetFontIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndex.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndex.AStyles">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndex.NeedAllStyles">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndex.NoMoreStyle">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.GetFontIndex.AStyle">
+        <short/>
+      </element>
+
+      <element name="TFamilyCollectionItem.HasStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFamilyCollectionItem.HasStyle.Result">
+        <short/>
+      </element>
+      <element name="TFamilyCollectionItem.HasStyle.AName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection">
+        <short>Implements a font collection used in the FreeType library</short>
+        <descr>
+          <p>
+            Provides methods to add or remove a TrueType font file by name. Methods are provided to load and remove all TrueType fonts found in a directory. Provides enumerators to access fonts by file name or family name.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.FFontList"/>
+      <element name="TFreeTypeFontCollection.FTempFont"/>
+      <element name="TFreeTypeFontCollection.FUpdateCount"/>
+      <element name="TFreeTypeFontCollection.FFamilyList"/>
+
+      <element name="TFreeTypeFontCollection.AddFamily">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFamily.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFamily.AName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.FindFamily">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.FindFamily.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.FindFamily.AName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.FindFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.FindFont.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.FindFont.AFileName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.CompareFontFileName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFontFileName.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFontFileName.Tree">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFontFileName.Data1">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFontFileName.Data2">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.CompareFamilyName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFamilyName.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFamilyName.Tree">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFamilyName.Data1">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.CompareFamilyName.Data2">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.GetFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFont.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFont.AFileName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.GetFamily">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFamily.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFamily.AName">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.GetFamilyCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFamilyCount.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.GetFontCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.GetFontCount.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.RemoveAndFreeFamily">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.RemoveAndFreeFamily.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.RemoveAndFreeFamily.AFamily">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.Clear">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.BeginUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.AddFolder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFolder.AFolder">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFolder.AIncludeSubdirs">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.RemoveFolder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.RemoveFolder.AFolder">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.AddFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFile.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddFile.AFilename">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.RemoveFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.RemoveFile.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.RemoveFile.AFilename">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.AddStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddStream.Result">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddStream.AStream">
+        <short/>
+      </element>
+      <element name="TFreeTypeFontCollection.AddStream.AOwned">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.EndUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.FontFileEnumerator">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.FontFileEnumerator.Result">
+        <short/>
+      </element>
+
+      <element name="TFreeTypeFontCollection.FamilyEnumerator">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeTypeFontCollection.FamilyEnumerator.Result">
+        <short/>
+      </element>
+
+      <element name="SetDefaultFreeTypeFontCollection">
+        <short>Sets the default font collection used in EasyLazFreeType to the specified value</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SetDefaultFreeTypeFontCollection.ACollection">
+        <short>Font collection used in EasyLazFreeType</short>
+      </element>
+
+    </module>
+    <!-- LazFreeTypeFontCollection -->
+  </package>
 </fpdoc-descriptions>

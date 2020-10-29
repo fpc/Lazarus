@@ -1,847 +1,590 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    TTTables
-  ====================================================================
--->
-
-<module name="TTTables">
-<short></short>
-<descr>
-</descr>
-
-<!-- pointer type Visibility: default -->
-<element name="PTTCHeader">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TTTCHeader">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTTCHeader.Tag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTTCHeader.version">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTTCHeader.DirCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTTCHeader.TableDirectory">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PTableDir">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TTableDir">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDir.version">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDir.numTables">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDir.searchRange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDir.entrySelector">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDir.rangeShift">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TTableDirEntry">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDirEntry.Tag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDirEntry.CheckSum">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDirEntry.Offset">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TTableDirEntry.Length">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TTableDirEntries">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PTableDirEntries">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TCMapDir">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCMapDir.tableVersionNumber">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCMapDir.numCMaps">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TCMapDirEntry">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCMapDirEntry.platformID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCMapDirEntry.platformEncodingID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCMapDirEntry.offset">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TCMapDirEntries">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PCMapDirEntries">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TMaxProfile">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.Version">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.numGlyphs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxPoints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxContours">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxCompositePoints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxCompositeContours">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxZones">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxTwilightPoints">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxStorage">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxFunctionDefs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxInstructionDefs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxStackElements">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxSizeOfInstructions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxComponentElements">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TMaxProfile.maxComponentDepth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="Gasp_GridFit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="Gasp_DoGray">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TGaspRange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TGaspRange.maxPPEM">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TGaspRange.gaspFlag">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TGaspRanges">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PGaspRanges">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TGasp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TGasp.version">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TGasp.numRanges">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TGasp.gaspRanges">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLongMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLongMetrics.advance">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLongMetrics.bearing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TTableLongMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PTableLongMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TShortMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TTableShortMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PTableShortMetrics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TName_Record">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.platformID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.encodingID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.languageID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.nameID">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.length">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Record.offset">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PName_Record">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="TName_Records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PName_Records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PName_Table">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TName_Table">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Table.format">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Table.numNameRecords">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Table.storageOffset">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Table.names">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TName_Table.storage">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PHdmx_Record">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="THdmx_Record">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx_Record.ppem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx_Record.max_width">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx_Record.widths">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- array type Visibility: default -->
-<element name="THdmx_Records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PHdmx_Records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="THdmx">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx.version">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx.num_records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="THdmx.records">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- TTTables -->
-
-</package>
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTTables
+    ====================================================================
+    -->
+    <module name="TTTables">
+      <short>TrueType table declarations used in the FreeType library</short>
+      <descr>
+        <p>
+          TTTables now contains only the declarations for the TrueType tables.
+        </p>
+        <p>
+          Instance, Resident and Execution context declarations were moved to TTObjs.
+        </p>
+        <p>
+          Tables loaders were moved to the new TTLoad component.
+        </p>
+      </descr>
+
+      <element name="PTTCHeader">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTTCHeader">
+        <short>TrueType collection header</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTTCHeader.Tag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTTCHeader.version">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTTCHeader.DirCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTTCHeader.TableDirectory">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PTableDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir">
+        <short>TrueType Table Directory type</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir.version">
+        <short/>
+        <descr>
+          Should be $10000.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir.numTables">
+        <short>Number of tables in the directory</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir.searchRange">
+        <short/>
+        <descr>
+          Parameter used only for a dichotomy search in the directory. We ignore it.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir.entrySelector">
+        <short/>
+        <descr>
+          Parameter used only for a dichotomy search in the directory. We ignore it.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TTableDir.rangeShift">
+        <short/>
+        <descr>
+          Parameter used only for a dichotomy search in the directory. We ignore it.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntry">
+        <short/>
+        <descr>
+          The 'TableDir' is followed by 'numTables' TableDirEntries.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntry.Tag">
+        <short>Table type</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntry.CheckSum">
+        <short>Table Checksum</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntry.Offset">
+        <short>Table file offset</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntry.Length">
+        <short>Table length</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableDirEntries">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PTableDirEntries">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDir">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDir.tableVersionNumber">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDir.numCMaps">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDirEntry">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDirEntry.platformID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDirEntry.platformEncodingID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDirEntry.offset">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCMapDirEntries">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PCMapDirEntries">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile">
+        <short/>
+        <descr>
+          Table "maxp" of Maximum Profiles.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.Version">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.numGlyphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxPoints">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxContours">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxCompositePoints">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxCompositeContours">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxZones">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxTwilightPoints">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxStorage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxFunctionDefs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxInstructionDefs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxStackElements">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxSizeOfInstructions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxComponentElements">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TMaxProfile.maxComponentDepth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="Gasp_GridFit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="Gasp_DoGray">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGaspRange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGaspRange.maxPPEM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGaspRange.gaspFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGaspRanges">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PGaspRanges">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGasp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGasp.version">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGasp.numRanges">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TGasp.gaspRanges">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLongMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLongMetrics.advance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLongMetrics.bearing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableLongMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PTableLongMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TShortMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TTableShortMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PTableShortMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.platformID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.encodingID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.languageID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.nameID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.length">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Record.offset">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PName_Record">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PName_Records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PName_Table">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table.format">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table.numNameRecords">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table.storageOffset">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table.names">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TName_Table.storage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PHdmx_Record">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx_Record">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx_Record.ppem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx_Record.max_width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx_Record.widths">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx_Records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PHdmx_Records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx.version">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx.num_records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THdmx.records">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+    </module>
+    <!-- TTTables -->
+  </package>
 </fpdoc-descriptions>

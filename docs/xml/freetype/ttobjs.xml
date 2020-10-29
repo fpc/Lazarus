@@ -1,5 +1,1858 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+<package name="freetypelaz">
+  <!-- TTObjs -->
+  <module name="TTObjs">
+    <short>Contains objects definitions used in the FreeType (TrueType) library</short>
+    <descr>
+      <p>
+        The four important objects managed by the library are:
+      </p>
+      <dl>
+        <dt>Face</dt>
+        <dd>The object for a given typeface.</dd>
+        <dt>Instance</dt>
+        <dd>The object for a given pointsize/transform in a typeface.</dd>
+        <dt>Context</dt>
+        <dd>The object for a loading/hinting execution in a typeface.</dd>
+        <dt>Glyph</dt>
+        <dd>The object for a given glyph (outline and metrics).</dd>
+      </dl>
+      <p>
+        A Face object is described by a TFace record, and its associated sub-tables. It is created through a call to the 'TT_Open_Face' API.
+      </p>
+      <p>
+        An Instance object is described by a TInstance record, and sub-tables. It is created for a given face through a call to the 'TT_Open_Instance' API. Several instances can share the same face.
+      </p>
+      <p>
+        The point size and/or transform of a given instance object can be changed on the fly through a call to the 'TT_Reset_Instance' API.
+      </p>
+      <p>
+        A Glyph object is used to describe a glyph to the client application It is made of a TGlyph_Record header, with several sub-tables used to store, for example, point coordinates or outline info. It can hold metrics information and other attributes, as well as the glyph's outline. A client application can request any kind of info to the library on a given glyph through the 'TT_Get_Glyph' call.
+      </p>
+      <p>
+        A Context is described by a TExec_Context record, and sub-tables Execution contexts are created on demand during the following operations:
+      </p>
+      <ul>
+        <li>Creating a new instance (to read and execute the font program).</li>
+        <li>Setting/resetting the point size (to execute the CVT program).</li>
+        <li>During glyph loading (when hinting is on).</li>
+      </ul>
+      <p>
+        They are used to run TrueType instructions and load/store glyph data that are not part of the Glyph object ( as they're of no meaning to a client application ).
+      </p>
+      <p>
+        The library keeps track of all objects related to a given face.
+      </p>
+      <p>
+        A face's instances are kept in two linked lists: one is the 'active' list, which tracks the face's current opened instances, while the other is the 'idle' list used to collect/recycle instance objects when they become unuseful after a 'TT_Close_Instance' call.
+      </p>
+      <p>
+        In the same way, a face's execution contexts are kept in two similar lists. Note that, as contexts are created on demand, the active and idle contexts lists should always contain few elements.
+      </p>
+      <p>
+        Look also for the following files:
+      </p>
+      <dl>
+        <dt>Face manager</dt>
+        <dd>TTFace.pas</dd>
+        <dt>Instance manager</dt>
+        <dd>TTInst.pas</dd>
+        <dt>Context manager</dt>
+        <dd>TTExec.pas</dd>
+        <dt>Glyph manager</dt>
+        <dd>TTGlyph.pas</dd>
+      </dl>
+    </descr>
+
+    <!-- unresolved external references -->
+    <element name="LazFreeType"/>
+    <element name="TTTypes"/>
+    <element name="TTError"/>
+    <element name="TTCache"/>
+    <element name="TTTables"/>
+    <element name="TTCMap"/>
+
+    <element name="PGraphicsState">
+      <short>Pointer to a TGraphicsState record type</short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TGraphicsState">
+      <short>Graphics State</short>
+      <descr>
+        <p>
+          The Graphics State (GS) is managed by the instruction field, but does not come from the font file. Thus, we can use <var>int</var> data types where needed.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.rp0">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.rp1">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.rp2">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.dualVector">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.projVector">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.freeVector">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.loop">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.minimum_distance">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.round_state">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.auto_flip">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.control_value_cutin">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.single_width_cutin">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.single_width_value">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.delta_base">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.delta_shift">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.instruct_control">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.scan_control">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.scan_type">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.gep0">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.gep1">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGraphicsState.gep2">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="Default_GraphicsState">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="MaxCodeRanges">
+      <short>Maximum number of code ranges</short>
+      <descr>
+        <p>
+          There can only be 3 active code ranges at once:
+        </p>
+        <ul>
+          <li>The Font Program</li>
+          <li>The CVT  Program</li>
+          <li>The glyph instructions set</li>
+        </ul>
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="TT_CodeRange_Font">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TT_CodeRange_Cvt">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TT_CodeRange_Glyph">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="CvtFlag_None">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="CvtFlag_X">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="CvtFlag_Y">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="CvtFlag_Both">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TCodeRange">
+      <short>
+        Defines a code range
+      </short>
+      <descr>
+      <p>
+          Code ranges can be resident to a glyph (i.e. the Font Program), while some others are volatile (Glyph instructions). Tracking the state and presence of code ranges allows function and instruction definitions within a code range to be forgotten when the range is discarded.
+      </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TCodeRange.Base">
+      <short/>
+    </element>
+    <element name="TCodeRange.Size">
+      <short/>
+    </element>
+
+    <element name="PCodeRange">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TCodeRangeTable">
+      <short>Defines a code range</short>
+      <descr>
+        <p>
+          Code ranges can be resident in a glyph (i.e. the Font Program), while some others are volatile (Glyph instructions). Tracking the state and presence of code ranges allows function and instruction definitions within a code range to be forgotten when the range is discarded.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="PDefRecord">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TDefRecord">
+      <short>
+        Defines a function / instruction definition record
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TDefRecord.Range">
+      <short/>
+      <descr>
+        In which code range is it located?
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TDefRecord.Start">
+      <short/>
+      <descr>
+        Where does it start?
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TDefRecord.Opc">
+      <short/>
+      <descr>
+        Function number or instruction code.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TDefRecord.Active">
+      <short/>
+      <descr>
+        Is the entry active?
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="PDefArray">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TDefArray">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TCallRecord">
+      <short>Defines a call record used to manage function calls</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TCallRecord.Caller_Range">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TCallRecord.Caller_IP">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TCallRecord.Cur_Count">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TCallRecord.Cur_Restart">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TCallStack">
+      <short>Defines a simple call stack</short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PCallStack">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PGlyph_Zone">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TGlyph_Zone">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Zone.n_points">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Zone.n_contours">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TGlyph_Zone.org">
+      <short>Original (scaled) coordinates</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Zone.cur">
+      <short>Current coordinates</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Zone.flags">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Zone.conEnds">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TRound_Function">
+      <short>Rounding function, as used by the interpreter</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TRound_Function.Result">
+      <short/>
+    </element>
+    <element name="TRound_Function.distance">
+      <short/>
+    </element>
+    <element name="TRound_Function.compensation">
+      <short/>
+    </element>
+
+    <element name="TMove_Function">
+      <short>
+        Point displacement along the freedom vector routine, as used by the interpreter
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TMove_Function.zone">
+      <short/>
+    </element>
+    <element name="TMove_Function.point">
+      <short/>
+    </element>
+    <element name="TMove_Function.distance">
+      <short/>
+    </element>
+
+    <element name="TProject_Function">
+      <short>
+        Distance projection along one of the proj. vectors, as used by the interpreter
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TProject_Function.Result">
+      <short/>
+    </element>
+    <element name="TProject_Function.P1">
+      <short/>
+    </element>
+    <element name="TProject_Function.P2">
+      <short/>
+    </element>
+
+    <element name="TFunc_Get_CVT">
+      <short>
+        Reads a CVT value
+      </short>
+      <descr>
+        Take care of non-square pixels when needed.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFunc_Get_CVT.Result">
+      <short/>
+    </element>
+    <element name="TFunc_Get_CVT.index">
+      <short/>
+    </element>
+
+    <element name="TFunc_Set_CVT">
+      <short>
+        Setting or Moving a CVT value
+      </short>
+      <descr>
+        Take care of non-square pixels when needed.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFunc_Set_CVT.index">
+      <short/>
+    </element>
+    <element name="TFunc_Set_CVT.value">
+      <short/>
+    </element>
+
+    <element name="PGlyph_Transform">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TGlyph_Transform">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph_Transform.xx">
+      <short/>
+    </element>
+    <element name="TGlyph_Transform.xy">
+      <short/>
+    </element>
+    <element name="TGlyph_Transform.yx">
+      <short/>
+    </element>
+    <element name="TGlyph_Transform.yy">
+      <short/>
+    </element>
+    <element name="TGlyph_Transform.ox">
+      <short/>
+    </element>
+    <element name="TGlyph_Transform.oy">
+      <short/>
+    </element>
+
+    <element name="PSubglyph_Record">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TSubglyph_Record">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TSubglyph_Record.index">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.is_scaled">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.is_hinted">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.preserve_pps">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.bbox">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.zone">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.arg1">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.arg2">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.element_flag">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.transform">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.file_offset">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.pp1">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.pp2">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.advanceWidth">
+      <short/>
+    </element>
+    <element name="TSubglyph_Record.leftBearing">
+      <short/>
+    </element>
+
+    <element name="TSubglyph_Stack">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PSubglyph_Stack">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TIns_Metrics">
+      <short>
+      </short>
+      <descr>
+        <p>
+          <b>A note regarding non-squared pixels:</b>
+        </p>
+        <p>
+          (This text will probably go into some docs at some time, for now, it is kept there to explain some definitions in the TIns_Metrics record).
+        </p>
+        <p>
+          The CVT is a one-dimensional array containing values that control certain important characteristics in a font, like the height of all capitals, all lowercase letter, default spacing or stem width/height.
+        </p>
+        <p>
+          These values are found in FUnits in the font file, and must be scaled to pixel coordinates before being used by the CVT and glyph programs. Unfortunately, when using distinct x and y resolutions ( or distinct x and y pointsizes ), there are two possible scalings.
+        </p>
+
+        <p>
+          A first try was to implement a 'lazy' scheme were all values were scaled when first used. However, some values are always used in the same direction, and some other are used in many different circumstances and orientations.
+        </p>
+        <p>
+          I have found a simpler way to do the same, and it even seems to work in most of the cases:
+        </p>
+        <ul>
+          <li>All CVT values are scaled to the maximum ppem size.</li>
+          <li>
+            When performing a read or write in the CVT, a ratio factor is used to perform adequate scaling.
+          </li>
+        </ul>
+        <p>
+          Example:
+        </p>
+        <code>
+x_ppem = 14
+y_ppem = 10
+        </code>
+        <p>
+          We chose ppem = x_ppem = 14 as the CVT scaling size. All CVT entries are scaled to it.
+        </p>
+        <code>
+  x_ratio = 1.0
+  y_ratio = y_ppem/ppem (&lt;1.0)
+        </code>
+        <p>
+          We compute the current ratio like:
+        </p>
+        <ul>
+          <li>if projVector is horizontal, ratio = x_ratio = 1.0</li>
+          <li>if projVector is vertical,   ratop = y_ratio</li>
+          <li>else, ratio = sqrt( (proj.x*x_ratio)**2+(proj.y*y_ratio)**2 )</li>
+        </ul>
+        <p>
+          Reading a CVT value returns:
+        </p>
+        <code>ratio*cvt[index]</code>
+        <p>
+          Writing a CVT value in pixels:
+        </p>
+        <code>cvt[index]/ratio</code>
+        <p>
+          The current ppem is simple:
+        </p>
+        <code>ratio*ppem</code>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TIns_Metrics.pointsize">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.x_resolution">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.y_resolution">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.x_ppem">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.y_ppem">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.x_scale1">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.x_scale2">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.y_scale1">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.y_scale2">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.x_ratio">
+      <short/>
+      <descr>
+        For non-square pixels.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TIns_Metrics.y_ratio">
+      <short/>
+      <descr>
+        For non-square pixels.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TIns_Metrics.scale1">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.scale2">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.ppem">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.ratio">
+      <short/>
+    </element>
+    <element name="TIns_Metrics.compensations">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TIns_Metrics.rotated">
+      <short/>
+      <descr>
+        Flag value.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TIns_Metrics.stretched">
+      <short/>
+      <descr>
+        Flag value.
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="PFace">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PInstance">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PExec_Context">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TFace">
+      <short>The FreeType Face object</short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TFace.stream">
+      <short>Input / output stream</short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TFace.ttcHeader">
+      <short>
+        TrueType collection header
+      </short>
+      <descr>
+        TrueType collection header, if any was found.
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="TFace.maxProfile">
+      <short>Maximum profile table</short>
+      <descr>
+        <p>
+          Maximum profile table, as defined by the TrueType Specification.
+        </p>
+        <p>
+          <b>Note:</b>
+        </p>
+        <p>
+          It seems that some maximum values cannot be taken directly from this table, but rather by combining some of its fields ( e.g. the max. number of points seems to be given by MAX(maxPoints, maxCompositePoints).
+        </p>
+        <p>
+          For this reason, we define later our own max values that are used to load and allocate further tables.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.fontHeader">
+      <short>The font header</short>
+      <descr>
+        <p>
+          The font header as defined by the TrueType Specification.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.horizontalHeader">
+      <short>The horizontal header</short>
+      <descr>
+        <p>
+          The horizontal header, as defined in the TrueType specification.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.verticalInfo">
+      <short>Set to true when vertical data is in the font</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.verticalHeader">
+      <short>Vertical header table</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.os2">
+      <short>OS/2 table</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.postscript">
+      <short>Postscript table</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.hdmx">
+      <short>Horizontal device metrics table</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.nameTable">
+      <short>Name table</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.numTables">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.dirTables">
+      <short/>
+      <descr>
+        <p>
+          The directory of the TrueType tables found in  this face's stream.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.numCMaps">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.cMaps">
+      <short/>
+      <descr>
+        <p>
+          The directory of character mapping tables found in the typeface.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.numLocations">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.glyphLocations">
+      <short/>
+      <descr>
+        <p>
+          The glyph locations table.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.fontPgmSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.fontProgram">
+      <short/>
+      <descr>
+        <p>
+          The font program, if any.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.cvtPgmSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.cvtProgram">
+      <short/>
+      <descr>
+        <p>
+          The CVT (or 'prep') program, if any.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.cvtSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFace.cvt">
+      <short/>
+      <descr>
+        <p>
+          The original, unscaled control value table.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.gasp">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TFace.numGlyphs">
+      <short>
+        Total number of glyphs in the typeface
+      </short>
+      <descr>
+        <p>
+          The value must be set by the maximum profile loader.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.maxPoints">
+      <short>
+        Maximum number of glyph points, simple and composite
+      </short>
+      <descr>
+        <p>
+          The value must be set by the maximum profile loader.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.maxContours">
+      <short>
+        Maximum number of glyph contours, simple and composite
+      </short>
+      <descr>
+        <p>
+          The value must be set by the maximum profile loader.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.maxComponents">
+      <short>
+        Maximum number of components in a composite glyph
+      </short>
+      <descr>
+        <p>
+          The value must be set by the maximum profile loader.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.instances">
+      <short/>
+      <descr>
+        <p>
+          The list is used to track active instance and context objects, as well as to recycle them.
+          See TTLists.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.glyphs">
+      <short/>
+      <descr>
+        <p>
+          The list is used to track active instance and context objects, as well as to recycle them.
+          See TTLists.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.kernings">
+      <short/>
+      <descr>
+        <p>
+          Various caches for this face's child objects.
+          The list is used to track active instance and context objects, as well as to recycle them.
+          See TTLists.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.extension">
+      <short/>
+      <descr>
+        <p>
+          A typeless pointer to the face object's extensions.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TFace.genericP">
+      <short/>
+      <descr>
+        <p>
+          A generic pointer. See TT_Set/Get_Face_Pointer.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="TInstance">
+      <short>FreeType Instance Object</short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.owner">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.valid">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.metrics">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.numFDefs">
+      <short>
+        Number of function definitions
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.maxFDefs">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.FDefs">
+      <short>
+        Table of FDefs entries
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.numIDefs">
+      <short>
+        Number of instruction definitions
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.maxIDefs">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.IDefs">
+      <short>
+        Table of IDefs entries
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.maxFunc">
+      <short>
+        Maximum function number
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.maxIns">
+      <short>
+        Maximum instruction number
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TInstance.codeRangeTable">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.GS">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.storeSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.storage">
+      <short>
+        The storage area
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.cvtSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.cvt">
+      <short>
+        The scaled Control Value Table
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.twilight">
+      <short>
+        The instance's twilight zone
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TInstance.debug">
+      <short>
+        Debugging variable
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TInstance.context">
+      <short/>
+      <descr>
+        <p>
+          When using the debugger, we must keep the execution context with the instance object rather than asking it on demand.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TInstance.genericP">
+      <short>
+        Generic pointer
+      </short>
+      <descr>
+         <p>
+           See TT_Set/Get_Instance_Pointer.
+         </p>
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="TExec_Context">
+      <short>FreeType Execution Context Object</short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TExec_Context.face">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.instance">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.error">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.interpreter">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.stackSize">
+      <short>
+        Size of instance stack
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.stack">
+      <short>
+        Current instance stack
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.zp0">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.zp1">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.zp2">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.twilight">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.pts">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.GS">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.curRange">
+      <short>
+        Ccurrent code range number
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.code">
+      <short>
+        Current code range
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.IP">
+      <short>
+        Current instruction pointer
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.codeSize">
+      <short>
+        Size of current range
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.step_ins">
+      <short>
+        Used by the interpreter
+      </short>
+      <descr>
+        If true, go to the next instruction.
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.loadSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.loadStack">
+      <short>
+        The load stack used to load composite glyphs
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.glyphIns">
+      <short>
+        Glyph instructions
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.glyphSize">
+      <short>
+        Glyph instruction size
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.callSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.callStack">
+      <short>
+        Interpreter call stack
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.period">
+      <short>
+        Value used for SuperRounding
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.phase">
+      <short>
+        Value used for SuperRounding
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.threshold">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxPoints">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxContours">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.numFDefs">
+      <short>
+        Number of function definitions
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxFDefs">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.FDefs">
+      <short>
+        Table of FDefs entries
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.numIDefs">
+      <short>
+        Number of instruction definitions
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxIDefs">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.IDefs">
+      <short>
+        Table of IDefs entries
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxFunc">
+      <short>
+        Maximum function number
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.maxIns">
+      <short>
+        Maximum instruction number
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.codeRangeTable">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.storeSize">
+      <short>
+        Size of the current storage
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.storage">
+      <short>
+        Sorage area
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.metrics">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.cur_ppem">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.scale1">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.scale2">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.cached_metrics">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.Instruction_Trap">
+      <short/>
+      <descr>
+        <p>
+          Used by the full-screen debugger. If set, the interpreter will exit after executing one opcode. Used to perform single-stepping.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.is_composite">
+      <short/>
+      <descr>
+        <p>
+          This flag is True when the glyph is a composite one. In this case, we measure original distances in the loaded coordinates (font units), then scale them appropriately. This get rid of transformation artifacts (like symmetries).
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.cvtSize">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.cvt">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.F_dot_P">
+      <short/>
+      <descr>
+        <p>
+          The dot product of the free and projection vector is used in frequent operations.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_round">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_project">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_dualproj">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_freeProj">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_move">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_read_cvt">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_write_cvt">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TExec_Context.func_move_cvt">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="PGlyph">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TGlyph">
+      <short>
+        FreeType Glyph Object
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph.face">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph.metrics">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph.outline">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TGlyph.computed_width">
+      <short/>
+      <descr>
+        <p>
+          Temporary. Used for debugging purposes.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TGlyph.precalc_width">
+      <short/>
+      <descr>
+        <p>
+          Temporary. Used for debugging purposes.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="TGlyph.is_composite">
+      <short/>
+      <descr>
+        <p>
+          Temporary. Used for debugging purposes.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+
+    <element name="PFont_Input">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="TFont_Input">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFont_Input.stream">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TFont_Input.fontIndex">
+      <short>
+        Index of the font in the collection
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="Goto_CodeRange">
+      <short>
+         Go to a specified code range
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Goto_CodeRange.Result">
+      <short/>
+    </element>
+    <element name="Goto_CodeRange.exec">
+      <short/>
+    </element>
+    <element name="Goto_CodeRange.range">
+      <short/>
+    </element>
+    <element name="Goto_CodeRange.IP">
+      <short/>
+    </element>
+
+    <element name="Get_CodeRange">
+      <short>
+        Returns a pointer to a given code range record
+      </short>
+      <descr>
+        <p>
+          Used only by the debugger.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="Get_CodeRange.result">
+      <short/>
+    </element>
+    <element name="Get_CodeRange.exec">
+      <short/>
+    </element>
+    <element name="Get_CodeRange.range">
+      <short/>
+    </element>
+
+    <element name="Set_CodeRange">
+      <short>
+        Sets properties for the given code range
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Set_CodeRange.result">
+      <short/>
+    </element>
+    <element name="Set_CodeRange.exec">
+      <short/>
+    </element>
+    <element name="Set_CodeRange.range">
+      <short/>
+    </element>
+    <element name="Set_CodeRange.base">
+      <short/>
+    </element>
+    <element name="Set_CodeRange.length">
+      <short/>
+    </element>
+
+    <element name="Clear_CodeRange">
+      <short>
+        Clear a given code range
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Clear_CodeRange.result">
+      <short/>
+    </element>
+    <element name="Clear_CodeRange.exec">
+      <short/>
+    </element>
+    <element name="Clear_CodeRange.range">
+      <short/>
+    </element>
+
+    <element name="New_Context">
+      <short/>
+      <descr>
+        <p>
+          Get a new execution context, either fresh or recycled, for an instance of the face 'res'. Called by 'New_Face_Context'. Assumes that the face mutex is acquired.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="New_Context.result">
+      <short/>
+    </element>
+    <element name="New_Context.instance">
+      <short/>
+    </element>
+
+    <element name="Done_Context">
+      <short/>
+      <descr>
+        <p>
+          Releases an execution context. The context can be destroyed or recycled, depending on implementation. Called by 'Done_Face_Context'. Assumes that the face mutex is acquired.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="Done_Context.exec">
+      <short/>
+    </element>
+
+    <element name="Context_Load">
+      <short/>
+      <descr>
+        <p>
+          Update exec's data with the one found in 'ins'. Typically before an execution.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="Context_Load.exec">
+      <short/>
+    </element>
+    <element name="Context_Load.ins">
+      <short/>
+    </element>
+
+    <element name="Context_Save">
+      <short/>
+      <descr>
+        <p>
+          Update ins's data with the one found in 'exec'. Typically after an execution.
+        </p>
+      </descr>
+      <seealso/>
+    </element>
+    <element name="Context_Save.exec">
+      <short/>
+    </element>
+    <element name="Context_Save.ins">
+      <short/>
+    </element>
+
+    <element name="Context_Run">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Context_Run.result">
+      <short/>
+    </element>
+    <element name="Context_Run.exec">
+      <short/>
+    </element>
+    <element name="Context_Run.debug">
+      <short/>
+    </element>
+
+    <element name="Instance_Init">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Instance_Init.result">
+      <short/>
+    </element>
+    <element name="Instance_Init.ins">
+      <short/>
+    </element>
+
+    <element name="Instance_Reset">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Instance_Reset.result">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Instance_Reset.ins">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Instance_Reset.debug">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="Scale_X">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Scale_X.result">
+      <short/>
+    </element>
+    <element name="Scale_X.metrics">
+      <short/>
+    </element>
+    <element name="Scale_X.x">
+      <short/>
+    </element>
+
+    <element name="Scale_Y">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="Scale_Y.result">
+      <short/>
+    </element>
+    <element name="Scale_Y.metrics">
+      <short/>
+    </element>
+    <element name="Scale_Y.y">
+      <short/>
+    </element>
+
+    <element name="TTObjs_Init">
+      <short>
+        Initialize the object manager
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+    <element name="TTObjs_Init.result">
+      <short/>
+    </element>
+
+    <element name="TTObjs_Done">
+      <short>
+        Finalize the object manager
+      </short>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="face_cache">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+    <element name="exec_cache">
+      <short/>
+      <descr/>
+      <seealso/>
+    </element>
+
+  </module>
+  <!-- TTObjs -->
 </package>
 </fpdoc-descriptions>

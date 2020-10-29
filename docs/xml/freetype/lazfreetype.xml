@@ -1,1632 +1,1355 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
     LazFreeType
-  ====================================================================
--->
-
-<module name="LazFreeType">
-<short></short>
-<descr>
-</descr>
-
-<!-- function Visibility: default -->
-<element name="TT_Init_FreeType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Init_FreeType.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TT_Done_FreeType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Raster_Palette">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Raster_Palette.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Raster_Palette.palette">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Open_Face">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Open_Face.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Face.fontname">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Face._face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Open_Collection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Open_Collection.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Collection.fontname">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Collection.faceIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Open_Collection._face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Face_Properties">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Face_Properties.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Face_Properties._face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Face_Properties.prop">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Face_Pointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Face_Pointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Face_Pointer._face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Face_Pointer.data">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Face_Pointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Face_Pointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Face_Pointer._face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Close_Face">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Close_Face.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Close_Face._face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_New_Instance">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_New_Instance.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Instance._face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Instance._ins">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_Resolutions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_Resolutions.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Resolutions._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Resolutions.x_resolution">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Resolutions.y_resolution">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_PointSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_PointSize.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PointSize._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PointSize.pointsize">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_CharSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_CharSize.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_CharSize._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_CharSize.charsize">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_CharSizes">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_CharSizes.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_CharSizes._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_CharSizes.charsizex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_CharSizes.charsizey">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes.pixelX">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes.pixelY">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_PixelSizes.pointsize">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_Transforms">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_Transforms.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Transforms._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Transforms.rotated">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Transforms.distorted">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Instance_Metrics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Instance_Metrics.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Instance_Metrics._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Instance_Metrics.m">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Set_Instance_Pointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Set_Instance_Pointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Pointer._ins">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Set_Instance_Pointer.data">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Instance_Pointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Instance_Pointer.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Instance_Pointer._ins">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Done_Instance">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Done_Instance.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Done_Instance._ins">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_New_Glyph">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_New_Glyph.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Glyph._face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Glyph._glyph">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Done_Glyph">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Done_Glyph.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Done_Glyph._glyph">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Load_Glyph">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Load_Glyph.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Load_Glyph._instance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Load_Glyph._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Load_Glyph.glyph_index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Load_Glyph.load_flags">
-<short></short>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TT_Load_Scale_Glyph">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TT_Load_Hint_Glyph">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TT_Load_Debug">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TT_Load_Default">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Outline._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Outline.outline">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Metrics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Metrics.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Metrics._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Metrics.gmetrics">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Big_Metrics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Big_Metrics.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Big_Metrics._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Big_Metrics.gmetrics">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap.x_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap.y_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Bitmap.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap.x_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap.y_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ.x_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ.y_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Glyph_Pixmap_HQ.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.x_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.y_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.tx">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.ty">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.OnRender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_Gray.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ._glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.x_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.y_offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.tx">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.ty">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.OnRender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Glyph_HQ.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Translate_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Translate_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Translate_Outline.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Translate_Outline.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Translate_Outline.y">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Transform_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Transform_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Transform_Outline.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Transform_Outline.mat">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Transform_Vector">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Transform_Vector.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Transform_Vector.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Transform_Vector.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Transform_Vector.mat">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Outline_Bitmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Outline_Bitmap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Bitmap.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Bitmap.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Bitmap.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Outline_Pixmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Outline_Pixmap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Outline_Pixmap_HQ">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Outline_Pixmap_HQ.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap_HQ.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap_HQ.map">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_Pixmap_HQ.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.tx">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.ty">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.OnRender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_Gray.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.x">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.y">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.tx">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.ty">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.OnRender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Render_Directly_Outline_HQ.rasterizer">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Outline_BBox">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Outline_BBox.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_BBox.out">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Outline_BBox.bbox">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_New_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_New_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Outline.n_points">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Outline.n_contours">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_New_Outline.out">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Copy_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Copy_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Copy_Outline.source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Copy_Outline.target">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Clone_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Clone_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Clone_Outline.source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Clone_Outline.target">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Done_Outline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Done_Outline.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Done_Outline.out">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_CharMap_Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_CharMap_Count.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap_Count.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_CharMap_ID">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_CharMap_ID.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap_ID.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap_ID.charmapIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap_ID.platform">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap_ID.encoding">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_CharMap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_CharMap.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap.charmapIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_CharMap.charMap">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Char_Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Char_Index.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Char_Index.charmap">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Char_Index.charCode">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Name_Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Name_Count.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_Count.face">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Name_ID">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Name_ID.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.nameIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.platform">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.encoding">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.language">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_ID.nameid">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Name_String">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Name_String.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_String.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_String.nameIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_String.str">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Name_String.len">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TT_Get_Font_Data">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TT_Get_Font_Data.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Font_Data.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Font_Data.tableTag">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Font_Data.offset">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Font_Data.buffer">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Font_Data.length">
-<short></short>
-</element>
-
-</module> <!-- LazFreeType -->
-
-</package>
+    ====================================================================
+    -->
+    <module name="LazFreeType">
+      <short>Implements a high-level interface to the FreeType library</short>
+      <descr></descr>
+
+      <!-- unresolved externals -->
+      <element name="TTTypes"/>
+      <element name="Classes"/>
+
+      <element name="TT_Init_FreeType">
+        <short>Initializes the FreeType engine</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="TT_Init_FreeType.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_FreeType">
+        <short>Finalizes the FreeType engine, and discards all objects</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Raster_Palette">
+        <short>Set the gray-level palette used for font-smoothing</short>
+        <descr>
+          <p>
+            palette is an array of Byte values which define the gray-level palette used in the default
+            rasterizer for the library. palette uses the following convention for bytes values in the array:
+          </p>
+          <table>
+            <caption>Byte Value Usage in a Gray-level Palette</caption>
+            <th>
+              <td>Byte Position</td>
+              <td>Contains</td>
+            </th>
+            <tr>
+              <td>0</td>
+              <td>Background (White)</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>Light</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Medium</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Dark</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Foreground (Black)</td>
+            </tr>
+          </table>
+          <p>
+            The return value is a TT_Error type with the error or success status for the routine. The value
+            is TT_Err_Ok if the routine completed successfully.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#freetypelaz.TTTypes.TT_Gray_Palette"/>
+          <link id="#freetypelaz.TTTypes.TT_Error"/>
+        </seealso>
+      </element>
+      <element name="TT_Set_Raster_Palette.Result">
+        <short>Success or error status value returned from the routine</short>
+      </element>
+      <element name="TT_Set_Raster_Palette.palette">
+        <short>Values for the gray-level palette</short>
+      </element>
+
+      <element name="TT_Open_Face">
+        <short>Opens a new font and returns a handle for it in the _face argument</short>
+        <descr>
+          <p>
+            <var>TT_Open_Face</var>
+            is a function used to open a TrueType font file or collection. Overloaded variants of the
+            routine are provided using either a file name or a stream as the source for the font face. When
+            the source is a font collection, the first embedded font is loaded.
+          </p>
+          <p>
+            <var>fontname</var>
+            contains the name for the TrueType font file or collection opened in the routine.
+          </p>
+          <p>
+            <var>AStream</var>
+            is a TStream instance with the font face loaded in the routine.
+          </p>
+          <p>
+            <var>_face</var>
+            is updated with the handle for the TrueType font loaded in the routine.
+          </p>
+          <p>
+            The return value is a
+            <var>TT_Error</var>
+            type which indicates the success or failure of the routine. Please note that success is
+            indicated by the value
+            <var>TT_Err_Ok</var>
+            (<b>0</b>). Any other value indicates an error condition.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TT_Error"/>
+          <link id="TT_Err_Ok"/>
+          <link id="TT_Open_Stream"/>
+          <link id="Cache_New"/>
+          <link id="error"/>
+        </seealso>
+      </element>
+      <element name="TT_Open_Face.Result">
+        <short>Success or error status for the operation</short>
+      </element>
+      <element name="TT_Open_Face.fontname">
+        <short>TrueType font file or collection opened in the routine</short>
+      </element>
+      <element name="TT_Open_Face._face">
+        <short>Handle for the font face opened in the routine</short>
+      </element>
+      <element name="TT_Open_Face.AStream">
+        <short>Stream with the font data examined in the routine</short>
+      </element>
+
+      <element name="TT_Open_Collection">
+        <short>Opens a font file embedded in a collection</short>
+        <descr>
+          <p>
+            <var>TT_Open_Collection</var>
+            is a function used to open a TrueType font embbedded in a font collection.
+          </p>
+          <p>
+            <var>fontname</var>
+            is the name of the font collection opend in the routine.
+          </p>
+          <p>
+            <var>faceIndex</var>
+            is the position of the desired font in the collection.
+          </p>
+          <p>
+            <var>_face</var>
+            contains the handle for the font loaded in the routine.
+          </p>
+          <p>
+            The return value is a
+            <var>TT_Error</var>
+            type which indicates the success or failure of the routine. Please note that success is
+            indicated by the value
+            <var>TT_Err_Ok</var>
+            (<b>0</b>). Any other value indicates an error condition.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TT_Error"/>
+          <link id="TT_Err_Ok"/>
+          <link id="TT_Open_Stream"/>
+          <link id="Cache_New"/>
+          <link id="error"/>
+        </seealso>
+      </element>
+      <element name="TT_Open_Collection.Result">
+        <short>Success or fail status for the routine</short>
+      </element>
+      <element name="TT_Open_Collection.fontname">
+        <short>Font collection examined in the routine</short>
+      </element>
+      <element name="TT_Open_Collection.faceIndex">
+        <short>Position of the desired font embedded in the collection</short>
+      </element>
+      <element name="TT_Open_Collection._face">
+        <short>Handle for the font face opened in the routine</short>
+      </element>
+
+      <element name="TT_Get_Face_Properties">
+        <short>Gets properties for the specified font face</short>
+        <descr>
+          <p>
+            <var>TT_Get_Face_Properties</var>
+            is a
+            <var>TT_Error</var>
+            function used to get properties for the font face specified in
+            <var>_face</var>.
+          </p>
+          <p>
+            The
+            <var>prop</var>
+            argument is a TT_Face_Properties output parameter where the properties for the TrueType font
+            face are stored. TT_Face_Properties provides access to the following types of information about
+            the TrueType font face:
+          </p>
+          <dl>
+            <dt>num_glyphs</dt>
+            <dd>Number of glyphs in the font</dd>
+            <dt>max_points</dt>
+            <dd>Maximum number of points needed to represent the glyphs in the font face</dd>
+            <dt>max_contours</dt>
+            <dd>
+              Maximum number of closed shapes (or contours) for glyphs defined using the points in the font
+              face
+            </dd>
+            <dt>max_faces</dt>
+            <dd>Maximum number of font faces in the header for a TrueType font collection</dd>
+            <dt>header</dt>
+            <dd>TrueType font header for the file or collection</dd>
+            <dt>horizontal</dt>
+            <dd>Horizontal layout information for glyphs in the font face</dd>
+            <dt>vertical</dt>
+            <dd>Vertical layout information for glyphs in the font face</dd>
+            <dt>os2</dt>
+            <dd>Metrics for the font face when used on the OS/2 operating system</dd>
+            <dt>postscript</dt>
+            <dd>Contains infomation needed to use the font face on Postscript output devices</dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TT_Face"/>
+          <link id="TT_Face_Properties"/>
+          <link id="TT_Error"/>
+          <link id="TT_Err_Ok"/>
+          <link id="TT_Err_Invalid_Face_Handle"/>
+        </seealso>
+      </element>
+      <element name="TT_Get_Face_Properties.Result">
+        <short>Success or failure status for the routine. 0 indicates success.</short>
+      </element>
+      <element name="TT_Get_Face_Properties._face">
+        <short>Font face examined in the routine</short>
+      </element>
+      <element name="TT_Get_Face_Properties.prop">
+        <short>Properties for the specified font face</short>
+      </element>
+
+      <element name="TT_Set_Face_Pointer">
+        <short>Sets the pointer to the data for the font face</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TT_Set_Face_Pointer.Result">
+        <short>Success or failure status for the routine</short>
+      </element>
+      <element name="TT_Set_Face_Pointer._face">
+        <short>Font face updated in the routine</short>
+      </element>
+      <element name="TT_Set_Face_Pointer.data">
+        <short>Pointer to the data assigned to the specified font face</short>
+      </element>
+
+      <element name="TT_Get_Face_Pointer">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Face_Pointer.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Face_Pointer._face">
+        <short></short>
+      </element>
+
+      <element name="TT_Close_Face">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Close_Face.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Close_Face._face">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Instance">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_New_Instance.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Instance._face">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Instance._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Resolutions">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_Resolutions.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Resolutions._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Resolutions.x_resolution">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Resolutions.y_resolution">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PointSize">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_PointSize.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PointSize._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PointSize.pointsize">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSize">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_CharSize.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSize._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSize.charsize">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSizes">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_CharSizes.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSizes._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSizes.charsizex">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_CharSizes.charsizey">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes.pixelX">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes.pixelY">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_PixelSizes.pointsize">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Transforms">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_Transforms.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Transforms._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Transforms.rotated">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Transforms.distorted">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Instance_Metrics">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Instance_Metrics.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Instance_Metrics._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Instance_Metrics.m">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Pointer">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Set_Instance_Pointer.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Pointer._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Set_Instance_Pointer.data">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Instance_Pointer">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Instance_Pointer.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Instance_Pointer._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Instance">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Done_Instance.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Instance._ins">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Glyph">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_New_Glyph.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Glyph._face">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Glyph._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Glyph">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Done_Glyph.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Glyph._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Load_Glyph">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Load_Glyph.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Load_Glyph._instance">
+        <short></short>
+      </element>
+
+      <element name="TT_Load_Glyph._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Load_Glyph.glyph_index">
+        <short></short>
+      </element>
+
+      <element name="TT_Load_Glyph.load_flags">
+        <short></short>
+      </element>
+
+      <element name="TT_Copy_Glyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TT_Copy_Glyph.Result">
+        <short/>
+      </element>
+      <element name="TT_Copy_Glyph.source">
+        <short/>
+      </element>
+      <element name="TT_Copy_Glyph.target">
+        <short/>
+      </element>
+
+      <element name="TT_Load_Scale_Glyph">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Load_Hint_Glyph">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Load_Debug">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Load_Default">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Outline._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Outline.outline">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Metrics">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Metrics.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Metrics._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Metrics.gmetrics">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Big_Metrics">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Big_Metrics.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Big_Metrics._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Big_Metrics.gmetrics">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap.x_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap.y_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Bitmap.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap.x_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap.y_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ.x_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ.y_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Glyph_Pixmap_HQ.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.x_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.y_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.tx">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.ty">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.OnRender">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_Gray.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ._glyph">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.x_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.y_offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.tx">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.ty">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.OnRender">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Glyph_HQ.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Translate_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Translate_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Translate_Outline.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Translate_Outline.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Translate_Outline.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Transform_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Outline.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Outline.mat">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Vector">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Transform_Vector.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Vector.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Vector.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Transform_Vector.mat">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Bitmap">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Outline_Bitmap.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Bitmap.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Bitmap.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Bitmap.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap_HQ">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap_HQ.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap_HQ.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap_HQ.map">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_Pixmap_HQ.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.tx">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.ty">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.OnRender">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_Gray.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.x">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.y">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.tx">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.ty">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.OnRender">
+        <short></short>
+      </element>
+
+      <element name="TT_Render_Directly_Outline_HQ.rasterizer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_BBox">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Outline_BBox.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_BBox.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Outline_BBox.bbox">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_New_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Outline.n_points">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Outline.n_contours">
+        <short></short>
+      </element>
+
+      <element name="TT_New_Outline.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Copy_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Copy_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Copy_Outline.source">
+        <short></short>
+      </element>
+
+      <element name="TT_Copy_Outline.target">
+        <short></short>
+      </element>
+
+      <element name="TT_Clone_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Clone_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Clone_Outline.source">
+        <short></short>
+      </element>
+
+      <element name="TT_Clone_Outline.target">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Outline">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Done_Outline.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Done_Outline.out">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_Count">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_CharMap_Count.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_Count.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_ID">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_CharMap_ID.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_ID.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_ID.charmapIndex">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_ID.platform">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap_ID.encoding">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_CharMap.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap.charmapIndex">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_CharMap.charMap">
+        <short></short>
+      </element>
+
+      <element name="TT_Char_Index">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Char_Index.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Char_Index.charmap">
+        <short></short>
+      </element>
+
+      <element name="TT_Char_Index.charCode">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_Count">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Name_Count.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_Count.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Name_ID.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.nameIndex">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.platform">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.encoding">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.language">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_ID.nameid">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_String">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Name_String.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_String.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_String.nameIndex">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_String.str">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Name_String.len">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+
+      <element name="TT_Get_Font_Data.Result">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data.face">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data.tableTag">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data.offset">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data.buffer">
+        <short></short>
+      </element>
+
+      <element name="TT_Get_Font_Data.length">
+        <short></short>
+      </element>
+
+    </module>
+    <!-- LazFreeType -->
+  </package>
 </fpdoc-descriptions>

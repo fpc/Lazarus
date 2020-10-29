@@ -1,475 +1,299 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
-
-<!--
-  ====================================================================
-    TTDebug
-  ====================================================================
--->
-
-<module name="TTDebug">
-<short></short>
-<descr>
-</descr>
-
-<!-- alias type Visibility: default -->
-<element name="ByteHexStr">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="ShortHexStr">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="LongHexStr">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="DebugStr">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PBreakPoint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TBreakPoint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TBreakPoint.Next">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TBreakPoint.Range">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TBreakPoint.Address">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PRangeRec">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TRangeRec">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.Code">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.Size">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.index">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.NLines">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.Disassembled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TRangeRec.Breaks">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Generate_Range">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Generate_Range.CR">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Generate_Range.index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Generate_Range.RR">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Throw_Range">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Throw_Range.RR">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Toggle_Break">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Toggle_Break.Head">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Toggle_Break.Range">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Toggle_Break.Adr">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Set_Break">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Set_Break.Head">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Set_Break.Range">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Set_Break.Adr">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Clear_Break">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Clear_Break.Head">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Clear_Break.Bp">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Clear_All_Breaks">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Clear_All_Breaks.Head">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Find_BreakPoint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Find_BreakPoint.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Find_BreakPoint.Head">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Find_BreakPoint.Range">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Find_BreakPoint.IP">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Cur_U_Line">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Cur_U_Line.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cur_U_Line.Code">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cur_U_Line.IP">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Get_Length">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Get_Length.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Length.Code">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Length.IP">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Get_Dis_Line">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Get_Dis_Line.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Dis_Line.cr">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Dis_Line.addr">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Hex8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Hex8.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Hex8.B">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Hex16">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Hex16.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Hex16.W">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Hex32">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Hex32.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Hex32.L">
-<short></short>
-</element>
-
-</module> <!-- TTDebug -->
-
-</package>
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTDebug
+    ====================================================================
+    -->
+    <module name="TTDebug">
+      <short>Used by the debugger</short>
+      <descr/>
+
+      <element name="ByteHexStr">
+        <short>hex representation of a byte</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="ShortHexStr">
+        <short>hex representation of a short</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="LongHexStr">
+        <short>hex representation of a long</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DebugStr">
+        <short>Disassembled line oputput</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PBreakPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TBreakPoint">
+        <short/>
+        <descr>
+          <p>
+            A simple record to hold breakpoint information it may be completed later with pass count, etc.
+            They must be in a sorted linked list.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TBreakPoint.Next">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TBreakPoint.Range">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TBreakPoint.Address">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PRangeRec">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec">
+        <short>
+          A record to store line number information and a list of breakpoints
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.Code">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.index">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.NLines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.Disassembled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TRangeRec.Breaks">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="Generate_Range">
+        <short>Generate Line Number information specific to a given range</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Generate_Range.CR">
+        <short/>
+      </element>
+      <element name="Generate_Range.index">
+        <short/>
+      </element>
+      <element name="Generate_Range.RR">
+        <short/>
+      </element>
+
+      <element name="Throw_Range">
+        <short>Discard Line Number Information</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Throw_Range.RR">
+        <short/>
+      </element>
+
+      <element name="Toggle_Break">
+        <short>Toggle a breakpoint</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Toggle_Break.Head">
+        <short/>
+      </element>
+      <element name="Toggle_Break.Range">
+        <short/>
+      </element>
+      <element name="Toggle_Break.Adr">
+        <short/>
+      </element>
+
+      <element name="Set_Break">
+        <short>Set a breakpoint on a given address</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Set_Break.Head">
+        <short/>
+      </element>
+      <element name="Set_Break.Range">
+        <short/>
+      </element>
+      <element name="Set_Break.Adr">
+        <short/>
+      </element>
+
+      <element name="Clear_Break">
+        <short>Clear one specific breakpoint</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Clear_Break.Head">
+        <short/>
+      </element>
+      <element name="Clear_Break.Bp">
+        <short/>
+      </element>
+
+      <element name="Clear_All_Breaks">
+        <short>Clear the breakpoint list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Clear_All_Breaks.Head">
+        <short/>
+      </element>
+
+      <element name="Find_BreakPoint">
+        <short>Find one breakpoint at a given address</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Find_BreakPoint.Result">
+        <short/>
+      </element>
+      <element name="Find_BreakPoint.Head">
+        <short/>
+      </element>
+      <element name="Find_BreakPoint.Range">
+        <short/>
+      </element>
+      <element name="Find_BreakPoint.IP">
+        <short/>
+      </element>
+
+      <element name="Cur_U_Line">
+        <short>Returns the current disassembled line at Code(IP)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Cur_U_Line.Result">
+        <short/>
+      </element>
+      <element name="Cur_U_Line.Code">
+        <short/>
+      </element>
+      <element name="Cur_U_Line.IP">
+        <short/>
+      </element>
+
+      <element name="Get_Length">
+        <short>Returns the length of the current opcode at Code(IP)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Get_Length.Result">
+        <short/>
+      </element>
+      <element name="Get_Length.Code">
+        <short/>
+      </element>
+      <element name="Get_Length.IP">
+        <short/>
+      </element>
+
+      <element name="Get_Dis_Line">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Get_Dis_Line.Result">
+        <short/>
+      </element>
+      <element name="Get_Dis_Line.cr">
+        <short/>
+      </element>
+      <element name="Get_Dis_Line.addr">
+        <short/>
+      </element>
+
+      <element name="Hex8">
+        <short>Returns a 8-bit hexadecimal string</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Hex8.Result">
+        <short/>
+      </element>
+      <element name="Hex8.B">
+        <short/>
+      </element>
+
+      <element name="Hex16">
+        <short>Returns a 16-bit hexadecimal string</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Hex16.Result">
+        <short/>
+      </element>
+      <element name="Hex16.W">
+        <short/>
+      </element>
+
+      <element name="Hex32">
+        <short>Returns a 32-bit hexadecimal string</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Hex32.Result">
+        <short/>
+      </element>
+      <element name="Hex32.L">
+        <short/>
+      </element>
+
+    </module>
+    <!-- TTDebug -->
+  </package>
 </fpdoc-descriptions>

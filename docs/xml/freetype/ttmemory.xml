@@ -1,124 +1,138 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTMemory
+    ====================================================================
+    -->
+    <module name="TTMemory">
+      <short>Memory management specification</short>
+      <descr>
+        <p>
+          Copyright 1996 David Turner, Robert Wilhelm and Werner Lemberg.
+        </p>
+        <p>
+          This file is part of the FreeType project, and may only be used modified and distributed under the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or distribute this file you indicate that you have read the license and understand and accept it fully.
+        </p>
+        <p>
+          Differences between 2.1 and 2.0:
+        </p>
+        <ul>
+          <li>Added a memory mutex to make the component thread-safe.</li>
+        </ul>
+        <p>
+          Differences between 2.0 and 1.1:
+        </p>
+        <ul>
+          <li>The growing heap was completely removed in version 2.0,</li>
+          <li>
+            The support for small mini-heaps may be re-introduced later to allow the storage of several consecutive arrays in one single block.
+          </li>
+        </ul>
+        <remark>
+          <p>IMPORTANT NOTICE :</p>
+          <p>
+            The Alloc and Free functions mimic their C equivalent, however, some points must be noticed:
+          </p>
+          <ul>
+            <li>
+              Both functions return a boolean. As usual, True indicates success, while False indicates failure.
+            </li>
+            <li>
+              The Alloc function puts a small header on front of each allocated block. The header contains a magic cookie and the size of the allocated block. This allows calls to Free without passing a block size as an argument, and thus reduces the risks of memory leaks.
+            </li>
+            <li>
+              It is possible to call Free with a nil pointer, in which case nothing happens, and the result is set to True (success).
+            </li>
+          </ul>
+          <p>
+            The pointer is set to nil after a call to Free in all cases.
+            This is done to clear the destructors code, allowing:
+          </p>
+          <code>
+if (pointer) then
+begin
+   Free(pointer);
+   pointer := nil;
+end;
+          </code>
+          <p>To be replaced by a single line:</p>
+          <code>
+Free(pointer);
+          </code>
+        </remark>
+      </descr>
 
-<!--
-  ====================================================================
-    TTMemory
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="TTTypes"/>
 
-<module name="TTMemory">
-<short></short>
-<descr>
-</descr>
+      <element name="TMarkRecord">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TMarkRecord.Magic">
+        <short/>
+      </element>
+      <element name="TMarkRecord.Top">
+        <short/>
+      </element>
 
-<!-- record type Visibility: default -->
-<element name="TMarkRecord">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Font_Pool_Allocated">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TMarkRecord.Magic">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Alloc">
+        <short/>
+        <descr>
+          <p>
+            Allocates a new memory block in the current heap of <var>size</var> bytes. Returns failure if no memory is left in the heap.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Alloc.Result">
+        <short/>
+      </element>
+      <element name="Alloc.P">
+        <short/>
+      </element>
+      <element name="Alloc.size">
+        <short/>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TMarkRecord.Top">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Free">
+        <short/>
+        <descr>
+          <p>
+            Releases a block previously allocated through <var>Alloc</var>. Returns True (success) if P is Nil before the call. Sets P to nil before exit.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Free.P">
+        <short/>
+      </element>
 
-<!-- constant Visibility: default -->
-<element name="Font_Pool_Allocated">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TTMemory_Init">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTMemory_Init.Result">
+        <short/>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Alloc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TTMemory_Done">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="Alloc.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Alloc.P">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Alloc.size">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Free">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Free.P">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TTMemory_Init">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTMemory_Init.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TTMemory_Done">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- TTMemory -->
-
-</package>
+    </module>
+    <!-- TTMemory -->
+  </package>
 </fpdoc-descriptions>

@@ -1,130 +1,108 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTError
+    ====================================================================
+    -->
+    <module name="TTError">
+      <short>Simple error management for the FreeType library</short>
+      <descr>
+        <p>
+          Copyright 1996, 1997 by David Turner, Robert Wilhelm, and Werner Lemberg.
+        </p>
+        <p>
+          This file is part of the FreeType project, and may only be used modified and distributed under
+          the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or
+          distribute this file you indicate that you have read the license and understand and accept it
+          fully.
+        </p>
+        <p>
+          The Pascal version of the library doesn't support multiple threads. We use a global error
+          variable, called simply "error" to report all defects. The various functions return an error
+          condition, which can be either Success (false) or Failure (true).
+        </p>
+        <p>
+          Note that the use of macros in the C version to automate error reporting makes the two source
+          trees very similar, even if they differ from some design points like this one.
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    TTError
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="TTTypes"/>
 
-<module name="TTError">
-<short></short>
-<descr>
-</descr>
+      <!-- procedure Visibility: default -->
+      <element name="Check_Error">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Check_Error.error">
+        <short/>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="Check_Error">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Panic1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Panic1.message">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Check_Error.error">
-<short></short>
-</element>
+      <element name="Trace1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Trace1.message">
+        <short/>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="Panic1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Err_Ras_None">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Panic1.message">
-<short></short>
-</element>
+      <element name="Err_Ras_NotIni">
+        <short>Rasterizer not Initialized</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="Trace1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="Err_Ras_Overflow">
+        <short>Profile Table Overflow</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Trace1.message">
-<short></short>
-</element>
+      <element name="Err_Ras_Neg_H">
+        <short>Negative Height encountered</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- constant Visibility: default -->
-<element name="Err_Ras_None">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Err_Ras_Invalid">
+        <short>Invalid value encountered</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- constant Visibility: default -->
-<element name="Err_Ras_NotIni">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Err_Ras_Invalid_Contours">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- constant Visibility: default -->
-<element name="Err_Ras_Overflow">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="error">
+        <short>Global error variable used for the FreeType library</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- constant Visibility: default -->
-<element name="Err_Ras_Neg_H">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="Err_Ras_Invalid">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="Err_Ras_Invalid_Contours">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="error">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- TTError -->
-
-</package>
+    </module>
+    <!-- TTError -->
+  </package>
 </fpdoc-descriptions>

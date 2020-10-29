@@ -1,112 +1,103 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="freetypelaz">
+    <!--
+    ====================================================================
+      TTGLoad
+    ====================================================================
+    -->
+    <module name="TTGLoad">
+      <short>TrueType glyph loader</short>
+      <descr>
+        <p>
+          Copyright 1996, 1997 by David Turner, Robert Wilhelm, and Werner Lemberg.
+        </p>
+        <p>
+          This file is part of the FreeType project, and may only be used modified and distributed under
+          the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or
+          distribute this file you indicate that you have read the license and understand and accept it
+          fully.
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    TTGLoad
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="LazFreeType"/>
+      <element name="TTError"/>
+      <element name="TTTypes"/>
+      <element name="TTObjs"/>
 
-<module name="TTGLoad">
-<short></short>
-<descr>
-</descr>
+      <element name="Load_TrueType_Glyph">
+        <short>Loads a font glyph into a given glyph info</short>
+        <descr>
+          <p>
+            The instance and glyph objects faces <b>must</b> match. The load_flags indicate what kind of values should be written to the glyph object (metrics, outline in EM coordinates, grid-fitted outline).
+          </p>
+          <p>
+            By default (i.e. with load_flags = 0), this function only returns the unscaled glyph metrics and points in EM units.
+          </p>
+          <p>
+            Use the flags to query scaling and hinting ops.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Load_TrueType_Glyph.Result">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Glyph.instance">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Glyph.glyph">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Glyph.glyph_index">
+        <short/>
+      </element>
+      <element name="Load_TrueType_Glyph.load_flags">
+        <short/>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Load_TrueType_Glyph">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TT_Get_Metrics">
+        <short/>
+        <descr>
+          <p>
+            Returns horizontal or vertical metrics in font units for a given glyph. The metrics are the left side bearing [resp. top side bearing] and advance width [resp. advance height].
+          </p>
+          <p>
+            This function may move later to another component.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TT_Get_Metrics.header">
+        <short/>
+      </element>
+      <element name="TT_Get_Metrics.index">
+        <short/>
+      </element>
+      <element name="TT_Get_Metrics.bearing">
+        <short/>
+      </element>
+      <element name="TT_Get_Metrics.advance">
+        <short/>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="Load_TrueType_Glyph.Result">
-<short></short>
-</element>
+      <element name="Get_Advance_Widths">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Get_Advance_Widths.Result">
+        <short/>
+      </element>
+      <element name="Get_Advance_Widths.face">
+        <short/>
+      </element>
+      <element name="Get_Advance_Widths.ppem">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Glyph.instance">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Glyph.glyph">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Glyph.glyph_index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Load_TrueType_Glyph.load_flags">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="TT_Get_Metrics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Metrics.header">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Metrics.index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Metrics.bearing">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TT_Get_Metrics.advance">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Get_Advance_Widths">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Get_Advance_Widths.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Advance_Widths.face">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Get_Advance_Widths.ppem">
-<short></short>
-</element>
-
-</module> <!-- TTGLoad -->
-
-</package>
+    </module>
+    <!-- TTGLoad -->
+  </package>
 </fpdoc-descriptions>

@@ -1,383 +1,272 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="freetypelaz">
+    <!--
+      ====================================================================
+        TTCache
+      ====================================================================
+    -->
+    <module name="TTCache">
+      <short>Defines and implements object caches used in the FreeType library</short>
+      <descr>
+        <p>
+          An object class is a structure layout that encapsulate one given type of data used by the FreeType engine. Each object class is completely described by:
+        </p>
+        <p>
+          A 'root' or 'leading' structure containing the first important fields of the class. The root structure is always of fixed size. It is implemented as a simple C structure, and may contain several pointers to sub-tables that can be sized and allocated dynamically.
+        </p>
+        <p>
+          Examples: TFace, TInstance, TGlyph and TExecution_Context (defined in TTObjs).
+        </p>
+        <p>
+          There is a difference between 'child' pointers and 'peer' pointers. A 'child' pointer points to a sub-table that is owned by the object, while a 'peer' pointer points to any other kind of data the object isn't responsible for. An object class is thus usually a 'tree' of 'child' tables.
+        </p>
+        <p>
+          Each object class needs a constructor and a destructor. A constructor is a function which receives the address of freshly allocated and zeroed object root structure and 'builds' all the valid child data that must be associated to the object before it becomes 'valid'.
+        </p>
+        <p>
+          A destructor does the inverse job : given the address of a valid object, it must discards all its child data and zero its main fields (essentially the pointers and array sizes found in the root fields).
+        </p>
+        <p>
+          Copyright 1996, 1997 by David Turner, Robert Wilhelm, and Werner Lemberg.
+        </p>
+      </descr>
 
-<!--
-  ====================================================================
-    TTCache
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="TTTypes"/>
 
-<module name="TTCache">
-<short></short>
-<descr>
-</descr>
+      <element name="PList_Element">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PList_Element">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TList_Element">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TList_Element.next">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TList_Element.data">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- record type Visibility: default -->
-<element name="TList_Element">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TSingle_List">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TList_Element.next">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TConstructor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TConstructor.Result">
+        <short></short>
+      </element>
+      <element name="TConstructor._object">
+        <short></short>
+      </element>
+      <element name="TConstructor._parent">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TList_Element.data">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TDestructor">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TDestructor.Result">
+        <short></short>
+      </element>
+      <element name="TDestructor._object">
+        <short></short>
+      </element>
 
-<!-- alias type Visibility: default -->
-<element name="TSingle_List">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="PCache_Class">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function type Visibility: default -->
-<element name="TConstructor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache_Class">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TConstructor.Result">
-<short></short>
-</element>
+      <element name="TCache_Class.Object_Size">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TConstructor._object">
-<short></short>
-</element>
+      <element name="TCache_Class.Idle_Limit">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TConstructor._parent">
-<short></short>
-</element>
+      <element name="TCache_Class.Init">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function type Visibility: default -->
-<element name="TDestructor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache_Class.Done">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TDestructor.Result">
-<short></short>
-</element>
+      <element name="PCache">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TDestructor._object">
-<short></short>
-</element>
+      <element name="TCache">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PCache_Class">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache.clazz">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- record type Visibility: default -->
-<element name="TCache_Class">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache.active">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache_Class.Object_Size">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache.idle">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache_Class.Idle_Limit">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TCache.idle_count">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache_Class.Init">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Cache_Create">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Cache_Create.Result">
+        <short></short>
+      </element>
+      <element name="Cache_Create.clazz">
+        <short></short>
+      </element>
+      <element name="Cache_Create.cache">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache_Class.Done">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Cache_Destroy">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Cache_Destroy.Result">
+        <short></short>
+      </element>
+      <element name="Cache_Destroy.cache">
+        <short></short>
+      </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PCache">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Cache_New">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Cache_New.Result">
+        <short></short>
+      </element>
+      <element name="Cache_New.cache">
+        <short></short>
+      </element>
+      <element name="Cache_New.new_object">
+        <short></short>
+      </element>
+      <element name="Cache_New.parent_data">
+        <short></short>
+      </element>
 
-<!-- record type Visibility: default -->
-<element name="TCache">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Cache_Done">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Cache_Done.Result">
+        <short></short>
+      </element>
+      <element name="Cache_Done.cache">
+        <short></short>
+      </element>
+      <element name="Cache_Done.obj">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache.clazz">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Element_New">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Element_New.Result">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache.active">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="Element_Done">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="Element_Done.element">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache.idle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TTCache_Init">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="TTCache_Init.Result">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: default -->
-<element name="TCache.idle_count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TTCache_Done">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <element name="TTCache_Done.Result">
+        <short></short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="Cache_Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Cache_Create.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_Create.clazz">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_Create.cache">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Cache_Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Cache_Destroy.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_Destroy.cache">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Cache_New">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Cache_New.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_New.cache">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_New.new_object">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_New.parent_data">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Cache_Done">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Cache_Done.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_Done.cache">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Cache_Done.obj">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Element_New">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Element_New.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Element_Done">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Element_Done.element">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TTCache_Init">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTCache_Init.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="TTCache_Done">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTCache_Done.Result">
-<short></short>
-</element>
-
-</module> <!-- TTCache -->
-
-</package>
+    </module>
+    <!-- TTCache -->
+  </package>
 </fpdoc-descriptions>
