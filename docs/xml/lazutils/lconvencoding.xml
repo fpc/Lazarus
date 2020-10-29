@@ -29,231 +29,213 @@
       <element name="iconvenc"/>
 
       <element name="TConvertEncodingErrorMode">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Represents the behaviors for an error occurring in an encoding conversion</short>
+        <descr>
+          <p>
+            <var>TConvertEncodingErrorMode</var> is an enumerated type with values that represent the behavior applied when an encoding conversion error is detected. TConvertEncodingErrorMode is the type used for the <var>ConvertEncodingErrorMode</var> variable.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingErrorMode"/>
+        </seealso>
       </element>
       <element name="TConvertEncodingErrorMode.ceemSkip">
-        <short/>
+        <short>Skip or ignore the encoding conversion error</short>
       </element>
       <element name="TConvertEncodingErrorMode.ceemException">
-        <short/>
+        <short>Raise an EConvertError exception with a message releveant to the concersion error</short>
       </element>
       <element name="TConvertEncodingErrorMode.ceemReplace">
-        <short/>
+        <short>Replace the suspect value with an error placeholder (usually the '?' character)</short>
       </element>
       <element name="TConvertEncodingErrorMode.ceemReturnEmpty">
-        <short/>
+        <short>Return an empty string ('') for the suspect value</short>
       </element>
 
       <element name="ConvertEncodingErrorMode">
-        <short/>
+        <short>Error handling behavior for encoding conversion errors</short>
         <descr>
           <p>
-            Global variable which controls the behaviour of encoding conversion errors for the following:
+            <var>ConvertEncodingErrorMode</var> is a unit global <var>TConvertEncodingErrorMode</var> variable which controls the behaviour of encoding conversion errors for the following:
           </p>
           <ul>
-            <li>UTF8 to single byte encoding</li>
-            <li>DBCS (Asian) encoding to UTF8</li>
-            <li>UTF8 to DBCS</li>
+            <li>UTF-8 to single byte encoding</li>
+            <li>DBCS (Asian) encoding to UTF-8</li>
+            <li>UTF-8 to DBCS</li>
           </ul>
+          <p>
+            The default value for the variable is <var>ceemSkip</var>, and indicates that an error is skipped or ignored when encountered in an encoding conversion.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TConvertEncodingErrorMode"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="CodepagesAsian.DBCSToUTF8"/>
+          <link id="CodepagesAsian.UTF8ToDBCS"/>
+          <link id="CodepagesAsian.UnicodeToCP936"/>
+        </seealso>
       </element>
 
       <element name="EncodingUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for UTF-8</short>
       </element>
       <element name="EncodingAnsi">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for ANSI</short>
       </element>
       <element name="EncodingUTF8BOM">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for UTF-8 with a byte order mark</short>
       </element>
       <element name="EncodingUCS2LE">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for UCS 2-byte Little Endian</short>
       </element>
       <element name="EncodingUCS2BE">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for UCS 2-byte Big Endian</short>
       </element>
       <element name="EncodingCP1250">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1250</short>
       </element>
       <element name="EncodingCP1251">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1251</short>
       </element>
       <element name="EncodingCP1252">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1252</short>
       </element>
       <element name="EncodingCP1253">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1253</short>
       </element>
       <element name="EncodingCP1254">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1254</short>
       </element>
       <element name="EncodingCP1255">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1255</short>
       </element>
       <element name="EncodingCP1256">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1256</short>
       </element>
       <element name="EncodingCP1257">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1257</short>
       </element>
       <element name="EncodingCP1258">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 1258</short>
       </element>
       <element name="EncodingCP437">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 437</short>
       </element>
       <element name="EncodingCP850">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 850</short>
       </element>
       <element name="EncodingCP852">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 852</short>
       </element>
       <element name="EncodingCP866">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 866</short>
       </element>
       <element name="EncodingCP874">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 874</short>
       </element>
       <element name="EncodingCP932">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 932</short>
       </element>
       <element name="EncodingCP936">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 936</short>
       </element>
       <element name="EncodingCP949">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 949</short>
       </element>
       <element name="EncodingCP950">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for Code Page 950</short>
       </element>
       <element name="EncodingCPMac">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for the Macintosh Code Page</short>
       </element>
       <element name="EncodingCPKOI8R">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for KOI-8R Code Page</short>
       </element>
       <element name="EncodingCPKOI8U">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for KOI-8U Code Page</short>
       </element>
       <element name="EncodingCPKOI8RU">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for KOI-8RU Code Page</short>
       </element>
       <element name="EncodingCPIso1">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for ISO 8859-1 Code Page</short>
       </element>
       <element name="EncodingCPIso2">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for ISO 8859-2 Code Page</short>
       </element>
       <element name="EncodingCPIso15">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Encoding name for ISO 8859-15 Code Page</short>
       </element>
 
       <element name="UTF8BOM">
-        <short/>
+        <short>ANSI representation for the UTF-8 Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
       <element name="UTF16BEBOM">
-        <short/>
+        <short>ANSI representation for the UTF-16 Big Endian Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
       <element name="UTF16LEBOM">
-        <short/>
+        <short>ANSI representation for the UTF-16 Little Endian Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
       <element name="UTF32BEBOM">
-        <short/>
+        <short>ANSI representation for the UTF-32 Big Endian Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
       <element name="UTF32LEBOM">
-        <short/>
+        <short>ANSI representation for the UTF-32 Little Endian Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="GuessEncoding">
-        <short/>
-        <descr/>
+        <short>Tries to determine the encoding used for the specified value</short>
+        <descr>
+          <p>
+            <var>GuessEncoding</var> is a <var>String</var> function which tries to determine the encoding used for the value specified in <var>S</var>. The return value contains an encoding name, like 'utf8' or 'ISO-8859-1'. It may contain an empty string ('') when S is also an empty string.
+          </p>
+          <p>
+            GuessEncoding checks S for various Byte Order Marks at the start of the value, including: <var>UTF8BOM</var>, <var>UTF16LEBOM</var>, and <var>UTF16BEBOM</var>. When present, the BOM determines the encoding used for the value.
+          </p>
+          <p>
+            Next, it checks for an explict '<b>{%encoding </b>' marker at the start of the value. When present, the value after the marker (up to the closing '<b>}</b>' character) is normalized and used as the return value.
+          </p>
+          <p>
+            Finally, it checks for a valid UTF-8 encoding (which includes ASII characters).
+            All characters in S are examined until a character whose UTF-8 code point is not valid is encountered.
+          </p>
+          <p>
+            When <var>EncodingValid</var> is <b>True</b>, <var>EncodingAnsi</var> is assumed. Otherwise, the default encoding for the platform is used. When the return value is <var>EncodingUTF8</var>, it is changed to '<b>ISO-8859-1</b>'. This is done because the system may use the UTF-8 encoding, but the value in S does not. ISO 8859-1 has a full mapping to Unicode, and this prevents data loss in encoding conversions.
+          </p>
+        </descr>
         <seealso/>
+        <notes>
+          <note>!!! This needs review for accuracy.</note>
+        </notes>
       </element>
       <element name="GuessEncoding.Result">
-        <short/>
+        <short>Encoding name detected, or a default value</short>
       </element>
       <element name="GuessEncoding.s">
-        <short/>
+        <short>String with the content examined in the routine</short>
       </element>
 
       <element name="ConvertEncodingFromUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Converts the encoded value from UTF-8 to the specified encoding</short>
+        <descr>
+          <p>
+            Used in the implementation of the ConvertEncoding function.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncoding"/>
+          <link id="ConvertEncodingToUTF8"/>
+        </seealso>
       </element>
       <element name="ConvertEncodingFromUTF8.Result">
         <short/>
@@ -272,9 +254,16 @@
       </element>
 
       <element name="ConvertEncodingToUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Converts the specified value to the UTF-8 encoding</short>
+        <descr>
+          <p>
+            Used in the implementation of the ConvertEncoding function.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncoding"/>
+          <link id="ConvertEncodingFromUTF8"/>
+        </seealso>
       </element>
       <element name="ConvertEncodingToUTF8.Result">
         <short/>
@@ -290,7 +279,7 @@
       </element>
 
       <element name="ConvertEncoding">
-        <short/>
+        <short>Converts the encoding for a value from its source encoding to the target encoding</short>
         <descr/>
         <seealso/>
       </element>
@@ -322,10 +311,10 @@
       </element>
 
       <element name="GetConsoleTextEncoding">
-        <short/>
+        <short>Gets the encoding used in a console on the platform</short>
         <descr>
           <p>
-            This routine returns the console text encoding, which might be different from the normal system encoding in some Windows systems. See
+            This routine returns the console text encoding, which might be different from the normal system encoding on some Windows systems. See
             <url href="http://mantis.freepascal.org/view.php?id=20552">http://mantis.freepascal.org/view.php?id=20552</url>
           </p>
         </descr>
@@ -336,7 +325,7 @@
       </element>
 
       <element name="NormalizeEncoding">
-        <short/>
+        <short>Converts the specified encoding name to lowercase and removes '-' characters</short>
         <descr/>
         <seealso/>
       </element>
@@ -348,15 +337,21 @@
       </element>
 
       <element name="TConvertEncodingFunction">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Specifies a function used to convert the encoding for a string value</short>
+        <descr>
+          <p>
+            <var>TConvertEncodingFunction</var> is the type used for the <var>ConvertAnsiToUTF8</var>  variable.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertAnsiToUTF8"/>
+        </seealso>
       </element>
       <element name="TConvertEncodingFunction.Result">
-        <short/>
+        <short>Value after converting the value to the required encoding</short>
       </element>
       <element name="TConvertEncodingFunction.s">
-        <short/>
+        <short>Value examined and converted in the routine</short>
       </element>
 
       <element name="TConvertUTF8ToEncodingFunc">
@@ -375,7 +370,7 @@
       </element>
 
       <element name="TCharToUTF8Table">
-        <short/>
+        <short>Alias for the TCharToUTF8Table type in CodepagesCommon</short>
         <descr/>
         <seealso/>
       </element>
@@ -393,19 +388,25 @@
       </element>
 
       <element name="ConvertAnsiToUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Routine used to convert from ANSI to UTF-8 encoding</short>
+        <descr>
+          <p>
+            <var>ConvertAnsiToUTF8</var> is a <var>TConvertEncodingFunction</var> variable provides a routine used to convert a String value from its ANSI-encoded value to the UTF-8 encoding.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TConvertEncodingFunction"/>
+        </seealso>
       </element>
 
       <element name="ConvertUTF8ToAnsi">
-        <short/>
+        <short>Routine used to convert from UTF-8 to ANSI encoding</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="UTF8BOMToUTF8">
-        <short/>
+        <short>Removes the UTF-8 BOM from the UTF-8 encoded value</short>
         <descr/>
         <seealso/>
       </element>
@@ -417,7 +418,7 @@
       </element>
 
       <element name="ISO_8859_1ToUTF8">
-        <short/>
+        <short>Converts an ISO 8859-1-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -429,7 +430,7 @@
       </element>
 
       <element name="ISO_8859_2ToUTF8">
-        <short/>
+        <short>Converts an ISO 8859-2-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -441,7 +442,7 @@
       </element>
 
       <element name="CP1250ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1250-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -453,7 +454,7 @@
       </element>
 
       <element name="CP1251ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1251-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -465,7 +466,7 @@
       </element>
 
       <element name="CP1252ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1252-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -477,7 +478,7 @@
       </element>
 
       <element name="CP1253ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1253-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -489,7 +490,7 @@
       </element>
 
       <element name="CP1254ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1254-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -501,7 +502,7 @@
       </element>
 
       <element name="CP1255ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1255-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -513,7 +514,7 @@
       </element>
 
       <element name="CP1256ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1256-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -525,7 +526,7 @@
       </element>
 
       <element name="CP1257ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1257-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -537,7 +538,7 @@
       </element>
 
       <element name="CP1258ToUTF8">
-        <short/>
+        <short>Converts a Code Page 1258-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -549,7 +550,7 @@
       </element>
 
       <element name="CP437ToUTF8">
-        <short/>
+        <short>Converts a Code Page 437-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -561,7 +562,7 @@
       </element>
 
       <element name="CP850ToUTF8">
-        <short/>
+        <short>Converts a Code Page 850-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -573,7 +574,7 @@
       </element>
 
       <element name="CP852ToUTF8">
-        <short/>
+        <short>Converts a Code Page 852-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -585,7 +586,7 @@
       </element>
 
       <element name="CP866ToUTF8">
-        <short/>
+        <short>Converts a Code Page 866-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -597,7 +598,7 @@
       </element>
 
       <element name="CP874ToUTF8">
-        <short/>
+        <short>Converts a Code Page 874-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -609,7 +610,7 @@
       </element>
 
       <element name="KOI8RToUTF8">
-        <short/>
+        <short>Converts a KOI-8R-encoded value to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -621,7 +622,7 @@
       </element>
 
       <element name="MacintoshToUTF8">
-        <short/>
+        <short>Converts a value encoded using the the Macintosh Code Page to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -633,22 +634,41 @@
       </element>
 
       <element name="SingleByteToUTF8">
-        <short/>
+        <short>Converts a string with single-byte values to UTF-8 using a character mapping table</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="CharToUTF8Table"/>
+          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_1ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_15ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_2ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1250ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1251ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1252ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1253ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1254ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1255ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1255ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP1257ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP437ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP850ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayCP866ToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayKOI8RToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayKOI8UToUTF8"/>
+          <link id="#lazutils.CodePagesCommon.ArrayMacintoshUToUTF8"/>
+        </seealso>
       </element>
       <element name="SingleByteToUTF8.Result">
-        <short/>
+        <short>String with the UTF-8-encoded value, or an empty string</short>
       </element>
       <element name="SingleByteToUTF8.s">
-        <short/>
+        <short>String with the siobngle-byte values converted in the routine</short>
       </element>
       <element name="SingleByteToUTF8.Table">
-        <short/>
+        <short>Table with Character to PChar mappings for the converted value</short>
       </element>
 
       <element name="UCS2LEToUTF8">
-        <short/>
+        <short>Converts a value in UCS 2-byte LE encoding to UTF8</short>
         <descr/>
         <seealso/>
       </element>
@@ -660,7 +680,7 @@
       </element>
 
       <element name="UCS2BEToUTF8">
-        <short/>
+        <short>Converts a value in UCS 2-byte BE encoding to UTF8</short>
         <descr/>
         <seealso/>
       </element>
@@ -672,7 +692,7 @@
       </element>
 
       <element name="UTF8ToUTF8BOM">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to UTF-8 with a Byte Order Mark</short>
         <descr/>
         <seealso/>
       </element>
@@ -684,7 +704,7 @@
       </element>
 
       <element name="UTF8ToISO_8859_1">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to ISO 8859-1</short>
         <descr/>
         <seealso/>
       </element>
@@ -699,7 +719,7 @@
       </element>
 
       <element name="UTF8ToISO_8859_2">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to ISO 8859-2</short>
         <descr/>
         <seealso/>
       </element>
@@ -714,7 +734,7 @@
       </element>
 
       <element name="UTF8ToCP1250">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1250</short>
         <descr/>
         <seealso/>
       </element>
@@ -729,7 +749,7 @@
       </element>
 
       <element name="UTF8ToCP1251">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1251</short>
         <descr/>
         <seealso/>
       </element>
@@ -744,7 +764,7 @@
       </element>
 
       <element name="UTF8ToCP1252">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1252</short>
         <descr/>
         <seealso/>
       </element>
@@ -759,7 +779,7 @@
       </element>
 
       <element name="UTF8ToCP1253">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1253</short>
         <descr/>
         <seealso/>
       </element>
@@ -774,7 +794,7 @@
       </element>
 
       <element name="UTF8ToCP1254">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1254</short>
         <descr/>
         <seealso/>
       </element>
@@ -789,7 +809,7 @@
       </element>
 
       <element name="UTF8ToCP1255">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1255</short>
         <descr/>
         <seealso/>
       </element>
@@ -804,7 +824,7 @@
       </element>
 
       <element name="UTF8ToCP1256">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1256</short>
         <descr/>
         <seealso/>
       </element>
@@ -819,7 +839,7 @@
       </element>
 
       <element name="UTF8ToCP1257">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1257</short>
         <descr/>
         <seealso/>
       </element>
@@ -834,7 +854,7 @@
       </element>
 
       <element name="UTF8ToCP1258">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 1258</short>
         <descr/>
         <seealso/>
       </element>
@@ -849,7 +869,7 @@
       </element>
 
       <element name="UTF8ToCP437">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 437</short>
         <descr/>
         <seealso/>
       </element>
@@ -864,7 +884,7 @@
       </element>
 
       <element name="UTF8ToCP850">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 850</short>
         <descr/>
         <seealso/>
       </element>
@@ -879,7 +899,7 @@
       </element>
 
       <element name="UTF8ToCP852">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 852</short>
         <descr/>
         <seealso/>
       </element>
@@ -894,7 +914,7 @@
       </element>
 
       <element name="UTF8ToCP866">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 866</short>
         <descr/>
         <seealso/>
       </element>
@@ -909,7 +929,7 @@
       </element>
 
       <element name="UTF8ToCP874">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to Code Page 874</short>
         <descr/>
         <seealso/>
       </element>
@@ -924,7 +944,7 @@
       </element>
 
       <element name="UTF8ToKOI8R">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to KOI-8R</short>
         <descr/>
         <seealso/>
       </element>
@@ -939,7 +959,7 @@
       </element>
 
       <element name="UTF8ToKOI8U">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to KOI-8U</short>
         <descr/>
         <seealso/>
       </element>
@@ -954,7 +974,7 @@
       </element>
 
       <element name="UTF8ToKOI8RU">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to KOI-8RU</short>
         <descr/>
         <seealso/>
       </element>
@@ -969,7 +989,7 @@
       </element>
 
       <element name="UTF8ToMacintosh">
-        <short/>
+        <short>Converts a value in UTF-8 encoding to the Macintosh Code Page</short>
         <descr/>
         <seealso/>
       </element>
@@ -984,7 +1004,9 @@
       </element>
 
       <element name="UTF8ToSingleByte">
-        <short/>
+        <short>
+          Converts a UTF-8-encoded value to a single-bye character set using a conversion function
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -999,7 +1021,7 @@
       </element>
 
       <element name="UTF8ToUCS2LE">
-        <short/>
+        <short>Converts a UTF-8-encoded value  to UCS 2-byte LE</short>
         <descr/>
         <seealso/>
       </element>
@@ -1011,7 +1033,7 @@
       </element>
 
       <element name="UTF8ToUCS2BE">
-        <short/>
+        <short>Converts a UTF-8-encoded value  to UCS 2-byte BE</short>
         <descr/>
         <seealso/>
       </element>
@@ -1023,7 +1045,7 @@
       </element>
 
       <element name="CP932ToUTF8">
-        <short/>
+        <short>Converts a value using Code Page 932 to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -1035,7 +1057,7 @@
       </element>
 
       <element name="CP936ToUTF8">
-        <short/>
+        <short>Converts a value using Code Page 936 to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -1047,7 +1069,7 @@
       </element>
 
       <element name="CP949ToUTF8">
-        <short/>
+        <short>Converts a value using Code Page 949 to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -1059,7 +1081,7 @@
       </element>
 
       <element name="CP950ToUTF8">
-        <short/>
+        <short>Converts a value using Code Page 950 to UTF-8</short>
         <descr/>
         <seealso/>
       </element>
@@ -1071,7 +1093,7 @@
       </element>
 
       <element name="UTF8ToCP932">
-        <short/>
+        <short>Converts a value using UTF-8 encoding to Code Page 932</short>
         <descr/>
         <seealso/>
       </element>
@@ -1086,7 +1108,7 @@
       </element>
 
       <element name="UTF8ToCP936">
-        <short/>
+        <short>Converts a value using UTF-8 encoding to Code Page 936</short>
         <descr/>
         <seealso/>
       </element>
@@ -1101,7 +1123,7 @@
       </element>
 
       <element name="UTF8ToCP949">
-        <short/>
+        <short>Converts a value using UTF-8 encoding to Code Page 949</short>
         <descr/>
         <seealso/>
       </element>
@@ -1116,7 +1138,7 @@
       </element>
 
       <element name="UTF8ToCP950">
-        <short/>
+        <short>Converts a value using UTF-8 encoding to Code Page 950</short>
         <descr/>
         <seealso/>
       </element>
@@ -1131,7 +1153,9 @@
       </element>
 
       <element name="UTF8ToDBCS">
-        <short/>
+        <short>
+          Converts a value from UTF-8 encoding to Double Byte Character Set encoding
+        </short>
         <descr/>
         <seealso/>
       </element>

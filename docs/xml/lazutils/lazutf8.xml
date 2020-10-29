@@ -11,7 +11,7 @@
         Routines for managing UTF-8-encoded strings
       </short>
       <descr>
-        lazutf.pas contains useful routines for managing UTF-8-encoded strings. All routines are thread-safe unless explicitly stated.
+        <file>lazutf8.pas</file> contains useful routines for managing UTF-8-encoded strings. All routines are thread-safe unless explicitly stated.
       </descr>
 
       <!-- unresolved externals -->
@@ -1707,7 +1707,7 @@
             <dd>Value S1 comes after S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
           </dl>
           <p>
-            Internally, UTF8CompareStr uses WideCompareStr on the first UTF-8 codepoint that differs between S1 and S2. As a result, it has proper collation on platforms where the WidestringManager supports this (Windows, *nix with cwstring unit).
+            Internally, UTF8CompareStr uses WideCompareStr on the first UTF-8 codepoint that differs between S1 and S2. As a result, it has proper collation on platforms where the WidestringManager supports this (Windows, *nix with <file>cwstring</file> unit).
           </p>
         </descr>
         <seealso></seealso>
@@ -2169,7 +2169,7 @@
         </short>
         <descr>
           <p>
-            FPUpChars is an array of char type with the Lower and Upper bounds permitted for the char type. Values in FPUpChars are assigned in the initialization section for the lazutf8.pas unit, and contains the upper case equivalent for all characters in the char type.
+            FPUpChars is an array of char type with the Lower and Upper bounds permitted for the char type. Values in FPUpChars are assigned in the initialization section for the <file>lazutf8.pas</file> unit, and contains the upper case equivalent for all characters in the char type.
           </p>
         </descr>
         <seealso></seealso>

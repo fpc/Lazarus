@@ -2324,7 +2324,7 @@
             BeginDoc calls <var>SelectCurrentPrinterOrDefault</var> to ensure a valid printer is selected for the class instance. If the current selection is invalid, the "default" printer is selected. The default printer is the first one in Printers.
           </p>
           <p>
-            BeginDoc updates <var>PrinterFlags</var> to include the value <var>pfPrinting</var>, and removes the value <var>pfAborted</var> (if present). The <var>PageNumber</var> property is set to <b>1</b> (<b>one</b>) for the newly started printing operation.
+            BeginDoc updates <var>PrinterFlags</var> to include the value <var>pfPrinting</var>, and removes the value <var>pfAborted</var> (if present). The <var>PageNumber</var> property is reset for the newly started printing operation.
           </p>
           <p>
             BeginDoc uses the value in <var>RawMode</var> to determine if a printer canvas is in used for the class instance. When RawMode is <b>False</b>, a <var>TPrinterCanvas</var> instance exists in <var>Canvas</var>. Its <var>Refresh</var> method is called, and the <var>BeginDoc</var> method in the printer canvas is called to synchronize the canvas. The value in <var>YDPI</var> is assigned to the PPI (Pixels per Inch) setting for the canvas font. No actions are performed for the printer canvas when RawMode is <b>True</b>.
