@@ -781,9 +781,9 @@
           </p>
           <dl>
             <dt>nvbShowTextHint</dt>
-            <dd>NullValue is used a the return value.</dd>
+            <dd>NullValue is used as the return value.</dd>
             <dt>nvbLimitedNullValue</dt>
-            <dd>GetLimitedValue is used derive the Null return value.</dd>
+            <dd>GetLimitedValue is used to derive the Null return value.</dd>
             <dt>nvbMinValue</dt>
             <dd>MinValue is used as the return value.</dd>
             <dt>nvbMaxValue</dt>
@@ -1481,7 +1481,7 @@
       </element>
 
       <element name="TFloatSpinEditEx.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
-      <element name="TFloatSpinEditEx.AutoSelect" link="TCustomEdit.AutoSelect"/>
+      <element name="TFloatSpinEditEx.AutoSelect" link="#lazcontrols.spinex.TCustomEdit.AutoSelect"/>
       <element name="TFloatSpinEditEx.AutoSizeHeightIsEditHeight" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight"/>
       <element name="TFloatSpinEditEx.AutoSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize"/>
       <element name="TFloatSpinEditEx.Action" link="#lcl.controls.TControl.Action"/>
@@ -1540,19 +1540,24 @@
       <element name="TFloatSpinEditEx.OnStartDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnStartDrag"/>
       <element name="TFloatSpinEditEx.OnUTF8KeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
 
-      <element name="TFloatSpinEditEx.ArrowKeys" link="TSpinEditExBase.ArrowKeys"/>
-      <element name="TFloatSpinEditEx.DecimalSeparator" link="TCustomFloatSpinEditEx.DecimalSeparator"/>
-      <element name="TFloatSpinEditEx.DecimalPlaces" link="TCustomFloatSpinEditEx.DecimalPlaces"/>
-      <element name="TFloatSpinEditEx.Increment" link="TSpinEditExBase.Increment"/>
-      <element name="TFloatSpinEditEx.MaxValue" link="TSpinEditExBase.MaxValue"/>
-      <element name="TFloatSpinEditEx.MinValue" link="TSpinEditExBase.MinValue"/>
-      <element name="TFloatSpinEditEx.MinRepeatValue" link="TSpinEditExBase.MinRepeatValue"/>
-      <element name="TFloatSpinEditEx.NullValue" link="TSpinEditExBase.NullValue"/>
-      <element name="TFloatSpinEditEx.NullValueBehaviour" link="TSpinEditExBase.NullValueBehaviour"/>
+      <element name="TFloatSpinEditEx.ArrowKeys" link="#lazcontrols.spinex.TSpinEditExBase.ArrowKeys"/>
+      <element name="TFloatSpinEditEx.DecimalSeparator" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.DecimalSeparator"/>
+      <element name="TFloatSpinEditEx.DecimalPlaces" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.DecimalPlaces"/>
+      <element name="TFloatSpinEditEx.Increment" link="#lazcontrols.spinex.TSpinEditExBase.Increment"/>
+      <element name="TFloatSpinEditEx.MaxValue" link="#lazcontrols.spinex.TSpinEditExBase.MaxValue"/>
+      <element name="TFloatSpinEditEx.MinValue" link="#lazcontrols.spinex.TSpinEditExBase.MinValue"/>
+      <element name="TFloatSpinEditEx.MinRepeatValue" link="#lazcontrols.spinex.TSpinEditExBase.MinRepeatValue"/>
+      <element name="TFloatSpinEditEx.NullValue" link="#lazcontrols.spinex.TSpinEditExBase.NullValue"/>
+      <element name="TFloatSpinEditEx.NullValueBehaviour" link="#lazcontrols.spinex.TSpinEditExBase.NullValueBehaviour"/>
       <element name="TFloatSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
-      <element name="TFloatSpinEditEx.UpDownVisible" link="TSpinEditExBase.UpDownVisible"/>
-      <element name="TFloatSpinEditEx.Value" link="TSpinEditExBase.Value"/>
+      <element name="TFloatSpinEditEx.UpDownVisible" link="#lazcontrols.spinex.TSpinEditExBase.UpDownVisible"/>
+      <element name="TFloatSpinEditEx.Value" link="#lazcontrols.spinex.TSpinEditExBase.Value"/>
 
+      <element name="TFloatSpinEditEx.DisplayMode" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.DisplayMode"/>
+      <element name="TFloatSpinEditEx.ExponentialFormatLimitPos" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.ExponentialFormatLimitPos"/>
+      <element name="TFloatSpinEditEx.ExponentialFormatLimitNeg" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.ExponentialFormatLimitNeg"/>
+      <element name="TFloatSpinEditEx.Precision" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.Precision"/>
+      <element name="TFloatSpinEditEx.ExponentDigits" link="#lazcontrols.spinex.TCustomFloatSpinEditEx.ExponentDigits"/>
 
       <element name="TCustomSpinEditEx">
         <short>Defines the base class for a spin edit control for Int64 values</short>
@@ -1710,7 +1715,7 @@
         <short>Text converted to a numeric value in the method</short>
       </element>
       <element name="TCustomSpinEditEx.TextIsNumber.ANumber">
-        <short>Contains the successfully converted number value</short>
+        <short>Contains the successfully converted numeric value for the string</short>
       </element>
 
       <!-- public methods and properties -->
@@ -1862,16 +1867,17 @@
       <element name="TSpinEditEx.OnStartDrag" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnStartDrag"/>
       <element name="TSpinEditEx.OnUTF8KeyPress" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnUTF8KeyPress"/>
 
-      <element name="TSpinEditEx.ArrowKeys" link="TSpinEditExBase.ArrowKeys"/>
-      <element name="TSpinEditEx.Increment" link="TCustomSpinEditEx.Increment"/>
-      <element name="TSpinEditEx.MaxValue" link="TCustomSpinEditEx.MaxValue"/>
-      <element name="TSpinEditEx.MinValue" link="TCustomSpinEditEx.MinValue"/>
-      <element name="TSpinEditEx.MinRepeatValue" link="TSpinEditExBase.MinRepeatValue"/>
-      <element name="TSpinEditEx.NullValue" link="TSpinEditExBase.NullValue"/>
-      <element name="TSpinEditEx.NullValueBehaviour" link="TSpinEditExBase.NullValueBehaviour"/>
+      <element name="TSpinEditEx.ArrowKeys" link="#lazcontrols.spinex.TSpinEditExBase.ArrowKeys"/>
+      <element name="TSpinEditEx.Increment" link="#lazcontrols.spinex.TCustomSpinEditEx.Increment"/>
+      <element name="TSpinEditEx.MaxValue" link="#lazcontrols.spinex.TCustomSpinEditEx.MaxValue"/>
+      <element name="TSpinEditEx.MinValue" link="#lazcontrols.spinex.TCustomSpinEditEx.MinValue"/>
+      <element name="TSpinEditEx.MinRepeatValue" link="#lazcontrols.spinex.TSpinEditExBase.MinRepeatValue"/>
+      <element name="TSpinEditEx.NullValue" link="#lazcontrols.spinex.TSpinEditExBase.NullValue"/>
+      <element name="TSpinEditEx.NullValueBehaviour" link="#lazcontrols.spinex.TSpinEditExBase.NullValueBehaviour"/>
       <element name="TSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
-      <element name="TSpinEditEx.UpDownVisible" link="TSpinEditExBase.UpDownVisible"/>
-      <element name="TSpinEditEx.Value" link="TSpinEditExBase.Value"/>
+      <element name="TSpinEditEx.ThousandSeparator" link="#lazcontrols.spinex.TCustomSpinEditEx.ThousandSeparator"/>
+      <element name="TSpinEditEx.UpDownVisible" link="#lazcontrols.spinex.TSpinEditExBase.UpDownVisible"/>
+      <element name="TSpinEditEx.Value" link="#lazcontrols.spinex.TSpinEditExBase.Value"/>
 
       <element name="DbgS">
         <short>Gets debugging information about a value from TNullValueBehaviour</short>
