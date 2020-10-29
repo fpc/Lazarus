@@ -209,7 +209,7 @@ var
   FPUpChars: array[char] of char;
 
 procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-                           const Insertion: string);
+  const Insertion: string); deprecated 'Use it from unit LazStringUtils'; // Deprecated in 2.1 / 29.10.2020 / Remove in 2.3
 
 implementation
 
@@ -3910,6 +3910,7 @@ end;
 
 procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
   const Insertion: string);
+// This was moved to LazStringUtils and a deprecated copy was left here. Will be removed.
 var
   MaxCount: SizeInt;
   InsertionLen: SizeInt;

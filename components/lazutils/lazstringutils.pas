@@ -89,6 +89,8 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
   const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String; overload;
 function TextToSingleLine(const AText: string): string;
 function SwapCase(Const S: String): String;
+procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
+                           const Insertion: string);
 // case..of utility
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
 function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer; overload;
@@ -1206,6 +1208,56 @@ begin
       P^ := char(byte(p^) + 32);
     Inc(P);
   end;
+end;
+
+procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
+  const Insertion: string);
+var
+  MaxCount: SizeInt;
+  InsertionLen: SizeInt;
+  SLen: SizeInt;
+  RestLen: SizeInt;
+  p: PByte;
+begin
+  SLen:=length(s);
+  if StartPos>SLen then begin
+    s:=s+Insertion;
+    exit;
+  end;
+  if StartPos<1 then StartPos:=1;
+  if Count<0 then Count:=0;
+  MaxCount:=SLen-StartPos+1;
+  if Count>MaxCount then
+    Count:=MaxCount;
+  InsertionLen:=length(Insertion);
+  if (Count=0) and (InsertionLen=0) then
+    exit; // nothing to do
+  if (Count=InsertionLen) then begin
+    if CompareMem(PByte(s)+StartPos-1,Pointer(Insertion),Count) then
+      // already the same content
+      exit;
+    UniqueString(s);
+  end else begin
+    RestLen:=SLen-StartPos-Count+1;
+    if InsertionLen<Count then begin
+      // shorten
+      if RestLen>0 then begin
+        UniqueString(s);
+        p:=PByte(s)+StartPos-1;
+        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
+      end;
+      Setlength(s,SLen-Count+InsertionLen);
+    end else begin
+      // longen
+      Setlength(s,SLen-Count+InsertionLen);
+      if RestLen>0 then begin
+        p:=PByte(s)+StartPos-1;
+        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
+      end;
+    end;
+  end;
+  if InsertionLen>0 then
+    System.Move(PByte(Insertion)^,(PByte(s)+StartPos-1)^,InsertionLen);
 end;
 
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer;

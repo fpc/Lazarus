@@ -44,7 +44,8 @@ uses
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
-  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes;
+  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes,
+  LazStringUtils;
 
 type
   TFPCStreamSeekType = int64;

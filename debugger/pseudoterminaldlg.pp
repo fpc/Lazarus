@@ -29,15 +29,20 @@
 unit PseudoTerminalDlg;
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
-
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  IDEWindowIntf, LazUTF8, Classes, Graphics, Forms, StdCtrls, DebuggerDlg,
-  BaseDebugManager, LazarusIDEStrConsts, LCLType, ComCtrls, ExtCtrls, MaskEdit,
-  PairSplitter;
+  Classes, SysUtils, StrUtils,
+  // LCL
+  Graphics, Forms, StdCtrls, LCLType, ComCtrls, ExtCtrls, MaskEdit, PairSplitter,
+  // LazUtils
+  LazStringUtils, LazLoggerBase,
+  // IdeIntf
+  IDEWindowIntf,
+  // IDE
+  DebuggerDlg, BaseDebugManager, LazarusIDEStrConsts;
 
 type
 
@@ -64,7 +69,6 @@ type
     procedure PairSplitterRawRightResize(Sender: TObject);
     procedure RadioGroupRightSelectionChanged(Sender: TObject);
   private
-    { private declarations }
     ttyHandle: System.THandle;         (* Used only by unix for console size tracking  *)
     fCharHeight: word;
     fCharWidth: word;
@@ -77,7 +81,6 @@ type
   protected
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
-    { public declarations }
     constructor Create(TheOwner: TComponent); override;
     procedure AddOutput(const AText: String);
     procedure Clear;
@@ -93,15 +96,13 @@ var
 
 implementation
 
-uses
-  SysUtils, StrUtils, LazLoggerBase
 {$IFDEF DBG_ENABLE_TERMINAL}
-  , Unix, BaseUnix, termio
+uses
+  BaseUnix, termio;
 {$ENDIF DBG_ENABLE_TERMINAL}
-  ;
 
 const
-  handleUnopened= THandle(-$80000000);
+  handleUnopened= System.THandle(-$80000000);
 
 var
   //DBG_VERBOSE,
@@ -286,7 +287,7 @@ begin
       getCharHeightAndWidth(Memo1.Font, fCharHeight, fCharWidth)
     end else begin                      (* Can't get pseudoterminal             *)
       DebugLn(DBG_WARNINGS, ['TPseudoConsoleDlg.AddOutput Unopened -> bad PseudoTerminal']);
-      ttyHandle := THandle(-1)
+      ttyHandle := System.THandle(-1)
     end;
 
 (* Every time we're called, provided that we were able to open the TTY, work    *)
@@ -323,7 +324,7 @@ begin
     if fpioctl(ttyHandle, TIOCSWINSZ, @winSize) < 0 then begin
       //fileclose(ttyHandle);
       DebugLn(DBG_WARNINGS, ['TPseudoConsoleDlg.AddOutput Write failed, closed handle']);
-      //ttyHandle := THandle(-1)      (* Attempted ioctl() failed                 *)
+      //ttyHandle := System.THandle(-1)    (* Attempted ioctl() failed          *)
     end
     else
     if integer(ttyHandle) >= 0 then begin (* Handle not closed by error         *)
@@ -342,7 +343,7 @@ begin
   end;
 {$ELSE       }
 begin
-  ttyHandle := THandle(-1);             (* Not used in non-unix OSes            *)
+  ttyHandle := System.THandle(-1);      (* Not used in non-unix OSes            *)
 {$ENDIF DBG_ENABLE_TERMINAL}
   Assert(ttyHandle <> handleUnopened, 'TPseudoConsoleDlg.consoleSizeChanged: TTY handle still in virgin state at exit');
   RadioGroupRightSelectionChanged(nil); (* Sort out initial state               *)
@@ -633,7 +634,7 @@ var
         //        #$7f,
         //        #$80..#$ff,
           begin
-          ReplaceSubstring(Result,j,1,dot);         (* GTK2 really doesn't like seeing this *)
+          ReplaceSubstring(Result,j,1,dot); (* GTK2 really doesn't like seeing this *)
           end;
       end;
       dec(j);

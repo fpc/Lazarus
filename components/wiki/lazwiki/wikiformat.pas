@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, laz2_XMLRead, laz2_DOM, LazLoggerBase, LazUTF8, AvgLvlTree,
+  LazFileUtils, laz2_XMLRead, laz2_DOM, LazLoggerBase, AvgLvlTree, LazUTF8, LazStringUtils,
   // Codetools
   BasicCodeTools, KeywordFuncLists,
   // LazWiki

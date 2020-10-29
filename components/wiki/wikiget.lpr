@@ -29,8 +29,13 @@ uses
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils, LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite,
-  LazLogger, LazUTF8, CodeToolsStructs, CustApp, Laz_AVL_Tree, avglvltree, strutils,
+  Classes, SysUtils, CustApp, strutils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite, LazLogger, avglvltree,
+  LazStringUtils, //LazUTF8,
+  // CodeTools
+  CodeToolsStructs,
+  // Wiki
   {$IF FPC_FULLVERSION<20701}
   myfphttpclient,
   {$ELSE}
