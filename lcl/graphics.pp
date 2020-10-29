@@ -1075,10 +1075,10 @@ type
                     Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
-                       const Source: TRect); virtual;
-    procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
+                       const Source: TRect); virtual; reintroduce;
+    procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual; reintroduce;
     procedure DrawFocusRect(const ARect: TRect); virtual;
-    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
+    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual; reintroduce;
     procedure Ellipse(const ARect: TRect); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Ellipse(x1, y1, x2, y2: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure FillRect(const ARect: TRect); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}

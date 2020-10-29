@@ -251,7 +251,7 @@ type
     procedure FlushStackToStream;
     procedure WriteToStream(const Buffer; Count: Longint);
   protected
-    procedure FlushBuffer;
+    procedure FlushBuffer; override;
     procedure WriteValue(Value: TValueType);
     procedure WriteStr(const Value: String);
     procedure WriteIntegerContent(i: integer);
