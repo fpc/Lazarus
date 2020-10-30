@@ -21,7 +21,7 @@ uses
   {$IFDEF MSWindows}Windows, ShellApi,{$ENDIF} // needed for ShellExecute, not good for WinCE, issue #36558
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, UTF8Process, {LazUTF8,} LazStringUtils, LazConfigStorage,
+  LazFileUtils, UTF8Process, LazStringUtils, LazConfigStorage,
   // LCL
   LCLProc, LCLIntf, LCLStrConsts, HelpIntfs, LazHelpIntf;
 

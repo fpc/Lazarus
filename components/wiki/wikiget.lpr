@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, CustApp, strutils, Laz_AVL_Tree,
   // LazUtils
   LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite, LazLogger, avglvltree,
-  LazStringUtils, //LazUTF8,
+  LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolsStructs,
   // Wiki
