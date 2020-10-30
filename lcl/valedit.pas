@@ -1319,7 +1319,7 @@ end;
 procedure TValueListEditor.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Key = '=') and (Col = 0) then
+  if (Key = Strings.NameValueSeparator) and (Col = 0) then
   begin//move to Value column
     Key := #0;
     //Modified code from TCustomGrid.KeyDown
@@ -1460,6 +1460,7 @@ procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
 var
   I: Integer;
   Key, KeyValue, Line: string;
+  Sep: Char;
 begin
   if (ARow = 0) and (doColumnTitles in DisplayOptions) then
   begin
@@ -1470,9 +1471,10 @@ begin
     I:=ARow-FixedRows;
     if ACol=0 then
     begin
+      Sep := Strings.NameValueSeparator;
       Key := AValue;
       {
-        A Key can never contain an equal sign ('=')
+        A Key can never contain NameVlaueSeparator (by default an equal sign ('='))
         While we disallow typing '=' inside the Key column
         we cannot prevent the user from pasting text that contains a '='
         This leads to strange effects since when we insert the Key/Value pair into
@@ -1482,9 +1484,9 @@ begin
         the Value cell will become '=='
         Reported on forum: https://forum.lazarus.freepascal.org/index.php?topic=51977.0;topicseen
       }
-      if (Pos('=', Key) > 0) then
+      if (Pos(Sep, Key) > 0) then
       begin
-        Key := StringReplace(Key, '=', '', [rfReplaceAll]);
+        Key := StringReplace(Key, Sep, '', [rfReplaceAll]);
         //update the content of the Column cell
         inherited SetCells(ACol, ARow, Key);
       end;
