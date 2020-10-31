@@ -111,6 +111,7 @@ type
     FListForm: TGenericCheckListForm;
     function IsSelected(AIndex: Integer): Boolean;
     procedure SaveManyModesSelection;
+    procedure SelectAll;
     procedure SelectFirst;
     function Show: Boolean;
   public
@@ -227,7 +228,10 @@ begin
   BMList:=TBuildModesCheckList.Create(DlgCapt);
   try
     if Project1.BuildModes.Count > 1 then
-      Ok:=BMList.Show
+    begin
+      BMList.SelectAll;
+      Ok:=BMList.Show;
+    end
     else begin
       Ok:=IDEMessageDialog(DlgCapt, Format(DlgMsg,[LineEnding,aDir]),
                            mtConfirmation,[mbYes,mbNo]) = mrYes;
@@ -879,6 +883,14 @@ begin
     if FListForm.CheckListBox1.Checked[i] then
       Project1.BuildModes.ManyBuildModes.Add(FListForm.CheckListBox1.Items[i]);
   Project1.Modified:=True;
+end;
+
+procedure TBuildModesCheckList.SelectAll;
+var
+  i: Integer;
+begin
+  for i := 0 to FListForm.CheckListBox1.Count-1 do
+    FListForm.CheckListBox1.Checked[i] := True;
 end;
 
 procedure TBuildModesCheckList.SelectFirst;
