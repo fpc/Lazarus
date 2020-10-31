@@ -4133,9 +4133,6 @@ resourcestring
   lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version "%s" is invalid.'
     +'%sPlease use the format major.minor.release.build'
     +'%sFor example: 1.0.20.10';
-  lisProjAddInvalidPascalUnitName = 'Invalid Pascal unit name';
-  lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name "%s" is '
-    +'not a valid Pascal identifier.';
   lisProjAddUnitNameAlreadyExists = 'Unit name already exists';
   lisProjAddTheUnitNameAlreadyExistsInTheProject = 'The unit name "%s" '
     +'already exists in the project%swith file: "%s".';

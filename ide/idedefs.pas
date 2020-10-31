@@ -55,6 +55,9 @@ type
     NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags)
     of object;
 
+  TOnGetUnitRegisterInfo = procedure(Sender: TObject; const Filename: string;
+    out TheUnitName: string; out HasRegisterProc: boolean) of object;
+
 implementation
 
 end.

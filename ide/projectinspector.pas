@@ -69,7 +69,7 @@ uses
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
-  PackageDefs, Project, InputHistory, MainBase, EnvironmentOpts,
+  PackageDefs, PackageEditor, Project, InputHistory, MainBase, EnvironmentOpts,
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks,
   ProjPackEditing, ProjPackFilePropGui, PackageSystem, BuildManager;
 
@@ -127,7 +127,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
-    procedure mnuAddBitBtnClick(Sender: TObject);
+    procedure mnuAddDiskFileClick(Sender: TObject);
     procedure mnuAddEditorFilesClick(Sender: TObject);
     procedure mnuAddFPMakeReqClick(Sender: TObject);
     procedure mnuAddReqClick(Sender: TObject);
@@ -360,17 +360,18 @@ begin
   UpdateButtons;
 end;
 
-procedure TProjectInspectorForm.mnuAddBitBtnClick(Sender: TObject);
+procedure TProjectInspectorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
+  ADirectory, NewFilename: String;
   i: Integer;
-  ADirectory: String;
 begin
   OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     ADirectory:=LazProject.Directory;
-    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
+    if not FilenameIsAbsolute(ADirectory) then
+      ADirectory:='';
     if ADirectory<>'' then
       OpenDialog.InitialDir:=ADirectory;
     OpenDialog.Title:=lisOpenFile;
@@ -380,11 +381,21 @@ begin
                  +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+dlgFilterLazarusInclude+' (*.inc)|*.inc'
                  +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
-    if OpenDialog.Execute then begin
+    if OpenDialog.Execute then
+    begin
+      InputHistories.StoreFileDialogSettings(OpenDialog);
       for i:=0 to OpenDialog.Files.Count-1 do
-        if not (AddOneFile(OpenDialog.Files[i]) in [mrOk, mrIgnore]) then break;
+      begin
+        NewFilename := OpenDialog.Files[i];
+        case TPrjFileCheck.AddingFile(LazProject, NewFilename,
+                                      PackageEditors.OnGetUnitRegisterInfo) of
+          mrOk: if not (AddOneFile(NewFilename) in [mrOk, mrIgnore]) then
+                  break;
+          mrIgnore: continue;
+          mrCancel: exit;
+        end;
+      end;
     end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
     OpenDialog.Free;
   end;
@@ -469,9 +480,11 @@ end;
 function TProjectInspectorForm.AddOneFile(aFilename: string): TModalResult;
 var
   NewFile: TUnitInfo;
+  NewFN: String;
 begin
   Result := mrOK;
-  aFilename:=CleanAndExpandFilename(aFilename);
+  NewFN:=CleanAndExpandFilename(aFilename);
+  Assert(NewFN=aFilename, 'TProjectInspectorForm.AddOneFile: '+aFilename+' is not clean.');
   NewFile:=LazProject.UnitInfoWithFilename(aFilename);
   if NewFile<>nil then begin
     if NewFile.IsPartOfProject then Exit(mrIgnore);
@@ -496,7 +509,7 @@ begin
   if NodeTreeIsIn(ItemsTreeView.Selected, FDependenciesNode) then
     mnuAddReqClick(Sender)
   else
-    mnuAddBitBtnClick(Sender);
+    mnuAddDiskFileClick(Sender);
 end;
 
 procedure TProjectInspectorForm.DoAddMoreDialog;
@@ -726,7 +739,7 @@ begin
   begin
     // Only the Files node is selected.
     Assert(AddBitBtn.Enabled, 'AddBitBtn not Enabled');
-    AddPopupMenuItem(lisBtnDlgAdd, @mnuAddBitBtnClick);
+    AddPopupMenuItem(lisBtnDlgAdd, @mnuAddDiskFileClick);
     if not LazProject.IsVirtual then
       AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick);
     AddPopupMenuItem(cLineCaption, Nil, False);                // Separator
@@ -864,7 +877,7 @@ begin
       if not NodeData.Removed then continue;
       if not (Item is TPkgDependency) then continue;
       Dependency:=TPkgDependency(Item);
-      if not CheckAddingProjectDependency(LazProject,Dependency) then exit;
+      if TPrjFileCheck.AddingDependency(LazProject,Dependency)<>mrOK then exit;
       if Assigned(OnReAddDependency) then
         OnReAddDependency(Self,Dependency);
     end;

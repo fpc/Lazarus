@@ -5114,11 +5114,12 @@ begin
     if Item is TProject then begin
       Result:=AddProjectDependency(TProject(Item),Pkg,OnlyTestIfPossible);
       if Result<>mrOk then exit;
-    end else if Item is TLazPackage then begin
+    end
+    else if Item is TLazPackage then begin
       NewDependency:=TPkgDependency.Create;
       try
         NewDependency.PackageName:=APackage.Name;
-        r:=CheckAddingPackageDependency(TLazPackage(Item),NewDependency,false,false);
+        r:=TPkgFileCheck.AddingDependency(TLazPackage(Item),NewDependency,false);
         if r=mrCancel then exit;
         if (not OnlyTestIfPossible) and (r<>mrIgnore) then begin
           ADependency:=NewDependency;
@@ -5413,7 +5414,7 @@ begin
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=ReqPackage;
-    Result:=CheckAddingPackageDependency(APackage,NewDependency,false,false);
+    Result:=TPkgFileCheck.AddingDependency(APackage,NewDependency,false);
     if Result=mrIgnore then exit(mrOk);
     if Result<>mrOk then exit;
     if not OnlyTestIfPossible then begin

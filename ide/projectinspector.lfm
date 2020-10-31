@@ -166,7 +166,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     object mnuAddDiskFile: TMenuItem
       Caption = 'Add file from disk'
       Default = True
-      OnClick = mnuAddBitBtnClick
+      OnClick = mnuAddDiskFileClick
     end
     object MenuItem2: TMenuItem
       Caption = '-'

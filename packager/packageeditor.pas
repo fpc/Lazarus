@@ -593,38 +593,31 @@ var
   AFilename: String;
   Dependency: TPkgDependency;
   i: Integer;
-  TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
   try
-    for i:=ItemsTreeView.SelectionCount-1 downto 0 do begin
-      TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    for i:=ItemsTreeView.SelectionCount-1 downto 0 do
+    begin
+      if not GetNodeDataItem(ItemsTreeView.Selections[i],NodeData,Item) then continue;
       if not NodeData.Removed then continue;
-      if Item is TPkgFile then begin
-        // re-add file
+      if Item is TPkgFile then
+      begin        // re-add file
         PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
-        if PkgFile.FileType in PkgFileRealUnitTypes then begin
-          if not CheckAddingPackageUnit(LazPackage,d2ptUnit,
-            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
-        end else if PkgFile.FileType=pftVirtualUnit then begin
-          if not CheckAddingPackageUnit(LazPackage,d2ptVirtualUnit,
-            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
-        end else begin
-          if not CheckAddingPackageUnit(LazPackage,d2ptFile,
-            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
-        end;
-        PkgFile.Filename:=AFilename;
+        if TPkgFileCheck.ReAddingUnit(LazPackage, PkgFile.FileType, AFilename,
+                           PackageEditors.OnGetIDEFileInfo,
+                           PackageEditors.OnGetUnitRegisterInfo)<>mrOk then exit;
+        //PkgFile.Filename:=AFilename;
+        Assert(PkgFile.Filename=AFilename, 'TPackageEditorForm.ReAddMenuItemClick: Unexpected Filename.');
         LazPackage.UnremovePkgFile(PkgFile);
       end
       else if Item is TPkgDependency then begin
         Dependency:=TPkgDependency(Item);
         // Re-add dependency
         fForcedFlags:=[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
-        if CheckAddingPackageDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
+        if TPkgFileCheck.AddingDependency(LazPackage,Dependency,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
       end;
@@ -1457,8 +1450,10 @@ procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   i: Integer;
-  NewUnitPaths, NewIncPaths: String;
+  NewFilename, NewUnitPaths, NewIncPaths: String;
 begin
+  // is readonly
+  if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -1473,12 +1468,19 @@ begin
       +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
       +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
       +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
-    if OpenDialog.Execute then begin
+    if OpenDialog.Execute then
+    begin
       InputHistories.StoreFileDialogSettings(OpenDialog);
       NewUnitPaths:='';
       NewIncPaths:='';
       for i:=0 to OpenDialog.Files.Count-1 do
-        LazPackage.AddFileByName(OpenDialog.Files[i], NewUnitPaths, NewIncPaths);
+      begin
+        NewFilename:=OpenDialog.Files[i];
+        if TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
+                                  PackageEditors.OnGetIDEFileInfo,
+                                  PackageEditors.OnGetUnitRegisterInfo)=mrOK then
+          LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths);
+      end;
       //UpdateAll(false);
       // extend unit and include search path
       if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;

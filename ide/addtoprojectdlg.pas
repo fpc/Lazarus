@@ -34,16 +34,15 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils,
   // LCL
-  Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs, ButtonPanel,
+  Forms, Controls, ComCtrls, StdCtrls, Dialogs, ButtonPanel,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
-  IDEWindowIntf, PackageIntf,
+  IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, IDEImagesIntf, Project, InputHistory, PackageDefs,
-  ProjPackChecks;
+  LazarusIDEStrConsts, IDEDialogs, Project, PackageEditor, ProjPackChecks;
   
 type
   { TAddToProjectDialog }
@@ -117,20 +116,41 @@ end;
 
 procedure TAddToProjectDialog.AddFileButtonClick(Sender: TObject);
 var
-  i: Integer;
-  NewFilename: string;
+  NewFilename, NewUnitName, OtherFile: string;
+  i, j: Integer;
 begin
   for i:=0 to AddFileListView.Items.Count-1 do
     if AddFileListView.Items[i].Selected then
     begin
       NewFilename:=AddFileListView.Items[i].Caption;
-      case CheckAddingProjectFile(fProject, fFileNames, NewFilename) of
-        mrOk: ;
+      if not FilenameIsAbsolute(NewFilename) then  // expand filename
+        NewFilename:=TrimFilename(fProject.Directory+PathDelim+NewFilename);
+      case TPrjFileCheck.AddingFile(fProject, NewFilename,
+                                    PackageEditors.OnGetUnitRegisterInfo) of
+        mrOk: begin
+            // check if unitname already exists in selection
+            if FilenameIsPascalUnit(NewFilename) then
+            begin
+              NewUnitName:=ExtractFileNameOnly(NewFilename);
+              for j:=0 to fFileNames.Count-1 do
+              begin
+                OtherFile:=fFileNames[j];
+                if FilenameIsPascalUnit(OtherFile)
+                and (CompareText(ExtractFileNameOnly(OtherFile), NewUnitName)=0)
+                then begin
+                  IDEMessageDialog(lisProjAddUnitNameAlreadyExists,
+                    Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection,
+                           [NewUnitName, LineEnding, OtherFile]),
+                    mtWarning, [mbCancel]);
+                  exit;
+                end;
+              end;
+            end;
+            fFileNames.Add(NewFilename);  // Add to valid files
+          end;  // mrOk
         mrIgnore: continue;
-      else
-        exit;
+        mrCancel: exit;
       end;
-      fFileNames.Add(NewFilename);
     end;
   ModalResult:=mrOk;  // everything ok
 end;

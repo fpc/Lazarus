@@ -69,9 +69,6 @@ type
     destructor Destroy; override;
   end;
   
-  TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
-    out TheUnitName: string; out HasRegisterProc: boolean) of object;
-
   { TIconGuiStuff }
 
   TIconGuiStuff = class
@@ -522,7 +519,7 @@ begin
     NewDependency:=TPkgDependency.Create;
     NewDependency.DependencyType:=pdtLazarus;
     NewDependency.PackageName:=ARequiredPackage.Name;
-    if CheckAddingPackageDependency(LazPackage,NewDependency,false,false)=mrOK then
+    if TPkgFileCheck.AddingDependency(LazPackage,NewDependency,false)=mrOK then
       PackageGraph.AddDependencyToPackage(LazPackage, NewDependency)
     else
       NewDependency.Free;
