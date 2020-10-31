@@ -17498,12 +17498,6 @@ msgstr "Bewerker-bestanden toevoegen"
 msgid "Invalid Min-Max version"
 msgstr "Ongeldige Min-Max versie"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-#, fuzzy
-#| msgid "Invalid pascal unit name"
-msgid "Invalid Pascal unit name"
-msgstr "Ongeldige Pascal unit naam"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Ongeldige versie"
@@ -17588,12 +17582,6 @@ msgstr "De unitnaam \"%s\" bestaat al in het project%smet bestand: \"%s\"."
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "De unitnaam \"%s\" bestaat al in de selectie%smet bestand: \"%s\"."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format, fuzzy
-#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "De unitnaam \"%s\" is geen geldige pascal identifier."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

@@ -16838,10 +16838,6 @@ msgstr "Editör Dosyalarını Ekle"
 msgid "Invalid Min-Max version"
 msgstr "Geçersiz Min-Max sürümü"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Geçersiz Pascal birim adı"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Geçersiz sürüm"
@@ -16920,11 +16916,6 @@ msgstr "\"%s\" birim adı %s projesinde zaten var: \"%s\"."
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "\"%s\" birim ismi %s seçiminde zaten var: \"%s\"."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "\"%s\" birim ismi geçerli bir Pascal tanımlayıcısı değil."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

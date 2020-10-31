@@ -17899,12 +17899,6 @@ msgstr "הוסף קבצי עורך"
 msgid "Invalid Min-Max version"
 msgstr "גירסה מינימלית-מקסימלית לא חוקית"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-#, fuzzy
-#| msgid "Invalid pascal unit name"
-msgid "Invalid Pascal unit name"
-msgstr "שם לא חוקי של יחידת פסקל "
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "גירסה לא חוקית"
@@ -17989,12 +17983,6 @@ msgstr "שם היחידה  %s%s%s כבר קיים בפרוייקט עם קובץ
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "שם היחידה  %s%s%s כבר קיים בבחירה עם קובץ:  %s%s%s."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "שם היחידה  %s%s%s אינו מזהה חוקי של פסקל."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

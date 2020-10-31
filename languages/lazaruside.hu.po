@@ -16912,10 +16912,6 @@ msgstr "Megnyitott fájl hozzáadása"
 msgid "Invalid Min-Max version"
 msgstr "Érvénytelen legkisebb-legnagyobb változat"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Érvénytelen pascal unit-név"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Érvénytelen változat"
@@ -16994,11 +16990,6 @@ msgstr "A(z) \"%s\" unit-név már létezik a projektben%sa(z) \"%s\" fájllal."
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "A(z) \"%s\" unit-név már létezik a kijelölésben%sa(z) \"%s\" fájllal."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "A(z) \"%s\" unit-név nem érvényes pascal azonosító."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

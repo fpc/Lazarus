@@ -17361,12 +17361,6 @@ msgstr "Pridať súbory editora"
 msgid "Invalid Min-Max version"
 msgstr "Neplatná Min-Max verzia"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-#, fuzzy
-#| msgid "Invalid pascal unit name"
-msgid "Invalid Pascal unit name"
-msgstr "Neplatné meno jednotky pascal"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Neplatná verzia"
@@ -17451,12 +17445,6 @@ msgstr "Meno jednotky %s%s%s už v projekte existuje %sso súborom: %s%s%s."
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Meno jednotky %s%s%s už existuje vo výbere%sso súborom: %s%s%s."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Meno jednotky %s%s%s nei je platný identifikátor Pascalu."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

@@ -16920,10 +16920,6 @@ msgstr "Ajouter les fichiers de l'éditeur"
 msgid "Invalid Min-Max version"
 msgstr "Version Min-Max incorrecte"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Nom d'unité Pascal incorrecte"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Version incorrecte"
@@ -17002,11 +16998,6 @@ msgstr "Le nom d'unité \"%s\" existe déjà dans le projet%savec le fichier : \
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Le nom d'unité \"%s\" existe déjà dans la sélection%savec le fichier : \"%s\"."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Le nom de l'unité \"%s\" n'est pas un identificateur Pascal correct."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

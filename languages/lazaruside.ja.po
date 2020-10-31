@@ -17115,10 +17115,6 @@ msgstr "編集ファイルを追加"
 msgid "Invalid Min-Max version"
 msgstr "無効なMin-Maxバージョン"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "無効な Pascal ユニット名"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "無効なバージョン"
@@ -17197,11 +17193,6 @@ msgstr "ユニット名\"%s\"はプロジェクト%sに既に存在していま�
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "ユニット名\"%s\"は選択した%sに既に存在しています。ファイル：\"%s\""
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "ユニット名 \"%s\" は有効な Pascal 識別子ではありません。"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

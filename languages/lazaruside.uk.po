@@ -16913,10 +16913,6 @@ msgstr "Додати файли редактора"
 msgid "Invalid Min-Max version"
 msgstr "Неправильна версія (Min-Max)"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Неправильна назва модуля Pascal"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Неправильна версія"
@@ -16995,11 +16991,6 @@ msgstr "Назва модуля \"%s\" вже існує у проєкті%sу �
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Назва модуля \"%s\" вже є у вибраному%sу файлі: \"%s\"."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Назва модуля \"%s\" не є правильним ідентифікатором Pascal. "
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

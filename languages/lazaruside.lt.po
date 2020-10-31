@@ -17150,10 +17150,6 @@ msgstr "Pridėti rengyklės failų"
 msgid "Invalid Min-Max version"
 msgstr "Klaidingos versijos ribos"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Klaidingas „Paskalio“ modulio pavadinimas"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Klaidinga versija"
@@ -17232,11 +17228,6 @@ msgstr "Modulio pavadinimas „%s“ jau figūruoja šiame projekte,%sžvilgtel�
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Modulio pavadinimas „%s“ jau figūruoja šiame pažymėjime,%sžvilgtelėkit į failą: „%s“."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Modulio pavadinimas „%s“ nėra Paskalio identifikatorius."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

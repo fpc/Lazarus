@@ -16814,10 +16814,6 @@ msgstr "Lisää editorissa avoinna olevia tiedostoja"
 msgid "Invalid Min-Max version"
 msgstr "Kelvoton Min-Max versio"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "Kelvoton Pascal -käännösyksikön nimi"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Kelvoton versio"
@@ -16896,11 +16892,6 @@ msgstr "Käännösyksikkö \"%s\" on jo projektissa%stiedostona: \"%s\"."
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Käännösyksikkö \"%s\" on jo valinnassa%stiedostossa: \"%s\"."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Käännösyksikön nimi \"%s\" ei ole kelvollinen Pascal-tunniste."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

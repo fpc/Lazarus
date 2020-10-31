@@ -17162,10 +17162,6 @@ msgstr "添加编辑器文件"
 msgid "Invalid Min-Max version"
 msgstr "无效的最小-最大版本"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr "无效的pascal单元名称"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "错误版本号"
@@ -17244,11 +17240,6 @@ msgstr ""
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr ""
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "该单元名称\"%s\"不是有效的Pascal标识符。"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

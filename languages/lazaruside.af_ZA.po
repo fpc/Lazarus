@@ -16935,10 +16935,6 @@ msgstr ""
 msgid "Invalid Min-Max version"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid Pascal unit name"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Ongeldige weergawe"
@@ -17016,11 +17012,6 @@ msgstr ""
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
 #, object-pascal-format
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists

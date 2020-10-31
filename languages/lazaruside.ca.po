@@ -17398,12 +17398,6 @@ msgstr "Afegeix els fitxers de l'editor"
 msgid "Invalid Min-Max version"
 msgstr "La versió min/max no és vàlida"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-#, fuzzy
-#| msgid "Invalid pascal unit name"
-msgid "Invalid Pascal unit name"
-msgstr "El nom de la unitat pascal no és vàlid"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "la versió no és vàlida"
@@ -17488,12 +17482,6 @@ msgstr "El nom d'unitat %s%s%s ja existeix en el projecte%sen el fitxer: %s%s%s.
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "El nom d'unitat %s%s%s ja existeix en la selecció%s en el fitxer: %s%s%s."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "El nom d'unitat %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"

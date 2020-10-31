@@ -17597,12 +17597,6 @@ msgstr "Tambah file editor"
 msgid "Invalid Min-Max version"
 msgstr "Versi Min-Max tidak benar"
 
-#: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-#, fuzzy
-#| msgid "Invalid pascal unit name"
-msgid "Invalid Pascal unit name"
-msgstr "Nama unit pascal tidak benar"
-
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Versi tidak benar"
@@ -17687,12 +17681,6 @@ msgstr "Nama unit %s%s%s sudah ada dalam proyek%sdengan file: %s%s%s."
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Nama unit %s%s%s sudah ada dalam pilihan%sdengan file: %s%s%s."
-
-#: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
-msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Nama unit %s%s%s bukan pengenal pascal yang benar."
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
