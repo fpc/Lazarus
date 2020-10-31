@@ -5717,18 +5717,21 @@ begin
     Name := FindAttribute(htmlAttrNAME);
     Content := FindAttribute(htmlAttrCONTENT);
     {$IFDEF IP_LAZARUS}
-    if SameText(HttpEquiv, 'content-type') and not FHasBOM then begin
-      j := pos('charset=', lowercase(Content));
-      if j>0 then begin
-        j := j+8;
-        i := j;
-        while (j<=Length(Content)) do begin
-          if Content[j] in [' ',';','"',','] then
-            break;
-          inc(j);
+    if not FHasBOM then begin
+      if SameText(HttpEquiv, 'content-type') then begin
+        j := pos('charset=', lowercase(Content));
+        if j>0 then begin
+          j := j+8;
+          i := j;
+          while (j<=Length(Content)) do begin
+            if Content[j] in [' ',';','"',','] then
+              break;
+            inc(j);
+          end;
+          fDocCharset := copy(content, i, j-i);
         end;
-        fDocCharset := copy(content, i, j-i);
-      end else
+      end
+      else
         fDocCharset := FindAttribute(htmlAttrCHARSET);
       if pos('windows', Lowercase(fDocCharset)) = 1 then
         fDocCharset := NormalizeEncoding(StringReplace(fDocCharset, 'windows', 'cp', [rfIgnoreCase]));
