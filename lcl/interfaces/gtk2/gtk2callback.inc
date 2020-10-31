@@ -1039,14 +1039,20 @@ begin
 
   ResetDefaultIMContext;
 
-  FillChar(Mess{%H-},SizeOf(Mess),0);
-  Mess.msg := LM_KILLFOCUS;
-  // do not release the capture widget here
+  // do not send LM_KILLFOCUS message if widget is destroying itself
+  if Assigned(Data) and
+    not ((csDestroying in TComponent(Data).ComponentState) or
+         (csDestroyingHandle in TControl(Data).ControlState)) then
+  begin
+    FillChar(Mess{%H-},SizeOf(Mess),0);
+    Mess.msg := LM_KILLFOCUS;
+    // do not release the capture widget here
 
-  //TODO: fill in new focus
-  //DebugLn(Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
+    //TODO: fill in new focus
+    //DebugLn(Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   
-  DeliverMessage(Data,  Mess);
+    DeliverMessage(Data,  Mess);
+  end;
 
   // do not show selection when widget is unfocused
   // issues #18164,#21897,#23182

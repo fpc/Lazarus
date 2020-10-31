@@ -2104,10 +2104,36 @@ var
     // The LCL does not use that and needs the return key event
     // => emulate it
 
-    // emulate VK_RETURN on GtkButton. issue #21483
     // spin button needs VK_RETURN to send OnEditingDone. issue #21224
-    if GtkWidgetIsA(TargetWidget, gtk_type_button) or
-     GtkWidgetIsA(TargetWidget, gtk_type_spin_button) then
+    // Fix for spin button not triggering TApplication.ControlKeyUp() when
+    //   VK_RETURN or VK_ESCAPE is pressed
+    if GtkWidgetIsA(TargetWidget, gtk_type_spin_button) and
+      (gdk_event_get_type(AEvent) = GDK_KEY_RELEASE) and
+      ((VKey = VK_RETURN) or (VKey = VK_ESCAPE)) then
+    begin
+      // emulate keyup and keydown
+      FillChar(Msg, SizeOf(Msg), 0);
+      Msg.CharCode := VKey;
+      if SysKey then
+        Msg.msg := LM_SYSKEYDOWN
+      else
+        Msg.msg := LM_KEYDOWN;
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001;
+      // send the (Sys)KeyDown message directly to the LCL
+      NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+      DeliverKeyMessage(TargetObj, Msg);
+
+      if SysKey then
+        Msg.msg := LM_SYSKEYUP
+      else
+        Msg.msg := LM_KEYUP;
+      // send the (Sys)KeyUp message directly to the LCL
+      NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+      DeliverKeyMessage(TargetObj, Msg);
+    end else
+
+    // emulate VK_RETURN on GtkButton. issue #21483
+    if GtkWidgetIsA(TargetWidget, gtk_type_button) then
     begin
       if (gdk_event_get_type(AEvent) = GDK_KEY_RELEASE) and
         (VKey = VK_RETURN) then
