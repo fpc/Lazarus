@@ -278,11 +278,7 @@ begin
                   begin
                     if CellNode.Width.LengthValue <= CellNode.ExpParentWidth then
                       Min0 := MaxI2(Min0, CellNode.Width.LengthValue - 2*FCellPadding
-                      {$IFDEF IP_LAZARUS}
                         - FCellSpacing - RUH);
-                      {$ELSE}
-                        - 2*CS2 - RUH);
-                      {$ENDIF}
                     Max0 := Min0;
                   end;
                 end;
@@ -318,19 +314,11 @@ begin
 
   TWMin := 0;
   TWMax := 0;
-  {$IFDEF IP_LAZARUS}
   CellOverhead := BL + FCellSpacing + BR;
-  {$ELSE}
-  CellOverhead := BL + 2*CS2 + RUH + BR;
-  {$ENDIF}
   for i := 0 to Pred(ColCount) do begin
     Inc(TWMin, ColTextWidthMin[i]);
     Inc(TWMax, ColTextWidthMax[i]);
-    {$IFDEF IP_LAZARUS}
     Inc(CellOverhead, RUH + 2*FCellPadding + FCellSpacing + RUH);
-    {$ELSE}
-    Inc(CellOverhead, 2*FCellPadding + 2*CS2 + RUH);
-    {$ENDIF}
     FRowSp[i] := 0;
   end;
 
@@ -466,36 +454,17 @@ var
                   CellRect1 := TargetRect;
                   Inc(CellRect1.Left, ColStart[CurCol]);
 
-                  {$IFDEF IP_LAZARUS}
                   Inc(CellRect1.Top, FCellSpacing + RUV);
-                  {$ELSE}
-                  Inc(CellRect1.Top, CS2 + RUV);
-                  {$ENDIF}
 
-                  CellRect1.Right := CellRect1.Left + 2*FCellPadding + ColTextWidth[CurCol]
-                    {$IFnDEF IP_LAZARUS}
-                    + 2*CS2
-                    {$ENDIF}
-                    ;
+                  CellRect1.Right := CellRect1.Left + 2*FCellPadding + ColTextWidth[CurCol];
                   for k := 1 to CellNode.ColSpan - 1 do
                     Inc(CellRect1.Right, ColTextWidth[CurCol + k] + 2*FCellPadding +
-                      {$IFDEF IP_LAZARUS}
                       2*RUH + FCellSpacing);
-                      {$ELSE}
-                      2*CS2 + RUH);
-                      {$ENDIF}
-                  {$IFDEF IP_LAZARUS}
                   // PadRect area of cell excluding rules
                   // CellRect area of text contained in cell
                   CellNode.PadRect := CellRect1;
                   Inc(CellRect1.Top, FCellPadding);
                   inflateRect(CellRect1, -FCellPadding, 0);
-                  {$ELSE}
-                  FPadRect := CellRect1;
-                  InflateRect(FPadRect, -CS2, 0);
-                  Inc(CellRect1.Top, FCellPadding);
-                  InflateRect(CellRect1, -(FCellPadding + CS2), 0);
-                  {$ENDIF}
 
                   VA := CellNode.VAlign;
                   if VA = hva3Default then
@@ -563,11 +532,7 @@ var
 
                   AL := AL0;
 
-                  {$IFDEF IP_LAZARUS}
                   HA := maxYY - (TargetRect.Top + FCellSpacing + RUV);
-                  {$ELSE}
-                  HA := maxYY - TargetRect.Top;
-                  {$ENDIF}
                   HB := CellNode.PageRect.Bottom - CellNode.PageRect.Top;
 
                   VA := CellNode.VAlign;
@@ -586,30 +551,14 @@ var
                   if Y0 > 0 then begin
                     CellRect1 := TargetRect;
                     Inc(CellRect1.Left, ColStart[CurCol]);
-                    {$IFDEF IP_LAZARUS}
                     Inc(CellRect1.Top, FCellSpacing + RUV + Y0);
-                    {$ELSE}
-                    Inc(CellRect1.Top, CS2 + RUV + Y0);
-                    {$ENDIF}
-                    CellRect1.Right := CellRect1.Left + 2*FCellPadding + ColTextWidth[CurCol]
-                      {$IFnDEF IP_LAZARUS}
-                      + 2*CS2
-                      {$ENDIF}
-                      ;
+                    CellRect1.Right := CellRect1.Left + 2*FCellPadding + ColTextWidth[CurCol];
                     for k := 1 to CellNode.ColSpan - 1 do
                       Inc(CellRect1.Right, ColTextWidth[CurCol + k] + 2*FCellPadding +
-                        {$IFDEF IP_LAZARUS}
                         2*RUH + FCellSpacing);
-                        {$ELSE}
-                        2*CS2 + RUH);
-                        {$ENDIF}
 
                     Inc(CellRect1.Top, FCellPadding);
-                    {$IFDEF IP_LAZARUS}
                     inflateRect(CellRect1, -FCellPadding, 0);
-                    {$ELSE}
-                    InflateRect(CellRect1, -(FCellPadding + CS2), 0);
-                    {$ENDIF}
 
                     case CellNode.Align of
                     haDefault : ;
@@ -656,11 +605,7 @@ var
                 if FRowSp[j] > 0 then
                   FRowSp[j] := FRowSp[j] - 1;
 
-              {$IFDEF IP_LAZARUS}
               TargetRect.Top := MaxI2(maxYY, TargetRect.Top) + RUV;
-              {$ELSE}
-              TargetRect.Top := MaxI2(maxYY, TargetRect.Top);
-              {$ENDIF}
               DeleteFirstSpanRow;
             end;
           end;
@@ -763,11 +708,7 @@ begin
                 case CellNode.Width.LengthType of
                 hlAbsolute :
                   AdjustCol(CellNode.ColSpan, CellNode.Width.LengthValue - 2*FCellPadding
-                  {$IFDEF IP_LAZARUS}
                     - FCellSpacing - RUH);
-                  {$ELSE}
-                    - 2*CS2 - RUH);
-                  {$ENDIF}
                 hlPercent :
                   AdjustCol(CellNode.Colspan,
                             round((FTableWidth - CellOverhead) *
@@ -878,19 +819,11 @@ begin
     R := BorderRect;
   end;
 
-  {$IFDEF IP_LAZARUS}
   ColStart[0] := BL + FCellSpacing + RUH;
-  {$ELSE}
-  ColStart[0] := BL + CS2 + RUH;
-  {$ENDIF}
   FRowSp[0] := 0;
   for i := 1 to Pred(ColCount) do begin
     ColStart[i] := ColStart[i-1] + 2*FCellPadding + ColTextWidth[i-1]
-      {$IFDEF IP_LAZARUS}
       + FCellSpacing + 2*RUH;
-      {$ELSE}
-      + 2*CS2 + RUH;
-      {$ENDIF}
     FRowSp[i] := 0;
   end;
 
@@ -908,11 +841,7 @@ begin
     RowFixup.Free;
   end;
 
-  {$IFDEF IP_LAZARUS}
   Inc(TargetRect.Top, FCellSpacing + RUV + BB);
-  {$ELSE}
-  Inc(TargetRect.Top, CS2 + RUV + BB);
-  {$ENDIF}
 
   R.Right := R.Left + FTableWidth;
   R.Bottom := TargetRect.Top;
@@ -964,11 +893,6 @@ begin
             FColCount := c;
         end;
       end;
-    {$IFnDEF IP_LAZARUS}
-    CS2 := FCellSpacing div 2;
-    if (FCellSpacing > 0) and (CS2 = 0) then
-      CS2 := 1;
-    {$ENDIF}
     RUH := 0;
     RUV := 0;
     case FTableOwner.Rules of

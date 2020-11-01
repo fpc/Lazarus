@@ -58,9 +58,7 @@ type
     destructor Destroy; override;
     function GetHtmlStream(const AUrl: string;
       APostData: TIpFormDataEntity): TStream; override;
-  {$IFDEF IP_LAZARUS}
     function DoGetStream(const AUrl: string): TStream; override;
-  {$ENDIF}
     function CheckURL(const AUrl: string;
       var AContentType: string): Boolean; override;
     procedure Leave(AHtml: TIpHtml); override;
@@ -104,14 +102,12 @@ begin
   Result.Seek(0, soFromBeginning);
 end;
 
-{$IFDEF IP_LAZARUS}
 function TIpHttpDataProvider.DoGetStream(const AUrl: string): TStream;
 begin
   Result := TMemoryStream.Create;
   Result.CopyFrom(FDocumment, 0);
   Result.Seek(0, soFromBeginning);
 end;
-{$ENDIF}
 
 function TIpHttpDataProvider.CheckURL(const AUrl: string;
   var AContentType: string): Boolean;

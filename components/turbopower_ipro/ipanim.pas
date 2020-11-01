@@ -37,14 +37,9 @@ unit IpAnim;
 interface
 
 uses
-  {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
   LCLIntf,
-  {$ELSE}
-  Windows,
-  Messages,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, IpConst;
 
@@ -607,9 +602,7 @@ var
   UseTransparentCopy : Boolean;
 
 begin
-  {$IFDEF IP_LAZARUS}
   if (CurrentFrame=nil) then ;
-  {$ENDIF}
   //  Basic clear frame.  This should work for just about anything.
   DefaultDrawing := False;
   UseTransparentCopy := False;
@@ -756,9 +749,7 @@ procedure TIpAnimatedGraphic.LoadFromStream (Stream: TStream);
   image.
 }
 begin
-  {$IFDEF IP_LAZARUS}
   if (Stream=nil) then ;
-  {$ENDIF}
   Width := 50;
   Height := 50;
   Bitmap.Canvas.Brush.Color := clWhite;

@@ -39,14 +39,10 @@ unit IpHtmlPv;
 interface
 
 uses
-  {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
   LCLIntf,
   Buttons,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Spin, IpHtml, IpConst;
 
@@ -123,11 +119,7 @@ implementation
 uses
   Printers;
 
-{$IFNDEF IP_LAZARUS}
-{$R *.DFM}
-{$ELSE}
 {$R *.lfm}
-{$ENDIF}
 
 const
   SCRATCH_WIDTH = 800; //640;
@@ -368,7 +360,6 @@ procedure TIpHTMLPreview.ResizeCanvas;
 begin
   ScrollBox1.HorzScrollBar.Position := 0;
   ScrollBox1.VertScrollBar.Position := 0;
-  {$IFDEF IP_LAZARUS}
   if Printer.PageHeight > 0 then
     PaperPanel.Height := round(Printer.PageHeight * Scale)
   else
@@ -377,10 +368,6 @@ begin
     PaperPanel.Width := round(Printer.PageWidth * Scale)
   else
     PaperPanel.Width := round(500 * Scale);
-  {$ELSE}
-  PaperPanel.Width := round(Printer.PageWidth * Scale);
-  PaperPanel.Height := round(Printer.PageHeight * Scale);
-  {$ENDIF}
 
   PaintBox1.Left := round(OwnerPanel.PrintTopLeft.x * Scale);
   PaintBox1.Top := round(OwnerPanel.PrintTopLeft.y * Scale);

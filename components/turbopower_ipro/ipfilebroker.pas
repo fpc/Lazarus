@@ -31,21 +31,13 @@ unit Ipfilebroker;
 
 interface
 
-{$IFDEF IP_LAZARUS}
 uses Classes, SysUtils, LResources, Graphics, LCLProc, LazFileUtils, LazUTF8,
      ipconst, iputils, iphtml, ipmsg;
-{$ELSE}
-uses
-  Windows, SysUtils, Graphics, Classes, Dialogs, ShellApi,
-  IpConst, IpUtils, {IpSock, IpCache,} IpHtml, {IpHttp,} IpMsg, IpStrms{, IpFtp};
-{$ENDIF}
 
 const
   IP_DEFAULT_SCHEME : string = 'HTTP';
 
-{$IFDEF IP_LAZARUS}
 function expandLocalHtmlFileName (URL : string) : string;
-{$ENDIF}
 
 type
 
@@ -124,9 +116,7 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     function GetHtmlStream(const URL : string; PostData : TIpFormDataEntity) : TStream; override;
-    {$IFDEF IP_LAZARUS}
     function DoGetStream(const URL: string): TStream; override;
-    {$ENDIF}
     function CheckURL(const URL : string; var ContentType : string) : Boolean; override;
     procedure Leave(Html : TIpHtml); override;
     procedure Reference(const URL : string); override;
@@ -138,7 +128,6 @@ procedure Register;
 
 implementation
 
-{$IFDEF IP_LAZARUS}
 function expandLocalHtmlFileName (URL : string) : string;
 begin
   if pos ('FILE://', ansiuppercase(URL)) = 0 then
@@ -146,7 +135,6 @@ begin
   else
     result := URL;
 end;
-{$ENDIF}
 
 { TIpCustomHtmlDataProvider }
 constructor TIpCustomHtmlDataProvider.Create(AOwner : TComponent);
@@ -165,9 +153,7 @@ function TIpCustomHtmlDataProvider.BuildURL(const Old,
   New : string) : string;
 begin
   Result := IpUtils.BuildURL(Old, New);
-  {$IFDEF IP_LAZARUS}
   //DebugLn('TIpCustomHtmlDataProvider.BuildURL Old="',old,'" new="',New,'"');
-  {$ENDIF}
 end;
 
 function TIpCustomHtmlDataProvider.CanHandle(const URL : string) : Boolean;
@@ -299,15 +285,11 @@ var
   ContentType, FN : string;
 begin
   Initialize(FileAddrRec);
-  {$IFDEF IP_LAZARUS}
   //DebugLn('TIpFileDataProvider.CanHandle('+URL+')');
-  {$ENDIF}
   FN := BuildURL(FOldURL, URL);
   IpParseURL(FN, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
-  {$IFDEF IP_LAZARUS}
   //DebugLn('TIpFileDataProvider.CanHandle FN="'+FN+'"');
-  {$ENDIF}
   ContentType := UpperCase(GetLocalContent(FN));
   Result := (FileExistsUTF8(FN)) and ((Pos('TEXT/HTML', ContentType) > 0) or
     (Pos('IMAGE/', ContentType) > 0));
@@ -343,7 +325,6 @@ begin
   Finalize(FileAddrRec);
 end;
 
-{$IFDEF IP_LAZARUS}
 function TIpFileDataProvider.DoGetStream(const URL: string): TStream;
 var
   FileAddrRec : TIpAddrRec;
@@ -361,7 +342,6 @@ begin
   end;
   Finalize(FileAddrRec);
 end;
-{$ENDIF}
 
 procedure TIpFileDataProvider.GetImage(Sender : TIpHtmlNode;
   const URL : string; var Picture : TPicture);

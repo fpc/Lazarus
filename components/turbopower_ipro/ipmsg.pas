@@ -40,19 +40,12 @@ unit IpMsg;
 interface
 
 uses
-  {$IFDEF IP_LAZARUS}
   LCLType,
   LCLIntf,
   LazFileUtils, LazUTF8Classes,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   Classes,
   SysUtils,
   IpStrms,
-  {$IFNDEF IP_LAZARUS}
-  //IpSock, //JMN
-  {$ENDIF}
   IpUtils,
   IpConst;
 
@@ -567,15 +560,6 @@ type
                       aEncoding : TIpMimeEncodingMethod);
     procedure SaveToStream(aStream : TStream);
   end;
-
- {$IFNDEF IP_LAZARUS}
- { dummy class so this unit will be added to the uses clause when an }
- { IpPop3Client, IpSmtpClient or IpNntpClient component is dropped on the form }
- (*** //JMN
- TIpCustomEmailClass = class(TIpCustomClient)
- end;
- **)
- {$ENDIF}
 
 function IpBase64EncodeString(const InStr: string): string;       {!!.02}{!!.03}
 

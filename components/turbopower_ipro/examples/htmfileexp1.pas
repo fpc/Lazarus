@@ -3,23 +3,14 @@ unit HtmFileExp1;
 {$mode objfpc}{$H+}
 
 {.$define UsePreview}
-{$IFDEF LCL}
-{$DEFINE IP_LAZARUS}
-{$ENDIF}
 
 interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  {$IFDEF IP_LAZARUS}
-    {$ifdef UsePreview}
-    OsPrinters,
-    {$endif}
-  {$ELSE}
-    GIFImage,
-    JPeg,
-    ImageDLLLoader, PNGLoader, LinarBitmap, //from ImageFileLib of Michael Vinther: http://www.logicnet.dk/lib/
-  {$ENDIF}
+  {$ifdef UsePreview}
+  OsPrinters,
+  {$endif}
   IpUtils, IpHtml, ExtCtrls, StdCtrls, FileUtil;
 
 type
@@ -123,10 +114,6 @@ procedure TFHtmFileExp1.HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
 var
   PicCreated: Boolean;
   FN, nURL: string;
- {$IFNDEF IP_LAZARUS}
-  Ext: string;
-  BitMap: Graphics.TBitMap;
- {$ENDIF}
 begin
   PicCreated := False;
   try
@@ -139,15 +126,10 @@ begin
     FN := Concat (FN, nURL);
     if FileExistsUTF8(FN) then begin
       if Picture = nil then begin
-        Picture := TPicture.Create;
-        PicCreated := True;
-      end;
-     {$IFNDEF IP_LAZARUS}
-      Ext := LowerCase (Copy (ExtractFileExt (FN), 2, MaxInt));
-      if  (Ext = 'bmp') or (Ext = 'emf') or (Ext = 'wmf') or (Ext = 'gif') or (Ext = 'jpg')  then  begin
-     {$ENDIF}
+          Picture := TPicture.Create;
+          PicCreated := True;
+        end;
         Picture.LoadFromFile(FN);
-     {$IFNDEF IP_LAZARUS}
       end
       else  begin
         PicCreated := False;
