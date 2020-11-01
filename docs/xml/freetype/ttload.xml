@@ -88,9 +88,9 @@
       <element name="Load_TrueType_Header">
         <short>Load the TrueType header table in the resident table</short>
         <descr>
-          <remarkl>
-            Please note: A font header is a static table that owns no subttable. It has then no constructor nor destructor.
-          </remarkl>
+          <remark>
+            Please note: A font header is a static table that owns no subttable. It has neither a constructor nor a destructor.
+          </remark>
         </descr>
         <seealso/>
       </element>

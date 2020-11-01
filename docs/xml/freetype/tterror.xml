@@ -32,7 +32,6 @@
       <!-- unresolved external references -->
       <element name="TTTypes"/>
 
-      <!-- procedure Visibility: default -->
       <element name="Check_Error">
         <short/>
         <descr/>

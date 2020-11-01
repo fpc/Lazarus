@@ -68,28 +68,28 @@
       </element>
 
       <element name="TT_FWord">
-        <short/>
+        <short>Distance in FUnits</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_UFWord">
-        <short/>
+        <short>Unsigned Distance</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_F2Dot14">
-        <short/>
+        <short>Alias for the Integer type</short>
         <descr>
           <p>
             Signed fixed float 2.14 used for unary vectors, with layout:
           </p>
           <table>
             <th>
-              <tr>Name</tr>
-              <tr>Bits</tr>
-              <tr>Description</tr>
+              <td>Name</td>
+              <td>Bits</td>
+              <td>Description</td>
             </th>
             <tr>
               <td>s</td>
@@ -115,7 +115,7 @@
       </element>
 
       <element name="TT_F26Dot6">
-        <short/>
+        <short>Alias for the LongInt type</short>
         <descr>
           <p>
             26.6 fixed float, used for pixel coordinates.
@@ -125,7 +125,7 @@
       </element>
 
       <element name="TT_Pos">
-        <short/>
+        <short>Alias for the LongInt type</short>
         <descr>
           <p>
             FUnits or 26.6 fixed float value, depending on context.
@@ -256,6 +256,42 @@
         <seealso/>
       </element>
 
+      <element name="TT_KerningInfo">
+        <short>Kerning information between two glyphs</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_KerningInfo.kerning_x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_KerningInfo.kerning_y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_KerningInfo.minimum_x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_KerningInfo.minimum_y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_KerningInfo.found">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TT_Error">
         <short/>
         <descr>
@@ -315,7 +351,7 @@
       </element>
 
       <element name="TT_Outline">
-        <short/>
+        <short>Glyph outline description</short>
         <descr/>
         <seealso/>
       </element>
@@ -333,25 +369,25 @@
       </element>
 
       <element name="TT_Outline.points">
-        <short/>
+        <short>Array of point coordinates</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Outline.flags">
-        <short/>
+        <short>Array of point flags</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Outline.conEnds">
-        <short/>
+        <short>Array of contours ends</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Outline.owner">
-        <short/>
+        <short>Flag set when the outline owns the arrays it uses</short>
         <descr/>
         <seealso/>
       </element>
@@ -375,7 +411,7 @@
       </element>
 
       <element name="TT_Glyph_Metrics">
-        <short/>
+        <short>Glyph metrics structure</short>
         <descr>
           <p>
             Glyph metrics structure.
@@ -409,7 +445,7 @@
       </element>
 
       <element name="TT_Big_Glyph_Metrics">
-        <short/>
+        <short>Big glyph metrics structure</short>
         <descr>
           <p>
             Big glyph metrics structure.
@@ -483,7 +519,7 @@
       </element>
 
       <element name="TT_Instance_Metrics">
-        <short/>
+        <short>Instance metrics structure</short>
         <descr>
           <p>
             Instance metrics used to return information to a client with the state for the instance.
@@ -547,7 +583,7 @@
       </element>
 
       <element name="TT_Raster_Map">
-        <short/>
+        <short>Describes a bitmap or pixmap to the rasterizer</short>
         <descr>
           <p>
             A record used to describe a bitmap or pixmap to the rasterizer.
@@ -557,43 +593,43 @@
       </element>
 
       <element name="TT_Raster_Map.Rows">
-        <short/>
+        <short>Number of rows for the bitmap</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Raster_Map.Cols">
-        <short/>
+        <short>Numer of columns (bytes) per Row</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Raster_Map.Width">
-        <short/>
+        <short>Number of pixels per Row</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Raster_Map.Flow">
-        <short/>
+        <short>Flow direction for the bitmap / pixmap</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Raster_Map.Buffer">
-        <short/>
+        <short>Data for the bitmap / pixmap</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Raster_Map.Size">
-        <short/>
+        <short>Size in bytes for the Data in the bitmap / pixmap</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Header">
-        <short/>
+        <short>TrueType font header table structure</short>
         <descr>
           <p>
             The TrueType font header table structure.
@@ -705,7 +741,7 @@
       </element>
 
       <element name="TT_Horizontal_Header">
-        <short/>
+        <short>TrueType horizontal header table structure</short>
         <descr>
           <p>
             The TrueType horizontal header table structure.
@@ -793,19 +829,19 @@
       </element>
 
       <element name="TT_Horizontal_Header.short_metrics">
-        <short/>
+        <short>Not part of the header in the file</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Horizontal_Header.long_metrics">
-        <short/>
+        <short>Not part of the header in the file</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Vertical_Header">
-        <short/>
+        <short>TrueType vertical header table structure</short>
         <descr>
           <p>
             The TrueType vertical header table structure.
@@ -893,19 +929,19 @@
       </element>
 
       <element name="TT_Vertical_Header.short_metrics">
-        <short/>
+        <short>Not part of the header in the file</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Vertical_Header.long_metrics">
-        <short/>
+        <short>Not part of the header in the file</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_OS2">
-        <short/>
+        <short>TrueType OS/2 table structure</short>
         <descr>
           <p>
             The TrueType OS/2 table structure.
@@ -1017,25 +1053,25 @@
       </element>
 
       <element name="TT_OS2.ulUnicodeRange1">
-        <short/>
+        <short>Bits 0 - 31</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_OS2.ulUnicodeRange2">
-        <short/>
+        <short>Bits 32 - 63</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_OS2.ulUnicodeRange3">
-        <short/>
+        <short>Bits 64 - 95</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_OS2.ulUnicodeRange4">
-        <short/>
+        <short>Bits 96 - 127</short>
         <descr/>
         <seealso/>
       </element>
@@ -1095,22 +1131,56 @@
       </element>
 
       <element name="TT_OS2.ulCodePageRange1">
-        <short/>
+        <short>In Version 1 tables only</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_OS2.ulCodePageRange2">
-        <short/>
+        <short>In Version 1 tables only</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_OS2.sxHeight">
+        <short>In Version 2 tables only</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_OS2.sCapHeight">
+        <short>In Version 2 tables only</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_OS2.usDefaultChar">
+        <short>In Version 2 tables only</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_OS2.usBreakChar">
+        <short>In Version 2 tables only</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TT_OS2.usMaxContext">
+        <short>In Version 2 tables only</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TT_Postscript">
-        <short/>
+        <short>TrueType Postscript table structure</short>
         <descr>
           <p>
             The TrueType Postscript table structure.
+          </p>
+          <p>
+            Type 1 is the single-byte font and can support hinting.
+            Type 42 is the PostScript wrapper for a TrueType font which relies on a rasterizer.
           </p>
         </descr>
         <seealso/>
@@ -1171,10 +1241,10 @@
       </element>
 
       <element name="TT_Face_Properties">
-        <short/>
+        <short>TrueType font face properties</short>
         <descr>
           <p>
-            Used to report important face properties to clients.
+            Used to report important properties for a font face to clients.
           </p>
         </descr>
         <seealso/>
@@ -1235,7 +1305,7 @@
       </element>
 
       <element name="TT_Stream">
-        <short/>
+        <short>Object handle type for a Stream</short>
         <descr/>
         <seealso/>
       </element>
@@ -1247,7 +1317,7 @@
       </element>
 
       <element name="TT_Face">
-        <short/>
+        <short>Object handle type for a Face</short>
         <descr/>
         <seealso/>
       </element>
@@ -1271,7 +1341,7 @@
       </element>
 
       <element name="TT_Glyph">
-        <short/>
+        <short>Object handle type for a Glyph</short>
         <descr/>
         <seealso/>
       </element>
@@ -1283,7 +1353,7 @@
       </element>
 
       <element name="TT_CharMap">
-        <short/>
+        <short>Object handle type for a Character Map</short>
         <descr/>
         <seealso/>
       </element>
@@ -1307,7 +1377,7 @@
       </element>
 
       <element name="TT_Err_Ok">
-        <short/>
+        <short>Success is always 0</short>
         <descr/>
         <seealso/>
       </element>
@@ -1706,7 +1776,7 @@
         <short/>
         <descr>
           <p>
-            Renders one gray-level glyph in the target pixmap. Palette points to an array of 5 colors used for the rendering. Use Nil to reuse the last palette. Default is VGA graylevels.
+            Renders a Glyph to a bitmap.
           </p>
         </descr>
         <seealso/>
@@ -1714,7 +1784,9 @@
 
       <element name="TFreeTypeCustomRasterizer.Render_Glyph">
         <short/>
-        <descr/>
+        <descr>
+          Renders one glyph in the target bitmap (1-bit per pixel).
+        </descr>
         <seealso/>
       </element>
 
@@ -1732,7 +1804,11 @@
 
       <element name="TFreeTypeCustomRasterizer.Render_Gray_Glyph">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            Renders one gray-level glyph in the target pixmap. Palette points to an array of 5 colors used for the rendering. Use Nil to reuse the last palette. Default is VGA graylevels.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -1878,7 +1954,11 @@
 
       <element name="Int">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            The <var>Int</var> type is used for loop counters and indexes. Its size must be the one handled for a given platform or operating system. For 32-bit platforms, it is an alias for the <var>LongInt</var> type. For all other platforms, it is an alias to the <var>Integer</var> type.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -1943,7 +2023,7 @@
       </element>
 
       <element name="TCoordinates">
-        <short/>
+        <short>Internal type for coordinates in the FreeType library</short>
         <descr/>
         <seealso/>
       </element>
@@ -1961,9 +2041,11 @@
       </element>
 
       <element name="TVecRecord">
-        <short></short>
+        <short>Describes point zones in the interpreter </short>
         <descr>
-          This type is used to describe each point zone in the TrueType interpreter.
+        <p>
+            This type is used to describe each point zone in the TrueType interpreter.
+        </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1987,13 +2069,13 @@
       </element>
 
       <element name="Success">
-        <short/>
+        <short>Success value is always False (no error)</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="Failure">
-        <short/>
+        <short>Failure value is always True (error has occurred)</short>
         <descr/>
         <seealso/>
       </element>

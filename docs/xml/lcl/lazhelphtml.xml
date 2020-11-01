@@ -16,12 +16,14 @@
         </p>
       </descr>
 
-      <!-- unresolved type references Visibility: default -->
+      <!-- unresolved external references -->
+      <element name="Windows"/>
+      <element name="ShellApi"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="LazFileUtils"/>
       <element name="UTF8Process"/>
-      <element name="LazUTF8"/>
+      <element name="LazStringUtils"/>
       <element name="LazConfigStorage"/>
       <element name="LCLProc"/>
       <element name="LCLIntf"/>

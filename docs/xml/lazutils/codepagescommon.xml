@@ -14,117 +14,191 @@
 
       <element name="ArrayISO_8859_1ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayISO_8859_15ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayISO_8859_2ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1250ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1251ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1252ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1253ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1254ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1255ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1256ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1257ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP1258ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP437ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP850ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP852ToUTF8">
         <short/>
         <descr>
-          ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT">
+            Code Page 852 DOS-Latin-2 to Unicode Conversion Table
+          </url>
         </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP866ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayCP874ToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayKOI8RToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 
       <element name="ArrayKOI8UToUTF8">
         <short/>
-        <descr/>
+        <descr>
+          <url href="ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT">
+            ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
+          </url>
+        </descr>
         <seealso/>
       </element>
 

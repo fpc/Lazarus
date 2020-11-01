@@ -2553,8 +2553,10 @@
             An exception may also be raised for the following conditions:
           </p>
           <ul>
-            <li>PrinterIndex is set to a value &amp;= 0 and the list of Printers is empty.</li>
-            <li>PrinterIndex is set to a value larger than the number of values in Printers.</li>
+            <li>
+              PrinterIndex is set to a value greater than or equal to 0 and the list of Printers is empty.
+            </li>
+            <li>PrinterIndex is set to a value larger than the number of entries in Printers.</li>
           </ul>
           <p>
             The <var>SetPrinter</var> method is called to make the named device the selected print device. <var>DoResetFontsList</var> is called to reload the values in the <var>Fonts</var> property.
@@ -2563,9 +2565,11 @@
         <errors>
           <dl>
             <dt>EPrinter</dt>
-            <dd>Raised with the message 'Printer is printing'.</dd>
-            <dd>Raised with the message 'No printers defined!'.</dd>
-            <dd>Raised with the message 'Printer index out of range!'.</dd>
+            <dd>
+              Raised with the message 'Printer is printing'.
+              Raised with the message 'No printers defined!'.
+              Raised with the message 'Printer index out of range!'.
+            </dd>
           </dl>
         </errors>
         <seealso>
