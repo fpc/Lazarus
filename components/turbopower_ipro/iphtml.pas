@@ -105,7 +105,6 @@ type
 
   TIpAbstractHtmlDataProvider = class;
 
-  {.$DEFINE CSS_CASESENSITIVE_CLASSID}
   {$DEFINE CSS_INTERFACE}
 {$I ipcss.inc}
   {$UNDEF CSS_INTERFACE}
@@ -2740,16 +2739,12 @@ type
     property Align;
     property ALinkColor;
     property AllowTextSelect;
-    {$IFDEF VERSION4}
     property Anchors;
-    {$ENDIF}
     property BgColor;
     property BorderSpacing;
     property BorderWidth;
     property BorderStyle;
-    {$IFDEF VERSION4}
     property Constraints;
-    {$ENDIF}
     property DataProvider;
     property Enabled;
     property FixedTypeface;
@@ -2773,12 +2768,8 @@ type
     property VLinkColor;
     property WantTabs;
     property OnClick;
-    {$IFDEF VERSION4}
     property OnConstrainedResize;
-    {$ENDIF}
-    {$IFDEF VERSION5}
     property OnContextPopup;
-    {$ENDIF}
     property OnControlClick;
     property OnControlClick2;
     property OnControlChange;
@@ -3110,7 +3101,6 @@ begin
   RegisterComponents('IPro', [TIpHtmlPanel]);
 end;
 
-{$IFNDEF VERSION3ONLY}
 type
   THtmlRadioButton = class(TRadioButton)
   protected
@@ -3168,8 +3158,6 @@ begin
   end;
 end;
 *)
-
-{$ENDIF}
 
 function GetAlignmentForStr(str: string;
          pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
@@ -3938,7 +3926,6 @@ begin
   FMax := -1;
 end;
 
-
 { TIpHtmlNode }
 
 function TIpHtmlNode.GetHint: string;
@@ -4186,7 +4173,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
 
   function GetPropType : PTypeInfo;
   begin
-    Result := PI.PropType{$IFDEF VERSION3}^{$ENDIF};
+    Result := PI.PropType;
   end;
 
   function GetIntegerProperty : string;
@@ -4224,11 +4211,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
 
   function GetVariantProperty : string;
   begin
-    {$IFDEF FPC}
     Result := AnsiString(GetVariantProp(AObject, PI));
-    {$ELSE}
-    Result := GetVariantProp(AObject, PI);
-    {$ENDIF}
   end;
 
   function GetStringProperty : string;
@@ -4281,7 +4264,7 @@ procedure SetPropertyValueLow(PI: PPropInfo;
 
   function GetPropType : PTypeInfo;
   begin
-    Result := PI.PropType{$IFDEF VERSION3}^{$ENDIF};
+    Result := PI.PropType;
   end;
 
   procedure SetIntegerProperty;
@@ -4296,9 +4279,7 @@ procedure SetPropertyValueLow(PI: PPropInfo;
 
   procedure SetEnumProperty;
   begin
-    {$IFDEF VERSION5}
     SetEnumProp(AObject, PI, NewValue);
-    {$ENDIF}
   end;
 
   procedure SetFloatProperty;
@@ -4316,9 +4297,7 @@ procedure SetPropertyValueLow(PI: PPropInfo;
 
   procedure SetSetProperty;
   begin
-    {$IFDEF VERSION5}
     SetSetProp(AObject, PI, NewValue);
-    {$ENDIF}
   end;
 
 begin
@@ -11616,11 +11595,7 @@ begin
     end;
   hitRadio :
     begin
-{$IFDEF VERSION3ONLY}
-      with FControl do
-{$ELSE}
       with THtmlRadioButton(FControl) do
-{$ENDIF}
         Checked := Self.Checked;
     end;
   end;
@@ -11708,18 +11683,10 @@ begin
     end;
   hitRadio :
     begin
-{$IFDEF VERSION3ONLY}
-      FControl := TRadioButton.Create(Parent);
-{$ELSE}
       FControl := THtmlRadioButton.Create(Parent);
-{$ENDIF}
       FControl.Tag := PtrInt(OwnerForm);
       setCommonProperties;
-{$IFDEF VERSION3ONLY}
-      with TRadioButton(FControl) do begin
-{$ELSE}
       with THtmlRadioButton(FControl) do begin
-{$ENDIF}
         Color := Brush.Color;
         SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
@@ -11841,7 +11808,7 @@ begin
 }
   inherited;
   if (Props.BgColor <> clNone) and (
-    (FControl is {$IFDEF VERSION3ONLY}TRadioButton{$ELSE}THtmlRadioButton{$ENDIF}) or
+    (FControl is THtmlRadioButton) or
     (FControl is TCustomEdit)) then
     FControl.Color := Props.BgColor;
 end;
@@ -11899,11 +11866,7 @@ begin
     hitCheckbox :
       Result := TCheckBox(FControl).Checked;
     hitRadio :
-{$IFDEF VERSION3ONLY}
-      Result := TRadioButton(FControl).Checked;
-{$ELSE}
       Result := THtmlRadioButton(FControl).Checked;
-{$ENDIF}
     hitFile :
       Result := FFileEdit.Text <> '';
     hitHidden :
@@ -11935,11 +11898,7 @@ begin
   hitCheckbox :
     Checked := TCheckBox(FControl).Checked;
   hitRadio :
-{$IFDEF VERSION3ONLY}
-    Checked := TRadioButton(FControl).Checked;
-{$ELSE}
     Checked := THtmlRadioButton(FControl).Checked;
-{$ENDIF}
   end;
 end;
 

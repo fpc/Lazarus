@@ -157,7 +157,7 @@ type
       constructor CreateEmpty;
       destructor  Destroy; override;
 
-      procedure Flush;                                                 {!!.12}
+      procedure Flush;
         { Flush any unwritten changes to the stream. }
       procedure FreeStream;
       function ReadChar(var aCh : AnsiChar) : Boolean;
@@ -211,7 +211,7 @@ type
       destructor Destroy; override;
 
       function  AtEndOfStream : Boolean;
-      procedure bsInitForNewStream; override;                        {!!.01}
+      procedure bsInitForNewStream; override;
       function  ReadLine : string;
       function  ReadLineArray(aCharArray : PAnsiChar; aLen : Longint) : Longint;
       function  ReadLineZ(aSt : PAnsiChar; aMaxLen : Longint) : PAnsiChar;
@@ -725,7 +725,6 @@ begin
     raise EIpBaseException.Create(SCannotWriteToStream);
   FDirty := false;
 end;
-{Begin !!.12}
 
 {-----------------------------------------------------------------------------}
 
@@ -734,7 +733,6 @@ begin
   if FDirty then
     bsWriteToStream;
 end;
-{End !!.12}
 
 {-----------------------------------------------------------------------------}
 
@@ -1482,7 +1480,6 @@ end;
 {-----------------------------------------------------------------------------}
 
 procedure TIpAnsiTextStream.WriteLine(const aSt : string);
-{Rewritten !!.15}
 begin
   if Length(aSt) > 0 then
     WriteLineArray(@aSt[1], length(aSt))
@@ -1555,11 +1552,7 @@ begin
 
   FHandle := THandle(FileOpen(FFileName, fmShareDenyNone + fmOpenReadWrite));
   if (Handle = IpFileOpenFailed) then
-{$IFDEF Version6OrHigher}
-    RaiseLastOSError; 
-{$ELSE}
-    RaiseLastWin32Error;
-{$ENDIF}
+    RaiseLastOSError;
 end;
 
 destructor TIpDownloadFileStream.Destroy;
@@ -1585,7 +1578,7 @@ begin
     raise EIpBaseException.Create(SBadPath);
 
   { Create a new uniquely named file in that folder. }
-  FFileName := GetTemporaryFile(FPath);                                {!!.12}
+  FFileName := GetTemporaryFile(FPath);
 end;
 
 function TIpDownloadFileStream.Read(var Buffer; Count : Longint) : Longint;
@@ -1618,14 +1611,8 @@ begin
   {calculate the full new name}
   NewFullName := FPath + '\' + aNewName;
   {rename the file}
-{$IFDEF Version6OrHigher}
-  {$IFNDEF IP_LAZARUS} //TODO need review
-  if not MoveFile(PAnsiChar(FFileName), PAnsiChar(NewFullName)) then
+  if not RenameFile(FFileName, NewFullName) then
     RaiseLastOSError;
-  {$ENDIF}
-{$ELSE}
-  Win32Check(MoveFile(PAnsiChar(FFileName), PAnsiChar(NewFullName)));
-{$ENDIF}
   {open up the same file, but with its new name}
   FFileName := NewFullName;
   try
@@ -1635,11 +1622,7 @@ begin
   end;
 
   if (Handle = IpFileOpenFailed) then
-{$IFDEF Version6OrHigher}
     RaiseLastOSError;
-{$ELSE}
-    RaiseLastWin32Error;
-{$ENDIF}
 
   FRenamed  := true;
 end;
@@ -1650,16 +1633,9 @@ begin
   {close the current handle}
   //CloseHandle(Handle);
   FHandle := IpFileOpenFailed;
-  {copy the file}                                                      {!!.01}
-{$IFDEF Version6OrHigher}
-  {$IFNDEF IP_LAZARUS} //TODO Need review
-  if not CopyFile(PAnsiChar(FFileName), PAnsiChar(aNewName), False) then
+  {copy the file}
+  if not RenameFile(FFileName, aNewName) then
     RaiseLastOSError;
-  {$ENDIF}
-{$ELSE}
-  Win32Check(CopyFile(PAnsiChar(FFileName),                            {!!.01}
-    PAnsiChar(aNewName), False));                                      {!!.01}
-{$ENDIF}
 
   {open up the same file, but with its new name}
   FFileName := aNewName;
@@ -1670,11 +1646,7 @@ begin
   end;
 
   if (Handle = IpFileOpenFailed) then
-{$IFDEF Version6OrHigher}
     RaiseLastOSError;
-{$ELSE}
-    RaiseLastWin32Error;
-{$ENDIF}
 
   FRenamed  := true;
 end;

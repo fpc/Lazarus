@@ -29,7 +29,7 @@ type
   TIpDefContentInfo = record
     Typ : string;                { content type, e.g. 'application' }
     Sub : string;                { content subtype, e.g. 'octet-stream' }
-    Enc : TIpMimeEncodingMethod; { encoding method, e.g. 'base64' }     {!!.02}
+    Enc : TIpMimeEncodingMethod; { encoding method, e.g. 'base64' }
   end;
 
 const

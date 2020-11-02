@@ -58,8 +58,6 @@ type
 type
   TIpCodingProgressEvent = procedure(Sender : TObject; Progress : Byte;
                                      var Abort : Boolean) of object;
-
-{Begin !!.12}
 type
   TIpHeaderTypes = (htBCC, htCC, htControl, htDate, htDispositionNotify,
                     htFollowUp, htFrom, htInReplyTo, htKeywords,
@@ -111,7 +109,7 @@ type
       FName        : string;
       FNameL       : string;
         { Lower case version of FName. Used to speed up header searches. }
-      FProperty    : Boolean;                                          {!!.13}
+      FProperty    : Boolean;
       FValue       : TStringList;
     protected
       procedure SetName(const Name : string);
@@ -125,8 +123,8 @@ type
       property Name : string read FName write SetName;
       property NameL : string read FNameL;
         { Lower case version of Name property. }
-      property IsProperty : Boolean read FProperty write FProperty;    {!!.13}
-        { Set to True if this header is exposed via an iPRO property. }{!!.13}
+      property IsProperty : Boolean read FProperty write FProperty;
+        { Set to True if this header is exposed via an iPRO property. }
       property Value : TStringList read FValue write SetValue;
   end;
 
@@ -140,11 +138,8 @@ type
       procedure SetItem (Index : Integer; Value : TIpHeaderItem);        
 
     public                                                               
-      constructor Create (AOwner : TPersistent);                         
+      constructor Create (AOwner : TPersistent);
 
-      {$IFNDEF VERSION5}                                                 
-      procedure Delete (Item : integer);                                 
-      {$ENDIF}
       function HasHeader (AName : string) : Integer;
       procedure HeaderByName (AName   : string;
                               Headers : TStringList);
@@ -154,7 +149,6 @@ type
       property Items[Index : Integer] : TIpHeaderItem                    
                read GetItem write SetItem;                               
   end;                                                                   
-{End !!.12}
 
   TIpMimeParts = class; { Forwards }
 
@@ -184,16 +178,16 @@ type
     FOriginalSize            : Longint;
     FParent                  : TIpMimeEntity;
     FReadDate                : string;
-    FRelatedType             : string;                                 {!!.02}
-    FRelatedSubtype          : string;                                 {!!.02}
-    FRelatedStart            : string;                                 {!!.02}
-    FRelatedStartInfo        : string;                                 {!!.02}
-    FAttachmentCount         : Integer;                                {!!.12}
+    FRelatedType             : string;
+    FRelatedSubtype          : string;
+    FRelatedStart            : string;
+    FRelatedStartInfo        : string;
+    FAttachmentCount         : Integer;
 
   protected {methods}
     procedure Clear; virtual;
-    procedure ClearBodyLargeAttach(const AttachmentSize : Longint); virtual;  {!!.12}
-    function  ContainsSpecialChars(const Value : string) : Boolean;    {!!.14}
+    procedure ClearBodyLargeAttach(const AttachmentSize : Longint); virtual;
+    function  ContainsSpecialChars(const Value : string) : Boolean;
     procedure DecodeContentDisposition(const aDisp : string);
     procedure DecodeContentType(const aType : string);
     function  DecodeContentTransferEncoding(const aEncoding : string) :
@@ -217,9 +211,9 @@ type
     procedure EncodeQuoted(InStream : TStream);
     procedure EncodeUUEncode(InStream : TStream; const aFileName : string);
     function DecodeEntity(InStream : TIpAnsiTextStream) : string;
-    function DecodeEntityAsAttachment(InStream : TIpAnsiTextStream) : string;  {!!.01}
+    function DecodeEntityAsAttachment(InStream : TIpAnsiTextStream) : string;
     function EncodeEntity(OutStream : TIpAnsiTextStream) : string;
-    procedure ReadBody(InStream : TIpAnsiTextStream; const StartLine : string); {!!.12}
+    procedure ReadBody(InStream : TIpAnsiTextStream; const StartLine : string);
 
   protected {properties}
     property OnCodingProgress : TIpCodingProgressEvent
@@ -235,12 +229,12 @@ type
     procedure ExtractBodyFile(const OutFile : string);
     procedure ExtractBodyStream(OutStream : TStream);
     procedure ExtractBodyStrings(OutStrings : TStrings);
-    function FindNestedMimePart(const aType, aSubType, aContentID : string) : TIpMimeEntity; {!!.02}
+    function FindNestedMimePart(const aType, aSubType, aContentID : string) : TIpMimeEntity;
     function  GetMimePart(const aType, aSubType, aContentID : string;
                               CanCreate : Boolean) : TIpMimeEntity;
     function  NewMimePart : TIpMimeEntity;
 
-    property AttachmentCount : Integer read FAttachmentCount;          {!!.12}
+    property AttachmentCount : Integer read FAttachmentCount;
 
   public {properties}
     property Body : TIpAnsiTextStream
@@ -303,16 +297,16 @@ type
     property ReadDate : string
       read FReadDate write FReadDate;
 
-    property RelatedStart : string                                   {!!.02}
+    property RelatedStart : string
       read FRelatedStart write FRelatedStart;
 
-    property RelatedStartInfo : string                               {!!.02}
+    property RelatedStartInfo : string
       read FRelatedStartInfo write FRelatedStartInfo;
 
-    property RelatedSubtype : string                                 {!!.02}
+    property RelatedSubtype : string
       read FRelatedSubtype write FRelatedSubtype;
 
-    property RelatedType : string                                    {!!.02}
+    property RelatedType : string
       read FRelatedType write FRelatedType;
 
   end;
@@ -353,8 +347,8 @@ type
     FFrom            : string;
     FInReplyTo       : string;
     FKeywords        : string;
-    FFollowupTo      : string;                                           {!!.12}
-    FControl         : string;                                           {!!.12}
+    FFollowupTo      : string;
+    FControl         : string;
     FMessageID       : string;
     FMessageTag      : Integer;
     FNewsgroups      : TStringList;
@@ -370,13 +364,13 @@ type
     FSender          : string;
     FSubject         : string;
     FUserFields      : TStringList;
-    FHeaders         : TIpHeaderCollection;                              {!!.12}
+    FHeaders         : TIpHeaderCollection;
     FDispositionNotify: string;
 
   protected {methods}
-    procedure CheckAllHeaders;                                           {!!.12}
-    procedure CheckHeaderType (HeaderInfo : TIpHeaderItem;               {!!.12}
-                               HeaderType : TIpHeaderTypes);             {!!.12}
+    procedure CheckAllHeaders;
+    procedure CheckHeaderType (HeaderInfo : TIpHeaderItem;
+                               HeaderType : TIpHeaderTypes);
     procedure Clear; override;
     procedure NewMessageStream;
     function  GetPosition : Longint;
@@ -395,9 +389,9 @@ type
     constructor CreateMessage; virtual;
     destructor  Destroy; override;
 
-    procedure AddDefaultAttachment(const aFileName : string);          {!!.02}
-    procedure AddDefaultAttachmentAs (const aFileName      : string;   {!!.12}
-                                      const AttachmentName : string);  {!!.12}
+    procedure AddDefaultAttachment(const aFileName : string);
+    procedure AddDefaultAttachmentAs (const aFileName      : string;
+                                      const AttachmentName : string);
     procedure Assign(Source : TPersistent); override;
     function  AtEndOfStream : Boolean;
     procedure DecodeMessage; virtual;
@@ -405,39 +399,39 @@ type
     function  GetBodyHtml(CanCreate : Boolean) : TIpMimeEntity;
     function  GetBodyPlain(CanCreate : Boolean) : TIpMimeEntity;
     procedure LoadFromFile(const aFileName : string);
-    procedure LoadFromStream(aStream : TStream);                       {!!.12}
+    procedure LoadFromStream(aStream : TStream);
     procedure NewMessage;
     function  ReadLine : string;
     function  ReadLineCRLF : string;
     procedure SaveToFile(const aFileName : string);
-    procedure SaveToStream(Stream: TStream);                           {!!.12}
-    procedure SetHeaders(Headers : TIpHeaderCollection);               {!!.12}
+    procedure SaveToStream(Stream: TStream);
+    procedure SetHeaders(Headers : TIpHeaderCollection);
     procedure WriteLine(const aSt : string);
 
   public {properties}
     property BCC : TStringList
-      read FBCC write SetBCC;                                          {!!.01}
+      read FBCC write SetBCC;
 
     property CC : TStringList
-      read FCC write SetCC;                                            {!!.01}
+      read FCC write SetCC;
 
-    property Control : string                                          {!!.12}
-      read FControl write FControl;                                    {!!.12}
+    property Control : string
+      read FControl write FControl;
 
     property Date : string
       read FDate write FDate;
 
-    property DispositionNotification : string                          {!!.12}
-      read FDispositionNotify write FDispositionNotify;                {!!.12}
+    property DispositionNotification : string
+      read FDispositionNotify write FDispositionNotify;
 
-    property FollowupTo : String                                       {!!.12}
-      read FFollowupTo Write FFollowupTo;                              {!!.12}
+    property FollowupTo : String
+      read FFollowupTo Write FFollowupTo;
 
     property From : string
       read FFrom write FFrom;
 
-    property Headers : TIpHeaderCollection                             {!!.12}
-             read FHeaders write SetHeaders;                           {!!.12}
+    property Headers : TIpHeaderCollection
+             read FHeaders write SetHeaders;
 
     property InReplyTo : string
       read FInReplyTo write FInReplyTo;
@@ -448,14 +442,14 @@ type
     property MessageID : string
       read FMessageID write FMessageID;
 
-    property MessageStream : TIpAnsiTextStream                         {!!.03}
-      read MsgStream;                                                  {!!.03}
+    property MessageStream : TIpAnsiTextStream
+      read MsgStream;
 
     property MessageTag : Integer
       read FMessageTag write FMessageTag;
 
     property Newsgroups : TStringList
-      read FNewsgroups write SetNewsgroups;                            {!!.01}
+      read FNewsgroups write SetNewsgroups;
 
     property NNTPPostingHost : string
       read FNNTPPostingHost write FNNTPPostingHost;
@@ -464,7 +458,7 @@ type
       read FOrganization write FOrganization;
 
     property Path : TStringList
-      read FPath write SetPath;                                        {!!.01}
+      read FPath write SetPath;
 
     property Position : Longint
       read GetPosition write SetPosition;
@@ -473,13 +467,13 @@ type
       read FPostingHost write FPostingHost;
 
     property Received : TStringList
-      read FReceived write SetReceived;                                {!!.01}
+      read FReceived write SetReceived;
 
     property Recipients : TStringList
-      read FRecipients write SetRecipients;                            {!!.01}
+      read FRecipients write SetRecipients;
 
     property References : TStringlist
-      read FReferences write SetReferences;                            {!!.01}
+      read FReferences write SetReferences;
 
     property ReplyTo : string
       read FReplyTo write FReplyTo;
@@ -497,7 +491,7 @@ type
       read FSubject write FSubject;
 
     property UserFields : TStringList
-      read FUserFields write SetUserFields;                            {!!.01}
+      read FUserFields write SetUserFields;
 
   end;
 
@@ -515,7 +509,7 @@ type
     property From;
     property Keywords;
     property MailTo : TStringList
-      read FRecipients write SetRecipients;                            {!!.01}
+      read FRecipients write SetRecipients;
     property OnCodingProgress;
     property References;
     property ReplyTo;
@@ -561,9 +555,8 @@ type
     procedure SaveToStream(aStream : TStream);
   end;
 
-function IpBase64EncodeString(const InStr: string): string;       {!!.02}{!!.03}
+function IpBase64EncodeString(const InStr: string): string;
 
-{Begin !!.12}
 const
   IpLgAttachSizeBoundry = 5 * 1024 * 1024;
     { Attachments over this size will be encoded using a TIpMemMapStream for
@@ -596,10 +589,9 @@ const
   strTo                = 'To: ';
   strUserFields        = 'X-';
   strXIpro             = 'X-Ipro: ';
-  strFollowUp          = 'Followup-To: ';                               {!!.12}
-  strControl           = 'Control: ';                                   {!!.12}
+  strFollowUp          = 'Followup-To: ';
+  strControl           = 'Control: ';
 
-{Begin !!.13}
   IpMimeHeaders : array [0..5] of string =
     { List of MIME headers that must be marked as public properties in
       the message's Headers collection. Marking them as a public property
@@ -613,7 +605,6 @@ const
       'Content-ID',
       'Content-Disposition'
     );
-{End !!.13}
 
   { MIME headers }
   strMimeVersion             = 'MIME-Version: ';
@@ -647,7 +638,7 @@ const
   strHTML        = 'html';
   strOctetStream = 'octet-stream';
   strAlternative = 'alternative';
-  strRelated     = 'related';                                        {!!.02}
+  strRelated     = 'related';
 
   { MIME content disposition parameters }
   strAttachment       = 'attachment';
@@ -656,10 +647,10 @@ const
   strFilename         = 'filename=';
   strModificationDate = 'modification-date=';
   strReadDate         = 'read-date=';
-  strStart            = 'start=';                                    {!!.02}
-  strStartInfo        = 'start-info=';                               {!!.02}
+  strStart            = 'start=';
+  strStartInfo        = 'start-info=';
   strSize             = 'size=';
-  strType             = 'type=';                                     {!!.02}
+  strType             = 'type=';
 
 
   { MIME encoding methods }
@@ -715,7 +706,7 @@ const { Base64 encoding table }
     #052, #053, #054, #055, #056, #057, #043, #047);
 
 const { Base64 decoding table }
-  IpD64Table : array[#43..#122] of Byte = (                          {!!.12}
+  IpD64Table : array[#43..#122] of Byte = (
     $3E, $7F, $7F, $7F, $3F, $34, $35, $36,
     $37, $38, $39, $3A, $3B, $3C, $3D, $7F,
     $7F, $7F, $7F, $7F, $7F, $7F, $00, $01,
@@ -743,9 +734,9 @@ const
   RLEChar : Byte = $90;
   BinHexFileType : array[0..3] of Byte = ($49, $42, $4D, $3F);  { "IBM?" }
   CRLF = #13#10;
-  MaxLine = 1000;                                                       {!!.12}
-  MaxLineEncode = 77;                                                   {!!.13}
-    { Maximum line length for QuotablePrintable & Base64 encoding. }    {!!.13}
+  MaxLine = 1000;
+  MaxLineEncode = 77;
+    { Maximum line length for QuotablePrintable & Base64 encoding. }
 
 type
   BinHexHeader = packed record
@@ -757,15 +748,15 @@ type
     RFLong   : Longint;
   end;
 
-function IsSameString (Str1          : string;                           {!!.12}
-                       Str2          : string;                           {!!.12}
-                       CaseSensitive : Boolean) : Boolean;               {!!.12}
-begin                                                                    {!!.12}
-  if CaseSensitive then                                                  {!!.12}
-    Result := (Str1 = Str2)                                              {!!.12}
-  else                                                                   {!!.12}
-    Result := StrIComp (PChar (Str1), PChar (Str2)) = 0;                 {!!.12}
-end;                                                                     {!!.12}
+function IsSameString (Str1          : string;
+                       Str2          : string;
+                       CaseSensitive : Boolean) : Boolean;
+begin
+  if CaseSensitive then
+    Result := (Str1 = Str2)
+  else
+    Result := StrIComp (PChar (Str1), PChar (Str2)) = 0;
+end;
 
 { Parse string into string list }
 procedure Parse(const Line : string; Delim : AnsiChar; var List : TStringList);
@@ -776,7 +767,7 @@ begin
   iPos := 1;
   jPos := IpUtils.CharPos(Delim, Line);
   while (jPos > 0) do begin
-    Term := Copy(Line, iPos, jPos - iPos);                           {!!.02}
+    Term := Copy(Line, iPos, jPos - iPos);
     if (Term <> '') then
       List.Add(Trim(Term));
     iPos := jPos + 1;
@@ -880,7 +871,7 @@ begin
   for i := 1 to RawHeaders.Count do begin
     S := RawHeaders[i-1];
     if StrLIComp(PChar(HeaderName), PChar(S), Length(HeaderName)) = 0 then begin
-      if HeaderName <> strUserFields then begin                         {!!.11}
+      if HeaderName <> strUserFields then begin
         {strip off the header field name}
         S := Copy(S, Length(HeaderName) + 1, Length(S));
         {unfold the header if continued on more than one line}
@@ -892,7 +883,7 @@ begin
             else
               S := S + S2;
           end;
-      end;                                                              {!!.11}
+      end;
       HeaderFieldList.Add(S);
     end;
   end;
@@ -925,7 +916,7 @@ begin
       end;
       S := S + HeaderFieldList[i];
       if (i < HeaderFieldList.Count - 1) and (S <> '') then begin
-        S := S + Delim;                                                {!!.14}
+        S := S + Delim;
         if Fold then begin
           RawHeaders.Add(S);
           S := #09;
@@ -958,10 +949,8 @@ begin
           for i := 1 to SL.Count do begin
             S := S + SL[i-1];
             if (i < SL.Count) and (S <> '') then begin
-{Begin !!.13}
               RawHeaders.Add(S);
               S := Delim;
-{End !!.13}
             end;
           end;
         finally
@@ -1040,7 +1029,6 @@ begin
   Result := dw;
 end;
 
-{Begin !!.12}
 { TIpHeaderItem ****************************************************** }
 
 constructor TIpHeaderItem.Create (Collection : TCollection);
@@ -1051,7 +1039,7 @@ begin
 
   FValue := TStringList.Create;
   FName  := '';
-  FProperty := False;                                                  {!!.13}
+  FProperty := False;
 end;                                                                     
 
 destructor TIpHeaderItem.Destroy;                                        
@@ -1083,13 +1071,6 @@ begin
   inherited Create (TIpHeaderItem);                                      
   FOwner := AOwner;                                                      
 end;                                                                     
-
-{$IFNDEF VERSION5}                                                       
-procedure TIpHeaderCollection.Delete(Item: integer);                     
-begin                                                                    
-  GetItem(Item).Free;                                                    
-end;                                                                     
-{$ENDIF}                                                                 
 
 function TIpHeaderCollection.GetItem (Index : Integer) : TIpHeaderItem;  
 begin                                                                    
@@ -1131,7 +1112,7 @@ var
   CurPos : Integer;
 
   function ExtractHeaderName (const AName : string) : string;
-  {!!.15 - replaced local variable i with inx in order to avoid confusion with
+  {replaced local variable i with inx in order to avoid confusion with
     variable i in parent routine. }
   var
     inx     : Integer;
@@ -1183,7 +1164,6 @@ var
       Inc (CurPos);
     WorkLine := Copy (AHeaderList[CurLine],
                       CurPos, LineLen - CurPos + 1);
-{Begin !!.13}
     Inc(CurLine);
 
     while IsWrappedLine (AHeaderList, CurLine) do begin
@@ -1191,7 +1171,6 @@ var
       Inc(CurLine);
     end;
     NewField.Value.Add (Trim (WorkLine));
-{End !!.13}
   end;
 
 var                                                                      
@@ -1209,11 +1188,9 @@ begin
       NewHeader := TIpHeaderItem (Add);                                  
       NewHeader.Name := HeaderName;                                      
       GetFieldValue (AHeaderList, i, NewHeader);
-{Begin !!.15}
     end
     else
       Inc(i);
-{End !!.15}
   end;
 end;                                                                     
 
@@ -1222,7 +1199,6 @@ procedure TIpHeaderCollection.SetItem (Index : Integer;
 begin                                                                    
   inherited SetItem (Index, Value);                                      
 end;
-{End !!.12}
 
 { TIpMimeParts }
 constructor TIpMimeParts.Create;
@@ -1318,7 +1294,6 @@ begin
   FBody.Stream := TMemoryStream.Create;
 end;
 
-{Begin !!.12}
 { Clear Body property in preparation for large attachment }
 procedure TIpMimeEntity.ClearBodyLargeAttach(const AttachmentSize : Longint);
 var
@@ -1334,7 +1309,6 @@ begin
   Strm.Open;
   FBody.Stream := Strm;
 end;
-{End !!.12}
 
 { Clear all properties }
 procedure TIpMimeEntity.Clear;
@@ -1354,10 +1328,10 @@ begin
   FIsMultipart := False;
   FMimeVersion := '';
   FEntityName := '';
-  FRelatedType := '';                                                {!!.02}
-  FRelatedSubtype := '';                                             {!!.02}
-  FRelatedStart := '';                                               {!!.02}
-  FRelatedStartInfo := '';                                           {!!.02}
+  FRelatedType := '';
+  FRelatedSubtype := '';
+  FRelatedStart := '';
+  FRelatedStartInfo := '';
 end;
 
 { Build Mime (and nested Mime) block(s) from incoming text stream }
@@ -1365,12 +1339,12 @@ function TIpMimeEntity.DecodeEntity(InStream : TIpAnsiTextStream) : string;
 var
   Blk : TIpMimeEntity;
   RawHeaders : TStringList;
-  Decoded : Boolean;                                                   {!!.12}
-  i,                                                                   {!!.13}
-  LeadingBlankLines : Integer;                                         {!!.13}
+  Decoded : Boolean;
+  i,
+  LeadingBlankLines : Integer;
 begin
-  Decoded := False;                                                    {!!.12}
-  LeadingBlankLines := 0;                                              {!!.13}
+  Decoded := False;
+  LeadingBlankLines := 0;
   { skip blank lines in front of mime headers or body }
   Result := InStream.ReadLine;
   while (Result = '') and not InStream.AtEndOfStream do begin
@@ -1379,11 +1353,9 @@ begin
   end;
 
   { decode mime headers if any }
-{Begin !!.15}
   if (StrLIComp(PChar(strContent), PChar(Result), Length(strContent)) = 0) or
      (StrLIComp(PChar(strMimeVersion), PChar(Result),
                 Length(strMimeVersion)) = 0) then begin
-{End !!.15}
     RawHeaders := TStringList.Create;
     try
       repeat
@@ -1401,17 +1373,15 @@ begin
   end;
 
   { decode body - main loop }
-{Begin !!.15}
   if (FParentBoundary <> '') and
      (Result = '--' + FParentBoundary) then
     { The body of this entity is empty & we are now positioned at the boundary
       marker for the next entity. }
     Decoded := True
   else
-{End !!.15}
-  while not (((FParentBoundary <> '') and                              {!!.12}
-              (Result = '--' + FParentBoundary)                        {!!.12}
-             ) or InStream.AtEndOfStream) do begin                     {!!.12}
+  while not (((FParentBoundary <> '') and
+              (Result = '--' + FParentBoundary)
+             ) or InStream.AtEndOfStream) do begin
     Decoded := True;
     { check for ending boundary - in which case were done }
     if (FParentBoundary <> '') then
@@ -1421,22 +1391,21 @@ begin
       end;
 
     { decode any nested mime parts - recursively }
-    if IsMultiPart and (Boundary <> '') and                            {!!.03}
+    if IsMultiPart and (Boundary <> '') and
       (Pos('--' + Boundary, Result) = 1)  then begin
       Blk := TIpMimeEntity.Create(Self);
       Result := Blk.DecodeEntity(Instream);
       FMimeParts.Add(Blk);
     end else begin
       { read raw text line into body }
-      for i := 1 to LeadingBlankLines do                               {!!.13}
-        Body.WriteLine('');                                            {!!.13}
+      for i := 1 to LeadingBlankLines do
+        Body.WriteLine('');
       Body.WriteLine(Result);
       Result := InStream.ReadLine;
     end;
-    if InStream.AtEndOfStream then break;                              {!!.12}
-    LeadingBlankLines := 0;                                            {!!.13}
+    if InStream.AtEndOfStream then break;
+    LeadingBlankLines := 0;
   end;
-{Begin !!.12}
   { If did not find a MIME entity then assume the body is text &
     read it into the Body property. }
   if not Decoded then
@@ -1445,10 +1414,9 @@ begin
     { If the last line is not a MIME separator then add the last line
       to the Body. }
     Body.WriteLine(Result);
-{End !!.12}
 end;
 
-{!!.01}
+
 { Build Mime block as subpart from incoming text stream }
 function TIpMimeEntity.DecodeEntityAsAttachment(InStream : TIpAnsiTextStream) : string;
 var
@@ -1536,7 +1504,7 @@ begin
     DecodeSingleParameter(strBoundary, RawParams, FBoundary);
     DecodeSingleParameter(strCharSet, RawParams, FCharacterSet);
 
-    {!!.02}
+
     { decode multipart/related parameters }
     DecodeSingleParameter(strType, RawParams, S);
     if (S <> '') then begin
@@ -1549,7 +1517,7 @@ begin
       DecodeSingleParameter(strStart, RawParams, FRelatedStart);
       DecodeSingleParameter(strStartInfo, RawParams, FRelatedStartInfo);
     end;
-    {!!.02}
+
 
   finally
     RawParams.Free;
@@ -1605,8 +1573,8 @@ begin
   DecodeSingleHeader(strContentDisposition, RawHeaders, S);
   if (S <> '') then
     DecodeContentDisposition(S);
-  if (FContentDispositionType = strAttachment) then                    {!!.12}
-    Inc (FParent.FAttachmentCount);                                    {!!.12}{!!.15}
+  if (FContentDispositionType = strAttachment) then
+    Inc (FParent.FAttachmentCount);
 end;
 
 { Compute attachment coding progress and fire OnCodingProgress event }
@@ -1673,11 +1641,11 @@ begin
       else 
         OutStream.CopyFrom(Body, 0); // copy the entire stream from the beginning
 
-    { make sure the body is properly terminated }                    {!!.01}
-    OutStream.Position := OutStream.Size - 1;                        {!!.01}
-    TIpBufferedStream(OutStream).ReadChar(Ch);                       {!!.01}
-    if ((Ch <> #13) and (Ch <> #10)) then                            {!!.01}
-      OutStream.WriteLine('');                                       {!!.01}
+    { make sure the body is properly terminated }
+    OutStream.Position := OutStream.Size - 1;
+    TIpBufferedStream(OutStream).ReadChar(Ch);
+    if ((Ch <> #13) and (Ch <> #10)) then
+      OutStream.WriteLine('');
   end;
 
   { encode nested mime parts - recursively }
@@ -1688,7 +1656,6 @@ begin
   end;
 end;
 
-{Begin !!.14}
 function TIpMimeEntity.ContainsSpecialChars(const Value : string) : Boolean;
 var
   Inx : Integer;
@@ -1703,7 +1670,6 @@ begin
       Break;
     end; { if }
 end;
-{End !!.14}
 
 { Generate Content-Disposition header into raw header list }
 procedure TIpMimeEntity.EncodeContentDisposition(RawHeaders : TStringList);
@@ -1716,7 +1682,6 @@ begin
   Params := TStringList.Create;
   try
     Params.Add(FContentDispositionType);
-{Begin !!.14}
     if (FFileName <> '') then begin
       { If the filename contains spaces, control characters, or any of the
         special characters identified in RFC 1521 then wrap the filename in
@@ -1729,7 +1694,6 @@ begin
       else
         Params.Add(strFileName + FFileName);
     end;  { if }
-{End !!.14}
     if (FCreationDate <> '') then
       Params.Add(strCreationDate + FCreationDate);
     if (FModificationDate <> '') then
@@ -1766,7 +1730,7 @@ begin
     if (FCharacterSet <> '') then
       Params.Add(strCharSet + FCharacterSet); {no quotes}
 
-    {!!.02}
+
     { encode multipart/related parameters }
     if (FRelatedType <> '') then begin
       if (FRelatedSubtype <> '') then
@@ -1778,7 +1742,7 @@ begin
       if (FRelatedStartInfo <> '') then
         Params.Add(strStartInfo + '"' + FRelatedStartInfo + '"');
     end;
-    {!!.02}
+
 
     EncodeListHeader(strContentType, RawHeaders, Params, ';', False);
   finally
@@ -1815,7 +1779,6 @@ end;
 
 { Encode Mime body from TStream - file name is optional }
 procedure TIpMimeEntity.EncodeBodyStream(InStream : TStream; const aFileName : string);
-{Begin !!.12}
 var
   LargeAttachment : Boolean;
     { Large attachments are handled with memory map streams in order to avoid
@@ -1831,7 +1794,6 @@ begin
       // presize stream for more speed
       FBody.Stream.Size := Trunc(InStream.Size * 1.3695);
     end;
-{End !!.12}
     case FContentTransferEncoding of
       em7Bit     : Encode8Bit(InStream);
       em8Bit     : Encode8Bit(InStream);
@@ -1842,14 +1804,12 @@ begin
       emUUEncode : EncodeUUEncode(InStream, aFileName);
       emUnknown  : Encode8Bit(InStream);
     end;
-  {Begin !!.12}
     FBody.Flush;
     if LargeAttachment then
       { This is a large attachment that was written to a memory map stream.
         Memory map streams are usually created larger than necessary so shrink
         it down to the correct size. }
       TIpMemMapStream(FBody.Stream).Size := TIpMemMapStream(FBody.Stream).DataSize;
-  {End !!.12}
   end;
   FOriginalSize := InStream.Size;
   FFileName := ExtractFileName(aFileName);
@@ -1864,7 +1824,7 @@ begin
     MS := TMemoryStream.Create;
     try
       InStrings.SaveToStream(MS);
-      MS.Position := 0;                                              {!!.03}
+      MS.Position := 0;
       FOriginalSize := MS.Size;
       FFileName := ExtractFileName(aFileName);
       EncodeBodyStream(MS, aFileName);
@@ -1877,7 +1837,7 @@ end;
 { Encode Mime body from file }
 procedure TIpMimeEntity.EncodeBodyFile(const InFile : string);
 var
-  FS : TIpMemMapStream;                                                {!!.12}
+  FS : TIpMemMapStream;
   i : Integer;
   aExt, aTyp, aSub : string;
   aEnc : TIpMimeEncodingMethod;
@@ -1904,9 +1864,9 @@ begin
   if (FContentTransferEncoding = emUnknown) then
     FContentTransferEncoding := aEnc;
 
-  FS := TIpMemMapStream.Create(InFile, True, False);                   {!!.12}
+  FS := TIpMemMapStream.Create(InFile, True, False);
   try
-    FS.Open;                                                           {!!.12}
+    FS.Open;
     FOriginalSize := FS.Size;
     FFileName := ExtractFileName(InFile);
     EncodeBodyStream(FS, FFileName);
@@ -1931,7 +1891,7 @@ begin
         em7Bit     : Decode8Bit(MS);
         em8Bit     : Decode8Bit(MS);
         emBase64   : DecodeBase64(MS);
-        emBinary   : OutStream.CopyFrom(FBody, FBody.Size);            {!!.14}
+        emBinary   : OutStream.CopyFrom(FBody, FBody.Size);
         emBinHex   : DecodeBinHex(MS);
         emQuoted   : DecodeQuoted(MS);
         emUUEncode : DecodeUUEncode(MS);
@@ -2009,7 +1969,7 @@ begin
   end;
 end;
 
-{!!.02}
+
 { Search all nested levels for specified MIME part }
 function TIpMimeEntity.FindNestedMimePart(const aType, aSubType, aContentID : string) : TIpMimeEntity;
 var
@@ -2020,15 +1980,15 @@ begin
   if (MimeParts.Count > 0) then
     for i := 0 to Pred(MimeParts.Count) do begin
       { ContentID is primary search key }
-      if (aContentID <> '') and                                          {!!.12}
-         (IsSameString (MimeParts[i].ContentID,                          {!!.12}
-                        aContentID, False)) then begin                   {!!.12}
+      if (aContentID <> '') and
+         (IsSameString (MimeParts[i].ContentID,
+                        aContentID, False)) then begin
         Result := MimeParts[i];
         Break;
-      end else if (IsSameString (MimeParts[i].ContentType,               {!!.12}
-                                 aType, False)) and                      {!!.12}
-                  (IsSameString (MimeParts[i].ContentSubtype,            {!!.12}
-                                 aSubType, False)) then begin            {!!.12}
+      end else if (IsSameString (MimeParts[i].ContentType,
+                                 aType, False)) and
+                  (IsSameString (MimeParts[i].ContentSubtype,
+                                 aSubType, False)) then begin
         Result := MimeParts[i];
         Break;
       end else begin
@@ -2077,9 +2037,9 @@ end;
 
 { Decode InStream to OutStream - Base64 }
 procedure TIpMimeEntity.DecodeBase64(OutStream : TStream);
-  { rewritten }                                                      {!!.12}
+  { rewritten }
 var
-  I : Integer;                                                         {!!.16}
+  I : Integer;
   C : Char;
   InBuf  : array[0..3] of Char;
   OutBuf : array[0..2] of Byte;
@@ -2095,7 +2055,7 @@ begin
   while not (Done or Abort) do begin
     { read in the next 4 valid Base64 characters }
     I := 0;
-    InBuf := '====';                                                   {!!.15}
+    InBuf := '====';
     while (I < 4) do begin
       if not BufStream.ReadChar(C) then begin
         Done := True;
@@ -2125,7 +2085,7 @@ begin
     end else
         Done := True;
     OutStream.Write(OutBuf, I);
-    DoOnCodingProgress(OutStream.Position, BufStream.FastSize, Abort); {!!.16}
+    DoOnCodingProgress(OutStream.Position, BufStream.FastSize, Abort);
   end;
 end;
 
@@ -2138,8 +2098,8 @@ var
   btThis, btLast, btNext : Byte;
   ch : AnsiChar;
   // headerlength is encoded as byte, HeaderFileName can only 256 bytes long
-  HeaderFileName : Array [0..MaxByte] of Byte;                   {!!.12}{!!.16}
-  HeaderLength : byte;                                                  {!!.12}
+  HeaderFileName : Array [0..MaxByte] of Byte;
+  HeaderLength : byte;
   CRC : Word;
   DataOffset, DataEnd, HeaderEnd : Longint;
   WS1, WS2 : TMemoryStream;
@@ -2250,11 +2210,11 @@ begin
         WS2.Free;
 
       { strip off header }
-      FillChar (HeaderFileName, SizeOf (HeaderFileName), $00);           {!!.12}
+      FillChar (HeaderFileName, SizeOf (HeaderFileName), $00);
       FillChar(Header, SizeOf(Header), #0);
       WS2.Position := 0;
-      WS2.Read(HeaderLength, SizeOf (Byte));                             {!!.12}
-      WS2.Read(HeaderFileName, HeaderLength);                            {!!.12}
+      WS2.Read(HeaderLength, SizeOf (Byte));
+      WS2.Read(HeaderFileName, HeaderLength);
       WS2.Read(Header, SizeOf(Header));
 
       { check header CRC }
@@ -2289,10 +2249,10 @@ end;
 { Decode InStream to OutStream - QuotedPrintable }
 procedure TIpMimeEntity.DecodeQuoted(OutStream : TStream);
 var
-  O, Count, WS : Byte;                                                   {!!.12}
-  I : integer;                                                           {!!.12}
-  InBuf  : array[0..pred (MaxLine)] of Byte;                             {!!.15}
-  OutBuf : array[0..pred (MaxLine)] of Byte;                             {!!.15}
+  O, Count, WS : Byte;
+  I : integer;
+  InBuf  : array[0..pred (MaxLine)] of Byte;
+  OutBuf : array[0..pred (MaxLine)] of Byte;
   Decoding : Boolean;
   Keeper : Boolean;
   Abort : Boolean;
@@ -2328,8 +2288,8 @@ begin
 
     { Read in one line at a time - skipping over bad characters }
     while True do begin
-      if (I > High(InBuf)) then                                        {!!.01}
-        raise EIpBaseException.Create(SLineLengthErr);                 {!!.01}
+      if (I > High(InBuf)) then
+        raise EIpBaseException.Create(SLineLengthErr);
       if not BufStream.ReadChar(Char(InBuf[I])) then
         Break;
       case InBuf[I] of
@@ -2340,7 +2300,7 @@ begin
               end;
        { Test for potential end of data }
        { '--' is probably the next Mime boundary }
-       { $2D : if (I = 1) and (InBuf[0] = $2D) then Exit;}             {!!.03}
+       { $2D : if (I = 1) and (InBuf[0] = $2D) then Exit;}
       end;
       Inc(I);
     end;
@@ -2560,7 +2520,7 @@ end;
 procedure TIpMimeEntity.EncodeBinHex(InStream : TStream;
                                      const aFileName : string);
 var
-  HeaderFileName : string;                                              {!!.12}
+  HeaderFileName : string;
   CRC : Word;
   DataOffset : DWord;
   PrevByte, CurrByte, i : Byte;
@@ -2797,26 +2757,26 @@ procedure TIpMimeEntity.OctetStreamToHextetStream(InStream : TStream;
                                                   const Table;
                                                   PadChar, Delim : AnsiChar);
 var
-  OutBuf: array[0..MaxLineEncode-1] of Char;                           {!!.12}{!!.13}
-  OutBufLen: Integer;                                                  {!!.12}
+  OutBuf: array[0..MaxLineEncode-1] of Char;
+  OutBufLen: Integer;
   Abort : Boolean;
 
   procedure FlushOutBuf;
     {- write out encoded buffer to message stream }
   begin
-    if OutBufLen > 0 then begin                                        {!!.12}
+    if OutBufLen > 0 then begin
       OutStream.WriteLineArray(OutBuf, OutBufLen);
-      OutBufLen := 0;                                                  {!!.12}
+      OutBufLen := 0;
     end;
   end;
 
   procedure OutChar(ch : AnsiChar);
     {- buffer the character to go out }
   begin
-    if OutBufLen >= MaxLineEncode - 1 then                             {!!.12}{!!.13}
+    if OutBufLen >= MaxLineEncode - 1 then
       FlushOutBuf;
-    OutBuf[OutBufLen] := Ch;                                           {!!.12}
-    inc(OutBufLen);                                                    {!!.12}
+    OutBuf[OutBufLen] := Ch;
+    inc(OutBufLen);
   end;
 
 type
@@ -2834,7 +2794,7 @@ begin
       raise EIpBaseException.Create(SNoMemoryStreamErr);
 
   Abort := False;
-  OutBufLen := 0;                                                      {!!.12}
+  OutBufLen := 0;
   if (Delim <> #0) then
     OutChar(Delim);
 
@@ -2856,7 +2816,7 @@ begin
     OutBuf[OutBufLen+3] := Char(TIp6BitTable(Table)[Buffer[I+2] and $3F]);
 
     Inc(OutBufLen, 4);
-    if OutBufLen >= MaxLineEncode - 1 then                             {!!.12}{!!.13}
+    if OutBufLen >= MaxLineEncode - 1 then
     begin
       FlushOutBuf;
       if i mod 100 = 0 then
@@ -2893,7 +2853,6 @@ begin
   FlushOutBuf;
 end;
 
-{Begin !!.12}
 procedure TIpMIMEEntity.ReadBody(InStream : TIpAnsiTextStream; const StartLine : string);
 var
   S : string;
@@ -2908,8 +2867,6 @@ begin
   { write final line }
   Body.WriteLine(S);
 end;
-{End !!.12}
-
 
 { TIpMessage }
 constructor TIpMessage.CreateMessage;
@@ -2923,7 +2880,7 @@ begin
   FRecipients := TStringList.Create;
   FReferences := TStringList.Create;
   FUserFields := TStringList.Create;
-  FHeaders    := TIpHeaderCollection.Create (Self);                    {!!.12}
+  FHeaders    := TIpHeaderCollection.Create (Self);
   MsgStream := TIpAnsiTextStream.CreateEmpty;
   NewMessageStream;
 end;
@@ -2939,13 +2896,12 @@ begin
   FRecipients.Free;
   FReferences.Free;
   FUserFields.Free;
-  FHeaders.Free;                                                         {!!.12}
+  FHeaders.Free;
   MsgStream.FreeStream;
   MsgStream.Free;
   inherited Destroy;
 end;
 
-{Begin !!.13}
 procedure TIpMessage.CheckAllHeaders;
 var
   i         : Integer;
@@ -2983,7 +2939,7 @@ procedure TIpMessage.CheckHeaderType (HeaderInfo : TIpHeaderItem;
   function ExtractSingleHeader(HeaderInfo : TIpHeaderItem) : string;
   begin
     Result := Trim(HeaderInfo.Value.Text);
-    HeaderInfo.IsProperty := True;                                     {!!.13}
+    HeaderInfo.IsProperty := True;
   end;
 
   procedure ExtractCSVHeader(HeaderInfo : TIpHeaderItem;
@@ -2993,30 +2949,28 @@ procedure TIpMessage.CheckHeaderType (HeaderInfo : TIpHeaderItem;
   begin
     WorkString := ExtractSingleHeader(HeaderInfo);
     Parse (WorkString, ',', AList);
-    HeaderInfo.IsProperty := True;                                     {!!.13}
+    HeaderInfo.IsProperty := True;
   end;
 
   procedure ExtractListHeader(HeaderInfo : TIpHeaderItem;
                            var AList      : TStringList);
   begin
     AList.Assign (HeaderInfo.Value);
-    HeaderInfo.IsProperty := True;                                     {!!.13}
+    HeaderInfo.IsProperty := True;
   end;
 
   procedure ExtractAppendListHeader(HeaderInfo : TIpHeaderItem;
-                              const IncludeName : Boolean;             {!!.13}
+                              const IncludeName : Boolean;
                                 var AList      : TStringList);
   var
     i : Integer;
   begin
     for i := 0 to HeaderInfo.Value.Count - 1 do
-{Begin !!.13}
       if IncludeName then
         AList.Add (HeaderInfo.Name + ': ' + HeaderInfo.Value[i])
       else
         AList.Add (HeaderInfo.Value[i]);
     HeaderInfo.IsProperty := True;
-{End !!.13}
   end;
 
 begin
@@ -3052,7 +3006,7 @@ begin
     htPostingHost     :
       FPostingHost := ExtractSingleHeader(HeaderInfo);
     htReceived        :
-      ExtractAppendListHeader(HeaderInfo, False, FReceived);           {!!.13}
+      ExtractAppendListHeader(HeaderInfo, False, FReceived);
     htReferences      :
       ExtractListHeader(HeaderInfo, FReferences);
     htReplyTo         :
@@ -3066,30 +3020,29 @@ begin
     htTo              :
       ExtractCSVHeader(HeaderInfo, FRecipients);
     htUserFields      :
-      ExtractAppendListHeader(HeaderInfo, True, FUserFields);          {!!.13}
+      ExtractAppendListHeader(HeaderInfo, True, FUserFields);
     htXIpro           : begin
     end;
   end;
 end;
-{End !!.12}
 
 { Clear properties and free message stream }
 procedure TIpMessage.Clear;
 begin
   inherited Clear;
 
-  FAttachmentCount := 0;                                               {!!.12}
-  FMessageTag := 0;                                                    {!!.15}
+  FAttachmentCount := 0;
+  FMessageTag := 0;
 
   FBCC.Clear;
   FCC.Clear;
   FDate := '';
-  FDispositionNotify := '';                                            {!!.12}
+  FDispositionNotify := '';
   FFrom := '';
   FInReplyTo := '';
   FKeywords := '';
-  FFollowupTo := '';                                                   {!!.15}
-  FControl := '';                                                      {!!.15}
+  FFollowupTo := '';
+  FControl := '';
   FMessageID := '';
   FNewsgroups.Clear;
   FNNTPPostingHost := '';
@@ -3104,11 +3057,10 @@ begin
   FSender := '';
   FSubject := '';
   FUserFields.Clear;
-  FHeaders.Clear;                                                      {!!.15}
+  FHeaders.Clear;
   MsgStream.FreeStream;
 end;
 
-{Begin !!.12}
 { Get headers, body, and MIME parts (if any) }
 procedure TIpMessage.DecodeMessage;
 
@@ -3280,11 +3232,10 @@ var
                 (FAttachmentCount > 0) then
       Dec (AttDepth);
   end;
-{End !!.12}
 var
   RawHeaders : TStringList;
   S : string;
-  i, j : Integer;                                                      {!!.13}
+  i, j : Integer;
 begin
   { get message headers}
   Position := 0;
@@ -3292,19 +3243,18 @@ begin
   try
     S := ReadLine;
     repeat
-      if S <> '' then                                                  {!!.15}
+      if S <> '' then
         RawHeaders.Add(S);
       S := ReadLine;
     until (S = '');
 
-    FHeaders.Clear;                                                    {!!.12}
-    FHeaders.LoadHeaders (RawHeaders, False);                          {!!.12}
-    CheckAllHeaders;                                                   {!!.12}
+    FHeaders.Clear;
+    FHeaders.LoadHeaders (RawHeaders, False);
+    CheckAllHeaders;
 
     { decode MIME headers }
     DecodeMimeHeaders(RawHeaders);
 
-{Begin !!.13}
     { If this is a MIME message, mark the MIME headers as being exposed via an
       iPRO property. }
     if FIsMime then
@@ -3313,17 +3263,16 @@ begin
         if j > -1 then
           FHeaders.Items[j].IsProperty := True;
       end;
-{End !!.13}
   finally
     RawHeaders.Free;
   end;
 
   { if message is mime, then decode mime parts }
-  if IsMime then begin                                                 {!!.01}
-    if (FContentDispositionType = strAttachment) then begin            {!!.12}
-      Inc (FParent.FAttachmentCount);                                  {!!.12}{!!.15}
-      DecodeEntityAsAttachment(MsgStream)                              {!!.01}
-    end else                                                           {!!.12}
+  if IsMime then begin
+    if (FContentDispositionType = strAttachment) then begin
+      Inc (FParent.FAttachmentCount);
+      DecodeEntityAsAttachment(MsgStream)
+    end else
       DecodeEntity(MsgStream);
   end else begin
     { otherwise, just read in the message body. }
@@ -3332,21 +3281,19 @@ begin
     until (S <> '') or AtEndOfStream;
 
     { read in message body up to message terminator '.' }
-    {while not ((S = '.') or AtEndOfStream) do begin}                  {!!.10}
-    while not AtEndOfStream do begin                                   {!!.10}
+    {while not ((S = '.') or AtEndOfStream) do begin}
+    while not AtEndOfStream do begin
       Body.WriteLine(S);
-      AttDepth := 0;                                                   {!!.12}
-      CheckForAttachment (S);                                          {!!.12}
+      AttDepth := 0;
+      CheckForAttachment (S);
       S := ReadLine;
     end;
-    { write final line }                                               {!!.10}
-    if S <> '' then                                                    {!!.13}
-      Body.WriteLine(S);                                               {!!.10}
+    { write final line }
+    if S <> '' then
+      Body.WriteLine(S);
 
-{Begin !!.12}
     { Read the message body. }
     {ReadBody(MsgStream, S); }
-{End !!.12}
   end;
   Body.Position := 0;
 end;
@@ -3355,13 +3302,12 @@ end;
 procedure TIpMessage.EncodeMessage;
 var
   i : Integer;
-  Size : Longint;                                                      {!!.12}
-  FileName : string;                                                   {!!.12}
-  Strm : TIpMemMapStream;                                              {!!.12}
+  Size : Longint;
+  FileName : string;
+  Strm : TIpMemMapStream;
   RawHeaders : TStringList;
 begin
   NewMessageStream;
-{Begin !!.12}
   { If we have some very large attachments then we need to use a memory mapped
     file stream instead of TMemory, in order to improve performance. }
   Size := 0;
@@ -3377,7 +3323,6 @@ begin
     Strm.Open;
     MsgStream.Stream := Strm;
   end;
-{End !!.12}
   if (FContentType <> '') then begin
     FIsMime := True;
     FMimeVersion := '1.0';
@@ -3387,10 +3332,10 @@ begin
     EncodeSingleHeader(strReturnPath, RawHeaders, FReturnPath);
     EncodeMultiHeader(strReceived, RawHeaders, FReceived, #09, True);
     EncodeListHeader(strPath, RawHeaders, FPath, ',', True);
-    EncodeListHeader(strNewsgroups, RawHeaders, FNewsgroups, ',', False); {!!.14}
+    EncodeListHeader(strNewsgroups, RawHeaders, FNewsgroups, ',', False);
     EncodeSingleHeader(strMessageID, RawHeaders, FMessageID);
-    EncodeSingleHeader (strDispositionNotify, RawHeaders,                {!!.12}
-                        FDispositionNotify);                             {!!.12}
+    EncodeSingleHeader (strDispositionNotify, RawHeaders,
+                        FDispositionNotify);
     EncodeSingleHeader(strReplyTo, RawHeaders, FReplyTo);
     EncodeSingleHeader(strFrom, RawHeaders, FFrom);
     EncodeListHeader(strTo, RawHeaders, FRecipients, ',', True);
@@ -3404,9 +3349,8 @@ begin
     EncodeSingleHeader(strSender, RawHeaders, FSender);
     EncodeSingleHeader(strKeywords, RawHeaders, FKeywords);
     EncodeMultiHeader('', RawHeaders, FUserFields, Char(0), False);
-    EncodeSingleHeader(strControl, RawHeaders, FControl);               {!!.12}
-    EncodeSingleHeader(strFollowUp, RawHeaders, FFollowupTo);           {!!.12}
-{Begin !!.13}
+    EncodeSingleHeader(strControl, RawHeaders, FControl);
+    EncodeSingleHeader(strFollowUp, RawHeaders, FFollowupTo);
     for i := 0 to Pred(Headers.Count) do
       { Write the header out only if it is not a header exposed via an iPRO
         property. }
@@ -3418,7 +3362,6 @@ begin
           EncodeMultiheader(Headers.Items[i].Name + ': ', RawHeaders,
                             Headers.Items[i].Value, #09, True);
       end;
-{End !!.13}
     if IsMime then
       EncodeMimeHeaders(RawHeaders);
     if (RawHeaders.Count = 0) then
@@ -3429,7 +3372,6 @@ begin
     RawHeaders.Free;
   end;
 
-{Begin !!.13}
   WriteLine('');
   if IsMime then
     EncodeEntity(MsgStream)
@@ -3439,23 +3381,18 @@ begin
       WriteLine(Body.ReadLine);
     until FBody.AtEndOfStream;
   end;  { if }
-{End !!.13}
 end;
 
 { Load message from file stream and decode }
 procedure TIpMessage.LoadFromFile(const aFileName : string);
-{Begin !!.12}
 var
   SourceStream : TIpMemMapStream;
-{End !!.12}
 begin
   Clear;
-  NewMessageStream;                                                    {!!.03}
-{Begin !!.12}
+  NewMessageStream;
   SourceStream := TIpMemMapStream.Create(aFileName, True, False);
   try
     SourceStream.Open;
-{Begin !!.15}
     if SourceStream.Size > IpLgAttachSizeBoundry then begin
       MsgStream.FreeStream;
       MsgStream.Stream := SourceStream;
@@ -3465,19 +3402,16 @@ begin
   finally
     if MsgStream.Stream <> SourceStream then
       SourceStream.Free;
-{End !!.15}
   end;
-{End !!.12}
 
-  try                                                                  {!!.03}
+  try
     DecodeMessage;
-  except                                                               {!!.03}
+  except
     { just eat the exception, the messge might be corrupt, but the }
     { raw text (MessageStream property) will still be available    }
-  end;                                                                 {!!.03}
+  end;
 end;
 
-{Begin !!.12}
 procedure TIpMessage.LoadFromStream(aStream : TStream);
 var
   FileName : string;
@@ -3511,7 +3445,7 @@ procedure TIpMessage.NewMessageStream;
 begin
   MsgStream.FreeStream;
   MsgStream.Stream := TMemoryStream.Create;
-  MsgStream.bsInitForNewStream;                                        {!!.02}
+  MsgStream.bsInitForNewStream;
 end;
 
 { Clear all and create new empty message stream }
@@ -3572,7 +3506,6 @@ begin
   end;
 end;
 
-{Begin !!.12}
 {- Save raw message stream }
 procedure TIpMessage.SaveToStream(Stream: TStream);
 begin
@@ -3584,7 +3517,6 @@ procedure TIpMessage.SetHeaders(Headers : TIpHeaderCollection);
 begin
   FHeaders.Assign(Headers);
 end;
-{End !!.12}
 
 { Position property write access method }
 procedure TIpMessage.SetPosition(Value : Longint);
@@ -3614,17 +3546,15 @@ function TIpMessage.GetBodyPlain(CanCreate : Boolean) : TIpMimeEntity;
 var
   aParent : TIpMimeEntity;
 begin
-  aParent := FindNestedMimePart(strMultipart, strAlternative, '');   {!!.02}
+  aParent := FindNestedMimePart(strMultipart, strAlternative, '');
   if not Assigned(aParent) then
     aParent := Self;
-{Begin !!.15}
   Result := aParent.FindNestedMimePart(strText, strPlain, '');
   if (Result = nil) and CanCreate then begin
     Result := NewMimePart;
     Result.ContentType := strText;
     Result.ContentSubtype := strPlain;
   end;
-{End !!.15}
 end;
 
 { Return 'alternative' text/html mime part }
@@ -3632,21 +3562,19 @@ function TIpMessage.GetBodyHtml(CanCreate : Boolean) : TIpMimeEntity;
 var
   aParent : TIpMimeEntity;
 begin
-  aParent := FindNestedMimePart(strMultipart, strAlternative, '');   {!!.02}
+  aParent := FindNestedMimePart(strMultipart, strAlternative, '');
   if not Assigned(aParent) then
     aParent := Self;
-{Begin !!.15}
   Result := aParent.FindNestedMimePart(strText, strHtml, '');
   if (Result = nil) and CanCreate then begin
     Result := NewMimePart;
     Result.ContentType := strText;
     Result.ContentSubtype := strHTML;
   end;
-{End !!.15}
 end;
 
 { Add a file attachment using default types }
-procedure TIpMessage.AddDefaultAttachment(const aFileName: string);     {!!.02}
+procedure TIpMessage.AddDefaultAttachment(const aFileName: string);
 begin
   with NewMimePart do begin
     EntityName := ExtractFileName(aFileName);
@@ -3655,15 +3583,15 @@ begin
   end;
 end;
 
-procedure TIpMessage.AddDefaultAttachmentAs (const aFileName      : string;  {!!.12}
-                                             const AttachmentName : string); {!!.12}
-begin                                                                    {!!.12}
-  with NewMimePart do begin                                              {!!.12}
-    EntityName := ExtractFileName (AttachmentName);                      {!!.12}
-    ContentDispositionType := 'attachment';                              {!!.12}
-    EncodeBodyFile (aFileName);                                          {!!.12}
-  end;                                                                   {!!.12}
-end;                                                                     {!!.12}
+procedure TIpMessage.AddDefaultAttachmentAs (const aFileName      : string;
+                                             const AttachmentName : string);
+begin
+  with NewMimePart do begin
+    EntityName := ExtractFileName (AttachmentName);
+    ContentDispositionType := 'attachment';
+    EncodeBodyFile (aFileName);
+  end;
+end;
 
 { Set message properties from another TIpMessage }
 procedure TIpMessage.Assign(Source: TPersistent);
@@ -3682,52 +3610,52 @@ begin
     MsgStream.CopyFrom(SourceMsg.MsgStream, 0);
     Position := 0;
     SourceMsg.Position := SourcePos;
-    try                                                                {!!.03}
+    try
       DecodeMessage;
-    except                                                             {!!.03}
+    except
       { just eat the exception, the messge might be corrupt, but the }
       { raw text (MessageStream property) will still be available    }
-    end;                                                               {!!.03}
+    end;
   end else
     inherited Assign(Source);
 end;
 
-procedure TIpMessage.SetBCC(const Value: TStringList);                 {!!.01}
+procedure TIpMessage.SetBCC(const Value: TStringList);
 begin
   FBCC.Assign(Value);
 end;
 
-procedure TIpMessage.SetCC(const Value: TStringList);                  {!!.01}
+procedure TIpMessage.SetCC(const Value: TStringList);
 begin
   FCC.Assign(Value);
 end;
 
-procedure TIpMessage.SetNewsgroups(const Value: TStringList);          {!!.01}
+procedure TIpMessage.SetNewsgroups(const Value: TStringList);
 begin
   FNewsgroups.Assign(Value);
 end;
 
-procedure TIpMessage.SetPath(const Value: TStringList);                {!!.01}
+procedure TIpMessage.SetPath(const Value: TStringList);
 begin
   FPath.Assign(Value);
 end;
 
-procedure TIpMessage.SetReceived(const Value: TStringList);            {!!.01}
+procedure TIpMessage.SetReceived(const Value: TStringList);
 begin
   FReceived.Assign(Value);
 end;
 
-procedure TIpMessage.SetRecipients(const Value: TStringList);          {!!.01}
+procedure TIpMessage.SetRecipients(const Value: TStringList);
 begin
   FRecipients.Assign(Value);
 end;
 
-procedure TIpMessage.SetReferences(const Value: TStringlist);          {!!.01}
+procedure TIpMessage.SetReferences(const Value: TStringlist);
 begin
   FReferences.Assign(Value);
 end;
 
-procedure TIpMessage.SetUserFields(const Value: TStringList);          {!!.01}
+procedure TIpMessage.SetUserFields(const Value: TStringList);
 begin
   FUserFields.Assign(Value);
 end;
@@ -3813,7 +3741,7 @@ begin
 end;
 
 {HTTP Authentication Support -- .02}
-function IpBase64EncodeString(const InStr: string): string;              {!!.03}
+function IpBase64EncodeString(const InStr: string): string;
 {
 encode a string into Base64, intended for producing short ( < 100 chars or so)
 coded strings to be passed as part of HTTP authentications via HTTP headers.
@@ -3834,15 +3762,15 @@ end;
 begin
   Result := '';
   Count := Length(InStr);
-  if Count = 0 then // empty input string nothing to encode              {!!.03}
-    Exit;                                                                {!!.03}
-  OutLen := Count * 2; // leave plenty of room for encoded string        {!!.03}
+  if Count = 0 then // empty input string nothing to encode
+    Exit;
+  OutLen := Count * 2; // leave plenty of room for encoded string
   GetMem(CvtBuff, OutLen + 1);
 
   Ct := 0;
   I := 1;
 
-  if Count >= 3 then begin                                               {!!.03}
+  if Count >= 3 then begin
     while I <= (Count - 2) do begin
       { Encode 1st byte }
       CvtBuff[Ct] := CodeByte(Ord(InStr[I]) shr 2);
@@ -3862,7 +3790,7 @@ begin
 
       Inc(I, 3);
     end;
-  end;                                                                   {!!.03}
+  end;
 
   { Are there odd bytes to add? }
   if (I <= Count) then begin

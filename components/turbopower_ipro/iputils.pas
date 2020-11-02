@@ -1156,7 +1156,7 @@ end;
 function IpParseURL(const URL : string; var Rslt : TIpAddrRec) : Boolean;
 { Splits URL into components }
 
-{!!.03 -- rewritten
+{ -- rewritten
   - Parsing UserName and Password fields out of Mailto: urls of the form:
       mailto:user:pass@myserver.net
   - Username and Password fields added to TIpAddrRec in support of
@@ -2020,7 +2020,7 @@ Canonical Internet header date strings are in one of three standard formats:
   Sun Nov  6 08:49:37 1994        ; ANSI C's asctime() format
 }
 
-{!!.03 -- rewritten to handle common variants such as the Day or Month name
+{-- rewritten to handle common variants such as the Day or Month name
 to be fully spelled out where they are not in the canonical form, or to have
 a 4 digit year in the RFC 850 style
 }
@@ -2668,13 +2668,11 @@ begin
   Result:=DirPathExists(Dir);
 end;
 
-{Begin !!.12}
 { Get temporary filename as string }
 function GetTemporaryFile(const Path : string) : string;
 begin
   Result:=GetTempFileNameUTF8(Path,'IP_');
 end;
-{End !!.12}
 
 { Get Windows system TEMP path in a string }
 function GetTemporaryPath: string;

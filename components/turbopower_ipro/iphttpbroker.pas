@@ -114,18 +114,14 @@ function TIpHttpDataProvider.CheckURL(const AUrl: string;
 var
   VAddrRec: TIpAddrRec;
 begin
-{$IFDEF VER2_6}
-  FillChar(VAddrRec, SizeOf(TIpAddrRec), 0);
-{$ELSE}
   VAddrRec := Default(TIpAddrRec);
-{$ENDIF}
   Initialize(VAddrRec);
   try
     IpParseURL(AUrl, VAddrRec);
     FDocumment.Clear;
     FClient.Get(AUrl, FDocumment);
     Result := (FClient.ResponseStatusCode = 200)
-{$IF FPC_FULLVERSION > 30000}or FClient.IsRedirect(FClient.ResponseStatusCode){$ENDIF};
+      or FClient.IsRedirect(FClient.ResponseStatusCode);
     if Result then
     begin
       FContentType := AllTrimSpaces(FClient.ResponseHeaders.Values['Content-Type']);
