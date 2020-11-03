@@ -1448,6 +1448,7 @@ var
   ps, saved_ps: TSeriesPointerStyle;
   brushAlreadySet: boolean;
   c: TColor;
+  style: TChartStyle;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if (not Pointer.Visible) or (Length(FGraphPoints) = 0) then exit;
@@ -1465,7 +1466,12 @@ begin
         Pointer.SetOwner(nil);   // avoid recursion
         Pointer.Style := ps;
       end;
-      brushAlreadySet := (Styles <> nil) and Styles.StyleByIndex(AStyleIndex).UseBrush;
+      brushAlreadySet := false;
+      if (Styles <> nil) then
+      begin
+        style := Styles.StyleByIndex(AStyleIndex);
+        if style <> nil then brushAlreadySet := style.UseBrush;
+      end;
       if brushAlreadySet then
         Styles.Apply(ADrawer, AStyleIndex);
       if UseDataColors then c := Source[i]^.Color else c := clTAColor;
