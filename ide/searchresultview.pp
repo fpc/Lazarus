@@ -120,8 +120,7 @@ type
     procedure ShortenPaths;
     procedure FreeObjectsTN(tnItems: TTreeNodes);
     procedure FreeObjects(slItems: TStrings);
-    function BeautifyLine(const Filename: string; X, Y: integer; const Line: string): string;
-    function BeautifyLine(SearchPos: TLazSearchMatchPos): string;
+    function BeautifyLineAt(SearchPos: TLazSearchMatchPos): string;
     property Filtered: Boolean read fFiltered write fFiltered;
     property SearchInListPhrases: string read FSearchInListPhrases write FSearchInListPhrases;
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
@@ -260,9 +259,6 @@ var
 implementation
 
 {$R *.lfm}
-
-const
-  MaxTextLen = 80;
 
 function CompareTVNodeTextAsFilename(Node1, Node2: Pointer): integer;
 var
@@ -714,7 +710,7 @@ begin
     SearchPos.FileEndPos:=EndPos;
     SearchPos.TheText:=TheText;
     SearchPos.ShownFilename:=SearchPos.Filename;
-    ShownText:=CurrentTV.BeautifyLine(SearchPos);
+    ShownText:=CurrentTV.BeautifyLineAt(SearchPos);
     LastPos:=nil;
     if CurrentTV.Updating then begin
       if (CurrentTV.UpdateItems.Count>0)
@@ -1116,7 +1112,6 @@ begin
 
   if Assigned(MatchPos) then
   begin
-
     FirstMatchPos:=MatchPos;
     TheTop:= ARect.Top;
     TextEnd:=ARect.Left;
@@ -1138,23 +1133,22 @@ begin
     while assigned(MatchPos) do begin
       //debugln(['TSearchResultsView.TreeViewAdvancedCustomDrawItem MatchPos.TheText="',MatchPos.TheText,'" MatchPos.MatchStart=',MatchPos.MatchStart,' MatchPos.MatchLen=',MatchPos.MatchLen]);
       // draw normal text
-      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchStart-1-DrawnTextLength));
+      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,
+                                      MatchPos.MatchStart-1-DrawnTextLength));
       DrawnTextLength:=MatchPos.MatchStart-1;
       TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
-
       // draw found text (matched)
-      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchLen));
+      CurPart:=ShortDotsLine(copy(MatchPos.TheText, DrawnTextLength+1, MatchPos.MatchLen));
       DrawnTextLength:=DrawnTextLength+MatchPos.MatchLen;
-      if UTF8Length(CurPart)>MaxTextLen then
-        CurPart:=UTF8Copy(CurPart,1,MaxTextLen)+'...';
       TV.Canvas.Font.Style:= TV.Canvas.Font.Style + [fsBold];
       TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
       TV.Canvas.Font.Style:= TV.Canvas.Font.Style - [fsBold];
 
       if MatchPos.NextInThisLine=nil then begin
-        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,Length(MatchPos.TheText)));
+        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,
+                                        Length(MatchPos.TheText)));
         TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       end;
       MatchPos:=MatchPos.NextInThisLine;
@@ -1455,7 +1449,7 @@ begin
         MatchPos:=TLazSearchMatchPos(AnObject);
         MatchPos.ShownFilename:=copy(MatchPos.Filename,SharedLen+1,
                                      length(MatchPos.Filename));
-        ShownText:=BeautifyLine(MatchPos);
+        ShownText:=BeautifyLineAt(MatchPos);
         SrcList[i]:=ShownText;
         SrcList.Objects[i]:=MatchPos;
       end;
@@ -1483,22 +1477,10 @@ begin
       slItems.Objects[i].Free;
 end;
 
-function TLazSearchResultTV.BeautifyLine(const Filename: string; X, Y: integer;
-  const Line: string): string;
+function TLazSearchResultTV.BeautifyLineAt(SearchPos: TLazSearchMatchPos): string;
 begin
-  Result:=SpecialCharsToHex(Line);
-  if UTF8Length(Result)>MaxTextLen then
-    Result:=UTF8Copy(Result,1,MaxTextLen)+'...';
-  Result:=Filename
-          +' ('+IntToStr(Y)
-          +','+IntToStr(X)+')'
-          +' '+Result;
-end;
-
-function TLazSearchResultTV.BeautifyLine(SearchPos: TLazSearchMatchPos): string;
-begin
-  Result:=BeautifyLine(SearchPos.ShownFilename,SearchPos.FileStartPos.X,
-                       SearchPos.FileStartPos.Y,SearchPos.TheText);
+  with SearchPos do
+    Result:=BeautifyLineXY(ShownFilename, TheText, FileStartPos.X, FileStartPos.Y);
 end;
 
 function TLazSearchResultTV.ItemsAsStrings: TStrings;
@@ -1506,7 +1488,6 @@ var
   i: integer;
 begin
   Result := TStringList.Create;
-
   for i := 0 to Items.Count - 1 do
     Result.AddObject(Items[i].Text,TObject(Items[i].Data));
 end;

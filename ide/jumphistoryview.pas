@@ -51,8 +51,6 @@ type
     fOnSelectionChanged : TNotifyEvent;
     fProjectChangeStamp: integer;
     function GetSelectedIndex : Integer;
-    function BeautifyLine(const Filename: string; X, Y: integer;
-      const Line: string): string;
     procedure InitDisplay;
   protected
     procedure IndexChanged(Sender: TObject; {%H-}Index: Integer);
@@ -70,9 +68,6 @@ var
 implementation
 
 {$R *.lfm}
-
-const
-  MaxTextLen = 80;
 
 { TJumpHistoryViewWin }
 
@@ -115,25 +110,12 @@ begin
   Result := listHistory.ItemIndex;
 end;
 
-function TJumpHistoryViewWin.BeautifyLine(const Filename : string; X, Y : integer;
-  const Line : string) : string;
-begin
-  Result:=SpecialCharsToHex(Line);
-  if UTF8Length(Result)>MaxTextLen then
-    Result:=UTF8Copy(Result,1,MaxTextLen)+'...';
-  Result:=Filename
-          +' ('+IntToStr(Y)
-          +','+IntToStr(X)+')'
-          +' '+Result;
-end;
-
 procedure TJumpHistoryViewWin.InitDisplay;
 var
   i : integer;
   jh_item : TProjectJumpHistoryPosition;
-  SrcLine: String;
+  SrcLine, Filename: String;
   CodeBuf: TCodeBuffer;
-  Filename: String;
 begin
   if (Project1<>nil)
   and (fProjectChangeStamp=Project1.JumpHistory.ChangeStamp) then exit;
@@ -150,12 +132,8 @@ begin
       Filename:=jh_item.Filename;
       if Project1<>nil then
         Filename:=Project1.GetShortFilename(Filename,true);
-      listHistory.Items.Append
-        (BeautifyLine(Filename,
-                      jh_item.CaretXY.X,
-                      jh_item.CaretXY.Y,
-                      SrcLine
-                     )
+      listHistory.Items.Append(
+          BeautifyLineXY(Filename, SrcLine, jh_item.CaretXY.X, jh_item.CaretXY.Y)
         );
     end;
     //DebugLn(['TJumpHistoryViewWin.InitDisplay Project1.JumpHistory.HistoryIndex=',Project1.JumpHistory.HistoryIndex]);

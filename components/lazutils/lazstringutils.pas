@@ -57,6 +57,8 @@ function SimpleSyntaxToRegExpr(const Src: string): string;
 function BinaryStrToText(const s: string): string;
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function SpecialCharsToHex(const s: string): string;
+function ShortDotsLine(const Line: string): string;
+function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 // Conversions to and from a StringList
@@ -102,6 +104,9 @@ function StrLScan(P: PChar; c: Char; MaxLen: Cardinal): PChar;
 // Like IsValidIdent() in FPC 3.1.
 function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
                          StrictDots: Boolean = False): Boolean;
+
+const
+  MaxTextLen = 80;
 
 implementation
 
@@ -723,8 +728,20 @@ begin
   for i:=length(Result) downto 1 do
     if Result[i]<' ' then
       Result:=copy(Result,1,i-1)
-              +'#'+Format('%d',[ord(Result[i])])
+              +'#'+Format('%x',[ord(Result[i])])
               +copy(Result,i+1,length(Result));
+end;
+
+function ShortDotsLine(const Line: string): string;
+begin
+  Result:=SpecialCharsToHex(Line);
+  if UTF8Length(Result)>MaxTextLen then
+    Result:=UTF8Copy(Result,1,MaxTextLen)+'...';
+end;
+
+function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
+begin
+  Result:=Filename+' ('+IntToStr(Y)+','+IntToStr(X)+')'+' '+ShortDotsLine(Line);
 end;
 
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
