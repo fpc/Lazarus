@@ -68,6 +68,7 @@ function ExtractNameFromFunctionHeading(const pcNode: TParseTreeNode;
   const pbFullName: boolean): string;
 
 function IsClassFunctionOrProperty(const pt: TSourceToken): boolean;
+function IsGenericFunctionOrProperty(const pt: TSourceToken): boolean;
 
 function RHSExprEquals(const pt: TSourceToken): boolean;
 
@@ -254,8 +255,12 @@ var
   lcNameToken: TSourceToken;
   lcPriorToken1, lcPriorToken2: TSourceToken;
 begin
+  if pcNode=nil then
+  begin
+    Result:='';
+    exit;
+  end;
   lcNameToken := nil;
-
   { function heading is of one of these forms
       function foo(param: integer): integer;
       function foo: integer;
@@ -378,6 +383,10 @@ begin
   Result := pt.IsOnRightOf(ProcedureHeadings + [nProperty], [ttClass]);
 end;
 
+function IsGenericFunctionOrProperty(const pt: TSourceToken): boolean;
+begin
+  Result := pt.IsOnRightOf(ProcedureHeadings + [nProperty], [ttGeneric]);
+end;
 
 function RHSExprEquals(const pt: TSourceToken): boolean;
 begin

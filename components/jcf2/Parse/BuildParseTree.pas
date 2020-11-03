@@ -919,7 +919,7 @@ begin
 
   }
   while fcTokenList.FirstSolidTokenType in
-    [ttClass] + Declarations + ProcedureWords do
+    [ttClass, ttGeneric] + Declarations + ProcedureWords do
     RecogniseDeclSection;
 end;
 
@@ -950,7 +950,7 @@ begin
       RecogniseTypeSection(false);
     ttVar, ttThreadvar:
       RecogniseVarSection(false);
-    ttProcedure, ttFunction, ttConstructor, ttDestructor, ttClass, ttOperator:
+    ttProcedure, ttFunction, ttConstructor, ttDestructor, ttClass, ttOperator,ttGeneric:
       RecogniseProcedureDeclSection;
     ttExports:
       RecogniseExportsSection;
@@ -2557,7 +2557,11 @@ begin
       Note that the function name can be omitted "
    }
   lc := fcTokenList.FirstSolidToken;
-
+  if lc.TokenType = ttSpecialize then
+  begin
+    Recognise(ttSpecialize);
+    lc := fcTokenList.FirstSolidToken;
+  end;
   if AnonymousMethodNext then
   begin
     RecogniseAnonymousMethod;
@@ -2941,6 +2945,12 @@ begin
   PushNode(nStatement);
 
   lct :=  fcTokenList.FirstSolidTokenType;
+
+  if lct = ttSpecialize then
+  begin
+    Recognise(ttSpecialize);
+    lct :=  fcTokenList.FirstSolidTokenType;
+  end;
 
   if lct = ttSemicolon then
   begin
@@ -3656,6 +3666,24 @@ begin
           raise TEParseError.Create('expected class procedure or class function', lc);
       end;
     end;
+    ttGeneric:
+      case fcTokenList.SolidTokenType(2) of
+        ttProcedure:
+          RecogniseProcedureDecl(false);
+        ttFunction:
+          RecogniseFunctionDecl(false);
+        ttClass:
+          case fcTokenList.SolidTokenType(3) of
+            ttProcedure:
+              RecogniseProcedureDecl(false);
+            ttFunction:
+              RecogniseFunctionDecl(false);
+            else
+              raise TEParseError.Create('expected class procedure or class function', lc);
+          end
+        else
+          raise TEParseError.Create('expected class procedure or class function', lc);
+     end;
     else
       raise TEParseError.Create('expected procedure or function', lc);
   end;
@@ -3792,6 +3820,9 @@ begin
   // FunctionHeading -> FUNCTION Ident [FormalParameters] ':' (SimpleType | STRING)
   PushNode(nFunctionHeading);
 
+  if fcTokenList.FirstSolidTokenType = ttGeneric then
+    Recognise(ttGeneric);
+
   // class procs
   if fcTokenList.FirstSolidTokenType = ttClass then
     Recognise(ttClass);
@@ -3845,6 +3876,8 @@ begin
   }
 
   PushNode(nProcedureHeading);
+  if fcTokenList.FirstSolidTokenType = ttGeneric then
+    Recognise(ttGeneric);
 
   if fcTokenList.FirstSolidTokenType = ttClass then
     Recognise(ttClass);
@@ -5591,7 +5624,11 @@ var
   lc: TSourceToken;
 begin
   lc := fcTokenList.FirstSolidToken;
-
+  if lc.TokenType = ttSpecialize then
+  begin
+    Recognise(ttSpecialize);
+    lc := fcTokenList.FirstSolidToken;
+  end;
   { all kinds of reserved words can sometimes be param names
     thanks to COM and named params
     See LittleTest43.pas }

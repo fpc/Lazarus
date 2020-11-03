@@ -160,11 +160,11 @@ begin
    }
   if StartsAnonymousMethod(pt) then
     exit;
-
   if (pt.TokenType in ProcedureWords) and
     (not pt.IsOnRightOf(nTypeDecl, ttEquals)) and
     (not pt.HasParentNode(nProcedureType, 2)) and
     (not IsClassFunctionOrProperty(pt)) and
+    (not IsGenericFunctionOrProperty(pt)) and
     (ProcedureHasBody(pt)) and
     (not IsIdentifier(pt, idAny)) then
   begin
@@ -196,6 +196,7 @@ begin
   { start of class function body }
   if (pt.TokenType = ttClass) and
     ( not pt.HasParentNode([nVarDecl, nConstDecl, nClassDeclarations, nRecordType])) and
+    ( not IsGenericFunctionOrProperty(pt)) and
     (pt.HasParentNode(nFunctionHeading, 1)) then
   begin
     Result := True;
@@ -240,7 +241,6 @@ begin
   end;
 
 end;
-
 
 function NeedsReturn(const pt, ptNext: TSourceToken): boolean;
 var
@@ -299,6 +299,7 @@ begin
   { procedure & function in class def get return but not blank line before }
   if (pt.TokenType in ProcedureWords + [ttProperty]) and
     (pt.HasParentNode([nClassType])) and
+    (not IsGenericFunctionOrProperty(pt)) and
     (not IsClassFunctionOrProperty(pt)) then
   begin
     Result := True;
@@ -309,7 +310,8 @@ begin
   if (pt.TokenType in ProcedureWords) and
     (not IsClassFunctionOrProperty(pt)) and
     (not pt.HasParentNode(nType)) and
-    (not IsIdentifier(pt, idAny)) then
+    (not IsIdentifier(pt, idAny)) and
+    (not IsGenericFunctionOrProperty(pt)) then
   begin
     Result := True;
     exit;
@@ -317,8 +319,9 @@ begin
 
   { start of class function decl in class }
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProcedureDecl, nFunctionDecl, nProperty]) and
+    (not IsGenericFunctionOrProperty(pt)) and
     pt.HasParentNode(nClassDeclarations) and
-    ( not pt.HasParentNode([nVarDecl, nConstDecl])) then
+    (not pt.HasParentNode([nVarDecl, nConstDecl])) then
   begin
     Result := True;
     exit;
@@ -340,6 +343,7 @@ begin
 
   { return before 'class' in class function }
   if (pt.TokenType = ttClass) and pt.HasParentNode(ProcedureHeadings) and
+    (not IsGenericFunctionOrProperty(pt)) and
     (RoundBracketLevel(pt) < 1) then
   begin
     Result := True;
@@ -376,7 +380,7 @@ function StartsProcedure(const pcSourceToken: TSourceToken): boolean;
 var
   lcPrev: TSourceToken;
 begin
-  Result := (pcSourceToken.TokenType in ProcedureWords + [ttClass]) and
+  Result := (pcSourceToken.TokenType in ProcedureWords + [ttClass] +[ttGeneric]) and
     pcSourceToken.HasParentNode(ProcedureNodes, 2);
 
   if Result then
@@ -385,7 +389,7 @@ begin
 
     // check that it's not "procedure" in "class procedure foo;"
     // or "reference to procedure
-    if (lcPrev <> nil) and (lcPrev.TokenType in [ttClass, ttTo]) then
+    if (lcPrev <> nil) and (lcPrev.TokenType in [ttClass, ttGeneric, ttTo]) then
       result := False;
   end;
 
