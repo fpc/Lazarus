@@ -672,7 +672,7 @@ function TSearchResultsView.BeautifyPageName(const APageName: string): string;
 const
   MaxPageName = 25;
 begin
-  Result:=SpecialCharsToHex(APageName);
+  Result:=Utf8EscapeControlChars(APageName, emHexPascal);
   if UTF8Length(Result)>MaxPageName then
     Result:=UTF8Copy(Result,1,MaxPageName-5)+'...';
 end;
@@ -1133,8 +1133,8 @@ begin
     while assigned(MatchPos) do begin
       //debugln(['TSearchResultsView.TreeViewAdvancedCustomDrawItem MatchPos.TheText="',MatchPos.TheText,'" MatchPos.MatchStart=',MatchPos.MatchStart,' MatchPos.MatchLen=',MatchPos.MatchLen]);
       // draw normal text
-      CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,
-                                      MatchPos.MatchStart-1-DrawnTextLength));
+      CurPart:=copy(MatchPos.TheText, DrawnTextLength+1, MatchPos.MatchStart-1-DrawnTextLength);
+      CurPart:=Utf8EscapeControlChars(CurPart, emHexPascal);
       DrawnTextLength:=MatchPos.MatchStart-1;
       TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
@@ -1147,8 +1147,8 @@ begin
       TV.Canvas.Font.Style:= TV.Canvas.Font.Style - [fsBold];
 
       if MatchPos.NextInThisLine=nil then begin
-        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,
-                                        Length(MatchPos.TheText)));
+        CurPart:=copy(MatchPos.TheText, DrawnTextLength+1, Length(MatchPos.TheText));
+        CurPart:=Utf8EscapeControlChars(CurPart, emHexPascal);
         TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
       end;
       MatchPos:=MatchPos.NextInThisLine;

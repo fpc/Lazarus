@@ -56,7 +56,8 @@ function CommentText(const s: string; CommentType: TCommentType): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function BinaryStrToText(const s: string): string;
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
-function SpecialCharsToHex(const s: string): string;
+// Deprecated in 2.1 / 04.11.2020 / Remove in 2.3
+function SpecialCharsToHex(const s: string): string; inline; deprecated 'Use LazUtf8.Utf8EscapeControlChars';
 function ShortDotsLine(const Line: string): string;
 function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
@@ -720,21 +721,13 @@ begin
 end;
 
 function SpecialCharsToHex(const s: string): string;
-var
-  i: Integer;
 begin
-  Result:=s;
-  if Result='' then exit;
-  for i:=length(Result) downto 1 do
-    if Result[i]<' ' then
-      Result:=copy(Result,1,i-1)
-              +'#'+Format('%x',[ord(Result[i])])
-              +copy(Result,i+1,length(Result));
+  Result:=Utf8EscapeControlChars(s, emHexPascal);
 end;
 
 function ShortDotsLine(const Line: string): string;
 begin
-  Result:=SpecialCharsToHex(Line);
+  Result:=Utf8EscapeControlChars(Line, emHexPascal);
   if UTF8Length(Result)>MaxTextLen then
     Result:=UTF8Copy(Result,1,MaxTextLen)+'...';
 end;
