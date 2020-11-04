@@ -2868,6 +2868,12 @@ begin
       begin
         Recognise(ttOpenSquareBracket);
         RecogniseExprList;
+        // partial array pass  Test(A[2..5]);
+        if fcTokenList.FirstSolidTokenType=ttDoubleDot then
+        begin
+          Recognise(ttDoubleDot);
+          RecogniseExprList;
+        end;
         Recognise(ttCloseSquareBracket);
       end;
       ttOpenBracket:
