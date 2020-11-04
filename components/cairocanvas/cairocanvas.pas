@@ -362,6 +362,7 @@ end;
 
 procedure TCairoPrinterCanvas.NewPage;
 begin
+  inherited NewPage;
   EndPage;
   BeginPage;
 end;

@@ -376,7 +376,7 @@ begin
 
   Include(fFlags, pfPrinting);
   Exclude(fFlags, pfAborted);
-  fPageNumber := 0;
+  fPageNumber := 1;
 
   if not RawMode then begin
     Canvas.Refresh;
@@ -414,6 +414,7 @@ end;
 //Create an new page
 procedure TPrinter.NewPage;
 begin
+  Inc(fPageNumber);
   if TMethod(@Self.DoNewPage).Code = Pointer(@TPrinter.DoNewPage) then
   begin
     // DoNewPage has not been overriden, use the new method
@@ -423,7 +424,6 @@ begin
   begin
     // Use the old method as DoNewPage has been overriden in descendat TPrinter
     CheckPrinting(True);
-    Inc(fPageNumber);
     if not RawMode then
       TPrinterCanvas(Canvas).NewPage;
     DoNewPage;
@@ -433,7 +433,6 @@ end;
 procedure TPrinter.BeginPage;
 begin
   CheckPrinting(True);
-  inc(fPageNumber);
   if not RawMode then
     TPrinterCanvas(Canvas).BeginPage;
   DoBeginPage;
@@ -1397,12 +1396,13 @@ end;
 
 procedure TPrinterCanvas.NewPage;
 begin
+  Inc(fPageNum);
   BeginPage;
 end;
 
 procedure TPrinterCanvas.BeginPage;
 begin
-  Inc(fPageNum);
+
 end;
 
 procedure TPrinterCanvas.EndPage;
