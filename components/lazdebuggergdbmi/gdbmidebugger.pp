@@ -9817,7 +9817,7 @@ procedure TGDBMIDebuggerBase.Init;
 
   procedure CheckGDBVersion;
   begin
-    if FGDBVersion < '5.3'
+    if (FGDBVersionMajor < 5) or ((FGDBVersionMajor = 5) and (FGDBVersionMinor < 3))
     then begin
       DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FGDBVersion);
       DebugLn(DBG_WARNINGS, '                    Not all functionality will be supported.');
