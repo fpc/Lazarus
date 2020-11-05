@@ -28,9 +28,12 @@ unit uDlgPropertiesPrinter;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, Buttons, Printers, CupsLCL, OsPrinters, LCLProc,
-  ButtonPanel, CupsDyn, Printer4LazStrConst;
+  Classes, SysUtils,
+  // LCL
+  LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
+  LCLProc, LCLType, ButtonPanel, Printers,
+  // Printers
+  CupsLCL, CupsDyn, Printer4LazStrConst;
 
 type
 
@@ -50,6 +53,7 @@ type
     imgOrientation: TIMAGE;
     labBanStart: TLABEL;
     labBanEnd: TLABEL;
+    Label1: TLabel;
     labPaperSrc: TLABEL;
     labResolution: TLabel;
     labPaperType: TLABEL;
@@ -66,6 +70,7 @@ type
     rbLandscape: TRADIOBUTTON;
     rbPortrait: TRADIOBUTTON;
     sb: TScrollBox;
+    procedure FormActivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure rbPortraitClick(Sender: TObject);
     procedure cbPaperSizeKeypress(Sender: TObject; var Key: Char);
@@ -105,7 +110,7 @@ procedure Tdlgpropertiesprinter.cbPaperSizeKeypress(Sender: TObject;
   var Key: Char);
 begin
   if Sender=nil then ;
-  Key:=#0;
+//  Key:=#0;
 end;
 
 function Tdlgpropertiesprinter.number_up_supported: string;
@@ -134,10 +139,6 @@ begin
 
   SetupCupsCombo(cbPaperSize, nil, 'PageSize');
   SetupCupsCombo(cbPaperType, nil, 'MediaType');
-  if not cbPaperType.Enabled then begin
-    cbPaperType.Items.Add('Not Available');
-    cbPaperType.ItemIndex:=0;
-  end;
   SetupCupsCombo(cbPaperSrc, nil, 'InputSlot');
   SetupCupsCombo(cbResolution, nil, 'Resolution');
   st := THackCUPSPrinter(Printer).GetResolutionOption;
@@ -208,10 +209,11 @@ procedure Tdlgpropertiesprinter.SetupAdvancedOptions(Data: PtrInt);
 var
   Group: pppd_group_t;
   Option: pppd_option_t;
-  c,g,k,y: Integer;
+  c,g,k: Integer;
   lab: TLabel;
   Bevel: TBevel;
   Combo: TCombobox;
+  prev: TControl;
 
   function CheckOption: boolean;
   begin
@@ -232,7 +234,7 @@ begin
   then
     exit;
 
-  y := C_SPACE-C_GROUPSPACE;
+  prev := sb;
 
   g := 0;
   Group := THackCUPSPrinter(Printer).CupsPPD^.groups;
@@ -254,28 +256,33 @@ begin
     if k>0 then
     begin
       // add group's caption
-      Inc(Y, C_GROUPSPACE);
-
-      // todo: use exclusively anchor options to do layout
       lab := TLabel.Create(Self);
       lab.Parent := sb;
       lab.Font.Style:=lab.font.style + [fsBold];
-      lab.Top := Y;
       lab.Caption := group^.text;
-      lab.BorderSpacing.Around:=C_SPACE;
+      lab.ShowAccelChar := False;
+      lab.AnchorSideTop.Control := prev;
+      if prev = sb then
+        lab.AnchorSideTop.Side := asrTop
+      else
+        lab.AnchorSideTop.Side := asrBottom;
+      lab.AnchorSideLeft.Control := sb;
+      lab.AnchorSideLeft.Side := asrTop;
+      lab.BorderSpacing.Top := 8;
 
       Bevel := TBevel.Create(Self);
       Bevel.Parent := sb;
       Bevel.Shape := bsTopLine;
-      Bevel.Top:= y + lab.Height div 2;
-      Bevel.Height:= C_SPACE div 2;
-      Bevel.BorderSpacing.Around := C_SPACE;
+      Bevel.Height:= 3;
+      Bevel.AnchorSideTop.Control := lab;
+      Bevel.AnchorSideTop.Side := asrCenter;
       Bevel.AnchorSideLeft.Control := lab;
       Bevel.AnchorSideLeft.Side := asrBottom;
-      Bevel.width := sb.Width - C_SPACE;
+      Bevel.AnchorSideRight.Control := sb;
+      Bevel.AnchorSideRight.Side := asrBottom;
       Bevel.anchors := [akLeft, akTop, akRight];
 
-      inc(y, Lab.Height);
+      prev := lab;
 
       // add options
       c := 0;
@@ -285,34 +292,33 @@ begin
 
         if CheckOption then
         begin
-          y := y + C_SPACE;
 
           lab := TLabel.Create(Self);
           lab.Parent := sb;
-          lab.Layout:=tlCenter;
           lab.AutoSize := false;
-          lab.Top := Y;
-          lab.Width:=220;
-          lab.BorderSpacing.Around:=C_SPACE;
-          lab.AnchorSideLeft.Control := sb;
+          lab.Width := 180; { ???? }
           lab.Caption := Option^.text;
+          lab.ShowAccelChar := False;
+          lab.AnchorSideLeft.Control := sb;
+          lab.AnchorSideLeft.Side := asrLeft;
 
           combo := TCombobox.Create(self);
           combo.Parent := sb;
           combo.Style:= csDropDownList;
-          combo.Top:= y + lab.Height div 2;
-          combo.BorderSpacing.Around := C_SPACE;
+          combo.AnchorSideTop.Control := prev;
+          combo.AnchorSideTop.Side := asrBottom;
           combo.AnchorSideLeft.Control := lab;
-          combo.AnchorSideLeft.Side := asrBottom;
+          combo.AnchorSideLeft.Side := asrRight;
           combo.AnchorSideRight.Control := sb;
-          combo.AnchorSideRight.Side := asrBottom;
+          combo.AnchorSideRight.Side := asrRight;
           combo.anchors := [akLeft, akTop, akRight];
 
-          lab.Height:= combo.height;
+          lab.AnchorSideTop.Control := combo;
+          lab.AnchorSideTop.Side := asrCenter;
 
           SetupCupsCombo(Combo, Option);
 
-          inc(y, combo.height + C_SPACE );
+          prev := combo;
         end;
 
         Inc(Option);
@@ -324,14 +330,8 @@ begin
     inc(group);
     inc(g);
   end; // group
-
-  // final space
-  with TPanel.Create(Self) do begin
-    SetBounds(C_SPACE, y+C_SPACE, 1, C_SPACE);
-    BevelOuter := bvNone;
-    Parent := sb;
-  end;
-
+  if Assigned(prev) then
+    prev.BorderSpacing.Bottom := 12;
 end;
 
 //Initialization
@@ -339,6 +339,7 @@ procedure Tdlgpropertiesprinter.dlgpropertiesprinterCreate(Sender: TObject);
 begin
   if Sender=nil then ;
   Notebook1.PageIndex:=0;
+  Notebook1.AutoSize := True;
 
   Caption := p4lrsPrinterProperties;
   ButtonPanel1.CancelButton.Caption := p4lrsCancel;
@@ -371,6 +372,11 @@ end;
 procedure Tdlgpropertiesprinter.FormDestroy(Sender: TObject);
 begin
   if Sender=nil then ;
+end;
+
+procedure Tdlgpropertiesprinter.FormActivate(Sender: TObject);
+begin
+  Notebook1.AutoSize := False;
 end;
 
 procedure Tdlgpropertiesprinter.RefreshInfos;
@@ -436,7 +442,7 @@ begin
     if rbSheet1.Checked then St:='1';
     if rbSheet2.Checked then St:='2';
     if rbSheet4.Checked then St:='4';
-    if THackCUPSPrinter(Printer).GetAttributeInteger('number-up-default',0)<>StrToInt(St) then
+    if THackCUPSPrinter(Printer).GetAttributeInteger('number-up',0)<>StrToInt(St) then
       THackCUPSPrinter(Printer).cupsAddOption('number-up',St);
   end;
   

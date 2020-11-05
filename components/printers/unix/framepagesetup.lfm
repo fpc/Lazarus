@@ -1,55 +1,72 @@
 object framePageSetup: TframePageSetup
   Left = 0
-  Height = 435
+  Height = 445
   Top = 0
   Width = 448
-  ClientHeight = 435
+  ClientHeight = 445
   ClientWidth = 448
   TabOrder = 0
-  DesignLeft = 350
-  DesignTop = 92
+  DesignLeft = 326
+  DesignTop = 136
   object panSetup: TPanel
     Left = 0
-    Height = 211
-    Top = 224
+    Height = 218
+    Top = 230
     Width = 448
-    Align = alBottom
+    Align = alTop
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 211
+    ChildSizing.HorizontalSpacing = 8
+    ChildSizing.VerticalSpacing = 6
+    ClientHeight = 218
     ClientWidth = 448
     TabOrder = 0
     object gpPaper: TGroupBox
-      Left = 6
-      Height = 98
-      Top = 6
-      Width = 436
+      Left = 0
+      Height = 106
+      Top = 0
+      Width = 448
       Align = alTop
-      BorderSpacing.Around = 6
+      AutoSize = True
       Caption = 'Paper'
-      ClientHeight = 82
-      ClientWidth = 432
+      ChildSizing.LeftRightSpacing = 8
+      ChildSizing.TopBottomSpacing = 2
+      ChildSizing.VerticalSpacing = 6
+      ClientHeight = 86
+      ClientWidth = 446
       TabOrder = 0
       object lblPaper: TLabel
-        Left = 14
-        Height = 14
-        Top = 11
-        Width = 37
-        Caption = 'Paper:'
+        AnchorSideLeft.Control = gpPaper
+        AnchorSideTop.Control = cbPaper
+        AnchorSideTop.Side = asrCenter
+        Left = 8
+        Height = 19
+        Top = 10
+        Width = 39
+        Caption = 'Paper'
+        FocusControl = cbPaper
         ParentColor = False
       end
       object lblSource: TLabel
-        Left = 14
-        Height = 14
+        AnchorSideLeft.Control = gpPaper
+        AnchorSideTop.Control = cbSource
+        AnchorSideTop.Side = asrCenter
+        Left = 8
+        Height = 19
         Top = 51
-        Width = 46
-        Caption = 'Source:'
+        Width = 45
+        Caption = 'Source'
+        FocusControl = cbSource
         ParentColor = False
       end
       object cbPaper: TComboBox
-        Left = 78
-        Height = 28
-        Top = 3
-        Width = 347
+        AnchorSideTop.Control = gpPaper
+        AnchorSideRight.Control = gpPaper
+        AnchorSideRight.Side = asrBottom
+        Left = 90
+        Height = 35
+        Top = 2
+        Width = 348
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
         OnChange = cbPaperChange
@@ -57,32 +74,42 @@ object framePageSetup: TframePageSetup
         TabOrder = 0
       end
       object cbSource: TComboBox
-        Left = 78
-        Height = 28
+        AnchorSideLeft.Control = cbPaper
+        AnchorSideTop.Control = cbPaper
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cbPaper
+        AnchorSideRight.Side = asrBottom
+        Left = 90
+        Height = 35
         Top = 43
-        Width = 347
+        Width = 348
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Bottom = 8
         ItemHeight = 0
         Style = csDropDownList
         TabOrder = 1
       end
     end
     object gpOrientation: TGroupBox
-      Left = 6
-      Height = 95
-      Top = 110
-      Width = 120
+      Left = 0
+      Height = 106
+      Top = 112
+      Width = 113
       Align = alLeft
-      BorderSpacing.Around = 6
+      AutoSize = True
       Caption = 'Orientation'
-      ClientHeight = 79
-      ClientWidth = 116
+      ChildSizing.LeftRightSpacing = 8
+      ChildSizing.TopBottomSpacing = 2
+      ClientHeight = 86
+      ClientWidth = 111
       TabOrder = 1
       object radPortrait: TRadioButton
+        AnchorSideLeft.Control = gpOrientation
+        AnchorSideTop.Control = gpOrientation
         Left = 8
-        Height = 24
-        Top = 8
-        Width = 70
+        Height = 23
+        Top = 2
+        Width = 77
         Caption = 'Portrait'
         Checked = True
         OnClick = radPortraitClick
@@ -90,112 +117,115 @@ object framePageSetup: TframePageSetup
         TabStop = True
       end
       object radLandscape: TRadioButton
+        AnchorSideLeft.Control = radPortrait
+        AnchorSideTop.Control = radPortrait
+        AnchorSideTop.Side = asrBottom
         Left = 8
-        Height = 24
-        Top = 40
-        Width = 91
+        Height = 23
+        Top = 25
+        Width = 95
         Caption = 'Landscape'
         OnClick = radPortraitClick
         TabOrder = 1
       end
     end
     object gpMargins: TGroupBox
-      Left = 132
-      Height = 95
-      Top = 110
-      Width = 310
+      Left = 121
+      Height = 106
+      Top = 112
+      Width = 327
       Align = alClient
-      BorderSpacing.Around = 6
+      AutoSize = True
       Caption = 'Margins'
-      ClientHeight = 79
-      ClientWidth = 306
+      ClientHeight = 86
+      ClientWidth = 325
       TabOrder = 2
       object panMargins: TPanel
         Left = 0
-        Height = 79
+        Height = 80
         Top = 0
-        Width = 306
+        Width = 325
         Align = alClient
+        AutoSize = True
+        BorderSpacing.Bottom = 6
         BevelOuter = bvSpace
-        ClientHeight = 79
-        ClientWidth = 306
+        ChildSizing.LeftRightSpacing = 8
+        ChildSizing.VerticalSpacing = 6
+        ClientHeight = 80
+        ClientWidth = 325
         TabOrder = 0
         object lblBottom: TLabel
           AnchorSideLeft.Control = lblRight
-          AnchorSideTop.Control = txtTop
+          AnchorSideTop.Control = txtBottom
           AnchorSideTop.Side = asrCenter
-          Left = 142
-          Height = 14
-          Top = 43
+          Left = 166
+          Height = 19
+          Top = 50
           Width = 48
-          Caption = 'Bottom:'
+          Caption = 'Bottom'
           ParentColor = False
         end
         object lblTop: TLabel
           AnchorSideLeft.Control = lblLeft
           AnchorSideTop.Control = txtTop
           AnchorSideTop.Side = asrCenter
-          Left = 7
-          Height = 14
-          Top = 43
+          Left = 9
+          Height = 19
+          Top = 50
           Width = 24
-          Caption = 'Top:'
+          Caption = 'Top'
           ParentColor = False
         end
         object lblRight: TLabel
-          AnchorSideLeft.Control = txtLeft
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = txtLeft
+          AnchorSideLeft.Control = Label1
+          AnchorSideTop.Control = txtRight
           AnchorSideTop.Side = asrCenter
-          Left = 142
-          Height = 14
-          Top = 13
-          Width = 36
-          BorderSpacing.Left = 6
-          Caption = 'Right:'
+          Left = 166
+          Height = 19
+          Top = 9
+          Width = 34
+          BorderSpacing.Left = 4
+          Caption = 'Right'
           ParentColor = False
         end
         object lblLeft: TLabel
           AnchorSideLeft.Control = panMargins
           AnchorSideTop.Control = txtLeft
           AnchorSideTop.Side = asrCenter
-          Left = 7
-          Height = 14
-          Top = 13
-          Width = 27
+          Left = 9
+          Height = 19
+          Top = 9
+          Width = 25
           BorderSpacing.Left = 6
-          Caption = 'Left:'
+          Caption = 'Left'
           ParentColor = False
         end
         object txtLeft: TFloatSpinEdit
-          Left = 64
-          Height = 24
-          Top = 8
-          Width = 72
-          Increment = 1
-          MaxValue = 100
-          MinValue = 0
-          OnChange = txtLeftChange
-          TabOrder = 0
-          Value = 0
-        end
-        object txtRight: TFloatSpinEdit
-          AnchorSideTop.Control = txtLeft
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = panMargins
+          AnchorSideLeft.Control = Label1
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = panMargins
+          AnchorSideRight.Control = Label1
           AnchorSideRight.Side = asrBottom
-          Left = 227
-          Height = 24
-          Top = 8
+          Left = 87
+          Height = 35
+          Top = 1
           Width = 72
           Anchors = [akTop, akRight]
-          BorderSpacing.Right = 6
-          Increment = 1
-          MaxValue = 100
-          MinValue = 0
+          BorderSpacing.Right = 4
+          OnChange = txtLeftChange
+          TabOrder = 0
+        end
+        object txtRight: TFloatSpinEdit
+          AnchorSideTop.Control = panMargins
+          AnchorSideRight.Control = panMargins
+          AnchorSideRight.Side = asrBottom
+          Left = 244
+          Height = 35
+          Top = 1
+          Width = 72
+          Anchors = [akTop, akRight]
           OnChange = txtLeftChange
           TabOrder = 1
-          Value = 0
         end
         object txtTop: TFloatSpinEdit
           AnchorSideLeft.Control = txtLeft
@@ -203,79 +233,58 @@ object framePageSetup: TframePageSetup
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = txtLeft
           AnchorSideRight.Side = asrBottom
-          Left = 64
-          Height = 24
-          Top = 38
+          Left = 87
+          Height = 35
+          Top = 42
           Width = 72
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 6
-          Increment = 1
-          MaxValue = 100
-          MinValue = 0
           OnChange = txtLeftChange
           TabOrder = 2
-          Value = 0
         end
         object txtBottom: TFloatSpinEdit
           AnchorSideLeft.Control = txtRight
-          AnchorSideTop.Control = txtTop
-          AnchorSideTop.Side = asrCenter
+          AnchorSideTop.Control = txtRight
+          AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = txtRight
           AnchorSideRight.Side = asrBottom
-          Left = 227
-          Height = 24
-          Top = 38
+          Left = 244
+          Height = 35
+          Top = 42
           Width = 72
           Anchors = [akTop, akLeft, akRight]
-          Increment = 1
-          MaxValue = 100
-          MinValue = 0
           OnChange = txtLeftChange
           TabOrder = 3
-          Value = 0
+        end
+        object Label1: TLabel
+          AnchorSideLeft.Control = panMargins
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = panMargins
+          Left = 162
+          Height = 1
+          Top = 1
+          Width = 1
+          ParentColor = False
         end
       end
     end
   end
   object panPreview: TPanel
-    AnchorSideTop.Control = panSetup
     Left = 0
-    Height = 224
+    Height = 230
     Top = 0
     Width = 448
-    Align = alClient
+    Align = alTop
     BevelOuter = bvNone
-    ClientHeight = 224
+    ClientHeight = 230
     ClientWidth = 448
     Constraints.MinHeight = 142
     TabOrder = 1
-    OnMouseDown = pbPreviewMouseDown
-    OnResize = panPreviewResize
-    object boxShadow: TShape
-      AnchorSideLeft.Control = pbPreview
-      AnchorSideTop.Control = pbPreview
-      AnchorSideRight.Side = asrCenter
-      Left = 180
-      Height = 65
-      Top = 53
-      Width = 124
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      Brush.Color = clGrayText
-      Pen.Color = clGrayText
-    end
     object pbPreview: TPaintBox
-      AnchorSideLeft.Control = panPreview
-      AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = panPreview
-      AnchorSideTop.Side = asrCenter
-      Left = 174
-      Height = 130
-      Top = 47
-      Width = 100
-      OnMouseDown = pbPreviewMouseDown
-      OnMouseWheelDown = pbPreviewMouseWheelDown
-      OnMouseWheelUp = pbPreviewMouseWheelUp
+      Left = 0
+      Height = 230
+      Top = 0
+      Width = 448
+      Align = alClient
       OnPaint = pbPreviewPaint
     end
   end

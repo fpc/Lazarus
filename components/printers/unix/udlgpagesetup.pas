@@ -14,7 +14,7 @@ interface
 
 uses
   // LCL
-  Classes, Forms, ExtCtrls, StdCtrls, Menus,
+  Classes, Forms, ExtCtrls, StdCtrls, Menus, Controls,
   // Printers
   Printers, framePageSetup;
 
@@ -29,8 +29,14 @@ type
     frmPageSetup: TframePageSetup;
     PanelButtons: TPanel;
     procedure btnPrinterClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FMenu: TPopupMenu;
+    FSavedPaperName: string;
+    FSavedOrientation: TPrinterOrientation;
+    FSavedPrinterIndex: Integer;
     procedure MenuPrinterClick(Sender: TObject);
   public
     procedure SetControls(AEnablePreview, AEnableMargins, AEnablePapers,
@@ -71,6 +77,38 @@ begin
   FMenu.PopUp(pnt.X, pnt.Y);
 end;
 
+procedure TDlgPageSetup.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if ModalResult = mrCancel then
+  begin
+    Printer.PaperSize.PaperName := FSavedPaperName;
+    Printer.Orientation := FSavedOrientation;
+    Printer.PrinterIndex := FSavedPrinterIndex;
+  end;
+end;
+
+procedure TDlgPageSetup.FormCreate(Sender: TObject);
+begin
+  // Save selected printer and paper, to be restore if dialog is cancelled
+  FSavedPaperName := Printer.PaperSize.PaperName;
+  FSavedOrientation := Printer.Orientation;
+  FSavedPrinterIndex := Printer.PrinterIndex;
+  AutoSize := False;
+  AutoSize := True;
+end;
+
+procedure TDlgPageSetup.FormShow(Sender: TObject);
+begin
+  // adjust height for themes
+  with frmPageSetup do
+    if not EnablePreview then
+      Height := panSetup.Height
+    else
+      Height := panSetup.Height + panPreview.Height;
+  MoveToDefaultPosition;
+end;
+
 procedure TDlgPageSetup.MenuPrinterClick(Sender: TObject);
 begin
   if Sender is TMenuItem then
@@ -90,6 +128,11 @@ procedure TDlgPageSetup.SetControls(AEnablePreview, AEnableMargins, AEnablePaper
   AEnableOrientation: boolean);
 begin
   frmPageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers, AEnableOrientation);
+{  with frmPageSetup do
+    if not EnablePreview then
+      Height := panSetup.Height
+    else
+      Height := panSetup.Height + panPreview.Height;}
 end;
 
 end.

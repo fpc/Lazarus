@@ -32,6 +32,7 @@ begin
   Dlg.PrintRange := Self.PrintRange;
   Dlg.cbCollate.Checked := Self.Collate;
   Dlg.edCopies.Value := Self.Copies;
+  Dlg.cbPrintToFile.Checked := Self.PrintToFile;
   if Title<>'' then
     Dlg.Caption := Title
   else

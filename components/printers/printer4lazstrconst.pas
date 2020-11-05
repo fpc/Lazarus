@@ -47,6 +47,9 @@ resourcestring
   p4lrsAllPages = 'All';
   p4lrsPageOdd = 'Odd';
   p4lrsPageEven = 'Even';
+  p4lrsNotAvailable = 'Not available';
+  p4lrsAbbrevUnitsMm = 'mm';
+  p4lrsAbbrevUnitsInches = '"';
 
 implementation
 

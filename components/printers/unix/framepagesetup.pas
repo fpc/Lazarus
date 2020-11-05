@@ -18,7 +18,7 @@ uses
   LCLIntf, LCLProc, LResources, Controls, Graphics, Forms, ExtCtrls, StdCtrls,
   Spin, Printers,
   // Printers
-  OsPrinters, CupsLCL;
+  CupsLCL, Printer4LazStrConst;
 
 type
   { TframePageSetup }
@@ -26,8 +26,8 @@ type
   TframePageSetup = class(TFrame)
     cbPaper: TComboBox;
     cbSource: TComboBox;
+    Label1: TLabel;
     panMargins: TPanel;
-    boxShadow: TShape;
     txtLeft: TFloatSpinEdit;
     txtTop: TFloatSpinEdit;
     txtRight: TFloatSpinEdit;
@@ -47,19 +47,10 @@ type
     radLandscape: TRadioButton;
     radPortrait: TRadioButton;
     procedure cbPaperChange(Sender: TObject);
-    procedure panPreviewResize(Sender: TObject);
-    procedure pbPreviewMouseDown(Sender: TObject; Button: TMouseButton;
-      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
-    procedure pbPreviewMouseWheelDown(Sender: TObject; {%H-}Shift: TShiftState;
-      {%H-}MousePos: TPoint; var Handled: Boolean);
-    procedure pbPreviewMouseWheelUp(Sender: TObject; {%H-}Shift: TShiftState;
-      {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure pbPreviewPaint(Sender: TObject);
     procedure radPortraitClick(Sender: TObject);
     procedure txtLeftChange(Sender: TObject);
   private
-    FHeightTallest: Integer;
-    FFactorX, FFactorY, FZoom: Double;
     function NToInches: double;
     procedure RotateMargins(AOrder: boolean);
   public
@@ -138,36 +129,88 @@ begin
 end;
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
+const
+  cTopBottomMargin = 8;
+  cPadding = 6;
+  cShadowSize = 4;
+  cDimLineHeight = 12;
+  cDimLineTail = 3;
 var
-  R: TRect;
-  NLeft, NTop, NRight, NBottom: integer;
+  rc: TRect;
+  txtHeight, fHeight, fWidth, fx, fy, vCenter: Integer;
+  FUnitsStr, str: string;
 begin
   if not EnablePreview then
     exit;
 
-  with pbPreview do
+  if UnitInches then
+    FUnitsStr := p4lrsAbbrevUnitsInches
+  else
+    FUnitsStr := p4lrsAbbrevUnitsMm;
+
+  with pbPreview, Canvas do
   begin
-    Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Color := clBlack;
-    Canvas.Brush.Color := clWhite;
-    Canvas.Rectangle(0, 0, Width, Height);
-
-    //if EnableMargins then // EnableMargins is for SpinEdits only
+    Pen.Color := clBlack;
+    txtHeight := TextHeight('A');
+    // center
+    vCenter := Height div 2;
+    // adjust center
+    if CurPageHeight > CurPageWidth then;
+      vCenter := vCenter - (txtHeight + cDimLineHeight + cPadding) div 2;
+    // compute height/width
+    fHeight := Height - cTopBottomMargin * 2 - txtHeight - cDimLineHeight - cPadding;
+    if CurPageHeight > CurPageWidth then
+      fWidth := Round(CurPageWidth / CurPageHeight * fHeight)
+    else
     begin
-      NLeft := Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom);
-      NTop := Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom);
-      NRight := Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom);
-      NBottom := Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom);
-
-      R.Left := NLeft;
-      R.Top := NTop;
-      R.Right := Width-1-NRight;
-      R.Bottom := Height-1-NBottom;
-
-      Canvas.Pen.Color := clMedGray;
-      //Canvas.Pen.Style := psDash; // AT: setting line style don't work, line is solid
-      Canvas.Rectangle(R);
+      fWidth := fHeight;
+      fHeight := Round(CurPageHeight / CurPageWidth * fWidth);
     end;
+    // draw paper and shadow
+    fx := (Width - fWidth) div 2;
+    fy := vCenter - (fHeight div 2);
+    Brush.Color := clGrayText;
+    Pen.Style := psClear;
+    rc := Rect(fx, fy, fx + fWidth, fy + fHeight);
+    rc.Offset(cShadowSize, cShadowSize);
+    Rectangle(rc);
+    Brush.Color := clWhite;
+    Pen.Style := psSolid;
+    rc.Offset(-cShadowSize, -cShadowSize);
+    Rectangle(rc);
+    // draw margins
+    rc.Left := rc.Left + Round(txtLeft.Value * fWidth / CurPageWidth);
+    rc.Top := rc.Top + Round(txtTop.Value * fHeight / CurPageHeight);
+    rc.Right := rc.Right - Round(txtRight.Value * fWidth / CurPageWidth);
+    rc.Bottom := rc.Bottom - Round(txtBottom.Value * fHeight / CurPageHeight);
+    Pen.Color := clGray;
+    Pen.Style := psDot;
+    Rectangle(rc);
+    // bottom dimension line
+    Pen.Color := clBlack;
+    Pen.Style := psSolid;
+    fy := fy + fHeight + cPadding + cDimLineHeight div 2;
+    Line(fx, fy, fx + fWidth, fy);
+    Line(fx, fy - cDimLineTail, fx, fy + cDimLineTail + 1);
+    fx := fx + fWidth - 1;
+    Line(fx, fy - cDimLineTail, fx, fy + cDimLineTail + 1);
+    // bottom dimension text
+    Brush.Style := bsClear;
+    str := FormatFloat(',0.00 ', CurPageWidth) + FUnitsStr;
+    fy := fy + cDimLineHeight div 2;
+    TextOut((Width - TextWidth(str)) div 2, fy, str);
+    // left dimension line
+    fy := vCenter - (fHeight div 2);
+    fx := (Width - fWidth) div 2 - cPadding - cDimLineHeight div 2;
+    Line(fx, fy, fx, fy + fHeight);
+    Line(fx - cDimLineTail, fy, fx + cDimLineTail + 1, fy);
+    fy := fy + fHeight - 1;
+    Line(fx - cDimLineTail, fy, fx + cDimLineTail + 1, fy);
+    // left dimension text
+    Brush.Style := bsClear;
+    str := FormatFloat(',0.00 ', CurPageHeight) + FUnitsStr;
+    fy := fy - fHeight div 2 - txtHeight div 2;
+    TextOut(fx - cDimLineHeight div 2 - TextWidth(str), fy, str);
   end;
 end;
 
@@ -183,7 +226,7 @@ end;
 
 procedure TframePageSetup.txtLeftChange(Sender: TObject);
 begin
-  pbPreview.Update;
+  pbPreview.Invalidate;
 end;
 
 procedure TframePageSetup.cbPaperChange(Sender: TObject);
@@ -197,68 +240,26 @@ begin
   UpdatePageSize;
 end;
 
-procedure TframePageSetup.panPreviewResize(Sender: TObject);
-var
-  TallH: Integer;
-begin
-  if not EnablePreview then
-    exit;
-
-  TallH := Round(FheightTallest * FFactorY);
-
-  with PanPreview do
-  if (Height<>C_BOTHSPACES) and (TallH>(Height-C_BOTHSPACES)) then
-    FZoom := (Height-C_BOTHSPACES)/TallH
-  else
-    FZoom := 1.0;
-end;
-
-procedure TframePageSetup.pbPreviewMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if Button=mbMiddle then
-  begin
-    FZoom := 1;
-    UpdatePageSize;
-  end;
-end;
-
-procedure TframePageSetup.pbPreviewMouseWheelDown(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-  FZoom := FZoom - 0.2;
-  if FZoom<0.5 then
-    FZoom := 0.5;
-  UpdatePageSize;
-  Handled := true;
-end;
-
-procedure TframePageSetup.pbPreviewMouseWheelUp(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-  FZoom := FZoom + 0.2;
-  UpdatePageSize;
-  Handled := true;
-end;
-
 procedure TframePageSetup.UpdatePageSize;
+var
+  FLastPageWidth, FLastPageHeight: Double;
 begin
   if not EnablePreview then
     exit;
-
-  with Printer.PaperSize.PaperRect.PhysicalRect do
-  begin
-    PbPreview.Width := Round(FFactorX * (Right - Left) * FZoom) + 2;
-    PbPreview.Height := Round(FFactorY * (Bottom - Top) * FZoom) + 2;
-
-    boxShadow.Width := pbPreview.Width;
-    boxShadow.Height := pbPreview.Height;
-  end;
 
   with Printer.PaperSize.PaperRect do
   begin
+    // save last size
+    FLastPageWidth := CurPageWidth;
+    FLastPageHeight := CurPageHeight;
     CurPageWidth := (PhysicalRect.Right-PhysicalRect.Left)/Printer.XDPI/NToInches;
     CurPageHeight := (PhysicalRect.Bottom-PhysicalRect.Top)/Printer.YDPI/NToInches;
+  end;
+  // revert to last size if invalid (custom?)
+  if (CurPageWidth <= 0) or (CurPageHeight <= 0) then
+  begin
+    CurPageWidth := FLastPageWidth;
+    CurPageHeight := FLastPageHeight;
   end;
 
   UpdateMaxValues;
@@ -286,9 +287,6 @@ end;
 
 procedure TframePageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
   AEnableOrientation: boolean);
-var
-  i,j:Integer;
-  R: TPaperRect;
 begin
   EnablePreview:= AEnablePreview;
   EnableMargins:= AEnableMargins;
@@ -300,20 +298,15 @@ begin
   cbPaper.ItemIndex := -1;
   cbSource.ItemIndex := -1;
 
-  if EnablePapers then
+  SetupCupsCombo(cbSource, nil, 'InputSlot');
+  SetupCupsCombo(cbPaper, nil, 'PageSize');
+  if (cbPaper.Items.Count=0) then
   begin
-    SetupCupsCombo(cbSource, nil, 'InputSlot');
-    SetupCupsCombo(cbPaper, nil, 'PageSize');
-    if (cbPaper.Items.Count=0) then
-    begin
-      // no cups printer papers, use default ones
-      cbPaper.Items := Printer.PaperSize.SupportedPapers;
-      cbPaper.ItemIndex:= cbPaper.Items.IndexOf(Printer.PaperSize.PaperName);
-    end;
+    // no cups printer papers, use default ones
+    cbPaper.Items := Printer.PaperSize.SupportedPapers;
+    cbPaper.ItemIndex:= cbPaper.Items.IndexOf(Printer.PaperSize.PaperName);
   end;
-
-  cbPaper.Enabled := cbPaper.Items.Count>0;
-  cbSource.Enabled := cbSource.Items.Count>0;
+  cbPaper.Enabled := EnablePapers;
 
   //TODO: support reverse variants too?
   gpOrientation.Enabled := EnableOrientation;
@@ -328,44 +321,7 @@ begin
   panPreview.Visible:= EnablePreview;
 
   if EnablePreview then
-  begin
-    // assume 100 pix = 8.5 inch (IOW, letter size width = 100 pixels)
-    with ScreenInfo do
-    begin
-      FFactorX := (100/8.5)/Printer.XDPI;
-      FFactorY := (100/8.5)*(PixelsPerInchY/PixelsPerInchX)/Printer.YDPI;
-    end;
-
-    // find the tallest paper
-    FHeightTallest := 0;
-    j := -1;
-    if cbPaper.Enabled then
-    for i:=0 to cbPaper.Items.Count-1 do
-    begin
-      if Printer.PaperSize.DefaultPapers then
-        R := Printer.PaperSize.PaperRectOf[cbPaper.Items[i]]
-      else
-        R := Printer.PaperSize.PaperRectOf[GetCupsComboKeyValue(cbPaper, i)];
-      with R.PhysicalRect do
-      if FHeightTallest<(Bottom-Top) then
-      begin
-        FHeightTallest := (Bottom-Top);
-        j := i;
-      end;
-    end;
-
-    if j>=0 then
-    begin
-      {$IFDEF DebugCUPS}
-      DebugLn(' Tallest Paper is: %s Height=%d %.2f Inch',
-       [cbPaper.Items[j],FHeightTallest,FHeightTallest/Printer.YDPI]);
-      {$ENDIF}
-    end;
-
-    // zoom factor
-    FZoom := 1.0;
     UpdatePageSize;
-  end;
 end;
 
 procedure TframePageSetup.SetDefaultMinMargins;

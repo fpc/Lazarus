@@ -18,7 +18,7 @@ uses
   {$ifdef DebugCUPS}LCLProc,{$endif}
   StdCtrls, Printers,
   // Printers
-  OsPrinters, CupsDyn;
+  OsPrinters, CupsDyn, Printer4LazStrConst;
 
 const
   C_SPACE       = 6;
@@ -46,36 +46,44 @@ begin
   combo.Tag:=-1;
   combo.Enabled:=false;
 
-  if THackCUPSPrinter(Printer).CupsPPD=nil then
-    exit;
-  if Option=nil then
-  begin
-    if OptionStr='' then
+  try
+    if THackCUPSPrinter(Printer).CupsPPD=nil then
       exit;
-    Option := ppdFindOption(THackCUPSPrinter(Printer).CupsPPD,pchar(OptionStr));
     if Option=nil then
-      exit;
-  end;
+    begin
+      if OptionStr='' then
+        exit;
+      Option := ppdFindOption(THackCUPSPrinter(Printer).CupsPPD,pchar(OptionStr));
+      if Option=nil then
+        exit;
+    end;
 
-  c := 0;
-  Choice := Option^.choices;
-  St := THackCUPSPrinter(Printer).cupsGetOption(Option^.keyword);
-  {$IFDEF DebugCUPS}
-  DbgOut('Combo: Keyword="%s" Default="%s" CurValue="%s"',
-                                        [Option^.keyword,Option^.defchoice,St]);
-  {$ENDIF}
-  if St='' then
-    St := Option^.defchoice;
-  while (Choice<>nil) and (c<Option^.num_choices) do
-  begin
-    j := combo.items.AddObject(choice^.Text, TObject(Choice));
-    if strcomp(choice^.choice, pchar(St))=0 then
-      combo.Tag := j;
-    inc(Choice);
-    inc(c);
+    c := 0;
+    Choice := Option^.choices;
+    St := THackCUPSPrinter(Printer).cupsGetOption(Option^.keyword);
+    {$IFDEF DebugCUPS}
+    DbgOut('Combo: Keyword="%s" Default="%s" CurValue="%s"',
+                                          [Option^.keyword,Option^.defchoice,St]);
+    {$ENDIF}
+    if St='' then
+      St := Option^.defchoice;
+    while (Choice<>nil) and (c<Option^.num_choices) do
+    begin
+      j := combo.items.AddObject(choice^.Text, TObject(Choice));
+      if strcomp(choice^.choice, pchar(St))=0 then
+        combo.Tag := j;
+      inc(Choice);
+      inc(c);
+    end;
+    combo.ItemIndex := combo.Tag;
+    combo.Enabled := combo.Items.Count > 0;
+  finally
+    if not combo.Enabled then
+    begin
+      combo.Items.Text := p4lrsNotAvailable;
+      combo.ItemIndex := 0;
+    end;
   end;
-  combo.ItemIndex := combo.Tag;
-  combo.Enabled:=combo.Tag<>-1;
   {$IFDEF DebugCUPS}
   DebugLn(' SelValue="%s" ItemIndex=%d',[St,combo.ItemIndex]);
   {$ENDIF}

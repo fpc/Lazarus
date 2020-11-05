@@ -1,40 +1,53 @@
 object dlgpropertiesprinter: Tdlgpropertiesprinter
-  Left = 363
-  Height = 468
-  Top = 180
-  Width = 457
-  ActiveControl = Notebook1
+  Left = 334
+  Height = 502
+  Top = 134
+  Width = 461
+  AutoSize = True
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'dlgpropertiesprinter'
-  ClientHeight = 468
-  ClientWidth = 457
+  ChildSizing.LeftRightSpacing = 8
+  ChildSizing.TopBottomSpacing = 6
+  ChildSizing.HorizontalSpacing = 4
+  ChildSizing.VerticalSpacing = 6
+  ClientHeight = 502
+  ClientWidth = 461
+  OnActivate = FormActivate
   OnCreate = dlgpropertiesprinterCREATE
   OnDestroy = FormDestroy
   OnShow = dlgpropertiesprinterSHOW
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Notebook1: TPageControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 427
-    Top = 0
-    Width = 457
+    Left = 8
+    Height = 446
+    Top = 6
+    Width = 444
+    TabStop = False
     ActivePage = pgGeneral
-    Align = alClient
     TabIndex = 0
     TabOrder = 0
+    Options = [nboKeyboardTabSwitch]
     object pgGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 396
-      ClientWidth = 453
+      ChildSizing.LeftRightSpacing = 8
+      ChildSizing.TopBottomSpacing = 8
+      ChildSizing.HorizontalSpacing = 8
+      ChildSizing.VerticalSpacing = 6
+      ClientHeight = 413
+      ClientWidth = 434
       object labPaperSize: TLabel
         AnchorSideLeft.Control = pgGeneral
         AnchorSideTop.Control = cbPaperSize
         AnchorSideTop.Side = asrCenter
-        Left = 6
-        Height = 17
-        Top = 13
-        Width = 69
+        Left = 8
+        Height = 19
+        Top = 16
+        Width = 68
         BorderSpacing.Left = 6
         Caption = 'Paper size'
         ParentColor = False
@@ -43,10 +56,10 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideLeft.Control = labPaperSize
         AnchorSideTop.Control = cbPaperType
         AnchorSideTop.Side = asrCenter
-        Left = 6
-        Height = 17
-        Top = 50
-        Width = 73
+        Left = 8
+        Height = 19
+        Top = 57
+        Width = 70
         Caption = 'Paper type'
         ParentColor = False
       end
@@ -54,10 +67,10 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideLeft.Control = labPaperSize
         AnchorSideTop.Control = cbPaperSrc
         AnchorSideTop.Side = asrCenter
-        Left = 6
-        Height = 17
-        Top = 87
-        Width = 88
+        Left = 8
+        Height = 19
+        Top = 98
+        Width = 86
         Caption = 'Paper source'
         ParentColor = False
       end
@@ -65,23 +78,20 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideLeft.Control = labPaperSize
         AnchorSideTop.Control = cbResolution
         AnchorSideTop.Side = asrCenter
-        Left = 6
-        Height = 17
-        Top = 124
-        Width = 72
+        Left = 8
+        Height = 19
+        Top = 139
+        Width = 69
         Caption = 'Resolution'
         ParentColor = False
       end
       object cbPaperSize: TComboBox
         AnchorSideTop.Control = pgGeneral
-        AnchorSideRight.Control = pgGeneral
         AnchorSideRight.Side = asrBottom
-        Left = 172
-        Height = 31
-        Top = 6
-        Width = 275
-        Anchors = [akTop, akRight]
-        BorderSpacing.Around = 6
+        Left = 142
+        Height = 35
+        Top = 8
+        Width = 284
         DropDownCount = 10
         ItemHeight = 0
         OnKeyPress = cbPaperSizeKEYPRESS
@@ -94,12 +104,11 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cbPaperSize
         AnchorSideRight.Side = asrBottom
-        Left = 172
-        Height = 31
-        Top = 43
-        Width = 275
+        Left = 142
+        Height = 35
+        Top = 49
+        Width = 284
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Top = 6
         ItemHeight = 0
         OnKeyPress = cbPaperSizeKEYPRESS
         Style = csDropDownList
@@ -111,37 +120,52 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cbPaperSize
         AnchorSideRight.Side = asrBottom
-        Left = 172
-        Height = 31
-        Top = 80
-        Width = 275
+        Left = 142
+        Height = 35
+        Top = 90
+        Width = 284
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Top = 6
         ItemHeight = 0
         OnKeyPress = cbPaperSizeKEYPRESS
         Style = csDropDownList
         TabOrder = 2
       end
       object gbOrientation: TGroupBox
-        Left = 13
-        Height = 119
-        Top = 162
-        Width = 233
+        AnchorSideLeft.Control = pgGeneral
+        AnchorSideTop.Control = cbResolution
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label1
+        AnchorSideRight.Side = asrBottom
+        Left = 8
+        Height = 120
+        Top = 172
+        Width = 232
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         Caption = ' Orientation '
+        ChildSizing.LeftRightSpacing = 8
+        ChildSizing.TopBottomSpacing = 2
         ClientHeight = 100
-        ClientWidth = 229
+        ClientWidth = 230
         TabOrder = 4
         object imgOrientation: TImage
-          Left = 167
+          AnchorSideLeft.Control = rbrev_Landscape
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = gbOrientation
+          AnchorSideTop.Side = asrCenter
+          Left = 170
           Height = 48
-          Top = 25
+          Top = 26
           Width = 52
+          BorderSpacing.Left = 14
         end
         object rbPortrait: TRadioButton
-          Left = 7
-          Height = 24
-          Top = 5
-          Width = 80
+          AnchorSideLeft.Control = gbOrientation
+          AnchorSideTop.Control = gbOrientation
+          Left = 8
+          Height = 23
+          Top = 2
+          Width = 77
           Caption = 'Portrait'
           Checked = True
           DragCursor = crDefault
@@ -150,30 +174,40 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           TabStop = True
         end
         object rbLandscape: TRadioButton
-          Left = 7
-          Height = 24
-          Top = 29
-          Width = 98
+          AnchorSideLeft.Control = gbOrientation
+          AnchorSideTop.Control = rbPortrait
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 25
+          Width = 95
           Caption = 'Landscape'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 1
         end
         object rbrev_Landscape: TRadioButton
-          Left = 7
-          Height = 24
-          Top = 53
-          Width = 150
+          AnchorSideLeft.Control = gbOrientation
+          AnchorSideTop.Control = rbLandscape
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 48
+          Width = 148
           Caption = 'Reverse landscape'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 2
         end
         object rbrev_portrait: TRadioButton
-          Left = 7
-          Height = 24
-          Top = 77
-          Width = 136
+          AnchorSideLeft.Control = gbOrientation
+          AnchorSideTop.Control = rbrev_Landscape
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 71
+          Width = 132
+          BorderSpacing.Bottom = 6
           Caption = 'Reverse portrait'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
@@ -181,23 +215,32 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
       end
       object gbBanners: TGroupBox
-        Left = 13
-        Height = 96
-        Top = 290
-        Width = 427
+        AnchorSideLeft.Control = pgGeneral
+        AnchorSideTop.Control = gbOrientation
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = gbPagesSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 8
+        Height = 106
+        Top = 298
+        Width = 418
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         Caption = ' Banners '
-        ClientHeight = 77
-        ClientWidth = 423
+        ChildSizing.LeftRightSpacing = 8
+        ChildSizing.TopBottomSpacing = 2
+        ChildSizing.VerticalSpacing = 6
+        ClientHeight = 86
+        ClientWidth = 416
         TabOrder = 6
         object labBanStart: TLabel
           AnchorSideLeft.Control = gbBanners
           AnchorSideTop.Control = cbBanStart
           AnchorSideTop.Side = asrCenter
-          Left = 6
-          Height = 17
-          Top = 13
-          Width = 34
-          BorderSpacing.Left = 6
+          Left = 8
+          Height = 19
+          Top = 10
+          Width = 32
           Caption = 'Start'
           ParentColor = False
         end
@@ -205,9 +248,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           AnchorSideLeft.Control = labBanStart
           AnchorSideTop.Control = cbBanEnd
           AnchorSideTop.Side = asrCenter
-          Left = 6
-          Height = 17
-          Top = 50
+          Left = 8
+          Height = 19
+          Top = 51
           Width = 25
           Caption = 'End'
           ParentColor = False
@@ -216,12 +259,11 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           AnchorSideTop.Control = gbBanners
           AnchorSideRight.Control = gbBanners
           AnchorSideRight.Side = asrBottom
-          Left = 112
-          Height = 31
-          Top = 6
-          Width = 305
+          Left = 88
+          Height = 35
+          Top = 2
+          Width = 320
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Around = 6
           ItemHeight = 0
           OnKeyPress = cbPaperSizeKEYPRESS
           Style = csDropDownList
@@ -233,12 +275,12 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = cbBanStart
           AnchorSideRight.Side = asrBottom
-          Left = 112
-          Height = 31
+          Left = 88
+          Height = 35
           Top = 43
-          Width = 305
+          Width = 320
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 6
+          BorderSpacing.Bottom = 8
           ItemHeight = 0
           OnKeyPress = cbPaperSizeKEYPRESS
           Style = csDropDownList
@@ -246,25 +288,44 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
       end
       object gbPagesSheet: TGroupBox
-        Left = 256
-        Height = 118
-        Top = 163
-        Width = 185
+        AnchorSideLeft.Control = gbOrientation
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbResolution
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cbResolution
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = gbOrientation
+        AnchorSideBottom.Side = asrBottom
+        Left = 248
+        Height = 120
+        Top = 172
+        Width = 178
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoSize = True
         Caption = ' Pages per sheet '
-        ClientHeight = 99
-        ClientWidth = 181
+        ChildSizing.LeftRightSpacing = 8
+        ChildSizing.TopBottomSpacing = 2
+        ClientHeight = 100
+        ClientWidth = 176
         TabOrder = 5
         object imgPageSheet: TImage
-          Left = 78
+          AnchorSideLeft.Control = rbSheet2
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = gbPagesSheet
+          AnchorSideTop.Side = asrCenter
+          Left = 72
           Height = 50
-          Top = 17
+          Top = 25
           Width = 80
+          BorderSpacing.Left = 30
         end
         object rbSheet1: TRadioButton
-          Left = 6
-          Height = 24
-          Top = 5
-          Width = 34
+          AnchorSideLeft.Control = gbPagesSheet
+          AnchorSideTop.Control = gbPagesSheet
+          Left = 8
+          Height = 23
+          Top = 2
+          Width = 32
           Caption = '1'
           Checked = True
           DragCursor = crDefault
@@ -273,9 +334,12 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           TabStop = True
         end
         object rbSheet2: TRadioButton
-          Left = 6
-          Height = 24
-          Top = 29
+          AnchorSideLeft.Control = gbPagesSheet
+          AnchorSideTop.Control = rbSheet1
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 25
           Width = 34
           Caption = '2'
           DragCursor = crDefault
@@ -283,10 +347,14 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           TabOrder = 1
         end
         object rbSheet4: TRadioButton
-          Left = 6
-          Height = 24
-          Top = 53
-          Width = 34
+          AnchorSideLeft.Control = gbPagesSheet
+          AnchorSideTop.Control = rbSheet2
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 23
+          Top = 48
+          Width = 35
+          BorderSpacing.Bottom = 6
           Caption = '4'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
@@ -299,40 +367,63 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cbPaperSize
         AnchorSideRight.Side = asrBottom
-        Left = 172
-        Height = 31
-        Top = 117
-        Width = 275
+        Left = 142
+        Height = 35
+        Top = 131
+        Width = 284
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Top = 6
         ItemHeight = 0
         OnKeyPress = cbPaperSizeKEYPRESS
         Style = csDropDownList
         TabOrder = 3
       end
+      object Label1: TLabel
+        AnchorSideLeft.Control = pgGeneral
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = pgGeneral
+        Left = 195
+        Height = 1
+        Top = 8
+        Width = 45
+        Constraints.MinWidth = 45
+        ParentColor = False
+      end
     end
     object pgAdvanced: TTabSheet
       Caption = 'Advanced'
-      ClientHeight = 396
-      ClientWidth = 453
+      ClientHeight = 413
+      ClientWidth = 434
       object sb: TScrollBox
-        Left = 0
-        Height = 396
+        Left = 6
+        Height = 413
         Top = 0
-        Width = 453
+        Width = 428
         HorzScrollBar.Page = 1
         VertScrollBar.Page = 1
         Align = alClient
+        BorderSpacing.Left = 6
+        BorderStyle = bsNone
+        ChildSizing.LeftRightSpacing = 8
+        ChildSizing.HorizontalSpacing = 8
+        ChildSizing.VerticalSpacing = 6
         TabOrder = 0
       end
     end
   end
   object ButtonPanel1: TButtonPanel
-    Left = 6
-    Height = 29
-    Top = 433
-    Width = 445
-    Anchors = [akLeft, akBottom]
+    AnchorSideLeft.Control = Notebook1
+    AnchorSideTop.Control = Notebook1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Notebook1
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 35
+    Top = 458
+    Width = 444
+    Align = alNone
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 8
+    BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -343,6 +434,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = []
     ShowBevel = False
   end
 end

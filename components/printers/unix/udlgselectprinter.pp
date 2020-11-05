@@ -37,13 +37,12 @@ unit uDlgSelectPrinter;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Types,
   // LCL
   LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
-  Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers,
+  Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers, LCLProc,
   // Printers
-  Printer4LazStrConst,
-  OsPrinters, CUPSDyn;
+  Printer4LazStrConst, OsPrinters, CUPSDyn;
 
 type
 
@@ -63,19 +62,19 @@ type
     edPageSet: TCOMBOBOX;
     cbTasktime: TCOMBOBOX;
     edRange: TEDIT;
+    Label2: TLabel;
     panLabels: TPanel;
     PrinterGroupbox: TGroupbox;
     gbPages: TGROUPBOX;
     gbCopies: TGROUPBOX;
-    ImgPrn: TIMAGE;
     imgCollate: TIMAGE;
-    PrinterNameLabel: TLabel;
+    Label1: TLabel;
     PrinterStateLabel: TLabel;
     PrinterLocationLabel: TLabel;
     PrinterDescriptionLabel: TLabel;
     labComment: TLABEL;
     labCUPS: TLABEL;
-    labPrinterName: TLabel;
+    PrinterNameLabel: TLabel;
     PrioLabel: TLabel;
     labCUPSServer: TLABEL;
     labTask: TLABEL;
@@ -99,25 +98,31 @@ type
     procedure btnPropCLICK(Sender: TObject);
     procedure btnReducCLICK(Sender: TObject);
     procedure cbPrintersCHANGE(Sender: TObject);
+    procedure cbPrintersDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure cbPrintersKEYPRESS(Sender: TObject; var Key: Char);
     procedure cbReverseCLICK(Sender: TObject);
     procedure cbTasktimeCHANGE(Sender: TObject);
     procedure dlgSelectPrinterCREATE(Sender: TObject);
     procedure dlgSelectPrinterSHOW(Sender: TObject);
-    procedure PrinterStateLabelChangeBounds(Sender: TObject);
+    procedure edCopiesChange(Sender: TObject);
+    procedure edRangeEnter(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
     procedure tkbPriorityCHANGE(Sender: TObject);
   private
     { private declarations }
     fPropertiesSetting : Boolean;
     FOptions: TPrintDialogOptions;
     FBig: boolean;
-    FHeightInit: integer;
-    FHeightDec: integer;
+    fPrinterImgs: TImageList;
+    FSavedPrinterIndex: Integer;
     function GetPrintRange: TPrintRange;
     procedure RefreshInfos;
     procedure InitPrinterOptions;
     procedure SetBigMode(AValue: boolean);
     procedure SetPrintRange(const AValue: TPrintRange);
+    procedure InitPrinterList;
     property BigMode: boolean read FBig write SetBigMode;
   public
     { public declaration}
@@ -159,10 +164,8 @@ end;
 
 constructor TdlgSelectPrinter.Create(aOwner : TComponent);
 begin
-  Inherited Create(aOwner);
-
-  FHeightInit:=Height;
-  FHeightDec:=NbOpts.Height+6;
+  inherited Create(aOwner);
+  btnReduc.Caption := p4lrsButtonMoreArrow;
 
   if WidgetSet.LCLPlatform = lpCarbon then
   begin  //Can't hide tabs with button on Carbon, so just expand dialog.
@@ -232,12 +235,9 @@ begin
       BtnPrint.Enabled:=False;
     end;
 
-    labState.Caption:=St;
+    btnPreview.Enabled := btnPrint.Enabled;
 
-    //DRw image printer
-    imgPrn.Picture.PixMap.TransparentColor:=clNone;
-    imgPrn.Picture.PixMap.LoadFromResourceName(HInstance, Stp);
-    imgPrn.Picture.PixMap.Transparent:=True;
+    labState.Caption:=St;
 
     //cups server
     labCUPSServer.Caption:=cupsServer()+':'+IntToStr(ippPort());
@@ -245,9 +245,8 @@ begin
     labLocation.Caption:=THackCUPSPrinter(Printer).GetAttributeString('printer-location','');
     labComment.Caption :=THackCUPSPrinter(Printer).GetAttributeString('printer-info','');
 
-    //Copies
-    edCopies.Value:=Printer.Copies;
-    cbCollate.Checked:=True; //For update image
+    cbReverseCLICK(cbCollate);  // update collate image
+    edCopiesChange(edCopies);   // update collate/reverse states
 
     //Range setting
     edRange.Enabled:=
@@ -296,7 +295,10 @@ begin
      Result:=prCurrentPage
   else
     if rbRange.checked then
-       Result:=prPageNums;
+       Result:=prPageNums
+    else
+      if rbSelection.checked then
+        Result:=prSelection;
 end;
 
 //Initialization of selected Printer options
@@ -373,25 +375,82 @@ begin
   case aValue of
     prAllPages    : rbAllPage.checked:=True;
     prCurrentPage : rbCurrentPage.checked:=True;
+    prSelection   : rbSelection.checked:=True;
     prPageNums    : rbRange.checked:=True;
   end;
 end;
 
+procedure TdlgSelectPrinter.InitPrinterList;
+var
+  i, FImgIndex, FSavedIndex: Integer;
+begin
+  // load printer images from resource
+  fPrinterImgs.AddResourceName(HInstance, 'printer');
+  fPrinterImgs.AddResourceName(HInstance, 'printer_remote');
+  fPrinterImgs.AddResourceName(HInstance, 'printer_remote_stopped');
+  fPrinterImgs.AddResourceName(HInstance, 'printer_stopped');
+
+  // add printer names to cbPrinters, with image index
+  FSavedIndex := Printer.PrinterIndex;
+  try
+    for i := 0 to Printer.Printers.Count - 1 do
+    begin
+      Printer.PrinterIndex := i;
+      // determine printer type and state
+      FImgIndex := 0;
+      if Printer.PrinterType = ptNetWork then
+      begin
+        if Printer.PrinterState = psStopped then
+          FImgIndex := 2
+        else
+          FImgIndex := 1;
+      end
+      else
+        if Printer.PrinterState = psStopped then
+          FImgIndex := 3;
+      cbPrinters.Items.AddObject(Printer.PrinterName, TObject(IntPtr(FImgIndex)));
+    end;
+  finally
+    Printer.PrinterIndex := FSavedIndex;
+  end;
+  if cbPrinters.Items.Count > 0 then
+    cbPrinters.ItemIndex := Printer.PrinterIndex;
+end;
 
 //Initialization of screen
 procedure TdlgSelectPrinter.dlgSelectPrinterSHOW(Sender: TObject);
 begin
   if Sender=nil then ;
   NbOpts.PageIndex:=0;
-  cbPrinters.Items.Assign(Printer.Printers);
-  if cbPrinters.Items.Count>0 then
-    cbPrinters.ItemIndex:= Printer.PrinterIndex;
+  InitPrinterList;
   RefreshInfos;
+  {$IFDEF UNIX}
+  btnCancel.Left := btnPreview.Left;
+  {$ENDIF}
 end;
 
-procedure TdlgSelectPrinter.PrinterStateLabelChangeBounds(Sender: TObject);
+procedure TdlgSelectPrinter.edCopiesChange(Sender: TObject);
 begin
-  labState.BorderSpacing.Top:=PrinterStateLabel.Top-labState.BorderSpacing.Around;
+  if Sender=nil then ;
+  cbCollate.Enabled := edCopies.Value > 1;
+  cbReverse.Enabled := cbCollate.Enabled;
+end;
+
+procedure TdlgSelectPrinter.edRangeEnter(Sender: TObject);
+begin
+  rbRange.Checked := True;
+end;
+
+procedure TdlgSelectPrinter.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if ModalResult = mrCancel then
+    Printer.PrinterIndex := FSavedPrinterIndex;
+end;
+
+procedure TdlgSelectPrinter.FormDestroy(Sender: TObject);
+begin
+  fPrinterImgs.Free;
 end;
 
 procedure TdlgSelectPrinter.cbTasktimeCHANGE(Sender: TObject);
@@ -405,11 +464,15 @@ end;
 procedure TdlgSelectPrinter.dlgSelectPrinterCREATE(Sender: TObject);
 begin
   if Sender=nil then ;
+  FBig := False;
   fPropertiesSetting:=False;
+  NbOpts.AutoSize := True;
   NbOpts.PageIndex:=0;
   edPageSet.Items[0]:=p4lrsAllPages;
   edPageSet.Items[1]:=p4lrsPageOdd;
   edPageSet.Items[2]:=p4lrsPageEven;
+  fPrinterImgs := TImageList.Create(Self);
+  FSavedPrinterIndex := Printer.PrinterIndex;
 end;
 
 //Show corresponding image
@@ -431,7 +494,7 @@ end;
 procedure TdlgSelectPrinter.cbPrintersKEYPRESS(Sender: TObject; var Key: Char);
 begin
   if Sender=nil then ;
-  Key:=#0;
+//  Key:=#0;
 end;
 
 procedure TdlgSelectPrinter.btnReducCLICK(Sender: TObject);
@@ -442,19 +505,21 @@ end;
 
 procedure TdlgSelectPrinter.SetBigMode(AValue: boolean);
 begin
+  if FBig = AValue then
+    Exit;
   FBig:= AValue;
   NbOpts.Visible:= FBig;
 
-  Constraints.MinHeight:=0;
-  Constraints.MaxHeight:=0;
-  Height:=FHeightInit-IfThen(not FBig, FHeightDec);
-  Constraints.MinHeight:=Height;
-  Constraints.MaxHeight:=Height;
+  AutoSize := False;
+  AutoSize := True;
 
   if not FBig then
     btnReduc.Caption:=p4lrsButtonMoreArrow
   else
     btnReduc.Caption:=p4lrsButtonLessArrow;
+
+  Application.ProcessMessages;
+  NbOpts.AutoSize := False;
 end;
 
 procedure TdlgSelectPrinter.btnPrintCLICK(Sender: TObject);
@@ -498,6 +563,32 @@ begin
   THackCupsPrinter(Printer).MergeOptions(tmpOptions, tmpn);
 
   RefreshInfos;
+end;
+
+procedure TdlgSelectPrinter.cbPrintersDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  ts: TTextStyle;
+begin
+  // setup dropdown colors
+  if cbPrinters.DroppedDown and not (odSelected in State) then
+  begin
+    cbPrinters.Canvas.Brush.Color := clMenu;
+    cbPrinters.Canvas.Font.Color := clMenuText;
+    cbPrinters.Canvas.FillRect(ARect);
+  end;
+  // draw image
+  fPrinterImgs.Draw(cbPrinters.Canvas, ARect.Left + 4,
+                    (ARect.Top + ARect.Bottom - fPrinterImgs.Height) div 2,
+                    IntPtr(cbPrinters.Items.Objects[Index]));
+  // draw text
+  ts.Layout := tlCenter;
+  ts.Alignment := taLeftJustify;
+  ts.Opaque := False;
+  ts.Clipping := True;
+  ts.Wordbreak := False;
+  ARect.Left := ARect.Left + (fPrinterImgs.Width + 8);
+  cbPrinters.Canvas.TextRect(ARect, ARect.Left, 0, cbPrinters.Items[Index], ts);
 end;
 
 end.
