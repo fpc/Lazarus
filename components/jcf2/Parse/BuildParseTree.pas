@@ -889,7 +889,7 @@ begin
   PushNode(nBlock);
 
   // [DeclSection]
-  if lt in (Declarations + ProcedureWords) then
+  if lt in ([ttGeneric] + Declarations + ProcedureWords) then
     RecogniseDeclSections;
 
   lc := fcTokenList.FirstSolidToken;
