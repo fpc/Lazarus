@@ -12,6 +12,14 @@ msgstr ""
 "Language: pl\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "Zaawansowane"
@@ -74,6 +82,10 @@ msgstr "Marginesy"
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
+msgstr ""
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
 msgstr ""
 
 #: printer4lazstrconst.p4lrsok

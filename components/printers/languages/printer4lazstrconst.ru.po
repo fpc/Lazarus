@@ -9,7 +9,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr "\""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr "мм"
 
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
@@ -74,6 +82,10 @@ msgstr "Поля"
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
 msgstr "Принтер по умолчанию не найден."
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
+msgstr "Нет доступных"
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"

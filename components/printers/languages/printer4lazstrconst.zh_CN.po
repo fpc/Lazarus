@@ -12,6 +12,14 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "高级"
@@ -74,6 +82,10 @@ msgstr "边距"
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
+msgstr ""
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
 msgstr ""
 
 #: printer4lazstrconst.p4lrsok

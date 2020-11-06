@@ -11,6 +11,14 @@ msgstr ""
 "Language: tr\n"
 "X-Generator: Poedit 2.2.3\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "Gelişmiş"
@@ -74,6 +82,10 @@ msgstr "Kenar boşlukları"
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
 msgstr "Varsayılan yazıcı bulunamadı."
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"

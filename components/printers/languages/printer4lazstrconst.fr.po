@@ -12,6 +12,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.1.1\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "Avancé"
@@ -75,6 +83,10 @@ msgstr "Marges"
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
 msgstr "Imprimante par défaut introuvable."
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"

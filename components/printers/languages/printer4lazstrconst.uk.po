@@ -13,6 +13,14 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "Розширені"
@@ -76,6 +84,10 @@ msgstr "Поля"
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
 msgstr "Не знайдено основного принтера."
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"

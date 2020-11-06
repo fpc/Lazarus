@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr ""
@@ -63,6 +71,10 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
+msgstr ""
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
 msgstr ""
 
 #: printer4lazstrconst.p4lrsok

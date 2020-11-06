@@ -11,6 +11,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: printer4lazstrconst.p4lrsabbrevunitsinches
+msgid "\""
+msgstr ""
+
+#: printer4lazstrconst.p4lrsabbrevunitsmm
+msgid "mm"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
 msgstr "Haladó"
@@ -74,6 +82,10 @@ msgstr "Margók"
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
 msgstr "Nem található alapértelmezett nyomtató."
+
+#: printer4lazstrconst.p4lrsnotavailable
+msgid "Not available"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
