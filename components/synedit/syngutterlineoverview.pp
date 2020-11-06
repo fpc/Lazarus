@@ -1211,10 +1211,9 @@ end;
 function TSynGutterLOvProviderBookmarks.IndexOfSynMark(ASynMark: TSynEditMark): Integer;
 begin
   Result := FMarkList.Count - 1;
-  while  Result >= 0 do begin;
+  while  Result >= 0 do begin
     if FMarkList[Result].FData = Pointer(ASynMark) then exit;
     dec(Result);
-
   end;
 end;
 
