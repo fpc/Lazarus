@@ -33,7 +33,7 @@ uses
   LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
   LCLProc, LCLType, ButtonPanel, Printers,
   // Printers
-  CupsLCL, CupsDyn, Printer4LazStrConst;
+  OSPrinters, CupsLCL, CupsDyn, Printer4LazStrConst;
 
 type
 
