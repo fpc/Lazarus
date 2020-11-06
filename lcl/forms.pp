@@ -1397,7 +1397,6 @@ type
     FMouseControl: TControl;
     FNavigation: TApplicationNavigationOptions;
     FOldExceptProc: TExceptProc;
-    FOldExitProc: Pointer;
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnActivate: TNotifyEvent;

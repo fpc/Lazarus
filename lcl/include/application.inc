@@ -119,8 +119,7 @@ begin
   inherited Create(AOwner);
   CaptureExceptions:=true;
 
-  FOldExitProc:=ExitProc;
-  ExitProc:=@BeforeFinalization;
+  AddExitProc(@BeforeFinalization);
   
   OnGetApplicationName := @GetApplicationName;
 end;
@@ -134,8 +133,6 @@ begin
   Include(FFlags,AppDestroying);
 
   if Assigned(FOnDestroy) then FOnDestroy(Self);
-
-  ExitProc:=FOldExitProc;
 
   ProcessAsyncCallQueue;
 
