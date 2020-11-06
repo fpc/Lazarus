@@ -426,7 +426,7 @@
         <short>Performs actions needed when a new page is started</short>
         <descr>
           <p>
-            <var>NewPage</var> is procedure used to perform actions needed when a new page is started. NewPage calls the <var>BeginPage</var> method which increments the value in <var>PageNumber</var>. <var>EndPage</var> is called when the page has been completed.
+            <var>NewPage</var> is procedure used to perform actions needed when a new page is started. NewPage increments the value in the <var>PageNumber</var> property, and calls  the <var>BeginPage</var> method prior to exit.
           </p>
           <p>
             NewPage is called from the <var>TPrinter.NewPage</var> method.
@@ -444,7 +444,7 @@
         <short>Performs actions needed when a page is started</short>
         <descr>
           <p>
-            <var>BeginPage</var> is a procedure used to perform actions needed when  page is started for the canvas. BeginPage increments the value in the <var>PageNumber</var> property.
+            <var>BeginPage</var> is a procedure used to perform actions needed when  page is started for the canvas.
           </p>
           <p>
             BeginPage is called from the TPrinter.BeginPage method.
@@ -2429,7 +2429,7 @@
             BeginPage is a procedure used to perform action when a page is started on the print device. BeginPage calls CheckPrinting to ensure that Printing contains True. An exception is raised in CheckPrinting when Printing contains False.
           </p>
           <p>
-            BeginPage increments the value in the PageNumber property. When RawMode is False, the BeginPage method in Canvas is called to synchronize the printer canvas.
+            When RawMode is False, the BeginPage method in Canvas is called to synchronize the printer canvas.
           </p>
           <p>
             BeginPage calls the DoBeginPage method to perform any actions needed for the class implementation.
