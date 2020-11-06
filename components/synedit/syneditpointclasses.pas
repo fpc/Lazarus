@@ -2395,7 +2395,7 @@ var
     if Value = '' then
       Exit;
     if FLines.Count = 0 then
-      FLines.Add('');
+      FLines.EditLineBreak(1, 1);
 
     // Using a TStringList to do this would be easier, but if we're dealing
     // with a large block of text, it would be very inefficient.  Consider:
