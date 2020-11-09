@@ -521,7 +521,7 @@ begin
 
   colorPanel.setDelegate(colorDelegate);
   colorPanel.setAccessoryView(accessoryView.autorelease);
-  colorPanel.setShowsAlpha(True);
+  colorPanel.setShowsAlpha(False);
   colorPanel.setDefaultButtonCell(okButton.cell);
 
   // load user settings
