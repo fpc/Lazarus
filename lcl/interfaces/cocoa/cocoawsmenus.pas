@@ -831,6 +831,7 @@ var
   view : NSView;
   w : NSWindow;
   px, py: Integer;
+  wi: NSUInteger;
 begin
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
@@ -847,6 +848,31 @@ begin
     py := y;
     view := nil;
     w :=NSApp.keyWindow;
+    if not Assigned(w) and (NSApp.windows.count>0) then
+    begin
+      // in macOS it's possible to "rightclick" without focusing a window
+      // so let's try to find the window
+      for wi := 0 to NSApp.windows.count-1 do
+      begin
+        w := NSWindow(NSApp.windows.objectAtIndex(wi));
+        if not w.isVisible then Continue;
+        view := w.contentView;
+        view.lclScreenToLocal(px, py);
+        if (px >= 0) and (py >= 0)
+          and (px<=Round(view.frame.size.width))
+          and (py<=Round(view.frame.size.height))
+        then
+        begin
+          px := X;
+          py := Y;
+          Break;
+        end;
+        w := nil;
+        px := X;
+        py := Y;
+      end;
+    end;
+
     if Assigned(w) then
     begin
       view := w.contentView;
