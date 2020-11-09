@@ -212,6 +212,7 @@ type
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
 
+    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
@@ -1682,6 +1683,17 @@ begin
   txt := GetTextView(ACustomEdit);
   if Assigned(txt) then
     txt.setEditable(not NewReadOnly);
+end;
+
+class function TCocoaWSCustomMemo.GetTextLen(const AWinControl: TWinControl;
+  var ALength: Integer): Boolean;
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(AWinControl);
+  Result := Assigned(txt);
+  if Result then
+    ALength := txt.string_.lengthOfBytesUsingEncoding(NSUTF8StringEncoding);
 end;
 
 class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
