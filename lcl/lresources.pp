@@ -175,9 +175,7 @@ type
     function ReadInt32: LongInt; override;
     function ReadInt64: Int64; override;
     function ReadSet(EnumType: Pointer): Integer; override;
-    {$IF FPC_FULLVERSION >= 30000}
     procedure ReadSignature; override;
-    {$ENDIF}
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
@@ -275,9 +273,7 @@ type
     procedure BeginCollection; override;{ Ends with the next "EndList" }
     procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
       ChildPos: Integer); override; { Ends after the second "EndList" }
-    {$IF FPC_FULLVERSION >= 30000}
     procedure WriteSignature; override;
-    {$ENDIF}
     procedure BeginList; override;
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
@@ -4247,11 +4243,9 @@ begin
   end;
 end;
 
-{$IF FPC_FULLVERSION >= 30000}
 procedure TLRSObjectReader.ReadSignature;
 begin
 end;
-{$ENDIF}
 
 function TLRSObjectReader.ReadStr: String;
 var
@@ -4781,11 +4775,9 @@ begin
   EndHeader;
 end;
 
-{$IF FPC_FULLVERSION >= 30000}
 procedure TLRSObjectWriter.WriteSignature;
 begin
 end;
-{$ENDIF}
 
 procedure TLRSObjectWriter.BeginList;
 begin

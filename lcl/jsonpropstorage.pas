@@ -102,10 +102,8 @@ end;
 procedure TCustomJSONPropStorage.SetFormatted(Value: Boolean);
 begin
   FFormatted := Value;
-  {$IF FPC_FULLVERSION >= 30000}
   if (FJSONConf<>nil) then
     FJSONConf.Formatted := Value;
-  {$ENDIF}
 end;
 
 function TCustomJSONPropStorage.FixPath(const APath: String): String;
@@ -118,9 +116,7 @@ begin
   if (FJSONConf=nil) and not (csDesigning in ComponentState) then
   begin
     FJSONConf := TJSONConfig.Create(nil);
-    {$IF FPC_FULLVERSION >= 30000}
     FJSONConf.Formatted := FFormatted;
-    {$ENDIF}
     FJSONConf.Filename := GetJSONFileName;
   end;
   Inc(FCount);

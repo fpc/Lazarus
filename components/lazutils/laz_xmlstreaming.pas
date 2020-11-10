@@ -78,9 +78,7 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
-    {$IF FPC_FULLVERSION >= 30000}
     procedure WriteSignature; override;
-    {$ENDIF}
     {$IFDEF USE_NEW_READER_WRITER}
     procedure WriteUInt64(Value: QWord); override;
     procedure WriteUnicodeString(const Value: UnicodeString); override;
@@ -132,9 +130,7 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
-    {$IF FPC_FULLVERSION >= 30000}
     procedure ReadSignature; override;
-    {$ENDIF}
     {$IFDEF USE_NEW_READER_WRITER}
     function ReadUnicodeString: UnicodeString; override;
     {$ENDIF}
@@ -469,11 +465,9 @@ begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
-{$IF FPC_FULLVERSION >= 30000}
 procedure TXMLObjectWriter.WriteSignature;
 begin
 end;
-{$ENDIF}
 
 {$IFDEF USE_NEW_READER_WRITER}
 procedure TXMLObjectWriter.WriteUInt64(Value: QWord);
@@ -1144,11 +1138,9 @@ begin
   //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
 
-{$IF FPC_FULLVERSION >= 30000}
 procedure TXMLObjectReader.ReadSignature;
 begin
 end;
-{$ENDIF}
 
 {$IFDEF USE_NEW_READER_WRITER}
 function TXMLObjectReader.ReadUnicodeString: UnicodeString;

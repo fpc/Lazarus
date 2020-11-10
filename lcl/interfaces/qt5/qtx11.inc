@@ -610,11 +610,6 @@ begin
   Result := XGetGeometry(d, X11Window, @ARootWin, @ARect.Left, @ARect.Top, @ARect.Right, @ARect.Bottom, @ABorder, @ADepth) = 1;
 end;
 
-{$IF FPC_FULLVERSION <= 20602}
-type
-  PUint32 = PDWord;
-{$ENDIF}
-
 function GetX11RectForAtom(AWinID: PtrUInt; const AAtomName: string; out ARect: TRect): boolean;
 var
   d: PDisplay;

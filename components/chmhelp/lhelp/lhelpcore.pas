@@ -30,12 +30,6 @@ unit lhelpcore;
 {$NOTE You can add http capability to lhelp by adding the lnetvisual package v0.6.3 or greater requirement to lhelp.}
 {$ENDIF}
 
-{$IFDEF UNIX}
-  {$if FPC_FULLVERSION <= 20700}
-    {$DEFINE STALE_PIPE_WORKAROUND}
-  {$ENDIF}
-{$ENDIF}
-
 {$mode objfpc}{$H+}
 
 interface

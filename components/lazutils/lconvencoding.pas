@@ -18,13 +18,11 @@ unit LConvEncoding;
 interface
 
 { $Define DisableAsianCodePages}
-//{$if FPC_FULLVERSION >= 30000}
-  {$IFDEF UTF8_RTL}
-    // Windows provides conversion functions.
-    // Unix: unit cwstring provides conversion functions which are used by default UTF-8 encoding system.
-    {$Define UseSystemCPConv} // use system conversions
-  {$ENDIF}
-//{$IFEND}
+{$IFDEF UTF8_RTL}
+  // Windows provides conversion functions.
+  // Unix: unit cwstring provides conversion functions which are used by default UTF-8 encoding system.
+  {$Define UseSystemCPConv} // use system conversions
+{$ENDIF}
 {$ifdef UseLCPConv}{$undef UseSystemCPConv}{$endif}
 
 uses

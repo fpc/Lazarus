@@ -14,10 +14,8 @@
 unit regdbexport;
 
 {$mode objfpc}{$H+}
-{$IF FPC_FULLVERSION > 20500}
 // XMLXSDExport unit was introduced in FPC 2.5.1.
 {$DEFINE HASXMLXSDEXPORT}
-{$ENDIF}
 
 interface
 

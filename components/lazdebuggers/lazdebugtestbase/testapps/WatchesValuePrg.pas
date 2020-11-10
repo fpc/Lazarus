@@ -226,18 +226,14 @@ type
   TSize = record
     cx : Longint; cy : Longint;
    public
-  {$if FPC_FULLVERSION >= 30000}
      constructor Create(asz :TSize);
-  {$ENDIF}
   end;
 
   TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
   TProc1 = procedure();
   TMeth1 = function(AVal: Integer): Boolean of object;
-  {$if FPC_FULLVERSION >= 30000}
   PFuncSelfRef = ^TFuncSelfRef;
   TFuncSelfRef = function(SomeValue, Foo: PFuncSelfRef): PFuncSelfRef;
-  {$ENDIF}
 
 type
   (* LOCATION: TYPE *)
@@ -321,10 +317,7 @@ var
   MyStringList: TMyStringList;
 
   U8Data1, U8Data2: Utf8String;
-
-  {$if FPC_FULLVERSION >= 30000}
   dummy1: PFuncSelfRef;
-  {$ENDIF}
 
 const
 (* LOCATION: global const *)
@@ -386,10 +379,8 @@ var
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_=:PPointerList;//", "_O2_=:PPointerList;//" )
 
 
-{$if FPC_FULLVERSION >= 30000}
 constructor TSize.Create(asz :TSize);
 begin end;
-{$endif}
 constructor TObjectCreate3Int64.Create;
 begin end;
 destructor TObjectCreate3Int64.Destroy;
@@ -480,9 +471,7 @@ begin
   PByteDummy := nil;
   SomeFunc1(1,1,1,1);
   SomeProc1();
-  {$if FPC_FULLVERSION >= 30000}
   dummy1 := nil;
-  {$ENDIF}
 
 (* use global const / value in "gv" will be overriden... *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gv, {e}={, "//@@=} :=", _pre3_=gc, _BLOCK_=TestAssignGC)

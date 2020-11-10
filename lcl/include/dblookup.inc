@@ -247,38 +247,14 @@ begin
     KeyList[i + 1] := KeyList[i];
 end;
 
-{$IF FPC_FULLVERSION < 30000}
-function IsClass(Instance: TObject; const ClassName: ShortString): Boolean;
-var
-  ClassRef: TClass;
-begin
-  Result := False;
-  ClassRef := Instance.ClassType;
-  while ClassRef <> nil do
-  begin
-    Result := ClassRef.ClassNameIs(ClassName);
-    if Result then
-      Exit;
-    ClassRef := ClassRef.ClassParent;
-  end;
-end;
-{$ENDIF}
-
 procedure TDBLookup.FetchLookupData;
 var
   KeyIndex, KeyListCount: Integer;
   ListLinkDataSet: TDataSet;
   Bookmark: TBookmark;
-  {$IF FPC_FULLVERSION < 30000}
-  DatasetSupportsBlockRead: Boolean;
-  {$ENDIF}
 begin
   if not Assigned(FControlItems) then
     Exit;
-  {$IF FPC_FULLVERSION < 30000}
-   if FFetchingLookupData then
-     Exit;
-  {$ENDIF}
   FControlItems.Clear;
   ListLinkDataSet := FListLink.DataSet;
   if not (Assigned(ListLinkDataSet) and Assigned(FListField)) then
@@ -301,18 +277,7 @@ begin
   end;
   Bookmark := ListLinkDataSet.GetBookmark;
   //in fpc 2.6.4, TMemDataset does not supports BlockRead. Issues 26356, 27959
-  {$IF FPC_FULLVERSION < 30000}
-  DatasetSupportsBlockRead := not IsClass(ListLinkDataSet, 'TMemDataset') and not IsClass(ListLinkDataSet, 'TFixedFormatDataSet');
-  if DatasetSupportsBlockRead then
-    ListLinkDataSet.BlockReadSize := 1
-  else
-  begin
-    FFetchingLookupData := True;
-    ListLinkDataSet.DisableControls;
-  end;
-  {$ELSE}
   ListLinkDataSet.BlockReadSize := 1;
-  {$ENDIF}
   FControlItems.BeginUpdate;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
@@ -346,17 +311,7 @@ begin
     FControlItems.EndUpdate;
     ListLinkDataSet.GotoBookmark(Bookmark);
     ListLinkDataSet.FreeBookmark(Bookmark);
-    {$IF FPC_FULLVERSION < 30000}
-    if DatasetSupportsBlockRead then
-      ListLinkDataSet.BlockReadSize := 0
-    else
-    begin
-      ListLinkDataSet.EnableControls;
-      FFetchingLookupData := False;
-    end;
-    {$ELSE}
     ListLinkDataSet.BlockReadSize := 0;
-    {$ENDIF}
   end;
 end;
 

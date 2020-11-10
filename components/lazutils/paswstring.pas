@@ -20,7 +20,6 @@ unit PasWString;
 // non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
 // sanity checks for defines
-//{$IF FPC_FULLVERSION >= 30000}
 {$IFnDEF NO_CP_RTL}
   {$IFDEF UTF8_RTL}
     {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}

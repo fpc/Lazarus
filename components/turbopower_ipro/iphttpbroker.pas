@@ -81,10 +81,8 @@ begin
   FDocumment := TMemoryStream.Create;
   HandledProtocols.Add('HTTP');
   FClient.ResponseHeaders.NameValueSeparator := ':';
-{$IF FPC_FULLVERSION > 30000}
   FClient.AllowRedirect := True;
   FClient.MaxRedirects := High(Byte);
-{$ENDIF}
 end;
 
 destructor TIpHttpDataProvider.Destroy;

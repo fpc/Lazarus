@@ -136,9 +136,6 @@ Type
     FLookupCache: Boolean;
     FInitializing: Boolean;
     FScrollListDataset: Boolean;
-    {$IF FPC_FULLVERSION < 30000}
-    FFetchingLookupData: Boolean;
-    {$ENDIF}
     procedure ActiveChange(Sender: TObject);
     procedure DatasetChange(Sender: TObject);
     procedure DoInitialize;

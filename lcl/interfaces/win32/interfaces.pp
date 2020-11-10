@@ -23,9 +23,9 @@ unit Interfaces;
 interface 
 
 uses
-  {$IF (FPC_FULLVERSION >= 30000) AND NOT DEFINED(DisableUTF8RTL)}
+  {$IFnDEF DisableUTF8RTL}
   LazUTF8,
-  {$IFEND}
+  {$ENDIF}
   InterfaceBase;
 
 implementation
