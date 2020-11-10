@@ -114,6 +114,11 @@ type
 
     function HasParentNode(const pcParentNode: TParseTreeNode): boolean; overload;
 
+    //search for the Record but if finds a Objects (class object interface) return false
+    function HasRecordParentNode:boolean;
+    //search for a Objects (class object interface) but if finds a RecordType return false
+    function HasObjectsParentNode:boolean;
+
     function GetParentNode(const peNodeTypes: TParseTreeNodeTypeSet): TParseTreeNode; overload;
     function GetParentNode(const peNodeType: TParseTreeNodeType): TParseTreeNode; overload;
 
@@ -400,6 +405,34 @@ begin
   Result := HasParentNode([peNodeType]);
 end;
 
+// search only for the last class/record type
+// For nested types
+//  class
+//    record
+//       class
+//           xxNode
+//
+// for xxNode  HasRecordParentNode returns false   and HasObjectsParentNode returns true.
+
+//search for the Record but if finds a Objects (class object interface) return false
+function TParseTreeNode.HasRecordParentNode:boolean;
+begin
+  Result := NodeType=nRecordType;
+
+  // try above
+  if ( not Result) and (Parent <> nil) and ( not (NodeType in ObjectTypes)) then
+    Result := Parent.HasRecordParentNode;
+end;
+
+//search for a Objects (class object interface) but if finds a RecordType return false
+function TParseTreeNode.HasObjectsParentNode:boolean;
+begin
+  Result := (NodeType in ObjectTypes);
+
+  // try above
+  if ( not Result) and (Parent <> nil) and (NodeType<>nRecordType) then
+    Result := Parent.HasObjectsParentNode;
+end;
 
 function TParseTreeNode.GetParentNode(const peNodeTypes: TParseTreeNodeTypeSet):
 TParseTreeNode;

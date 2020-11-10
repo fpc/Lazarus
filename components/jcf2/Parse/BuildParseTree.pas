@@ -1031,8 +1031,13 @@ begin
     // ("private" for exemple) can be written after.
     // So, inside a class, no wtReservedWordDirective allowed
     leFirstTokenType := fcTokenList.FirstSolidTokenType;
-    if pbNestedInClass and (leFirstTokenType in ClassVisibility) then
-      break;
+    if pbNestedInClass then
+    begin
+      if (leFirstTokenType in ClassVisibility) then
+        break;
+      if leFirstTokenType in [ttClass,ttVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
+        break;
+    end;
 
     // can be followed by an operator decl in FreePascal
     if leFirstTokenType = ttOperator then
@@ -1102,8 +1107,13 @@ begin
   begin
     RecogniseTypeDecl;
 
-    if pbNestedInClass and (fcTokenList.FirstSolidTokenType in ClassVisibility) then
-      break;
+    if pbNestedInClass then
+    begin
+      if (fcTokenList.FirstSolidTokenType in ClassVisibility) then
+        break;
+      if fcTokenList.FirstSolidTokenType in [ttClass,ttVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
+        break;
+    end;
 
     lc := fcTokenList.FirstSolidToken;
   end;
@@ -2043,14 +2053,34 @@ begin
         RecogniseFunctionHeading(False, False);
       ttConstructor:
         RecogniseConstructorHeading(True);
+      ttDestructor:
+        RecogniseDestructorHeading(True);
       ttClass:
         RecogniseRecordStaticItem;
       ttProperty:
         RecogniseProperty;
+      // nested types.
+      ttType:
+      begin
+        RecogniseTypeSection(true);
+        lcNextToken := fcTokenList.FirstSolidToken;
+        continue;
+      end;
+      ttVar:
+      begin
+        RecogniseVarSection(true);
+        lcNextToken := fcTokenList.FirstSolidToken;
+        continue;
+      end;
+      ttConst:
+      begin
+        RecogniseConstSection(true);
+        lcNextToken := fcTokenList.FirstSolidToken;
+        continue;
+      end
       else
         RecogniseFieldDecl;
     end;
-
 
     lcNextToken := fcTokenList.FirstSolidToken;
 
@@ -2094,6 +2124,24 @@ begin
       RecogniseFunctionHeading(false, false);
       PopNode;
     end;
+    ttConstructor:
+    begin
+      PushNode(nConstructorDecl);
+      RecogniseConstructorHeading(true);
+      PopNode;
+    end;
+    ttDestructor:
+    begin
+      PushNode(nDestructorDecl);
+      RecogniseDestructorHeading(true);
+      PopNode;
+    end;
+    ttProperty:
+    begin
+      PushNode(nProperty);
+      RecogniseProperty;
+      PopNode;
+    end
     else
       RecogniseClassVars;
   end;
@@ -4722,7 +4770,7 @@ begin
         Recognise(ttWriteOnly);
       end;
       else
-        raise TEParseError.Create('expected proeprty specifier',
+        raise TEParseError.Create('expected property specifier',
           fcTokenList.FirstSolidToken);
     end;
 

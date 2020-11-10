@@ -317,6 +317,13 @@ begin
     exit;
   end;
 
+  { start of class property }
+  if (pt.TokenType = ttClass) and pt.HasParentNode([nProperty],1) then
+  begin
+    Result := True;
+    exit;
+  end;
+
   { start of class function decl in class }
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProcedureDecl, nFunctionDecl, nProperty]) and
     (not IsGenericFunctionOrProperty(pt)) and

@@ -229,7 +229,7 @@ begin
   if pt = nil then
     exit;
 
-  if pt.NodeType in ObjectTypes then
+  if pt.NodeType in ObjectTypes+[nRecordType] then
     Result := 1;
 
   Result := Result + CountClassNesting(pt.Parent);
@@ -304,6 +304,8 @@ begin
   end;
 end;
 
+
+
 function CalculateIndent(const pt: TSourceToken): integer;
 var
   liIndentCount: integer;
@@ -321,32 +323,28 @@ begin
   if pt = nil then
     exit;
 
-  { object types }
-  if pt.HasParentNode(ObjectTypes) then
+  { object and record types }
+  if pt.HasObjectsParentNode or pt.HasRecordParentNode then
   begin
     { indentation sections inside the class }
     if FormattingSettings.Indent.IndentVarAndConstInClass then
-    begin
-      liVarConstIndent := 2;
-    end
+      liVarConstIndent := 2
     else
-    begin
       liVarConstIndent := 1;
-    end;
 
     if pt.TokenType in ClassVisibility + [ttStrict] then
       liIndentCount := 1
-    else if (pt.TokenType = ttConst) and pt.HasParentNode(nConstSection, 1) then
-      liIndentCount := liVarConstIndent
-    else if (pt.TokenType = ttVar) and pt.HasParentNode(nVarSection, 1) then
-      liIndentCount := liVarConstIndent
-    else if (pt.TokenType = ttClass) and pt.HasParentNode(nClassVars, 1) then
-      liIndentCount := 2
+    else if  pt.HasParentNode(nConstSection, 3) then
+      liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttConst)
+    else if pt.HasParentNode(nVarSection, 4) then
+      liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttVar)
+    else if  pt.HasParentNode(nClassVars, 4) then
+      liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttClass)
 
     else if pt.TokenType = ttEnd then
     begin
       // end is the end of the class unless it's the end of an anon record typed var
-      if pt.HasParentNode(nRecordType) then
+      if pt.HasRecordParentNode and not pt.HasParentNode(nTypeDecl,3) then
         liIndentCount := 2
       else
         liIndentCount := 1;
@@ -373,13 +371,9 @@ begin
       if (liTypeNestingCount > 1) then
       begin
         if pt.TokenType = ttType then
-        begin
-          liIndentCount := liIndentCount + (liTypeNestingCount - 2);
-        end
+          liIndentCount := liIndentCount + (liTypeNestingCount - 2)
         else
-        begin
           liIndentCount := liIndentCount + (liTypeNestingCount - 1);
-        end;
       end;
     end;
   end
@@ -427,7 +421,7 @@ begin
         Dec(liIndentCount);
 
         // not these in local record type decl
-        if (pt.TokenType in [ttCase, ttEnd]) and (pt.HasParentNode(nRecordType)) then
+        if (pt.TokenType in [ttCase, ttEnd]) and (pt.HasRecordParentNode ) then
           Inc(liIndentCount);
 
         // not these in  procedure params or procedure type
@@ -525,12 +519,8 @@ begin
   end; // procedures
 
   { record declaration stuph }
-  if pt.HasParentNode(nRecordType) then
+  if pt.HasRecordParentNode then
   begin
-    { nested record types }
-    if pt.Nestings.GetLevel(nlRecordType) > 1 then
-      liIndentCount := liIndentCount + (pt.Nestings.GetLevel(nlRecordType) - 1);
-
     if pt.Nestings.GetLevel(nlRecordVariantSection) > 0 then
     begin
       liIndentCount := liIndentCount + pt.Nestings.GetLevel(nlRecordVariantSection);
@@ -540,36 +530,6 @@ begin
 
     if pt.HasParentNode(nRecordVariant) and (RoundBracketLevel(pt) > 0) then
       Inc(liIndentCount);
-
-    // delphi.net fns and procedures in records
-    if pt.TokenType in (ProcedureWords) then
-    begin
-      Inc(liIndentCount);
-    end
-    // class procs, but not class vars - those are already done
-    else if (pt.TokenType = ttClass) then
-    begin
-      if not pt.HasParentNode(nClassVars, 1) then
-      begin
-        Inc(liIndentCount);
-      end;
-    end;
-
-    if (pt.TokenType <> ttEnd) then
-    begin
-      lbHasIndentedDecl := True;
-      if not (pt.TokenType in ClassVisibility) then
-        Inc(liIndentCount);
-    end;
-
-    // run on lines in procs
-    if pt.HasParentNode(ProcedureHeadings) and
-      ( not (pt.TokenType in (ProcedureWords + [ttClass, ttComment]))) then
-      Inc(liIndentCount);
-
-    if IsRunOnProcDecl(pt) then
-      Inc(liIndentCount);
-    
   end;
 
 
