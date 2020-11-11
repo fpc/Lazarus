@@ -323,18 +323,12 @@ function UTF8ToConsole(const s: string): string; // converts UTF8 to console str
 var
   Dst: PChar;
 begin
-  {$ifndef NO_CP_RTL}
   Result := UTF8ToWinCP(s);
-  {$else NO_CP_RTL}
-  Result := UTF8ToSys(s); // Kept for compatibility
-  {$endif NO_CP_RTL}
   Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
   if CharToOEM(PChar(Result), Dst) then
     Result := StrPas(Dst);
   FreeMem(Dst);
-  {$ifndef NO_CP_RTL}
   SetCodePage(RawByteString(Result), CP_OEMCP, False);
-  {$endif NO_CP_RTL}
 end;
 {$endif not WinCE}
 

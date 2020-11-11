@@ -20,14 +20,12 @@ unit PasWString;
 // non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
 // sanity checks for defines
-{$IFnDEF NO_CP_RTL}
-  {$IFDEF UTF8_RTL}
-    {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
-      {$error UTF8 or not UTF8}
-    {$ENDIF}
+{$IFDEF UTF8_RTL}
+  {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
+    {$error UTF8 or not UTF8}
   {$ENDIF}
-  {$DEFINE DisablePasWString}
 {$ENDIF}
+{$DEFINE DisablePasWString}
 
 interface
 

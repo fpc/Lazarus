@@ -113,13 +113,9 @@ function UTF8Pos(const SearchForText, SearchInText: string; StartPos: SizeInt = 
 function UTF8PosP(SearchForText: PChar; SearchForTextLen: SizeInt;
   SearchInText: PChar; SearchInTextLen: SizeInt): PChar;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
-{$IFnDEF NO_CP_RTL}
 procedure UTF8Delete(var s: Utf8String; StartCharIndex, CharCount: PtrInt);
-{$ENDIF}
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
-{$IFnDEF NO_CP_RTL}
 procedure UTF8Insert(const source: Utf8String; var s: Utf8String; StartCharIndex: PtrInt);
-{$ENDIF}
 procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; ALanguage: string=''): String; inline;
@@ -1098,7 +1094,6 @@ begin
   end;
 end;
 
-{$IFnDEF NO_CP_RTL}
 procedure UTF8Delete(var s: Utf8String; StartCharIndex, CharCount: PtrInt);
 var
   tmp: String;
@@ -1116,7 +1111,6 @@ begin
   tmp := '';
   SetCodePage(RawByteString(s), CP_UTF8, False);
 end;
-{$ENDIF NO_ACP_RTL}
 
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 var
@@ -1136,7 +1130,6 @@ begin
   end;
 end;
 
-{$IFnDEF NO_CP_RTL}
 {It's simper to copy the code from the variant with String parameters than writing a wrapper}
 procedure UTF8Insert(const source: UTF8String; var s: UTF8string;
   StartCharIndex: PtrInt);
@@ -1147,7 +1140,6 @@ begin
   if StartBytePos <> nil then
     Insert(source, s, StartBytePos-PChar(s)+1);
 end;
-{$ENDIF NO_CP_RTL}
 
 procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 var
