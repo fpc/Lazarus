@@ -58,7 +58,6 @@
       <element name="LookupStringList"/>
       <element name="Maps"/>
       <element name="Masks"/>
-      <element name="PasWString"/>
       <element name="StringHashList"/>
       <element name="TextStrings"/>
       <element name="Translations"/>

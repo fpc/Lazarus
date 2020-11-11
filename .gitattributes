@@ -6122,7 +6122,6 @@ docs/xml/lazutils/lookupstringlist.xml svneol=native#text/plain
 docs/xml/lazutils/maps.xml svneol=native#text/plain
 docs/xml/lazutils/masks.xml svneol=native#text/plain
 docs/xml/lazutils/objectlists.xml svneol=native#text/plain
-docs/xml/lazutils/paswstring.xml svneol=native#text/plain
 docs/xml/lazutils/stringhashlist.xml svneol=native#text/plain
 docs/xml/lazutils/textstrings.xml svneol=native#text/plain
 docs/xml/lazutils/translations.xml svneol=native#text/plain
