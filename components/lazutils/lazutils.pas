@@ -19,8 +19,8 @@ uses
   LazPasReadUtil, LazStringUtils, LazSysUtils, LazTracer, LazUnicode, 
   LazUTF16, LazUTF8, LazUTF8Classes, LazUTF8SysUtils, LazUtilities, 
   LazUtilsStrConsts, LazVersion, LConvEncoding, lcsvutils, LookupStringList, 
-  Maps, Masks, ObjectLists, PasWString, StringHashList, TextStrings, 
-  Translations, UITypes, UTF8Process, LazarusPackageIntf;
+  Maps, Masks, ObjectLists, StringHashList, TextStrings, Translations, 
+  UITypes, UTF8Process, LazarusPackageIntf;
 
 implementation
 

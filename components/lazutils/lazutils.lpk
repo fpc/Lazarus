@@ -291,10 +291,6 @@
         <UnitName Value="ObjectLists"/>
       </Item>
       <Item>
-        <Filename Value="paswstring.pas"/>
-        <UnitName Value="PasWString"/>
-      </Item>
-      <Item>
         <Filename Value="stringhashlist.pas"/>
         <UnitName Value="StringHashList"/>
       </Item>

@@ -3452,7 +3452,6 @@ components/lazutils/lookupstringlist.pas svneol=native#text/pascal
 components/lazutils/maps.pp svneol=native#text/pascal
 components/lazutils/masks.pas svneol=native#text/pascal
 components/lazutils/objectlists.pas svneol=native#text/pascal
-components/lazutils/paswstring.pas svneol=native#text/pascal
 components/lazutils/stringhashlist.pas svneol=native#text/pascal
 components/lazutils/test/TestLazStorageMem.lpi svneol=native#text/plain
 components/lazutils/test/TestLazStorageMem.lpr svneol=native#text/plain

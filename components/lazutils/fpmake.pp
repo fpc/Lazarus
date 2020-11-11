@@ -3,7 +3,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 15.10.2020
+   This file was generated on 11-11-2020
 }
 
 {$ifndef ALLPACKAGES} 
@@ -103,7 +103,6 @@ begin
     t.Dependencies.AddUnit('maps');
     t.Dependencies.AddUnit('masks');
     t.Dependencies.AddUnit('objectlists');
-    t.Dependencies.AddUnit('paswstring');
     t.Dependencies.AddUnit('stringhashlist');
     t.Dependencies.AddUnit('textstrings');
     t.Dependencies.AddUnit('translations');
@@ -168,7 +167,6 @@ begin
     T:=P.Targets.AddUnit('maps.pp');
     T:=P.Targets.AddUnit('masks.pas');
     T:=P.Targets.AddUnit('objectlists.pas');
-    T:=P.Targets.AddUnit('paswstring.pas');
     T:=P.Targets.AddUnit('stringhashlist.pas');
     T:=P.Targets.AddUnit('textstrings.pas');
     T:=P.Targets.AddUnit('translations.pas');
