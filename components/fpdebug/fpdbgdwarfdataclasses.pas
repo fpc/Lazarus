@@ -3446,7 +3446,7 @@ function TFpDwarfInfo.FindProcSymbol(AAddress: TDbgPtr): TFpSymbol;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
-  Iter: TMapIterator;
+  Iter: TLockedMapIterator;
   Info: PDwarfAddressInfo;
   MinMaxSet: boolean;
 begin
@@ -3462,7 +3462,7 @@ begin
 
     CU.BuildAddressMap;
 
-    Iter := TMapIterator.Create(CU.FAddressMap);
+    Iter := TLockedMapIterator.Create(CU.FAddressMap);
     try
       if not Iter.Locate(AAddress)
       then begin

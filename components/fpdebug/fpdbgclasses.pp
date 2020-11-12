@@ -254,7 +254,7 @@ type
 
   { TThreadMapEnumerator }
 
-  TThreadMapEnumerator = class(TMapIterator)
+  TThreadMapEnumerator = class(TLockedMapIterator)
   private
     FDoneFirst: Boolean;
     function GetCurrent: TDbgThread;
@@ -2007,7 +2007,7 @@ var
   Iterator: TMapIterator;
   Thread: TDbgThread;
 begin
-  Iterator := TMapIterator.Create(FThreadMap);
+  Iterator := TLockedMapIterator.Create(FThreadMap);
   try
     Iterator.First;
     while not Iterator.EOM do
@@ -2029,7 +2029,7 @@ var
   Iterator: TMapIterator;
   Thread: TDbgThread;
 begin
-  Iterator := TMapIterator.Create(FThreadMap);
+  Iterator := TLockedMapIterator.Create(FThreadMap);
   try
     Iterator.First;
     while not Iterator.EOM do
