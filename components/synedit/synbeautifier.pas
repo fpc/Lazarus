@@ -970,6 +970,8 @@ var
     p := GetMatchStartPos(-1, AForceFirst);
 
     FRegExprEngine.InputString:= copy(FCurrentLines[ToIdx(p.y)], p.x, MaxInt);
+    if (FRegExprEngine.InputString='') then
+      exit(false);
     FRegExprEngine.Expression := FMatch[AType];
     if not FRegExprEngine.ExecPos(1) then begin
       ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[AType]);
