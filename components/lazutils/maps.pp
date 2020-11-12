@@ -81,6 +81,13 @@ type
   end;
   
   { TBaseMap }
+
+  { TLockedMapModifyException }
+
+  TLockedMapModifyException = class(Exception)
+  public
+    constructor Create;
+  end;
   
   TBaseMapIterator = class;
 
@@ -92,6 +99,7 @@ type
     FFirst: PMapItem;   // First element of our linkedlist
     FLast: PMapItem;    // Last element of our linkedlist
     FIterators: TList;  // A List of iterators iterating us
+    FLocked: integer;
     function FindNode(const AId): TAvlTreeNode;
     function FindItem(const AId): PMapItem;
     procedure FreeData(ANode: TAvlTreeNode);
@@ -100,6 +108,8 @@ type
     procedure IteratorAdd(AIterator: TBaseMapIterator);
     procedure IteratorRemove(AIterator: TBaseMapIterator);
   protected
+    procedure LockMap;
+    procedure UnLockMap;
     procedure InternalAdd(const AId, AData);
     function InternalGetData(AItem: PMapItem; out AData): Boolean;
     function InternalGetDataPtr(AItem: PMapItem): Pointer;
@@ -128,6 +138,8 @@ type
     procedure MapCleared;        // Called when our map is cleared
     procedure ItemRemove(AData: Pointer); // Called when an Item is removed from the map
   protected
+    procedure AddToMap; virtual;
+    procedure RemoveFromMap; virtual;
     procedure InternalCreate(AMap: TBaseMap);
     function InternalLocate(const AId): Boolean; //True if match found. If not found, current is next and Invalid is set
     procedure Validate;
@@ -170,6 +182,17 @@ type
     procedure GetID(out AID);
     function  Locate(const AId): Boolean;
     procedure SetData(const AData);
+  end;
+
+  { TLockedMapIterator
+    Allow iteration of a map in multiple threads.
+    The map will be locked againts adding/removing entries.
+  }
+
+  TLockedMapIterator = class(TMapIterator)
+  protected
+    procedure AddToMap; override;
+    procedure RemoveFromMap; override;
   end;
 
   { TTypedMap }
@@ -222,6 +245,12 @@ begin
   else Result := AMap.FTree.ReportAsString;
 end;
 
+{ TLockedMapModifyException }
+
+constructor TLockedMapModifyException.Create;
+begin
+  inherited Create('Map modification not allowed');
+end;
 
 { TBaseMap }
 
@@ -229,6 +258,8 @@ procedure TBaseMap.Clear;
 var
   n: Integer;
 begin
+  if FLocked > 0 then
+    raise TLockedMapModifyException.Create;
   FreeData(FTree.Root);
   FTree.Clear;
   FFirst := nil;
@@ -260,6 +291,9 @@ var
   Node: TAvlTreeNode;
   n: integer;
 begin
+  if FLocked > 0 then
+    raise TLockedMapModifyException.Create;
+
   Node := FindNode(AId);
   Result := Node <> nil;
   if not result then Exit;
@@ -288,6 +322,9 @@ destructor TBaseMap.Destroy;
 var
   n: Integer;
 begin
+  if FLocked > 0 then
+    raise TLockedMapModifyException.Create;
+
   // notify our iterators
   if FIterators <> nil
   then begin
@@ -361,6 +398,9 @@ var
   p: Pointer;
   Node, NewNode: TAvlTreeNode;
 begin
+  if FLocked > 0 then
+    raise TLockedMapModifyException.Create;
+
   if FindNode(AId) <> nil
   then begin
     Error;
@@ -461,6 +501,16 @@ begin
   if FIterators.Count = 0 then FreeAndNil(FIterators);
 end;
 
+procedure TBaseMap.LockMap;
+begin
+  InterLockedIncrement(FLocked);
+end;
+
+procedure TBaseMap.UnLockMap;
+begin
+  InterLockedDecrement(FLocked);
+end;
+
 procedure TBaseMap.ReleaseData(ADataPtr: Pointer);
 begin
 end;
@@ -515,7 +565,7 @@ end;
 
 destructor TBaseMapIterator.Destroy;
 begin
-  if FMap <> nil then FMap.IteratorRemove(Self);
+  if FMap <> nil then RemoveFromMap;
   FMap := nil;
   inherited Destroy;
 end;
@@ -532,7 +582,7 @@ procedure TBaseMapIterator.InternalCreate(AMap: TBaseMap);
 begin
   inherited Create;
   FMap := AMap;
-  FMap.IteratorAdd(Self);
+  AddToMap;
   FCurrent := FMap.FFirst;
   FBOM := FCurrent = nil;
   FEOM := FCurrent = nil;
@@ -598,6 +648,16 @@ begin
   FInvalid := True;
   FCurrent := FCurrent^.Link.Next;
   FEOM := FCurrent = nil;
+end;
+
+procedure TBaseMapIterator.AddToMap;
+begin
+  FMap.IteratorAdd(Self);
+end;
+
+procedure TBaseMapIterator.RemoveFromMap;
+begin
+  FMap.IteratorRemove(Self);
 end;
 
 procedure TBaseMapIterator.Last;
@@ -876,6 +936,18 @@ procedure TMapIterator.SetData(const AData);
 begin
   Validate;
   FMap.InternalSetData(FCurrent, AData);
+end;
+
+{ TLockedMapIterator }
+
+procedure TLockedMapIterator.AddToMap;
+begin
+  FMap.LockMap;
+end;
+
+procedure TLockedMapIterator.RemoveFromMap;
+begin
+  FMap.UnLockMap;
 end;
 
 { TTypedMapIterator }
