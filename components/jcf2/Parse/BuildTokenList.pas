@@ -124,6 +124,13 @@ begin
     Result := IsMultiByte(pcChar);
 end;
 
+function CharIsOctDigit(const c: Char): Boolean;
+const
+  OctDigits: set of Char = [ '0', '1', '2', '3', '4', '5', '6', '7'];
+begin
+  Result := (c in OctDigits);
+end;
+
 { TBuildTokenList }
 
 constructor TBuildTokenList.Create;
@@ -468,14 +475,32 @@ end;
 
 
 function TBuildTokenList.TryWord(const pcToken: TSourceToken): boolean;
+
 begin
   Result := False;
 
-  if not CharIsWordChar(Current) then
-    exit;
-
-  pcToken.SourceCode := Current;
-  Consume;
+  // support reserved words as identifiers
+  // example.
+  // var &type:integer;
+  if Current='&' then
+  begin
+    if CharIsOctDigit(ForwardChar(1)) then
+      Exit;
+    pcToken.SourceCode := Current;
+    Consume;
+    if not CharIsWordChar(Current) then
+    begin
+      pcToken.TokenType := ttAmpersand;
+      exit;
+    end;
+  end
+  else
+  begin
+    if not CharIsWordChar(Current) then
+      exit;
+    pcToken.SourceCode := Current;
+    Consume;
+  end;
 
   { concat any subsequent word chars }
   while CharIsWordChar(Current) or CharIsDigit(Current) do
@@ -691,19 +716,22 @@ end;
 
 { ~pktb 2017.05.19 - Oct numbers are prefixed with & }
 function TBuildTokenList.TryOctNumber(const pcToken: TSourceToken): boolean;
-function CharIsOctDigit(const c: Char): Boolean;
-const
-  OctDigits: set of AnsiChar = [
-    '0', '1', '2', '3', '4', '5', '6', '7'];
-begin
-  Result := (c in OctDigits);
-end;
 begin
   Result := False;
 
   { starts with a & }
   if Current <> '&' then
     exit;
+
+  //ISN'T A Octal Number.
+  if not CharIsOctDigit(ForwardChar(1)) then
+  begin
+    pcToken.TokenType  := ttAmpersand;
+    pcToken.SourceCode := Current;
+    Consume;
+    result:=true;
+    exit;
+  end;
 
   pcToken.TokenType  := ttNumber;
   pcToken.SourceCode := Current;

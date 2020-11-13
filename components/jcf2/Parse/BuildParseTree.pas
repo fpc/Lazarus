@@ -1218,40 +1218,49 @@ begin
 
   Recognise(ttEquals);
 
-  //Recognise type helper (for fpc)
-  if (fcTokenList.FirstSolidTokenType in [ttType,ttRecord]) and
-    (fcTokenList.SolidToken(2).TokenType=ttHelper) then
-  begin
-     RecogniseTypeHelper;
-  end else
+  repeat
 
-  // type or restricted type
-  if (fcTokenList.FirstSolidTokenType in [ttObject, ttClass, ttInterface,
-    ttDispInterface]) then
-    RecogniseRestrictedType
-  else
-    RecogniseType;
+     //Recognise type helper (for fpc)
+    if (fcTokenList.FirstSolidTokenType in [ttType,ttRecord]) and
+      (fcTokenList.SolidToken(2).TokenType=ttHelper) then
+    begin
+       RecogniseTypeHelper;
+    end else
 
-  if fcTokenList.FirstSolidTokenType = ttLessThan then
-  begin
-    RecogniseGenericType;
-  end;
 
-  if fcTokenList.FirstSolidTokenType = ttIs then
-  begin
-    Recognise(ttIs);
-    Recognise(ttNested);
-  end;
+    // type or restricted type
+    if (fcTokenList.FirstSolidTokenType in [ttObject, ttClass, ttInterface,
+      ttDispInterface]) then
+      RecogniseRestrictedType
+    else
+      RecogniseType;
 
-  // the type can be deprecated
-  if fcTokenList.FirstSolidTokenType = ttDeprecated then
-    Recognise(ttDeprecated);
+    if fcTokenList.FirstSolidTokenType = ttLessThan then
+    begin
+      RecogniseGenericType;
+    end;
 
+    if fcTokenList.FirstSolidTokenType = ttIs then
+    begin
+      Recognise(ttIs);
+      Recognise(ttNested);
+    end;
+
+    // the type can be deprecated
+    if fcTokenList.FirstSolidTokenType = ttDeprecated then
+      Recognise(ttDeprecated);
+
+    if fcTokenList.FirstSolidTokenType <> ttDot then
+      break;
+    Recognise(ttDot);
+
+  until false;
 
   Recognise(ttSemicolon);
 
   PopNode;
 end;
+
 
 function TBuildParseTree.GenericAhead: boolean;
 var
@@ -5000,22 +5009,26 @@ begin
   Recognise(IdentiferTokens);
 
   { tokens can be qualified by a unit name }
+  { can be nested types }
   if pbCanHaveUnitQualifier and (fcTokenList.FirstSolidTokenType = ttDot) then
   begin
-    Recognise(ttDot);
+    while fcTokenList.FirstSolidTokenType = ttDot do
+    begin
+      Recognise(ttDot);
 
-    { delphi.net can preface the identifier with an '&'
-      in order to do something obscure with it - make it a literal or something
+      { delphi.net can preface the identifier with an '&'
+        in order to do something obscure with it - make it a literal or something
 
-      e.g. "WebRequest.&Create" is not a constructor,
-      but a C# method called "Create", which is not a reserved word in C#
-    }
+        e.g. "WebRequest.&Create" is not a constructor,
+        but a C# method called "Create", which is not a reserved word in C#
+      }
 
-    RecognisePossiblyAmpdIdentifier;
+      RecognisePossiblyAmpdIdentifier;
+    end;
   end;
 
   PopNode;
-end;
+end; 
 
 { the name of a procedure/function/constructor can be
   a plain name or classname.methodname
@@ -5125,8 +5138,13 @@ begin
     // a use not a decl
     RecogniseGenericType;
   end;
-  
+  if fcTokenList.FirstSolidTokenType = ttDot then
+  begin
+    Recognise(ttDot);
+    RecogniseTypeId;
+  end;
 end;
+
 
 procedure TBuildParseTree.RecogniseAsmBlock;
 begin
@@ -5432,7 +5450,7 @@ begin
       begin
         lcLastChar := lcNext.SourceCode[Length(lcNext.SourceCode)];
 
-        if (lcLastChar = 'h') then
+        if ((lcLastChar = 'h') or (lcLastChar = 'H')) then
         begin
           Recognise(ttIdentifier);
         end;
