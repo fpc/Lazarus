@@ -3473,6 +3473,7 @@ end;
 procedure TBuildParseTree.RecogniseForStmnt;
 var
   lc: TSourceToken;
+  lCountBrackets:integer;
 begin
   { ForStmt -> FOR QualId ':=' Expression (TO | DOWNTO) Expression DO Statement
 
@@ -3484,6 +3485,22 @@ begin
 
   Recognise(ttFor);
   RecogniseQualId;
+
+
+  //type cast    for TCollectionItem(item) in ItemList do 
+  // TypeCast1(TypeCast2(TypeCast3(item)))
+  lCountBrackets:=0;
+  while fcTokenList.FirstSolidTokenType=ttOpenBracket do
+  begin
+    Recognise(ttOpenBracket);
+    RecogniseQualId;
+    Inc(lCountBrackets);
+  end;
+  while lCountBrackets>0 do
+  begin
+    Recognise(ttCloseBracket);
+    Dec(lCountBrackets);
+  end;
 
   lc := fcTokenList.FirstSolidToken;
   if lc.TokenType = ttIn then
