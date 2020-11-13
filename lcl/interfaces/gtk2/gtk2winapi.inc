@@ -3776,7 +3776,7 @@ begin
               Clip:=CreateEmptyRegion
             else begin
               GDK_Window_Get_Size(Drawable, @X, @Y);
-              Clip := CreateRectRGN(0, 0, X, Y);
+              Clip := CreateRectRGN(-Offset.X, -Offset.Y, X - Offset.X, Y - Offset.Y);
             end;
             // create target clip
             Tmp := CreateEmptyRegion;
