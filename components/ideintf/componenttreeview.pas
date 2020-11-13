@@ -67,8 +67,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    procedure RebuildComponentNodes; virtual;
-    procedure UpdateComponentNodesValues; virtual;
+    procedure RebuildComponentNodes;
+    procedure UpdateComponentNodesValues;
   public
     ImgIndexForm: Integer;
     ImgIndexComponent: Integer;

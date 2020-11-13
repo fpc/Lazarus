@@ -79,12 +79,13 @@ type
 
   TDesignerFlag = (
     dfHasSized,
+    dfNeedPainting,
     dfDuringPaintControl,
+    dfDuringDeletePers,
+    dfDestroyingForm,
     dfShowEditorHints,
     dfShowComponentCaptions,
-    dfShowNonVisualComponents,
-    dfDestroyingForm,
-    dfNeedPainting
+    dfShowNonVisualComponents
     );
   TDesignerFlags = set of TDesignerFlag;
 
@@ -2992,6 +2993,7 @@ var
   Hook: TPropertyEditorHook;
 begin
   if APersistent=nil then exit;
+  Include(FFlags, dfDuringDeletePers);
   try
     //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
     // unselect component
@@ -3019,15 +3021,16 @@ begin
       TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
     else if FreeIt then
       APersistent.Free;
+    // call ComponentDeleted handler
+    if Assigned(FOnPersistentDeleted) then
+      FOnPersistentDeleted(Self,APersistent);
+    if Hook<>nil then
+      Hook.PersistentDeleted;
   finally
     // unmark component
     DeletingPersistent.Remove(APersistent);
+    Exclude(FFlags, dfDuringDeletePers);
   end;
-  // call ComponentDeleted handler
-  if Assigned(FOnPersistentDeleted) then
-    FOnPersistentDeleted(Self,APersistent);
-  if Hook<>nil then
-    Hook.PersistentDeleted;
 end;
 
 function TDesigner.GetSelectedComponentClass: TRegisteredComponent;
@@ -3170,7 +3173,11 @@ begin
     {$IFDEF VerboseDesigner}
     DebugLn('[TDesigner.Notification] opRemove ',dbgsName(AComponent));
     {$ENDIF}
-    DoDeletePersistent(AComponent,false);
+    Assert(dfDuringDeletePers in FFlags,
+      'TDesigner.Notification: opRemove for '+dbgsName(AComponent)+' from outside.');
+    // Notification is always(?) triggered with TheFormEditor.DeleteComponent()
+    //  in DoDeletePersistent. Don't call it again.
+    //DoDeletePersistent(AComponent,false);
   end;
 end;
 
