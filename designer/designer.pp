@@ -1629,7 +1629,7 @@ begin
   Modified;
   OI := FormEditingHook.GetCurrentObjectInspector;
   if Assigned(OI) then
-    OI.ComponentTree.RebuildComponentNodes;
+    OI.ComponentTree.BuildComponentNodes(True);
 end;
 
 procedure TDesigner.GiveComponentsNames;

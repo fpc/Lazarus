@@ -40,18 +40,24 @@ type
 
   TComponentTreeView = class(TCustomTreeView)
   private
+    // tree of TComponentCandidate sorted for aPersistent (CompareComponentCandidates)
+    FCompCandis: TAvlTree;
     FComponentList: TBackupComponentList;
+    FPropertyEditorHook: TPropertyEditorHook;
+    FRootNode: TTreeNode;
+    FDrawWholeTree: Boolean;
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
-    FPropertyEditorHook: TPropertyEditorHook;
-    function CollectionCaption(ACollection: TCollection; DefaultName: string): string;
-    function CollectionItemCaption(ACollItem: TCollectionItem): string;
-    function ComponentCaption(AComponent: TComponent): String;
+    function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
+      ACapt: String): TTreeNode;
+    procedure AddCandidates(OwnerComponent: TComponent);
+    procedure AddChildren(AComponent: TComponent);
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
+    procedure UpdateCompNode(ANode: TTreeNode);
+    procedure UpdateSelNode(ANode: TTreeNode);
     procedure UpdateSelected;
-    function CreateNodeCaption(APersistent: TPersistent; DefaultName: string = ''): string;
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(APersistent: TPersistent):integer;
@@ -67,7 +73,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    procedure RebuildComponentNodes;
+    procedure BuildComponentNodes(AWholeTree: Boolean);
     procedure UpdateComponentNodesValues;
   public
     ImgIndexForm: Integer;
@@ -92,11 +98,11 @@ implementation
 
 type
   TCollectionAccess = class(TCollection);
+  TComponentAccessor = class(TComponent);
 
   TComponentCandidate = class
   public
     APersistent: TPersistent;
-    Parent: TComponent;
     Added: boolean;
   end;
 
@@ -104,7 +110,7 @@ type
 
   TComponentWalker = class
   private
-    FComponentTV: TComponentTreeView;
+    FCompTV: TComponentTreeView;
     FCandidates: TAvlTree;
     FLookupRoot: TComponent;
     FNode: TTreeNode;
@@ -115,12 +121,8 @@ type
     function PersistentFoundInNode(APers: TPersistent): Boolean;
     procedure Walk(AComponent: TComponent);
   public
-    constructor Create(
-      ATreeView: TComponentTreeView; ACandidates: TAvlTree;
-      ALookupRoot: TComponent; ANode: TTreeNode);
+    constructor Create(ACompTV: TComponentTreeView; ALookupRoot: TComponent);
   end;
-
-  TComponentAccessor = class(TComponent);
 
 function CompareComponentCandidates(
   Candidate1, Candidate2: TComponentCandidate): integer;
@@ -128,24 +130,74 @@ begin
   Result := ComparePointers(Candidate1.APersistent, Candidate2.APersistent);
 end;
 
-function ComparePersistentWithComponentCandidate(
-  APersistent: TPersistent; Candidate: TComponentCandidate): integer;
+function ComparePersistentWithCandidate(APersistent: TPersistent;
+  Candidate: TComponentCandidate): integer;
 begin
   Result := ComparePointers(APersistent, Candidate.APersistent);
 end;
 
+function CollectionCaption(ACollection: TCollection; DefaultName: string): string;
+var
+  PropList: PPropList;
+  i, PropCount: Integer;
+begin
+  Result := '';
+  if Result <> '' then
+    Result := TCollectionAccess(ACollection).PropName
+  else if DefaultName<>'' then
+    Result := DefaultName  // DefaultName is the property name.
+  else if ACollection.Owner <> nil then
+  begin
+    PropCount := GetPropList(ACollection.Owner, PropList);
+    try                 // Find the property name where ACollection can be found.
+      for i := 0 to PropCount - 1 do
+        if (PropList^[i]^.PropType^.Kind = tkClass) then
+          if GetObjectProp(ACollection.Owner, PropList^[i], ACollection.ClassType) = ACollection then
+          begin
+            Result := PropList^[i]^.Name;
+            Break;
+          end;
+    finally
+      FreeMem(PropList);
+    end;
+  end;
+  if Result = '' then
+    Result := '<unknown collection>';
+  Result := Result + ': ' + ACollection.ClassName;
+end;
+
+function CollectionItemCaption(ACollItem: TCollectionItem): string;
+begin
+  Result := IntToStr(ACollItem.Index)+' - '+ACollItem.DisplayName+': '+ACollItem.ClassName;
+end;
+
+function ComponentCaption(AComponent: TComponent): String;
+begin
+  Result := AComponent.Name + ': ' + AComponent.ClassName;
+end;
+
+function CreateNodeCaption(APersistent: TPersistent; DefaultName: string): string;
+begin
+  Result := APersistent.ClassName;
+  if APersistent is TComponent then
+    Result := ComponentCaption(TComponent(APersistent))
+  else if APersistent is TCollection then
+    Result := CollectionCaption(TCollection(APersistent), DefaultName)
+  else if APersistent is TCollectionItem then
+    Result := CollectionItemCaption(TCollectionItem(APersistent))
+  else if DefaultName<>'' then
+    Result := DefaultName + ':' + Result;
+end;
+
 { TComponentWalker }
 
-constructor TComponentWalker.Create(ATreeView: TComponentTreeView;
-  ACandidates: TAvlTree; ALookupRoot: TComponent; ANode: TTreeNode);
+constructor TComponentWalker.Create(ACompTV: TComponentTreeView; ALookupRoot: TComponent);
 begin
   {$IFDEF VerboseComponentTVWalker}
   DebugLn(['TComponentWalker.Create ALookupRoot=',DbgSName(ALookupRoot)]);
   {$ENDIF}
-  FComponentTV := ATreeView;
-  FCandidates := ACandidates;
+  FCompTV := ACompTV;
   FLookupRoot := ALookupRoot;
-  FNode := ANode;
 end;
 
 procedure TComponentWalker.AddCollection(AColl: TCollection; AParentNode: TTreeNode);
@@ -161,12 +213,7 @@ begin
     DebugLn(['TComponentWalker.AddCollection, Adding CollectionItem ',
              Item.DisplayName, ':', Item.ClassName]);
     {$ENDIF}
-    ItemNode := FComponentTV.Items.AddChild(AParentNode,
-                                       FComponentTV.CollectionItemCaption(Item));
-    ItemNode.Data := Item;
-    ItemNode.ImageIndex := FComponentTV.GetImageFor(Item);
-    ItemNode.SelectedIndex := ItemNode.ImageIndex;
-    ItemNode.MultiSelected := FComponentTV.Selection.IndexOf(Item) >= 0;
+    ItemNode := FCompTV.AddOrGetPersNode(AParentNode, Item, CollectionItemCaption(Item));
     // Collections can be nested. Add possible Collections under a CollectionItem.
     GetOwnedPersistents(Item, ItemNode);
   end;
@@ -187,16 +234,10 @@ begin
            ' its root=',DbgSName(TheRoot),' FLookupRoot=',DbgSName(FLookupRoot)]);
   {$ENDIF}
   if TheRoot <> FLookupRoot then Exit;
-  if PersistentFoundInNode(APers) then Exit;
-  TVNode := FComponentTV.Items.AddChild(AParentNode,
-                          FComponentTV.CreateNodeCaption(APers, APropName));
-  TVNode.Data := APers;
-  TVNode.ImageIndex := FComponentTV.GetImageFor(APers);
-  TVNode.SelectedIndex := TVNode.ImageIndex;
-  TVNode.MultiSelected := FComponentTV.Selection.IndexOf(APers) >= 0;
+  Assert(not PersistentFoundInNode(APers), 'AddOwnedPersistent: APers already there.');
+  TVNode := FCompTV.AddOrGetPersNode(AParentNode, APers, CreateNodeCaption(APers, APropName));
   if APers is TCollection then
     AddCollection(TCollection(APers), TVNode);
-  //AParentNode.Expanded := True;
 end;
 
 procedure TComponentWalker.GetOwnedPersistents(APers: TPersistent; AParentNode: TTreeNode);
@@ -249,33 +290,26 @@ begin
   if csDestroying in AComponent.ComponentState then exit;
   if GetLookupRootForComponent(AComponent) <> FLookupRoot then Exit;
 
-  AVLNode := FCandidates.FindKey(AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
-  if AVLNode = nil then Exit;
+  AVLNode := FCandidates.FindKey(AComponent,TListSortCompare(@ComparePersistentWithCandidate));
+  Assert(Assigned(AVLNode), 'TComponentWalker.Walk: AVLNode = nil');
 
   Candidate := TComponentCandidate(AVLNode.Data);
-  if Candidate.Added then Exit;
+  Assert(not Candidate.Added,
+        'TComponentWalker.Walk: '+Candidate.APersistent.ClassName+' already added.');
   Candidate.Added := True;
 
   OldNode := FNode;
-  FNode := FComponentTV.Items.AddChild(FNode, FComponentTV.ComponentCaption(AComponent));
-  FNode.Data := AComponent;
-  FNode.ImageIndex := FComponentTV.GetImageFor(AComponent);
-  FNode.SelectedIndex := FNode.ImageIndex;
-  FNode.MultiSelected := FComponentTV.Selection.IndexOf(AComponent) >= 0;
-
+  FNode := FCompTV.AddOrGetPersNode(FNode, AComponent, ComponentCaption(AComponent));
   GetOwnedPersistents(AComponent, FNode);
-
   if (csInline in AComponent.ComponentState) or (AComponent.Owner = nil) then
     Root := AComponent
   else
     Root := AComponent.Owner;
-
   if not ( (Root is TControl)
-       and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle) )
+          and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle) )
   then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
-  FNode.Expanded := True;
 end;
 
 { TComponentTreeView }
@@ -284,8 +318,7 @@ procedure TComponentTreeView.SetSelection(NewSelection: TPersistentSelectionList
 begin
   if (PropertyEditorHook = nil) then
   begin
-    if (FComponentList.LookupRoot = nil) then
-      Exit;
+    if (FComponentList.LookupRoot = nil) then Exit;
     FComponentList.Clear;
   end
   else if not NewSelection.ForceUpdate
@@ -297,11 +330,7 @@ begin
   end;
   FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
-  if NewSelection.ForceUpdate then
-  begin
-    DebugLn('TComponentTreeView.SetSelection: Selection.ForceUpdate encountered.');
-    NewSelection.ForceUpdate:=false;
-  end;
+  NewSelection.ForceUpdate:=false;
   UpdateSelected;
 end;
 
@@ -433,7 +462,7 @@ begin
       end;
       ACollection.EndUpdate;
     end;
-    RebuildComponentNodes;
+    BuildComponentNodes(True);
   end;
   inherited DragDrop(Source, X, Y);
 end;
@@ -582,12 +611,12 @@ begin
   Result := -1;
   if Assigned(APersistent) then
   begin
-    if (APersistent is TControl)
-    and (csAcceptsControls in TControl(APersistent).ControlStyle) then
-      Result := ImgIndexBox
-    else
-    if (APersistent is TControl) then
-      Result := ImgIndexControl
+    if (APersistent is TControl) then begin
+      if (csAcceptsControls in TControl(APersistent).ControlStyle) then
+        Result := ImgIndexBox
+      else
+        Result := ImgIndexControl;
+    end
     else
     if (APersistent is TComponent) then
       Result := ImgIndexComponent
@@ -607,7 +636,7 @@ procedure TComponentTreeView.SetPropertyEditorHook(AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
-  RebuildComponentNodes;
+  BuildComponentNodes(True);
 end;
 
 function TComponentTreeView.GetSelection: TPersistentSelectionList;
@@ -637,203 +666,158 @@ begin
   inherited Destroy;
 end;
 
-procedure TComponentTreeView.RebuildComponentNodes;
+function TComponentTreeView.AddOrGetPersNode(AParentNode: TTreeNode;
+  APers: TPersistent; ACapt: String): TTreeNode;
 var
-  Candidates: TAvlTree; // tree of TComponentCandidate sorted for aPersistent (CompareComponentCandidates)
+  xNode: TTreeNode;
+begin
+  if not FDrawWholeTree then
+  begin
+    if AParentNode = nil then
+      Exit(Items.GetFirstNode);   // Return existing root node.
+    xNode:=AParentNode.GetFirstChild;
+    while (xNode<>nil) and (TObject(xNode.Data)<>APers) do
+      xNode:=xNode.GetNextSibling;
+    if Assigned(xNode) then
+      Exit(xNode);                // Return existing node if there is one.
+  end;
+  // Add a new node and set its properties.
+  Result := Items.AddChildObject(AParentNode, ACapt, APers);
+  if AParentNode = nil then
+    Result.ImageIndex := ImgIndexForm
+  else
+    Result.ImageIndex := GetImageFor(APers);
+  Result.SelectedIndex := Result.ImageIndex;
+  Result.MultiSelected := Selection.IndexOf(APers) >= 0;
+end;
+
+procedure TComponentTreeView.AddChildren(AComponent: TComponent);
+var
+  Walker: TComponentWalker;
+begin
+  if csDestroying in AComponent.ComponentState then exit;
+  Walker := TComponentWalker.Create(Self, AComponent);
+  Walker.FCandidates := FCompCandis;
+  Walker.FNode := FRootNode;
+  try      // add inline components children
+    TComponentAccessor(AComponent).GetChildren(@Walker.Walk, AComponent);
+  finally
+    Walker.Free;
+  end;
+end;
+
+procedure TComponentTreeView.AddCandidates(OwnerComponent: TComponent);
+var
+  AComponent: TComponent;
+  Candidate: TComponentCandidate;
+  i: Integer;
+begin
+  for i := 0 to OwnerComponent.ComponentCount - 1 do
+  begin
+    AComponent := OwnerComponent.Components[i];
+    Candidate := TComponentCandidate.Create;
+    Candidate.APersistent := AComponent;
+    if FCompCandis.Find(Candidate)<>nil then
+    begin
+      DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ', AComponent.Name);
+      Candidate.Free;
+    end
+    else
+    begin
+      FCompCandis.Add(Candidate);
+      if csInline in AComponent.ComponentState then
+        AddCandidates(AComponent);
+    end;
+  end;
+end;
+
+procedure TComponentTreeView.BuildComponentNodes(AWholeTree: Boolean);
+// Add all components to the tree.
+// AWholeTree=True means clearing and refilling all,
+//       False means existing tree is used and only missing components are added.
+var
   RootObject: TPersistent;
   RootComponent: TComponent absolute RootObject;
-
-  procedure AddChildren(AComponent: TComponent; ANode: TTreeNode);
-  var
-    Walker: TComponentWalker;
-    Root: TComponent;
-  begin
-    if csDestroying in AComponent.ComponentState then exit;
-    //debugln(['AddChildren ',DbgSName(AComponent),' ',AComponent.ComponentCount]);
-    Walker := TComponentWalker.Create(Self, Candidates, RootComponent, ANode);
-    try
-      // add inline components children
-      if csInline in AComponent.ComponentState then
-        Root := AComponent
-      else
-        Root := RootComponent;
-      TComponentAccessor(AComponent).GetChildren(@Walker.Walk, Root);
-    finally
-      Walker.Free;
-    end;
-  end;
-
-  procedure AddCandidates(OwnerComponent: TComponent);
-  var
-    AComponent: TComponent;
-    Candidate: TComponentCandidate;
-    i: Integer;
-  begin
-    //debugln(['AddCandidates OwnerComponent=',DbgSName(OwnerComponent)]);
-    if OwnerComponent = nil then Exit;
-    if csDestroying in OwnerComponent.ComponentState then exit;
-    for i := 0 to OwnerComponent.ComponentCount - 1 do
-    begin
-      AComponent := OwnerComponent.Components[i];
-      if csDestroying in AComponent.ComponentState then continue;
-      Candidate := TComponentCandidate.Create;
-      Candidate.APersistent := AComponent;
-      if Candidates.Find(Candidate)<>nil then
-      begin
-        DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ', AComponent.Name);
-        Candidate.Free;
-      end
-      else
-      begin
-        Candidates.Add(Candidate);
-        if csInline in AComponent.ComponentState then
-          AddCandidates(AComponent);
-      end;
-    end;
-  end;
-
-var
-  RootNode: TTreeNode;
   Candidate: TComponentCandidate;
 begin
   BeginUpdate;
-  Items.Clear;
+  FDrawWholeTree := AWholeTree;
+  if AWholeTree then
+    Items.Clear;
   RootObject := nil;
   if PropertyEditorHook<>nil then
     RootObject := PropertyEditorHook.LookupRoot;
-  if (RootObject is TComponent)
-  and (csDestroying in TComponent(RootObject).ComponentState) then
+  if (RootObject is TComponent) and (csDestroying in RootComponent.ComponentState) then
     RootObject:=nil;
   if RootObject <> nil then
   begin
-    Candidates:=TAvlTree.Create(TListSortCompare(@CompareComponentCandidates));
+    FCompCandis:=TAvlTree.Create(TListSortCompare(@CompareComponentCandidates));
     try
       // first add the lookup root
-      RootNode := Items.Add(nil, CreateNodeCaption(RootObject));
-      RootNode.Data := RootObject;
-      RootNode.ImageIndex := ImgIndexForm;
-      RootNode.SelectedIndex := RootNode.ImageIndex;
-      RootNode.MultiSelected := Selection.IndexOf(RootObject) >= 0;
-
+      FRootNode := AddOrGetPersNode(nil, RootObject, CreateNodeCaption(RootObject,''));
       // create candidate nodes for every child
       Candidate := TComponentCandidate.Create;
       Candidate.APersistent := RootObject;
       Candidate.Added := True;
-      Candidates.Add(Candidate);
-
+      FCompCandis.Add(Candidate);
       // add components in creation order and TControl.Parent relationship
       if RootObject is TComponent then
       begin
         AddCandidates(RootComponent);
-        AddChildren(RootComponent,RootNode);
+        AddChildren(RootComponent);
       end;
     finally
-      Candidates.FreeAndClear;
-      Candidates.Free;
+      FCompCandis.FreeAndClear;
+      FCompCandis.Free;
     end;
-
-    RootNode.Expand(true);
+    if AWholeTree then           // Don't expand existing tree.
+      FRootNode.Expand(true);    // A user may want to have some nodes collapsed.
   end;
   MakeSelectionVisible;
   EndUpdate;
 end;
 
+procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);
+var
+  APersistent: TPersistent;
+begin
+  if ANode = nil then Exit;
+  APersistent := TPersistent(ANode.Data);
+  if APersistent is TComponent then
+    ANode.Text := ComponentCaption(TComponent(APersistent))
+  else if APersistent is TCollectionItem then
+    ANode.Text := CollectionItemCaption(TCollectionItem(APersistent));
+  // Note: Collection name does not change, don't update.
+
+  UpdateCompNode(ANode.GetFirstChild);    // Recursive call.
+  UpdateCompNode(ANode.GetNextSibling);
+end;
+
 procedure TComponentTreeView.UpdateComponentNodesValues;
 // Could be optimised by adding a PropName parameter and searching a node by name.
-
-  procedure UpdateComponentNode(ANode: TTreeNode);
-  var
-    APersistent: TPersistent;
-  begin
-    if ANode = nil then Exit;
-    APersistent := TPersistent(ANode.Data);
-    if APersistent is TComponent then
-      ANode.Text := ComponentCaption(TComponent(APersistent))
-    else if APersistent is TCollectionItem then
-      ANode.Text := CollectionItemCaption(TCollectionItem(APersistent));
-    // Note: Collection name does not change, don't update.
-
-    UpdateComponentNode(ANode.GetFirstChild);    // Recursive call.
-    UpdateComponentNode(ANode.GetNextSibling);
-  end;
-
 begin
   BeginUpdate;
-  UpdateComponentNode(Items.GetFirstNode);
+  UpdateCompNode(Items.GetFirstNode);
   EndUpdate;
+end;
+
+procedure TComponentTreeView.UpdateSelNode(ANode: TTreeNode);
+var
+  APersistent: TPersistent;
+begin
+  if ANode = nil then Exit;
+  APersistent := TPersistent(ANode.Data);
+  ANode.MultiSelected := Selection.IndexOf(APersistent) >= 0;
+  UpdateSelNode(ANode.GetFirstChild);     // Recursive call.
+  UpdateSelNode(ANode.GetNextSibling);
 end;
 
 procedure TComponentTreeView.UpdateSelected;
-
-  procedure UpdateComponentNode(ANode: TTreeNode);
-  var
-    APersistent: TPersistent;
-  begin
-    if ANode = nil then Exit;
-    APersistent := TPersistent(ANode.Data);
-    ANode.MultiSelected := Selection.IndexOf(APersistent) >= 0;
-    UpdateComponentNode(ANode.GetFirstChild);
-    UpdateComponentNode(ANode.GetNextSibling);
-  end;
-
 begin
   BeginUpdate;
   Selected := Nil;
-  UpdateComponentNode(Items.GetFirstNode);
+  UpdateSelNode(Items.GetFirstNode);
   EndUpdate;
-end;
-
-function TComponentTreeView.CollectionCaption(ACollection: TCollection; DefaultName: string): string;
-var
-  PropList: PPropList;
-  i, PropCount: Integer;
-begin
-  Result := '';
-  if Result <> '' then
-    Result := TCollectionAccess(ACollection).PropName
-  else if DefaultName<>'' then
-    Result := DefaultName  // DefaultName is the property name.
-  else if ACollection.Owner <> nil then
-  begin
-    PropCount := GetPropList(ACollection.Owner, PropList);
-    try                 // Find the property name where ACollection can be found.
-      for i := 0 to PropCount - 1 do
-        if (PropList^[i]^.PropType^.Kind = tkClass) then
-          if GetObjectProp(ACollection.Owner, PropList^[i], ACollection.ClassType) = ACollection then
-          begin
-            Result := PropList^[i]^.Name;
-            Break;
-          end;
-    finally
-      FreeMem(PropList);
-    end;
-  end;
-  if Result = '' then
-    Result := '<unknown collection>';
-  Result := Result + ': ' + ACollection.ClassName;
-end;
-
-function TComponentTreeView.CollectionItemCaption(ACollItem: TCollectionItem): string;
-begin
-  Result := IntToStr(ACollItem.Index)+' - '+ACollItem.DisplayName+': '+ACollItem.ClassName;
-end;
-
-function TComponentTreeView.ComponentCaption(AComponent: TComponent): String;
-begin
-  Result := AComponent.Name + ': ' + AComponent.ClassName;
-end;
-
-function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent; DefaultName: string): string;
-begin
-  Result := APersistent.ClassName;
-  if APersistent is TComponent then
-    Result := ComponentCaption(TComponent(APersistent))
-  else if APersistent is TCollection then
-    Result := CollectionCaption(TCollection(APersistent), DefaultName)
-  else if APersistent is TCollectionItem then
-    Result := CollectionItemCaption(TCollectionItem(APersistent))
-  else if DefaultName<>'' then
-    Result := DefaultName + ':' + Result;
 end;
 
 end.

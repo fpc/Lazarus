@@ -9412,8 +9412,8 @@ procedure TMainIDE.DesignerPersistentDeleted(Sender: TObject; APersistent: TPers
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
   if APersistent=nil then ;
-  if ObjectInspector1<>nil then
-    ObjectInspector1.FillComponentList;
+  if ObjectInspector1<>nil then          // ToDo: Prevent component tree expanding
+    ObjectInspector1.FillComponentList(True); // after delete (don't refill all).
 end;
 
 procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
@@ -13274,9 +13274,11 @@ procedure TMainIDE.PropHookModified(Sender: TObject; PropName: ShortString);
 begin
   // ToDo: Should designer be marked as modified with PropName?
   if ObjectInspector1=Nil then Exit;
-  if PropName='' then
+  if PropName='' then begin
+    DebugLn('TMainIDE.PropHookModified: Component tree refilled.');
     // Item may be added or deleted or whatever.
-    ObjectInspector1.FillComponentList
+    ObjectInspector1.FillComponentList(True);
+  end
   else
     // Any change of property can cause a change in display name.
     ObjectInspector1.UpdateComponentValues;
@@ -13305,20 +13307,21 @@ begin
   if ConsoleVerbosity>0 then
     DebugLn('Hint: (lazarus) TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
+  ClassUnitInfo:=nil;
   if APersistent is TComponent then
     AComponent:=TComponent(APersistent)
   else
     AComponent:=nil;
   RegComp:=IDEComponentPalette.FindComponent(APersistent.ClassName);
-  if (RegComp=nil) and (AComponent<>nil) then begin
-    ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(APersistent.ClassType));
-    if ClassUnitInfo=nil then begin
-      DebugLn('Error: (lazarus) TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
-              ' not registered');
-      exit;
-    end;
-  end;
   if AComponent<>nil then begin
+    if RegComp=nil then begin
+      ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType));
+      if ClassUnitInfo=nil then begin
+        DebugLn('Error: (lazarus) TMainIDE.OnPropHookPersistentAdded ',AComponent.ClassName,
+                ' not registered');
+        exit;
+      end;
+    end;
     // create unique name
     if AComponent.Name='' then
       AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
@@ -13367,7 +13370,7 @@ begin
     TheControlSelection.AssignPersistent(APersistent);
 
   if ObjectInspector1<>nil then
-    ObjectInspector1.FillComponentList;
+    ObjectInspector1.FillComponentList(False);
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
   {$ENDIF}

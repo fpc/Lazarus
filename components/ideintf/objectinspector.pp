@@ -810,7 +810,7 @@ type
     procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
-    procedure FillComponentList;
+    procedure FillComponentList(AWholeTree: Boolean);
     procedure UpdateComponentValues;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -4521,7 +4521,7 @@ begin
     finally
       OldSelection.Free;
     end;
-    FillComponentList;
+    FillComponentList(True);
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelection;
   end;
@@ -4607,13 +4607,13 @@ begin
     if GridControl[Page]<>nil then
       GridControl[Page].PropEditLookupRootChange;
   CompFilterEdit.Filter:='';
-  FillComponentList;
+  FillComponentList(True);
 end;
 
-procedure TObjectInspectorDlg.FillComponentList;
+procedure TObjectInspectorDlg.FillComponentList(AWholeTree: Boolean);
 begin
   if FShowComponentTree then
-    ComponentTree.RebuildComponentNodes
+    ComponentTree.BuildComponentNodes(AWholeTree)
   else
     FillPersistentComboBox;
 end;
@@ -4808,7 +4808,7 @@ begin
   end;
 
   DoModified;
-  FillComponentList;
+  FillComponentList(True);
 end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
@@ -5255,7 +5255,7 @@ begin
       CreateTopSplitter
     else
       FreeAndNil(Splitter1);
-    FillComponentList;
+    FillComponentList(True);
   finally
     EndUpdate;
   end;
@@ -6001,7 +6001,7 @@ begin
 
   DoModified;
   if Assigned(ComponentTree) then
-    ComponentTree.RebuildComponentNodes
+    ComponentTree.BuildComponentNodes(True)
 end;
 
 function TObjectInspectorDlg.GetComponentPanelHeight: integer;
