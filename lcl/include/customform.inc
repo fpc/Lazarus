@@ -95,7 +95,7 @@ var
         if NewHeight <= 0 then
           NewHeight := GetSystemMetrics(SM_CYMAXIMIZED);
         if NewWidth <= 0 then
-          NewHeight := GetSystemMetrics(SM_CXMAXIMIZED);
+          NewWidth := GetSystemMetrics(SM_CXMAXIMIZED);
       end else
       begin
         NewHeight := GetSystemMetrics(SM_CYMAXIMIZED);
