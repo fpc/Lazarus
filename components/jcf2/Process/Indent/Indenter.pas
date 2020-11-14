@@ -337,9 +337,9 @@ begin
     else if  pt.HasParentNode(nConstSection, 3) then
       liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttConst)
     else if pt.HasParentNode(nVarSection, 4) then
-      liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttVar)
-    else if  pt.HasParentNode(nClassVars, 4) then
-      liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttClass)
+      liIndentCount := liVarConstIndent + byte(not (pt.TokenType in [ttVar,ttThreadVar]))
+    else if  pt.HasParentNode(nClassVars, 5) then
+	        liIndentCount := liVarConstIndent + byte(pt.TokenType<>ttClass)
 
     else if pt.TokenType = ttEnd then
     begin

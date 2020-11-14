@@ -66,7 +66,7 @@ type
     { false for commandline UI - don't put up a parse fail dialog
       This could be in  batch file on a server }
     fbGuiMessages: Boolean;
-
+    fbShowParseTree: Boolean;
     {$IFNDEF COMMAND_LINE}
     leOldCursor: TCursor;
     {$ENDIF}
@@ -108,6 +108,7 @@ type
 
     property OnStatusMessage: TStatusMessageProc Read GetOnStatusMessage Write SetOnStatusMessage;
     property SingleProcess: TTreeNodeVisitorType Read fcSingleProcess Write fcSingleProcess;
+    property ShowTree: boolean Read fbShowParseTree Write fbShowParseTree;	
   end;
 
 implementation
@@ -178,7 +179,8 @@ begin
         // make a parse tree from it
         fcBuildParseTree.TokenList := lcTokenList;
         fcBuildParseTree.BuildParseTree;
-
+        if fbShowParseTree then
+           ShowParseTree;
       except
         on E: Exception do
         begin

@@ -298,7 +298,7 @@ begin
 
   { procedure & function in class def get return but not blank line before }
   if (pt.TokenType in ProcedureWords + [ttProperty]) and
-    (pt.HasParentNode([nClassType])) and
+    (pt.HasParentNode([nClassType, nRecordType])) and
     (not IsGenericFunctionOrProperty(pt)) and
     (not IsClassFunctionOrProperty(pt)) then
   begin
@@ -335,7 +335,7 @@ begin
   end;
 
   { access specifiying directive (private, public et al) in a class def }
-  if pt.HasParentNode(nClassType) and IsClassDirective(pt) then
+  if pt.HasParentNode([nClassType, nRecordType]) and IsClassDirective(pt) then
   begin
     { no return before the "private" in "strict private" }
     if (pt.TokenType in [ttPrivate, ttProtected]) then

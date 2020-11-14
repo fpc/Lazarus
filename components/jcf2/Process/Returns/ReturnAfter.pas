@@ -229,7 +229,8 @@ begin
        procedure foo;
     }
     if pt.HasParentNode([nVarSection, nConstSection]) and
-      (ptNext.TokenType in ProcedureWords) then
+      (ptNext.TokenType in ProcedureWords) and
+      (not pt.HasParentNode([nClassType,nRecordType])) then   // not in class methods
     begin
       Result := True;
       exit;

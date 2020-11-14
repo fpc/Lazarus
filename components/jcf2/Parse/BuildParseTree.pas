@@ -105,7 +105,6 @@ type
 
     procedure RecogniseTypeSection(const pbNestedInCLass: Boolean);
     procedure RecogniseVarSection(const pbClassVars: boolean);
-    procedure RecogniseClassVars;
     procedure RecogniseProcedureDeclSection;
     procedure RecogniseClassOperator(const pbHasBody: boolean);
     procedure RecogniseOperator(const pbHasBody: boolean);
@@ -775,7 +774,7 @@ begin
 
   }
   while fcTokenList.FirstSolidTokenType in [ttConst, ttResourceString,
-      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports, ttOperator, ttProperty] + ProcedureWords do
+      ttType, ttVar, ttThreadVar, ttOpenSquareBracket, ttExports, ttOperator, ttProperty,ttGeneric] + ProcedureWords do
     RecogniseInterfaceDecl;
 end;
 
@@ -1035,7 +1034,7 @@ begin
     begin
       if (leFirstTokenType in ClassVisibility) then
         break;
-      if leFirstTokenType in [ttClass,ttVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
+      if leFirstTokenType in [ttClass,ttVar,ttThreadVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
     end;
 
@@ -1111,7 +1110,7 @@ begin
     begin
       if (fcTokenList.FirstSolidTokenType in ClassVisibility) then
         break;
-      if fcTokenList.FirstSolidTokenType in [ttClass,ttVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
+      if fcTokenList.FirstSolidTokenType in [ttClass,ttVar,ttThreadVar, ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
     end;
 
@@ -2049,6 +2048,7 @@ end;
 procedure TBuildParseTree.RecogniseFieldList;
 var
   lcNextToken: TSourceToken;
+  lcVarSection:boolean;  
 begin
   // FieldList ->  FieldDecl/';'... [VariantSection] [';']
   lcNextToken := fcTokenList.FirstSolidToken;
@@ -2065,7 +2065,15 @@ begin
       ttDestructor:
         RecogniseDestructorHeading(True);
       ttClass:
+      begin
+        lcVarSection:=fcTokenList.SolidTokenType(2) in [ttVar,ttThreadVar];
         RecogniseRecordStaticItem;
+        if lcVarSection then
+        begin
+          lcNextToken := fcTokenList.FirstSolidToken;
+          continue;
+        end;		
+      end;
       ttProperty:
         RecogniseProperty;
       // nested types.
@@ -2075,9 +2083,9 @@ begin
         lcNextToken := fcTokenList.FirstSolidToken;
         continue;
       end;
-      ttVar:
+      ttVar, ttThreadVar:
       begin
-        RecogniseVarSection(true);
+        RecogniseVarSection(True);
         lcNextToken := fcTokenList.FirstSolidToken;
         continue;
       end;
@@ -2150,9 +2158,11 @@ begin
       PushNode(nProperty);
       RecogniseProperty;
       PopNode;
-    end
-    else
-      RecogniseClassVars;
+    end;
+    ttVar,ttThreadVar:
+    begin
+      RecogniseVarSection(true);
+    end;
   end;
 end;
 
@@ -2304,7 +2314,7 @@ const
   END_VAR_SECTION: TTokenTypeSet =
     [ttVar, ttThreadVar, ttConst, ttLabel, ttResourceString, ttType,
     ttBegin, ttEnd, ttImplementation, ttInitialization,
-    ttProcedure, ttFunction, ttOperator, ttConstructor, ttDestructor, ttClass, ttAsm];
+    ttProcedure, ttFunction, ttOperator, ttConstructor, ttDestructor, ttClass, ttAsm, ttGeneric];
 var
   leEndVarSection: TTokenTypeSet;
 begin
@@ -2312,8 +2322,13 @@ begin
   if pbClassVars then
     leEndVarSection := leEndVarSection + ClassVisibility;
 
-
-  PushNode(nVarSection);
+  if pbClassVars and (fcTokenList.FirstSolidTokenType=ttClass) then
+  begin
+    PushNode(nClassVars);
+    Recognise(ttClass);
+  end
+  else
+    PushNode(nVarSection);
 
   // VarSection -> VAR (VarDecl ';')...
   Recognise([ttVar, ttThreadvar]);
@@ -2323,30 +2338,6 @@ begin
   begin
     RecogniseVarDecl;
     Recognise(ttSemicolon);
-  end;
-
-  PopNode;
-end;
-
-procedure TBuildParseTree.RecogniseClassVars;
-var
-  lbHasVars: Boolean;
-begin
-  PushNode(nClassVars);
-
-  Recognise(ttClass);
-  Recognise(ttVar);
-
-  // can be an empty section
-  lbHasVars := True;
-  if fcTokenList.FirstSolidTokenType in ClassVisibility + [ttEnd] then
-  begin
-    lbHasVars := False;
-  end;
-
-  if lbHasVars then
-  begin
-    RecogniseVarDecl;
   end;
 
   PopNode;
@@ -4481,8 +4472,8 @@ end;
 procedure TBuildParseTree.RecogniseClassDeclarations(const pbInterface: boolean);
 const
   // can declare thse things in a class
-  CLASS_DECL_WORDS = [ttProcedure, ttFunction,
-    ttConstructor, ttDestructor, ttProperty, ttClass, ttConst, ttType, ttVar];
+  CLASS_DECL_WORDS = [ttProcedure, ttFunction, ttConstructor, ttDestructor,
+                      ttProperty, ttClass, ttConst, ttType, ttVar, ttThreadVar];
 var
   lc: TSourceToken;
   lbStarted: boolean;
@@ -4561,8 +4552,11 @@ begin
             RecogniseProcedureHeading(False, True);
           ttFunction:
             RecogniseFunctionHeading(False, True);
-          ttVar:
-            RecogniseClassVars;
+          ttVar, ttThreadVar:
+          begin
+            RecogniseVarSection(True);
+            lbHasTrailingSemicolon := False;
+          end;
           ttProperty:
           begin
             RecogniseProperty;
@@ -4599,7 +4593,7 @@ begin
         RecogniseTypeSection(true);
         lbHasTrailingSemicolon := False;
       end;
-      ttVar:
+      ttVar, ttThreadVar:
       begin
         RecogniseVarSection(True);
         lbHasTrailingSemicolon := False;

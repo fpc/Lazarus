@@ -136,6 +136,29 @@ begin
 end;
 
 procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
+begin
+  if pcUnit = nil then
+    exit;
+  if psText <> fcConverter.InputCode then
+  begin
+    try
+      pcUnit.BeginUpdate;
+      pcUnit.BeginUndoBlock;
+      pcUnit.Lines.Text := psText;
+      pcUnit.Modified := True;
+    finally
+      pcUnit.EndUndoBlock;  
+      pcUnit.EndUpdate;
+    end;
+  end;
+end;
+
+//BUGGY: inserts empty blank lines in "random" position in the editor.
+// and if only one line es added or deleted after formatting then doesn't syncronize well.
+// i think is better change all text in the editor.
+// TODO: delete
+{
+procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
 var
   lcSourceLines, lcDestLines: TStrings;
   lcSameStart, lcSameEnd: TStrings;
@@ -145,7 +168,6 @@ var
 begin
   if pcUnit = nil then
     exit;
-
   lcSourceLines := TStringList.Create;
   lcSourceLines.Text := fcConverter.InputCode;
   lcDestLines := TStringList.Create;
@@ -192,6 +214,7 @@ begin
     lcSameEnd.Free;
    end;
 end;
+}
 
 procedure TEditorConverter.AfterConvert;
 begin
