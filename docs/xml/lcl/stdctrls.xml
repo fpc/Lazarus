@@ -8555,7 +8555,7 @@
             When <b>False</b>, an Ampersand '&amp;' in the label caption is displayed as an ordinary character (as in the Object Inspector).
           </p>
           <p>
-            When <b>True</b>, the character following the Ampersand appears underlined, and when the user presses the accelerator key (CTRL+[character]), the focus changes to the associated FocusControl.
+            When <b>True</b>, the character following the Ampersand appears underlined, and when the user presses the accelerator key with the ALT (ie Alt+character), the focus goes to the associated FocusControl.
           </p>
         </descr>
         <seealso>
