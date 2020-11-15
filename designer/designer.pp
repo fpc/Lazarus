@@ -1214,7 +1214,7 @@ begin
   try
     // copy components to stream
     if not CopySelectionToStream(AllComponentsStream) then exit;
-    SetLength(AllComponentText,AllComponentsStream.Size);
+    SetLength(AllComponentText{%H-},AllComponentsStream.Size);
     if AllComponentText<>'' then begin
       AllComponentsStream.Position:=0;
       AllComponentsStream.Read(AllComponentText[1],length(AllComponentText));
@@ -3173,11 +3173,10 @@ begin
     {$IFDEF VerboseDesigner}
     DebugLn('[TDesigner.Notification] opRemove ',dbgsName(AComponent));
     {$ENDIF}
-    Assert(dfDuringDeletePers in FFlags,
-      'TDesigner.Notification: opRemove for '+dbgsName(AComponent)+' from outside.');
-    // Notification is always(?) triggered with TheFormEditor.DeleteComponent()
+    // Notification is usually triggered by TheFormEditor.DeleteComponent
     //  in DoDeletePersistent. Don't call it again.
-    //DoDeletePersistent(AComponent,false);
+    if not (dfDuringDeletePers in FFlags) then // Needed eg. for TControlSelection
+      DoDeletePersistent(AComponent,false);    //  with copy/paste.
   end;
 end;
 
