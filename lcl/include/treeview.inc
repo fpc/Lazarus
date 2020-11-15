@@ -1037,6 +1037,17 @@ begin
     Result:=nil;
 end;
 
+function TTreeNode.GetFirstSibling: TTreeNode;
+begin
+  if Parent<>nil then
+    Result:=Parent.GetFirstChild
+  else begin
+    Result:=Self;
+    while Result.FPrevBrother<>nil do
+      Result:=Result.FPrevBrother;
+  end;
+end;
+
 function TTreeNode.GetFirstVisibleChild: TTreeNode;
 begin
   Result := GetFirstChild;

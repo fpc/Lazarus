@@ -9411,9 +9411,8 @@ procedure TMainIDE.DesignerPersistentDeleted(Sender: TObject; APersistent: TPers
 // important: APersistent was freed, do not access its content, only the pointer
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
-  if APersistent=nil then ;
-  if ObjectInspector1<>nil then          // ToDo: Prevent component tree expanding
-    ObjectInspector1.FillComponentList(True); // after delete (don't refill all).
+  if ObjectInspector1<>nil then
+    ObjectInspector1.DeleteCompFromList(APersistent);
 end;
 
 procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
@@ -13276,7 +13275,7 @@ begin
   if ObjectInspector1=Nil then Exit;
   if PropName='' then begin
     DebugLn('TMainIDE.PropHookModified: Component tree refilled.');
-    // Item may be added or deleted or whatever.
+    // Something changed in component structure. Must rebuild the tree.
     ObjectInspector1.FillComponentList(True);
   end
   else

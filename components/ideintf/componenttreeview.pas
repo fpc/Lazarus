@@ -36,6 +36,9 @@ type
   TCTVGetImageIndexEvent = procedure(APersistent: TPersistent;
     var AIndex: integer) of object;
 
+  // First 4 are ways to change ZOrder, zoDelete deletes a component.
+  TZOrderDelete = (zoToFront, zoToBack, zoForward, zoBackward, zoDelete);
+
   { TComponentTreeView }
 
   TComponentTreeView = class(TCustomTreeView)
@@ -46,12 +49,17 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FRootNode: TTreeNode;
     FDrawWholeTree: Boolean;
+    // A Component (Persistent) can move or delete based on FZOrderDelete value.
+    FPersToChange: TPersistent;
+    FZOrderDelete: TZOrderDelete;
+    // Events
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
     function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
       ACapt: String): TTreeNode;
     procedure AddCandidates(OwnerComponent: TComponent);
     procedure AddChildren(AComponent: TComponent);
+    procedure ChangeNode(ANode: TTreeNode);
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
@@ -74,6 +82,8 @@ type
     destructor Destroy; override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure BuildComponentNodes(AWholeTree: Boolean);
+    procedure ChangeCompZOrder(APersistent: TPersistent; AZOrder: TZOrderDelete);
+    procedure DeleteComponentNode(APersistent: TPersistent);
     procedure UpdateComponentNodesValues;
   public
     ImgIndexForm: Integer;
@@ -89,7 +99,7 @@ type
     property OnSelectionChanged;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnComponentGetImageIndex : TCTVGetImageIndexEvent
-                           read FOnComponentGetImageIndex write FOnComponentGetImageIndex;
+                  read FOnComponentGetImageIndex write FOnComponentGetImageIndex;
   end;
 
 implementation
@@ -666,6 +676,37 @@ begin
   inherited Destroy;
 end;
 
+procedure TComponentTreeView.ChangeNode(ANode: TTreeNode);
+// A node matching FPersToChange was found. Change its ZOrder or delete it.
+var
+  Neighbor: TTreeNode;
+begin
+  case FZOrderDelete of
+    zoToFront: begin         // Front means the last sibling.
+      Neighbor := ANode.GetLastSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsertBehind);
+    end;
+    zoToBack: begin          // Back means the first sibling.
+      Neighbor := ANode.GetFirstSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsert);
+    end;
+    zoForward: begin         // Towards the end.
+      Neighbor := ANode.GetNextSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsertBehind);
+    end;
+    zoBackward: begin        // Towards the beginning.
+      Neighbor := ANode.GetPrevSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsert);
+    end;
+    zoDelete: ANode.Delete;  // Delete the node
+  end;
+  FPersToChange := nil;      // No need to search again in the next round.
+end;
+
 function TComponentTreeView.AddOrGetPersNode(AParentNode: TTreeNode;
   APers: TPersistent; ACapt: String): TTreeNode;
 var
@@ -675,9 +716,19 @@ begin
   begin
     if AParentNode = nil then
       Exit(Items.GetFirstNode);   // Return existing root node.
-    xNode:=AParentNode.GetFirstChild;
+    // Search for a node to change.
+    if Assigned(FPersToChange) then
+    begin
+      xNode := AParentNode.GetFirstChild;
+      while (xNode<>nil) and (TObject(xNode.Data)<>FPersToChange) do
+        xNode := xNode.GetNextSibling;
+      if Assigned(xNode) then
+        ChangeNode(xNode);
+    end;
+    // Search for an existing valid node.
+    xNode := AParentNode.GetFirstChild;
     while (xNode<>nil) and (TObject(xNode.Data)<>APers) do
-      xNode:=xNode.GetNextSibling;
+      xNode := xNode.GetNextSibling;
     if Assigned(xNode) then
       Exit(xNode);                // Return existing node if there is one.
   end;
@@ -775,6 +826,23 @@ begin
   end;
   MakeSelectionVisible;
   EndUpdate;
+end;
+
+procedure TComponentTreeView.ChangeCompZOrder(APersistent: TPersistent;
+  AZOrder: TZOrderDelete);
+begin
+  FPersToChange := APersistent;
+  FZOrderDelete := AZOrder;
+  BuildComponentNodes(False);
+  Assert(FPersToChange=nil, 'TComponentTreeView.ChangeCompZOrder: FPersToChange is assigned.');
+end;
+
+procedure TComponentTreeView.DeleteComponentNode(APersistent: TPersistent);
+begin
+  FPersToChange := APersistent;
+  FZOrderDelete := zoDelete;
+  BuildComponentNodes(False);
+  Assert(FPersToChange=nil, 'TComponentTreeView.DeleteComponentNode: FPersToChange is assigned.');
 end;
 
 procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);

@@ -3048,6 +3048,7 @@ type
     function EditText: Boolean;
     function FindNode(const NodeText: string): TTreeNode;
     function GetFirstChild: TTreeNode;
+    function GetFirstSibling: TTreeNode;
     function GetFirstVisibleChild: TTreeNode;
     function GetHandle: THandle;
     function GetLastChild: TTreeNode;

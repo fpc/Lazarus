@@ -810,6 +810,8 @@ type
     procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
+    procedure ChangeCompZOrderInList(APersistent: TPersistent; AZOrder: TZOrderDelete);
+    procedure DeleteCompFromList(APersistent: TPersistent);
     procedure FillComponentList(AWholeTree: Boolean);
     procedure UpdateComponentValues;
     procedure BeginUpdate;
@@ -4610,6 +4612,23 @@ begin
   FillComponentList(True);
 end;
 
+procedure TObjectInspectorDlg.ChangeCompZOrderInList(APersistent: TPersistent;
+  AZOrder: TZOrderDelete);
+begin
+  if FShowComponentTree then
+    ComponentTree.ChangeCompZOrder(APersistent, AZOrder)
+  else
+    FillPersistentComboBox;
+end;
+
+procedure TObjectInspectorDlg.DeleteCompFromList(APersistent: TPersistent);
+begin
+  if FShowComponentTree then
+    ComponentTree.DeleteComponentNode(APersistent)
+  else
+    FillPersistentComboBox;
+end;
+
 procedure TObjectInspectorDlg.FillComponentList(AWholeTree: Boolean);
 begin
   if FShowComponentTree then
@@ -4799,14 +4818,12 @@ begin
     for i:=0 to Selection.Count-1 do
       NewSelection.Add(Selection.Items[i]);
     SetSelection(NewSelection);
-
     NewSelection.ForceUpdate:=True;
     NewSelection.Delete(0);
     SetSelection(NewSelection);
   finally
     NewSelection.Free;
   end;
-
   DoModified;
   FillComponentList(True);
 end;
@@ -5966,19 +5983,20 @@ end;
 procedure TObjectInspectorDlg.ZOrderItemClick(Sender: TObject);
 var
   Control: TControl;
+  ZOrder: TZOrderDelete;
   NewSelection: TPersistentSelectionList;
 begin
   if not (Sender is TMenuItem) then Exit;
-  if (Selection.Count <> 1) or
-     not (Selection[0] is TControl) then Exit;
+  if (Selection.Count <> 1) or not (Selection[0] is TControl) then Exit;
   Control := TControl(Selection[0]);
   if Control.Parent = nil then Exit;
-
-  case TMenuItem(Sender).Tag of
-    0: Control.BringToFront;
-    1: Control.SendToBack;
-    2: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) + 1);
-    3: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) - 1);
+  // The enum matches with the Tag numbers.
+  ZOrder := TZOrderDelete(TMenuItem(Sender).Tag);
+  case ZOrder of
+    zoToFront: Control.BringToFront;
+    zoToBack:  Control.SendToBack;
+    zoForward: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) + 1);
+    zoBackward:Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) - 1);
   end;
 
   // Ensure controls that belong to a container are rearranged if required.
@@ -5990,7 +6008,6 @@ begin
     NewSelection.ForceUpdate:=True;
     NewSelection.Add(Control.Parent);
     SetSelection(NewSelection);
-
     NewSelection.Clear;
     NewSelection.ForceUpdate:=True;
     NewSelection.Add(Control);
@@ -5998,10 +6015,8 @@ begin
   finally
     NewSelection.Free;
   end;
-
   DoModified;
-  if Assigned(ComponentTree) then
-    ComponentTree.BuildComponentNodes(True)
+  ChangeCompZOrderInList(Control, ZOrder);
 end;
 
 function TObjectInspectorDlg.GetComponentPanelHeight: integer;
