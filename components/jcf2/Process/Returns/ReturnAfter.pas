@@ -267,7 +267,7 @@ end;
 { true if the "AddGoodReturns" setting wants a return here }
 function NeedsGoodReturn(const pt, ptNext: TSourceToken): boolean;
 const
-  CLASS_FOLLOW = [ttOf, ttHelper];
+  CLASS_FOLLOW = [ttOf, ttHelper, ttAbstract, ttSealed];
 var
   lcNext: TSourceToken;
 begin

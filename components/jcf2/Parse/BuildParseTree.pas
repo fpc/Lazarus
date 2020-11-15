@@ -1032,7 +1032,7 @@ begin
     leFirstTokenType := fcTokenList.FirstSolidTokenType;
     if pbNestedInClass then
     begin
-      if (leFirstTokenType in ClassVisibility) then
+      if leFirstTokenType in (ClassVisibility+[ttStrict]) then
         break;
       if leFirstTokenType in [ttClass,ttVar,ttThreadVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
@@ -1108,7 +1108,7 @@ begin
 
     if pbNestedInClass then
     begin
-      if (fcTokenList.FirstSolidTokenType in ClassVisibility) then
+      if fcTokenList.FirstSolidTokenType in (ClassVisibility + [ttStrict]) then
         break;
       if fcTokenList.FirstSolidTokenType in [ttClass,ttVar,ttThreadVar, ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
@@ -2320,7 +2320,7 @@ var
 begin
   leEndVarSection := END_VAR_SECTION;
   if pbClassVars then
-    leEndVarSection := leEndVarSection + ClassVisibility;
+    leEndVarSection := leEndVarSection + ClassVisibility + [ttStrict];
 
   if pbClassVars and (fcTokenList.FirstSolidTokenType=ttClass) then
   begin
