@@ -24,7 +24,7 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo,
   // LazUtils
   LazUtilities, LazLoggerBase, LazTracer,
   // LCL
@@ -43,13 +43,11 @@ type
 
   TComponentTreeView = class(TCustomTreeView)
   private
-    // tree of TComponentCandidate sorted for aPersistent (CompareComponentCandidates)
-    FCompCandis: TAvlTree;
     FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
     FRootNode: TTreeNode;
     FDrawWholeTree: Boolean;
-    // A Component (Persistent) can move or delete based on FZOrderDelete value.
+    // A Component (Persistent) to be moved or deleted based on FZOrderDelete value.
     FPersToChange: TPersistent;
     FZOrderDelete: TZOrderDelete;
     // Events
@@ -57,7 +55,6 @@ type
     FOnModified: TNotifyEvent;
     function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
       ACapt: String): TTreeNode;
-    procedure AddCandidates(OwnerComponent: TComponent);
     procedure AddChildren(AComponent: TComponent);
     procedure ChangeNode(ANode: TTreeNode);
     function GetSelection: TPersistentSelectionList;
@@ -110,18 +107,11 @@ type
   TCollectionAccess = class(TCollection);
   TComponentAccessor = class(TComponent);
 
-  TComponentCandidate = class
-  public
-    APersistent: TPersistent;
-    Added: boolean;
-  end;
-
   { TComponentWalker }
 
   TComponentWalker = class
   private
     FCompTV: TComponentTreeView;
-    FCandidates: TAvlTree;
     FLookupRoot: TComponent;
     FNode: TTreeNode;
     procedure AddCollection(AColl: TCollection; AParentNode: TTreeNode);
@@ -133,18 +123,6 @@ type
   public
     constructor Create(ACompTV: TComponentTreeView; ALookupRoot: TComponent);
   end;
-
-function CompareComponentCandidates(
-  Candidate1, Candidate2: TComponentCandidate): integer;
-begin
-  Result := ComparePointers(Candidate1.APersistent, Candidate2.APersistent);
-end;
-
-function ComparePersistentWithCandidate(APersistent: TPersistent;
-  Candidate: TComponentCandidate): integer;
-begin
-  Result := ComparePointers(APersistent, Candidate.APersistent);
-end;
 
 function CollectionCaption(ACollection: TCollection; DefaultName: string): string;
 var
@@ -293,21 +271,10 @@ end;
 procedure TComponentWalker.Walk(AComponent: TComponent);
 var
   OldNode: TTreeNode;
-  Candidate: TComponentCandidate;
-  AVLNode: TAvlTreeNode;
   Root: TComponent;
 begin
   if csDestroying in AComponent.ComponentState then exit;
   if GetLookupRootForComponent(AComponent) <> FLookupRoot then Exit;
-
-  AVLNode := FCandidates.FindKey(AComponent,TListSortCompare(@ComparePersistentWithCandidate));
-  Assert(Assigned(AVLNode), 'TComponentWalker.Walk: AVLNode = nil');
-
-  Candidate := TComponentCandidate(AVLNode.Data);
-  Assert(not Candidate.Added,
-        'TComponentWalker.Walk: '+Candidate.APersistent.ClassName+' already added.');
-  Candidate.Added := True;
-
   OldNode := FNode;
   FNode := FCompTV.AddOrGetPersNode(FNode, AComponent, ComponentCaption(AComponent));
   GetOwnedPersistents(AComponent, FNode);
@@ -748,37 +715,11 @@ var
 begin
   if csDestroying in AComponent.ComponentState then exit;
   Walker := TComponentWalker.Create(Self, AComponent);
-  Walker.FCandidates := FCompCandis;
   Walker.FNode := FRootNode;
   try      // add inline components children
     TComponentAccessor(AComponent).GetChildren(@Walker.Walk, AComponent);
   finally
     Walker.Free;
-  end;
-end;
-
-procedure TComponentTreeView.AddCandidates(OwnerComponent: TComponent);
-var
-  AComponent: TComponent;
-  Candidate: TComponentCandidate;
-  i: Integer;
-begin
-  for i := 0 to OwnerComponent.ComponentCount - 1 do
-  begin
-    AComponent := OwnerComponent.Components[i];
-    Candidate := TComponentCandidate.Create;
-    Candidate.APersistent := AComponent;
-    if FCompCandis.Find(Candidate)<>nil then
-    begin
-      DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ', AComponent.Name);
-      Candidate.Free;
-    end
-    else
-    begin
-      FCompCandis.Add(Candidate);
-      if csInline in AComponent.ComponentState then
-        AddCandidates(AComponent);
-    end;
   end;
 end;
 
@@ -789,7 +730,6 @@ procedure TComponentTreeView.BuildComponentNodes(AWholeTree: Boolean);
 var
   RootObject: TPersistent;
   RootComponent: TComponent absolute RootObject;
-  Candidate: TComponentCandidate;
 begin
   BeginUpdate;
   FDrawWholeTree := AWholeTree;
@@ -801,28 +741,13 @@ begin
   if (RootObject is TComponent) and (csDestroying in RootComponent.ComponentState) then
     RootObject:=nil;
   if RootObject <> nil then
-  begin
-    FCompCandis:=TAvlTree.Create(TListSortCompare(@CompareComponentCandidates));
-    try
-      // first add the lookup root
-      FRootNode := AddOrGetPersNode(nil, RootObject, CreateNodeCaption(RootObject,''));
-      // create candidate nodes for every child
-      Candidate := TComponentCandidate.Create;
-      Candidate.APersistent := RootObject;
-      Candidate.Added := True;
-      FCompCandis.Add(Candidate);
-      // add components in creation order and TControl.Parent relationship
-      if RootObject is TComponent then
-      begin
-        AddCandidates(RootComponent);
-        AddChildren(RootComponent);
-      end;
-    finally
-      FCompCandis.FreeAndClear;
-      FCompCandis.Free;
-    end;
-    if AWholeTree then           // Don't expand existing tree.
-      FRootNode.Expand(true);    // A user may want to have some nodes collapsed.
+  begin                          // first add the lookup root
+    FRootNode := AddOrGetPersNode(nil, RootObject, CreateNodeCaption(RootObject,''));
+    // add components in creation order and TControl.Parent relationship
+    if RootObject is TComponent then
+      AddChildren(RootComponent);
+    if AWholeTree then           // Don't expand existing tree as a user
+      FRootNode.Expand(true);    // may want to have some nodes collapsed.
   end;
   MakeSelectionVisible;
   EndUpdate;
