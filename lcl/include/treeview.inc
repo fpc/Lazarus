@@ -1300,6 +1300,7 @@ begin
 
   // remove single select
   Selected:=false;
+  TheTreeView:=Nil;
   // invalidate caches of TreeView and if root item, remove from TreeView.Items
   if Owner<>nil then begin
     Owner.ClearCache;
@@ -1347,6 +1348,7 @@ begin
       ReAllocMem(FParent.FItems,SizeOf(Pointer)*FParent.FCapacity);
     end;
     if FParent.Count=0 then begin
+      Assert(Assigned(TheTreeView), 'TTreeNode.Unbind: TheTreeView=Nil.');
       TheTreeView.BeginUpdate;
       try
         FParent.Expanded:=false;
