@@ -7072,9 +7072,6 @@
       <element name="TApplication.FOldExceptProc">
         <short>The previously installed exception handler</short>
       </element>
-      <element name="TApplication.FOldExitProc">
-        <short>The previously installed Exit procedure</short>
-      </element>
       <element name="TApplication.FOnActionExecute" link="#lcl.forms.TApplication.OnActionExecute"/>
       <element name="TApplication.FOnActionUpdate" link="#lcl.forms.TApplication.OnActionUpdate"/>
       <element name="TApplication.FOnActivate" link="#lcl.forms.TApplication.OnActivate"/>

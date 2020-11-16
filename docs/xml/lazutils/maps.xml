@@ -7,9 +7,7 @@
     ====================================================================
     -->
     <module name="Maps">
-      <short>
-        Implements a map for unique IDs to arbitrary data
-      </short>
+      <short>Implements a map for unique IDs to arbitrary data</short>
       <descr>
         <p>
           Implements a map for unique IDs to arbitrary data. The ID-to-Data mapping is stored in an Average Level Binary Tree for fast indexing. The map also maintains a linked list between the ordered items for fast iteration through its elements. The ID can be signed or unsigned, with a size of 1, 2, 4, 8, 16 or 32 bytes. The data can be of any (constant) size.
@@ -19,7 +17,7 @@
         </p>
       </descr>
 
-      <!-- unresolved externals Visibility: default -->
+      <!-- unresolved externals references -->
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="Math"/>
@@ -27,11 +25,8 @@
       <element name="Laz_AVL_Tree"/>
       <element name="FPCAdds"/>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TMapIdType">
-        <short>
-          Identifies the data type used for map IDs
-        </short>
+        <short>Identifies the data type used for map IDs</short>
         <descr>
           <p>
             TMapIdType is an enumeration type with values that identify the native data type used in map ID values. TMapIdType is used in TMapID and as an argument in the TBaseMap.Create method.
@@ -42,84 +37,45 @@
           <link id="TBaseMap.Create">TBaseMap.Create</link>
         </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu1">
-        <short>
-          1 byte unsigned value (Byte)
-        </short>
+        <short>1 byte unsigned value (Byte)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its1">
-        <short>
-          1 byte signed value (ShortInt)
-        </short>
+        <short>1 byte signed value (ShortInt)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu2">
-        <short>
-          2 byte unsigned value (Word)
-        </short>
+        <short>2 byte unsigned value (Word)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its2">
-        <short>
-          2 byte signed value (SmallInt)
-        </short>
+        <short>2 byte signed value (SmallInt)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu4">
-        <short>
-          4 byte unsigned value (LongWord)
-        </short>
+        <short>4 byte unsigned value (LongWord)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its4">
-        <short>
-          4 byte signed value (LongInt)
-        </short>
+        <short>4 byte signed value (LongInt)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu8">
-        <short>
-          8 byte unsigned value (QWord)
-        </short>
+        <short>8 byte unsigned value (QWord)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its8">
-        <short>
-          8 byte signed value (Int64)
-        </short>
+        <short>8 byte signed value (Int64)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu16">
-        <short>
-          16 byte unsigned value (Low and High QWords)
-        </short>
+        <short>16 byte unsigned value (Low and High QWords)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its16">
-        <short>
-          16 byte signed value (Low QWord and High Int64)
-        </short>
+        <short>16 byte signed value (Low QWord and High Int64)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.itu32">
-        <short>
-          32 byte unsigned value (4 QWord values)
-        </short>
+        <short>32 byte unsigned value (4 QWord values)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMapIdType.its32">
-        <short>
-          32 byte signed value (3 QWord values and Int64)
-        </short>
+        <short>32 byte signed value (3 QWord values and Int64)</short>
       </element>
 
-      <!-- constant Visibility: default -->
       <element name="itsPtrSize">
-        <short>
-          Constant that indicates the size of a signed Pointer in the map
-        </short>
+        <short>Constant that indicates the size of a signed Pointer in the map</short>
         <descr>
           <p>
             itsPtrSize is a constant TMapIdType data type that indicates the size used for  a signed Pointer in the map. The definition is CPU-specific. For a 64-bit CPU, it is defined as its8 in TMapIdType (or Int64). For all other CPUs, it is defines as its4 in TMapIdType (or LongInt).
@@ -133,11 +89,8 @@
         </descr>
       </element>
 
-      <!-- constant Visibility: default -->
       <element name="ituPtrSize">
-        <short>
-          Constant that indicates the size of an unsigned Pointer in the map
-        </short>
+        <short>Constant that indicates the size of an unsigned Pointer in the map</short>
         <descr>
           <p>
             ituPtrSize is a constant TMapIdType data type that indicates the size used for an unsigned Pointer in the map. The definition is CPU-specific. For a 64-bit CPU, it is defined as itu8 in TMapIdType (or QWord). For all other CPUs, it is defines as itu4 in TMapIdType (or LongWord).
@@ -151,11 +104,8 @@
         </descr>
      </element>
 
-      <!-- pointer type Visibility: default -->
       <element name="PMapItem">
-        <short>
-          Pointer to a TMapItem data type
-        </short>
+        <short>Pointer to a TMapItem data type</short>
         <descr>
           <p>
             PMapItem is a Pointer to a TMapItem data type. PMapItem is the type used to represent the first, last, previous, and next items in a linked list. PMapItem is used in TMapLink and TBaseMap.
@@ -168,11 +118,8 @@
         </seealso>
       </element>
 
-      <!-- pointer type Visibility: default -->
       <element name="PMapLink">
-        <short>
-          Pointer to a TMapLink data type
-        </short>
+        <short>Pointer to a TMapLink data type</short>
         <descr>
           <p>
             PMapLink is a Pointer to a TMapLink data type.
@@ -183,11 +130,8 @@
         </descr>
       </element>
 
-      <!-- record type Visibility: default -->
       <element name="TMapLink">
-        <short>
-          Record type used to build the linked list for items in the map
-        </short>
+        <short>Record type used to build the linked list for items in the map</short>
         <descr>
           <p>
             TMapLink is a record type with members that contain Pointers to the Previous and Next items in the linked list for the map. TMapLink is used to implement TMapItem.
@@ -195,11 +139,8 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="TMapLink.Previous">
-        <short>
-          Pointer to the previous item in the linked list for a map
-        </short>
+        <short>Pointer to the previous item in the linked list for a map</short>
         <descr>
           <p>
             Previous is a PMapItem type that contains a pointer to the previous item in the linked list for a map. Values in Previous and Next are used when TBaseMap adds an item to the map, and when TMapIterator acts upon items in the linked list.
@@ -207,11 +148,8 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="TMapLink.Next">
-        <short>
-          Pointer to the Next item in the linked list for a map
-        </short>
+        <short>Pointer to the Next item in the linked list for a map</short>
         <descr>
           <p>
             Next is a PMapItem type that contains a pointer to the Next item in the linked list for a map. Values in Previous and Next are used when TBaseMap adds an item to the map, and when TMapIterator acts upon items in the linked list.
@@ -219,11 +157,8 @@
         </descr>
       </element>
 
-      <!-- pointer type Visibility: default -->
       <element name="PMapID">
-        <short>
-          Pointer to a TMapID type
-        </short>
+        <short>Pointer to a TMapID type</short>
         <descr>
           <p>
             PMapID is a Pointer to a TMapID type.
@@ -231,10 +166,8 @@
         </descr>
       </element>
 
-      <!-- record type Visibility: default -->
       <element name="TMapID">
-        <short>
-        </short>
+        <short>Represents an ID in a map association</short>
         <descr>
           <p>
             TMapID is a record type used to provide access to the byte values in the ID for a map association. Members are provided in TMapID to represent each byte in the signed or unsigned value used in the ID.
@@ -250,126 +183,105 @@
           </p>
         </descr>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U1">
         <short>
           Unsigned Byte value for the ID (1 Byte)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S1">
         Signed ShortInt value for the ID (1 Byte)
         <short>
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U2">
         <short>
           Unsigned Word value for the ID (2 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S2">
         <short>
           Signed SmallInt value for the ID (2 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U4">
         <short>
           Unsigned LongWord value for the ID (4 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S4">
         <short>
           Signed LongInt value for the ID (4 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U8">
         <short>
           Unsigned QWord value for the ID (8 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S8">
         <short>
           Signed Int64 value for the ID (8 Bytes)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U16H">
         <short>
           Unsigned QWords (Low and High) (16 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U16L">
         <short>
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S16H">
         <short>
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S16L">
         <short>
           Signed QWord (Low) and Int64 (High) (16 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U32HH">
         <short>
           Unsigned QWords (LL, LH, HL, HH) (32 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U32HL">
         <short>
           Unsigned QWords (LL, LH, HL, HH) (32 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U32LH">
         <short>
           Unsigned QWords (LL, LH, HL, HH) (32 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.U32LL">
         <short>
           Unsigned QWords (LL, LH, HL, HH) (32 Bytes) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S32HH">
         <short>
           Signed QWords (LL, LH, HL)  and signed Int64 (HH) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S32HL">
         <short>
           Signed QWords (LL, LH, HL)  and signed Int64 (HH) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S32LH">
         <short>
           Signed QWords (LL, LH, HL)  and signed Int64 (HH) (with Endian byte order)
         </short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TMapID.S32LL">
         <short>
           Signed QWords (LL, LH, HL)  and signed Int64 (HH) (with Endian byte order)
         </short>
       </element>
 
-      <!-- record type Visibility: default -->
       <element name="TMapItem">
         <short>
           Represents the ID and order of items in the linked list for the map
@@ -381,7 +293,6 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="TMapItem.Link">
         <short>
           Provides navigation to the previous and next map items in the linked list
@@ -393,7 +304,6 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="TMapItem.ID">
         <short>
           Represents the ID for the map item
@@ -405,7 +315,29 @@
         </descr>
       </element>
 
-      <!-- class Visibility: default -->
+      <element name="TLockedMapModifyException">
+        <short>Exception raised when a modification is made to a locked Map</short>
+        <descr/>
+        <seealso>
+          <link id="'TBaseMap'"/>
+        </seealso>
+      </element>
+
+      <element name="TLockedMapModifyException.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using the exception message text: 'Map modification not allowed'.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TBaseMap.Clear"/>
+          <link id="TBaseMap.Delete"/>
+          <link id="TBaseMap.Destroy"/>
+          <link id="TBaseMap.InternalAdd"/>
+        </seealso>
+      </element>
+
       <element name="TBaseMap" link="#rtl.Classes.TPersistent">
         <short>
           Implements the base class for a map for unique IDs to arbitrary data
@@ -423,91 +355,97 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TBaseMap.FTree"/>
       <element name="TBaseMap.FIdType"/>
       <element name="TBaseMap.FDataSize"/>
       <element name="TBaseMap.FFirst"/>
       <element name="TBaseMap.FLast"/>
       <element name="TBaseMap.FIterators"/>
+      <element name="TBaseMap.FLocked"/>
 
-      <!-- function Visibility: private -->
       <element name="TBaseMap.FindNode">
         <short>Finds a node in the AVL Tree with the specified ID</short>
       </element>
-      <!-- function result Visibility: private -->
       <element name="TBaseMap.FindNode.Result">
         <short>AVL Tree node with the specified item</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.FindNode.AId">
         <short>ID to locate in the AVL Tree</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TBaseMap.FindItem">
         <short>Finds the data for the item with the specified ID</short>
       </element>
-      <!-- function result Visibility: private -->
       <element name="TBaseMap.FindItem.Result">
         <short>Data stored in the AVL Tree for the specified ID</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.FindItem.AId">
         <short>ID to locate in the AVL Tree</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMap.FreeData">
         <short>Frees the data for the specified AVL Tree node</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.FreeData.ANode">
         <short>AVL Tree node to locate in the map</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TBaseMap.TreeCompareID">
         <short>
           Gets the relative order for the specified map items using their binary ID values
         </short>
       </element>
-      <!-- function result Visibility: private -->
       <element name="TBaseMap.TreeCompareID.Result">
         <short>-1, 0, or 1 as the relative order for the map items</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.TreeCompareID.Sender">
         <short>AVL Tree for the operation</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.TreeCompareID.AItem1">
         <short>Map item to compare</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.TreeCompareID.AItem2">
         <short>Map item to compare</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMap.IteratorAdd">
         <short>Adds the map iterator to the internal list</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.IteratorAdd.AIterator">
         <short>Map iterator to add to the list</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMap.IteratorRemove">
         <short>Removes the map iterator from the internal list</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.IteratorRemove.AIterator">
         <short>Map iterator to remove from the list</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
+      <element name="TBaseMap.LockMap">
+        <short>Locks the Map when an iterator is added</short>
+        <descr>
+          <p>
+            Calls <var>InterLockedIncrement</var> to increase the value in the internal member used to track the locking state.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLockedMapIterator.AddToMap"/>
+        </seealso>
+      </element>
+
+      <element name="TBaseMap.UnLockMap">
+        <short>Unlocks the Map when an iterator is removed</short>
+        <descr>
+          <p>
+            Calls <var>InterLockedDecrement</var> to decrease the value in the internal member used to track the locking state.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLockedMapIterator.RemoveFromMap"/>
+        </seealso>
+      </element>
+
       <element name="TBaseMap.InternalAdd">
         <short>
           Adds a map item with the specified ID and Data to the AVL Tree
@@ -529,16 +467,13 @@
           </p>
         </errors>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalAdd.AId">
         <short>ID for the new map item</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalAdd.AData">
         <short>Data for the new map item</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalGetData">
         <short>
           Gets the data stored in the specified map item
@@ -558,20 +493,16 @@
           <link id="#LazUtils.Maps.TMap.GetData"/>
         </seealso>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TBaseMap.InternalGetData.Result">
         <short>True when the specified map item is a valid pointer</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalGetData.AItem">
         <short>Map item to examine n the method</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalGetData.AData">
         <short>Data stored in the specified map item</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalGetDataPtr">
         <short>
           Gets a Pointer to the data for the specified map item
@@ -592,16 +523,13 @@
           <link id="#LazUtils.Maps.TMap.GetDataPtr"/>
         </seealso>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TBaseMap.InternalGetDataPtr.Result">
         <short>Pointer to the data for the specified map item</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalGetDataPtr.AItem">
         <short>Map item examined in the method</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalGetId">
         <short>
           Get the ID value for the specified map item
@@ -618,130 +546,116 @@
           </p>
         </descr>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TBaseMap.InternalGetId.Result">
         <short>False if the specified map item is not a valid Pointer</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalGetId.AItem">
         <short>Map item examined in the method</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalGetId.AID">
         <short>Value for the ID in the specified map item</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TBaseMap.InternalSetData">
         <short>Stores the data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TBaseMap.InternalSetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalSetData.AItem">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.InternalSetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TBaseMap.ReleaseData">
         <short>Frees resources allocated for the data in the map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.ReleaseData.ADataPtr">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TBaseMap.Create">
         <short>Constructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.Create.AIdType">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.Create.ADataSize">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TBaseMap.Clear">
         <short>Clears all map items in the AVL Tree</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TBaseMap.Count">
         <short>Gets the number of map items in the AVL Tree</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TBaseMap.Count.Result">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TBaseMap.Delete">
         <short>Deletes the specified map item from the AVL Tree</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TBaseMap.Delete.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMap.Delete.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TBaseMap.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TBaseMapIterator" link="#rtl.Classes.TObject">
         <short>Specifies the interface used for map item iterators</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TBaseMapIterator.FMap"/>
       <element name="TBaseMapIterator.FCurrent"/>
       <element name="TBaseMapIterator.FInValid"/>
       <element name="TBaseMapIterator.FBOM"/>
       <element name="TBaseMapIterator.FEOM"/>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMapIterator.MapDestroyed">
         <short>Called when the map is destroyed</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMapIterator.MapCleared">
         <short>Called when the map is cleared</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TBaseMapIterator.ItemRemove">
         <short>Called when an Item is removed from the map</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMapIterator.ItemRemove.AData">
         <short>Pointer to the AVL Tree node for the item</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
+      <element name="TBaseMapIterator.AddToMap">
+        <short>Adds the class instance to the associated Map for the iterator</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TBaseMapIterator.RemoveFromMap">
+        <short>Removes the class instance from the associated Map for the iterator</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TBaseMapIterator.InternalCreate">
         <short>
           Initializes the iterator for specified the map
@@ -763,12 +677,10 @@
           </p>
         </descr>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMapIterator.InternalCreate.AMap">
         <short>Map for the iterator class instance</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TBaseMapIterator.InternalLocate">
         <short>
           True when a matching map item is found
@@ -798,16 +710,13 @@
           </p>
         </descr>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TBaseMapIterator.InternalLocate.Result">
         <short>True when the map item exists in the map</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TBaseMapIterator.InternalLocate.AId">
         <short>Map item to locate in the method</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TBaseMapIterator.Validate">
         <short>
           Validates the AVL Tree and the Current item in the iterator
@@ -831,7 +740,6 @@
         </errors>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TBaseMapIterator.ValidateMap">
         <short>
           Ensures that the map for the iterator is still valid
@@ -848,7 +756,6 @@
         </errors>
       </element>
 
-      <!-- property Visibility: protected -->
       <element name="TBaseMapIterator.Current">
         <short>
           Current map item for the iterator
@@ -860,41 +767,33 @@
         </descr>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TBaseMapIterator.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TBaseMapIterator.First">
         <short>Moves to the first item in the linked list</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TBaseMapIterator.Next">
         <short>Moves to the next item in the linked list</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TBaseMapIterator.Previous">
         <short>Moves to the previous item in the linked list</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TBaseMapIterator.Last">
         <short>Moves to the last item in the linked list</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TBaseMapIterator.Valid">
-        <short>
-          Indicates if the map for the iterator has been freed
-        </short>
+        <short>Indicates if the map for the iterator has been freed</short>
         <descr>
           <p>
             Valid is a Boolean function used to determine if the map for the iterator is still valid. The return value is False when the map class instance has been freed (contains <var>Nil</var>).
@@ -906,11 +805,8 @@
         <short>False when the map for the iterator has been freed</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TBaseMapIterator.BOM">
-        <short>
-          True when the iterator is at the beginning of the linked list for the map
-        </short>
+        <short>True when the iterator is at the beginning of the linked list for the map</short>
         <descr>
           <p>
             BOM is a read-only Boolean property that indicates if the iterator is at the beginning of the linked list for the map, or the value in Current is <var>Nil</var>. The value in BOM is updated when navigation methods for the iterator are used, such as: First, Next, Previous, Last, and Locate.
@@ -918,15 +814,11 @@
         </descr>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TBaseMapIterator.EOM">
-        <short>
-          True when the iterator is at the end of the linked list for the map
-        </short>
-        <descr></descr>
+        <short>True when the iterator is at the end of the linked list for the map</short>
+        <descr/>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TMap">
         <short>
           Implements a map for unique IDs to arbitrary data
@@ -944,171 +836,159 @@
         </descr>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TMap.Add" link="#lazutils.maps.TBaseMap.InternalAdd">
         <short>
           Adds a map item with the specified ID and Data values
         </short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.Add.AId">
         <short>Map item to add in the method</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.Add.AData">
         <short>Data for the map item to add in the method</short>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMap.HasId">
         <short>
           Checks for the specified ID is in the AVL Tree for the map
         </short>
         <descr>
           <p>
-            HasId is a Boolean function used to locate the specified map item in the AVL Tree for the map. HasId calls the FindNode method to located the value in AId. The return value is True when FindNode returns a value other than <var>Nil</var>.
+            <var>HasId</var> is a <var>Boolean</var> function used to locate the specified map item in the AVL Tree for the map. HasId calls the FindNode method to located the value in AId. The return value is True when FindNode returns a value other than <var>Nil</var>.
           </p>
         </descr>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMap.HasId.Result">
         <short>True when the AVL Tree contains a node for the specified map item</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.HasId.AID">
         <short>Map item to locate in the AVL Tree</short>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMap.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
         <short>
           Gets the Data for the map item with the specified ID
         </short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMap.GetData.Result" link="#lazutils.maps.TBaseMap.InternalGetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.GetData.AId" link="#lazutils.maps.TBaseMap.InternalGetData.AId">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.GetData.AData" link="#lazutils.maps.TBaseMap.InternalGetData.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMap.GetDataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
         <short>Gets a Pointer to the data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMap.GetDataPtr.Result" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.GetDataPtr.AId" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMap.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
         <short>Stores the data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMap.SetData.Result" link="#lazutils.maps.TBaseMap.InternalSetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.SetData.AId" link="#lazutils.maps.TBaseMap.InternalSetData.AId">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMap.SetData.AData" link="#lazutils.maps.TBaseMap.InternalSetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TMapIterator" link="#lazutils.maps.TBaseMapIterator">
-        <short>
-          Implements an iterator for items in a map
-        </short>
+        <short>Implements an iterator for items in a map</short>
         <descr>
           <p>
-            TMapIterator is a TBaseMapIterator descendant that implements an iterator for items in a map. TMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TMapIterator also provides an implementation of the Locate method.
+            <var>TMapIterator</var> is a <var>TBaseMapIterator</var> descendant that implements an iterator for items in a map. TMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TMapIterator also provides an implementation of the Locate method.
           </p>
         </descr>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TMapIterator.Create" link="#lazutils.maps.TBaseMapIterator.InternalCreate">
         <short>Constructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMapIterator.Create.AMap">
         <short>Map with IDs and Data for the iterator</short>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMapIterator.DataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
         <short>Gets the Pointer to the Data in a map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMapIterator.DataPtr.Result" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.Result">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TMapIterator.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
         <short>Gets the Data for a map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMapIterator.GetData.AData" link="#lazutils.maps.TBaseMap.InternalGetData,AData">
         <short>Data for the map item</short>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TMapIterator.GetID" link="#lazutils.maps.TBaseMap.InternalGetID">
         <short>Gets the ID for a map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMapIterator.GetID.AID" link="#lazutils.maps.TBaseMap.InternalGetID.AID">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TMapIterator.Locate" link="#lazutils.maps.TBaseMapIterator.InternalLocate">
         <short>Locates a map item with the specified ID</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TMapIterator.Locate.Result" link="#lazutils.maps.TBaseMapIterator.InternalLocate.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMapIterator.Locate.AId" link="#lazutils.maps.TBaseMapIterator.InternalLocate.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TMapIterator.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
         <short>Sets the Data for a map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMapIterator.SetData.AData" link="#lazutils.maps.TBaseMap.InternalSetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- class Visibility: default -->
+      <element name="TLockedMapIterator">
+        <short>Implements a map iterator with thread-safe locking in the associated map</short>
+        <descr>
+            <p>
+              <var>TLockedMapIterator</var> is a <var>TMapIterator</var> descendant which allows iteration of a map in multiple threads. The associated map will be locked prior to adding or removing entries.
+            </p>
+          </descr>
+        <seealso/>
+      </element>
+
+      <element name="TLockedMapIterator.AddToMap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TLockedMapIterator.RemoveFromMap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TTypedMap" link="#lazutils.maps.TMap">
         <short>
           Implements a map with support for reference counted Type Information in the Data
@@ -1120,199 +1000,157 @@
         </descr>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TTypedMap.FTypeInfo"/>
 
-      <!-- function Visibility: protected -->
       <element name="TTypedMap.InternalSetData" link="#lazutils.maps.TBaseMap.InternalSetData">
-        <short></short>
-        <descr></descr>
+        <short/>
+        <descr/>
       </element>
-      <!-- function result Visibility: protected -->
       <element name="TTypedMap.InternalSetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.InternalSetData.AItem">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.InternalSetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TTypedMap.ReleaseData" link="#lazutils.maps.TBaseMap.ReleaseData">
-        <short></short>
-        <descr></descr>
+        <short/>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.ReleaseData.ADataPtr">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TTypedMap.Add" link="#lazutils.maps.TMap.Add">
-        <short></short>
-        <descr></descr>
+        <short/>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.Add.AId">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.Add.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TTypedMap.Create">
         <short>Constructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.Create.AIdType">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.Create.ATypeInfo">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TTypedMap.Destroy" link="#lazutils.maps.TBaseMap.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TTypedMap.HasId" link="#lazutils.maps.TMap.HasId">
-        <short></short>
-        <descr></descr>
+        <short/>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TTypedMap.HasId.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.HasId.AID">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TTypedMap.GetData" link="#lazutils.maps.TMap.GetData">
         <short>Gets the Data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TTypedMap.GetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.GetData.AId">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.GetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TTypedMap.GetDataPtr" link="#lazutils.maps.TMap.GetDataPtr">
         <short>Gets a Pointer to the Data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TTypedMap.GetDataPtr.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.GetDataPtr.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TTypedMap.SetData" link="#lazutils.maps.TMap.SetData">
         <short>Stores the Data for the specified map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TTypedMap.SetData.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.SetData.AId">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMap.SetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TTypedMapIterator" link="#lazutils.maps.TMapIterator">
-        <short>
-          Implements an iterator for items in a map
-        </short>
+        <short>Implements an iterator for items in a map</short>
         <descr>
           <p>
-            TTypedMapIterator is a TMapIterator descendant that implements an iterator for map items with reference counted Type Information for their Data. TTypedMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TTypedMapIterator also provides an implementation of the Locate method.
+            <var>TTypedMapIterator</var> is a <var>TMapIterator</var> descendant that implements an iterator for map items with reference counted Type Information in their Data. TTypedMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TTypedMapIterator also provides an implementation of the Locate method.
           </p>
         </descr>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TTypedMapIterator.Create">
         <short>Constructor for the class instance</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMapIterator.Create.AMap">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TTypedMapIterator.GetData">
         <short>Gets the Data for the map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMapIterator.GetData.AData">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TTypedMapIterator.GetID">
         <short>Gets the ID for the map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMapIterator.GetID.AID">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- function Visibility: public -->
       <element name="TTypedMapIterator.Locate">
         <short>Locates a map item with the specified ID</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- function result Visibility: public -->
       <element name="TTypedMapIterator.Locate.Result">
-        <short></short>
+        <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMapIterator.Locate.AId">
-        <short></short>
+        <short/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TTypedMapIterator.SetData">
         <short>Stores the Data for the map item</short>
-        <descr></descr>
+        <descr/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TTypedMapIterator.SetData.AData">
-        <short></short>
+        <short/>
       </element>
 
       <!-- function Visibility: default -->
@@ -1324,14 +1162,13 @@
           </p>
         </descr>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MapReport.Result">
         <short>String with the multi-line information about the AVL Tree</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MapReport.AMap">
         <short>Map class to examine in the routine</short>
       </element>
+
     </module>
     <!-- Maps -->
   </package>

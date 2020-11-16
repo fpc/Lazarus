@@ -1358,26 +1358,12 @@ ACfg.SetValue('list/items/item[2]/value', 'valueC');
 &lt;/list&gt;
           </code>
 
-          <!-- TODO:
-            discuss reading and writing TRect
-
-            ACfg.SetValue('window/position/top', ARect.Top);
-            ACfg.SetValue('window/position/left', ARect.Left);
-            ACfg.SetValue('window/position/bottom', ARect.Bottom);
-            ACfg.SetValue('window/position/right', ARect.Right);
-
-            ACfg.GetValue('window/position/', ARect, ADefRect);
-
-            window
-              position left= top= right= bottom=
-          -->
-
           <remark>
             There is no overloaded variant of the SetValue method which handles writing a TRect data type in the current implementation. You must write the Top, Left, Right, and Bottom coordinates as separate calls to SetValue using the desired path.
           </remark>
 
           <remark>
-            Please note: Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not XPath-compatible.
+            Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not XPath-compatible.
           </remark>
         </descr>
         <seealso>

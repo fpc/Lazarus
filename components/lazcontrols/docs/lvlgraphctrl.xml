@@ -48,7 +48,9 @@
       <element name="TLvlGraphNode">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TPersistent"/>
+        </seealso>
       </element>
 
       <!-- private -->
@@ -286,7 +288,7 @@
         <short/>
         <descr>
           <p>
-            Requires a value greater than or equal to 0 (zero).
+            Requires a value greater than or equal to <b>0</b> (<b>zero</b>) in the <var>ImageIndex</var> property.
           </p>
         </descr>
         <seealso/>
@@ -510,9 +512,9 @@
           <p>
             Calculated using the formula:
           </p>
-          <code>
-          DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
-          </code>
+<code>
+DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
+</code>
         </descr>
         <seealso/>
       </element>
@@ -3062,7 +3064,7 @@
         <short>Implements a control used to draw a level (or layered) graph</short>
         <descr>
           <p>
-            TLvlGraphControl is a TCustomLvlGraphControl descendant which implements a control used to render a level graph (also known as a edlayered graph). A level graph consists of nodes (or vertices) and edges  with an equidistant spacing beteen related nodes.
+            <var>TLvlGraphControl</var> is a <var>TCustomLvlGraphControl</var> descendant which implements a control used to render a level graph (also known as a edlayered graph). A level graph consists of nodes (or vertices) and edges  with an equidistant spacing beteen related nodes.
           </p>
           <p>
             TLvlGraphControl provides the following features:
@@ -3130,56 +3132,55 @@
       </element>
 
       <!-- published -->
-      <!-- TODO: add links to ancestor classes -->
-      <element name="TLvlGraphControl.Align"/>
-      <element name="TLvlGraphControl.Anchors"/>
-      <element name="TLvlGraphControl.BorderSpacing"/>
-      <element name="TLvlGraphControl.BorderStyle"/>
-      <element name="TLvlGraphControl.BorderWidth"/>
-      <element name="TLvlGraphControl.Color"/>
-      <element name="TLvlGraphControl.Constraints"/>
-      <element name="TLvlGraphControl.DragCursor"/>
-      <element name="TLvlGraphControl.DragKind"/>
-      <element name="TLvlGraphControl.DragMode"/>
-      <element name="TLvlGraphControl.EdgeStyle"/>
-      <element name="TLvlGraphControl.Enabled"/>
-      <element name="TLvlGraphControl.Font"/>
-      <element name="TLvlGraphControl.NodeStyle"/>
-      <element name="TLvlGraphControl.OnClick"/>
-      <element name="TLvlGraphControl.OnContextPopup"/>
-      <element name="TLvlGraphControl.OnDblClick"/>
-      <element name="TLvlGraphControl.OnDragDrop"/>
-      <element name="TLvlGraphControl.OnDragOver"/>
-      <element name="TLvlGraphControl.OnDrawStep"/>
-      <element name="TLvlGraphControl.OnEndAutoLayout"/>
-      <element name="TLvlGraphControl.OnEndDrag"/>
-      <element name="TLvlGraphControl.OnEnter"/>
-      <element name="TLvlGraphControl.OnExit"/>
-      <element name="TLvlGraphControl.OnKeyDown"/>
-      <element name="TLvlGraphControl.OnKeyPress"/>
-      <element name="TLvlGraphControl.OnKeyUp"/>
-      <element name="TLvlGraphControl.OnMinimizeCrossings"/>
-      <element name="TLvlGraphControl.OnMinimizeOverlappings"/>
-      <element name="TLvlGraphControl.OnMouseDown"/>
-      <element name="TLvlGraphControl.OnMouseEnter"/>
-      <element name="TLvlGraphControl.OnMouseLeave"/>
-      <element name="TLvlGraphControl.OnMouseMove"/>
-      <element name="TLvlGraphControl.OnMouseUp"/>
-      <element name="TLvlGraphControl.OnSelectionChanged"/>
-      <element name="TLvlGraphControl.OnShowHint"/>
-      <element name="TLvlGraphControl.OnStartAutoLayout"/>
-      <element name="TLvlGraphControl.OnStartDrag"/>
-      <element name="TLvlGraphControl.OnUTF8KeyPress"/>
-      <element name="TLvlGraphControl.Options"/>
-      <element name="TLvlGraphControl.ParentColor"/>
-      <element name="TLvlGraphControl.ParentFont"/>
-      <element name="TLvlGraphControl.ParentShowHint"/>
-      <element name="TLvlGraphControl.PopupMenu"/>
-      <element name="TLvlGraphControl.ShowHint"/>
-      <element name="TLvlGraphControl.TabOrder"/>
-      <element name="TLvlGraphControl.TabStop"/>
-      <element name="TLvlGraphControl.Tag"/>
-      <element name="TLvlGraphControl.Visible"/>
+      <element name="TLvlGraphControl.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TLvlGraphControl.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TLvlGraphControl.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TLvlGraphControl.BorderStyle" link="#lcl.controls.TCustomControl.BorderStyle"/>
+      <element name="TLvlGraphControl.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
+      <element name="TLvlGraphControl.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TLvlGraphControl.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TLvlGraphControl.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TLvlGraphControl.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TLvlGraphControl.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TLvlGraphControl.EdgeStyle" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.EdgeStyle"/>
+      <element name="TLvlGraphControl.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TLvlGraphControl.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TLvlGraphControl.NodeStyle" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.NodeStyle"/>
+      <element name="TLvlGraphControl.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TLvlGraphControl.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TLvlGraphControl.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TLvlGraphControl.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TLvlGraphControl.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TLvlGraphControl.OnDrawStep" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnDrawStep"/>
+      <element name="TLvlGraphControl.OnEndAutoLayout" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnEndAutoLayout"/>
+      <element name="TLvlGraphControl.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TLvlGraphControl.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TLvlGraphControl.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TLvlGraphControl.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TLvlGraphControl.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TLvlGraphControl.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TLvlGraphControl.OnMinimizeCrossings" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnMinimizeCrossings"/>
+      <element name="TLvlGraphControl.OnMinimizeOverlappings" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnMinimizeOverlappings"/>
+      <element name="TLvlGraphControl.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TLvlGraphControl.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TLvlGraphControl.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TLvlGraphControl.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TLvlGraphControl.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TLvlGraphControl.OnSelectionChanged" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnSelectionChanged"/>
+      <element name="TLvlGraphControl.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+      <element name="TLvlGraphControl.OnStartAutoLayout" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.OnStartAutoLayout"/>
+      <element name="TLvlGraphControl.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TLvlGraphControl.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TLvlGraphControl.Options" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.Options"/>
+      <element name="TLvlGraphControl.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TLvlGraphControl.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TLvlGraphControl.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TLvlGraphControl.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TLvlGraphControl.ShowHint" link="#lazcontrols.lvlgraphctrl.TCustomLvlGraphControl.ShowHint"/>
+      <element name="TLvlGraphControl.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TLvlGraphControl.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TLvlGraphControl.Tag" link="#rtl.classes.TComponent.Tag"/>
+      <element name="TLvlGraphControl.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="GetCCPaletteRGB">
         <short/>

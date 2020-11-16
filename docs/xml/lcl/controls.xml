@@ -9956,8 +9956,6 @@
         <short/>
       </element>
 
-      <!-- TODO: missing either AddHandlerOnEnabledChanging or RemoveHandlerOnEnableChanged -->
-
       <element name="TControl.RemoveHandlerOnEnableChanging">
         <short>Removes an <var>OnEnabledChanged</var> handler</short>
         <descr/>
@@ -11828,8 +11826,8 @@
         <descr/>
         <seealso/>
         <notes>
-          <note>TODO: Check if we need this method.</note>
           <note>Implementation is empty in the current LCL version.</note>
+          <note>TODO: Check if we need this method.</note>
         </notes>
       </element>
       <element name="TWinControl.CreateSubClass.Params">
@@ -13111,26 +13109,34 @@
           Initializes the window creation parameter record with the settings for the control
         </short>
         <descr>
-          <p>Definition of parameters:</p>
-          <pre>
-TCreateParams = record
-    Caption: PChar;
-    Style: Cardinal;
-    ExStyle: Cardinal;
-    X, Y: Integer;
-    Width, Height: Integer;
-    WndParent: HWnd;
-    Param: Pointer;
-    WindowClass: TWndClass;
-    WinClassName: array[0..63] of Char;
-end;
-          </pre>
+          <p>
+            <var>CreateParams</var> is a procedure used to initialize and/or update creation parameters in the <var>Params</var> argument. CreateParams is called from the <var>CreateWnd</var> method when the window handle is allocated for the control.
+          </p>
+          <p>
+            CreateParams ensures that values in the <var>TCreateParams</var> record instance contain the values needed for the class instance. The following members in the record are update:
+          </p>
+          <dl>
+            <dt>Caption</dt>
+            <dd>Set to the value in the Caption property.</dd>
+            <dt>Style</dt>
+            <dd>
+              Includes flag values: WS_CHILD, WS_CLIPSIBLINGS, WS_CLIPCHILDREN, and WS_TABSTOP when needed.
+            </dd>
+            <dt>ExStyle</dt>
+            <dd>Includes style values needed for the value in ControlStyle and BorderStyle.</dd>
+            <dt>WndParent</dt>
+            <dd>Set to the handle in ParentWindow, or Parent.Handle when assigned.</dd>
+            <dt>X, Y, Width, Height</dt>
+            <dd>Set to the property values in the class instance.</dd>
+          </dl>
         </descr>
-        <seealso/>
-        <notes><note>TODO: fix this. Add content instead of declaration code </note></notes>
+        <seealso>
+          <link id="TWinControl.CreateWnd"/>
+          <link id="#lcl.lcltype.TCreateParams"/>
+        </seealso>
       </element>
       <element name="TWinControl.CreateParams.Params">
-        <short/>
+        <short>Create parameters updated in the method</short>
       </element>
 
       <element name="TWinControl.CreateWnd">
@@ -14062,13 +14068,12 @@ end;
       </element>
 
       <element name="TWinControl.FixDesignFontsPPIWithChildren">
-        <!-- TODO -->
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWinControl.FixDesignFontsPPIWithChildren.ADesignTimePPI">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TWinControl.Create">
@@ -14124,7 +14129,7 @@ end;
         <short>Destructor for the class instance</short>
         <descr>
           <p>
-            Destroy is the overridden destructor for the class instance.
+            <var>Destroy</var> is the overridden destructor for the class instance.
           </p>
           <p>
             Destroy call RemoveFocus to ensure that the control cannot receive focus from a Parent control. If a handle has been allocated for the windowed control, the DestroyHandle method is called.
@@ -14192,7 +14197,7 @@ if FormFoo.EditFoo.CanFocus then
   FormFoo.ActiveControl := FormFoo.EditFoo;
           </code>
           <remark>
-            Please note: CanFocus returns True even if the parent form isn't actually visible, and a subsequent SetFocus call could throw an exception. Use <var>CanSetFocus</var> in this case.
+            CanFocus returns True even if the parent form isn't actually visible, and a subsequent SetFocus call could throw an exception. Use <var>CanSetFocus</var> in this case.
           </remark>
         </descr>
         <seealso>
@@ -15352,7 +15357,6 @@ if MyControl.CanSetFocus then
         <seealso>
           <link id="#lcl.Controls.TDockManager"/>
         </seealso>
-        <notes><note>TODO: make this description a topic</note></notes>
       </element>
 
       <element name="TDockTree.FBorderWidth">
@@ -16409,7 +16413,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             During loading and handle creation the calls are delayed.
           </p>
           <p>
-            This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden in descendent components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.
+            This method is essentially the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden in descendent components,  it is not useful to perform all tests, which can result in too much overhead. To reduce the overhead, the LCL  calls <var>AdjustSize</var> instead.
           </p>
           <p>
             When setting <var>AutoSize</var> to <b>True</b>, the LCL auto-sizes the width and height for the control. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start with a simple scenario:
@@ -16624,7 +16628,6 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
             ClientToScreen returns the screen coordinates for an point in client coordinates.
           </p>
         </descr>
-        <notes><note>?</note><note>right?</note></notes>
       </topic>
 
       <topic name="AnchoringControls">

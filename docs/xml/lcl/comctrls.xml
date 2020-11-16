@@ -812,7 +812,7 @@
             <var>InvalidatePanel</var> renders the panel with specified index non-valid. Calls <var>UpdateHandleObject</var> to ensure that the widget set class is notified of the change to the specified panel.
           </p>
           <remark>
-            Please note: No actions are performed in the method when the PanelParts argument is an empty set ([]).
+            Please note: No actions are performed in the method when the PanelParts argument is an empty set (<b>[]</b>).
           </remark>
         </descr>
         <seealso/>
@@ -1268,7 +1268,7 @@
         </short>
         <descr>
           <p>
-            Gets the ordinal position in the Parent (tab control) where the current page is displayed. Returns -1 if the page is not present in the notebook or has its TabVisible property set to False.
+            Gets the ordinal position in the Parent (tab control) where the current page is displayed. Returns <b>-1</b> if the page is not present in the notebook or has its TabVisible property set to False.
           </p>
         </descr>
       </element>
@@ -8676,7 +8676,7 @@
       <element name="TCustomListView.LargeImagesWidth">
         <short/>
         <descr>
-          LargeImagesWidth is an Integer property used to access the width for large images in the list view. Reading and writing a value to the property accesses an internal array with width values for the image list using the TListViewImageList enumeration value. The default value for the property is zero (0).
+          LargeImagesWidth is an Integer property used to access the width for large images in the list view. Reading and writing a value to the property accesses an internal array with width values for the image list using the TListViewImageList enumeration value. The default value for the property is zero (<b>0</b>).
         </descr>
         <seealso/>
       </element>
@@ -9397,7 +9397,7 @@
             At first this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link> but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var> and it can have images associated with the list <var>Items</var>.
           </p>
           <p>
-            The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (...) next to the <var>Items</var> entry in the Object Inspector.
+            The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (<b>...</b>) next to the <var>Items</var> entry in the Object Inspector.
           </p>
           <p>
             A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list.
@@ -11525,8 +11525,8 @@
       <element name="TToolButton.MenuItem">
         <short>The item on the Main Menu with which this tool button is associated</short>
         <descr>
-          <p>The item on the Main Menu with which this tool button is associated</p>
-          <p>Typically the buttons on the toolbar would each point to an entry on the menu action list which could also be accessed by using the Main Menu</p>
+          <p>The item on the Main Menu with which this tool button is associated.</p>
+          <p>Typically the buttons on the toolbar would each point to an entry on the menu action list which could also be accessed by using the Main Menu.</p>
         </descr>
       </element>
 
@@ -16235,6 +16235,26 @@
         <short/>
       </element>
 
+      <element name="TTreeNode.GetFirstSibling">
+        <short>Gets the first tree node at the same level in the tree</short>
+        <descr>
+          <p>
+            <var>GetFirstSibling</var> is a <var>TTreeNode</var> function which returns the first tree node at the same <var>Level</var> in the tree node hierarchy. The return value may be the same as the current class instance when it is the first (or only) node at the current Level.
+          </p>
+          <p>
+            When a <var>Parent</var> node has been assigned, its <var>GetFirstChild</var> method is used to get the return value. Otherwise, the internal linked list for the sub-tree is used to get the previous tree node as the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Level"/>
+          <link id="TTreeNode.Parent"/>
+          <link id="TTreeNode.GetFirstChild"/>
+        </seealso>
+      </element>
+      <element name="TTreeNode.GetFirstSibling.Result">
+        <short>First tree node at the same level</short>
+      </element>
+
       <element name="TTreeNode.GetFirstVisibleChild">
         <short/>
         <descr/>
@@ -16629,14 +16649,20 @@
           <p>
             Definition of the modes of attachment:
           </p>
-          <pre>
-    naAdd,           // add as last sibling of Destination
-    naAddFirst,      // add as first sibling of Destination
-    naAddChild,      // add as last child of Destination
-    naAddChildFirst, // add as first child of Destination
-    naInsert,        // insert in front of Destination
-    naInsertBehind   // insert behind Destination
-        </pre>
+          <dl>
+            <dt>naAdd</dt>
+            <dd>Add as last sibling of Destination</dd>
+            <dt>naAddFirst</dt>
+            <dd>Add as first sibling of Destination</dd>
+            <dt>naAddChild</dt>
+            <dd>Add as last child of Destination</dd>
+            <dt>naAddChildFirst</dt>
+            <dd>Add as first child of Destination</dd>
+            <dt>naInsert</dt>
+            <dd>Insert in front of Destination</dd>
+            <dt>naInsertBehind</dt>
+            <dd>Insert behind Destination</dd>
+          </dl>
         </descr>
         <seealso/>
       </element>

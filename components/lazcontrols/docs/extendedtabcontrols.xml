@@ -37,7 +37,9 @@
       <element name="TExtendedTabToolbar">
         <short/>
         <descr>
-          TExtendedTabToolbar is a TToolBar descendant.
+          <p>
+            TExtendedTabToolbar is a TToolBar descendant.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -460,7 +462,7 @@
         <short/>
         <descr>
           <p>
-            EdgeBorders is a TEdgeBorders property which contains a set of TEdgeBorder enumeration values. The values indicates which borders will be drawn for the tool bar. The default value for the property is a set which includes the following values:
+            <var>EdgeBorders</var> is a <var>TEdgeBorders</var> property which contains a set of <var>TEdgeBorder</var> enumeration values. The values indicates which borders will be drawn for the tool bar. The default value for the property is a set which includes the following values:
           </p>
           <ul>
             <li>ebLeft</li>
@@ -476,7 +478,7 @@
         <short>Drawing styleused for the inner edge of the tool bar</short>
         <descr>
           <p>
-            EdgeInner is a TEdgeStyle property which indicates the drawing style used for the inner edge of the tool bar. The default value for the property is esRaised.
+            <var>EdgeInner</var> is a <var>TEdgeStyle</var> property which indicates the drawing style used for the inner edge of the tool bar. The default value for the property is <var>esRaised</var>.
           </p>
         </descr>
         <seealso/>
@@ -485,7 +487,7 @@
       <element name="TToolbarWrapper.EdgeOuter">
         <short/>
         <descr>
-          The default value for the property is esLowered.
+          The default value for the property is <var>esLowered</var>.
         </descr>
         <seealso/>
       </element>
@@ -589,7 +591,9 @@
       <element name="TExtendedInternalCustomPage">
         <short/>
         <descr>
-          TExtendedInternalCustomPage is a TCustomPage descendant.
+          <p>
+            <var>TExtendedInternalCustomPage</var> is a <var>TCustomPage</var> descendant.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -610,7 +614,9 @@
       <element name="TExtendedInternalTabControl">
         <short>Internal TabControl used to display tabs</short>
         <descr>
-          TExtendedInternalTabControl is a TNoteBookStringsTabControl descendant.
+          <p>
+            <var>TExtendedInternalTabControl</var> is a <var>TNoteBookStringsTabControl</var> descendant.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -627,7 +633,9 @@
       <element name="TExtendedTabControlNoteBookStrings">
         <short>List of tabs (and pages) used in TCustomExtendedTabControl</short>
         <descr>
-          TExtendedTabControlNoteBookStrings is a TTabControlNoteBookStrings descendant.
+          <p>
+            <var>TExtendedTabControlNoteBookStrings</var> is a <var>TTabControlNoteBookStrings</var> descendant.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -789,56 +797,58 @@
       </element>
 
       <element name="TExtendedTabSheet">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Class type used for Pages in TCustomExtendedTabControl</short>
+        <descr>
+          <p>
+            Implements the class reference used for the <var>PageClass</var> and <var>Pages</var> properties in <var>TCustomExtendedTabControl</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomExtendedTabSheet"/>
+          <link id="TCustomExtendedTabControl.PageClass"/>
+          <link id="TCustomExtendedTabControl.Pages"/>
+        </seealso>
       </element>
 
       <!-- published -->
-      <!-- TODO: Add links to ancestor classes -->
-      <element name="TExtendedTabSheet.BorderWidth"/>
-      <element name="TExtendedTabSheet.BiDiMode"/>
-      <element name="TExtendedTabSheet.Caption"/>
-      <element name="TExtendedTabSheet.ChildSizing"/>
-      <element name="TExtendedTabSheet.ClientHeight"/>
-      <element name="TExtendedTabSheet.ClientWidth"/>
-      <element name="TExtendedTabSheet.Enabled"/>
-      <element name="TExtendedTabSheet.Font"/>
-      <element name="TExtendedTabSheet.ImageIndex"/>
-      <element name="TExtendedTabSheet.OnContextPopup"/>
-      <element name="TExtendedTabSheet.OnDragDrop"/>
-      <element name="TExtendedTabSheet.OnDragOver"/>
-      <element name="TExtendedTabSheet.OnEndDrag"/>
-      <element name="TExtendedTabSheet.OnEnter"/>
-      <element name="TExtendedTabSheet.OnExit"/>
-      <element name="TExtendedTabSheet.OnHide"/>
-      <element name="TExtendedTabSheet.OnMouseDown"/>
-      <element name="TExtendedTabSheet.OnMouseEnter"/>
-      <element name="TExtendedTabSheet.OnMouseLeave"/>
-      <element name="TExtendedTabSheet.OnMouseMove"/>
-      <element name="TExtendedTabSheet.OnMouseUp"/>
-      <element name="TExtendedTabSheet.OnResize"/>
-      <element name="TExtendedTabSheet.OnShow"/>
-      <element name="TExtendedTabSheet.OnStartDrag"/>
-      <element name="TExtendedTabSheet.PageIndex"/>
-      <element name="TExtendedTabSheet.ParentBiDiMode"/>
-      <element name="TExtendedTabSheet.ParentFont"/>
-      <element name="TExtendedTabSheet.ParentShowHint"/>
-      <element name="TExtendedTabSheet.PopupMenu"/>
-      <element name="TExtendedTabSheet.ShowHint"/>
-      <element name="TExtendedTabSheet.TabVisible"/>
-      <element name="TExtendedTabSheet.Width"/>
+      <element name="TExtendedTabSheet.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
+      <element name="TExtendedTabSheet.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TExtendedTabSheet.Caption" link="#lcl.controls.TControl.Caption"/>
+      <element name="TExtendedTabSheet.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+      <element name="TExtendedTabSheet.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+      <element name="TExtendedTabSheet.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
+      <element name="TExtendedTabSheet.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TExtendedTabSheet.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TExtendedTabSheet.ImageIndex" link="#lcl.comctrls.TCustomPage.ImageIndex"/>
+      <element name="TExtendedTabSheet.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TExtendedTabSheet.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TExtendedTabSheet.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TExtendedTabSheet.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TExtendedTabSheet.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TExtendedTabSheet.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TExtendedTabSheet.OnHide" link="#lcl.comctrls.TCustomPage.OnHide"/>
+      <element name="TExtendedTabSheet.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TExtendedTabSheet.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TExtendedTabSheet.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TExtendedTabSheet.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TExtendedTabSheet.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TExtendedTabSheet.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TExtendedTabSheet.OnShow" link="#lcl.comctrls.TCustomPage.OnShow"/>
+      <element name="TExtendedTabSheet.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TExtendedTabSheet.PageIndex" link="#lcl.comctrls.TCustomPage.PageIndex"/>
+      <element name="TExtendedTabSheet.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TExtendedTabSheet.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TExtendedTabSheet.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TExtendedTabSheet.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TExtendedTabSheet.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TExtendedTabSheet.TabVisible" link="#lcl.comctrls.TCustomPage.TabVisible"/>
 
       <element name="TCustomExtendedTabControl">
         <short/>
         <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomExtendedTabControl.">
-        <short/>
-        <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.comctrls.TTabControl"/>
+        </seealso>
       </element>
 
       <!-- private -->
@@ -1048,13 +1058,14 @@
       <element name="TExtendedTabControl">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomExtendedTabControl"/>
+        </seealso>
       </element>
 
       <!-- published -->
-      <!-- TODO: add links to ancestor classes -->
-      <element name="TExtendedTabControl.ShowToolBar"/>
-      <element name="TExtendedTabControl.ToolBar"/>
+      <element name="TExtendedTabControl.ShowToolBar" link="#lcl.extendedtabcontrols.TCustomExtendedTabControl.ShowToolBar"/>
+      <element name="TExtendedTabControl.ToolBar" link="#lcl.extendedtabcontrols.TCustomExtendedTabControl.ToolBar"/>
 
     </module>
     <!-- ExtendedTabControls -->

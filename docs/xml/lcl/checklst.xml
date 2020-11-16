@@ -703,12 +703,17 @@
           <var>TCheckListBox</var> implements a list box with check boxes for its items
         </short>
         <descr>
-          <!-- TODO: make this consistent with the overview in the ancestor class -->
           <p>
             <var>TCheckListBox</var> is a <var>TCustomCheckListBox</var> descendant which implements a scrollable list box which displays check boxes for each of its items.
           </p>
           <p>
-            Use the <var>Items</var> property to define the caption for entries that appear in the control. Each of the Items can have a state of checked or unchecked (or "grayed" when <var>AllowGrayed</var> is set). Use the properties and methods such as <var>Toggle</var>, <var>CheckAll</var>, <var>Checked</var>, <var>ItemEnabled</var>, and <var>State</var> to maintain the items in the control. Use the event handlers in the class to perform actions needed when one or more items are clicked or change their state value. Use <var>OnItemClick</var> to process item changes individually.
+            Use the <var>Items</var> property to define the caption for entries that appear in the control. Each of the Items can have a state of checked or unchecked (or "grayed" when <var>AllowGrayed</var> is set). Use the properties and methods such as <var>Toggle</var>, <var>CheckAll</var>, <var>Checked</var>, <var>ItemEnabled</var>, and <var>State</var> to maintain the items in the control.
+          </p>
+          <p>
+            It provides the scrolling, selection, and drawing styles inherited from the ancestor class. It also includes the ability to render its items as a check box, and to respond to mouse or keyboard events when an item is toggled.
+          </p>
+          <p>
+            Use the event handlers in the class to perform actions needed when one or more items are clicked or change their state value. Use <var>OnItemClick</var> to process item changes individually.
           </p>
           <p>
             <var>TCheckListBox</var> sets the visibility for properties defined in the ancestor class.

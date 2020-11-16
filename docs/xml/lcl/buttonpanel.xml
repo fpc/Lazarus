@@ -7,7 +7,7 @@
       ====================================================================
     -->
     <module name="ButtonPanel">
-      <short>Defines a panel with Bitmap buttons</short>
+      <short>Provides a panel with Bitmap buttons</short>
       <descr></descr>
 
       <element name="Math"/>
@@ -31,9 +31,13 @@
           Enumerated type with the display order used for buttons on TButtonPanel
         </short>
         <descr>
-          TButtonOrder is an enumeration with values which indicate the display order used for buttons on TButtonPanel.
+          <p>
+            <var>TButtonOrder</var> is an enumeration with values which indicate the display order used for buttons on <var>TButtonPanel</var>.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TButtonPanel"/>
+        </seealso>
       </element>
       <element name="TButtonOrder.boDefault">
         <short>Uses the default button order; OK, Cancel, Close, Help</short>
@@ -50,9 +54,13 @@
           Enumeration with values that represent the button types used on TButtonPanel
         </short>
         <descr>
-          TPanelButton is an enumeration type with values which represent the button types used on TButtonPanel.
+          <p>
+            <var>TPanelButton</var> is an enumeration type with values which represent the button types used on <var>TButtonPanel</var>.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TButtonPanel"/>
+        </seealso>
       </element>
       <element name="TPanelButton.pbOK">
         <short>Represents the OK button on the panel</short>
@@ -116,8 +124,6 @@
       </element>
 
       <element name="TPanelBitBtn.Caption" link="#LCL.Controls.TControl.Caption"/>
-
-      <!-- TODO: add links to ancestors?  -->
 
       <element name="TPanelBitBtn.DefaultCaption">
         <short>Indicates if the Caption for the button contains a default value</short>
@@ -213,7 +219,7 @@
         </descr>
         <seealso>
           <link id="TButtonPanel"/>
-          <link id="#LCL.ExtCtrls.TCustomPanel"/>
+          <link id="#lcl.extctrls.TCustomPanel"/>
         </seealso>
       </element>
 
@@ -546,73 +552,54 @@
         <short>Control compared to the buttons on the panel</short>
       </element>
 
-      <element name="TCustomButtonPanel.CreateControlBorderSpacing">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-        <notes>
-          <note>???</note>
-        </notes>
-      </element>
+      <element name="TCustomButtonPanel.CreateControlBorderSpacing" link="#lcl.controls.TControl.CreateControlBorderSpacing"/>
       <element name="TCustomButtonPanel.CreateControlBorderSpacing.Result">
-        <short></short>
+        <short/>
       </element>
 
-      <element name="TCustomButtonPanel.CustomAlignInsertBefore">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TCustomButtonPanel.CustomAlignInsertBefore" link="#lcl.controls.TWinControl.CustomAlignInsertBefore"/>
       <element name="TCustomButtonPanel.CustomAlignInsertBefore.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl1">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl2">
-        <short></short>
+        <short/>
       </element>
 
-      <element name="TCustomButtonPanel.CustomAlignPosition">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TCustomButtonPanel.CustomAlignPosition" link="#lcl.controls.TWinControl.CustomAlignPosition"/>
       <element name="TCustomButtonPanel.CustomAlignPosition.AControl">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.ANewLeft">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.ANewTop">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.ANewWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.ANewHeight">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.AlignRect">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CustomAlignPosition.AlignInfo">
-        <short></short>
+        <short/>
       </element>
 
-      <element name="TCustomButtonPanel.CalculatePreferredSize">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TCustomButtonPanel.CalculatePreferredSize" link="#lcl.controls.TWinControl.CalculatePreferredSize"/>
       <element name="TCustomButtonPanel.CalculatePreferredSize.PreferredWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CalculatePreferredSize.PreferredHeight">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomButtonPanel.CalculatePreferredSize.WithThemeSpace">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TCustomButtonPanel.Loaded">
@@ -822,7 +809,6 @@
         <seealso>
         </seealso>
       </element>
-
 
       <element name="TCustomButtonPanel.ShowBevel">
         <short>Indicates if a bevel is displayed for the button panel</short>
