@@ -54,6 +54,7 @@ type
     procedure TestParseIFOpt;
     procedure TestParseProcAnoAssign;
     procedure TestParseProcAnoArg;
+    procedure TestParseThreadVar;
   end;
 
 implementation
@@ -560,6 +561,21 @@ begin
   'begin',
   '  DoIt(procedure begin end);',
   '  DoIt(procedure begin p:=procedure(w:word) begin end; end);',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseThreadVar;
+begin
+  Add([
+  'program test1;',
+  'type',
+  '  TTestClass = class',
+  '    private class threadvar',
+  '      foo:Boolean;',
+  '  end;',
+  '',
+  'begin',
   '']);
   ParseModule;
 end;

@@ -1256,6 +1256,7 @@ function TPascalParserTool.KeyWordFuncClassVarSection: boolean;
 {
   var
   class var
+  class threadvar
 }
 begin
   if CurNode.Desc in AllClassSubSections then begin
@@ -1283,6 +1284,7 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
     class destructor
     class operator
     class var
+    class threadvar
 }
 begin
   Result:=false;
@@ -1294,7 +1296,7 @@ begin
   end else if UpAtomIs('PROPERTY') then begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassProperty;
-  end else if UpAtomIs('VAR') then begin
+  end else if UpAtomIs('VAR') or UpAtomIs('THREADVAR') then begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassVarSection;
   end else

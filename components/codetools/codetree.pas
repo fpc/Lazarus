@@ -107,7 +107,7 @@ const
   ctnClassInheritance   = 44;
   ctnHelperFor          = 45;//class/record/type helper for, only child is ctnIdentifier
   ctnClassGUID          = 46;
-  ctnClassClassVar      = 47; // child of visibility section
+  ctnClassClassVar      = 47; // child of visibility section (var and threadvar)
   ctnClassPrivate       = 48; // child of AllClassObjects
   ctnClassProtected     = 49;
   ctnClassPublic        = 50;
