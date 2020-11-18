@@ -20,11 +20,14 @@ Type
     FMouseTimer : TTimer;
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
+  private
+    procedure ButtonCoordToUpDownCoord(var X,Y: Integer);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
   public
     constructor CreateWithParams(UpDown : TCustomUpDown;
@@ -34,10 +37,28 @@ Type
     procedure Paint; override;
   end;
 
+procedure TUpDownButton.ButtonCoordToUpDownCoord(var X, Y: Integer);
+begin
+  //Fix me: there must be a better way to do this?
+  //Result may be off by appr. 2 pixels
+  if FUpDown.Orientation = udVertical then
+  begin
+    if FButtonType = btPrev then //down arrow
+      Y := Y + Height; //assumes both buttons are equal height
+  end
+  else
+  begin
+    if FButtonType = btNext then //right arrow
+      X := X + Width;
+  end;
+end;
+
 procedure TUpDownButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  ButtonCoordToUpDownCoord(X, Y);
+  FUpDown.MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then begin
     With FUpDown do begin
       FMouseTimerEvent := @Self.Click;
@@ -59,12 +80,21 @@ procedure TUpDownButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
+  ButtonCoordToUpDownCoord(X, Y);
+  FUpDown.MouseUp(Button, Shift, X, Y);
   With FUpDown do
     If Assigned(FMouseTimer) then begin
       FreeAndNil(FMouseTimer);
       FMouseDownBounds := Rect(0,0,0,0);
       FMouseTimerEvent := nil;
     end;
+end;
+
+procedure TUpDownButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  ButtonCoordToUpDownCoord(X, Y);
+  FUpDown.MouseMove(Shift, X, Y);
 end;
 
 procedure TUpDownButton.DblClick;
