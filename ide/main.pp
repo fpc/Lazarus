@@ -2312,7 +2312,7 @@ var
   CmdLineFiles: TStrings;
   i: Integer;
   OpenFlags: TOpenFlags;
-  AFilename: String;
+  AFilename, LastProj: String;
   PkgOpenFlags: TPkgOpenFlags;
 begin
   {$IFDEF IDE_DEBUG}
@@ -2338,22 +2338,23 @@ begin
     end;
   end;
 
+  LastProj:=EnvironmentOptions.LastSavedProjectFile;
   // try loading last project if lazarus didn't fail last time
   {debugln(['TMainIDE.SetupStartProject ProjectLoaded=',ProjectLoaded,
     ' SkipAutoLoadingLastProject=',SkipAutoLoadingLastProject,
     ' EnvironmentOptions.OpenLastProjectAtStart=',EnvironmentOptions.OpenLastProjectAtStart,
-    ' EnvironmentOptions.LastSavedProjectFile="',EnvironmentOptions.LastSavedProjectFile,'"',
+    ' LastProj="',LastProj,'"',
     ' RestoreProjectClosed=',RestoreProjectClosed,
-    ' FileExistsCached(EnvironmentOptions.LastSavedProjectFile)=',FileExistsCached(EnvironmentOptions.LastSavedProjectFile)
+    ' FileExistsCached(LastProj)=',FileExistsCached(LastProj)
     ]);}
   if (not ProjectLoaded)
   and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
-  and (EnvironmentOptions.LastSavedProjectFile<>'')
+  and (LastProj<>'')
   and ((EnvironmentOptions.MultipleInstances=mioAlwaysStartNew)
-    or (not LazIDEInstances.ProjectIsOpenInAnotherInstance(EnvironmentOptions.LastSavedProjectFile)))
-  and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
-  and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
+    or (not LazIDEInstances.ProjectIsOpenInAnotherInstance(LastProj)))
+  and (LastProj<>RestoreProjectClosed)
+  and (FileExistsCached(LastProj))
   then begin
     if (not IDEProtocolOpts.LastProjectLoadingCrashed)
     or AskIfLoadLastFailingProject then begin
@@ -2362,8 +2363,7 @@ begin
       IDEProtocolOpts.LastProjectLoadingCrashed := True;
       IDEProtocolOpts.Save;
       // try loading the project
-      ProjectLoaded:=
-        (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+      ProjectLoaded:=DoOpenProjectFile(LastProj,[])=mrOk;
       // protocol that the IDE was able to open the project without crashing
       IDEProtocolOpts.LastProjectLoadingCrashed := false;
       IDEProtocolOpts.Save;
@@ -2379,9 +2379,8 @@ begin
             Include(PkgOpenFlags,pofMultiOpen)
           else
             Exclude(PkgOpenFlags,pofMultiOpen);
-          if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then begin
+          if PkgBoss.DoOpenPackageFile(AFilename,PkgOpenFlags,true)=mrAbort then
             break;
-          end;
         end;
       end else
       begin
@@ -2393,8 +2392,8 @@ begin
 
   if (not ProjectLoaded) then
   begin
-    if EnvironmentOptions.OpenLastProjectAtStart
-    and (EnvironmentOptions.LastSavedProjectFile=RestoreProjectClosed) then begin
+    if EnvironmentOptions.OpenLastProjectAtStart and (LastProj=RestoreProjectClosed) then
+    begin
       // IDE was closed without a project => restore that state
     end else begin
       // create new project
