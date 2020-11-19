@@ -295,7 +295,9 @@ type
     ttPlusAssign,     // +=
     ttMinusAssign,    // -=
     ttTimesAssign,    // *=
-    ttFloatDivAssign  // /=
+    ttFloatDivAssign, // /=
+    ttShl_ll,         // <<
+    ttShr_gg          // >>
     );
 
   TTokenTypeSet = set of TTokenType;
@@ -419,7 +421,7 @@ const
 
   AddOperators: TTokenTypeSet = [ttPlus, ttMinus, ttOr, ttXor];
 
-  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr, ttExponent];
+  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr, ttExponent, ttShl_ll,ttShr_gg];
 
   SingleSpaceOperators = [
     // some unary operators
@@ -427,7 +429,7 @@ const
     // all operators that are always binary
     ttAnd, ttAs, ttDiv, ttIn, ttIs, ttMod, ttOr, ttShl, ttShr, ttXor,
     ttTimes, ttFloatDiv, ttExponent, ttEquals, ttGreaterThan, ttLessThan,
-    ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual, ttSetSymDif];
+    ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual, ttSetSymDif, ttShl_ll, ttShr_gg];
 
   StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString];
 
@@ -789,6 +791,8 @@ begin
   AddKeyword('<=', wtOperator, ttLessThanOrEqual);
   AddKeyword('<>', wtOperator, ttNotEqual);
   AddKeyword('><', wtOperator, ttSetSymDif);
+  AddKeyword('<<', wtOperator, ttShl_ll);  // in FreePascal
+  AddKeyword('>>', wtOperator, ttShr_gg);  // in FreePascal
   // these must come after the above as they are shorter
   AddKeyword('>', wtOperator, ttGreaterThan);
   AddKeyword('<', wtOperator, ttLessThan);

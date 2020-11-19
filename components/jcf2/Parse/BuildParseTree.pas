@@ -65,6 +65,7 @@ type
     fiTokenCount: integer;
     procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
+    procedure SplitShr_gg;
 
     procedure RecogniseGoal;
     procedure RecogniseUnit;
@@ -1260,6 +1261,9 @@ begin
   PopNode;
 end;
 
+const
+  CONST_GENERIC_TOKENS = [ttAt, ttOpenBracket, ttOpenSquareBracket, ttIdentifier, ttPlus, ttMinus,
+        ttNot, ttNumber, ttQuotedLiteralString, ttNil, ttTrue, ttFalse];
 
 function TBuildParseTree.GenericAhead: boolean;
 var
@@ -1287,7 +1291,7 @@ begin
     if liTokenIndex mod 2 = 0 then
     begin
       // should be id
-      if (lcToken.WordType <> wtBuiltInType) and (not IsIdentifierToken(lcToken, idAny)) then
+      if (lcToken.WordType <> wtBuiltInType) and (not IsIdentifierToken(lcToken, idAny)) and (not (lcToken.TokenType in CONST_GENERIC_TOKENS)) then
       begin
         break;
       end;
@@ -1320,36 +1324,102 @@ end;
 
 
 const
-  ConstraintTokens = [ttClass, ttRecord, ttConstructor];
+  ConstraintTokens = [ttClass, ttRecord, ttConstructor, ttInterface, ttObject];
 
 procedure TBuildParseTree.RecogniseGenericType;
+var
+  lbHasConst: boolean;
+  lbIsGenericType:boolean;
+
+  procedure RecogniseP;
+  var
+    liNestLevel: integer;
+  begin
+    if fcTokenList.FirstSolidTokenType = ttConst then
+    begin
+      Recognise(ttConst);
+      lbHasConst := True;
+    end;
+    if lbHasConst = False then //can be a expresion like    h: specialize TNames<[Blaise,Pascal]>;
+    begin
+      lbisGenericType:=(fcTokenList.FirstSolidTokenType=ttIdentifier) and (fcTokenList.SolidTokenType(2)=ttLessThan); //is generic type
+      if fcTokenList.FirstSolidTokenType=ttSpecialize then
+        lbIsGenericType:=true;
+      if (fcTokenList.FirstSolidTokenType in CONST_GENERIC_TOKENS) and (not lbIsGenericType) then
+      begin //hack. recognise tokens until ; , or >
+        liNestLevel := 0;
+        while (liNestLevel > 0) or (not (fcTokenList.FirstTokenType in [ttComma, ttGreaterThan, ttSemiColon, ttGreaterThanOrEqual, ttShr_gg])) do
+        begin
+          if fcTokenList.FirstTokenType in [ttOpenSquareBracket, ttOpenBracket] then
+            Inc(liNestLevel);
+          if fcTokenList.FirstTokenType in [ttCloseSquareBracket, ttCloseBracket] then
+            Dec(liNestLevel);
+          Recognise(fcTokenList.FirstTokenType);
+          if fcTokenList.EOF then
+          begin
+            raise TEParseError.Create('Unexpected EOF. ',nil);
+          end;
+        end;
+      end
+      else
+        RecogniseType;
+    end
+    else
+      RecogniseType;
+
+    if lbHasConst then
+    begin
+      if fcTokenList.FirstSolidTokenType = ttColon then
+        RecogniseGenericConstraints;
+    end;
+  end;
+
 begin
   PushNode(nGeneric);
 
   // angle brackets
   Recognise(ttLessThan);
-  RecogniseType;
 
-  if fcTokenList.FirstSolidTokenType = ttColon then
+  while True do
   begin
-    RecogniseGenericConstraints;
+    lbHasConst := False;
+    PushNode(nType);
+    RecogniseP;
+    // more types after commas
+    while fcTokenList.FirstSolidTokenType = ttComma do
+    begin
+      Recognise(ttComma);
+      RecogniseP;
+    end;
+
+    if fcTokenList.FirstSolidTokenType = ttColon then
+    begin
+      RecogniseGenericConstraints;
+    end;
+    if fcTokenList.FirstSolidTokenType <> ttSemiColon then
+    begin
+      PopNode;
+      break;
+    end;
+    Recognise(ttSemiColon);
+    PopNode;
   end;
 
-   // more types after commas
-   while fcTokenList.FirstSolidTokenType = ttComma do
-   begin
-      Recognise(ttComma);
-      RecogniseType;
-   end;
+  if fcTokenList.FirstSolidTokenType = ttGreaterThanOrEqual then
+  begin
+    // the tokenizer got it wrong - e.g "TTestNullable<T:Record>=Class"
+    // this is the same as TTestNullable<T:Record> =Class
+    RecogniseWhiteSpace;
+    SplitGreaterThanOrEqual;
+  end;
 
-   if  fcTokenList.FirstSolidTokenType = ttGreaterThanOrEqual  then
-   begin
-     // the tokenizer got it wrong - e.g "TTestNullable<T:Record>=Class"
-     // this is the same as TTestNullable<T:Record> =Class
-     RecogniseWhiteSpace;
+  if fcTokenList.FirstSolidTokenType = ttShr_gg then
+  begin
+    // >> operator
+    RecogniseWhiteSpace;
+    SplitShr_gg;
+  end;
 
-     SplitGreaterThanOrEqual;
-   end;
 
   Recognise(ttGreaterThan);
 
@@ -1416,6 +1486,35 @@ begin
     lcNewToken.FileName := fsFileName;
     lcNewToken.SourceCode := '=';
     lcNewToken.TokenType := ttEquals;
+
+    fcTokenList.Insert(liIndex + 1 , lcNewToken);
+  end;
+end;
+
+procedure TBuildParseTree.SplitShr_gg;
+var
+  liIndex: integer;
+  lcNewToken: TSourceToken;
+  fsFileName: string;
+begin
+  if fcTokenList.FirstTokenType = ttShr_gg then
+  begin
+    liIndex := fcTokenList.CurrentTokenIndex;
+    fsFileName := fcTokenList.SourceTokens[liIndex].FileName;
+
+    fcTokenList.Delete(liIndex);
+
+    lcNewToken := TSourceToken.Create();
+    lcNewToken.FileName := fsFileName;
+    lcNewToken.SourceCode := '>';
+    lcNewToken.TokenType := ttGreaterThan;
+
+    fcTokenList.Insert(liIndex, lcNewToken);
+
+    lcNewToken := TSourceToken.Create();
+    lcNewToken.FileName := fsFileName;
+    lcNewToken.SourceCode := '>';
+    lcNewToken.TokenType := ttGreaterThan;
 
     fcTokenList.Insert(liIndex + 1 , lcNewToken);
   end;

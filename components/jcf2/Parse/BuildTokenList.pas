@@ -63,6 +63,7 @@ type
     function ForwardChar(const piOffset: integer): Char;
     function ForwardChars(const piOffset, piCount: integer): String;
     procedure Consume(const piCount: integer = 1);
+    procedure UndoConsume(const piCount: integer = 1);
     function EndOfFile: boolean;
     function EndOfFileAfter(const piChars: integer): boolean;
 
@@ -820,10 +821,15 @@ function TBuildTokenList.TryPunctuation(const pcToken: TSourceToken): boolean;
     // "<<" is the start of two nested generics,
     // likewise '>>' is not an operator, it is two "end-of-generic" signs in sucession
     if (chLast = '<') and (ch = '<') then
+    begin
+      Result := True;  // <<
       exit;
+    end;
     if (chLast = '>') and (ch = '>') then
+    begin
+      Result := True; // >>
       exit;
-
+    end;
 
     Result := CharIsPuncChar(ch);
   end;
@@ -851,6 +857,12 @@ begin
     Consume;
   end;
 
+  if length(pcToken.SourceCode) > 2 then  // nested generic    specialize TC1<TC2<TC3<integer>>>=record  end;
+  begin
+    // only consume the first >
+    UndoConsume(Length(pcToken.SourceCode) - 1);
+    pcToken.SourceCode := pcToken.SourceCode[1];
+  end;
   { try to recognise the punctuation as an operator }
   TypeOfToken(pcToken.SourceCode, leWordType, leTokenType);
   if leTokenType <> ttUnknown then
@@ -930,6 +942,11 @@ end;
 procedure TBuildTokenList.Consume(const piCount: integer);
 begin
   inc(fiCurrentIndex, piCount);
+end;
+
+procedure TBuildTokenList.UndoConsume(const piCount: integer);
+begin
+  dec(fiCurrentIndex, piCount);
 end;
 
 function TBuildTokenList.EndOfFile: boolean;

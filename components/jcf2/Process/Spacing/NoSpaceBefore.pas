@@ -78,6 +78,11 @@ begin
     exit;
   end;
 
+  if (pt.TokenType in [ttLessThan,ttGreaterThan]) and pt.HasParentNode(nGeneric,1) then
+  begin
+    Result := True;
+    Exit;
+  end;
 
   // '@@' in asm, e.g. "JE @@initTls" needs the space
   if pt.HasParentNode(nAsm) then

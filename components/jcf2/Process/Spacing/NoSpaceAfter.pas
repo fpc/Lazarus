@@ -71,6 +71,12 @@ begin
   if ptNext.TokenType = ttComment then
     exit;
 
+  if (pt.TokenType in [ttLessThan,ttGreaterThan]) and pt.HasParentNode(nGeneric,1) then
+  begin
+    Result := True;
+    Exit;
+  end;
+
   if pt.TokenType in NoSpaceAnywhere then
   begin
     Result := True;

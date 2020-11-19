@@ -1150,7 +1150,7 @@ object Form1: TForm1
     Left = 18
     Height = 15
     Top = 465
-    Width = 80
+    Width = 152
     Anchors = [akLeft, akBottom]
     AutoSize = False
     ParentColor = False

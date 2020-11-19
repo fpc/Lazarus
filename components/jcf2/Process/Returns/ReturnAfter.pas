@@ -128,6 +128,13 @@ begin
     Result := True;
     exit;
   end;
+  { in generic definition}
+  if pt.HasParentNode(nGeneric,2) then
+  begin
+    Result := False;
+    exit;
+  end;
+
 end;
 
 

@@ -640,9 +640,12 @@ begin
 end;
 
 function IsDfmIncludeDirective(const pt: TSourceToken): boolean;
+var
+  lsToken:string;
 begin
   // form dfm comment
-  Result := (pt.TokenType = ttComment) and AnsiSameText(pt.SourceCode, '{$R *.dfm}') and
+  lsToken:=UpperCase(pt.SourceCode);
+  Result := (pt.TokenType = ttComment) and ((lsToken = '{$R *.DFM}') or (lsToken = '[$R *.LFM}')) and
     pt.HasParentNode(nImplementationSection, 4);
 end;
 

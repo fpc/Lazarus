@@ -80,9 +80,9 @@ begin
   if pt.HasParentNode(nAsm) then
     exit;
 
-  if pt.HasParentNode(nGeneric, 1) then
+  if pt.HasParentNode(nGeneric, 2) then
   begin
-    if pt.TokenType in [ttComma, ttColon] then
+    if pt.TokenType in [ttComma, ttColon, ttSemiColon] then
     begin
       Result := true;
     end;
