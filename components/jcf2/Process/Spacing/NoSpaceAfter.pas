@@ -72,61 +72,37 @@ begin
     exit;
 
   if (pt.TokenType in [ttLessThan,ttGreaterThan]) and pt.HasParentNode(nGeneric,1) then
-  begin
-    Result := True;
-    Exit;
-  end;
+    exit(True);
 
   if pt.TokenType in NoSpaceAnywhere then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (FormattingSettings.Spaces.SpaceForOperator = eNever) then
-  begin
     if IsSymbolOperator(pt) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
-
+      exit(True);
 
   { no space between method name and open bracket for param list
     no space between type & bracket for cast
     no space between fn name & params for procedure call }
   if pt.HasParentNode([nProcedureDecl, nFunctionDecl, nConstructorDecl,
     nDestructorDecl, nStatementList]) and
-    (IsIdentifier(pt, idAllowDirectives) or (pt.TokenType in BuiltInTypes)) then
-  begin
+    (IsIdentifier(pt, idAllowDirectives) or (pt.TokenType in BuiltInTypes))
+  then
     if (ptNext.TokenType in OpenBrackets) and (not IsInsideAsm(ptNext)) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
+      exit(True);
 
   { the above takes care of procedure headers but not procedure type defs
    eg type TFred = procedure(i: integer) of object;
     note no space before the open bracket }
   if pt.HasParentNode(nTypeDecl) and (pt.IsOnRightOf(nTypeDecl, ttEquals)) and
-    (pt.TokenType in ProcedureWords) then
-  begin
+    (pt.TokenType in ProcedureWords)
+  then
     if (ptNext.TokenType in OpenBrackets) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
+      exit(True);
 
   { no space after unary operator in expression }
-  if pt.HasParentNode(nExpression) and IsUnaryOperator(pt) and
-    ( not StrHasAlpha(pt.SourceCode)) then
-  begin
-    Result := True;
-    exit;
-  end;
+  if pt.HasParentNode(nExpression) and IsUnaryOperator(pt) and (not StrHasAlpha(pt.SourceCode)) then
+    exit(True);
 
   { no space before class heritage ? could be one of 3 things
     TFoo = class; - no space, but "No space before semicolon" should take care of that
@@ -137,16 +113,11 @@ begin
 
     also applies to type TFoo = interface(IDispatch) }
   if (pt.HasParentNode(nRestrictedType)) and (pt.TokenType in ObjectTypeWords) and
-    ( not (FormattingSettings.Spaces.SpaceBeforeClassHeritage)) then
-  begin
+    ( not (FormattingSettings.Spaces.SpaceBeforeClassHeritage))
+  then
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
+      exit(True);
 end;
-
 
 constructor TNoSpaceAfter.Create;
 begin

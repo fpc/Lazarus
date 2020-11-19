@@ -817,19 +817,12 @@ function TBuildTokenList.TryPunctuation(const pcToken: TSourceToken): boolean;
     if (chLast = '*') and (ch <> '*') then
       exit;
 
-
     // "<<" is the start of two nested generics,
     // likewise '>>' is not an operator, it is two "end-of-generic" signs in sucession
     if (chLast = '<') and (ch = '<') then
-    begin
-      Result := True;  // <<
-      exit;
-    end;
+      exit(True);    // <<
     if (chLast = '>') and (ch = '>') then
-    begin
-      Result := True; // >>
-      exit;
-    end;
+      exit(True);    // >>
 
     Result := CharIsPuncChar(ch);
   end;
@@ -840,7 +833,6 @@ var
   lcLast:      Char;
 begin
   Result := False;
-
   if not CharIsPuncChar(Current) then
     exit;
 
@@ -876,7 +868,6 @@ end;
 function TBuildTokenList.TrySingleCharToken(const pcToken: TSourceToken): boolean;
 begin
   Result := False;
-
   pcToken.TokenType := TypeOfToken(Current);
   if pcToken.TokenType <> ttUnknown then
   begin

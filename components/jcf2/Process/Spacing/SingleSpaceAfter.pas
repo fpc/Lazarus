@@ -83,10 +83,7 @@ begin
   if pt.HasParentNode(nGeneric, 2) then
   begin
     if pt.TokenType in [ttComma, ttColon, ttSemiColon] then
-    begin
       Result := true;
-    end;
-
     exit;
   end;
 
@@ -101,62 +98,37 @@ begin
     { semciolon as a record field seperator in a const record declaration
      has no newline (See ReturnAfter.pas), just a single space }
     if (pt.HasParentNode(nRecordConstant)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     { semicolon  in param  declaration list }
     if (pt.HasParentNode(nFormalParams)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     { semicolon in param lists in proc type def. as above }
     if (pt.HasParentNode(nProcedureType)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     { semicolon in procedure directives }
     if (pt.HasParentNode(nProcedureDirectives)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
   end;// semicolon
 
   { function foo: integer; has single space after the colon
     single space after colon - anywhere? }
   if pt.TokenType = ttColon then
-  begin
     Result := True;
-  end;
 
   if (pt.TokenType in SingleSpaceAfterTokens) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if pt.TokenType = ttOpenBracket then
-  begin
     if FormattingSettings.Spaces.SpaceAfterOpenBrackets then
-    begin
-      Result := true;
-      exit;
-    end;
-  end;
+      exit(true);
 
   { 'absolute' as a var directive }
   if (pt.TokenType = ttAbsolute) and pt.HasParentNode(nVarAbsolute) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType in SingleSpaceAfterWords) then
   begin
@@ -175,73 +147,45 @@ begin
 
   if FormattingSettings.Spaces.SpaceForOperator = eAlways then
   begin
-
     if (pt.TokenType in SingleSpaceOperators) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     { + or - but only if it is a binary operator, ie a term to the left of it }
     if (pt.TokenType in PossiblyUnaryOperators) and (pt.HasParentNode(nExpression)) and
       ( not IsUnaryOperator(pt)) then
-    begin
-      Result := True;
-      exit;
-    end;
-
+      exit(True);
   end;
 
   { only if it actually is a directive, see TestCases/TestBogusDirectives for details }
   if (pt.TokenType in AllDirectives) and (pt.HasParentNode(DirectiveNodes)) and
-    (ptNext.TokenType <> ttSemiColon) then
-  begin
-    Result := True;
-    exit;
-  end;
+    (ptNext.TokenType <> ttSemiColon)
+  then
+    exit(True);
 
   if pt.TokenType = ttEquals then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { 'in' in the uses clause }
   if (pt.TokenType = ttIn) and (pt.HasParentNode(nUses)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { const or var as parameter var types }
   if (pt.TokenType in ParamTypes) and (pt.HasParentNode(nFormalParams)) then
-  begin
     // beware of 'procedure foo (bar: array of const);' and the like
     if not ((pt.TokenType = ttConst) and pt.HasParentNode(nType, 1)) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
+      exit(True);
 
   if (pt.TokenType in ParamTypes) and pt.HasParentNode(nPropertyParameterList) and
-    pt.IsOnRightOf(nPropertyParameterList, ttOpenSquareBracket) then
-  begin
-    Result := True;
-    exit;
-  end;
+    pt.IsOnRightOf(nPropertyParameterList, ttOpenSquareBracket)
+  then
+    exit(True);
 
   { signle space after read, write etc in property }
   if pt.HasParentNode(nProperty) then
-  begin
-    if (pt.TokenType in [ttProperty, ttRead, ttWrite, ttDefault,
-      ttStored, ttImplements]) and
-      (ptNext.TokenType <> ttSemiColon) then
-    begin
-      Result := True;
-      exit;
-    end;
-  end;
+    if (pt.TokenType in [ttProperty, ttRead, ttWrite, ttDefault, ttStored, ttImplements])
+      and (ptNext.TokenType <> ttSemiColon)
+    then
+      exit(True);
 
   { single space before class heritage ?
     see NoSpaceAfter }
@@ -249,27 +193,18 @@ begin
     (FormattingSettings.Spaces.SpaceBeforeClassHeritage) then
   begin
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
   if InStatements(pt) then
   begin
     // else if
     if (pt.TokenType = ttElse) and (ptNext.TokenType = ttIf) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     // end else
     if (pt.TokenType = ttEnd) and (ptNext.TokenType = ttElse) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     { else followed by something else on the same line,
       e.g if block style brings up the following "begin" }
@@ -277,10 +212,7 @@ begin
     begin
       lcSameLineToken := pt.NexttokenWithExclusions([ttWhiteSpace]);
       if (lcSameLineToken <> nil) and (not (lcSameLineToken.TokenType in [ttReturn, ttSemiColon])) then
-      begin
-        Result := True;
-        exit;
-      end;
+        exit(True);
     end;
   end;
 

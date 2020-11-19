@@ -77,64 +77,31 @@ const
 function SemicolonHasReturn(const pt, ptNext: TSourceToken): boolean;
 begin
   Result := True;
-
   { point 1 }
-  if (ptNext.HasParentNode(nProcedureDirectives)) then
-  begin
-    Result := False;
-    exit;
-  end;
-
- { point 1b }
- if (ptNext.HasParentNode(nHintDirectives)) then
-  begin
-    Result := False;
-    exit;
-  end;
-
-
+  if ptNext.HasParentNode(nProcedureDirectives) then
+    exit(False);
+  { point 1b }
+  if ptNext.HasParentNode(nHintDirectives) then
+    exit(False);
   { point 2. to avoid the return,
     the next token must still be in the same  property}
   if ptNext.HasParentNode(nProperty) and (ptNext.TokenType <> ttProperty) then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
   { point 3 }
   if pt.HasParentNode(nRecordConstant) then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
   { point 4 }
   if (pt.HasParentNode(nFormalParams)) then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
   { point 4, for a procedure type def }
   if pt.HasParentNode(nProcedureType) then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
   { in a record type def }
   if pt.HasParentNode(nRecordType) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
   { in generic definition}
   if pt.HasParentNode(nGeneric,2) then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
 end;
 
 
@@ -171,7 +138,6 @@ begin
 
   lcParent := lcParent.Parent;
 
-
   if (lcParent = nil) or (lcParent.NodeType <> nBlock) then
     exit;
 
@@ -192,40 +158,27 @@ begin
     exit;
 
   if pt.HasParentNode(nAsm) then
-  begin
     exit;
-  end;
 
   // form dfm comment
   if IsDfmIncludeDirective(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType in WordsBlankLineAfter) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { 'interface', but not as a typedef, but as the section }
   if (pt.TokenType = ttInterface) and pt.HasParentNode(nInterfaceSection, 1) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { semicolon that ends a proc or is between procs e.g. end of uses clause }
   if (pt.TokenType = ttSemiColon) then
   begin
     if ( not pt.HasParentNode(ProcedureNodes)) and
       (BlockLevel(pt) = 0) and
-      ( not pt.HasParentNode(nDeclSection)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      ( not pt.HasParentNode(nDeclSection))
+    then
+      exit(True);
 
     { semicolon at end of block
       e.g.
@@ -237,20 +190,15 @@ begin
     }
     if pt.HasParentNode([nVarSection, nConstSection]) and
       (ptNext.TokenType in ProcedureWords) and
-      (not pt.HasParentNode([nClassType,nRecordType])) then   // not in class methods
-    begin
-      Result := True;
-      exit;
-    end;
+      (not pt.HasParentNode([nClassType,nRecordType]))   // not in class methods
+    then
+      exit(True);
 
     // at the end of type block with a proc next. but not in a class def
-    if pt.HasParentNode(nTypeSection) and (ptNext.TokenType in ProcedureWords) and
-      ( not pt.HasParentNode(ObjectBodies + [nRecordType])) then
-    begin
-      Result := True;
-      exit;
-    end;
-
+    if pt.HasParentNode(nTypeSection) and (ptNext.TokenType in ProcedureWords)
+    and ( not pt.HasParentNode(ObjectBodies + [nRecordType]))
+    then
+      exit(True);
 
     lcPrev := pt.PriorToken;
     { 'end' at end of type def or proc
@@ -261,13 +209,8 @@ begin
       lcPrev := lcPrev.PriorToken;
 
     if (lcPrev.TokenType = ttEnd) and (pt.TokenType <> ttDot) then
-    begin
       if EndsObjectType(lcPrev) or EndsProcedure(lcPrev) then
-      begin
-        Result := True;
-        exit;
-      end;
-    end;
+        exit(True);
   end;
 end;
 
@@ -281,19 +224,14 @@ begin
   Result := False;
 
   if (pt.TokenType in WordsJustReturnAfter) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { return after 'type' unless it's the second type in "type foo = type integer;"
     but what about }
   if (pt.TokenType = ttType) and (pt.HasParentNode(nTypeSection, 1)) and
-    ( not pt.IsOnRightOf(nTypeDecl, ttEquals)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    ( not pt.IsOnRightOf(nTypeDecl, ttEquals))
+  then
+    exit(True);
 
   if (pt.TokenType = ttSemiColon) then
   begin
@@ -311,10 +249,7 @@ begin
      needless to say there is no return after the second "const"
      even though it is in a const section }
     if not pt.HasParentNode(nFormalParams) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
   { return after else unless
@@ -322,33 +257,21 @@ begin
    - it is an else case of a case statement
    block styles takes care of these }
   if (pt.TokenType = ttElse) and (ptNext.TokenType <> ttIf) and not
-    (pt.HasParentNode(nElseCase, 1)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    (pt.HasParentNode(nElseCase, 1))
+  then
+    exit(True);
 
   { case .. of  }
   if (pt.TokenType = ttOf) and (pt.IsOnRightOf(nCaseStatement, ttCase)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { record varaint with of}
   if (pt.TokenType = ttOf) and pt.HasParentNode(nRecordVariantSection, 1) then
-  begin
-    Result := True;
-    exit;
-  end;
-
+    exit(True);
 
   { label : }
   if (pt.TokenType = ttColon) and pt.HasParentNode(nStatementLabel, 1) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   lcNext := pt.NextSolidToken;
 
@@ -356,27 +279,17 @@ begin
   if (pt.TokenType = ttEnd) and ( not (ptNext.TokenType in [ttSemiColon, ttDot])) and
     ( not (ptNext.TokenType in HintDirectives)) then
   begin
-
     { not end .. else if the style forbits it }
     if (lcNext <> nil) and (lcNext.TokenType = ttElse) then
-    begin
-      Result := (FormattingSettings.Returns.EndElseStyle = eAlways);
-    end
+      Result := (FormattingSettings.Returns.EndElseStyle = eAlways)
     else
-    begin
       Result := True;
-    end;
-
     exit;
   end;
 
   { access specifiying directive (private, public et al) in a class def }
   if IsClassDirective(pt) then
-  begin
-    // all except the strict in "strict private"
-    Result := (pt.TokenType <> ttStrict);
-    exit;
-  end;
+    exit(pt.TokenType <> ttStrict); // all except the strict in "strict private"
 
   { "TSomeClass = class(TAncestorClass)" has a return after the close brackets
    unless it's a "class helper(foo) for bar"
@@ -386,10 +299,7 @@ begin
   begin
     lcNext := pt.NextSolidToken;
     if (lcNext <> nil) and (lcNext.TokenType <> ttFor) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
   { otherwise "TSomeClass = class" has a return after "class"
@@ -400,73 +310,48 @@ begin
       - it's not the metaclass syntax 'foo = class of bar; ' }
   if (pt.TokenType = ttClass) and
     pt.HasParentNode([nClassType, nInterfaceType], 1) and not
-    (pt.Parent.HasChildNode(nClassHeritage, 1)) and not (ptNext.TokenType in CLASS_FOLLOW) then
-  begin
-    Result := True;
-    exit;
-  end;
+    (pt.Parent.HasChildNode(nClassHeritage, 1)) and not (ptNext.TokenType in CLASS_FOLLOW)
+  then
+    exit(True);
 
   { comma in exports clause }
   if (pt.TokenType = ttComma) and pt.HasParentNode(nExports) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { comma in uses clause of program or lib - these are 1 per line,
     using the 'in' keyword to specify the file  }
   if (pt.TokenType = ttComma) and pt.HasParentNode(nUses) and
-    pt.HasParentNode(TopOfProgramSections) then
-  begin
-    Result := True;
-    exit;
-  end;
+    pt.HasParentNode(TopOfProgramSections)
+  then
+    exit(True);
 
   // 'uses' in program, library or package
   if (pt.TokenType = ttUses) and pt.HasParentNode(TopOfProgramSections) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType = ttRecord) and pt.IsOnRightOf(nFieldDeclaration, ttColon) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { end of class heritage }
   if (pt.HasParentNode(nRestrictedType)) and
     ( not pt.HasParentNode(nClassVisibility)) and
-    (ptNext.HasParentNode(nClassVisibility)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    (ptNext.HasParentNode(nClassVisibility))
+  then
+    exit(True);
 
   { return in record def after the record keyword }
   if pt.HasParentNode(nRecordType) and (pt.TokenType = ttRecord) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType = ttCloseSquareBracket) then
   begin
     // end of guid in interface
     if pt.HasParentNode(nInterfaceTypeGuid, 1) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     // end of attribute
     if pt.HasParentNode(nAttribute) then
-    begin
-      Result := True;
-      exit;
-    end;
-
+      exit(True);
   end;
 
   { return after compiler directives
@@ -475,11 +360,9 @@ begin
   if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, False) = eAlways) then
   begin
     lcNext := pt.NextTokenWithExclusions([ttWhiteSpace]);
-    if (lcNext <> nil) and (lcNext.TokenType <> ttConditionalCompilationRemoved) then
-    begin
-      Result := True;
-      exit;
-    end;
+    if (lcNext <> nil) and (lcNext.TokenType <> ttConditionalCompilationRemoved)
+    then
+      exit(True);
   end;
 end;
 
@@ -496,28 +379,19 @@ begin
   { option to Break After Uses }
   if pt.HasParentNode(nUses) and (pt.TokenType = ttUses) and
     FormattingSettings.Returns.BreakAfterUses then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if pt.HasParentNode(nUses) and FormattingSettings.Returns.UsesClauseOnePerLine then
   begin
     if (pt.TokenType = ttUses) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     if (pt.TokenType in [ttComma, ttUses]) then
     begin
       // add a return, unless there's a comment just after the comma
       lcNext := pt.NextTokenWithExclusions([ttWhiteSpace]);
       if (lcNext <> nil) and (lcNext.TokenType <> ttComment) then
-      begin
-        Result := True;
-        exit;
-      end;
+        exit(True);
     end;
   end;
 
@@ -525,9 +399,7 @@ begin
     exit;
 
   if FormattingSettings.Returns.AddGoodReturns then
-  begin
     Result := NeedsGoodReturn(pt, ptNext);
-  end;
 end;
 
 function IsAsmLabelEnd(const pcSourceToken: TSourceToken): boolean;
@@ -535,14 +407,10 @@ begin
   Result := false;
 
   if pcSourceToken = nil then
-  begin
     exit;
-  end;
 
   if (pcSourceToken.TokenType = ttColon) then
-  begin
     Result := pcSourceToken.HasParentNode(nAsmLabel, 1);
-  end;
 end;
 
 function ReturnsNeededInAsm(const pcSourceToken: TSourceToken): integer;
@@ -557,9 +425,7 @@ begin
   end;
 
   if pcSourceToken.TokenType in [ttAsm, ttSemiColon] then
-  begin
     Result := 1;
-  end;
 end;
 
 constructor TReturnAfter.Create;
@@ -584,24 +450,16 @@ begin
     exit;
 
   if lcSourceToken.HasParentNode(nAsm) then
-  begin
-    liReturnsNeeded := ReturnsNeededInAsm(lcSourceToken);
-  end
+    liReturnsNeeded := ReturnsNeededInAsm(lcSourceToken)
   else
   begin
     // not asm
     if NeedsBlankLine(lcSourceToken, lcNext) then
-    begin
-      liReturnsNeeded := 2;
-    end
+      liReturnsNeeded := 2
     else if NeedsReturn(lcSourceToken, lcNext) then
-    begin
       liReturnsNeeded := 1
-    end
     else
-    begin
       liReturnsNeeded := 0;
-    end;
   end;
 
   if liReturnsNeeded < 1 then
