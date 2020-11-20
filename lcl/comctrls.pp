@@ -1894,6 +1894,7 @@ type
     FMinRepeatInterval: Byte;  //Interval starts at 300 and this must be smaller always
     FMouseDownBounds : TRect;
     FMouseTimerEvent: TProcedureOfObject; // the Min/MaxBtn's Click method
+    FMouseInsideComp: Boolean; // Used for MouseEnter and MouseLeave events.
     FOnChanging: TUDChangingEvent;
     FOnChangingEx: TUDChangingEventEx;
     FOnClick: TUDClickEvent;
@@ -1902,6 +1903,8 @@ type
     FThousands: Boolean;
     FWrap: Boolean;
     FUseWS: Boolean;
+    procedure CheckMouseEntering;
+    procedure CheckMouseLeaving;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     function GetFlat: Boolean;
@@ -1934,6 +1937,8 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
