@@ -803,7 +803,7 @@ begin
       RecogniseTypeSection(false);
     ttVar, ttThreadvar:
       RecogniseVarSection(false);
-    ttProcedure, ttFunction, ttOperator:
+    ttProcedure, ttFunction, ttOperator,ttGeneric:
       RecogniseExportedHeading;
     ttOpenSquareBracket:
       RecogniseAttributes;
@@ -837,16 +837,23 @@ begin
 
   case lt of
     ttProcedure:
-    begin
       RecogniseProcedureHeading(False, False);
-    end;
     ttFunction:
-    begin
       RecogniseFunctionHeading(False, False);
-    end;
     ttOperator:
-    begin
       RecogniseOperator(false);
+    ttGeneric:
+    begin
+      case fcTokenList.SolidTokenType(2) of
+        ttProcedure:
+          RecogniseProcedureHeading(False, False);
+        ttFunction:
+          RecogniseFunctionHeading(False, False);
+        ttOperator:
+          RecogniseOperator(false);
+        else
+          TEParseError.Create('Expected function or procedure', lc);
+        end;
     end
     else
       raise TEParseError.Create('Expected function or procedure', lc);
@@ -1037,6 +1044,11 @@ begin
         break;
       if leFirstTokenType in [ttClass,ttVar,ttThreadVar,ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
+    end
+    else
+    begin
+      if (fcTokenList.FirstSolidTokenType = ttGeneric) and (fcTokenList.SolidTokenType(2) in [ttFunction,ttProcedure,ttOperator]) then
+        break;
     end;
 
     // can be followed by an operator decl in FreePascal
@@ -1113,8 +1125,12 @@ begin
         break;
       if fcTokenList.FirstSolidTokenType in [ttClass,ttVar,ttThreadVar, ttConst,ttFunction,ttProcedure,ttOperator,ttConstructor,ttDestructor,ttProperty] then
         break;
+    end
+    else
+    begin
+      if (fcTokenList.FirstSolidTokenType = ttGeneric) and (fcTokenList.SolidTokenType(2) in [ttFunction,ttProcedure,ttOperator]) then
+        break;
     end;
-
     lc := fcTokenList.FirstSolidToken;
   end;
 
