@@ -6393,6 +6393,7 @@ end;
 
 procedure TDebuggerIntf.ResetStateToIdle;
 begin
+  FExitCode := 0;
   SetState(dsIdle);
 end;
 
