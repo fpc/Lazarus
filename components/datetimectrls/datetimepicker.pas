@@ -139,6 +139,7 @@ type
     cDefOptions = [];
     cCheckBoxBorder = 3;
   private
+    FAlignment: TAlignment;
     FAutoAdvance: Boolean;
     FAutoButtonSize: Boolean;
     FCalAlignment: TDTCalAlignment;
@@ -215,6 +216,7 @@ type
     function GetDateTime: TDateTime;
     function GetDroppedDown: Boolean;
     function GetTime: TTime;
+    procedure SetAlignment(AValue: TAlignment);
     procedure SetArrowShape(const AValue: TArrowShape);
     procedure SetAutoButtonSize(AValue: Boolean);
     procedure SetCalAlignment(AValue: TDTCalAlignment);
@@ -420,6 +422,7 @@ type
              read FShowMonthNames write SetShowMonthNames default False;
     property DroppedDown: Boolean read GetDroppedDown;
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Options: TDateTimePickerOptions read FOptions write SetOptions default cDefOptions;
   public
     constructor Create(AOwner: TComponent); override;
@@ -501,6 +504,7 @@ type
     property MonthNames;
     property ShowMonthNames;
     property CalAlignment;
+    property Alignment;
     property Options;
 // events:
     property OnChange;
@@ -1938,11 +1942,13 @@ function TCustomDateTimePicker.GetCheckBoxRect(
 var
   Details: TThemedElementDetails;
   CSize: TSize;
+
 begin
   Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
   CSize := ThemeServices.GetDetailSize(Details);
   CSize.cx := ScaleScreenToFont(CSize.cx);
   CSize.cy := ScaleScreenToFont(CSize.cy);
+
   if IsRightToLeft and not IgnoreRightToLeft then
   begin
     Result.Right := ClientWidth - (BorderSpacing.InnerBorder + BorderWidth);
@@ -1962,23 +1968,60 @@ end;
   Also used in calculating our preffered size. }
 function TCustomDateTimePicker.GetTextOrigin(IgnoreRightToLeft: Boolean
   ): TPoint;
-var
-  R: TRect;
+
+var   
+  Re: TRect;
+  B: Integer;
+  XL, XR: Integer;
+  AuxAlignment: TAlignment;
 begin
-  Result.y := BorderSpacing.InnerBorder + BorderWidth;
-  if FShowCheckBox then
-  begin
-    R := GetCheckBoxRect(IgnoreRightToLeft);
-    if not IgnoreRightToLeft and IsRightToLeft then
-      Result.x := R.Left - Scale96ToFont(cCheckBoxBorder) - FTextWidth
-    else
-      Result.x := R.Right + Scale96ToFont(cCheckBoxBorder);
-  end else
-  begin
-    Result.x := Result.y;
-    if not IgnoreRightToLeft and IsRightToLeft then
-      Result.x := ClientWidth - Result.x - FTextWidth;
+  B := BorderSpacing.InnerBorder + BorderWidth;
+  Result.y := B;
+
+  if IgnoreRightToLeft or AutoSize then
+    AuxAlignment := taLeftJustify
+  else begin
+    AuxAlignment := FAlignment;
+    if IsRightToLeft then begin
+      case AuxAlignment of
+        taRightJustify:
+          AuxAlignment := taLeftJustify;
+        taLeftJustify:
+          AuxAlignment := taRightJustify;
+      end;
+    end;
   end;
+
+  if FShowCheckBox then begin
+    Re := GetCheckBoxRect(IgnoreRightToLeft);
+    InflateRect(Re, Scale96ToFont(cCheckBoxBorder), 0);
+    XL := Re.Right;
+    XR := Re.Left;
+  end else begin
+    XL := B;
+    XR := ClientWidth - B;
+  end;
+
+  if Assigned(FUpDown) then
+    B := B + FUpDown.Width
+  else if Assigned(FArrowButton) then
+    B := B + FArrowButton.Width;
+
+  if IgnoreRightToLeft or not IsRightToLeft then begin
+    XR := ClientWidth - B;
+  end else begin
+    XL := B;
+  end;
+
+  case AuxAlignment of
+    taRightJustify:
+      Result.x := XR - FTextWidth;
+    taCenter:
+      Result.x := (XL + XR - FTextWidth) div 2;
+  else
+    Result.x := XL;
+  end;
+
 end;
 
 { MoveSelectionLR
@@ -2137,19 +2180,12 @@ end;
 
 procedure TCustomDateTimePicker.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  R: TRect;
 begin
-  if FTextEnabled then
+  if ShowCheckBox and PtInRect(GetCheckBoxRect, Point(X, Y)) then
+    Checked := not Checked
+  else if FTextEnabled then
     SelectTextPartUnderMouse(X);
-  if ShowCheckBox then
-  begin
-    R := GetCheckBoxRect;
-    if PtInRect(R, Point(X, Y)) then
-    begin
-      Checked := not Checked;
-    end;
-  end;
+
   SetFocusIfPossible;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -2165,20 +2201,14 @@ begin
 end;
 
 procedure TCustomDateTimePicker.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  NewMouseInCheckBox: Boolean;
 begin
   inherited MouseMove(Shift, X, Y);
 
-  if ShowCheckBox then
-  begin
-    NewMouseInCheckBox := PtInRect(GetCheckBoxRect, Point(X, Y));
-    if FMouseInCheckBox <> NewMouseInCheckBox then
-    begin
-      FMouseInCheckBox := NewMouseInCheckBox;
-      Invalidate;
-    end;
+  if ShowCheckBox and (FMouseInCheckBox xor PtInRect(GetCheckBoxRect, Point(X, Y))) then begin
+    FMouseInCheckBox := not FMouseInCheckBox;
+    Invalidate;
   end;
+
 end;
 
 function TCustomDateTimePicker.DoMouseWheel(Shift: TShiftState;
@@ -2186,6 +2216,7 @@ function TCustomDateTimePicker.DoMouseWheel(Shift: TShiftState;
 begin
   Result := False;
   if FTextEnabled then begin
+
     SelectTextPartUnderMouse(MousePos.x);
     if not FReadOnly then begin
       Inc(FUserChanging);
@@ -2935,12 +2966,14 @@ var
   TextStyle: TTextStyle;
   DTP: TDateTimePart;
   S: String;
+
 const
   CheckStates: array[Boolean, Boolean, Boolean] of TThemedButton = (
     ((tbCheckBoxUncheckedDisabled, tbCheckBoxUncheckedDisabled),
      (tbCheckBoxCheckedDisabled, tbCheckBoxCheckedDisabled)),
     ((tbCheckBoxUncheckedNormal, tbCheckBoxUncheckedHot),
      (tbCheckBoxCheckedNormal, tbCheckBoxCheckedHot)));
+
 begin
   if ClientRectNeedsInterfaceUpdate then // In Qt widgetset, this solves the
     DoAdjustClientRectChange;           // problem of dispositioned client rect.
@@ -2970,11 +3003,6 @@ begin
   TextStyle.Wordbreak := False;
   TextStyle.Opaque := False;
   TextStyle.RightToLeft := IsRightToLeft;
-
-  if ShowCheckBox then
-    ThemeServices.DrawElement(Canvas.Handle,
-      ThemeServices.GetElementDetails(CheckStates[Enabled, Checked, FMouseInCheckBox]),
-      GetCheckBoxRect);
 
   if DateIsNull and (FTextForNullDate <> '')
                        and (not (FTextEnabled and Focused)) then begin
@@ -3127,6 +3155,11 @@ begin
 
   end;
 
+  if ShowCheckBox then
+    ThemeServices.DrawElement(Canvas.Handle,
+      ThemeServices.GetElementDetails(CheckStates[Enabled, Checked, FMouseInCheckBox]),
+      GetCheckBoxRect);
+
   inherited Paint;
 end;
 
@@ -3220,6 +3253,14 @@ begin
     Result := NullDate
   else
     Result := Abs(Frac(FDateTime));
+end;
+
+procedure TCustomDateTimePicker.SetAlignment(AValue: TAlignment);
+begin
+  if FAlignment <> AValue then begin
+    FAlignment := AValue;
+    Invalidate;
+  end;
 end;
 
 procedure TCustomDateTimePicker.SetArrowShape(const AValue: TArrowShape);
@@ -3848,6 +3889,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
+  FAlignment := taLeftJustify;
   FCalAlignment := dtaDefault;
   FCorrectedDTP := dtpAMPM;
   FCorrectedValue := 0;
