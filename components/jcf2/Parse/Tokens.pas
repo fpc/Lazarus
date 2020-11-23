@@ -250,6 +250,18 @@ type
     ttAnsiString,
     ttWidestring,
     ttPchar,
+    ttShortString,
+    ttPShortString,
+    ttAnsiChar,
+    ttPAnsiChar,
+    ttPWideChar,
+    ttUnicodeChar,
+    ttUnicodeString,
+    ttPUnicodeChar,
+    ttUtf8String,
+    ttUtf16String,
+    ttRawByteString,
+    ttPByte,
     ttSingle,
     ttDouble,
     ttExtended,
@@ -257,6 +269,15 @@ type
     ttReal48,
     ttComp,
     ttCurrency,
+    ttNativeInt,
+    ttNativeUInt,
+    ttInt8,
+    ttInt16,
+    ttInt32,
+    ttUInt8,
+    ttUInt16,
+    ttUInt32,
+    ttUInt64,
 
     ttVariant,
     ttOleVariant,
@@ -431,7 +452,8 @@ const
     ttTimes, ttFloatDiv, ttExponent, ttEquals, ttGreaterThan, ttLessThan,
     ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual, ttSetSymDif, ttShl_ll, ttShr_gg];
 
-  StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString];
+  StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString, ttShortString,
+    ttUnicodeString, ttUtf8String, ttUtf16String, ttRawByteString];
 
   RealTypes: TTokenTypeSet =
     [ttReal48, ttReal, ttSingle, ttDouble, ttExtended, ttCurrency, ttComp];
@@ -440,7 +462,9 @@ const
     [ttShortInt, ttSmallInt, ttInteger, ttByte,
     ttLongInt, ttInt64, ttWord,
     ttBoolean, ttByteBool, ttWordBool, ttLongBool,
-    ttChar, ttWideChar, ttLongWord, ttPChar];
+    ttChar, ttWideChar, ttLongWord, ttPChar, ttCardinal, ttNativeInt, ttNativeUInt,
+    ttInt8, ttInt16, ttInt32, ttUInt8, ttUInt16, ttUInt32, ttUInt64, ttAnsiChar,
+    ttUnicodeChar, ttPAnsiChar, ttPUnicodeChar, ttPWideChar, ttPByte, ttPShortString];
 
   UsesWords: TTokenTypeSet = [ttUses, ttRequires, ttContains];
 
@@ -520,7 +544,7 @@ const
 
   { a value larger than the number of keywords,
     used as an initial size for the dynamic array }
-  INITIAL_MAX_KEYWORDS = 200;
+  INITIAL_MAX_KEYWORDS = 230;
 
 var
   { final number of keywords added }
@@ -803,6 +827,28 @@ begin
   AddKeyword('-=', wtNotAWord, ttMinusAssign);
   AddKeyword('*=', wtNotAWord, ttTimesAssign);
   AddKeyword('/=', wtNotAWord, ttFloatDivAssign);
+
+  AddKeyword('nativeint', wtBuiltInType, ttNativeInt);
+  AddKeyword('nativeuint', wtBuiltInType, ttNativeUInt);
+  AddKeyword('int8', wtBuiltInType, ttInt8);
+  AddKeyword('int16', wtBuiltInType, ttInt16);
+  AddKeyword('int32', wtBuiltInType, ttInt32);
+  AddKeyword('uint8', wtBuiltInType, ttUInt8);
+  AddKeyword('uint16', wtBuiltInType, ttUInt16);
+  AddKeyword('uint32', wtBuiltInType, ttUInt32);
+  AddKeyword('uint64', wtBuiltInType, ttUInt64);
+  AddKeyword('shortstring', wtBuiltInType, ttShortString);
+  AddKeyword('pshortstring', wtBuiltInType, ttPShortString);
+  AddKeyword('ansichar', wtBuiltInType, ttAnsiChar);
+  AddKeyword('pansichar', wtBuiltInType, ttPAnsiChar);
+  AddKeyword('pwidechar', wtBuiltInType, ttPWideChar);
+  AddKeyword('unicodechar', wtBuiltInType, ttUnicodeChar);
+  AddKeyword('unicodestring', wtBuiltInType, ttUnicodeString);
+  AddKeyword('punicodechar', wtBuiltInType, ttPUnicodeChar);
+  AddKeyword('utf8string', wtBuiltInType, ttUtf8String);
+  AddKeyword('utf16string', wtBuiltInType, ttUtf16String);
+  AddKeyword('rawbytestring', wtBuiltInType, ttRawByteString);
+  AddKeyword('pbyte', wtBuiltInType, ttPByte);
 
   {Now that we know how many keywords were added,
     we can set the actual size of the array }

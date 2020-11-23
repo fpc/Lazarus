@@ -2546,6 +2546,7 @@ begin
   // exppubl : ( 'export' | 'public' ) [named] ';'
   // external : ( 'external' [[lib_name] [named]] ';'
   // absolute : 'absolute' var_name
+  // absolute : 'absolute' expression
   // initvalue : '=' ConstExpr
   // hints : [ 'deprecated'
   // | 'experimental'
@@ -2568,22 +2569,7 @@ begin
   begin
     PushNode(nVarAbsolute);
     Recognise(ttAbsolute);
-
-    if (fcTokenList.FirstSolidWordType in IdentifierTypes) then
-    begin
-      // can be a dotted name
-      RecogniseIdentifier(True, idAllowDirectives);
-
-      while fcTokenList.FirstSolidTokenType = ttDot do
-      begin
-        Recognise(ttDot);
-        RecogniseIdentifier(false, idAllowDirectives);
-      end;
-      
-    end
-    else
-      RecogniseConstantExpression;
-
+    RecogniseConstantExpression;
     PopNode;
   end
   else
