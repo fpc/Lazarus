@@ -52,11 +52,7 @@ type
   TIDEFileStateFlags = set of TIDEFileStateFlag;
   
   TGetIDEFileStateEvent = procedure(Sender: TObject; const Filename: string;
-    NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags)
-    of object;
-
-  TOnGetUnitRegisterInfo = procedure(Sender: TObject; const Filename: string;
-    out TheUnitName: string; out HasRegisterProc: boolean) of object;
+    NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags) of object;
 
 implementation
 

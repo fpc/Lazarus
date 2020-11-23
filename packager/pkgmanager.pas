@@ -116,9 +116,6 @@ type
     procedure AfterWritePackage(Sender: TObject; Restore: boolean);
     procedure BeforeReadPackage(Sender: TObject);
     procedure PackageEditorFreeEditor(APackage: TLazPackage);
-    procedure PackageEditorGetUnitRegisterInfo(Sender: TObject;
-                              const AFilename: string; out TheUnitName: string;
-                              out HasRegisterProc: boolean);
     function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
                           PkgList: TFPList; out FilesChanged: boolean): boolean;
     // package graph
@@ -185,9 +182,6 @@ type
                                  FirstDependency: TPkgDependency;
                                  const Directory: string;
                                  ShowAbort: boolean): TModalResult;
-    function DoGetUnitRegisterInfo(const AFilename: string;
-                          out TheUnitName: string; out HasRegisterProc: boolean;
-                          IgnoreErrors: boolean): TModalResult;
     procedure SaveAutoInstallDependencies;
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string;
@@ -946,12 +940,6 @@ begin
   PackageGraph.ClosePackage(APackage);
 end;
 
-procedure TPkgManager.PackageEditorGetUnitRegisterInfo(Sender: TObject;
-  const AFilename: string; out TheUnitName: string; out HasRegisterProc: boolean);
-begin
-  DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
-end;
-
 function TPkgManager.PackageGraphCheckInterPkgFiles(IDEObject: TObject;
   PkgList: TFPList; out FilesChanged: boolean): boolean;
 begin
@@ -1137,7 +1125,7 @@ var
       OldUnitName:=OldPkgName;
       NewUnitName:=APackage.Name;
       if (OldUnitName<>NewUnitName) then begin
-        MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
+        MainIDE.SaveSourceEditorChangesToCodeCache(nil);
         if CodeToolBoss.RenameUsedUnit(
           AProject.MainUnitInfo.Source,OldUnitName,NewUnitName,'')
         then
@@ -1505,39 +1493,6 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string; out
-  TheUnitName: string; out HasRegisterProc: boolean; IgnoreErrors: boolean
-  ): TModalResult;
-  
-  function ErrorsHandled: boolean;
-  begin
-    if (CodeToolBoss.ErrorMessage='') or IgnoreErrors then exit(true);
-    MainIDE.DoJumpToCodeToolBossError;
-    Result:=false;
-  end;
-  
-var
-  ExpFilename: String;
-  CodeBuffer: TCodeBuffer;
-begin
-  Result:=mrCancel;
-  ExpFilename:=TrimFilename(AFilename);
-  // create default values
-  TheUnitName:='';
-  HasRegisterProc:=false;
-  MainIDE.SaveSourceEditorChangesToCodeCache(nil);
-  CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
-  if CodeBuffer<>nil then begin
-    TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-    if not ErrorsHandled then exit;
-    HasRegisterProc:=CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer);
-    if not ErrorsHandled then exit;
-  end;
-  if TheUnitName='' then
-    TheUnitName:=ExtractFileNameOnly(ExpFilename);
-  Result:=mrOk;
-end;
-
 procedure TPkgManager.SaveAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
@@ -1651,7 +1606,7 @@ begin
   and (AProject.MainUnitInfo<>nil) then begin
     //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
-      MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
+      MainIDE.SaveSourceEditorChangesToCodeCache(nil);
       if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
         AProject.MainUnitInfo.Source,AnUnitName,AnUnitInFilename)
       then
@@ -2972,7 +2927,6 @@ begin
   PackageEditors.OnShowFindInFiles:=@PackageEditorFindInFiles;
   PackageEditors.OnFreeEditor:=@PackageEditorFreeEditor;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
-  PackageEditors.OnGetUnitRegisterInfo:=@PackageEditorGetUnitRegisterInfo;
   PackageEditors.OnInstallPackage:=@PackageEditorInstallPackage;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
   PackageEditors.OnOpenPackage:=@PackageEditorOpenPackage;
@@ -6443,7 +6397,7 @@ begin
   if (Project1.MainUnitID>=0)
   and (pfMainUnitIsPascalSource in Project1.Flags)
   then begin
-    MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
+    MainIDE.SaveSourceEditorChangesToCodeCache(nil);
     ShortUnitName:=ADependency.PackageName;
     //debugln('TPkgManager.OnProjectInspectorRemoveDependency B ShortUnitName="',ShortUnitName,'"');
     if (ShortUnitName<>'') then begin

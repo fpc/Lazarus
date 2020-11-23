@@ -39,6 +39,8 @@ uses
   ExtCtrls, ImgList, LCLType, LCLIntf,
   // LazControls
   TreeFilterEdit,
+  // Codetools
+  CodeToolManager, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
   // BuildIntf
@@ -375,7 +377,6 @@ type
     FOnShowFindInFiles: TOnPkgEvent;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
-    FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     FOnInstallPackage: TOnPkgEvent;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnPkgEvent;
@@ -453,8 +454,6 @@ type
                                             write FOnFreeEditor;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
-    property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
-                       read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
     property OnInstallPackage: TOnPkgEvent read FOnInstallPackage
                                                  write FOnInstallPackage;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
@@ -1918,12 +1917,11 @@ end;
 
 procedure TPackageEditorForm.DoAddNewFile(NewItem: TNewIDEItemTemplate);
 var
-  NewFilename: String;
+  NewFilename, NewUnitName: String;
   NewFileType: TPkgFileType;
   NewFlags: TPkgFileFlags;
   Desc: TProjectFileDescriptor;
-  NewUnitName: String;
-  HasRegProc: Boolean;
+  CodeBuffer: TCodeBuffer;
 begin
   if not (NewItem is TNewItemProjectFile) then exit;
   // create new file
@@ -1939,9 +1937,12 @@ begin
   if (NewFileType in PkgFileUnitTypes) then begin
     Include(NewFlags,pffAddToPkgUsesSection);
     NewUnitName:=ExtractFilenameOnly(NewFilename);
-    if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
-      PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,NewUnitName,HasRegProc);
-      if HasRegProc then
+    //MainIDE.SaveSourceEditorChangesToCodeCache(nil);  // Not needed ?
+    CodeBuffer:=CodeToolBoss.LoadFile(NewFilename,true,false);
+    if CodeBuffer<>nil then begin
+      Assert(NewUnitName=CodeToolBoss.GetSourceName(CodeBuffer,false),
+             'TPackageEditorForm.DoAddNewFile: Unit name mismatch.');
+      if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer) then
         Include(NewFlags,pffHasRegisterProc);
     end;
   end;
