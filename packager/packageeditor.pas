@@ -607,8 +607,7 @@ begin
         PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
         if TPkgFileCheck.ReAddingUnit(LazPackage, PkgFile.FileType, AFilename,
-                           PackageEditors.OnGetIDEFileInfo,
-                           PackageEditors.OnGetUnitRegisterInfo)<>mrOk then exit;
+                                      PackageEditors.OnGetIDEFileInfo)<>mrOk then exit;
         //PkgFile.Filename:=AFilename;
         Assert(PkgFile.Filename=AFilename, 'TPackageEditorForm.ReAddMenuItemClick: Unexpected Filename.');
         LazPackage.UnremovePkgFile(PkgFile);
@@ -1365,7 +1364,7 @@ procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 var
   i: Integer;
-  NewUnitPaths, NewIncPaths: String;
+  NewFilename, NewUnitPaths, NewIncPaths: String;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
@@ -1376,7 +1375,12 @@ begin
     NewUnitPaths:='';
     NewIncPaths:='';
     for i:=0 to high(Filenames) do
-      LazPackage.AddFileByName(FileNames[i], NewUnitPaths, NewIncPaths);
+    begin
+      NewFilename:=FileNames[i];
+      if TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
+                                  PackageEditors.OnGetIDEFileInfo)=mrOK then
+        LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths);
+    end;
     //UpdateAll(false);
     // extend unit and include search path
     if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
@@ -1477,8 +1481,7 @@ begin
       begin
         NewFilename:=OpenDialog.Files[i];
         if TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
-                                  PackageEditors.OnGetIDEFileInfo,
-                                  PackageEditors.OnGetUnitRegisterInfo)=mrOK then
+                                    PackageEditors.OnGetIDEFileInfo)=mrOK then
           LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths);
       end;
       //UpdateAll(false);
@@ -1916,41 +1919,35 @@ end;
 procedure TPackageEditorForm.DoAddNewFile(NewItem: TNewIDEItemTemplate);
 var
   NewFilename: String;
-  DummyResult: TModalResult;
   NewFileType: TPkgFileType;
-  NewPkgFileFlags: TPkgFileFlags;
+  NewFlags: TPkgFileFlags;
   Desc: TProjectFileDescriptor;
   NewUnitName: String;
-  HasRegisterProc: Boolean;
+  HasRegProc: Boolean;
 begin
-  if NewItem is TNewItemProjectFile then begin
-    // create new file
-    Desc:=TNewItemProjectFile(NewItem).Descriptor;
-    NewFilename:='';
-    DummyResult:=LazarusIDE.DoNewFile(Desc,NewFilename,'',
-      [nfOpenInEditor,nfCreateDefaultSrc,nfIsNotPartOfProject],LazPackage);
-    if DummyResult=mrOk then begin
-      // success -> now add it to package
-      NewUnitName:='';
-      NewFileType:=FileNameToPkgFileType(NewFilename);
-      NewPkgFileFlags:=[];
-      if (NewFileType in PkgFileUnitTypes) then begin
-        Include(NewPkgFileFlags,pffAddToPkgUsesSection);
-        NewUnitName:=ExtractFilenameOnly(NewFilename);
-        if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
-          HasRegisterProc:=false;
-          PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,
-            NewUnitName,HasRegisterProc);
-          if HasRegisterProc then
-            Include(NewPkgFileFlags,pffHasRegisterProc);
-        end;
-      end;
-      LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
-                                              NewPkgFileFlags, cpNormal);
-      FreeAndNil(FNextSelectedPart);
-      FNextSelectedPart:=TPENodeData.Create(penFile,NewFilename,false);
+  if not (NewItem is TNewItemProjectFile) then exit;
+  // create new file
+  Desc:=TNewItemProjectFile(NewItem).Descriptor;
+  NewFilename:='';
+  if LazarusIDE.DoNewFile(Desc,NewFilename,'',
+      [nfOpenInEditor,nfCreateDefaultSrc,nfIsNotPartOfProject],LazPackage)<>mrOk
+  then exit;
+  // success -> now add it to package
+  NewUnitName:='';
+  NewFileType:=FileNameToPkgFileType(NewFilename);
+  NewFlags:=[];
+  if (NewFileType in PkgFileUnitTypes) then begin
+    Include(NewFlags,pffAddToPkgUsesSection);
+    NewUnitName:=ExtractFilenameOnly(NewFilename);
+    if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
+      PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,NewUnitName,HasRegProc);
+      if HasRegProc then
+        Include(NewFlags,pffHasRegisterProc);
     end;
   end;
+  LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
+  FreeAndNil(FNextSelectedPart);
+  FNextSelectedPart:=TPENodeData.Create(penFile,NewFilename,false);
 end;
 
 function TPackageEditorForm.ShowNewCompDialog: TModalResult;

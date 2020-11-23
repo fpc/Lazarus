@@ -68,10 +68,9 @@ uses
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
-  PackageDefs, PackageEditor, Project, InputHistory, MainBase, EnvironmentOpts,
-  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks,
-  ProjPackEditing, ProjPackFilePropGui, PackageSystem, BuildManager;
+  LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project, InputHistory,
+  EnvironmentOpts, AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg,
+  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs, PackageSystem, BuildManager;
 
 type
   TOnAddUnitToProject =
@@ -387,8 +386,7 @@ begin
       for i:=0 to OpenDialog.Files.Count-1 do
       begin
         NewFilename := OpenDialog.Files[i];
-        case TPrjFileCheck.AddingFile(LazProject, NewFilename,
-                                      PackageEditors.OnGetUnitRegisterInfo) of
+        case TPrjFileCheck.AddingFile(LazProject, NewFilename) of
           mrOk: if not (AddOneFile(NewFilename) in [mrOk, mrIgnore]) then
                   break;
           mrIgnore: continue;

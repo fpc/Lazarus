@@ -360,7 +360,7 @@ type
           out StartInStringConst, EndInStringConst: boolean): boolean;
           
     // register procedure
-    function HasInterfaceRegisterProc(out HasRegisterProc: boolean): boolean;
+    function HasInterfaceRegisterProc: boolean;
     
     // Delphi to Lazarus conversion
     function ConvertDelphiToLazarusSource(AddLRSCode: boolean;
@@ -3952,42 +3952,22 @@ begin
                        FormatParameters,StartInStringConst,EndInStringConst);
 end;
 
-function TStandardCodeTool.HasInterfaceRegisterProc(out HasRegisterProc: boolean
-  ): boolean;
-
-  function IsRegisterProc(ANode: TCodeTreeNode): boolean;
-  begin
-    Result:=false;
-    if ANode=nil then exit;
-    if ANode.Desc=ctnProcedureHead then
-      ANode:=Anode.Parent;
-    if (ANode.Desc<>ctnProcedure) then exit;
-    MoveCursorToNodeStart(ANode);
-    if not ReadNextUpAtomIs('PROCEDURE') then exit;
-    if not ReadNextUpAtomIs('REGISTER') then exit;
-    if CurPos.Flag<>cafSemicolon then exit;
-    HasRegisterProc:=true;
-    Result:=true;
-  end;
-
+function TStandardCodeTool.HasInterfaceRegisterProc: boolean;
 var
-  InterfaceNode: TCodeTreeNode;
   ANode: TCodeTreeNode;
 begin
   Result:=false;
-  HasRegisterProc:=false;
   ANode:=FindDeclarationNodeInInterface('Register',true);
   if ANode=nil then exit;
-  if IsRegisterProc(ANode) then
-    exit(true);
-  // there may be multiple register
-  InterfaceNode:=FindInterfaceNode;
-  ANode:=InterfaceNode.FirstChild;
-  while ANode<>nil do begin
-    if IsRegisterProc(ANode) then
-      exit(true);
-    ANode:=ANode.NextBrother;
-  end;
+  if ANode.Desc=ctnProcedureHead then
+    ANode:=Anode.Parent;
+  if (ANode.Desc<>ctnProcedure) then exit;
+  MoveCursorToNodeStart(ANode);
+  if not ReadNextUpAtomIs('PROCEDURE') then exit;
+  if not ReadNextUpAtomIs('REGISTER') then exit;
+  ReadNextAtom;
+  if CurPos.Flag<>cafSemicolon then exit;
+  Result:=true;
 end;
 
 function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;

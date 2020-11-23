@@ -3371,7 +3371,6 @@ function TLazPackage.AddFileByName(aFilename: string;
 var
   NewFileType: TPkgFileType;
   NewUnitName: String;
-  HasRegister: Boolean;
   NewFlags: TPkgFileFlags;
   Code: TCodeBuffer;
   CurDir: String;
@@ -3383,7 +3382,6 @@ begin
   if FindPkgFile(aFilename,true,false)<>nil then Exit(False);
   NewFileType:=FileNameToPkgFileType(aFilename);
   NewFlags:=[];
-  HasRegister:=false;
   NewUnitName:='';
   if (NewFileType=pftUnit) then begin
     Code:=CodeToolBoss.LoadFile(aFilename,true,false);
@@ -3392,8 +3390,7 @@ begin
     //if NewUnitName='' then NewUnitName:=ExtractFileNameOnly(aFilename);
     if FindUsedUnit(NewUnitName)=nil then
       Include(NewFlags,pffAddToPkgUsesSection);
-    CodeToolBoss.HasInterfaceRegisterProc(Code,HasRegister);
-    if HasRegister then
+    if CodeToolBoss.HasInterfaceRegisterProc(Code) then
       Include(NewFlags,pffHasRegisterProc);
   end;
   AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);

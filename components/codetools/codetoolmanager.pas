@@ -511,8 +511,7 @@ type
           out CodeContexts: TCodeContextInfo): boolean;
     function ExtractProcedureHeader(Code: TCodeBuffer; X,Y: integer;
           Attributes: TProcHeadAttributes; out ProcHead: string): boolean;
-    function HasInterfaceRegisterProc(Code: TCodeBuffer;
-          out HasRegisterProc: boolean): boolean;
+    function HasInterfaceRegisterProc(Code: TCodeBuffer): boolean;
 
     // gather identifiers (i.e. all visible)
     function GatherUnitNames(Code: TCodeBuffer): Boolean;
@@ -2435,17 +2434,15 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
-  out HasRegisterProc: boolean): boolean;
+function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer): boolean;
 begin
   Result:=false;
-  HasRegisterProc:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.HasInterfaceRegisterProc(HasRegisterProc);
+    Result:=FCurCodeTool.HasInterfaceRegisterProc;
   except
     on e: Exception do Result:=HandleException(e);
   end;

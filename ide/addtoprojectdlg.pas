@@ -42,7 +42,7 @@ uses
   // IDEIntf
   IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, IDEDialogs, Project, PackageEditor, ProjPackChecks;
+  LazarusIDEStrConsts, IDEDialogs, Project, ProjPackChecks;
   
 type
   { TAddToProjectDialog }
@@ -125,8 +125,7 @@ begin
       NewFilename:=AddFileListView.Items[i].Caption;
       if not FilenameIsAbsolute(NewFilename) then  // expand filename
         NewFilename:=TrimFilename(fProject.Directory+PathDelim+NewFilename);
-      case TPrjFileCheck.AddingFile(fProject, NewFilename,
-                                    PackageEditors.OnGetUnitRegisterInfo) of
+      case TPrjFileCheck.AddingFile(fProject, NewFilename) of
         mrOk: begin
             // check if unitname already exists in selection
             if FilenameIsPascalUnit(NewFilename) then

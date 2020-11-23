@@ -1530,7 +1530,7 @@ begin
   if CodeBuffer<>nil then begin
     TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
     if not ErrorsHandled then exit;
-    CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer,HasRegisterProc);
+    HasRegisterProc:=CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer);
     if not ErrorsHandled then exit;
   end;
   if TheUnitName='' then
@@ -1598,8 +1598,7 @@ begin
     end;
     
     // load package
-    APackage:=LoadInstalledPackage(StaticPackage^.Name,KeepInstalledPackages,
-                                   Quiet);
+    APackage:=LoadInstalledPackage(StaticPackage^.Name,KeepInstalledPackages,Quiet);
 
     PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
   end;
@@ -2609,10 +2608,8 @@ var
       NewAddToUses:=true;
       if NewFileType=pftUnit then begin
         Code:=CodeToolBoss.LoadFile(OldFilename,true,false);
-        if (Code<>nil) then begin
-          if TargetPackage<>nil then
-            CodeToolBoss.HasInterfaceRegisterProc(Code,NewHasRegisterProc);
-        end;
+        if (Code<>nil) and (TargetPackage<>nil) then
+          NewHasRegisterProc:=CodeToolBoss.HasInterfaceRegisterProc(Code);
       end;
     end;
 

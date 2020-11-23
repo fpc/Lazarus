@@ -1887,13 +1887,12 @@ begin
     // Check if the unit has a Register procedure.
     // ToDo: Optimize. The source is read again during unit conversion.
     CodeBuffer:=CodeToolBoss.LoadFile(AFilename, true, false);
-    if CodeBuffer<>nil then
-      if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer, HasRegisterProc) then
-        if HasRegisterProc then begin
-          Include(Flags, pffHasRegisterProc);
-          fSettings.AddLogLine(mluNote, Format(lisConvAddingFlagForRegister,[PureUnitName]),
-                               fLazPMainFilename);
-        end;
+    if (CodeBuffer<>nil) and CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer) then
+    begin
+      Include(Flags, pffHasRegisterProc);
+      fSettings.AddLogLine(mluNote, Format(lisConvAddingFlagForRegister,[PureUnitName]),
+                           fLazPMainFilename);
+    end;
     // Add new unit to package
     LazPackage.AddFile(AFileName, PureUnitName, pftUnit, Flags, cpNormal);
   end;

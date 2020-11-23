@@ -10,6 +10,8 @@ uses
   LCLProc, Forms, Dialogs,
   // LazUtils
   FileUtil, LazFileUtils, UITypes,
+  // Codetools
+  CodeToolManager, CodeCache,
   // BuildIntf
   PackageIntf, PackageDependencyIntf,
   // IDEIntf
@@ -21,8 +23,7 @@ type
 
   TProjPackFileCheck = class
   protected
-    class function UnitNameOk(const AFilename, AUnitFilename: string;
-      OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+    class function UnitNameOk(const AFilename, AUnitFilename: string): TModalResult;
   public
   end;
 
@@ -39,12 +40,10 @@ type
   public
     class function ReadOnlyOk(LazPackage: TLazPackage): TModalResult;
     class function AddingUnit(LazPackage: TLazPackage; const AFilename: string;
-      OnGetIDEFileInfo: TGetIDEFileStateEvent;
-      OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+      OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
     class function ReAddingUnit(LazPackage: TLazPackage;
       FileTyp: TPkgFileType; const AFilename: string;
-      OnGetIDEFileInfo: TGetIDEFileStateEvent;
-      OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+      OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
     class function AddingDependency(LazPackage: TLazPackage;
       NewDependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
   end;
@@ -54,10 +53,8 @@ type
   TPrjFileCheck = class(TProjPackFileCheck)
   private
   public
-    class function AddingFile(AProject: TProject; const AFilename: string;
-      OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
-    class function AddingDependency(AProject: TProject;
-            NewDependency: TPkgDependency): TModalResult;
+    class function AddingFile(AProject: TProject; const AFilename: string): TModalResult;
+    class function AddingDependency(AProject: TProject; NewDependency: TPkgDependency): TModalResult;
   end;
 
 // Project or Package using the common interface
@@ -82,21 +79,19 @@ end;
 
 { TProjPackFileCheck }
 
-class function TProjPackFileCheck.UnitNameOk(const AFilename, AUnitFilename: string;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+class function TProjPackFileCheck.UnitNameOk(const AFilename, AUnitFilename: string): TModalResult;
 // This is called only for Pascal units.
 var
   Unit_Name: string;
-  HasRegisterProc: boolean;
+  CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
   // valid unitname
-  if Assigned(OnGetUnitRegisterInfo) then
-  begin
-    OnGetUnitRegisterInfo(Nil, AFilename, Unit_Name, HasRegisterProc);
-    //if HasRegisterProc then
-    //  Include(PkgFileFlags,pffHasRegisterProc);
-  end;
+  Unit_Name:='';
+  CodeBuffer:=CodeToolBoss.LoadFile(AFilename,true,false);
+  if CodeBuffer<>nil then
+    Unit_Name:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+  Assert(Unit_Name<>'', 'TProjPackFileCheck.UnitNameOk: Unit_Name is empty.');
   if CompareText(Unit_Name, AUnitFilename)<>0 then
     if IDEMessageDialog(lisA2PInvalidUnitName,
       Format(lisA2PTheUnitNameAndFilenameDiffer,[Unit_Name,LineEnding,AUnitFilename]),
@@ -111,9 +106,6 @@ begin
   end;
   // Pascal extension
   Assert(FilenameIsPascalUnit(AFilename), 'TPkgFileCheck.UnitNameOk: Wrong extension.');
-  //IDEMessageDialog(lisA2PFileNotUnit, lisA2PPascalUnitsMustHaveTheExtensionPPOrPas,
-  //                 mtWarning,[mbCancel]);
-
   Result:=mrOK;
 end;
 
@@ -235,15 +227,11 @@ begin
 end;
 
 class function TPkgFileCheck.AddingUnit(LazPackage: TLazPackage;
-  const AFilename: string; OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+  const AFilename: string; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 var
   NewFileType: TPkgFileType;
   UnitFilename: String;
 begin
-  // normalize filename
-  //Result:=NormalizeFN(LazPackage, AFilename);
-  //if Result<>mrOK then exit;
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.AddingUnit: Not absolute Filename.');
   // file exists
   Result:=FileExistsOk(LazPackage, AFilename);
@@ -252,12 +240,12 @@ begin
   Result:=PartOfProjectOk(AFilename, OnGetIDEFileInfo);
   if Result<>mrOK then exit;
 
-  NewFileType:=FileNameToPkgFileType(AFilename); //FilenameIsPascalUnit  ExtractFileNameOnly
+  NewFileType:=FileNameToPkgFileType(AFilename);
   if NewFileType<>pftUnit then
     exit(mrOK);                         // Further checks only for Pascal units.
   UnitFilename:=ExtractFileNameOnly(AFilename);
   // unitname
-  Result:=UnitNameOk(AFilename, UnitFilename, OnGetUnitRegisterInfo);
+  Result:=UnitNameOk(AFilename, UnitFilename);
   if Result<>mrOK then exit;
   // unit is unique
   Result:=UniqueUnitOk(LazPackage, UnitFilename);
@@ -267,20 +255,10 @@ end;
 
 class function TPkgFileCheck.ReAddingUnit(LazPackage: TLazPackage;
   FileTyp: TPkgFileType; const AFilename: string;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 var
   UnitFilename: String;
 begin
-  // is readonly
-{  Result:=ReadOnlyOk(LazPackage);
-  if Result<>mrOK then exit;
-  // normalize filename
-  if AddFileType<>d2ptVirtualUnit then
-  begin
-    Result:=NormalizeFN(LazPackage, AFilename);
-    if Result<>mrOK then exit;
-  end;  }
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.ReAddingUnit: Not absolute Filename.');
   // file exists
   Result:=FileExistsOk(LazPackage, AFilename);
@@ -292,7 +270,7 @@ begin
     exit(mrOK);                         // Further checks only for Pascal units.
   UnitFilename:=ExtractFileNameOnly(AFilename);
   // unitname
-  Result:=UnitNameOk(AFilename, UnitFilename, OnGetUnitRegisterInfo);
+  Result:=UnitNameOk(AFilename, UnitFilename);
   if Result<>mrOK then exit;
   // unit is unique
   Result:=UniqueUnitOk(LazPackage, UnitFilename);
@@ -398,8 +376,7 @@ end;
 
 { TPrjFileCheck }
 
-class function TPrjFileCheck.AddingFile(AProject: TProject; const AFilename: string;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+class function TPrjFileCheck.AddingFile(AProject: TProject; const AFilename: string): TModalResult;
 // Returns mrOk=can be added, mrCancel=do not add, mrIgnore=already there
 var
   NewFile: TUnitInfo;
@@ -415,7 +392,7 @@ begin
   if FilenameIsPascalUnit(AFilename) then
   begin
     UnitFilename:=ExtractFileNameOnly(AFilename);
-    Result:=UnitNameOk(AFilename, UnitFilename, OnGetUnitRegisterInfo);
+    Result:=UnitNameOk(AFilename, UnitFilename);
     if Result<>mrOK then exit;
     // check if unitname already exists in project
     ConflictFile:=AProject.UnitWithUnitname(UnitFileName);
