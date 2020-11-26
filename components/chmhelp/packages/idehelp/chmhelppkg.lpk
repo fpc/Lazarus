@@ -23,7 +23,7 @@
     </CompilerOptions>
     <Description Value="IDE package to use chm help files in the IDE via the lhelp viewer."/>
     <License Value="GPL 2"/>
-    <Version Minor="2"/>
+    <Version Minor="2" Release="1"/>
     <Files Count="5">
       <Item1>
         <Filename Value="lazchmhelp.pas"/>

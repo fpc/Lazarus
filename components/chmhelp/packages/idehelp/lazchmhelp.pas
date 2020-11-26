@@ -564,12 +564,14 @@ var
   Proc: TProcessUTF8;
   FoundFileName: String;
   LHelpPath: String;
-  WasRunning: boolean;
+  WasRunning: Boolean;
+  UpdateStarted: Boolean;
   {$IFDEF CHMLOADTIMES}
   TotalTime: TDateTime;
   StartTime: TDateTime;
   {$ENDIF}
 begin
+  UpdateStarted := False;
   if Pos('file://', Node.URL) = 1 then
   begin
     Result := PassTheBuck(Node, ErrMsg);
@@ -608,25 +610,26 @@ begin
   if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then
   begin
     WasRunning := fHelpConnection.ServerRunning;
-    // Start server and tell it to hide
-    // No use setting cursor to hourglass as that may take as long as the
-    // waitforresponse timeout.
-    {$IFDEF CHMLOADTIMES}
-    TotalTime:=Now;
-    StartTime:=Now;
-    {$ENDIF}
-    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
-    {$IFDEF CHMLOADTIMES}
-    DebugLn(['CHMLOADTIMES: ',Format('Starting LHelp took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
-    {$ENDIF}
-    // If the server is not already running, open all chm files after it has started
-    // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
     if not(WasRunning) then
     begin
-      if fHelpConnection.BeginUpdate = srError then
+      // Start server and tell it to hide
+      // No use setting cursor to hourglass as that may take as long as the
+      // waitforresponse timeout.
+      {$IFDEF CHMLOADTIMES}
+      TotalTime:=Now;
+      StartTime:=Now;
+      {$ENDIF}
+      fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
+      {$IFDEF CHMLOADTIMES}
+      DebugLn(['CHMLOADTIMES: ',Format('Starting LHelp took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
+      {$ENDIF}
+      // If the server is not already running, open all chm files after it has started
+      // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
+      UpdateStarted := (fHelpConnection.BeginUpdate = srSuccess);
+      if not UpdateStarted then
       begin
         // existing lhelp doesn't understand mrBeginUpdate and needs to be rebuilt
-        //close lhelp
+        // close lhelp
         if fHelpConnection.RunMiscCommand(LHelpControl.mrClose) <> srError then
         begin
           // force rebuild of lhelp
@@ -637,8 +640,14 @@ begin
             // start it again
             Debugln(['TChmHelpViewer.ShowNode restarting lhelp to use updated protocols']);
             fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
-            // now run begin update
-            fHelpConnection.BeginUpdate; // it inc's a value so calling it more than once doesn't hurt
+            // check running again
+            WasRunning := fHelpConnection.ServerRunning;
+            if not WasRunning then
+            begin
+              Result := shrViewerError;
+              ErrMsg := 'Error starting LHelp IPC server';
+              exit;
+            end;
           end;
         end;
       end;
@@ -649,16 +658,18 @@ begin
       {$IFDEF CHMLOADTIMES}
       DebugLn(['CHMLOADTIMES: ',Format('Searching and Loading files took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
       {$ENDIF}
-      // Instruct viewer to show its GUI
-      Response:=fHelpConnection.RunMiscCommand(mrShow);
-      if Response<>srSuccess then
-        debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     end;
-    fHelpConnection.BeginUpdate;
+    // When UpdateStarted = True then server use LHellp version 2 protocol
+    // it inc's a value so calling it more than once doesn't hurt
+    if not UpdateStarted then
+       UpdateStarted := (fHelpConnection.BeginUpdate = srSuccess);
     Response := fHelpConnection.OpenURL(FileName, Url);
-    fHelpConnection.EndUpdate;
-    if not WasRunning then
+    if UpdateStarted then
       fHelpConnection.EndUpdate;
+    // Instruct viewer to show its GUI always
+    Response:=fHelpConnection.RunMiscCommand(mrShow);
+    if Response<>srSuccess then
+      debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     {$IFDEF CHMLOADTIMES}
     DebugLn(['CHMLOADTIMES: ',Format('Total start time was %d ms',[DateTimeToTimeStamp(Now-TotalTime).Time])]);
     {$ENDIF}
