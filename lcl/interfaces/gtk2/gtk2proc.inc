@@ -7575,7 +7575,7 @@ function CreateFormContents(AForm: TCustomForm;
   var FormWidget: Pointer; AWidgetInfo: PWidgetInfo = nil): Pointer;
 var
   ScrolledWidget, ClientAreaWidget: PGtkWidget;
-  WindowStyle: PGtkStyle;
+//  WindowStyle: PGtkStyle;
   Adjustment: PGtkAdjustment;
 begin
   // Create the VBox. We need that to place controls outside
@@ -7592,8 +7592,10 @@ begin
   gtk_widget_show(ScrolledWidget);
 
   ClientAreaWidget := gtk_layout_new(nil, nil);
-  WindowStyle := GetStyle(lgsWindow);
-  gtk_widget_set_style(ClientAreaWidget, WindowStyle);
+  // issue #16183: not sure why the GtkLayout is given a GtkWindow style here,
+  // this prevents setting color to the GtkLayout
+//  WindowStyle := GetStyle(lgsWindow);
+//  gtk_widget_set_style(ClientAreaWidget, WindowStyle);
   //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 

@@ -2307,7 +2307,10 @@ begin
 
   if ChangeBGColor then
   begin
-    if (BGColor = clDefault) or (BGColor = clBtnFace) then
+    // setting bg color to nil will cancel previous calls to gtk_widget_modify_bg()
+    // cannot use nil on a GtkLayout (issue #16183)
+    if not GTK_IS_LAYOUT(AWidget) and
+      ((BGColor = clDefault) or (BGColor = clBtnFace)) then
       NewColor := nil
     else
     begin

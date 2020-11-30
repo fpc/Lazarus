@@ -50,6 +50,7 @@ type
   TWSScrollingWinControl = class(TWSWinControl)
   published
     // procedure ScrollBy is moved to TWSWinControl.
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSScrollBox }
@@ -139,6 +140,19 @@ type
   procedure RegisterHintWindow;
 
 implementation
+
+{ TWSScrollingWinControl }
+
+class function TWSScrollingWinControl.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clForm,
+ { dctFont  } clBtnText
+  );
+begin
+  Result := DefColors[ADefaultColorType];
+end;
 
 { TWSCustomForm }
 
