@@ -118,7 +118,6 @@ type
     procedure AddOwnedPersistent(APers: TPersistent; const APropName: String;
       AParentNode: TTreeNode);
     procedure GetOwnedPersistents(APers: TPersistent; AParentNode: TTreeNode);
-    function PersistentFoundInNode(APers: TPersistent): Boolean;
     procedure Walk(AComponent: TComponent);
   public
     constructor Create(ACompTV: TComponentTreeView; ALookupRoot: TComponent);
@@ -222,7 +221,6 @@ begin
            ' its root=',DbgSName(TheRoot),' FLookupRoot=',DbgSName(FLookupRoot)]);
   {$ENDIF}
   if TheRoot <> FLookupRoot then Exit;
-  Assert(not PersistentFoundInNode(APers), 'AddOwnedPersistent: APers already there.');
   TVNode := FCompTV.AddOrGetPersNode(AParentNode, APers, CreateNodeCaption(APers, APropName));
   if APers is TCollection then
     AddCollection(TCollection(APers), TVNode);
@@ -256,16 +254,6 @@ begin
   finally
     FreeMem(PropList);
   end;
-end;
-
-function TComponentWalker.PersistentFoundInNode(APers: TPersistent): Boolean;
-var
-  i: Integer;
-begin
-  for i:=0 to FNode.Count-1 do
-    if TObject(FNode[i].Data) = APers then
-      Exit(True);
-  Result := False;
 end;
 
 procedure TComponentWalker.Walk(AComponent: TComponent);
