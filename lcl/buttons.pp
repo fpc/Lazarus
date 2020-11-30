@@ -290,9 +290,11 @@ type
     procedure AssignClient(AClient: TObject); override;
     procedure SetGroupIndex(Value: Integer); override;
     procedure SetChecked(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
   public
     function IsCheckedLinked: Boolean; override;
     function IsGroupIndexLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
   end;
 
   { TCustomSpeedButton }
