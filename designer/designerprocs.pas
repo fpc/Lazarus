@@ -33,11 +33,11 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, Types, typinfo,
+  Classes, SysUtils, Types, typinfo, Contnrs,
   // LazUtils
   LazLoggerBase, LazTracer,
   // LCL
-  LCLIntf, LCLType, Forms, Controls, Graphics,
+  LCLIntf, LCLType, Forms, Controls, Graphics, Menus, ActnList,
   // IdeIntf
   FormEditingIntf, ComponentReg;
 
@@ -118,6 +118,10 @@ procedure WriteComponentStates(aComponent: TComponent; Recursive: boolean;
 
 implementation
 
+var
+  // Speed optimization for invisible components. No need to search
+  // the whole palette if found in InvisibleClasses.
+  InvisibleClasses: TClassList;
 
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 var
@@ -375,9 +379,21 @@ begin
   if (AComponent is TControl) then
     Result:=(csNoDesignVisible in TControl(AComponent).ControlStyle)
   else begin
+    if InvisibleClasses=Nil then begin
+      InvisibleClasses:=TClassList.Create;
+      InvisibleClasses.Add(TMenuItem);
+      InvisibleClasses.Add(TAction);
+    end;
+    // Optimization: search class types from list first.
+    if InvisibleClasses.IndexOf(AComponent.ClassType) > -1 then
+      Exit(True);
     Assert(Assigned(IDEComponentPalette), 'ComponentIsInvisible: IDEComponentPalette=Nil');
     RegComp:=IDEComponentPalette.FindComponent(AComponent.ClassName);
     Result:=(RegComp=nil) or (RegComp.OrigPageName='');
+    if Result then begin
+      DebugLn(['---ComponentIsInvisible: Adding ', AComponent, ' to InvisibleClasses.---']);
+      InvisibleClasses.Add(AComponent.ClassType);
+    end;
   end;
 end;
 
@@ -548,6 +564,9 @@ end;
 
 initialization
   OnGetDesignerForm:=nil;
+
+finalization
+  InvisibleClasses.Free;
 
 end.
 
