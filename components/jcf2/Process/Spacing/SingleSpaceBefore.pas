@@ -84,10 +84,7 @@ begin
   if pt.TokenType = ttCloseBracket then
   begin
     if FormattingSettings.Spaces.SpaceBeforeCloseBrackets then
-    begin
-      Result := true;
-      exit;
-    end;
+      exit(True);
   end;
 
   if (pt.TokenType = ttOpenBracket) then
@@ -95,19 +92,13 @@ begin
     if FormattingSettings.Spaces.SpaceBeforeOpenBracketsInFunctionDeclaration then
     begin
       if pt.HasParentNode(nFormalParams, 1) then
-      begin
-        Result := true;
-        exit;
-      end;
+        exit(True);
     end;
 
     if FormattingSettings.Spaces.SpaceBeforeOpenBracketsInFunctionCall then
     begin
       if pt.HasParentNode(nActualParams, 1) then
-      begin
-        Result := true;
-        exit;
-      end;
+        exit(True);
     end;
 
   end
@@ -116,54 +107,31 @@ begin
     if FormattingSettings.Spaces.SpaceBeforeOpenSquareBracketsInExpression then
     begin
       if pt.HasParentNode(nExpression) then
-      begin
-        Result := true;
-        exit;
-      end;
+        exit(True);
     end;
   end;
 
-
   if pt.HasParentNode(nLiteralString) then
-  begin
-    Result := False;
-    exit;
-  end;
+    exit(False);
 
   if IsClassHelperWords(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { not in Asm block }
   if pt.HasParentNode(nAsm) then
     exit;
 
   if (pt.TokenType in AssignmentDirectives) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if IsHintDirective(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
-
+    exit(True);
 
   if (pt.TokenType in AllDirectives) and (pt.HasParentNode(DirectiveNodes)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType in SingleSpaceBeforeWords) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if FormattingSettings.Spaces.SpaceForOperator = eAlways then
   begin
@@ -189,51 +157,33 @@ begin
 
   { 'in' in the uses clause }
   if ((pt.TokenType = ttIn) and (pt.HasParentNode(nUses))) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { comment just after uses clause, unless it's a compiler directive }
   if (pt.TokenType = ttComment) and (pt.CommentStyle <> eCompilerDirective) then
   begin
     lcPrev := pt.PriorSolidToken;
     if (lcPrev <> nil) and (lcPrev.TokenType = ttUses) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
   { 'absolute' as a var directive }
   if (pt.TokenType = ttAbsolute) and pt.HasParentNode(nVarAbsolute) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { any token that starts a literal string }
   if StartsLiteralString(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType = ttDefault) and pt.HasParentNode(nPropertySpecifier) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { signle space before read, write etc in property }
   if pt.HasParentNode(nProperty) then
   begin
     if (pt.TokenType in [ttProperty, ttRead, ttWrite, ttDefault,
       ttStored, ttNoDefault, ttImplements]) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
 
@@ -242,11 +192,11 @@ begin
   begin
     if ((pt.TokenType = ttComment) and (pt.CommentStyle in CURLY_COMMENTS)) and
       pt.IsOnRightOf(nUses, ttUses) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
+
+  if pt.TokenType in [ttNear,ttFar,ttHuge] then
+    exit(True);
 
 end;
 

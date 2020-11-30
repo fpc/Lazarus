@@ -52,7 +52,15 @@ type
 
   end;
 
+  procedure CheckNilPointer(aPtr:Pointer);
+
 implementation
+
+procedure CheckNilPointer(aPtr:Pointer);
+begin
+  if aPtr=nil then
+    raise TEParseError.Create('JCF Internal error, Unexpected nil pointer', nil);
+end;
 
 { TEParseError }
 

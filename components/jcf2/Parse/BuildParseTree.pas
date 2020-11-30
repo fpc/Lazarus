@@ -1740,7 +1740,9 @@ begin
     ttReal48, ttReal, ttSingle, ttDouble, ttExtended, ttCurrency, ttComp,
     ttShortInt, ttSmallInt, ttInteger, ttByte, ttLongInt, ttInt64, ttWord,
     ttBoolean, ttByteBool, ttWordBool, ttLongBool,
-    ttChar, ttWideChar, ttLongWord, ttPChar:
+    ttChar, ttWideChar, ttLongWord, ttPChar, ttCardinal, ttNativeInt, ttNativeUInt,
+    ttInt8, ttInt16, ttInt32, ttUInt8, ttUInt16, ttUInt32, ttUInt64, ttAnsiChar,
+    ttUnicodeChar, ttPAnsiChar, ttPUnicodeChar, ttPWideChar, ttPByte, ttPShortString:
       RecogniseSimpleType; {RealTypes + OrdTypes}
     ttOpenBracket:
       RecogniseSimpleType; {enumerated types}
@@ -1767,7 +1769,8 @@ begin
       RecogniseSpecializeType;
     ttHat:
       RecognisePointerType;
-    ttString, ttAnsiString, ttWideString:
+    ttString, ttAnsiString, ttWideString, ttShortString,
+    ttUnicodeString, ttUtf8String, ttUtf16String, ttRawByteString:
       RecogniseStringType; {StringWords}
     ttProcedure, ttFunction:
       RecogniseProcedureType;
@@ -2394,10 +2397,36 @@ begin
 end;
 
 procedure TBuildParseTree.RecognisePointerType;
+var
+  wTT:TTokenType;
 begin
   // PointerType -> '^' TypeId
   Recognise(ttHat);
   RecogniseTypeId;
+
+  wTT:=fcTokenList.FirstSolidTokenType;
+  if (wTT = ttSemiColon) then
+  begin
+    if fcTokenList.SolidTokenType(2)=ttNear then
+    begin
+      Recognise(ttSemiColon);
+      Recognise(ttNear);
+      // segment  'CS' 'DS' 'ES' 'SS' 'FS' 'GS'
+      if fcTokenList.FirstSolidTokenType = ttQuotedLiteralString then
+        Recognise(ttQuotedLiteralString);
+    end
+    else
+    if (fcTokenList.SolidTokenType(2)=ttFar) then
+    begin
+      Recognise(ttSemiColon);
+      Recognise(ttFar);
+    end
+    else if (fcTokenList.SolidTokenType(2)=ttHuge) then
+    begin
+      Recognise(ttSemiColon);
+      Recognise(ttHuge);
+    end;
+  end;
 end;
 
 procedure TBuildParseTree.RecogniseProcedureType;

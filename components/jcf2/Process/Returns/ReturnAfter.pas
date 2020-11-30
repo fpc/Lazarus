@@ -102,6 +102,9 @@ begin
   { in generic definition}
   if pt.HasParentNode(nGeneric,2) then
     exit(False);
+  { pointer type }
+  if ptNext.TokenType in [ttNear,ttFar,ttHuge] then
+    exit(False);
 end;
 
 

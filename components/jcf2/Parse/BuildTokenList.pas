@@ -688,6 +688,20 @@ begin
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
+  // msdos i8086 segment:offset
+  // $SSSS:$OOOO
+  if (lbHasDecimalSep=false) and (Current=':') and (ForwardChar(1)='$') then
+  begin
+    pcToken.SourceCode := pcToken.SourceCode + Current;
+    Consume;
+    pcToken.SourceCode := pcToken.SourceCode + Current;
+    Consume;
+    while Current in NativeHexDigits do
+    begin
+      pcToken.SourceCode := pcToken.SourceCode + Current;
+      Consume;
+    end;
+  end;
 
   Result := True;
 end;

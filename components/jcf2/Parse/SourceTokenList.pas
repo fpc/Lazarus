@@ -80,6 +80,9 @@ type
     {This is to keep an index of the next non-nil item}
     property CurrentTokenIndex: integer Read fiCurrentTokenIndex;
 
+    //Last solid token in list for error messages.
+    function LastSolidToken: TSourceToken;
+
     {----------------------------------------------------
      the following are all relative to the Current Token Index
       e.g. "First" is the token at the current pos }
@@ -248,6 +251,27 @@ begin
       end;
     end;
     Inc(liLoop);
+  end;
+end;
+
+function TSourceTokenList.LastSolidToken: TSourceToken;
+var
+  liLoop:      integer;
+  lcTestToken: TSourceToken;
+begin
+  Result := nil;
+  liLoop := Count - 1;
+
+  while liLoop >= 0 do
+  begin
+    lcTestToken := TSourceToken(List^[liLoop]);
+    if (lcTestToken <> nil) and lcTestToken.IsSolid then
+    begin
+      // found a solid token.
+      Result := lcTestToken;
+      break;
+    end;
+    Dec(liLoop);
   end;
 end;
 

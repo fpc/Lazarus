@@ -84,67 +84,43 @@ begin
   end;
 
   if (pt.TokenType in NoReturnTokens + Operators) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { class helper declaration }
   if IsClassHelperWords(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { no return before then and do  in procedure body }
   if (pt.TokenType in ProcNoReturnWords) and InStatements(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { no return in record def before the record keyword, likewise class & interface
     be carefull with the word 'class' as it also denotes (static) class fns. }
   if pt.HasParentNode(nTypeDecl) and (pt.TokenType in StructuredTypeWords) and
     ( not pt.HasParentNode(nClassVisibility)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType = ttCloseSquareBracket) then
   begin
     // end of guid in interface
     if pt.HasParentNode(nInterfaceTypeGuid, 1) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     if pt.HasParentNode(nAttribute) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
-
 
   // "foo in  Foo.pas, " has return only after the comma
   if InFilesUses(pt) then
   begin
     if (pt.TokenType in [ttComma, ttWord, ttQuotedLiteralString]) or
       ((pt.TokenType = ttComment) and (pt.CommentStyle in CURLY_COMMENTS)) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
   if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, True) = eNever) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
+
 end;
 
 constructor TNoReturnBefore.Create;

@@ -117,19 +117,13 @@ begin
       if (lcParent.NodeType = nTypeDecl) and
         lcParent.HasChildNode(ObjectTypes, 2) and
         lcParent.HasChildNode(ObjectBodies, 3) then
-      begin
-        Result := True;
-        exit;
-      end;
+        exit(True);
 
       { likewise before a record type }
       if (lcParent.NodeType = nTypeDecl) and
         lcParent.HasChildNode(nRecordType, 2) and
         lcParent.HasChildNode(nFieldDeclaration, 3) then
-      begin
-        Result := True;
-        exit;
-      end;
+        exit(True);
     end;
   end;
 end;
@@ -167,17 +161,11 @@ begin
     (not IsGenericFunctionOrProperty(pt)) and
     (ProcedureHasBody(pt)) and
     (not IsIdentifier(pt, idAny)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   // form dfm comment
   if IsDfmIncludeDirective(pt) or IsGenericResIncludeDirective(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
     { blank line before the words var, type or const at top level
       except for:
@@ -188,34 +176,21 @@ begin
   if (pt.TokenType in Declarations) and (pt.Nestings.Total = 0) and
     (not pt.IsOnRightOf(nTypeDecl, ttEquals)) and
     (not pt.HasParentNode(nType)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { start of class function body }
   if (pt.TokenType = ttClass) and
     ( not pt.HasParentNode([nVarDecl, nConstDecl, nClassDeclarations, nRecordType])) and
     ( not IsGenericFunctionOrProperty(pt)) and
     (pt.HasParentNode(nFunctionHeading, 1)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { interface, but not as a typedef }
   if (pt.TokenType = ttInterface) and not (pt.HasParentNode(nTypeDecl)) then
-  begin
-    Result := True;
-    exit;
-  end;
-
+    exit(True);
 
   if IsStructuredTypeStart(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { end. where there is no initialization section code,
     ie 'end' is the first and only token in the init section   }
@@ -225,20 +200,19 @@ begin
   begin
     lcNext := pt.NextSolidToken;
     if (lcNext <> nil) and (lcNext.TokenTYpe = ttDot) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
+
+  //type
+  //  TStr8 = string[8];
+  if (pt.TokenType = ttOpenSquareBracket) and (pt.PriorToken.TokenType=ttString ) then
+    exit(False);
 
   // attribute before type decl
   if (pt.TokenType = ttOpenSquareBracket) and
     pt.HasParentNode(nTypeDecl, 2) and
     (not pt.HasParentNode([nClassType, nRecordType])) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
 end;
 
@@ -258,10 +232,7 @@ begin
     exit;
 
   if (pt.TokenType in WordsReturnBefore) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if pt.TokenType = ttElse then
   begin
@@ -277,10 +248,7 @@ begin
   begin
     lcPrev := pt.PriorTokenWithExclusions([ttWhiteSpace]); 
     if (lcPrev <> nil) and (lcPrev.TokenType <> ttConditionalCompilationRemoved) then
-      begin
-        Result := True;
-        exit;
-      end;
+      exit(True);
   end;
 
   { there is not always a return before 'type'
@@ -291,20 +259,14 @@ begin
    var, const, type but not in parameter list }
   if (pt.TokenType in Declarations) and pt.HasParentNode(nTopLevelSections, 1) and
     ( not pt.IsOnRightOf(nTypeDecl, ttEquals)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { procedure & function in class def get return but not blank line before }
   if (pt.TokenType in ProcedureWords + [ttProperty]) and
     (pt.HasParentNode([nClassType, nRecordType])) and
     (not IsGenericFunctionOrProperty(pt)) and
     (not IsClassFunctionOrProperty(pt)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { nested procs and top level procs get it as well }
   if (pt.TokenType in ProcedureWords) and
@@ -312,27 +274,18 @@ begin
     (not pt.HasParentNode(nType)) and
     (not IsIdentifier(pt, idAny)) and
     (not IsGenericFunctionOrProperty(pt)) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { start of class property }
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProperty],1) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { start of class function decl in class }
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProcedureDecl, nFunctionDecl, nProperty]) and
     (not IsGenericFunctionOrProperty(pt)) and
     pt.HasParentNode(nClassDeclarations) and
     (not pt.HasParentNode([nVarDecl, nConstDecl])) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { access specifiying directive (private, public et al) in a class def }
   if pt.HasParentNode([nClassType, nRecordType]) and IsClassDirective(pt) then
@@ -352,33 +305,21 @@ begin
   if (pt.TokenType = ttClass) and pt.HasParentNode(ProcedureHeadings) and
     (not IsGenericFunctionOrProperty(pt)) and
     (RoundBracketLevel(pt) < 1) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   { "uses UnitName in 'File'" has a blank line before UnitName }
   if IsIdentifier(pt, idStrict) and (pt.HasParentNode(nUses)) and (ptNext.TokenType = ttIn) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   if (pt.TokenType = ttOpenSquareBracket)then
   begin
     // start of guid in interface
     if pt.HasParentNode(nInterfaceTypeGuid, 1) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
 
     // start of attribute
     if pt.HasParentNode(nAttribute) then
-    begin
-      Result := True;
-      exit;
-    end;
+      exit(True);
   end;
 
 end;

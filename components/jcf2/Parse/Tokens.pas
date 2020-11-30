@@ -181,6 +181,7 @@ type
     ttWriteOnly,
     ttDispId,
     ttNear,
+    ttHuge,
     ttReadOnly,
     ttDynamic,
     ttNodefault,
@@ -394,7 +395,7 @@ const
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
     ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
-    ttPublic, ttVectorcall];
+    ttPublic, ttVectorcall,ttHuge];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -410,7 +411,7 @@ const
     ttNear, ttReadOnly, ttDynamic, ttNoDefault, ttRegister,
     ttExport, ttOverride, ttOverload, ttResident, ttLocal,
     ttImplements, ttReintroduce,
-    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttCVar, ttVectorcall];    
+    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttCVar, ttVectorcall,ttHuge];
 
   ProcedureWords: TTokenTypeSet = [ttProcedure, ttFunction, ttConstructor, ttDestructor, ttOperator];
 
@@ -849,6 +850,7 @@ begin
   AddKeyword('utf16string', wtBuiltInType, ttUtf16String);
   AddKeyword('rawbytestring', wtBuiltInType, ttRawByteString);
   AddKeyword('pbyte', wtBuiltInType, ttPByte);
+  AddKeyword('huge', wtReservedWordDirective, ttHuge);
 
   {Now that we know how many keywords were added,
     we can set the actual size of the array }
