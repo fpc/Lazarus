@@ -3739,7 +3739,7 @@ end;
 
 function TDesigner.ComponentIsIcon(AComponent: TComponent): boolean;
 begin
-  Result:=DesignerProcs.ComponentIsNonVisual(AComponent);
+  Result:=ComponentIsNonVisual(AComponent);
   if Result and (Mediator<>nil) then
     Result:=Mediator.ComponentIsIcon(AComponent);
 end;
@@ -3841,8 +3841,7 @@ begin
 end;
 
 function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
-  const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean
-  ): TComponent;
+  const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean): TComponent;
 var
   s: TComponentSearch;
   MediatorFlags: TDMCompAtPosFlags;
@@ -3869,7 +3868,6 @@ begin
       s.Free;
     end;
   end;
-
   if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass)) then
     Result := LookupRoot;
 end;

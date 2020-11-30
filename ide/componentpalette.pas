@@ -133,7 +133,6 @@ type
     function SelectAButton(Button: TSpeedButton): boolean;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
-    procedure CheckComponentDesignerVisible(AComponent: TComponent; var Invisible: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -830,29 +829,13 @@ begin
   UpdateNoteBookButtons(ForceUpdateAll);
 end;
 
-procedure TComponentPalette.CheckComponentDesignerVisible(
-  AComponent: TComponent; var Invisible: boolean);
-var
-  RegComp: TRegisteredComponent;
-  AControl: TControl;
-begin
-  if (AComponent is TControl) then begin
-    AControl:=TControl(AComponent);
-    Invisible:=(csNoDesignVisible in AControl.ControlStyle)
-  end else begin
-    RegComp:=FindComponent(AComponent.ClassName);
-    Invisible:=(RegComp=nil) or (RegComp.OrigPageName='');
-  end;
-end;
-
 constructor TComponentPalette.Create;
 begin
   inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
   fComponentButtons:=TComponentButtonMap.Create;
   fComponentButtons.Sorted:=True;
-  OnComponentIsInvisible:=@CheckComponentDesignerVisible;
-  {IDEComponentPalette.} AddHandlerComponentAdded(@ComponentWasAdded);
-  {IDEComponentPalette.} AddHandlerSelectionChanged(@SelectionWasChanged);
+  AddHandlerComponentAdded(@ComponentWasAdded);
+  AddHandlerSelectionChanged(@SelectionWasChanged);
   ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
 end;
 
@@ -860,8 +843,6 @@ destructor TComponentPalette.Destroy;
 var
   i: Integer;
 begin
-  if OnComponentIsInvisible=@CheckComponentDesignerVisible then
-    OnComponentIsInvisible:=nil;
   PageControl:=nil;
   for i := 0 to fComponentButtons.Count-1 do
     fComponentButtons.Data[i].Free;

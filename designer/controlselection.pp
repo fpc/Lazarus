@@ -238,7 +238,7 @@ type
     cssOnlyNonVisualNeedsUpdate,
     cssOnlyNonVisualSelected,
     cssOnlyVisualNeedsUpdate,
-    cssOnlyVisualNeedsSelected,
+    cssOnlyVisualSelected,
     cssOnlyInvisibleNeedsUpdate,
     cssOnlyInvisibleSelected,
     cssOnlyBoundLessNeedsUpdate,
@@ -610,8 +610,7 @@ begin
   FIsTWinControl:=FPersistent is TWinControl;
   FDesignerForm:=GetDesignerForm(FPersistent);
   GetIsNonVisualComponent;
-  FIsVisible:=FIsTComponent
-              and (not ComponentIsInvisible(TComponent(APersistent)));
+  FIsVisible:=FIsTComponent and not ComponentIsInvisible(TComponent(APersistent));
 end;
 
 function TSelectedControl.GetIsNonVisualComponent: boolean;
@@ -1468,8 +1467,7 @@ begin
   if Result<1 then Result:=1;
 end;
 
-function TControlSelection.PersistentAlignable(
-  APersistent: TPersistent): boolean;
+function TControlSelection.PersistentAlignable(APersistent: TPersistent): boolean;
 var
   CurParentLevel: integer;
   AComponent: TComponent;
@@ -1498,9 +1496,7 @@ begin
     end;
   end else begin
     if ComponentIsInvisible(AComponent) then exit;
-    if Count>0 then begin
-      if OnlyVisualComponentsSelected then exit;
-    end;
+    if (Count>0) and OnlyVisualComponentsSelected then exit;
   end;
   if IsSelected(AComponent) then exit;
 
@@ -2962,12 +2958,12 @@ begin
         break;
       end;
     if Result then
-      Include(FStates,cssOnlyVisualNeedsSelected)
+      Include(FStates,cssOnlyVisualSelected)
     else
-      Exclude(FStates,cssOnlyVisualNeedsSelected);
+      Exclude(FStates,cssOnlyVisualSelected);
     Exclude(FStates,cssOnlyVisualNeedsUpdate);
   end else
-    Result:=cssOnlyVisualNeedsSelected in FStates;
+    Result:=cssOnlyVisualSelected in FStates;
 end;
 
 function TControlSelection.OnlyInvisiblePersistentsSelected: boolean;

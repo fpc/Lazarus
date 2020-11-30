@@ -39,7 +39,7 @@ uses
   // LCL
   LCLIntf, LCLType, Forms, Controls, Graphics,
   // IdeIntf
-  FormEditingIntf;
+  FormEditingIntf, ComponentReg;
 
 type
   TDesignerDCFlag = (
@@ -89,13 +89,7 @@ type
 const
   NonVisualCompBorder = 2;
 
-
-type
-  TOnComponentIsInvisible = procedure(AComponent: TComponent;
-                                      var Invisible: boolean) of object;
-var
-  OnComponentIsInvisible: TOnComponentIsInvisible;
-
+procedure ScaleNonVisual(aParent: TComponent; AFromPPI, AToPPI: Integer);
 function NonVisualCompWidth: integer;
 function GetParentLevel(AControl: TControl): integer;
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
@@ -118,12 +112,9 @@ function GetComponentWidth(AComponent: TComponent): integer;
 function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
-
 procedure WriteComponentStates(aComponent: TComponent; Recursive: boolean;
   const Prefix: string = '');
 
-procedure ScaleNonVisual(const aParent: TComponent;
-  const AFromPPI, AToPPI: Integer);
 
 implementation
 
@@ -334,8 +325,7 @@ begin
   end;
 end;
 
-procedure ScaleNonVisual(const aParent: TComponent; const AFromPPI,
-  AToPPI: Integer);
+procedure ScaleNonVisual(aParent: TComponent; AFromPPI, AToPPI: Integer);
 var
   I: Integer;
   Comp: TComponent;
@@ -370,21 +360,25 @@ end;
 
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
 begin
-  Result:=true;
   while AControl<>nil do begin
-    if csNoDesignVisible in AControl.ControlStyle then begin
-      Result:=false;
-      exit;
-    end;
+    if csNoDesignVisible in AControl.ControlStyle then
+      exit(false);
     AControl:=AControl.Parent;
   end;
+  Result:=true;
 end;
 
 function ComponentIsInvisible(AComponent: TComponent): boolean;
+var
+  RegComp: TRegisteredComponent;
 begin
-  Result:=false;
-  if Assigned(OnComponentIsInvisible) then
-    OnComponentIsInvisible(AComponent,Result);
+  if (AComponent is TControl) then
+    Result:=(csNoDesignVisible in TControl(AComponent).ControlStyle)
+  else begin
+    Assert(Assigned(IDEComponentPalette), 'ComponentIsInvisible: IDEComponentPalette=Nil');
+    RegComp:=IDEComponentPalette.FindComponent(AComponent.ClassName);
+    Result:=(RegComp=nil) or (RegComp.OrigPageName='');
+  end;
 end;
 
 function ComponentIsNonVisual(AComponent: TComponent): boolean;
