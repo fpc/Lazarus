@@ -23,6 +23,7 @@ type
     procedure SaveCheckStates(out AStates: TByteDynArray);
   protected
     procedure Changed; override;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(TheCheckGroup: TCustomCheckGroup);
     procedure Delete(AIndex: Integer); override;
@@ -59,6 +60,24 @@ begin
   for i:= AIndex to High(b)-1 do b[i] := b[i+1];
   SetLength(b, Length(b)-1);
   RestoreCheckStates(b);
+end;
+
+procedure TCheckGroupStringList.InsertItem(Index: Integer; const S: string; O: TObject);
+var
+  i: Integer;
+  b: TByteDynArray;
+begin
+  if csLoading in FCheckGroup.ComponentState then
+    inherited
+  else begin
+    SaveCheckStates(b);
+    inherited;
+    SetLength(b, Length(b)+1);
+    for i := High(b) downto Index+1 do
+      b[i] := b[i-1];
+    b[Index] := 2;  // default for new item: unchecked, enabled
+    RestoreCheckStates(b);
+  end;
 end;
 
 procedure TCheckGroupStringList.RestoreCheckStates(const AStates: TByteDynArray);
