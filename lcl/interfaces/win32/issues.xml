@@ -5,6 +5,10 @@
 			<short>Combo box height is constrained</short>
 			<descr>It is impossible to set an arbitrary height to a TComboBox under Windows. Use AutoSize to make sure the size is good on all platforms.</descr>
 		</issue>
+		<issue name="TComboBox.BorderStyle">
+			<short>Setting BorderStyle has no effect.</short>
+			<descr>It is impossible to remove the border by setting the property to bsNone under Windows.</descr>
+		</issue>
 		<issue name="TButton.Color">
 			<short>Button color cannot be changed</short>
 			<descr>It is impossible to implement without making them owner drawn.</descr>
