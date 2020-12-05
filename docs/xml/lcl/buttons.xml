@@ -1733,6 +1733,29 @@
           <short></short>
         </element>
 
+      <element name="TSpeedButtonActionLink.SetImageIndex">
+        <short>
+          Sets the image index in the control for the action link when enabled
+        </short>
+        <descr>
+          <p>
+            <var>SetImageIndex</var> is an overridden method used to change the selected image in the associated <var>TSpeedButton</var> control for the action link. SetImageIndex uses the value from <var>IsImageIndexLinked</var> to determine if the image can be changed by the action link. When IsImageIndexLinked returns <b>False</b>, no actions are performed in the method.
+          </p>
+          <p>
+            SetImageIndex accesses the internal <var>TSpeedButton</var> control for the action link, and sets its <var>ImageIndex</var> property to the ordinal position specified in <var>Value</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpeedButtonActionLink.IsImageIndexLinked"/>
+          <link id="TSpeedButton.ImageIndex"/>
+          <link id="TSpeedButton.Images"/>
+          <link id="#lcl.actnlist.TActionLink.SetImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TSpeedButtonActionLink.SetImageIndex.Value">
+        <short>Ordinal position for the image selected in the speed button control</short>
+      </element>
+
       <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked"/>
       <element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
         <short></short>
@@ -1741,6 +1764,25 @@
       <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#LCL.ActnList.TActionLink.IsGroupIndexLinked"/>
       <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
         <short></short>
+      </element>
+
+      <element name="TSpeedButtonActionLink.IsImageIndexLinked">
+        <short>Determines whether the action link can update the image index for the associated control</short>
+        <descr>
+          <p>
+            <var>IsImageIndexLinked</var> is an overridden <var>Boolean</var> function used to dtermine if the Action Link can update the image in its associated <var>TSpeedButton</var> control. The return value is <b>True</b> when the <var>Action</var> is derived from <var>TCustomAction</var> and the <var>ImageIndex</var> values in the TSpeedButton and the Action currently have the same values.
+          </p>
+          <p>
+            IsImageIndexLinked is called from the <var>SetImageIndex</var> method before updating the value in the ImageIndex for the TSpeedButton control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSpeedButtonActionLink.SetImageIndex"/>
+          <link id="TSpeedButtonActionLink.Action"/>
+        </seealso>
+      </element>
+      <element name="TSpeedButtonActionLink.IsImageIndexLinked.Result">
+        <short>Returns True when the action is can update the image in the associated control</short>
       </element>
 
       <element name="TCustomSpeedButton">

@@ -3949,15 +3949,18 @@
       </element>
 
       <element name="TCustomCheckGroup.Items">
-        <short>
-          <var>Items</var> - a string list for the captions of the check boxes
-        </short>
+        <short>String list with the captions for the check boxes in the grouped edit control</short>
         <descr>
           <p>
-            <var>Items</var> is a <var>TStrings</var> property which stores the captions for the check boxes on the grouped edit control. When the class instance is created, <var>TCheckGroupStringList</var> is used as the storage for the property values in the <var>Items</var> property.
+            <var>Items</var> is a <var>TStrings</var> property which stores the captions for the check boxes on the grouped edit control. Items also determines the number of <var>TCheckBox</var> controls created and displayed for the control. Setting a new value for the property causes the list of check boxes and the columns in the control to be updated.
+          </p>
+          <p>
+            When the class instance is created, a <var>TCheckGroupStringList</var> instance is assigned to the member variable for the <var>Items</var> property. The implementation type contains a reference to the class instance, and provides access to values in <var>Checked</var> and <var>CheckEnabled</var> when adding or removing entries in Items.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomCheckGroup.Checked"/>
+          <link id="TCustomCheckGroup.CheckEnabled"/>
         </seealso>
       </element>
 

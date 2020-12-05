@@ -10010,6 +10010,7 @@
       <element name="TCustomUpDown.FMinRepeatInterval"/>
       <element name="TCustomUpDown.FMouseDownBounds"/>
       <element name="TCustomUpDown.FMouseTimerEvent"/>
+      <element name="TCustomUpDown.FMouseInsideComp"/>
       <element name="TCustomUpDown.FOnChanging"/>
       <element name="TCustomUpDown.FOnChangingEx"/>
       <element name="TCustomUpDown.FOnClick"/>
@@ -10038,6 +10039,18 @@
           </p>
         </descr>
         <version>Introduced in LCL version 2.1.0.</version>
+        <seealso/>
+      </element>
+
+      <element name="TCustomUpDown.CheckMouseEntering">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomUpDown.CheckMouseLeaving">
+        <short/>
+        <descr/>
         <seealso/>
       </element>
 
@@ -10353,6 +10366,18 @@
       </element>
       <element name="TCustomUpDown.DoMouseWheelRight.MousePos">
         <short/>
+      </element>
+
+      <element name="TCustomUpDown.MouseEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TCustomUpDown.MouseLeave">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomUpDown.DoSetBounds">
