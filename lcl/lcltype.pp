@@ -260,8 +260,8 @@ const
   DT_MODIFYSTRING = $10000;
   DT_RTLREADING =  $20000;
   //DT_WORDREADING = $40000;
-  //DT_HIDEPREFIX = $100000;
-  //DT_PREFIXONLY = $200000;
+  DT_HIDEPREFIX = $100000;
+  DT_PREFIXONLY = $200000;
 
 //==============================================
 // Draw frame constants
