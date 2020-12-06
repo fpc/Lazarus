@@ -1555,8 +1555,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     function  CanTab: boolean; override;
-    procedure DoMeasureTextPosition(var TextTop: integer;
-      var TextLeft: integer); virtual;
+    procedure DoDrawText(var Rect: TRect; Flags: Longint); virtual;
     function  HasMultiLine : boolean;
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
