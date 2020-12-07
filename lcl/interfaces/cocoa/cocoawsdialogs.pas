@@ -291,7 +291,12 @@ var
     lDialogView := NSView(ASaveOwner.contentView);
     if lDialogView <> nil then
     begin
-      if lDialogView.frame.size.width > INT_MIN_ACCESSORYVIEW_WIDTH then
+      if (NSAppkitVersionNumber >= NSAppKitVersionNumber11_0) then
+        // starting with Big Sur, the dialog retains the last openned size
+        // causing the width to be increased on every openning of the dialog
+        // we'd simply force the lAccessoryWidth to start with the minimum width
+        lAccessoryWidth := INT_MIN_ACCESSORYVIEW_WIDTH
+      else if lDialogView.frame.size.width > INT_MIN_ACCESSORYVIEW_WIDTH then
         lAccessoryWidth := Round(lDialogView.frame.size.width);
     end;
     lRect := GetNSRect(0, 0, lAccessoryWidth, 30);
