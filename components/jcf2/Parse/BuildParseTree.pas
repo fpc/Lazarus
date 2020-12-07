@@ -5072,9 +5072,9 @@ end;
 
 procedure TBuildParseTree.RecogniseIdentValue;
 begin
-  if fcTokenList.FirstSolidTokenType = ttEquals then
+  if fcTokenList.FirstSolidTokenType in [ttEquals, ttAssign] then
   begin
-    Recognise(ttEquals);
+    Recognise(fcTokenList.FirstSolidTokenType);
     RecogniseExpr(True);
   end;
 end;
