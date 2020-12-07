@@ -7993,44 +7993,32 @@
         <short>Always False in TCustomLabel</short>
       </element>
 
-      <element name="TCustomLabel.DoMeasureTextPosition">
-        <short>Determines the location for the text within the control</short>
+      <element name="TCustomLabel.DoDrawText">
+        <short>Performs actions needed to draw the text for the label</short>
         <descr>
           <p>
-            <var>DoMeasureTextPosition</var> is a procedure used to determine the coordinates where the control text is drawn. Values in <var>TextTop</var> and <var>TextLeft</var> are updated in the method.
+            <var>DoDrawText</var> performs action needed to draw the text for the label.
           </p>
           <p>
-            DoMeasureTextPosition uses the value in <var>Layout</var> to determine the vertical alignment for the text. When Layout is <var>tlTop</var>, the value in TextTop is set to <b>0</b> (zero). TextLeft is always set to <b>0</b> (zero).
+            The <var>GetLabelText</var> method is called to get the text value drawn in the method.
           </p>
           <p>
-            DoMeasureTextPosition calls <var>CalculateSize</var> to get the width and height needed for the text when other values are used in Layout. The calculated text height and the control <var>Height</var> are used to get the value for TextTop as follows:
+            The <var>Font</var> color may be temporarily changed when when the <var>Enabled</var> property is <b>False</b>. If themes are enabled, the Font color is set to <var>clGrayText</var>. When themes are not enabled, the Font color is set to <var>clBtnHighlight</var>. The original Font color is restored prior to exiting the method.
           </p>
-          <dl>
-            <dt>tlCenter</dt>
-            <dd>
-              Half of the ununsed height is used in TextTop so that equal spacing occurs both above and below the text (vertically centered).
-            </dd>
-            <dt>tlBottom</dt>
-            <dd>
-              The amount of unused space is used in TextTop so the text is aligned to the bottom of the control.
-            </dd>
-          </dl>
           <p>
-            DoMeasureTextPosition is used in the implementation of the <var>Paint</var> method.
+            DoDrawText calls the <var>DrawText</var> routine to draw the text on the <var>Canvas</var> using the text rectangle and flags passed as arguments. DrawText is called a second time to render the shadow for the label text when themes are not enabled. The shadow text uses the color <var>clBtnShadow</var>.
+          </p>
+          <p>
+            DoDrawText is called from the <var>CalculateSize</var> and <var>Paint</var> methods.
           </p>
         </descr>
-        <seealso>
-          <link id="TCustomLabel.Layout"/>
-          <link id="TCustomLabel.CalculateSize"/>
-          <link id="TCustomLabel.Paint"/>
-          <link id="#lcl.controls.TControl.Height"/>
-        </seealso>
+        <seealso/>
       </element>
-      <element name="TCustomLabel.DoMeasureTextPosition.TextTop">
-        <short>Top coordinate for the text</short>
+      <element name="TCustomLabel.DoDrawText.Rect">
+        <short>Text rectangle used to draw the label text</short>
       </element>
-      <element name="TCustomLabel.DoMeasureTextPosition.TextLeft">
-        <short>Left coordinate for the text</short>
+      <element name="TCustomLabel.DoDrawText.Flags">
+        <short>DrawText flags used to render the text</short>
       </element>
 
       <element name="TCustomLabel.HasMultiLine">
@@ -8084,12 +8072,24 @@
       </element>
 
       <element name="TCustomLabel.CalculateSize">
-        <short>Determines the text extent for a maximum width constraint</short>
-        <descr/>
+        <short>Gets the height and width needed for the label text</short>
+        <descr>
+          <p>
+            Calculates the size for the label text using the formatting defined in property values.
+          </p>
+          <p>
+            <var>NeededWidth</var> and <var>NeededHeight</var> are variable parameters updated in the method to reflect the values needed after applying DrawText flags to the label text. The flag values applied are determined by the following property values:
+          </p>
+          <ul>
+            <li>WordWrap</li>
+            <li>HasMultiLine</li>
+            <li>ShowAccelChar</li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomLabel.CalculateSize.MaxWidth">
-        <short>Maximum width where wordwrap may start</short>
+        <short>Maximum width for the text rectangle in the label</short>
       </element>
       <element name="TCustomLabel.CalculateSize.NeededWidth">
         <short>Width needed for the text</short>
