@@ -236,9 +236,9 @@ const
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
   ListViewClsName: array[0..13] of char = 'SysListView32'#0;
 
-  LCLComboboxClsName: array[0..11] of char = 'LCLComboBox'#0;
-  LCLListboxClsName: array[0..10] of char = 'LCLListBox'#0;
-  LCLCheckListboxClsName: array[0..15] of char = 'LCLCheckListBox'#0;
+  LCLComboboxClsName: array[0..27] of char = 'LCLComboBox'#0;
+  LCLListboxClsName: array[0..26] of char = 'LCLListBox'#0;
+  LCLCheckListboxClsName: array[0..31] of char = 'LCLCheckListBox'#0;
   ClsNameW: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
   ClsHintNameW: array[0..10] of WideChar = ('H', 'i', 'n', 't', 'W', 'i', 'n', 'd', 'o', 'w', #0);
 
@@ -341,6 +341,9 @@ end;
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
 
+var
+  S : String;
+  L, L1 : integer;
 
 initialization
   Pointer(GetDpiForMonitor) := @xGetDpiForMonitor;
@@ -356,10 +359,34 @@ initialization
   else
     IntSetPixel:=@Windows.SetPixel;
 
+  // Register a windows sub-classes failed in a DLL library
+  // https://bugs.freepascal.org/view.php?id=37982
+  if IsLibrary then begin
+    S := System.HexStr(Pointer(System.Hinstance));
+    L:=Length(pChar(LCLListboxClsName));
+    L1 := Length( S );
+    Move( S[1], LCLListboxClsName[L],L1);
+    LCLListboxClsName[L+L1] := #0;
+    L:=Length(pChar(LCLComboboxClsName));
+    Move( S[1], LCLComboboxClsName[L], L1);
+    LCLComboboxClsName[L+L1] := #0;
+    L:=Length(pChar(LCLCheckListboxClsName));
+    Move( S[1], LCLCheckListboxClsName[L], L1);
+    LCLCheckListboxClsName[L+L1] := #0;
+    end;
+
 finalization
   if CurDoubleBuffer.Bitmap <> 0 then
   begin
     Windows.DeleteObject(CurDoubleBuffer.Bitmap);
     CurDoubleBuffer.Bitmap := 0;
   end;
+
+  // Register a windows sub-classes failed in a DLL library
+  // https://bugs.freepascal.org/view.php?id=37982
+  if IsLibrary then begin
+    Windows.UnregisterClassW(PWideChar(  WideString(LCLListboxClsName) ), System.HInstance);
+    Windows.UnregisterClassW(PWideChar(  WideString(LCLComboboxClsName) ), System.HInstance);
+    Windows.UnregisterClassW(PWideChar(  WideString(LCLCheckListboxClsName) ), System.HInstance);
+    end;
 end.
