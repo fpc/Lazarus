@@ -195,7 +195,7 @@ var
     if BaseFormEditor1.FindDesignerBaseClassByName(AClassName,true)<>nil then
       exit;
     // search in registered classes
-    RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
+    RegComp:=IDEComponentPalette.FindRegComponent(ObjNode.TypeName);
     if (RegComp<>nil) and (RegComp.GetUnitName<>'') then exit;
     // search in global registered classes
     if GetClass(ObjNode.TypeName) <> nil then
@@ -452,7 +452,7 @@ function TLFMChecker.FindAndFixMissingComponentClasses: TModalResult;
 var
   CurError: TLFMError;
   MissingObjectTypes: TStringList;
-  TypeName: String;
+  AClassName: String;
   RegComp: TRegisteredComponent;
   i: Integer;
 begin
@@ -463,16 +463,16 @@ begin
     CurError:=fLFMTree.FirstError;
     while CurError<>nil do begin
       if CurError.IsMissingObjectType then begin
-        TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
-        if MissingObjectTypes.IndexOf(TypeName)<0 then
-          MissingObjectTypes.Add(TypeName);
+        AClassName:=(CurError.Node as TLFMObjectNode).TypeName;
+        if MissingObjectTypes.IndexOf(AClassName)<0 then
+          MissingObjectTypes.Add(AClassName);
       end;
       CurError:=CurError.NextError;
     end;
 
     // keep missing object types only with a registered component class
     for i:=MissingObjectTypes.Count-1 downto 0 do begin
-      RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
+      RegComp:=IDEComponentPalette.FindRegComponent(MissingObjectTypes[i]);
       if (RegComp=nil) or (RegComp.GetUnitName='') then
         MissingObjectTypes.Delete(i);
     end;

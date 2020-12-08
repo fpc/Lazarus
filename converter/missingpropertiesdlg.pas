@@ -598,7 +598,7 @@ begin
   if not Assigned(fUsedUnitsTool) then Exit;
   for i := 0 to aMissingTypes.Count-1 do
   begin
-    RegComp:=IDEComponentPalette.FindComponent(aMissingTypes[i]);
+    RegComp:=IDEComponentPalette.FindRegComponent(aMissingTypes[i]);
     NeededUnitName:='';
     if (RegComp<>nil) then begin
       if RegComp.ComponentClass<>nil then begin

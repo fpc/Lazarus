@@ -1853,8 +1853,7 @@ begin
     // check unitname
     FRegistrationUnitName:=TheUnitName;
     if not IsValidUnitName(FRegistrationUnitName) then begin
-      RegistrationError(Format(lisPkgSysInvalidUnitname, [FRegistrationUnitName]
-        ));
+      RegistrationError(Format(lisPkgSysInvalidUnitname, [FRegistrationUnitName]));
       exit;
     end;
     // check unit file
@@ -1934,7 +1933,7 @@ begin
     end;
     {$ENDIF}
     if (IDEComponentPalette<>nil)
-    and (IDEComponentPalette.FindComponent(CurClassname)<>nil) then
+    and (IDEComponentPalette.FindRegComponent(CurComponent.ClassType)<>nil) then
       RegistrationError(Format(lisPkgSysComponentClassAlreadyDefined,[CurClassname]));
     if AbortRegistration then exit;
     // add the component to the package owning the file
@@ -1944,7 +1943,7 @@ begin
     //DebugLn('TLazPackageGraph.RegisterComponentsHandler Page="',Page,
     //        '" CurComponent=',CurClassname,' FRegistrationFile=',FRegistrationFile.Filename);
     if IDEComponentPalette<>nil then
-      IDEComponentPalette.AddComponent(NewPkgComponent);
+      IDEComponentPalette.AddRegComponent(NewPkgComponent);
   end;
 end;
 

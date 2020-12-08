@@ -538,7 +538,7 @@ procedure TCustomFormEditor.RegisterFrame;
 var
   FrameComp: TRegisteredComponent;
 begin
-  FrameComp:=IDEComponentPalette.FindComponent('TFrame');
+  FrameComp:=IDEComponentPalette.FindRegComponent('TFrame');
   if FrameComp <> nil then
     FrameComp.OnGetCreationClass:=@FrameCompGetCreationClass;
 end;
@@ -1836,8 +1836,7 @@ var
   OldClassName: String;
   DefinePropertiesPersistent: TDefinePropertiesPersistent;
 
-  function CreateTempPersistent(
-    const APersistentClass: TPersistentClass): boolean;
+  function CreateTempPersistent(APersistentClass: TPersistentClass): boolean;
   begin
     Result:=false;
     if APersistent<>nil then
@@ -1865,35 +1864,38 @@ var
     AncestorClass: TComponentClass;
   begin
     Result:=false;
-    
+    Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
+
     // try to find the AClassName in the registered components
-    if APersistent=nil then begin
-      CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(AClassname);
+    //if APersistent=nil then begin
+      CacheItem.RegisteredComponent:=IDEComponentPalette.FindRegComponent(AClassName);
       if (CacheItem.RegisteredComponent<>nil)
       and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
         //debugln('TCustomFormEditor.FindDefineProperty ComponentClass ',AClassName,' is registered');
         if not CreateTempPersistent(CacheItem.RegisteredComponent.ComponentClass)
         then exit;
       end;
-    end;
+    //end;
     
     // try to find the AClassName in the registered TPersistent classes
-    if APersistent=nil then begin
+    //if APersistent=nil then begin
       APersistentClass:=Classes.GetClass(AClassName);
       if APersistentClass<>nil then begin
         //debugln('TCustomFormEditor.FindDefineProperty PersistentClass ',AClassName,' is registered');
+        Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
         if not CreateTempPersistent(APersistentClass) then exit;
       end;
-    end;
+    //end;
 
-    if APersistent=nil then begin
+    //if APersistent=nil then begin
       // try to find the AClassName in the open forms/datamodules
+      Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
       APersistent:=FindJITComponentByClassName(AClassName);
       if APersistent<>nil then
         debugln('TCustomFormEditor.FindDefineProperty ComponentClass ',
           AClassName,' is a resource,'
           +' but inheriting design properties is not yet implemented');
-    end;
+    //end;
 
     // try default classes
     if (APersistent=nil) then begin
@@ -1925,9 +1927,8 @@ begin
     AutoFreePersistent:=false;
 
     if not GetDefinePersistent(APersistentClassName) then exit;
-    if (APersistent=nil) then begin
+    if APersistent=nil then
       if not GetDefinePersistent(AncestorClassName) then exit;
-    end;
 
     if APersistent<>nil then begin
       //debugln('TCustomFormEditor.FindDefineProperty Getting define properties for ',APersistent.ClassName);
@@ -2247,7 +2248,7 @@ var
   i: Integer;
 begin
   //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
-  RegComp:=IDEComponentPalette.FindComponent(ComponentClassName);
+  RegComp:=IDEComponentPalette.FindRegComponent(ComponentClassName);
   if RegComp<>nil then begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
     ComponentClass:=RegComp.ComponentClass;

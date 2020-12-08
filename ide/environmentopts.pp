@@ -2287,8 +2287,8 @@ begin
   try
     if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
     begin
-      Desktop.ImportSettingsFromIDE(Self);
-      DebugDesktop.Assign(Desktop);
+      FDesktop.ImportSettingsFromIDE(Self);
+      DebugDesktop.Assign(FDesktop);
     end;
 
     UseDesktop(FLastDesktopBeforeDebug);
@@ -2351,8 +2351,8 @@ begin
   begin
     FLastDesktopBeforeDebug := TDesktopOpt.Create(ActiveDesktopName);
     if AutoSaveActiveDesktop then
-      Desktop.ImportSettingsFromIDE(Self);
-    FLastDesktopBeforeDebug.Assign(Desktop, False);
+      FDesktop.ImportSettingsFromIDE(Self);
+    FLastDesktopBeforeDebug.Assign(FDesktop, False);
     EnvironmentOptions.UseDesktop(DebugDesktop);
   end;
 end;
@@ -2786,8 +2786,8 @@ begin
       FXMLCfg.DeletePath(CurPath+'Desktop');
     end;
 
-    Desktop.Assign(ActiveDesktop, False);
-    Desktop.ExportSettingsToIDE(Self);
+    FDesktop.Assign(ActiveDesktop, False);
+    FDesktop.ExportSettingsToIDE(Self);
 
     for i := 0 to SubConfigCount - 1 do
       SubConfig[i].ReadFromXml(FXMLCfg);
@@ -3107,8 +3107,8 @@ begin
     and (Application.MainForm<>nil) and Application.MainForm.Visible then
     begin
       //save active desktop
-      Desktop.ImportSettingsFromIDE(Self);
-      ActiveDesktop.Assign(Desktop);
+      FDesktop.ImportSettingsFromIDE(Self);
+      ActiveDesktop.Assign(FDesktop);
 
       if Assigned(FLastDesktopBeforeDebug) then//are we in debug session?
       begin
@@ -3704,7 +3704,7 @@ begin
 
   Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
-  Result.Assign(Desktop);
+  Result.Assign(FDesktop);
   if Assigned(IDEDockMaster) then
     Result.FDockedOpt.LoadDefaults;
   OldActiveDesktop := TDesktopOpt(FDesktops.Find(OldActiveDesktopName));
@@ -3750,13 +3750,13 @@ begin
   xLastFocusControl := Screen.ActiveControl;
   xLastFocusForm := Screen.ActiveCustomForm;
   DoBeforeWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
-  Desktop.Assign(ADesktop);
+  FDesktop.Assign(ADesktop);
   ActiveDesktopName := ADesktop.Name;
   if ADesktop.AssociatedDebugDesktopName<>'' then
     DebugDesktopName := ADesktop.AssociatedDebugDesktopName;
-  Desktop.ExportSettingsToIDE(Self);
+  FDesktop.ExportSettingsToIDE(Self);
   DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
-  Desktop.RestoreDesktop;
+  FDesktop.RestoreDesktop;
 
   //set focus back to the previously focused control
   if Screen.CustomFormIndex(xLastFocusForm) >= 0 then//check if form hasn't been destroyed

@@ -204,6 +204,12 @@ type
     function CopyMoveFiles(Sender: TObject): boolean;
     function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList): TModalResult;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
+    // Components
+    function FilterMissingDependenciesForUnit(const UnitFilename: string;
+                         InputPackageList: TPackagePackageArray;
+                         out OutputPackageList: TOwnerPackageArray): TModalResult;
+    function GetUnitsAndDependenciesForComponents(ComponentClassNames: TStrings;
+          out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -354,14 +360,10 @@ type
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          Quiet: boolean = false): TModalResult; override;
-    function GetUnitsAndDependenciesForComponents(ComponentClassNames: TStrings;
-          out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
-    function GetMissingDependenciesForUnit(const UnitFilename: string;
+{    function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          var List: TOwnerPackageArray): TModalResult;
-    function FilterMissingDependenciesForUnit(const UnitFilename: string;
-                         InputPackageList: TPackagePackageArray;
-                         out OutputPackageList: TOwnerPackageArray): TModalResult;
+}
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStrProc); override;
@@ -4509,7 +4511,7 @@ begin
     for CurClassID:=0 to ComponentClassnames.Count-1 do
     begin
       CurCompClass:=ComponentClassnames[CurClassID];
-      CurRegisteredComponent:=IDEComponentPalette.FindComponent(CurCompClass);
+      CurRegisteredComponent:=IDEComponentPalette.FindRegComponent(CurCompClass);
       if CurRegisteredComponent is TPkgComponent then
       begin
         CurUnitName:='';
@@ -4643,7 +4645,7 @@ begin
   end;
   Result:=mrOk;
 end;
-
+{
 function TPkgManager.GetMissingDependenciesForUnit(
   const UnitFilename: string; ComponentClassnames: TStrings;
   var List: TOwnerPackageArray): TModalResult;
@@ -4662,7 +4664,7 @@ begin
     AllUnits.Free;
   end;
 end;
-
+}
 function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TFPList;
 begin
   Result:=GetPossibleOwnersOfUnit(UnitFilename,[]);

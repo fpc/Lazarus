@@ -77,10 +77,6 @@ type
     procedure ComponentsListViewItemChecked(Sender: TObject; {%H-}Item: TListItem);
     procedure ComponentsListViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CompMoveDownBtnClick(Sender: TObject);
-    procedure CompPalModeAddButtonClick(Sender: TObject);
-    procedure CompPalModeComboBoxChange(Sender: TObject);
-    procedure CompPalModeDeleteButtonClick(Sender: TObject);
-    procedure CompPalModeRenameButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
     procedure PageMoveDownBtnClick(Sender: TObject);
@@ -274,17 +270,17 @@ var
 begin
   OrigComps := TStringList.Create;
   try
-    cpo.ComponentPages.Clear;
+    cpo.PageNamesCompNames.Clear;
     for i := 1 to PagesListBox.Count-1 do      // Skip "all components" page
     begin
       PgName := PagesListBox.Items[i];
       UserComps := PagesListBox.Items.Objects[i] as TStringList;
       Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: No UserComps for '+PgName);
       // Collect original visible components from this page.
-      IDEComponentPalette.AssignOrigVisibleCompsForPage(PgName, OrigComps);
+      IDEComponentPalette.AssignOrigVisibleCompNames(PgName, OrigComps);
       // Differs from original order -> add configuration for components.
       if (OrigComps.Count=0) or not OrigComps.Equals(UserComps) then
-        cpo.AssignComponentPage(PgName, UserComps);
+        cpo.AssignPageCompNames(PgName, UserComps);
     end;
   finally
     OrigComps.Free;
@@ -319,14 +315,14 @@ end;
 
 procedure TCompPaletteOptionsFrame.InitialComps(aPageInd: Integer; aCompList: TStringList);
 var
-  OrderedComps: TStringList;
+  OrderedComps: TRegisteredCompList;
   Comp: TRegisteredComponent;
   i: Integer;
 begin
-  OrderedComps := fLocalUserOrder.ComponentPages.Objects[aPageInd] as TStringList;
+  OrderedComps := fLocalUserOrder.ComponentPages.Objects[aPageInd] as TRegisteredCompList;
   for i := 0 to OrderedComps.Count-1 do
   begin
-    Comp := IDEComponentPalette.FindComponent(OrderedComps[i]);
+    Comp := OrderedComps[i];
     if Assigned(Comp) and Comp.Visible then
       aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
   end;
@@ -736,28 +732,6 @@ begin
     UpdateCompMoveButtons(i+1);
     MarkAsChanged;
   end;
-end;
-
-procedure TCompPaletteOptionsFrame.CompPalModeAddButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TCompPaletteOptionsFrame.CompPalModeComboBoxChange(Sender: TObject);
-begin
-
-end;
-
-procedure TCompPaletteOptionsFrame.CompPalModeDeleteButtonClick(Sender: TObject
-  );
-begin
-
-end;
-
-procedure TCompPaletteOptionsFrame.CompPalModeRenameButtonClick(Sender: TObject
-  );
-begin
-
 end;
 
 procedure TCompPaletteOptionsFrame.MarkAsChanged;

@@ -6650,7 +6650,7 @@ var
       FoundComponentClass:=AnUnitInfo.UnitResourceFileformat.FindComponentClass(aClassName);
     if FoundComponentClass=nil then
     begin
-      RegComp:=IDEComponentPalette.FindComponent(aClassName);
+      RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
       if RegComp<>nil then
         FoundComponentClass:=RegComp.ComponentClass;
     end;

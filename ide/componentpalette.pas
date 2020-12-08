@@ -61,11 +61,11 @@ type
     fPageComponent: TCustomPage;
     fSelectButton: TComponent;
     fBtnIndex: integer;
-    fCompNames: TStringList;   // Reference to component names.
+    fRegComps: TRegisteredCompList;   // Reference to components.
     fGuiCreated: Boolean;
     procedure ReAlignButtons;
     procedure RemoveSheet;
-    procedure InsertVisiblePage(aCompNames: TStringList);
+    procedure InsertVisiblePage(aCompNames: TRegisteredCompList);
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
       aScrollBox: TScrollBox);
@@ -295,7 +295,7 @@ begin
   PageComponent:=nil;
 end;
 
-procedure TComponentPage.InsertVisiblePage(aCompNames: TStringList);
+procedure TComponentPage.InsertVisiblePage(aCompNames: TRegisteredCompList);
 var
   Pal: TComponentPalette;
   TabIndex: Integer;
@@ -309,7 +309,7 @@ begin
     {$ENDIF}
     exit;
   end;
-  fCompNames := aCompNames;
+  fRegComps := aCompNames;
   Pal := TComponentPalette(Palette);
   TabControl := TCustomTabControl(Pal.FPageControl);
   if PageComponent=nil then
@@ -505,9 +505,9 @@ begin
   CreateSelectionButton(IntToStr(FIndex), ScrollBox);
   // create component buttons and delete unneeded ones
   fBtnIndex := 0;
-  Assert(Assigned(fCompNames), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
-  for i := 0 to fCompNames.Count-1 do begin
-    Comp := Pal.FindComponent(fCompNames[i]) as TPkgComponent;
+  Assert(Assigned(fRegComps), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
+  for i := 0 to fRegComps.Count-1 do begin
+    Comp := fRegComps[i] as TPkgComponent;
     if Assigned(Comp) then
       CreateOrDelButton(Comp, Format('%d_%d_',[FIndex,i]), ScrollBox);
   end;
@@ -980,7 +980,7 @@ begin
         Pg.RemoveSheet;
       end;
       {$ENDIF}
-      Pg.InsertVisiblePage(TStringList(UserOrder.ComponentPages.Objects[i]));
+      Pg.InsertVisiblePage(UserOrder.ComponentPages.Objects[i] as TRegisteredCompList);
       {$IFDEF VerboseComponentPalette}
       DebugLn(['TComponentPalette.UpdateNoteBookButtons: PageIndex=', i, ' PageName=',Pages[i].PageName]);
       {$ENDIF}
@@ -1017,7 +1017,7 @@ var
   ARegComp: TRegisteredComponent;
 begin
   if AComponent<>nil then
-    ARegComp:=FindComponent(AComponent.ClassName)
+    ARegComp:=FindRegComponent(AComponent.ClassType)
   else
     ARegComp:=nil;
   if ARegComp<>nil then
@@ -1046,7 +1046,7 @@ var
 begin
   i := fComponentButtons.IndexOfData(Button);
   if i >= 0 then
-    Result := FindComponent(fComponentButtons.Keys[i])
+    Result := FindRegComponent(fComponentButtons.Keys[i])
   else
     Result := nil;
 end;

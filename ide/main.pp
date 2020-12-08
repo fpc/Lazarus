@@ -9345,7 +9345,7 @@ begin
   NewClassName:=FindLFMClassName(TxtCompStream);
 
   // check if component class is registered
-  ARegComp:=IDEComponentPalette.FindComponent(NewClassName);
+  ARegComp:=IDEComponentPalette.FindRegComponent(NewClassName);
   if ARegComp=nil then begin
     IDEMessageDialog(lisClassNotFound,
       Format(lisClassIsNotARegisteredComponentClassUnableToPaste,[NewClassName,LineEnding]),
@@ -11533,7 +11533,8 @@ begin
   DebugLn(['** TMainIDE.DesignerActivated: Calling UpdateIDEComponentPalette(true)',
            ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
-  MainIDEBar.UpdateIDEComponentPalette(true);
+  if FIDEStarted then
+    MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.DesignerCloseQuery(Sender: TObject);
@@ -11627,7 +11628,7 @@ var
       raise Exception.Create(Format(lisComponentNameIsKeyword, [AName]));
 
     // check if registered component class
-    RegComp:=IDEComponentPalette.FindComponent(AName);
+    RegComp:=IDEComponentPalette.FindRegComponent(AName);
     if RegComp<>nil then begin
       s:=Format(lisThereIsAlreadyAComponentClassWithTheName, [RegComp.
         ComponentClass.ClassName]);
@@ -13310,7 +13311,7 @@ begin
     AComponent:=TComponent(APersistent)
   else
     AComponent:=nil;
-  RegComp:=IDEComponentPalette.FindComponent(APersistent.ClassName);
+  RegComp:=IDEComponentPalette.FindRegComponent(APersistent.ClassType);
   if AComponent<>nil then begin
     if RegComp=nil then begin
       ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType));

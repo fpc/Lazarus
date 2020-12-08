@@ -385,7 +385,7 @@ procedure TComponentListForm.UpdateComponents;
 // Fill all three tabsheets: Flat list, Palette layout and Component inheritence.
 var
   Pg: TBaseComponentPage;
-  Comps: TStringList;
+  Comps: TRegisteredCompList;
   Comp: TRegisteredComponent;
   ParentNode: TTreeNode;
   AListNode: TTreeNode;
@@ -417,11 +417,11 @@ begin
       ParentNode := PalletteTree.Items.AddChild(nil, Pg.PageName);
       // Iterate components of one page
       for j := 0 to Comps.Count-1 do begin
-        Comp := Comps.Objects[j] as TRegisteredComponent;
+        Comp := Comps[j];
         // Flat list item
-        AListNode := ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
+        AListNode := ListTree.Items.AddChildObject(Nil, Comp.ComponentClass.ClassName, Comp);
         // Palette layout item
-        APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comp.ComponentClass.ClassName, Comp);
         if Comp is TPkgComponent then
           CurIcon := TPkgComponent(Comp).ImageIndex
         else

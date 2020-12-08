@@ -203,7 +203,7 @@ begin
     end;
   end;
   // check if unitname is a componentclass
-  if IDEComponentPalette.FindComponent(AUnitFilename)<>nil then
+  if IDEComponentPalette.FindRegComponent(AUnitFilename)<>nil then
   begin
     if IDEMessageDialog(lisA2PAmbiguousUnitName,
         Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),

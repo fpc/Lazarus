@@ -226,7 +226,7 @@ end;
 procedure TAddToPackageDlg.FormCreate(Sender: TObject);
 begin
   Caption:=lisMenuNewComponent;
-  fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
+  fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClass);
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
   fParams:=TAddToPkgResult.Create;
   IDEDialogLayoutList.ApplyLayout(Self,700,400);
@@ -492,7 +492,7 @@ begin
       exit;
   end;
   // check if classname already exists
-  PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fParams.NewClassname));
+  PkgComponent:=TPkgComponent(IDEComponentPalette.FindRegComponent(fParams.NewClassname));
   if PkgComponent<>nil then begin
     if IDEMessageDialog(lisA2PClassNameAlreadyExists,
       Format(lisA2PTheClassNameExistsAlreadyInPackageFile, [fParams.NewClassName, LineEnding,
@@ -502,7 +502,7 @@ begin
       exit;
   end;
   // check if unitname is a componentclass
-  if IDEComponentPalette.FindComponent(fParams.Unit_Name)<>nil then begin
+  if IDEComponentPalette.FindRegComponent(fParams.Unit_Name)<>nil then begin
     if IDEMessageDialog(lisA2PAmbiguousUnitName,
       Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[fParams.Unit_Name,LineEnding]),
       mtWarning,[mbCancel,mbIgnore])<>mrIgnore
@@ -511,7 +511,7 @@ begin
   end;
 
   // create dependency if needed
-  PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fParams.AncestorType));
+  PkgComponent:=TPkgComponent(IDEComponentPalette.FindRegComponent(fParams.AncestorType));
   if PkgComponent<>nil then begin
     fParams.UsedUnitname:=PkgComponent.GetUnitName;
     ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
@@ -564,7 +564,7 @@ var
 begin
   fLastNewAncestorType:=AncestorComboBox.Text;
   if not IsValidIdent(fLastNewAncestorType) then exit;
-  PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fLastNewAncestorType));
+  PkgComponent:=TPkgComponent(IDEComponentPalette.FindRegComponent(fLastNewAncestorType));
   // create unique classname
   ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(fLastNewAncestorType);
   // choose the same page name

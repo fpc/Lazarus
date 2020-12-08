@@ -388,7 +388,7 @@ begin
     if InvisibleClasses.IndexOf(AComponent.ClassType) > -1 then
       Exit(True);
     Assert(Assigned(IDEComponentPalette), 'ComponentIsInvisible: IDEComponentPalette=Nil');
-    RegComp:=IDEComponentPalette.FindComponent(AComponent.ClassName);
+    RegComp:=IDEComponentPalette.FindRegComponent(AComponent.ClassType);
     Result:=(RegComp=nil) or (RegComp.OrigPageName='');
     if Result then begin
       DebugLn(['---ComponentIsInvisible: Adding ', AComponent, ' to InvisibleClasses.---']);
