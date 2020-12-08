@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, TypInfo, types, strutils, process, Laz_AVL_Tree,
+  Math, Classes, SysUtils, TypInfo, types, strutils, Contnrs, process, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
   ComCtrls, Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls,
@@ -13295,12 +13295,11 @@ procedure TMainIDE.PropHookPersistentAdded(APersistent: TPersistent; Select: boo
 var
   RegComp: TRegisteredComponent;
   ADesigner: TDesigner;
-  AComponent: TComponent;
+  AComponent, Ancestor: TComponent;
   ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  Ancestor: TComponent;
-  ComponentClassNames: TStringList;
-  ClassUnitInfo: TUnitInfo;
+  ActiveUnitInfo, ClassUnitInfo: TUnitInfo;
+  ComponentClasses: TClassList;
+  ct: TClass;
   i: Integer;
 begin
   if ConsoleVerbosity>0 then
@@ -13343,18 +13342,18 @@ begin
     // add needed package to required packages
     if ADesigner.LookupRoot.ComponentCount>0 then
     begin
-      ComponentClassNames:=TStringList.Create;
-      ComponentClassNames.Sorted:=True;
-      ComponentClassNames.Duplicates:=dupIgnore;
-      ComponentClassNames.CaseSensitive:=False;
+      DebugLn('TMainIDE.OnPropHookPersistentAdded Creating ComponentClassNames.');
+      ComponentClasses:=TClassList.Create;
       try
         for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
-          ComponentClassNames.Add(ADesigner.LookupRoot.Components[i].ClassName);
-        //DebugLn(['TMainIDE.OnPropHookPersistentAdded ComponentClassNames=',ComponentClassNames.Text]);
-        PkgBoss.AddUnitDependenciesForComponentClasses(ActiveUnitInfo.Filename,
-          ComponentClassNames,true);
+        begin
+          ct := ADesigner.LookupRoot.Components[i].ClassType;
+          if ComponentClasses.IndexOf(ct)<=0 then
+            ComponentClasses.Add(ct);
+        end;
+        PkgBoss.AddUnitDepsForCompClasses(ActiveUnitInfo.Filename,ComponentClasses,true);
       finally
-        ComponentClassNames.Free;
+        ComponentClasses.Free;
       end;
     end;
 

@@ -205,11 +205,11 @@ type
     function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList): TModalResult;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     // Components
-    function FilterMissingDependenciesForUnit(const UnitFilename: string;
-                         InputPackageList: TPackagePackageArray;
-                         out OutputPackageList: TOwnerPackageArray): TModalResult;
-    function GetUnitsAndDependenciesForComponents(ComponentClassNames: TStrings;
-          out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
+    function FilterMissingDepsForUnit(const UnitFilename: string;
+      InputPackageList: TPackagePackageArray;
+      out OutputPackageList: TOwnerPackageArray): TModalResult;
+    function GetUnitsAndDepsForComps(ComponentClasses: TClassList;
+      out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -357,9 +357,8 @@ type
                               ShowDialog: boolean): TModalResult;
                               
     // components
-    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         Quiet: boolean = false): TModalResult; override;
+    function AddUnitDepsForCompClasses(const UnitFilename: string;
+      ComponentClasses: TClassList; Quiet: boolean): TModalResult; override;
 {    function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          var List: TOwnerPackageArray): TModalResult;
@@ -4294,9 +4293,8 @@ begin
   PackageList.AddObject(APackageID.Name,APackageID);
 end;
 
-function TPkgManager.AddUnitDependenciesForComponentClasses(
-  const UnitFilename: string; ComponentClassnames: TStrings;
-  Quiet: boolean): TModalResult;
+function TPkgManager.AddUnitDepsForCompClasses(const UnitFilename: string;
+  ComponentClasses: TClassList; Quiet: boolean): TModalResult;
 var
   UnitBuf: TCodeBuffer;
   UnitNames: TStringList;
@@ -4449,13 +4447,12 @@ begin
   Dependencies:=nil;
   MissingDependencies:=nil;
   try
-    Result:=GetUnitsAndDependenciesForComponents(ComponentClassnames,
-                                          Dependencies,UnitNames);
+    Result:=GetUnitsAndDepsForComps(ComponentClasses, Dependencies, UnitNames);
     if Result<>mrOk then exit;
 
     if (Dependencies<>nil) then
     begin
-      Result:=FilterMissingDependenciesForUnit(UnitFilename,Dependencies,MissingDependencies);
+      Result:=FilterMissingDepsForUnit(UnitFilename,Dependencies,MissingDependencies);
       if Result<>mrOk then exit;
     end;
 
@@ -4484,15 +4481,14 @@ begin
   end;
 end;
 
-function TPkgManager.GetUnitsAndDependenciesForComponents(
-  ComponentClassNames: TStrings; out PackageList: TPackagePackageArray;
-  out UnitList: TStringList): TModalResult;
+function TPkgManager.GetUnitsAndDepsForComps(ComponentClasses: TClassList;
+  out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
 // returns a list of packages and units needed to use the Component in the unit
 var
   CurClassID: Integer;
   CurUnitIdx, CurPackageIdx: Integer;
-  CurCompClass: string;
-  CurRegisteredComponent: TRegisteredComponent;
+  CurCompClass: TClass;
+  CurRegComp: TRegisteredComponent;
   PkgFile: TPkgFile;
   RequiredPackage: TLazPackageID;
   CurUnitName: String;
@@ -4508,11 +4504,11 @@ begin
   AllPackages:=nil;
   CurUnitNames:=TStringList.Create;
   try
-    for CurClassID:=0 to ComponentClassnames.Count-1 do
+    for CurClassID:=0 to ComponentClasses.Count-1 do
     begin
-      CurCompClass:=ComponentClassnames[CurClassID];
-      CurRegisteredComponent:=IDEComponentPalette.FindRegComponent(CurCompClass);
-      if CurRegisteredComponent is TPkgComponent then
+      CurCompClass:=ComponentClasses[CurClassID];
+      CurRegComp:=IDEComponentPalette.FindRegComponent(CurCompClass);
+      if CurRegComp is TPkgComponent then
       begin
         CurUnitName:='';
         CurUnitNames.Clear;
@@ -4525,14 +4521,16 @@ begin
           UnitList.CaseSensitive:=False;
         end;
         try
-          if CurRegisteredComponent.ComponentClass<>nil then
+          if CurRegComp.ComponentClass<>nil then
           begin
-            CurUnitName:=GetClassUnitName(CurRegisteredComponent.ComponentClass);
-            CurCompReq:=GetComponentRequirements(CurRegisteredComponent.ComponentClass);
+            CurUnitName:=CurRegComp.ComponentClass.UnitName;
+            CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
           end;
           //DebugLn(['TPkgManager.GetUnitsAndDependenciesForComponents CurUnitName=',CurUnitName]);
           if CurUnitName='' then
-            CurUnitName:=CurRegisteredComponent.GetUnitName;
+            CurUnitName:=CurRegComp.GetUnitName;
+          Assert(CurUnitNames.IndexOf(CurUnitName)<0,
+            'TPkgManager.GetUnitsAndDependenciesForComponents: Name already in CurUnitNames.');
           CurUnitNames.Add(CurUnitName);
           if CurCompReq<>nil then
             CurCompReq.RequiredUnits(CurUnitNames);
@@ -4543,7 +4541,7 @@ begin
             PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
             //DebugLn(['TPkgManager.GetUnitsAndDependenciesForComponents PkgFile=',PkgFile<>nil]);
             if PkgFile=nil then
-              PkgFile:=TPkgComponent(CurRegisteredComponent).PkgFile;
+              PkgFile:=TPkgComponent(CurRegComp).PkgFile;
             if PkgFile<>nil then
             begin
               RequiredPackage:=PkgFile.LazPackage;
@@ -4578,12 +4576,12 @@ begin
                 end;
               end;
             end;
-          end;
+          end;  // for CurUnitIdx:=
         finally
           CurCompReq.Free;
         end;
       end;
-    end;
+    end;  // for CurClassID:=...
     if Assigned(AllPackages) and (AllPackages.Count>0) then
     begin
       PackageList:=TPackagePackageArray.Create;
@@ -4598,7 +4596,7 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.FilterMissingDependenciesForUnit(const UnitFilename: string;
+function TPkgManager.FilterMissingDepsForUnit(const UnitFilename: string;
                      InputPackageList: TPackagePackageArray;
                      out OutputPackageList: TOwnerPackageArray): TModalResult;
 // returns a list of packages that are not yet used by the project the unit belongs to

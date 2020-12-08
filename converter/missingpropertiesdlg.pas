@@ -88,7 +88,7 @@ type
     procedure FillReplaceGrids;
     function ShowConvertLFMWizard: TModalResult;
   protected
-    function FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult; override;
+    function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; override;
     procedure LoadLFM;
   public
     constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer);
@@ -585,12 +585,12 @@ begin
   end;
 end;
 
-function TLFMFixer.FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult;
+function TLFMFixer.FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult;
 // This is called from TLFMChecker.FindAndFixMissingComponentClasses.
 // Add needed units to uses section using methods already defined in fUsedUnitsTool.
 var
   RegComp: TRegisteredComponent;
-  ClassUnitInfo: TUnitInfo;
+  //ClassUnitInfo: TUnitInfo;
   i: Integer;
   NeededUnitName: String;
 begin
@@ -600,17 +600,20 @@ begin
   begin
     RegComp:=IDEComponentPalette.FindRegComponent(aMissingTypes[i]);
     NeededUnitName:='';
-    if (RegComp<>nil) then begin
-      if RegComp.ComponentClass<>nil then begin
+    if Assigned(RegComp) then
+    begin
+      if RegComp.ComponentClass<>nil then
+      begin
         NeededUnitName:=RegComp.ComponentClass.UnitName;
         if NeededUnitName='' then
           NeededUnitName:=RegComp.GetUnitName;
       end;
     end
     else begin
-      ClassUnitInfo:=Project1.UnitWithComponentClassName(aMissingTypes[i]);
+      Assert(False, 'TLFMFixer.FixMissingComponentClasses: RegComp=Nil');
+{      ClassUnitInfo:=Project1.UnitWithComponentClass(aMissingTypes[i] as TComponentClass);
       if ClassUnitInfo<>nil then
-        NeededUnitName:=ClassUnitInfo.GetUsesUnitName;
+        NeededUnitName:=ClassUnitInfo.GetUsesUnitName;  }
     end;
     if (NeededUnitName<>'')
     and fUsedUnitsTool.AddUnitImmediately(NeededUnitName) then

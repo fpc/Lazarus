@@ -76,7 +76,7 @@ type
     function FindListBoxError: TLFMError;
     procedure WriteLFMErrors;
     function FindAndFixMissingComponentClasses: TModalResult;
-    function FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult; virtual;
+    function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; virtual;
     procedure FillErrorsListBox;
     procedure JumpToError(LFMError: TLFMError);
     procedure AddReplacement(LFMChangeList: TObjectList; StartPos, EndPos: integer;
@@ -451,30 +451,26 @@ function TLFMChecker.FindAndFixMissingComponentClasses: TModalResult;
 // returns true, if after adding units to uses section all errors are fixed
 var
   CurError: TLFMError;
-  MissingObjectTypes: TStringList;
-  AClassName: String;
+  MissingObjectTypes: TClassList;
   RegComp: TRegisteredComponent;
+  AClassName: String;
   i: Integer;
 begin
   Result:=mrOK;
-  MissingObjectTypes:=TStringList.Create;
+  MissingObjectTypes:=TClassList.Create;
   try
     // collect all missing object types
     CurError:=fLFMTree.FirstError;
     while CurError<>nil do begin
       if CurError.IsMissingObjectType then begin
         AClassName:=(CurError.Node as TLFMObjectNode).TypeName;
-        if MissingObjectTypes.IndexOf(AClassName)<0 then
-          MissingObjectTypes.Add(AClassName);
+        RegComp:=IDEComponentPalette.FindRegComponent(AClassName);
+        if Assigned(RegComp) and (RegComp.GetUnitName<>'')
+        and (MissingObjectTypes.IndexOf(RegComp.ComponentClass)<0)
+        then
+          MissingObjectTypes.Add(RegComp.ComponentClass);
       end;
       CurError:=CurError.NextError;
-    end;
-
-    // keep missing object types only with a registered component class
-    for i:=MissingObjectTypes.Count-1 downto 0 do begin
-      RegComp:=IDEComponentPalette.FindRegComponent(MissingObjectTypes[i]);
-      if (RegComp=nil) or (RegComp.GetUnitName='') then
-        MissingObjectTypes.Delete(i);
     end;
     // Now the list contains only types that are found in IDE.
     if MissingObjectTypes.Count>0 then
@@ -484,11 +480,11 @@ begin
   end;
 end;
 
-function TLFMChecker.FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult;
+function TLFMChecker.FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult;
 begin
   // add units for the missing object types with registered component classes
-  Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
-       fPascalBuffer.Filename, aMissingTypes);
+  Result:=PackageEditingInterface.AddUnitDepsForCompClasses(fPascalBuffer.Filename,
+                                                            aMissingTypes);
 end;
 
 function TLFMChecker.CheckUnit: boolean;

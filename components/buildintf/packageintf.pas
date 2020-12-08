@@ -329,9 +329,8 @@ type
       Flags: TPkgIntfRequiredFlags = []) virtual; abstract;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract; // mrOk or mrIgnore for already connected
-    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         Quiet: boolean = false): TModalResult; virtual; abstract;
+    function AddUnitDepsForCompClasses(const UnitFilename: string;
+      ComponentClasses: TClassList; Quiet: boolean = false): TModalResult; virtual; abstract;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; virtual; abstract;
 
     // package editors

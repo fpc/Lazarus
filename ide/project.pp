@@ -5537,8 +5537,7 @@ begin
     Result:=Result.fNext[uilWithComponent];
 end;
 
-function TProject.UnitWithComponentClassName(const AClassName: string
-  ): TUnitInfo;
+function TProject.UnitWithComponentClassName(const AClassName: string): TUnitInfo;
 begin
   Result := fFirst[uilWithComponent];
   while (Result<>nil)
