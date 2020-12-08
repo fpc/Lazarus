@@ -10965,7 +10965,7 @@ begin
   if ASrcEdit=nil then exit;
 
   {$IFDEF VerboseIDEDisplayState}
-  debugln(['TMainIDE.OnSrcNotebookEditorActived']);
+  debugln(['TMainIDE.SrcNotebookEditorActived']);
   {$ENDIF}
   DisplayState:=dsSource;
   Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
@@ -11446,7 +11446,7 @@ var
   AtomRect: TRect;
   DebugHint: TSrcNotebookHintCallback;
 begin
-  //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
+  //DebugLn(['TMainIDE.SrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
 
   if not BeginCodeTool(SrcEdit, ActiveUnitInfo,
@@ -11456,18 +11456,18 @@ begin
   SmartHintStr := '';
   {$IFDEF IDE_DEBUG}
   debugln('');
-  debugln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
+  debugln('[TMainIDE.SrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
   {$ENDIF}
   HasHint:=false;
   if EditorOpts.AutoToolTipSymbTools then
   begin
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SrcNotebookShowHintForSource A');{$ENDIF}
     if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
                              CaretPos,BaseURL,SmartHintStr,
                              [{$IFDEF EnableFocusHint}ihmchAddFocusHint{$ENDIF}])=shrSuccess
     then
       HasHint:=true;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SrcNotebookShowHintForSource B');{$ENDIF}
   end;
   if (ToolStatus = itDebugger) and EditorOpts.AutoToolTipExprEval then
   begin
@@ -11479,7 +11479,7 @@ begin
     end
     else
       Expression := SrcEdit.GetOperandFromCaret(CaretPos);
-    //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
+    //DebugLn(['TMainIDE.SrcNotebookShowHintForSource Expression="',Expression,'"']);
 
     if Expression <> '' then begin
       Opts := [];
@@ -11510,7 +11510,7 @@ end;
 procedure TMainIDE.SrcNoteBookActivated(Sender: TObject);
 begin
   {$IFDEF VerboseIDEDisplayState}
-  debugln(['TMainIDE.OnSrcNoteBookActivated']);
+  debugln(['TMainIDE.SrcNoteBookActivated']);
   {$ENDIF}
   DisplayState:=dsSource;
 end;
@@ -11943,9 +11943,8 @@ begin
       XMLConfig.Free;
     end;
   except
-    on E: Exception do begin
+    on E: Exception do
       IDEMessageDialog('Error',E.Message,mtError,[mbCancel]);
-    end;
   end;
 end;
 
@@ -11980,7 +11979,7 @@ var
 begin
   {$IFDEF VerboseJumpHistory}
   debugln('');
-  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  debugln('[TMainIDE.SrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   {$ENDIF}
   ActiveUnitInfo:=Project1.UnitWithEditorComponent(AEditor);
   if (ActiveUnitInfo=nil) then exit;
@@ -11992,12 +11991,12 @@ begin
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
   {$IFDEF VerboseJumpHistory}
-  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] B INSERTED');
+  debugln('[TMainIDE.SrcNoteBookAddJumpPoint] B INSERTED');
   Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   {$IFDEF VerboseJumpHistory}
-  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  debugln('[TMainIDE.SrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
 end;
@@ -12042,7 +12041,7 @@ begin
 
   {$IFDEF VerboseJumpHistory}
   debugln('');
-  debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
+  debugln('[TMainIDE.SrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
   JumpHistory.WriteDebugReport;
   {$ENDIF}
 
@@ -12103,7 +12102,7 @@ begin
       if AnEditorInfo <> nil then
         DestEditor:=TSourceEditor(AnEditorInfo.EditorComponent);
       {$IFDEF VerboseJumpHistory}
-      debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
+      debugln('[TMainIDE.SrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
       {$ENDIF}
       break;
     end;
@@ -12117,7 +12116,7 @@ begin
   CursorPoint.Free;
 
   {$IFDEF VerboseJumpHistory}
-  debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',JumpHistory.Count,',HistoryIndex=',JumpHistory.HistoryIndex);
+  debugln('[TMainIDE.SrcNotebookJumpToHistoryPoint] END Count=',JumpHistory.Count,',HistoryIndex=',JumpHistory.HistoryIndex);
   JumpHistory.WriteDebugReport;
   debugln('');
   {$ENDIF}
@@ -12134,13 +12133,13 @@ begin
   SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
   if SrcEdit=nil then begin
     {$IFDEF VerboseFindDeclarationFail}
-    debugln(['TMainIDE.OnSrcNoteBookMouseLink SrcEdit=nil']);
+    debugln(['TMainIDE.SrcNoteBookMouseLink SrcEdit=nil']);
     {$ENDIF}
     exit;
   end;
   if not BeginCodeTool(SrcEdit,ActiveUnitInfo,[]) then begin
     {$IFDEF VerboseFindDeclarationFail}
-    debugln(['TMainIDE.OnSrcNoteBookMouseLink BeginCodeTool failed ',SrcEdit.FileName,' X=',X,' Y=',Y]);
+    debugln(['TMainIDE.SrcNoteBookMouseLink BeginCodeTool failed ',SrcEdit.FileName,' X=',X,' Y=',Y]);
     {$ENDIF}
     exit;
   end;
@@ -12272,7 +12271,7 @@ var
 begin
   if FNeedUpdateHighlighters then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.OnApplicationIdle FNeedUpdateHighlighters']);
+    debugln(['TMainIDE.HandleApplicationIdle FNeedUpdateHighlighters']);
     {$ENDIF}
     UpdateHighlighters(true);
   end;
@@ -12295,7 +12294,7 @@ begin
   if FUserInputSinceLastIdle then
   begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.OnApplicationIdle FUserInputSinceLastIdle']);
+    debugln(['TMainIDE.HandleApplicationIdle FUserInputSinceLastIdle']);
     {$ENDIF}
     FUserInputSinceLastIdle:=false;
     FormEditor1.CheckDesignerPositions;
@@ -12328,19 +12327,19 @@ begin
   end;
   if FCheckFilesOnDiskNeeded then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.OnApplicationIdle FCheckFilesOnDiskNeeded']);
+    debugln(['TMainIDE.HandleApplicationIdle FCheckFilesOnDiskNeeded']);
     {$ENDIF}
     DoCheckFilesOnDisk(true);
   end;
   if (FRemoteControlTimer=nil) and EnableRemoteControl then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.OnApplicationIdle EnableRemoteControl']);
+    debugln(['TMainIDE.HandleApplicationIdle EnableRemoteControl']);
     {$ENDIF}
     SetupRemoteControl;
   end;
   if Screen.GetCurrentModalForm=nil then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.OnApplicationIdle Screen.GetCurrentModalForm']);
+    debugln(['TMainIDE.HandleApplicationIdle Screen.GetCurrentModalForm']);
     {$ENDIF}
     PkgBoss.OpenHiddenModifiedPackages;
   end;
@@ -12381,9 +12380,9 @@ var
   aForm: TCustomForm;
   aControl: TControl;
 begin
-  //DebugLn('TMainIDE.OnApplicationKeyDown ',dbgs(Key),' ',dbgs(Shift));
+  //DebugLn('TMainIDE.HandleApplicationKeyDown ',dbgs(Key),' ',dbgs(Shift));
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
-  //debugln(['TMainIDE.OnApplicationKeyDown ',dbgs(Command),' ',DbgSName(Screen.GetCurrentModalForm)]);
+  //debugln(['TMainIDE.HandleApplicationKeyDown ',dbgs(Command),' ',DbgSName(Screen.GetCurrentModalForm)]);
   if Command=ecEditContextHelp then begin
     // show context help editor
     Key:=VK_UNKNOWN;
@@ -12765,7 +12764,7 @@ begin
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
   if ((Result=nil) or (Result.Designer=nil)) and LoadForm
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
-    //DebugLn(['TMainIDE.GetFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
+    //DebugLn(['TMainIDE.GetDesignerFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
     LoadLFM(AnUnitInfo,[],[]);
   end;
   if (Result=nil) and (AnUnitInfo.Component<>nil) then
@@ -12801,8 +12800,7 @@ begin
   Result:='';
 end;
 
-function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent
-  ): TLazProjectFile;
+function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile;
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -12843,7 +12841,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit(False);
   {$IFDEF VerboseMethodPropEdit}
-  debugln(['TMainIDE.PropHookGetCompatibleMethods ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName,' MethodName="',AMethodName,'"']);
+  debugln(['TMainIDE.PropHookMethodExists ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName,' MethodName="',AMethodName,'"']);
   {$ENDIF}
   Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                         ActiveUnitInfo.Component.ClassName, AMethodName, TypeData,
@@ -12988,12 +12986,12 @@ begin
     exit;
   {$IFDEF VerboseOnPropHookCreateMethod}
   debugln('');
-  debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
+  debugln('[TMainIDE.PropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['  Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
   if ActiveUnitInfo.Component=nil then begin
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['TMainIDE.OnPropHookCreateMethod failed ActiveUnitInfo.Component=nil']);
+    debugln(['TMainIDE.PropHookCreateMethod failed ActiveUnitInfo.Component=nil']);
     {$ENDIF}
   end;
 
@@ -13020,14 +13018,14 @@ begin
   try
     // create published method in active unit
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath,' AddOverride=',AddOverride]);
+    debugln(['TMainIDE.PropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath,' AddOverride=',AddOverride]);
     {$ENDIF}
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,ShortMethodName,
         ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),
         APropertyPath,InheritedMethodPath,AddOverride);
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['[TMainIDE.OnPropHookCreateMethod] ************ ',dbgs(r),' ShortMethodName="',ShortMethodName,'"']);
+    debugln(['[TMainIDE.PropHookCreateMethod] ************ ',dbgs(r),' ShortMethodName="',ShortMethodName,'"']);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
@@ -13043,14 +13041,14 @@ begin
         except
           on E: Exception do begin
             {$IFDEF VerboseOnPropHookCreateMethod}
-            debugln(['[TMainIDE.OnPropHookCreateMethod] syntax error: searched for ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Error="',E.Message,'"']);
+            debugln(['[TMainIDE.PropHookCreateMethod] syntax error: searched for ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Error="',E.Message,'"']);
             {$ENDIF}
             CodeToolBoss.HandleException(E);
           end;
         end;
         if (Ctx.Node=nil) or (Ctx.Node.Desc<>ctnProcedure) then begin
           {$IFDEF VerboseOnPropHookCreateMethod}
-          debugln(['[TMainIDE.OnPropHookCreateMethod] damn, I lost the method: ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Ctx=',FindContextToString(Ctx)]);
+          debugln(['[TMainIDE.PropHookCreateMethod] damn, I lost the method: ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Ctx=',FindContextToString(Ctx)]);
           {$ENDIF}
           DoJumpToCodeToolBossError;
           raise Exception.Create('source method not found: '+ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName);
@@ -13060,14 +13058,14 @@ begin
           Ctx.Node:=Ctx.Node.Parent;
         MethodClassName:=Ctx.Tool.ExtractClassName(Ctx.Node,false,false);
         {$IFDEF VerboseOnPropHookCreateMethod}
-        debugln(['[TMainIDE.OnPropHookCreateMethod] found method source in class MethodClassName, searching JITcomponent ...']);
+        debugln(['[TMainIDE.PropHookCreateMethod] found method source in class MethodClassName, searching JITcomponent ...']);
         {$ENDIF}
         // find nearest JIT component
         while CompareText(MethodComponent.ClassName,MethodClassName)<>0 do begin
           if not MethodComponent.ClassParent.InheritsFrom(TComponent) then break;
           AncestorComponent:=FormEditor1.FindJITComponentByClass(TComponentClass(MethodComponent.ClassParent));
           {$IFDEF VerboseOnPropHookCreateMethod}
-          debugln(['[TMainIDE.OnPropHookCreateMethod] MethodComponent.ClassParent=',MethodComponent.ClassParent.ClassName,' JITcomponent=',DbgSName(AncestorComponent)]);
+          debugln(['[TMainIDE.PropHookCreateMethod] MethodComponent.ClassParent=',MethodComponent.ClassParent.ClassName,' JITcomponent=',DbgSName(AncestorComponent)]);
           {$ENDIF}
           if AncestorComponent=nil then break;
           MethodComponent:=AncestorComponent;
@@ -13079,7 +13077,7 @@ begin
       debugln(['TMainIDE.PropHookCreateMethod JITClass=',TJITMethod(Result.Data).TheClass.ClassName]);
       {$ENDIF}
     end else begin
-      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookCreateMethod failed adding method "'+ShortMethodName+'" to source']);
+      DebugLn(['Error: (lazarus) TMainIDE.PropHookCreateMethod failed adding method "'+ShortMethodName+'" to source']);
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
@@ -13121,7 +13119,7 @@ begin
     CurMethodName:=AMethodName;
   end;
   {$IFDEF VerboseMethodPropEdit}
-  DebugLn('[TMainIDE.OnPropHookShowMethod] MethodName=',AMethodName,', ClassName=',AClassName,
+  DebugLn('[TMainIDE.PropHookShowMethod] MethodName=',AMethodName,', ClassName=',AClassName,
           ', CurMethodName=',CurMethodName,', ActiveUnit=',ExtractFilename(ActiveUnitInfo.Filename));
   {$ENDIF}
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
@@ -13130,7 +13128,7 @@ begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
-    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
+    DebugLn(['Error: (lazarus) TMainIDE.PropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
@@ -13188,7 +13186,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF VerboseMethodPropEdit}
-  debugln(['TMainIDE.PropHookShowMethod CurName="',CurName,'" NewName="',NewName,'"']);
+  debugln(['TMainIDE.PropHookRenameMethod CurName="',CurName,'" NewName="',NewName,'"']);
   {$ENDIF}
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
@@ -13197,7 +13195,7 @@ begin
     BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF VerboseMethodPropEdit}
-    debugln(['TMainIDE.PropHookShowMethod CurName="',CurName,'" NewName="',NewName,'" Result=',BossResult]);
+    debugln(['TMainIDE.PropHookRenameMethod CurName="',CurName,'" NewName="',NewName,'" Result=',BossResult]);
     {$ENDIF}
     ApplyCodeToolChanges;
     if BossResult then begin
@@ -13240,7 +13238,7 @@ begin
       mtError,[mbCancel]);
     {$IFDEF VerboseComponentPalette}
     DebugLn('***');
-    DebugLn('** TMainIDE.OnPropHookBeforeAddPersistent: Calling UpdateIDEComponentPalette(false) **');
+    DebugLn('** TMainIDE.PropHookBeforeAddPersistent: Calling UpdateIDEComponentPalette(false) **');
     {$ENDIF}
     // make sure the component palette shows only the available components
     MainIDEBar.UpdateIDEComponentPalette(false);
@@ -13303,7 +13301,7 @@ var
   i: Integer;
 begin
   if ConsoleVerbosity>0 then
-    DebugLn('Hint: (lazarus) TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
+    DebugLn('Hint: (lazarus) TMainIDE.PropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
   ClassUnitInfo:=nil;
   if APersistent is TComponent then
@@ -13315,7 +13313,7 @@ begin
     if RegComp=nil then begin
       ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType));
       if ClassUnitInfo=nil then begin
-        DebugLn('Error: (lazarus) TMainIDE.OnPropHookPersistentAdded ',AComponent.ClassName,
+        DebugLn('Error: (lazarus) TMainIDE.PropHookPersistentAdded ',AComponent.ClassName,
                 ' not registered');
         exit;
       end;
@@ -13323,10 +13321,10 @@ begin
     // create unique name
     if AComponent.Name='' then
       AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
-    //debugln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+    //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
     // set component into design mode
     SetDesigning(AComponent,true);
-    //debugln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+    //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
     // add to source
     ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
@@ -13342,7 +13340,6 @@ begin
     // add needed package to required packages
     if ADesigner.LookupRoot.ComponentCount>0 then
     begin
-      DebugLn('TMainIDE.OnPropHookPersistentAdded Creating ComponentClassNames.');
       ComponentClasses:=TClassList.Create;
       try
         for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
@@ -13362,7 +13359,7 @@ begin
     CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,Ancestor);
   end;
 
-  //debugln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  //debugln('TMainIDE.PropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
   if Select then
     TheControlSelection.AssignPersistent(APersistent);
@@ -13370,7 +13367,7 @@ begin
   if ObjectInspector1<>nil then
     ObjectInspector1.FillComponentList(False);
   {$IFDEF IDE_DEBUG}
-  debugln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
+  debugln('TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
   {$ENDIF}
 end;
 
@@ -13399,7 +13396,7 @@ begin
   // find the current unit
   AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
   if AnUnitInfo=nil then begin
-    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookObjectPropertyChanged LookupRoot not found']);
+    DebugLn(['Error: (lazarus) TMainIDE.PropHookObjectPropertyChanged LookupRoot not found']);
     exit;
   end;
   // find the reference unit
@@ -13409,7 +13406,7 @@ begin
     if ReferenceDesigner=nil then exit;
     ReferenceUnitInfo:=Project1.UnitWithComponent(ReferenceDesigner.LookupRoot);
     if ReferenceUnitInfo=nil then begin
-      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookObjectPropertyChanged reference LookupRoot not found']);
+      DebugLn(['Error: (lazarus) TMainIDE.PropHookObjectPropertyChanged reference LookupRoot not found']);
       exit;
     end;
     if ReferenceUnitInfo<>AnUnitInfo then begin
@@ -13435,20 +13432,20 @@ begin
     if (AnUnitName<>'')
     and (SysUtils.CompareText(AnUnitName,RequiredUnitName)<>0) then
       raise Exception.Create(
-        'TMainIDE.OnPropHookAddDependency unitname and class do not fit:'
+        'TMainIDE.PropHookAddDependency unitname and class do not fit:'
         +'unitname='+AnUnitName
         +' class='+dbgs(AClass)+' class.unitname='+RequiredUnitName);
   end else begin
     RequiredUnitName:=AnUnitName;
   end;
   if RequiredUnitName='' then
-    raise Exception.Create('TMainIDE.OnPropHookAddDependency no unitname');
+    raise Exception.Create('TMainIDE.PropHookAddDependency no unitname');
 
   // find current designer and unit
   if not (GlobalDesignHook.LookupRoot is TComponent) then exit;
   AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
   if AnUnitInfo=nil then begin
-    DebugLn(['Error: (lazarus) TMainIDE.OnPropHookAddDependency LookupRoot not found']);
+    DebugLn(['Error: (lazarus) TMainIDE.PropHookAddDependency LookupRoot not found']);
     exit;
   end;
 
