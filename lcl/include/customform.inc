@@ -1931,7 +1931,7 @@ begin
   Debugln(['TCustomForm.SetActiveControl ',DbgSName(Self),' FActive=',DbgS(FActive),' OldActiveControl=',DbgSName(FActiveControl),' NewActiveControl=',DbgSName(AWinControl)]);
   {$ENDIF}
   FActiveControl := AWinControl;
-  if (FActiveControl<>nil) and (FActiveControl<>Self) and not (FActiveControl is TCustomForm) then
+  if (FActiveControl<>nil) and not (FActiveControl is TCustomForm) then
     FLastActiveControl := FActiveControl;
   if Assigned(FActiveControl) then FreeNotification(FActiveControl);
   if ([csLoading, csDestroying] * ComponentState = []) then
