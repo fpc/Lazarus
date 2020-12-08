@@ -235,8 +235,6 @@ type
     fSelected: TRegisteredComponent;
     fSelectionMode: TComponentSelectionMode;
     fHideControls: boolean;
-    fUpdateLock: integer;
-    fChanged: boolean;
     fChangeStamp: integer;
     fOnClassSelected: TNotifyEvent;
     fLastFoundCompClassName: String;
@@ -247,14 +245,17 @@ type
                             const AMethod: TMethod);
     procedure CacheOrigComponentPages;
     function CreatePagesFromUserOrder: Boolean;
-    procedure DoChange;
     procedure DoPageAddedComponent(Component: TRegisteredComponent);
     procedure DoPageRemovedComponent(Component: TRegisteredComponent);
+    procedure SetHideControls(AValue: boolean);
     function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;
     function GetSelected: TRegisteredComponent;
     function GetMultiSelect: boolean;
     procedure SetSelected(const AValue: TRegisteredComponent);
     procedure SetMultiSelect(AValue: boolean);
+  protected
+    FChanged: boolean;
+    procedure DoChange; virtual; abstract;
   public
     constructor Create(EnvPaletteOptions: TCompPaletteOptions);
     destructor Destroy; override;
@@ -264,9 +265,8 @@ type
     function AssignOrigVisibleCompNames(PageName: string;
                                     DestCompNames: TStringList): Boolean;
     function RefUserCompsForPage(PageName: string): TRegisteredCompList;
-    procedure BeginUpdate(Change: boolean);
-    procedure EndUpdate;
-    function IsUpdateLocked: boolean;
+    procedure BeginUpdate; virtual; abstract;
+    procedure EndUpdate; virtual; abstract;
     procedure IncChangeStamp;
     function IndexOfPageName(const APageName: string; ACaseSensitive: Boolean): integer;
     function GetPage(const APageName: string; ACaseSensitive: Boolean=False): TBaseComponentPage;
@@ -296,7 +296,7 @@ type
     property ComponentPageClass: TBaseComponentPageClass read FComponentPageClass
                                                         write FComponentPageClass;
     property ChangeStamp: integer read fChangeStamp;
-    property HideControls: boolean read FHideControls write FHideControls;
+    property HideControls: boolean read FHideControls write SetHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
     property MultiSelect: boolean read GetMultiSelect write SetMultiSelect;
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
@@ -1028,14 +1028,6 @@ begin
   FHandlers[HandlerType].Remove(AMethod);
 end;
 
-procedure TBaseComponentPalette.DoChange;
-begin
-  if FUpdateLock>0 then
-    fChanged:=true
-  else
-    Update(False);
-end;
-
 procedure TBaseComponentPalette.DoPageAddedComponent(Component: TRegisteredComponent);
 begin
   fComponentCache.Add(Component);
@@ -1048,27 +1040,11 @@ begin
   DoChange;
 end;
 
-procedure TBaseComponentPalette.BeginUpdate(Change: boolean);
+procedure TBaseComponentPalette.SetHideControls(AValue: boolean);
 begin
-  inc(FUpdateLock);
-  if FUpdateLock=1 then
-    fChanged:=Change
-  else
-    fChanged:=fChanged or Change;
-end;
-
-procedure TBaseComponentPalette.EndUpdate;
-begin
-  if FUpdateLock<=0 then
-    raise Exception.Create('TBaseComponentPalette.EndUpdate');
-  dec(FUpdateLock);
-  if (FUpdateLock=0) and fChanged then
-    Update(False);
-end;
-
-function TBaseComponentPalette.IsUpdateLocked: boolean;
-begin
-  Result:=FUpdateLock>0;
+  if FHideControls=AValue then Exit;
+  FHideControls:=AValue;
+  FChanged:=True;
 end;
 
 procedure TBaseComponentPalette.IncChangeStamp;

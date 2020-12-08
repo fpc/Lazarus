@@ -38,11 +38,15 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Math, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
+  Classes, SysUtils, Math,
+  // LCL
+  Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
+  // LazUtils
+  LazFileCache,
   // IDEIntf
-  ProjectIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
-  LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, ComponentReg, IdeCoolbarData;
+  MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf, ComponentReg,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts, IdeCoolbarData;
 
 type
   { TMainIDEBar }

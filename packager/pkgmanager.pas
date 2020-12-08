@@ -3041,7 +3041,7 @@ end;
 
 procedure TPkgManager.LoadInstalledPackages;
 begin
-  IDEComponentPalette.BeginUpdate(true);
+  IDEComponentPalette.BeginUpdate;
   try
     PackageGraph.LoadStaticBasePackages;
     LoadStaticCustomPackages;

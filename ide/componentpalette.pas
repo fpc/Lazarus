@@ -106,6 +106,7 @@ type
     FOnChangeActivePage: TNotifyEvent;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
+    fUpdateLock: integer;
     // Used by UpdateNoteBookButtons
     fOldActivePage: TTabSheet;
     fVisiblePageIndex: integer;
@@ -133,11 +134,16 @@ type
     function SelectAButton(Button: TSpeedButton): boolean;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
+  protected
+    procedure DoChange; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
       AComponent: TComponent; var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+    function IsUpdateLocked: boolean;
     procedure Update(ForceUpdateAll: Boolean); override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
@@ -820,15 +826,6 @@ begin
   Handled := True;
 end;
 
-procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
-begin
-  inherited Update(ForceUpdateAll);
-  {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=', fUpdatingPageControl]);
-  {$ENDIF}
-  UpdateNoteBookButtons(ForceUpdateAll);
-end;
-
 constructor TComponentPalette.Create;
 begin
   inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
@@ -851,6 +848,36 @@ begin
   FreeAndNil(PopupMenu);
   FreeAndNil(PalettePopupMenu);
   inherited Destroy;
+end;
+
+procedure TComponentPalette.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TComponentPalette.EndUpdate;
+begin
+  if FUpdateLock<=0 then
+    raise Exception.Create('TBaseComponentPalette.EndUpdate: FUpdateLock<=0');
+  dec(FUpdateLock);
+  if (FUpdateLock=0) and FChanged then
+    Update(False);
+end;
+
+function TComponentPalette.IsUpdateLocked: boolean;
+begin
+  Result:=FUpdateLock>0;
+end;
+
+procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
+begin
+  if not FChanged then Exit;
+  inherited Update(ForceUpdateAll);
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=', fUpdatingPageControl]);
+  {$ENDIF}
+  UpdateNoteBookButtons(ForceUpdateAll);
+  FChanged:=False;
 end;
 
 procedure TComponentPalette.ClearButtons;
@@ -900,6 +927,14 @@ procedure TComponentPalette.ComponentWasAdded(ALookupRoot, AComponent: TComponen
 begin
   if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
     Selected := nil;
+end;
+
+procedure TComponentPalette.DoChange;
+begin
+  if FUpdateLock>0 then
+    FChanged:=true
+  else
+    Update(False);
 end;
 
 procedure TComponentPalette.ReAlignButtons(aSheet: TCustomPage);
