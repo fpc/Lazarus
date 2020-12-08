@@ -269,6 +269,8 @@ var
   lFilter: TCocoaFilterComboBox;
   callback: TOpenSaveDelegate;
 
+  isMenuOn: Boolean;
+
   // setup panel and its accessory view
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
   const
@@ -440,7 +442,7 @@ begin
   saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
   UpdateOptions(FileDialog, saveDlg);
 
-  ToggleAppMenu(false);
+  isMenuOn := ToggleAppMenu(false);
   try
     if saveDlg.runModal = NSOKButton then
     begin
@@ -463,7 +465,7 @@ begin
     saveDlg.release;
     LocalPool.Release;
   finally
-    ToggleAppMenu(true);
+    ToggleAppMenu(isMenuOn);
   end;
 
 end;  {TCocoaWSFileDialog.ShowModal}
@@ -485,6 +487,8 @@ var
   accessoryView: NSView;
   lRect: NSRect;
   okButton, cancelButton: NSButton;
+
+  isMenuOn: Boolean;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSColorDialog.ShowModal for ' + ACommonDialog.Name);
@@ -539,8 +543,13 @@ begin
 *)
 
   // show panel
-  colorPanel.makeKeyAndOrderFront(colorDelegate);
-  NSApp.runModalForWindow(colorPanel);
+  isMenuOn := ToggleAppMenu(false);
+  try
+    colorPanel.makeKeyAndOrderFront(colorDelegate);
+    NSApp.runModalForWindow(colorPanel);
+  finally
+    ToggleAppMenu(isMenuOn);
+  end;
 end;
 
 { TCocoaWSFontDialog }
@@ -562,6 +571,7 @@ var
   lRect: NSRect;
   okButton, cancelButton: NSButton;
   fn : NSFont;
+  isMenuOn: Boolean;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFontDialog.ShowModal for ' + ACommonDialog.Name);
@@ -624,8 +634,13 @@ begin
 *)
 
   // show panel
-  FontPanel.makeKeyAndOrderFront(FontDelegate);
-  NSApp.runModalForWindow(FontPanel);
+  isMenuOn := ToggleAppMenu(false);
+  try
+    FontPanel.makeKeyAndOrderFront(FontDelegate);
+    NSApp.runModalForWindow(FontPanel);
+  finally
+    ToggleAppMenu(isMenuOn);
+  end;
 end;
 
 { TColorPanelDelegate }

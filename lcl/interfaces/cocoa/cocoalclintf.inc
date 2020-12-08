@@ -239,6 +239,7 @@ var
   Str: string;
   cancelAccessory: TCocoaAlertCancelAccessoryView;
   needsCancel: Boolean;
+  isMenuOn: Boolean;
 begin
   {Str := 'TCocoaWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
     ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +
@@ -328,11 +329,14 @@ begin
       end
       else
       begin
-        ToggleAppMenu(false);
-        Result := AnAlert.runModal;
-        if Result = NSCancelButton then
-          Result := EscapeResult;
-        ToggleAppMenu(true); // modal menu doesn't have a window, disabling it
+        isMenuOn := ToggleAppMenu(false);
+        try
+          Result := AnAlert.runModal;
+          if Result = NSCancelButton then
+            Result := EscapeResult;
+        finally
+          ToggleAppMenu(isMenuOn); // modal menu doesn't have a window, disabling it
+        end;
       end;
     finally
       if Assigned(cancelAccessory) then cancelAccessory.release;

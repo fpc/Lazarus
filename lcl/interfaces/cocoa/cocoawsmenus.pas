@@ -161,7 +161,8 @@ procedure NSMenuItemSetBitmap(mn: NSMenuItem; bmp: TBitmap);
 // the returned "Key" should not be released, as it's not memory owned
 procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 
-procedure ToggleAppMenu(ALogicalEnabled: Boolean);
+// returns the last state the menu was at
+function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
@@ -937,9 +938,14 @@ begin
   end;
 end;
 
-procedure ToggleAppMenu(ALogicalEnabled: Boolean);
+var
+  isMenuEnabled : Boolean = true;
+
+function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 begin
+  Result := isMenuEnabled;
   ToggleAppNSMenu( NSApplication(NSApp).mainMenu, ALogicalEnabled );
+  isMenuEnabled := ALogicalEnabled;
 end;
 
 end.
