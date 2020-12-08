@@ -136,15 +136,27 @@ begin
 end;
 
 procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
+var
+  lLogicalCaretXY:TPoint;
+  lStart,lEnd:TPoint;
 begin
   if pcUnit = nil then
     exit;
   if psText <> fcConverter.InputCode then
   begin
     try
+      lLogicalCaretXY:=pcUnit.CursorTextXY;
       pcUnit.BeginUpdate;
       pcUnit.BeginUndoBlock;
-      pcUnit.Lines.Text := psText;
+      lStart.X:=0;  //select all text.
+      lStart.Y:=0;
+      lEnd.X:=0;
+      if pcUnit.LineCount>0 then
+        lEnd.X:=length(pcUnit.Lines[pcUnit.LineCount-1])+1;
+      lEnd.Y:=pcUnit.LineCount;
+      //pcUnit.Lines.Text := psText;    // removes undo history.
+      pcUnit.ReplaceText(lStart,lEnd,psText);
+      pcUnit.CursorTextXY:=lLogicalCaretXY;
       pcUnit.Modified := True;
     finally
       pcUnit.EndUndoBlock;  
