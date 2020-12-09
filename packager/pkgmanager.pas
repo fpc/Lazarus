@@ -4526,11 +4526,11 @@ begin
             CurUnitName:=CurRegComp.ComponentClass.UnitName;
             CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
           end;
-          //DebugLn(['TPkgManager.GetUnitsAndDependenciesForComponents CurUnitName=',CurUnitName]);
+          //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurUnitName=',CurUnitName]);
           if CurUnitName='' then
             CurUnitName:=CurRegComp.GetUnitName;
           Assert(CurUnitNames.IndexOf(CurUnitName)<0,
-            'TPkgManager.GetUnitsAndDependenciesForComponents: Name already in CurUnitNames.');
+            'TPkgManager.GetUnitsAndDepsForComps: Name already in CurUnitNames.');
           CurUnitNames.Add(CurUnitName);
           if CurCompReq<>nil then
             CurCompReq.RequiredUnits(CurUnitNames);
@@ -4539,7 +4539,8 @@ begin
             CurUnitName:=CurUnitNames[CurUnitIdx];
             UnitList.Add(CurUnitName);
             PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
-            //DebugLn(['TPkgManager.GetUnitsAndDependenciesForComponents PkgFile=',PkgFile<>nil]);
+            //DebugLn(['            GetUnitsAndDepsForComps: CurUnitName=',CurUnitName,
+            //         ', PkgFile=', PkgFile.Unit_Name]);
             if PkgFile=nil then
               PkgFile:=TPkgComponent(CurRegComp).PkgFile;
             if PkgFile<>nil then

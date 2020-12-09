@@ -1459,16 +1459,13 @@ var
   I: Integer;
   P: PComponentClassReqRec;
 begin
-  if not Assigned(ComponentClass) or not Assigned(ComponentClassReqList) then
+  if (ComponentClass=Nil) or (ComponentClassReqList=Nil) then
     Exit(Nil);
   for I := 0 to ComponentClassReqList.Count - 1 do
   begin
     P := PComponentClassReqRec(ComponentClassReqList[i]);
     if P^.ComponentClass = ComponentClass then
-    begin
-      Result := P^.RequirementsClass.Create(ComponentClass);
-      Exit;
-    end;
+      Exit(P^.RequirementsClass.Create(ComponentClass));
   end;
   Result := Nil;
 end;
