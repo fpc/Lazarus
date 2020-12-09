@@ -41,7 +41,7 @@ end;
 procedure TCustomLabel.CalculateSize(MaxWidth: integer; var NeededWidth,
   NeededHeight: integer);
 var
-  DC: HDC;
+  DC, OldHandle: HDC;
   R: TRect;
   OldFont: HGDIOBJ;
   Flags: cardinal;
@@ -56,6 +56,7 @@ begin
 
   DC := GetDC(0);
   try
+    OldHandle := Canvas.Handle;
     Canvas.Handle := DC;
     R := Rect(0, 0, MaxWidth, cMaxLabelSize);
     OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
@@ -72,10 +73,10 @@ begin
     SelectObject(DC, OldFont);
     NeededWidth := R.Right - R.Left;
     NeededHeight := R.Bottom - R.Top;
-    Canvas.Handle := 0;
+    Canvas.Handle := OldHandle;
     //DebugLn(['TCustomLabel.CalculatePreferredSize ',DbgSName(Self),' R=',dbgs(R),' MaxWidth=',MaxWidth,' DT_WORDBREAK=',(DT_WORDBREAK and Flags)>0,' LabelText="',LabelText,'"']);
   finally
-    ReleaseDC(Parent.Handle, DC);
+    ReleaseDC(0, DC);
   end;
 end;
 
