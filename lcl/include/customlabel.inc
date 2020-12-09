@@ -112,20 +112,20 @@ var
   Rect2: TRect;
 begin
   LabelText := GetLabelText;
-  OldFontColor := Font.Color;
+  OldFontColor := Canvas.Font.Color;
   if not IsEnabled and (Flags and DT_CALCRECT = 0) then
     if ThemeServices.ThemesEnabled then
-      Font.Color := clGrayText
+      Canvas.Font.Color := clGrayText
     else
     begin
-      Font.Color := clBtnHighlight;
+      Canvas.Font.Color := clBtnHighlight;
       Rect2 := Rect;
       OffsetRect(Rect2, 1, 1);
       DrawText(Canvas.Handle, PChar(LabelText), Length(LabelText), Rect2, Flags);
-      Font.Color := clBtnShadow;
+      Canvas.Font.Color := clBtnShadow;
     end;
   DrawText(Canvas.Handle, PChar(LabelText), Length(LabelText), Rect, Flags);
-  Font.Color := OldFontColor;
+  Canvas.Font.Color := OldFontColor;
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
