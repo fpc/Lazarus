@@ -292,6 +292,7 @@ type
     procedure RemoveHandlerSelectionChanged(OnSelectionChangedEvent: TPaletteHandlerEvent);
   public
     property Pages: TBaseComponentPageList read fPages;
+    property Comps: TRegisteredCompList read fComps;
     property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
     property ComponentPageClass: TBaseComponentPageClass read FComponentPageClass
                                                         write FComponentPageClass;
