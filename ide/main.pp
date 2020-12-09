@@ -13297,7 +13297,6 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo, ClassUnitInfo: TUnitInfo;
   ComponentClasses: TClassList;
-  ct: TClass;
   i: Integer;
 begin
   if ConsoleVerbosity>0 then
@@ -13338,16 +13337,18 @@ begin
     SourceEditorManager.AddJumpPointClicked(Self);
 
     // add needed package to required packages
-    if ADesigner.LookupRoot.ComponentCount>0 then
+    if AComponent<>nil then  //if ADesigner.LookupRoot.ComponentCount>0 then
     begin
       ComponentClasses:=TClassList.Create;
       try
+{ Getting dependencies for all components is not needed. The newly added component suffices.
         for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
         begin
           ct := ADesigner.LookupRoot.Components[i].ClassType;
           if ComponentClasses.IndexOf(ct)<=0 then
             ComponentClasses.Add(ct);
-        end;
+        end;  }
+        ComponentClasses.Add(AComponent.ClassType);
         PkgBoss.AddUnitDepsForCompClasses(ActiveUnitInfo.Filename,ComponentClasses,true);
       finally
         ComponentClasses.Free;
