@@ -113,7 +113,7 @@ procedure TQtThemeServices.DrawEdge(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
   AContentRect: PRect);
 begin
-  DebugLn('WARNING: TQtThemeServices.DrawEdge is not implemented.');
+  //DebugLn('WARNING: TQtThemeServices.DrawEdge is not implemented.');
 end;
 
 procedure TQtThemeServices.DrawElement(DC: HDC;
