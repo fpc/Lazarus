@@ -130,8 +130,10 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
     procedure OnWakeMainThread(Sender: TObject);
+    {$ifndef QT_NO_SESSIONMANAGER}
     procedure SlotCommitDataRequest(sessionManager: QSessionManagerH); cdecl;
     procedure SlotSaveDataRequest(sessionManager: QSessionManagerH); cdecl;
+    {$endif}
   public
     function LCLPlatform: TLCLPlatform; override;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;

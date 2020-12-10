@@ -209,7 +209,7 @@ begin
 
   if not FIsLibraryInstance then
   begin
-    {$IF DEFINED(HAIKU) OR DEFINED(QTOPIA)}
+    {$IF DEFINED(HAIKU) OR DEFINED(QTOPIA) OR DEFINED(QT_NO_SESSIONMANAGER)}
     FAppSessionQuit := nil;
     FAppSaveSessionRequest := nil;
     {$ELSE}
@@ -1213,6 +1213,7 @@ begin
   QCoreApplication_postEvent(QCoreApplication_instance(), Event, 1 {high priority});
 end;
 
+{$ifndef QT_NO_SESSIONMANAGER}
 procedure TQtWidgetSet.SlotCommitDataRequest(sessionManager: QSessionManagerH);
   cdecl;
 var
@@ -1256,6 +1257,7 @@ begin
   DebugLn('TQtWidgetSet.SlotSaveDataRequest ');
   {$ENDIF}
 end;
+{$endif}
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;
 begin
