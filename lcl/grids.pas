@@ -8575,6 +8575,9 @@ begin
       // high control coords (like GTK2)
       CellR := Bounds(-FEditor.Width-100, -FEditor.Height-100, CellR.Right-CellR.Left, CellR.Bottom-CellR.Top);
 
+    // Make sure to use the grid font, not that of the title (issue #38203).
+    Canvas.Font.Assign(Font);
+
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       if (FEditor = FStringEditor) and (EditorBorderStyle = bsNone) then
         CellR := TWSCustomGridClass(WidgetSetClass).
