@@ -66,11 +66,11 @@ type
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode;
       Candidates: TAvlTree);
     procedure RefreshTree;
-    procedure OnSomethingChanged;
-    procedure OnPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
-    procedure OnPersistentDeleting({%H-}APersistent: TPersistent);
-    procedure OnDeletePersistent(var {%H-}APersistent: TPersistent);
-    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+    procedure SomethingChanged;
+    procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
+    procedure PersistentDeleting({%H-}APersistent: TPersistent);
+    procedure DeletePersistent(var {%H-}APersistent: TPersistent);
+    procedure SetSelection(const ASelection: TPersistentSelectionList);
   end;
 
   { TTabOrderPropEditor }
@@ -132,12 +132,12 @@ procedure TTabOrderDialog.TabOrderDialogCreate(Sender: TObject);
 begin
   Name := NonModalIDEWindowNames[nmiwTabOrderEditor];
 
-  GlobalDesignHook.AddHandlerChangeLookupRoot(@OnSomethingChanged);
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnSomethingChanged);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
-  GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
-  GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
+  GlobalDesignHook.AddHandlerChangeLookupRoot(@SomethingChanged);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@SomethingChanged);
+  GlobalDesignHook.AddHandlerPersistentAdded(@PersistentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
+  GlobalDesignHook.AddHandlerDeletePersistent(@DeletePersistent);
+  GlobalDesignHook.AddHandlerSetSelection(@SetSelection);
 
   IDEImages.AssignImage(ArrowDown, 'arrow_down');
   IDEImages.AssignImage(ArrowUp, 'arrow_up');
@@ -158,7 +158,7 @@ begin
   Sel := TPersistentSelectionList.Create;
   try
     GlobalDesignHook.GetSelection(Sel);
-    OnSetSelection(Sel);
+    SetSelection(Sel);
   finally
     Sel.Free;
   end;
@@ -411,7 +411,7 @@ begin
   end;
 end;
 
-procedure TTabOrderDialog.OnSomethingChanged;
+procedure TTabOrderDialog.SomethingChanged;
 begin
   if FUpdating then Exit;
   FUpdating := true;
@@ -420,23 +420,23 @@ begin
   FUpdating := false;
 end;
 
-procedure TTabOrderDialog.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
+procedure TTabOrderDialog.PersistentAdded(APersistent: TPersistent; Select: boolean);
 begin
-  OnSomethingChanged;
+  SomethingChanged;
 end;
 
-procedure TTabOrderDialog.OnPersistentDeleting(APersistent: TPersistent);
+procedure TTabOrderDialog.PersistentDeleting(APersistent: TPersistent);
 begin
-  OnSomethingChanged;
+  SomethingChanged;
 end;
 
-procedure TTabOrderDialog.OnDeletePersistent(var APersistent: TPersistent);
+procedure TTabOrderDialog.DeletePersistent(var APersistent: TPersistent);
 begin
   ShowMessage('TTabOrderDialog.OnDeletePersistent is never called for some reason!');
-  OnSomethingChanged;
+  SomethingChanged;
 end;
 
-procedure TTabOrderDialog.OnSetSelection(const ASelection: TPersistentSelectionList);
+procedure TTabOrderDialog.SetSelection(const ASelection: TPersistentSelectionList);
 // Select item also in TreeView when selection in Designer changes.
 
   function FindSelection: TTreeNode;
