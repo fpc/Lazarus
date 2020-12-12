@@ -6,12 +6,13 @@ unit GLGtk3GlxContext;
 interface
 
 uses
-  Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl, glext,
-  InterfaceBase,
-  glx,
+  Classes, SysUtils, ctypes, X, XUtil, XLib, gl, glext, glx,
+  // LazUtils
+  LazUtilities,
+  // LCL
+  LCLType, InterfaceBase, LMessages, Controls,
   WSLCLClasses, LCLMessageGlue,
-  LMessages, glib2, gtk3int, LazGdk3, LazGtk3, gtk3widgets,
-  Controls;
+  glib2, gtk3int, LazGdk3, LazGtk3, gtk3widgets;
 
 function LBackingScaleFactor(Handle: HWND): single;
 procedure LOpenGLViewport({%H-}Handle: HWND; Left, Top, Width, Height: integer);

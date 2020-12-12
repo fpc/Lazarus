@@ -19,7 +19,12 @@ unit ExtGraphics;
 
 interface
 
-uses Types, Classes, LCLProc, Graphics, Math, GraphMath;
+uses
+  Types, Classes, Math,
+  // LazUtils
+  LazUtilities,
+  // LCL
+  Graphics, GraphMath;
 
 type
   TShapeDirection = (atUp, atDown, atLeft, atRight);

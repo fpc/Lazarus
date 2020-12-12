@@ -25,13 +25,14 @@ unit ProcessList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, UTF8Process;
+  Classes, SysUtils,
+  // LazUtils
+  UTF8Process, LazLoggerBase;
   
 type
   { The TProcessList is used by the IDE to store all running programs and
     external tools, that are not watched. From time to time the IDE checks,
-    if the processes has terminated and will free them cleanly to avoid
-    zombies. }
+    if the processes has terminated and will free them cleanly to avoid zombies. }
   TProcessList = class
   private
     FItems: TList; // list of TProcessUTF8
@@ -58,7 +59,8 @@ var
 
 function GetDefaultProcessList: TProcessList;
 begin
-  if DefaultProcessList=nil then DefaultProcessList:=TProcessList.Create;
+  if DefaultProcessList=nil then
+    DefaultProcessList:=TProcessList.Create;
   Result:=DefaultProcessList;
 end;
 
@@ -131,12 +133,8 @@ begin
   end;
 end;
 
-initialization
-  DefaultProcessList:=nil;
-
 finalization
-  DefaultProcessList.Free;
-  DefaultProcessList:=nil;
+  FreeAndNil(DefaultProcessList);
 
 end.
 

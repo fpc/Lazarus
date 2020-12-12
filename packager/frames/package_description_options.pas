@@ -7,7 +7,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, Spin, LCLProc,
+  Forms, Controls, StdCtrls, Spin,
+  // LazUtils
+  LazUtilities,
   // IdeIntf
   PackageDependencyIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // IDE

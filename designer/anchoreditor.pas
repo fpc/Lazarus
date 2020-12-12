@@ -35,9 +35,15 @@ unit AnchorEditor;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, StdCtrls, Buttons, Spin,
-  ExtCtrls, Graphics, IDECommands, PropEdits, IDEDialogs, LazarusIDEStrConsts,
-  IDEOptionDefs, IDEImagesIntf, EnvironmentOpts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, Buttons, Spin, ExtCtrls, Graphics,
+  // LazUtils
+  LazUtilities,
+  // IdeIntf
+  IDECommands, PropEdits, IDEDialogs, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
 
 type
 

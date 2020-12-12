@@ -16,9 +16,9 @@ uses
   // RTL
   Classes, SysUtils, glib2, pango, Laz_AVL_Tree,
   // LazUtils
-  LazLoggerBase,
+  LazUtilities, LazLoggerBase, LazTracer,
   // LCL
-  LCLProc, LCLType, Gtk2Def, LCLResCache;
+  LCLType, Gtk2Def, LCLResCache;
   
 type
   TGtkFontCacheDescriptor = class;

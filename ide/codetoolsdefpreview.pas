@@ -32,10 +32,9 @@ interface
 uses
   Classes, SysUtils, Math, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, ButtonPanel, Buttons,
-  StdCtrls, ComCtrls, ExtCtrls,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, Buttons, StdCtrls, ComCtrls, ExtCtrls,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools
   DefineTemplates, ExprEval,
   // SynEdit

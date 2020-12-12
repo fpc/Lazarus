@@ -22,8 +22,12 @@ unit CalcForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics,
-  StdCtrls, ExtCtrls, Buttons, Menus, Clipbrd;
+  Classes, SysUtils,
+  // LazUtils
+  LazUtilities,
+  // LCL
+  Forms, Controls, Graphics, StdCtrls, ExtCtrls, Buttons, Menus, Clipbrd,
+  WSExtDlgs, LCLStrConsts;
 
 const
   CalcDefPrecision = 15;
@@ -150,9 +154,6 @@ var
 
 
 implementation
-
-uses
-  LclProc, WSExtDlgs, LCLStrConsts;
 
 type
   TCalcBtnKind =

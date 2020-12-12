@@ -34,7 +34,7 @@ uses
   // LCL
   LCLProc, LCLType, LCLIntf, Forms, Menus,
   // LazUtils
-  LazLoggerBase, LazTracer,
+  LazLoggerBase, LazTracer, LazMethodList,
   // IdeIntf
   IDEImagesIntf;
   

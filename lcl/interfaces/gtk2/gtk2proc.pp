@@ -49,7 +49,8 @@ uses
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
   // LazUtils
-  Masks, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase, LazUTF8, DynHashArray,
+  FileUtil, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase, LazTracer,
+  Masks, LazUTF8, DynHashArray,
   // Gtk2
   Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 

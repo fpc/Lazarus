@@ -92,8 +92,10 @@ unit OpenGLContext;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf, LResources,
-  Graphics, LMessages, WSLCLClasses, WSControls,
+  Classes, SysUtils,
+  // LCL
+  LCLType, LCLIntf, LResources, Forms, Controls, Graphics, LMessages,
+  WSLCLClasses, WSControls,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
 {$ENDIF}

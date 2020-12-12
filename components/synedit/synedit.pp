@@ -116,7 +116,7 @@ uses
   LCLProc, LCLIntf, LCLType, LMessages, LResources, Messages, Controls, Graphics,
   Forms, StdCtrls, ExtCtrls, Menus, Clipbrd, StdActns,
   // LazUtils
-  LazMethodList, LazLoggerBase, LazUTF8,
+  LazUtilities, LazMethodList, LazLoggerBase, LazTracer, LazUTF8,
   // SynEdit
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,

@@ -31,7 +31,8 @@ interface
 
 Uses
   Types, Classes, SysUtils, Math,
-  LCLProc;
+  // LazUtils
+  LazUtilities;
 
 Type
   TFloatPoint = Record

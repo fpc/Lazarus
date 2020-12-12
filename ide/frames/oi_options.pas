@@ -30,7 +30,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, StdCtrls, Dialogs, Spin, ColorBox, Graphics, Buttons,
+  Forms, StdCtrls, Dialogs, Spin, ColorBox, Graphics, Buttons,
+  // LazUtils
+  LazUtilities,
   // IdeIntf
   ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE

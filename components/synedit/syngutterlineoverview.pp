@@ -27,10 +27,14 @@ unit SynGutterLineOverview;
 interface
 
 uses
-  Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, Forms, LMessages,
-  FPCanvas, sysutils, math, SynGutterBase, SynEditTypes, LazSynEditText,
-  SynEditTextBuffer, SynEditMarks, SynEditMiscClasses,
-  SynEditMouseCmds, LazUtilities;
+  Classes, sysutils, math, FPCanvas,
+  // LCL
+  Graphics, Controls, Forms, LCLType, LCLIntf, LMessages,
+  // LazUtils
+  LazUtilities,
+  // SynEdit
+  SynGutterBase, SynEditTypes, LazSynEditText, SynEditTextBuffer, SynEditMarks,
+  SynEditMiscClasses, SynEditMouseCmds;
 
 type
   TSynGutterLineOverview = class;

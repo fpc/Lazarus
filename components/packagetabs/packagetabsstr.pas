@@ -1,4 +1,4 @@
-unit packagetabsstr;
+unit PackageTabsStr;
 
 {$mode objfpc}{$H+}
 

@@ -37,10 +37,10 @@ uses
   // FPC
   Classes, SysUtils, Math, Types, maps,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, LazUtilities, LazLoggerBase,
   // LCL
-  InterfaceBase, LCLPlatformDef, LCLProc, LazUTF8, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
-  Controls, ExtCtrls, Forms,
+  InterfaceBase, LCLPlatformDef, LazUTF8, LCLProc, LCLType, LMessages,
+  LCLMessageGlue, LCLStrConsts, Controls, ExtCtrls, Forms,
   Dialogs, StdCtrls, LCLIntf, GraphType, GraphUtil, Themes,
   // WS
   {$IFDEF HASX11}

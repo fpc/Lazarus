@@ -50,7 +50,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, LResources, LCLMemManager, LCLProc,
   //LazUtils
-  AvgLvlTree, LazLoggerBase,
+  AvgLvlTree, LazUtilities, LazLoggerBase, LazTracer,
   // CodeTools
   BasicCodeTools,
   // IdeIntf

@@ -42,7 +42,7 @@ uses
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
-  LazFileUtils, LazFileCache,
+  LazFileUtils, LazFileCache, LazLoggerBase,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
   IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,

@@ -28,10 +28,10 @@ uses
   // RTL
   Classes, SysUtils, glib2, gdk2pixbuf, pango, gdk2, gtk2,
   // LazUtils
-  DynHashArray, LazLoggerBase,
+  DynHashArray, LazLoggerBase, LazTracer, LazUtilities,
   // LCL
   Gtk2Extra,
-  LCLIntf, LCLProc, LCLType, LCLMemManager,
+  LCLIntf, LCLType, LCLMemManager,
   GraphType, Gtk2Globals, Graphics {for TColor};
 
 {$ifdef TraceGdiCalls}

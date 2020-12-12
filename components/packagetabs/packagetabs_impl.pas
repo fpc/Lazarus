@@ -23,7 +23,7 @@
   Abstract:
     Replacement of source editor tabs/pages with buttons sorted by package and name.
 }
-unit packagetabs_impl;
+unit PackageTabs_impl;
 
 {$mode objfpc}{$H+}
 
@@ -32,15 +32,15 @@ interface
 uses
   Classes, SysUtils, Types, Contnrs,
   // LCL
-  LCLProc, LCLIntf, Forms, Controls, StdCtrls, Buttons, ComCtrls, ExtCtrls,
+  LCLIntf, Forms, Controls, StdCtrls, Buttons, ComCtrls, ExtCtrls,
   Graphics, Menus, Clipbrd,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg,
+  LazUtilities, LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
   SrcEditorIntf, PackageIntf, LazIDEIntf, IDEImagesIntf, IDECommands,
   IDEOptEditorIntf, ProjectIntf,
   // PackageTabs
-  packagetabsstr;
+  PackageTabsStr;
 
 type
   TPackageTabButton = class(TSpeedButton)

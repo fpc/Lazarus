@@ -13,11 +13,20 @@ unit LazUtilities;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, TypInfo;
 
 procedure FreeThenNil(var obj);
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareBoolean(b1, b2: boolean): integer;
+
+function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
+                         const DefaultValue: Integer): Integer;
+
+function RoundToInt(e: Extended): integer; inline;
+function RoundToCardinal(e: Extended): cardinal; inline;
+function TruncToInt(e: Extended): integer; inline;
+function TruncToCardinal(e: Extended): cardinal; inline;
+function StrToDouble(const s: string): double; inline;
 
 { MergeSortWithLen:
   sort ascending, e.g. Compare(List[0],List[1])<0
@@ -57,6 +66,54 @@ begin
     Result:=1
   else
     Result:=-1;
+end;
+
+function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
+  const DefaultValue: Integer): Integer;
+begin
+  Result:=GetEnumValue(TypeInfo,Name);
+  if Result<0 then
+    Result:=DefaultValue;
+end;
+
+function RoundToInt(e: Extended): integer;
+begin
+  Result:=integer(Round(e));
+  {$IFDEF VerboseRound}
+  DebugLn('RoundToInt ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function RoundToCardinal(e: Extended): cardinal;
+begin
+  Result:=cardinal(Round(e));
+  {$IFDEF VerboseRound}
+  DebugLn('RoundToCardinal ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function TruncToInt(e: Extended): integer;
+begin
+  Result:=integer(Trunc(e));
+  {$IFDEF VerboseRound}
+  DebugLn('TruncToInt ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function TruncToCardinal(e: Extended): cardinal;
+begin
+  Result:=cardinal(Trunc(e));
+  {$IFDEF VerboseRound}
+  DebugLn('TruncToCardinal ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function StrToDouble(const s: string): double;
+begin
+  {$IFDEF VerboseRound}
+  DebugLn('StrToDouble "',s,'"');
+  {$ENDIF}
+  Result:=Double(StrToFloat(s));
 end;
 
 procedure MergeSortWithLen(List: PPointer; ListLength: PtrInt;
