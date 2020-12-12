@@ -230,8 +230,7 @@ type
     procedure DoShowObjectInspector;
     procedure DoChangeZOrder(TheAction: Integer);
 
-    procedure GiveComponentsNames;
-    procedure NotifyPersistentAdded(APersistent: TPersistent);
+    procedure NotifyComponentAdded(AComponent: TComponent);
     function  ComponentClassAtPos(const AClass: TComponentClass;
                                   const APos: TPoint; const UseRootAsDefault,
                                   IgnoreHidden: boolean): TComponent;
@@ -760,11 +759,10 @@ begin
     FOnSetDesigning(Self,NewComponent,True);
 
   if EnvironmentOptions.CreateComponentFocusNameProperty then
-    // ask user for name
-    ShowComponentNameDialog(LookupRoot,NewComponent);
+    ShowComponentNameDialog(LookupRoot,NewComponent);  // ask user for name
 
   // tell IDE about the new component (e.g. add it to the source)
-  NotifyPersistentAdded(NewComponent);
+  NotifyComponentAdded(NewComponent);
 
   // creation completed
   // -> select new component
@@ -1291,7 +1289,7 @@ function TDesigner.DoInsertFromStream(s: TStream;
   PasteParent: TWinControl; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
   NewSelection: TPersistentSelectionList;
-  NewComponents: TFPList;
+  NewComps: TFPList;
 
   procedure FindUniquePosition(AComponent: TComponent);
   var
@@ -1310,7 +1308,7 @@ var
       i:=AParent.ControlCount-1;
       while i>=0 do begin
         OverlappedControl:=AParent.Controls[i];
-        if (NewComponents.IndexOf(OverlappedControl)<0)
+        if (NewComps.IndexOf(OverlappedControl)<0)
         and (OverlappedControl.Left=P.X)
         and (OverlappedControl.Top=P.Y) then begin
           inc(P.X,NonVisualCompWidth);
@@ -1353,7 +1351,7 @@ begin
   //debugln('TDesigner.DoInsertFromStream B s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TPersistentSelectionList.Create;
-  NewComponents:=TFPList.Create;
+  NewComps:=TFPList.Create;
   try
     Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
     try
@@ -1365,16 +1363,16 @@ begin
       end;
 
       // create components and add to LookupRoot
-      FOnPasteComponent(Self,FLookupRoot,s,PasteParent,NewComponents);
+      FOnPasteComponent(Self,FLookupRoot,s,PasteParent,NewComps);
       // add new component to new selection
-      for i:=0 to NewComponents.Count-1 do begin
-        NewComponent:=TComponent(NewComponents[i]);
+      for i:=0 to NewComps.Count-1 do begin
+        NewComponent:=TComponent(NewComps[i]);
         NewSelection.Add(NewComponent);
         // set new nice bounds
         if cpsfFindUniquePositions in PasteFlags then
           FindUniquePosition(NewComponent);
         // finish adding component
-        NotifyPersistentAdded(NewComponent);
+        NotifyComponentAdded(NewComponent);
         Modified;
         // add action in undo list
         AddUndoAction(NewComponent, uopAdd, i = 0, 'Name', '', NewComponent.Name);
@@ -1387,7 +1385,7 @@ begin
       Form.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
     end;
   finally
-    NewComponents.Free;
+    NewComps.Free;
     if NewSelection.Count>0 then
       Selection.AssignSelection(NewSelection);
     NewSelection.Free;
@@ -1632,24 +1630,12 @@ begin
     OI.ComponentTree.BuildComponentNodes(True);
 end;
 
-procedure TDesigner.GiveComponentsNames;
-var
-  i: Integer;
-  CurComponent: TComponent;
-begin
-  if LookupRoot=nil then exit;
-  for i:=0 to LookupRoot.ComponentCount-1 do begin
-    CurComponent:=LookupRoot.Components[i];
-    if CurComponent.Name='' then
-      CurComponent.Name:=UniqueName(CurComponent.ClassName);
-  end;
-end;
-
-procedure TDesigner.NotifyPersistentAdded(APersistent: TPersistent);
+procedure TDesigner.NotifyComponentAdded(AComponent: TComponent);
 begin
   try
-    GiveComponentsNames;
-    GlobalDesignHook.PersistentAdded(APersistent,false);
+    if AComponent.Name='' then
+      AComponent.Name:=UniqueName(AComponent.ClassName);
+    GlobalDesignHook.PersistentAdded(AComponent,false);
   except
     on E: Exception do
       IDEMessageDialog('Error:',E.Message,mtError,[mbOk]);
