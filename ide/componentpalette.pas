@@ -871,10 +871,11 @@ end;
 
 procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
-  if not FChanged then Exit;
+  if not (ForceUpdateAll or FChanged) then Exit;
   inherited Update(ForceUpdateAll);
   {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=', fUpdatingPageControl]);
+  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=',
+           fUpdatingPageControl, ', ForceUpdateAll=', ForceUpdateAll, ', FChanged=', FChanged]);
   {$ENDIF}
   UpdateNoteBookButtons(ForceUpdateAll);
   FChanged:=False;
