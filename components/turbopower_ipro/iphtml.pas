@@ -13650,6 +13650,8 @@ begin
   inc(FPaintingLock);
 
   try
+    if Assigned(HTMLPanel.OnPaint) then HTMLPanel.OnPaint(HTMLPanel);
+
     CR := GetClientRect;
     if not ScaleBitmaps {printing} and (Hyper <> nil) then
     begin
@@ -15441,7 +15443,6 @@ procedure TIpHtmlCustomPanel.Paint;
 var
   Sz: TSize;
 begin
-  inherited;
   if csDesigning in ComponentState then begin
     Canvas.Brush.Color := clBtnFace;
     Canvas.FillRect(Canvas.ClipRect);
