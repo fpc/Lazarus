@@ -9430,8 +9430,8 @@ begin
   if dfDestroyingForm in CurDesigner.Flags then exit;
 
   ActiveSrcEdit:=nil;
-  if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
-                [ctfSwitchToFormSource]) then exit;
+  if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
+    exit;
   ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then
     RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
@@ -10957,38 +10957,39 @@ begin
 end;
 
 procedure TMainIDE.SrcNotebookEditorActived(Sender: TObject);
+// The editor tab was changed but it may not have focus.
+// It is also changed when a component is dropped on designer form.
 var
-  ActiveUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor;
+  UnitInfo: TUnitInfo;
 begin
   ASrcEdit := SourceEditorManager.SenderToEditor(Sender);
   if ASrcEdit=nil then exit;
-
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.SrcNotebookEditorActived']);
   {$ENDIF}
-  DisplayState:=dsSource;
-  Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
-
-  ActiveUnitInfo := Project1.UnitWithEditorComponent(ASrcEdit);
-  if ActiveUnitInfo = nil then Exit;
-  ActiveUnitInfo.SetLastUsedEditor(ASrcEdit);
-
+  UnitInfo := Project1.GetAndUpdateVisibleUnit(ASrcEdit,
+                                               ASrcEdit.SourceNotebook.WindowID);
+  if UnitInfo = nil then Exit;
   UpdateSaveMenuItemsAndButtons(false);
-  MainIDEBar.itmViewToggleFormUnit.Enabled := Assigned(ActiveUnitInfo.Component)
-                                           or (ActiveUnitInfo.ComponentName<>'');
+  MainIDEBar.itmViewToggleFormUnit.Enabled := (UnitInfo.Component<>nil)
+                                           or (UnitInfo.ComponentName<>'');
 end;
 
 procedure TMainIDE.SrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
+var
+  UnitInfo: TUnitInfo;
 begin
-  Project1.UnitWithEditorComponent(TSourceEditor(Sender)).AddBookmark
-    (Mark.Column, Mark.Line, Mark.BookmarkNumber);
+  UnitInfo := Project1.UnitWithEditorComponent(TSourceEditor(Sender));
+  UnitInfo.AddBookmark(Mark.Column, Mark.Line, Mark.BookmarkNumber);
 end;
 
 procedure TMainIDE.SrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
+var
+  UnitInfo: TUnitInfo;
 begin
-  Project1.UnitWithEditorComponent(TSourceEditor(Sender)).DeleteBookmark
-    (Mark.BookmarkNumber);
+  UnitInfo := Project1.UnitWithEditorComponent(TSourceEditor(Sender));
+  UnitInfo.DeleteBookmark(Mark.BookmarkNumber);
 end;
 
 procedure TMainIDE.SrcNotebookEditorClearBookmarkId(Sender: TObject;
@@ -11520,7 +11521,7 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   if DisplayState<>dsForm then begin
     debugln(['TMainIDE.DesignerActivated ']);
-    DumpStack;
+    //DumpStack;
   end;
   {$ENDIF}
   DisplayState:= dsForm;
@@ -11529,7 +11530,6 @@ begin
   and (TheControlSelection.SelectionForm <> LastFormActivated) then
     TheControlSelection.AssignPersistent(LastFormActivated);
   {$IFDEF VerboseComponentPalette}
-  DebugLn('***');
   DebugLn(['** TMainIDE.DesignerActivated: Calling UpdateIDEComponentPalette(true)',
            ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
@@ -11988,8 +11988,7 @@ begin
   {$IFDEF VerboseJumpHistory}
   //Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
-  Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
-                                   NewJumpPoint);
+  Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1, NewJumpPoint);
   {$IFDEF VerboseJumpHistory}
   debugln('[TMainIDE.SrcNoteBookAddJumpPoint] B INSERTED');
   Project1.JumpHistory.WriteDebugReport;

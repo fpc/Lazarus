@@ -677,10 +677,9 @@ type
     procedure ToggleBreakpointEnabledClicked(Sender: TObject);
   private
     FManager: TSourceEditorManager;
-    FUpdateLock, FFocusLock: Integer;
+    FUpdateLock, FFocusLock, fAutoFocusLock: Integer;
     FUpdateFlags: TSourceNotebookUpdateFlags;
     FPageIndex: Integer;
-    fAutoFocusLock: integer;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
     FIncrementalSearchStr, FIncrementalFoundStr: string;
@@ -9282,10 +9281,10 @@ end;
 procedure TSourceNotebook.Activate;
 begin
   inherited Activate;
-  if assigned(Manager) then
+  if assigned(Manager) then begin
     Manager.ActiveSourceWindow := self;
-  if assigned(Manager) then
     Manager.DoWindowFocused(Self);
+  end;
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors(AEditor: TSynEdit);
@@ -9437,8 +9436,7 @@ begin
     Result := nil;
 end;
 
-procedure TSourceEditorManagerBase.SetActiveEditor(
-  const AValue: TSourceEditorInterface);
+procedure TSourceEditorManagerBase.SetActiveEditor(const AValue: TSourceEditorInterface);
 var
   Window: TSourceEditorWindowInterface;
 begin
@@ -10642,8 +10640,8 @@ end;
 procedure TSourceEditorManager.AddJumpPointClicked(Sender: TObject);
 begin
   if Assigned(OnAddJumpPoint) and (ActiveEditor <> nil) then
-    OnAddJumpPoint(ActiveEditor.EditorComponent.LogicalCaretXY,
-      ActiveEditor.EditorComponent.TopLine, ActiveEditor, true);
+    with ActiveEditor.EditorComponent do
+      OnAddJumpPoint(LogicalCaretXY, TopLine, ActiveEditor, true);
 end;
 
 procedure TSourceEditorManager.DeleteLastJumpPointClicked(Sender: TObject);

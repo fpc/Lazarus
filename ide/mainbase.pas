@@ -70,7 +70,7 @@ uses
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
   PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, BuildManager, EnvironmentOpts,
+  LazConf, LazarusIDEStrConsts, Project, EnvironmentOpts,
   EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,
   Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts;
 
@@ -781,8 +781,7 @@ procedure TMainIDEBase.DoSwitchToFormSrc(ADesigner: TIDesigner;
 begin
   if (ADesigner<>nil) then
     ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
-  else if (GlobalDesignHook.LookupRoot<>nil)
-  and (GlobalDesignHook.LookupRoot is TComponent) then
+  else if GlobalDesignHook.LookupRoot is TComponent then
     ActiveUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
   else
     ActiveUnitInfo:=nil;

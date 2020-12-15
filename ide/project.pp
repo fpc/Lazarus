@@ -936,7 +936,8 @@ type
     // true if something changed
     function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
-    procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowID: Integer);
+    function GetAndUpdateVisibleUnit(AnEditor: TSourceEditorInterface;
+                                     AWindowID: Integer): TUnitInfo;
     procedure UpdateAllVisibleUnits;
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
@@ -3741,13 +3742,20 @@ begin
   Result:=AnUnitInfo;
 end;
 
-procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowID: Integer);
+function TProject.GetAndUpdateVisibleUnit(AnEditor: TSourceEditorInterface;
+  AWindowID: Integer): TUnitInfo;
 var
   i: Integer;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   for i := 0 to AllEditorsInfoCount - 1 do
-    if AllEditorsInfo[i].WindowID = AWindowID then
-      AllEditorsInfo[i].IsVisibleTab := AllEditorsInfo[i].EditorComponent = AnEditor;
+    with AllEditorsInfo[i] do
+      IsVisibleTab := (WindowID = AWindowID) and (EditorComponent = AnEditor);
+  AnEditorInfo := EditorInfoWithEditorComponent(AnEditor);
+  if AnEditorInfo = nil then Exit(nil);
+  Result := AnEditorInfo.UnitInfo;
+  if Assigned(Result) then
+    Result.SetLastUsedEditor(AnEditor);
 end;
 
 procedure TProject.UpdateAllVisibleUnits;
