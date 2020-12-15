@@ -297,6 +297,11 @@ begin
       Result := LCL_CAPABILITY_YES;
     lcAccelleratorKeys:
       Result := LCL_CAPABILITY_NO;
+    lcTextHint:
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+        Result := LCL_CAPABILITY_YES
+      else
+        Result := LCL_CAPABILITY_NO;
   else
     Result := inherited;
   end;

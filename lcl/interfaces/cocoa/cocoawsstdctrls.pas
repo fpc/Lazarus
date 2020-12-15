@@ -102,6 +102,7 @@ type
        WithThemeSpace: Boolean); override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetTextHint(const ACustomComboBox: TCustomComboBox; const ATextHint: string); override;
   end;
 
   { TCocoaWSCustomListBox }
@@ -158,6 +159,7 @@ type
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
   end;
   
   { TCocoaMemoStrings }
@@ -333,6 +335,8 @@ procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
   SkipChangeEvent: Boolean = true);
+procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
+procedure ObjSetTextHint(obj: NSObject; const str: string);
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 
@@ -484,6 +488,22 @@ begin
   AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
   AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
   AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
+end;
+
+procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
+var
+  ns : NSString;
+begin
+  if not Assigned(txt) then Exit;
+  ns := NSStringUtf8(str);
+  txt.setPlaceholderString(ns);
+  ns.release;
+end;
+
+procedure ObjSetTextHint(obj: NSObject; const str: string);
+begin
+  if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then Exit;
+  TextFieldSetTextHint(NSTextField(obj), str);
 end;
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
@@ -1189,6 +1209,14 @@ begin
       txt := UTF8Copy(txt, 1, mxl);
     ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
   end;
+end;
+
+class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
+  const ATextHint: string);
+begin
+  if NSAppKitVersionNumber <= NSAppKitVersionNumber10_10 then Exit;
+  if (ACustomEdit.HandleAllocated) then
+    ObjSetTextHint(NSObject(ACustomEdit.Handle), ATextHint);
 end;
 
 { TCocoaMemoStrings }
@@ -1970,6 +1998,16 @@ class procedure TCocoaWSCustomComboBox.SetText(const AWinControl: TWinControl;
 begin
   if (AWinControl.HandleAllocated) then
     ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetTextHint(
+  const ACustomComboBox: TCustomComboBox; const ATextHint: string);
+begin
+  if NSAppKitVersionNumber <= NSAppKitVersionNumber10_10 then
+    Exit;
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+    Exit;
+  ObjSetTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
 end;
 
 { TCocoaWSToggleBox }

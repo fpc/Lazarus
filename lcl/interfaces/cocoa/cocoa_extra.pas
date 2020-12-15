@@ -105,6 +105,7 @@ type
     procedure setBezeled_(flag: ObjCBool); message 'setBezeled:';
     procedure setEditable_(flag: ObjCBool); message 'setEditable:';
     procedure setSelectable_(flag: ObjCBool); message 'setSelectable:';
+    procedure setPlaceholderString(str: NSString); message 'setPlaceholderString:';
   end;
   {$endif}
 
