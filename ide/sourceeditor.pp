@@ -8682,26 +8682,19 @@ End;
 
 function TSourceNotebook.FindPageWithEditor(ASourceEditor: TSourceEditor): integer;
 var
-  LParent: TWinControl;
-  LTabSheet: TWinControl;
+  LTabSheet, LParent: TWinControl;
 begin
-  if (ASourceEditor.EditorComponent.Parent is TTabSheet) then
+  Result:=-1;
+  LParent := ASourceEditor.EditorComponent.Parent;
+  if LParent is TTabSheet then
   begin
-    LParent := ASourceEditor.EditorComponent.Parent.Parent;
-    LTabSheet := ASourceEditor.EditorComponent.Parent;
-    while (LParent <> FNotebook) and (LParent <> nil) do
-    begin
+    repeat
       LTabSheet := LParent;
       LParent := LParent.Parent;
-    end;
-
+    until (LParent = FNotebook) or (LParent = nil);
     if (LParent <> nil) and (LTabSheet is TTabSheet) then
-      Result:=TTabSheet(LTabSheet).PageIndex
-    else
-      Result:=-1;
-  end
-  else    
-    Result:=-1;
+      Result:=TTabSheet(LTabSheet).PageIndex;
+  end;
 end;
 
 function TSourceNotebook.FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor;
@@ -8845,7 +8838,7 @@ var
   CaretXY: TPoint;
   TopLine: Integer;
 Begin
-  if (not assigned(Manager)) or (FUpdateLock > 0) Then begin
+  if (Manager = nil) or (FUpdateLock > 0) Then begin
     Include(States, snNotebookPageChangedNeeded);
     exit;
   end;
