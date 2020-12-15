@@ -12,34 +12,25 @@
       </short>
       <descr/>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-      </element>
-      <element name="SysUtils">
-        <short/>
-      </element>
-      <element name="Math">
-        <short/>
-      </element>
-      <element name="LCLStrConsts">
-        <short/>
-      </element>
-      <element name="LCLType">
-        <short/>
-      </element>
-      <element name="LCLProc">
-        <short/>
-      </element>
-      <element name="LMessages">
-        <short/>
-      </element>
-      <element name="GraphType">
-        <short/>
-      </element>
-      <element name="GraphMath">
-        <short/>
-      </element>
+      <!-- unresolved external references -->
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="FPImage"/>
+      <element name="LazUTF8"/>
+      <element name="IntegerList"/>
+      <element name="LazUtilities"/>
+      <element name="LazLoggerBase"/>
+      <element name="GraphType"/>
+      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
+      <element name="LCLPlatformDef"/>
+      <element name="GraphMath"/>
+      <element name="IntfGraphics"/>
+      <element name="Themes"/>
+
       <!-- "type" alias type Visibility: default -->
       <element name="PEventHandler">
         <short/>

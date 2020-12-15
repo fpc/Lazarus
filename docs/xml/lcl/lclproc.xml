@@ -2,43 +2,31 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    LCLProc
-  ====================================================================
--->
+      ====================================================================
+      LCLProc
+      ====================================================================
+    -->
     <module name="LCLProc">
       <short>Useful lower level helper functions and classes</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Math">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <!-- unresolved external references -->
+      <element name="MacOSAll"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="Types"/>
+      <element name="Laz_AVL_Tree"/>
+      <element name="LazFileUtils"/>
+      <element name="LazUtilities"/>
+      <element name="LazMethodList"/>
+      <element name="LazUTF8"/>
+      <element name="LazUTF8Classes"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazTracer"/>
+      <element name="LCLStrConsts"/>
+      <element name="LCLType"/>
+
       <!-- object Visibility: default -->
       <element name="TMethodList">
         <short>A list for method references.</short>
@@ -430,36 +418,7 @@
         <seealso>
         </seealso>
       </element>
-<!-- record type Visibility: default -->
-      <element name="TLineInfoCacheItem">
-        <short>A record containing an address/description pair.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TLineInfoCacheItem.Addr">
-        <short>The address to describe.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TLineInfoCacheItem.Info">
-        <short>The descriptive text.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- pointer type Visibility: default -->
-      <element name="PLineInfoCacheItem" link="#lcl.lclproc.TLineInfoCacheItem"/>
-      <!-- function Visibility: default -->
+
       <element name="CompareDebugLCLItemInfos">
         <short>Compare function for the TDebugLCLItems AVL tree
         </short>
@@ -477,7 +436,7 @@
       <element name="CompareDebugLCLItemInfos.Data2">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="CompareItemWithDebugLCLItemInfo">
         <short>Compare function for <link id="TDebugLCLItems.FindInfo"/>.
         </short>
@@ -495,43 +454,7 @@
       <element name="CompareItemWithDebugLCLItemInfo.DebugItemInfo">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="CompareLineInfoCacheItems">
-        <short>Compare function for <link id="GetLineInfo"/>
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="CompareLineInfoCacheItems.Result">
-        <short/>
-      </element>
-      <element name="CompareLineInfoCacheItems.Data1">
-        <short/>
-      </element>
-      <element name="CompareLineInfoCacheItems.Data2">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="CompareAddrWithLineInfoCacheItem">
-        <short>Compare function for <link id="GetLineInfo"/>
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="CompareAddrWithLineInfoCacheItem.Result">
-        <short/>
-      </element>
-      <element name="CompareAddrWithLineInfoCacheItem.Addr">
-        <short/>
-      </element>
-      <element name="CompareAddrWithLineInfoCacheItem.Item">
-        <short/>
-      </element>
-      <!-- function type Visibility: default -->
+
       <element name="TStringsSortCompare">
         <short>Compare function type for TStrings Strings[].</short>
         <descr>
@@ -562,32 +485,41 @@
       <element name="MergeSort.OnCompare">
         <short>The sort compare function.</short>
       </element>
+      <element name="MergeSort.StartIndex">
+        <short/>
+      </element>
+      <element name="MergeSort.EndIndex">
+        <short/>
+      </element>
+
+      <element name="KeyAndShiftStateToKeyString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="KeyAndShiftStateToKeyString.Result">
+        <short/>
+      </element>
+      <element name="KeyAndShiftStateToKeyString.Key">
+        <short/>
+      </element>
+      <element name="KeyAndShiftStateToKeyString.ShiftState">
+        <short/>
+      </element>
+
+      <element name="KeyStringIsIrregular">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="KeyStringIsIrregular.Result">
+        <short/>
+      </element>
+      <element name="KeyStringIsIrregular.s">
+        <short/>
+      </element>
+
       <!-- function Visibility: default -->
-      <element name="GetEnumValueDef">
-        <short>Finds an enum member by name
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetEnumValueDef.Result">
-        <short>The member ordinal</short>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetEnumValueDef.TypeInfo">
-        <short>The enum TypeInfo.</short>
-      </element>
-      <element name="GetEnumValueDef.Name">
-        <short>The member name.</short>
-      </element>
-      <element name="GetEnumValueDef.DefaultValue">
-        <short>The value returned when the element was not found.</short>
-      </element>
-<!-- function Visibility: default -->
       <element name="ShortCutToText">
         <short>Returns the textual representation of an shortcut
         </short>
@@ -600,10 +532,22 @@
       <element name="ShortCutToText.ShortCut">
         <short/>
       </element>
+
+      <element name="ShortCutToTextRaw">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ShortCutToTextRaw.Result">
+        <short/>
+      </element>
+      <element name="ShortCutToTextRaw.ShortCut">
+        <short/>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="TextToShortCut">
-        <short>Converts the textual representation of an shortcut into an shortcut
-        </short>
+        <short>Converts the textual representation of an shortcut into an shortcut</short>
         <descr/>
         <seealso/>
       </element>
@@ -613,6 +557,19 @@
       <element name="TextToShortCut.ShortCutText">
         <short/>
       </element>
+
+      <element name="TextToShortCutRaw">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TextToShortCutRaw.Result">
+        <short/>
+      </element>
+      <element name="TextToShortCutRaw.ShortCutText">
+        <short/>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="GetCompleteText">
         <short>Find an string in a list, given its first few characters.
@@ -632,21 +589,16 @@
         <short>The list index where the search should start.</short>
       </element>
       <element name="GetCompleteText.bCaseSensitive">
-        <short>True means case-sensitive comparison
-        </short>
-      <notes><note>?</note>
-        </notes>
+        <short>True means case-sensitive comparison</short>
       </element>
       <element name="GetCompleteText.bSearchAscending">
-        <short>True means search ascending from iSelStart
-        </short>
-      <notes><note>?</note>
-        </notes>
+        <short>True means search ascending from iSelStart</short>
       </element>
       <element name="GetCompleteText.slTextList">
         <short>The list to search.
         </short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="IsEditableTextKey">
         <short/>
@@ -661,6 +613,7 @@
       <element name="IsEditableTextKey.Key">
         <short>The virtual key code.</short>
       </element>
+
       <!-- function type Visibility: default -->
       <element name="TSendApplicationMessageFunction">
         <short/>
@@ -679,7 +632,7 @@
       <element name="TSendApplicationMessageFunction.LParam">
         <short/>
       </element>
-      <!-- procedure type Visibility: default -->
+
       <element name="TOwnerFormDesignerModifiedProc">
         <short/>
         <descr/>
@@ -688,19 +641,25 @@
       <element name="TOwnerFormDesignerModifiedProc.AComponent">
         <short/>
       </element>
-      <!-- variable Visibility: default -->
+
       <element name="SendApplicationMessageFunction">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
+
+      <element name="SendApplicationMessageFunction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="OwnerFormDesignerModifiedProc">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="SendApplicationMessage">
         <short/>
         <descr/>
@@ -719,6 +678,7 @@
       <element name="SendApplicationMessage.LParam">
         <short/>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="OwnerFormDesignerModified">
         <short/>
@@ -880,41 +840,25 @@
       <element name="DeleteAmpersands.Str">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="BreakString">
+
+      <element name="RemoveAmpersands">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <element name="BreakString.Result">
+      <element name="RemoveAmpersands.Result">
         <short/>
       </element>
-      <element name="BreakString.s">
+      <element name="RemoveAmpersands.ASource">
         <short/>
       </element>
-      <element name="BreakString.MaxLineLength">
+      <element name="RemoveAmpersands.Src">
         <short/>
       </element>
-      <element name="BreakString.Indent">
+      <element name="RemoveAmpersands.LineLength">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="ComparePointers">
-        <short>Compares two pointers, returning the Sign of the difference.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ComparePointers.Result">
-        <short>+1 if p1 is higher than p2, -1 if p2 is higher than p1, 0 if both are equal.
-        </short>
-      </element>
-      <element name="ComparePointers.p1">
-        <short/>
-      </element>
-      <element name="ComparePointers.p2">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="CompareHandles">
         <short>Compares two Handles, returning the Sign of the difference.</short>
         <descr/>
@@ -930,26 +874,7 @@
       <element name="CompareHandles.h2">
         <short/>
       </element>
-     <!-- function Visibility: default -->
-      <element name="CompareLCLHandles">
-        <short>Compares two LCLHandles, returning the Sign of the difference.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="CompareLCLHandles.Result">
-        <short/>
-      </element>
-      <element name="CompareLCLHandles.h1">
-        <short/>
-      </element>
-      <element name="CompareLCLHandles.h2">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="CompareRect">
         <short>Returns True when the two rectangles are equal.</short>
         <descr/>
@@ -985,16 +910,31 @@
       <element name="ComparePoints.p2">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
+      <element name="CompareCaret">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CompareCaret.Result">
+        <short/>
+      </element>
+      <element name="CompareCaret.FIrstCaret">
+        <short/>
+      </element>
+      <element name="CompareCaret.SecondCaret">
+        <short/>
+      </element>
+
       <element name="CompareMethods">
-        <short>Returns true when both method references are equal.
-        </short>
+        <short>Returns true when both method references are equal</short>
         <descr>
+          Deprecated. Use LazMethodList.CompareMethods instead.
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="CompareMethods.Result">
         <short/>
@@ -1002,19 +942,39 @@
       <element name="CompareMethods.m1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CompareMethods.m2">
       <short/>
       </element>
-      <!-- function Visibility: default -->
+
+      <element name="ComparePointers">
+        <short/>
+        <descr>
+          Deprecated. Use LazUtilities.ComparePointers instead.
+        </descr>
+        <seealso/>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
+      </element>
+      <element name="ComparePointers.Result">
+        <short/>
+      </element>
+      <element name="ComparePointers.p1">
+        <short/>
+      </element>
+      <element name="ComparePointers.p2">
+        <short/>
+      </element>
+
       <element name="RoundToInt">
         <short>Returns the rounded value as an Integer.</short>
-        <descr/>
-        <errors>
-        </errors>
+        <descr>
+          Deprecated. Use LazUtilities.RoundToInt instead.
+        </descr>
         <seealso/>
-      <notes><note>What if the result exceeds the Integer range?</note>
-        </notes>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="RoundToInt.Result">
         <short/>
@@ -1022,15 +982,16 @@
       <element name="RoundToInt.e">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="RoundToCardinal">
         <short>Returns the rounded value as an Cardinal.</short>
-        <descr/>
-        <errors>
-        </errors>
+        <descr>
+          Deprecated. Use LazUtilities.RoundToCardinal instead.
+        </descr>
         <seealso/>
-      <notes><note>What if the result exceeds the Cardinal range?</note>
-        </notes>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="RoundToCardinal.Result">
         <short/>
@@ -1038,15 +999,16 @@
       <element name="RoundToCardinal.e">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="TruncToInt">
         <short>Returns the truncated value as an Integer.</short>
-        <descr/>
-        <errors>
-        </errors>
+        <descr>
+          Deprecated. Use LazUtilities.TruncToInt instead.
+        </descr>
         <seealso/>
-      <notes><note>What if the result exceeds the Integer range?</note>
-        </notes>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="TruncToInt.Result">
         <short/>
@@ -1054,15 +1016,16 @@
       <element name="TruncToInt.e">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="TruncToCardinal">
         <short>Returns the rounded value as an Cardinal.</short>
-        <descr/>
-        <errors>
-        </errors>
+        <descr>
+          Deprecated. Use LazUtilities.TruncToCardinal instead.
+        </descr>
         <seealso/>
-      <notes><note>What if the result exceeds the Cardinal range?</note>
-        </notes>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="TruncToCardinal.Result">
         <short/>
@@ -1070,12 +1033,16 @@
       <element name="TruncToCardinal.e">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="StrToDouble">
         <short>Converts an numeric string into an Double value.</short>
-        <descr/>
-        <errors/>
+        <descr>
+          Deprecated. Use LazUtilities.StrToDouble instead.
+        </descr>
         <seealso/>
+        <version>
+          Deprecated in LCL version 2.1. Will be removed in version 2.3.
+        </version>
       </element>
       <element name="StrToDouble.Result">
         <short/>
@@ -1083,7 +1050,7 @@
       <element name="StrToDouble.s">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RaiseGDBException">
         <short>Raises an exception.</short>
         <descr>
@@ -1095,118 +1062,7 @@
       <element name="RaiseGDBException.Msg">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="RaiseAndCatchException">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DumpExceptionBackTrace">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DumpStack">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetStackTrace">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetStackTrace.Result">
-        <short/>
-      </element>
-      <element name="GetStackTrace.UseCache">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="GetStackTracePointers">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetStackTracePointers.AStack">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="StackTraceAsString">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="StackTraceAsString.Result">
-        <short/>
-      </element>
-      <element name="StackTraceAsString.AStack">
-        <short/>
-      </element>
-      <element name="StackTraceAsString.UseCache">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetLineInfo">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetLineInfo.Result">
-        <short/>
-      </element>
-      <element name="GetLineInfo.Addr">
-        <short/>
-      </element>
-      <element name="GetLineInfo.UseCache">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DebugLn">
         <short>Writes a number of strings (heavily overloaded) to the debug output</short>
         <errors/>
@@ -1267,7 +1123,7 @@
       <element name="DebugLn.s16">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DebugLnEnter">
         <short/>
         <descr>
@@ -1303,7 +1159,7 @@
       <element name="DebugLnEnter.s16"/>
       <element name="DebugLnEnter.s17"/>
       <element name="DebugLnEnter.s18"/>
-      <!-- procedure Visibility: default -->
+
       <element name="DebugLnExit">
         <short/>
         <descr>
@@ -1339,14 +1195,12 @@
       <element name="DebugLnExit.s16"/>
       <element name="DebugLnExit.s17"/>
       <element name="DebugLnExit.s18"/>
-      <!-- procedure Visibility: default -->
+
       <element name="DbgOut">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
-      <notes><note>?</note>
-        </notes>
       </element>
       <element name="DbgOut.s">
         <short/>
@@ -1368,7 +1222,7 @@
       <element name="DbgOut.s10"/>
       <element name="DbgOut.s11"/>
       <element name="DbgOut.s12"/>
-      <!-- function Visibility: default -->
+
       <element name="DbgS">
         <short>Formats debug output for various argument types (overloaded).</short>
         <descr>
@@ -1445,7 +1299,7 @@
       <element name="DbgS.AScrollInfo">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="DbgSName">
         <short>Returns the component or class name.</short>
         <descr/>
@@ -1457,7 +1311,7 @@
       <element name="DbgSName.p">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="DbgStr">
         <short>Converts control characters or above #126 into #hex format.
         </short>
@@ -1470,7 +1324,7 @@
       <element name="DbgStr.StringWithSpecialChars">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="DbgWideStr">
         <short>
           Converts control characters or above #126 into #hex format.
@@ -1486,7 +1340,7 @@
       <element name="DbgWideStr.StringWithSpecialChars">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="dbgMemRange">
         <short>Provides an hex dump of a memory section.
         </short>
@@ -1507,7 +1361,7 @@
       <element name="dbgMemRange.Width">
         <short>The number of bytes per line, zero for no line breaks.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="dbgMemStream">
         <short>Provides an hex dump of an memory stream.
         </short>
@@ -1531,7 +1385,6 @@
         <short>The maximum number of bytes to dump.</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="dbgObjMem">
         <short>Provides an hex dump of an TObject.
         </short>
@@ -1549,7 +1402,6 @@
         <short/>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="dbghex">
         <short>Provides an hex dump of an Int64, (sign + absolute value).
         </short>
@@ -1566,7 +1418,7 @@
       <element name="dbghex.i">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="DbgSWindowPosFlags">
         <short>Provides an dump of SetWindowPosition flags.</short>
         <descr>
@@ -1580,7 +1432,7 @@
       <element name="DbgSWindowPosFlags.Flags">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="DbgsVKCode">
         <short>Translates an virtual key code into its VK_... name.
         </short>
@@ -1595,7 +1447,7 @@
       <element name="DbgsVKCode.c">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DbgOutThreadLog">
         <short/>
         <descr>
@@ -1606,7 +1458,7 @@
       <element name="DbgOutThreadLog.Msg">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DebuglnThreadLog">
         <short/>
         <descr>
@@ -1622,7 +1474,7 @@
       <notes><note>?</note>
         </notes>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DbgSaveData">
         <short>Writes data into an file</short>
         <descr>
@@ -1639,7 +1491,7 @@
       <element name="DbgSaveData.ADataSize">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DbgAppendToFile">
         <short>Appends a line to the given file</short>
         <descr>
@@ -1653,7 +1505,7 @@
       <element name="DbgAppendToFile.S">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DbgAppendToFileWithoutLn">
         <short>Appends (preformatted) text to an file</short>
         <descr>
@@ -1669,7 +1521,7 @@
       <element name="DbgAppendToFileWithoutLn.S">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="CloseDebugOutput">
         <short/>
         <descr>
@@ -1679,124 +1531,11 @@
         <seealso>
         </seealso>
       </element>
-      <!-- function Visibility: default -->
-      <element name="StripLN">
-        <short>Strips everything after (and including) an CR or LF.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="StripLN.Result">
-        <short/>
-      </element>
-      <element name="StripLN.ALine">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetPart">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="GetPart.Result">
-        <short/>
-      </element>
-      <element name="GetPart.ASkipTo">
-        <short/>
-      </element>
-      <element name="GetPart.AnEnd">
-        <short/>
-      </element>
-      <element name="GetPart.ASource">
-        <short/>
-      </element>
-      <element name="GetPart.AnIgnoreCase">
-        <short/>
-      </element>
-      <element name="GetPart.AnUpdateSource">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="TextToSingleLine">
-        <short>Compresses multi-line text into a single line.
-        </short>
-        <descr>
-          <p>
-            Converts a multiline string to a single line. Replaces CR and LF with spaces. Removes duplicate spaces.
-          </p>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TextToSingleLine.Result">
-        <short/>
-      </element>
-      <element name="TextToSingleLine.AText">
-        <short/>
-      </element>
-      <element name="SwapCase">
-        <short>
-          Toggles the case of all ASCII characters in an string.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="SwapCase.Result">
-        <short/>
-      </element>
-      <element name="SwapCase.S">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="StringCase">
-        <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="StringCase.Result">
-        <short/>
-      </element>
-      <element name="StringCase.AString">
-        <short/>
-      </element>
-      <element name="StringCase.ACase">
-        <short/>
-      </element>
-      <element name="StringCase.AIgnoreCase">
-        <short/>
-      </element>
-      <element name="StringCase.APartial">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="ClassCase">
         <short/>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ClassCase.Result">
         <short/>
@@ -1810,436 +1549,19 @@
       <element name="ClassCase.ADecendant">
         <short/>
       </element>
-      <!-- "type" alias type Visibility: default -->
+
       <element name="UTF16String">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- pointer type Visibility: default -->
+
       <element name="PUTF16String" link="UTF16String">
-        <short>
-          Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CharacterLength">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8CharacterLength.Result">
         <short/>
-      </element>
-      <element name="UTF8CharacterLength.p">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8Length">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="UTF8Length.Result">
-        <short/>
-      </element>
-      <element name="UTF8Length.s">
-        <short/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8Length.p">
-        <short/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8Length.ByteCount">
-        <short/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CharacterToUnicode">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8CharacterToUnicode.Result">
-        <short/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8CharacterToUnicode.p">
-        <short/>
-      </element>
-      <element name="UTF8CharacterToUnicode.CharLen">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UnicodeToUTF8">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
         <descr/>
         <seealso/>
       </element>
-      <element name="UnicodeToUTF8.Result">
-        <short/>
-      </element>
-      <element name="UnicodeToUTF8.u">
-        <short/>
-      </element>
-      <element name="UnicodeToUTF8.Buf">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UnicodeToUTF8SkipErrors">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UnicodeToUTF8SkipErrors.Result">
-        <short/>
-      </element>
-      <element name="UnicodeToUTF8SkipErrors.u">
-        <short/>
-      </element>
-      <element name="UnicodeToUTF8SkipErrors.Buf">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8ToDoubleByteString">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8ToDoubleByteString.Result">
-        <short/>
-      </element>
-      <element name="UTF8ToDoubleByteString.s">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8ToDoubleByte">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8ToDoubleByte.Result">
-        <short/>
-      </element>
-      <element name="UTF8ToDoubleByte.UTF8Str">
-        <short/>
-      </element>
-      <element name="UTF8ToDoubleByte.Len">
-        <short/>
-      </element>
-      <element name="UTF8ToDoubleByte.DBStr">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8FindNearestCharStart">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8FindNearestCharStart.Result">
-        <short/>
-      </element>
-      <element name="UTF8FindNearestCharStart.UTF8Str">
-        <short/>
-      </element>
-      <element name="UTF8FindNearestCharStart.Len">
-        <short/>
-      </element>
-      <element name="UTF8FindNearestCharStart.BytePos">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CharStart">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8CharStart.Result">
-        <short/>
-      </element>
-      <element name="UTF8CharStart.UTF8Str">
-        <short/>
-      </element>
-      <element name="UTF8CharStart.Len">
-        <short/>
-      </element>
-      <element name="UTF8CharStart.CharIndex">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CharToByteIndex">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      <descr>
-      </descr>
-      <errors>
-      </errors>
-      <seealso>
-      </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8CharToByteIndex.Result">
-       <short/>
-      </element>
-      <element name="UTF8CharToByteIndex.UTF8Str">
-        <short/>
-      </element>
-      <element name="UTF8CharToByteIndex.Len">
-        <short/>
-      </element>
-      <element name="UTF8CharToByteIndex.CharIndex">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="UTF8FixBroken">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
-      </element>
-      <element name="UTF8FixBroken.P">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CharacterStrictLength">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="UTF8CharacterStrictLength.Result">
-        <short/>
-      </element>
-      <element name="UTF8CharacterStrictLength.P">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CStringToUTF8String">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="UTF8CStringToUTF8String.Result">
-        <short/>
-      </element>
-      <element name="UTF8CStringToUTF8String.SourceStart">
-        <short/>
-      </element>
-      <element name="UTF8CStringToUTF8String.SourceLen">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8Pos">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="UTF8Pos.Result">
-        <short/>
-      </element>
-      <element name="UTF8Pos.SearchForText">
-        <short/>
-      </element>
-      <element name="UTF8Pos.SearchInText">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8Copy">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="UTF8Copy.Result">
-        <short/>
-      </element>
-      <element name="UTF8Copy.s">
-        <short/>
-      </element>
-      <element name="UTF8Copy.StartCharIndex">
-        <short/>
-      </element>
-      <element name="UTF8Copy.CharCount">
-        <short/>
-      </element>
-      <element name="UTF8Delete">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="UTF8Delete.s">
-        <short/>
-      </element>
-      <element name="UTF8Delete.StartCharIndex">
-        <short/>
-      </element>
-      <element name="UTF8Delete.CharCount">
-        <short/>
-      </element>
-      <element name="UTF8Insert">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="UTF8Insert.source">
-        <short/>
-      </element>
-      <element name="UTF8Insert.s">
-        <short/>
-      </element>
-      <element name="UTF8Insert.StartCharIndex">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8LowerCase">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="UTF8LowerCase.Result">
-        <short/>
-      </element>
-      <element name="UTF8LowerCase.s">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8UpperCase">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="UTF8UpperCase.Result">
-        <short/>
-      </element>
-      <element name="UTF8UpperCase.s">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="FindInvalidUTF8Character">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="FindInvalidUTF8Character.Result">
-        <short/>
-      </element>
-      <element name="FindInvalidUTF8Character.p">
-        <short/>
-      </element>
-      <element name="FindInvalidUTF8Character.Count">
-        <short/>
-      </element>
-      <element name="FindInvalidUTF8Character.StopOnNonASCII">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="ValidUTF8String">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="ValidUTF8String.Result">
-        <short/>
-      </element>
-      <element name="ValidUTF8String.s">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="AssignUTF8ListToAnsi">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="AssignUTF8ListToAnsi.UTF8List">
-        <short/>
-      </element>
-      <element name="AssignUTF8ListToAnsi.AnsiList">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="UTF16CharacterLength">
         <short>
           Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
@@ -2251,7 +1573,7 @@
       <element name="UTF16CharacterLength.p">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="UTF16Length">
         <short>
           Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
@@ -2269,7 +1591,7 @@
       <element name="UTF16Length.WordCount">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="UTF16CharacterToUnicode">
         <short>
           Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
@@ -2284,7 +1606,7 @@
       <element name="UTF16CharacterToUnicode.CharLen">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="UnicodeToUTF16">
         <short>
           Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
@@ -2296,148 +1618,7 @@
       <element name="UnicodeToUTF16.u">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CompareStr">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="UTF8CompareStr.Result">
-        <short/>
-      </element>
-      <element name="UTF8CompareStr.S1">
-        <short/>
-      </element>
-      <element name="UTF8CompareStr.S2">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8CompareText">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="UTF8CompareText.Result">
-        <short/>
-      </element>
-      <element name="UTF8CompareText.S1">
-        <short/>
-      </element>
-      <element name="UTF8CompareText.S2">
-        <short/>
-      </element>
-      <!-- alias type Visibility: default -->
-      <element name="TConvertResult">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <!-- alias type Visibility: default -->
-      <element name="TConvertOption">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <!-- alias type Visibility: default -->
-      <element name="TConvertOptions">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="ConvertUTF8ToUTF16">
-        <short>
-          Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="ConvertUTF8ToUTF16.Result">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.Dest">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.DestWideCharCount">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.Src">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.SrcCharCount">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.Options">
-        <short/>
-      </element>
-      <element name="ConvertUTF8ToUTF16.ActualWideCharCount">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="ConvertUTF16ToUTF8">
-        <short>
-          Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="ConvertUTF16ToUTF8.Result">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.Dest">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.DestCharCount">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.Src">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.SrcWideCharCount">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.Options">
-        <short/>
-      </element>
-      <element name="ConvertUTF16ToUTF8.ActualCharCount">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8ToUTF16">
-        <short>
-          Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="UTF8ToUTF16.Result">
-        <short/>
-      </element>
-      <element name="UTF8ToUTF16.S">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="UTF16ToUTF8">
-        <short>Replaces last digits with a decimal number one higher</short>
-        <descr>For example Name21 becomes Name22.</descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="UTF16ToUTF8.Result">
-        <short/>
-      </element>
-      <element name="UTF16ToUTF8.S">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="LCLGetLanguageIDs">
-        <short>
-          Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
-        </short>
-      </element>
-      <element name="LCLGetLanguageIDs.Lang">
-        <short/>
-      </element>
-      <element name="LCLGetLanguageIDs.FallbackLang">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="CreateFirstIdentifier">
         <short>Replaces last digits with 1</short>
         <descr>For example Name321 becomes Name1</descr>
@@ -2450,7 +1631,7 @@
       <element name="CreateFirstIdentifier.Identifier">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="CreateNextIdentifier">
         <short>
           Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> package for replacements
@@ -2462,36 +1643,37 @@
       <element name="CreateNextIdentifier.Identifier">
         <short/>
       </element>
-      <!-- variable Visibility: default -->
+
+      <element name="IsFontNameDefault">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="IsFontNameDefault.Result">
+        <short/>
+      </element>
+      <element name="IsFontNameDefault.AName">
+        <short/>
+      </element>
+
       <element name="DebugLnMaxNestPrefixLen">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
+
       <element name="DebugLnNestLvlIndent">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
+
       <element name="DebugText">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <descr/>
+        <seealso/>
       </element>
+
     </module>
     <!-- LCLProc -->
   </package>

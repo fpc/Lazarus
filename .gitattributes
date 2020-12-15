@@ -6139,7 +6139,7 @@ docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/asyncprocess.xml svneol=native#text/plain
 docs/xml/lcl/buttonpanel.xml svneol=native#text/plain
 docs/xml/lcl/buttons.xml svneol=native#text/xml
-docs/xml/lcl/calcform.xml -text svneol=native#text/plain
+docs/xml/lcl/calcform.xml svneol=native#text/plain
 docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/calendarpopup.xml svneol=native#text/plain
 docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf

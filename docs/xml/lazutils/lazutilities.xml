@@ -10,6 +10,11 @@
       <short></short>
       <descr></descr>
 
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="TypInfo"/>
+
       <element name="FreeThenNil">
         <short></short>
         <descr></descr>
@@ -55,6 +60,84 @@
       </element>
       <element name="CompareBoolean.b2">
         <short></short>
+      </element>
+
+      <element name="GetEnumValueDef">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="GetEnumValueDef.Result">
+        <short/>
+      </element>
+      <element name="GetEnumValueDef.TypeInfo">
+        <short/>
+      </element>
+      <element name="GetEnumValueDef.Name">
+        <short/>
+      </element>
+      <element name="GetEnumValueDef.DefaultValue">
+        <short/>
+      </element>
+
+      <element name="RoundToInt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="RoundToInt.Result">
+        <short/>
+      </element>
+      <element name="RoundToInt.e">
+        <short/>
+      </element>
+
+      <element name="RoundToCardinal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="RoundToCardinal.Result">
+        <short/>
+      </element>
+      <element name="RoundToCardinal.e">
+        <short/>
+      </element>
+
+      <element name="TruncToInt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TruncToInt.Result">
+        <short/>
+      </element>
+      <element name="TruncToInt.e">
+        <short/>
+      </element>
+
+      <element name="TruncToCardinal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TruncToCardinal.Result">
+        <short/>
+      </element>
+      <element name="TruncToCardinal.e">
+        <short/>
+      </element>
+
+      <element name="StrToDouble">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="StrToDouble.Result">
+        <short/>
+      </element>
+      <element name="StrToDouble.s">
+        <short/>
       </element>
 
       <element name="MergeSortWithLen">

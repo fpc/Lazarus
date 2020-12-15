@@ -3530,7 +3530,8 @@
         </seealso>
       </element>
 
-      <element name="TPen.Style" link="#fcl.fpcanvas.TFPCustomPen.Style">
+      <element name="TPen.Style">
+        <short/>
         <descr>
           <p>
             Style can contain one of the following values:
@@ -4649,15 +4650,29 @@
       </element>
 
       <element name="TGraphic.LazarusResourceTypeValid">
-        <short>
-          Check that the Resource specified for reading or writing is a valid type - result True if it is
-        </short>
+        <short>Determines if the specified resource type is valid for the image format</short>
+        <descr>
+          <p>
+            <var>LazarusResourceTypeValid</var> is a Boolean function used to determine if the specified resource type is valid for the image format.
+          </p>
+          <p>
+            LazarusResourceTypeValid always returns <b>False</b> in <var>TGraphic</var>. The method must be overridden in descendent classes to check for resource type(s) supported for a specific image format.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitmap.LazarusResourceTypeValid"/>
+          <link id="TFPImageBitmap.LazarusResourceTypeValid"/>
+          <link id="TPixmap.LazarusResourceTypeValid"/>
+          <link id="TCustomIcon.LazarusResourceTypeValid"/>
+          <link id="TIcnsIcon.LazarusResourceTypeValid"/>
+          <link id="TCursorImage.LazarusResourceTypeValid"/>
+        </seealso>
       </element>
       <element name="TGraphic.LazarusResourceTypeValid.Result">
-        <short/>
+        <short>Returns True when ResourceType is supported in the image format</short>
       </element>
       <element name="TGraphic.LazarusResourceTypeValid.AResourceType">
-        <short>The Resource type which is to be checked</short>
+        <short>The resource type examined in the method</short>
       </element>
 
       <element name="TGraphic.LoadFromFile">
@@ -4710,11 +4725,17 @@
       </element>
 
       <element name="TGraphic.LoadFromMimeStream">
-        <short>Loads the MIME-encoded data for the graphic from the specified stream</short>
+        <short>Loads the from the specified stream for the given MIME type</short>
         <descr>
           <p>
-            <var>LoadFromMimeStream </var> reads graphic data from a MIME-encoded stream.
+            <var>LoadFromMimeStream</var> reads graphic data from a stream for the given MIME type. LoadFromMimeStream compares the value in AMimeType to the value in the MimeType property. When the values are the same, the LoadFromStream method is called the load the image data for the graphic from the stream in AStream.
           </p>
+          <p>
+            In TGraphic, an <var>EInvalidGraphic</var> is raised when AMimeType contains any value other than an empty string (<b>''</b>).
+          </p>
+          <remark>
+            Must be overridden in a descendent class to provide support for a MIME type representing a specific image format.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -4722,7 +4743,7 @@
         <short>Stream with the content loaded in the method</short>
       </element>
       <element name="TGraphic.LoadFromMimeStream.AMimeType">
-        <short>MIME type expected in the stream content</short>
+        <short>MIME type representing the stream content</short>
       </element>
 
       <element name="TGraphic.LoadFromLazarusResource">
@@ -4912,9 +4933,7 @@
       </element>
 
       <element name="TGraphic.GetFileExtensions">
-        <short>
-          <var>GetFileExtensions</var> - returns a list of the file extensions available
-        </short>
+        <short>Returns a list of the file extensions available</short>
         <descr>
           <p>
             <var>GetFileExtensions</var> is a <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a <b>SemiColon</b> (<b>;</b>) character. For example:
@@ -8545,6 +8564,14 @@
 
       <element name="TBitmapHandleType">
         <short>Represents handle types used for Bitmaps</short>
+        <!--
+          TODO:
+          Needs information  about the differences bnetween handle types.
+          Stored image resolution.
+          Color organization per device context.
+          Scanline order.
+          Image headers.
+        -->
         <descr>
           <p>
             <var>TBitmapHandleType</var> is an enumerated type with values that represent handle types available for Bitmaps. On Windows platforms, the handle may represent  two distinctly different storage mechanisms:
@@ -8557,7 +8584,7 @@
             The handle type indicates the storage format and content for the Bitmap.
           </p>
           <p>
-            TBitmapHandleType is the type used to implement the <var>HandleType</var> property in <var>TSharedCustomBitmap</var>.
+            TBitmapHandleType is the type used to implement the <var>HandleType</var> property in <var>TCustomBitmap</var> and <var>TSharedCustomBitmap</var>.
           </p>
         </descr>
         <seealso>
@@ -8581,7 +8608,7 @@
       <element name="TSharedRasterImage.FBitmapCanvas"/>
       <element name="TSharedRasterImage.FSaveStream"/>
 
-      <element name="TSharedRasterImage.FreeHandle" link="#lcl.graphics.TSharedImage.FreeHandle">
+      <element name="TSharedRasterImage.FreeHandle">
         <short>Frees the handle for the shared image</short>
         <descr>
           <p>
@@ -8594,7 +8621,9 @@
             No actions are performed in the method when the handle is already set to <b>0</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TSharedImage.FreeHandle"/>
+        </seealso>
       </element>
 
       <element name="TSharedRasterImage.ReleaseHandle">
@@ -8976,7 +9005,7 @@
         <short>Not used in the current implementation</short>
       </element>
 
-      <element name="TRasterImage.Draw" link="#lcl.graphics.TGraphic.Draw">
+      <element name="TRasterImage.Draw">
         <short>Renders the image to the specified canvas</short>
         <descr>
           <p>
@@ -8998,7 +9027,9 @@
             Draw uses the Device Contexts for Canvas and DestCanvas, and calls the <var>StretchMaskBlt</var> routine in the LCL interface to render the image using methods in the widgetset. The <var>Changing</var> method in DestCanvas is called before drawing the image. The <var>Changed</var> method in DestCanvas is called after the image is drawn.
           </p>
         </descr>
-        <seealso/>
+      <seealso>
+        <link id="TGraphic.Draw"/>
+      </seealso>
       </element>
       <element name="TRasterImage.Draw.DestCanvas">
         <short>Canvas where the image is rendered</short>
@@ -9011,10 +9042,11 @@
         <short>Gets the value for the Empty property</short>
         <descr>
           <p>
-            Implements the abstract virtual method defined in the ancestor. Property value contains the result from the IsEmpty method in the shared raster image for the class instance.
+            Implements the abstract virtual method defined in the ancestor. The property value contains the result from the IsEmpty method in the shared raster image for the class instance.
           </p>
         </descr>
         <seealso>
+          <link id="TSharedRasterImage.IsEmpty"/>
           <link id="TGraphic.Empty"/>
         </seealso>
       </element>
@@ -9595,7 +9627,7 @@
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create ensures that the internal shared image instance is created and referenced for the implementation.
           </p>
           <p>
-            Create sets the default value for the <var>TransparentColor</var> property to <var>clDefault</var>. This is done for Delphi compatibility where clDefault that the bottom left pixel in the image is used as the transparent color.
+            Create sets the default value for the <var>TransparentColor</var> property to <var>clDefault</var>. This is done for Delphi compatibility where clDefault indicates that the bottom left pixel in the image is used as the transparent color.
           </p>
         </descr>
         <seealso>
@@ -9860,13 +9892,28 @@
         <short>Number of byte to read from the stream</short>
       </element>
 
-      <!-- WIP -->
-
       <element name="TRasterImage.LoadFromMimeStream">
-        <short>Loads image data from a stream with the specified MIME type</short>
-        <descr/>
+        <short>Loads image data from a stream for the specified MIME type</short>
+        <descr>
+          <p>
+            <var>LoadFromMimeStream</var> is an overridden method in <var>TRasterImage</var>.
+          </p>
+          <p>
+            LoadFromMimeStream examines the <var>ClassType</var> for the image to determine if it is handled in the overridden method. <var>TBitmap</var>, <var>TPixmap</var>, and <var>TCustomIcon</var> descendants are handled in the method.
+          </p>
+          <p>
+            LoadFromMimeStream compares the value in <var>AMimeType</var> to the <var>PredefinedClipboardMimeTypes</var> values defined in LCL. If AMimeType matches one of the values defined for TPixmap or TBitmap, then the <var>LoadFromStream</var> method is called to load image data from <var>AStream</var>.
+          </p>
+          <p>
+            Other ClassType or MIME type values cause the inherited <var>LoadFromMimeStream</var> method to be called.
+          </p>
+          <p>
+            LoadFromMimeStream is used in the implementation of the <var>AssignGraphic</var> method in <var>TClipboard</var>.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.graphics.TGraphic.LoadFromMimeStream"/>
+          <link id="#lcl.clipbrd.TClipboard.AssignGraphic"/>
         </seealso>
       </element>
       <element name="TRasterImage.LoadFromMimeStream.AStream">
@@ -9879,7 +9926,23 @@
 
       <element name="TRasterImage.LoadFromRawImage">
         <short>Loads image data from the specified TRawImage instance</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>LoadFromRawImage</var> is a procedure used to load raw image data in <var>AImage</var> into the class instance.
+          </p>
+          <p>
+            LoadFromRawImage calls <var>BeginUpdate</var> to increment the update process count, and calls <var>EndUpdate</var> when the image data has been loaded in the method.
+          </p>
+          <p>
+            LoadFromRawImage calls <var>Clear</var> to free the internal save stream for the class instance, and calls <var>SetSize</var> to reflect an empty image. No additional actions are performed in the method If AImage contains an empty image.
+          </p>
+          <p>
+            The Image Descriptor in AImage is assigned to the internal <var>TRawImage</var> instance to capture the image metadata.
+          </p>
+          <p>
+            <var>ADataOwner</var> indicates if the internal TRawImage instance is the owner for the image data in AImage. When set to <b>True</b>, values in AImage data are assigned directly to the pointer to the internal raw image data. Values include the size and content for the image data, the image mask, and the palette. When set to <b>False</b>, storage for values is allocated using <var>GetMem</var> and copied from AImage using the <var>Move</var> routine.
+          </p>
+        </descr>
         <seealso>
           <link id="#lazutils.graphtype.TRawImage"/>
         </seealso>
@@ -9893,24 +9956,41 @@
 
       <element name="TRasterImage.LoadFromIntfImage">
         <short>
-          <var>LoadFromIntfImage</var> - loads image data from an Interface stream
+          Loads the image from a TLazIntfImage instance
         </short>
-        <descr/>
+        <descr>
+          Calls the CreateBitmaps method to create the image and mask handles used to access the image data.
+          Calls SetHandles to apply the image and mask handles to the class instance.
+        </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.LoadFromIntfImage.IntfImage">
-        <short/>
+        <short>TLazIntfImage instance with image data loaded in the method</short>
       </element>
 
       <element name="TRasterImage.SaveToStream">
-        <short>
-          <var>SaveToStream</var> - write graphic data to a stream, with error checking
-        </short>
+        <short>Saves image data to the specified stream</short>
         <descr>
-          <var>SaveToStream</var> - write graphic data to a stream
+          <p>
+            <var>SaveToStream</var> is an overridden method used to write image data to the stream specified in <var>AStream</var>.
+          </p>
+          <p>
+            SaveToStream calls <var>SaveStreamNeeded</var> to ensure that an internal save stream exists in the class instance. An <var>EInvalidGraphicOperation</var> exception is raised in SaveStreamNeeded when the active update count for the count is not 0 (zero). An <var>FPImageException</var> is raised when a TMemoryStream instance could not be created and initialized in SaveStreamNeeded.
+          </p>
+          <p>
+            SaveToStream resets the internal save to stream to its origin, and resizes AStream to include sufficient storage for the values in the internal save stream. The <var>CopyFrom</var> method in AStream is called to store the content for the internal shared image.  An <var>FPImageException</var> is raised when the number of bytes written in the CopyFrom method does not match the size for the internal save stream.
+          </p>
         </descr>
+        <errors>
+          <p>
+            Raises an FPImageException exception when the number of bytes written to the stream does not match the size for the raw image data.
+           </p>
+           <p>
+             An Exception may be raised in SaveToStream (called in the method).
+           </p>
+        </errors>
         <seealso>
-          <link id="#lcl.graphics.TGraphic.SaveToStream">TGraphic.SaveToStream</link>
+          <link id="TGraphic.SaveToStream"/>
         </seealso>
       </element>
       <element name="TRasterImage.SaveToStream.AStream">
@@ -9918,12 +9998,21 @@
       </element>
 
       <element name="TRasterImage.GetSupportedSourceMimeTypes">
-        <short>
-          <var>GetSupportedSourceMimeTypes</var> calls inherited method and allows addition of extra types not specified there
-        </short>
-        <descr/>
+        <short>Gets a list of supported MIME types for image data used in the image type</short>
+        <descr>
+          <p>
+            <var>GetSupportedSourceMimeTypes</var> is an overridden method in <var>TRasterImage</var> used to get the list of MIME types used for image data in the image type. <var>List</var> is the <var>TStrings</var> instance where the list of supported MIME types is stored.
+          </p>
+          <p>
+            GetSupportedSourceMimeTypes uses the value in <var>ClassType</var> to determine if the request is handled in the overridden method. It is handled in the method when ClassType is <var>TBitmap</var>, <var>TPixmap</var>, or <var>TCustomIcon</var>. Values in the <var>PredefinedClipboardMimeTypes</var> constant for the TBitmap and TPixmap types are added to List. When ClassType contains any other type, the inherited method is called.
+          </p>
+          <p>
+            GetSupportedSourceMimeTypes is called from the <var>AssignPicture</var> method in <var>TClipboard</var>.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TGraphic.GetSupportedSourceMimeTypes"/>
+          <link id="TGraphic.GetSupportedSourceMimeTypes"/>
+          <link id="#lcl.clipbrd.TClipboard.AssignPicture"/>
         </seealso>
       </element>
       <element name="TRasterImage.GetSupportedSourceMimeTypes.List">
@@ -9931,22 +10020,28 @@
       </element>
 
       <element name="TRasterImage.GetSize">
-        <short>
-          <var>GetSize</var> - finds the size of the Image
-        </short>
-        <descr/>
+        <short>Gets the image Width and Height from the metadata for the raw image</short>
+        <descr>
+          <p>
+            Calls <var>GetRawImageDescriptionPtr</var> to get a pointer to the image descriptor in the raw image data. When the image descriptor is <b>Nil</b>, or its Format contains <var>ricfNone</var>, the values in <var>AWidth</var> and <var>AHeight</var> are both set to <b>0</b> (<b>zero</b>). Otherwise, the <var>Width</var> and <var>Height</var> values in the image descriptor are used as the output parameter values.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.GetSize.AWidth">
-        <short/>
+        <short>Width for the raw image data</short>
       </element>
       <element name="TRasterImage.GetSize.AHeight">
-        <short/>
+        <short>Height for the raw image data</short>
       </element>
 
       <element name="TRasterImage.Mask">
-        <short>The <var>Mask</var> with transparent areas in the Image</short>
-        <descr/>
+        <short>Applies the color used for transparent pixels to the image</short>
+        <descr>
+          <p>
+            Calls CreateMask to create and appy the mask handle required for the fixed color transparency.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.Mask.ATransparentColor">
@@ -9954,28 +10049,40 @@
       </element>
 
       <element name="TRasterImage.SetHandles">
-        <short>
-          <var>SetHandles</var> - allows the user to specify handles
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Sets handles for the bitmap and the mask to the specified values</short>
+        <descr>
+          <p>
+            <var>SetHandles</var> is a procedure used to set the handles for the bitmap and the mask to the values specified in <var>ABitmap</var> and <var>AMask</var>. SetHandles is an abstract virtual method in <var>TRasterImage</var>, and must be implemented in a descendent class to store handle values in the shared image used in the image format.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitmap.SetHandles"/>
+          <link id="TCustomIcon.SetHandles"/>
+        </seealso>
       </element>
       <element name="TRasterImage.SetHandles.ABitmap">
-        <short/>
+        <short>Handle to use for the Bitmap</short>
       </element>
       <element name="TRasterImage.SetHandles.AMask">
-        <short/>
+        <short>Handle to use for the Mask</short>
       </element>
 
       <element name="TRasterImage.ReleaseBitmapHandle">
         <short>
-          <var>ReleaseBitmapHandle</var> - releases the handle used by the Bitmap
+          Releases the handle in the shared image without freeing the BitmapHandle
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ReleaseBitmapHandle</var> is a HBITMAP function used to release the hndle for the shared image without freeing it. The return value contains the handle value in the shared image when its <var>ReleaseHandle</var> method is called.
+          </p>
+          <p>
+            Calls <var>BitmapHandleNeeded</var> to ensure that the <var>BitmapHandle</var> and optional <var>MaskHandle</var> are valid for the image type. Calls <var>FreeCanvasContext</var> to free the cavas context when the handle been has changed.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.ReleaseBitmapHandle.Result">
-        <short/>
+        <short>Value for the handle in the shared image before it is released</short>
       </element>
 
       <element name="TRasterImage.ReleaseMaskHandle">
@@ -10134,13 +10241,38 @@
         <short>Row number for the pixels accessed in the raw image data</short>
       </element>
 
-      <!-- WIP -->
-
       <element name="TRasterImage.TransparentColor">
         <short>Color used for transparent pixels in the image</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TransparentColor</var> is a <var>TColor</var> property which indicates the color used for transparent pixels in the raw image data. The default value for the property is <var>clDefault</var>.
+          </p>
+          <p>
+            TransparentColor is used along with <var>TransparentMode</var> to determine whether a fixed color is used for transparency, or if the tranparent color is read from a specified pixel in the raw image data.
+          </p>
+          <p>
+            When TransparentColor contains <var>clDefault</var>, the <var>RequestTransparentColor</var> method is used to get the transparency color value from the bottom-left pixel in the raw image data.
+          </p>
+          <p>
+            When setting a new value for the property, the TransparentMode property is updated as well. When clDefault is assigned to the property, TransparentMode is set to <var>tmAuto</var>.  For other color values, TransparentMode is set to <var>tmFixed</var>.
+          </p>
+          <p>
+            <var>MaskHandleAllocated</var> is called to determine if a HBITMAP handle has been allocated for the MaskHandle property. When <b>True</b>, the <var>MaskHandle</var> is reset to 0 to indicate the handle is no longer in use or is invalid.
+          </p>
+          <p>
+            The <var>Changed</var> method is called to update the internal save stream for the image (when needed), set <var>Modified</var> to <b>True</b>, and signal the <var>OnChange</var> event handler (when assigned).
+          </p>
+        </descr>
         <seealso>
+          <link id="TRasterImage.RequestTransparentColor"/>
           <link id="TRasterImage.TransparentMode"/>
+          <link id="TRasterImage.Transparent"/>
+          <link id="TRasterImage.MaskHandleAllocated"/>
+          <link id="TRasterImage.MaskHandle"/>
+          <link id="TRasterImage.Changed"/>
+          <link id="TGraphic.Modified"/>
+          <link id="TGraphic.OnChange"/>
+          <link id="TColor"/>
         </seealso>
       </element>
 
@@ -10172,11 +10304,20 @@
       </element>
 
       <element name="TSharedCustomBitmap">
-        <short>
-          <var>TSharedCustomBitmap</var> - a reference counted base class for TSharedBitmap, TSharedPixmap, TSharedJPEGImage, TSharedPortableNetworkGraphic and TSharedPortableAnyMapGraphic
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Implements the base class for a reference-counted shared image</short>
+        <descr>
+          <p>
+            <var>TSharedCustomBitmap</var> is a <var>TSharedRasterImage</var> descendant which implements the base class for reference-counted shared images, like: TSharedBitmap, TSharedPixmap, TSharedJPEGImage, TSharedPortableNetworkGraphic and TSharedPortableAnyMapGraphic.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSharedRasterImage"/>
+          <link id="TSharedBitmap"/>
+          <link id="TSharedPixmap"/>
+          <link id="TSharedJPEGImage"/>
+          <link id="TSharedPortableNetworkGraphic"/>
+          <link id="TSharedPortableAnyMapGraphic"/>
+        </seealso>
       </element>
 
       <element name="TSharedCustomBitmap.FHandleType"/>
@@ -10230,21 +10371,37 @@
         <seealso/>
       </element>
 
-      <!-- WIP -->
-
       <element name="TSharedCustomBitmap.FreeImage">
-        <short>
-          <var>FreeImage</var> - release the Image from the Bitmap
-        </short>
-        <descr/>
-        <seealso/>
+        <short> Frees raw image data for the shared bitmap and resets its image descriptor</short>
+        <descr>
+          <p>
+            Calls the <var>FreeData</var> method in the internal <var>TRawImage</var> member to free the raw image data. Sets the <var>Format</var> in its <var>Description</var> property to <var>ricfNone</var>.
+          </p>
+          <p>
+            FreeImage is called from the destructor when the class instance is destroyed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSharedCustomBitmap.Destroy"/>
+          <link id="#lazutils.graphtype.TRawImage"/>
+        </seealso>
       </element>
 
       <element name="TSharedCustomBitmap.ReleasePalette">
         <short>
-          <var>ReleasePalette</var> - returns the Handle of the released Palette
+          Returns the Handle of the released Palette
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ReleasePalette</var> is a <var>HPALETTE</var> function used to release the internal pallette handle for the shared bitmap. The return value contains the existing palette handle on entry.
+          </p>
+          <p>
+            Sets the value in the internal palette handle to <b>0</b> to indicate that the palette handle is no longer in use or is invalid.
+          </p>
+          <p>
+            Use FreePalette to remove the palette handle in widgetset classes.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TSharedCustomBitmap.ReleasePalette.Result">
@@ -10252,14 +10409,14 @@
       </element>
 
       <element name="TSharedCustomBitmap.GetPixelFormat">
-        <short>
-          <var>GetPixelFormat</var> - returns the format for the Pixels in this Bitmap
-        </short>
+        <short>Gets the value for the PixelFormat property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedCustomBitmap.PixelFormat"/>
+        </seealso>
       </element>
       <element name="TSharedCustomBitmap.GetPixelFormat.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TSharedCustomBitmap.IsEmpty">
@@ -10303,20 +10460,34 @@
       </element>
 
       <element name="TSharedCustomBitmap.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TSharedCustomBitmap</var>: frees stream, handle and image, then calls inherited <var>Destroy</var>
-        </short>
-        <descr/>
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is theoverridden destructor for <var>TSharedCustomBitmap</var>.
+          </p>
+          <p>
+            Destroy frees the internal save stream for the class instance. It also calls FreeHandle and FreeImage to free the handle and the raw image data for the shared bitmap. Calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+          <link id="TSharedCustomBitmap.FreeHandle"/>
+          <link id="TSharedCustomBitmap.FreeImage"/>
+          <link id="TSharedRasterImage.Destroy"/>
         </seealso>
       </element>
 
       <element name="TSharedCustomBitmap.HandleAllocated">
         <short>Determines if the handle for the shared bitmap has been allocated</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>HandleAllocated</var> is an overridden method used to determine if the handle for the shared bitmap has been allocated. HandleAllocated implements the abstract virtual method defined in <var>TSharedImage</var>.
+          </p>
+          <p>
+            The return value is <b>True</b> when the internal handle has a non-zero value.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TSharedImage.HandleAllocated"/>
+          <link id="TSharedImage.HandleAllocated"/>
         </seealso>
       </element>
       <element name="TSharedCustomBitmap.HandleAllocated.Result">
@@ -10327,8 +10498,16 @@
         <short>
           <var>ImageAllocated</var> - returns True if an image has been allocated
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ImageAllocated</var> is a <var>Boolean</var> function which indicates if the internal raw image data has been allocated for the shared bitmap. The return value is <b>True</b> when the <var>TRawImage</var> instance in the class has a value other than <var>ricfNone</var> in its image descriptor.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.graphtype.TRawImage.Description"/>
+          <link id="#lazutils.graphtype.TRawImageDescription.Format"/>
+          <link id="#lazutils.graphtype.TRawImageColorFormat"/>
+        </seealso>
       </element>
       <element name="TSharedCustomBitmap.ImageAllocated.Result">
         <short>True when the color format for the raw image data has been assigned</short>
@@ -10342,6 +10521,9 @@
           <p>
             HandleType is a TBitmapHandleType property which indicates the Bitmap handle type and the storage mechanism used for the Bitmap header and data.
           </p>
+          <remark>
+            Use of HandleType is not implemented in the current LCL version.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -10350,32 +10532,44 @@
         <short>The <var>Height</var> of the Bitmap</short>
         <descr>
           <p>
-            <var>Height</var> is a read-only <var>Integer</var> property which contains the height for the shared bitmap image as indicated in the descriptor for the raw image data.
+            <var>Height</var> is a read-only <var>Integer</var> property which contains the height for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always <b>0</b> (<b>zero</b>) when the descriptor for the internal raw image data contains <var>ricfNone</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lazutils.graphtype.TRawImage.Description"/>
+          <link id="#lazutils.graphtype.TRawImageDescription.Format"/>
+          <link id="#lazutils.graphtype.TRawImageColorFormat"/>
+        </seealso>
       </element>
 
       <element name="TSharedCustomBitmap.PixelFormat">
-        <short>
-          <var>PixelFormat</var> - the format for the Pixels in this Bitmap
-        </short>
+        <short>Storage format for pixels in the raw image data</short>
         <descr>
           <p>
-            <var>PixelFormat</var> is a read-only <var>TPixelFormat</var> property with the storage format used for pixel data in the raw image.
+            <var>PixelFormat</var> is a read-only <var>TPixelFormat</var> property with the storage format used for pixel data in the raw image. It also determines the number of colors (or color depth) allowed in the raw image data.
+          </p>
+          <p>
+            See <var>TPixelFormat</var> for more information about the values and meanings in the enumeration.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TPixelFormat"/>
+          <link id="#lazutils.graphtype.TRawImageDescription.Depth"/>
+        </seealso>
       </element>
 
       <element name="TSharedCustomBitmap.Width">
         <short>The Width of the Bitmap</short>
         <descr>
           <p>
-            <var>Width</var> is a read-only <var>Integer</var> property which contains the width for the shared bitmap image as indicated in the descriptor for the raw image data.
+            <var>Width</var> is a read-only <var>Integer</var> property which contains the width for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always <b>0</b> (<b>zero</b>) when the descriptor for the internal raw image data contains <var>ricfNone</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lazutils.graphtype.TRawImage.Description"/>
+          <link id="#lazutils.graphtype.TRawImageDescription.Format"/>
+          <link id="#lazutils.graphtype.TRawImageColorFormat"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitmap">
@@ -10458,7 +10652,7 @@
         <short>Updates the value in PixelFormat from the shared Bitmap image</short>
         <descr>
           <p>
-            Called when the value for <var>PixelFormat</var> is retrieved and the descriptor has not already been read for the image.
+            Called when the value for <var>PixelFormat</var> is retrieved and the image descriptor has not already been read for the shared image.
           </p>
         </descr>
         <seealso/>
@@ -10524,7 +10718,7 @@
         <short>Object instance for the change notification</short>
       </element>
 
-      <element name="TCustomBitmap.CreateDefaultBitmapHandle" link="#lcl.graphics.TRasterImage.CreateDefaultBitmapHandle">
+      <element name="TCustomBitmap.CreateDefaultBitmapHandle">
         <short>
           Creates a handle for the bitmap using the bitmap handle type in the bitmap image data
         </short>
@@ -10542,7 +10736,9 @@
             CreateDefaultBitmapHandle is called from the <var>BitmapHandleNeeded</var> method in the ancestor class.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TRasterImage.CreateDefaultBitmapHandle"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.CreateDefaultBitmapHandle.Result">
         <short>Default handle for the bitmap</short>
@@ -10614,22 +10810,36 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TCustomBitmap.GetRawImagePtr" link="#lcl.graphics.TRasterImage.GetRawImagePtr">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomBitmap.GetRawImagePtr">
+        <short>Gets a pointer with the raw image data</short>
+        <descr>
+          <p>
+            Calls RawImageNeeded to ensure that the image descriptor, save stream, and handle are valid for the shared Bitmap image. Calls the CreateData method in the raw image pointer (when needed) prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.GetRawImagePtr"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.GetRawImagePtr.Result">
-        <short/>
+        <short>Pointer to the TRawImage instance for the shared bitmap image</short>
       </element>
 
-      <element name="TCustomBitmap.GetRawImageDescriptionPtr" link="#lcl.graphics.TRasterImage.GetRawImageDescriptionPtr">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomBitmap.GetRawImageDescriptionPtr">
+        <short>
+          Gets a pointer to the image descriptor for the shared Bitmap image.
+        </short>
+        <descr>
+          <p>
+            Calls <var>RawimageNeeded</var> to ensure that the image desriptor is valid.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.GetRawImageDescriptionPtr"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.GetRawImageDescriptionPtr.Result" >
-        <short/>
+        <short>Pointer to the TRawImageDescription instance for the shared bitmap image</short>
       </element>
 
       <element name="TCustomBitmap.HandleNeeded">
@@ -10640,6 +10850,7 @@
           </p>
         </descr>
         <seealso>
+          <link id="TCustomBitmap.BitmapHandleNeeded"/>
           <link id="#lcl.graphics.TRasterImage.HandleNeeded"/>
         </seealso>
       </element>
@@ -10647,7 +10858,9 @@
       <element name="TCustomBitmap.InternalReleaseBitmapHandle" link="#lcl.graphics.TRasterImage.InternalReleaseBitmapHandle">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedRasterImage.ReleaseHandle"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.InternalReleaseBitmapHandle.Result">
         <short/>
@@ -10656,7 +10869,9 @@
       <element name="TCustomBitmap.InternalReleaseMaskHandle" link="#lcl.graphics.TRasterImage.InternalReleaseMaskHandle">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomBitmap.MaskHandle"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.InternalReleaseMaskHandle.Result">
         <short/>
@@ -10665,22 +10880,39 @@
       <element name="TCustomBitmap.InternalReleasePalette" link="#lcl.graphics.TRasterImage.InternalReleasePalette">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedCustomBitmap.ReleasePalette"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.InternalReleasePalette.Result">
         <short/>
       </element>
 
       <element name="TCustomBitmap.RawImageNeeded">
-        <short>
-          <var>RawimageNeeded</var> - method to signal that a raw image is required; if
-          <var>ADescOnly</var> is True, only a descriptor is required
-        </short>
-        <descr/>
+        <short>Ensures that the RawImage data is allocated prior to use</short>
+        <descr>
+          <p>
+            Ensures that the <var>RawImage</var> property is allocated prior to accessing values in the raw image data.
+          </p>
+          <p>
+            <var>ADescOnly</var> indicates whether the image descriptor or the the complete raw image data is required. When ADescOnly is <b>True</b>, only the <var>TRawImageDescription</var> in the raw image is needed. When set to <var>False</var>, all values in the <var>TRawImage</var> instance are required.
+          </p>
+          <p>
+            RawImageNeeded is called from methods access the raw image data, and occurs before the value in RawImage is accessed. For example:
+          </p>
+          <ul>
+            <li>SetSize</li>
+            <li>UpdatePixelFormat</li>
+            <li>GetMonochrome</li>
+            <li>UnshareImage</li>
+            <li>GetRawImagePtr</li>
+            <li>GetRawImageDescriptionPtr</li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomBitmap.RawImageNeeded.ADescOnly">
-        <short/>
+        <short>True when only the image descriptor in the raw image data is needed</short>
       </element>
 
       <element name="TCustomBitmap.SetHandle">
@@ -10703,7 +10935,7 @@
         <short>Sets the value for the PixelFormat property</short>
         <descr>
           <p>
-            Implements the abstract virtual method defined in the TRasterImage ancestor.
+            Implements the abstract virtual method defined in the <var>TRasterImage</var> ancestor.
           </p>
           <p>
             Frees the raw image data in the class instance. No actions are performed in the method when the new property value is the same as the existing property value.
@@ -10720,24 +10952,50 @@
 
       <element name="TCustomBitmap.UnshareImage">
         <short>Frees the shared image in the bitmap, and creates a new one</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>UnshareImage</var> is an overridden method used to free the shared image in the bitmap, and create a new one. UnshareImage implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            UnshareImage calls <var>GetSharedImageClass</var> to get the class type used for the shared image, and creates a new instance of the class. It is cast to <var>TSharedCustomBitmap</var>, and its <var>Reference</var> method is called to increment the reference count for the shared image.
+          </p>
+          <p>
+            <var>CopyContent</var> indicates whether the existing image data is copied into the new shared image instance. When set to <b>True</b>, the content in the existing shared image is copied and stored in the new shared image instance. When set to <var>False</var>, only the image descriptor in the shared image is copied. This gets the metadata for the image.
+          </p>
+          <p>
+            UnshareImage calls <var>FreeCanvasContext</var> to free the device context for the Canvas used in the image.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.graphics.TRasterImage.UnshareImage"/>
         </seealso>
       </element>
       <element name="TCustomBitmap.UnshareImage.CopyContent">
-        <short/>
+        <short>True copies the exisiting content in the shared image</short>
       </element>
 
-      <element name="TCustomBitmap.UpdateHandles" link="#lcl.graphics.TRasterImage.UpdateHandles">
-        <short>Sets the handles for the image and mask in the shared image to the specified values</short>
+      <element name="TCustomBitmap.UpdateHandles">
+        <short>Sets the handles for the image and mask in the shared Bitmap to the specified values</short>
         <descr>
-          <!-- TODO: needs more description -->
           <p>
-            Implements the abstract virtual method defined in TRasterImage.
+            <var>UpdateHandles</var> is an overridden <var>Boolean</var> function which implements the abstract virtual method defined in <var>TRasterImage</var>. UpdateHandles is used to set the handles for the shared bitmap image and its mask to the values specified in <var>ABitmap</var> and <var>AMask</var>.
+          </p>
+          <p>
+            The return value is <b>True</b> when the values in ABitmap and AMask are successfully applied in the class instance. The return value is <b>False</b> when ABitmap and Mask have the same values as the exisiting handles in the class instance, and the action is not needed.
+          </p>
+          <p>
+            The <var>FreeHandle</var> method in the internal shared image is called before applying the value in ABitmap.
+          </p>
+          <p>
+            <var>FreeMaskHandle</var> is called to free the value in <var>MaskHandle</var> before applying the value in AMask.
+          </p>
+          <p>
+            UpdateHandles is used in the implementation of the <var>MaskHandleNeeded</var> and <var>SetHandles</var> methods.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TRasterImage.UpdateHandles"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.UpdateHandles.Result">
         <short>True when the handle(s) are successfully applied</short>
@@ -10757,41 +11015,38 @@
           </p>
         </descr>
         <seealso>
+          <link id="TRasterImage.PixelFormat"/>
+          <link id="TPixelFormat"/>
         </seealso>
       </element>
 
       <element name="TCustomBitmap.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomBitmap</var>: frees any Mask handles, then performs inherited <var>Destroy</var>
-        </short>
+        <short>Destructor for the class instance</short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. The supplied code can <b>override</b> the method defined for ancestor classes.
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>FreeMaskHandle</var> to free the handle in <var>MaskHandle</var> (when assigned). Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomBitmap.FreeMaskHandle"/>
+          <link id="TRasterImage.MaskHandle"/>
+          <link id="TRasterImage.Destroy"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitmap.Assign">
-        <short>
-          <var>Assign</var>: find out about the <var>Source</var> of the call
-        </short>
+        <short>Copies values from the specified persistent object into the class instance</short>
         <descr>
           <p>
-            <var>Assign</var>: find out about the <var>Source</var> of the call.
+            <var>Assign</var> is an overridden method in <var>TCustomBitmap</var> used to copy property values from the persistent object in <var>Source</var> into the current class instance. Assign calls the inherited method on entry using Source as an argument.
           </p>
           <p>
-            If the  <var>Bitmap</var> data are already in use, the data are shared; if not, a new  <var>Bitmap</var> is produced.
+            When Source is a TCustomBitmap descendant, values in its <var>PixelFormat</var> and <var>PixelFormatNeedsUpdate</var> members are copied into the members in the class instance.
           </p>
         </descr>
       </element>
-
       <element name="TCustomBitmap.Assign.Source">
-        <short>
-          The <var>Source</var> control (usually a Bitmap) for the <var>Assign</var> procedure
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Persistent object with values copied in the method</short>
       </element>
 
       <element name="TCustomBitmap.Clear">
@@ -10821,100 +11076,238 @@
         <seealso/>
       </element>
 
-      <element name="TCustomBitmap.LazarusResourceTypeValid" link="#lcl.graphics.TGraphic.LazarusResourceTypeValid">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomBitmap.LazarusResourceTypeValid">
+        <short>
+          Determines if the specified resource type is valid for the image format
+        </short>
+        <descr>
+          <p>
+            <var>LazarusResourceTypeValid</var> is a <var>Boolean</var> function used to determine if the value in <var>ResourceType</var> is a valid resource type for the image format.
+          </p>
+          <p>
+            LazarusResourceTypeValid is an overridden method in <var>TCustomBitmap</var>, and re-implements the method defined in the ancestor class. The return value is <b>True</b> when ResourceType contains one of the values:
+          </p>
+          <dl>
+            <dt>'BMP'</dt>
+            <dd>Bitmap resource type.</dd>
+            <dt>'BITMAP'</dt>
+            <dd>Bitmap resource type.</dd>
+            <dt>'XPM'</dt>
+            <dd>Pixmap resource type.</dd>
+          </dl>
+          <p>
+            Case is not significant for the value in ResourceType; it is converted to uppercase prior to checking its value.
+          </p>
+          <p>
+            The return value is <b>False</b> if ResourceType contains any other value.
+          </p>
+          <p>
+            LazarusResourceTypeValid is used in the implementation of the <var>LoadFromLazarusResource</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGraphic.LoadFromLazarusResource"/>
+          <link id="TPicture.LoadFromLazarusResource"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.LazarusResourceTypeValid.Result">
-        <short>Returns True if a valid resource type is found</short>
+        <short>Returns True if the resource type is valid for the image format</short>
       </element>
       <element name="TCustomBitmap.LazarusResourceTypeValid.ResourceType">
-        <short>The target resource type specified as a string</short>
+        <short>The resource type examined in the method</short>
       </element>
 
-      <element name="TCustomBitmap.BitmapHandleAllocated" link="#lcl.graphics.TRasterImage.BitmapHandleAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomBitmap.BitmapHandleAllocated">
+        <short>Returns True if a handle has been allocated for the Bitmap</short>
+        <descr>
+          <p>
+            <var>BitmapHandleAllocated</var> is an overridden <var>Boolean</var> function used to determine if a handle has been allocated for the bitmap. BitmapHandleAllocated implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            The return value is <b>True</b> when the handle in the internal shared image has a <b>non-zero</b> value.
+          </p>
+          <p>
+            BitmapHandleAllocated is used in the implementation of the <var>MaskHandleNeeded</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.graphics.TRasterImage.BitmapHandleAllocated"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.BitmapHandleAllocated.Result">
         <short/>
       </element>
 
       <element name="TCustomBitmap.MaskHandleAllocated" link="#lcl.graphics.TRasterImage.MaskHandleAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines if the mask handle has been allocated for the image</short>
+        <descr>
+          <p>
+            <var>MaskHandleNeeded</var> is an overridden <var>Boolean</var> function in <var>TCustomBitmap</var>, and is used to determine if <var>MaskHandle</var> has been allocated for the image mask. It implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            The return value is True when the <var>MaskHandle</var> property contains a <b>non-zero</b> value.
+          </p>
+          <p>
+            MaskHandleAllocated is used in the implementation of methods like:
+          </p>
+          <ul>
+            <li>BitmapHandleNeeded</li>
+            <li>SetTransparentColor</li>
+            <li>SetBitmapHandle</li>
+            <li>CreateMask</li>
+            <li>Assign</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.MaskHandleAllocated"/>
+          <link id="TRasterImage.MaskHandle"/>
+          <link id="TRasterImage.Masked"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.MaskHandleAllocated.Result">
-        <short>Returns True is a mask handle has been allocated</short>
+        <short>Returns True if a mask handle has been allocated for the image</short>
       </element>
 
-      <element name="TCustomBitmap.PaletteAllocated" link="#lcl.graphics.TRasterImage.PaletteAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomBitmap.PaletteAllocated">
+        <short>Indicates whether a handle has been allocated for a palette in the image</short>
+        <descr>
+          <p>
+            <var>PaletteAllocated</var> is an overridden <var>Boolean</var> function in <var>TCustomBitmap</var>, and indicates whether a handle has been allocated for a palette in the image. PaletteAllocated implements the abstract virtual method defined in the ancestor class.
+          </p>
+            <p>
+              The return value is <b>True</b> when palette handle in the internal shared image contains a <b>non-zero</b> value.
+            </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.PaletteAllocated"/>
+        </seealso>
       </element>
       <element name="TCustomBitmap.PaletteAllocated.Result">
-        <short>Returns True if a palette has been allocated</short>
+        <short>Returns True if a palette handle has been allocated for the image</short>
       </element>
 
       <element name="TCustomBitmap.ReleaseHandle">
-        <short>Release the bitmap handle, effectively freeing resources</short>
-        <descr/>
+        <short>Releases the bitmap handle for the shared image</short>
+        <descr>
+          <p>
+            Calls <var>HandleNeeded</var> to ensure that the handles for the bitmap and mask reflect the values for the raw image data. Calls the <var>ReleaseHandle</var> method in the shared image to free the handle for the bitmap.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomBitmap.ReleaseHandle.Result">
-        <short>Returns True if handle has been correctly released</short>
+        <short>Returns True when the handle is sucessfully released</short>
       </element>
 
       <element name="TCustomBitmap.SetHandles">
-        <short/>
-        <descr/>
+        <short>Sets handles for the bitmap and the mask to the specified values</short>
+        <descr>
+          <p>
+            <var>SetHandles</var> is a procedure used to set the handles for the bitmap and the mask to the values specified in <var>ABitmap</var> and <var>AMask</var>. SetHandles ensures that the <var>Canvas</var> context, shared image, and save stream are unshared and freed. SetHandles calls <var>UpdateHandles</var> to store the specified handles for the shared image and its mask.
+          </p>
+          <p>
+            SetHandles is called from methods that load image data using <var>TLazIntfImage</var> from the LCL interface. It is also called when values are assigned to the <var>BitmapHandle</var> or <var>MaskHandle</var> properties.
+          </p>
+        </descr>
         <seealso>
           <link id="TRasterImage.SetHandles"/>
         </seealso>
       </element>
       <element name="TCustomBitmap.SetHandles.ABitmap">
-        <short/>
+        <short>New Bitmap handle for the image</short>
       </element>
       <element name="TCustomBitmap.SetHandles.AMask">
-        <short/>
+        <short>New Mask handle for the image</short>
       </element>
 
       <element name="TCustomBitmap.SetSize">
-        <short>
-          <var>SetSize</var> - allows the user to specify the size of the Bitmap
-        </short>
-        <descr/>
+        <short>Sets the Height and Width for the image to the specified values</short>
+        <descr>
+          <p>
+            <var>SetSize</var> is an overridden method in <var>TCustomBitmap</var> used to change the <var>Height</var> and <var>Width</var> for the bitmap image to the specified values. SetSize implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            Calls RawImageNeeded to ensure that the image header in RawImage is valid for the image.
+          </p>
+          <p>
+            The values in AWidth and AHeight contain the new dimensions for the image. Both values must contain a positive value or 0. The default value for an argument is set to 0 when a negative value is found. Their values are assigned to the image desriptor in the shared imaged to change the size for the image content. No additional actions are performed in the method if either value is not successfully applied to the raw image descriptor.
+          </p>
+          <p>
+            Calls UnshareImage and RawImageNeeded to re-create the raw image data for the shared image.
+          </p>
+          <p>
+            Copies exisiting pixel data for the image into the resized image. When the new image size is smaller, only the portion of the image that fits within the new dimensions is copied. Uses the CopyPixels method in the TLazIntfImage instance to copy the image content.
+          </p>
+          <p>
+            Ensures that the Canvas context, BitMapHandle, and MaskHandle are updated for the image. Calls the Changed method to update the shared image data and signal the OnChange event handler (when assigned).
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.graphics.TRasterImage.SetSize"/>
         </seealso>
       </element>
       <element name="TCustomBitmap.SetSize.AWidth">
-        <short/>
+        <short>New width for the image</short>
       </element>
       <element name="TCustomBitmap.SetSize.AHeight">
-        <short/>
+        <short>New height for the image</short>
       </element>
 
       <element name="TCustomBitmap.Handle">
         <short>The operating system Handle associated with this bitmap</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            In <var>TCustomBitmap</var>, the handle is provided by the internal shared image class (<var>TSharedCustomBitmap</var>) and stored in the <var>BitmapHandle</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.BitmapHandle"/>
+          <link id="TSharedCustomBitmap"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitmap.HandleType">
-        <short>The type of system handle</short>
-        <descr/>
-        <seealso/>
+        <short>Handle type for the Bitmap</short>
+        <descr>
+          <p>
+            <var>HandleType</var> is a <var>TBitmapHandleType</var> property which indicates the handle type used for the bitmap image data. HandleType identifies whether the bitmap handle is classified as a Device-Dependent Bitmap (DDB) or a Device-Independent Bitmap (DIB).
+          </p>
+          <p>
+            See <link id="TBitmapHandleType">TBitmapHandleType</link> for more information about the handle types and their specifics.
+          </p>
+          <p>
+            The value for the property is read from the internal shared image in the class instance. Setting a new value for the property has no effect in the current implementation; the value is always read from the raw image data.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TBitmapHandleType"/>
+          <link id="TSharedCustomBitmap.HandleType"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitmap.Monochrome">
-        <short>Whether using monochrome display</short>
-        <descr/>
-        <seealso/>
+        <short>True when the image contains monochrome image data</short>
+        <descr>
+          <p>
+            <var>Monochrome</var> is a <var>Boolean</var> property which indicates whether the raw image data is represented using pixels of a single color.
+          </p>
+          <p>
+            The property value is <b>True</b> when the descriptor for the shared raw image data has a color depth of <b>1</b>. The <var>PixelFormat</var> property willl also contain the value <var>pf1bit</var>.
+          </p>
+          <p>
+            Setting a new value in Monochrome causes the value in PixelFormat to be changed. When set to <b>True</b>, PixelFormat is set to <var>pf1bit</var>. When set to <b>False</b>, the value <var>pfDevice</var> is assigned to the PixelFormat property.
+          </p>
+          <p>
+            Changing the value in Monochrome (and PixelFormat) causes the image data to be discarded, and the Handle for the internal shared image is freed.
+          </p>
+          <p>
+            No actions are performed when Monochrome is set to the existing value for the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.PixelFormat"/>
+          <link id="TCustomBitmap.Handle"/>
+        </seealso>
       </element>
 
       <element name="TFPImageBitmap">
@@ -11086,28 +11479,38 @@
         <short>Not used in the current implementation</short>
       </element>
 
-      <!-- WIP -->
-
       <element name="TFPImageBitmap.WriteStream">
         <short>Write the data to a stream</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>WriteStream</var> is an overridden procedure in <var>TFPImageBitmap</var> used to write the image content to the stream specified in <var>AStream</var>. WriteStream implements the abstract virtual method defined in <var>TRasterImage</var>.
+          </p>
+          <p>
+            WriteStream creates temporary <var>TLazIntfImage</var> and <var>TFPCustomImageWriter</var> instances that are used to write the data for the internal <var>TRawImage</var> instance used in the class. Raw image data is stored in the TLazIntfImage instance, and its <var>SaveToStream</var> method is called to write the values to AStream.
+          </p>
+          <p>
+            No actions are performed in the method when the data size for the raw image is <b>0</b>.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TRasterImage.WriteStream">TRasterImage.WriteStream</link>
+          <link id="#lcl.graphics.TRasterImage.WriteStream"/>
         </seealso>
       </element>
       <element name="TFPImageBitmap.WriteStream.Stream">
-        <short/>
-      </element>
-      <element name="TFPImageBitmap.WriteStream.WriteSize">
-        <short/>
+        <short>Stream where the image data is stored</short>
       </element>
 
       <element name="TFPImageBitmap.GetFileExtensions" link="#lcl.graphics.TGraphic.GetFileExtensions">
-        <descr/>
+        <short>Returns a list of the file extensions available for the image type</short>
+        <descr>
+          <p>
+            Always returns an empty string ('') in TFPImageBitmap.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.GetFileExtensions.Result">
-        <short/>
+        <short>List of file extensions supported for the image type</short>
       </element>
 
       <element name="TFPImageBitmap.IsStreamFormatSupported">
@@ -11129,32 +11532,55 @@
         <short>True when the stream contains a image data in a supported format</short>
       </element>
 
-      <!-- WIP -->
-
       <element name="TFPImageBitmap.IsFileExtensionSupported">
-        <short>
-          <var>IsFileExtensionSupported</var> - returns True if the given file extension is supported?
-        </short>
-        <descr/>
+        <short>Indicates whether the given file extension is supported for the image type</short>
+        <descr>
+          <p>
+            <var>IsFileExtensionSupported</var> is a <var>Boolean</var> class function used to determine if the file extension in <var>FileExtension</var> is valid for the image type. If FileExtension includes a period character ('.'), it is removed before use.
+          </p>
+          <p>
+            The return value is <b>True</b> when FileExtension is included in the value returned by the <var>GetFileExtensions</var> method. No actions are performed in the method when FileExtension is an empty string (<b>''</b>).
+          </p>
+          <p>
+            IsFileExtensionSupported is used in the implementation of <var>LazarusResourceTypeValid</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.IsFileExtensionSupported.Result">
-        <short/>
+        <short>True when the file extension is valid for the image type</short>
       </element>
       <element name="TFPImageBitmap.IsFileExtensionSupported.FileExtension">
-        <short/>
+        <short>File extension checked for the image type</short>
       </element>
 
-      <element name="TFPImageBitmap.LazarusResourceTypeValid" link="#lcl.graphics.TGraphic.LazarusResourceTypeValid">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TFPImageBitmap.LazarusResourceTypeValid">
+        <short>
+          Determines if the specified resource type is valid for the image format
+        </short>
+        <descr>
+          <p>
+            <var>LazarusResourceTypeValid</var> is a <var>Boolean</var> function used to determine if the value in <var>ResourceType</var> is a valid resource type for the image format.
+          </p>
+          <p>
+            LazarusResourceTypeValid is an overridden method, and re-implements the method defined in the ancestor class. The return value is <b>True</b> when ResourceType contains is one the file extensions returned from IsFileExtensionSupported. The return value is <b>False</b> if ResourceType contains any other value.
+          </p>
+          <p>
+            LazarusResourceTypeValid is used in the implementation of the <var>LoadFromLazarusResource</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFPImageBitmap.IsFileExtensionSupported"/>
+          <link id="TCustomBitmap.LazarusResourceTypeValid"/>
+          <link id="TGraphic.LazarusResourceTypeValid"/>
+          <link id="TGraphic.LoadFromLazarusResource"/>
+        </seealso>
       </element>
       <element name="TFPImageBitmap.LazarusResourceTypeValid.Result">
-        <short/>
+        <short>True when the resource type name is one file extensions for the image format</short>
       </element>
       <element name="TFPImageBitmap.LazarusResourceTypeValid.ResourceType">
-        <short/>
+        <short>Resource type examined in the method</short>
       </element>
 
       <element name="TFPImageBitmapClass">
@@ -11167,7 +11593,11 @@
 
       <element name="TSharedBitmap">
         <short>Defines a reference-counted shared Bitmap graphic</short>
-        <descr/>
+        <descr>
+          <p>
+            TSharedBitmap is a TSharedCustomBitmap descendant.
+          </p>
+        </descr>
         <seealso>
           <link id="TSharedCustomBitmap"/>
         </seealso>
@@ -11262,22 +11692,43 @@
       </element>
 
       <element name="TBitmap.GetReaderClass">
-        <short>Gets the class reference used to create instances of the FCL-compatible reader class</short>
+        <short>Gets the class reference used to create the FCL-compatible reader for the image</short>
         <descr>
-          Returns a TLazReaderBMP class reference.
+          <p>
+            <var>GetReaderClass</var> is an overridden <var>TFPCustomImageReaderClass</var> class function used to get the FCL-compatible reader for the image type. The return value is a <var>TLazReaderBMP</var> class reference in <var>TBitmap</var>.
+          </p>
+          <p>
+            GetReaderClass is called from the <var>ReadStream</var> method when the reader is created and intialized. It is used to load a <var>TLazIntfImage</var> instance with the image content supplied in a stream. It is also used in the <var>IsStreamFormatSupported</var> method to determine if the stream contains an image format that can be read using the reader class type.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFPImageBitmap.GetReaderClass"/>
+          <link id="TCustomBitmap.GetReaderClass"/>
+          <link id="TFPImageBitmap.ReadStream"/>
+          <link id="TFPImageBitmap.IsStreamFormatSupported"/>
+          <link id="#lcl.intfgraphics.TLazReaderBMP"/>
+          <link id="#lcl.intfgraphics.TLazReaderDIB"/>
+          <link id="#lcl.intfgraphics.ILazImageReader"/>
+        </seealso>
       </element>
       <element name="TBitmap.GetReaderClass.Result">
         <short>Class reference used to create instances of the reader class</short>
       </element>
 
       <element name="TBitmap.GetWriterClass">
-        <short>Gets the class reference used to create instances of the FCL-compatible writer class</short>
+        <short>Gets the class reference used to create instances of the FCL-compatible image writer</short>
         <descr>
-          Returns a TLazWriterBMP class reference.
+          <p>
+            The return value is a <var>TLazWriterBMP</var> class reference in TBitmap.
+          </p>
+          <p>
+            <var>GetWriterClass</var> is called from the <var>WriteStream</var> method when the image writer is used to write a <var>TLazIntfImage</var> instance to a stream.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFPImageBitmap.GetWriterClass"/>
+          <link id="TFPImageBitmap.WriteStream"/>
+        </seealso>
       </element>
       <element name="TBitmap.GetWriterClass.Result">
         <short>Class reference used to create instances of the writer class</short>
@@ -11286,12 +11737,20 @@
       <element name="TBitmap.GetSharedImageClass">
         <short>Gets the class reference used to create new instances of a shared image</short>
         <descr>
-          Returns a reference to the TSharedBitmap type.
+          <p>
+            <var>GetSharedImageClass</var> provides a class reference used to create new instances of the shared image class used in <var>TBitmap</var>.
+          </p>
+          <p>
+            The return value is a <var>TSharedBitmap</var> class reference in TBitmap.
+          </p>
+          <p>
+            GetSharedImageClass is called from methods like <var>Create</var>, <var>Assign</var>, and <var>CanShareImage</var>.
+          </p>
         </descr>
         <seealso/>
       </element>
       <element name="TBitmap.GetSharedImageClass.Result">
-        <short>Creates new instances of a shared image</short>
+        <short>Class reference used to create new instances of the shared image class</short>
       </element>
 
       <element name="TBitmap.GetFileExtensions">
@@ -11352,12 +11811,12 @@
       </element>
 
       <element name="TSharedPixmap">
-        <short>
-          <var>TSharedPixmap</var> - a reference counted Pixmap graphic
-        </short>
+        <short>Implements a reference-counted shared Pixmap image type</short>
         <descr/>
         <seealso>
           <link id="TSharedCustomBitmap"/>
+          <link id="TPixmap"/>
+          <link id="TSharedPixmap.GetSharedImageClass"/>
         </seealso>
       </element>
 
@@ -11371,7 +11830,7 @@
             Pixmap is an image file format used by the X Window System. It is intended primarily for creating icons, and supports transparent pixels. Derived from the earlier XBM syntax, it is a plain text file using the XPM2 format or a C programming language syntax, which can be included in a source code file.
           </p>
           <p>
-            <var>PixMap</var> ensures that specified resources (image, file, or stream) are of correct type and format.
+            <var>TPixmap</var> ensures that specified resources (image, file, or stream) are of the correct type and format.
           </p>
         </descr>
         <seealso/>
@@ -11404,16 +11863,17 @@
         <short>class reference used to create the shared image in the class instance</short>
       </element>
 
-      <element name="TPixmap.LazarusResourceTypeValid" link="#lcl.graphics.TGraphic.LazarusResourceTypeValid">
+      <element name="TPixmap.LazarusResourceTypeValid" link="TFPImageBitmap.LazarusResourceTypeValid">
         <short/>
-        <descr/>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <element name="TPixmap.LazarusResourceTypeValid.Result">
-        <short>Returns True if resource type is 'XPM'</short>
+        <short>Returns True if the resource type is 'XPM'</short>
       </element>
       <element name="TPixmap.LazarusResourceTypeValid.ResourceType">
-        <short/>
+        <short>Resource type examined in the method</short>
       </element>
 
       <element name="TPixmap.GetFileExtensions">
@@ -11589,13 +12049,13 @@
       <element name="TIconImageClass">
         <short>Class reference used to create new instances of TIconImage</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TIconImage"/>
+        </seealso>
       </element>
 
       <element name="TSharedIcon">
-        <short>
-          <var>TSharedIcon</var> - a reference counted shared Icon
-        </short>
+        <short>Implements a reference-counted shared Icon image type</short>
         <descr>
           <p>
             <var>TSharedIcon</var> is a <var>TSharedRasterImage</var> descendant which implements a reference counted shared Icon. TSharedIcon provides access to the list of images available in the Icon as <var>TIconImage</var> instances using the <var>Images</var> property. Methods are provided to add, delete, clear, sort, and retrieve the images.
@@ -12111,13 +12571,13 @@
         </short>
         <descr>
           <p>
-            Gets the ordinal position in the internal image list for the icon with the specified pixel format, height, and width. The return value is -1 if an image using all of the requested values was not found in the list.
+            Gets the ordinal position in the internal image list for the icon with the specified pixel format, height, and width. The return value is <b>-1</b> if an image using all of the requested values was not found in the list.
           </p>
           <p>
-            Assign the return value to the Current property to use it as the selected image for the icon.
+            Assign the return value to the <var>Current</var> property to use it as the selected image for the icon.
           </p>
           <p>
-            Use GetBestIndexForSize to find the position of the image which matches most closely the specified height and width.
+            Use <var>GetBestIndexForSize</var> to find the position of the image which matches most closely the specified height and width.
           </p>
         </descr>
          <seealso>
@@ -12162,7 +12622,7 @@
         </short>
         <descr>
           <p>
-            GetDefaultSize is a TSize class function used to gets the default size used for new instances of the class. The return value uses the SM_CXICON and SM_CYICON values returned from the GetSystemMetrics function in its cx and cy members.
+            <var>GetDefaultSize</var> is a <var>TSize</var> class function used to get the default size in  new instances of the class. The return value uses the SM_CXICON and SM_CYICON values returned from the GetSystemMetrics function in its cx and cy members.
           </p>
         </descr>
         <seealso/>
@@ -12175,7 +12635,7 @@
         <short>Gets the value for the MaskHandle property</short>
         <descr>
           <p>
-            GetMaskHandle implements the abstract method defined in the ancestor class.
+            <var>GetMaskHandle</var> implements the abstract method defined in the ancestor class.
           </p>
         </descr>
         <seealso>
@@ -12304,7 +12764,7 @@
         <short>Type identifier for images in the icon</short>
       </element>
 
-      <element name="TCustomIcon.HandleNeeded" link="#lcl.graphics.TRasterImage.HandleNeeded">
+      <element name="TCustomIcon.HandleNeeded">
         <short>Ensures that a handle for the image has been allocated</short>
         <descr>
           <p>
@@ -12317,7 +12777,9 @@
             HandleNeeded calls the <var>CreateIconIndirect</var> routine for the widgetset  to get the value used as the Handle for the shared image.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TRasterImage.HandleNeeded"/>
+        </seealso>
       </element>
 
       <element name="TCustomIcon.InternalReleaseBitmapHandle" link="#lcl.graphics.TRasterImage.InternalReleaseBitmapHandle">
@@ -12347,63 +12809,154 @@
         <short/>
       </element>
 
-      <!-- WIP -->
-
-      <element name="TCustomIcon.ReadData" link="#lcl.graphics.TGraphic.ReadData">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.ReadData">
+        <short>Reads data for the class instance from a stream</short>
+        <descr>
+          <p>
+            <var>ReadData</var> is an overridden method used to read the data for the class instance from the TStream instance specified in <var>Stream</var>. ReadData is the method called when TFiler reads a persistent object during LCL component streaming.
+          </p>
+          <p>
+            ReadData saves the position in Stream on entry, and restores the original position prior to exiting from the method.
+          </p>
+          <p>
+            ReadData checks the values in Stream to determine if a size prefix for the content is stored in the stream. Delphi streaming does not include the size prefix. Current Lazarus versions do. When the <var>LongInt</var> value used as the StreamSignature is 0, the LoadFromStream method is called to load the contents of the stream. Otherwise, the inherited method is called to complete the operation.
+          </p>
+          <p>
+            ReadData is also called from the <var>LoadFromResourceHandle</var> method in <var>TIcon</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id=" lcl.graphics.TRasterImage.ReadData"/>
+          <link id=" lcl.graphics.TGraphic.ReadData"/>
+          <link id="TIcon.LoadFromResourceHandle"/>
+          <link id="#rtl.classes.TFiler"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.ReadData.Stream">
         <short/>
       </element>
 
-      <element name="TCustomIcon.ReadStream" link="#lcl.graphics.TRasterImage.ReadStream">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.ReadStream">
+        <short>Reads the content for the icon from the specified stream</short>
+        <descr>
+          <p>
+            <var>ReadStream</var> is an overridden procedure used to read the content for the icon from the stream specified in <var>AStream</var>. ReadStream implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            ReadStream verifies that AStream contains an icon image by checking for header value(s) that are valid for .ICO data. If the header values are nopt found, an <var>EInvalidGraphic</var> exception is raised.
+          </p>
+          <p>
+            For icon data, the icon directory must be read from the stream. The header contains the number of icon directory entries included in the stream. The icon directory entries are read from AStream, and include values for each icon image that includes:
+          </p>
+          <ul>
+            <li>HotSpotX</li>
+            <li>HotSpotY</li>
+            <li>BytesInRes</li>
+            <li>ImageOffset</li>
+          </ul>
+          <p>
+            ReadStream positions the stream, and reads image data for the each of the icon directory entries. It handles both DIB Bitmap and PNG (used in WIndows Vista) image data for the icon images. An  FCL-compatible image reader is created as required for the image type, and a <var>TLazIntfImage</var> instance is used to capture the raw image data from the stream. Images read from the stream are added to the internal list of images in the <var>TSharedIcon</var> member for the class instance.
+          </p>
+          <p>
+            ReadStream calls <var>CheckRequestedSize</var> to use the <var>Width</var> and/or <var>Height</var> specified in the class instance. <var>GetBestIndexForSize</var> is called to determine the value in <var>Current</var> with the requested image size.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.ReadStream"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.ReadStream.AStream">
-        <short/>
+        <short>Stream instance with the image content read in the method</short>
       </element>
       <element name="TCustomIcon.ReadStream.ASize">
-        <short/>
+        <short>Number of bytes expected for the icon data</short>
       </element>
 
-      <element name="TCustomIcon.SetMasked" link="#lcl.graphics.TRasterImage.SetMasked">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.SetMasked">
+        <short>Sets the value for the Masked property</short>
+        <descr>
+          <p>
+            <var>SetMasked</var> is an empty implementation in <var>TCustomIcon</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="lcl.graphics.TRasterImage.SetMasked"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.SetMasked.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
-      <element name="TCustomIcon.SetPixelFormat" link="#lcl.graphics.TRasterImage.SetPixelFormat">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.SetPixelFormat">
+        <short>Sets the value for the PixelFormat property</short>
+        <descr>
+          <p>
+            Changing the value for <var>PixelFormat</var> raises an <var>EInvalidGraphicOperation</var> exception in <var>TCustomIcon</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.SetPixelFormat"/>
+          <link id="TRasterImage.PixelFormat"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.SetPixelFormat.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
-      <element name="TCustomIcon.SetTransparent" link="#lcl.graphics.TRasterImage.SetTransparent">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.SetTransparent">
+        <short>Sets the value for the Transparent property</short>
+        <descr>
+          <p>
+            <var>SetTransparent</var> is an empty implementation in <var>TCustomIcon</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGraphic.Transparent"/>
+          <link id="#lcl.graphics.TRasterImage.SetTransparent"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.SetTransparent.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
-      <element name="TCustomIcon.UnshareImage" link="#lcl.graphics.TRasterImage.UnshareImage">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.UnshareImage">
+        <short>Unshares the shared image when the content in the icon is changed</short>
+        <descr>
+          <p>
+            <var>UnshareImage</var> is an overridden procedure used to stop sharing the image(s) for the icon. UnshareImage implements the abstract virtual method defined in the enacestor class.
+          </p>
+          <p>
+            No actions are performed in the method when the <var>RefCount</var> for the internal <var>TSharedIcon</var> instance is less than <b>1</b>.
+          </p>
+          <p>
+            When sharing is stopped, the internal TSharedIcon instance in the class is re-created.
+          </p>
+          <p>
+            <var>CopyContent</var> indicates whether exising content from icon images is copied into the new image list. When set to <b>True</b>, <var>TIconImage</var> instances are re-created for each of the icon images and their existing content is copied. When set to <b>False</b>, image data for the icon is empty.
+          </p>
+          <p>
+            UnshareImage calls <var>FreeCanvasContext</var> to discard the device context used in the Canvas.
+          </p>
+          <p>
+            UnshareImage calls the <var>Release</var> method for the old TSharedIcon instance.
+          </p>
+          <p>
+            UnshareImage is called from methods which alter the handle or image content for the icon, including:
+          </p>
+          <ul>
+            <li>SetHandle</li>
+            <li>Add</li>
+            <li>Assign</li>
+            <li>AssignImage</li>
+            <li>Delete</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.UnshareImage"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.UnshareImage.CopyContent">
-        <short/>
+        <short>True if exisitng image content is copied in the method</short>
       </element>
 
       <element name="TCustomIcon.UpdateCurrentView">
@@ -12446,28 +12999,67 @@
         <short>Handle compared to the shared icon image</short>
       </element>
 
-      <element name="TCustomIcon.UpdateHandles" link="#lcl.graphics.TRasterImage.UpdateHandles">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.UpdateHandles">
+        <short>Sets the Bitmap and Mask handles for the current image in the icon</short>
+        <descr>
+          <p>
+            <var>UpdateHandles</var> is an overridden method used to set the Bitmap and Mask handles for the <var>Current</var> icon image to the specified values. UpdateHandles implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            UpdateHandles uses the value in <var>Current</var> to determine the <var>TIconImage</var> in the internal image list that is updated in the method.
+          </p>
+          <p>
+            When Current is set to <b>-1</b>, an icon image has not been selected and no actions are performed in the method. The return value is <b>False</b> if the handles could not be applied to icon image.
+          </p>
+          <p>
+            UpdateHandles calls the <var>UpdateHandles</var> method for the TIconImage indicated in Current using the values in <var>ABitmap</var> and <var>AMask</var> as arguments. The return value is <b>True</b> if the handles are successfully applied to the icon image.
+          </p>
+          <p>
+            UpdateHandles is called from methods like:
+          </p>
+          <ul>
+            <li>BitmapHandleNeeded</li>
+            <li>MaskHandleNeeded</li>
+            <li>UpdateHandle</li>
+            <li>Assign</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="#lcl.graphics.TRasterImage.UpdateHandles"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.UpdateHandles.Result">
-        <short/>
+        <short>True if the new handles are successfully applied to the icon image</short>
       </element>
       <element name="TCustomIcon.UpdateHandles.ABitmap">
-        <short/>
+        <short>Bitmap handle for the current image in the icon</short>
       </element>
       <element name="TCustomIcon.UpdateHandles.AMask">
-        <short/>
+        <short>Mask handle for the current image in the icon</short>
       </element>
 
-      <element name="TCustomIcon.WriteStream" link="#lcl.graphics.TRasterImage.WriteStream">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.WriteStream">
+        <short>Writes the content for the multi-image icon to the specified stream</short>
+        <descr>
+          <p>
+            <var>WriteStream</var> is an overridden method used to write the content for the multi-image icon to the stream specified in <var>AStream</var>. WriteStream implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            WriteStream performs actions needed to write the header, icon directory, and content for each of the images used in the multi-image icon to the TMemoryStream instance. It handles both PNG and DIB Bitmap icon images, and creates Mask data for images when it is not already present.
+          </p>
+          <p>
+            For icon images used in <var>TCursorImage</var>, the X and Y coordinates for the HotSpot are also included in the image data.
+          </p>
+          <p>
+            WriteStream is called from <var>SaveStreamNeeded</var> when the <var>SaveToStream</var> method is performed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.WriteStream"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.WriteStream.AStream">
-        <short/>
+        <short>TMemoryStream instance where icon data is stored</short>
       </element>
 
       <element name="TCustomIcon.Create">
@@ -12499,7 +13091,17 @@
         <short>
           <var>Add</var> - an Icon formatted as <var>AFormat</var>, with specified <var>Height</var> and <var>Width</var>
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Add</var> is procedure used to create an image for the icon with the attributes specified in <var>AFormat</var>, <var>AHeight</var>, and <var>AWidth</var>. Add calls <var>GetIIndex</var> to determine if an icon image with the requested attributes already exists in the image list for the icon. An <var>EInvalidGraphicOperation</var> exception is raised when the image already exists in the internal image list.
+          </p>
+          <p>
+            Add calls <var>UnshareImage</var> to release the shared image handle, and adds a new image class instance to  the shared icon. If the icon image is the first one in the list, the value in <var>Current</var> is set to <b>0</b> (<b>zero</b>) and the <var>UpdateCurrentView</var> method is called.
+          </p>
+          <p>
+            Use Current to make an icon image active for the class instance. Use <var>AssignImage</var> to store the image at the position in Current.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomIcon.Add.AFormat">
@@ -12513,73 +13115,158 @@
       </element>
 
       <element name="TCustomIcon.Assign">
-        <short>
-          <var>Assign</var> checks if Source is correct data type, then copies image data
-        </short>
-        <descr/>
+        <short>Copies values from the specified persistent object into the current class instance</short>
+        <descr>
+          <p>
+            <var>Assign</var> is an overridden method used to copyvalues from the persistent object in <var>Source</var> into the current class instance. Assign calls <var>BeginUpdate</var> to increment the active update counter, and calls <var>EndUpdate</var> prior to exiting from the method.
+          </p>
+          <p>
+            Assign handles specific class types in Source, including:
+          </p>
+          <dl>
+            <dt>
+              TRasterImage
+            </dt>
+            <dd>
+              Calls Clear to remove existing image content,  and calls Add to create and icon image with the attributes in the PixelFormat, Height, and Width properties in Source. Calls AssignImage to store the image content from Source in the icon image. If the shared image class in Source is different than the one for the current class instance, UnshareImage is called.
+            </dd>
+            <dt>
+              TCustomIcon
+            </dt>
+            <dd>
+              Sets the value in Current to the value found in Source.
+            </dd>
+          </dl>
+          <p>
+            When Source is derived from another class type, the inherited Assign method is called.
+          </p>
+        </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+          <link id="TRasterImage.Assign"/>
+          <link id="#rtl.Classes.TPersistent.Assign"/>
         </seealso>
       </element>
       <element name="TCustomIcon.Assign.Source">
-        <short/>
+        <short>Persistent object with values copied into the current class instance</short>
       </element>
 
       <element name="TCustomIcon.AssignImage">
-        <short>
-          <var>AssignImage</var> - copies information from the source image to the current one
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Copies image data from the source image to the current icon image</short>
+        <descr>
+          <p>
+            <var>AssignImage</var> is used to copy image data from <var>ASource</var> to the currently selected image for the icon.
+          </p>
+          <p>
+            AssignImage is typically used to assign the icon image when <var>Add</var> is used to create a new icon image with the required attributes (PixelFormat, Height, Width). AssignImage is called from the <var>Assign</var> method to store a single raster image to the icon.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomIcon.Add"/>
+          <link id="TCustomIcon.Assign"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.AssignImage.ASource">
-        <short/>
+        <short>Image with the values assigned to the current icon image</short>
       </element>
 
       <element name="TCustomIcon.Clear">
-        <short>
-          <var>Clear</var> the Icon and release its resources
-        </short>
-        <descr/>
+        <short>Removes the image content for the icon</short>
+        <descr>
+          <p>
+            <var>Clear</var> is an overridden method used to remove the image content for the icon. Clear frees the internal save stream for the image. The internal shared image is also freed and re-created. The value in <var>Current</var> is set to <b>-1</b> to indicate that an icon image has not been selected.
+          </p>
+          <p>
+            Clear calls the <var>Changed</var> method to set the value in <var>Modified</var> and signal the <var>OnChange</var> event handler (when assigned).
+          </p>
+          <p>
+            No actions are performed in the method when <var>Empty</var> returns <b>True</b>.
+          </p>
+          <remark>
+            Clear does not call the method inherited from TRasterImage.
+          </remark>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TGraphic.Clear">TGraphic.Clear</link>
+          <link id="#lcl.graphics.TRasterImage.Clear"/>
         </seealso>
       </element>
 
       <element name="TCustomIcon.Delete">
         <short>
-          <var>Delete</var> the indexed Icon
+          Deletes the image at the specified position in the list of images for the icon
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Delete</var> is a procedure used to delete the icon image at the ordinal position specified in <var>AIndex</var> from the list of images for the icon.
+          </p>
+          <p>
+            Delete calls <var>UnshareImage</var> to stop sharing the image list for the icon. A copy of the images is kept and restored when the Delete method in TSharedIcon has removed the image at the specified postion.
+          </p>
+          <p>
+            When AIndex is also the <var>Current</var> image for the icon, Current is set to <b>-1</b> and the <var>UpdateCurrentView</var> method is called. Otherwise, the value in Current is decremented.
+          </p>
+          <p>
+            Use <var>Remove</var> to delete an icon image with specific PixelFormat, Height, and Width values.
+          </p>
+          <p>
+            Use <var>Add</var> to add an icon image with specific PixelFormat, Height, and Width values.
+          </p>
+          <p>
+            Use <var>Count</var> to determine the number of images in the list of images for the icon.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomIcon.Delete.AIndex">
-        <short/>
+        <short>Ordinal position for the icon image deleted in the method</short>
       </element>
 
       <element name="TCustomIcon.Remove">
-        <short>
-          Removes the Icon specified by <var>AFormat</var>, <var>AHeight</var> and <var>AWidth</var>
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Removes an icon image with the specified attributes</short>
+        <descr>
+          <p>
+            <var>Remove</var> is used to locate and delete an icon image with the attributes specified in <var>AFormat</var>,  <var>AHeight</var>, and <var>AWidth</var>.
+          </p>
+          <p>
+            Remove calls <var>GetIndex</var> to get the position in the internal image list where the icon image with the specified attributes is stored. If an image is found, the <var>Delete</var> method is called to the remove the icon image.
+          </p>
+          <p>
+            The value in <var>Current</var> is modified when it represents an icon image affected by the removal. Current is set to <b>-1</b> when it contains the index for the icon image removed in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomIcon.GetIndex"/>
+          <link id="TCustomIcon.Delete"/>
+          <link id="TCustomIcon.Current"/>
+          <link id="TCustomIcon.Count"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.Remove.AFormat">
-        <short/>
+        <short>Pixel format (color depth) for the icon image</short>
       </element>
       <element name="TCustomIcon.Remove.AHeight">
-        <short/>
+        <short>Height for the icon image</short>
       </element>
       <element name="TCustomIcon.Remove.AWidth">
-        <short/>
+        <short>Width for the icon image</short>
       </element>
 
       <element name="TCustomIcon.GetDescription">
         <short>
-          <var>GetDescription</var> - find the description for the Icon
+          Gets metadata which describes the icon image at the specified position in the image list
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GetDescription</var> is used to get image metadata whcih describes the icon image at the position specified in <var>AIndex</var>. <var>AFormat</var>, <var>AHeight</var>, and <var>AWidth</var> are output parameters where the corresponding values from the <var>TIconImage</var> instance are stored.
+          </p>
+          <p>
+            GetDescription accesses the image list in the internal <var>TSharedIcon</var> instance used in the class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TIconImage"/>
+          <link id="TSharedIcon"/>
+          <link id="TPixelFormat"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.GetDescription.AIndex">
         <short><var>Aindex</var> - the Index value for the Icon</short>
@@ -12595,121 +13282,268 @@
       </element>
 
       <element name="TCustomIcon.SetSize">
-        <short>
-          <var>SetSize</var> - write the size (width, height) of the Icon
-        </short>
-        <descr/>
+        <short>Sets the size (width, height) for the image in the Icon</short>
+        <descr>
+          <p>
+            <var>SetSize</var> is an overridden method used to set the size for the image in the icon to the values specified in <var>AWidth</var> and <var>AHeight</var>. SetSize implements the abstract virtual method defined in the ancestor class. SetSize stores the argument values in an internal member used to track the requested icon image size used in the  <var>GetBestIndexForSize</var> method.
+          </p>
+          <p>
+            SetSize raises an <var>EInvalidGraphicOperation</var> exception when an icon size has been selected by setting a value in the <var>Current</var> property.
+          </p>
+          <p>
+            SetSize is called from the <var>ReadStream</var> method.
+          </p>
+        </descr>
+        <errors>
+          Raises an EInvalidGraphicOperation with the message in rsIconImageSizeChange when Current contains a value other than -1.
+        </errors>
         <seealso>
-          <link id="#lcl.graphics.TRasterImage.SetSize">TRasterImage.SetSize</link>
+          <link id="TCustomIcon.Current"/>
+          <link id="TCustomIcon.ReadStream"/>
+          <link id="TCustomIcon.GetBestIndexForSize"/>
+          <link id="TRasterImage.SetSize"/>
+          <link id="EInvalidGraphicOperation"/>
+          <link id="rsIconImageSizeChange"/>
         </seealso>
       </element>
       <element name="TCustomIcon.SetSize.AWidth">
-        <short/>
+        <short>New Width for the icon</short>
       </element>
       <element name="TCustomIcon.SetSize.AHeight">
-        <short/>
+        <short>New Height for the icon</short>
       </element>
 
       <element name="TCustomIcon.GetFileExtensions">
-        <short><var>GetFileExtensions</var> returns valid file extensions, in this case 'ico'</short>
-        <descr/>
+        <short>Gets a delimited list of file extensions supported for the image type</short>
+        <descr>
+          <p>
+            <var>GetFileExtensions</var> is an overridden <var>String</var> class function used to get a delimited list of file extensions supported for the image type. In <var>TCustomIcon</var> and <var>TIcon</var>, the return value is always <b>'ico'</b>.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TGraphic.GetFileExtensions">TGraphic.GetFileExtensions</link>
+          <link id="TGraphic.GetFileExtensions"/>
         </seealso>
       </element>
       <element name="TCustomIcon.GetFileExtensions.Result">
-        <short/>
+        <short>Delimited list of file extensions supported for the image type</short>
       </element>
 
-      <element name="TCustomIcon.LazarusResourceTypeValid" link="#lcl.graphics.TGraphic.LazarusResourceTypeValid">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.LazarusResourceTypeValid">
+        <short>Determines if the specified resource type is valid for the image format</short>
+        <descr>
+          <p>
+            <var>LazarusResourceTypeValid</var> is an overridden  Boolean function used to determine if the specified resource type is valid for the image format.
+          </p>
+          <p>
+            The return value is <b>True</b> when <var>ResourceType</var> contains <b>'ICO'</b> or <b>'ICON'</b>. The inherited method is called to get the return value when ResourceType contains any other resource type name. Case is not significant when comparing the value in ResourceType; it is converted to uppercase in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGraphic.LazarusResourceTypeValid"/>
+          <link id="TCustomBitmap.LazarusResourceTypeValid"/>
+          <link id="TFPImageBitmap.LazarusResourceTypeValid"/>
+          <link id="TPixmap.LazarusResourceTypeValid"/>
+          <link id="TIcnsIcon.LazarusResourceTypeValid"/>
+          <link id="TCursorImage.LazarusResourceTypeValid"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.LazarusResourceTypeValid.Result">
-        <short/>
+        <short>True when the resource type identifier is valid for the image format</short>
       </element>
       <element name="TCustomIcon.LazarusResourceTypeValid.ResourceType">
-        <short/>
+        <short>Resource type identifier examined in the method</short>
       </element>
 
       <element name="TCustomIcon.LoadFromResourceName">
-        <short/>
-        <descr/>
+        <short>Loads the icon with the specified resource name from the instance handle</short>
+        <descr>
+          <p>
+            <var>LoadFromResourceName</var> is an overridden procedure used to load a resource with the name specified in <var>ResName</var> using the handle provided in <var>Instance</var>. LoadFromResourceName re-implements the method defined in the ancestor class, and does not call the inherited method.
+          </p>
+          <p>
+            LoadFromResourceName calls <var>GetResourceType</var> to get the <var>Integer</var> resource type used in the class instance. No actions are performed in the method when the <var>TResourceType</var> value is unassigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            LoadFromResourceName calls <var>FindResource</var> to get the resource handle needed in the method. An <var>EResNotFound</var> exception is raised if a resource with the specified name and type is not found in FindResource.
+          </p>
+          <p>
+            LoadFromResourceName calls <var>LoadFromResourceHandle</var> to load the icon using the Instance and resource handle values.
+          </p>
+          <p>
+            Use <var>LoadFromResourceID</var> to load a resource by its Resource ID.
+          </p>
+          <p>
+            Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a <b>.lrs</b> file with a give name.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomIcon.LoadFromResourceName.Instance">
-        <short/>
+        <short>Handle where the content for the resource is stored</short>
       </element>
       <element name="TCustomIcon.LoadFromResourceName.ResName">
-        <short/>
+        <short>Name for the resource loaded in the method</short>
       </element>
 
       <element name="TCustomIcon.LoadFromResourceID">
-        <short/>
-        <descr/>
+        <short>Load icon data from a resource with the specified integer resource identifier</short>
+        <descr>
+          <p>
+            <var>LoadFromResourceID</var> is an overridden procedure used to load a resource with the specified Resource ID into the class instance. LoadFromResourceID re-implements the method defined in the ancestor class, and does not call the inherited method.
+          </p>
+          <p>
+            <var>Instance</var> contains the Handle used to read the resource. <var>ResID</var> contains an Integer pointer to the resource identifier loaded in the method.
+          </p>
+          <p>
+            LoadFromResourceID calls <var>GetResourceType</var> to get the <var>Integer</var> resource type used in the class instance. No actions are performed in the method when the <var>TResourceType</var> value is unassigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            LoadFromResourceName calls <var>FindResource</var> to get the resource handle needed in the method. An <var>EResNotFound</var> exception is raised if a resource with the specified ID  and type is not found in FindResource.
+          </p>
+          <p>
+            LoadFromResourceName calls <var>LoadFromResourceHandle</var> to load the icon using the Instance and resource handle values.
+          </p>
+          <p>
+            Use <var>LoadFromResourceName</var> to load a resource with a given resource name.
+          </p>
+          <p>
+            Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a <b>.lrs</b> file with a give name.
+          </p>
+        </descr>
+        <errors>
+          Raises an EResNotFound exception if the resource handle for the specified ID and type is not valid.
+        </errors>
         <seealso/>
       </element>
       <element name="TCustomIcon.LoadFromResourceID.Instance">
-        <short/>
+        <short>Handle where the content for the resource is stored</short>
       </element>
       <element name="TCustomIcon.LoadFromResourceID.ResID">
-        <short/>
+        <short>Integer resource identifier loaded in the method</short>
       </element>
 
       <element name="TCustomIcon.LoadFromResourceHandle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Loads icon data from the specified instance and resource handles</short>
+        <descr>
+          <p>
+              LoadFromResourceHandle has an empty implementation in TCustomIcon. It is re-implemented in TIcon descendant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TIcon.LoadFromResourceHandle"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.LoadFromResourceHandle.Instance">
-        <short/>
+        <short>Handle with the resource data loaded in the method</short>
       </element>
       <element name="TCustomIcon.LoadFromResourceHandle.ResHandle">
-        <short/>
+        <short>Resource handle with the icon data loaded in the method</short>
       </element>
 
-      <element name="TCustomIcon.BitmapHandleAllocated" link="#lcl.graphics.TRasterImage.BitmapHandleAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.BitmapHandleAllocated">
+        <short>Indicates if a handle for the icon image has been allocated</short>
+      <descr>
+        <p>
+          <var>BitmapHandleAllocated</var> is an overridden <var>Boolean</var> function which indicates if a handle for the icon image has been allocated in the class instance. BitmapHandleAllocated implements the abstract virtual method defined in the ancestor class.
+        </p>
+        <p>
+          The return value is <b>True</b> when <var>Current</var> has a valid image index for the icon image, and the handle for the <var>TIconImage</var> in the shared icon has a <b>non-zero</b> value.
+        </p>
+        <p>
+          BitmapHandleAllocated is called from methods that required a valid image handle prior to performing actions using the image data. For example:
+        </p>
+        <ul>
+          <li>Assign</li>
+          <li>BitmapHandleNeeded</li>
+          <li>MaskHandleNeed</li>
+          <li>Draw</li>
+          <li>EndUpdate</li>
+          <li>SetMaskHandle</li>
+        </ul>
+      </descr>
+        <seealso>
+          <link id="TRasterImage.BitmapHandleAllocated"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.BitmapHandleAllocated.Result">
-        <short/>
+        <short>True when a valid handle has been assigned for the shared icon image</short>
       </element>
 
-      <element name="TCustomIcon.MaskHandleAllocated" link="#lcl.graphics.TRasterImage.MaskHandleAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.MaskHandleAllocated">
+        <short>True if a handle has been allocated for the mask in the image</short>
+        <descr>
+          <p>
+            <var>MaskHandleAllocated</var> is an overridden method used to determine if a handle for the image mask has been allocated in the class instance. MaskHandleAllocated implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            The return value is <var>True</var> when <var>Current</var> contains a value other than -1, and the <var>MaskHandle</var> for the <var>TIconImage</var> in the shared image list has a non-zero value.
+          </p>
+          <p>
+            MaskHandleAllocated is called from methods that required a valid handle prior to performing actions using the mask image data. For example:
+          </p>
+          <ul>
+            <li>Assign</li>
+            <li>AssignImage</li>
+            <li>BitmapHandleNeeded</li>
+            <li>MaskHandleNeeded</li>
+            <li>CreateMask</li>
+            <li>SetTransparentColor</li>
+            <li>SetBitmapHandle</li>
+            <li>SetMaskHandle</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomIcon.Assign"/>
+          <link id="TCustomIcon.AssignImage"/>
+          <link id="TCustomIcon.MaskHandleNeeded"/>
+          <link id="TCustomIcon.BitmapHandleNeeded"/>
+          <link id="TRasterImage.CreateMask"/>
+          <link id="TRasterImage.MaskHandleAllocated"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.MaskHandleAllocated.Result">
-        <short/>
+        <short>True when the MaskHandle has been allocated for the icon image</short>
       </element>
 
-      <element name="TCustomIcon.PaletteAllocated" link="#lcl.graphics.TRasterImage.PaletteAllocated">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomIcon.PaletteAllocated">
+        <short>Determine if a handle has been allocated for the Palette in the icon</short>
+        <descr>
+          <p>
+            <var>PaletteAllocated</var> is an overridden method used to determine if a handle has been allocated for the Palette in the icon image. PaletteAllocated implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            The return value is <b>True</b> when <var>Current</var> contains a value other than <b>-1</b>, and the palette handle in the <var>TIconImage</var> instance for the shared icon image has a <b>non-zero</b> value.
+          </p>
+          <remark>
+            While provided as property in TCustomIcon, Palette is never assigned in the TIconImage class instances used to represent the individual images in the icon. Effectively, Palette is not implemented for TCustomIcon and PaletteAllocated will always return <b>False</b>.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.PaletteAllocated"/>
+          <link id="TSharedIcon"/>
+          <link id="TIconImage.Palette"/>
+        </seealso>
       </element>
       <element name="TCustomIcon.PaletteAllocated.Result">
-        <short/>
+        <short>True when the Palette handle has been allocated for the icon</short>
       </element>
 
       <element name="TCustomIcon.SetHandles">
-        <short/>
+        <short>Not implemented in TCustomIcon</short>
         <descr>
-          Not implemented in TCustomIcon in the current LCL version.
+          <p>
+            SetHandles has an empty implementation in TCustomIcon.
+          </p>
         </descr>
         <seealso>
           <link id="TRasterImage.SetHandles"/>
         </seealso>
       </element>
       <element name="TCustomIcon.SetHandles.ABitmap">
-        <short/>
+        <short>Handle for the Bitmap in the icon</short>
       </element>
       <element name="TCustomIcon.SetHandles.AMask">
-        <short/>
+        <short>Handle for the Mask in the icon</short>
       </element>
 
       <element name="TCustomIcon.Sort">
@@ -12718,8 +13552,15 @@
           <p>
             Sorts images in the internal image list for the icon. The <var>Sort</var> method in <var>TSharedIcon</var> is called to perform the sort, and compares the Width/PixelFormat values in the images to determine the sort order. Preference is given to the value in Width; if two items have the same Width, the value in PixelFormat is used for the comparison.
           </p>
+          <p>
+            Sort keeps a reference to the image in <var>Current</var> when it is set to a value other than <b>-1</b>. The image is used to restore the value in Current when the sort operation is completed. The IndexOf method for the internal image list is called determine the new position for the referenced image.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomIcon.Current"/>
+          <link id="TSharedIcon"/>
+          <link id="TIconImage"/>
+        </seealso>
       </element>
 
       <element name="TCustomIcon.GetBestIndexForSize">
@@ -12742,9 +13583,7 @@
       </element>
 
       <element name="TCustomIcon.Current">
-        <short>
-          <var>Current</var> - the sequence number of the current Icon
-        </short>
+        <short>Ordinal position for the current image displayed for the icon</short>
         <descr>
           <p>
             <var>Current</var> is an <var>Integer</var> property which contains the ordinal position for the selected image in the icon. Setting a new value for the property causes the <var>UpdateCurrentView</var> method to be called to update the <var>Canvas</var>, and the save stream for the shared image. The <var>OnChange</var> event handler is signalled (when assigned).
@@ -12757,15 +13596,13 @@
       </element>
 
       <element name="TCustomIcon.Count">
-        <short>
-          <var>Count</var> - the number of references to this Icon
-        </short>
+        <short>Number of images in the image list for the shared icon</short>
         <descr>
           <p>
             <var>Count</var> is a read-only <var>Integer</var> property which contains the number of images in the internal image list for the icon. Read access for the property value is redirected to the Count property in the internal TSharedIcon instance used in the class.
           </p>
           <p>
-            Use methods like Add, Delete, Remove, Clear, Assign, and AssignImage to maintain the list of images available in the icon.
+            Use methods like <var>Add</var>, <var>Delete</var>, <var>Remove</var>, <var>Clear</var>, <var>Assign</var>, and <var>AssignImage</var> to maintain the list of images available in the icon.
           </p>
         </descr>
         <seealso/>
@@ -12773,7 +13610,7 @@
 
       <element name="TIcon">
         <short>
-          <var>TIcon</var>  - icons, small images typically associated with applications, controls, etc.
+          Implements an icon image type; small images typically associated with applications, controls, etc.
         </short>
         <descr>
           <p>
@@ -12817,50 +13654,71 @@
       <element name="TIcon.GetTypeID.Result" link="#lcl.graphics.TCustomIcon.GetTypeID.Result"/>
 
       <element name="TIcon.HandleNeeded">
-        <short/>
-        <descr/>
+        <short>Ensures that handle values for the icon are valid</short>
+        <descr>
+          <p>
+            Ensures that Handle values are valid for the icon. Configures the values in IconInfo with the BitmapHandle and MaskHandle for the class instance. Calls CreateIconIndirect for the widgetset to get the Handle used for the shared image in the icon.
+          </p>
+          <p>
+            No actions are performed in the method when the Handle for the shared icon image has already been assigned.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.graphics.TRasterImage.HandleNeeded"/>
+          <link id="TIcon.Handle"/>
+          <link id="TRasterImage.BitmapHandle"/>
+          <link id="TRasterImage.MaskHandle"/>
+          <link id="TRasterImage.HandleNeeded"/>
         </seealso>
       </element>
 
       <element name="TIcon.LoadFromResourceHandle">
-        <short/>
+        <short>Loads icon data from the specified instance and resource handles</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomIcon.LoadFromResourceHandle"/>
+        </seealso>
       </element>
       <element name="TIcon.LoadFromResourceHandle.Instance">
-        <short/>
+        <short>Handle with the resource data loaded in the method</short>
       </element>
       <element name="TIcon.LoadFromResourceHandle.ResHandle">
-        <short/>
+        <short>Resource handle with the icon data loaded in the method</short>
       </element>
 
       <element name="TIcon.ReleaseHandle">
-        <short>
-          <var>ReleaseHandle</var> - frees the handle that was used for the Icon
-        </short>
+        <short>Frees the Handle used for the Icon</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TIcon.ReleaseHandle.Result">
-        <short/>
+        <short>HICON value removed from the Handle in the class instance</short>
       </element>
 
       <element name="TIcon.GetResourceType">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            The return value is RT_GROUP_ICON in TIcon.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TIcon.GetResourceType.Result">
-        <short/>
+        <short>Resource type used for the icon image type</short>
       </element>
 
       <element name="TIcon.Handle">
-        <short>The Operating System <var>Handle</var> used for the Icon</short>
-        <descr/>
+        <short>Handle used to access the image data for the icon</short>
+        <descr>
+          <p>
+            Handle is a <var>HICON</var> property which contains the icon handle used to access image data for the icon. The property value is provided by the GetHandle method.
+            <!-- TODO: SetHandle -->
+          </p>
+        </descr>
         <seealso/>
       </element>
+
+      <!-- .ICNS is the Apple icon image format used in MacOS. -->
 
       <element name="TIcnsRec">
         <short/>
@@ -13062,45 +13920,53 @@
       </element>
 
       <element name="TSharedCursorImage">
-        <short>
-          <var>TSharedCursorImage</var> - a reference counted shared image to be used for cursors
-        </short>
+        <short>Implements a reference-counted shared image used for cursors</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TSharedCursorImage.FreeHandle" link="#lcl.graphics.TSharedImage.FreeHandle">
-        <short/>
+        <short>Frees the handle for the cursor image</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedImage.FreeHandle"/>
+        </seealso>
       </element>
 
       <element name="TSharedCursorImage.GetImagesClass" link="#lcl.graphics.TSharedIcon.GetImagesClass">
-        <short/>
+        <short>Gets the class reference used to create a new cursor image in the Images property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TSharedCursorImage.GetImagesClass.Result">
-        <short/>
+        <short>Class reference used to create images in the shared cursor image list</short>
       </element>
 
       <element name="TCursorImageImage">
-        <short>
-          <var>TCursorImageImage</var> - the image for a cursor, stored as an Icon
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Implements the image for a cursor, stored as an Icon</short>
+        <descr>
+          <p>
+            Provides a <var>HotSpot</var> property with the coordinates in the cursor that is the point that interacts with other elements on the screen.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TIconImage"/>
+        </seealso>
       </element>
 
       <element name="TCursorImageImage.FHotSpot"/>
 
       <element name="TCursorImageImage.Create">
-        <short/>
-        <descr/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Calls the inherited constructor on entry using the value in <var>AInfo</var> as an argument. AInfo contains the coordinates that are assigned to the <var>HotSpot</var> property.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCursorImageImage.Create.AInfo">
-        <short/>
+        <short>TIconInfo instance with the hotspot information for the cursor image</short>
       </element>
 
       <element name="TCursorImageImage.HotSpot">
@@ -13122,30 +13988,36 @@
       </element>
 
       <element name="TCursorImage.GetHotSpot">
-        <short/>
+        <short>Gets the value for the HotSpot property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCursorImage.HotSpot"/>
+        </seealso>
       </element>
       <element name="TCursorImage.GetHotSpot.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TCursorImage.GetCursorHandle">
-        <short/>
+        <short>Gets the value for the CursorHandle property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCursorImage.CursorHandle"/>
+        </seealso>
       </element>
       <element name="TCursorImage.GetCursorHandle.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TCursorImage.SetCursorHandle">
-        <short/>
+        <short>Sets the value for the CursorHandle property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCursorImage.CursorHandle"/>
+        </seealso>
       </element>
       <element name="TCursorImage.SetCursorHandle.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCursorImage.HandleNeeded" link="#lcl.graphics.TRasterImage.HandleNeeded">
@@ -13163,7 +14035,7 @@
         <short/>
       </element>
 
-      <element name="TCursorImage.GetStreamSignature">
+      <element name="TCursorImage.GetStreamSignature" link="#lcl.graphics.TCustomIcon.GetStreamSignature">
         <short/>
         <descr/>
         <seealso/>
@@ -13202,16 +14074,21 @@
       <element name="TCursorImage.GetResourceType">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.lcltype.RT_GROUP_CURSOR"/>
+          <link id="TGraphic.GetResourceType"/>
+        </seealso>
       </element>
       <element name="TCursorImage.GetResourceType.Result">
         <short/>
       </element>
 
-      <element name="TCursorImage.LoadFromResourceHandle">
+      <element name="TCursorImage.LoadFromResourceHandle" link="#lcl.graphics.TCustomIcon.LoadFromResourceHandle">
         <short/>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomIcon.LoadFromResourceHandle"/>
+        </seealso>
       </element>
       <element name="TCursorImage.LoadFromResourceHandle.Instance">
         <short/>
@@ -13244,7 +14121,9 @@
       </element>
 
       <element name="TCursorImage.SetCenterHotSpot">
-        <short/>
+        <short>
+          Updates the HotSpot coordinate to the center point for the Current image in the cursor
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -13258,8 +14137,18 @@
       </element>
 
       <element name="TCursorImage.Handle">
-        <short>The Operating System <var>Handle</var> allocated for this cursor</short>
-        <descr/>
+        <short>Handle for the cursor image</short>
+        <descr>
+          <p>
+            <var>Handle</var> is a <var>HCURSOR</var> property in <var>TCursorImage</var>, and contains the handle used to identify the cursor image. The value for the property is provided by the <var>GetHandle</var> method.
+          </p>
+          <p>
+            Setting a new value for Handle causes the device context in <var>Canvas</var> to be freed, and the shared image for the icon is cleared. The <var>UpdateHandle</var> method is called to update the shared image using the new value for the property. If the shared icon contains image data, the value in <var>Current</var> is set to <b>0</b> (the first image in the internal list of images). Otherwise, Current is set to <b>-1</b>.
+          </p>
+          <p>
+            <var>Changed</var> is called to re-create the internal save stream for the shared image and signal the <var>OnChange</var> event handler (when assigned).
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -13299,7 +14188,7 @@
         </short>
         <descr>
           <p>
-            <var>TJPEGImage</var> is a <var>TFPImageBitmap</var> descendant which implements support for the <b>JPEG</b> image format. JPEG images are commonly used for storing digital photographs. They can represent detailed color photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality.
+            <var>TJPEGImage</var> is a <var>TFPImageBitmap</var> descendant which implements support for the <b>JPEG</b> (<b>Joint Photographic Experts Group</b>) image format. JPEG images are commonly used for storing digital photographs. They can represent detailed color photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality.
           </p>
           <p>
             JPEG image files normally have a file extension like:  <b>jpeg, jpg, jpe, or jfif</b>.
@@ -13357,24 +14246,41 @@
       </element>
 
       <element name="TJPEGImage.InitializeReader">
-        <short>Initializes the FCL Image reader for the image type</short>
-        <descr/>
-        <seealso/>
+        <short>Initializes the FCL-compatible image reader for the image type</short>
+        <descr>
+          <p>
+            <var>InitializeReader</var> is an overridden method used transfer property values specific to the JPEG image in <var>AImage</var> to the <var>TFPCustomImageReader</var> class instance in <var>AReader</var>. The following property values are stored to the corresponding properties in AReader:
+          </p>
+          <ul>
+            <li>MinHeight</li>
+            <li>MinWidth</li>
+            <li>Performance</li>
+            <li>Scale</li>
+            <li>Smoothing</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TJPEGImage.InitialWriter"/>
+        </seealso>
       </element>
       <element name="TJPEGImage.InitializeReader.AImage">
-        <short/>
+        <short>Image with values used to configure the reader class</short>
       </element>
       <element name="TJPEGImage.InitializeReader.AReader">
-        <short/>
+        <short>FCL-compatible image reader class updated in the method</short>
       </element>
 
+      <!-- WIP -->
       <element name="TJPEGImage.InitialWriter">
-        <short>Initializes the FCL Image Writer for the image type</short>
+        <short>Initializes the FCL-compatible Image Writer for the image type</short>
         <descr/>
         <seealso/>
       </element>
-      <element name="TJPEGImage.InitialWriter.AReader">
-        <short/>
+      <element name="TJPEGImage.InitialWriter.AImage">
+        <short>Image with values used to configure the writer class</short>
+      </element>
+      <element name="TJPEGImage.InitialWriter.AWriter">
+        <short>FCL-compatible image writer class updated in the method</short>
       </element>
 
       <element name="TJPEGImage.FinalizeReader">
@@ -13383,7 +14289,7 @@
         <seealso/>
       </element>
       <element name="TJPEGImage.FinalizeReader.AReader">
-        <short/>
+        <short>FCL-compatible image reader examined in the method</short>
       </element>
 
       <element name="TJPEGImage.GetReaderClass" link="#lcl.graphics.TFPImageBitmap.GetReaderClass">
@@ -13449,7 +14355,7 @@
         <seealso/>
       </element>
       <element name="TJPEGImage.IsStreamFormatSupported.Result">
-        <short/>
+        <short>True when Stream contains a valid image format for the image type</short>
       </element>
       <element name="TJPEGImage.IsStreamFormatSupported.Stream">
         <short>TStream instance examined in the method</short>
@@ -13461,11 +14367,11 @@
         <seealso/>
       </element>
       <element name="TJPEGImage.GetFileExtensions.Result">
-        <short/>
+        <short>Delimited list of file extensions supported for the image type</short>
       </element>
 
       <element name="TJPEGImage.CompressionQuality">
-        <short>Determine the compression quality for the image</short>
+        <short>Determine the compression quality for the image data</short>
         <descr>
           <p>
             Extreme compression can lead to loss of quality at the expense of a small file size.
@@ -13474,6 +14380,7 @@
             The allowed range is <b>1..100</b>, where <b>100</b> is <b>best quality</b>, and <b>25</b> is <b>pretty awful</b>.
           </p>
         </descr>
+        <seealso/>
       </element>
 
       <element name="TJPEGImage.GrayScale">
@@ -13483,19 +14390,19 @@
       </element>
 
       <element name="TJpegImage.MinHeight">
-        <short>Minimum height allowed for the image when read using the FCL image reader</short>
+        <short>Minimum height allowed for the image when read using an FCL image reader</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TJpegImage.MinWidth">
-        <short>Minimum width allowed for the image when read using the FCL image reader</short>
+        <short>Minimum width allowed for the image when read using an FCL image reader</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TJPEGImage.ProgressiveEncoding">
-        <short>Indicates if progressive encoding was used for the image data </short>
+        <short>Indicates if progressive encoding is used for the image data</short>
         <descr/>
         <seealso/>
       </element>
@@ -13507,14 +14414,35 @@
       </element>
 
       <element name="TJpegImage.Scale">
-        <short/>
-        <descr/>
+        <short>A predefined scaling value applied to the image data</short>
+        <descr>
+          <p>
+            <var>Scale</var> is a <var>TJPEGScale</var> property which contains one of the prefined scaling values applied to the raw image data. For instance:
+          </p>
+          <dl>
+            <dt>jsFullSize</dt>
+            <dd>Image is not scaled.</dd>
+            <dt>jsHalf</dt>
+            <dd>Image is scaled to one-half of its width and height.</dd>
+            <dt>jsQuarter</dt>
+            <dd>Image is scaled to one-quarter of its width and height.</dd>
+            <dt>jsEighth</dt>
+            <dd>Image is scaled to one-eighth of its width and height.</dd>
+          </dl>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TJpegImage.Smoothing">
-        <short/>
-        <descr/>
+        <short>Indicates if smoothing is applied to the raw image data</short>
+        <descr>
+          <p>
+            <var>Smoothing</var> is a <var>Boolean</var> property which indicates if smoothing is applied to raw data in the image. Smoothing uses a low pass filter to remove high spatial frequency noise from a digital image.
+          </p>
+          <p>
+            The value in Smoothing is used in the <var>InitializeReader</var> method to configure the image reader used to load the raw image data. Set the value in Smoothing prior to calling methods which load the image content using an FCL-compatible image reader.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -13532,7 +14460,7 @@
         <seealso/>
       </element>
       <element name="TTiffUnit.tuUnknown">
-        <short/>
+        <short>Unit of measurement is unknown</short>
       </element>
       <element name="TTiffUnit.tuNone">
         <short>
@@ -13545,10 +14473,10 @@
         </descr>
       </element>
       <element name="TTiffUnit.tuInch">
-        <short/>
+        <short>Unit of measure is Inches</short>
       </element>
       <element name="TTiffUnit.tuCentimeter">
-        <short/>
+        <short>Unit of measure is Centimeters</short>
       </element>
 
       <element name="TTiffImage">
@@ -13567,7 +14495,7 @@
             TTiffImage implements the class methods from the ancestor class which get FCL TFPCustomImageReaderClass and TFPCustomImageWriterClass instances, as well as the shared graphics class instance for the image format.
           </p>
           <p>
-            TTiffImage has properties which expose values for selected Tag names in the image data, including:
+            TTiffImage has properties which expose values for Baseline Tags in the image data, including:
           </p>
           <ul>
             <li>Artist</li>
@@ -13612,7 +14540,7 @@
       <element name="TTiffImage.FYResolution"/>
 
       <element name="TTiffImage.InitializeReader">
-        <short/>
+        <short>Initializes the FCL-compatible image reader for the image</short>
         <descr/>
         <seealso/>
       </element>
@@ -13624,7 +14552,7 @@
       </element>
 
       <element name="TTiffImage.InitializeWriter">
-        <short/>
+        <short>Initializes the FCL-compatible image writer for the image</short>
         <descr/>
         <seealso/>
       </element>
@@ -13636,7 +14564,7 @@
       </element>
 
       <element name="TTiffImage.FinalizeReader">
-        <short/>
+        <short>Captures values from the image reader after loading an image</short>
         <descr/>
         <seealso/>
       </element>
@@ -13693,19 +14621,19 @@
       </element>
 
       <element name="TTiffImage.Artist">
-        <short/>
+        <short>Person who created the image</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.Copyright">
-        <short/>
+        <short>Copyright notice for the image</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.DateTime">
-        <short/>
+        <short>Date and time the image was created</short>
         <descr/>
         <seealso/>
       </element>
@@ -13717,63 +14645,64 @@
       </element>
 
       <element name="TTiffImage.HostComputer">
-        <short/>
+        <short>The computer and/or operating system where the image was created</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.ImageDescription">
-        <short/>
+        <short>A string that describes the subject of the image</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.Make">
-        <short/>
+        <short>The scanner manufacturer</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.Model">
-        <short/>
+        <short>The scanner model name or number</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.ResolutionUnit">
-        <short/>
+        <short>The unit of measurement for XResolution and YResolution</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.Software">
-        <short/>
+        <short>Name and version number for the software used to create the image</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.XResolution">
-        <short/>
+        <short>Number of pixels in ResolutionUnits for the image width</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTiffImage.YResolution">
-        <short/>
+        <short>Number of pixels in ResolutionUnits for the image height</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TSharedGIFImage">
-        <short/>
+        <short>Implements a reference-counted shared GIF image</short>
         <descr/>
         <seealso>
+          <link id="TGIFImage"/>
           <link id="TSharedCustomBitmap"/>
         </seealso>
       </element>
 
       <element name="TGIFImage">
-        <short/>
+        <short>Implements an image using the GIF (Graphics Interchange Format) image format</short>
         <descr>
           <p>
             <var>TGIFImage</var> is a <var>TFPImageBitmap</var> descendant which implements support for the <b>GIF</b> (<b>Graphics Interchange Format</b>) image format. GIF images support up to 8 bits per pixel in the image data, and a color palette of up to 256  colors from the 24-bit RGB color space. While GIF images allow animation, the LCL implementation does not support the feature.
@@ -13788,7 +14717,8 @@
       <element name="TGIFImage.FInterlaced"/>
       <element name="TGIFImage.FBitsPerPixel"/>
 
-      <element name="TGIFImage.InitializeReader">
+      <!-- WIP -->
+      <element name="TGIFImage.InitializeReader" link="#lcl.graphics.TFPImageBitmap.InitializeReader">
         <short/>
         <descr/>
         <seealso/>
@@ -13801,12 +14731,29 @@
       </element>
 
       <element name="TGIFImage.FinalizeReader">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Updates the image when the reader has finished loading the image content</short>
+        <descr>
+          <p>
+            Ensures that image properties discovered using the reader class are applied to the properties in the GIF image.
+          </p>
+          <p>
+            Calls the inherited method on entry. Copies values found in AReader to the following properties:
+          </p>
+          <ul>
+            <li>Transparent</li>
+            <li>Interlaced</li>
+            <li>BitsPerPixel</li>
+          </ul>
+          <p>
+            <var>FinalizeReader</var> is called from the <var>ReadStream</var> method when the reader class has loaded the image content into a TLazIntfImage instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFPImageBitmap.FinalizeReader"/>
+        </seealso>
       </element>
       <element name="TGIFImage.FinalizeReader.AReader">
-        <short/>
+        <short>FCL-compatible reader for the image type</short>
       </element>
 
       <element name="TGIFImage.GetReaderClass">
@@ -13870,13 +14817,19 @@
         <short>Indicates if the image uses the "venetian blind" effect during display</short>
         <descr/>
         <seealso/>
-        <notes><note>TODO: GIF89a. Two pass using alternating lines. Similar to progressive JPEG.</note></notes>
+        <notes>
+          <note>
+            TODO: Describe GIF89a. Two pass using alternating lines. Similar to progressive JPEG.
+          </note>
+        </notes>
       </element>
 
       <element name="TGIFImage.BitsPerPixel">
         <short>Number of bits needed to represent a pixel in the image</short>
         <descr>
-          Determines the color depth (or maximum number of colors) that can be represented in the image data.
+          <p>
+            BitsPerPixel indicates the color depth (or maximum number of colors) that can be represented in the image data.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -13895,14 +14848,28 @@
 
       <element name="GraphicExtension">
         <short>Gets a string with the file extension used for the specified image class type</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls <var>GetPicFileFormats</var> to get the list which maps TGraphicClass (or descendent) references to a file extension.
+          </p>
+          <p>
+            GraphicExtension iterates over the values in the mapping list in reverese order, and compares the class name for the list item to the class name in <var>GraphicClass</var>. When a match is found, the <var>GetFormatExt</var> method for the item is called to get the return value for the function.
+          </p>
+          <p>
+            The return value is an empty string (<b>''</b>) when a mapping for GraphicClass is not found in the list.
+          </p>
+        </descr>
+        <seealso>
+          <link id="GetPicFileFormats"/>
+          <link id="TPicFileFormatsList.GetFormatExt"/>
+          <link id="TPicFileFormat"/>
+        </seealso>
       </element>
       <element name="GraphicExtension.Result">
-        <short/>
+        <short>File extension for the image type</short>
       </element>
       <element name="GraphicExtension.GraphicClass">
-        <short/>
+        <short>Graphic class used to determine the file extension</short>
       </element>
 
       <element name="GraphicFileMask">
@@ -13948,11 +14915,11 @@
 
       <element name="IdentEntry">
         <short>
-          <var>IdentEntry</var> - checks that a given Entry exists in a Map of  color names
+          Checks whether a given Entry exists in a Map of  color names
         </short>
         <descr>
           <p>
-            <var>IdentEntry</var> - checks that a given Entry exists in a Map of  color names.
+            <var>IdentEntry</var> checks whether a given Entry exists in a Map of  color names.
           </p>
           <p>
             A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry).
@@ -14043,7 +15010,7 @@
           <short>True when the color value exists in Colors</short>
         </element>
         <element name="ColorIndex.Color">
-          <short>Color value to located in Colors</short>
+          <short>Color value to locate in Colors</short>
         </element>
         <element name="ColorIndex.Index">
           <short>Position in Colors where the color value was found</short>
@@ -14066,19 +15033,19 @@
         </element>
 
         <element name="ColorToRGB">
-          <short>
-            <var>ColorToRGB</var> - given a <var>Color</var> value, converts into <var>RGB</var>
-          </short>
-          <descr/>
+          <short>Converts a TColor value to an RGB color constant</short>
+          <descr>
+            <p>
+              ColorToRGB ensures that TColor values for special and sytem colors remove the non-RGB values in the constant.
+            </p>
+          </descr>
           <seealso/>
         </element>
         <element name="ColorToRGB.Result">
-          <short>
-            Returns the original <var>Color</var> transformed to <var>RGB</var>
-          </short>
+          <short>LongInt value representing the specified color</short>
         </element>
         <element name="ColorToRGB.Color">
-          <short>The original <var>Color</var> for processing</short>
+          <short>TColor value converted in the method</short>
         </element>
 
         <element name="ColorToString">
@@ -14223,20 +15190,20 @@
 
       <element name="RGBToColor">
         <short>
-          <var>RGBToColor</var> - assembles the supplied values for Red, Green and Blue into a composite color
+           Combines the values for Red, Green and Blue into a TColor value
         </short>
       </element>
       <element name="RGBToColor.Result">
-        <short/>
+        <short>TColor value for the specified color components</short>
       </element>
       <element name="RGBToColor.R">
-        <short/>
+        <short>Byte with the Red color component</short>
       </element>
       <element name="RGBToColor.G">
-        <short/>
+        <short>Byte with the Green color component</short>
       </element>
       <element name="RGBToColor.B">
-        <short/>
+        <short>Byte with the Blue color component</short>
       </element>
 
       <element name="RedGreenBlue">
@@ -14481,19 +15448,23 @@
       </element>
 
       <element name="ExtractFamilyFromXLFDName">
-        <short/>
-        <descr/>
+        <short>Gets the family name for the typeface used in the XLFD font descriptor</short>
+        <descr>
+          <p>
+            Parses a font name in XLFD format and extracts the FamilyName sequence with the typeface family name.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="ExtractFamilyFromXLFDName.Result">
-        <short/>
+        <short>Typeface family name found in XLFDName</short>
       </element>
       <element name="ExtractFamilyFromXLFDName.XLFDName">
-        <short/>
+        <short>XLFD font descriptor examined in the routine</short>
       </element>
 
       <element name="ClearXLFDItem">
-        <short/>
+        <short>Replaces the specified XLFD segment value with the '*' wildcard.</short>
         <descr/>
         <seealso/>
       </element>
@@ -14508,7 +15479,9 @@
       </element>
 
       <element name="ClearXLFDHeight">
-        <short/>
+        <short>
+          Replaces the PixelSize, PointSize, ResolutionX, ResolutionY and AverageWidth segments in an XLFD font name with the '*' wildcard
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14520,7 +15493,9 @@
       </element>
 
       <element name="ClearXLFDPitch">
-        <short/>
+        <short>
+            Replaces the spacing for a XLFD font descrtiptor format with a '*' wildcard
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14532,7 +15507,9 @@
       </element>
 
       <element name="ClearXLFDStyle">
-        <short/>
+        <short>
+          Replaces the WeightName, Slant and SetwidthName segmetnts in an XLFD font name with the '*' wildcard
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14544,7 +15521,9 @@
       </element>
 
       <element name="XLFDHeightIsSet">
-        <short/>
+        <short>
+          Chechs whether an explicit value is assigned to XLFD segments controlling font height
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14811,7 +15790,9 @@
       </element>
 
       <element name="CreateGraphicFromResourceName">
-        <short/>
+        <short>
+          Creates and loads a TGraphic instance using the specified instance handle and resource name
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14842,9 +15823,10 @@
 
       <element name="CreateBitmapFromLazarusResource">
         <short>
-          <var>CreateBitmapFromLazarusResource</var> - creates a bitmap image using data read into a stream from a Lazarus Resource (.LRS)
+          Creates and loads a Bitmap from a Lazarus Resource (.lrs) file
         </short>
-        <descr/>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <element name="CreateBitmapFromLazarusResource.Result">
@@ -14960,9 +15942,18 @@
 
       <element name="FontResourceCache">
         <short>Variable used as the cache for Font resources</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>FontResourceCache</var> is a <var>TFontHandleCache</var> variable used as the cache for Font resources. FontResourceCache allows reference-counted font handles to be created or retrieved when the <var>ReferenceNeeded</var> method in <var>TFont</var> is called. Values in FontResourceCache are maintained when the FreeReference method in TFont is called.
+          </p>
+          <p>
+            Resources for FontResourceCache are allocated when the <file>Graphuic.pp</file> unit is initialized, and freed when the unit is finalized.
+          </p>
+        </descr>
         <seealso>
           <link id="TFontHandleCache"/>
+          <link id="TFont.ReferenceNeeded"/>
+          <link id="TFont.FreeReference"/>
         </seealso>
       </element>
 

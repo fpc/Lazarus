@@ -9,31 +9,14 @@
     <module name="GraphMath">
       <short>A Set of Mathematical Helper routines to simply Cross-Platform Canvas drawing etc</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Math">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- record type Visibility: default -->
+
+      <!-- unresolved external references -->
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="LazUtilities"/>
+
       <element name="TFloatPoint">
         <short>
           <var>TFloatPoint</var> - an extended precision record specifying the X and Y coordinates of a point in a graphic environment</short>

@@ -11,9 +11,9 @@
       <descr/>
 
       <!-- used units -->
-      <element name="System"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
+      <element name="LazUtilities"/>
       <element name="Forms"/>
       <element name="Controls"/>
       <element name="Graphics"/>
@@ -22,6 +22,8 @@
       <element name="Buttons"/>
       <element name="Menus"/>
       <element name="Clipbrd"/>
+      <element name="WSExtDlgs"/>
+      <element name="LCLStrConsts"/>
 
       <element name="CalcDefPrecision">
         <short>

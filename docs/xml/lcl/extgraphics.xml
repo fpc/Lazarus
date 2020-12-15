@@ -1,53 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
   ====================================================================
     ExtGraphics
   ====================================================================
 -->
-
 <module name="ExtGraphics">
 <short/>
 <descr>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="math">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved external references -->
+<element name="Types"/>
+<element name="Classes"/>
+<element name="Math"/>
+<element name="LazUtilities"/>
+<element name="Graphics"/>
+<element name="GraphMath"/>
 
 <!-- enumeration type Visibility: default -->
 <element name="TShapeDirection">
@@ -57,22 +27,18 @@
 <seealso>
 </seealso>
 </element>
-
 <!-- enumeration value Visibility: default -->
 <element name="TShapeDirection.atUp">
 <short/>
 </element>
-
 <!-- enumeration value Visibility: default -->
 <element name="TShapeDirection.atDown">
 <short/>
 </element>
-
 <!-- enumeration value Visibility: default -->
 <element name="TShapeDirection.atLeft">
 <short/>
 </element>
-
 <!-- enumeration value Visibility: default -->
 <element name="TShapeDirection.atRight">
 <short/>
@@ -465,6 +431,8 @@
 <element name="LinesPointOfIntersection.line2b">
 <short/>
 </element>
-</module> <!-- ExtGraphics -->
+
+</module>
+<!-- ExtGraphics -->
 </package>
 </fpdoc-descriptions>
