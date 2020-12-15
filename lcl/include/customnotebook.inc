@@ -562,7 +562,8 @@ begin
   //debugln(['TCustomTabControl.SetPageIndex C ',dbgsName(Self)]);
   //debugln(['  FOptions = ',DbgS(Foptions)]);
 
-  if ([csDesigning, csLoading, csDestroying] * ComponentState = []) and (nboDoChangeOnSetIndex in Options) then
+  if ([csDesigning, csLoading, csDestroying] * ComponentState = [])
+  and (nboDoChangeOnSetIndex in Options) then
     DoChange;
 end;
 
@@ -1102,43 +1103,35 @@ begin
     end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomTabControl.ShowCurrentPage
+function HasFocusedControl(APage: TCustomPage): Boolean;
+var
+  i: Integer;
+  lForm: TCustomForm;
+begin
+  Result := False;
+  lForm := GetParentForm(APage);
+  if (lForm=nil) or not lForm.Focused then Exit;
+  for i := 0 to APage.ControlCount - 1 do
+    if APage.Controls[i] = lForm.ActiveControl then
+      Exit(True);
+end;
 
-  Makes sure Visible = true for page which has index FPageIndex
- ------------------------------------------------------------------------------}
 procedure TCustomTabControl.ShowCurrentPage;
-
-  function HasFocusedControl(APage: TCustomPage): Boolean;
-  var
-    i: Integer;
-    lForm: TCustomForm;
-  begin
-    Result := False;
-    lForm := GetParentForm(APage);
-    if not Assigned(lForm) or not lForm.Visible then Exit;
-    for i := 0 to APage.ControlCount - 1 do
-      if APage.Controls[i] = lForm.ActiveControl then
-        Exit(True);
-  end;
-
+// Makes sure Visible = true for page which has index FPageIndex
 var
   CurPage: TCustomPage;
 begin
   CurPage := nil;
-  if (FPageIndex >= 0) and (FPageIndex < PageCount) then
-  begin
-    CurPage := Page[FPageIndex];
-    CurPage.Visible := True;
-    //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
-  end;
-  if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
-     (FPageIndexOnLastChange <> FPageIndex) then
-  begin
-    if Assigned(CurPage) and CurPage.enabled and HasFocusedControl(Page[FPageIndexOnLastChange]) then
-      CurPage.SetFocus;
-    Page[FPageIndexOnLastChange].Visible := False;
-  end;
+  if (FPageIndex < 0) or (FPageIndex >= PageCount) then Exit;
+  CurPage := Page[FPageIndex];
+  CurPage.Visible := True;
+  //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
+  if (FPageIndexOnLastChange < 0) or (FPageIndexOnLastChange >= PageCount)
+  or (FPageIndexOnLastChange = FPageIndex) then
+    Exit;
+  if CurPage.Enabled and HasFocusedControl(Page[FPageIndexOnLastChange]) then
+    CurPage.SetFocus;
+  Page[FPageIndexOnLastChange].Visible := False;
 end;
 
 {------------------------------------------------------------------------------
