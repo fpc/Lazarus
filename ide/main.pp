@@ -649,7 +649,9 @@ type
   private
     FUserInputSinceLastIdle: boolean;
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed on idle.
-    fNeedSaveEnvironment: boolean;
+    FComponentAddedDesigner: TDesigner; // Designer and unit where components were added.
+    FComponentAddedUnit: TUnitInfo;
+    FNeedSaveEnvironment: boolean;
     FCheckFilesOnDiskNeeded: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
@@ -12263,6 +12265,7 @@ end;
 procedure TMainIDE.HandleApplicationIdle(Sender: TObject; var Done: Boolean);
 var
   SrcEdit: TSourceEditor;
+  Ancestor: TComponent;
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
   HasResources: Boolean;
@@ -12280,6 +12283,19 @@ begin
   GetDefaultProcessList.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
+  if Assigned(FComponentAddedDesigner) then
+  begin
+    {$IFDEF VerboseIdle}
+    DebugLn(['TMainIDE.HandleApplicationIdle FComponentAddedDesigner']);
+    {$ENDIF}
+    // Remember cursor position
+    SourceEditorManager.AddJumpPointClicked(Self);
+    // Add component definitions to form source
+    Ancestor:=GetAncestorLookupRoot(FComponentAddedUnit);
+    CodeToolBoss.CompleteComponent(FComponentAddedUnit.Source,
+                                   FComponentAddedDesigner.LookupRoot, Ancestor);
+    FComponentAddedDesigner:=nil;
+  end;
   if Assigned(FDesignerToBeFreed) then begin
     for FileItem in FDesignerToBeFreed do begin
       if Project1=nil then break;
@@ -13281,94 +13297,63 @@ begin
   ObjectInspector1.RefreshPropertyValues;
 end;
 
-{-------------------------------------------------------------------------------
-  procedure TMainIDE.PropHookPersistentAdded(APersistent: TPersistent;
-    Select: boolean);
-
-  This handler is called whenever a new component was added to a designed form
-  and should be added to form source
--------------------------------------------------------------------------------}
 procedure TMainIDE.PropHookPersistentAdded(APersistent: TPersistent; Select: boolean);
+// This handler is called whenever a new component was added to a designed form
+// and should be added to form source
 var
-  RegComp: TRegisteredComponent;
-  ADesigner: TDesigner;
-  AComponent, Ancestor: TComponent;
+  AComponent: TComponent;
   ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo, ClassUnitInfo: TUnitInfo;
   ComponentClasses: TClassList;
-  i: Integer;
 begin
-  if ConsoleVerbosity>0 then
-    DebugLn('Hint: (lazarus) TMainIDE.PropHookPersistentAdded A ',dbgsName(APersistent));
-  ADesigner:=nil;
-  ClassUnitInfo:=nil;
-  if APersistent is TComponent then
-    AComponent:=TComponent(APersistent)
-  else
-    AComponent:=nil;
-  RegComp:=IDEComponentPalette.FindRegComponent(APersistent.ClassType);
-  if AComponent<>nil then begin
-    if RegComp=nil then begin
-      ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType));
-      if ClassUnitInfo=nil then begin
-        DebugLn('Error: (lazarus) TMainIDE.PropHookPersistentAdded ',AComponent.ClassName,
-                ' not registered');
-        exit;
-      end;
-    end;
-    // create unique name
-    if AComponent.Name='' then
-      AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
-    //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
-    // set component into design mode
-    SetDesigning(AComponent,true);
-    //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
-    // add to source
-    ADesigner:=FindRootDesigner(AComponent) as TDesigner;
+  //DebugLn('Hint: (lazarus) TMainIDE.PropHookPersistentAdded A ',dbgsName(APersistent));
+  Assert(APersistent is TComponent, 'TMainIDE.PropHookPersistentAdded: Not a TComponent.');
+  //if APersistent is TComponent then
+  //begin
+  AComponent:=TComponent(APersistent);
+  if (IDEComponentPalette.FindRegComponent(AComponent.ClassType)=nil)
+  and (Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType))=nil) then
+  begin
+    DebugLn('Error: (lazarus) TMainIDE.PropHookPersistentAdded ',
+            AComponent.ClassName, ' not registered');
+    exit;
   end;
-
-  if (ADesigner<>nil) and ((RegComp<>nil) or (ClassUnitInfo<>nil)) then begin
+  //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+  // set component into design mode
+  SetDesigning(AComponent,true);
+  //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+  // add to source
+  FComponentAddedDesigner:=FindRootDesigner(AComponent) as TDesigner;
+  if FComponentAddedDesigner<>nil then
+  begin
     ActiveSrcEdit:=nil;
-    if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
-    then exit;
-
-    // remember cursor position
-    SourceEditorManager.AddJumpPointClicked(Self);
-
-    // add needed package to required packages
-    if AComponent<>nil then  //if ADesigner.LookupRoot.ComponentCount>0 then
+    if BeginCodeTool(FComponentAddedDesigner,ActiveSrcEdit,FComponentAddedUnit,
+                     [ctfSwitchToFormSource]) then
     begin
-      ComponentClasses:=TClassList.Create;
-      try
-{ Getting dependencies for all components is not needed. The newly added component suffices.
-        for i:=0 to ADesigner.LookupRoot.ComponentCount-1 do
-        begin
-          ct := ADesigner.LookupRoot.Components[i].ClassType;
-          if ComponentClasses.IndexOf(ct)<=0 then
-            ComponentClasses.Add(ct);
-        end;  }
-        ComponentClasses.Add(AComponent.ClassType);
-        PkgBoss.AddUnitDepsForCompClasses(ActiveUnitInfo.Filename,ComponentClasses,true);
-      finally
-        ComponentClasses.Free;
+      // add needed package to required packages
+      if AComponent<>nil then
+      begin
+        ComponentClasses:=TClassList.Create;
+        try
+          ComponentClasses.Add(AComponent.ClassType);
+          PkgBoss.AddUnitDepsForCompClasses(FComponentAddedUnit.Filename,ComponentClasses,true);
+        finally
+          ComponentClasses.Free;
+        end;
       end;
+    end
+    else begin
+      FComponentAddedDesigner:= Nil;
+      exit;
     end;
-
-    // add component definitions to form source
-    Ancestor:=GetAncestorLookupRoot(ActiveUnitInfo);
-    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,Ancestor);
   end;
-
-  //debugln('TMainIDE.PropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
-  // select component
+  //end;
+  // select persistent
   if Select then
     TheControlSelection.AssignPersistent(APersistent);
-
-  if ObjectInspector1<>nil then
-    ObjectInspector1.FillComponentList(False);
-  {$IFDEF IDE_DEBUG}
-  debugln('TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
-  {$ENDIF}
+  // Update Object Inspector
+  if ObjectInspector1<>nil then   // Moving this to Idle handler somehow removes
+    ObjectInspector1.FillComponentList(False); // selection of pasted components!
+  //debugln('TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
 end;
 
 procedure TMainIDE.PropHookDeletePersistent(var APersistent: TPersistent);
