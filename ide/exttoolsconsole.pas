@@ -55,6 +55,8 @@ type
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EnterCriticalSection; override;
+    procedure LeaveCriticalSection; override;
   end;
 
   { TExternalToolsConsole }
@@ -191,6 +193,19 @@ end;
 destructor TExternalToolConsole.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TExternalToolConsole.EnterCriticalSection;
+begin
+  // A hack to prevent occational crash in LazBuild. Issue #36318, #37883 etc.
+  Sleep(1);                           // ToDo: Find the real bug and fix it.
+  inherited EnterCriticalSection;
+end;
+
+procedure TExternalToolConsole.LeaveCriticalSection;
+begin
+  Sleep(1);
+  inherited LeaveCriticalSection;
 end;
 
 procedure TExternalToolConsole.CreateView;
