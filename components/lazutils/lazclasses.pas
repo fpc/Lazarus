@@ -40,6 +40,7 @@ type
     FDebugNext, FDebugPrev: TRefCountedObject;
     {$ENDIF}
     FDebugList: TStringList;
+    FCritSect: TRTLCriticalSection;
     FInDestroy: Boolean;
     procedure DbgAddName(DebugIdAdr: Pointer = nil; DebugIdTxt: String = '');
     procedure DbgRemoveName(DebugIdAdr: Pointer = nil; DebugIdTxt: String = '');
@@ -52,6 +53,13 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
+    (* AddReference
+       AddReference/ReleaseReference can be used in Threads.
+       However a thread may only call those, if either
+       - the thread already holds a refernce (and no other thread will release that ref)
+       - the thread just created this, and no other thread has (yet) access to the object
+       - the thread is in a critical section, preventing other threads from decreasing the ref.
+    *)
     procedure AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
     procedure ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
     {$IFDEF WITH_REFCOUNT_DEBUG}
@@ -111,7 +119,7 @@ begin
   Assert(not FInDestroy, 'Adding reference while destroying');
   DbgAddName(DebugIdAdr, DebugIdTxt);
   {$ENDIF}
-  Inc(FRefcount);
+  InterLockedIncrement(FRefCount);
   // call only if overridden
   If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
     DoReferenceAdded;
@@ -122,6 +130,9 @@ procedure TRefCountedObject.DbgAddName(DebugIdAdr: Pointer; DebugIdTxt: String);
 var
   s: String;
 begin
+// TODO: critical section
+  EnterCriticalsection(FCritSect);
+  try
   if FDebugList = nil then FDebugList := TStringList.Create;
   if (DebugIdAdr <> nil) or (DebugIdTxt <> '') then
     s := inttostr(PtrUInt(DebugIdAdr))+': '+DebugIdTxt
@@ -135,12 +146,17 @@ begin
     FDebugList.Objects[FDebugList.IndexOf(s)] :=
       TObject(PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)])+1);
   end;
+  finally
+    LeaveCriticalsection(FCritSect);
+  end;
 end;
 
 procedure TRefCountedObject.DbgRemoveName(DebugIdAdr: Pointer; DebugIdTxt: String);
 var
   s: String;
 begin
+  EnterCriticalsection(FCritSect);
+  try
   if FDebugList = nil then FDebugList := TStringList.Create;
   if (DebugIdAdr <> nil) or (DebugIdTxt <> '') then
     s := inttostr(PtrUInt(DebugIdAdr))+': '+DebugIdTxt
@@ -153,6 +169,9 @@ begin
   else
     FDebugList.Objects[FDebugList.IndexOf(s)] :=
       TObject(PtrInt(FDebugList.Objects[FDebugList.IndexOf(s)])-1);
+  finally
+    LeaveCriticalsection(FCritSect);
+  end;
 end;
 {$ENDIF}
 
@@ -182,6 +201,7 @@ begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if FDebugList = nil then
     FDebugList := TStringList.Create;
+  InitCriticalSection(FCritSect);
   {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
   FDebugNext := FUnfreedRefObjList;
   FUnfreedRefObjList := Self;
@@ -195,6 +215,7 @@ destructor TRefCountedObject.Destroy;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   FreeAndNil(FDebugList);
+  DoneCriticalsection(FCritSect);
   {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
   if not( (FDebugPrev=nil) and (FDebugNext = nil) and (FUnfreedRefObjList <> self) ) then begin
     if FDebugPrev <> nil then begin
@@ -217,6 +238,8 @@ begin
 end;
 
 procedure TRefCountedObject.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+var
+  lc: Integer;
 begin
   if Self = nil then exit;
   {$IFDEF WITH_REFCOUNT_DEBUG}
@@ -224,17 +247,20 @@ begin
   {$ENDIF}
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
 
-  Dec(FRefCount);
-  inc(FInDecRefCount);
+  InterLockedIncrement(FInDecRefCount);
+  InterLockedDecrement(FRefCount);
   // call only if overridden
 
   // Do not check for RefCount = 0, since this was done, by whoever decreased it;
   If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedObject.DoReferenceReleased) then
     DoReferenceReleased;
 
-  dec(FInDecRefCount);
-  if (FRefCount = 0) and (FInDecRefCount = 0) then
-    DoFree;
+  lc := InterLockedDecrement(FInDecRefCount);
+  if lc = 0 then begin
+    ReadBarrier;
+    if (FRefCount = 0) then
+      DoFree;
+  end;
 end;
 
 {$IFDEF WITH_REFCOUNT_DEBUG}
