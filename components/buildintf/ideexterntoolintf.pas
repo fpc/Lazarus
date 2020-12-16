@@ -2354,8 +2354,8 @@ var
 begin
   if csDestroying in ComponentState then exit;
   Changed:=false;
-  //EnterCriticalSection; // Beware: Tool is already in critical section !!!
-  //try
+  EnterCriticalSection; // Beware: Tool is already in critical section
+  try
     if (FPendingLines=nil) or (FPendingProgressLine=nil) then exit;
     //DebugLn(['TExtToolView.ProcessNewMessages START From=',FirstMsgLine,' To=',Tool.WorkerMessages.Count-1]);
     NewProgressLine:=nil;
@@ -2383,9 +2383,9 @@ begin
       PendingProgressLine.Msg:='';
     end;
     //debugln(['TExtToolView.ProcessNewMessages END Changed=',Changed,' Progress="',ProgressLine.Msg,'"']);
-  //finally       !!!
-  //  LeaveCriticalSection;
-  //end;
+  finally
+    LeaveCriticalSection;
+  end;
 
   if Changed and Assigned(OnChanged) then begin
     // wake up main thread
