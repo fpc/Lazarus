@@ -274,9 +274,13 @@ end;
   SetPrimaryConfigPath procedure
  ---------------------------------------------------------------------------}
 procedure SetPrimaryConfigPath(const NewValue: String);
+var
+  NewExpValue: String;
 begin
-  debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
-  PrimaryConfigPath := ChompPathDelim(ExpandFileNameUTF8(NewValue));
+  NewExpValue:=ChompPathDelim(ExpandFileNameUTF8(NewValue));
+  if NewExpValue=PrimaryConfigPath then exit;
+  debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(NewExpValue),'"');
+  PrimaryConfigPath := NewExpValue;
 end;
 
 {---------------------------------------------------------------------------
