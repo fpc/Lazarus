@@ -109,10 +109,10 @@ type
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     property Thread: TExternalToolThread read FThread write SetThread;
-    procedure Execute; override;
-    procedure Terminate; override;
-    procedure WaitForExit; override;
-    function ResolveMacros: boolean; override;
+    procedure Execute; override; // (main thread)
+    procedure Terminate; override; // (main thread)
+    procedure WaitForExit; override; // (main thread)
+    function ResolveMacros: boolean; override; // (main thread)
 
     function ExecuteAfterCount: integer; override;
     function ExecuteBeforeCount: integer; override;
