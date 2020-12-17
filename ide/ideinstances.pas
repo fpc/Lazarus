@@ -358,7 +358,7 @@ begin
   Result := False;
 
   outMessageType := '';
-  SetLength(outParams, 0);
+  SetLength(outParams{%H-}, 0);
   try
     ReadXMLFile(xDOM, aStream, []);
   except
@@ -605,7 +605,7 @@ var
     try
       xClient.ServerID := SERVERNAME_COLLECT;
 
-      SetLength(xOutParams, 0);
+      SetLength(xOutParams{%H-}, 0);
       AddFilesToParams(FilesToOpen, xOutParams);
 
       xStream := TMemoryStream.Create;
@@ -765,7 +765,7 @@ begin
   try
     //ask to show prompt
     xStream.Clear;
-    SetLength(xOutParams, 0);
+    SetLength(xOutParams{%H-}, 0);
     TIDEInstances.AddFilesToParams(aFiles, xOutParams);
     TIDEInstances.BuildMessage(MESSAGE_STARTNEWINSTANCE, xOutParams, xStream);
     xStream.Position := 0;
@@ -805,7 +805,7 @@ begin
   xStream := TMemoryStream.Create;
   try
     xStream.Clear;
-    SetLength(xOutParams, 0);
+    SetLength(xOutParams{%H-}, 0);
     TIDEInstances.BuildMessage(MESSAGE_GETOPENEDPROJECT, xOutParams, xStream);
     xStream.Position := 0;
     Self.PostRequest(MESSAGETYPE_XML, xStream);
@@ -871,7 +871,7 @@ begin
     end;
   end;
 
-  SetLength(xParams, 5);
+  SetLength(xParams{%H-}, 5);
   xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, IntToStr(Ord(xResult)));
   xParams[1] := TIDEInstances.MessageParam(PARAM_HANDLEBRINGTOFRONT, IntToStr(xSourceWindowHandle)); // do not use Application.MainFormHandle here - it steals focus from active source editor
   xParams[2] := TIDEInstances.MessageParam(PARAM_MODALERRORMESSAGE, dlgRunningInstanceModalError);
@@ -947,7 +947,7 @@ begin
   if Assigned(FStartNewInstanceEvent) then
     FGetCurrentProjectEvent(xResult);
 
-  SetLength(xParams, 1);
+  SetLength(xParams{%H-}, 1);
   xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, xResult);
   SimpleResponse(aMsgID, RESPONSE_GETOPENEDPROJECT, xParams);
 end;
