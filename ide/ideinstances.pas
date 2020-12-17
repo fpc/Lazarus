@@ -429,20 +429,25 @@ var
   CustomDir, StartPath, DefaultDir, DefaultExe, CustomExe: String;
   Params: TStringList;
   aProcess: TProcessUTF8;
+  CfgParams: TStrings;
   i: Integer;
+  aPID: SizeUInt;
 {$ENDIF}
 begin
   Result:=ofrStartNewInstance;
   {$IFDEF EnableRedirectToUserIDE}
 
-  debugln('Debug: (lazarus) TIDEInstances.StartUserBuiltIDE ');
+  aPID:=GetProcessID;
+  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE ']);
 
-  if Application.HasOption(StartedByStartLazarusOpt) then
+  CfgParams:=GetParamsAndCfgFile;
+
+  if CfgParams.IndexOf(StartedByStartLazarusOpt)>=0 then
     exit; // startlazarus has started this exe -> do not redirect
 
   try
     StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
-    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
     if FileIsSymlink(StartPath) then
       StartPath:=GetPhysicalFilename(StartPath,pfeException);
     DefaultDir:=ExtractFilePath(StartPath);
@@ -456,7 +461,7 @@ begin
   end;
   DefaultDir:=AppendPathDelim(DefaultDir);
   CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
-  debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
   if CompareFilenames(DefaultDir,CustomDir)=0 then
     exit; // this is the user built IDE
 
@@ -466,22 +471,22 @@ begin
   if (not FileExistsUTF8(DefaultExe))
       or (not FileExistsUTF8(CustomExe)) then
   begin
-    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
     exit;
   end;
   if FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe) then
   begin
-    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
     exit;
   end;
 
   if DirectoryIsWritable(DefaultDir) then
   begin
-    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
     exit;
   end;
 
-  debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
 
   // customexe is younger and defaultexe is not writable
   // => the user started the default binary
@@ -508,9 +513,9 @@ begin
     {$ENDIF}
     // append params
     for i:=1 to ParamCount do
-      Params.Add(ParamStr(i));
+      Params.Add(ParamStrUTF8(i));
     aProcess.Parameters:=Params;
-    debugln(['Debug: (lazarus) AAA5 TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
     aProcess.Execute;
   finally
     Params.Free;
@@ -537,9 +542,15 @@ var
   xModalErrorForceUniqueMessage: string = '';
   xNotRespondingErrorMessage: string = '';
   xHandleBringToFront: HWND = 0;
+  PCP: String;
 begin
   if not FStartIDE then//InitIDEInstances->CollectOtherOpeningFiles decided not to start the IDE
     Exit;
+
+  // set primary config path
+  PCP:=ExtractPrimaryConfigPath(GetParamsAndCfgFile);
+  if PCP<>'' then
+    SetPrimaryConfigPath(PCP);
 
   if not FForceNewInstance then
   begin

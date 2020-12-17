@@ -1495,7 +1495,7 @@ begin
   {$IFDEF VerboseExtToolThread}
   Title:=Tool.Title;
   {$ENDIF}
-  SetLength(Buf,4096);
+  SetLength(Buf{%H-},4096);
   ErrorFrameCount:=0;
   fLines:=TStringList.Create;
   try
