@@ -696,6 +696,8 @@ begin
     debugln(['Info: (lazarus) Executable="',Process.Executable,'"']);
     for i:=0 to Process.Parameters.Count-1 do
       debugln(['Info: (lazarus) Param[',i,']="',Process.Parameters[i],'"']);
+    for i:=0 to Process.Environment.Count-1 do
+      debugln(['Info: (lazarus) Env[',i,']="',LeftStr(DbgStr(Process.Environment[i]),100),'"']);
   end;
   Thread.Start;
 end;

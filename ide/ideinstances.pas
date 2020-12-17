@@ -464,12 +464,23 @@ begin
   CustomExe:=CustomDir+'lazarus'+GetExeExt; // user built IDE
 
   if (not FileExistsUTF8(DefaultExe))
-      or (not FileExistsUTF8(CustomExe))
-      or (FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe)) then
+      or (not FileExistsUTF8(CustomExe)) then
+  begin
+    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
     exit;
+  end;
+  if FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe) then
+  begin
+    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
+    exit;
+  end;
 
-  if DirectoryIsWritable(ChompPathDelim(ExtractFilePath(DefaultExe))) then
+  if DirectoryIsWritable(DefaultDir) then
+  begin
+    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
     exit;
+  end;
+
   debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
 
   // customexe is younger and defaultexe is not writable

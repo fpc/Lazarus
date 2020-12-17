@@ -1835,6 +1835,11 @@ begin
     SynDefaultFontHeight := 12;
     {$DEFINE SynDefaultFont}
   {$ENDIF}
+  {$IFDEF LCLcocoa}
+    SynDefaultFontName   := 'Andale Mono'; // Note: cocoa is case sensitive
+    SynDefaultFontHeight := 10;
+    {$DEFINE SynDefaultFont}
+  {$ENDIF}
   // LCLgtk2 and LCLQt use default settings
   {$IFnDEF SynDefaultFont}
     SynDefaultFontName   := 'Courier New';
