@@ -512,7 +512,7 @@ type
     function CanFree: boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    destructor Destroy; override; // (main thread)
     // always use before access, when using Tool and View: always lock Tool before View
     procedure EnterCriticalSection; virtual;
     procedure LeaveCriticalSection; virtual;
@@ -650,7 +650,7 @@ type
     procedure EnterCriticalSection; virtual; abstract;
     procedure LeaveCriticalSection; virtual; abstract;
     function GetIDEObject(ToolData: TIDEExternalToolData): TObject; virtual; abstract;
-    procedure HandleMesages; virtual; abstract;
+    procedure HandleMessages; virtual; abstract;
     // parsers
     procedure RegisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
     procedure UnregisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
@@ -942,7 +942,7 @@ end;
 procedure TExternalToolGroup.WaitForExit;
 begin
   repeat
-    ExternalToolList.HandleMesages;
+    ExternalToolList.HandleMessages;
     if AllStopped then exit;
     Sleep(50);
     //debugln(['TExternalToolGroup.WaitForExit ',Now,'==========================']);

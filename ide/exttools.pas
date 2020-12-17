@@ -76,7 +76,7 @@ type
     property Tool: TExternalTool read FTool write SetTool;
     procedure Execute; override;
     procedure DebuglnThreadLog(const Args: array of const);
-    destructor Destroy; override;
+    destructor Destroy; override; // (main thread)
   end;
 
   { TExternalTool }
@@ -131,14 +131,18 @@ type
   private
     FCritSec: TRTLCriticalSection;
     fRunning: TFPList; // list of TExternalTool, needs Enter/LeaveCriticalSection
+    fOldThreads: TFPList; // list of TExternalToolThread, needs Enter/LeaveCriticalSection
     FMaxProcessCount: integer;
     fParsers: TFPList; // list of TExtToolParserClass
+    procedure AddOldThread(aThread: TExternalToolThread); // (main thread)
     function GetRunningTools(Index: integer): TExternalTool;
     procedure AddRunningTool(Tool: TExternalTool); // (worker thread)
     procedure RemoveRunningTool(Tool: TExternalTool); // (worker thread)
-    function RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
-    function RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
-    function RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean;
+    function RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean; // (main thread)
+    function RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean; // (main thread)
+    function RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean; // (main thread)
+    procedure FreeFinishedThreads; // (main thread)
+    procedure OnThreadTerminate(Sender: TObject); // (main thread)
   protected
     FToolClass: TExternalToolClass;
     function GetParsers(Index: integer): TExtToolParserClass; override;
@@ -268,6 +272,8 @@ begin
   if ErrorMessage<>'' then
     DebuglnThreadLog(['TExternalTool.ThreadStopped ',Title,' ErrorMessage=',ErrorMessage]);
   {$ENDIF}
+  if Thread<>nil then
+    Thread.Tool:=nil;
   EnterCriticalSection;
   try
     if (not Terminated) and (ErrorMessage='') then
@@ -293,13 +299,9 @@ begin
       end;
     end;
   end;
-  try
-    if Tools<>nil then
-      TExternalTools(Tools).RemoveRunningTool(Self);
-    TThread.Synchronize(nil,@NotifyHandlerStopped);
-  finally
-    fThread:=nil;
-  end;
+  if Tools<>nil then
+    TExternalTools(Tools).RemoveRunningTool(Self);
+  TThread.Synchronize(nil,@NotifyHandlerStopped);
 end;
 
 procedure TExternalTool.AddOutputLines(Lines: TStringList);
@@ -444,6 +446,9 @@ begin
   // process stopped => start next
   if Tools<>nil then
     TExternalTools(Tools).Work;
+
+  // free tool if not used
+  AutoFree;
 end;
 
 procedure TExternalTool.NotifyHandlerNewOutput;
@@ -462,24 +467,15 @@ end;
 
 procedure TExternalTool.SetThread(AValue: TExternalToolThread);
 var
-  CallAutoFree: Boolean;
+  OldThread: TExternalToolThread;
 begin
-  // Note: in lazbuild ProcessStopped sets FThread:=nil, so SetThread is not called.
-  CallAutoFree:=false;
-  EnterCriticalSection;
-  try
-    if FThread=AValue then Exit;
-    FThread:=AValue;
-    CallAutoFree:=CanFree;
-  finally
-    LeaveCriticalSection;
-  end;
-  if CallAutoFree then begin
-    if MainThreadID=GetCurrentThreadId then
-      AutoFree
-    else
-      QueueAsyncAutoFree;
-  end;
+  if FThread=AValue then Exit;
+  OldThread:=FThread;
+  FThread:=AValue;
+  if OldThread<>nil then
+    OldThread.Tool:=nil;
+  if FThread<>nil then
+    FThread.Tool:=Self;
 end;
 
 procedure TExternalTool.SynchronizedImproveMessages;
@@ -688,7 +684,8 @@ begin
   if Thread=nil then begin
     FThread:=TExternalToolThread.Create(true);
     Thread.Tool:=Self;
-    FThread.FreeOnTerminate:=true;
+    FThread.FreeOnTerminate:=false;
+    FThread.OnTerminate:=@TExternalTools(Tools).OnThreadTerminate;
   end;
   if ConsoleVerbosity>=0 then begin
     debugln(['Info: (lazarus) Execute Title="',Title,'"']);
@@ -913,7 +910,7 @@ begin
     if MainThreadID=ThreadID then
     begin
       Assert(Owner is TExternalToolsBase, 'TExternalTool.WaitForExit: Owner is not TExternalToolsBase.');
-      TExternalToolsBase(Owner).HandleMesages;
+             TExternalToolsBase(Owner).HandleMessages;
     end;
     Assert(Assigned(ExternalToolList), 'TExternalTool.WaitForExit: ExternalToolList=Nil.');
     // check if this tool still exists
@@ -1163,6 +1160,40 @@ begin
   end;
 end;
 
+procedure TExternalTools.FreeFinishedThreads;
+var
+  i: Integer;
+  aThread: TExternalToolThread;
+begin
+  for i:=fOldThreads.Count-1 downto 0 do
+  begin
+    aThread:=TExternalToolThread(fOldThreads[i]);
+    if aThread.Finished then
+    begin
+      fOldThreads.Delete(i);
+      aThread.Free;
+    end;
+  end;
+end;
+
+procedure TExternalTools.OnThreadTerminate(Sender: TObject);
+begin
+  AddOldThread(TExternalToolThread(Sender));
+end;
+
+procedure TExternalTools.AddOldThread(aThread: TExternalToolThread);
+var
+  OldTool: TExternalTool;
+begin
+  OldTool:=aThread.Tool;
+  aThread.Tool:=nil;
+  if fOldThreads.IndexOf(aThread)<0 then
+    fOldThreads.Add(aThread);
+
+  if OldTool<>nil then
+    OldTool.AutoFree;
+end;
+
 function TExternalTools.GetRunningTools(Index: integer): TExternalTool;
 begin
   EnterCriticalSection;
@@ -1221,6 +1252,7 @@ begin
   InitCriticalSection(FCritSec);
   fRunning:=TFPList.Create;
   fParsers:=TFPList.Create;
+  fOldThreads:=TFPList.Create;
   MaxProcessCount:=DefaultMaxProcessCount;
   RunExternalTool := @RunExtToolHandler;
 end;
@@ -1236,6 +1268,7 @@ begin
     inherited Destroy;
     FreeAndNil(fRunning);
     FreeAndNil(fParsers);
+    FreeAndNil(fOldThreads);
   finally
     LeaveCriticalSection;
   end;
@@ -1265,9 +1298,11 @@ var
 begin
   while RunningCount<MaxProcessCount do begin
     Tool:=FindNextToolToStart;
-    if Tool=nil then exit;
+    if Tool=nil then
+      break;
     Tool.DoStart;
   end;
+  FreeFinishedThreads;
 end;
 
 function TExternalTools.FindNextToolToStart: TExternalTool;
@@ -1303,6 +1338,7 @@ var
 begin
   for i:=Count-1 downto 0 do
     Terminate(Items[i] as TExternalTool);
+  FreeFinishedThreads;
 end;
 
 procedure TExternalTools.Clear;
@@ -1495,6 +1531,8 @@ begin
   {$IFDEF VerboseExtToolThread}
   Title:=Tool.Title;
   {$ENDIF}
+  if Tool.Thread<>Self then
+    raise Exception.Create('');
   SetLength(Buf{%H-},4096);
   ErrorFrameCount:=0;
   fLines:=TStringList.Create;
@@ -1680,8 +1718,7 @@ begin
   {$IFDEF VerboseExtToolThread}
   DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' ProcessStopped ...']);
   {$ENDIF}
-  if Tool<>nil then
-    Tool.ProcessStopped;
+  Tool.ProcessStopped;
   {$IFDEF VerboseExtToolThread}
   DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' Thread END']);
   {$ENDIF}

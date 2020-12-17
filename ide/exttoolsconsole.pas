@@ -46,17 +46,11 @@ type
 
   { TExternalToolConsole }
 
-  // ToDo: Replace TLazExtToolConsole with this TExternalToolConsole somehow.
   TExternalToolConsole = class(TExternalTool)
-  private
   protected
     procedure CreateView; override;
     procedure QueueAsyncAutoFree; override;
   public
-    constructor Create(aOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure EnterCriticalSection; override;
-    procedure LeaveCriticalSection; override;
   end;
 
   { TExternalToolsConsole }
@@ -66,7 +60,7 @@ type
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     function GetIDEObject({%H-}ToolData: TIDEExternalToolData): TObject; override;
-    procedure HandleMesages; override;
+    procedure HandleMessages; override;
   end;
 
 var
@@ -185,29 +179,6 @@ end;
 
 { TExternalToolConsole }
 
-constructor TExternalToolConsole.Create(aOwner: TComponent);
-begin
-  inherited Create(aOwner);
-end;
-
-destructor TExternalToolConsole.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TExternalToolConsole.EnterCriticalSection;
-begin
-  // A hack to prevent occational crash in LazBuild. Issue #36318, #37883 etc.
-  Sleep(1);                           // ToDo: Find the real bug and fix it.
-  inherited EnterCriticalSection;
-end;
-
-procedure TExternalToolConsole.LeaveCriticalSection;
-begin
-  Sleep(1);
-  inherited LeaveCriticalSection;
-end;
-
 procedure TExternalToolConsole.CreateView;
 // in console mode all output goes unparsed to console
 var
@@ -247,7 +218,7 @@ begin
   Result:=nil;
 end;
 
-procedure TExternalToolsConsole.HandleMesages;
+procedure TExternalToolsConsole.HandleMessages;
 begin
   if IsMultiThread then begin
     if ConsoleVerbosity>0 then
