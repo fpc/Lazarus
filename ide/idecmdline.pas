@@ -250,7 +250,7 @@ var
   s: String;
 begin
   if isStartLazarus then
-    Result := ' --no-splash-screen --started-by-startlazarus'
+    Result := ' '+NoSplashScreenOptLong+' '+StartedByStartLazarusOpt
   else
     Result := '';
   for i := 0 to aCmdLineParams.Count - 1 do begin

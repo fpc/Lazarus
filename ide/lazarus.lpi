@@ -1053,6 +1053,7 @@
       <Unit170>
         <Filename Value="lazarusmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LazarusManager"/>
       </Unit170>
       <Unit171>
         <Filename Value="macropromptdlg.pas"/>

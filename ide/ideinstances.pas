@@ -37,14 +37,16 @@ unit IDEInstances;
 interface
 
 uses
-  sysutils, Interfaces, Classes, Controls, Forms, Dialogs, ExtCtrls,
-  LCLProc, LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
-  Laz2_DOM, LazarusIDEStrConsts, IDECmdLine, crc,
+  Classes, sysutils, crc, Process,
   {$IF (FPC_FULLVERSION >= 30101)}
   AdvancedIPC
   {$ELSE}
   LazAdvancedIPC
   {$ENDIF}
+  Interfaces, Controls, Forms, Dialogs, ExtCtrls, LCLProc,
+  LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
+  Laz2_DOM, FileUtil, UTF8Process,
+  LazarusIDEStrConsts, IDECmdLine, LazConf,
   ;
 
 type
@@ -99,6 +101,8 @@ type
       var outHandleBringToFront: HWND): TStartNewInstanceResult;
   end;
 
+  { TIDEInstances }
+
   TIDEInstances = class(TComponent)
   private
     FMainServer: TMainServer;//running IDE
@@ -126,6 +130,9 @@ type
     function AllowStartNewInstance(const aFiles: TStrings;
       var outModalErrorMessage, outModalErrorForceUniqueMessage, outNotRespondingErrorMessage: string;
       var outHandleBringToFront: HWND): TStartNewInstanceResult;
+
+    function StartUserBuiltIDE: TStartNewInstanceResult;
+
     procedure InitIDEInstances;
   public
     constructor Create(aOwner: TComponent); override;
@@ -415,6 +422,94 @@ begin
   end;
 end;
 
+function TIDEInstances.StartUserBuiltIDE: TStartNewInstanceResult;
+// check if this is the standard(nonwritable) IDE and there is a custom built IDE.
+// if yes, start the custom IDE.
+{$IFDEF EnableRedirectToUserIDE}
+var
+  CustomDir, StartPath, DefaultDir, DefaultExe, CustomExe: String;
+  Params: TStringList;
+  aProcess: TProcessUTF8;
+  i: Integer;
+{$ENDIF}
+begin
+  Result:=ofrStartNewInstance;
+  {$IFDEF EnableRedirectToUserIDE}
+
+  debugln('Debug: (lazarus) TIDEInstances.StartUserBuiltIDE ');
+
+  if Application.HasOption(StartedByStartLazarusOpt) then
+    exit; // startlazarus has started this exe -> do not redirect
+
+  try
+    StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
+    debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
+    if FileIsSymlink(StartPath) then
+      StartPath:=GetPhysicalFilename(StartPath,pfeException);
+    DefaultDir:=ExtractFilePath(StartPath);
+    if DirectoryExistsUTF8(DefaultDir) then
+      DefaultDir:=GetPhysicalFilename(DefaultDir,pfeException);
+  except
+    on E: Exception do begin
+      MessageDlg ('Error',E.Message,mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  DefaultDir:=AppendPathDelim(DefaultDir);
+  CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
+  debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  if CompareFilenames(DefaultDir,CustomDir)=0 then
+    exit; // this is the user built IDE
+
+  DefaultExe:=DefaultDir+'lazarus'+GetExeExt; // started IDE
+  CustomExe:=CustomDir+'lazarus'+GetExeExt; // user built IDE
+
+  if (not FileExistsUTF8(DefaultExe))
+      or (not FileExistsUTF8(CustomExe))
+      or (FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe)) then
+    exit;
+
+  if DirectoryIsWritable(ChompPathDelim(ExtractFilePath(DefaultExe))) then
+    exit;
+  debugln(['Debug: (lazarus) TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+
+  // customexe is younger and defaultexe is not writable
+  // => the user started the default binary
+  // -> start the customexe
+  Params:=TStringList.Create;
+  aProcess:=nil;
+  try
+    aProcess := TProcessUTF8.Create(nil);
+    aProcess.InheritHandles := false;
+    aProcess.Options := [];
+    aProcess.ShowWindow := swoShow;
+    {$IFDEF Darwin}
+    aProcess.Executable:='/usr/bin/open';
+    Params.Add('-a');
+    if DirectoryExistsUTF8(CustomExe+'.app') then
+    begin
+      // start the bundle instead
+      CustomExe:=CustomExe+'.app/Contents/MacOS/'+ExtractFileName(CustomExe);
+    end;
+    Params.Add(CustomExe);
+    Params.Add('--args');
+    {$ELSE}
+    aProcess.Executable:=CustomExe;
+    {$ENDIF}
+    // append params
+    for i:=1 to ParamCount do
+      Params.Add(ParamStr(i));
+    aProcess.Parameters:=Params;
+    debugln(['Debug: (lazarus) AAA5 TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
+    aProcess.Execute;
+  finally
+    Params.Free;
+    aProcess.Free;
+  end;
+  Result:=ofrDoNotStart;
+  {$ENDIF}
+end;
+
 function TIDEInstances.CheckParamsForForceNewInstanceOpt: Boolean;
 var
   I: Integer;
@@ -437,7 +532,16 @@ begin
     Exit;
 
   if not FForceNewInstance then
-    xResult := AllowStartNewInstance(FilesToOpen, xModalErrorMessage, xModalErrorForceUniqueMessage, xNotRespondingErrorMessage, xHandleBringToFront)
+  begin
+    // check for already running instance
+    xResult := AllowStartNewInstance(FilesToOpen, xModalErrorMessage, xModalErrorForceUniqueMessage, xNotRespondingErrorMessage, xHandleBringToFront);
+
+    if xResult=ofrStartNewInstance then
+    begin
+      // check if there is an user built binary
+      xResult := StartUserBuiltIDE;
+    end;
+  end
   else
     xResult := ofrStartNewInstance;
 

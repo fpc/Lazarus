@@ -384,7 +384,7 @@ begin
         {$IFDEF Linux}
         EnvOverrides.Values['LIBOVERLAY_SCROLLBAR']:='0';
         {$ENDIF}
-        {$IFDEF LCLCarbon}
+        {$IFDEF darwin}
         // "open" process runs a bundle, but doesn't wait for it to finish execution
         // "startlazarus" logic suggests that the Lazarus process would be waited
         // and if the special 99 (ExitCodeRestartLazarus) code is received,
@@ -393,7 +393,10 @@ begin
         // The arguments would not indicate that lazarus was started by startlazarus
         FLazarusProcess :=
           TLazarusProcess.Create('open',
-               ' -a ' + FLazarusPath + ' --args  --no-splash-screen ' + GetCommandLineParameters(FCmdLineParams, False)+' '+FCmdLineFiles,
+               ' -a ' + FLazarusPath + ' --args'
+               +' '+NoSplashScreenOptLong
+               +' '+GetCommandLineParameters(FCmdLineParams, False)
+               +' '+FCmdLineFiles,
                EnvOverrides);
         {$ELSE}
         FLazarusProcess :=
