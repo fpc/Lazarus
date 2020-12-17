@@ -39,15 +39,14 @@ interface
 uses
   Classes, sysutils, crc, Process,
   {$IF (FPC_FULLVERSION >= 30101)}
-  AdvancedIPC
+  AdvancedIPC,
   {$ELSE}
-  LazAdvancedIPC
+  LazAdvancedIPC,
   {$ENDIF}
   Interfaces, Controls, Forms, Dialogs, ExtCtrls, LCLProc,
   LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
   Laz2_DOM, FileUtil, UTF8Process,
-  LazarusIDEStrConsts, IDECmdLine, LazConf,
-  ;
+  LazarusIDEStrConsts, IDECmdLine, LazConf;
 
 type
   TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError,
