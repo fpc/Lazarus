@@ -424,7 +424,6 @@ end;
 function TIDEInstances.StartUserBuiltIDE: TStartNewInstanceResult;
 // check if this is the standard(nonwritable) IDE and there is a custom built IDE.
 // if yes, start the custom IDE.
-{$IFDEF EnableRedirectToUserIDE}
 var
   CustomDir, StartPath, DefaultDir, DefaultExe, CustomExe: String;
   Params: TStringList;
@@ -432,22 +431,24 @@ var
   CfgParams: TStrings;
   i: Integer;
   aPID: SizeUInt;
-{$ENDIF}
+  Verbose: Boolean;
 begin
   Result:=ofrStartNewInstance;
-  {$IFDEF EnableRedirectToUserIDE}
 
   aPID:=GetProcessID;
-  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE ']);
-
   CfgParams:=GetParamsAndCfgFile;
+
+  Verbose:=(CfgParams.IndexOf('-v')>=0) or (CfgParams.IndexOf('--verbose')>=0);
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE ']);
 
   if CfgParams.IndexOf(StartedByStartLazarusOpt)>=0 then
     exit; // startlazarus has started this exe -> do not redirect
 
   try
     StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
-    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
     if FileIsSymlink(StartPath) then
       StartPath:=GetPhysicalFilename(StartPath,pfeException);
     DefaultDir:=ExtractFilePath(StartPath);
@@ -461,7 +462,8 @@ begin
   end;
   DefaultDir:=AppendPathDelim(DefaultDir);
   CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
-  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
   if CompareFilenames(DefaultDir,CustomDir)=0 then
     exit; // this is the user built IDE
 
@@ -471,22 +473,26 @@ begin
   if (not FileExistsUTF8(DefaultExe))
       or (not FileExistsUTF8(CustomExe)) then
   begin
-    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
     exit;
   end;
   if FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe) then
   begin
-    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
     exit;
   end;
 
   if DirectoryIsWritable(DefaultDir) then
   begin
-    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
     exit;
   end;
 
-  debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
 
   // customexe is younger and defaultexe is not writable
   // => the user started the default binary
@@ -499,30 +505,30 @@ begin
     aProcess.Options := [];
     aProcess.ShowWindow := swoShow;
     {$IFDEF Darwin}
+    if not DirectoryExistsUTF8(CustomExe+'.app') then
+    begin
+      debugln(['Note: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE user IDE is missing the .app folder: ',CustomExe]);
+      exit;
+    end;
     aProcess.Executable:='/usr/bin/open';
     Params.Add('-a');
-    if DirectoryExistsUTF8(CustomExe+'.app') then
-    begin
-      // start the bundle instead
-      CustomExe:=CustomExe+'.app/Contents/MacOS/'+ExtractFileName(CustomExe);
-    end;
+    CustomExe:=CustomExe+'.app';
     Params.Add(CustomExe);
     Params.Add('--args');
     {$ELSE}
     aProcess.Executable:=CustomExe;
     {$ENDIF}
-    // append params
-    for i:=1 to ParamCount do
-      Params.Add(ParamStrUTF8(i));
+    // append params, including the lazarus.cfg params
+    for i:=1 to CfgParams.Count-1 do
+      Params.Add(CfgParams[i]);
     aProcess.Parameters:=Params;
-    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
+    debugln(['Note: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
     aProcess.Execute;
   finally
     Params.Free;
     aProcess.Free;
   end;
   Result:=ofrDoNotStart;
-  {$ENDIF}
 end;
 
 function TIDEInstances.CheckParamsForForceNewInstanceOpt: Boolean;
