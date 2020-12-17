@@ -51,6 +51,7 @@ end;
 
 destructor TExternalToolIDE.Destroy;
 begin
+  Application.RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
 
