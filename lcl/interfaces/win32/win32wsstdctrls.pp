@@ -1026,7 +1026,7 @@ begin
   end;
 
   // issue #37129: Fix static listbox of style csSimple when height is changed (like in Delphi)
-  if (CBS_SIMPLE and Params.flags) <> 0 Then
+  if TCustomComBoBox(AWInControl).Style = csSimple then
   begin
     Params.Flags := Params.Flags or CBS_NOINTEGRALHEIGHT;
     Include(TWinControlAccess(AWinControl).FWinControlFlags, wcfEraseBackground);
@@ -1180,20 +1180,9 @@ class procedure TWin32WSCustomComboBox.SetDropDownCount(
 var
   StringList: TWin32ComboBoxStringList;
 begin
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
-  begin
-    //Use CB_SETMINVISIBLE in vista or above
-    SendMessage(ACustomComboBox.Handle, CB_SETMINVISIBLE, NewCount, 0);
-    //Issue #37670: Fix DropDownCount not changing when Style=csDropDownList
-    if not (ACustomComboBox.Style in [csSimple, csDropDown, csOwnerDrawEditableFixed]) then
-      RecreateWnd(ACustomCombobox);
-  end
-  else
-  begin
-    StringList := GetStringList(ACustomComboBox);
-    if StringList <> nil then
-      StringList.DropDownCount := NewCount;
-  end;
+  StringList := GetStringList(ACustomComboBox);
+  if StringList <> nil then
+    StringList.DropDownCount := NewCount;
 end;
 
 class procedure TWin32WSCustomComboBox.SetDroppedDown(
