@@ -42,7 +42,6 @@ type
   
   TPairSplitterSide = class(TWinControl)
   private
-    fCreatedBySplitter: boolean;
     function GetSplitter: TCustomPairSplitter;
   protected
     class procedure WSRegisterClass; override;
@@ -388,14 +387,8 @@ begin
 end;
 
 destructor TCustomPairSplitter.Destroy;
-var
-  i: Integer;
 begin
-  // destroy the sides
   fDoNotCreateSides:=true;
-  for i:=Low(FSides) to High(FSides) do
-    if (FSides[i]<>nil) and (FSides[i].fCreatedBySplitter) then
-      FSides[i].Free;
   inherited Destroy;
 end;
 
@@ -433,8 +426,7 @@ var
   ASide: TPairSplitterSide;
   i: Integer;
 begin
-  if fDoNotCreateSides or (csDestroying in ComponentState)
-  or (csLoading in ComponentState)
+  if fDoNotCreateSides or (ComponentState * [csLoading,csDestroying] <> [])
   or ((Owner<>nil) and (csLoading in Owner.ComponentState)) then exit;
   // create the missing side controls
   for i := Low(FSides) to High(FSides) do
@@ -443,7 +435,6 @@ begin
       // For streaming it is important that the side controls are owned by
       // the owner of the splitter
       ASide:=TPairSplitterSide.Create(Owner);
-      ASide.fCreatedBySplitter:=true;
       ASide.Parent:=Self;
     end;
 end;
