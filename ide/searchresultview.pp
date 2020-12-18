@@ -553,10 +553,17 @@ begin
 end;
 
 procedure TSearchResultsView.tbbCloseAllClick(Sender: TObject);
+var
+  lPageIx : integer;
 begin
-  with ResultsNoteBook do
-    while PageCount>0 do
-      ClosePage(PageCount-1);
+  with ResultsNoteBook do begin
+    lPageIx := PageCount;
+    while lPageIx > 0 do begin
+      Dec(lPageIx);
+      if lPageIx < PageCount then
+        ClosePage(lPageIx);
+    end;
+  end;
 end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true

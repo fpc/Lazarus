@@ -38,7 +38,7 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, fgl, Laz_AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
   // LazUtils
