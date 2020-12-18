@@ -125,6 +125,7 @@ type
     function GetLast(out Key, Value: Pointer): Boolean;
     function GetNext(const Key: Pointer; out NextKey, NextValue: Pointer): Boolean;
     function GetPrev(const Key: Pointer; out PrevKey, PrevValue: Pointer): Boolean;
+    function FindByValue(Value: Pointer): Pointer; // Returns the Key or Nil.
     property Count: SizeInt read GetCount;
     property Values[const Key: Pointer]: Pointer read GetValues write SetValues; default;
     property Tree: TAvlTree read FItems; // tree of PPointerToPointerItem
@@ -1069,8 +1070,7 @@ begin
   Result:=FItems.FindKey(Key,@ComparePointerWithPtrToPtrItem)
 end;
 
-function TPointerToPointerTree.GetNode(Node: TAvlTreeNode; out Key,
-  Value: Pointer): Boolean;
+function TPointerToPointerTree.GetNode(Node: TAvlTreeNode; out Key,Value: Pointer): Boolean;
 var
   Item: PPointerToPointerItem;
 begin
@@ -1234,13 +1234,28 @@ begin
   Result:=GetNode(Node,PrevKey,PrevValue);
 end;
 
+function TPointerToPointerTree.FindByValue(Value: Pointer): Pointer;
+// Find a Key by its Value using a slow linear search.
+var
+  AVLNode: TAVLTreeNode;
+  P2PItem: PPointerToPointerItem;
+begin
+  AVLNode:=FItems.FindLowest;
+  while AVLNode<>nil do begin
+    P2PItem:=PPointerToPointerItem(AVLNode.Data);
+    if Value = P2PItem^.Value then
+      Exit(P2PItem^.Key);
+    AVLNode:=FItems.FindSuccessor(AVLNode);
+  end;
+  Result:=nil;
+end;
+
 function TPointerToPointerTree.GetEnumerator: TPointerToPointerEnumerator;
 begin
   Result:=TPointerToPointerEnumerator.Create(Tree);
 end;
 
-function TPointerToPointerTree.
-  GetEnumeratorHighToLow: TPointerToPointerEnumerator;
+function TPointerToPointerTree.GetEnumeratorHighToLow: TPointerToPointerEnumerator;
 begin
   Result:=TPointerToPointerEnumerator.Create(Tree);
   Result.fHighToLow:=true;

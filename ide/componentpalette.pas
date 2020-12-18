@@ -42,7 +42,7 @@ uses
   // LCL
   LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazFileCache,
+  LazFileUtils, LazFileCache, AvgLvlTree,
   // IdeIntf
   FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
@@ -80,8 +80,6 @@ type
     property SelectButton: TComponent read fSelectButton write fSelectButton;
   end;
 
-  TComponentButtonMap = specialize TFPGMap<String,TSpeedButton>;
-
   { TComponentPalette }
 
   TComponentPalette = class(TBaseComponentPalette)
@@ -98,7 +96,9 @@ type
     procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
-    fComponentButtons: TComponentButtonMap;
+    // Generics TFPGMap<> is bocus, being actually a sorted list, slow adding items.
+    // Instead use a tree container as Map<TComponentClass,TSpeedButton>.
+    fComponentButtons: TPointerToPointerTree;
     // Visual container for tabs
     FPageControl: TPageControl;
     FOnOpenPackage: TNotifyEvent;
@@ -429,24 +429,20 @@ procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueNa
   aScrollBox: TScrollBox);
 var
   Pal: TComponentPalette;
+  CompCls: TComponentClass;
   Btn: TSpeedButton;
-  CompCN: String;      // Component ClassName
-  i: Integer;
 begin
   Pal := TComponentPalette(Palette);
-  CompCN := aComp.ComponentClass.ClassName;
-  if Pal.fComponentButtons.Find(CompCN, i) then
-    Btn := Pal.fComponentButtons.Data[i]
-  else
-    Btn := nil;
+  CompCls := aComp.ComponentClass;
+  Btn := TSpeedButton(Pal.fComponentButtons[CompCls]);
   if aComp.Visible then
   begin
     inc(fBtnIndex);
     if Btn=nil then
     begin
       Btn := TSpeedButton.Create(nil);
-      Pal.fComponentButtons[CompCN] := Btn;
-      Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
+      Pal.fComponentButtons[CompCls] := Btn;
+      Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCls.ClassName;
       // Left and Top will be set in ReAlignButtons.
       Btn.SetBounds(Btn.Left, Btn.Top,
                     aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),
@@ -460,18 +456,18 @@ begin
       Btn.OnDblClick := @Pal.ComponentBtnDblClick;
       Btn.OnMouseWheel := @Pal.OnPageMouseWheel;
       Btn.ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
-      Btn.Hint := CompCN + sLineBreak +
+      Btn.Hint := CompCls.ClassName + sLineBreak +
         '(' + aComp.ComponentClass.UnitName+', '+aComp.PkgFile.LazPackage.Name + ')';
       Btn.PopupMenu:=Pal.PopupMenu;
       {$IFDEF VerboseComponentPalette}
       if aComp.RealPage.PageName = CompPalVerbPgName then
-        DebugLn(['TComponentPalette.CreateOrDelButton Created Button: ',CompCN,' ',Btn.Name]);
+        DebugLn(['TComponentPalette.CreateOrDelButton Created Button: ',CompCls.ClassName,' ',Btn.Name]);
       {$ENDIF}
     end else
     begin
       {$IFDEF VerboseComponentPalette}
       if aComp.RealPage.PageName = CompPalVerbPgName then
-        DebugLn(['TComponentPalette.CreateOrDelButton Keep Button: ',CompCN,' ',Btn.Name,' ',DbgSName(Btn.Parent)]);
+        DebugLn(['TComponentPalette.CreateOrDelButton Keep Button: ',CompCls.ClassName,' ',Btn.Name,' ',DbgSName(Btn.Parent)]);
       {$ENDIF}
     end;
     Btn.Parent := aScrollBox;
@@ -481,10 +477,10 @@ begin
   begin
     {$IFDEF VerboseComponentPalette}
     if aComp.RealPage.PageName = CompPalVerbPgName then
-      DebugLn(['TComponentPalette.CreateOrDelButton Destroy Button: ',CompCN,' ',Btn.Name]);
+      DebugLn(['TComponentPalette.CreateOrDelButton Destroy Button: ',CompCls.ClassName,' ',Btn.Name]);
     {$ENDIF}
     Application.ReleaseComponent(Btn);
-    Pal.fComponentButtons.Remove(CompCN);
+    Pal.fComponentButtons.Remove(CompCls);
     Btn.Visible:=false;
   end;
 end;
@@ -738,7 +734,7 @@ end;
 procedure TComponentPalette.SelectionWasChanged;
 var
   Sheet: TTabSheet;
-  i: Integer;
+  Btn: TSpeedButton;
 begin
   if FPageControl=nil then exit;
   UnselectAllButtons;
@@ -751,11 +747,13 @@ begin
   // Switch to the new page
   FPageControl.ActivePage:=Sheet;
   // Build the GUI layout for this page if not done yet.
-  if not fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then
+  Btn:=TSpeedButton(fComponentButtons[Selected.ComponentClass]);
+  if Btn=nil then
     ReAlignButtons(FPageControl.ActivePage);
   // Select button
-  if fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then //find again!
-    fComponentButtons.Data[i].Down := true;
+  Btn:=TSpeedButton(fComponentButtons[Selected.ComponentClass]);  //find again!
+  if Btn<>nil then
+    Btn.Down:=true;
 end;
 
 procedure TComponentPalette.CreatePopupMenu;
@@ -827,8 +825,7 @@ end;
 constructor TComponentPalette.Create;
 begin
   inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
-  fComponentButtons:=TComponentButtonMap.Create;
-  fComponentButtons.Sorted:=True;
+  fComponentButtons:=TPointerToPointerTree.Create;
   AddHandlerComponentAdded(@ComponentWasAdded);
   AddHandlerSelectionChanged(@SelectionWasChanged);
   ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
@@ -836,11 +833,17 @@ end;
 
 destructor TComponentPalette.Destroy;
 var
-  i: Integer;
+  AVLNode: TAVLTreeNode;
+  P2PItem: PPointerToPointerItem;
 begin
   PageControl:=nil;
-  for i := 0 to fComponentButtons.Count-1 do
-    fComponentButtons.Data[i].Free;
+  // Free SpeedButtons stored in the tree map.
+  AVLNode:=fComponentButtons.Tree.FindLowest;
+  while AVLNode<>nil do begin
+    P2PItem:=PPointerToPointerItem(AVLNode.Data);
+    TSpeedButton(P2PItem^.Value).Free;
+    AVLNode:=fComponentButtons.Tree.FindSuccessor(AVLNode);
+  end;
   FreeAndNil(fComponentButtons);
   FreeAndNil(fSelectButtonIcon);
   FreeAndNil(PopupMenu);
@@ -1076,11 +1079,11 @@ end;
 
 function TComponentPalette.FindCompByButton(Button: TSpeedButton): TRegisteredComponent;
 var
-  i: Integer;
+  CompClass: TComponentClass;
 begin
-  i := fComponentButtons.IndexOfData(Button);
-  if i >= 0 then
-    Result := FindRegComponent(fComponentButtons.Keys[i])
+  CompClass := TComponentClass(fComponentButtons.FindByValue(Button));
+  if Assigned(CompClass) then
+    Result := FindRegComponent(CompClass)
   else
     Result := nil;
 end;
