@@ -343,6 +343,7 @@ type
     procedure ClearSeries;
     function Clone: TChart; overload;
     function Clone(ANewOwner, ANewParent: TComponent): TChart; overload;
+    procedure CopyToClipboard(AClass: TRasterImageClass);
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure DisableRedrawing;
@@ -682,14 +683,19 @@ begin
   end;
 end;
 
-procedure TChart.CopyToClipboardBitmap;
+procedure TChart.CopyToClipboard(AClass: TRasterImageClass);
 begin
-  with SaveToImage(TBitmap) do
+  with SaveToImage(AClass) do
     try
       SaveToClipboardFormat(RegisterClipboardFormat(MimeType));
     finally
       Free;
     end;
+end;
+
+procedure TChart.CopyToClipboardBitmap;
+begin
+  CopyToClipboard(TBitmap);
 end;
 
 constructor TChart.Create(AOwner: TComponent);
