@@ -165,7 +165,6 @@ type
     property Visible: boolean read FVisible write SetVisible;
   end;
 
-
   { TBaseComponentPage }
 
   TBaseComponentPage = class
@@ -346,12 +345,11 @@ var
   Comp1: TRegisteredComponent absolute Data1;
   Comp2: TRegisteredComponent absolute Data2;
 begin
-  // The same case-insensitive compare function should be used in this function
-  //  and in CompareClassNameWithRegisteredComponent.
+  // The same compare function must be used here and in CompareClassWithIDEComponent.
   Result:=ComparePointers(Comp1.ComponentClass, Comp2.ComponentClass);
 end;
 
-function CompareClassWithRegisteredComponent(Key, Data: Pointer): integer;
+function CompareClassWithIDEComponent(Key, Data: Pointer): integer;
 var
   AClass: TComponentClass absolute Key;
   RegComp: TRegisteredComponent absolute Data;
@@ -1128,7 +1126,7 @@ function TBaseComponentPalette.FindRegComponent(ACompClass: TClass): TRegistered
 var
   ANode: TAVLTreeNode;
 begin
-  ANode:=fComponentCache.FindKey(ACompClass, @CompareClassWithRegisteredComponent);
+  ANode:=fComponentCache.FindKey(ACompClass, @CompareClassWithIDEComponent);
   if ANode<>nil then
     Result:=TRegisteredComponent(ANode.Data)
   else

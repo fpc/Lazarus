@@ -13340,6 +13340,8 @@ begin
           ComponentClasses.Free;
         end;
       end;
+      // Note: Source editor will be updated with added components later on Idle
+      //       using FComponentAddedDesigner and FComponentAddedUnit.
     end
     else begin
       FComponentAddedDesigner:= Nil;

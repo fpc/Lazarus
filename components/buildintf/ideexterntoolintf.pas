@@ -514,8 +514,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override; // (main thread)
     // always use before access, when using Tool and View: always lock Tool before View
-    procedure EnterCriticalSection; virtual;
-    procedure LeaveCriticalSection; virtual;
+    procedure EnterCriticalSection;
+    procedure LeaveCriticalSection;
     property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
     procedure AutoFree; // (only main thread) free if not in use

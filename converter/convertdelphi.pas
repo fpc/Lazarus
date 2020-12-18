@@ -1865,7 +1865,6 @@ var
   PkgFile, OffendingUnit: TPkgFile;
   CodeBuffer: TCodeBuffer;
   Flags: TPkgFileFlags;
-  HasRegisterProc: boolean;
   PureUnitName: String;
 begin
   Result:=mrOK;

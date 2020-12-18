@@ -492,17 +492,15 @@ end;
 procedure TComponentPage.CreateButtons;
 // Create speedbuttons for every visible component
 var
-  Pal: TComponentPalette;
   ScrollBox: TScrollBox;
   Comp: TPkgComponent;
   i: Integer;
 begin
   if not Visible then Exit;
-  Pal := TComponentPalette(Palette);
   ScrollBox := GetScrollBox;
   Assert(Assigned(ScrollBox), 'CreateButtons: ScrollBox not assigned.');
-  ScrollBox.OnResize := @Pal.OnScrollBoxResize;
-  ScrollBox.OnMouseWheel := @Pal.OnPageMouseWheel;
+  ScrollBox.OnResize := @TComponentPalette(Palette).OnScrollBoxResize;
+  ScrollBox.OnMouseWheel := @TComponentPalette(Palette).OnPageMouseWheel;
   {$IFDEF VerboseComponentPalette}
   if PageName = CompPalVerbPgName then
     DebugLn(['TComponentPalette.CreateButtons PAGE="',PageName,'", PageIndex=',PageComponent.PageIndex]);

@@ -4360,7 +4360,7 @@ var
       if UsesAdditions<>'' then UsesAdditions:=UsesAdditions+', ';
       UsesAdditions:=UsesAdditions+UnitNames[i];
     end;
-    //DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses UsesAdditions=',UsesAdditions);
+    //DebugLn('TPkgManager.AddUnitDepsForCompClasses UsesAdditions=',UsesAdditions);
     PackageAdditions:='';
     if MissingDependencies<>nil then begin
       for i:=0 to MissingDependencies.Count-1 do begin
@@ -4377,7 +4377,7 @@ var
         end;
       end;
     end;
-    //DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
+    //DebugLn('TPkgManager.AddUnitDepsForCompClasses PackageAdditions=',PackageAdditions);
     Msg:='';
     if UsesAdditions<>'' then begin
       Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf,
@@ -4407,7 +4407,7 @@ var
         if RequiredPackage is TIDEPackage then
           RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
         if UnitOwner is TProject then begin
-          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Adding Project Dependency ',TProject(UnitOwner).GetTitle,' -> ',RequiredPackage.Name);
+          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDepsForCompClasses] Adding Project Dependency ',TProject(UnitOwner).GetTitle,' -> ',RequiredPackage.Name);
           if RequiredPackage is TLazPackage then
             AddProjectDependency(TProject(UnitOwner),TLazPackage(RequiredPackage))
           else begin
@@ -4416,7 +4416,7 @@ var
             AddProjectDependency(TProject(UnitOwner),PkgDependency);
           end;
         end else if UnitOwner is TLazPackage then begin
-          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
+          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDepsForCompClasses] Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
           AddPackageDependency(TLazPackage(UnitOwner),RequiredPackage.Name);
         end;
       end;
@@ -4431,7 +4431,7 @@ var
     Result:=LoadAndParseUnitBuf;
     if Result<>mrOk then exit;
     for i:=0 to UnitNames.Count-1 do begin
-      DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Extending Uses ',
+      DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDepsForCompClasses] Extending Uses ',
               UnitBuf.Filename,' ',UnitNames[i]);
       if not CodeToolBoss.AddUnitToMainUsesSection(UnitBuf,UnitNames[i],'') then
         MainIDE.DoJumpToCodeToolBossError;

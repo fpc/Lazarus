@@ -454,7 +454,6 @@ var
   MissingObjectTypes: TClassList;
   RegComp: TRegisteredComponent;
   AClassName: String;
-  i: Integer;
 begin
   Result:=mrOK;
   MissingObjectTypes:=TClassList.Create;

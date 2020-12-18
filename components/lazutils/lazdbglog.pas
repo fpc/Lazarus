@@ -32,7 +32,7 @@ function MemSizeFPList(const List: TFPList): PtrUInt;
 begin
   if List=nil then exit(0);
   Result:=PtrUInt(List.InstanceSize)
-    +PtrUInt(List.Capacity)*SizeOf(Pointer);
+         +PtrUInt(List.Capacity)*SizeOf(Pointer);
 end;
 
 function GetStringRefCount(const s: string): PtrInt;
