@@ -1363,7 +1363,7 @@ begin
           AParent:=AParent.Parent;
         end;
       end;
-      DebugLn('Parent is '''+dbgsName(AParent)+'''');
+      //DebugLn('TCustomFormEditor.CreateComponent: Parent is '''+dbgsName(AParent)+'''');
     end else begin
       // create a toplevel component
       // -> a form or a datamodule or a custom component

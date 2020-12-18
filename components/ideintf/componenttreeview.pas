@@ -747,7 +747,6 @@ begin
   FPersToChange := APersistent;
   FZOrderDelete := AZOrder;
   BuildComponentNodes(False);
-  Assert(FPersToChange=nil, 'TComponentTreeView.ChangeCompZOrder: FPersToChange is assigned.');
 end;
 
 procedure TComponentTreeView.DeleteComponentNode(APersistent: TPersistent);
@@ -755,7 +754,6 @@ begin
   FPersToChange := APersistent;
   FZOrderDelete := zoDelete;
   BuildComponentNodes(False);
-  Assert(FPersToChange=nil, 'TComponentTreeView.DeleteComponentNode: FPersToChange is assigned.');
 end;
 
 procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);

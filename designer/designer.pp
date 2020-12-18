@@ -37,8 +37,9 @@ interface
 {off $DEFINE VerboseDesignerSelect}
 
 uses
-  // RTL + FCL + LCL
-  Types, Classes, Math, SysUtils, variants, TypInfo,
+  // RTL + FCL
+  Types, Classes, Math, SysUtils, Variants, TypInfo,
+  // LCL
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
@@ -1631,10 +1632,21 @@ begin
 end;
 
 procedure TDesigner.NotifyComponentAdded(AComponent: TComponent);
+var
+  i: Integer;
+  SubContrl: TControl;
 begin
   try
     if AComponent.Name='' then
       AComponent.Name:=UniqueName(AComponent.ClassName);
+    // Iterating Controls is needed at least for Side1 and Side2 of TPairSplitter.
+    if AComponent is TWinControl then
+      for i:=0 to TWinControl(AComponent).ControlCount-1 do
+      begin
+        SubContrl:=TWinControl(AComponent).Controls[i];
+        if SubContrl.Name='' then
+          SubContrl.Name:=UniqueName(SubContrl.ClassName);
+      end;
     GlobalDesignHook.PersistentAdded(AComponent,false);
   except
     on E: Exception do
