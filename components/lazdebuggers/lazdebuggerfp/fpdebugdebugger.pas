@@ -2492,7 +2492,7 @@ begin
     begin
     TFPBreakpoints(Collection).AddBreakpointToDelayedRemoveList(FInternalBreakpoint);
     FInternalBreakpoint:=nil;
-    TFpDebugDebugger(Debugger).QuickPause;
+//    TFpDebugDebugger(Debugger).QuickPause;
     end
   else
     ResetBreak;
