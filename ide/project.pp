@@ -1345,7 +1345,7 @@ begin
   if (FPageIndex >= 0) and (FWindowID < 0) then
     WindowID := 1;
   FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',1);
-  CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',1),
+  FCursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',1),
                      XMLConfig.GetValue(Path+'CursorPos/Y',1));
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);

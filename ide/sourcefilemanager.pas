@@ -3794,9 +3794,7 @@ begin
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
     end;
 
-    // set all modified to false
     Project1.UpdateAllVisibleUnits;
-    Project1.ClearModifieds(true);
 
     IncreaseCompilerParseStamp;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
@@ -3813,6 +3811,10 @@ begin
           AnUnitInfo.Loaded := false;
       end;
     end;
+
+    // set all modified to false
+    Project1.ClearModifieds(true);
+
     // call ProjectOpened handlers
     HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
