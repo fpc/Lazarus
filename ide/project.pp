@@ -1339,7 +1339,7 @@ end;
 procedure TUnitEditorInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   IsVisibleTab := XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
-  PageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',0);
+  FPageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',0);
   WindowID  := XMLConfig.GetValue(Path+'WindowIndex/Value',0);
   // update old data
   if (FPageIndex >= 0) and (FWindowID < 0) then
@@ -1916,6 +1916,7 @@ begin
   c := XMLConfig.GetValue(Path+'ExtraEditorCount/Value', 0);
   for i := 1 to c do
     FEditorInfoList.NewEditorInfo.LoadFromXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
+  UpdatePageIndex;
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   if Loaded then
