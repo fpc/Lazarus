@@ -87,7 +87,7 @@ ifeq ($(OS_TARGET),wince)
 LCL_PLATFORM=wince
 else
 ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
+LCL_PLATFORM=cocoa
 else
 LCL_PLATFORM=gtk2
 endif
