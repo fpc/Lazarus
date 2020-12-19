@@ -544,7 +544,7 @@ type
        A QuickPause may skip changing the debugger.State.
     *)
     procedure QuickPause;
-    procedure RunQuickPauseTasks;
+    procedure RunQuickPauseTasks(AForce: Boolean = False);
     procedure DoRelease; override;
     procedure CheckAndRunIdle;
     procedure DoBeforeState(const OldState: TDBGState); override;
@@ -1840,7 +1840,7 @@ end;
 procedure TFPThreads.DoStateChange(const AOldState: TDBGState);
 begin
   inherited DoStateChange(AOldState);
-  if (Debugger.State in [dsPause{, dsInternalPause}]) then // Make sure we have threads first // this can be removed, once threads are KEPT between pauses
+  if (Debugger.State in [dsPause, dsInternalPause]) then // Make sure we have threads first // this can be removed, once threads are KEPT between pauses
     RequestEntries;
 end;
 
@@ -1899,7 +1899,7 @@ begin
   if CurrentThreads = nil then exit;
   if Debugger = nil then Exit;
 
-  if not (Debugger.State in [dsPause, dsInternalPause {, dsRun}]) then begin
+  if not (Debugger.State in [dsPause, dsInternalPause {, dsRun}]) then begin  // Make sure we have threads first // this can be removed, once threads are KEPT between pauses
     CurrentThreads.Clear;
     Exit;
   end;
@@ -2311,7 +2311,7 @@ var
   tid, idx: Integer;
   cs: TCallStackBase;
 begin
-  if (Debugger = nil) or not(Debugger.State = dsPause) then begin // dsInternalPause ?
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     exit;
   end;
 
@@ -2376,7 +2376,7 @@ var
 begin
   inherited DoStateChange(AOldState);
   if (Debugger.State in [dsPause, dsInternalPause, dsStop]) or
-     (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State = dsRun))
+     (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State in [dsRun, dsInit]))
   then
   begin
     if FDelayedRemoveBreakpointList.Count>0 then begin
@@ -2494,7 +2494,7 @@ end;
 procedure TFPBreakpoint.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger.State in [dsPause, dsInternalPause]) or
-     (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State = dsRun))
+     (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State in [dsRun, dsInit]))
   then
     begin
     if Enabled and not FIsSet then
@@ -2524,7 +2524,7 @@ var
   ADebugger: TFpDebugDebugger;
 begin
   ADebugger := TFpDebugDebugger(Debugger);
-  if (ADebugger.State in [dsPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then
+  if (ADebugger.State in [dsPause, dsInternalPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then
     begin
     if Enabled and not FIsSet then
       FSetBreakFlag := True
@@ -3848,8 +3848,9 @@ begin
     FPauseForEvent := True;
 
   if not AMoreHitEventsPending then begin
-    FQuickPause := False;
-    &continue := not FPauseForEvent; // Only continue, if ALL events did say to continue
+    FQuickPause := False; // Ok, because we will SetState => RunQuickPauseTasks is not needed
+    if FPauseForEvent then
+      &continue := False; // Only continue, if ALL events did say to continue
 
     EnterPause(ALocationAddr, &continue);
   end;
@@ -3858,9 +3859,16 @@ end;
 procedure TFpDebugDebugger.EnterPause(ALocationAddr: TDBGLocationRec;
   AnInternalPause: Boolean);
 begin
-  if State <> dsPause then begin
-    SetState(dsPause);
-    DoCurrent(ALocationAddr);
+  if AnInternalPause then begin
+    if not (State in [dsPause, dsInternalPause]) then begin
+      SetState(dsInternalPause);
+    end;
+  end
+  else begin
+    if State <> dsPause then begin
+      SetState(dsPause);
+      DoCurrent(ALocationAddr);
+    end;
   end;
 end;
 
@@ -3870,7 +3878,9 @@ var
 begin
   // This will trigger setting the breakpoints,
   // may also trigger the evaluation of the callstack or disassembler.
-  SetState(dsInternalPause);
+  FSendingEvents := True; // Let DoStateChange know that the debugger is paused
+  RunQuickPauseTasks(True);
+  FSendingEvents := False;
 
   FExceptionStepper.DoProcessLoaded;
 
@@ -4147,7 +4157,7 @@ begin
     FQuickPause:=false;
 
     if Cont then begin
-      if State = dsPause then begin
+      if State in [dsPause, dsInternalPause] then begin
         FWorkQueue.Lock;
         CheckAndRunIdle;
         c := FWorkQueue.Count;
@@ -4175,9 +4185,10 @@ begin
   FQuickPause:=FDbgController.Pause;
 end;
 
-procedure TFpDebugDebugger.RunQuickPauseTasks;
+procedure TFpDebugDebugger.RunQuickPauseTasks(AForce: Boolean);
 begin
-  if FQuickPause or
+  if AForce or
+     FQuickPause or
      (TFPBreakpoints(Breakpoints).FDelayedRemoveBreakpointList.Count > 0)
   then
     TFPBreakpoints(Breakpoints).DoStateChange(dsRun);
