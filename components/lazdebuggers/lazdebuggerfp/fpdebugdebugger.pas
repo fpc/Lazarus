@@ -480,7 +480,7 @@ type
     FWorkThread: TThread; // for TThread.queue / 3.0.4 can only unqueue if there is a thread
     FWorkerThreadId: TThreadID;
     FEvalWorkItem: TFpThreadWorkerCmdEval;
-    FQuickPause, FPauseForEvent: boolean;
+    FQuickPause, FPauseForEvent, FSendingEvents: boolean;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
@@ -2480,7 +2480,9 @@ end;
 
 destructor TFPBreakpoint.Destroy;
 begin
-  if assigned(Debugger) and (Debugger.State = dsRun) and assigned(FInternalBreakpoint) then
+  if assigned(Debugger) and
+     ( (Debugger.State = dsRun) and (not TFpDebugDebugger(Debugger).FSendingEvents) ) and
+     assigned(FInternalBreakpoint) then
     begin
     TFPBreakpoints(Collection).AddBreakpointToDelayedRemoveList(FInternalBreakpoint);
     FInternalBreakpoint:=nil;
@@ -2522,7 +2524,7 @@ var
   ADebugger: TFpDebugDebugger;
 begin
   ADebugger := TFpDebugDebugger(Debugger);
-  if (ADebugger.State in [dsPause, dsInit]) then
+  if (ADebugger.State in [dsPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then
     begin
     if Enabled and not FIsSet then
       FSetBreakFlag := True
@@ -4137,7 +4139,9 @@ begin
       Threads.CurrentThreads.CurrentThreadId := FDbgController.CurrentThreadId;
 
     FPauseForEvent := False;
+    FSendingEvents := True;
     FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
+    FSendingEvents := False;
 
     FQuickPause:=false;
 
