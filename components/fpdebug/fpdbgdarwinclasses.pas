@@ -22,7 +22,8 @@ uses
   FpDbgUtil,
   UTF8Process,
   LazLoggerBase,
-  FpDbgCommon, FpdMemoryTools;
+  FpDbgCommon, FpdMemoryTools,
+  FpErrorMessages;
 
 type
   x86_thread_state32_t = record
@@ -146,7 +147,7 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
@@ -643,7 +644,8 @@ end;
 
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  out AnError: TFpError): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;

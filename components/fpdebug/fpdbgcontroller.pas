@@ -16,7 +16,7 @@ uses
   {$ifdef windows}  FpDbgWinClasses,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
   {$ifdef linux}  FpDbgLinuxClasses,  {$endif}
-  FpDbgInfo, FpDbgDwarf, FpdMemoryTools;
+  FpDbgInfo, FpDbgDwarf, FpdMemoryTools, FpErrorMessages;
 
 type
 
@@ -253,6 +253,7 @@ type
 
   TDbgController = class
   private
+    FLastError: TFpError;
     FMemManager: TFpDbgMemManager;
     FDefaultContext: TFpDbgLocationContext;
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
@@ -316,6 +317,7 @@ type
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
     property MemManager: TFpDbgMemManager read FMemManager;
     property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
+    property LastError: TFpError read FLastError;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1419,8 +1421,10 @@ end;
 function TDbgController.Run: boolean;
 var
   Flags: TStartInstanceFlags;
+  Err: TFpError;
 begin
   result := False;
+  FLastError := NoError;
   if assigned(FMainProcess) then
     begin
     DebugLn(DBG_WARNINGS, 'The debuggee is already running');
@@ -1452,9 +1456,9 @@ begin
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
   if AttachToPid <> 0 then
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager)
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager, FLastError)
   else
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager);
+    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager, FLastError);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);

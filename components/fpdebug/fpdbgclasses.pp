@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader, FpDbgInfo,
   FpdMemoryTools, LazLoggerBase, LazClasses, LazFileUtils, DbgIntfBaseTypes,
   fgl, DbgIntfDebuggerBase, FpPascalBuilder, fpDbgSymTableContext,
-  FpDbgDwarfDataClasses, FpDbgCommon;
+  FpDbgDwarfDataClasses, FpDbgCommon, FpErrorMessages;
 
 type
   TFPDEvent = (
@@ -570,8 +570,8 @@ type
 public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; virtual;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; virtual;
+      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; virtual;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; virtual;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
     constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); virtual;
     destructor Destroy; override;
@@ -2100,14 +2100,15 @@ end;
 class function TDbgProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
   AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager): TDbgProcess;
+  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
 begin
   DebugLn(DBG_VERBOSE, 'Debug support is not available for this platform.');
   result := nil;
 end;
 
 class function TDbgProcess.AttachToInstance(AFileName: string; APid: Integer;
-  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
+  AnError: TFpError): TDbgProcess;
 begin
   DebugLn(DBG_VERBOSE, 'Attach not supported');
   Result := nil;

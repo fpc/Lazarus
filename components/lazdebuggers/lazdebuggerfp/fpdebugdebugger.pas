@@ -3937,7 +3937,7 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
-    //FDbgController.AttachToPid := 0;
+    FDbgController.AttachToPid := 0;
     if ACommand = dcAttach then begin
       FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
       Result := FDbgController.AttachToPid <> 0;
@@ -3954,16 +3954,22 @@ begin
     Result := WorkItem.StartSuccesfull;
     FWorkerThreadId := WorkItem.WorkerThreadId;
     WorkItem.DecRef;
-    if not result then
-      begin
+    if not result then begin
       // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
       // that dcRun could be requested. Reset the filename so that the state
       // is set to dsIdle again and is set to dsStop on the next try
       // to run.
       FileName := '';
       FreeDebugThread;
+
+      if not IsError(FDbgController.LastError) then
+        ResText := 'Error starting process in debugger'
+      else
+        ResText := GetFpErrorHandler.ErrorAsString(FDbgController.LastError);
+      DoDbgEvent(ecProcess, etProcessExit, ResText); // or ecDebugger?
+      OnFeedback(self, ResText, '', ftError, [frOk]);
       Exit;
-      end;
+    end;
     // TODO: any step commond should run to "main" or "pascalmain"
     // Currently disabled in TFpDebugDebugger.GetSupportedCommands
     FStartupCommand := ACommand;

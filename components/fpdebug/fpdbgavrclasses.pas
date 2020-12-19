@@ -18,7 +18,8 @@ uses
   FpDbgLoader,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   LazLoggerBase, Maps,
-  FpDbgRsp, FpDbgCommon, FpdMemoryTools;
+  FpDbgRsp, FpDbgCommon, FpdMemoryTools,
+  FpErrorMessages;
 
 const
   // RSP commands
@@ -101,12 +102,12 @@ type
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
+      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
 
     // Not supported, returns false
     //class function AttachToInstance(AFileName: string; APid: Integer
     //  ): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
 
     class function isSupported(target: TTargetDescriptor): boolean; override;
 
@@ -533,7 +534,7 @@ end;
 class function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
   AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager): TDbgProcess;
+  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
 var
   AnExecutabeFilename: string;
   dbg: TDbgAvrProcess;
@@ -571,8 +572,8 @@ begin
 end;
 
 class function TDbgAvrProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  ): TDbgProcess;
+  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
+  AnError: TFpError): TDbgProcess;
 begin
   result := nil;
 end;

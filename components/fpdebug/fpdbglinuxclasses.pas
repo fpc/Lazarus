@@ -21,7 +21,8 @@ uses
   FpDbgUtil,
   UTF8Process,
   LazLoggerBase, Maps,
-  FpDbgCommon, FpdMemoryTools;
+  FpDbgCommon, FpdMemoryTools,
+  FpErrorMessages;
 
 type
   user_regs_struct64 = record
@@ -299,8 +300,8 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
+    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError
       ): TDbgProcess; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
@@ -820,7 +821,8 @@ end;
 
 class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams,
   AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
+  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  out AnError: TFpError): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -887,7 +889,8 @@ begin
 end;
 
 class function TDbgLinuxProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager): TDbgProcess;
+  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  out AnError: TFpError): TDbgProcess;
 begin
   Result := nil;
   fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE));

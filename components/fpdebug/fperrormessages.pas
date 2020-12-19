@@ -44,6 +44,10 @@ resourcestring
   MsgfpErrLocationParserMinStack          = 'Not enough elements on stack.';             // internally used
   MsgfpErrLocationParserNoAddressOnStack  = 'Not an address on stack';           // internally used
 
+  // 10000 Process/Control errors
+  MsgfpErrCreateProcess = 'Failed to start process "%1:s".%0:s Errormessage: %2:d "%3:s". %0:s%4:s';
+  MsgfpErrAttachProcess = 'Failed to attach to process "%1:s".%0:s Errormessage: %2:d "%3:s". %0:s%4:s';
+
 const
   fpErrNoError        = TFpErrorCode(0); // not an error
   fpErrAnyError       = TFpErrorCode(1);
@@ -79,6 +83,11 @@ const
   fpErrLocationParserInit             = TFpErrorCode(202);
   fpErrLocationParserMinStack         = TFpErrorCode(203);
   fpErrLocationParserNoAddressOnStack = TFpErrorCode(204);
+
+  // 10000 Process/Control errors
+  fpErrCreateProcess                  = TFpErrorCode(10000);
+  fpErrAttachProcess                  = TFpErrorCode(10001);
+
 type
 
   TFpError = array of record
@@ -219,6 +228,9 @@ begin
     fpErrLocationParserInit:             Result := MsgfpErrLocationParserInit;
     fpErrLocationParserMinStack:         Result := MsgfpErrLocationParserMinStack;
     fpErrLocationParserNoAddressOnStack: Result := MsgfpErrLocationParserNoAddressOnStack;
+
+    fpErrCreateProcess:                  Result := MsgfpErrCreateProcess;
+    fpErrAttachProcess:                  Result := MsgfpErrAttachProcess;
   end;
 end;
 
