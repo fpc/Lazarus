@@ -2329,7 +2329,7 @@ begin
   ecSave:                SetSingle(VK_S,[ssMeta]);
   ecSaveAs:              SetSingle(VK_S,[ssMeta,ssShift]);
   ecSaveAll:             SetSingle(VK_S,[ssMeta,ssAlt]);
-  ecClose:               SetSingle(VK_W,[ssMeta,ssShift]);
+  ecClose:               SetSingle(VK_W,[ssMeta],VK_W,[ssMeta,ssShift]);
   ecCloseAll:            SetSingle(VK_UNKNOWN,[]);
   ecCleanDirectory:      SetSingle(VK_UNKNOWN,[]);
   ecRestart:             SetSingle(VK_UNKNOWN,[]);
