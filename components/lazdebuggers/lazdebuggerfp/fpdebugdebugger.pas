@@ -1904,14 +1904,6 @@ begin
     Exit;
   end;
 
-  if Monitor = nil then exit;
-  if CurrentThreads = nil then exit;
-  if Debugger = nil then Exit;
-  if not (Debugger.State in [dsPause{, dsInternalPause}]) then begin // Make sure we have threads first // this can be removed, once threads are KEPT between pauses
-    CurrentThreads.Clear;
-    exit;
-  end;
-
   WorkItem := TFpThreadWorkerThreads.Create(TFpDebugDebugger(Debugger));
   TFpDebugDebugger(Debugger).FWorkQueue.PushItem(WorkItem);
   FThreadWorkers.Add(WorkItem);
