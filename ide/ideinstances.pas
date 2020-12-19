@@ -37,15 +37,16 @@ unit IDEInstances;
 interface
 
 uses
-  sysutils, Interfaces, Classes, Controls, Forms, Dialogs, ExtCtrls,
-  LCLProc, LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
-  Laz2_DOM, LazarusIDEStrConsts, IDECmdLine, crc,
+  Classes, sysutils, crc, Process,
   {$IF (FPC_FULLVERSION >= 30101)}
-  AdvancedIPC
+  AdvancedIPC,
   {$ELSE}
-  LazAdvancedIPC
+  LazAdvancedIPC,
   {$ENDIF}
-  ;
+  Interfaces, Controls, Forms, Dialogs, ExtCtrls, LCLProc,
+  LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
+  Laz2_DOM, FileUtil, UTF8Process,
+  LazarusIDEStrConsts, IDECmdLine, LazConf;
 
 type
   TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError,
@@ -99,6 +100,8 @@ type
       var outHandleBringToFront: HWND): TStartNewInstanceResult;
   end;
 
+  { TIDEInstances }
+
   TIDEInstances = class(TComponent)
   private
     FMainServer: TMainServer;//running IDE
@@ -126,6 +129,9 @@ type
     function AllowStartNewInstance(const aFiles: TStrings;
       var outModalErrorMessage, outModalErrorForceUniqueMessage, outNotRespondingErrorMessage: string;
       var outHandleBringToFront: HWND): TStartNewInstanceResult;
+
+    function StartUserBuiltIDE: TStartNewInstanceResult;
+
     procedure InitIDEInstances;
   public
     constructor Create(aOwner: TComponent); override;
@@ -352,7 +358,7 @@ begin
   Result := False;
 
   outMessageType := '';
-  SetLength(outParams, 0);
+  SetLength(outParams{%H-}, 0);
   try
     ReadXMLFile(xDOM, aStream, []);
   except
@@ -415,6 +421,116 @@ begin
   end;
 end;
 
+function TIDEInstances.StartUserBuiltIDE: TStartNewInstanceResult;
+// check if this is the standard(nonwritable) IDE and there is a custom built IDE.
+// if yes, start the custom IDE.
+var
+  CustomDir, StartPath, DefaultDir, DefaultExe, CustomExe: String;
+  Params: TStringList;
+  aProcess: TProcessUTF8;
+  CfgParams: TStrings;
+  i: Integer;
+  aPID: SizeUInt;
+  Verbose: Boolean;
+begin
+  Result:=ofrStartNewInstance;
+
+  aPID:=GetProcessID;
+  CfgParams:=GetParamsAndCfgFile;
+
+  Verbose:=(CfgParams.IndexOf('-v')>=0) or (CfgParams.IndexOf('--verbose')>=0);
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE ']);
+
+  if CfgParams.IndexOf(StartedByStartLazarusOpt)>=0 then
+    exit; // startlazarus has started this exe -> do not redirect
+
+  try
+    StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE StartPath=',StartPath]);
+    if FileIsSymlink(StartPath) then
+      StartPath:=GetPhysicalFilename(StartPath,pfeException);
+    DefaultDir:=ExtractFilePath(StartPath);
+    if DirectoryExistsUTF8(DefaultDir) then
+      DefaultDir:=GetPhysicalFilename(DefaultDir,pfeException);
+  except
+    on E: Exception do begin
+      MessageDlg ('Error',E.Message,mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  DefaultDir:=AppendPathDelim(DefaultDir);
+  CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+  if CompareFilenames(DefaultDir,CustomDir)=0 then
+    exit; // this is the user built IDE
+
+  DefaultExe:=DefaultDir+'lazarus'+GetExeExt; // started IDE
+  CustomExe:=CustomDir+'lazarus'+GetExeExt; // user built IDE
+
+  if (not FileExistsUTF8(DefaultExe))
+      or (not FileExistsUTF8(CustomExe)) then
+  begin
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE CustomExe=',CustomExe,' Exits=',FileExistsUTF8(CustomExe)]);
+    exit;
+  end;
+  if FileAgeUTF8(CustomExe)<FileAgeUTF8(DefaultExe) then
+  begin
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
+    exit;
+  end;
+
+  if DirectoryIsWritable(DefaultDir) then
+  begin
+    if Verbose then
+      debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Dir is writable: DefaultDir=',DefaultDir]);
+    exit;
+  end;
+
+  if Verbose then
+    debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE DefaultDir=',DefaultDir,' CustomDir=',CustomDir]);
+
+  // customexe is younger and defaultexe is not writable
+  // => the user started the default binary
+  // -> start the customexe
+  Params:=TStringList.Create;
+  aProcess:=nil;
+  try
+    aProcess := TProcessUTF8.Create(nil);
+    aProcess.InheritHandles := false;
+    aProcess.Options := [];
+    aProcess.ShowWindow := swoShow;
+    {$IFDEF Darwin}
+    if not DirectoryExistsUTF8(CustomExe+'.app') then
+    begin
+      debugln(['Note: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE user IDE is missing the .app folder: ',CustomExe]);
+      exit;
+    end;
+    aProcess.Executable:='/usr/bin/open';
+    Params.Add('-a');
+    CustomExe:=CustomExe+'.app';
+    Params.Add(CustomExe);
+    Params.Add('--args');
+    {$ELSE}
+    aProcess.Executable:=CustomExe;
+    {$ENDIF}
+    // append params, including the lazarus.cfg params
+    for i:=1 to CfgParams.Count-1 do
+      Params.Add(CfgParams[i]);
+    aProcess.Parameters:=Params;
+    debugln(['Note: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
+    aProcess.Execute;
+  finally
+    Params.Free;
+    aProcess.Free;
+  end;
+  Result:=ofrDoNotStart;
+end;
+
 function TIDEInstances.CheckParamsForForceNewInstanceOpt: Boolean;
 var
   I: Integer;
@@ -432,12 +548,27 @@ var
   xModalErrorForceUniqueMessage: string = '';
   xNotRespondingErrorMessage: string = '';
   xHandleBringToFront: HWND = 0;
+  PCP: String;
 begin
   if not FStartIDE then//InitIDEInstances->CollectOtherOpeningFiles decided not to start the IDE
     Exit;
 
+  // set primary config path
+  PCP:=ExtractPrimaryConfigPath(GetParamsAndCfgFile);
+  if PCP<>'' then
+    SetPrimaryConfigPath(PCP);
+
   if not FForceNewInstance then
-    xResult := AllowStartNewInstance(FilesToOpen, xModalErrorMessage, xModalErrorForceUniqueMessage, xNotRespondingErrorMessage, xHandleBringToFront)
+  begin
+    // check for already running instance
+    xResult := AllowStartNewInstance(FilesToOpen, xModalErrorMessage, xModalErrorForceUniqueMessage, xNotRespondingErrorMessage, xHandleBringToFront);
+
+    if xResult=ofrStartNewInstance then
+    begin
+      // check if there is an user built binary
+      xResult := StartUserBuiltIDE;
+    end;
+  end
   else
     xResult := ofrStartNewInstance;
 
@@ -502,7 +633,7 @@ var
     try
       xClient.ServerID := SERVERNAME_COLLECT;
 
-      SetLength(xOutParams, 0);
+      SetLength(xOutParams{%H-}, 0);
       AddFilesToParams(FilesToOpen, xOutParams);
 
       xStream := TMemoryStream.Create;
@@ -662,7 +793,7 @@ begin
   try
     //ask to show prompt
     xStream.Clear;
-    SetLength(xOutParams, 0);
+    SetLength(xOutParams{%H-}, 0);
     TIDEInstances.AddFilesToParams(aFiles, xOutParams);
     TIDEInstances.BuildMessage(MESSAGE_STARTNEWINSTANCE, xOutParams, xStream);
     xStream.Position := 0;
@@ -702,7 +833,7 @@ begin
   xStream := TMemoryStream.Create;
   try
     xStream.Clear;
-    SetLength(xOutParams, 0);
+    SetLength(xOutParams{%H-}, 0);
     TIDEInstances.BuildMessage(MESSAGE_GETOPENEDPROJECT, xOutParams, xStream);
     xStream.Position := 0;
     Self.PostRequest(MESSAGETYPE_XML, xStream);
@@ -768,7 +899,7 @@ begin
     end;
   end;
 
-  SetLength(xParams, 5);
+  SetLength(xParams{%H-}, 5);
   xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, IntToStr(Ord(xResult)));
   xParams[1] := TIDEInstances.MessageParam(PARAM_HANDLEBRINGTOFRONT, IntToStr(xSourceWindowHandle)); // do not use Application.MainFormHandle here - it steals focus from active source editor
   xParams[2] := TIDEInstances.MessageParam(PARAM_MODALERRORMESSAGE, dlgRunningInstanceModalError);
@@ -844,7 +975,7 @@ begin
   if Assigned(FStartNewInstanceEvent) then
     FGetCurrentProjectEvent(xResult);
 
-  SetLength(xParams, 1);
+  SetLength(xParams{%H-}, 1);
   xParams[0] := TIDEInstances.MessageParam(PARAM_RESULT, xResult);
   SimpleResponse(aMsgID, RESPONSE_GETOPENEDPROJECT, xParams);
 end;
