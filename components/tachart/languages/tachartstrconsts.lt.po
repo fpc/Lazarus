@@ -421,6 +421,10 @@ msgstr "Taškas"
 msgid "Polar series"
 msgstr "Polinės sekos"
 
+#: tachartstrconsts.rspolygonseries
+msgid "Polygon series"
+msgstr ""
+
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"

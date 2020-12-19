@@ -423,6 +423,10 @@ msgstr "Точка"
 msgid "Polar series"
 msgstr "Пелюсткова діаграма"
 
+#: tachartstrconsts.rspolygonseries
+msgid "Polygon series"
+msgstr ""
+
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"

@@ -420,6 +420,10 @@ msgstr "Ponto"
 msgid "Polar series"
 msgstr "Série Polar"
 
+#: tachartstrconsts.rspolygonseries
+msgid "Polygon series"
+msgstr ""
+
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"

@@ -421,6 +421,10 @@ msgstr "点"
 msgid "Polar series"
 msgstr "极线系列(Polar)"
 
+#: tachartstrconsts.rspolygonseries
+msgid "Polygon series"
+msgstr ""
+
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"

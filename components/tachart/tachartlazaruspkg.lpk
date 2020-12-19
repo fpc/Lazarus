@@ -30,7 +30,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="54">
+    <Files Count="55">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -266,6 +266,10 @@
         <Filename Value="tadatapointseditor.pas"/>
         <UnitName Value="TADataPointsEditor"/>
       </Item54>
+      <Item55>
+        <Filename Value="tapolygonseries.pas"/>
+        <UnitName Value="TAPolygonSeries"/>
+      </Item55>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
