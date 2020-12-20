@@ -1297,6 +1297,7 @@ var
   ThreadToPause, ThreadSignaled: TDbgLinuxThread;
   Pid: THandle;
   WaitStatus: cint;
+  it: TThreadMapUnLockedEnumerator;
 begin
   if AThread = nil then begin // should not happen... / just assume the most likely safe failbacks
     if FIsTerminating then
@@ -1465,11 +1466,15 @@ begin
     {$ENDIF}
   end;
 
-  for TDbgThread(ThreadToPause) in FThreadMap do begin
+  it := TThreadMapUnLockedEnumerator.Create(FThreadMap); // At this point no other thread (ide-main, ...) can add an iterator to the map
+  it.First;
+  while not it.EOM do begin
+    TDbgThread(ThreadToPause) := it.Current;
     if ThreadToPause.FHasExited then begin
-    Process.RemoveThread(ThreadToPause.ID); // TODO: postpone ?
-    ThreadToPause.Free;
+      Process.RemoveThread(ThreadToPause.ID); // TODO: postpone ?
+      ThreadToPause.Free;
     end;
+    it.Next;
   end;
 
   {$IFDEF DebuglnLinuxDebugEvents}

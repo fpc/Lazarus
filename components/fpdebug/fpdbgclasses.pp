@@ -252,7 +252,18 @@ type
   end;
   TDbgThreadClass = class of TDbgThread;
 
-  { TThreadMapEnumerator }
+  { TThreadMapUnLockedEnumerator }
+
+  TThreadMapUnLockedEnumerator = class(TMapIterator)
+  private
+    FDoneFirst: Boolean;
+    function GetCurrent: TDbgThread;
+  public
+    function MoveNext: Boolean;
+    property Current: TDbgThread read GetCurrent;
+  end;
+
+    { TThreadMapEnumerator }
 
   TThreadMapEnumerator = class(TLockedMapIterator)
   private
@@ -810,6 +821,23 @@ begin
   Result := Count - 1;
   while (Result >= 0) and not (Items[Result].Equals(a)) do
     dec(Result);
+end;
+
+{ TThreadMapUnLockedEnumerator }
+
+function TThreadMapUnLockedEnumerator.GetCurrent: TDbgThread;
+begin
+  GetData(Result);
+end;
+
+function TThreadMapUnLockedEnumerator.MoveNext: Boolean;
+begin
+  if FDoneFirst then
+    Next
+  else
+    First;
+  FDoneFirst := True;
+  Result := not EOM;
 end;
 
 { TThreadMapEnumerator }
