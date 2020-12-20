@@ -210,6 +210,7 @@ begin
   HasDebugLog := False;
   for i := 1 to ParamsAndCfgCount do begin
     Param := ParamsAndCfgStr(i);
+    if Param='' then continue;
     if SysUtils.CompareText(LeftStr(Param, length(DebugLogOpt)), DebugLogOpt) = 0 then
       HasDebugLog := HasDebugLog or (length(Param) > length(DebugLogOpt));
     if (Param=LazarusDebugOpt) and (not HasDebugLog) then begin
