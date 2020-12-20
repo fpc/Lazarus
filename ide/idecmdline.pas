@@ -65,6 +65,7 @@ procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid : Integer;
 function GetCommandLineParameters(aCmdLineParams: TStrings;
             isStartLazarus: Boolean = False) : string;
 function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;
+function ExpandParamFile(const s: string): string;
 
 function IsHelpRequested : Boolean;
 function IsVersionRequested : boolean;
@@ -280,6 +281,19 @@ begin
     GetParam(aCmdLineParams[i],PrimaryConfPathOptLong,Result);
     GetParam(aCmdLineParams[i],PrimaryConfPathOptShort,Result);
   end;
+end;
+
+function ExpandParamFile(const s: string): string;
+var
+  p: string;
+begin
+  Result:=s;
+  for p in [PrimaryConfPathOptLong,SecondaryConfPathOptLong,LazarusDirOpt] do
+    if LeftStr(Result,length(p))=p then
+    begin
+    Result:=LeftStr(Result,length(p))+ExpandFileNameUTF8(copy(Result,length(p)+1,length(Result)));
+    exit;
+    end;
 end;
 
 function IsHelpRequested : Boolean;

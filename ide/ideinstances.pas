@@ -483,6 +483,7 @@ begin
       debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' < Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
     exit;
   end;
+  //debugln(['Debug: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE FileAge: Custom=',CustomExe,':',FileAgeUTF8(CustomExe),' >= Default=',DefaultExe,':',FileAgeUTF8(DefaultExe)]);
 
   if DirectoryIsWritable(DefaultDir) then
   begin
@@ -520,7 +521,7 @@ begin
     {$ENDIF}
     // append params, including the lazarus.cfg params
     for i:=1 to CfgParams.Count-1 do
-      Params.Add(CfgParams[i]);
+      Params.Add(ExpandParamFile(CfgParams[i]));
     aProcess.Parameters:=Params;
     debugln(['Note: (lazarus) ',aPID,' TIDEInstances.StartUserBuiltIDE Starting custom IDE: aProcess.Executable=',aProcess.Executable,' Params=[',Params.Text,']']);
     aProcess.Execute;
