@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
-  TAChartUtils, TADrawUtils, TACustomSeries;
+  TAChartUtils, TADrawUtils, TACustomSeries, TALegend;
 
 type
   TPolygonSeries = class(TBasicPointSeries)
@@ -17,6 +17,9 @@ type
     FStart: array of Integer;
     procedure SetBrush(AValue: TBrush);
     procedure SetPen(AValue: TPen);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -143,6 +146,11 @@ begin
   for i := 0 to High(FStart)-1 do
     ADrawer.Polygon(FPoints, FStart[i], FStart[i+1] - FStart[i]);
 
+end;
+
+procedure TPolygonSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  GetLegendItemsRect(AItems, FBrush, FPen);
 end;
 
 { Is overridden in order to detect tool events inside the polygon (nptCustom).
