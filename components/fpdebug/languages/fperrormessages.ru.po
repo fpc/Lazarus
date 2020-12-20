@@ -20,6 +20,11 @@ msgstr "Невозможно получить доступ к данным, та
 msgid "%1:s"
 msgstr "%1:s"
 
+#: fperrormessages.msgfperrattachprocess
+#, object-pascal-format
+msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+msgstr "Не удалось присоединиться к процессу \"%1:s\".%0:s Сообщение об ошибке: %2:d \"%3:s\". %0:s%4:s"
+
 #: fperrormessages.msgfperrcannotdereferencetype
 #, object-pascal-format
 msgid "Cannot dereference Expression \"%1:s\""
@@ -40,6 +45,11 @@ msgstr "Не удалось записать память по адресу $%1:
 #: fperrormessages.msgfperrchangevariablenotsupported
 msgid "Changing the value of this variable is not supported"
 msgstr "Изменение значения этой переменной не поддерживается"
+
+#: fperrormessages.msgfperrcreateprocess
+#, object-pascal-format
+msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+msgstr "Не удалось запустить процесс \"%1:s\".%0:s Сообщение об ошибке: %2:d \"%3:s\". %0:s%4:s"
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"

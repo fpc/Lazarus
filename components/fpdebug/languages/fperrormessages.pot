@@ -12,7 +12,7 @@ msgstr ""
 
 #: fperrormessages.msgfperrattachprocess
 #, object-pascal-format
-msgid "Failed to attach to process \"%1:s\".%0:s Errormessage: %2:d \"%3:s\". %0:s%4:s"
+msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
 msgstr ""
 
 #: fperrormessages.msgfperrcannotdereferencetype
@@ -38,7 +38,7 @@ msgstr ""
 
 #: fperrormessages.msgfperrcreateprocess
 #, object-pascal-format
-msgid "Failed to start process \"%1:s\".%0:s Errormessage: %2:d \"%3:s\". %0:s%4:s"
+msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
 msgstr ""
 
 #: fperrormessages.msgfperrfailedreadregiseter

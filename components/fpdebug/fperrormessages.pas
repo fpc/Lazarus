@@ -45,8 +45,8 @@ resourcestring
   MsgfpErrLocationParserNoAddressOnStack  = 'Not an address on stack';           // internally used
 
   // 10000 Process/Control errors
-  MsgfpErrCreateProcess = 'Failed to start process "%1:s".%0:s Errormessage: %2:d "%3:s". %0:s%4:s';
-  MsgfpErrAttachProcess = 'Failed to attach to process "%1:s".%0:s Errormessage: %2:d "%3:s". %0:s%4:s';
+  MsgfpErrCreateProcess = 'Failed to start process "%1:s".%0:s Error message: %2:d "%3:s". %0:s%4:s';
+  MsgfpErrAttachProcess = 'Failed to attach to process "%1:s".%0:s Error message: %2:d "%3:s". %0:s%4:s';
 
 const
   fpErrNoError        = TFpErrorCode(0); // not an error
