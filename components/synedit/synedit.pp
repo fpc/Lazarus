@@ -1783,7 +1783,7 @@ begin
   //rmc := (eoRightMouseMovesCursor in AnOptions);
 
   if (emDragDropEditing in AnOptions) then
-    AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], []);
+    AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [ssShift]);
 end;
 
 { THookedCommandHandlerEntry }

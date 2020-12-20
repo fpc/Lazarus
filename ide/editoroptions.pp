@@ -3926,7 +3926,7 @@ begin
 
   if FTextDrag then
     with FSelActions do begin
-      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [], emcoNotDragedNoCaretOnUp);
+      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [ssShift], emcoNotDragedNoCaretOnUp);
     end;
     FTextActions.AddCommand(emcNone, True, mbXLeft, ccSingle, cdUp, [], [], 0, 99);
 end;
