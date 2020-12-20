@@ -1254,23 +1254,23 @@ end;
 
 function TSynHighlighterAttributes.GetBackPriorityStored: Boolean;
 begin
-  Result := FBackPriority = 0;
+  Result := FBackPriority <> 0;
 end;
 
 function TSynHighlighterAttributes.GetForePriorityStored: Boolean;
 begin
-  Result := FForePriority = 0;
+  Result := FForePriority <> 0;
 end;
 
 function TSynHighlighterAttributes.GetFramePriorityStored: Boolean;
 begin
-  Result := FFramePriority = 0;
+  Result := FFramePriority <> 0;
 end;
 
 function TSynHighlighterAttributes.GetStylePriorityStored(AIndex: TFontStyle
   ): Boolean;
 begin
-  Result := FStylePriority[AIndex] = 0;
+  Result := FStylePriority[AIndex] <> 0;
 end;
 
 procedure TSynHighlighterAttributes.AssignFrom(Src: TLazSynCustomTextAttributes);
