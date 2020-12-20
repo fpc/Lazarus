@@ -288,7 +288,9 @@ var
   p: string;
 begin
   Result:=s;
-  for p in [PrimaryConfPathOptLong,SecondaryConfPathOptLong,LazarusDirOpt] do
+  for p in [PrimaryConfPathOptLong,PrimaryConfPathOptShort,
+            SecondaryConfPathOptLong,SecondaryConfPathOptShort,
+            LazarusDirOpt] do
     if LeftStr(Result,length(p))=p then
     begin
     Result:=LeftStr(Result,length(p))+ExpandFileNameUTF8(copy(Result,length(p)+1,length(Result)));
