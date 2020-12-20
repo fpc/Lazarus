@@ -422,7 +422,7 @@ msgstr "Лепестковая диаграмма"
 
 #: tachartstrconsts.rspolygonseries
 msgid "Polygon series"
-msgstr ""
+msgstr "Диаграмма с многоугольниками"
 
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
