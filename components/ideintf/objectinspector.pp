@@ -4623,8 +4623,12 @@ end;
 
 procedure TObjectInspectorDlg.DeleteCompFromList(APersistent: TPersistent);
 begin
-  if FShowComponentTree then
-    ComponentTree.DeleteComponentNode(APersistent)
+  if FShowComponentTree then begin
+    if APersistent=nil then
+      ComponentTree.BuildComponentNodes(True)
+    else
+      ComponentTree.DeleteComponentNode(APersistent);
+  end
   else
     FillPersistentComboBox;
 end;
@@ -4652,7 +4656,6 @@ var
   OldText: AnsiString;
   NewList: TStringList;
 begin
-  DebugLn('TObjectInspectorDlg.FillPersistentComboBox: Updating ComboBox with components');
   Assert(not FUpdatingAvailComboBox,
          'TObjectInspectorDlg.FillPersistentComboBox: Updating Avail ComboBox');
   //if FUpdatingAvailComboBox then exit;

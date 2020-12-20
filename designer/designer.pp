@@ -2989,6 +2989,7 @@ end;
 procedure TDesigner.DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
+  Special: Boolean;
 begin
   if APersistent=nil then exit;
   Include(FFlags, dfDuringDeletePers);
@@ -3012,17 +3013,22 @@ begin
     end;
     // call component deleting handlers
     Hook:=GetPropertyEditorHook;
-    if Hook<>nil then
+    if Assigned(Hook) then
       Hook.PersistentDeleting(APersistent);
+    Special:=(APersistent is TWinControl) and TWinControl(APersistent).IsSpecialSubControl;
     // delete component
     if APersistent is TComponent then
       TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
     else if FreeIt then
       APersistent.Free;
     // call ComponentDeleted handler
-    if Assigned(FOnPersistentDeleted) then
-      FOnPersistentDeleted(Self,APersistent);
-    if Hook<>nil then
+    if Assigned(FOnPersistentDeleted) then begin
+      if Special then // Special treatment is now needed only for TPairSplitterSide.
+        FOnPersistentDeleted(Self,nil)          // Will rebuild whole OI Tree.
+      else
+        FOnPersistentDeleted(Self,APersistent);
+    end;
+    if Assigned(Hook) then
       Hook.PersistentDeleted;
   finally
     // unmark component

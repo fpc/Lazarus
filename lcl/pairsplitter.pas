@@ -191,7 +191,8 @@ begin
   ASplitter := Splitter;
   if ASplitter <> nil then begin
     ASplitter.RemoveSide(Self);
-    DeletingSplitter := (csDestroying in ASplitter.ComponentState) or DesignerDeleting;
+    DeletingSplitter := (csDestroying in ASplitter.ComponentState)
+                     or (wcfDesignerDeleting in FWinControlFlags);
   end
   else
     DeletingSplitter := False;
@@ -238,6 +239,8 @@ begin
   inherited Create(TheOwner);
   FCompStyle := csPairSplitterSide;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  // A flag custom made for TPairSplitterSide.
+  Include(FWinControlFlags, wcfSpecialSubControl);
 end;
 
 destructor TPairSplitterSide.Destroy;
@@ -334,7 +337,7 @@ begin
     end;
   // if the user deletes a side at designtime, autocreate a new one
   if (ComponentState * [csDesigning,csDestroying] = [csDesigning])
-  and not DesignerDeleting then
+  and not (wcfDesignerDeleting in FWinControlFlags) then
     CreateSides;
 end;
 

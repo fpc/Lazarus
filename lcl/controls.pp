@@ -1946,7 +1946,9 @@ type
     wcfUpdateShowing,
     wcfHandleVisible,
     wcfAdjustedLogicalClientRectValid,
-    wcfKillIntfSetBounds
+    wcfKillIntfSetBounds,
+    wcfDesignerDeleting,     // Only used for PairSplitter which should be redesigned
+    wcfSpecialSubControl     // Only set by PairSplitterSide
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -2032,7 +2034,6 @@ type
     FShowing: Boolean;
     FDockSite: Boolean;
     FUseDockManager: Boolean;
-    FDesignerDeleting: Boolean;
     procedure AlignControl(AControl: TControl);
     function DoubleBufferedIsStored: Boolean;
     function GetBrush: TBrush;
@@ -2042,9 +2043,11 @@ type
     function GetDockClients(Index: Integer): TControl;
     function GetHandle: HWND;
     function GetIsResizing: boolean;
+    function GetIsSpecialSubControl: Boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
     procedure SetChildSizing(const AValue: TControlChildSizing);
+    procedure SetDesignerDeleting(AValue: Boolean);
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetDoubleBuffered(Value: Boolean);
     procedure SetHandle(NewHandle: HWND);
@@ -2274,7 +2277,8 @@ type
     property Showing: Boolean read FShowing; // handle visible
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
-    property DesignerDeleting: Boolean read FDesignerDeleting write FDesignerDeleting;
+    property DesignerDeleting: Boolean write SetDesignerDeleting;
+    property IsSpecialSubControl: Boolean read GetIsSpecialSubControl;
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds

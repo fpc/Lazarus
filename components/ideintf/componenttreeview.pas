@@ -47,16 +47,13 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FRootNode: TTreeNode;
     FDrawWholeTree: Boolean;
-    // A Component (Persistent) to be moved or deleted based on FZOrderDelete value.
-    FPersToChange: TPersistent;
-    FZOrderDelete: TZOrderDelete;
     // Events
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
     function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
       ACapt: String): TTreeNode;
     procedure AddChildren(AComponent: TComponent);
-    procedure ChangeNode(ANode: TTreeNode);
+    function FindAndChange(APers: TPersistent; ZOrderDel: TZOrderDelete): Boolean;
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
@@ -212,15 +209,18 @@ var
   TVNode: TTreeNode;
   TheRoot: TPersistent;
 begin
-  if (APers is TComponent)
-  and (csDestroying in TComponent(APers).ComponentState) then Exit;
+  if (APers is TComponent) then
+    Assert(not (csDestroying in TComponent(APers).ComponentState), 'TComponentWalker: Comp is Destroying.');
   TheRoot := GetLookupRootForComponent(APers);
   {$IFDEF VerboseComponentTVWalker}
   DebugLn(['TComponentWalker.AddOwnedPersistent'+
            ' PropName=',APropName,' Persistent=',DbgSName(APers),
            ' its root=',DbgSName(TheRoot),' FLookupRoot=',DbgSName(FLookupRoot)]);
   {$ENDIF}
-  if TheRoot <> FLookupRoot then Exit;
+  if TheRoot <> FLookupRoot then begin
+    DebugLn(['TComponentWalker.AddOwnedPersistent: TheRoot "', TheRoot, '" <> FLookupRoot "', FLookupRoot, '"']);
+    Exit;
+  end;
   TVNode := FCompTV.AddOrGetPersNode(AParentNode, APers, CreateNodeCaption(APers, APropName));
   if APers is TCollection then
     AddCollection(TCollection(APers), TVNode);
@@ -261,8 +261,14 @@ var
   OldNode: TTreeNode;
   Root: TComponent;
 begin
-  if csDestroying in AComponent.ComponentState then exit;
-  if GetLookupRootForComponent(AComponent) <> FLookupRoot then Exit;
+  if csDestroying in AComponent.ComponentState then begin
+    DebugLn(['TComponentWalker.Walk: ', AComponent, ' is Destroying.']);
+    Exit;
+  end;
+  if GetLookupRootForComponent(AComponent) <> FLookupRoot then begin
+    DebugLn(['TComponentWalker.Walk: "', AComponent, '" LookupRoot <> FLookupRoot "', FLookupRoot, '"']);
+    Exit;
+  end;
   OldNode := FNode;
   FNode := FCompTV.AddOrGetPersNode(FNode, AComponent, ComponentCaption(AComponent));
   GetOwnedPersistents(AComponent, FNode);
@@ -631,37 +637,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TComponentTreeView.ChangeNode(ANode: TTreeNode);
-// A node matching FPersToChange was found. Change its ZOrder or delete it.
-var
-  Neighbor: TTreeNode;
-begin
-  case FZOrderDelete of
-    zoToFront: begin         // Front means the last sibling.
-      Neighbor := ANode.GetLastSibling;
-      if Assigned(Neighbor) then
-        ANode.MoveTo(Neighbor, naInsertBehind);
-    end;
-    zoToBack: begin          // Back means the first sibling.
-      Neighbor := ANode.GetFirstSibling;
-      if Assigned(Neighbor) then
-        ANode.MoveTo(Neighbor, naInsert);
-    end;
-    zoForward: begin         // Towards the end.
-      Neighbor := ANode.GetNextSibling;
-      if Assigned(Neighbor) then
-        ANode.MoveTo(Neighbor, naInsertBehind);
-    end;
-    zoBackward: begin        // Towards the beginning.
-      Neighbor := ANode.GetPrevSibling;
-      if Assigned(Neighbor) then
-        ANode.MoveTo(Neighbor, naInsert);
-    end;
-    zoDelete: ANode.Delete;  // Delete the node
-  end;
-  FPersToChange := nil;      // No need to search again in the next round.
-end;
-
 function TComponentTreeView.AddOrGetPersNode(AParentNode: TTreeNode;
   APers: TPersistent; ACapt: String): TTreeNode;
 var
@@ -671,15 +646,6 @@ begin
   begin
     if AParentNode = nil then
       Exit(Items.GetFirstNode);   // Return existing root node.
-    // Search for a node to change.
-    if Assigned(FPersToChange) then
-    begin
-      xNode := AParentNode.GetFirstChild;
-      while (xNode<>nil) and (TObject(xNode.Data)<>FPersToChange) do
-        xNode := xNode.GetNextSibling;
-      if Assigned(xNode) then
-        ChangeNode(xNode);
-    end;
     // Search for an existing valid node.
     xNode := AParentNode.GetFirstChild;
     while (xNode<>nil) and (TObject(xNode.Data)<>APers) do
@@ -741,19 +707,76 @@ begin
   EndUpdate;
 end;
 
+function TComponentTreeView.FindAndChange(APers: TPersistent;
+  ZOrderDel: TZOrderDelete): Boolean;
+// APers is Component to be moved or deleted based on ZOrderDel value.
+
+  procedure ChangeNode(ANode: TTreeNode);
+  // Change ZOrder of the given node or delete it.
+  var
+    Neighbor: TTreeNode;
+  begin
+    case ZOrderDel of
+      zoToFront: begin              // Front means the last sibling.
+        Neighbor := ANode.GetLastSibling;
+        if Assigned(Neighbor) then
+          ANode.MoveTo(Neighbor, naInsertBehind);
+      end;
+      zoToBack: begin               // Back means the first sibling.
+        Neighbor := ANode.GetFirstSibling;
+        if Assigned(Neighbor) then
+          ANode.MoveTo(Neighbor, naInsert);
+      end;
+      zoForward: begin              // Towards the end.
+        Neighbor := ANode.GetNextSibling;
+        if Assigned(Neighbor) then
+          ANode.MoveTo(Neighbor, naInsertBehind);
+      end;
+      zoBackward: begin             // Towards the beginning.
+        Neighbor := ANode.GetPrevSibling;
+        if Assigned(Neighbor) then
+          ANode.MoveTo(Neighbor, naInsert);
+      end;
+      zoDelete: ANode.Delete;       // Delete the node
+    end;
+  end;
+
+  function IterateTree(ANode: TTreeNode): Boolean;
+  begin
+    if TObject(ANode.Data)=APers then
+    begin
+      ChangeNode(ANode);
+      Exit(True);                   // Found and changed.
+    end;
+    ANode := ANode.GetFirstChild;
+    while ANode<>nil do
+    begin
+      Result := IterateTree(ANode); // Recursive call.
+      if Result then Exit;          // Found in a child item. Don't search more.
+      ANode := ANode.GetNextSibling;
+    end;
+    Result := False;
+  end;
+
+begin
+  // Search for a node to change.
+  Assert(Assigned(APers), 'TComponentTreeView.FindAndChangeItem: APers=Nil.');
+  Assert(Items.GetFirstNode.GetNextSibling=Nil,
+         'TComponentTreeView.FindAndChange: Top node has siblings.');
+  Result := IterateTree(Items.GetFirstNode);
+end;
+
 procedure TComponentTreeView.ChangeCompZOrder(APersistent: TPersistent;
   AZOrder: TZOrderDelete);
 begin
-  FPersToChange := APersistent;
-  FZOrderDelete := AZOrder;
-  BuildComponentNodes(False);
+  if not FindAndChange(APersistent, AZOrder) then
+    DebugLn(['TComponentTreeView.ChangeCompZOrder failed.']);
 end;
 
 procedure TComponentTreeView.DeleteComponentNode(APersistent: TPersistent);
 begin
-  FPersToChange := APersistent;
-  FZOrderDelete := zoDelete;
-  BuildComponentNodes(False);
+  if not FindAndChange(APersistent, zoDelete) then
+    DebugLn(['TComponentTreeView.DeleteComponentNode failed.']);
 end;
 
 procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);
