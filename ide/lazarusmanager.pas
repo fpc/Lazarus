@@ -372,11 +372,7 @@ begin
       {$IFDEF darwin}
       if DirectoryExistsUTF8(FLazarusPath+'.app') then begin
         // start the bundle instead
-        {$IFDEF LCLCocoa}
-        FLazarusPath:= FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
-        {$ELSE}
         FLazarusPath:= FLazarusPath+'.app';// /Contents/MacOS/'+ExtractFileName(FLazarusPath);
-        {$ENDIF}
       end;
       {$ENDIF}
 
@@ -415,6 +411,7 @@ begin
       // clear the command line files, so that they are passed only once.
       FCmdLineFiles:='';
       FLazarusProcess.OnStart := @LazarusProcessStart;
+      DebugLn(['Info: (startlazarus) [TLazarusManager.Run] exe',FLazarusProcess.Process.Executable,' Params=[',FLazarusProcess.Process.Parameters.Text,']']);
       FLazarusProcess.Execute;
       FLazarusProcess.WaitOnExit;
       Restart := FLazarusProcess.WantsRestart;
