@@ -1476,6 +1476,7 @@ begin
     end;
     it.Next;
   end;
+  it.Free;
 
   {$IFDEF DebuglnLinuxDebugEvents}
   for TDbgThread(ThreadToPause) in FThreadMap do
