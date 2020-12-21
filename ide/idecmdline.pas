@@ -285,13 +285,17 @@ begin
 end;
 
 function ExpandParamFile(const s: string): string;
+const
+  a: array[1..5] of string = (
+    PrimaryConfPathOptLong,PrimaryConfPathOptShort,
+    SecondaryConfPathOptLong,SecondaryConfPathOptShort,
+    LazarusDirOpt
+  );
 var
   p: string;
 begin
   Result:=s;
-  for p in [PrimaryConfPathOptLong,PrimaryConfPathOptShort,
-            SecondaryConfPathOptLong,SecondaryConfPathOptShort,
-            LazarusDirOpt] do
+  for p in a do
     if LeftStr(Result,length(p))=p then
     begin
     Result:=LeftStr(Result,length(p))+ExpandFileNameUTF8(copy(Result,length(p)+1,length(Result)));
