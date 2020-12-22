@@ -421,7 +421,7 @@ begin  { do not call inherited ! }
     end;
   anyRect.Top:=(ARect.Top+ARect.Bottom-FTextHeight) div 2;
   anyRect.Bottom:=anyRect.Top+FTextHeight;
-  ThemeServices.DrawText(Canvas, aDetail, ItemsEx[Index].Caption, anyRect, aFlags, 0);
+  DrawText(Canvas.Handle, PChar(ItemsEx[Index].Caption), Length(ItemsEx[Index].Caption), anyRect, aFlags);
 end;
 
 procedure TCustomComboBoxEx.FontChanged(Sender: TObject);
@@ -682,7 +682,7 @@ begin  { do not call inherited ! }
     end;
   anyRect.Top:=(ARect.Top+ARect.Bottom-FTextHeight) div 2;
   anyRect.Bottom:=anyRect.Top+FTextHeight;
-  ThemeServices.DrawText(Canvas, aDetail, Items[Index], anyRect, aFlags, 0);
+  DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]), anyRect, aFlags);
 end;
 
 procedure TCustomCheckCombo.DropDown;
