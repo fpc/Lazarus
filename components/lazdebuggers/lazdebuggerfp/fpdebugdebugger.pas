@@ -582,6 +582,8 @@ type
     function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
       CurAddr: TDBGPtr = 0): TDBGPtr;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
+    procedure StopAllWorkers;
+    function IsPausedAndValid: boolean; // ready for eval watches/stack....
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -1864,6 +1866,7 @@ begin
   if Monitor = nil then exit;
   if CurrentThreads = nil then exit;
   if Debugger = nil then Exit;
+  if not TFpDebugDebugger(Debugger).IsPausedAndValid then exit;
 
   CurrentThreads.Clear;
 
@@ -2243,8 +2246,7 @@ procedure TFPCallStackSupplier.RequestAtLeastCount(ACallstack: TCallStackBase;
 var
   WorkItem: TFpThreadWorkerCallStackCount;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
-  then begin
+  if not FpDebugger.IsPausedAndValid then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
@@ -2266,6 +2268,13 @@ begin
   if not It.Locate(ACallstack.LowestUnknown )
   then if not It.EOM
   then It.Next;
+
+  if not FpDebugger.IsPausedAndValid then begin
+    while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown) do
+      TCallStackEntry(It.DataPtr^).Validity := ddsInvalid;
+    It.Free;
+    exit;
+  end;
 
   if not FpDebugger.FDbgController.CurrentProcess.GetThread(ACallstack.ThreadId, t) then
     t := nil;
@@ -2354,10 +2363,7 @@ var
   AController: TDbgController;
   WorkItem: TFpThreadWorkerLocals;
 begin
-  AController := FpDebugger.FDbgController;
-  if (AController = nil) or (AController.CurrentProcess = nil) or
-     (AController.CurrentProcess.DbgInfo = nil)
-  then begin
+  if not FpDebugger.IsPausedAndValid then begin
     ALocals.SetDataValidity(ddsInvalid);
     exit;
   end;
@@ -2764,8 +2770,10 @@ var
   thr: TDbgThread;
   frm: TDbgCallstackEntry;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause, dsStop]) then
+  if not TFpDebugDebugger(Debugger).IsPausedAndValid then begin
+    ARegisters.DataValidity:=ddsInvalid;
     exit;
+  end;
 
   if not TFpDebugDebugger(Debugger).FDbgController.MainProcess.GetThread(ARegisters.ThreadId, thr) then begin
     ARegisters.DataValidity:=ddsError;
@@ -2919,6 +2927,11 @@ procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
 var
   WorkItem: TFpThreadWorkerWatchValueEval;
 begin
+  if not FpDebugger.IsPausedAndValid then begin
+    AWatchValue.Validity := ddsInvalid;
+    exit;
+  end;
+
   WorkItem := TFpThreadWorkerWatchValueEval.Create(FpDebugger, AWatchValue);
   FpDebugger.FWorkQueue.PushItem(WorkItem);
   FWatchEvalWorkers.Add(WorkItem);
@@ -3498,6 +3511,7 @@ begin
   try
     SetState(dsStop);
     FExceptionStepper.DoDbgStopped;
+    StopAllWorkers;
     FreeDebugThread;
   finally
     UnlockRelease;
@@ -4553,6 +4567,28 @@ begin
     Result := FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
 end;
 
+procedure TFpDebugDebugger.StopAllWorkers;
+begin
+  TFPThreads(Threads).StopWorkes;
+  TFPCallStackSupplier(CallStack).StopWorkes;
+  TFPWatches(Watches).StopWorkes;
+  TFPLocals(Locals).StopWorkes;
+  if FEvalWorkItem <> nil then begin
+    FEvalWorkItem.Abort;
+    FEvalWorkItem.DecRef;
+  end;
+end;
+
+function TFpDebugDebugger.IsPausedAndValid: boolean;
+begin
+  Result := False;
+  if self = nil then
+    exit;
+  Result := (State in [dsPause, dsInternalPause]) and
+            (FDbgController <> nil) and
+            (FDbgController.CurrentProcess <> nil);
+end;
+
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
@@ -4584,20 +4620,14 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
-  TFPThreads(Threads).StopWorkes;
-  TFPCallStackSupplier(CallStack).StopWorkes;
-  TFPWatches(Watches).StopWorkes;
-  TFPLocals(Locals).StopWorkes;
-  if FEvalWorkItem <> nil then begin
-    FEvalWorkItem.Abort;
-    FEvalWorkItem.DecRef;
-  end;
+  StopAllWorkers;
 
   if state in [dsPause, dsInternalPause] then
     try
       SetState(dsStop);
     except
     end;
+  StopAllWorkers; // In case state change added workes
 
   Application.RemoveAsyncCalls(Self);
   FreeAndNil(FDbgController);
