@@ -796,7 +796,7 @@ begin
   s:=MakeExeComboBox.Text;
   if s<>'' then
     EnvironmentOptions.MakeFilename:=s;
-  if not (FSkipDebugger and (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil))
+  if not FSkipDebugger and (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil)
   then begin
     s:=DebuggerComboBox.Text;
     if s<>'' then begin
