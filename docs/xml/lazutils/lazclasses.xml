@@ -1,225 +1,274 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+      ====================================================================
+        LazClasses
+      ====================================================================
+    -->
+    <module name="LazClasses">
+      <short>Contains classes and routines used to implement free notifications</short>
+      <descr></descr>
 
-<!--
-  ====================================================================
-    LazClasses
-  ====================================================================
--->
+      <!-- unresolved external references -->
+      <element name="SysUtils"/>
+      <element name="Classes"/>
+      <element name="LazMethodList"/>
 
-<module name="LazClasses">
-<short></short>
-<descr>
-</descr>
+      <element name="TFreeNotifyingObject">
+        <short>Base class used to implement objects which perform free notifications</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TFreeNotifyingObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TFreeNotifyingObject.FFreeNotificationList">
+        <short>List of notification methods called when the object is freed</short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TFreeNotifyingObject.FFreeNotificationList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TFreeNotifyingObject.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- constructor Visibility: public -->
-<element name="TFreeNotifyingObject.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TFreeNotifyingObject.AddFreeNotification">
+        <short>Adds the specified method to the notification list in the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeNotifyingObject.AddFreeNotification.ANotification">
+        <short>The notification event handler added to the internal list</short>
+      </element>
 
-<!-- destructor Visibility: public -->
-<element name="TFreeNotifyingObject.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TFreeNotifyingObject.RemoveFreeNotification">
+        <short>Removes the specified method from the internal list</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFreeNotifyingObject.RemoveFreeNotification.ANotification">
+        <short>The notification event handler removed form the internal list</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TFreeNotifyingObject.AddFreeeNotification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject">
+        <short>Implements a thread-safe reference-counted class which performs free notifications</short>
+        <descr>
+          <p>
+            Used in the implementation of logging classes and the debugger interface in Lazarus. Also used in the implementation of classes for TSynEdit.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TFreeNotifyingObject.AddFreeeNotification.ANotification">
-<short></short>
-</element>
+      <element name="TRefCountedObject.FRefCount">
+        <short/>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TFreeNotifyingObject.RemoveFreeeNotification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.FIncDecRefCount">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TFreeNotifyingObject.RemoveFreeeNotification.ANotification">
-<short></short>
-</element>
+      <element name="TRefCountedObject.FDebugNext">
+        <short/>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TRefCountedObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.FDebugPrev">
+        <short/>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TRefCountedObject.FRefCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.FDebugList">
+        <short/>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TRefCountedObject.DoFree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.FCritSect">
+        <short/>
+      </element>
 
-<!-- property Visibility: protected -->
-<element name="TRefCountedObject.RefCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.FInDestroy">
+        <short/>
+      </element>
 
-<!-- constructor Visibility: public -->
-<element name="TRefCountedObject.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.DbgAddName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TRefCountedObject.DbgAddName.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.DbgAddName.DebugIdTxt">
+        <short/>
+      </element>
 
-<!-- destructor Visibility: public -->
-<element name="TRefCountedObject.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.DbgRemoveName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TRefCountedObject.DbgRemoveName.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.DbgRemoveName.DebugIdTxt">
+        <short/>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TRefCountedObject.AddReference">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.DoFree">
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TRefCountedObject.ReleaseReference">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.DoReferenceAdded">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TRefCntObjList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.DoReferenceReleased">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TRefCntObjList.Notify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.RefCount">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TRefCntObjList.Notify.Ptr">
-<short></short>
-</element>
+      <element name="TRefCountedObject.Create">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TRefCntObjList.Notify.Action">
-<short></short>
-</element>
+      <element name="TRefCountedObject.Destroy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
-<!-- procedure Visibility: default -->
-<element name="ReleaseRefAndNil">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <element name="TRefCountedObject.AddReference">
+        <short/>
+        <descr>
+          <p>
+            AddReference and ReleaseReference can be used in threads. However a thread can only call the
+            methods, if either:
+          </p>
+          <ul>
+            <li>The thread already holds a refernce (and no other thread will release that reference).</li>
+            <li>The thread created the reference, and no other thread has access to the object (yet).</li>
+            <li>
+              The thread is in a critical section, preventing other threads from decreasing the reference
+              count.
+            </li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TRefCountedObject.AddReference.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.AddReference.DebugIdTxt">
+        <short/>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="ReleaseRefAndNil.ARefCountedObject">
-<short></short>
-</element>
+      <element name="TRefCountedObject.ReleaseReference">
+        <short/>
+        <descr>
+          <p>
+            AddReference and ReleaseReference can be used in threads. However a thread can only call the
+            methods, if either:
+          </p>
+          <ul>
+            <li>The thread already holds a refernce (and no other thread will release that reference).</li>
+            <li>The thread created the reference, and no other thread has access to the object (yet).</li>
+            <li>
+              The thread is in a critical section, preventing other threads from decreasing the reference
+              count.
+            </li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TRefCountedObject.ReleaseReference.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.ReleaseReference.DebugIdTxt">
+        <short/>
+      </element>
 
-</module> <!-- LazClasses -->
+      <element name="TRefCountedObject.DbgRenameReference">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TRefCountedObject.DbgRenameReference.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.DbgRenameReference.DebugIdTxt">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.DbgRenameReference.OldDebugIdAdr">
+        <short/>
+      </element>
+      <element name="TRefCountedObject.DbgRenameReference.OldDebugIdTxt">
+        <short/>
+      </element>
 
-</package>
+      <element name="TRefCntObjList">
+        <short>Implements a list used to store TRefCountedObject instances</short>
+        <descr>
+          <p>
+            Provides a <var>Notify</var> method which executes the notification methods for each reference-counted object in the list.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TRefCntObjList.Notify">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TRefCntObjList.Notify.Ptr">
+        <short/>
+      </element>
+      <element name="TRefCntObjList.Notify.Action">
+        <short/>
+      </element>
+
+      <element name="ReleaseRefAndNil">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ReleaseRefAndNil.ARefCountedObject">
+        <short/>
+      </element>
+      <element name="ReleaseRefAndNil.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="ReleaseRefAndNil.DebugIdTxt">
+        <short/>
+      </element>
+
+      <element name="NilThenReleaseRef">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="NilThenReleaseRef.ARefCountedObject">
+        <short/>
+      </element>
+      <element name="NilThenReleaseRef.DebugIdAdr">
+        <short/>
+      </element>
+      <element name="NilThenReleaseRef.DebugIdTxt">
+        <short/>
+      </element>
+
+    </module>
+    <!-- LazClasses -->
+  </package>
 </fpdoc-descriptions>

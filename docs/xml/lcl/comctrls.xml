@@ -1066,14 +1066,18 @@
       </element>
 
       <element name="TCustomPage">
-        <short>
-          <var>TCustomPage</var>: The base type for <var>Page</var>
-        </short>
+        <short>The base class for TTabSheet</short>
         <descr>
-          <var>TCustomPage</var>: The base type for the tabbed pages found in notebooks.
+          <p>
+            <var>TCustomPage</var> is a <var>TWinControl</var> descendant which implements the base class for the tabbed pages found in notebooks. TCustomPage provides properties used to maintain the order and visibility of the page, and event handlers signalled when the page is hidden or displayed.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="TTabSheet"/>
+          <link id="TPageControl"/>
+          <link id="TCustomTabControl.Page"/>
+          <link id="TCustomTabControl.ActivePageComponent"/>
         </seealso>
       </element>
 
@@ -1135,8 +1139,15 @@
         <short>
           Contains flag values that represent the status or state for the handle in the custom page control
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Values in <var>Flags</var> are normally added or removed when changes are performed in a control which uses the page control class instance. See <var>TPageFlag</var> for more information about enumeration values and their meanings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPageFlags"/>
+          <link id="TPageFlag"/>
+        </seealso>
       </element>
 
       <element name="TCustomPage.CMHitTest" link="#LCL.Controls.TControl.CMHitTest">
@@ -1148,7 +1159,7 @@
         <short/>
       </element>
 
-      <element name="TCustomPage.CMVisibleChanged">
+      <element name="TCustomPage.CMVisibleChanged" link="#lcl.controls.TWinControl.CMVisibleChanged">
         <short/>
         <descr/>
         <seealso/>
@@ -1158,23 +1169,25 @@
       </element>
 
       <element name="TCustomPage.GetPageIndex">
-        <short>
-          <var>GetPageIndex</var> - returns the index of the current page</short>
+        <short>Gets the value for the PageIndex property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPage.PageIndex"/>
+        </seealso>
       </element>
       <element name="TCustomPage.GetPageIndex.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TCustomPage.SetPageIndex">
-        <short>
-          <var>SetPageIndex</var> - specifies an index for the current page</short>
+        <short>Sets the value for the PageIndex property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPage.PageIndex"/>
+        </seealso>
       </element>
       <element name="TCustomPage.SetPageIndex.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomPage.GetTabVisible">
@@ -1193,7 +1206,9 @@
           Provides support for TCustomTabControl as parent when handling dialog accelerator keys
         </short>
         <descr>
-          Calls the inherited DoalogChar method when Parent is not derived from TCustomTabControl.
+          <p>
+            Calls the inherited DialogChar method when Parent is not derived from TCustomTabControl.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1219,9 +1234,7 @@
       </element>
 
       <element name="TCustomPage.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
-        <short>
-          Removes values in the Flags property when the handle for the control is freed
-          </short>
+        <short>Updates the Flags property when the handle for the control is freed</short>
         <descr/>
         <seealso/>
       </element>
@@ -1236,24 +1249,30 @@
       </element>
 
       <element name="TCustomPage.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initializes style, visibility, alignment and caption</short>
-        <descr/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for <var>TCustomPage</var>.
+          </p>
+          <p>
+            Create calls the inherited constructor on entry and sets the default value for the style, visibility, alignment and caption in the class instance.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.Create">TControl.Create</link>
+          <link id="#lcl.controls.TWinControl.Create"/>
         </seealso>
       </element>
       <element name="TCustomPage.Create.TheOwner">
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TCustomPage.CanTab" link="#LCL.Controls.TControl.CanTab"/>
+      <element name="TCustomPage.CanTab" link="#lcl.controls.TWinControl.CanTab"/>
       <element name="TCustomPage.CanTab.Result"/>
 
       <element name="TCustomPage.IsControlVisible" link="#lcl.Controls.TControl.IsControlVisible"/>
       <element name="TCustomPage.IsControlVisible.Result"/>
 
-      <element name="TCustomPage.HandleObjectShouldBeVisible" link="#LCL.Controls.TControl.HandleObjectShouldBeVisible">
+      <element name="TCustomPage.HandleObjectShouldBeVisible" link="#lcl.controls.TControl.HandleObjectShouldBeVisible">
         <short/>
         <descr/>
         <seealso/>
@@ -1294,14 +1313,19 @@
       </element>
 
       <element name="TCustomPage.PageIndex">
-        <short>
-          <var>PageIndex </var>- integer index value for this page in the notebook</short>
+        <short>Ordinal position for the page in the parent control</short>
+        <descr>
+          <p>
+            <var>PageIndex</var> is an Integer property which contains the ordinal position for the page control in a <var>Parent</var> control. Setting a new value for the property causes the Parent control to call its <var>MoveTab</var> method to reorder the pages on the control. This action is performed when Parent is descended from <var>TCustomTabControl</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTabControl"/>
+        </seealso>
       </element>
 
       <element name="TCustomPage.TabVisible">
-        <short>
-        Indicates if the tab in the Parent control should be visible
-        </short>
+        <short>Indicates if the tab in the Parent control should be visible</short>
         <descr>
           <p>
             <var>TabVisible</var> indicates if the Tab in the <var>Parent</var> control is visible.
@@ -2176,7 +2200,17 @@
 
       <element name="TCustomTabControl.ShowCurrentPage">
         <short>Ensures that the current page has its Visible property set to True</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ShowCurrentPage</var> checks the value in <var>PageIndex</var> to determine if a valid page index has been specified. No actions are performed in the method when PageIndex is less than <b>0</b> or greater than <b>PageCount - 1</b>.
+          </p>
+          <p>
+            ShowCurrentPage gets the <var>TCustomPage</var> instance in <var>Page</var> at the position in <var>PageIndex</var>, and sets its <var>Visible</var> property to <b>True</b>. If the Page is Enabled, it <var>SetFocus</var> method is called.
+          </p>
+          <p>
+            ShowCurrentPage sets the Visible property in the previously selected Page to <b>False</b>.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -2695,8 +2729,18 @@
       </element>
 
       <element name="TCustomTabControl.TabToPageIndex">
-        <short/>
-        <descr/>
+        <short>Gets the real page index for the specified tab</short>
+        <descr>
+          <p>
+            <var>TabToPageIndex</var> is an <var>Integer</var> function used to get the page index for the tab at the specified position.  The tab index value in <var>AIndex</var> does not include any non-visible tabs. TabToPageIndex adjusts the index value to include any <var>TCustomPage</var> instances in <var>Page</var> with its <var>TabVisible</var> property set to <b>False</b>.
+          </p>
+          <p>
+            The return value contains the value specified in AIndex after adding any non-visible pages proper to the requested position.
+          </p>
+          <p>
+            No actions are performed in the method at design-time; all pages are visible on the designer surface.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTabControl.TabToPageIndex.Result">
@@ -2848,7 +2892,7 @@
       </element>
 
       <element name="TCustomTabControl.Pages">
-        <short>The contents of the <var>Pages</var> in the Notebook (as Strings)</short>
+        <short>The list of page names in the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -17923,28 +17967,8 @@
         </short>
         <descr>
           <p>
-            <var>TTreeViewState</var> - enumerated type containing the permissible values for state of a <var>TTreeView</var>
+            <var>TTreeViewState</var> is an enumerated type containing the permissible state values for <var>TTreeView</var>.
           </p>
-          <pre>tvsScrollbarChanged,
-            tvsMaxRightNeedsUpdate,
-            tvsTopsNeedsUpdate,
-            tvsMaxLvlNeedsUpdate,
-            tvsTopItemNeedsUpdate,
-            tvsBottomItemNeedsUpdate,
-            tvsCanvasChanged,
-            tvsDragged,
-            tvsIsEditing,
-            tvsStateChanging,
-            tvsManualNotify,
-            tvsUpdating,
-            tvsPainting,
-            tvsMouseCapture,
-            tvsWaitForDragging,
-            tvsDblClicked,
-            tvsTripleClicked,
-            tvsQuadClicked,
-            tvsSelectionChanged
-          </pre>
         </descr>
         <seealso/>
       </element>
@@ -18119,19 +18143,22 @@
           <p>
             A series of defaults used to set the options of a TreeView object when first placed on a form. This set consists of the following items:
           </p>
-          <pre>
-            tvoShowRoot,
-            tvoShowLines,
-            tvoShowButtons,
-            tvoHideSelection,
-            tvoToolTips,
-            tvoKeepCollapsedNodes,
-            tvoAutoItemHeight
-          </pre>
+          <ul>
+            <li>tvoShowRoot</li>
+            <li>tvoShowLines</li>
+            <li>tvoShowButtons</li>
+            <li>tvoHideSelection</li>
+            <li>tvoToolTips</li>
+            <li>tvoKeepCollapsedNodes</li>
+            <li>tvoAutoItemHeight</li>
+          </ul>
           <p>
             For the meaning of these options, see the documentation of <var>TTreeView</var>.
           </p>
         </descr>
+        <seealso>
+          <link id="TTreeView"/>
+        </seealso>
       </element>
 
       <element name="DefaultMultiSelectStyle">
@@ -18192,25 +18219,19 @@
 
       <element name="TCustomTreeView">
         <short>
-          <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>
+          Ancestor class for <var>TTreeView</var>
         </short>
         <descr>
           <p>
-            <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>,
-            which displays a collection of items in a hierarchical tree form.
-            This class defines many properties which are inherited by children classes,
-            including loading the data from files or streams, saving to files or streams,
-            updating, sorting alphabetically, editing, making visible or invisible, expanding
-            or collapsing the tree display, and many more.
+            <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by descendent classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.
           </p>
           <p>
-            Please note that Accessibility support in TCustomTreeView might make this control
-            slower if there is a very large number of items, for example, 10.000+ items.
-            If the performance impact is unacceptable it is possible to turn accessibility
-            off for tree view items by setting TCustomTreeView.AccessibilityOn to false.
-            The default value is true.
+            Please note that Accessibility support in TCustomTreeView might make this control slower if there are a very large number of items, for example: 10,000+ items. If the performance impact is unacceptable, it is possible to turn accessibility off for tree view items by setting the <var>AccessibilityOn</var> property to <b>False</b>. The default value is <b>True</b>.
           </p>
         </descr>
+        <seealso>
+          <link id="TTreeView"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.FAccessibilityOn"/>

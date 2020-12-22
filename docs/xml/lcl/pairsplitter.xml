@@ -40,13 +40,11 @@
         </short>
         <descr>
           <p>
-            <var>TPairSplitterSide</var> is a TWinControl descendant that implements the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide alters the visibility of inherited properties to match their intended usage.
+            <var>TPairSplitterSide</var> is a <var>TWinControl</var> descendant that represents the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide alters the visibility of inherited properties to match their intended usage.
           </p>
         </descr>
         <seealso/>
       </element>
-
-      <element name="TPairSplitterSide.fCreatedBySplitter"/>
 
       <!-- function Visibility: private -->
       <element name="TPairSplitterSide.GetSplitter">
@@ -59,22 +57,28 @@
 
       <element name="TPairSplitterSide.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.SetParent">
         <short>
           Sets the value for the Parent property
         </short>
         <descr>
           <p>
-            <var>SetParent</var> is an overridden procedure used to set the value in the Parent property. SetParent ensures that the control is removed from its existing parent prior to setting the new property value. The control is added to the new parent when AParent is not <var>Nil</var>.
+            <var>SetParent</var> is an overridden procedure used to set the value in the <var>Parent</var> property. SetParent is the re-implemented write access specifier for the Parent property.
           </p>
           <p>
-            SetParent is the reimplemented write access specifier for the Parent property.
+            SetParent ensures that the control is removed from the Sides property in the existing Parent prior to setting the new value for the property. SetParent calls the inherited method to handle the Bounds and AutoSizing for the control.
+          </p>
+          <p>
+            If the new Parent is not <b>Nil</b>, the <var>AddSide</var> method in the TPairSplitter instance is called to add the current control.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Parent"/>
+          <link id="#lcl.controls.TControl.SetParent"/>
+          <link id="#lcl.controls.TControl.CheckNewParent"/>
+          <link id="TPairSplitter.AddSide"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPairSplitterSide.SetParent.AParent">
         <short>New value for the Parent property</short>
       </element>
@@ -102,19 +106,15 @@
       <element name="TPairSplitterSide.Align" link="#lcl.Controls.TControl.Align"/>
       <element name="TPairSplitterSide.Anchors" link="#lcl.Controls.TControl.Anchors"/>
 
-      <!-- constructor Visibility: public -->
       <element name="TPairSplitterSide.Create">
-        <short>
-          Constructor for the class instance
-        </short>
+        <short>Constructor for the class instance</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using TheOwner as the owner of the control. Create updates the ControlStyle property to include the value csAcceptsControls.
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using TheOwner as the owner of the control. Create updates values in the ControlStyle property and the internal window control flags used in the control.
           </p>
         </descr>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TPairSplitterSide.Create.TheOwner">
         <short>Owner of the control</short>
       </element>
@@ -139,7 +139,7 @@
         </short>
         <descr>
           <p>
-            <var>Splitter</var> is a read-only TCustomPairSplitter property which represents the component for the control. The value in Splitter is the same as the Parent for the control, or <var>Nil</var> when Parent has not been assigned.
+            <var>Splitter</var> is a read-only <var>TCustomPairSplitter</var> property which represents the component for the control. The value in Splitter is the same as the Parent for the control, or <var>Nil</var> when Parent has not been assigned.
           </p>
         </descr>
         <seealso/>
@@ -192,15 +192,18 @@
         <short>Splitter is oriented to size adjacent children vertically</short>
       </element>
 
-      <!-- object Visibility: default -->
-      <element name="TCustomPairSplitter" link="#lcl.Controls.TWinControl">
+      <element name="TCustomPairSplitter">
         <short>
           Defines the base class for the TPairSplitter component
         </short>
         <descr>
-          Defines the base class for the <var>TPairSplitter</var> component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+          <p>
+            Defines the base class for the <var>TPairSplitter</var> component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent child controls.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Controls.TWinControl"/>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
@@ -291,17 +294,17 @@
         <short>Owner of the component</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TCustomPairSplitter.Destroy">
-        <short>
-          Destructor for the class instance
-        </short>
+        <short>Destructor for the class instance</short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated in the Sides property, and calls the inherited destructor.
+            <var>Destroy</var> is the destructor for the class instance. Destroy ensures that the class instances in Sides are not created (or re-created), and calls the inherited destructor.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPairSplitter.Sides"/>
+          <link id="TPairSplitterSide"/>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: public -->
@@ -328,14 +331,13 @@
         <seealso/>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TCustomPairSplitter.CreateSides">
         <short>
           Creates missing controls in the Sides property
         </short>
         <descr>
           <p>
-            <var>CreateSides</var> is a procedure used to create missing controls in the Sides property. CreateSides ensures that both TPairSplitterSide values used in the component have been created (and parented).
+            <var>CreateSides</var> is a procedure used to create missing values in the Sides property. CreateSides ensures that both TPairSplitterSide instances used in the component have been created (and parented).
           </p>
           <p>
             No actions are performed in the method when component streaming has not been completed, or when the component is freed.
@@ -366,7 +368,7 @@
         </short>
         <descr>
           <p>
-            <var>ChildClassAllowed</var> is an overridden Boolean function used to determine if the specified class is inherited from a specific ancestor class. ChildClassAllowed calls the ChildClass.InheritsFrom method. The return value is True when it is derived from the TPairSplitterSide or TSplitter classes.
+            <var>ChildClassAllowed</var> is an overridden <var>Boolean</var> function used to determine if the specified class is inherited from a specific ancestor class. ChildClassAllowed calls the ChildClass.InheritsFrom method. The return value is True when it is derived from the TPairSplitterSide or TSplitter classes.
           </p>
         </descr>
         <seealso/>
@@ -389,7 +391,7 @@
         </short>
         <descr>
           <p>
-            <var>Sides</var> is a read-only indexed TPairSplitterSide property which provides access to the adjacent children resized using the Splitter in the component. Sides always has 2 elements in the array (in the range 0..1). If Index contains an invalid value, an exception is raised.
+            <var>Sides</var> is a read-only indexed <var>TPairSplitterSide</var> property which provides access to the adjacent children resized using the Splitter in the component. Sides always has 2 elements in the array (in the range 0..1). If Index contains an invalid value, an exception is raised.
           </p>
           <p>
             Each controls in Sides behaves like a TPanel component with a reference to the TPairSplitter that owns the control. They provide a custom Paint method and WMPaint message handling. Some of their properties have altered visibility; for example, Align and Anchors are private, Top and Left are public.
@@ -414,7 +416,7 @@
         </short>
         <descr>
           <p>
-            <var>SplitterType</var> is a TPairSplitterType property which specifies the orientation for the splitter in the component. The values in TPairSplitterType dictate the splitter orientation relative to the adjacent children in Sides. Writing a new value in the SplitterType property causes the value in the Cursor property to be changed to match the selected orientation. For example:
+            <var>SplitterType</var> is a <var>TPairSplitterType</var> property which specifies the orientation for the splitter in the component. The values in TPairSplitterType dictate the splitter orientation relative to the adjacent children in Sides. Writing a new value in the SplitterType property causes the value in the Cursor property to be changed to match the selected orientation. For example:
           </p>
           <dl>
             <dt>pstHorizontal</dt>
@@ -437,7 +439,7 @@
         </short>
         <descr>
           <p>
-            <var>Position</var> is an Integer property that indicates the position for the splitter relative to its orientation. Reading the value in splitter causes the UpdatePosition to be called to recalculate the current position for the Splitter. Position can be set at design-time, or changed at run-time by dragging the grab bar for the splitter. The value in Position affects the sizing of the adjacent child controls in Sides.
+            <var>Position</var> is an <var>Integer</var> property that indicates the position for the splitter relative to its orientation. Reading the value in splitter causes the UpdatePosition to be called to recalculate the current position for the Splitter. Position can be set at design-time, or changed at run-time by dragging the grab bar for the splitter. The value in Position affects the sizing of the adjacent child controls in Sides.
           </p>
           <p>
             When SplitterType contains <var>pstHorizontal</var>, the value in Position is used as the Width for the child control in Sides[0]. The remaining Width in the component (less the 5 pixels used for the Splitter) is set as the Width for the child control in Sides[1].
@@ -455,7 +457,9 @@
           Implements the TPairSplitter component
         </short>
         <descr>
-          Implements the TPairSplitter component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+          <p>
+            Implements the <var>TPairSplitter</var> component. TPairSplitter is a component with two <var>TPairSplitterSide</var> children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -487,8 +491,9 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short></short>
+        <short>Registers components for use in the Lazarus IDE</short>
       </element>
+
     </module>
     <!-- PairSplitter -->
   </package>

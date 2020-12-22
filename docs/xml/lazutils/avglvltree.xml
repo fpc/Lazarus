@@ -526,6 +526,18 @@
         <short></short>
       </element>
 
+      <element name="TPointerToPointerTree.FindByValue">
+        <short>Finds a Key by its Value using a slow linear search.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPointerToPointerTree.FindByValue.Result">
+        <short>Pointer to the Key or Nil</short>
+      </element>
+      <element name="TPointerToPointerTree.FindByValue.AValue">
+        <short/>
+      </element>
+
       <element name="TPointerToPointerTree.Count">
         <short>
           <var>Count</var> - the number of items

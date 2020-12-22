@@ -11029,6 +11029,12 @@
         <short/>
         <notes><note>?</note></notes>
       </element>
+      <element name="TWinControlFlag.wcfDesignerDeleting">
+        <short>Only used for TCustomPairSplitter / TPairSplitter</short>
+      </element>
+      <element name="TWinControlFlag.wcfSpecialSubContro">
+        <short>Only used for TCustomPairSplitter / TPairSplitter</short>
+      </element>
 
       <element link="#lcl.controls.TWinControlFlag" name="TWinControlFlags">
         <short>Set of TWinControlFlag enumeration values</short>
@@ -11310,7 +11316,6 @@
       <element link="#lcl.controls.TWinControl.Showing" name="TWinControl.FShowing"/>
       <element link="#lcl.controls.TWinControl.DockSite" name="TWinControl.FDockSite"/>
       <element link="#lcl.controls.TWinControl.UseDockManager" name="TWinControl.FUseDockManager"/>
-      <element name="TWinControl.FDesignerDeleting"/>
 
       <element name="TWinControl.AlignControl">
         <short>Aligns the control and its child controls</short>
@@ -11393,6 +11398,17 @@
         <short/>
       </element>
 
+      <element name="TWinControl.GetIsSpecialSubControl">
+        <short>Gets the value for the IsSpecialSubControl property</short>
+        <descr/>
+        <seealso>
+          <link id="TWinControl.IsSpecialSubControl"/>
+        </seealso>
+      </element>
+      <element name="TWinControl.GetIsSpecialSubControl.Result">
+        <short>Value for the property</short>
+      </element>
+
       <element link="#lcl.controls.TWinControl.TabOrder" name="TWinControl.GetTabOrder"/>
       <element name="TWinControl.GetTabOrder.Result">
         <short/>
@@ -11410,6 +11426,17 @@
       <element link="#lcl.controls.TWinControl.ChildSizing" name="TWinControl.SetChildSizing"/>
       <element name="TWinControl.SetChildSizing.AValue">
         <short/>
+      </element>
+
+      <element name="TWinControl.SetDesignerDeleting">
+        <short>Sets the value for the DesignerDeleting property</short>
+        <descr/>
+        <seealso>
+          <link id="TWinControl.DesignerDeleting"/>
+        </seealso>
+      </element>
+      <element name="TWinControl.SetDesignerDeleting.AValue">
+        <short>New value for the property</short>
       </element>
 
       <element link="#lcl.controls.TWinControl.DockSite" name="TWinControl.SetDockSite"/>
@@ -13812,7 +13839,22 @@
 
       <element name="TWinControl.DesignerDeleting">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            <var>DesignerDeleting</var> is a <var>Boolean</var> property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TWinControl.IsSpecialSubControl">
+        <short/>
+        <descr>
+          <p>
+            <var>IsSpecialSubControl</var> is a read-only <var>Boolean</var> property.
+            Used in <var>TCustomPairSplitter</var> only.
+          </p>
+        </descr>
         <seealso/>
       </element>
 

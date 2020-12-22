@@ -7,8 +7,18 @@
       ====================================================================
     -->
     <module name="FileCtrl">
-      <short>Implements a list box used to select files on the local file system</short>
+      <short>Implements list box and combo-box controls used to select files on the local file system</short>
       <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="StdCtrls"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="Masks"/>
+      <element name="Graphics"/>
+      <element name="ShellCtrls"/>
 
       <element name="TFileAttr">
         <short>Enumerated type with file and directory attributes used in TFileListBox</short>
@@ -44,22 +54,22 @@
       </element>
       <element name="TFileAttr.ftHidden">
         <short>
-          File is hidden. For UNIX-like environments, the means that the file name starts with a '.' (Dot) character.
+          File is hidden. For UNIX-like environments, this means that the file name starts with a <b>'.'</b> (<b>Period</b>) character.
         </short>
       </element>
       <element name="TFileAttr.ftSystem">
         <short>
-          File is a sytem file. For UNIX-like environements, this means it is a character, block, or FIFO file.
+          File is a sytem file. For UNIX-like environements, this means that it is a character, block, or FIFO file.
         </short>
       </element>
       <element name="TFileAttr.ftVolumeID">
         <short>
-          Drive Volume label used on the Windows FAT (not FAT32) file system. Not used on UNIX-like file systems.
+          Drive Volume label used on the Windows FAT (not FAT32) file system. Volume labels are not used on UNIX-like file systems.
         </short>
       </element>
       <element name="TFileAttr.ftDirectory">
         <short>
-          FIle is a directory.
+          FIle is a directory entry.
         </short>
       </element>
       <element name="TFileAttr.ftArchive">
@@ -74,7 +84,7 @@
       </element>
 
       <element name="TFileType">
-        <short>Set used to store file attributes</short>
+        <short>Set type used to store file attributes</short>
         <descr>
           <p>
             <var>TFileType</var> is a set type used to store zero (0) or more enumeration values from <var>TFileAttr</var>. TFileType is the type used to implement the <var>FileType</var> property in <var>TFileListBox</var>.
@@ -93,25 +103,28 @@
             <var>TCustomFileListBox</var> is a TCustomListBox descendant which implements the base type for <var>TFileListBox</var>. TCustomFileListBox extends the ancestor with properties, methods, and events used to select a file or directory on the local file system in a list box control.
           </p>
           <p>
-            Use the Drive and Directory properties to specify the location on the local file sytem displayed in the list box. Please note: Drive is not used on UNIX-like file systems.
+            Use the <var>Drive</var> and <var>Directory</var> properties to specify the location on the local file sytem displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
           </p>
           <p>
-            Use FileType to specify the files and/or directories which can be displayed in the control.
+            Use <var>FileType</var> to specify the files and/or directories which can be displayed in the control.
           </p>
           <p>
-            Use Mask to specify a file mask (with optional wildcards) used to select the files displayed in the control. Please note: Wild cards may be implemented differently for some file systems. For example: '*' is the "all files" mask on UNIX-like file systems instead of "*.*".
+            Use <var>Mask</var> to specify a file mask (with optional wildcards) used to select the files displayed in the control. Please note that wild cards may be implemented differently for some file systems. For example: <b>'*'</b> is the "all files" mask on UNIX-like file systems instead of <b>"*.*"</b>.
           </p>
           <p>
-            Use the Sorted property to control the order of files and directories displayed in the control.
+            Use the <var>Sorted</var> property to control the order of files and directories displayed in the control.
           </p>
           <p>
-            Use the FileName property to get the current file selection in the control.
+            Use <var>Items</var> to access the file and/or directory names matching the FileType and Mask in the current Directory for the control. Directory names are enclosed in square brackets (<b>[]</b>).
           </p>
           <p>
-            Assign an object procedure to the OnChange event handler to perform actions needed when a new item has been selected in the control.
+            Use <var>FileName</var> or <var>ItemIndex</var> to get or set the current selection in the control.
           </p>
           <p>
-            Do not create instances of TCustomFileListBox. Use the TFileListBox descendant which sets the visibility of properties used in the class instance.
+            Assign an object procedure to the <var>OnChange</var> event handler to perform actions needed when a new item has been selected in the control.
+          </p>
+          <p>
+            Do not create instances of <var>TCustomFileListBox</var>. Use the <var>TFileListBox</var> descendant which sets the visibility of properties used in the class instance.
           </p>
         </descr>
         <seealso>
@@ -137,7 +150,7 @@
       </element>
       <element name="TCustomFileListBox.MaskIsStored.Result">
         <short>
-          True when a value other than the all directory entries mask has been assigned to the property
+          True when a value other than the all directory entries mask (<b>'*'</b>) has been assigned to the property
         </short>
       </element>
 
@@ -244,7 +257,7 @@
             <var>IndexOfFile</var> is an Integer function used to get the ordinal position for the specified  file name in the list of file names in the control. <var>AFilename</var> contains the file name to locate in the method.
           </p>
           <p>
-            IndexOfFile handles drive and volume entries that may be stored in <var>Items</var> by ignoring the square brackets ('<b>[]</b>') used to surround values with the corresponding file attributes. The <var>CompareFileNames</var> routine from <file>LazFileUtils</file> is used to perform file name comparisions.
+            IndexOfFile handles drive and volume entries that may be stored in <var>Items</var> by ignoring the square brackets (<b>[]</b>) used to surround values with the corresponding file attributes. The <var>CompareFileNames</var> routine from <file>LazFileUtils</file> is used to perform file name comparisions.
           </p>
           <p>
             The return value is <b>-1</b> when AFilename is not stored in the Items property.
@@ -282,22 +295,45 @@
         <short>Shift, Alt, or Ctrl modifier for the virtual key</short>
       </element>
 
+      <element name="TCustomFileListBox.SetItemIndex">
+        <short>Sets the value for the ItemIndex property</short>
+        <descr>
+          <p>
+            <var>SetItemIndex</var> is an overridden method in <var>TCustomFileListBox</var>. Calls the inherited method on entry. Calls <var>UpdateSelectedFileName</var> to set the new value for the <var>FileName</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.SetItemIndex"/>
+          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
+          <link id="TCustomFileListBox.FileName"/>
+        </seealso>
+      </element>
+      <element name="TCustomFileListBox.SetItemIndex.AIndex">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TCustomFileListBox.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create sets the default values for properties in the class instance, including:
           </p>
-          <ul>
-            <li>Mask</li>
-            <li>FileType</li>
-            <li>Drive</li>
-            <li>Directory</li>
-            <li>MultiSelect</li>
-            <li>Sorted</li>
-          </ul>
+          <dl>
+            <dt>Mask</dt>
+            <dd>Set to the AllDirectoryEntriesMask ('*')</dd>
+            <dt>FileType</dt>
+            <dd>Set to [ftNormal]</dd>
+            <dt>Directory</dt>
+            <dd>Set to the value from GetCurrentDirUTF8</dd>
+            <dt>Drive</dt>
+            <dd>Contains the value form ExtractFileDrive, or an empty string</dd>
+            <dt>MultiSelect</dt>
+            <dd>Set to False</dd>
+            <dt>Sorted</dt>
+            <dd>Set to True after files have been loaded in UpdateFileList</dd>
+          </dl>
           <p>
-            Create calls the <var>UpdateFileList</var> method to load the file and directory names for the current directory into the Items property.
+            Create calls the <var>UpdateFileList</var> method to load the file and directory names for the current directory into the <var>Items</var> property.
           </p>
         </descr>
         <seealso>
@@ -357,7 +393,10 @@
             UpdateFileList calls <var>Clear</var> to remove any existing values in the <var>Items</var> property.
           </p>
           <p>
-            Values in <var>FileType</var> are used to construct the corresponding file attributes needed for use with <var>TSearchRec</var>. The <var>FindFirstUTF8</var> and <var>FindNextUTF8</var> routines from <file>LazFileUtils</file> are used to find matching file or directory names in the <var>Directory</var> for the control. Each value returned for the TSearchRec is compared to the <var>Mask</var> and <var>FileType</var> defined in the control. Acceptable values are added to the <var>Items</var> property. Please note: Directory names are surrounded by <b>square brackets</b> (<b>'[]'</b>) when added to the Items property.
+            Values in <var>FileType</var> are used to construct file attributes needed for use with <var>TSearchRec</var>. The <var>FindFirstUTF8</var> and <var>FindNextUTF8</var> routines from <file>LazFileUtils</file> are used to find matching file or directory names in the <var>Directory</var> for the control. Each value returned for the TSearchRec is compared to the <var>Mask</var> and <var>FileType</var> defined in the control. Acceptable values are added to the <var>Items</var> property.
+          </p>
+          <p>
+            Please note that Directory names (included when FileType contains ftDirectory) are surrounded by <b>square brackets</b> (<b>'[]'</b>) when added to the Items property.
           </p>
           <p>
             The private <var>UpdateSelectedFileName</var> method is called to include path information in <var>FileName</var> for the selected item in the control.
@@ -381,6 +420,9 @@
           <p>
             Use Directory to specify the path on the local file system to the entries displayed in the control.
           </p>
+          <remark>
+            Setting a new value in Drive does not automatically alter the value in Directory. Always assign an explicit value to Directory when setting the value in Drive. In addition, setting a value in Directory which includes a drive designator like 'd:\config\' does not update the value in Drive. The only time Drive is automatically sync'd to the value in Directory is in the Create constructor.
+          </remark>
         </descr>
         <seealso>
           <list id="TCustomFileListBox.Create"/>
@@ -394,16 +436,26 @@
         <short>The <var>Directory</var> or Folder in which the file is located</short>
         <descr>
           <p>
-            <var>Directory</var> is a <var>String</var> property which contains the path on the local file system to the files or and/or directories displayed in the list box control. The initial value for Directory is assigned in the constructor and uses the current directory for the application.
+            <var>Directory</var> is a <var>String</var> property which contains the path on the local file system to the files or and/or directories displayed in the list box control. The initial value for Directory is assigned in the constructor and defaults to the current directory for the application.
           </p>
           <p>
-            The value in Directory is prepended to the value used in <var>Filename</var> in the private  <var>UpdateSelectedFileName</var> method.
+            The value in Directory is prepended to the value in <var>Filename</var> when the <var>UpdateSelectedFileName</var> method is called from methods like: <var>Click</var>, <var>KeyUp</var>, <var>SetItemIndex</var>, <var>SetFileName</var>.
           </p>
           <p>
             Changing the value in Directory causes the <var>UpdateFileList</var> method to be called to reload the file and or directory names stored in the <var>Items</var> property.
           </p>
+          <remark>
+            Changing the value in Directory does not automatically update the value in Drive. If Directory includes a drive designator like 'D:\config\', it is not proogated to the Drive property. In addition, setting a value in Drive does not update the value in Director. The only time Drive and Directory are automatically sync'd is in the Create constructor.
+          </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomFileListBox.FileName"/>
+          <link id="TCustomFileListBox.ItemIndex"/>
+          <link id="TCustomFileListBox.UpdateFileList"/>
+          <link id="TCustomFileListBox.Click"/>
+          <link id="TCustomFileListBox.KeyUp"/>
+          <link id="TCustomFileListBox.SetItemIndex"/>
+        </seealso>
       </element>
 
       <element name="TCustomFileListBox.FileName">
@@ -453,16 +505,16 @@
         <short>Contains the mask for files selected for the control</short>
         <descr>
           <p>
-            <var>Mask</var> should be filled with one or more file masks separated by semi-colons. For example: "*.pdf;*.svg" will show all files with the extensions pdf and svg. The default value for the property is "*" which is the generic mask meaning any file. Do not use the Windows specific mask "*.*" to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control "*.*" will require the file name to have an extension.
+            <var>Mask</var> should be filled with one or more file masks separated by semi-colons. For example: <b>'*.pdf;*.svg'</b> will show all files with the extensions pdf and svg. The default value for the property is "*" which is the generic mask meaning any file or directory. Do not use the Windows specific mask <b>'*.*'</b> to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control '*.*' will require the file name to have an extension.
           </p>
           <p>
-            Allowed wildcards include "*" which means zero or more characters, and "?" which means exactly 1 character of any kind. Other characters represent themselves with one important detail: The file matching algorithm is <b>not</b> case sensitive. So if you set "*.PDF" in the mask, then "PostScript.pdf" will also be shown, even on Linux which is a case sensitive file system.
+            Allowed wildcards include <b>'*.*'</b> which means zero or more characters, and <b>'?'</b> which means exactly 1 character with any value. Other characters represent themselves with one important detail: The file matching algorithm is <b>not</b> case sensitive. So if you set '*.PDF' in the mask, then 'PostScript.pdf' will also be shown, even on Linux which is a case sensitive file system.
           </p>
           <p>
             This property has exactly the same rules and behavior as the <var>Mask</var> property in <var>TFilterComboBox</var>.
           </p>
           <p>
-            Changing the value in Mask causes the <var>UpdateFileList</var> method to be called to reload the file information in the Items property.
+            Changing the value in Mask causes the <var>UpdateFileList</var> method to be called to reload the file information for the current Directory in the Items property.
           </p>
         </descr>
         <seealso>
@@ -509,13 +561,13 @@
             <var>TFileListBox</var> is a <var>TCustomFileListBox</var> descendant which implements a file selection list box control. It is used to select a file or directory on the local file system. TFileListBox sets the visibility for properties introduced in an ancestor class, and does not contains any new properties, methods, or events.
           </p>
           <p>
-            Use the Drive and Directory properties to specify the location on the local file sytem displayed in the list box. Please note: Drive is not used on UNIX-like file systems.
+            Use the Drive and Directory properties to specify the location on the local file sytem displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
           </p>
           <p>
             Use FileType to specify the files and/or directories which can be displayed in the control.
           </p>
           <p>
-            Use Mask to specify a file mask (with optional wildcards) used to select the files displayed in the control. Please note: Wild cards may be implemented differently for some file systems. For example: '*' is the "all files" mask on UNIX-like file systems instead of "*.*".
+            Use Mask to specify a file mask (with optional wildcards) used to select the files displayed in the control. Please note that wild cards may be implemented differently for some file systems. For example: <b>'*'</b> is the "all files" mask on UNIX-like file systems instead of <b>'*.*'</b>.
           </p>
           <p>
             Use the Sorted property to control the order of files and directories displayed in the control.
@@ -592,7 +644,7 @@
             Use the <var>Filter</var> property to define the filter names and expressions available in the drop-down for the combo-box. Only the filter name is displayed in the combo-box.
           </p>
           <p>
-            Use <var>AutoComplete</var> to enable or disable case-insensitive automatic text completion in the edit area for the combo-box. When set to <b>True</b>, the Filter which starts the the typed value is located and selected in the control. Please note: AutoComplete works when the text area is empty, or the entire contents of the editable are are selected.
+            Use <var>AutoComplete</var> to enable or disable case-insensitive automatic text completion in the edit area for the combo-box. When set to <b>True</b>, the Filter which starts the the typed value is located and selected in the control. Please note that AutoComplete works when the text area is empty, or when the entire contents of the editable are are selected.
           </p>
           <p>
             Use <var>ItemIndex</var> to get the ordinal position in Filter for the selected filter. Use the <var>OnSelect</var> event handler to perform actions needed when a new value is selected in the combo-box.
@@ -601,7 +653,7 @@
             TCustomFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the seleted filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
-            TCustomFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note: Some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
+            TCustomFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
           </p>
         </descr>
         <seealso>
@@ -618,7 +670,7 @@
         <short>Sets the value for the Filter property</short>
         <descr/>
         <seealso>
-          <link id="TCustomFilterComboBox.Filter"/>
+          <link id="TFilterComboBox.Filter"/>
         </seealso>
       </element>
       <element name="TCustomFilterComboBox.SetFilter.AValue">
@@ -694,6 +746,33 @@
       <element name="TCustomFilterComboBox.ConvertFilterToStrings">
         <short>Parses the file filter(s) in AFilter and stores them in AStrings</short>
         <descr>
+          <p>
+            <var>ConvertFilterToStrings</var> is a class procedure used to parse the LCL filter string in <var>AFilter</var>, and store the individual filters in <var>AStrings</var>.
+          </p>
+          <p>
+            AFilter contains a value like: 'Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe'.
+          </p>
+          <p>
+            Values in <var>AClearStrings</var>, <var>AAddDescription</var>, and <var>AAddFilter</var> control the values stored in the AStrings.
+          </p>
+          <p>
+            AClearStrings indicates whether existing values in AStrings are cleared before adding values found in the method.
+          </p>
+          <p>
+            AAddDescription insicates if the descriptive text for file filter(s) are added to the string list.
+          </p>
+          <p>
+            AAddFilter indicates if the file mask portion of the filter is added to the string list.
+          </p>
+          <p>
+            When AAddDescription = <b>True</b> and AAddFilter = <b>False</b>, the following values would be stored in AStrings:
+          </p>
+          <pre>
+Text files (*.txt *.pas)
+Binaries (*.exe)</pre>
+          <p>
+            Adapted from the converter initially created for QtWSDialogs.pas
+          </p>
         </descr>
         <seealso>
         </seealso>
@@ -717,6 +796,18 @@
       <element name="TCustomFilterComboBox.Mask">
         <short>File mask for the selected filter in the control</short>
         <descr>
+          <p>
+            <var>Mask</var> is a read-only <var>String</var> property with the file mask for the selected <var>Filter</var> in the control.
+          </p>
+          <p>
+            When reading the value for Mask, a temporary TStringList instance is used to convert the values in Filter into individual file masks by calling the <var>ConvertFilterToStrings</var> method. The value in <var>ItemIndex</var> determines the value returned for the property.
+          </p>
+          <p>
+            The property value is an empty string (<b>''</b>) if Filter is unassigned, or ItemIndex contains <b>-1</b>.
+          </p>
+          <p>
+            Mask can be used to provide the file mask for the selected filter to related controls.
+          </p>
         </descr>
         <seealso>
           <link id="TFilterComboBox.Filter"/>
@@ -729,12 +820,16 @@
         <short>Connects the control to a TShellListView instance</short>
         <descr>
           <p>
-            The files shown in the TShellListView will be limited to the Filter selected in the control.
+            <var>ShellListView</var> is a <var>TShellListView</var> property which contains an optional list view control connected to the combo-box control. The files shown in the TShellListView will be limited to the <var>Mask</var> (or selected Filter) in the control.
+          </p>
+          <p>
+            When a shell list view control is assigned to the property, the value in Mask is copied into the Mask property for the list view control. The list view is added to the free notification list for the combo-box. ShellListView is updated (when assigned) in the <var>Select</var> method to use the current value in the Mask property.
           </p>
         </descr>
         <seealso>
           <link id="TCustomFilterComboBox.Mask"/>
           <link id="TCustomFilterComboBox.Select"/>
+          <link id="#lcl.shellctrls.TShellListView"/>
         </seealso>
       </element>
 
@@ -745,7 +840,7 @@
             <var>TFilterComboBox</var> is a <var>TCustomFilterComboBox</var> descendant which implements a combo-box used to select files which match a selection filter. Use the <var>Filter</var> property to define the filter names and expressions available in the drop-down for the combo-box. Only the filter name is displayed in the combo-box.
           </p>
           <p>
-            Use <var>AutoComplete</var> to enable or disable case-insensitive automatic text completion in the edit area for the combo-box. When set to <b>True</b>, the Filter which starts the the typed value is located and selected in the control. Please note: AutoComplete works when the text area is empty, or the entire contents of the editable are are selected.
+            Use <var>AutoComplete</var> to enable or disable case-insensitive automatic text completion in the edit area for the combo-box. When set to <b>True</b>, the Filter which starts the the typed value is located and selected in the control. Please note that AutoComplete works when the text area is empty, or the entire contents of the editable are are selected.
           </p>
           <p>
             Use <var>ItemIndex</var> to get the ordinal position in Filter for the selected filter. Use the <var>OnSelect</var> event handler to perform actions needed when a new value is selected in the combo-box.
@@ -754,7 +849,7 @@
             TFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the seleted filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
-            TFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note: Some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
+            TFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that Some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
           </p>
         </descr>
         <seealso>
@@ -767,7 +862,15 @@
       <element name="TFilterComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <element name="TFilterComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete"/>
       <element name="TFilterComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown"/>
-      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+
+      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+        <descr>
+          <p>
+            Please note that some themes (or styles) in Windows may use a fixed height for the combo-box.
+          </p>
+        </descr>
+      </element>
+
       <element name="TFilterComboBox.BidiMode" link="#LCL.Controls.TControl.BidiMode"/>
       <element name="TFilterComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TFilterComboBox.Color" link="#LCL.Controls.TControl.Color"/>
@@ -776,7 +879,26 @@
       <element name="TFilterComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TFilterComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TFilterComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TFilterComboBox.Filter" link="#LCL.StdCtrls.TCustomComboBox.Filter"/>
+
+      <element name="TFilterComboBox.Filter">
+        <short>Contains oneor more file filters used in the combo-box</short>
+        <descr>
+          <p>
+            <var>Filter</var> is a <var>String</var> property which is published in <var>TFilterComboBox</var>. Filter contains the file filter(s) which are used in the <var>Items</var> property. Each filter value in the string  contains a textual description and mask. For example:
+          </p>
+          <code>'Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe'.</code>
+          <p>
+            Setting a new value for the property causes <var>ConvertFilterToStrings</var> to be called to parse and store the filter descriptions in the Items property. Existing values in Items are cleared before storing the new filter values. The value in <var>ItemIndex</var> is set to <b>0</b> to select the initial filter in Items.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFilterComboBox.Items"/>
+          <link id="TCustomFilterComboBox.ConvertFilterToStrings"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.SetFilter"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
+        </seealso>
+      </element>
+
       <element name="TFilterComboBox.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TFilterComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
       <element name="TFilterComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBidiMode"/>
@@ -811,28 +933,34 @@
       <element name="TFilterComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
       <element name="TFilterComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
 
-      <element name="MiniMizeName">
+      <element name="MinimizeName">
         <short>Returns a shortened version of a file name, so that it fits within the given MaxWidth</short>
         <descr>
           <p>
-            This function will return a shortened version of FileName, so that it fits within the given MaxWidth. It uses the Font currently assigned to the Canvas argument.
+            This function will return a shortened version of <var>FileName</var>, so that it fits within the width given in <var>MaxWidth</var>. It uses the Font currently assigned to the <var>Canvas</var> argument.
         </p>
           <p>
-            For example: C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic  would be shortened to a value like: C:\...\Word\custom.dic.
+            For example: 'C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic'  would be shortened to a value like: 'C:\...\Word\custom.dic'.
+          </p>
+          <p>
+            No actions are performed in the routine when path information is not included in FileName. Normalizes all path delimiters in the file name to the first path delimiter found in the argument.
+          </p>
+          <p>
+            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with one <b>'...'</b> value until the shortened file name fits within the specified width.
           </p>
         </descr>
       </element>
-      <element name="MiniMizeName.Result">
-        <short/>
+      <element name="MinimizeName.Result">
+        <short>File name shortened to the maximum length when needed</short>
       </element>
-      <element name="MiniMizeName.FileName">
-        <short/>
+      <element name="MinimizeName.FileName">
+        <short>File name examined and shortened in the routine</short>
       </element>
-      <element name="MiniMizeName.Canvas">
-        <short/>
+      <element name="MinimizeName.Canvas">
+        <short>Canvas with the font used to measure the file name</short>
       </element>
-      <element name="MiniMizeName.MaxWidth">
-        <short/>
+      <element name="MinimizeName.MaxWidth">
+        <short>Maximum width (in pixels) for the file name on the canvas</short>
       </element>
 
       <element name="Register">
