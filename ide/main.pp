@@ -13306,49 +13306,46 @@ var
   ComponentClasses: TClassList;
 begin
   //DebugLn('Hint: (lazarus) TMainIDE.PropHookPersistentAdded A ',dbgsName(APersistent));
-  Assert(APersistent is TComponent, 'TMainIDE.PropHookPersistentAdded: Not a TComponent.');
-  //if APersistent is TComponent then
-  //begin
-  AComponent:=TComponent(APersistent);
-  if (IDEComponentPalette.FindRegComponent(AComponent.ClassType)=nil)
-  and (Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType))=nil) then
+  if APersistent is TComponent then
   begin
-    DebugLn('Error: (lazarus) TMainIDE.PropHookPersistentAdded ',
-            AComponent.ClassName, ' not registered');
-    exit;
-  end;
-  //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
-  // set component into design mode
-  SetDesigning(AComponent,true);
-  //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
-  // add to source
-  FComponentAddedDesigner:=FindRootDesigner(AComponent) as TDesigner;
-  if FComponentAddedDesigner<>nil then
-  begin
-    ActiveSrcEdit:=nil;
-    if BeginCodeTool(FComponentAddedDesigner,ActiveSrcEdit,FComponentAddedUnit,
-                     [ctfSwitchToFormSource]) then
+    AComponent:=TComponent(APersistent);
+    if (IDEComponentPalette.FindRegComponent(AComponent.ClassType)=nil)
+    and (Project1.UnitWithComponentClass(TComponentClass(AComponent.ClassType))=nil) then
     begin
-      // add needed package to required packages
-      if AComponent<>nil then
-      begin
-        ComponentClasses:=TClassList.Create;
-        try
-          ComponentClasses.Add(AComponent.ClassType);
-          PkgBoss.AddUnitDepsForCompClasses(FComponentAddedUnit.Filename,ComponentClasses,true);
-        finally
-          ComponentClasses.Free;
-        end;
-      end;
-      // Note: Source editor will be updated with added components later on Idle
-      //       using FComponentAddedDesigner and FComponentAddedUnit.
-    end
-    else begin
-      FComponentAddedDesigner:= Nil;
+      DebugLn('Error: (lazarus) TMainIDE.PropHookPersistentAdded ',
+              AComponent.ClassName, ' not registered');
       exit;
     end;
+    //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+    // set component into design mode
+    SetDesigning(AComponent,true);
+    //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+    // add to source
+    FComponentAddedDesigner:=FindRootDesigner(AComponent) as TDesigner;
+    if FComponentAddedDesigner<>nil then
+    begin
+      ActiveSrcEdit:=nil;
+      if BeginCodeTool(FComponentAddedDesigner,ActiveSrcEdit,FComponentAddedUnit,
+                       [ctfSwitchToFormSource]) then
+      begin
+        // add needed package to required packages
+        if AComponent<>nil then
+        begin
+          ComponentClasses:=TClassList.Create;
+          try
+            ComponentClasses.Add(AComponent.ClassType);
+            PkgBoss.AddUnitDepsForCompClasses(FComponentAddedUnit.Filename,ComponentClasses,true);
+          finally
+            ComponentClasses.Free;
+          end;
+        end;
+        // Note: Source editor will be updated with added components later on Idle
+        //       using FComponentAddedDesigner and FComponentAddedUnit.
+      end
+      else
+        FComponentAddedDesigner:=Nil;
+    end;
   end;
-  //end;
   // select persistent
   if Select then
     TheControlSelection.AssignPersistent(APersistent);
