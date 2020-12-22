@@ -1,0 +1,279 @@
+object AtomPackageSettingsForm: TAtomPackageSettingsForm
+  Left = 357
+  Height = 546
+  Top = 159
+  Width = 588
+  Caption = 'New Atom Package'
+  ClientHeight = 546
+  ClientWidth = 588
+  OnShow = FormShow
+  LCLVersion = '2.1.0.0'
+  object edtDescription: TEdit
+    AnchorSideLeft.Control = dePackage
+    AnchorSideTop.Control = dePackage
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 27
+    Top = 43
+    Width = 446
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    TabOrder = 0
+  end
+  object lblDescription: TLabel
+    AnchorSideTop.Control = edtDescription
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtDescription
+    Left = 24
+    Height = 16
+    Top = 48
+    Width = 88
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&Description'
+    FocusControl = edtDescription
+    ParentColor = False
+  end
+  object edtName: TEdit
+    AnchorSideLeft.Control = edtDescription
+    AnchorSideTop.Control = edtDescription
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 27
+    Top = 78
+    Width = 184
+    BorderSpacing.Top = 8
+    OnEditingDone = edtNameEditingDone
+    OnKeyPress = edtNameKeyPress
+    TabOrder = 1
+  end
+  object lblName: TLabel
+    AnchorSideTop.Control = edtName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtName
+    Left = 16
+    Height = 16
+    Top = 83
+    Width = 96
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'Package &Name'
+    FocusControl = edtName
+    ParentColor = False
+  end
+  object cbLink: TCheckBox
+    AnchorSideLeft.Control = edtClassName
+    AnchorSideTop.Control = edtClassName
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 23
+    Top = 149
+    Width = 173
+    BorderSpacing.Top = 8
+    Caption = 'Link in Atom package dir'
+    TabOrder = 2
+  end
+  object vleCommands: TValueListEditor
+    AnchorSideLeft.Control = cbLink
+    AnchorSideTop.Control = cbLink
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 112
+    Top = 180
+    Width = 446
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    DefaultColWidth = 192
+    FixedCols = 0
+    RowCount = 2
+    TabOrder = 3
+    KeyOptions = [keyEdit, keyAdd, keyDelete]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAutoAddRows, goAlwaysShowEditor, goThumbTracking]
+    TitleCaptions.Strings = (
+      'Name'
+      'Function'
+    )
+    ColWidths = (
+      192
+      252
+    )
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 502
+    Width = 576
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object lblLicense: TLabel
+    AnchorSideTop.Control = edtLicense
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtLicense
+    Left = 56
+    Height = 16
+    Top = 305
+    Width = 56
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&License'
+    FocusControl = edtLicense
+    ParentColor = False
+  end
+  object edtLicense: TEdit
+    AnchorSideLeft.Control = vleCommands
+    AnchorSideTop.Control = vleCommands
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 27
+    Top = 300
+    Width = 184
+    BorderSpacing.Top = 8
+    TabOrder = 5
+  end
+  object lblCommands: TLabel
+    AnchorSideTop.Control = vleCommands
+    AnchorSideRight.Control = vleCommands
+    Left = 32
+    Height = 16
+    Top = 180
+    Width = 80
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&Commands'
+    FocusControl = vleCommands
+    ParentColor = False
+  end
+  object lblLicense1: TLabel
+    AnchorSideTop.Control = edtKeywords
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtKeywords
+    Left = 44
+    Height = 16
+    Top = 341
+    Width = 68
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&Keywords'
+    FocusControl = edtKeywords
+    ParentColor = False
+  end
+  object edtKeywords: TEdit
+    AnchorSideLeft.Control = edtLicense
+    AnchorSideTop.Control = edtLicense
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 27
+    Top = 336
+    Width = 445
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 9
+    TabOrder = 6
+  end
+  object lblCommands1: TLabel
+    AnchorSideTop.Control = vleActivationCommands
+    AnchorSideRight.Control = vleActivationCommands
+    Left = 23
+    Height = 32
+    Top = 371
+    Width = 89
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&Activation '#10'Commands'
+    FocusControl = vleActivationCommands
+    ParentColor = False
+  end
+  object vleActivationCommands: TValueListEditor
+    AnchorSideLeft.Control = edtKeywords
+    AnchorSideTop.Control = edtKeywords
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 112
+    Top = 371
+    Width = 445
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    DefaultColWidth = 192
+    FixedCols = 0
+    RowCount = 2
+    TabOrder = 7
+    KeyOptions = [keyEdit, keyAdd, keyDelete, keyUnique]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAutoAddRows, goAlwaysShowEditor, goThumbTracking]
+    TitleCaptions.Strings = (
+      'Command Name'
+      'Scope'
+    )
+    ColWidths = (
+      192
+      251
+    )
+  end
+  object dePackage: TDirectoryEdit
+    Left = 120
+    Height = 27
+    Top = 8
+    Width = 447
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 8
+  end
+  object lblDescription1: TLabel
+    AnchorSideTop.Control = dePackage
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = dePackage
+    Left = 34
+    Height = 16
+    Top = 13
+    Width = 78
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = '&Directory'
+    FocusControl = edtDescription
+    ParentColor = False
+  end
+  object lblClassName: TLabel
+    AnchorSideTop.Control = edtClassName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtClassName
+    Left = 32
+    Height = 16
+    Top = 119
+    Width = 79
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 9
+    Caption = '&Class Name'
+    FocusControl = edtClassName
+    ParentColor = False
+  end
+  object edtClassName: TEdit
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = edtName
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 27
+    Top = 114
+    Width = 184
+    BorderSpacing.Top = 9
+    OnKeyPress = edtClassNameKeyPress
+    TabOrder = 9
+  end
+end

@@ -143,6 +143,10 @@ msgstr "Réinitialiser la commande d'exécution"
 msgid "Run RTL when all page resources are fully loaded"
 msgstr "Exécuter la RTL quand toutes les pages de ressources sont totalement chargées"
 
+#: strpas2jsdesign.pjsdselectatomtemplatedir
+msgid "Select atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
 msgstr "Sélectionner l'exécutable du navigateur"

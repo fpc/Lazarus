@@ -143,6 +143,10 @@ msgstr ""
 msgid "Run RTL when all page resources are fully loaded"
 msgstr ""
 
+#: strpas2jsdesign.pjsdselectatomtemplatedir
+msgid "Select atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
 msgstr ""

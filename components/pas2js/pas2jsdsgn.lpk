@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="Pas2JSDsgn"/>
     <Type Value="DesignTime"/>
     <Author Value="Mattias Gaertner"/>
@@ -18,7 +18,7 @@
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
-    <Files Count="9">
+    <Files Count="13">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -56,7 +56,25 @@
         <Filename Value="pjsprojectoptions.pp"/>
         <UnitName Value="pjsprojectoptions"/>
       </Item9>
+      <Item10>
+        <Filename Value="frmpas2jsatompackagesettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item10>
+      <Item11>
+        <Filename Value="frmpas2jsatompackagesettings.pas"/>
+        <UnitName Value="frmPas2jsAtomPackageSettings"/>
+      </Item11>
+      <Item12>
+        <Filename Value="regpas2jsatom.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regpas2jsatom"/>
+      </Item12>
+      <Item13>
+        <Filename Value="defaults.inc"/>
+        <Type Value="Include"/>
+      </Item13>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>

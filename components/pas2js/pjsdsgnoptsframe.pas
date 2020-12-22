@@ -31,8 +31,11 @@ Type
     HTTPServerCmdLabel: TLabel;
     HTTPServerComboBox: TComboBox;
     NodeJSBrowseButton: TButton;
+    NodeJSBrowseButton1: TButton;
     NodeJSComboBox: TComboBox;
+    AtomTemplateDirComboBox: TComboBox;
     NodeJSLabel: TLabel;
+    lblAtomTemplateDir: TLabel;
     Pas2jsPathBrowseButton: TButton;
     Pas2jsPathComboBox: TComboBox;
     Pas2jsPathLabel: TLabel;
@@ -42,6 +45,7 @@ Type
     HTTPServerOptionsMemo: TMemo;
     procedure BBrowserBrowseButtonClick(Sender: TObject);
     procedure HTTPServerBrowseButtonClick(Sender: TObject);
+    procedure NodeJSBrowseButton1Click(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
   private
@@ -99,6 +103,21 @@ begin
     end;
   finally
     OpenDialog.Free;
+  end;
+end;
+
+procedure TPas2jsOptionsFrame.NodeJSBrowseButton1Click(Sender: TObject);
+
+var
+  ADirname: String;
+
+begin
+  aDirName:=AtomTemplateDirComboBox.Text;
+  if SelectDirectory(pjsdSelectAtomTemplateDir,aDirName,aDirName) then
+  begin
+    ADirName:=CleanAndExpandFilename(ADirName);
+    SetComboBoxText(AtomTemplateDirComboBox,ADirName,cstFilename,30);
+    PJSOptions.AtomTemplateDir:=ADirName;
   end;
 end;
 
