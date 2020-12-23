@@ -11,6 +11,10 @@ msgstr ""
 "Language: tr\n"
 "X-Generator: Poedit 2.2.3\n"
 
+#: strpas2jsdesign.pjsdatompackagetemplatedirectory
+msgid "Atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr ""
@@ -59,8 +63,18 @@ msgstr ""
 msgid "missing path to pas2js"
 msgstr ""
 
+#: strpas2jsdesign.pjsdnewatompackage
+msgid "Atom package"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewatompackagedescr
+msgid "A pas2js program running as Atom package."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
-msgid "A pas2js program running in node.js"
+#, fuzzy
+#| msgid "A pas2js program running in node.js"
+msgid "A pas2js program running in node.js."
 msgstr "Node.js içinde çalışan bir pas2js programı"
 
 #: strpas2jsdesign.pjsdnodejsapplication
@@ -144,7 +158,7 @@ msgid "Run RTL when all page resources are fully loaded"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
-msgid "Select atom package template directory"
+msgid "Select Atom package template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
@@ -194,7 +208,9 @@ msgid "Use this URL to start application"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
-msgid "A pas2js program running in the browser"
+#, fuzzy
+#| msgid "A pas2js program running in the browser"
+msgid "A pas2js program running in the browser."
 msgstr "Tarayıcıda çalışan bir pas2js programı"
 
 #: strpas2jsdesign.pjsdwebapplication

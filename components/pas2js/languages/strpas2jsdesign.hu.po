@@ -11,6 +11,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.6\n"
 
+#: strpas2jsdesign.pjsdatompackagetemplatedirectory
+msgid "Atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Böngészés"
@@ -59,8 +63,18 @@ msgstr "HTML lap karbantartása"
 msgid "missing path to pas2js"
 msgstr "a pas2js útvonala hiányzik"
 
+#: strpas2jsdesign.pjsdnewatompackage
+msgid "Atom package"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewatompackagedescr
+msgid "A pas2js program running as Atom package."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
-msgid "A pas2js program running in node.js"
+#, fuzzy
+#| msgid "A pas2js program running in node.js"
+msgid "A pas2js program running in node.js."
 msgstr "Egy pas2js program, mely node.js-ben futtatható"
 
 #: strpas2jsdesign.pjsdnodejsapplication
@@ -144,7 +158,7 @@ msgid "Run RTL when all page resources are fully loaded"
 msgstr "Az RTL csak a lap minden erőforrásának betöltése után induljon"
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
-msgid "Select atom package template directory"
+msgid "Select Atom package template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
@@ -194,7 +208,9 @@ msgid "Use this URL to start application"
 msgstr "Az alkalmazás indításához ezt az URL-t használja"
 
 #: strpas2jsdesign.pjsdwebappdescription
-msgid "A pas2js program running in the browser"
+#, fuzzy
+#| msgid "A pas2js program running in the browser"
+msgid "A pas2js program running in the browser."
 msgstr "Egy pas2js program, mely a webböngészőben futtatható"
 
 #: strpas2jsdesign.pjsdwebapplication

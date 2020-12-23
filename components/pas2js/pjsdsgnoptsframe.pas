@@ -222,8 +222,11 @@ begin
   BrowserLabel.Hint:=pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
 
   NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
+
   HTTPServerOptsLabel.Caption:=pjsdHTTPServerOptsLabelCaption;
   HTTPServerOptsLabel.Hint:=pjsdHTTPServerOptsLabelHint;
+
+  lblAtomTemplateDir.Caption := pjsdAtomPackageTemplateDirectory;
 end;
 
 procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -11,6 +11,10 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.13\n"
 
+#: strpas2jsdesign.pjsdatompackagetemplatedirectory
+msgid "Atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Navegar"
@@ -59,9 +63,19 @@ msgstr "Manter página HTML"
 msgid "missing path to pas2js"
 msgstr "caminho ausente para pas2js"
 
+#: strpas2jsdesign.pjsdnewatompackage
+msgid "Atom package"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewatompackagedescr
+msgid "A pas2js program running as Atom package."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
+#, fuzzy
+#| msgid "A pas2js program running in node.js"
 msgctxt "strpas2jsdesign.pjsdnodejsappdescription"
-msgid "A pas2js program running in node.js"
+msgid "A pas2js program running in node.js."
 msgstr "Um programa pas2js executando em node.js"
 
 #: strpas2jsdesign.pjsdnodejsapplication
@@ -146,7 +160,7 @@ msgid "Run RTL when all page resources are fully loaded"
 msgstr "Rodar RTL quando todas as páginas de recursos forem totalmente carregadas"
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
-msgid "Select atom package template directory"
+msgid "Select Atom package template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
@@ -195,8 +209,10 @@ msgid "Use this URL to start application"
 msgstr "Usar esta URL para iniciar a aplicação"
 
 #: strpas2jsdesign.pjsdwebappdescription
+#, fuzzy
+#| msgid "A pas2js program running in the browser"
 msgctxt "strpas2jsdesign.pjsdwebappdescription"
-msgid "A pas2js program running in the browser"
+msgid "A pas2js program running in the browser."
 msgstr "Um programa pas2js executando no navegador"
 
 #: strpas2jsdesign.pjsdwebapplication

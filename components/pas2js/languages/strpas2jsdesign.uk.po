@@ -13,6 +13,10 @@ msgstr ""
 "X-Generator: Lokalize 19.04.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: strpas2jsdesign.pjsdatompackagetemplatedirectory
+msgid "Atom package template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Огляд"
@@ -61,8 +65,18 @@ msgstr "Підтримувати HTML-сторінку"
 msgid "missing path to pas2js"
 msgstr "відсутній шлях до pas2js"
 
+#: strpas2jsdesign.pjsdnewatompackage
+msgid "Atom package"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewatompackagedescr
+msgid "A pas2js program running as Atom package."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
-msgid "A pas2js program running in node.js"
+#, fuzzy
+#| msgid "A pas2js program running in node.js"
+msgid "A pas2js program running in node.js."
 msgstr "Програма pas2js, що запускається в node.js"
 
 #: strpas2jsdesign.pjsdnodejsapplication
@@ -146,7 +160,7 @@ msgid "Run RTL when all page resources are fully loaded"
 msgstr "Після повного завантаження всіх ресурсів сторінки запустити RTL"
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
-msgid "Select atom package template directory"
+msgid "Select Atom package template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
@@ -196,7 +210,9 @@ msgid "Use this URL to start application"
 msgstr "Для запуску застосунку використати цей URL"
 
 #: strpas2jsdesign.pjsdwebappdescription
-msgid "A pas2js program running in the browser"
+#, fuzzy
+#| msgid "A pas2js program running in the browser"
+msgid "A pas2js program running in the browser."
 msgstr "Програма pas2js, що запускається в оглядачі"
 
 #: strpas2jsdesign.pjsdwebapplication

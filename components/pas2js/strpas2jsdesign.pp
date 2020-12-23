@@ -9,9 +9,11 @@ uses FileProcs, sysutils;
 Resourcestring
   // "Create new" dialog
   pjsdWebApplication = 'Web Browser Application';
-  pjsdWebAppDescription = 'A pas2js program running in the browser';
+  pjsdWebAppDescription = 'A pas2js program running in the browser.';
   pjsdNodeJSApplication = 'Node.js Application';
-  pjsdNodeJSAppDescription = 'A pas2js program running in node.js';
+  pjsdNodeJSAppDescription = 'A pas2js program running in node.js.';
+  pjsdNewAtomPackage = 'Atom package';
+  pjsdNewAtomPackageDescr = 'A pas2js program running as Atom package.';
 
   // menu item
   SPasJSWebserverCaption = 'Pas2JS WebServers';
@@ -35,7 +37,7 @@ Resourcestring
   pjsdSelectXExecutable = 'Select %s executable';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
   pjsdSelectBrowserExecutable = 'Select browser executable';
-  pjsdSelectAtomTemplateDir = 'Select atom package template directory';
+  pjsdSelectAtomTemplateDir = 'Select Atom package template directory';
   pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea = 'You can use IDE '
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';
@@ -52,6 +54,7 @@ Resourcestring
   pjsdPathOfNodeJsExecutable = 'Path of Node.js executable, macro $(Pas2JSNodeJS)';
   pjsdHTTPServerOptsLabelCaption = 'HTTP Server extra command-line options (one per line)';
   pjsdHTTPServerOptsLabelHint = 'Add extra command-line options for the command which starts the webserver.';
+  pjsdAtomPackageTemplateDirectory = 'Atom package template directory';
 
   // Project options frame
   pjsdWebProjectPas2js = 'Web Project (pas2js)';

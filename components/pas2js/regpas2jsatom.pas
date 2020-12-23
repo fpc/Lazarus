@@ -59,11 +59,7 @@ uses
   {$ENDIF}
 
   fpjson,frmpas2jsatompackagesettings,  CompOptsIntf,
-  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions;
-
-Resourcestring
-  SNewAtomPackage = 'Pas2js Atom package';
-  SNewAtomPackageDescr = 'Create a new pas2js Atom package';
+  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
 
 Var
   AtomProjDesc:TAtomPackageProjectDescriptor;
@@ -138,12 +134,12 @@ end;
 
 function TAtomPackageProjectDescriptor.GetLocalizedName: string;
 begin
-  Result:=SNewAtomPackage;
+  Result:=pjsdNewAtomPackage;
 end;
 
 function TAtomPackageProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=SNewAtomPackageDescr;
+  Result:=pjsdNewAtomPackageDescr;
 end;
 
 
