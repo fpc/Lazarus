@@ -7499,7 +7499,7 @@ const
       end;
       //DebugLn('Setting CommandLine');
       StartLazProcess.Executable:=ExeName;
-      StartLazProcess.Parameters.Add('--lazarus-pid='+IntToStr(GetProcessID));
+      StartLazProcess.Parameters.Add(StartLazarusPidOpt+IntToStr(GetProcessID));
       StartLazProcess.Parameters.AddStrings(Params);
 
       i:=StartLazProcess.Parameters.Count-1;

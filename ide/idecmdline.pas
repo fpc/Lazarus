@@ -45,6 +45,7 @@ uses
   LazConf;
 
 const
+  // IDE cmd line options
   ShowSetupDialogOptLong='--setup';
   PrimaryConfPathOptLong='--primary-config-path=';
   PrimaryConfPathOptShort='--pcp=';
@@ -59,6 +60,10 @@ const
   DebugLogOptEnable='--debug-enable=';
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
+const
+  // startlazarus options
+  StartLazarusPidOpt   = '--lazarus-pid=';
+  StartLazarusDebugOpt = '--debug';
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid : Integer;
             out ShowSplashScreen: boolean);
@@ -198,9 +203,6 @@ end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
   ShowSplashScreen: boolean);
-const
-  LazarusPidOpt   = '--lazarus-pid=';
-  LazarusDebugOpt = '--debug';
 var
   i     : Integer;
   Param : string;
@@ -213,14 +215,14 @@ begin
     if Param='' then continue;
     if SysUtils.CompareText(LeftStr(Param, length(DebugLogOpt)), DebugLogOpt) = 0 then
       HasDebugLog := HasDebugLog or (length(Param) > length(DebugLogOpt));
-    if (Param=LazarusDebugOpt) and (not HasDebugLog) then begin
+    if (Param=StartLazarusDebugOpt) and (not HasDebugLog) then begin
       aCmdLineParams.Add('--debug-log=' +
                          AppendPathDelim(UTF8ToSys(GetPrimaryConfigPath)) + 'debug.log');
     end;
-    if LeftStr(Param,length(LazarusPidOpt))=LazarusPidOpt then begin
+    if LeftStr(Param,length(StartLazarusPidOpt))=StartLazarusPidOpt then begin
       try
         IDEPid :=
-          StrToInt(RightStr(Param,Length(Param)-Length(LazarusPidOpt)));
+          StrToInt(RightStr(Param,Length(Param)-Length(StartLazarusPidOpt)));
       except
         DebugLn('Failed to parse %s',[Param]);
         IDEPid := 0;
