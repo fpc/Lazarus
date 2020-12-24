@@ -1,13 +1,14 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018, 2019.
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2020.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-09-19 00:26+0200\n"
-"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2020-12-24 22:33+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 19.12.3\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +26,7 @@ msgstr "Зневаджувач зазнав помилки під час спр�
 #: gdbmistringconstants.gdbmicommandstartapplicationerror
 #, object-pascal-format
 msgid "The application could not be started:%0:s%1s"
-msgstr ""
+msgstr "Неможливо запустити застосунок:%0:s%1s"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format

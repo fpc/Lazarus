@@ -4,14 +4,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-08-31 01:18+0200\n"
+"PO-Revision-Date: 2020-12-24 22:55+0200\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 19.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -8483,7 +8483,7 @@ msgstr "Відновити необроблені"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
-msgstr ""
+msgstr "Показувати при зупинці повідомлення про помилку (Exit-code <> 0)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
@@ -8877,7 +8877,7 @@ msgstr "Деякі файли змінені на диску:"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavelocalchanges
 msgid "Some files have local changes. Either local or external changes will be overwritten."
-msgstr ""
+msgstr "Деякі файли мають локальні зміни. Локальні або зовнішні зміни будуть перезаписані."
 
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -9717,7 +9717,7 @@ msgstr "Виконання завершено"
 #: lazarusidestrconsts.lisexecutionstoppedexitcode
 #, object-pascal-format
 msgid "Execution stopped with exit-code %1:d ($%2:s)"
-msgstr ""
+msgstr "Виконання зупинено з кодом виходу %1:d ($%2:s)"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -15496,7 +15496,7 @@ msgstr "Викликати процедуру %sRegister%s вибраного м
 
 #: lazarusidestrconsts.lispckeditcheckavailabilityonline
 msgid "Check availability online"
-msgstr ""
+msgstr "Перевірити доступність онлайн"
 
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
@@ -21099,7 +21099,7 @@ msgstr "&Другорядна версія:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
 msgid "New search with same criteria"
-msgstr ""
+msgstr "Новий пошук з тими самими критеріями"
 
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
@@ -21111,7 +21111,7 @@ msgstr "Результуюча тека PO:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
 msgid "Refresh the search"
-msgstr ""
+msgstr "Оновити пошук"
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"

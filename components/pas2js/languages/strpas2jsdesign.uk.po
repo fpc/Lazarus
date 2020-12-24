@@ -4,18 +4,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-02-18 22:25+0200\n"
-"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2020-12-24 22:47+0200\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
-"X-Generator: Lokalize 19.04.3\n"
+"X-Generator: Lokalize 19.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
-msgstr ""
+msgstr "Тека шаблонів пакунка Atom"
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
@@ -67,17 +67,15 @@ msgstr "відсутній шлях до pas2js"
 
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
-msgstr ""
+msgstr "Пакунок Atom"
 
 #: strpas2jsdesign.pjsdnewatompackagedescr
 msgid "A pas2js program running as Atom package."
-msgstr ""
+msgstr "Програма pas2js запущена, як пакунок Atom"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
-#, fuzzy
-#| msgid "A pas2js program running in node.js"
 msgid "A pas2js program running in node.js."
-msgstr "Програма pas2js, що запускається в node.js"
+msgstr "Програма pas2js, що запускається в node.js."
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
@@ -161,7 +159,7 @@ msgstr "Після повного завантаження всіх ресурс
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
 msgid "Select Atom package template directory"
-msgstr ""
+msgstr "Виберіть теку шаблонів пакунка Atom"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
@@ -210,10 +208,8 @@ msgid "Use this URL to start application"
 msgstr "Для запуску застосунку використати цей URL"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser"
 msgid "A pas2js program running in the browser."
-msgstr "Програма pas2js, що запускається в оглядачі"
+msgstr "Програма pas2js, що запускається в оглядачі."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
