@@ -55,6 +55,7 @@ type
     procedure AddChildren(AComponent: TComponent);
     function FindAndChange(APers: TPersistent; ZOrderDel: TZOrderDelete): Boolean;
     function GetSelection: TPersistentSelectionList;
+    procedure RebuildCollection(ANode: TTreeNode);
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
     procedure UpdateCompNode(ANode: TTreeNode);
@@ -707,17 +708,22 @@ begin
   EndUpdate;
 end;
 
-function FindCollectionNode(ANode: TTreeNode): TTreeNode;
+procedure TComponentTreeView.RebuildCollection(ANode: TTreeNode);
+// Find TOwnedCollection under a given node and if found rebuild it.
 begin
   ANode := ANode.GetFirstChild;
   while Assigned(ANode) do
   begin
-    DebugLn(['FindCollectionNode: Testing node ', TPersistent(ANode.Data)]);
     if TObject(ANode.Data) is TOwnedCollection then
-      Exit(ANode);
+    begin
+      DebugLn(['IterateTree: Rebuilding Collection node ', TOwnedCollection(ANode.Data)]);
+      ANode.DeleteChildren;
+      BuildComponentNodes(False);
+      ANode.Expand(False);
+      Exit;
+    end;
     ANode := ANode.GetNextSibling;
   end;
-  Result := Nil;
 end;
 
 function TComponentTreeView.FindAndChange(APers: TPersistent;
@@ -757,8 +763,6 @@ var
   end;
 
   procedure IterateTree(ANode: TTreeNode);
-  var
-    CollNode: TTreeNode;
   begin
     if TObject(ANode.Data)=APers then
     begin
@@ -766,23 +770,16 @@ var
       DoneChange := True;
       Exit;                         // Found and changed.
     end;
+    // Iterate subnodes.
     ANode := ANode.GetFirstChild;
     while Assigned(ANode) and not DoneChange do
     begin
       IterateTree(ANode);           // Recursive call.
       if DoneChange then
       begin
-        // After a node was changed, search a Collection from its siblings and
-        // rebuild its items if found. Needed for FlowPanel.ControlList at least.
-        CollNode := FindCollectionNode(ANode);
-        if Assigned(CollNode) then
-        begin
-          DebugLn(['IterateTree: Rebuilding Collection node ', TOwnedCollection(CollNode.Data)]);
-          CollNode.DeleteChildren;
-          BuildComponentNodes(False);
-          CollNode.Expand(False);
-        end;
-        Exit;                       // Found in a child item. Don't search more.
+        // Search a Collection from siblings of the changed node and rebuild if found.
+        RebuildCollection(ANode);   // Needed for FlowPanel.ControlList at least.
+        Exit;                       // Found, don't search more.
       end;
       ANode := ANode.GetNextSibling;
     end;
