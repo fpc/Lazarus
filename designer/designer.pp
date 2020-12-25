@@ -1644,7 +1644,7 @@ begin
       for i:=0 to TWinControl(AComponent).ControlCount-1 do
       begin
         SubContrl:=TWinControl(AComponent).Controls[i];
-        if SubContrl.Name='' then
+        if (SubContrl.Owner<>AComponent) and (SubContrl.Name='') then
           SubContrl.Name:=UniqueName(SubContrl.ClassName);
       end;
     GlobalDesignHook.PersistentAdded(AComponent,false);
