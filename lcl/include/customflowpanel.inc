@@ -31,8 +31,7 @@ begin
   Result := TFlowPanelControl(inherited Add);
 end;
 
-procedure TFlowPanelControlList.AddControl(AControl: TControl;
-  AIndex: Integer);
+procedure TFlowPanelControlList.AddControl(AControl: TControl; AIndex: Integer);
 var
   I: Integer;
   Item: TFlowPanelControl;
@@ -71,8 +70,7 @@ begin
   Result := TCustomFlowPanel(GetOwner);
 end;
 
-function TFlowPanelControlList.GetItem(Index: Integer
-  ): TFlowPanelControl;
+function TFlowPanelControlList.GetItem(Index: Integer): TFlowPanelControl;
 begin
   Result := TFlowPanelControl(inherited GetItem(Index));
 end;

@@ -9416,48 +9416,6 @@ begin
     ObjectInspector1.DeleteCompFromList(APersistent);
 end;
 
-procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
-var
-  ActiveForm: TCustomForm;
-  ActiveUnitInfo: TUnitInfo;
-  ActiveSrcEdit: TSourceEditor;
-  OwnerClassName: string;
-  CurDesigner: TDesigner;
-begin
-  if not (APersistent is TComponent) then exit;
-  //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent)]);
-  CurDesigner:=TDesigner(FindRootDesigner(TComponent(APersistent)));
-  if CurDesigner=nil then exit;
-
-  if dfDestroyingForm in CurDesigner.Flags then exit;
-
-  ActiveSrcEdit:=nil;
-  if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
-    exit;
-  ActiveForm:=CurDesigner.Form;
-  if ActiveForm=nil then
-    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
-  // find source for form
-  ActiveUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
-  if ActiveUnitInfo=nil then begin
-    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
-  end;
-  if APersistent is TComponent then begin
-    // mark references modified
-    if APersistent is TComponent then
-      MarkUnitsModifiedUsingSubComponent(TComponent(APersistent));
-
-    // remember cursor position
-    SourceEditorManager.AddJumpPointClicked(Self);
-
-    // remove component definition from owner source
-    OwnerClassName:=CurDesigner.LookupRoot.ClassName;
-    //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent),' OwnerClassName=',OwnerClassName]);
-    CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
-                                         TComponent(APersistent).Name,false);
-  end;
-end;
-
 procedure TMainIDE.DesignerModified(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
@@ -13353,6 +13311,39 @@ begin
   if ObjectInspector1<>nil then   // Moving this to Idle handler somehow removes
     ObjectInspector1.FillComponentList(False); // selection of pasted components!
   //debugln('TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
+end;
+
+procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
+var
+  Comp: TComponent;
+  UnitInfo: TUnitInfo;
+  SrcEdit: TSourceEditor;
+  OwnerClassName: string;
+  CurDesigner: TDesigner;
+begin
+  if not (APersistent is TComponent) then exit;
+  Comp := TComponent(APersistent);
+  //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent)]);
+  CurDesigner:=TDesigner(FindRootDesigner(Comp));
+  if CurDesigner=nil then exit;
+  if dfDestroyingForm in CurDesigner.Flags then exit;
+  SrcEdit:=nil;
+  if not BeginCodeTool(CurDesigner,SrcEdit,UnitInfo,[ctfSwitchToFormSource]) then
+    exit;
+  if CurDesigner.Form=nil then
+    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
+  // find source for form
+  Assert(UnitInfo=Project1.UnitWithComponent(CurDesigner.LookupRoot), 'TMainIDE.PropHookPersistentDeleting check fail.');
+  if UnitInfo=nil then
+    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
+  // mark references modified
+  MarkUnitsModifiedUsingSubComponent(Comp);
+  // remember cursor position
+  SourceEditorManager.AddJumpPointClicked(Self);
+  // remove component definition from owner source
+  OwnerClassName:=CurDesigner.LookupRoot.ClassName;
+  //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent),' OwnerClassName=',OwnerClassName]);
+  CodeToolBoss.RemovePublishedVariable(UnitInfo.Source,OwnerClassName,Comp.Name,false);
 end;
 
 procedure TMainIDE.PropHookDeletePersistent(var APersistent: TPersistent);
