@@ -707,9 +707,24 @@ begin
   EndUpdate;
 end;
 
+function FindCollectionNode(ANode: TTreeNode): TTreeNode;
+begin
+  ANode := ANode.GetFirstChild;
+  while Assigned(ANode) do
+  begin
+    DebugLn(['FindCollectionNode: Testing node ', TPersistent(ANode.Data)]);
+    if TObject(ANode.Data) is TOwnedCollection then
+      Exit(ANode);
+    ANode := ANode.GetNextSibling;
+  end;
+  Result := Nil;
+end;
+
 function TComponentTreeView.FindAndChange(APers: TPersistent;
   ZOrderDel: TZOrderDelete): Boolean;
 // APers is Component to be moved or deleted based on ZOrderDel value.
+var
+  DoneChange: Boolean;
 
   procedure ChangeNode(ANode: TTreeNode);
   // Change ZOrder of the given node or delete it.
@@ -741,21 +756,36 @@ function TComponentTreeView.FindAndChange(APers: TPersistent;
     end;
   end;
 
-  function IterateTree(ANode: TTreeNode): Boolean;
+  procedure IterateTree(ANode: TTreeNode);
+  var
+    CollNode: TTreeNode;
   begin
     if TObject(ANode.Data)=APers then
     begin
       ChangeNode(ANode);
-      Exit(True);                   // Found and changed.
+      DoneChange := True;
+      Exit;                         // Found and changed.
     end;
     ANode := ANode.GetFirstChild;
-    while ANode<>nil do
+    while Assigned(ANode) and not DoneChange do
     begin
-      Result := IterateTree(ANode); // Recursive call.
-      if Result then Exit;          // Found in a child item. Don't search more.
+      IterateTree(ANode);           // Recursive call.
+      if DoneChange then
+      begin
+        // After a node was changed, search a Collection from its siblings and
+        // rebuild its items if found. Needed for FlowPanel.ControlList at least.
+        CollNode := FindCollectionNode(ANode);
+        if Assigned(CollNode) then
+        begin
+          DebugLn(['IterateTree: Rebuilding Collection node ', TOwnedCollection(CollNode.Data)]);
+          CollNode.DeleteChildren;
+          BuildComponentNodes(False);
+          CollNode.Expand(False);
+        end;
+        Exit;                       // Found in a child item. Don't search more.
+      end;
       ANode := ANode.GetNextSibling;
     end;
-    Result := False;
   end;
 
 begin
@@ -763,7 +793,9 @@ begin
   Assert(Assigned(APers), 'TComponentTreeView.FindAndChangeItem: APers=Nil.');
   Assert(Items.GetFirstNode.GetNextSibling=Nil,
          'TComponentTreeView.FindAndChange: Top node has siblings.');
-  Result := IterateTree(Items.GetFirstNode);
+  DoneChange := False;
+  IterateTree(Items.GetFirstNode);
+  Result := DoneChange;
 end;
 
 procedure TComponentTreeView.ChangeCompZOrder(APersistent: TPersistent;
