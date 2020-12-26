@@ -45,12 +45,22 @@ var
 begin
   redirect_stderr.DoShowWindow := False;
   Application.Initialize;
-  LazIDEInstances.PerformCheck;
-  if not LazIDEInstances.StartIDE then
-    Exit;
   ALazarusManager := TLazarusManager.Create(nil);
-  ALazarusManager.Initialize;
-  ALazarusManager.Run;
-  FreeAndNil(ALazarusManager);
+  try
+    // parse params
+    ALazarusManager.Initialize;
+    // if started by lazarus, wait for it to exit
+    ALazarusManager.WaitForLazarus;
+
+    // if there is a lazarus instance accepting files, pass files to that
+    LazIDEInstances.PerformCheck;
+    if not LazIDEInstances.StartIDE then
+      Exit;
+
+    // start lazarus
+    ALazarusManager.Run;
+  finally
+    FreeAndNil(ALazarusManager);
+  end;
 end.
 

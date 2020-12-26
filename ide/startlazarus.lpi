@@ -50,6 +50,7 @@
       <Unit0>
         <Filename Value="startlazarus.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="StartLazarus"/>
       </Unit0>
       <Unit1>
         <Filename Value="lazarusmanager.pas"/>

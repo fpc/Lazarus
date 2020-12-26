@@ -136,10 +136,10 @@ type
     FShowSplashOption: boolean;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
-    procedure WaitForLazarus;
   public
     destructor Destroy; override;
     procedure Initialize;
+    procedure WaitForLazarus;
     procedure Run;
     procedure ShowSplash;
     property ShowSplashOption: boolean read FShowSplashOption write FShowSplashOption;
@@ -274,6 +274,16 @@ begin
 end;
 
 procedure TLazarusManager.Run;
+
+  procedure AddExpandedParam(Params: TStringListUTF8; Param: string);
+  begin
+    // skip startlazarus params
+    if LeftStr(Param,length(StartLazarusPidOpt))=StartLazarusPidOpt then
+      exit;
+    // expand filenames and append
+    Params.Add(ExpandParamFile(Param));
+  end;
+
 var
   Restart: boolean;
   DefaultDir: String;
@@ -286,7 +296,6 @@ var
   Params: TStringListUTF8;
   i: Integer;
 begin
-  WaitForLazarus;
   try
     StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
     if FileIsSymlink(StartPath) then
@@ -402,7 +411,7 @@ begin
         Params.Add(NoSplashScreenOptLong);
         Params.Add(StartedByStartLazarusOpt);
         for i:=0 to FCmdLineParams.Count-1 do
-          Params.Add(ExpandParamFile(FCmdLineParams[i]));
+          AddExpandedParam(Params,FCmdLineParams[i]);
         FLazarusProcess.Process.Parameters.AddStrings(Params);
       finally
         Params.Free;
