@@ -912,10 +912,13 @@ var
   var
     i: Integer;
     se: TSourceEditorInterface;
+    ASourceEditorWindowData: TSourceEditorWindowData;
   begin
     if (LastActiveSourceEditorWindow = nil) or (LastActiveSourceEditor = nil) then
       Exit(False);
-    for se in SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList.Keys do
+
+    ASourceEditorWindowData := SourceEditorWindows[LastActiveSourceEditorWindow];
+    for se in ASourceEditorWindowData.FPageCtrlList.Keys do
     begin
       Result := True;
       for i := 0 to LastActiveSourceEditorWindow.Count - 1 do
@@ -1022,6 +1025,7 @@ var
   LSourceEditor: TSourceEditorInterface;
   LPageCtrl: TModulePageControl;
   LSourceEditorWindow: TSourceEditorWindowInterface;
+  LSourceEditorWindowData: TSourceEditorWindowData;
   LFormData: TDesignFormData;
 begin
   // sender is here as special parameter, because is possible situation where is moved editor
@@ -1033,8 +1037,10 @@ begin
 
   // parent don't exist anymore and we must search in each window...
   if Sender = nil then // but not for Sender = nil :P
-    LPageCtrl := SourceEditorWindows[LastActiveSourceEditorWindow].FPageCtrlList[LastActiveSourceEditor]
-  else
+  begin
+    LSourceEditorWindowData := SourceEditorWindows[LastActiveSourceEditorWindow];
+    LPageCtrl := LSourceEditorWindowData.FPageCtrlList[LastActiveSourceEditor]
+  end else
     LPageCtrl := AbsoluteFindModulePageControl(LSourceEditor);
 
   if LPageCtrl = nil then
