@@ -14,8 +14,6 @@ type
   { TAbstractResizer }
 
   TAbstractResizer = class(TComponent, IResizer)
-  private
-    procedure FunnyButtonClick(Sender: TObject);
   protected { IResizer }
     function GetActiveResizeFrame: IResizeFrame; virtual; abstract;
     function GetActiveDesignedForm: IDesignedForm; virtual; abstract;
@@ -56,7 +54,6 @@ type
     pDesignTimeUtils: TPanel;
     sbV: TScrollBar;
     sbH: TScrollBar;
-    bR: TButton;
 
     constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); virtual; reintroduce;
     property DesignScrollRight: Boolean index SB_Vert read FDesignScroll[SB_Vert] write SetDesignScroll;
@@ -69,18 +66,6 @@ type
 implementation
 
 { TAbstractResizer }
-
-procedure TAbstractResizer.FunnyButtonClick(Sender: TObject);
-begin
-  ShowMessage('Funny button with no functionality!'
-              + sLineBreak
-              + sLineBreak +
-              'Regards'
-              + sLineBreak +
-              'Maciej Izak'
-              + sLineBreak
-              + sLineBreak + 'DaThoX team FreeSparta.com project');
-end;
 
 procedure TAbstractResizer.TryBoundSizerToDesignedForm(Sender: TObject);
 var
@@ -348,22 +333,6 @@ begin
   pAddons.BevelOuter := bvNone;
   pAddons.Width:=0;
 
-  // Funny button
-  bR := TButton.Create(Self);
-  with bR do
-  begin
-    Parent := AParent;
-    Height := 17;
-    Width := 17;
-    AnchorSideRight.Control := pAddons;
-    AnchorSideBottom.Control := AParent;
-    AnchorSideBottom.Side := asrBottom;
-    Anchors := [akRight, akBottom];
-    Caption := 'R';
-    Visible := True;
-    OnClick := FunnyButtonClick;
-  end;
-
   sbV := TScrollBar.Create(Self);
   with sbV do
   begin
@@ -372,7 +341,7 @@ begin
     AnchorSideTop.Control := pMainDTU;
     AnchorSideTop.Side := asrBottom;
     AnchorSideRight.Control := pAddons;
-    AnchorSideBottom.Control := bR;
+    AnchorSideBottom.Side := asrBottom;
     Width := 17;
     Anchors := [akTop, akRight, akBottom];
     Visible := False;
@@ -384,7 +353,7 @@ begin
   begin
     Parent := AParent;
     AnchorSideLeft.Control := AParent;
-    AnchorSideRight.Control := bR;
+    AnchorSideRight.Side := asrRight;
     AnchorSideBottom.Control := AParent;
     AnchorSideBottom.Side := asrBottom;
     Anchors := [akLeft, akRight, akBottom];
@@ -404,6 +373,9 @@ begin
     Anchors := [akTop, akLeft, akRight, akBottom];
     BevelOuter := bvNone;
   end;
+
+  sbV.AnchorSideBottom.Control := pMain;
+  sbH.AnchorSideRight.Control := pMain;
 
   pMain.OnChangeBounds:=TryBoundSizerToDesignedForm;
 end;
