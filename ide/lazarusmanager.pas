@@ -397,19 +397,21 @@ begin
         if (EnvOverrides<>nil) and (EnvOverrides.Count>0) then
           AssignEnvironmentTo(FLazarusProcess.Process.Environment,EnvOverrides);
         {$IFDEF darwin}
-        // "open" process runs a bundle, but doesn't wait for it to finish execution
-        // "startlazarus" logic suggests that the Lazarus process would be waited
-        // and if the special 99 (ExitCodeRestartLazarus) code is received,
-        // would repeat the restart process.
-        // Since "open" doesn't play nice with "startlazarus" logic.
-        // The arguments would not indicate that lazarus was started by startlazarus
+        // GUI bundles must be opened by "open".
+        // "open" runs a bundle, but doesn't wait for it to finish execution.
+        // startlazarus will exit and lazarus has to start a new startlazarus
+        // when it needs a restart
         FLazarusProcess.Process.Executable:='/usr/bin/open';
         Params.Add('-a');
         Params.Add(FLazarusPath);
         Params.Add('--args');
+        {$ELSE}
+        // tell lazarus, startlazarus is waiting for its exitcode
+        // When the special 99 (ExitCodeRestartLazarus) code is received,
+        // start a new lazars
+        Params.Add(StartedByStartLazarusOpt);
         {$ENDIF}
         Params.Add(NoSplashScreenOptLong);
-        Params.Add(StartedByStartLazarusOpt);
         for i:=0 to FCmdLineParams.Count-1 do
           AddExpandedParam(Params,FCmdLineParams[i]);
         FLazarusProcess.Process.Parameters.AddStrings(Params);
@@ -422,8 +424,12 @@ begin
       FLazarusProcess.OnStart := @LazarusProcessStart;
       DebugLn(['Info: (startlazarus) [TLazarusManager.Run] exe',FLazarusProcess.Process.Executable,' Params=[',FLazarusProcess.Process.Parameters.Text,']']);
       FLazarusProcess.Execute;
+      {$IFDEF darwin}
+      Restart:=false;
+      {$ELSE}
       FLazarusProcess.WaitOnExit;
       Restart := FLazarusProcess.WantsRestart;
+      {$ENDIF}
       FreeAndNil(FLazarusProcess);
     end;
   until not Restart;
