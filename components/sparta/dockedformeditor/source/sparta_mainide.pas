@@ -1346,7 +1346,9 @@ begin
       Exit;
     LForm := TCustomForm(GlobalDesignHook.LookupRoot);
     LFormData := FindDesignFormData(LForm);
-    LFormData.RepaintFormImages;
+    LSourceWindow := (LFormData as IDesignedFormIDE).LastActiveSourceWindow;
+    LPageCtrl := FindModulePageControl(LSourceWindow);
+    LPageCtrl.BoundToDesignTabSheet;
   end;
 end;
 
