@@ -748,7 +748,9 @@ type
     // manual docking
     procedure ManualFloat(AControl: TControl);
     procedure ManualDock(SrcSite: TAnchorDockHostSite; TargetSite: TCustomForm;
-                         Align: TAlign; TargetControl: TControl = nil);
+                         Align: TAlign; TargetControl: TControl = nil); overload;
+    procedure ManualDock(SrcSite: TAnchorDockHostSite; TargetPanel: TAnchorDockPanel;
+                         Align: TAlign; TargetControl: TControl = nil); overload;
     function ManualEnlarge(Site: TAnchorDockHostSite; Side: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
 
@@ -3639,6 +3641,56 @@ begin
   BeginUpdate;
   try
     Site.ExecuteDock(SrcSite,TargetControl,Align);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TAnchorDockMaster.ManualDock(SrcSite: TAnchorDockHostSite;
+  TargetPanel: TAnchorDockPanel; Align: TAlign; TargetControl: TControl);
+var
+  Site: TAnchorDockHostSite;
+  aManager: TAnchorDockManager;
+  DockObject: TDragDockObject;
+begin
+  {$IFDEF VerboseAnchorDocking}
+  debugln(['TAnchorDockMaster.ManualDock SrcSite=',DbgSName(SrcSite),' TargetPanel=',DbgSName(TargetPanel),' Align=',dbgs(Align),' TargetControl=',DbgSName(TargetControl)]);
+  {$ENDIF}
+  if SrcSite.IsParentOf(TargetPanel) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock SrcSite.IsParentOf(TargetSite)');
+  if TargetPanel.IsParentOf(SrcSite) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock TargetSite.IsParentOf(SrcSite)');
+
+
+  aManager:=TAnchorDockManager(TargetPanel.DockManager);
+  Site:=aManager.GetChildSite;
+  if Site=nil then begin
+    // dock as first site into AnchorDockPanel
+    {$IFDEF VerboseAnchorDocking}
+    debugln(['TAnchorDockMaster.ManualDock dock as first site into AnchorDockPanel: SrcSite=',DbgSName(SrcSite),' TargetPanel=',DbgSName(TargetPanel),' Align=',dbgs(Align)]);
+    {$ENDIF}
+    BeginUpdate;
+    try
+      DockObject := TDragDockObject.Create(SrcSite);
+      try
+        DockObject.DropAlign:=alClient;
+        DockObject.DockRect:=SrcSite.BoundsRect;
+        DockObject.Control.Dock(TargetPanel, SrcSite.BoundsRect);
+        aManager.InsertControl(DockObject);
+      finally
+        DockObject.Free;
+      end;
+    finally
+      EndUpdate;
+    end;
+    exit;
+  end;
+
+  if AutoFreedIfControlIsRemoved(Site,SrcSite) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock TargetPanel depends on SrcSite');
+  BeginUpdate;
+  try
+    Site.ExecuteDock(SrcSite,TargetPanel,alClient);
   finally
     EndUpdate;
   end;
