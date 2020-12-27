@@ -1183,6 +1183,7 @@ var
   MButton: NSInteger;
   bndPt, clPt, srchPt: TPoint;
   dx,dy: double;
+  isPrecise: Boolean;
 const
   WheelDeltaToLCLY = 1200; // the basic (one wheel-click) is 0.1 on cocoa
   WheelDeltaToLCLX = 1200; // the basic (one wheel-click) is 0.1 on cocoa
@@ -1211,10 +1212,12 @@ begin
 
   if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
   begin
+    isPrecise := event.hasPreciseScrollingDeltas;
     dx := event.scrollingDeltaX;
     dy := event.scrollingDeltaY;
   end else
   begin
+    isPrecise := false;
     dx := event.deltaX;
     dy := event.deltaY;
   end;
@@ -1225,7 +1228,10 @@ begin
   if dy <> 0 then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
-    Msg.WheelDelta := sign(dy) * LCLStep;
+    if isPrecise then
+      Msg.WheelDelta := Round(dy * LCLStep)
+    else
+      Msg.WheelDelta := sign(dy) * LCLStep;
   end
   else
   if dx <> 0 then
@@ -1234,7 +1240,10 @@ begin
     // see "deltaX" documentation.
     // on macOS: -1 = right, +1 = left
     // on LCL:   -1 = left,  +1 = right
-    Msg.WheelDelta := sign(-dx) * LCLStep;
+    if isPrecise then
+      Msg.WheelDelta := Round(-dx * LCLStep)
+    else
+      Msg.WheelDelta := sign(-dx) * LCLStep;
   end
   else
     // Filter out empty events - See bug 28491
