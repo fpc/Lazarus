@@ -1,4 +1,4 @@
-unit regpas2jsatom;
+unit regpas2jsvscode;
 
 {$mode objfpc}{$H+}
 interface
@@ -9,33 +9,33 @@ uses
 
 type
 
-  { TAtomPackageProjectDescriptor }
+  { TVSCodeExtensionProjectDescriptor }
 
-  TAtomPackageProjectDescriptor = class(TProjectDescriptor)
+  TVSCodeExtensionProjectDescriptor = class(TProjectDescriptor)
   Private
-    FPackageClassName,
+    FPackagePublisher : string;
+    FPackageClassName : String;
     FPackageDir,
     FPackageLicense,
     FPackageName,
     FPackageDescription : String;
-    FlinkPackage : Boolean;
     FKeyWords,
     FCommands : TStrings;
-    FActivationCommands : TStrings;
-    procedure AddCSSFile(aProject: TLazProject);
-    procedure AddFileToProject(aProject: TLazProject; const aFileName: string);
+    FContributesCommands : TStrings;
+    FFiles : TStrings;
+    procedure AddFileToProject(const aFileName: string);
     procedure AddGlueFile(aProject: TLazProject);
-    procedure AddKeyMapFile(aProject: TLazProject);
-    procedure AddMenuFile(aProject: TLazProject);
+    procedure AddLaunchFile(aProject: TLazProject);
     procedure AddPackageJSONFile(aProject: TLazProject);
     procedure AddProjectFile(AProject: TLazProject);
+    procedure AddTasksFile(aProject: TLazProject);
     procedure CreateProjectDirs;
     procedure CreateProjectSource(Src: TStrings);
-    procedure DoDefaultReplacements(Src: TStrings);
+    procedure DoDefaultReplaceMents(Src: TStrings);
     procedure InitVars;
     procedure InsertHandlerDefinitions(Src: TStrings; aIndex, aIndent: Integer);
     procedure InsertHandlerImplementations(Src: TStrings; aIndex: Integer);
-    procedure InsertHandlerRegistrations(Src: TStrings; aIndex: Integer);
+    procedure InsertHandlerRegistrations(Src: TStrings; aIndex,aIndent: Integer);
     function LoadDefault(Src: TStrings; aFileName: string): boolean;
     Function ShowOptionsDialog : TModalResult;
   public
@@ -55,39 +55,37 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF UNIX}
-  baseunix,
-  {$ENDIF}
+  fpjson,frmpas2jsvscodeextensionsettings,  CompOptsIntf,
+  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions;
 
-  fpjson,frmpas2jsatompackagesettings,  CompOptsIntf,
-  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
+Resourcestring
+  SNewVSCodeExtension = 'Pas2js VS Code extension';
+  SNewVSCodeExtensionDescr = 'Create a new pas2js VS Code extension';
 
 Var
-  AtomProjDesc:TAtomPackageProjectDescriptor;
-
+  VSCodeProjDesc:TVSCodeExtensionProjectDescriptor;
 
 procedure Register;
 
 begin
-  //RegisterIdeMenuCommand(itmOptionsDialogs,STemplateSettings,SProjectTemplateSettings,nil,@ChangeSettings);
-  AtomProjDesc:=TAtomPackageProjectDescriptor.Create();
-  RegisterProjectDescriptor(AtomProjDesc);
+  VSCodeProjDesc:=TVSCodeExtensionProjectDescriptor.Create();
+  RegisterProjectDescriptor(VSCodeProjDesc);
 end;
 
 
-{ TAtomPackageProjectDescriptor }
+{ TVSCodeExtensionProjectDescriptor }
 
-function TAtomPackageProjectDescriptor.ShowOptionsDialog : TModalResult;
+function TVSCodeExtensionProjectDescriptor.ShowOptionsDialog : TModalResult;
 
 begin
-  With TAtomPackageSettingsForm.Create(Application) do
+  With TVSCodeExtensionSettingsForm.Create(Application) do
     try
       PkgDescription:=FPackageDescription;
       PkgName:=FPackageName;
-      pkgClassName:= FPackageClassName;
-      pkgLink:=FlinkPackage;
+      PkgPublisher:=FPackagePublisher;
+      PkgClassName:=FPackageClassName;
       PkgCommands:=FCommands;
-      PkgActivationCommands:=FActivationCommands;
+      PkgContributesCommands:=FContributesCommands;
       PkgLicense:=FPackageLicense;
       PkgKeyWords:=FkeyWords.CommaText;
       PkgDir:=FPackageDir;
@@ -96,13 +94,13 @@ begin
         begin
         FPackageDescription:=PkgDescription;
         FPackageName:=PkgName;
-        FlinkPackage:=pkgLink;
+        FPackageClassName:=PkgClassName;
+        FPackagePublisher:=PkgPublisher;
         FCommands.Assign(PkgCommands);
-        FActivationCommands.Assign(PkgActivationCommands);
+        FContributesCommands.Assign(PkgContributesCommands);
         FPackageLicense:=PkgLicense;
         FKeyWords.CommaText:=PkgKeyWords;
         FPackageDir:=IncludeTrailingPathDelimiter(PkgDir);
-        FPackageClassName:=pkgClassName;
         end;
     finally
       Free;
@@ -110,89 +108,80 @@ begin
 end;
 
 
-constructor TAtomPackageProjectDescriptor.Create;
+constructor TVSCodeExtensionProjectDescriptor.Create;
 begin
   inherited Create;
   FKeyWords:=TStringList.Create;
   FCommands:=TStringList.Create;
-  FActivationCommands:=TStringList.Create;
+  FContributesCommands:=TStringList.Create;
+  FFiles:=TStringList.Create;
   InitVars;
-  Name:='pas2jsatompackage';
+  Name:='pas2jsvscodeextension';
 end;
 
-destructor TAtomPackageProjectDescriptor.destroy;
+destructor TVSCodeExtensionProjectDescriptor.destroy;
 begin
+  FreeAndNil(FFiles);
   FreeAndNil(FCommands);
   FreeAndNil(FKeywords);
-  FreeAndNil(FActivationCommands);
+  FreeAndNil(FContributesCommands);
   Inherited;
 end;
 
 
-function TAtomPackageProjectDescriptor.GetLocalizedName: string;
+function TVSCodeExtensionProjectDescriptor.GetLocalizedName: string;
 begin
-  Result:=pjsdNewAtomPackage;
+  Result:=SNewVSCodeExtension;
 end;
 
-function TAtomPackageProjectDescriptor.GetLocalizedDescription: string;
+function TVSCodeExtensionProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=pjsdNewAtomPackageDescr;
+  Result:=SNewVSCodeExtensionDescr;
 end;
 
-Procedure TAtomPackageProjectDescriptor.InitVars;
+Procedure TVSCodeExtensionProjectDescriptor.InitVars;
 
 begin
-  FPackageDir:=GetUserDir+'github'+pathdelim+'myatompackage';
-  FPackageName:='my-atom-package';
-  FPackageDescription:='My atom package';
-  FPackageClassName:='TMyAtomPackageApplication';
+  FPackageDir:=GetUserDir+'myvscodeextension';
+  FPackageClassName:='TMyVSCodeExtensionApplication';
+
+  FPackageName:='myvscodeextension';
+  FPackageDescription:='My VS Code Extension';
+  FPackagePublisher:='me';
   FPackageLicense:='MIT';
-{$IFDEF UNIX}
-  FLinkPackage:=True;
-{$ELSE}
-  FLinkPackage:=False;
-{$ENDIF}
-  FKeywords.Clear;
+  FKeyWords.Clear;
   FCommands.Clear;
-  FActivationCommands.Clear;
+  FContributesCommands.Clear;
 end;
 
-function TAtomPackageProjectDescriptor.DoInitDescriptor: TModalResult;
+function TVSCodeExtensionProjectDescriptor.DoInitDescriptor: TModalResult;
 
 begin
-  InitVars;
+  initVars;
   Result:=ShowOptionsDialog;
+
 end;
 
-Procedure TAtomPackageProjectDescriptor.CreateProjectDirs;
+Procedure TVSCodeExtensionProjectDescriptor.CreateProjectDirs;
 
 Const
-  DirCount = 5;
+  DirCount = 3;
   DefDirs : Array [1..DirCount] of string =
-      ('','lib','keymaps','menus','styles');
+      ('','.vscode','js');
 
 Var
   S : String;
-  L : String;
 
 begin
   FPackageDir:=IncludeLeadingPathDelimiter(FPackageDir);
   For S in DefDirs do
     If not ForceDirectories(FPackageDir+S) then
       ShowMessage('Failed to create directory '+FPackageDir+S);
-{$IFDEF UNIX}
-  if FLinkPackage then
-    begin
-    L:=Sysutils.GetUserDir+'.atom'+PathDelim+'packages/'+FPackageName;
-    fpSymlink(PChar(FPackageDir),PChar(L));
-    end;
-{$ENDIF}
 end;
 
-{$I atomdefaults.inc}
+{$I vscodedefaults.inc}
 
-
-Procedure TAtomPackageProjectDescriptor.InsertHandlerDefinitions(Src : TStrings; aIndex,aIndent : Integer);
+Procedure TVSCodeExtensionProjectDescriptor.InsertHandlerDefinitions(Src : TStrings; aIndex,aIndent : Integer);
 
 Var
   I,Cnt : Integer;
@@ -213,11 +202,11 @@ begin
   For I:=0 to FCommands.Count-1 do
     begin
     FCommands.GetNameValue(I,N,V);
-    AddLn(Prefix+'Procedure '+V+';');
+    AddLn(Prefix+'function '+V+'(args : TJSValueDynArray) : JSValue;');
     end;
 end;
 
-Procedure TAtomPackageProjectDescriptor.InsertHandlerImplementations(Src : TStrings; aIndex : Integer);
+Procedure TVSCodeExtensionProjectDescriptor.InsertHandlerImplementations(Src : TStrings; aIndex : Integer);
 
 Var
   cnt : Integer;
@@ -231,6 +220,7 @@ Var
 Var
   I : Integer;
   N,V : String;
+
 begin
   cnt:=0;
   Src.Delete(aIndex);
@@ -238,15 +228,16 @@ begin
     begin
     AddLn('');
     FCommands.GetNameValue(I,N,V);
-    AddLn('Procedure '+FPackageClassName+'.'+V+';');
+    AddLn('function '+FPackageClassName+'.'+V+'(args : TJSValueDynArray) : JSValue;');
     AddLn('');
     AddLn('begin');
+    AddLn('  Result:=null;');
     AddLn('end;');
     AddLn('');
     end;
 end;
 
-Procedure TAtomPackageProjectDescriptor.InsertHandlerRegistrations(Src : TStrings; aIndex : Integer);
+Procedure TVSCodeExtensionProjectDescriptor.InsertHandlerRegistrations(Src : TStrings; aIndex,aIndent : Integer);
 
 Var
   cnt : Integer;
@@ -264,16 +255,15 @@ Var
 begin
   Src.Delete(aIndex);
   if FCommands.Count=0 then exit;
-  AddLn('cmds:=TJSObject.New;');
   For I:=0 to FCommands.Count-1 do
     begin
     FCommands.GetNameValue(I,N,V);
-    AddLn('cmds['''+N+''']:=@'+V+';');
+    AddLn('disp:=VSCode.commands.registerCommand('''+N+''', @'+V+');');
+    AddLn('TJSArray(ExtensionContext.subscriptions).push(disp);');
     end;
-  AddLn('subscriptions.add(atom.commands.add(''workspace'', cmds));');
 end;
 
-Procedure TAtomPackageProjectDescriptor.DoDefaultReplacements(Src : TStrings);
+Procedure TVSCodeExtensionProjectDescriptor.DoDefaultReplacements(Src : TStrings);
 
 Var
   I,P : Integer;
@@ -292,11 +282,11 @@ begin
       InsertHandlerImplementations(Src,I);
     P:=pos('%PACKAGEHANDLERREGS%',Src[i]);
     if P>0 then
-      InsertHandlerRegistrations(Src,I);
+      InsertHandlerRegistrations(Src,I,P);
     end;
 end;
 
-function TAtomPackageProjectDescriptor.LoadDefault(Src : TStrings; aFileName : string) : boolean;
+function TVSCodeExtensionProjectDescriptor.LoadDefault(Src : TStrings; aFileName : string) : boolean;
 
 Var
   FN : String;
@@ -312,14 +302,15 @@ begin
     end;
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddGlueFile(aProject : TLazProject);
+
+Procedure TVSCodeExtensionProjectDescriptor.AddGlueFile(aProject : TLazProject);
 
 Var
   Src : TStrings;
   FN : String;
 
 begin
-  FN:=FPackageDir+'lib'+PathDelim+'packageglue.js';
+  FN:=FPackageDir+'js'+PathDelim+'packageglue.js';
   Src:=TStringList.Create;
   try
     if not LoadDefault(Src,'glue.js') then
@@ -329,84 +320,64 @@ begin
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddCSSFile(aProject : TLazProject);
+Procedure TVSCodeExtensionProjectDescriptor.AddTasksFile(aProject : TLazProject);
 
 Var
   Src : TStrings;
   FN : String;
 
 begin
-  FN:=FPackageDir+'styles'+PathDelim+'package.less';
+  FN:=FPackageDir+'.vscode'+PathDelim+'tasks.json';
   Src:=TStringList.Create;
   try
-    if not LoadDefault(Src,'package.less') then
-      GetDefaultCSSFile(Src);
+    if not LoadDefault(Src,'tasks.json') then
+      GetDefaultTasksFile(Src);
     DoDefaultReplaceMents(Src);
     Src.SaveToFile(FN);
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
-
+  AddFileToProject(FN);
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddKeyMapFile(aProject : TLazProject);
+Procedure TVSCodeExtensionProjectDescriptor.AddLaunchFile(aProject : TLazProject);
 
 Var
   Src : TStrings;
   FN : String;
 
 begin
-  FN:=FPackageDir+'keymaps'+PathDelim+'keymaps.json';
+  FN:=FPackageDir+'.vscode'+PathDelim+'launch.json';
   Src:=TStringList.Create;
   try
-    if not LoadDefault(Src,'keymaps.json') then
-      GetDefaultKeyMapFile(Src);
+    if not LoadDefault(Src,'launch.json') then
+      GetDefaultLaunchFile(Src);
     DoDefaultReplaceMents(Src);
     Src.SaveToFile(FN);
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddMenuFile(aProject : TLazProject);
+
+
+Procedure TVSCodeExtensionProjectDescriptor.AddPackageJSONFile(aProject : TLazProject);
 
 Var
-  Src : TStrings;
-  FN : String;
-
-begin
-  FN:=FPackageDir+'menus'+PathDelim+'menu.json';
-  Src:=TStringList.Create;
-  try
-    if not LoadDefault(Src,'menu.json') then
-      GetDefaultMenuFile(Src);
-    DoDefaultReplaceMents(Src);
-    Src.SaveToFile(FN);
-  finally
-    Src.Free;
-  end;
-  AddFileToProject(aProject,FN);
-end;
-
-Procedure TAtomPackageProjectDescriptor.AddPackageJSONFile(aProject : TLazProject);
-
-Var
-  aJSON,B : TJSONObject;
-  keys : TJSONArray;
+  b,aJSON,Contribs,Cmd : TJSONObject;
+  cmds, keys : TJSONArray;
   S,N,V : String;
-  JS : TJSONStringType;
   I : Integer;
   aStream : TStringStream;
 
 begin
   aJSON:=TJSONObject.Create([
    'name',FPackagename,
-   'main','lib/packageglue',
+   'main','js/packageglue.js',
    'version','0.0.1',
    'description',FPackageDescription,
    'license',FPackageLicense
@@ -416,34 +387,45 @@ begin
     aJSON.add('keywords',keys);
     For S in FKeyWords do
       Keys.Add(S);
-    b:=TJSONObject.Create;
-    aJSON.Add('activationCommands',b);
-    For I:=0 to FActivationCommands.Count-1 do
+    Contribs:=TJSONObject.Create;
+    aJSON.Add('contributes',Contribs);
+    cmds:=TJSONArray.Create;
+    Contribs.Add('commands',cmds);
+    For I:=0 to FContributesCommands.Count-1 do
       begin
-      FActivationCommands.GetNameValue(I,N,V);
-      b.Add(V,FPackageName+':'+N);
+      FContributesCommands.GetNameValue(I,N,V);
+      cmd:=TJSONObject.Create(['command',N,'title',v]);
+      cmds.Add(cmd);
       end;
-    b:=TJSONObject.Create(['atom','>=1.0.0 <2.0.0']);
+    cmds:=TJSONArray.Create;
+    aJSON.Add('activationEvents',cmds);
+    for I:=0 to FCommands.Count-1 do
+      begin
+      FContributesCommands.GetNameValue(I,N,V);
+      cmds.Add('onCommand:'+N);
+      end;
+    b:=TJSONObject.Create(['vscode','^1.32.0']);
     aJSON.Add('engines',b);
-    b:=TJSONObject.Create([]);
-    aJSON.Add('dependencies',b);
-    JS:=aJSON.FormatJSON;
-    aStream:=TStringStream.Create(JS);
+    b:=TJSONObject.Create(['@types/vscode', '^1.32.0']);
+    aJSON.Add('devDependencies',b);
+    aStream:=TStringStream.Create(aJSON.FormatJSON);
     aStream.SaveToFile(FPackageDir+'package.json');
   finally
     aJSON.Free;
+    aStream.Free;
   end;
 end;
 
-procedure TAtomPackageProjectDescriptor.CreateProjectSource(Src : TStrings);
+procedure TVSCodeExtensionProjectDescriptor.CreateProjectSource(Src : TStrings);
 
 begin
   if not LoadDefault(Src,'project.lpr') then
     GetDefaultProjectFile(Src);
   DoDefaultReplaceMents(Src);
+
 end;
 
-procedure TAtomPackageProjectDescriptor.AddProjectFile(AProject: TLazProject);
+procedure TVSCodeExtensionProjectDescriptor.AddProjectFile(AProject: TLazProject);
 
 Var
   aFile : TLazProjectFile;
@@ -466,8 +448,7 @@ begin
   end;
 end;
 
-function TAtomPackageProjectDescriptor.InitProject(AProject: TLazProject) : TModalResult;
-
+function TVSCodeExtensionProjectDescriptor.InitProject(AProject: TLazProject) : TModalResult;
 
 Var
   CompOpts : TLazCompilerOptions;
@@ -478,26 +459,33 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:='lib/'+StripNonIdentifierChars(FPackageName)+'.js';
-  CompOpts.CustomOptions:='-Jiatomimports.js -Jirtl.js -Jc '+CompOpts.CustomOptions+' -Jiatomexports.js';
+  CompOpts.CustomOptions:='-Jivscodeimports.js -Jirtl.js -Jc '+CompOpts.CustomOptions+' -Javscodeexports.js';
   SetDefaultNodeRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AddProjectFile(aProject);
   Result:=mrOK;
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddFileToProject(aProject : TLazProject; Const aFileName : string);
+Procedure TVSCodeExtensionProjectDescriptor.AddFileToProject(Const aFileName : string);
 
 begin
-  LazarusIDE.DoOpenEditorFile(aFileName, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);
+  FFiles.Add(aFileName);
 end;
 
-Function TAtomPackageProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TModalresult;
+
+
+Function TVSCodeExtensionProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TModalresult;
+
+var
+  aFileName : String;
 
 begin
+  FFiles.Clear;
   AddGlueFile(aProject);
-  AddCSSFile(aProject);
-  AddKeyMapFile(aProject);
-  AddMenuFile(aProject);
+  AddTasksFile(aProject);
+  AddLaunchFile(aProject);
   AddPackageJSONFile(aProject);
+  For aFileName in FFiles do
+    LazarusIDE.DoOpenEditorFile(aFileName, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);
   Result:=mrOK;
 end;
 

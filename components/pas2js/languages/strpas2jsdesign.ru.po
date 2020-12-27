@@ -171,6 +171,10 @@ msgstr "Выберите исполнимый файл Node.js"
 msgid "Select pas2js executable"
 msgstr "Выберите исполнимый файл pas2js"
 
+#: strpas2jsdesign.pjsdselectvscodetemplatedir
+msgid "Select VS Code extension template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdselectxexecutable"

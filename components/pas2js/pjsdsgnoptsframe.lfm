@@ -1,10 +1,10 @@
 object Pas2jsOptionsFrame: TPas2jsOptionsFrame
   Left = 0
-  Height = 428
+  Height = 479
   Top = 0
   Width = 507
   BorderSpacing.Left = 6
-  ClientHeight = 428
+  ClientHeight = 479
   ClientWidth = 507
   ParentShowHint = False
   ShowHint = True
@@ -277,7 +277,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     TabOrder = 10
     Text = 'AtomTemplateDirComboBox'
   end
-  object NodeJSBrowseButton1: TButton
+  object AtomTemplateDirBrowseButton: TButton
     AnchorSideTop.Control = AtomTemplateDirComboBox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -291,7 +291,52 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = '...'
-    OnClick = NodeJSBrowseButton1Click
+    OnClick = AtomTemplateDirBrowseButtonClick
     TabOrder = 11
+  end
+  object lblVSCodeTemplateDir: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AtomTemplateDirComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 16
+    Top = 413
+    Width = 227
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'VS Code Extension template directory'
+    ParentColor = False
+  end
+  object VSCodeTemplateDirComboBox: TComboBox
+    AnchorSideLeft.Control = lblVSCodeTemplateDir
+    AnchorSideTop.Control = lblVSCodeTemplateDir
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = NodeJSBrowseButton
+    Left = 6
+    Height = 27
+    Top = 431
+    Width = 472
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    ItemHeight = 0
+    TabOrder = 12
+    Text = 'VSCodeTemplateDirComboBox'
+  end
+  object VSCodeTemplateDirBrowseButton: TButton
+    AnchorSideTop.Control = VSCodeTemplateDirComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = VSCodeTemplateDirComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 478
+    Height = 27
+    Top = 431
+    Width = 23
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = VSCodeTemplateDirBrowseButtonClick
+    TabOrder = 13
   end
 end

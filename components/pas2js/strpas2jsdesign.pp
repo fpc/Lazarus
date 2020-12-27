@@ -38,6 +38,7 @@ Resourcestring
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
   pjsdSelectBrowserExecutable = 'Select browser executable';
   pjsdSelectAtomTemplateDir = 'Select Atom package template directory';
+  pjsdSelectVSCodeTemplateDir = 'Select VS Code extension template directory';
   pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea = 'You can use IDE '
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';

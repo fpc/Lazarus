@@ -24,14 +24,17 @@ Type
   { TPas2jsOptionsFrame }
 
   TPas2jsOptionsFrame = class(TAbstractIDEOptionsEditor)
+    VSCodeTemplateDirBrowseButton: TButton;
+    VSCodeTemplateDirComboBox: TComboBox;
     BBrowserBrowseButton: TButton;
     BrowserComboBox: TComboBox;
     BrowserLabel: TLabel;
     HTTPServerBrowseButton: TButton;
     HTTPServerCmdLabel: TLabel;
     HTTPServerComboBox: TComboBox;
+    lblVSCodeTemplateDir: TLabel;
     NodeJSBrowseButton: TButton;
-    NodeJSBrowseButton1: TButton;
+    AtomTemplateDirBrowseButton: TButton;
     NodeJSComboBox: TComboBox;
     AtomTemplateDirComboBox: TComboBox;
     NodeJSLabel: TLabel;
@@ -45,9 +48,10 @@ Type
     HTTPServerOptionsMemo: TMemo;
     procedure BBrowserBrowseButtonClick(Sender: TObject);
     procedure HTTPServerBrowseButtonClick(Sender: TObject);
-    procedure NodeJSBrowseButton1Click(Sender: TObject);
+    procedure AtomTemplateDirBrowseButtonClick(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
+    procedure VSCodeTemplateDirBrowseButtonClick(Sender: TObject);
   private
     function CheckCompiler({%H-}Buttons: TMsgDlgButtons): boolean;
   public
@@ -84,6 +88,21 @@ begin
   end;
 end;
 
+procedure TPas2jsOptionsFrame.VSCodeTemplateDirBrowseButtonClick(Sender: TObject
+  );
+var
+  ADirname: String;
+
+begin
+  aDirName:=VSCodeTemplateDirComboBox.Text;
+  if SelectDirectory(pjsdSelectVSCodeTemplateDir,aDirName,aDirName) then
+  begin
+    ADirName:=CleanAndExpandFilename(ADirName);
+    SetComboBoxText(VSCodeTemplateDirComboBox,ADirName,cstFilename,30);
+    PJSOptions.VSCodeTemplateDir:=ADirName;
+  end;
+end;
+
 procedure TPas2jsOptionsFrame.HTTPServerBrowseButtonClick(Sender: TObject);
 
 var
@@ -106,7 +125,7 @@ begin
   end;
 end;
 
-procedure TPas2jsOptionsFrame.NodeJSBrowseButton1Click(Sender: TObject);
+procedure TPas2jsOptionsFrame.AtomTemplateDirBrowseButtonClick(Sender: TObject);
 
 var
   ADirname: String;
@@ -237,6 +256,8 @@ begin
    SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
   SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
   HTTPServerOptionsMemo.Lines:=PJSOptions.HTTPServerOpts;
+  SetComboBoxText(AtomTemplateDirComboBox,PJSOptions.AtomTemplateDir,cstFilename,30);
+  SetComboBoxText(VSCodeTemplateDirComboBox,PJSOptions.VSCodeTemplateDir,cstFilename,30);
 end;
 
 procedure TPas2jsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -247,6 +268,8 @@ begin
   PJSOptions.BrowserFileName:=BrowserComboBox.Text;
   PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
   PJSOptions.HTTPServerOpts:=HTTPServerOptionsMemo.Lines;
+  PJSOptions.AtomTemplateDir:=AtomTemplateDirComboBox.Text;
+  PJSOptions.VSCodeTemplateDir:=VSCodeTemplateDirComboBox.Text;
   If PJSOptions.Modified then
     PJSOptions.Save;
 end;

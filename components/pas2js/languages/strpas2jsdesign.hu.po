@@ -173,6 +173,10 @@ msgstr "A Node.js alkalmazás kiválasztása"
 msgid "Select pas2js executable"
 msgstr "A pas2js alkalmazás kiválasztása"
 
+#: strpas2jsdesign.pjsdselectvscodetemplatedir
+msgid "Select VS Code extension template directory"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdselectxexecutable"
