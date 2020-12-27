@@ -85,10 +85,6 @@ end;
 
 procedure TVSCodeExtensionSettingsForm.FormShow(Sender: TObject);
 begin
-{$IFDEF WINDOWS}
-  cbLink.checked:=False;
-  cbLink.Enabled:=False;
-{$ENDIF}
 end;
 
 procedure TVSCodeExtensionSettingsForm.edtClassNameKeyPress(Sender: TObject;
