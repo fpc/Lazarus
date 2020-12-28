@@ -40,25 +40,27 @@ begin
   Application.Initialize;
   for X := 1 to ParamCount do
   begin
-    if LowerCase(ParamStr(X)) = '--help' then 
-    begin
-      S := TStringList.Create;
-      S.Add(slhelp_LHelpOptions);
-      S.Add('');
-      S.Add(slhelp_UsageLhelpFilenameContextIdHideIpcnameLhelpMyapp);
-      S.Add('');
-      S.Add(slhelp_HelpShowThisInformation);
-      S.Add(slhelp_HideStartHiddenButAcceptCommunicationsViaIPC);
-      S.Add(slhelp_ContextShowTheHelpInformationRelatedToThisContext);
-      S.Add(Format(slhelp_IpcnameTheNameOfTheIPCServerToListenOnForProgramsW, [LineEnding]));
+    case LowerCase(ParamStr(X)) of
+    '--help','-h':
+      begin
+        S := TStringList.Create;
+        S.Add(slhelp_LHelpOptions);
+        S.Add('');
+        S.Add(slhelp_UsageLhelpFilenameContextIdHideIpcnameLhelpMyapp);
+        S.Add('');
+        S.Add(slhelp_HelpShowThisInformation);
+        S.Add(slhelp_HideStartHiddenButAcceptCommunicationsViaIPC);
+        S.Add(slhelp_ContextShowTheHelpInformationRelatedToThisContext);
+        S.Add(Format(slhelp_IpcnameTheNameOfTheIPCServerToListenOnForProgramsW, [LineEnding]));
 
-      if TextRec(Output).Mode = fmClosed then
-        MessageDlg(S.Text, mtInformation, [mbOk], 0)
-      else
-        WriteLn(S.Text);
+        if TextRec(Output).Mode = fmClosed then
+          MessageDlg(S.Text, mtInformation, [mbOk], 0)
+        else
+          WriteLn(S.Text);
 
-      S.Free;
-      Exit;
+        S.Free;
+        Exit;
+      end;
     end;
   end;
   Application.CreateForm(THelpForm, HelpForm);
