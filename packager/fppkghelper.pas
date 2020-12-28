@@ -476,7 +476,7 @@ procedure TFppkgHelper.ReInitialize;
 begin
   FIsProperlyConfigured := fpcUnknown;
   {$IF FPC_FULLVERSION>30100}
-  FFPpkg.Free;
+  FreeAndNil(FFPpkg);
   {$ENDIF}
   InitializeFppkg;
 end;
