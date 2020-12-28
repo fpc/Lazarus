@@ -74,7 +74,7 @@ var
   nSource, nPoints: Integer;
   nStart: Integer;
   newPolygon: Boolean;
-  i: Integer;
+  i, j: Integer;
 
   procedure SavePolygonStartIndex(AIndex: Integer);
   begin
@@ -140,12 +140,29 @@ begin
   // Trim length of FStart array to occupied length
   SetLength(FStart, nStart);
 
-  // Draw polygon(s)
-  ADrawer.SetBrush(FBrush);
-  ADrawer.SetPen(FPen);
-  for i := 0 to High(FStart)-1 do
-    ADrawer.Polygon(FPoints, FStart[i], FStart[i+1] - FStart[i]);
+  SetLength(FPoints, nPoints + Length(FStart) - 1);
+  j := nPoints;
+  for i := High(FStart) downto 1 do
+  begin
+    FPoints[j] := FPoints[FStart[i]];
+    inc(j);
+  end;
 
+  // Draw polygon fill
+  if FBrush.Style <> bsClear then
+  begin
+    ADrawer.SetBrush(FBrush);
+    ADrawer.SetPenParams(psClear, clTAColor);
+    ADrawer.Polygon(FPoints, 0, Length(FPoints));
+  end;
+
+  // Draw border
+  if FPen.Style <> psClear then
+  begin
+    ADrawer.Pen := FPen;
+    for i := 0 to High(FStart) - 1 do
+      ADrawer.PolyLine(FPoints, FStart[i], FStart[i+1] - FStart[i]);
+  end;
 end;
 
 procedure TPolygonSeries.GetLegendItems(AItems: TChartLegendItems);
