@@ -376,7 +376,7 @@ var
   i, w: Integer;
   s: String;
 begin
-  SetLength(ALineMap, abs(FSelectionEndLine - FSelectLine)+1);
+  SetLength(ALineMap{%H-}, abs(FSelectionEndLine - FSelectLine)+1);
   UpdateLineDataEx(ALineMap, Min(FSelectionEndLine, FSelectLine),
     abs(FSelectionEndLine - FSelectLine)+1,
     FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, False, True);

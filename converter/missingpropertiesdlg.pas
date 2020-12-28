@@ -222,7 +222,7 @@ begin
   Result:=mrOk;
   OutS:='';
   aInStream.Position:=0;
-  SetLength(InS, aInStream.Size);
+  SetLength(InS{%H-}, aInStream.Size);
   aInStream.Read(InS[1],length(InS));
   i := 1;
   while i <= Length(InS) do begin

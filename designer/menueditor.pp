@@ -2495,7 +2495,7 @@ var
     }
     r.Right:=ClientWidth;
     r.Left:=r.Right - MenuBar_Height;
-    SetLength(pts, 4);
+    SetLength(pts{%H-}, 4);
     pts[0]:=Point(r.Left, ScaleY(9, 96));
     pts[1]:=Point(r.Left + ScaleX(4, 96), ScaleY(12, 96));
     pts[2]:=Point(r.Left, ScaleY(15, 96));

@@ -291,6 +291,7 @@ type
     procedure DefineBinaryProperty(const Name: string;
       {%H-}ReadData, {%H-}WriteData: TStreamProc;
       {%H-}HasData: Boolean); override;
+    procedure FlushBuffer; override;
     property DefinePropertyNames: TStrings read FDefinePropertyNames;
   end;
   
@@ -2636,6 +2637,11 @@ procedure TDefinePropertiesReader.DefineBinaryProperty(const Name: string;
   ReadData, WriteData: TStreamProc; HasData: Boolean);
 begin
   AddPropertyName(Name);
+end;
+
+procedure TDefinePropertiesReader.FlushBuffer;
+begin
+
 end;
 
 { TDefinePropertiesPersistent }

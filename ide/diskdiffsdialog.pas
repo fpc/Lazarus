@@ -116,7 +116,7 @@ begin
     try
       fs := TFileStreamUTF8.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
       try
-        SetLength(s, fs.Size);
+        SetLength(s{%H-}, fs.Size);
         if s <> '' then
           fs.Read(s[1], length(s));
         DiskEncoding := '';
@@ -169,7 +169,7 @@ begin
       try
         if fs.Size=length(CurSource) then begin
           // size has not changed => load to see difference
-          SetLength(DiskSource,fs.Size);
+          SetLength(DiskSource{%H-},fs.Size);
           fs.Read(DiskSource[1],length(DiskSource));
           if DiskSource=CurSource then
             PackageOk:=true;

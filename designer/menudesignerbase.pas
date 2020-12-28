@@ -200,7 +200,7 @@ var
   si: TShadowItemBase;
   mi: TMenuItem;
 begin
-  SetLength(Result, 0);
+  SetLength(Result{%H-}, 0);
   for si in FShadowList do
   begin
     mi:=si.RealItem;

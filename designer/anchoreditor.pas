@@ -764,8 +764,8 @@ begin
           akRight: SelectedControls.Sort(@compareControlRight);
           akBottom: SelectedControls.Sort(@compareControlBottom);
         end;
-        setlength(OldPositions,SelectedControls.Count);
-        setlength(OldPositions2,SelectedControls.Count);
+        setlength(OldPositions{%H-},SelectedControls.Count);
+        setlength(OldPositions2{%H-},SelectedControls.Count);
         for i:=0 to SelectedControls.Count-1 do begin
           OldPositions[i]:=NeighbourPosition(TControl(SelectedControls[i]));
           case CurNeighbour of

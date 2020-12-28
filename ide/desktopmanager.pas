@@ -897,7 +897,7 @@ var
   xDesktops: array of TCustomDesktopOpt;
   I: Integer;
 begin
-  SetLength(xDesktops, EnvironmentOptions.Desktops.Count);
+  SetLength(xDesktops{%H-}, EnvironmentOptions.Desktops.Count);
   for I := 0 to Length(xDesktops)-1 do
     xDesktops[I] := EnvironmentOptions.Desktops[I];
   ExportDesktops(xDesktops);

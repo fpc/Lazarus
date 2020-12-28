@@ -94,8 +94,8 @@ type
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
     procedure lvRegistersDrawCell(Sender: TObject; aCol, aRow: Integer;
-      aRect: TRect; aState: TGridDrawState);
-    procedure lvRegistersSelection(Sender: TObject; aCol, aRow: Integer);
+      aRect: TRect; {%H-}aState: TGridDrawState);
+    procedure lvRegistersSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
     procedure ToolButtonDispTypeClick(Sender: TObject);
     function GetCurrentRegisters: TRegisters;
   private

@@ -168,7 +168,7 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseDebuggerExecutable;
 
-    lDirName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, lDirText);
+    lDirName := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, lDirText{%H-});
     lExpandedName := CleanAndExpandFilename(lDirName);
     lDirName := GetValidDirectory(lDirName, {out} lDirNameF);
     OpenDialog.InitialDir := lDirName;

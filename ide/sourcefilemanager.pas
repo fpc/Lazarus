@@ -5139,7 +5139,7 @@ begin
               ,'T'+AnUnitInfo.ComponentName,'FORMDATA');
             AnUnitInfo.ComponentLastLRSStreamSize:=MemStream.Size;
             MemStream.Position:=0;
-            SetLength(CompResourceCode,MemStream.Size);
+            SetLength(CompResourceCode{%H-},MemStream.Size);
             MemStream.Read(CompResourceCode[1],length(CompResourceCode));
           finally
             MemStream.Free;
