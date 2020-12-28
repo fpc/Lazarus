@@ -1026,11 +1026,18 @@ begin
         0: Result := RegisterLoc(0); // EAX
         1: Result := RegisterLoc(2); // EDX
         2: Result := RegisterLoc(1); // ECX
+      else
+        Result := UnInitializedLoc;
       end;
     dm64: case AParamIdx of
         0: Result := RegisterLoc(5); // RDI
         1: Result := RegisterLoc(4); // RSI
         2: Result := RegisterLoc(1); // RDX
+        3: Result := RegisterLoc(2); // RCX
+        4: Result := RegisterLoc(8); // R8
+        5: Result := RegisterLoc(9); // R9
+      else
+        Result := UnInitializedLoc;
       end;
   end;
 end;
