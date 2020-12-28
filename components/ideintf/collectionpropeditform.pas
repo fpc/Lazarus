@@ -39,7 +39,6 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     FCollection: TCollection;
-    FOwnerComponent: TPersistent;
     FOwnerPersistent: TPersistent;
     FPropertyName: String;
     procedure FillCollectionListBox;
@@ -58,7 +57,6 @@ type
     procedure UpdateButtons;
   public
     property Collection: TCollection read FCollection;
-    property OwnerComponent: TPersistent read FOwnerComponent;
     property OwnerPersistent: TPersistent read FOwnerPersistent;
     property PropertyName: String read FPropertyName;
   end;
@@ -260,7 +258,7 @@ begin
   // For some reason this is called only when the whole collection is deleted,
   // for example when changing to another project. Thus clear the whole collection.
   DebugLn(['TCollectionPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
-           ', OwnerPersistent=', OwnerPersistent, ', OwnerComponent=', OwnerComponent]);
+           ', OwnerPersistent=', OwnerPersistent]);
   SetCollection(nil, nil, '');
   Hide;
   UpdateButtons;
@@ -356,15 +354,8 @@ begin
   FCollection := NewCollection;
   FOwnerPersistent := NewOwnerPersistent;
   FPropertyName := NewPropName;
-  //find the component that owns the collection
-  FOwnerComponent := NewOwnerPersistent;
-  while FOwnerComponent <> nil do
-  begin
-    if FOwnerComponent is TComponent then
-      break;
-    FOwnerComponent := TPersistentAccess(FOwnerComponent).GetOwner;
-  end;
-  //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
+  //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),
+  //        ' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
   if GlobalDesignHook <> nil then
   begin
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
@@ -384,7 +375,8 @@ end;
 
 procedure TCollectionPropertyEditorForm.Modified;
 begin
-  //debugln(['TCollectionPropertyEditorForm.Modified FOwnerPersistent=',DbgSName(FOwnerPersistent),' FCollection=',DbgSName(FCollection),' GlobalDesignHook.LookupRoot=',DbgSName(GlobalDesignHook.LookupRoot)]);
+  //debugln(['TCollectionPropertyEditorForm.Modified FOwnerPersistent=',DbgSName(FOwnerPersistent),
+  //  ' FCollection=',DbgSName(FCollection),' GlobalDesignHook.LookupRoot=',DbgSName(GlobalDesignHook.LookupRoot)]);
   if GlobalDesignHook <> nil then
     GlobalDesignHook.Modified(Self);
 end;
