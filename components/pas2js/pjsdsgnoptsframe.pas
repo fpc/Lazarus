@@ -246,6 +246,7 @@ begin
   HTTPServerOptsLabel.Hint:=pjsdHTTPServerOptsLabelHint;
 
   lblAtomTemplateDir.Caption := pjsdAtomPackageTemplateDirectory;
+  lblVSCodeTemplateDir.Caption := pjsdVisualStudioCodeExtensionTemplateDirectory;
 end;
 
 procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -14,6 +14,8 @@ Resourcestring
   pjsdNodeJSAppDescription = 'A pas2js program running in node.js.';
   pjsdNewAtomPackage = 'Atom package';
   pjsdNewAtomPackageDescr = 'A pas2js program running as Atom package.';
+  pjsdNewVSCodeExtension = 'Visual Studio Code extension';
+  pjsdNewVSCodeExtensionDescr = 'A pas2js program running as Visual Studio Code extension.';
 
   // menu item
   SPasJSWebserverCaption = 'Pas2JS WebServers';
@@ -38,7 +40,7 @@ Resourcestring
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
   pjsdSelectBrowserExecutable = 'Select browser executable';
   pjsdSelectAtomTemplateDir = 'Select Atom package template directory';
-  pjsdSelectVSCodeTemplateDir = 'Select VS Code extension template directory';
+  pjsdSelectVSCodeTemplateDir = 'Select Visual Studio Code extension template directory';
   pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea = 'You can use IDE '
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';
@@ -56,6 +58,8 @@ Resourcestring
   pjsdHTTPServerOptsLabelCaption = 'HTTP Server extra command-line options (one per line)';
   pjsdHTTPServerOptsLabelHint = 'Add extra command-line options for the command which starts the webserver.';
   pjsdAtomPackageTemplateDirectory = 'Atom package template directory';
+  pjsdVisualStudioCodeExtensionTemplateDirectory = 'Visual Studio Code '
+    +'extension template directory';
 
   // Project options frame
   pjsdWebProjectPas2js = 'Web Project (pas2js)';

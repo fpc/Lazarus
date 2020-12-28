@@ -72,6 +72,14 @@ msgstr ""
 msgid "A pas2js program running as Atom package."
 msgstr ""
 
+#: strpas2jsdesign.pjsdnewvscodeextension
+msgid "Visual Studio Code extension"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewvscodeextensiondescr
+msgid "A pas2js program running as Visual Studio Code extension."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 #, fuzzy
 #| msgid "A pas2js program running in node.js"
@@ -175,7 +183,7 @@ msgid "Select pas2js executable"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
-msgid "Select VS Code extension template directory"
+msgid "Select Visual Studio Code extension template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectxexecutable
@@ -210,6 +218,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
+msgid "Visual Studio Code extension template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription

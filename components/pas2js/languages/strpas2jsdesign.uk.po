@@ -73,6 +73,14 @@ msgstr "Пакунок Atom"
 msgid "A pas2js program running as Atom package."
 msgstr "Програма pas2js запущена, як пакунок Atom"
 
+#: strpas2jsdesign.pjsdnewvscodeextension
+msgid "Visual Studio Code extension"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnewvscodeextensiondescr
+msgid "A pas2js program running as Visual Studio Code extension."
+msgstr ""
+
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js."
 msgstr "Програма pas2js, що запускається в node.js."
@@ -174,7 +182,7 @@ msgid "Select pas2js executable"
 msgstr "Вибрати виконуваний файл pas2js"
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
-msgid "Select VS Code extension template directory"
+msgid "Select Visual Studio Code extension template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectxexecutable
@@ -210,6 +218,10 @@ msgstr "Для відкривання URL або HTML-файлів проєкт�
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr "Для запуску застосунку використати цей URL"
+
+#: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
+msgid "Visual Studio Code extension template directory"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser."

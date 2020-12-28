@@ -56,11 +56,7 @@ implementation
 
 uses
   fpjson,frmpas2jsvscodeextensionsettings,  CompOptsIntf,
-  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions;
-
-Resourcestring
-  SNewVSCodeExtension = 'Pas2js VS Code extension';
-  SNewVSCodeExtensionDescr = 'Create a new pas2js VS Code extension';
+  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
 
 Var
   VSCodeProjDesc:TVSCodeExtensionProjectDescriptor;
@@ -131,12 +127,12 @@ end;
 
 function TVSCodeExtensionProjectDescriptor.GetLocalizedName: string;
 begin
-  Result:=SNewVSCodeExtension;
+  Result:=pjsdNewVSCodeExtension;
 end;
 
 function TVSCodeExtensionProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=SNewVSCodeExtensionDescr;
+  Result:=pjsdNewVSCodeExtensionDescr;
 end;
 
 Procedure TVSCodeExtensionProjectDescriptor.InitVars;
