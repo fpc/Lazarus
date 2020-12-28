@@ -11252,7 +11252,6 @@ begin
   result := ExportTo(FilterClass, exportStream, true);
   if result then
   begin
-    fDefExportFilterClass := FCurrentFilter.ClassName;
     fDefExportFileName := aFileName;
   end;
 
@@ -11330,6 +11329,10 @@ begin
       FCurrentFilter.AfterExport;
 
   finally
+    if result then
+    begin
+      fDefExportFilterClass := FCurrentFilter.ClassName;
+    end;
     FreeAndNil(FCurrentFilter);
   end;
 
