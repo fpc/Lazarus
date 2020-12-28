@@ -4,7 +4,7 @@
 
    fpmake.pp for fpdebug 0.9
 
-   This file was generated on 17-06-20
+   This file was generated on 28-12-20
 }
 
 {$ifndef ALLPACKAGES} 
@@ -91,6 +91,7 @@ begin
     D := T.Dependencies.AddUnit('FpDbgCommon');
     D := T.Dependencies.AddUnit('FpImgReaderWinPETypes');
     D := T.Dependencies.AddUnit('FpDbgHardcodedFreepascalInfo');
+    D := T.Dependencies.AddUnit('FpDbgCallContextInfo');
     T := P.Targets.AddImplicitUnit('fpdbgclasses.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdisasx86.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdwarf.pas');
@@ -132,6 +133,7 @@ begin
     T := P.Targets.AddImplicitUnit('fpdbgcommon.pas');
     T := P.Targets.AddImplicitUnit('fpimgreaderwinpetypes.pas');
     T := P.Targets.AddImplicitUnit('fpdbghardcodedfreepascalinfo.pas');
+    T := P.Targets.AddImplicitUnit('fpdbgcallcontextinfo.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('fpdebug.compiled');
