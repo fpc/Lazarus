@@ -29,10 +29,10 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLIntf, LCLType, Forms, Controls, Graphics, GraphType, Dialogs, StdCtrls,
+  LCLIntf, LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, LCLTaskDialog,
   // LazUtils
-  LazLoggerBase,
+  GraphType, LazLoggerBase,
   // IdeIntf
   IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 

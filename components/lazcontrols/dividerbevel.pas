@@ -18,7 +18,9 @@ interface
 uses
   Classes, Types, Math,
   // LCL
-  LCLType, LCLIntf, Controls, Graphics, GraphType, ComCtrls, ExtCtrls, Themes;
+  LCLType, LCLIntf, Controls, Graphics, ComCtrls, ExtCtrls, Themes,
+  // LazUtils
+  GraphType;
 
 type
   { TDividerBevel }

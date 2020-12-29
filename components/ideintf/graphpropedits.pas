@@ -18,10 +18,9 @@ interface
 uses
   Classes, TypInfo, SysUtils, Math,
   // LCL
-  LCLType, Forms, GraphType, Graphics, Buttons, Menus, Dialogs, Grids, ImgList,
-  EditBtn,
+  LCLType, Forms, Graphics, Buttons, Menus, Dialogs, Grids, ImgList, EditBtn,
   // LazUtils
-  UITypes, LazFileUtils,
+  GraphType, UITypes, LazFileUtils,
   // IdeIntf
   PropEdits, GraphicPropEdit; // defines TGraphicPropertyEditorForm
 

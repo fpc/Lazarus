@@ -26,8 +26,12 @@ uses
   // Bindings
   qt4,
   qtwidgets, qtobjects, qtproc, qtint,
+  // RTL
+  SysUtils, Classes, Types,
   // LCL
-  SysUtils, Classes, Types, Controls, LCLType, LazUTF8, Forms, Graphics,
+  Controls, LCLType, Forms, Graphics,
+  // LazUtils
+  LazUTF8,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses;
 

@@ -26,7 +26,9 @@ uses
   // RTL
   SysUtils, Classes,
   // LCL
-  Controls, Buttons, Graphics, GraphType, LCLType, LCLProc, LazUTF8,
+  Controls, Buttons, Graphics, LCLType, LCLProc, LazUTF8,
+  // LazUtils
+  GraphType,
   // Widgetset
   WSButtons, WSLCLClasses, WinCEWSControls, WinCEWSImgList, WinCEProc;
 

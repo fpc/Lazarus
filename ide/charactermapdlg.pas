@@ -37,11 +37,17 @@ unit CharacterMapDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LCLType, LCLUnicodeData, GraphType, Grids, ButtonPanel, ComCtrls,
-  IDEHelpIntf, LazUTF8, Math,
-  {$ifdef WINDOWS}Windows,{$endif} lconvencoding,
-  LazarusIDEStrConsts, IDEImagesIntf, EditorOptions, EnvironmentOpts;
+  {$ifdef WINDOWS}Windows,{$endif}
+  Classes, SysUtils, Math,
+  // LCL
+  Controls, Graphics, Dialogs, Buttons, StdCtrls, Forms,
+  LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls,
+  // LazUtils
+  GraphType, LazUTF8, LConvEncoding,
+  // IdeIntf
+  IDEHelpIntf, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
 
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;

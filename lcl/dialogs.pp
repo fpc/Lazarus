@@ -25,10 +25,10 @@ uses
   Types, typinfo, Classes, SysUtils,
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
-  Forms, Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
+  Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
   // LazUtils
-  UITypes, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
+  GraphType, UITypes, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
 type
   // Aliases for types in UITypes.

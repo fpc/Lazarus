@@ -22,9 +22,9 @@ interface
 uses
   Types, Classes, Math,
   // LazUtils
-  LazUtilities,
+  LazUtilities, GraphMath,
   // LCL
-  Graphics, GraphMath;
+  Graphics;
 
 type
   TShapeDirection = (atUp, atDown, atLeft, atRight);

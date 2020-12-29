@@ -21,8 +21,10 @@ interface
 
 uses
   // LCL
-  Graphics, GraphType, ImgList, Menus, Forms, LCLIntf, {keep before Windows }
+  Graphics, ImgList, Menus, Forms, LCLIntf, {keep before Windows }
   Controls,  InterfaceBase, LCLProc, LazUTF8,
+  // LazUtils
+  GraphType,
   // RTL, FCL
   Windows, Classes, SysUtils,
   commctrl,

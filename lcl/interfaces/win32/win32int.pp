@@ -36,10 +36,10 @@ uses
   {$ENDIF}
   // LCL
   LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LCLType, LMessages,
-  Controls, Buttons, Forms, Dialogs, GraphMath, GraphType, StdCtrls,
+  Controls, Buttons, Forms, Dialogs, StdCtrls,
   Graphics, Menus, ComCtrls, Themes, Win32Def, Spin,
   // LazUtils
-  LazUTF8, Translations;
+  GraphType, GraphMath, LazUTF8, Translations;
   {, Win32Debug}
 
 const

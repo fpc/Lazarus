@@ -32,7 +32,9 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLProc, Graphics, GraphType, Forms, Controls,
+  Graphics, Forms, Controls,
+  // LazUtils
+  GraphType, LazLoggerBase,
   // IdeIntf
   FormEditingIntf,
   // IDE

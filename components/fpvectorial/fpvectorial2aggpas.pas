@@ -27,14 +27,13 @@ unit fpvectorial2aggpas;
 interface
 
 uses
-  Classes, SysUtils, Math, TypInfo, contnrs, types,
+  Classes, SysUtils, Math, TypInfo, contnrs, Types,
   // FCL-Image
-  fpcanvas, fpimage, fpwritebmp,
+  FPCanvas, FPImage, FPWriteBMP,
   // lazutils
-  laz2_dom,
+  GraphType, LazUTF8, laz2_dom,
   // LCL
-  lazutf8, lazregions,
-  Graphics, LCLIntf, LCLType, intfgraphics, graphtype, interfacebase,
+  LazRegions, Graphics, LCLIntf, LCLType, IntfGraphics, InterfaceBase,
   // AggPas
   agg_fpimage, Agg_LCL,
   // fpvectorial

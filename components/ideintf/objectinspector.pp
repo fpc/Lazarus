@@ -33,13 +33,12 @@ uses
   Classes, SysUtils, Types, TypInfo, math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLType, LCLIntf, Forms, Buttons, Graphics,
-  GraphType, StdCtrls, Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes,
-  LMessages, ImgList,
+  StdCtrls, Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes, LMessages, ImgList,
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   TreeFilterEdit, ListFilterEdit,
   // LazUtils
-  LazConfigStorage, LazLoggerBase,
+  GraphType, LazConfigStorage, LazLoggerBase,
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,

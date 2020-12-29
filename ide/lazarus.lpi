@@ -322,6 +322,7 @@
       <Unit40>
         <Filename Value="../designer/designerprocs.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="DesignerProcs"/>
       </Unit40>
       <Unit41>
         <Filename Value="codebrowser.pas"/>
@@ -921,6 +922,7 @@
         <Filename Value="searchfrm.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="SearchFrm"/>
       </Unit143>
       <Unit144>
         <Filename Value="codemacroselect.pas"/>
@@ -1342,6 +1344,7 @@
         <Filename Value="charactermapdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CharacterMapDlg"/>
       </Unit225>
       <Unit226>
         <Filename Value="idedefs.pas"/>

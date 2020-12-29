@@ -3,7 +3,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 11-11-2020
+   This file was generated on 21.12.2020
 }
 
 {$ifndef ALLPACKAGES} 
@@ -56,6 +56,7 @@ begin
     t.Dependencies.AddUnit('filereferencelist');
     t.Dependencies.AddUnit('fileutil');
     t.Dependencies.AddUnit('fpcadds');
+    t.Dependencies.AddUnit('graphmath');
     t.Dependencies.AddUnit('graphtype');
     t.Dependencies.AddUnit('html2textrender');
     t.Dependencies.AddUnit('integerlist');
@@ -120,6 +121,7 @@ begin
     T:=P.Targets.AddUnit('filereferencelist.pas');
     T:=P.Targets.AddUnit('fileutil.pas');
     T:=P.Targets.AddUnit('fpcadds.pas');
+    T:=P.Targets.AddUnit('graphmath.pp');
     T:=P.Targets.AddUnit('graphtype.pp');
     T:=P.Targets.AddUnit('html2textrender.pas');
     T:=P.Targets.AddUnit('integerlist.pas');

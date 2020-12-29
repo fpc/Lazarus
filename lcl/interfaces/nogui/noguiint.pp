@@ -27,7 +27,9 @@ uses
   InterfaceBase,
   // LCL
   Dialogs, Controls, Forms,
-  LCLProc, LCLIntf, LCLType, LCLPlatformDef, GraphType, Graphics, Menus, Themes,
+  LCLProc, LCLIntf, LCLType, LCLPlatformDef, Graphics, Menus, Themes,
+  // LazUtils
+  GraphType,
   // widgetset
   WSLCLClasses;
 

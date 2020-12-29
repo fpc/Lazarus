@@ -36,11 +36,11 @@ uses
   Classes, SysUtils, Types, TypInfo, Math, CustApp,
   // LCL
   LCLStrConsts, LCLType, LCLProc, LCLIntf, LCLVersion, LCLClasses, InterfaceBase,
-  LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
+  LResources, Graphics, Menus, LMessages, CustomTimer, ActnList,
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
   LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList, LazLoggerBase,
-  LazUtilities, UITypes
+  LazUtilities, GraphType, UITypes
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 

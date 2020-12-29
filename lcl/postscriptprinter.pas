@@ -25,7 +25,11 @@ unit PostScriptPrinter;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, GraphMath, LCLIntf, Forms;
+  Classes, SysUtils,
+  // LCL
+  LCLIntf, Graphics, Forms,
+  // LazUtils
+  GraphMath, LazLoggerBase;
   
   // uses lcllinux or winapi for RGB conversions and FORMS for application object
   

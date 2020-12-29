@@ -38,17 +38,15 @@ uses
     {$EndIf}
   {$EndIf}
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
-  // LazUtils
-  LazFileUtils, LazUTF8, DynHashArray, Maps, IntegerList,
-  LazLoggerBase, LazTracer, LazUtilities, LazStringUtils,
   // LCL
-  Dialogs, Controls, Forms, LCLStrConsts,
-  LMessages, LCLProc, LCLIntf, LCLType, GraphType, GraphMath,
+  LMessages, LCLProc, LCLIntf, LCLType, Dialogs, Controls, Forms, LCLStrConsts,
   Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, ExtCtrls,
   LCLPlatformDef, InterfaceBase,
   WSLCLClasses, WSControls,
-  Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra,
-  Gtk2MsgQueue;
+  Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra, Gtk2MsgQueue,
+  // LazUtils
+  GraphType, GraphMath, LazFileUtils, LazUTF8, DynHashArray, Maps, IntegerList,
+  LazLoggerBase, LazTracer, LazUtilities, LazStringUtils;
 
 type
 
@@ -64,8 +62,7 @@ type
     constructor Create; overload;
     destructor Destroy; override;
     function GetWidgetFrame: TRect;
-    function ShowDummyWidget(const ALeft, ATop, AWidth,
-      AHeight: integer): boolean;
+    function ShowDummyWidget(const ALeft, ATop, AWidth, AHeight: integer): boolean;
     procedure SendToBack;
     procedure HideWidget;
     property Widget: PGtkWidget read FWidget write FWidget;

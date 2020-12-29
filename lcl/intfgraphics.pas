@@ -34,9 +34,9 @@ uses
   {$ENDIF}
   Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, LazLoggerBase, LazTracer,
+  GraphType, FPCAdds, LazLoggerBase, LazTracer,
   // LCL
-  LCLType, LCLversion, GraphType, IcnsTypes;
+  LCLType, LCLversion, IcnsTypes;
 
 type
   { TLazIntfImage }

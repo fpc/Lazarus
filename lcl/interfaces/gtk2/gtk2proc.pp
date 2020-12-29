@@ -45,12 +45,12 @@ uses
   Math, // Math after gtk to get the correct Float type
   Types,
   // LCL
-  LMessages, LCLProc, LCLIntf, LCLType, GraphType, Graphics,
+  LMessages, LCLProc, LCLIntf, LCLType, Graphics,
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase, LazTracer,
-  Masks, LazUTF8, DynHashArray,
+  GraphType, Masks, LazUTF8, DynHashArray,
   // Gtk2
   Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 

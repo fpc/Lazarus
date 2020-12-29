@@ -31,11 +31,11 @@ interface
 
 uses
   Types, Classes, SysUtils, DB, Variants,
-  // LazUtils
-  LazTracer, LazUtilities,
   // LCL
-  LCLStrConsts, LMessages, LCLType, LCLIntf, LResources, GraphType, Controls, Graphics,
-  Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, ImgList;
+  LCLStrConsts, LMessages, LCLType, LCLIntf, LResources, Controls, Graphics,
+  Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, ImgList,
+  // LazUtils
+  GraphType, LazTracer, LazUtilities;
 
 Type
   { TFieldDataLink }

@@ -44,10 +44,10 @@ uses
   Windows, Classes,
   // LCL
   LCLIntf, LCLType, ComCtrls, Controls, Buttons, Dialogs,
-  ExtCtrls, Forms, GraphMath, GraphType, LCLPlatformDef, InterfaceBase,
+  ExtCtrls, Forms, LCLPlatformDef, InterfaceBase,
   LMessages, StdCtrls, SysUtils, Graphics, Menus, Themes,
   // LazUtils
-  LazUTF8, DynHashArray,
+  GraphType, GraphMath, LazUTF8, DynHashArray,
   // Widgetset
   WinCEProc, WinCEExtra, WinExt, WinCEDef;
 

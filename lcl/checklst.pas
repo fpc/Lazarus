@@ -21,8 +21,11 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, LCLType, GraphType, Graphics, LMessages,
-  LResources, Controls, StdCtrls, LCLIntf;
+  Classes, SysUtils, Math,
+  // LCL
+  LCLType, LCLIntf, Graphics, LMessages, LResources, Controls, StdCtrls,
+  // LazUtils
+  GraphType;
   
 
 type

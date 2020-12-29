@@ -48,7 +48,9 @@ interface
 uses
   Classes, SysUtils, Types, Math,
   // LCL  -  Controls cannot be used here to prevent circular references
-  LCLProc, LCLType, GraphType, Graphics, TmSchema;
+  LCLProc, LCLType, Graphics, TmSchema,
+  // LazUtils
+  GraphType;
   
 type
   // These are all elements which can be themed.

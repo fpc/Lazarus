@@ -21,14 +21,15 @@ interface
 
 uses
   // RTL
-  glib2, gtk2, gdk2, gdk2pixbuf,
+  Classes, glib2, gtk2, gdk2, gdk2pixbuf,
   // LCL
-////////////////////////////////////////////////////
-  LCLType, Controls, Buttons, Graphics, GraphType, ImgList, Classes,
+  LCLType, Controls, Buttons, Graphics, ImgList,
+  // LazUtils
+  GraphType,
   {$IFDEF DebugLCLComponents}
   LazLoggerBase,
   {$ENDIF}
-////////////////////////////////////////////////////
+  // WS
   WSButtons, WSLCLClasses, WSProc,
   Gtk2Def;
 

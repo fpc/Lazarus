@@ -28,14 +28,13 @@ unit fpvectorial2canvas;
 interface
 
 uses
-  Classes, SysUtils, Math, TypInfo, contnrs, types,
+  Classes, SysUtils, Math, TypInfo, contnrs, Types,
   // FCL-Image
-  fpcanvas, fpimage, fpwritebmp,
+  FPCanvas, FPImage, FPWriteBMP,
   // lazutils
-  laz2_dom,
+  GraphType, LazUTF8, Laz2_DOM,
   // LCL
-  lazutf8, lazregions,
-  Graphics, LCLIntf, LCLType, intfgraphics, graphtype, interfacebase,
+  LazRegions, Graphics, LCLIntf, LCLType, intfgraphics, interfacebase,
   // fpvectorial
   fpvutils, fpvectorial;
 

@@ -30,12 +30,12 @@ interface
 
 uses
   SysUtils, Types, Classes, Math, Laz_AVL_Tree,
-  // LazUtils
-  LazUTF8, LazUTF8Classes, LazLoggerBase, LazUtilities,
   // LCL
-  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses,
-  WSReferences, LCLProc, GraphType, Graphics, ImgList, ActnList, Themes, Menus,
-  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons;
+  LCLStrConsts, LResources, LCLIntf, LCLType, LCLProc, LMessages, WSLCLClasses,
+  WSReferences, Graphics, ImgList, ActnList, Themes, Menus,
+  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
+  // LazUtils
+  GraphType, LazUTF8, LazUTF8Classes, LazLoggerBase, LazUtilities;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,

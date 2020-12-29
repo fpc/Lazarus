@@ -7,9 +7,9 @@ interface
 uses
   Classes, SysUtils, FPimage,
   // LazUtils
-  EasyLazFreeType,
+  GraphType, EasyLazFreeType,
   // LCL
-  GraphType, Graphics, IntfGraphics;
+  Graphics, IntfGraphics;
 
 type
   TLazIntfImageGetPixelAtProc = procedure(p: pointer; out Color: TFPColor);

@@ -74,7 +74,6 @@ begin
     D := T.Dependencies.AddUnit('FileCtrl');
     D := T.Dependencies.AddUnit('Forms');
     D := T.Dependencies.AddUnit('Graphics');
-    D := T.Dependencies.AddUnit('GraphMath');
     D := T.Dependencies.AddUnit('GraphUtil');
     D := T.Dependencies.AddUnit('Grids');
     D := T.Dependencies.AddUnit('HelpIntfs');
@@ -356,7 +355,6 @@ begin
     T := P.Targets.AddImplicitUnit('filectrl.pp');
     T := P.Targets.AddImplicitUnit('forms.pp');
     T := P.Targets.AddImplicitUnit('graphics.pp');
-    T := P.Targets.AddImplicitUnit('graphmath.pp');
     T := P.Targets.AddImplicitUnit('graphutil.pp');
     T := P.Targets.AddImplicitUnit('grids.pas');
     T := P.Targets.AddImplicitUnit('helpintfs.pas');

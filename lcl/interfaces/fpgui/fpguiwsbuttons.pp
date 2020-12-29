@@ -26,7 +26,9 @@ uses
   // RTL
   SysUtils,
   // LCL
-  Buttons, LCLType, Controls, Graphics, GraphType, ImgList,
+  Buttons, LCLType, Controls, Graphics, ImgList,
+  // LazUtils
+  GraphType,
   // Widgetset
   WSButtons, WSLCLClasses;
 

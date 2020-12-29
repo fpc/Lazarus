@@ -26,7 +26,9 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL
-  LCLType, GraphType
+  LCLType,
+  // LazUtils
+  GraphType
   {$ifdef WINDOWS}
   ,messages
   {$endif WINDOWS}

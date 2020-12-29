@@ -25,14 +25,14 @@ uses
   // RTL / FCL
   Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils, FGL,
   // LCL
-  LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
+  LCLType, LCLIntf, LCLProc, Forms, Controls, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
   FileCtrl, PropertyStorage, Themes,
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   // LazUtils
   FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
-  UITypes, FPCAdds, // for StrToQWord in older fpc versions
+  GraphType, UITypes, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files

@@ -45,10 +45,10 @@ uses
   // RTL + FCL
   Classes, SysUtils, strutils, Math, Types, FPImage,
   // LCL
-  Graphics, Forms, GraphMath, GraphType, IntfGraphics, Printers,
-  LCLType, LCLIntf, LCLProc, PostScriptUnicode,
+  LCLType, LCLIntf, LCLProc,
+  Graphics, Forms, IntfGraphics, Printers, PostScriptUnicode,
   // LazUtils
-  LazFileUtils, IntegerList, LazUTF8, LazUTF8Classes;
+  GraphType, GraphMath, LazFileUtils, IntegerList, LazUTF8, LazUTF8Classes;
   
 Type
 

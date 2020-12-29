@@ -27,7 +27,9 @@ uses
   Classes, Types, SysUtils, Math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages,
-  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Themes,
+  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, Themes,
+  // LazUtils
+  GraphType,
   // Bindings
   fpg_main, fpg_form, fpguiproc, fpg_base, fpg_dialogs,// fpg_stylemanager, fpg_style_win8,
   // Widgetset

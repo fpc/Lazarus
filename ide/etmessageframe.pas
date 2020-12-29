@@ -35,9 +35,10 @@ uses
   Math, strutils, Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
-  Graphics, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
+  Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls,
   // LazUtils
-  UTF8Process, FileProcs, LazFileCache, LazUTF8Classes, LazFileUtils, LazUTF8,
+  GraphType, UTF8Process, FileProcs, LazFileCache, LazFileUtils,
+  LazUTF8Classes, LazUTF8,
   // SynEdit
   SynEdit, SynEditMarks,
   // IDEIntf

@@ -1,7 +1,7 @@
 { $Id$ }
 {
  /***************************************************************************
-                                graphtype.pp
+                                graphutil.pp
                                 ------------
                           Graphic utility functions.
 
@@ -22,7 +22,10 @@ interface
 
 uses
   Types, Math,
-  Graphics, GraphType, LCLType, LCLIntf;
+  // LCL
+  Graphics, LCLType, LCLIntf,
+  // LazUtils
+  GraphType;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);

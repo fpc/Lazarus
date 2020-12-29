@@ -23,11 +23,10 @@ interface
 
 uses
   Classes, SysUtils, types, math, typinfo, FPimage, FPCanvas, Laz_AVL_Tree,
-  // LazUtils
-  LazLoggerBase, AvgLvlTree,
   // LCL
-  LMessages, LCLType, LCLIntf, GraphType, Graphics, Controls, ImgList,
-  Forms, Themes;
+  LMessages, LCLType, LCLIntf, Graphics, Controls, ImgList, Forms, Themes,
+  // LazUtils
+  GraphType, LazLoggerBase, AvgLvlTree;
 
 type
   TLazCtrlPalette = array of TFPColor;

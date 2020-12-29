@@ -35,13 +35,13 @@ uses
   // Bindings - qt5 must come first to avoid type redefinition problems
   qt5,
   // FPC
-  Classes, SysUtils, Math, Types, maps,
-  // LazUtils
-  LazStringUtils, LazUtilities, LazLoggerBase,
+  Classes, SysUtils, Math, Types,
   // LCL
-  InterfaceBase, LCLPlatformDef, LazUTF8, LCLProc, LCLType, LMessages,
+  InterfaceBase, LCLPlatformDef, LCLProc, LCLType, LMessages,
   LCLMessageGlue, LCLStrConsts, Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, LCLIntf, GraphType, GraphUtil, Themes,
+  Dialogs, StdCtrls, LCLIntf, GraphUtil, Themes,
+  // LazUtils
+  GraphType, LazStringUtils, LazUtilities, LazLoggerBase, LazUTF8, Maps,
   // WS
   {$IFDEF HASX11}
   qtx11dummywidget,
@@ -93,7 +93,6 @@ type
     SavedHintHandlesList: TFPList;
     FWindowManagerName: String; // Track various incompatibilities between WM. Initialized at WS start.
     {$ENDIF}
-
 
     // qt style does not have pixel metric for themed menubar (menu) height
     // so we must calculate it somehow.

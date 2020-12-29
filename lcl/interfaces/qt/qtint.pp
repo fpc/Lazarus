@@ -38,11 +38,11 @@ uses
   // FPC
   Classes, SysUtils, Math, Types,
   // LazUtils
-  LazUTF8, Maps, LazUtilities, LazStringUtils,
+  GraphType, LazUTF8, Maps, LazUtilities, LazStringUtils,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LCLIntf,
   LMessages, LCLMessageGlue, LCLStrConsts,
-  Controls, ExtCtrls, Forms, StdCtrls, GraphType, GraphUtil, Themes,
+  Controls, ExtCtrls, Forms, StdCtrls, GraphUtil, Themes,
   // WS
   {$IFDEF HASX11}
   qtx11dummywidget,

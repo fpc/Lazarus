@@ -33,13 +33,13 @@ interface
 uses
   Classes, SysUtils, Math, TypInfo, contnrs, types,
   // FCL-Image
-  fpcanvas, fpimage, fpwritebmp,
+  FPCanvas, FPImage, FPWriteBMP,
   // lazutils
-  laz2_dom,
+  GraphType, Laz2_DOM,
   // LCL
-  lazutf8, lazregions
+  LazUTF8, LazRegions
   {$ifdef USE_LCL_CANVAS}
-  , Graphics, LCLIntf, LCLType, intfgraphics, graphtype, interfacebase
+  , Graphics, LCLIntf, LCLType, IntfGraphics, InterfaceBase
   {$endif}
   ;
 

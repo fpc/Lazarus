@@ -46,14 +46,13 @@ interface
 
 uses
   // RTL + FCL
-  Types, math, SysUtils, Classes, FPReadBMP, FPimage, FPImgCanv, FPCanvas,
-  Contnrs, zstream, Laz_AVL_Tree,
-  // LazUtils
-  FPCAdds, LazLoggerBase, LazUtilities, AvgLvlTree,
+  Types, math, SysUtils, Classes, RtlConsts, Contnrs, zstream, Laz_AVL_Tree,
+  FPReadBMP, FPimage, FPImgCanv, FPCanvas,
   // LCL
-  LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, Graphics, GraphType,
-  LCLClasses, IntfGraphics,
-  WSReferences, RtlConsts;
+  LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, LCLClasses,
+  Graphics, IntfGraphics, WSReferences,
+  // LazUtils
+  GraphType, FPCAdds, LazLoggerBase, LazTracer, LazUtilities, AvgLvlTree;
 
 type
   TImageIndex = type integer;

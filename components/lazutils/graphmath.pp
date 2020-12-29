@@ -9,14 +9,14 @@
 ***************************************************************************/
 
 *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
 *****************************************************************************
 }
 {
-@abstract(A Set of Math Helper routines to simply Cross-Platfrom Canvas, 
+@abstract(A Set of Math Helper routines to simplify Cross-Platfrom Canvas,
 etc)
 @author(Andrew Johnson <AJ_Genius@Hotmail.com>)
 @created(2002)
@@ -77,10 +77,10 @@ function LineEndPoint(const StartPoint : TPoint; Angle, Length : Extended) : TPo
 procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
 procedure PolyBezier2Polyline(Beziers : Array of TPoint;
-  var Points : PPoint; var Count : Longint; 
+  var Points : PPoint; var Count : Longint;
   Continuous : Boolean); Overload; inline;
 procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
-  var Points : PPoint; var Count : Longint; 
+  var Points : PPoint; var Count : Longint;
   Continuous : Boolean); Overload;
 
 procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1,
@@ -301,7 +301,7 @@ end;
   for Start and End Radial-Points, such as are used in the Windows API Arc
   Pie and Chord routines. The angles are 1/16th of a degree. For example, a
   full circle equals 5760 (16*360). Positive values of Angle and AngleLength
-  mean counter-clockwise while negative values mean clockwise direction. 
+  mean counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
@@ -525,7 +525,6 @@ begin
   If (not Assigned(Points)) or (Count <= 0) then
   begin
     Count := 0;
-
     if Assigned(Points) then
       ReallocMem(Points, 0);
   end;
@@ -569,11 +568,10 @@ begin
   If (not Assigned(Points)) or (Count <= 0) then
   begin
     Count := 0;
-    
     if Assigned(Points) then
       ReallocMem(Points, 0);
   end;
-  
+
   Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B);
   Bezier2Polyline(B,Points,Count);
 end;
@@ -839,9 +837,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : PPoint;
   var Count : Longint; Continuous : Boolean);
-begin  
-  PolyBezier2Polyline(@Beziers[0],High(Beziers) + 1, Points, Count, 
-    	              Continuous);
+begin
+  PolyBezier2Polyline(@Beziers[0],High(Beziers) + 1, Points, Count, Continuous);
 end;
 
 procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
@@ -874,7 +871,7 @@ begin
         Beziers[I*3+2],Beziers[I*3+3]), Points, Count);
   end;
 end;
-  
+
 {------------------------------------------------------------------------------
   Method:   PolyBezierArcPoints
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count

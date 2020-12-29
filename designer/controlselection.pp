@@ -39,7 +39,9 @@ interface
 uses
   Classes, SysUtils, Math, types,
   // LCL
-  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus, ComCtrls,
+  LCLIntf, LCLType, LCLProc, Controls, Forms, Graphics, Menus, ComCtrls,
+  // LazUtils
+  GraphType,
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE

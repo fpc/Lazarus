@@ -91,6 +91,10 @@
         <UnitName Value="FPCAdds"/>
       </Item>
       <Item>
+        <Filename Value="graphmath.pp"/>
+        <UnitName Value="GraphMath"/>
+      </Item>
+      <Item>
         <Filename Value="graphtype.pp"/>
         <UnitName Value="GraphType"/>
       </Item>

@@ -28,10 +28,10 @@ interface
 
 uses
   Types, Classes, SysUtils, Math, FPImage,
-  // LazUtils
-  LazUTF8, IntegerList, LazUtilities, LazLoggerBase, GraphType,
   // LCL
-  LCLProc, LCLType, LMessages, LCLPlatformDef, GraphMath, IntfGraphics, Themes;
+  LCLProc, LCLType, LMessages, LCLPlatformDef, IntfGraphics, Themes,
+  // LazUtils
+  LazUTF8, IntegerList, LazUtilities, LazLoggerBase, GraphType, GraphMath;
 
 type
   PEventHandler = type Pointer;

@@ -33,11 +33,10 @@ interface
 uses
   Types, Classes, SysUtils, Math,
   // LCL
-  LCLType, LCLProc, LCLIntf, LCLStrConsts,
-  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus, LResources, ImageListCache,
+  LCLType, LCLProc, LCLIntf, LCLStrConsts, LResources, Graphics, ImgList, ActnList,
+  Controls, StdCtrls, LMessages, Forms, Themes, Menus, ImageListCache,
   // LazUtils
-  LazUtilities;
+  GraphType, LazUtilities;
 
 type
   TButtonLayout =

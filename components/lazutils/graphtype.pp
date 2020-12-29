@@ -71,7 +71,7 @@ type
     riboLSBFirst, // least significant byte first
     riboMSBFirst  // most significant byte first
     );
-    
+
   TRawImageBitOrder = (
     riboBitsInOrder, // Bit 0 is pixel 0
     riboReversedBits // Bit 0 is pixel 7 (Bit 1 is pixel 6, ...)

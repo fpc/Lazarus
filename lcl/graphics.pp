@@ -55,11 +55,11 @@ uses
   {$IFNDEF DisableLCLGIF}
   FPReadGif,
   {$ENDIF}
-  // LazUtils
-  FPCAdds, LazUTF8Classes, LazLoggerBase, LazUtilities,
   // LCL
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
-  IntfGraphics, GraphType, IcnsTypes, GraphMath, WSReferences;
+  IntfGraphics, IcnsTypes, WSReferences,
+  // LazUtils
+  GraphType, GraphMath, FPCAdds, LazUTF8Classes, LazLoggerBase, LazTracer, LazUtilities;
 
 type
   PColor = ^TColor;

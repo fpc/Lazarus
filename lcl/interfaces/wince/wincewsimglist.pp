@@ -25,7 +25,9 @@ uses
   Windows,
   commctrl,
   // RTL, LCL
-  SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
+  SysUtils, Classes, ImgList, Graphics, LCLType,
+  // LazUtils
+  GraphType,
   // Widgetset
   WinCEExtra, WinCEInt, WinCEProc, InterfaceBase,
   WSImgList, WSLCLClasses, WSProc, WSReferences;

@@ -62,8 +62,7 @@ uses
   Math, Classes, SysUtils, TypInfo, types, strutils, Contnrs, process, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
-  ComCtrls, Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls,
-  Dialogs, LclStrConsts,
+  ComCtrls, Forms, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, LclStrConsts,
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
@@ -72,7 +71,7 @@ uses
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, LazUTF8Classes, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
-  LazStringUtils,
+  GraphType, LazStringUtils,
   LCLExceptionStacktrace,
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,

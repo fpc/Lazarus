@@ -29,10 +29,10 @@ uses
   SysUtils, Types, Classes, contnrs, FGL,
   // LCL
   LCLStrConsts, LCLType, LCLProc, LResources, LMessages, Controls, Forms,
-  StdCtrls, GraphType, Graphics, LCLIntf, CustomTimer, Themes, LCLClasses, Menus,
+  StdCtrls, Graphics, LCLIntf, CustomTimer, Themes, LCLClasses, Menus,
   PopupNotifier, ImgList,
   // LazUtils
-  LazLoggerBase, LazUtilities;
+  GraphType, LazLoggerBase, LazTracer, LazUtilities;
 
 type
 
