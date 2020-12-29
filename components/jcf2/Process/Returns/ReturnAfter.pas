@@ -60,7 +60,7 @@ uses
 const
   WordsJustReturnAfter: TTokenTypeSet = [ttBegin, ttRepeat,
     ttTry, ttExcept, ttFinally, ttLabel,
-    ttInitialization, ttFinalization, ttThen, ttDo, ttConditionalCompilationRemoved];
+    ttInitialization, ttFinalization, ttConditionalCompilationRemoved];
   // can't add 'interface' as it has a second meaning :(
 
   { blank line is 2 returns }
@@ -262,7 +262,15 @@ begin
   if (pt.TokenType = ttElse) and (ptNext.TokenType <> ttIf) and not
     (pt.HasParentNode(nElseCase, 1))
   then
-    exit(True);
+  begin
+    if ptNext.TokenType = ttBegin then
+    begin
+      if FormattingSettings.Returns.ElseBeginStyle <> eLeave then
+        exit(True);
+    end
+    else
+      exit(True);
+  end;
 
   { case .. of  }
   if (pt.TokenType = ttOf) and (pt.IsOnRightOf(nCaseStatement, ttCase)) then

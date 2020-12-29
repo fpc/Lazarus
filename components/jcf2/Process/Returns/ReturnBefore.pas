@@ -64,7 +64,7 @@ uses
 
 const
   WordsReturnBefore: TTokenTypeSet =
-    [ttBegin, ttEnd, ttUntil, ttTry, ttFinally, ttExcept
+    [ttEnd, ttUntil, ttTry, ttFinally, ttExcept
     //, ttConditionalCompilationRemoved
     ];
 
@@ -230,6 +230,13 @@ begin
 
   if StartsAnonymousMethod(pt) then
     exit;
+
+  if pt.TokenType = ttBegin then
+  begin
+    lcPrev:=pt.PriorSolidToken;
+    if (lcPrev <> nil) and (not (lcPrev.TokenType in [ttThen,ttDo,ttElse,ttColon])) then
+      exit(True);
+  end;
 
   if (pt.TokenType in WordsReturnBefore) then
     exit(True);
