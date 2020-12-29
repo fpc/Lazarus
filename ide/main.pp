@@ -580,7 +580,7 @@ type
     procedure ControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
     procedure ControlSelectionPropsChanged(Sender: TObject);
     procedure ControlSelectionFormChanged(Sender: TObject; OldForm, NewForm: TCustomForm);
-    procedure GetDesignerSelection(const ASelection: TPersistentSelectionList);
+    procedure GetDesignerSelection(ASelection: TPersistentSelectionList);
 
     // project inspector event handlers
     function ProjInspectorAddUnitToProject(Sender: TObject;
@@ -9485,7 +9485,7 @@ begin
     MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
-procedure TMainIDE.GetDesignerSelection(const ASelection: TPersistentSelectionList);
+procedure TMainIDE.GetDesignerSelection(ASelection: TPersistentSelectionList);
 begin
   if TheControlSelection=nil then exit;
   TheControlSelection.GetSelection(ASelection);

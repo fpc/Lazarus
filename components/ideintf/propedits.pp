@@ -1360,10 +1360,8 @@ type
   TPropHookPersistentDeleting = procedure(APersistent: TPersistent) of object;
   TPropHookPersistentDeleted = procedure of object;
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
-  TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
-                                             ) of object;
-  TPropHookSetSelection = procedure(const ASelection: TPersistentSelectionList
-                                             ) of object;
+  TPropHookGetSelection = procedure(ASelection: TPersistentSelectionList) of object;
+  TPropHookSetSelection = procedure(ASelection: TPersistentSelectionList) of object;
   TPropHookAddDependency = procedure(const AClass: TClass;
                                      const AnUnitName: shortstring) of object;
   // persistent objects

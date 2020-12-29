@@ -71,7 +71,7 @@ type
     procedure RefreshSearchResult;
     procedure UpdateComponentsList;
 
-    procedure OnDesignSetSelection(const ASelection: TPersistentSelectionList);
+    procedure OnDesignSetSelection(ASelection: TPersistentSelectionList);
   public
     constructor Create(AOwner: TComponent; AParent: TWinControl; AIgnoreRoot: Boolean = False); reintroduce;
     destructor Destroy; override;
@@ -609,7 +609,7 @@ begin
   RefreshSearchResult;
 end;
 
-procedure TComponentsPalette.OnDesignSetSelection(const ASelection: TPersistentSelectionList);
+procedure TComponentsPalette.OnDesignSetSelection(ASelection: TPersistentSelectionList);
 begin
   // to replace original components palette
   if not FIgnoreRoot or (csDestroying in ComponentState) then

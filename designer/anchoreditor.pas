@@ -183,7 +183,7 @@ type
     FSideControls: array[TAnchorKind] of TAnchorDesignerSideControls;
     procedure Refresh;
     procedure OnRefreshPropertyValues;
-    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+    procedure OnSetSelection(ASelection: TPersistentSelectionList);
     function GetSelectedControls: TList;
     function FindSibling(const Sibling: string): TControl;
     procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
@@ -1167,8 +1167,7 @@ begin
   end;
 end;
 
-procedure TAnchorDesigner.OnSetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TAnchorDesigner.OnSetSelection(ASelection: TPersistentSelectionList);
 begin
   if FSelection.IsEqual(ASelection) then exit;
   Refresh;

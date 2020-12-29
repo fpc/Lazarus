@@ -764,10 +764,11 @@ type
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
+    procedure HookRefreshPropertyValues;
     procedure FillPersistentComboBox;
     procedure SetAvailComboBoxText;
-    procedure HookGetSelection(const ASelection: TPersistentSelectionList);
-    procedure HookSetSelection(const ASelection: TPersistentSelectionList);
+    procedure HookGetSelection(ASelection: TPersistentSelectionList);
+    procedure HookSetSelection(ASelection: TPersistentSelectionList);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure ShowNextPage(Delta: integer);
@@ -821,7 +822,6 @@ type
     function GetCurRowDefaultValue(var DefaultStr: string): Boolean;
     function HasParentCandidates: Boolean;
     procedure ChangeParent;
-    procedure HookRefreshPropertyValues;
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
   public
@@ -1385,7 +1385,6 @@ procedure TOICustomPropertyGrid.SetPropertyEditorHook(
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
   FPropertyEditorHook:=NewPropertyEditorHook;
-  FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
   IncreaseChangeStep;
   SetSelection(FSelection);
 end;
@@ -4501,7 +4500,12 @@ begin
     Selection := nil;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
+      begin
+        if Page=oipgpProperties then  // Add HookGetCheckboxForBoolean only once.
+          FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(
+                                   @GridControl[Page].HookGetCheckboxForBoolean);
         GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
+      end;
     OldSelection:=TPersistentSelectionList.Create;
     try
       FPropertyEditorHook.GetSelection(OldSelection);
@@ -4610,6 +4614,11 @@ begin
       GridControl[Page].PropEditLookupRootChange;
   CompFilterEdit.Filter:='';
   FillComponentList(True);
+end;
+
+procedure TObjectInspectorDlg.HookRefreshPropertyValues;
+begin
+  RefreshPropertyValues;
 end;
 
 procedure TObjectInspectorDlg.ChangeCompZOrderInList(APersistent: TPersistent;
@@ -5250,13 +5259,13 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.HookGetSelection(const ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookGetSelection(ASelection: TPersistentSelectionList);
 begin
   if ASelection=nil then exit;
   ASelection.Assign(FSelection);
 end;
 
-procedure TObjectInspectorDlg.HookSetSelection(const ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookSetSelection(ASelection: TPersistentSelectionList);
 begin
   Selection := ASelection;
 end;
@@ -6050,11 +6059,6 @@ begin
   PropertyGrid.Filter := Filter - [tkMethod];
   FavoriteGrid.Filter := Filter + [tkMethod];
   RestrictedGrid.Filter := Filter + [tkMethod];
-end;
-
-procedure TObjectInspectorDlg.HookRefreshPropertyValues;
-begin
-  RefreshPropertyValues;
 end;
 
 procedure TObjectInspectorDlg.ActivateGrid(Grid: TOICustomPropertyGrid);

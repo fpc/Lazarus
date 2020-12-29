@@ -70,7 +70,7 @@ type
     procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
     procedure PersistentDeleting({%H-}APersistent: TPersistent);
     procedure DeletePersistent(var {%H-}APersistent: TPersistent);
-    procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure SetSelection(ASelection: TPersistentSelectionList);
   end;
 
   { TTabOrderPropEditor }
@@ -436,7 +436,7 @@ begin
   SomethingChanged;
 end;
 
-procedure TTabOrderDialog.SetSelection(const ASelection: TPersistentSelectionList);
+procedure TTabOrderDialog.SetSelection(ASelection: TPersistentSelectionList);
 // Select item also in TreeView when selection in Designer changes.
 
   function FindSelection: TTreeNode;
