@@ -639,7 +639,7 @@ const
     'OEM_8', // 0xdf - VK_OEM_8
     '', // 0xe0
     'OEM_0xE1', // 0xe1
-    '\', // 0xe2 - VK_OEM_102 - Either the angle bracket key or the backslash key on the RT 102-key keyboard
+    'OEM_Backslash', // 0xe2 - VK_OEM_102 - Either the angle bracket key or the backslash key on the RT 102-key keyboard
     'OEM_0xE3', // 0xe3
     'OEM_0xE4', // 0xe4
     'IME_process', // 0xe5 - VK_PROCESSKEY
