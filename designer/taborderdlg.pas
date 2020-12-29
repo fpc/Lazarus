@@ -34,7 +34,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, Buttons, ExtCtrls, StdCtrls, ComCtrls, LCLType, LCLProc,
+  Forms, Controls, Dialogs, Buttons, ExtCtrls, StdCtrls, ComCtrls, LCLType,
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   PropEdits, IDEDialogs, IDEImagesIntf,
   //IDE

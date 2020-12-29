@@ -348,8 +348,7 @@ type
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
     procedure SetModified(const NewValue: Boolean); override;
-    procedure SetSyntaxHighlighterType(
-                                 ASyntaxHighlighterType: TLazSyntaxHighlighter);
+    procedure SetSyntaxHighlighterType(AHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
     procedure StartIdentCompletionBox(JumpToError, CanAutoComplete: boolean);
@@ -4893,23 +4892,19 @@ begin
   end;
 end;
 
-procedure TSourceEditor.SetSyntaxHighlighterType(
-  ASyntaxHighlighterType: TLazSyntaxHighlighter);
+procedure TSourceEditor.SetSyntaxHighlighterType(AHighlighterType: TLazSyntaxHighlighter);
 var
   HlIsPas, OldHlIsPas: Boolean;
 begin
-  if (ASyntaxHighlighterType=fSyntaxHighlighterType)
+  if (AHighlighterType=fSyntaxHighlighterType)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
 
   OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
   HlIsPas := False;
-  if EditorOpts.UseSyntaxHighlight
-  then begin
-    if Highlighters[ASyntaxHighlighterType]=nil then begin
-      Highlighters[ASyntaxHighlighterType]:=
-        EditorOpts.CreateSyn(ASyntaxHighlighterType);
-    end;
-    FEditor.Highlighter:=Highlighters[ASyntaxHighlighterType];
+  if EditorOpts.UseSyntaxHighlight then begin
+    if Highlighters[AHighlighterType]=nil then
+      Highlighters[AHighlighterType]:=EditorOpts.CreateSyn(AHighlighterType);
+    FEditor.Highlighter:=Highlighters[AHighlighterType];
     HlIsPas := FEditor.Highlighter is TSynPasSyn;
   end
   else
@@ -4923,7 +4918,7 @@ begin
     EditorOpts.GetSynEditSettings(FEditor, nil);
   end;
 
-  FSyntaxHighlighterType:=ASyntaxHighlighterType;
+  FSyntaxHighlighterType:=AHighlighterType;
   SourceNotebook.UpdateActiveEditColors(FEditor);
 end;
 

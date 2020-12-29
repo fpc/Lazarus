@@ -81,7 +81,7 @@ type
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TSrcIDEHighlighter;
 
-  TLazSynPluginTemplateMultiCaret = class(TForm)     end;
+  TLazSynPluginTemplateMultiCaret = class(TForm)   end;
   TLazSynPluginTemplateEditForm = class(TForm)     end;
   TLazSynPluginTemplateEditFormOff = class(TForm)  end;
   TLazSynPluginSyncroEditFormSel = class(TForm)    end;
@@ -1267,8 +1267,7 @@ type
     property IsFallback: Boolean read FIsFallback;
     property Desc: String read FDesc write FDesc;
   //published
-    property Caption: String
-             read FCaption write FCaption;
+    property Caption: String read FCaption write FCaption;
   published
     property Enabled: Boolean
              read FEnabled write SetEnabled;
@@ -1401,7 +1400,7 @@ type
     property UseGlobalIDECommandList: Boolean read FUseGlobalIDECommandList write FUseGlobalIDECommandList;
   end;
 
-  { TEditorOptions - Editor Options object used to hold the editor options }
+  { TEditorOptions }
 
   TEditorOptions = class(TIDEEditorOptions)
   private
@@ -1569,8 +1568,7 @@ type
     function GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter; SynColorSchemeName: String = ''): TColorSchemeLanguage;
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
-    procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
-                                      SynColorScheme: String);
+    procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter; SynColorScheme: String);
 
     procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter; ReadForOptions: Boolean = False);
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
@@ -2327,7 +2325,6 @@ begin
   inherited Option := AValue;
 end;
 
-
 procedure RepairEditorFontSize(var FontSize: integer);
 begin
   if ((FontSize>=0) and (FontSize<=EditorOptionsMinimumFontSize))
@@ -2424,6 +2421,7 @@ var
     FreeAndNil(XMLConfig);
     FreeAndNil(Stream);
   end;
+
 begin
   if not Assigned(Singleton) then begin
     InitLocale;
@@ -2500,7 +2498,6 @@ begin
   EditorOptionsEditAccessDefaults[7].Desc    := dlgEditAccessDescIgnLockedOnlyActWin;
   EditorOptionsEditAccessDefaults[8].Caption := dlgEditAccessCaptionUnLockedOpenNewInAnyWin;
   EditorOptionsEditAccessDefaults[8].Desc    := dlgEditAccessDescUnLockedOpenNewInAnyWin;
-
 
   // update translation
   EditorOptionsFoldInfoPas[ 0].Name := dlgFoldPasProcedure;
@@ -3135,8 +3132,6 @@ begin
   NewInfo.Prepare(lshCss);
   Add(NewInfo);
 
-
-
   // create info for JScript
   NewInfo := TEditOptLanguageInfo.Create;
   with NewInfo do
@@ -3334,16 +3329,14 @@ begin
     dec(Result);
 end;
 
-function TEditOptLangList.FindByClass(
-  CustomSynClass: TCustomSynClass): Integer;
+function TEditOptLangList.FindByClass(CustomSynClass: TCustomSynClass): Integer;
 begin
   Result := Count - 1;
   while (Result >= 0) and (Items[Result].SynClass <> CustomSynClass) do
     dec(Result);
 end;
 
-function TEditOptLangList.FindByHighlighter(Hilighter:
-  TSynCustomHighlighter): Integer;
+function TEditOptLangList.FindByHighlighter(Hilighter: TSynCustomHighlighter): Integer;
 begin
   if Hilighter <> Nil then
     Result := FindByClass(TCustomSynClass(Hilighter.ClassType))
@@ -3371,8 +3364,7 @@ begin
     Result := '';
 end;
 
-function TEditOptLangList.GetInfoByType(AType: TLazSyntaxHighlighter
-  ): TEditOptLanguageInfo;
+function TEditOptLangList.GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo;
 var
   i: LongInt;
 begin
@@ -3524,7 +3516,6 @@ begin
   FTextShiftAltExtra2Click := mbaNone;
   FTextShiftCtrlExtra2Click := mbaNone;
   FTextShiftExtra2Click := mbaNone;
-
 
   FTextRightMoveCaret  := False;
   FTextDrag            := True;
@@ -3925,10 +3916,9 @@ begin
   AddWheelAct(FShiftAltCtrlHorizWheel, [ssShift, ssAlt, ssCtrl], ModKeys, True);
 
   if FTextDrag then
-    with FSelActions do begin
-      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [ssShift], emcoNotDragedNoCaretOnUp);
-    end;
-    FTextActions.AddCommand(emcNone, True, mbXLeft, ccSingle, cdUp, [], [], 0, 99);
+    FSelActions.AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown,
+                           [], [ssShift], emcoNotDragedNoCaretOnUp);
+  FTextActions.AddCommand(emcNone, True, mbXLeft, ccSingle, cdUp, [], [], 0, 99);
 end;
 
 procedure TEditorMouseOptions.ResetToUserScheme;
@@ -3978,7 +3968,6 @@ var
   i: Integer;
 begin
   FName                 := Src.FName;
-
   FGutterLeft           := Src.GutterLeft;
   FSelectOnLineNumbers  := Src.SelectOnLineNumbers;
   FTextDrag             := Src.TextDrag;
@@ -3987,7 +3976,7 @@ begin
 
     // left multi click
   FTextDoubleLeftClick       := Src.TextDoubleLeftClick;
-  FTextTripleLeftClick      := Src.TextTripleLeftClick;
+  FTextTripleLeftClick       := Src.TextTripleLeftClick;
   FTextQuadLeftClick         := Src.TextQuadLeftClick;
   FTextShiftDoubleLeftClick  := Src.TextShiftDoubleLeftClick;
   FTextAltDoubleLeftClick    := Src.TextAltDoubleLeftClick;
@@ -4054,8 +4043,6 @@ begin
   FTextShiftAltExtra2Click := Src.TextShiftAltExtra2Click;
   FTextShiftCtrlExtra2Click := Src.TextShiftCtrlExtra2Click;
   FTextShiftExtra2Click := Src.TextShiftExtra2Click;
-
-
 
   AssignActions(Src);
 
@@ -4861,16 +4848,13 @@ begin
     end;
 
     fShowTabCloseButtons :=
-      XMLConfig.GetValue(
-      'EditorOptions/General/Editor/ShowTabCloseButtons', True);
+      XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabCloseButtons', True);
     FHideSingleTabInWindow :=
-      XMLConfig.GetValue(
-      'EditorOptions/General/Editor/HideSingleTabInWindow', False);
+      XMLConfig.GetValue('EditorOptions/General/Editor/HideSingleTabInWindow', False);
     fShowTabNumbers :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
     FCopyWordAtCursorOnCopyNone :=
-      XMLConfig.GetValue(
-      'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone', True);
+      XMLConfig.GetValue('EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone', True);
     FShowGutterHints :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowGutterHints', True);
     fUndoAfterSave :=
@@ -4878,8 +4862,7 @@ begin
     fFindTextAtCursor :=
       XMLConfig.GetValue('EditorOptions/General/Editor/FindTextAtCursor', True);
     fUseSyntaxHighlight :=
-      XMLConfig.GetValue(
-      'EditorOptions/General/Editor/UseSyntaxHighlight', True);
+      XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight', True);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
     FBlockTabIndent :=
@@ -4923,13 +4906,11 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
     if FileVersion < 8 then begin
       fEditorFontSize :=
-        XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',
-        SynDefaultFontHeight);
+        XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', SynDefaultFontHeight);
       fEditorFontSize := FontHeightToSize(fEditorFontSize);
     end else begin
       fEditorFontSize :=
-        XMLConfig.GetValue('EditorOptions/Display/EditorFontSize',
-        SynDefaultFontSize);
+        XMLConfig.GetValue('EditorOptions/Display/EditorFontSize', SynDefaultFontSize);
     end;
     RepairEditorFontSize(fEditorFontSize);
     fExtraCharSpacing :=
@@ -4937,8 +4918,7 @@ begin
     fExtraLineSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
     fDisableAntialiasing :=
-      XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing',
-                         FileVersion<7);
+      XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing', FileVersion<7);
     FDoNotWarnForFont :=
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
@@ -4961,35 +4941,27 @@ begin
     FUserDefinedColors.LoadFromXMLConfig(xmlconfig, 'EditorOptions/UserDefinedColors');
 
     FMarkupCurWordTime :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
+      XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/Time', 1500);
     FMarkupCurWordFullLen :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
+      XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
     // check deprecated value
     if not XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/FullWord', True) then
       FMarkupCurWordFullLen := 0;
     XMLConfig.DeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord');
     FMarkupCurWordNoKeyword :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/NoKeyword', True);
+      XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword', True);
     FMarkupCurWordTrim :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/Trim', True);
+      XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/Trim', True);
     FMarkupCurWordNoTimer :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
+      XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
     FShowFileNameInCaption :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/ShowFileNameInCaption', False);
+      XMLConfig.GetValue('EditorOptions/Display/ShowFileNameInCaption', False);
 
     // Code Tools options
     fAutoBlockCompletion :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeTools/AutoBlockCompletion', True);
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoBlockCompletion', True);
     fAutoDisplayFuncPrototypes :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeTools/AutoDisplayFuncPrototypes', True);
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoDisplayFuncPrototypes', True);
     fAutoCodeParameters :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters', True);
     fAutoToolTipExprEval :=
@@ -5004,8 +4976,7 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       , TrimFilename(AppendPathDelim(GetPrimaryConfigPath) + DefaultCodeTemplatesFilename));
     fCTemplIndentToTokenStart :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
+      XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
     fAutoRemoveEmptyMethods :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
     FCompletionLongLineHintInMSec :=
@@ -5016,14 +4987,11 @@ begin
 
     // Code Folding
     FUseCodeFolding :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeFolding/UseCodeFolding', True);
+      XMLConfig.GetValue('EditorOptions/CodeFolding/UseCodeFolding', True);
     FUseMarkupWordBracket :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeFolding/UseMarkupWordBracket', True);
+      XMLConfig.GetValue('EditorOptions/CodeFolding/UseMarkupWordBracket', True);
     FUseMarkupOutline :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeFolding/UseMarkupOutline', False);
+      XMLConfig.GetValue('EditorOptions/CodeFolding/UseMarkupOutline', False);
 
     FUserMouseSettings.LoadFromXml(XMLConfig, 'EditorOptions/Mouse/',
                                   'EditorOptions/General/Editor/', FileVersion);
@@ -5599,7 +5567,6 @@ begin
   XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
 end;
 
-
 procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String);
 // if SynColorScheme='' then default ColorScheme will be used
@@ -5609,7 +5576,6 @@ begin
   LangScheme := GetColorSchemeLanguage(Syn, SynColorScheme);
   if LangScheme = nil then
     exit;
-
   LangScheme.ApplyTo(Syn);
 end;
 
@@ -5638,10 +5604,10 @@ begin
         ConfName := TheFoldInfo.Info^[i].Xml;
         Path := 'EditorOptions/FoldConfig/Lang' +
           StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-      // try reading the old config first
-      FoldHl.FoldConfig[idx].Enabled :=
-        XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
-      XMLConfig.ReadObject(Path + 'Settings/', FoldHl.FoldConfig[idx], DefHl.FoldConfig[idx]);
+        // try reading the old config first
+        FoldHl.FoldConfig[idx].Enabled :=
+          XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
+        XMLConfig.ReadObject(Path + 'Settings/', FoldHl.FoldConfig[idx], DefHl.FoldConfig[idx]);
 
         (* if ReadForOptions=True then Enabled appies only to fmFold,fmHide.
            This allows to store what selection was previously active *)
@@ -5680,9 +5646,8 @@ begin
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
     for i := 0 to TheFoldInfo.Count - 1 do
-      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do begin
+      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do
         Enabled := TheFoldInfo.Info^[i].Enabled;
-      end;
   end;
 end;
 
@@ -6214,7 +6179,7 @@ end;
 function TColorSchemeAttribute.GetSchemeGlobal: TColorSchemeAttribute;
 begin
   Result := nil;
-  if (FOwner <> nil) and (FOwner.FOwner<> nil) and
+  if (FOwner <> nil) and (FOwner.FOwner <> nil) and
      (FOwner.FOwner.FDefaultColors <> nil)
   then
     Result := FOwner.FOwner.FDefaultColors.Attribute[StoredName];
@@ -6323,7 +6288,7 @@ begin
   Result := (FGroup      = Other.FGroup) and
             (FUseSchemeGlobals = Other.FUseSchemeGlobals) and
             // ignore resourcestring Name and Caption
-            (StoredName = Other.StoredName) and
+            (StoredName  = Other.StoredName) and
             (Background  = Other.Background) and
             (Foreground  = Other.Foreground) and
             (FrameColor  = Other.FrameColor) and
@@ -6335,7 +6300,7 @@ begin
             (Style       = Other.Style) and
             (StyleMask   = Other.StyleMask) and
             (Features   = Other.Features);
-  end;
+end;
 
 function TColorSchemeAttribute.GetStoredValuesForAttrib: TColorSchemeAttribute;
 begin
@@ -6555,7 +6520,6 @@ begin
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
 
-
 end;
 
 destructor TColorSchemeLanguage.Destroy;
@@ -6739,10 +6703,8 @@ begin
     aPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/';
   if (Defaults <> nil) and Self.Equals(Defaults) then begin
     aXMLConfig.DeletePath(aPath + 'Scheme' + StrToValidXMLName(Name));
-    if not FIsSchemeDefault then begin
-      if not aXMLConfig.HasChildPaths(aPath) then
-        aXMLConfig.DeletePath(aPath);
-    end;
+    if not (FIsSchemeDefault or aXMLConfig.HasChildPaths(aPath)) then
+      aXMLConfig.DeletePath(aPath);
     exit;
   end;
   aXMLConfig.SetValue(aPath + 'Version', EditorOptsFormatVersion);
@@ -7056,8 +7018,7 @@ begin
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
     // do not create duplicates
     if CompatibleLazSyntaxHilighter[i] = i then
-      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig,
-        aPath)
+      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig, aPath)
     else
       FColorSchemes[i] := nil;
 end;
@@ -7211,8 +7172,7 @@ begin
       Def := Defaults.ColorSchemeGroupAtPos[i]
     else
       Def := nil;
-    ColorSchemeGroupAtPos[i].LoadFromXml(aXMLConfig, aPath,
-                                         Def, aOldPath);
+    ColorSchemeGroupAtPos[i].LoadFromXml(aXMLConfig, aPath, Def, aOldPath);
   end;
   // all Schemes have read (and relocated) the old values
   if aOldPath <> '' then begin

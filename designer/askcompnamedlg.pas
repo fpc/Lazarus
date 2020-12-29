@@ -26,9 +26,13 @@ unit AskCompNameDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ButtonPanel, ExtCtrls, PropEdits, LazarusIDEStrConsts,
-  TypInfo, LCLType;
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ExtCtrls,
+  // IdeIntf
+  PropEdits,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

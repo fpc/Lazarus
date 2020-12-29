@@ -7,11 +7,11 @@ interface
 uses
   // FCL
   Classes, SysUtils, Types, typinfo, strutils,
-  // LazUtils
-  LazLogger,
   // LCL
   ActnList, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
+  // LazUtils
+  LazLogger, LazTracer,
   // IdeIntf
   FormEditingIntf, IDEWindowIntf, IDEImagesIntf, ComponentEditors, IDEDialogs,
   PropEdits,

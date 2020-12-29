@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, strutils, types, fgl,
-  ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, Menus,
-  Forms, Graphics, LCLType, LCLIntf, LCLProc,
+  // LCL
+  ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, Menus, Forms, Graphics,
+  LCLType, LCLIntf, LCLProc,
   // LazUtils
   LazUTF8,
   // IdeIntf

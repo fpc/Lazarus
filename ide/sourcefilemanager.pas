@@ -616,7 +616,7 @@ begin
 
     NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
     AnEditorInfo.EditorComponent := NewSrcEdit;
-    //debugln(['TFileOpener.OpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
+    //debugln(['TFileOpener.OpenFileInSourceEditor ',AnUnitInfo.Filename]);
 
     // restore source editor settings
     DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);

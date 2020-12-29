@@ -30,8 +30,9 @@ unit SizeCompsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel;
 
 type
   { TSizeComponentsDialog }

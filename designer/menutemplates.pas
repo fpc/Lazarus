@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, types, fgl,
+  // LCL
   Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   ComCtrls, Forms, Graphics, Themes, LCLType, LCLIntf, LCLProc,
   // LazUtils

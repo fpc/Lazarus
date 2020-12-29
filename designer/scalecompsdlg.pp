@@ -30,8 +30,11 @@ unit ScaleCompsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, LazarusIDEStrConsts, ButtonPanel, Spin;
+  Classes, SysUtils,
+  // LCL
+  LCLIntf, Forms, Controls, StdCtrls, ButtonPanel, Spin,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

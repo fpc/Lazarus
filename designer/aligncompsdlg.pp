@@ -30,8 +30,11 @@ unit AlignCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, 
-  LazarusIDEStrConsts, ButtonPanel, StdCtrls;
+  Classes,
+  // LCL
+  Forms, Controls, ExtCtrls, ButtonPanel, StdCtrls,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
   { TAlignComponentsDialog }

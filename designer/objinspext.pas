@@ -19,15 +19,16 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
+  Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, Menus, ComCtrls, Grids,
+  CustomTimer,
   // LazUtils
-  LazFileUtils, LazConfigStorage,
+  LazFileUtils, LazConfigStorage, LazLoggerBase,
   // CodeTools
   CodeToolManager, CodeCache,
+  // BuildIntf
+  BaseIDEIntf, ProjectIntf,
   // IdeIntf
-  BaseIDEIntf, LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
-  PropEdits, IDEDialogs,
+  LazIDEIntf, ObjectInspector, OIFavoriteProperties, PropEdits, IDEDialogs,
   // IDE
   DialogProcs, LazConf, LazarusIDEStrConsts;
 

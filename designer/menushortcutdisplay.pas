@@ -5,8 +5,9 @@ unit MenuShortcutDisplay;
 interface
 
 uses
-  // FCL + LCL
+  // FCL
   Classes, SysUtils,
+  // LCL
   ButtonPanel, Controls, StdCtrls, Menus, Forms, LCLIntf, LCLProc,
   // LazUtils
   LazUTF8,

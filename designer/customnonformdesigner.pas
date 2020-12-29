@@ -31,7 +31,10 @@ interface
 
 uses
   Classes, SysUtils,
-  FormEditingIntf, LazUtilities;
+  // LazUtils
+  LazUtilities,
+  // IdeIntf
+  FormEditingIntf;
   
 type
 

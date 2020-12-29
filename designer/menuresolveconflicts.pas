@@ -5,8 +5,9 @@ unit MenuResolveConflicts;
 interface
 
 uses
-  // FCL + LCL
+  // FCL
   Classes, SysUtils,
+  // LCL
   ActnList, ButtonPanel, Controls, StdCtrls, Menus, Forms, Graphics, LCLProc,
   // IdeIntf
   FormEditingIntf, PropEdits,

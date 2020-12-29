@@ -5,9 +5,12 @@ unit MenuDesignerBase;
 interface
 
 uses
-  // FCL + LCL
+  // FCL
   Classes, SysUtils, fgl,
-  Controls, Forms, Menus, Graphics, LCLProc,
+  // LCL
+  Controls, Forms, Menus, Graphics,
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   FormEditingIntf, ComponentEditors,
   // IDE
