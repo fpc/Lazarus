@@ -3690,7 +3690,7 @@ begin
     raise Exception.Create('TAnchorDockMaster.ManualDock TargetPanel depends on SrcSite');
   BeginUpdate;
   try
-    Site.ExecuteDock(SrcSite,TargetPanel,alClient);
+    Site.ExecuteDock(SrcSite,TargetControl,Align);
   finally
     EndUpdate;
   end;
