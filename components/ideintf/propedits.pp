@@ -1357,8 +1357,7 @@ type
   TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
   TPropHookPersistentAdded = procedure(APersistent: TPersistent; Select: boolean
                                       ) of object;
-  TPropHookPersistentDeleting = procedure(APersistent: TPersistent) of object;
-  TPropHookPersistentDeleted = procedure of object;
+  TPropHookPersistentDel = procedure(APersistent: TPersistent) of object;
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
   TPropHookGetSelection = procedure(ASelection: TPersistentSelectionList) of object;
   TPropHookSetSelection = procedure(ASelection: TPersistentSelectionList) of object;
@@ -1488,7 +1487,7 @@ type
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure PersistentDeleting(APersistent: TPersistent);
-    procedure PersistentDeleted;
+    procedure PersistentDeleted(APersistent: TPersistent);
     procedure DeletePersistent(var APersistent: TPersistent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -1592,13 +1591,13 @@ type
     procedure RemoveHandlerPersistentAdded(
                              const OnPersistentAdded: TPropHookPersistentAdded);
     procedure AddHandlerPersistentDeleting(
-                       const OnPersistentDeleting: TPropHookPersistentDeleting);
+                       const OnPersistentDeleting: TPropHookPersistentDel);
     procedure RemoveHandlerPersistentDeleting(
-                       const OnPersistentDeleting: TPropHookPersistentDeleting);
+                       const OnPersistentDeleting: TPropHookPersistentDel);
     procedure AddHandlerPersistentDeleted(
-                       const OnPersistentDeleted: TPropHookPersistentDeleted);
+                       const OnPersistentDeleted: TPropHookPersistentDel);
     procedure RemoveHandlerPersistentDeleted(
-                       const OnPersistentDeleted: TPropHookPersistentDeleted);
+                       const OnPersistentDeleted: TPropHookPersistentDel);
     procedure AddHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
@@ -6735,16 +6734,16 @@ var
 begin
   i:=GetHandlerCount(htPersistentDeleting);
   while GetNextHandlerIndex(htPersistentDeleting,i) do
-    TPropHookPersistentDeleting(FHandlers[htPersistentDeleting][i])(APersistent);
+    TPropHookPersistentDel(FHandlers[htPersistentDeleting][i])(APersistent);
 end;
 
-procedure TPropertyEditorHook.PersistentDeleted;
+procedure TPropertyEditorHook.PersistentDeleted(APersistent: TPersistent);
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htPersistentDeleted);
   while GetNextHandlerIndex(htPersistentDeleted,i) do
-    TPropHookPersistentDeleted(FHandlers[htPersistentDeleted][i])();
+    TPropHookPersistentDel(FHandlers[htPersistentDeleted][i])(APersistent);
 end;
 
 procedure TPropertyEditorHook.DeletePersistent(var APersistent: TPersistent);
@@ -7280,25 +7279,25 @@ begin
 end;
 
 procedure TPropertyEditorHook.AddHandlerPersistentDeleting(
-  const OnPersistentDeleting: TPropHookPersistentDeleting);
+  const OnPersistentDeleting: TPropHookPersistentDel);
 begin
   AddHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerPersistentDeleting(
-  const OnPersistentDeleting: TPropHookPersistentDeleting);
+  const OnPersistentDeleting: TPropHookPersistentDel);
 begin
   RemoveHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
 
 procedure TPropertyEditorHook.AddHandlerPersistentDeleted(
-  const OnPersistentDeleted: TPropHookPersistentDeleted);
+  const OnPersistentDeleted: TPropHookPersistentDel);
 begin
   AddHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerPersistentDeleted(
-  const OnPersistentDeleted: TPropHookPersistentDeleted);
+  const OnPersistentDeleted: TPropHookPersistentDel);
 begin
   RemoveHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
 end;

@@ -165,7 +165,7 @@ type
     class procedure OnDesignRefreshPropertyValues;
     class procedure OnModifiedPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: Boolean);
     class procedure OnModifiedSender(Sender: TObject);
-    class procedure OnModified;
+    class procedure OnModified(APersistent: TPersistent);
     class procedure DesignerSetFocus;
     class procedure OnDesignMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
@@ -1213,10 +1213,10 @@ end;
 
 class procedure TSpartaMainIDE.OnModifiedSender(Sender: TObject);
 begin
-  OnModified;
+  OnModified(Nil);
 end;
 
-class procedure TSpartaMainIDE.OnModified;
+class procedure TSpartaMainIDE.OnModified(APersistent: TPersistent);
 var
   LResizer: TResizer;
 begin
@@ -1228,7 +1228,7 @@ end;
 class procedure TSpartaMainIDE.OnModifiedPersistentAdded(
   APersistent: TPersistent; Select: Boolean);
 begin
-  OnModified;
+  OnModified(Nil);
 end;
 
 class procedure TSpartaMainIDE.OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;

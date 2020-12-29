@@ -3015,7 +3015,8 @@ begin
     Hook:=GetPropertyEditorHook;
     if Assigned(Hook) then
       Hook.PersistentDeleting(APersistent);
-    Special:=(APersistent is TWinControl) and TWinControl(APersistent).IsSpecialSubControl;
+    Special := (Copy(APersistent.ClassName,1,3) = 'TPS') // A hack for PSScript plugins. ToDo...
+      or ((APersistent is TWinControl) and TWinControl(APersistent).IsSpecialSubControl);
     // delete component
     if APersistent is TComponent then
       TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
@@ -3023,13 +3024,13 @@ begin
       APersistent.Free;
     // call ComponentDeleted handler
     if Assigned(FOnPersistentDeleted) then begin
-      if Special then // Special treatment is now needed only for TPairSplitterSide.
+      if Special then       // Special treatment is needed for TPairSplitterSide.
         FOnPersistentDeleted(Self,nil)          // Will rebuild whole OI Tree.
       else
         FOnPersistentDeleted(Self,APersistent);
     end;
     if Assigned(Hook) then
-      Hook.PersistentDeleted;
+      Hook.PersistentDeleted(APersistent);
   finally
     // unmark component
     DeletingPersistent.Remove(APersistent);

@@ -50,7 +50,7 @@ type
     procedure OnShowEditorClick(Sender: TObject);
 
     procedure OnDesignRefreshPropertyValues;
-    procedure OnPersistentDeleted;
+    procedure OnPersistentDeleted(APersistent: TPersistent);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
   public
     { public declarations }
@@ -240,13 +240,12 @@ begin
   end;
 end;
 
-procedure TedtuMain.OnPersistentDeleted;
+procedure TedtuMain.OnPersistentDeleted(APersistent: TPersistent);
 begin
   OnDesignRefreshPropertyValues
 end;
 
-procedure TedtuMain.OnPersistentAdded(APersistent: TPersistent; Select: boolean
-  );
+procedure TedtuMain.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
 begin
   OnDesignRefreshPropertyValues
 end;

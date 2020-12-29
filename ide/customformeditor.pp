@@ -643,7 +643,7 @@ Begin
       DebugLn(['TCustomFormEditor.DeleteComponent Hiding: ',dbgsName(AWinControl)]);
     end;
   end;
-  PropertyEditorHook.PersistentDeleted;
+  //PropertyEditorHook.PersistentDeleted(AComponent); Not needed?
 end;
 
 function TCustomFormEditor.FindComponentByName(const Name: ShortString): TComponent;
