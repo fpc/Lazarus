@@ -114,7 +114,12 @@ type
 
 procedure Register;
 
+function ChmViewerInstance(): TChmHelpViewer;
+
 implementation
+
+var
+  ChmHelpViewer: TChmHelpViewer;
 
 const
   // Part of help name. Stored/retrieved in Lazarus options CHMHelp/Name.
@@ -133,22 +138,28 @@ end;
 
 procedure Register;
 var
-  ChmHelp: TChmHelpViewer;
+  ChmViewer: TChmHelpViewer;
 begin
-  ChmHelp := TChmHelpViewer.Create(nil);
-  HelpViewers.RegisterViewer(ChmHelp);
+  ChmViewer := ChmViewerInstance();
+  HelpViewers.RegisterViewer(ChmViewer);
   RegisterLangRefHelpDatabase;
-  LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  LangRefHelpDatabase.OnFindViewer := @ChmViewer.DBFindViewer;
   RegisterLclHelpDatabase;
-  LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  LCLHelpDatabase.OnFindViewer := @ChmViewer.DBFindViewer;
   RegisterFPCDirectivesHelpDatabase;
-  FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  FPCDirectivesHelpDatabase.OnFindViewer := @ChmViewer.DBFindViewer;
 
   // disable showing CodeBrowser on unknown identifiers. LHelp has its own
   // search function.
   LazarusHelp.ShowCodeBrowserOnUnknownIdentifier:=false;
 end;
 
+function ChmViewerInstance ( ): TChmHelpViewer;
+begin
+  if not Assigned (ChmHelpViewer) then
+     ChmHelpViewer:= TChmHelpViewer.Create(nil);
+  Result:= ChmHelpViewer;
+end;
 
 { TChmHelpViewer }
 
@@ -515,43 +526,42 @@ var
   SearchPath: String; //; delimited list of directories
   HelpExeFileName: String;
 begin
-  // Make sure the lhelp help viewer exists; build it if doesn't and it is lhelp
   HelpExeFileName:=GetHelpExe;
-  if (not FileExistsUTF8(HelpExeFileName)) and
-    ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and
-    (CheckBuildLHelp <> mrOK)) then
-  begin
-    IDEMessageDialog(HELP_MissingLhelp,
-      Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
-             [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
-              GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]),
-      mtError,[mbCancel]);
-    Debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
-      [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
-      GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]));
-    exit;
-  end;
-
   SearchPath := GetHelpFilesPath;
-  // Start up help viewer if needed - and tell it to hide
+
   if not(fHelpConnection.ServerRunning) then
   begin
+    // Make sure the lhelp help viewer exists; build it if doesn't and it is lhelp
+    if (not FileExistsUTF8(HelpExeFileName)) and
+      ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and
+      (CheckBuildLHelp <> mrOK)) then
+    begin
+      IDEMessageDialog(HELP_MissingLhelp,
+        Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+               [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
+                GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]),
+        mtError,[mbCancel]);
+      Debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+        [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
+        GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]));
+      exit;
+    end;
+    // Start up help viewer if needed - and tell it to hide
     fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
     Response := fHelpConnection.RunMiscCommand(mrVersion);
     if Response <> srSuccess then
     begin
-      debugln('TChmHelpViewer: Help viewer does not support our protocol version ('+PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)))
-    end
-    else
-    begin
-      // Open all chm files after it has started, while still hidden
-      OpenAllCHMsInSearchPath(SearchPath);
-      // Instruct viewer to show its GUI
-      Response := fHelpConnection.RunMiscCommand(mrShow);
-      if Response <> srSuccess then
-        debugln('TChmHelpViewer: Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
+      debugln('TChmHelpViewer: Help viewer does not support our protocol version ('+
+              PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)));
+      Exit;
     end;
   end;
+  // Open all chm files always
+  OpenAllCHMsInSearchPath(SearchPath);
+  // Instruct viewer to show its GUI
+  Response := fHelpConnection.RunMiscCommand(mrShow);
+  if Response <> srSuccess then
+    debugln('TChmHelpViewer: Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
 end;
 
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string

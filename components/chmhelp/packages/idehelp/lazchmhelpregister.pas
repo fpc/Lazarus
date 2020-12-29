@@ -42,10 +42,7 @@ const
   HELP_CURRENT_NAME  = 'chpHelp';
   HELP_CATEGORY_IDECMD_NAME = 'chpFormat';
 
-var
-  IDECHMHelp: TChmHelpViewer;
-
-
+// Register package
 procedure Register;
 var
   Cat: TIDECommandCategory;
@@ -53,10 +50,11 @@ var
   Key: TIDEShortCut;
   }
   CmdHelpCommand: TIDECommand;
+  AChmViewer: TChmHelpViewer;
 begin
   // We can't put this in an initialization section because IDEChmHelp requires
   // some IDE features, which are only available in "Register".
-  IDECHMHelp := TChmHelpViewer.Create(nil);
+  AChmViewer := ChmViewerInstance();
   Cat := IDECommandList.CreateCategory(nil, HELP_CATEGORY_IDECMD_NAME,
     HELP_CATEGORY_IDECMD, IDECmdScopeSrcEditOnly);
   {
@@ -66,13 +64,9 @@ begin
     @IDECHMHelp.ShowAllHelp);
   }
   CmdHelpCommand := RegisterIDECommand(Cat, HELP_CURRENT_NAME, HELP_CURRENT_IDECMD,
-    @IDECHMHelp.ShowAllHelp);
-
+    @AChmViewer.ShowAllHelp);
   RegisterIDEMenuCommand(mnuHelp, HELP_CURRENT_NAME, HELP_CURRENT_MENU,
-    @IDECHMHelp.ShowAllHelp, nil, CmdHelpCommand);
+    @AChmViewer.ShowAllHelp, nil, CmdHelpCommand);
 end;
 
-
-finalization
-  FreeAndNil(IDECHMHelp);
 end.
