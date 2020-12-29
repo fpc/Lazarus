@@ -3620,6 +3620,7 @@ begin
         try
           DockObject.DropAlign:=Align;
           DockObject.DockRect:=SrcSite.BoundsRect;
+          DockObject.Control.Dock(TargetSite, SrcSite.BoundsRect);
           aManager.InsertControl(DockObject);
         finally
           DockObject.Free;
