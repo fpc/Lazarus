@@ -5,7 +5,7 @@ unit IDETemplateProject;
 interface
 
 uses
-  Classes, SysUtils, ContNrs,
+  Classes, SysUtils, StrUtils, ContNrs,
   // LCL
   LResources, Forms, Controls, Graphics, Dialogs,
   // LazUtils
@@ -29,13 +29,13 @@ type
     Function ShowOptionsDialog : TModalResult;
   public
     constructor Create(ATemplate : TProjectTemplate); overload;
-    destructor destroy; override;
+    destructor Destroy; override;
     Function DoInitDescriptor : TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject) : TModalResult; override;
     function CreateStartFiles({%H-}AProject: TLazProject) : TModalResult; override;
-    Property template : TProjectTemplate Read FTemplate Write FTemplate;
+    Property Template : TProjectTemplate Read FTemplate Write FTemplate;
   end;
   
 procedure Register;
@@ -108,11 +108,30 @@ begin
   NewIDEItems.Add(TNewIDEItemCategory.Create(STemplateCategory));
 end;
 
+procedure FileReplaceText(FN, AFrom, ATo: string);
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  if not FileExistsUTF8(FN) then
+    exit;
+  sl:=TStringList.Create;
+  try
+    sl.LoadFromFile(FN);
+    for i:=0 to sl.Count-1 do
+      sl[i]:=ReplaceText(sl[i],AFrom,ATo);
+    sl.SaveToFile(fn);
+  finally
+    sl.Free;
+  end;
+end;
+
 Procedure DoProject(Sender : TObject);
 
 Var
   I : Integer;
   Desc : TTemplateProjectDescriptor;
+  fn: string;
 
 begin
   I:=MenuList.count-1;
@@ -124,8 +143,18 @@ begin
         Desc:=FProjDesc;
     Dec(i);
     end;
-  If Desc<>Nil then
-    LazarusIDE.DoNewProject(Desc);
+  If Desc=Nil then
+    exit;
+
+  If Desc.ShowOptionsDialog<>mrOk then
+    exit;
+  Desc.Template.CreateProject(Desc.FProjectDirectory,Desc.FVariables);
+  fn:=Desc.FProjectDirectory+Desc.FProjectName;
+  FileReplaceText(fn+'.lpi',Desc.FTemplate.ProjectFile,Desc.FProjectName);
+  FileReplaceText(fn+'.lpr',Desc.FTemplate.ProjectFile,Desc.FProjectName);
+  FileReplaceText(fn+'.lps',Desc.FTemplate.ProjectFile,Desc.FProjectName);
+  LazarusIDE.DoOpenProjectFile(Desc.FProjectDirectory+Desc.FProjectName+'.lpi',
+    [ofProjectLoading,ofOnlyIfExists,ofConvertMacros,ofDoLoadResource]);
 end;
 
 procedure RegisterKnowntemplates;
@@ -211,10 +240,16 @@ begin
       FVariables.Assign(FTemplate.Variables);
       I:=FVariables.IndexOfName('ProjName');
       if (I<>-1) then
+        begin
+        EProjectName.Text:=FVariables.Values['ProjName'];
         FVariables.Delete(I);
+        end;
       I:=FVariables.IndexOfName('ProjDir');
       if (I<>-1) then
+        begin
+        DEDestDir.Text:=FVariables.Values['ProjDir'];
         FVariables.Delete(I);
+        end;
       Templates:=Templates;
       Variables:=FVariables;
       Result:=ShowModal;
@@ -265,11 +300,23 @@ end;
 
 
 function TTemplateProjectDescriptor.DoInitDescriptor: TModalResult;
-
+var
+  I : integer;
+  Desc : TTemplateProjectDescriptor;
 begin
-  Result:=ShowOptionsDialog;
-  If (Result=mrOK) then
-    FTemplate.CreateProject(FProjectDirectory,FVariables);
+  Result:=mrCancel;
+  I:=MenuList.count-1;
+  Desc:=Nil;
+  While (Desc=Nil) and (I>=0) do
+  begin
+  With TIDEObject(MenuList[i]) do
+    if FProjDesc=self then
+      begin
+      DoProject(FProjMenu);
+      exit;
+      end;
+  Dec(i);
+  end;
 end;
 
 
@@ -317,6 +364,9 @@ begin
     end
   else
     Result:=mrCancel;
+
+Result:=mrCancel;
+
 end;
 
 Function TTemplateProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TModalresult;

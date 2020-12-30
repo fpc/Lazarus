@@ -7,7 +7,7 @@ interface
 uses
   Classes,
   // LCL
-  Forms, ExtCtrls, Grids, StdCtrls, EditBtn, ButtonPanel,
+  Controls, Forms, ExtCtrls, Grids, StdCtrls, EditBtn, ButtonPanel,
   // ProjectTemplates
   ProjectTemplates, ptstrconst;
 
@@ -26,6 +26,8 @@ type
     procedure BOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ProjectVariablesFormShow(Sender: TObject);
+    procedure SGVariablesSelectEditor(Sender: TObject; aCol, aRow: Integer;
+      var Editor: TWinControl);
   private
     FSChanged: Boolean;
     FTemplates: TProjectTemplates;
@@ -55,6 +57,13 @@ begin
   SGVariables.Cells[0,0]:=SVariable;
   SGVariables.Cells[1,0]:=SValue;
   SGVariables.Cells[2,0]:=SDescription;
+end;
+
+procedure TProjectVariablesForm.SGVariablesSelectEditor(Sender: TObject; aCol,
+  aRow: Integer; var Editor: TWinControl);
+begin
+  if aCol<>1 then
+    Editor:=nil;
 end;
 
 procedure TProjectVariablesForm.BOKClick(Sender: TObject);
