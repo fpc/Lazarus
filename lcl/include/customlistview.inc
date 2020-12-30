@@ -587,7 +587,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.DoDeletion(AItem: TListItem);
 begin
-  if Assigned(FOnDeletion) then FOnDeletion(Self, AItem);
+  if not (csDestroying in ComponentState) and Assigned(FOnDeletion) then
+    FOnDeletion(Self, AItem);
 end;
 
 {------------------------------------------------------------------------------}
@@ -595,7 +596,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.DoInsert(AItem: TListItem);
 begin
-  if Assigned(FOnInsert) then FOnInsert(Self, AItem);
+  if not (TMethod(@Self.InsertItem).Code = Pointer(@TCUstomListView.InsertItem)) then
+    //There is an override for InsertItem, so use that for Delphi compatibility. Issue #0038263
+    InsertItem(AItem)
+  else
+    if Assigned(FOnInsert) then FOnInsert(Self, AItem);
 end;
 
 {------------------------------------------------------------------------------}
@@ -671,6 +676,12 @@ begin
     AItem.Caption := S;
 end;
 
+procedure TCustomListView.Edit(AItem: TListItem);
+begin
+  if Assigned(AItem) then
+    DoEndEdit(AItem, AItem.Caption);
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemDeleted                                                }
 {------------------------------------------------------------------------------}
@@ -729,13 +740,15 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.Delete(Item : TListItem);
 begin
+  Item.Delete;
 end;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView InsertItem                                                 }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.InsertItem(Item : TListItem);
+procedure TCustomListView.InsertItem(AItem : TListItem);
 begin
+  if Assigned(FOnInsert) then FOnInsert(Self, AItem);
 end;
 
 function TCustomListView.IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;

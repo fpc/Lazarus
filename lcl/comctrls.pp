@@ -1511,7 +1511,7 @@ type
     procedure Change(AItem: TListItem; AChange: Integer); virtual;
     procedure ColClick(AColumn: TListColumn); virtual;
 
-    procedure Delete(Item : TListItem);
+    procedure Delete(Item : TListItem); virtual;
     procedure DoDeletion(AItem: TListItem); virtual;
     procedure DoInsert(AItem: TListItem); virtual;
     procedure DoItemChecked(AItem: TListItem);
@@ -1521,8 +1521,9 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
 
     procedure DoEndEdit(AItem: TListItem; const AValue: String); virtual;
+    procedure Edit(AItem: TListItem); virtual;
 
-    procedure InsertItem(Item : TListItem);
+    procedure InsertItem(AItem : TListItem); virtual;
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
