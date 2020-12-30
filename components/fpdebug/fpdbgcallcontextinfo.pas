@@ -9,29 +9,30 @@ uses
   FpDbgInfo,
   FpdMemoryTools,
   FpDbgDwarfDataClasses,
-  FpDbgDwarf;
+  FpDbgDwarf,
+  FpDbgClasses;
 
 type
   { TFpDbgInfoCallContext }
 
   TFpDbgInfoCallContext = class(TFpDbgAbstractCallContext)
   public
-    function CreateParamSymbol(AParamIndex: Integer; ASymbol: TFpSymbol): TFpValue; override;
+    function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; ADbgProcess: TDbgProcess): TFpValue; virtual;
   end;
 
 implementation
 
 { TFpDbgInfoCallContext }
 
-function TFpDbgInfoCallContext.CreateParamSymbol(AParamIndex: Integer; ASymbol: TFpSymbol): TFpValue;
+function TFpDbgInfoCallContext.CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; ADbgProcess: TDbgProcess): TFpValue;
 var
   ParameterMemLocation: TFpDbgMemLocation;
   TypeSymbol: TFpSymbol;
   ParamSymbol: TFpSymbolDwarfFunctionResult;
 begin
-  ParameterMemLocation := RegisterLoc(5);
-  TypeSymbol := ASymbol.TypeInfo;
-  ParamSymbol := TFpSymbolDwarfFunctionResult.Create(ASymbol.Name, TDbgDwarfSymbolBase(ASymbol).InformationEntry, TypeSymbol.Kind, ParameterMemLocation);
+  ParameterMemLocation := ADbgProcess.CallParamDefaultLocation(AParamIndex);
+  TypeSymbol := ASymbolType.TypeInfo;
+  ParamSymbol := TFpSymbolDwarfFunctionResult.Create(ASymbolType.Name, TDbgDwarfSymbolBase(ASymbolType).InformationEntry, TypeSymbol.Kind, ParameterMemLocation);
   try
     Result := ParamSymbol.Value;
   finally

@@ -553,6 +553,9 @@ type
   // The special addition to make this work is that it is possible to set a
   // register-value by calling SetRegisterValue. Further this class is an empty
   // wrapper.
+
+  { TFpDbgAbstractCallContext }
+
   TFpDbgAbstractCallContext = class(TFpDbgLocationContext)
   private
     FBaseContext: TFpDbgLocationContext;
@@ -569,8 +572,6 @@ type
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
     destructor Destroy; override;
-
-    function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol): TFpValue; virtual; abstract;
 
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
     procedure SetError(const Message: string);
