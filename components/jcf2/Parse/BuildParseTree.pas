@@ -2023,7 +2023,7 @@ begin
     end;
   end
   else
-    Recognise([ttAnsiString, ttWideString]);
+    Recognise(StringWords);
 end;
 
 //Recognise specialize keyword in type definition (for fpc)
