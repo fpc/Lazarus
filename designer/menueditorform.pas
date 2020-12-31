@@ -90,7 +90,7 @@ type
     procedure HidePopupAssignmentsInfo;
     procedure InitializeStatisticVars;
     procedure LoadFixedButtonGlyphs;
-    procedure OnDesignerSetSelection(ASelection: TPersistentSelectionList);
+    procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
     procedure ProcessForPopup(aControl: TControl);
     procedure SetupPopupAssignmentsDisplay;
   public
@@ -279,7 +279,7 @@ begin
   OpenURL(helpPath);
 end;
 
-procedure TMenuDesignerForm.OnDesignerSetSelection(ASelection: TPersistentSelectionList);
+procedure TMenuDesignerForm.OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
 var
   mnu: TMenu;
   mi, tmp: TMenuItem;

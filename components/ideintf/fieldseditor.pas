@@ -81,8 +81,8 @@ type
     procedure SelectionChanged(AOrderChanged: Boolean = false);
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure OnPersistentDeleting(APersistent: TPersistent);
-    procedure OnGetSelection(ASelection: TPersistentSelectionList);
-    procedure OnSetSelection(ASelection: TPersistentSelectionList);
+    procedure OnGetSelection(const ASelection: TPersistentSelectionList);
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
   private
     LinkDataset: TDataset;
@@ -450,7 +450,8 @@ begin
     FieldsListBox.Items.Delete(i);
 end;
 
-procedure TDSFieldsEditorFrm.OnGetSelection(ASelection: TPersistentSelectionList);
+procedure TDSFieldsEditorFrm.OnGetSelection(
+  const ASelection: TPersistentSelectionList);
 var i: integer;
 begin
   if Not Assigned(ASelection) then exit;
@@ -460,7 +461,8 @@ begin
       ASelection.Add(TPersistent(FieldsListBox.Items.Objects[i]));
 end;
 
-procedure TDSFieldsEditorFrm.OnSetSelection(ASelection: TPersistentSelectionList);
+procedure TDSFieldsEditorFrm.OnSetSelection(
+  const ASelection: TPersistentSelectionList);
 var i, j: integer;
 begin
   if Assigned(ASelection) then begin

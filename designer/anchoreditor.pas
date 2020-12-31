@@ -183,7 +183,7 @@ type
     FSideControls: array[TAnchorKind] of TAnchorDesignerSideControls;
     procedure Refresh;
     procedure OnRefreshPropertyValues;
-    procedure OnSetSelection(ASelection: TPersistentSelectionList);
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     function GetSelectedControls: TList;
     function FindSibling(const Sibling: string): TControl;
     procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
@@ -409,7 +409,7 @@ begin
 end;
 
 procedure TAnchorDesigner.FormDestroy(Sender: TObject);
-  var
+var
   i: TAnchorKind;
 begin
   FreeAndNil(Values);
@@ -1167,7 +1167,7 @@ begin
   end;
 end;
 
-procedure TAnchorDesigner.OnSetSelection(ASelection: TPersistentSelectionList);
+procedure TAnchorDesigner.OnSetSelection(const ASelection: TPersistentSelectionList);
 begin
   if FSelection.IsEqual(ASelection) then exit;
   Refresh;
@@ -1175,8 +1175,7 @@ end;
 
 { TAnchorDesignerValues }
 
-function TAnchorDesignerValues.GetSides(Kind: TAnchorKind
-  ): TAnchorDesignerSideValues;
+function TAnchorDesignerValues.GetSides(Kind: TAnchorKind): TAnchorDesignerSideValues;
 begin
   Result:=FSides[Kind];
 end;

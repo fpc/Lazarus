@@ -66,10 +66,10 @@ type
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
     procedure MoveSelection(AStart, ADir: Integer);
     procedure OnComponentRenamed(AComponent: TComponent);
-    procedure OnGetSelection(ASelection: TPersistentSelectionList);
+    procedure OnGetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; ASelect: Boolean);
     procedure OnPersistentDeleting(APersistent: TPersistent);
-    procedure OnSetSelection(ASelection: TPersistentSelectionList);
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure RefreshList;
     procedure SelectionChanged(AOrderChanged: Boolean = false);
   protected
@@ -298,7 +298,8 @@ begin
     BuildCaption;
 end;
 
-procedure TComponentListEditorForm.OnGetSelection(ASelection: TPersistentSelectionList);
+procedure TComponentListEditorForm.OnGetSelection(
+  const ASelection: TPersistentSelectionList);
 var
   i: Integer;
 begin
@@ -335,7 +336,8 @@ begin
   end;
 end;
 
-procedure TComponentListEditorForm.OnSetSelection(ASelection: TPersistentSelectionList);
+procedure TComponentListEditorForm.OnSetSelection(
+  const ASelection: TPersistentSelectionList);
 var
   i, j: Integer;
 begin

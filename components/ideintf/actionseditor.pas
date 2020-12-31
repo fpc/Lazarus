@@ -139,7 +139,7 @@ type
     procedure lstActionNameDblClick(Sender: TObject);
   protected
     procedure OnComponentRenamed(AComponent: TComponent);
-    procedure OnComponentSelection(NewSelection: TPersistentSelectionList);
+    procedure OnComponentSelection(const NewSelection: TPersistentSelectionList);
     procedure OnComponentDelete(APersistent: TPersistent);
     procedure OnRefreshPropertyValues;
     function GetSelectedAction: TContainedAction;
@@ -477,7 +477,8 @@ begin
     lstActionName.Items[i] := AComponent.Name;
 end;
 
-procedure TActionListEditor.OnComponentSelection(NewSelection: TPersistentSelectionList);
+procedure TActionListEditor.OnComponentSelection(
+  const NewSelection: TPersistentSelectionList);
 var
   CurAct: TContainedAction;
   tmpCategory: String;

@@ -766,8 +766,8 @@ type
     procedure HookRefreshPropertyValues;
     procedure FillPersistentComboBox;
     procedure SetAvailComboBoxText;
-    procedure HookGetSelection(ASelection: TPersistentSelectionList);
-    procedure HookSetSelection(ASelection: TPersistentSelectionList);
+    procedure HookGetSelection(const ASelection: TPersistentSelectionList);
+    procedure HookSetSelection(const ASelection: TPersistentSelectionList);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure ShowNextPage(Delta: integer);
@@ -5258,13 +5258,13 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.HookGetSelection(ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookGetSelection(const ASelection: TPersistentSelectionList);
 begin
   if ASelection=nil then exit;
   ASelection.Assign(FSelection);
 end;
 
-procedure TObjectInspectorDlg.HookSetSelection(ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookSetSelection(const ASelection: TPersistentSelectionList);
 begin
   Selection := ASelection;
 end;
