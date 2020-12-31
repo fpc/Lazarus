@@ -9,30 +9,15 @@
     <module name="GraphType">
       <short>Definitions of several special types (including Raw Image) to be used for graphics</short>
       <descr/>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="Math"/>
+      <element name="FPCAdds"/>
+      <element name="LazLoggerBase"/>
+
       <!-- range type Visibility: default -->
       <element name="TGraphicsColor">
         <short/>

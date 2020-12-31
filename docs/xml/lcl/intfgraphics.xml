@@ -9,73 +9,29 @@
     <module name="IntfGraphics">
       <short>Classes and functions for easy handling of raw images (interface images)</short>
       <descr/>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="fpImage">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPReadBMP">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="BMPComn">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPCAdds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="AvgLvlTree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure type Visibility: default -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="fpImage"/>
+      <element name="FPReadBMP"/>
+      <element name="FPWriteBMP"/>
+      <element name="BMPComn"/>
+      <element name="FPReadPNG"/>
+      <element name="FPWritePNG"/>
+      <element name="FPReadTiff"/>
+      <element name="FPWriteTiff"/>
+      <element name="FPTiffCmn"/>
+      <element name="AvgLvlTree"/>
+      <element name="GraphType"/>
+      <element name="FPCAdds"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazTracer"/>
+      <element name="LCLType"/>
+      <element name="LCLVersion"/>
+      <element name="IcnsTypes"/>
+
       <element name="TOnGetLazIntfImagePixel">
         <short/>
         <descr/>

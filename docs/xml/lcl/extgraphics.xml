@@ -16,8 +16,8 @@
 <element name="Classes"/>
 <element name="Math"/>
 <element name="LazUtilities"/>
-<element name="Graphics"/>
 <element name="GraphMath"/>
+<element name="Graphics"/>
 
 <!-- enumeration type Visibility: default -->
 <element name="TShapeDirection">

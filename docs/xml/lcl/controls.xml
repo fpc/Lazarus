@@ -21,7 +21,6 @@
       <element name="LCLStrConsts"/>
       <element name="LCLType"/>
       <element name="LCLProc"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="LMessages"/>
       <element name="LCLIntf"/>
@@ -33,10 +32,12 @@
       <element name="LCLClasses"/>
       <element name="LResources"/>
       <element name="LCLPlatformDef"/>
+      <element name="GraphType"/>
+      <element name="UITypes"/>
       <element name="LazMethodList"/>
       <element name="LazLoggerBase"/>
+      <element name="LazTracer"/>
       <element name="LazUtilities"/>
-      <element name="UITypes"/>
 
       <!-- included from controlconsts.inc -->
       <element name="CM_BASE">

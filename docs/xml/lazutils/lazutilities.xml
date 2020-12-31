@@ -16,134 +16,172 @@
       <element name="TypInfo"/>
 
       <element name="FreeThenNil">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Ensures that the specified object instance is freed and set to Nil</short>
+        <descr>
+          <var>FreeThenNil</var> is a procedure used to ensure that the object instance in <var>obj</var> is freed and set to Nil. If obj has been assigned, it is cast to a <var>TObject</var> instance and its Free method is called. Finally, the pointer to the address in obj is set to Nil.
+        </descr>
+        <seealso/>
       </element>
       <element name="FreeThenNil.obj">
-        <short></short>
+        <short>Object instance modified in the routine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ComparePointers">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Gets the relative order for the specified Pointers</short>
+        <descr>
+          <p>
+            <var>ComparePointers</var> is an <var>Integer</var> function used to get the relative order for the specified Pointer values. The following return values are used in the routine:
+          </p>
+          <dl>
+            <dt>1</dt>
+            <dd>Returned when p1 &gt; p2.</dd>
+            <dt>0</dt>
+            <dd>Returned when p1 = p2.</dd>
+            <dt>-1</dt>
+            <dd>Returned when p1 &lt; p2.</dd>
+          </dl>
+        </descr>
+        <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ComparePointers.Result">
-        <short></short>
+        <short>Numeric value with the relative order for the compared Pointers</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ComparePointers.p1">
-        <short></short>
+        <short>Pointer compared in the routine</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ComparePointers.p2">
-        <short></short>
+        <short>Pointer compared in the routine</short>
       </element>
 
       <element name="CompareBoolean">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Compares the specified Boolean values</short>
+        <descr>
+          <dl>
+            <dt>0</dt>
+            <dd>Returned when b1 and b2 have the same value.</dd>
+            <dt>1</dt>
+            <dd>Returned when b1 is True.</dd>
+            <dt>-1</dt>
+            <dd>Returned as the default value (when b1 is False ).</dd>
+          </dl>
+        </descr>
+        <seealso/>
       </element>
       <element name="CompareBoolean.Result">
-        <short></short>
+        <short>Numeric value for the comparison</short>
       </element>
       <element name="CompareBoolean.b1">
-        <short></short>
+        <short>Boolean value compared in the routine</short>
       </element>
       <element name="CompareBoolean.b2">
-        <short></short>
+        <short>Boolean value compared in the routine</short>
       </element>
 
       <element name="GetEnumValueDef">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Gets the ordinal position for an enumeration value with the specified name</short>
+        <descr>
+          <p>
+            <var>GetEnumValueDef</var> is an <var>Integer</var> function used to get the ordinal position in the specified enumeration type insformation for the value with the given name.
+          </p>
+          <p>
+            The return value contains the ordinal position in <var>TypeInfo</var> for the enumeration value with the given <var>Name</var>. GetEnumValueDef calls <var>GetEnumValue</var> to find the value in Name in the type information. If the  return value is <b>-1</b>, an enumeration value with the specified name is not found in TypeInfo and the value in <var>DefaultValue</var> is used as the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.typinfo.GetEnumValue"/>
+          <link id="#rtl.typinfo.PTypeInfo"/>
+        </seealso>
       </element>
       <element name="GetEnumValueDef.Result">
-        <short/>
+        <short>Ordinal position for the enumeration value with the specified name</short>
       </element>
       <element name="GetEnumValueDef.TypeInfo">
-        <short/>
+        <short>Pointer to the type information examined in the routine</short>
       </element>
       <element name="GetEnumValueDef.Name">
-        <short/>
+        <short>Name for the enumeration value to locate in TypeInfo</short>
       </element>
       <element name="GetEnumValueDef.DefaultValue">
-        <short/>
+        <short>Default ordinal position for the enumeration value used when Name is not found</short>
       </element>
 
       <element name="RoundToInt">
-        <short/>
-        <descr/>
+        <short>Rounds the specified Extended value to an Integer value</short>
+        <descr>
+          <p>
+            Calls <var>Round</var> to round the <var>Extended</var> value, and casts the result to the <var>Integer</var> type used as the return value.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="RoundToInt.Result">
-        <short/>
+        <short>Integer value for the rounded numeric value</short>
       </element>
       <element name="RoundToInt.e">
-        <short/>
+        <short>Extended type rounded and converted in the routine</short>
       </element>
 
       <element name="RoundToCardinal">
-        <short/>
-        <descr/>
+        <short>Rounds the specified Extended value to a Cardinal value</short>
+        <descr>
+          <p>
+            Calls <var>Round</var> to round the <var>Extended</var> value, and casts the result to the <var>Cardinal</var> type used as the return value.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="RoundToCardinal.Result">
-        <short/>
+        <short>Cardinal value for the rounded numeric value</short>
       </element>
       <element name="RoundToCardinal.e">
-        <short/>
+        <short>Extended type rounded and converted in the routine</short>
       </element>
 
       <element name="TruncToInt">
-        <short/>
+        <short>Truncates the extended value and returns an Integer type</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TruncToInt.Result">
-        <short/>
+        <short>Integer type with the truncated value</short>
       </element>
       <element name="TruncToInt.e">
-        <short/>
+        <short>Extended value truncated and converted in the routine</short>
       </element>
 
       <element name="TruncToCardinal">
-        <short/>
+        <short>Truncates the extended value and returns a Cardinal type</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TruncToCardinal.Result">
-        <short/>
+        <short>Cardinal type with the truncated value</short>
       </element>
       <element name="TruncToCardinal.e">
-        <short/>
+        <short>Extended value truncated and converted in the routine</short>
       </element>
 
       <element name="StrToDouble">
-        <short/>
-        <descr/>
+        <short>Converts the specified string value to a Double type</short>
+        <descr>
+          <p>
+            Calls <var>StrToFloat</var> to convert the value in <var>s</var>, and casts the result to the <var>Double</var> data type used as the return value.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="StrToDouble.Result">
-        <short/>
+        <short>Double type with the converted value</short>
       </element>
       <element name="StrToDouble.s">
-        <short/>
+        <short>String value converted in the routine</short>
       </element>
 
       <element name="MergeSortWithLen">
         <short></short>
         <descr></descr>
         <seealso></seealso>
+        <notes><note>?</note></notes>
       </element>
       <element name="MergeSortWithLen.List">
         <short></short>
@@ -157,9 +195,24 @@
 
       <element name="ConsoleVerbosity">
         <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>ConsoleVerbosity</var> is an Integer variable which indicates the level of detail output from tools like pas2js and CodeTools. ConsoleVerbosity enables debugger output for specific levels of detail.
+          </p>
+          <dl>
+            <dt>-1</dt>
+            <dd>Quiet</dd>
+            <dt>0</dt>
+            <dd>Normal verbosity (No debugger output)</dd>
+            <dt>1</dt>
+            <dd>Verbose (Debugger output enabled)</dd>
+            <dt>2</dt>
+            <dd>Very verbose (Debugger output enabled)</dd>
+          </dl>
+        </descr>
+        <seealso/>
       </element>
+
     </module>
     <!-- LazUtilities -->
   </package>

@@ -1,53 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
   ====================================================================
     LMessages
   ====================================================================
 -->
-
 <module name="LMessages">
 <short/>
 <descr>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Types"/>
+<element name="LCLType"/>
+<element name="GraphType"/>
+<element name="Messages"/>
 
 <!-- constant Visibility: default -->
 <element name="LM_USER">

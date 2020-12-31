@@ -15,7 +15,7 @@
       <element name="LCLProc"/>
       <element name="LCLIntf"/>
       <element name="LCLStrConsts"/>
-      <element name="GraphType"/>
+      <element name="LResources"/>
       <element name="Graphics"/>
       <element name="ImgList"/>
       <element name="ActnList"/>
@@ -25,8 +25,8 @@
       <element name="Forms"/>
       <element name="Themes"/>
       <element name="Menus"/>
-      <element name="LResources"/>
       <element name="ImageListCache"/>
+      <element name="GraphType"/>
       <element name="LazUtilities"/>
 
       <element name="TButtonLayout">

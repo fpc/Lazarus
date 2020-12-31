@@ -16,17 +16,13 @@
       <element name="Types"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
-      <element name="LCLProc"/>
       <element name="LResources"/>
       <element name="LCLType"/>
       <element name="LCLStrConsts"/>
-      <element name="InterfaceBase"/>
       <element name="LCLPlatformDef"/>
-      <element name="FileUtil"/>
-      <element name="LazFileUtils"/>
+      <element name="InterfaceBase"/>
       <element name="Controls"/>
       <element name="Dialogs"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="ExtCtrls"/>
       <element name="StdCtrls"/>
@@ -35,6 +31,9 @@
       <element name="Buttons"/>
       <element name="Masks"/>
       <element name="CalcForm"/>
+      <element name="GraphType"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
 
       <element name="TPreviewFileControl">
         <short>

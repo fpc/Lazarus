@@ -9,117 +9,55 @@
 -->
 
 <module name="PostscriptCanvas">
-<short/>
+<short>Contains classes and types used to implement a PostScript printer canvas</short>
 <descr>
+  <p>
+    Developed using information from:
+  </p>
+  <ul>
+    <li>The Green Book Listing 9-1, on page 138 for Patterns</li>
+    <li>PostScriptPrinter.pas unit by Tony Maro</li>
+    <li>Piddle Project (Python language)</li>
+    <li>Internet PostScript forums</li>
+  </ul>
+  <p>
+    <b>Warnings:</b>
+  </p>
+  <ul>
+    <li>
+      Draw and StretchDraw are slow for big images.
+    </li>
+    <li>
+      Angles are expressed in 1/16th of degree.
+    </li>
+  </ul>
+  <p>
+    Author: Olivier Guilbaud.
+    TextRect implemented by T. P. Launchbury (12 Dec 2012).
+  </p>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Math">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FPImage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="IntfGraphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Printers">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="StrUtils"/>
+<element name="Math"/>
+<element name="Types"/>
+<element name="FPImage"/>
+<element name="LCLType"/>
+<element name="LCLIntf"/>
+<element name="LclProc"/>
+<element name="Graphics"/>
+<element name="Forms"/>
+<element name="IntfGraphics"/>
+<element name="Printers"/>
+<element name="PostScriptUnicode"/>
+<element name="GraphType"/>
+<element name="GraphMath"/>
+<element name="LazFileUtils"/>
+<element name="IntegerList"/>
+<element name="LazUTF8"/>
+<element name="LazUTF8Classes"/>
 
 <!-- object Visibility: default -->
 <element name="TPostscriptPrinterCanvas">

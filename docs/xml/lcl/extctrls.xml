@@ -24,7 +24,6 @@
       <element name="Controls"/>
       <element name="Forms"/>
       <element name="StdCtrls"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="LCLIntf"/>
       <element name="CustomTimer"/>
@@ -33,7 +32,9 @@
       <element name="Menus"/>
       <element name="PopupNotifier"/>
       <element name="ImgList"/>
+      <element name="GraphType"/>
       <element name="LazLoggerBase"/>
+      <element name="LazTracer"/>
       <element name="LazUtilities"/>
 
       <element name="TBeforeShowPageEvent">

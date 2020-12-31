@@ -11,6 +11,7 @@
         Contains types and classes used to implement Forms, which are the basis for the Lazarus Graphical User Interface
       </short>
       <descr/>
+
       <!-- unresolved type references -->
       <element name="Classes"/>
       <element name="SysUtils"/>
@@ -26,7 +27,6 @@
       <element name="LCLClasses"/>
       <element name="InterfaceBase"/>
       <element name="LResources"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="Menus"/>
       <element name="LMessages"/>
@@ -44,8 +44,10 @@
       <element name="LazMethodList"/>
       <element name="LazLoggerBase"/>
       <element name="LazUtilities"/>
+      <element name="GraphType"/>
       <element name="UITypes"/>
       <element name="gettext"/>
+
       <!-- procedure type Visibility: default -->
       <element name="TProcedure">
         <short>The type of a procedure that takes no arguments</short>

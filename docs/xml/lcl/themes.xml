@@ -1,836 +1,520 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
   ====================================================================
     Themes
   ====================================================================
 -->
-
 <module name="Themes">
 <short>For manipulation of display Themes, mostly in a Windows XP (and later) environment</short>
 <descr>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Types">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved type references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Types"/>
+<element name="Math"/>
+<element name="LCLProc"/>
+<element name="LCLType"/>
+<element name="Graphics"/>
+<element name="TmSchema"/>
+<element name="GraphType"/>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="TmSchema">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
 <element name="TThemedElement">
-<short/>
+<short>Represents elements which can be themed</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teButton">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teClock">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teComboBox">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teEdit">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teExplorerBar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teHeader">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teListView">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teMenu">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.tePage">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teProgress">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teRebar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teScrollBar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teSpin">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teStartPanel">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teStatus">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTab">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTaskBand">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTaskBar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teToolBar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teToolTip">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTrackBar">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTrayNotify">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teTreeview">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedElement.teWindow">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedButton">
-<short/>
+<short>Represents data elements for themed buttons</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbButtonDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbButtonRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbPushButtonNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbPushButtonHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbPushButtonPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbPushButtonDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbPushButtonDefaulted">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonUncheckedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonUncheckedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonUncheckedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonUncheckedDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonCheckedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonCheckedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonCheckedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbRadioButtonCheckedDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxUncheckedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxUncheckedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxUncheckedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxUncheckedDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxCheckedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxCheckedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxCheckedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxCheckedDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxMixedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxMixedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxMixedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbCheckBoxMixedDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbGroupBoxNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbGroupBoxDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedButton.tbUserButton">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedClock">
-<short/>
+<short>Represents data elements used to theme a Clock</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedClock.tcClockDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedClock.tcClockRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedClock.tcTimeNormal">
 <short/>
 </element>
 
 <!-- enumeration type Visibility: default -->
 <element name="TThemedComboBox">
-<short/>
+<short>Represents data elemenets used to theme combo-box controls</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcComboBoxDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcComboBoxRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcDropDownButtonNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcDropDownButtonHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcDropDownButtonPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedComboBox.tcDropDownButtonDisabled">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedEdit">
-<short/>
+<short>Represents data elements used to theme Edit controls</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextSelected">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextFocused">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextReadOnly">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditTextAssist">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedEdit.teEditCaret">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedExplorerBar">
-<short/>
+<short>Represents data elements used to theme an Explorer Bar</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebExplorerBarDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebExplorerBarRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderBackgroundNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderBackgroundHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderBackgroundPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderCloseNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderCloseHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderClosePressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinSelectedNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinSelectedHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebHeaderPinSelectedPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebIEBarMenuNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebIEBarMenuHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebIEBarMenuPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupBackground">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupCollapseNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupCollapseHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupCollapsePressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupExpandNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupExpandHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupExpandPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebNormalGroupHead">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupBackground">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupCollapseSpecial">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupCollapseHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupCollapsePressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupExpandSpecial">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupExpandHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupExpandPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedExplorerBar.tebSpecialGroupHead">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedHeader">
-<short/>
+<short>Represents data elements used to theme a Header control</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemLeftNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemLeftHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemLeftPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemRightNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemRightHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderItemRightPressed">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderSortArrowSortedUp">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedHeader.thHeaderSortArrowSortedDown">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedListview">
-<short/>
+<short>Represents data elements used to theme List View controls</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListviewDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListviewRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListItemNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListItemHot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListItemSelected">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListItemDisabled">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListItemSelectedNotFocus">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListGroup">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListDetail">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlListSortDetail">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedListview.tlEmptyText">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedMenu">
-<short/>
+<short>Represents data elements used to theme Menus</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuDontCare">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuRoot">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuItemNormal">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuItemSelected">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuItemDemoted">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuDropDown">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuBarItem">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmMenuBarDropDown">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmChevron">
 <short/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TThemedMenu.tmSeparator">
 <short/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TThemedPage">
 <short/>
 <descr>
@@ -3729,7 +3413,7 @@
 </seealso>
 </element>
 
-</module> <!-- Themes -->
-
+</module>
+<!-- Themes -->
 </package>
 </fpdoc-descriptions>

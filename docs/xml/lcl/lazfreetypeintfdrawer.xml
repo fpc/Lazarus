@@ -13,6 +13,57 @@
 <descr>
 </descr>
 
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="FPImage"/>
+<element name="GraphType"/>
+<element name="EasyLazFreeType"/>
+<element name="Graphics"/>
+<element name="IntfGraphics"/>
+
+<element name="TLazIntfImageGetPixelAtProc">
+  <short/>
+  <descr/>
+  <seealso/>
+</element>
+<element name="TLazIntfImageGetPixelAtProc.p">
+  <short/>
+</element>
+<element name="TLazIntfImageGetPixelAtProc.Color">
+  <short/>
+</element>
+
+<element name="TLazIntfImageSetPixelAtProc">
+  <short/>
+  <descr/>
+  <seealso/>
+</element>
+<element name="TLazIntfImageSetPixelAtProc.p">
+  <short/>
+</element>
+<element name="TLazIntfImageSetPixelAtProc.Color">
+  <short/>
+</element>
+
+<element name="TLazIntfHorizLineProc">
+  <short/>
+  <descr/>
+  <seealso/>
+</element>
+<element name="TLazIntfHorizLineProc.x1">
+  <short/>
+</element>
+<element name="TLazIntfHorizLineProc.y">
+  <short/>
+</element>
+<element name="TLazIntfHorizLineProc.x2">
+  <short/>
+</element>
+<element name="TLazIntfHorizLineProc.Color">
+  <short/>
+</element>
+
 <!-- class Visibility: default -->
 <element name="TIntfFreeTypeDrawer">
 <short></short>

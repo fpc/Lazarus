@@ -14,17 +14,16 @@
       <element name="Types"/>
       <element name="SysUtils"/>
       <element name="Classes"/>
-      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
       <element name="Controls"/>
       <element name="ExtCtrls"/>
       <element name="StdCtrls"/>
       <element name="Buttons"/>
       <element name="Forms"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
-      <element name="LMessages"/>
       <element name="Themes"/>
-      <element name="LCLType"/>
+      <element name="GraphType"/>
 
       <element name="TButtonOrder">
         <short>

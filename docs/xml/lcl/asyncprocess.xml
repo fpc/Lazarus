@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
-
     <!--
     ====================================================================
       AsyncProcess
@@ -10,62 +9,37 @@
 
     <module name="AsyncProcess">
       <short>
-        Defines a process with asynchronous event notifications for data
+        Implements a process with asynchronous event notifications
       </short>
       <descr></descr>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short></short>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Process">
-        <short></short>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="InterfaceBase">
-        <short></short>
-      </element>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short></short>
-      </element>
+      <!-- unresolved  references -->
+      <element name="Classes"/>
+      <element name="Process"/>
+      <element name="FileUtil"/>
+      <element name="UTF8Process"/>
+      <element name="InterfaceBase"/>
+      <element name="LCLIntf"/>
 
       <!-- object Visibility: default -->
-      <element name="TAsyncProcess" link="#lazutils.TProcessUTF8">
+      <element name="TAsyncProcess">
         <short>
           Implements a process with asynchronous notifications for data and termination
         </short>
         <descr>
           <p>
-            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchronous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the Output handle, and when the process is terminated. TAsyncProcess provides OnReadData and OnTerminate event handlers signalled for the corresponding asynchronous notifications.
+            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchronous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the Output handle, and when the process is terminated. TAsyncProcess provides <var>OnReadData</var> and <var>OnTerminate</var> event handlers signalled for the corresponding asynchronous notifications.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lazutils.TProcessUTF8"/>
+        </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
-      <element name="TAsyncProcess.FPipeHandler">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TAsyncProcess.FProcessHandler">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TAsyncProcess.FOnReadData">
-        <short></short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TAsyncProcess.FOnTerminate">
-        <short></short>
-      </element>
+      <element name="TAsyncProcess.FPipeHandler"/>
+      <element name="TAsyncProcess.FProcessHandler"/>
+      <element name="TAsyncProcess.FOnReadData"/>
+      <element name="TAsyncProcess.FOnTerminate"/>
 
       <!-- function Visibility: protected -->
       <element name="TAsyncProcess.GetNumBytesAvailable">
@@ -74,13 +48,13 @@
         </short>
         <descr>
           <p>
-            <var>GetNumBytesAvailable</var> is a dword function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value in <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
+            <var>GetNumBytesAvailable</var> is a <var>dword</var> function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value in <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
           </p>
           <p>
-            Use NumBytesAvailable to read the value for the property.
+            Use <var>NumBytesAvailable</var> to access the value for the property.
           </p>
           <p>
-            Use Options to enable the Options for the process.
+            Use <var>Options</var> to enable the <var>Options</var> for the process.
           </p>
         </descr>
         <seealso></seealso>
@@ -94,17 +68,17 @@
       <!-- procedure Visibility: protected -->
       <element name="TAsyncProcess.HandlePipeInput">
         <short>
-          Implements support for asynchronous notifications during execution of the process
+          Implements asynchronous notifications during execution of the process
         </short>
         <descr>
           <p>
-            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous  notifications which occur during execution of the process. HandlePipeInput is assigned using AddPipeEventHandler when Execute is called.
+            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous  notifications which occur during execution of the process. HandlePipeInput is assigned using <var>AddPipeEventHandler</var> when <var>Execute</var> is called.
           </p>
           <p>
-            HandlePipeInput examines values in AReasons to determine the action for the notification. When AReasons includes the value prBroken, the pipe has been closed and UnhookPipeHandle is called. When prDataAvailable is included in AReasons, the OnReadData event handler is signalled (when assigned).
+            HandlePipeInput examines values in <var>AReasons</var> to determine the action for the notification. When AReasons includes the value <var>prBroken</var>, the pipe has been closed and <var>UnhookPipeHandle</var> is called. When <var>prDataAvailable</var> is included in AReasons, the <var>OnReadData</var> event handler is signalled (when assigned).
           </p>
           <p>
-            Use OnReadData to respond to arrival of data on the handle for the process. Use NumBytesAvailable is determine the number of bytes available.
+            Use <var>OnReadData</var> to respond to arrival of data on the handle for the process. Use <var>NumBytesAvailable</var> is determine the number of bytes available.
           </p>
         </descr>
         <seealso></seealso>
@@ -127,10 +101,10 @@
         </short>
         <descr>
           <p>
-            <var>HandleProcessTermination</var> is a procedure which performs actions needed when the process is terminated. HandleProcessTermination is assigned using AddProcessEventHandler when Execute is called.
+            <var>HandleProcessTermination</var> is a procedure which performs actions needed when the process is terminated. HandleProcessTermination is assigned using <var>AddProcessEventHandler</var> when <var>Execute</var> is called.
           </p>
           <p>
-            HandleProcessTermination calls UnhookProcessHandle and UnhookPipeHandle to release the handlers in the class instance. HandleProcessTermination signals the OnTerminate event handler when it has been assigned.
+            HandleProcessTermination calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> to release the handlers in the class instance. HandleProcessTermination signals the <var>OnTerminate</var> event handler when it has been assigned.
           </p>
         </descr>
         <seealso></seealso>
@@ -158,7 +132,7 @@
         </short>
         <descr>
           <p>
-            <var>UnhookPipeHandle</var> is a procedure used to remove the pipe handler assigned for the process in the Execute method. UnhookPipeHandle calls RemovePipeEventHandler when it has been assigned. UnhookPipeHandle is called in the Destroy method.
+            <var>UnhookPipeHandle</var> is a procedure used to remove the pipe handler assigned for the process in the <var>Execute</var> method. UnhookPipeHandle calls <var>RemovePipeEventHandler</var> when it has been assigned. <var>UnhookPipeHandle</var> is called in the <var>Destroy</var> method.
           </p>
         </descr>
         <seealso></seealso>
@@ -171,8 +145,7 @@
         </short>
         <descr>
           <p>
-            <var>UnhookProcessHandle</var> is a procedure used to remove the process handler assigned for the process in the Execute method. UnhookProcessHandle calls RemoveProcessEventHandler when it has been assigned. UnhookProcessHandle
-            is called in the Destroy method.
+            <var>UnhookProcessHandle</var> is a procedure used to remove the process handler assigned for the process in the <var>Execute</var> method. UnhookProcessHandle calls <var>RemoveProcessEventHandler</var> when it has been assigned. <var>UnhookProcessHandle</var> is called in the <var>Destroy</var> method.
           </p>
         </descr>
         <seealso></seealso>
@@ -185,13 +158,13 @@
         </short>
         <descr>
           <p>
-            <var>Execute</var> is an overridden procedure used to execute the process. Execute calls the inherited Execute method. Execute uses values in Options to determine if a process or a pipe handler is needed for the class instance. Set the values in Options prior to calling the Execute method.
+            <var>Execute</var> is an overridden procedure used to execute the process. Execute calls the inherited Execute method. Execute uses values in <var>Options</var> to determine if a process or a pipe handler is needed for the class instance. Set the values in Options prior to calling the Execute method.
           </p>
           <p>
-              When Options includes the value poUsePipes, AddPipeEventHandler is called using HandlePipeInput as the pipe handler.
+              When Options includes the value <var>poUsePipes</var>, <var>AddPipeEventHandler</var> is called using <var>HandlePipeInput</var> as the pipe handler routine.
           </p>
           <p>
-            Execute calls AddProcessEventHandler using HandleProcessTermination as the process handle.
+            Execute calls <var>AddProcessEventHandler</var> using <var>HandleProcessTermination</var> as the process handler routine.
           </p>
         </descr>
         <seealso></seealso>
@@ -200,16 +173,17 @@
       <!-- property Visibility: published -->
       <element name="TAsyncProcess.NumBytesAvailable">
         <short>
+          Number of output bytes available from the process
         </short>
         <descr>
           <p>
-            <var>NumBytesAvailable</var> is a read-only dword property that indicates the number of bytes available on the Output handle for the process. GetNumBytesAvailable is the read access specifier for the property value. NumBytesAvailable contains the value in Output.NumBytesAvailable, or 0 (zero) when Options does not contain the value poUsePipes.
+            <var>NumBytesAvailable</var> is a read-only <var>name</var> property that indicates the number of bytes available on the Output handle for the process. <var>GetNumBytesAvailable</var> is the read access specifier for the property value. NumBytesAvailable contains the value in Output.NumBytesAvailable, or 0 (zero) when <var>Options</var> does not contain the value <var>poUsePipes</var>.
           </p>
           <p>
-            Set the values for the Options property prior to calling Execute.
+            Set the values for the <var>Options</var> property prior to calling <var>Execute</var>.
           </p>
           <p>
-            Use OnReadData to respond to the process notification signalled when data is available.
+            Use <var>OnReadData</var> to respond to the process notification signalled when data is available.
           </p>
         </descr>
         <seealso></seealso>
@@ -218,11 +192,11 @@
       <!-- property Visibility: published -->
       <element name="TAsyncProcess.OnReadData">
         <short>
-          Event handler signalled when data is available
+          Event handler signalled when output data is available for the process
         </short>
         <descr>
           <p>
-            <var>OnReadData</var> is a TNotifyEvent property that implements the event handler signalled when data is available for the process. Applications should assign a procedure to the event handler that responds to the pipe notification. The procedure must handle all data available on the Output.Handle up to the number of bytes in NumBytesAvailable. All data must be handled, or the procedure will be called repeatedly until no more data is available.
+            <var>OnReadData</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when data is available for the process. Applications should assign a procedure to the event handler that responds to the pipe notification. The procedure must handle all data available on the Output.Handle up to the number of bytes in <var>NumBytesAvailable</var>. All available data must be handled, or the procedure will be called repeatedly until no more data is available.
           </p>
         </descr>
         <seealso></seealso>
@@ -235,7 +209,7 @@
         </short>
         <descr>
           <p>
-            <var>OnTerminate</var> is a TNotifyEvent property that implements the event handler signalled when the process is terminated. Applications can assign a procedure to the event handler to perform actions needed when the process is terminated.
+            <var>OnTerminate</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when the process is terminated. Applications can assign a procedure to the event handler to perform actions needed when the process is terminated.
           </p>
         </descr>
         <seealso></seealso>

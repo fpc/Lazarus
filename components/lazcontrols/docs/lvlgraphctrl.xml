@@ -15,17 +15,17 @@
       <element name="FPImage"/>
       <element name="FPCanvas"/>
       <element name="Laz_AVL_Tree"/>
-      <element name="LazLoggerBase"/>
-      <element name="AvgLvlTree"/>
       <element name="LMessages"/>
       <element name="LCLType"/>
       <element name="LCLIntf"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="Controls"/>
       <element name="ImgList"/>
       <element name="Forms"/>
       <element name="Themes"/>
+      <element name="GraphType"/>
+      <element name="LazLoggerBase"/>
+      <element name="AvgLvlTree"/>
 
       <element name="TLazCtrlPalette">
         <short/>

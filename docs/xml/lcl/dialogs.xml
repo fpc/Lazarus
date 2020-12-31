@@ -9,120 +9,36 @@
     <module name="Dialogs">
       <short>Some dialogs commonly used in Lazarus applications. Look at the Procedures as well as the Classes</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Types">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="InterfaceBase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FileUtil">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Buttons">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ExtCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLClasses">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <element name="Types"/>
+      <element name="TypInfo"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LMessages"/>
+      <element name="LResources"/>
+      <element name="LCLIntf"/>
+      <element name="InterfaceBase"/>
+      <element name="LCLStrConsts"/>
+      <element name="LCLType"/>
+      <element name="Forms"/>
+      <element name="Controls"/>
+      <element name="Themes"/>
+      <element name="Graphics"/>
+      <element name="Buttons"/>
+      <element name="ButtonPanel"/>
+      <element name="StdCtrls"/>
+      <element name="ExtCtrls"/>
+      <element name="LCLClasses"/>
+      <element name="ClipBrd"/>
+      <element name="Menus"/>
+      <element name="LCLTaskDialog"/>
+      <element name="GraphType"/>
+      <element name="UITypes"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="LazStringUtils"/>
+      <element name="LazLoggerBase"/>
+
       <!-- enumeration type Visibility: default -->
       <element name="TMsgDlgType">
         <short>Constants to define the types of message dialogs.</short>

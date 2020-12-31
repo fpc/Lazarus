@@ -11,13 +11,12 @@
       <element name="Types"/>
       <element name="Math"/>
       <element name="LCLType"/>
-      <element name="LCLIntf"/>
       <element name="Controls"/>
       <element name="Graphics"/>
-      <element name="GraphType"/>
       <element name="ComCtrls"/>
       <element name="ExtCtrls"/>
       <element name="Themes"/>
+      <element name="GraphType"/>
 
       <element name="TDividerBevel">
         <short>Line with text in the middle, used as a divider or header.</short>

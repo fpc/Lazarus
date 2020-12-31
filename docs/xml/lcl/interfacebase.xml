@@ -18,18 +18,18 @@
       <element name="SysUtils"/>
       <element name="Math"/>
       <element name="FPImage"/>
+      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="LMessages"/>
+      <element name="LCLPlatformDef"/>
+      <element name="IntfGraphics"/>
+      <element name="Themes"/>
       <element name="LazUTF8"/>
       <element name="IntegerList"/>
       <element name="LazUtilities"/>
       <element name="LazLoggerBase"/>
       <element name="GraphType"/>
-      <element name="LCLProc"/>
-      <element name="LCLType"/>
-      <element name="LMessages"/>
-      <element name="LCLPlatformDef"/>
       <element name="GraphMath"/>
-      <element name="IntfGraphics"/>
-      <element name="Themes"/>
 
       <!-- "type" alias type Visibility: default -->
       <element name="PEventHandler">

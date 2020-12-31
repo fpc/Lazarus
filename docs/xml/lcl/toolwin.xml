@@ -14,14 +14,13 @@
 
       <!-- unresolved type references Visibility: default -->
       <element name="Classes"/>
-      <element name="LCLProc"/>
-      <element name="Controls"/>
       <element name="SysUtils"/>
-      <element name="GraphType"/>
-      <element name="Graphics"/>
       <element name="LCLType"/>
       <element name="LCLIntf"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
       <element name="StdCtrls"/>
+      <element name="GraphType"/>
 
       <!-- enumeration type Visibility: default -->
       <element name="TEdgeBorder">

@@ -18,19 +18,14 @@
       <element name="Classes"/>
       <element name="Math"/>
       <element name="Laz_AVL_Tree"/>
-      <element name="LazUTF8"/>
-      <element name="LazUTF8Classes"/>
-      <element name="LazLoggerBase"/>
-      <element name="LazUtilities"/>
       <element name="LCLStrConsts"/>
       <element name="LResources"/>
       <element name="LCLIntf"/>
       <element name="LCLType"/>
+      <element name="LCLProc"/>
       <element name="LMessages"/>
       <element name="WSLCLClasses"/>
       <element name="WSReferences"/>
-      <element name="LCLProc"/>
-      <element name="GraphType"/>
       <element name="Graphics"/>
       <element name="ImgList"/>
       <element name="ActnList"/>
@@ -42,6 +37,11 @@
       <element name="ExtCtrls"/>
       <element name="ToolWin"/>
       <element name="Buttons"/>
+      <element name="GraphType"/>
+      <element name="LazUTF8"/>
+      <element name="LazUTF8Classes"/>
+      <element name="LazLoggerBase"/>
+      <element name="LazUtilities"/>
 
       <element name="THitTest">
         <short>Represents permissible results for a hit test</short>

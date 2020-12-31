@@ -2,61 +2,39 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    PostScriptPrinter
-  ====================================================================
--->
+    ====================================================================
+      PostScriptPrinter
+    ====================================================================
+    -->
     <module name="PostScriptPrinter">
-      <short/>
-      <descr/>
+      <short>Contains classes and types used to implement a PostScript printer</short>
+      <descr>
+        <p>
+          Defines a special canvas type object and override drawing methods to make the postscript code.
+        </p>
+        <p>
+          Defines a TPSPattern object that handles creation of patterns to be used in fill and paint operations.
+        </p>
+        <p>
+          TPostScript manages a list of patterns and inserts the definitions into the postscript code and manages when they are changed.
+        </p>
+        <p>
+          A pattern definition can access pattern definitions within the same postscript object, as long as the TPSPattern object pointer is placed into the canvas pen/brush at the time the new pattern is made.
+        </p>
+        <p>
+          Author: Tony Maro
+        </p>
+      </descr>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphMath">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLIntf"/>
+      <element name="Graphics"/>
+      <element name="Forms"/>
+      <element name="GraphMath"/>
+      <element name="LazLoggerBase"/>
+
       <!-- enumeration type Visibility: default -->
       <element name="TPSPaintType">
         <short/>

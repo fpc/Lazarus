@@ -13,10 +13,9 @@
     <element name="SysUtils"/>
     <element name="LCLType"/>
     <element name="LMessages"/>
-    <element name="Ctrls"/>
-    <element name="EditBtn"/>
     <element name="DB"/>
     <element name="DBCtrls"/>
+    <element name="EditBtn"/>
 
       <!-- class Visibility: default -->
       <element name="TDBDateEdit" link="#lcl.EditBtn.TDateEdit">
@@ -540,8 +539,15 @@
         </seealso>
       </element>
 
-      <!-- procedure Visibility: default -->
-      <element name="Register"/>
+      <element name="Register">
+        <short>Registers components for use  in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is the procedure used to registers components for use  in the Lazarus IDE. Register calls <var>RegisterComponents</var> to add the <var>TDBDateEdit</var> component to the <b>Data Controls</b> tab in the Lazarus IDE.
+          </p>
+        </descr>
+      </element>
+
     </module>
      <!-- DBExtCtrls -->
 

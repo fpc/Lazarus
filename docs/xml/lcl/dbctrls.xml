@@ -17,14 +17,11 @@
       <element name="SysUtils"/>
       <element name="DB"/>
       <element name="Variants"/>
-      <element name="LazTracer"/>
-      <element name="LazUtilities"/>
       <element name="LCLStrConsts"/>
       <element name="LMessages"/>
       <element name="LCLType"/>
       <element name="LCLIntf"/>
       <element name="LResources"/>
-      <element name="GraphType"/>
       <element name="Controls"/>
       <element name="Graphics"/>
       <element name="Dialogs"/>
@@ -34,6 +31,9 @@
       <element name="ExtCtrls"/>
       <element name="Calendar"/>
       <element name="ImgList"/>
+      <element name="GraphType"/>
+      <element name="LazTracer"/>
+      <element name="LazUtilities"/>
 
       <element name="TFieldDataLink" link="#FCL.Db.TDataLink">
         <short>

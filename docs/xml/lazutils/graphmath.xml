@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      GraphMath
+    ====================================================================
+    -->
+    <module name="GraphMath">
+      <short>A Set of Mathematical Helper routines to simply Cross-Platform Canvas drawing etc</short>
+      <descr/>
+
+      <!-- unresolved external references -->
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="Math"/>
+      <element name="LazUtilities"/>
+
+      <element name="TFloatPoint">
+        <short>
+          <var>TFloatPoint</var> - an extended precision record specifying the X and Y coordinates of a point in a graphic environment</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFloatPoint.X">
+        <short/>
+      </element>
+      <element name="TFloatPoint.Y">
+        <short/>
+      </element>
+
+      <element name="TBezier">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="PPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="Angles2Coords">
+        <short>
+          <var>Angles2Coords</var> - convert an Eccentric Angle and an Angle-Length, into the coords for Start and End Radial-Points
+        </short>
+        <descr>
+          <p>
+            Use Angles2Coords to convert an Eccentric (aka Radial) Angle and an Angle-Length, such as are used in X-Windows and GTK, into the coords, for Start and End Radial-Points, such as are used in the Windows API Arc Pie and Chord routines. The angles are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Angles2Coords.X">
+        <short/>
+      </element>
+      <element name="Angles2Coords.Y">
+        <short/>
+      </element>
+      <element name="Angles2Coords.Width">
+        <short/>
+      </element>
+      <element name="Angles2Coords.Height">
+        <short/>
+      </element>
+      <element name="Angles2Coords.Angle1">
+        <short/>
+      </element>
+      <element name="Angles2Coords.Angle2">
+        <short/>
+      </element>
+      <element name="Angles2Coords.SX">
+        <short/>
+      </element>
+      <element name="Angles2Coords.SY">
+        <short/>
+      </element>
+      <element name="Angles2Coords.EX">
+        <short/>
+      </element>
+      <element name="Angles2Coords.EY">
+        <short/>
+      </element>
+
+      <element name="Arc2Bezier">
+        <short>
+          <var>Arc2Bezier</var> - convert an Arc and ArcLength into a Bezier Approximation of the Arc.</short>
+        <descr>
+          <p>
+            Use Arc2Bezier to convert an Arc and ArcLength into a Bezier Approximation of the Arc. The Rotation parameter accepts a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this value would be 0, or 360. If the AngleLength is greater than 90 degrees, or is equal to 0, it automatically exits, as Bezier cannot accurately approximate any angle greater then 90 degrees, and in fact for best result no angle greater than 45 should be converted, instead an array of Bezier's should be created, each Bezier describing a portion of the total arc no greater than 45 degrees. The angles are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="Arc2Bezier.X">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Y">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Width">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Height">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Angle1">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Angle2">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Rotation">
+        <short/>
+      </element>
+      <element name="Arc2Bezier.Points">
+        <short/>
+      </element>
+
+      <element name="Bezier">
+        <short>
+          <var>Bezier</var> - function to get a Bezier figure from the given points
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Bezier.Result">
+        <short/>
+      </element>
+      <element name="Bezier.C1">
+        <short/>
+      </element>
+      <element name="Bezier.C2">
+        <short/>
+      </element>
+      <element name="Bezier.C3">
+        <short/>
+      </element>
+      <element name="Bezier.C4">
+        <short/>
+      </element>
+
+      <element name="Bezier2Polyline">
+        <short>
+          <var>Bezier2Polyline</var> - convert a 4-Point Bezier into a Pointer Array of TPoint and a Count variable
+        </short>
+        <descr>
+          <p>
+            Use BezierToPolyline to convert a 4-Point Bezier into a Pointer Array of TPoint and a Count variable which can then be used within either a Polyline, or Polygon routine. It is primarily for use within PolyBezier2Polyline. If Points is not initialized or Count is less then 0, it is set to nil and the array starts at 0, otherwise it tries to append points to the array starting at Count. Points should ALWAYS be Freed when done by calling to ReallocMem(Points, 0) or FreeMem.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="Bezier2Polyline.Bezier">
+        <short/>
+      </element>
+      <element name="Bezier2Polyline.Points">
+        <short/>
+      </element>
+      <element name="Bezier2Polyline.Count">
+        <short/>
+      </element>
+
+      <element name="BezierArcPoints">
+        <short>
+          <var>BezierArcPoints</var> - convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon
+        </short>
+        <descr>
+          <p>
+            Use BezierArcPoints to convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon. The Rotation parameter accepts a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this value would be 0, or 360. The result is an Approximation based on 1 or more Beziers. If the AngleLength is greater than 90 degrees, it calls PolyBezierArcPoints, otherwise it Converts the angles into a Bezier by calling to Arc2Bezier, and then converts the Bezier into an array of Points by calling to Bezier2Polyline. The angles are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3'o clock position. If Points is not initialized or Count is less then 0, it is set to nil and the array starts at 0, otherwise it tries to append points to the array starting at Count. Points should ALWAYS be Freed when done by calling ReallocMem(Points, 0) or FreeMem.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="BezierArcPoints.X">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Y">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Width">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Height">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Angle1">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Angle2">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Rotation">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Points">
+        <short/>
+      </element>
+      <element name="BezierArcPoints.Count">
+        <short/>
+      </element>
+
+      <element name="BezierMidPoint">
+        <short>
+          <var>BezierMidPoint</var> - get the Mid-Point of any 4-Point Bezier. It is  primarily for use in SplitBezier.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="BezierMidPoint.Result">
+        <short/>
+      </element>
+      <element name="BezierMidPoint.Bezier">
+        <short/>
+      </element>
+
+      <element name="CenterPoint">
+        <short>
+          <var>CenterPoint</var> - get the Center-Point of any rectangle. It is primarily for use with, and in, other routines such as Quadrant, and RadialPoint
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CenterPoint.Result">
+        <short/>
+      </element>
+      <element name="CenterPoint.Rect">
+        <short/>
+      </element>
+
+      <element name="Coords2Angles">
+        <short>
+          <var>Coords2Angles</var> - convert the coords for Start and End Radial-Points into an Eccentric counter clockwise Angle and an Angle-Length
+        </short>
+        <descr>
+          <p>
+            Use Coords2Angles to convert the coords for Start and End Radial-Points, such as are used in the Windows API Arc Pie and Chord routines, into an Eccentric (aka Radial) counter clockwise Angle and an Angle-Length, such as are used in X-Windows and GTK. The angles angle1 and angle2 are returned in 1/16th of a degree. For example, a full circle equals 5760 (16*360). Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="Coords2Angles.X">
+        <short/>
+      </element>
+      <element name="Coords2Angles.Y">
+        <short/>
+      </element>
+      <element name="Coords2Angles.Width">
+        <short/>
+      </element>
+      <element name="Coords2Angles.Height">
+        <short/>
+      </element>
+      <element name="Coords2Angles.SX">
+        <short/>
+      </element>
+      <element name="Coords2Angles.SY">
+        <short/>
+      </element>
+      <element name="Coords2Angles.EX">
+        <short/>
+      </element>
+      <element name="Coords2Angles.EY">
+        <short/>
+      </element>
+      <element name="Coords2Angles.Angle1">
+        <short/>
+      </element>
+      <element name="Coords2Angles.Angle2">
+        <short/>
+      </element>
+
+      <element name="Distance">
+        <short>
+          Get the <var>Distance</var> between any two Points. It is primarily for use in other routines such as EccentricAngle
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="Distance.Result">
+        <short/>
+      </element>
+      <element name="Distance.PT1">
+        <short/>
+      </element>
+      <element name="Distance.Pt2">
+        <short/>
+      </element>
+
+      <element name="EccentricAngle">
+        <short>
+          <var>EccentricAngle</var> - get the Eccentric Angle of a given point on any non-rotated ellipse
+        </short>
+        <descr>
+          <p>
+            Use EccentricAngle to get the Eccentric( aka Radial ) Angle of a given point on any non-rotated ellipse. It is primarily for use in Coords2Angles. The result is in 1/16th of a degree. For example, a full circle equals 5760 (16*360).  Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="EccentricAngle.Result">
+        <short/>
+      </element>
+      <element name="EccentricAngle.PT">
+        <short/>
+      </element>
+      <element name="EccentricAngle.Rect">
+        <short/>
+      </element>
+
+      <element name="EllipseRadialLength">
+        <short>
+          <var>EllipseRadialLength</var> - Radial-Length of non-rotated ellipse at any given Eccentric Angle
+        </short>
+        <descr>
+          <p>
+            Use EllipseRadialLength to get the Radial-Length of non-rotated ellipse at any given Eccentric( aka Radial ) Angle. It is primarily for use in other routines such as RadialPoint. The Eccentric angle is in 1/16th of a degree. For example, a full circle equals 5760 (16*360).  Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="EllipseRadialLength.Result">
+        <short/>
+      </element>
+      <element name="EllipseRadialLength.Rect">
+        <short/>
+      </element>
+      <element name="EllipseRadialLength.EccentricAngle">
+        <short/>
+      </element>
+
+      <element name="FloatPoint">
+        <short>
+          <var>FloatPoint</var> - it is essentially like Classes.Point in use, except that it accepts Extended Parameters. It is Primarily for use with and in Bezier routines.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="FloatPoint.Result">
+        <short/>
+      </element>
+      <element name="FloatPoint.AX">
+        <short/>
+      </element>
+      <element name="FloatPoint.AY">
+        <short/>
+      </element>
+
+      <element name="LineEndPoint">
+        <short>
+          <var>LineEndPoint</var> - get the End-Point of a line of any given Length at any given angle with any given Start-Point
+        </short>
+        <descr>
+          <p>
+            Use LineEndPoint to get the End-Point of a line of any given Length at any given angle with any given Start-Point. It is primarily for use in other routines such as RadialPoint. The angle is in 1/16th of a degree. For example, a full circle equals 5760 (16*360).  Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="LineEndPoint.Result">
+        <short/>
+      </element>
+      <element name="LineEndPoint.StartPoint">
+        <short/>
+      </element>
+      <element name="LineEndPoint.Angle">
+        <short/>
+      </element>
+      <element name="LineEndPoint.Length">
+        <short/>
+      </element>
+
+      <element name="PolyBezier2Polyline">
+        <short>
+          <var>PolyBezier2Polyline</var> - convert an array of 4-Point Bezier into a Pointer Array of TPoint and a Count variable
+        </short>
+        <descr>
+          <p>
+            Use BezierToPolyline to convert an array of 4-Point Bezier into a Pointer Array of TPoint and a Count variable which can then be used within either a Polyline, or Polygon routine. Points is automatically initialized, so any existing information is lost, and the array starts at 0. Points should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="PolyBezier2Polyline.Beziers">
+        <short/>
+      </element>
+      <element name="PolyBezier2Polyline.Points">
+        <short/>
+      </element>
+      <element name="PolyBezier2Polyline.Count">
+        <short/>
+      </element>
+
+      <element name="PolyBezierArcPoints">
+        <short>
+          <var>PolyBezierArcPoints</var> - convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon
+        </short>
+        <descr>
+          <p>
+            Use PolyBezierArcPoints to convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon. The Rotation parameter accepts a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this value would be 0, or 360. The result is an Approximation based on 1 or more Beziers. If the AngleLength is greater than 45 degrees, it recursively breaks the Arc into Arcs of 45 degrees or less, and converts them into Beziers with BezierArcPoints. The angles are 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3'o clock position. Points is automatically initialized, so any existing information is lost, and the array starts at 0. Points should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="PolyBezierArcPoints.X">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Y">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Width">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Height">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Angle1">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Angle2">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Rotation">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Points">
+        <short/>
+      </element>
+      <element name="PolyBezierArcPoints.Count">
+        <short/>
+      </element>
+
+      <element name="Quadrant">
+        <short>Determine the <var>Quadrant</var>  of any point, given the Center</short>
+        <descr>
+          <p>
+            Use Quadrant to determine the Quadrant of any point, given the Center. It is primarily for use in other routines such as EccentricAngle. A result of 1-4 represents the primary 4 quadrants. A result of 5-8 means the point lies on one of the Axis', 5 = -Y Axis, 6 = +X Axis, 7 = +Y Axis, and 8 = -X Axis. A result of -1 means that it does not fall in any quadrant, that is, it is the Center.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="Quadrant.Result">
+        <short/>
+      </element>
+      <element name="Quadrant.PT">
+        <short/>
+      </element>
+      <element name="Quadrant.Center">
+        <short/>
+      </element>
+
+      <element name="RadialPoint">
+        <short>Get the <var>RadialPoint</var> at any given Eccentric angle on any non-rotated ellipse</short>
+        <descr>
+          <p>
+            Use RadialPoint to get the Radial-Point at any given Eccentric( aka Radial ) angle on any non-rotated ellipse. It is primarily for use in Angles2Coords. The EccentricAngle is in 1/16th of a degree. For example, a full circle equals 5760 (16*360).  Zero degrees is at the 3 o'clock position.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="RadialPoint.Result">
+        <short/>
+      </element>
+      <element name="RadialPoint.EccentricAngle">
+        <short/>
+      </element>
+      <element name="RadialPoint.Rect">
+        <short/>
+      </element>
+
+      <element name="SplitBezier">
+        <short>
+          <var>SplitBezier</var> - split any 4-Point Bezier into two 4-Point Beziers: a 'Left' and a 'Right'
+        </short>
+        <descr>
+          <p>
+            Use SplitBezier to split any 4-Point Bezier into two 4-Point Beziers: a 'Left' and a 'Right'. It is primarily for use in Bezier2Polyline.
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="SplitBezier.Bezier">
+        <short/>
+      </element>
+      <element name="SplitBezier.Left">
+        <short/>
+      </element>
+      <element name="SplitBezier.Right">
+        <short/>
+      </element>
+
+      <topic name="GraphMathOperators">
+        <short>
+          <b>GraphMath Operators</b>
+        </short>
+        <descr>
+          <p>
+            This Unit contains a number of routines for calculating and converting series of graphic points from one coordinate system to another.
+          </p>
+          <p>
+            A fundamental type is introduced, called TFloatPoint. It is an extended precision record containing an X and a Y coordinate for a graphic point. Its structure is as follows:
+          </p>
+
+<code>type
+  TFloatPoint = record
+    X, Y : Extended;
+  end;</code>
+
+          <p>
+            The unit contains definitions for mathematical operators which extend the normal definitions of addition, subtraction, multiplication, division and comparison to cover manipulations with TFloatPoints, allowing, for example, addition or multiplication of two TFloatPoints, a TFloatPoint and a TPoint, or a TFloatPoint and an Extended Precision number.
+          </p>
+        </descr>
+      </topic>
+    </module>
+    <!-- GraphMath -->
+  </package>
+</fpdoc-descriptions>

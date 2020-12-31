@@ -27,14 +27,28 @@
       </descr>
 
       <!-- unresolved type references -->
+      <element name="Windows"/>
+      <element name="ShellApi"/>
+      <element name="LazUTF16"/>
+      <element name="Unix"/>
+      <element name="MacOSAll"/>
+      <element name="CocoaAll"/>
       <element name="Math"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
+      <element name="Types"/>
       <element name="LCLType"/>
       <element name="LCLProc"/>
-      <element name="GraphType"/>
+      <element name="LMessages"/>
+      <element name="LCLStrConsts"/>
       <element name="InterfaceBase"/>
-      <element name="LResources"/>
+      <element name="GraphType"/>
+      <element name="FileUtil"/>
+      <element name="LazFileUtils"/>
+      <element name="UTF8Process"/>
+      <element name="LazUTF8"/>
+      <element name="LazSysUtils"/>
+      <element name="Maps"/>
 
       <element name="Arc">
         <short>Draws an elliptical curve</short>

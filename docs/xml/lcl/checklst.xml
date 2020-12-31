@@ -14,15 +14,14 @@
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="Math"/>
-      <element name="LCLProc"/>
       <element name="LCLType"/>
-      <element name="GraphType"/>
+      <element name="LCLIntf"/>
       <element name="Graphics"/>
       <element name="LMessages"/>
       <element name="LResources"/>
       <element name="Controls"/>
       <element name="StdCtrls"/>
-      <element name="LCLIntf"/>
+      <element name="GraphType"/>
 
       <element name="TCheckListClicked">
         <short>

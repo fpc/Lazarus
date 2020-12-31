@@ -30,9 +30,9 @@
       <element name="Types"/>
       <element name="Math"/>
       <element name="Graphics"/>
-      <element name="GraphType"/>
       <element name="LCLType"/>
       <element name="LCLIntf"/>
+      <element name="GraphType"/>
 
       <element name="ColorToGray">
         <short>Converts a Lazarus TColor value to its grayscale equivalent</short>
