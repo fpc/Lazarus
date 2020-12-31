@@ -24,9 +24,9 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, TypInfo,
+  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
   // LazUtils
-  LazUtilities, LazLoggerBase, LazTracer,
+  LazUtilities, LazLoggerBase, LazTracer, AvgLvlTree,
   // LCL
   Dialogs, Forms, Controls, ComCtrls,
   // IdeIntf
@@ -45,17 +45,23 @@ type
   private
     FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
-    FRootNode: TTreeNode;
+    // Map of Root component -> TAVLTree of collapsed components.
+    FRoot2CollapasedMap: TPointerToPointerTree;
+    FCollapsedComps: TAVLTree;       // The current list of collapsed components.
     FDrawWholeTree: Boolean;
     // Events
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
     function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
       ACapt: String): TTreeNode;
-    procedure AddChildren(AComponent: TComponent);
+    procedure AddChildren(AComponent: TComponent; ARootNode: TTreeNode);
     function FindAndChange(APers: TPersistent; ZOrderDel: TZOrderDelete): Boolean;
+    function GetRootObject: TPersistent;
     function GetSelection: TPersistentSelectionList;
+    procedure NodeCollapsed(Sender: TObject; Node: TTreeNode);
+    procedure NodeExpanded(Sender: TObject; Node: TTreeNode);
     procedure RebuildCollection(ANode: TTreeNode);
+    procedure RestoreExpand(ANode: TTreeNode);
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
     procedure UpdateCompNode(ANode: TTreeNode);
@@ -608,7 +614,6 @@ procedure TComponentTreeView.SetPropertyEditorHook(AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
-  BuildComponentNodes(True);
 end;
 
 function TComponentTreeView.GetSelection: TPersistentSelectionList;
@@ -621,6 +626,7 @@ begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
   FComponentList:=TBackupComponentList.Create;
+  FRoot2CollapasedMap:=TPointerToPointerTree.Create;
   Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
   MultiSelectStyle := MultiSelectStyle + [msShiftSelect];
   ImgIndexForm := IDEImages.GetImageIndex('oi_form');
@@ -633,9 +639,28 @@ begin
 end;
 
 destructor TComponentTreeView.Destroy;
+var
+  Enumer: TPointerToPointerEnumerator;
 begin
+  Enumer := FRoot2CollapasedMap.GetEnumerator;
+  while Enumer.MoveNext do
+    FreeAndNil(TObject(Enumer.Current^.Value)); // Free the CollapsedComp TAVLTrees.
+  FreeThenNil(FRoot2CollapasedMap);
   FreeThenNil(FComponentList);
   inherited Destroy;
+end;
+
+procedure TComponentTreeView.NodeCollapsed(Sender: TObject; Node: TTreeNode);
+begin
+  Assert(Assigned(FCollapsedComps), 'TComponentTreeView.NodeCollapsed: FCollapsedComps=Nil.');
+  FCollapsedComps.Add(Node.Data);
+end;
+
+procedure TComponentTreeView.NodeExpanded(Sender: TObject; Node: TTreeNode);
+begin
+  Assert(Assigned(FCollapsedComps), 'TComponentTreeView.NodeExpanded: FCollapsedComps=Nil.');
+  if not FCollapsedComps.Remove(Node.Data) then
+    DebugLn(['TComponentTreeView.NodeExpanded: Removing node ', TPersistent(Node.Data), ' failed.']);
 end;
 
 function TComponentTreeView.AddOrGetPersNode(AParentNode: TTreeNode;
@@ -664,18 +689,27 @@ begin
   Result.MultiSelected := Selection.IndexOf(APers) >= 0;
 end;
 
-procedure TComponentTreeView.AddChildren(AComponent: TComponent);
+procedure TComponentTreeView.AddChildren(AComponent: TComponent; ARootNode: TTreeNode);
 var
   Walker: TComponentWalker;
 begin
   if csDestroying in AComponent.ComponentState then exit;
   Walker := TComponentWalker.Create(Self, AComponent);
-  Walker.FNode := FRootNode;
+  Walker.FNode := ARootNode;
   try      // add inline components children
     TComponentAccessor(AComponent).GetChildren(@Walker.Walk, AComponent);
   finally
     Walker.Free;
   end;
+end;
+
+function TComponentTreeView.GetRootObject: TPersistent;
+// Get root object / component
+begin
+  if PropertyEditorHook = nil then Exit(nil);
+  Result := PropertyEditorHook.LookupRoot;
+  if (Result is TComponent) and (csDestroying in TComponent(Result).ComponentState) then
+    Result := nil;
 end;
 
 procedure TComponentTreeView.BuildComponentNodes(AWholeTree: Boolean);
@@ -684,28 +718,50 @@ procedure TComponentTreeView.BuildComponentNodes(AWholeTree: Boolean);
 //       False means existing tree is used and only missing components are added.
 var
   RootObject: TPersistent;
-  RootComponent: TComponent absolute RootObject;
+  RootNode: TTreeNode;
 begin
+  OnCollapsed:=nil;     // Don't handle these events while the tree builds.
+  OnExpanded:=nil;
   BeginUpdate;
-  FDrawWholeTree := AWholeTree;
+  RootObject := GetRootObject;
   if AWholeTree then
     Items.Clear;
-  RootObject := nil;
-  if PropertyEditorHook<>nil then
-    RootObject := PropertyEditorHook.LookupRoot;
-  if (RootObject is TComponent) and (csDestroying in RootComponent.ComponentState) then
-    RootObject:=nil;
   if RootObject <> nil then
-  begin                          // first add the lookup root
-    FRootNode := AddOrGetPersNode(nil, RootObject, CreateNodeCaption(RootObject,''));
+  begin
+    //DebugLn(['TComponentTreeView.BuildComponentNodes: RootObj=', RootObject, ', AWholeTree=', AWholeTree]);
+    FDrawWholeTree := AWholeTree;
+    // first add the lookup root
+    RootNode := AddOrGetPersNode(nil, RootObject, CreateNodeCaption(RootObject,''));
     // add components in creation order and TControl.Parent relationship
     if RootObject is TComponent then
-      AddChildren(RootComponent);
-    if AWholeTree then           // Don't expand existing tree as a user
-      FRootNode.Expand(true);    // may want to have some nodes collapsed.
+      AddChildren(TComponent(RootObject), RootNode);
+    if AWholeTree then
+    begin
+      // Get the right list of collapsed nodes based on LookupRoot
+      FCollapsedComps := TAVLTree(FRoot2CollapasedMap[RootObject]);
+      if FCollapsedComps = nil then
+      begin
+        FCollapsedComps := TAVLTree.Create;
+        FRoot2CollapasedMap[RootObject] := FCollapsedComps;
+      end;
+      RestoreExpand(RootNode);     // then restore the Expanded/Collapsed state.
+    end;
+    MakeSelectionVisible;
   end;
-  MakeSelectionVisible;
   EndUpdate;
+  OnCollapsed:=@NodeCollapsed;
+  OnExpanded:=@NodeExpanded;
+end;
+
+procedure TComponentTreeView.RestoreExpand(ANode: TTreeNode);
+// Restore Expanded/Collapsed state based on user's choice from last time.
+begin
+  ANode.Expanded := FCollapsedComps.Find(ANode.Data) = Nil; // Nil means a user
+  ANode := ANode.GetFirstChild;           // did not collapse the node last time.
+  while ANode<>nil do begin
+    RestoreExpand(ANode);           // Recursive call.
+    ANode := ANode.GetNextSibling;
+  end;
 end;
 
 procedure TComponentTreeView.RebuildCollection(ANode: TTreeNode);
@@ -716,7 +772,7 @@ begin
   begin
     if TObject(ANode.Data) is TOwnedCollection then
     begin
-      DebugLn(['IterateTree: Rebuilding Collection node ', TOwnedCollection(ANode.Data)]);
+      DebugLn(['TComponentTreeView.RebuildCollection: Node ', TOwnedCollection(ANode.Data)]);
       ANode.DeleteChildren;
       BuildComponentNodes(False);
       ANode.Expand(False);

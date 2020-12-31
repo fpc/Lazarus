@@ -4519,16 +4519,13 @@ begin
           if FPropertyEditorHook.LookupRoot is TComponent then
             FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
         end;
-      end else begin
-        // the OI gets the selection from the propertyeditorhook
-        Selection := OldSelection;
-      end;
+      end
+      else
+        Selection := OldSelection; // OI gets the selection from propertyeditorhook
     finally
       OldSelection.Free;
     end;
-    FillComponentList(True);
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
-    RefreshSelection;
   end;
 end;
 
