@@ -9,7 +9,7 @@ object FHtmFileExp1: TFHtmFileExp1
   ClientWidth = 777
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
     Height = 525
@@ -177,7 +177,7 @@ object FHtmFileExp1: TFHtmFileExp1
   object OpenDialog1: TOpenDialog
     Filter = 'Web Pages|*.html;*.htm'
     FilterIndex = 0
-    left = 48
-    top = 80
+    Left = 48
+    Top = 80
   end
 end

@@ -8,7 +8,7 @@ object FHtmFileExp2: TFHtmFileExp2
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object P_Top: TPanel
     Left = 0
     Height = 42
@@ -154,7 +154,7 @@ object FHtmFileExp2: TFHtmFileExp2
   object OpenDialog1: TOpenDialog
     Filter = 'Web Pages|*.html;*.htm'
     FilterIndex = 0
-    left = 26
-    top = 93
+    Left = 26
+    Top = 93
   end
 end

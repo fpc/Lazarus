@@ -130,22 +130,6 @@ begin
           PicCreated := True;
         end;
         Picture.LoadFromFile(FN);
-      end
-      else  begin
-        PicCreated := False;
-        BitMap := Graphics.TBitMap.Create;
-        with TLinearBitmap.Create do
-          try
-            LoadFromFile (FN);
-            AssignTo (Bitmap);
-            Picture.Bitmap.Assign (BitMap);
-            PicCreated := True;
-          finally
-            Bitmap.Free;
-            Free;
-          end;
-      end;
-     {$ENDIF}
     end;
   except
     if PicCreated then

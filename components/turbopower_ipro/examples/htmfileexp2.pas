@@ -122,26 +122,10 @@ begin
     FN := Concat (FN, nURL);
     if FileExistsUTF8(FN) then begin
       if Picture = nil then begin
-          Picture := TPicture.Create;
-          PicCreated := True;
-        end;
-        Picture.LoadFromFile(FN);
-      end
-      else begin
-        PicCreated := False;
-        BitMap := Graphics.TBitMap.Create;
-        with TLinearBitmap.Create do
-          try
-            LoadFromFile (FN);
-            AssignTo (Bitmap);
-            Picture.Bitmap.Assign (BitMap);
-            PicCreated := True;
-          finally
-            Bitmap.Free;
-            Free;
-          end;
+        Picture := TPicture.Create;
+        PicCreated := True;
       end;
-     {$ENDIF}
+      Picture.LoadFromFile(FN);
     end;
   except
     if PicCreated then
