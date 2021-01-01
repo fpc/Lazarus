@@ -291,7 +291,7 @@ type
     procedure DefineBinaryProperty(const Name: string;
       {%H-}ReadData, {%H-}WriteData: TStreamProc;
       {%H-}HasData: Boolean); override;
-    procedure FlushBuffer; override;
+    procedure FlushBuffer;  {$IF FPC_FULLVERSION >= 30200}override;{$ENDIF}
     property DefinePropertyNames: TStrings read FDefinePropertyNames;
   end;
   
