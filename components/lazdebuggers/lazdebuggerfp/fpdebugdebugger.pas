@@ -2270,8 +2270,10 @@ begin
   then It.Next;
 
   if not FpDebugger.IsPausedAndValid then begin
-    while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown) do
+    while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown) do begin
       TCallStackEntry(It.DataPtr^).Validity := ddsInvalid;
+      IT.Next;
+    end;
     It.Free;
     exit;
   end;
