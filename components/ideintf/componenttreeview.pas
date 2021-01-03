@@ -645,6 +645,7 @@ begin
   Enumer := FRoot2CollapasedMap.GetEnumerator;
   while Enumer.MoveNext do
     FreeAndNil(TObject(Enumer.Current^.Value)); // Free the CollapsedComp TAVLTrees.
+  Enumer.Free;
   FreeThenNil(FRoot2CollapasedMap);
   FreeThenNil(FComponentList);
   inherited Destroy;
