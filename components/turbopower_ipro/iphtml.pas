@@ -2314,7 +2314,6 @@ type
     InPrint: Integer;
     {$ENDIF}
     SettingPageRect : Boolean;
-    FPaintingLock: Integer;
     MouseDownX, MouseDownY : Integer;
     HaveSelection,
     MouseIsDown,
@@ -2348,7 +2347,7 @@ type
     procedure DoCurElementChange;
     procedure DoHotInvoke;
     procedure DoClick;
-    procedure DoOnResize; override;
+    procedure Resize; override;
     procedure ScrollInView(R : TRect);
     procedure ScrollInViewRaw(R : TRect);
     function PagePtToScreen(const Pt : TPoint): TPoint;
@@ -13645,42 +13644,31 @@ procedure TIpHtmlInternalPanel.Paint;
 var
   CR: TRect;
 begin
-  if FPaintingLock > 0 then
-    exit;
-  inc(FPaintingLock);
-
-  try
-    if Assigned(HTMLPanel.OnPaint) then HTMLPanel.OnPaint(HTMLPanel);
-
-    CR := GetClientRect;
-    if not ScaleBitmaps {printing} and (Hyper <> nil) then
-    begin
-      // update layout
-      GetPageRect;
-      // render
-      Hyper.Render(Canvas,
-        Rect(
-          ViewLeft, ViewTop,
-          ViewLeft + (CR.Right - CR.Left),
-          ViewTop + (CR.Bottom - CR.Top)
-        ),
-        ViewTop,
-        ViewTop + (CR.Bottom - CR.Top),
-        True,
-        Point(0, 0)
-      )
-    end
-    else
-      Canvas.FillRect(CR);
-    //debugln(['TIpHtmlInternalPanel.Paint ',dbgs(CR)]);
-    {$IFDEF IP_LAZARUS_DBG}
-    DebugBox(Canvas, CR, clYellow);
-    Debugbox(Canvas, Canvas.ClipRect, clLime, true);
-    {$ENDIF}
-
-  finally
-    dec(FPaintingLock);
-  end;
+  CR := GetClientRect;
+  if not ScaleBitmaps {printing} and (Hyper <> nil) then
+  begin
+    // update layout
+    GetPageRect;
+    // render
+    Hyper.Render(Canvas,
+      Rect(
+        ViewLeft, ViewTop,
+        ViewLeft + (CR.Right - CR.Left),
+        ViewTop + (CR.Bottom - CR.Top)
+      ),
+      ViewTop,
+      ViewTop + (CR.Bottom - CR.Top),
+      True,
+      Point(0, 0)
+    )
+  end
+  else
+    Canvas.FillRect(CR);
+  //debugln(['TIpHtmlInternalPanel.Paint ',dbgs(CR)]);
+  {$IFDEF IP_LAZARUS_DBG}
+  DebugBox(Canvas, CR, clYellow);
+  Debugbox(Canvas, Canvas.ClipRect, clLime, true);
+  {$ENDIF}
 end;
 
 {$IFDEF Html_Print}
@@ -13884,11 +13872,10 @@ end;
 procedure TIpHtmlInternalPanel.InvalidateSize;
 begin
   FPageRectValid:=false;
-  if FPaintingLock = 0 then
-    Invalidate;
+  Invalidate;
 end;
 
-procedure TIpHtmlInternalPanel.DoOnResize;
+procedure TIpHtmlInternalPanel.Resize;
 begin
   inherited;
   InvalidateSize;
