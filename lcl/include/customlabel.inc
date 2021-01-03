@@ -68,6 +68,8 @@ begin
       Flags := Flags or DT_SINGLELINE;
     if not ShowAccelChar then
       Flags := Flags or DT_NOPREFIX;
+    if UseRightToLeftReading then
+      Flags := Flags or DT_RTLREADING;
 
     DoDrawText(R, Flags);
     SelectObject(DC, OldFont);
@@ -447,6 +449,8 @@ begin
   if not ShowAccelChar then
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or cAlignment[BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment)];
+  if UseRightToLeftReading then
+    Flags := Flags or DT_RTLREADING;
 
   if FLayout<>tlTop then
   begin
