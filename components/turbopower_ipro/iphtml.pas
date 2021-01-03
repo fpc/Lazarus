@@ -2595,6 +2595,7 @@ type
     FFontQuality: TFontQuality;
     FWantTabs: Boolean;
     FScrollDist: Integer;
+    FUsePaintBuffer: Boolean;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real);
     function FactBAParagNotIs1: Boolean;
@@ -2660,6 +2661,7 @@ type
     procedure SetDefaultFontSize(const Value: integer);
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    property UsePaintBuffer: Boolean read FUsePaintBuffer write FUsePaintBuffer default true;
   public
     {$IFDEF Html_Print}
     function GetPrintPageCount: Integer;
@@ -2764,6 +2766,7 @@ type
     property TabOrder;
     property TabStop;
     property TextColor;
+    property UsePaintBuffer;
     property Visible;
     property VLinkColor;
     property WantTabs;
@@ -13658,7 +13661,7 @@ begin
       ),
       ViewTop,
       ViewTop + (CR.Bottom - CR.Top),
-      True,
+      HTMLPanel.UsePaintBuffer,
       Point(0, 0)
     )
   end
@@ -15252,6 +15255,7 @@ begin
   FFactBAParag := 1;
   FWantTabs := True;
   FScrollDist := 100;
+  FUsePaintBuffer := true;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
