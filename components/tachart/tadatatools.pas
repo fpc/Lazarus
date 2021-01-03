@@ -254,9 +254,9 @@ begin
     if Marks.Visible then begin
       flip := (dpdoFlipLabel in Options) and ((a > Pi /2) or (a < -Pi / 2));
       Marks.SetAdditionalAngle(
-        IfThen(dpdoRotateLabel in Options, IfThen(flip, Pi - a, -a), 0));
+        Math.IfThen(dpdoRotateLabel in Options, Math.IfThen(flip, Pi - a, -a), 0));
       p1 := (p1 + p2) div 2;
-      a += IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
+      a += Math.IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
       p2 := p1 + RotatePointX(Marks.Distance, a);
       Marks.DrawLabel(ADrawer, p1, p2, GetDistanceText, dummy);
     end;

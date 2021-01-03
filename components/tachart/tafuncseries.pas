@@ -569,7 +569,7 @@ var
 begin
   inherited Draw(ADrawer, ARect);
   with FFramePen do
-    pw := IfThen(EffVisible, (Width + 1) div 2, 0);
+    pw := Math.IfThen(EffVisible, (Width + 1) div 2, 0);
   w := ARect.Right - ARect.Left - 2 * pw;
   if w <= 0 then exit;
   for x := ARect.Left + pw to ARect.Right - pw do begin
@@ -847,7 +847,7 @@ begin
   t := ParamMin;
   pp := PointAt(ParamMin);
   ADrawer.MoveTo(pp);
-  ms := IfThen(ParamMaxStep > 0, ParamMaxStep, (ParamMax - ParamMin) / 4);
+  ms := Math.IfThen(ParamMaxStep > 0, ParamMaxStep, (ParamMax - ParamMin) / 4);
   ts := ms;
   while t < ParamMax do begin
     p := PointAt(t + ts);
@@ -1183,8 +1183,8 @@ begin
         if Assigned(p) then lBrush := p.Brush else lBrush := nil;
         for s in Styles.Styles do
           AItems.Add(TLegendItemLinePointer.CreateWithBrush(
-            IfThen((lPen <> nil) and s.UsePen, s.Pen, lPen) as TPen,
-            IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
+            TAChartUtils.IfThen((lPen <> nil) and s.UsePen, s.Pen, lPen) as TPen,
+            TAChartUtils.IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
             p,
             LegendTextStyle(s)
           ));
@@ -1864,7 +1864,7 @@ var
     SetLength(xv, n);
     SetLength(yv, n);
     hasErrorBars := Source.HasYErrorBars;
-    SetLength(dy, IfThen(hasErrorBars, n, 0));
+    SetLength(dy, Math.IfThen(hasErrorBars, n, 0));
     j := 0;
     for i := 0 to ns - 1 do
       with Source.Item[i]^ do
@@ -1998,7 +1998,7 @@ begin
     exit;
   end;
 
-  offs := IfThen(IsPrediction, 1, 0);
+  offs := Math.IfThen(IsPrediction, 1, 0);
   with FitStatistics do begin
     x := TransformX(AX);
     if IsNaN(x) then exit;
@@ -2610,8 +2610,8 @@ begin
     ADrawer.SetPenParams(psClear, clTAColor);
   end;
 
-  scaled_stepX := IfThen(StepX > 1, Max(1, ADrawer.Scale(StepX)), 1);
-  scaled_stepY := IfThen(StepY > 1, Max(1, ADrawer.Scale(StepY)), 1);
+  scaled_stepX := Math.IfThen(StepX > 1, Max(1, ADrawer.Scale(StepX)), 1);
+  scaled_stepY := Math.IfThen(StepY > 1, Max(1, ADrawer.Scale(StepY)), 1);
 
   GetZRange(r, scaled_stepX, scaled_stepY);
 
@@ -2684,7 +2684,7 @@ procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
 
   function PrepareFormats: TStrings;
   begin
-    Result := Split(IfThen(Legend.Format = '', DEF_COLORMAP_LEGENDFORMAT, Legend.Format));
+    Result := Split(StrUtils.IfThen(Legend.Format = '', DEF_COLORMAP_LEGENDFORMAT, Legend.Format));
     with Result do
       try
         while Count < 3 do

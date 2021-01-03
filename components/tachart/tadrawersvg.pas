@@ -486,7 +486,7 @@ begin
   end;
 
   // Set the requested font attributes
-  FFont.SizeInPoints := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
+  FFont.SizeInPoints := Math.IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
   FFont.UnderlineDecoration := AFont.Underline;
   FFont.StrikeoutDecoration := AFont.StrikeThrough;
   FFont.Hinted := true;

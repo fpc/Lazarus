@@ -478,7 +478,7 @@ var
   parts: TStrings;
   i: Integer;
 begin
-  parts := Split(IfThen(NiceSteps = '', DEF_INTERVAL_STEPS, NiceSteps));
+  parts := Split(StrUtils.IfThen(NiceSteps = '', DEF_INTERVAL_STEPS, NiceSteps));
   try
     SetLength(FStepValues, parts.Count);
     for i := 0 to parts.Count - 1 do
@@ -1192,7 +1192,7 @@ function TCustomChartSource.FormatItem(
   const AFormat: String; AIndex, AYIndex: Integer): String;
 begin
   with Item[AIndex]^ do
-    Result := FormatItemXYText(AFormat, IfThen(XCount > 0, X, Double(AIndex)), GetY(AYIndex), Text);
+    Result := FormatItemXYText(AFormat, Math.IfThen(XCount > 0, X, Double(AIndex)), GetY(AYIndex), Text);
 end;
 
 function TCustomChartSource.FormatItemXYText(
@@ -1234,7 +1234,7 @@ begin
   ALowerDelta := 0;
 
   if Which = 0 then
-    v := IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex)
+    v := Math.IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex)
   else
     v := Item[APointIndex]^.Y;
 
@@ -1296,7 +1296,7 @@ var
   v, dxp, dxn: Double;
 begin
   Result := GetErrorBarValues(APointIndex, 0, dxp, dxn);
-  v := IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex);
+  v := Math.IfThen(XCount > 0, Item[APointIndex]^.X, APointIndex);
   if Result and not IsNaN(v) then begin
     AUpperLimit := v + dxp;
     ALowerLimit := v - dxn;
@@ -1491,7 +1491,7 @@ procedure TCustomChartSource.ValuesInRange(
     ADest.FValue := AValue;
     with Item[AIndex]^ do begin
       if AParams.FUseY then begin
-        nx := IfThen(XCount > 0, X, AIndex);
+        nx := Math.IfThen(XCount > 0, X, AIndex);
         ny := AValue;
       end
       else begin
@@ -1548,7 +1548,7 @@ begin
   AValues[start].FValue := SafeNan;
   for i := 0 to Count - 1 do begin
     with Item[I]^ do
-      v := IfThen(AParams.FUseY, Y, IfThen(XCount > 0, X, I));
+      v := Math.IfThen(AParams.FUseY, Y, Math.IfThen(XCount > 0, X, I));
     if IsNan(v) then continue;
     if v < AParams.FMin then begin
       if v > lo.FValue then

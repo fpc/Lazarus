@@ -1755,9 +1755,9 @@ var
   ar: Integer;
 begin
   ar := EffectiveAccumulationRange;
-  ar := IfThen(ar = 0, MaxInt div 2, ar - 1);
-  ALeft := AIndex - IfThen(AccumulationDirection = cadForward, 0, ar);
-  ARight := AIndex + IfThen(AccumulationDirection = cadBackward, 0, ar);
+  ar := Math.IfThen(ar = 0, MaxInt div 2, ar - 1);
+  ALeft := AIndex - Math.IfThen(AccumulationDirection = cadForward, 0, ar);
+  ARight := AIndex + Math.IfThen(AccumulationDirection = cadBackward, 0, ar);
   ALeft := EnsureRange(ALeft, 0, Count - 1);
   ARight := EnsureRange(ARight, 0, Count - 1);
 end;

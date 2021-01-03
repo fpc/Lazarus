@@ -767,8 +767,8 @@ begin
         if Assigned(p) then lb := p.Brush else lb := nil;
         for s in Styles.Styles do
           AItems.Add(TLegendItemLinePointer.CreateWithBrush(
-            IfThen((lp <> nil) and s.UsePen, s.Pen, lp) as TPen,
-            IfThen(s.UseBrush, s.Brush, lb) as TBrush,
+            TAChartUtils.IfThen((lp <> nil) and s.UsePen, s.Pen, lp) as TPen,
+            TAChartUtils.IfThen(s.UseBrush, s.Brush, lb) as TBrush,
             p,
             LegendTextStyle(s)
           ));
@@ -1311,7 +1311,7 @@ begin
   if UseZeroLevel then
     zero := ZeroLevel
   else
-    zero := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
+    zero := Math.IfThen(IsRotated, ext2.a.X, ext2.a.Y);
 
   PrepareGraphPoints(ext2, true);
   SetLength(heights, Source.YCount + 1);
@@ -1478,7 +1478,7 @@ begin
     cy := ARect.Top;
   end;
   a := w div 2;
-  b := IfThen(ADepth = 0, 0, ADepth div 2);
+  b := Math.IfThen(ADepth = 0, 0, ADepth div 2);
   if IsRotated then b := -b;
 
   c := ADrawer.BrushColor;
@@ -1733,7 +1733,7 @@ end;
 
 function TBarSeries.GetZeroLevel: Double;
 begin
-  Result := IfThen(UseZeroLevel, ZeroLevel, 0.0);
+  Result := Math.IfThen(UseZeroLevel, ZeroLevel, 0.0);
 end;
 
 function TBarSeries.IsZeroLevelStored: boolean;
@@ -1998,9 +1998,9 @@ var
   begin
     p := ParentChart.GraphToImage(AP);
     if IsRotated then
-      p.X := basePts[IfThen(FBanded, AIndex, 1)].X
+      p.X := basePts[Math.IfThen(FBanded, AIndex, 1)].X
     else
-      p.Y := basePts[IfThen(FBanded, AIndex, 1)].Y;
+      p.Y := basePts[Math.IfThen(FBanded, AIndex, 1)].Y;
     PushPoint(p);
   end;
 
@@ -2160,7 +2160,7 @@ var
     CopyPoints(basePts, pts, numBasePts);
 
     // Iterate through y values
-    j0 := IfThen(FBanded and (Source.YCount > 1), 0, -1);
+    j0 := Math.IfThen(FBanded and (Source.YCount > 1), 0, -1);
     for j := Source.YCount - 2 downto j0 do begin
       // Stack level points
       numPts := 0;
@@ -2233,7 +2233,7 @@ begin
   if UseZeroLevel then
     zero := AxisToGraphY(ZeroLevel)
   else
-    zero := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
+    zero := Math.IfThen(IsRotated, ext2.a.X, ext2.a.Y);
   scaled_depth := ADrawer.Scale(Depth);
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
 
@@ -2283,7 +2283,7 @@ end;
 
 function TAreaSeries.GetZeroLevel: Double;
 begin
-  Result := IfThen(UseZeroLevel, ZeroLevel, 0.0);
+  Result := Math.IfThen(UseZeroLevel, ZeroLevel, 0.0);
 end;
 
 function TAreaSeries.IsZeroLevelStored: boolean;

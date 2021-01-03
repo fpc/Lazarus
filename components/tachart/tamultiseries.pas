@@ -418,7 +418,7 @@ begin
   symbol[4] := Rect(
     (r.Left * 2 + r.Right) div 3, center.y - bw,
     (r.Left + r.Right * 2) div 3, center.y + bw);
-  bw -= IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
+  bw -= Math.IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
   symbol[5] := Rect(center.x, center.y - bw, center.x, center.y + bw);
 
   if FIsVertical then
@@ -893,7 +893,7 @@ begin
       UpdateLabelDirectionReferenceLevel(i, j, center);
       dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
       with Marks.MeasureLabel(ADrawer, labelText) do
-        dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+        dist := Math.IfThen(dir in [ldLeft, ldRight], cx, cy);
       if Marks.DistanceToCenter then
         dist := dist div 2;
       m[dir] := Max(m[dir], dist + scMarksDistance);
@@ -1886,7 +1886,7 @@ end;
 function TFieldSeries.GetColor(AIndex: Integer): TColor;
 begin
   with Source.Item[AIndex]^ do
-    Result := TColor(IfThen(Color = clTAColor, FPen.Color, Color));
+    Result := TColor(Math.IfThen(Color = clTAColor, FPen.Color, Color));
 end;
 
 procedure TFieldSeries.GetLegendItems(AItems: TChartLegendItems);

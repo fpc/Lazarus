@@ -746,7 +746,7 @@ begin
   if not Visible then exit;
   da := ArcTan2(Width, Length);
 
-  sgn := IfThen(FInverted, -1, +1);
+  sgn := Math.IfThen(FInverted, -1, +1);
   diag := -ADrawer.Scale(Round(Sqrt(Sqr(Length) + Sqr(Width))));
   pt1 := AEndPos + RotatePointX(diag, AAngle - da)*sgn;
   pt2 := AEndPos + RotatePointX(diag, AAngle + da)*sgn;

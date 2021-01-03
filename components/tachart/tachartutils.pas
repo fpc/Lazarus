@@ -548,7 +548,7 @@ end;
 
 function NumberOr(ANum: Double; ADefault: Double): Double;
 begin
-  Result := IfThen(IsNan(ANum), ADefault, ANum);
+  Result := Math.IfThen(IsNan(ANum), ADefault, ANum);
 end;
 
 function OrientToRad(AOrient: Integer): Double;
