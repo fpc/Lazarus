@@ -202,7 +202,12 @@ end;
 
 function TSpinEditExBase.MaxValueStored: Boolean;
 begin
-  Result := true; //not SameValue(FMaxValue, DefMaxValue);
+  Result := true;
+end;
+
+function TSpinEditExBase.MinValueStored: Boolean;
+begin
+  Result := true;
 end;
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
@@ -323,6 +328,7 @@ begin
   FArrowKeys := True;
   FIncrement := DefIncrement;
   FMaxValue := DefMaxValue;
+  FMinValue := DefMinValue;
   FUpdatePending := True;
   FSettingValue := False;
   FNullValueBehaviour := nvbMinValue;
@@ -482,6 +488,11 @@ begin
   Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
+function TCustomFloatSpinEditEx.MinValueStored: Boolean;
+begin
+  Result := not SameValue(FMinValue, DefMinValue);
+end;
+
 function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
   ): Boolean;
 begin
@@ -625,12 +636,17 @@ end;
 
 function TCustomSpinEditEx.IncrementStored: Boolean;
 begin
-  Result := not SameValue(FIncrement, DefIncrement);
+  Result := FIncrement <> DefIncrement;
 end;
 
 function TCustomSpinEditEx.MaxValueStored: Boolean;
 begin
-  Result := not SameValue(FMaxValue, DefMaxValue);
+  Result := FMaxValue <> DefMaxValue;
+end;
+
+function TCustomSpinEditEx.MinValueStored: Boolean;
+begin
+  Result := FMinValue <> DefMinValue;
 end;
 
 procedure TCustomSpinEditEx.SetThousandSeparator(AValue: String);

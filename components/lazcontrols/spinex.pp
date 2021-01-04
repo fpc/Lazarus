@@ -100,6 +100,7 @@ type
   private const
     DefIncrement = 1;
     DefMaxValue = 100;
+    DefMinValue = 0;
     DefMinRepeatValue = 100;
   private
     FArrowKeys: Boolean;
@@ -136,6 +137,7 @@ type
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     function IncrementStored: Boolean; virtual;
     function MaxValueStored: Boolean; virtual;
+    function MinValueStored: Boolean; virtual;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
     procedure SetValue(const AValue: T); virtual;
@@ -166,7 +168,7 @@ type
     function Utf8KeyAllowed({%H-}Key: TUTF8Char): Boolean; virtual;
   public
     property Increment: T read FIncrement write SetIncrement stored IncrementStored nodefault;
-    property MinValue: T read FMinValue write SetMinValue;
+    property MinValue: T read FMinValue write SetMinValue stored MinValueStored nodefault;
     property MaxValue: T read FMaxValue write SetMaxValue stored MaxValueStored nodefault;
     property NullValue: T read GetNullValue write SetNullValue;
     property NullValueBehaviour: TNullValueBehaviour read FNullValueBehaviour write FNullValueBehaviour default nvbMinValue;
@@ -204,6 +206,7 @@ type
     procedure EditKeyPress(var Key: char); override;
     function IncrementStored: Boolean; override;
     function MaxValuestored: Boolean; override;
+    function MinValuestored: Boolean; override;
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
     function SafeInc(AValue: Double): Double; override;
     function SafeDec(AValue: Double): Double; override;
@@ -318,6 +321,7 @@ type
   protected
     function IncrementStored: Boolean; override;
     function MaxValuestored: Boolean; override;
+    function MinValuestored: Boolean; override;
     function SafeInc(AValue: Int64): Int64; override;
     function SafeDec(AValue: Int64): Int64; override;
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
