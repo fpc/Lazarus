@@ -324,11 +324,12 @@ type
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
   public
-    constructor Create(const AGroup: TColorScheme; const ALang: TLazSyntaxHighlighter;
-                       IsSchemeDefault: Boolean = False);
-    constructor CreateFromXml(const AGroup: TColorScheme; const ALang: TLazSyntaxHighlighter;
-                              aXMLConfig: TRttiXMLConfig; aPath: String;
-                              IsSchemeDefault: Boolean = False);
+    constructor Create(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+      IsSchemeDefault: Boolean);
+    constructor CreateWithDefColor(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+      IsSchemeDefault: Boolean);
+    constructor CreateFromXml(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+      aXMLConfig: TRttiXMLConfig; const aPath: String; IsSchemeDefault: Boolean);
     destructor  Destroy; override;
     procedure Clear;
     procedure Assign(Src: TColorSchemeLanguage); reintroduce;
@@ -6455,12 +6456,13 @@ begin
     Result := FOwner.GetStoredValuesForScheme.ColorScheme[FLanguage];
 end;
 
-constructor TColorSchemeLanguage.Create(const AGroup: TColorScheme;
-  const ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean = False);
+constructor TColorSchemeLanguage.Create(AGroup: TColorScheme;
+  ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
 begin
   inherited Create;
   FIsSchemeDefault := IsSchemeDefault;
   FAttributes := TQuickStringlist.Create;
+  FAttributes.Sorted := true;
   FOwner := AGroup;
   FHighlighter := nil;
   FLanguage := ALang;
@@ -6468,23 +6470,28 @@ begin
     FHighlighter := LazSyntaxHighlighterClasses[ALang].Create(nil);
     FLanguageName := FHighlighter.LanguageName;
   end;
+end;
+
+constructor TColorSchemeLanguage.CreateWithDefColor(AGroup: TColorScheme;
+  ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
+begin
+  Create(AGroup, ALang, IsSchemeDefault);
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
   FAttributes.AddObject(UpperCase(FDefaultAttribute.StoredName), FDefaultAttribute);
-  FAttributes.Sorted := true;
 end;
 
-constructor TColorSchemeLanguage.CreateFromXml(const AGroup: TColorScheme;
-  const ALang: TLazSyntaxHighlighter; aXMLConfig: TRttiXMLConfig; aPath: String;
-  IsSchemeDefault: Boolean);
+constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
+  ALang: TLazSyntaxHighlighter; aXMLConfig: TRttiXMLConfig;
+  const aPath: String; IsSchemeDefault: Boolean);
 var
   hla: TSynHighlighterAttributes;
   csa: TColorSchemeAttribute;
   aha: TAdditionalHilightAttribute;
   FormatVersion, i: Integer;
 begin
-  Create(AGroup, ALang, IsSchemeDefault);   // don't call inherited Create
+  CreateWithDefColor(AGroup, ALang, IsSchemeDefault); // don't call inherited Create
 
   FAttributes.Sorted := False;
   if FHighlighter <> nil then begin
@@ -6528,44 +6535,24 @@ begin
   FAttributes.Clear;
 end;
 
-var Laskuri: integer;
-
 procedure TColorSchemeLanguage.Assign(Src: TColorSchemeLanguage);
 var
-  i, j: Integer;
+  i: Integer;
   Attr, SrcAttr: TColorSchemeAttribute;
-  NewList: TQuickStringlist;
 begin
-  Inc(Laskuri);
-  DebugLn([' TColorSchemeLanguage (', Laskuri, '), Assign ', Src.AttributeCount, ' source attributes. OwnsObjects=', FAttributes.OwnsObjects]);
-  // Do not clear old list => external references to Attributes may exist
+  Clear;
+  FAttributes.Sorted := false;
   FLanguage := Src.FLanguage;
   FLanguageName := Src.FLanguageName;
-  //FDefaultAttribute.Assign(Src.FDefaultAttribute);
   FDefaultAttribute := nil;
-  NewList := TQuickStringlist.Create;
   for i := 0 to Src.AttributeCount - 1 do begin
     SrcAttr := Src.AttributeAtPos[i];
-    // Reuse existing Attribute if possible.
-    j := FAttributes.IndexOf(UpperCase(SrcAttr.StoredName));
-    if j >= 0 then begin
-      Attr := TColorSchemeAttribute(FAttributes.Objects[j]);
-      DebugLn(['      Use existing attr ', Attr.StoredName]);
-      FAttributes.Delete(j);
-    end
-    else begin
-      Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
-      if Laskuri < 3 then
-        DebugLn(['      New attr ', Attr.StoredName]);
-    end;
+    Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
     Attr.Assign(SrcAttr);
-    NewList.AddObject(UpperCase(Attr.StoredName), Attr);
+    FAttributes.AddObject(UpperCase(Attr.StoredName), Attr);
     if SrcAttr = Src.DefaultAttribute then
       FDefaultAttribute := Attr;
   end;
-  Clear;
-  FreeAndNil(FAttributes);
-  FAttributes := NewList;
   FAttributes.Sorted := true;
 end;
 
@@ -7005,11 +6992,12 @@ var
 begin
   Create(AName);
   FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, lshNone, aXMLConfig,
-    aPath  + 'Globals/', True);
+                                                       aPath + 'Globals/', True);
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
     // do not create duplicates
     if CompatibleLazSyntaxHilighter[i] = i then
-      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig, aPath)
+      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig,
+                                                             aPath, False)
     else
       FColorSchemes[i] := nil;
 end;
@@ -7032,18 +7020,14 @@ begin
     FreeAndNil(FDefaultColors)
   else if FDefaultColors = nil then
     FDefaultColors := TColorSchemeLanguage.Create(Self, lshNone, True);
-  if FDefaultColors <> nil then begin
-    DebugLn('-');
-    DebugLn(['TColorScheme (', FName, '), Assign DefaultColors']);
+  if FDefaultColors <> nil then
     FDefaultColors.Assign(Src.FDefaultColors);
-  end;
   for i := low(FColorSchemes) to high(FColorSchemes) do begin
     if Src.FColorSchemes[i] = nil then begin
       FreeAndNil(FColorSchemes[i]);
     end else begin
       if FColorSchemes[i] = nil then
-        FColorSchemes[i] := TColorSchemeLanguage.Create(Self, i);
-      DebugLn(['TColorScheme (', FName, '), Assign Color ', i]);
+        FColorSchemes[i] := TColorSchemeLanguage.Create(Self, i, False);
       FColorSchemes[i].Assign(Src.FColorSchemes[i]);
     end;
   end;
@@ -7147,9 +7131,6 @@ var
 begin
   FMappings.Sorted := False;
   Clear;
-  Laskuri:=0;
-  DebugLn('***');
-  DebugLn(['TColorSchemeFactory.Assign: ', Src.FMappings.Count, ' source mappings.']);
   for i := 0 to Src.FMappings.Count - 1 do begin
     lMapping := TColorScheme.Create(Src.ColorSchemeGroupAtPos[i].Name);
     lMapping.Assign(Src.ColorSchemeGroupAtPos[i]);
