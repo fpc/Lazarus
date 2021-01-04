@@ -251,6 +251,8 @@ const
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
   AdditionalHighlightGroupNames: array[TAhaGroupName] of String;
+  IndexOfLaskuri: integer; // For debugging TColorAttrStringlist.IndexOf(). Will be removed.
+  ColorSchemeLangLaskuri: integer;
 
 type
   (* ***  ColorSchemes  *** *)
@@ -259,6 +261,14 @@ type
 
   TQuickStringlist=class(TStringlist)
     Function DoCompareText(const s1,s2 : string) : PtrInt; override;
+  end;
+
+  // Dedicated list for TColorSchemeLanguage.FAttributes. For debugging, will be removed.
+  TColorAttrStringlist=class(TQuickStringlist)
+  protected
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+  public
+    Function IndexOf(const S: string): Integer; override;
   end;
 
   TColorScheme = class;
@@ -292,8 +302,6 @@ type
     function GetSchemeGlobal: TColorSchemeAttribute;
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
                           Defaults: TColorSchemeAttribute; Version: Integer);
-    procedure LoadFromXmlV1(aXMLConfig: TRttiXMLConfig; aPath: String;
-                            Defaults: TColorSchemeAttribute);
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
                         Defaults: TColorSchemeAttribute);
     property Group: TAhaGroupName read FGroup write FGroup;
@@ -312,7 +320,7 @@ type
   TColorSchemeLanguage = class(TObject)
   private
     FDefaultAttribute: TColorSchemeAttribute;
-    FAttributes: TQuickStringlist; // TColorSchemeAttribute
+    FAttributes: TColorAttrStringlist; // TColorSchemeAttribute
     FHighlighter: TSynCustomHighlighter;
     FLanguage: TLazSyntaxHighlighter;
     FOwner: TColorScheme;
@@ -1140,11 +1148,8 @@ type
   { TEditorMouseOptionPresets }
 
   TEditorMouseOptionPresets = class
-  private
-    FPreset: TQuickStringlist;
   public
     constructor Create;
-    destructor Destroy; override;
   end;
 
   TEditorOptionsEditAccessInViewState =
@@ -1423,7 +1428,7 @@ type
     {$IFDEF WinIME}
     FUseMinimumIme: Boolean;
     {$ENDIF}
-    xmlconfig: TRttiXMLConfig;
+    XMLConfig: TRttiXMLConfig;
 
     // general options
     fFindTextAtCursor: Boolean;
@@ -1819,7 +1824,6 @@ procedure RepairEditorFontSize(var FontSize: integer);
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function ColorSchemeFactory: TColorSchemeFactory;
 function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
-//function HighlighterListSingleton: TEditOptLangList;
 
 procedure InitLocale;
 
@@ -2757,13 +2761,11 @@ begin
   inherited Destroy;
 end;
 
-function TEditOptLanguageInfo.SampleLineToAddAttr(
-  Line: Integer): TAdditionalHilightAttribute;
+function TEditOptLanguageInfo.SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
 begin
   if Line < 1 then
     exit(ahaNone);
-  for Result := Low(TAdditionalHilightAttribute)
-    to High(TAdditionalHilightAttribute) do
+  for Result := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
     if (Result <> ahaNone) and (AddAttrSampleLines[Result] = Line) then
       exit;
   Result := ahaNone;
@@ -4078,6 +4080,7 @@ end;
 procedure TEditorMouseOptions.AssignEx(Src: TEditorMouseOptions; WithUserSchemes: Boolean);
 var
   i: Integer;
+  Opt: TEditorMouseOptions;
 begin
   FName                 := Src.FName;
   FGutterLeft           := Src.GutterLeft;
@@ -4161,9 +4164,9 @@ begin
   if WithUserSchemes then begin
     ClearUserSchemes;
     for i := 0 to Src.FUserSchemes.Count - 1 do begin
-      FUserSchemes.AddObject(Src.FUserSchemes[i], TEditorMouseOptions.Create);
-      TEditorMouseOptions(FUserSchemes.Objects[i]).Assign
-        ( TEditorMouseOptions(Src.FUserSchemes.Objects[i]) );
+      Opt := TEditorMouseOptions.Create;
+      Opt.Assign(TEditorMouseOptions(Src.FUserSchemes.Objects[i]));
+      FUserSchemes.AddObject(Src.FUserSchemes[i], Opt);
     end;
   end;
 end;
@@ -4536,8 +4539,6 @@ var
   i, j, c: Integer;
   n: String;
 begin
-  FPreset := TQuickStringlist.Create;
-
   if DirectoryExistsUTF8(UserSchemeDirectory(False)) then begin
     FileList := FindAllFiles(UserSchemeDirectory(False), '*.xml', False);
     for i := 0 to FileList.Count - 1 do begin
@@ -4559,13 +4560,6 @@ begin
     end;
     FileList.Free;
   end;
-
-end;
-
-destructor TEditorMouseOptionPresets.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FPreset);
 end;
 
 { TEditorOptionsEditAccessOrderList }
@@ -4737,7 +4731,7 @@ begin
   ConfFileName := AppendPathDelim(GetPrimaryConfigPath) + EditOptsConfFileName;
   CopySecondaryConfigFile(EditOptsConfFileName);
   try
-    if (not FileExistsUTF8(ConfFileName)) then
+    if not FileExistsUTF8(ConfFileName) then
     begin
       DebugLn('NOTE: editor options config file not found - using defaults');
       XMLConfig := TRttiXMLConfig.CreateClean(ConfFileName);
@@ -4871,7 +4865,6 @@ begin
                       sciMatchOnlyPastTokenIndent
                      ];
   FAnsiIndentAlignMax := 40;
-
 
   FCurlyCommentContinueEnabled := False;
   FCurlyCommentMatch := '^\s?(\*)';
@@ -6203,7 +6196,7 @@ end;
 
 procedure TColorSchemeAttribute.ApplyTo(aDest: TSynHighlighterAttributes;
   aDefault: TColorSchemeAttribute);
-// aDefault (if supplied) is usuallythe Schemes agnDefault / DefaultAttribute
+// aDefault (if supplied) is usually the Schemes agnDefault / DefaultAttribute
 var
   Src: TColorSchemeAttribute;
 begin
@@ -6302,10 +6295,15 @@ begin
 end;
 
 function TColorSchemeAttribute.GetStoredValuesForAttrib: TColorSchemeAttribute;
+var
+  csl: TColorSchemeLanguage;
 begin
   Result := nil;
-  if (FOwner <> nil) and (FOwner.GetStoredValuesForLanguage <> nil) then
-    Result := FOwner.GetStoredValuesForLanguage.Attribute[StoredName];
+  if FOwner <> nil then begin
+    csl := FOwner.GetStoredValuesForLanguage;
+    if csl <> nil then
+      Result := csl.Attribute[StoredName];
+  end;
 end;
 
 procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
@@ -6382,30 +6380,6 @@ begin
   end;
 end;
 
-procedure TColorSchemeAttribute.LoadFromXmlV1(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorSchemeAttribute);
-var
-  fs: TFontStyles;
-begin
-  // FormatVersion = 1 (only pascal colors)
-  if Defaults = nil then
-    Defaults := Self;
-  if StoredName = '' then exit;
-  aPath := aPath + StrToValidXMLName(StoredName) + '/';
-  BackGround := aXMLConfig.GetValue(aPath + 'BackgroundColor', Defaults.Background);
-  ForeGround := aXMLConfig.GetValue(aPath + 'ForegroundColor', Defaults.Foreground);
-  FrameColor := aXMLConfig.GetValue(aPath + 'FrameColorColor', Defaults.FrameColor);
-  fs := [];
-  if aXMLConfig.GetValue(aPath + 'Bold', fsBold in Defaults.Style) then
-    Include(fs, fsBold);
-  if aXMLConfig.GetValue(aPath + 'Italic', fsItalic in Defaults.Style) then
-    Include(fs, fsItalic);
-  if aXMLConfig.GetValue(aPath + 'Underline', fsUnderline in Defaults.Style) then
-    Include(fs, fsUnderline);
-  Style := fs;
-  StyleMask := [];
-end;
-
 procedure TColorSchemeAttribute.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
   Defaults: TColorSchemeAttribute);
 var
@@ -6450,19 +6424,24 @@ begin
 end;
 
 function TColorSchemeLanguage.GetStoredValuesForLanguage: TColorSchemeLanguage;
+var
+  cs: TColorScheme;
 begin
   Result := nil;
-  if (FOwner <> nil) and (FOwner.GetStoredValuesForScheme <> nil) then
-    Result := FOwner.GetStoredValuesForScheme.ColorScheme[FLanguage];
+  if FOwner <> nil then begin
+    cs := FOwner.GetStoredValuesForScheme;
+    if cs <> nil then
+      Result := cs.ColorScheme[FLanguage];
+  end;
 end;
 
 constructor TColorSchemeLanguage.Create(AGroup: TColorScheme;
   ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
 begin
   inherited Create;
+  Inc(ColorSchemeLangLaskuri);
   FIsSchemeDefault := IsSchemeDefault;
-  FAttributes := TQuickStringlist.Create;
-  FAttributes.Sorted := true;
+  FAttributes := TColorAttrStringlist.Create;
   FOwner := AGroup;
   FHighlighter := nil;
   FLanguage := ALang;
@@ -6559,15 +6538,16 @@ end;
 function TColorSchemeLanguage.Equals(Other: TColorSchemeLanguage): Boolean;
 var
   i: Integer;
+  csa, othercsa: TColorSchemeAttribute;
 begin
   Result := //FDefaultAttribute.Equals(Other.FDefaultAttribute) and
             (FLanguage = Other.FLanguage) and
             (FAttributes.Count = Other.FAttributes.Count);
   i := FAttributes.Count - 1;
   while Result and (i >= 0) do begin
-    Result := Result and
-              (Other.Attribute[AttributeAtPos[i].StoredName] <> nil) and
-              AttributeAtPos[i].Equals(Other.Attribute[AttributeAtPos[i].StoredName]);
+    csa := AttributeAtPos[i];
+    othercsa := Other.Attribute[csa.StoredName];
+    Result := Result and (othercsa <> nil) and csa.Equals(othercsa);
     dec(i);
   end;
 end;
@@ -6581,14 +6561,12 @@ procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig;
   const aPath: String; Defaults: TColorSchemeLanguage; ColorVersion: Integer;
   const aOldPath: String);
 var
-  Def: TColorSchemeAttribute;
+  Def, EmptyDef, CurAttr: TColorSchemeAttribute;
   FormatVersion: longint;
   TmpPath: String;
   i: Integer;
-  EmptyDef: TColorSchemeAttribute;
 begin
 //  Path := 'EditorOptions/Color/'
-
   if not FIsSchemeDefault then
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'
   else
@@ -6623,57 +6601,55 @@ begin
   //   Attribute has SchemeDefault => Save diff to SchemeDefault
   //     SchemeDefault_Attri.UseSchemeGlobals must be TRUE => so it serves as default
   //   Attribute hasn't SchemeDefault => Save diff to empty
-  if (Defaults = nil) then
+  if Defaults = nil then
     // default all colors = clNone
     EmptyDef := TColorSchemeAttribute.Create(Self, nil, '')
   else
     EmptyDef := nil;
 
   for i := 0 to AttributeCount - 1 do begin
+    CurAttr := AttributeAtPos[i];
     if Defaults <> nil then
-      Def := Defaults.Attribute[AttributeAtPos[i].StoredName]
+      Def := Defaults.Attribute[CurAttr.StoredName]
     else begin
-      if AttributeAtPos[i].GetSchemeGlobal <> nil then
-        Def := AttributeAtPos[i].GetSchemeGlobal
-      else
+      Def := CurAttr.GetSchemeGlobal;
+      if Def = nil then
         Def := EmptyDef;
     end;
-
-    AttributeAtPos[i].LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
-
+    CurAttr.LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
     if (ColorVersion < 9)
-    and (AttributeAtPos[i].StoredName = GetAddiHilightAttrName(ahaMouseLink)) then
+    and (CurAttr.StoredName = GetAddiHilightAttrName(ahaMouseLink)) then
     begin
       // upgrade ahaMouseLink
-      AttributeAtPos[i].FrameColor := AttributeAtPos[i].Foreground;
-      AttributeAtPos[i].Background := clNone;
-      AttributeAtPos[i].Style := [];
-      AttributeAtPos[i].StyleMask := [];
-      AttributeAtPos[i].FrameStyle := slsSolid;
-      AttributeAtPos[i].FrameEdges := sfeBottom;
+      CurAttr.FrameColor := CurAttr.Foreground;
+      CurAttr.Background := clNone;
+      CurAttr.Style := [];
+      CurAttr.StyleMask := [];
+      CurAttr.FrameStyle := slsSolid;
+      CurAttr.FrameEdges := sfeBottom;
     end;
 
-    if (ColorVersion < 12) and (AttributeAtPos[i].Group = agnOutlineColors) then
-      AttributeAtPos[i].MarkupFoldLineColor := AttributeAtPos[i].Foreground;
+    if (ColorVersion < 12) and (CurAttr.Group = agnOutlineColors) then
+      CurAttr.MarkupFoldLineColor := CurAttr.Foreground;
   end;
   FreeAndNil(EmptyDef);
 
   // Version 5 and before stored the global background on the Whitespace attribute.
   // If a whitespace Attribute was loaded (UseSchemeGlobals=false) then copy it
-  if (FormatVersion <= 5) and (DefaultAttribute <> nil) and
-      (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) and
-      (Attribute[Highlighter.WhitespaceAttribute.StoredName] <> nil) and
-      (not Attribute[Highlighter.WhitespaceAttribute.StoredName].UseSchemeGlobals)
-  then
-    DefaultAttribute.Background := Attribute[Highlighter.WhitespaceAttribute.StoredName].Background;
+  if (FormatVersion <= 5) and (DefaultAttribute <> nil)
+  and (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) then
+  begin
+    CurAttr := Attribute[Highlighter.WhitespaceAttribute.StoredName];
+    if (CurAttr <> nil) and not CurAttr.UseSchemeGlobals then
+      DefaultAttribute.Background := CurAttr.Background;
+  end;
 end;
 
 procedure TColorSchemeLanguage.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
   Defaults: TColorSchemeLanguage);
 var
-  Def: TColorSchemeAttribute;
+  Def, EmptyDef, CurAttr: TColorSchemeAttribute;
   i: Integer;
-  EmptyDef: TColorSchemeAttribute;
 begin
   if (FLanguageName = '') and (not FIsSchemeDefault) then
     exit;
@@ -6695,15 +6671,15 @@ begin
     EmptyDef := nil;
 
   for i := 0 to AttributeCount - 1 do begin
+    CurAttr := AttributeAtPos[i];
     if Defaults <> nil then
-      Def := Defaults.Attribute[AttributeAtPos[i].StoredName]
+      Def := Defaults.Attribute[CurAttr.StoredName]
     else begin
-      if AttributeAtPos[i].GetSchemeGlobal <> nil then
-        Def := AttributeAtPos[i].GetSchemeGlobal
-      else
+      Def := CurAttr.GetSchemeGlobal;
+      if Def = nil then
         Def := EmptyDef;
     end;
-    AttributeAtPos[i].SaveToXml(aXMLConfig, aPath, Def);
+    CurAttr.SaveToXml(aXMLConfig, aPath, Def);
   end;
   FreeAndNil(EmptyDef);
 end;
@@ -6795,23 +6771,29 @@ begin
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
     if ASynEdit is TIDESynEditor then begin
       with TIDESynEditor(ASynEdit) do begin
-        if AttributeByEnum[ahaIfDefBlockInactive] <> nil
-          then AttributeByEnum[ahaIfDefBlockInactive].ApplyTo(MarkupIfDef.MarkupInfoDisabled )
+        Attri := AttributeByEnum[ahaIfDefBlockInactive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoDisabled )
           else MarkupIfDef.MarkupInfoDisabled.Clear;
-        if AttributeByEnum[ahaIfDefBlockActive] <> nil
-          then AttributeByEnum[ahaIfDefBlockActive].ApplyTo(MarkupIfDef.MarkupInfoEnabled )
+        Attri := AttributeByEnum[ahaIfDefBlockActive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoEnabled )
           else MarkupIfDef.MarkupInfoEnabled.Clear;
-        if AttributeByEnum[ahaIfDefBlockTmpActive] <> nil
-          then AttributeByEnum[ahaIfDefBlockTmpActive].ApplyTo(MarkupIfDef.MarkupInfoTempEnabled )
+        Attri := AttributeByEnum[ahaIfDefBlockTmpActive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempEnabled )
           else MarkupIfDef.MarkupInfoTempEnabled.Clear;
-        if AttributeByEnum[ahaIfDefNodeInactive] <> nil
-          then AttributeByEnum[ahaIfDefNodeInactive].ApplyTo(MarkupIfDef.MarkupInfoNodeDisabled )
+        Attri := AttributeByEnum[ahaIfDefNodeInactive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoNodeDisabled )
           else MarkupIfDef.MarkupInfoNodeDisabled.Clear;
-        if AttributeByEnum[ahaIfDefNodeActive] <> nil
-          then AttributeByEnum[ahaIfDefNodeActive].ApplyTo(MarkupIfDef.MarkupInfoNodeEnabled )
+        Attri := AttributeByEnum[ahaIfDefNodeActive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoNodeEnabled )
           else MarkupIfDef.MarkupInfoNodeEnabled.Clear;
-        if AttributeByEnum[ahaIfDefNodeTmpActive] <> nil
-          then AttributeByEnum[ahaIfDefNodeTmpActive].ApplyTo(MarkupIfDef.MarkupInfoTempNodeEnabled )
+        Attri := AttributeByEnum[ahaIfDefNodeTmpActive];
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempNodeEnabled )
           else MarkupIfDef.MarkupInfoTempNodeEnabled.Clear;
       end;
     end;
@@ -6940,13 +6922,15 @@ procedure TColorSchemeLanguage.ApplyTo(AHLighter: TSynCustomHighlighter);
 var
   i: Integer;
   Attr: TColorSchemeAttribute;
+  hlattrs: TSynHighlighterAttributes;
 begin
   AHLighter.BeginUpdate;
   try
     for i := 0 to AHLighter.AttrCount - 1 do begin
-      Attr := Attribute[AHLighter.Attribute[i].StoredName];
+      hlattrs := AHLighter.Attribute[i];
+      Attr := Attribute[hlattrs.StoredName];
       if Attr <> nil then
-        Attr.ApplyTo(AHLighter.Attribute[i], DefaultAttribute);
+        Attr.ApplyTo(hlattrs, DefaultAttribute);
     end;
   finally
     AHLighter.EndUpdate;
@@ -7228,6 +7212,22 @@ begin
   end;
   Result := 0;
 end;
+
+// For debug
+procedure TColorAttrStringlist.InsertItem(Index: Integer; const S: string; O: TObject);
+begin
+  if Sorted then
+    DebugLn(['TColorAttrStringlist.InsertItem: Sorted! Index=', Index, ', S="', S, '", Obj=', O]);
+  inherited InsertItem(Index, S, O);
+end;
+
+function TColorAttrStringlist.IndexOf(const S: string): Integer;
+begin
+  Assert(Sorted, 'TColorAttrStringlist.IndexOf: Not Sorted!');
+  Inc(IndexOfLaskuri);
+  Result:=inherited IndexOf(S);
+end;
+
 
 initialization
   RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);

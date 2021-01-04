@@ -1660,6 +1660,8 @@ begin
   LazIDEInstances.StartListening(@LazInstancesStartNewInstance, @LazInstancesGetOpenedProjectFileName);
   IDECommandList.StartUpdateEvents;
   FIDEStarted:=true;
+  DebugLn(['StartIDE: TColorAttrStringlist.IndexOf() called ', IndexOfLaskuri, ' times.']);
+  DebugLn(['StartIDE: TColorSchemeLanguage created ', ColorSchemeLangLaskuri, ' times.']);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
