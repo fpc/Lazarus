@@ -47,6 +47,7 @@ type
     procedure SetDate(Date: TDate); override;
     function GetDate: TDate; override;
     function AreCoordinatesOnDate(X, Y: Integer): Boolean; override;
+    function InMonthView: Boolean; override;
 
     constructor Create; override;
     destructor Destroy; override;
@@ -60,7 +61,7 @@ procedure TLCLCalendarWrapper.LCLCalendarWrapperWndProc(
   var TheMessage: TLMessage);
 begin
   if TheMessage.msg = LM_LBUTTONDOWN then
-    CanClose := TCalendar(GetCalendarControl).GetCalendarView = cvMonth;
+    CanClose := InMonthView;
 
   if Assigned(PrevCalendarWndProc) then
     PrevCalendarWndProc(TheMessage);
@@ -84,11 +85,15 @@ end;
 function TLCLCalendarWrapper.AreCoordinatesOnDate(X, Y: Integer): Boolean;
 begin
   Result :=
-    CanClose and
-    (TCalendar(GetCalendarControl).GetCalendarView = cvMonth) and
+    CanClose and InMonthView and
     (TCalendar(GetCalendarControl).HitTest(Point(X, Y)) in [cpDate, cpNoWhere]);
 
   CanClose := True;
+end;
+
+function TLCLCalendarWrapper.InMonthView: Boolean;
+begin
+  Result := TCalendar(GetCalendarControl).GetCalendarView = cvMonth;
 end;
 
 constructor TLCLCalendarWrapper.Create;

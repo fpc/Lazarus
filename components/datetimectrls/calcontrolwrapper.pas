@@ -21,7 +21,7 @@ calendar is clicked on date, but not when the user clicks in title area changing
 months or years, then we let the user keep browsing the calendar).
 
    When creating new wrapper, there are four abstract methods which need to be
-overriden. Please see the coments in code below.
+overriden. Please see the comments in code below.
 
 -----------------------------------------------------------
 LICENCE
@@ -51,11 +51,11 @@ type
 
   { TCalendarControlWrapper }
 
-  TCalendarControlWrapper = class
+  TCalendarControlWrapper = class abstract (TObject)
   private
     FCalendarControl: TControl;
   public
-  { There are four methods that derived classes should override: }
+  { There are four abstract methods that derived classes should override: }
 
   { Should be overriden to just return the class of the calendar control. }
     class function GetCalendarControlClass: TControlClass; virtual abstract;
@@ -69,9 +69,19 @@ type
   { This function should return True if coordinates (X, Y) are on the date in
     the calendar control (DateTimePicker calls this function when the calendar
     is clicked, to determine whether the drop-down calendar should return the
-    date or not).  }
+    date or not). }
     function AreCoordinatesOnDate(X, Y: Integer): Boolean; virtual abstract;
 
+  public
+  { Not mandatory to override: }
+
+  { Override only if the calendar class have "views", like Windows calendar
+    control (LCL's TCalendar in Win WS).
+    Should return False only when the calendar is in some view other than month.
+    DateTimePicker asks this when closing calendar. }
+    function InMonthView: Boolean; virtual;
+
+  public
     function GetCalendarControl: TControl;
     constructor Create; virtual;
     destructor Destroy; override;
@@ -82,6 +92,11 @@ type
 implementation
 
 { TCalendarControlWrapper }
+
+function TCalendarControlWrapper.InMonthView: Boolean;
+begin
+  Result := True;
+end;
 
 function TCalendarControlWrapper.GetCalendarControl: TControl;
 begin

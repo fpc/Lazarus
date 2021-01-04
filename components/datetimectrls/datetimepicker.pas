@@ -46,7 +46,7 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8, LCLIntf,
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, LCLIntf,
   LCLProc, Themes, CalControlWrapper;
 
 const
@@ -769,9 +769,7 @@ begin
   case Key of
 
     VK_ESCAPE, VK_RETURN, VK_SPACE, VK_TAB:
-      if (not(Cal.GetCalendarControl is TCustomCalendar))
-         or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth)
-      then begin
+      if Cal.InMonthView then begin
         ApplyTheDate := Key in [VK_RETURN, VK_SPACE];
         Key := 0;
         CloseCalendarForm(ApplyTheDate);
@@ -819,7 +817,7 @@ procedure TDTCalendarForm.WMActivate(var Message: TLMActivate);
 var
   PP: HWND;
 begin
-  inherited;
+  inherited WMActivate(Message);
 
   PP := LCLIntf.GetParent(Handle);
   if (PP <> 0) then
