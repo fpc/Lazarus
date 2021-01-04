@@ -436,7 +436,6 @@ type
     procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual;
-
   public
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
@@ -451,10 +450,8 @@ type
     property LanguageName: string read GetLanguageName;
   public
     property AttrCount: integer read GetAttribCount;
-    property Attribute[idx: integer]: TSynHighlighterAttributes
-      read GetAttribute;
-    property Capabilities: TSynHighlighterCapabilities
-       read FCapabilities;
+    property Attribute[idx: integer]: TSynHighlighterAttributes read GetAttribute;
+    property Capabilities: TSynHighlighterCapabilities read FCapabilities;
     property SampleSource: string read GetSampleSource write SetSampleSource;
     // The below should be depricated and moved to those HL that actually implement them.
     property CommentAttribute: TSynHighlighterAttributes
@@ -898,8 +895,7 @@ begin
   FStoredName := aStoredName;;
 end;
 
-constructor TSynHighlighterAttributes.Create(aCaption: PString;
-  aStoredName: String);
+constructor TSynHighlighterAttributes.Create(aCaption: PString; aStoredName: String);
 begin
   Create;
   if aCaption<>nil then begin
@@ -912,7 +908,7 @@ begin
   end;
   if aStoredName = '' then
     aStoredName := FConstName;
-  FStoredName := aStoredName;;
+  FStoredName := aStoredName;
 end;
 
 function TSynHighlighterAttributes.IsEnabled: boolean;

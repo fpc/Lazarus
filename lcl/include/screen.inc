@@ -39,7 +39,7 @@ var
   L: TStrings;
   S: String;
 begin
-  L := TStrings(PtrInt(Data));
+  L := TStrings(Data);
   S := LogFont.elfLogFont.lfFaceName;
   if L.IndexOf(S) < 0 then
     L.Add(S);

@@ -957,10 +957,7 @@ begin
   begin
     Clear;
     for x := 0 to TSynEditKeyStrokes(Source).Count-1 do
-    begin
-      with Add do
-        Assign(TSynEditKeyStrokes(Source)[x]);
-    end;
+      Add.Assign(TSynEditKeyStrokes(Source)[x]);
   end else
     inherited Assign(Source);
 end;
