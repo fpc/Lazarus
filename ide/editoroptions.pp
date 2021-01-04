@@ -6323,11 +6323,14 @@ end;
 procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
   Defaults: TColorSchemeAttribute; Version: Integer);
 var
-  AttriName, Path: String;
-  fs: TFontStyles;
+  Path: String;
+  //AttriName: String;
+  //fs: TFontStyles;
 begin
-  // FormatVersion >= 2
+  // FormatVersion >= 5
   (* Note: This is currently always called with a default, so the nil handling isn't needed*)
+  Assert(Version > 4, 'TColorSchemeAttribute.LoadFromXml: Version ('+IntToStr(Version)+' < 5.');
+{
   AttriName := OldAdditionalAttributeName(StoredName);
   if (Version < 5) and (AttriName <> '') then begin
     // Read Version 2-4, 4 if exist, or keep values
@@ -6359,17 +6362,17 @@ begin
       StyleMask := fs;
     end;
   end;
-
+}
   // Read the Version >= 5 if exist, or keep values
   if StoredName = '' then exit;
   Path := aPath + StrToValidXMLName(StoredName) + '/';
-  if (Version <= 5) and (Defaults = nil) then
-    Defaults := GetSchemeGlobal;
+  //if (Version <= 5) and (Defaults = nil) then  <- Juha: Should it be (Version < 5)?
+  //  Defaults := GetSchemeGlobal;
 
   if aXMLConfig.HasPath(Path, False) then begin
     aXMLConfig.ReadObject(Path, Self, Defaults);
-    if (Version <= 5) then
-      UseSchemeGlobals := False;
+    //if (Version <= 5) then                     <- Juha: Should it be (Version < 5)?
+    //  UseSchemeGlobals := False;
   end
   else begin
     if (Defaults <> Self) and (Defaults <> nil) then begin
@@ -6389,8 +6392,8 @@ begin
       ItalicPriority    := Defaults.ItalicPriority;
       UnderlinePriority := Defaults.UnderlinePriority;
     end;
-    if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
-      UseSchemeGlobals := False;
+    //if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
+    //  UseSchemeGlobals := False;
   end;
 end;
 
