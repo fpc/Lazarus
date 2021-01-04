@@ -202,7 +202,7 @@ end;
 
 function TSpinEditExBase.MaxValueStored: Boolean;
 begin
-  Result := CompareValue(FMaxValue, T(DefMaxValue)) <> 0;
+  Result := true; //not SameValue(FMaxValue, DefMaxValue);
 end;
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
@@ -252,7 +252,7 @@ end;
 
 function TSpinEditExBase.IncrementStored: Boolean;
 begin
-  Result := CompareValue(FIncrement, T(DefIncrement)) <> 0;
+  Result := true;
 end;
 
 function TSpinEditExBase.IsLimited: Boolean;
@@ -466,11 +466,20 @@ begin
   Result := FFS;
 end;
 
-
 procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
 begin
   if (Key in ['.',',']) then Key := FFS.Decimalseparator;
   inherited EditKeyPress(Key);
+end;
+
+function TCustomFloatSpinEditEx.IncrementStored: Boolean;
+begin
+  Result := not SameValue(FIncrement, DefIncrement);
+end;
+
+function TCustomFloatSpinEditEx.MaxValueStored: Boolean;
+begin
+  Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
 function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
@@ -612,6 +621,16 @@ begin
     Result := ValueS
   else
     Result := StringReplace(ValueS, AThousandSeparator, '', [rfReplaceAll]);
+end;
+
+function TCustomSpinEditEx.IncrementStored: Boolean;
+begin
+  Result := not SameValue(FIncrement, DefIncrement);
+end;
+
+function TCustomSpinEditEx.MaxValueStored: Boolean;
+begin
+  Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
 procedure TCustomSpinEditEx.SetThousandSeparator(AValue: String);

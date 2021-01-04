@@ -125,8 +125,6 @@ type
     procedure UpDownChangingEx(Sender: TObject; var {%H-}AllowChange: Boolean;
                                {%H-}NewValue: SmallInt; Direction: TUpDownDirection);
     procedure UpDownClick(Sender: TObject; {%H-}Button: TUDBtnType);
-    function IncrementStored: Boolean;
-    function MaxValueStored: Boolean;
   protected
     function GetBuddyClassType: TControlClass; override;
     procedure DoEnter; override;
@@ -136,6 +134,8 @@ type
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
     procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    function IncrementStored: Boolean; virtual;
+    function MaxValueStored: Boolean; virtual;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
     procedure SetValue(const AValue: T); virtual;
@@ -202,6 +202,8 @@ type
   protected
     function GetFormatsettings: TFormatSettings;
     procedure EditKeyPress(var Key: char); override;
+    function IncrementStored: Boolean; override;
+    function MaxValuestored: Boolean; override;
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
     function SafeInc(AValue: Double): Double; override;
     function SafeDec(AValue: Double): Double; override;
@@ -314,6 +316,8 @@ type
     FThousandSeparator: String;
     procedure SetThousandSeparator(AValue: String);
   protected
+    function IncrementStored: Boolean; override;
+    function MaxValuestored: Boolean; override;
     function SafeInc(AValue: Int64): Int64; override;
     function SafeDec(AValue: Int64): Int64; override;
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
