@@ -287,6 +287,7 @@ type
     FAlreadyGotSchemeGlobal: Boolean;
     FSchemeGlobalCache: TColorSchemeAttribute;
     FUseSchemeGlobals: Boolean;
+    FUpStoredName: string;  // Uppercase version of StoredName. Used for searching.
     function GetIsUsingSchemeGlobals: Boolean;
     procedure SetMarkupFoldLineAlpha(AValue: Byte);
     procedure SetMarkupFoldLineColor(AValue: TColor);
@@ -329,7 +330,7 @@ type
     FLanguageName: String;
     FIsSchemeDefault: Boolean;
     FFormatVersion: integer;
-    function GetAttribute(Index: String): TColorSchemeAttribute;
+    function GetAttribute(UpperName: String): TColorSchemeAttribute;
     function GetAttributeAtPos(Index: Integer): TColorSchemeAttribute;
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
@@ -356,7 +357,7 @@ type
     property  Name: String read GetName;
     property  Language: TLazSyntaxHighlighter read FLanguage;
     property  LanguageName: String read FLanguageName;
-    property  Attribute[Index: String]: TColorSchemeAttribute read GetAttribute;
+    property  Attribute[UpperName: String]: TColorSchemeAttribute read GetAttribute;
     property  AttributeByEnum[Index: TAdditionalHilightAttribute]: TColorSchemeAttribute
               read GetAttributeByEnum;
     property  AttributeAtPos[Index: Integer]: TColorSchemeAttribute read GetAttributeAtPos;
@@ -6185,7 +6186,7 @@ begin
     if (FOwner <> nil) and (FOwner.FOwner <> nil) and
        (FOwner.FOwner.FDefaultColors <> nil)
     then
-      Result := FOwner.FOwner.FDefaultColors.Attribute[StoredName];
+      Result := FOwner.FOwner.FDefaultColors.Attribute[FUpStoredName];
     if Result = Self then
       Result := nil;
     FSchemeGlobalCache := Result;
@@ -6199,6 +6200,7 @@ begin
   inherited Create(attribName, aStoredName);
   FOwner := ASchemeLang;
   FUseSchemeGlobals := True;
+  FUpStoredName := UpperCase(StoredName);
 end;
 
 function TColorSchemeAttribute.IsEnabled: boolean;
@@ -6314,7 +6316,7 @@ begin
   if FOwner <> nil then begin
     csl := FOwner.GetStoredValuesForLanguage;
     if csl <> nil then
-      Result := csl.Attribute[StoredName];
+      Result := csl.Attribute[FUpStoredName];
   end;
 end;
 
@@ -6409,11 +6411,11 @@ end;
 
 { TColorSchemeLanguage }
 
-function TColorSchemeLanguage.GetAttribute(Index: String): TColorSchemeAttribute;
+function TColorSchemeLanguage.GetAttribute(UpperName: String): TColorSchemeAttribute;
 var
   Idx: Integer;
 begin
-  Idx := FAttributes.IndexOf(UpperCase(Index));
+  Idx := FAttributes.IndexOf(UpperName);
   if Idx = -1 then
     Result := nil
   else
@@ -6427,7 +6429,7 @@ end;
 
 function TColorSchemeLanguage.GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
 begin
-  Result := Attribute[GetAddiHilightAttrName(Index)];
+  Result := Attribute[UpperCase(GetAddiHilightAttrName(Index))];
 end;
 
 function TColorSchemeLanguage.GetName: String;
@@ -6470,7 +6472,7 @@ begin
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
-  FAttributes.AddObject(UpperCase(FDefaultAttribute.StoredName), FDefaultAttribute);
+  FAttributes.AddObject(FDefaultAttribute.FUpStoredName, FDefaultAttribute);
 end;
 
 constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
@@ -6491,7 +6493,7 @@ begin
       csa := TColorSchemeAttribute.Create(Self, hla.Caption, hla.StoredName);
       csa.Assign(hla);
       csa.Group := agnLanguage;
-      FAttributes.AddObject(UpperCase(csa.StoredName), csa);
+      FAttributes.AddObject(csa.FUpStoredName, csa);
     end;
   end;
 
@@ -6501,7 +6503,7 @@ begin
                                         GetAddiHilightAttrName(aha) );
     csa.Features := ahaSupportedFeatures[aha];
     csa.Group    := ahaGroupMap[aha];
-    FAttributes.AddObject(UpperCase(csa.StoredName), csa);
+    FAttributes.AddObject(csa.FUpStoredName, csa);
   end;
   FAttributes.Sorted := true;
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
@@ -6540,7 +6542,7 @@ begin
     SrcAttr := Src.AttributeAtPos[i];
     Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
     Attr.Assign(SrcAttr);
-    FAttributes.AddObject(UpperCase(Attr.StoredName), Attr);
+    FAttributes.AddObject(Attr.FUpStoredName, Attr);
     if SrcAttr = Src.DefaultAttribute then
       FDefaultAttribute := Attr;
   end;
@@ -6558,7 +6560,7 @@ begin
   i := FAttributes.Count - 1;
   while Result and (i >= 0) do begin
     csa := AttributeAtPos[i];
-    othercsa := Other.Attribute[csa.StoredName];
+    othercsa := Other.Attribute[csa.FUpStoredName];
     Result := Result and (othercsa <> nil) and csa.Equals(othercsa);
     dec(i);
   end;
@@ -6622,7 +6624,7 @@ begin
   for i := 0 to AttributeCount - 1 do begin
     CurAttr := AttributeAtPos[i];
     if Defaults <> nil then
-      Def := Defaults.Attribute[CurAttr.StoredName]
+      Def := Defaults.Attribute[CurAttr.FUpStoredName]
     else begin
       Def := CurAttr.GetSchemeGlobal;
       if Def = nil then
@@ -6651,7 +6653,7 @@ begin
   if (FormatVersion <= 5) and (DefaultAttribute <> nil)
   and (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) then
   begin
-    CurAttr := Attribute[Highlighter.WhitespaceAttribute.StoredName];
+    CurAttr := Attribute[UpperCase(Highlighter.WhitespaceAttribute.StoredName)];
     if (CurAttr <> nil) and not CurAttr.UseSchemeGlobals then
       DefaultAttribute.Background := CurAttr.Background;
   end;
@@ -6685,7 +6687,7 @@ begin
   for i := 0 to AttributeCount - 1 do begin
     CurAttr := AttributeAtPos[i];
     if Defaults <> nil then
-      Def := Defaults.Attribute[CurAttr.StoredName]
+      Def := Defaults.Attribute[CurAttr.FUpStoredName]
     else begin
       Def := CurAttr.GetSchemeGlobal;
       if Def = nil then
@@ -6940,7 +6942,7 @@ begin
   try
     for i := 0 to AHLighter.AttrCount - 1 do begin
       hlattrs := AHLighter.Attribute[i];
-      Attr := Attribute[hlattrs.StoredName];
+      Attr := Attribute[UpperCase(hlattrs.StoredName)];
       if Attr <> nil then
         Attr.ApplyTo(hlattrs, DefaultAttribute);
     end;
@@ -7172,20 +7174,23 @@ end;
 
 procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig; AName, aPath: String);
 var
-  i, j: integer;
   lMapping: TColorScheme;
+  UpName: String;
+  i, j: integer;
 begin
-  i := FMappings.IndexOf(UpperCase(AName));
+  UpName := UpperCase(AName);
+  i := FMappings.IndexOf(UpName);
   if i <> -1 then begin
     j := 0;
-    while i >= 0 do begin
+    repeat
       inc(j);
-      i := FMappings.IndexOf(UpperCase(AName+'_'+IntToStr(j)));
-    end;
+      i := FMappings.IndexOf(UpName+'_'+IntToStr(j));
+    until i = -1;
     AName := AName+'_'+IntToStr(j);
+    DebugLn(['TColorSchemeFactory.RegisterScheme: Adjusting AName to ', AName]);
   end;
   lMapping := TColorScheme.CreateFromXml(aXMLConfig, AName, aPath);
-  FMappings.AddObject(UpperCase(AName), lMapping);
+  FMappings.AddObject(UpName, lMapping);
 end;
 
 procedure TColorSchemeFactory.GetRegisteredSchemes(AList: TStrings);
