@@ -208,7 +208,7 @@ type
     property Values[const s: string]: boolean read GetValues write SetValues; default;
   end;
 
-  { TOldStringToStringTree - Associative array }
+  { TStringToStringTree - Associative array string to string }
 
   TStringToStringItem = record
     Name: string;
@@ -224,8 +224,6 @@ type
   public
     property Current: PStringToStringItem read GetCurrent;
   end;
-
-  { TStringToStringTree }
 
   TStringToStringTree = class(TCustomStringMap)
   private
@@ -253,6 +251,8 @@ type
     function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
     function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
   end;
+
+  { TStringToPointerTree }
 
   TStringToPointerTreeItem = record
     Name: string;
