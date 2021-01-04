@@ -284,6 +284,8 @@ type
     FMarkupFoldLineColor: TColor;
     FMarkupFoldLineStyle: TSynLineStyle;
     FOwner: TColorSchemeLanguage;
+    FAlreadyGotSchemeGlobal: Boolean;
+    FSchemeGlobalCache: TColorSchemeAttribute;
     FUseSchemeGlobals: Boolean;
     function GetIsUsingSchemeGlobals: Boolean;
     procedure SetMarkupFoldLineAlpha(AValue: Byte);
@@ -6172,13 +6174,23 @@ end;
 
 function TColorSchemeAttribute.GetSchemeGlobal: TColorSchemeAttribute;
 begin
-  Result := nil;
-  if (FOwner <> nil) and (FOwner.FOwner <> nil) and
-     (FOwner.FOwner.FDefaultColors <> nil)
-  then
-    Result := FOwner.FOwner.FDefaultColors.Attribute[StoredName];
-  if Result = Self then
+  if FAlreadyGotSchemeGlobal then begin
+    // The Nil result is never fetched twice for some reason.
+    if FSchemeGlobalCache=Nil then
+      DebugLn(['TColorSchemeAttribute.GetSchemeGlobal: Using cached Nil.']);
+    Result := FSchemeGlobalCache;
+  end
+  else begin
     Result := nil;
+    if (FOwner <> nil) and (FOwner.FOwner <> nil) and
+       (FOwner.FOwner.FDefaultColors <> nil)
+    then
+      Result := FOwner.FOwner.FDefaultColors.Attribute[StoredName];
+    if Result = Self then
+      Result := nil;
+    FSchemeGlobalCache := Result;
+    FAlreadyGotSchemeGlobal := True;
+  end;
 end;
 
 constructor TColorSchemeAttribute.Create(ASchemeLang: TColorSchemeLanguage;
