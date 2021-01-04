@@ -202,7 +202,7 @@ end;
 
 function TSpinEditExBase.MaxValueStored: Boolean;
 begin
-  Result := not SameValue(FMaxValue, DefMaxValue);
+  Result := CompareValue(FMaxValue, T(DefMaxValue)) <> 0;
 end;
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
@@ -252,7 +252,7 @@ end;
 
 function TSpinEditExBase.IncrementStored: Boolean;
 begin
-  Result := not SameValue(FIncrement, DefIncrement);
+  Result := CompareValue(FIncrement, T(DefIncrement)) <> 0;
 end;
 
 function TSpinEditExBase.IsLimited: Boolean;
