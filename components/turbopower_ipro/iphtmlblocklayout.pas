@@ -1381,7 +1381,7 @@ end;
 
 procedure TIpNodeBlockLayouter.Render(RenderProps: TIpHtmlProps);
 begin
-  if not RenderProps.IsEqualTo(Props) then
+  if FOwner.Owner.NeedResize and (not RenderProps.IsEqualTo(Props)) then
   begin
     Props.Assign(RenderProps);
     FOwner.LoadAndApplyCSSProps;
@@ -1491,26 +1491,29 @@ procedure TIpNodeTableElemLayouter.Render(RenderProps: TIpHtmlProps);
 var
   R : TRect;
 begin
-  Props.Assign(RenderProps);
-  Props.DelayCache:=True;
-  FOwner.LoadAndApplyCSSProps;
-//DebugLn('td :', IntToStr(Integer(Props.Alignment)));
-  if FTableElemOwner.BgColor <> clNone then
-    Props.BgColor := FTableElemOwner.BgColor;
-  if FTableElemOwner.Align <> haDefault then
-    Props.Alignment := FTableElemOwner.Align
-  else if Props.Alignment = haDefault then
+  if FOwner.Owner.NeedResize then
   begin
+    Props.Assign(RenderProps);
+    Props.DelayCache:=True;
+    FOwner.LoadAndApplyCSSProps;
+//DebugLn('td :', IntToStr(Integer(Props.Alignment)));
+    if FTableElemOwner.BgColor <> clNone then
+      Props.BgColor := FTableElemOwner.BgColor;
+    if FTableElemOwner.Align <> haDefault then
+      Props.Alignment := FTableElemOwner.Align
+    else if Props.Alignment = haDefault then
+    begin
+      if FOwner is TIpHtmlNodeTH then
+        Props.Alignment := haCenter
+      else
+        Props.Alignment := haLeft;
+    end;
     if FOwner is TIpHtmlNodeTH then
-      Props.Alignment := haCenter
-    else
-      Props.Alignment := haLeft;
+      Props.FontStyle := Props.FontStyle + [fsBold];
+    Props.VAlignment := FTableElemOwner.VAlign;
+    if FTableElemOwner.NoWrap then
+      Props.NoBreak := True;
   end;
-  if FOwner is TIpHtmlNodeTH then
-    Props.FontStyle := Props.FontStyle + [fsBold];
-  Props.VAlignment := FTableElemOwner.VAlign;
-  if FTableElemOwner.NoWrap then
-    Props.NoBreak := True;
   {$IFDEF IP_LAZARUS_DBG}
   DebugBox(Owner.Target, PadRect, clYellow, True);
   {$ENDIF}
@@ -1523,7 +1526,8 @@ begin
     end else
       FIpHtml.Target.Brush.Style := bsClear;
   end;
-  Props.DelayCache:=False;
+  if FOwner.Owner.NeedResize then
+    Props.DelayCache:=False;
   inherited Render(Props);
 end;
 

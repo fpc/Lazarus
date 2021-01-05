@@ -1947,6 +1947,7 @@ type
     FDocCharset: string;
     FHasBOM: boolean;
     FTabList: TIpHtmlTabList;
+    FNeedResize: Boolean;
   protected
     CharStream : TStream;
     CurToken : TIpHtmlToken;
@@ -2254,6 +2255,7 @@ type
     property FactBAParag: Real read FFactBAParag write FFactBAParag;
     property MouseLastPoint : TPoint read FMouseLastPoint;
     property RenderDevice: TIpHtmlRenderDevice read FRenderDev;
+    property NeedResize: Boolean read FNeedResize write FNeedResize;
   end;
 
   TIpHtmlInternalPanel = class;
@@ -2314,6 +2316,7 @@ type
     InPrint: Integer;
     {$ENDIF}
     SettingPageRect : Boolean;
+    FPaintingLock: Integer;
     MouseDownX, MouseDownY : Integer;
     HaveSelection,
     MouseIsDown,
@@ -2347,7 +2350,7 @@ type
     procedure DoCurElementChange;
     procedure DoHotInvoke;
     procedure DoClick;
-    procedure Resize; override;
+    procedure DoOnResize; override;
     procedure ScrollInView(R : TRect);
     procedure ScrollInViewRaw(R : TRect);
     function PagePtToScreen(const Pt : TPoint): TPoint;
@@ -7696,6 +7699,7 @@ begin
   //FixedTypeface := 'Courier New';
   FBgColor := clNone;
   FFactBAParag := 1;
+  NeedResize := True;
 end;
 
 function TIpHtml.LinkVisited(const URL : string): Boolean;
@@ -8221,9 +8225,10 @@ begin
           AggressiveDrawing := False;
     {$ENDIF}
 
- for i := 0 to Pred(FControlList.Count) do
+  for i := 0 to Pred(FControlList.Count) do
     TIpHtmlNode(FControlList[i]).UnmarkControl;
-  SetDefaultProps;
+  if NeedResize then
+    SetDefaultProps;
   FPageViewRect := TargetPageRect;
   { Note: In Preview mode the page is tiled of "mini-pages" sized PageViewRect.
     The lower end of the "real" page is given by PageViewBottom. We set here
@@ -10115,7 +10120,8 @@ begin
   FHot := Value;
   if FAreaList.Count = 0 then
     BuildAreaList;
-  SetProps(Props);
+  if FOwner.NeedResize then
+    SetProps(Props);
   for i := 0 to Pred(FAreaList.Count) do
     if PageRectToScreen(PRect(FAreaList[i])^, R) then
       Owner.InvalidateRect(R);
@@ -10440,10 +10446,13 @@ begin
                     end;
 
                     // set TR color, Render override them anyway if TD/TH have own settings
-                    Props.BGColor := TrBgColor;
-                    Props.FontColor := TrTextColor;
+                    if FOwner.NeedResize then
+                    begin
+                      Props.BGColor := TrBgColor;
+                      Props.FontColor := TrTextColor;
 
-                    Props.VAlignment := Al;
+                      Props.VAlignment := Al;
+                    end;
                     Render(Props);
                     {paint left rule if selected}
                     case Rules of
@@ -11795,6 +11804,8 @@ begin
   begin
     FControl.Hint := Alt;
     FControl.ShowHint:=True;
+    if (FControl is TEdit) then
+      FControl.ControlStyle:=FControl.ControlStyle + [csOpaque];
   end;
   aCanvas.Font.Size := iCurFontSize;
 end;
@@ -13647,31 +13658,42 @@ procedure TIpHtmlInternalPanel.Paint;
 var
   CR: TRect;
 begin
-  CR := GetClientRect;
-  if not ScaleBitmaps {printing} and (Hyper <> nil) then
-  begin
-    // update layout
-    GetPageRect;
-    // render
-    Hyper.Render(Canvas,
-      Rect(
-        ViewLeft, ViewTop,
-        ViewLeft + (CR.Right - CR.Left),
-        ViewTop + (CR.Bottom - CR.Top)
-      ),
-      ViewTop,
-      ViewTop + (CR.Bottom - CR.Top),
-      HTMLPanel.UsePaintBuffer,
-      Point(0, 0)
-    )
-  end
-  else
-    Canvas.FillRect(CR);
-  //debugln(['TIpHtmlInternalPanel.Paint ',dbgs(CR)]);
-  {$IFDEF IP_LAZARUS_DBG}
-  DebugBox(Canvas, CR, clYellow);
-  Debugbox(Canvas, Canvas.ClipRect, clLime, true);
-  {$ENDIF}
+  if FPaintingLock > 0 then
+    exit;
+  inc(FPaintingLock);
+
+  try
+    if Assigned(HTMLPanel.OnPaint) then HTMLPanel.OnPaint(HTMLPanel);
+
+    CR := GetClientRect;
+    if not ScaleBitmaps {printing} and (Hyper <> nil) then
+    begin
+      // update layout
+      GetPageRect;
+      // render
+      Hyper.Render(Canvas,
+        Rect(
+          ViewLeft, ViewTop,
+          ViewLeft + (CR.Right - CR.Left),
+          ViewTop + (CR.Bottom - CR.Top)
+        ),
+        ViewTop,
+        ViewTop + (CR.Bottom - CR.Top),
+        HTMLPanel.UsePaintBuffer,
+        Point(0, 0)
+      );
+      FHyper.NeedResize := False;
+    end
+    else
+      Canvas.FillRect(CR);
+    //debugln(['TIpHtmlInternalPanel.Paint ',dbgs(CR)]);
+    {$IFDEF IP_LAZARUS_DBG}
+    DebugBox(Canvas, CR, clYellow);
+    Debugbox(Canvas, Canvas.ClipRect, clLime, true);
+    {$ENDIF}
+  finally
+    dec(FPaintingLock);
+  end;
 end;
 
 {$IFDEF Html_Print}
@@ -13875,13 +13897,16 @@ end;
 procedure TIpHtmlInternalPanel.InvalidateSize;
 begin
   FPageRectValid:=false;
-  Invalidate;
+  if FPaintingLock = 0 then
+    Invalidate;
 end;
 
-procedure TIpHtmlInternalPanel.Resize;
+procedure TIpHtmlInternalPanel.DoOnResize;
 begin
   inherited;
   InvalidateSize;
+  if Assigned(FHyper) then
+    FHyper.NeedResize := True;
 end;
 
 function TIpHtmlInternalPanel.PagePtToScreen(const Pt : TPoint): TPoint;
