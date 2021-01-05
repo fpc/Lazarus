@@ -811,7 +811,6 @@ type
     property Items[Index: Integer]: TEditOptLanguageInfo read GetInfos; default;
   end;
 
-  TEditorOptions = class;
   TMouseOptGutterLeftType = (
     moGLDownClick,
     moglUpClickAndSelect,
@@ -1409,9 +1408,9 @@ type
     property UseGlobalIDECommandList: Boolean read FUseGlobalIDECommandList write FUseGlobalIDECommandList;
   end;
 
-  { TEditorOptions }
+  { TEditorOptionsBase }
 
-  TEditorOptions = class(TIDEEditorOptions)
+  TEditorOptionsBase = class(TIDEEditorOptions)
   private
     FBlockTabIndent: Integer;
     FCompletionLongLineHintInMSec: Integer;
@@ -1479,7 +1478,7 @@ type
 
     // Color options
     fHighlighterList: TEditOptLangList;
-    FUserColorSchemeSettings: TColorSchemeFactory;
+    FUserColorSchemeGroup: TColorSchemeFactory;
     FUserDefinedColors: TEditorUserDefinedWordsList;
 
     // Markup Current Word
@@ -1540,21 +1539,13 @@ type
     FStringBreakEnabled: Boolean;
     FStringBreakPrefix: String;
 
-    FDefaultValues: TEditorOptions;
     function GetCodeTemplateFileNameExpand:String;
   protected
     function GetTabPosition: TTabPosition; override;
+    procedure GetUserColorSchemeGroupData; virtual; abstract;
   public
-    class function GetGroupCaption:string; override;
-    class function GetInstance: TAbstractIDEOptions; override;
-    procedure DoAfterWrite(Restore: boolean); override;
-  public
-    constructor Create;
-    constructor CreateDefaultOnly;
     destructor Destroy; override;
     procedure Init;
-    procedure Load;
-    procedure Save;
     function LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
     function SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
     procedure TranslateResourceStrings;
@@ -1662,7 +1653,7 @@ type
 
     // Color options
     property HighlighterList: TEditOptLangList read fHighlighterList;
-    property UserColorSchemeGroup: TColorSchemeFactory read FUserColorSchemeSettings;
+    property UserColorSchemeGroup: TColorSchemeFactory read FUserColorSchemeGroup;
     property UserDefinedColors: TEditorUserDefinedWordsList read FUserDefinedColors;
 
     // Markup Current Word
@@ -1711,7 +1702,6 @@ type
     property CompletionLongLineHintType: TSynCompletionLongHintType
              read FCompletionLongLineHintType write FCompletionLongLineHintType
              default sclpExtendRightOnly;
-
   public
     // Code Folding
     property UseCodeFolding: Boolean
@@ -1816,6 +1806,34 @@ type
     // Scroll
     property ScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions read FScrollOnEditLeftOptions write FScrollOnEditLeftOptions;
     property ScrollOnEditRightOptions: TSynScrollOnEditRightOptions read FScrollOnEditRightOptions write FScrollOnEditRightOptions;
+  end;
+
+  { TEditorOptionsDefaults }
+
+  TEditorOptionsDefaults = class(TEditorOptionsBase)
+  private
+  protected
+    procedure GetUserColorSchemeGroupData; override;
+  public
+    constructor Create;
+  end;
+
+  { TEditorOptions }
+
+  TEditorOptions = class(TEditorOptionsBase)
+  private
+    FDefaultValues: TEditorOptionsDefaults;
+  protected
+    procedure GetUserColorSchemeGroupData; override;
+  public
+    class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite(Restore: boolean); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Load;
+    procedure Save;
   end;
 
 var
@@ -4719,72 +4737,20 @@ begin
   end;
 end;
 
-{ TEditorOptions }
-
-constructor TEditorOptions.Create;
-var
-  ConfFileName: String;
+destructor TEditorOptionsBase.Destroy;
 begin
-  inherited Create;
-  InitLocale;
-  FScrollOnEditLeftOptions := TSynScrollOnEditLeftOptions.Create;
-  FScrollOnEditRightOptions := TSynScrollOnEditRightOptions.Create;
-
-  ConfFileName := AppendPathDelim(GetPrimaryConfigPath) + EditOptsConfFileName;
-  CopySecondaryConfigFile(EditOptsConfFileName);
-  try
-    if not FileExistsUTF8(ConfFileName) then
-    begin
-      DebugLn('NOTE: editor options config file not found - using defaults');
-      XMLConfig := TRttiXMLConfig.CreateClean(ConfFileName);
-    end
-    else
-      XMLConfig := TRttiXMLConfig.Create(ConfFileName);
-  except
-    on E: Exception do
-    begin
-      DebugLn('WARNING: unable to read ', ConfFileName, ' ', E.Message);
-      XMLConfig := Nil;
-    end;
-  end;
-
-  // set defaults
-  Init;
-
-  // code templates (dci file)
-  fCodeTemplateFileNameRaw :=
-    TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeTemplatesFilename);
-  CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
-
-  FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
-  FMultiWinEditAccessOrder.InitDefaults;
-
-  FDefaultValues := TEditorOptions.CreateDefaultOnly;
-end;
-
-constructor TEditorOptions.CreateDefaultOnly;
-begin
-  inherited Create;
-  Init;
-  FDefaultValues := nil;
-end;
-
-destructor TEditorOptions.Destroy;
-begin
-  FreeAndNil(FUserColorSchemeSettings);
   FreeAndNil(FUserDefinedColors);
   fKeyMap.Free;
   FreeAndNil(FMultiWinEditAccessOrder);
   XMLConfig.Free;
   FUserMouseSettings.Free;
   FTempMouseSettings.Free;
-  FreeAndNil(FDefaultValues);
   FreeAndNil(FScrollOnEditLeftOptions);
   FreeAndNil(FScrollOnEditRightOptions);
   inherited Destroy;
 end;
 
-procedure TEditorOptions.Init;
+procedure TEditorOptionsBase.Init;
 begin
   // General options
   fShowTabCloseButtons := True;
@@ -4826,8 +4792,7 @@ begin
 
   // Color options
   fHighlighterList := HighlighterListSingleton;
-  FUserColorSchemeSettings := TColorSchemeFactory.Create;
-  FUserColorSchemeSettings.Assign(ColorSchemeFactory);
+  GetUserColorSchemeGroupData;
   FUserDefinedColors := TEditorUserDefinedWordsList.Create;
   FUserDefinedColors.UseGlobalIDECommandList := True;
 
@@ -4894,6 +4859,899 @@ begin
   FStringBreakPrefix  := '';
 end;
 
+function TEditorOptionsBase.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
+  ): TModalResult;
+
+  function ResourceDCIAsText: String;
+  var
+    data: TResourceStream;
+    i: Int64;
+  begin
+    data := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
+    i := data.Size;
+    if i > 0 then begin
+      SetLength(Result, i);
+      data.Read(Result[1], i);
+    end;
+    data.Free;
+  end;
+
+var
+  s: String;
+  FileVersion, i, j, v: Integer;
+  NewAutoComplete: TSynEditAutoComplete;
+  Attr: TStringList;
+  Added: Boolean;
+begin
+  s := CodeTemplateFileNameExpand;
+  Result := mrAbort;
+  if FileExistsUTF8(s) then begin
+    try
+      LoadStringsFromFileUTF8(AnAutoComplete.AutoCompleteList, s);
+      Result := mrOK;
+    except
+      Result := mrAbort;
+    end;
+    if Result = mrAbort then
+      exit;
+
+    FileVersion := AnAutoComplete.Completions.Count;
+    if (FileVersion > 0) then begin
+      FileVersion := AnAutoComplete.CompletionAttributes[0].IndexOfName(DciFileVersionName);
+      if (FileVersion >= 0) then
+        FileVersion := StrToIntDef(AnAutoComplete.CompletionAttributes[0][FileVersion], 0);
+    end;
+    if FileVersion < DciFileVersion then begin
+      // Merge new entries
+      NewAutoComplete := TSynEditAutoComplete.Create(nil);
+      NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
+      Added := False;
+      for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
+        j := NewAutoComplete.CompletionAttributes[i].IndexOfName(DciVersionName);
+        if j < 0 then
+          continue;
+        v := StrToIntDef(NewAutoComplete.CompletionAttributes[i][j], 0);
+        if v <= FileVersion then
+          continue;
+        if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
+          continue;
+        Attr := TStringList.Create;
+        Attr.Assign(NewAutoComplete.CompletionAttributes[i]); // will be owned by AnAutoComplete;
+        AnAutoComplete.AddCompletion(
+          NewAutoComplete.Completions[i],
+          NewAutoComplete.CompletionValues[i],
+          NewAutoComplete.CompletionComments[i],
+          Attr);
+        Added := True;
+      end;
+      NewAutoComplete.Free;
+      if Added then
+        if BuildBorlandDCIFile(AnAutoComplete) then
+          SaveCodeTemplates(AnAutoComplete);
+    end;
+  end
+  else begin
+    AnAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
+  end;
+end;
+
+function TEditorOptionsBase.SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete
+  ): TModalResult;
+begin
+  try
+    SaveStringsToFileUTF8(AnAutoComplete.AutoCompleteList, CodeTemplateFileNameExpand);
+    Result := mrOK;
+  except
+    Result := mrAbort;
+  end;
+end;
+
+procedure TEditorOptionsBase.TranslateResourceStrings;
+begin
+
+end;
+
+procedure TEditorOptionsBase.AssignKeyMapTo(ASynEdit: TSynEdit; SimilarEdit: TSynEdit);
+var
+  c, i: Integer;
+begin
+  if SimilarEdit<>nil then
+    ASynEdit.KeyStrokes.Assign(SimilarEdit.Keystrokes)
+  else
+    KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
+
+  c := ASynEdit.PluginCount - 1;
+  while (c >= 0) do begin
+
+    if SimilarEdit<>nil then begin
+      i := SimilarEdit.PluginCount - 1;
+      while (i >= 0) and not (SimilarEdit.Plugin[i].ClassType = ASynEdit.Plugin[c].ClassType) do
+        dec(i);
+    end
+    else
+      i:= -1;
+
+    if (ASynEdit.Plugin[c] is TSynPluginTemplateEdit) then begin
+      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
+      if i >= 0 then begin
+        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
+                               TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeyStrokes);
+        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
+                               TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
+      end else begin
+        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes,
+                        TLazSynPluginTemplateEditForm, ecIdePTmplOffset);
+        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
+                        TLazSynPluginTemplateEditFormOff, ecIdePTmplOutOffset);
+      end;
+    end;
+
+    if (ASynEdit.Plugin[c] is TSynPluginSyncroEdit) then begin
+      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Clear;
+      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
+      if i >= 0 then begin
+        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Assign(
+                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesSelecting);
+        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
+                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeyStrokes);
+        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
+                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
+      end else begin
+        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting,
+                        TLazSynPluginSyncroEditFormSel, ecIdePSyncroSelOffset);
+        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes,
+                        TLazSynPluginSyncroEditForm, ecIdePSyncroOffset);
+        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
+                        TLazSynPluginSyncroEditFormOff, ecIdePSyncroOutOffset);
+      end;
+    end;
+
+    if (ASynEdit.Plugin[c] is TSynPluginMultiCaret) then begin
+      // Only ecPluginMultiCaretClearAll
+      // the others are handled in SynEdit.Keystrokes
+      TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      if i >= 0 then begin
+        TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Assign(
+                               TSynPluginMultiCaret(SimilarEdit.Plugin[i]).KeyStrokes);
+      end else begin
+        KeyMap.AssignTo(TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes,
+                        TLazSynPluginTemplateMultiCaret, 0); //ecIdePTmplOffset);
+      end;
+    end;
+
+    dec(c);
+  end;
+end;
+
+function TEditorOptionsBase.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
+begin
+  if LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil then
+  begin
+    Result := LazSyntaxHighlighterClasses[LazSynHilighter].Create(Nil);
+    GetHighlighterSettings(Result);
+  end
+  else
+    Result := Nil;
+end;
+
+function TEditorOptionsBase.ReadColorScheme(const LanguageName: String): String;
+(* The name of the currently chosen color-scheme for that language *)
+begin
+  if LanguageName = '' then
+  begin
+    Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
+    exit;
+  end;
+  if LanguageName <> TPreviewPasSyn.GetLanguageName then
+    Result := XMLConfig.GetValue(
+      'EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) +
+      '/ColorScheme/Value', '')
+  else
+    Result := '';
+  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
+    Result := '';
+  if Result = '' then
+    Result := ReadPascalColorScheme;
+end;
+
+function TEditorOptionsBase.ReadPascalColorScheme: String;
+(* The name of the currently chosen color-scheme for pascal code *)
+var
+  FormatVersion: Integer;
+begin
+  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
+  if FormatVersion > 1 then
+    Result := XMLConfig.GetValue(
+      'EditorOptions/Color/Lang' + StrToValidXMLName(
+      TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
+  else
+    Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
+  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
+    Result := '';
+  if (Result = '') then begin
+    if DefaultColorSchemeName <> '' then
+      Result := DefaultColorSchemeName
+    else
+      Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
+  end;
+end;
+
+function TEditorOptionsBase.GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter;
+  SynColorSchemeName: String): TColorSchemeLanguage;
+var
+  Scheme: TColorScheme;
+begin
+  Result := nil;
+  // initialize with defaults
+  if SynColorSchemeName = '' then
+    SynColorSchemeName := ReadColorScheme(aHighLighter.LanguageName);
+  if (SynColorSchemeName = '') then
+    exit;
+
+  Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorSchemeName];
+  if Scheme = nil then
+    exit;
+  Result := Scheme.ColorSchemeBySynClass[aHighLighter.ClassType];
+end;
+
+procedure TEditorOptionsBase.WriteColorScheme(const LanguageName, SynColorScheme: String);
+begin
+  if (LanguageName = '') or (SynColorScheme = '') then
+    exit;
+  XMLConfig.SetValue('EditorOptions/Color/Lang' + StrToValidXMLName(
+    LanguageName) + '/ColorScheme/Value', SynColorScheme);
+  XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
+end;
+
+procedure TEditorOptionsBase.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
+  SynColorScheme: String);
+// if SynColorScheme='' then default ColorScheme will be used
+var
+  LangScheme: TColorSchemeLanguage;
+begin
+  LangScheme := GetColorSchemeLanguage(Syn, SynColorScheme);
+  if LangScheme = nil then
+    exit;
+  LangScheme.ApplyTo(Syn);
+end;
+
+procedure TEditorOptionsBase.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter;
+  ReadForOptions: Boolean);
+var
+  ConfName: String;
+  Path: String;
+  i, h, idx: Integer;
+  TheFoldInfo: TEditorOptionsFoldRecord;
+  DefHl, FoldHl: TSynCustomFoldHighlighter;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+
+  if (syn is TSynCustomFoldHighlighter) then begin
+    DefHl := TSynCustomFoldHighlighter(TCustomSynClass(Syn.ClassType).Create(nil));
+    try
+      ReadDefaultsForHighlighterFoldSettings(DefHl);
+      FoldHl := TSynCustomFoldHighlighter(Syn);
+      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+      for i := 0 to TheFoldInfo.Count - 1 do begin
+        idx := TheFoldInfo.Info^[i].Index;
+        ConfName := TheFoldInfo.Info^[i].Xml;
+        Path := 'EditorOptions/FoldConfig/Lang' +
+          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+        // try reading the old config first
+        FoldHl.FoldConfig[idx].Enabled :=
+          XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
+        XMLConfig.ReadObject(Path + 'Settings/', FoldHl.FoldConfig[idx], DefHl.FoldConfig[idx]);
+
+        (* if ReadForOptions=True then Enabled appies only to fmFold,fmHide.
+           This allows to store what selection was previously active *)
+        if not ReadForOptions then begin
+          if (not FoldHl.FoldConfig[idx].Enabled) or (not FUseCodeFolding) then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmFold, fmHide];
+          if (not FUseMarkupWordBracket) then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmMarkup];
+          if (not FUseMarkupOutline) then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmOutline];
+
+          FoldHl.FoldConfig[idx].Enabled := FoldHl.FoldConfig[idx].Modes <> [];
+        end;
+
+        if (FoldHl is TSynPasSyn) and (idx = ord(cfbtIfThen)) then begin
+          FoldHl.FoldConfig[ord(cfbtIfElse)].Modes := FoldHl.FoldConfig[idx].Modes * [fmOutline];
+          FoldHl.FoldConfig[ord(cfbtIfElse)].Enabled := FoldHl.FoldConfig[idx].Enabled and (FoldHl.FoldConfig[ord(cfbtIfElse)].Modes <> []);
+        end;
+
+      end;
+    finally
+      DefHl.Free;
+    end;
+  end;
+end;
+
+procedure TEditorOptionsBase.ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+var
+  i, h: Integer;
+  TheFoldInfo: TEditorOptionsFoldRecord;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  if (syn is TSynCustomFoldHighlighter) then begin
+    TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+    for i := 0 to TheFoldInfo.Count - 1 do
+      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do
+        Enabled := TheFoldInfo.Info^[i].Enabled;
+  end;
+end;
+
+procedure TEditorOptionsBase.WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+var
+  DefSyn: TSrcIDEHighlighter;
+  i, h:   Integer;
+  Path:   String;
+  ConfName: String;
+  TheFoldInfo: TEditorOptionsFoldRecord;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+
+  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
+  try
+    ReadDefaultsForHighlighterFoldSettings(DefSyn);
+
+    if (syn is TSynCustomFoldHighlighter) then begin
+      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+      for i := 0 to TheFoldInfo.Count - 1 do begin
+        ConfName := TheFoldInfo.Info^[i].Xml;
+        Path := 'EditorOptions/FoldConfig/Lang' +
+          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+        XMLConfig.DeletePath(Path + 'Enabled/');
+        XMLConfig.WriteObject(Path + 'Settings/',
+          TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
+          TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info^[i].Index]);
+      end;
+    end;
+
+  finally
+    DefSyn.Free;
+  end;
+end;
+
+procedure TEditorOptionsBase.ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  Conf: TSynDividerDrawConfig;
+  ConfName: String;
+  Path: String;
+  i, h: Integer;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+
+  ReadDefaultsForHighlighterDivDrawSettings(Syn);
+
+  // read settings, that are different from the defaults
+  for i := 0 to TheInfo.Count - 1 do begin
+    Conf := Syn.DividerDrawConfig[i];
+    ConfName := TheInfo.Info^[i].Xml;
+    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
+      '/Type' + ConfName + '/' ;
+    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
+        Conf.MaxDrawDepth);
+    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
+        Conf.TopColor);
+    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
+        Conf.NestColor);
+  end;
+end;
+
+procedure TEditorOptionsBase.ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  TheInfo: TEditorOptionsDividerRecord;
+  i, h: Integer;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+  for i := 0 to TheInfo.Count - 1 do begin
+    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
+    Syn.DividerDrawConfig[i].TopColor := clDefault;
+    Syn.DividerDrawConfig[i].NestColor := clDefault;
+  end;
+end;
+
+procedure TEditorOptionsBase.WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+var
+  DefSyn: TSrcIDEHighlighter;
+  i, h:   Integer;
+  Path:   String;
+  Conf, DefConf: TSynDividerDrawConfig;
+  TheInfo: TEditorOptionsDividerRecord;
+  ConfName: String;
+begin
+  h := HighlighterList.FindByHighlighter(Syn);
+  if h < 0 then
+    h := HighlighterList.FindByName(Syn.LanguageName);
+  if h < 0 then exit;
+  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
+
+  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
+  try
+    ReadDefaultsForHighlighterDivDrawSettings(DefSyn);
+    for i := 0 to TheInfo.Count - 1 do begin
+      Conf := Syn.DividerDrawConfig[i];
+      DefConf := DefSyn.DividerDrawConfig[i]; // default value
+      ConfName := TheInfo.Info^[i].Xml;
+      Path := 'EditorOptions/DividerDraw/Lang' +
+        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+      XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,
+                               DefConf.MaxDrawDepth);
+      XMLConfig.SetDeleteValue(Path + 'TopColor/Value', Conf.TopColor,
+                               DefConf.TopColor);
+      XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
+                               DefConf.NestColor);
+    end;
+
+  finally
+    DefSyn.Free;
+  end;
+end;
+
+procedure TEditorOptionsBase.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
+// read highlight settings from config file
+begin
+  ReadHighlighterSettings(Syn, '');
+  ReadHighlighterFoldSettings(Syn);
+  ReadHighlighterDivDrawSettings(Syn);
+  if Syn is TSynPasSyn then begin
+    TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
+    TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
+  end;;
+end;
+
+procedure TEditorOptionsBase.SetMarkupColors(aSynEd: TSynEdit);
+var
+  Scheme: TColorSchemeLanguage;
+begin
+  // Find current color scheme for default colors
+  if (aSynEd.Highlighter = nil) then begin
+    aSynEd.Color := clWhite;
+    aSynEd.Font.Color := clBlack;
+    exit;
+  end;
+  // get current colorscheme:
+  Scheme := GetColorSchemeLanguage(aSynEd.Highlighter);
+  if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
+end;
+
+procedure TEditorOptionsBase.SetMarkupColor(Syn : TSrcIDEHighlighter;
+  AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+var
+  SchemeGrp: TColorScheme;
+  Scheme: TColorSchemeLanguage;
+  Attrib: TColorSchemeAttribute;
+begin
+  if assigned(Syn) then begin
+    Scheme := GetColorSchemeLanguage(Syn);
+  end else begin
+    SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[DefaultColorSchemeName];
+    if SchemeGrp = nil then
+      exit;
+    Scheme := SchemeGrp.DefaultColors;
+  end;
+
+  Attrib := Scheme.AttributeByEnum[AddHilightAttr];
+  if Attrib <> nil then begin
+    Attrib.ApplyTo(aMarkup);
+    exit;
+  end;
+
+  // set default
+  aMarkup.Foreground := clNone;
+  aMarkup.Background := clNone;
+  aMarkup.FrameColor := clNone;
+  aMarkup.FrameEdges := sfeAround;
+  aMarkup.FrameStyle := slsSolid;
+  aMarkup.Style := [];
+  aMarkup.StyleMask := [];
+end;
+
+procedure TEditorOptionsBase.ApplyFontSettingsTo(ASynEdit: TSynEdit);
+begin
+  ASynEdit.Font.Size := fEditorFontSize;// set size before name for XLFD !
+  ASynEdit.Font.Name := fEditorFont;
+  if fDisableAntialiasing then
+    ASynEdit.Font.Quality := fqNonAntialiased
+  else
+    ASynEdit.Font.Quality := fqDefault;
+end;
+
+function TEditorOptionsBase.ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
+var
+  s, CurExt: String;
+  LangID, StartPos, EndPos: Integer;
+begin
+  Result := lshNone;
+  if (Ext = '') or (Ext = '.') or (HighlighterList = Nil) then
+    exit;
+  Ext := lowercase(Ext);
+  if (Ext[1] = '.') then
+    Ext := copy(Ext, 2, length(Ext) - 1);
+  LangID := 0;
+  while LangID < HighlighterList.Count do
+  begin
+    s := HighlighterList[LangID].FileExtensions;
+    StartPos := 1;
+    while StartPos <= length(s) do
+    begin
+      Endpos := StartPos;
+      while (EndPos <= length(s)) and (s[EndPos] <> ';') do
+        inc(EndPos);
+      CurExt := copy(s, Startpos, EndPos - StartPos);
+      if (CurExt <> '') and (CurExt[1] = '.') then
+        CurExt := copy(CurExt, 2, length(CurExt) - 1);
+      if lowercase(CurExt) = Ext then
+      begin
+        Result := HighlighterList[LangID].TheType;
+        exit;
+      end;
+      Startpos := EndPos + 1;
+    end;
+    inc(LangID);
+  end;
+end;
+
+procedure TEditorOptionsBase.GetSynEditSettings(ASynEdit: TSynEdit;
+  SimilarEdit: TSynEdit);
+// read synedit settings from config file
+// if SimilarEdit is given it is used for speed up
+var
+  MarkCaret: TSynEditMarkupHighlightAllCaret;
+  b: TSynBeautifierPascal;
+  i: Integer;
+  mw: TSourceSynEditMarkupHighlightAllMulti;
+  TermsConf: TEditorUserDefinedWords;
+  Markup: TSynEditMarkup;
+begin
+  // general options
+  ASynEdit.BeginUpdate(False);
+  try
+    ASynEdit.Options := fSynEditOptions;
+    ASynEdit.Options2 := fSynEditOptions2;
+    ASynEdit.BlockIndent := fBlockIndent;
+    ASynEdit.BlockTabIndent := FBlockTabIndent;
+    (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
+    if ASynEdit.Beautifier is TSynBeautifierPascal then begin
+      b := ASynEdit.Beautifier as TSynBeautifierPascal;
+
+      if FAnsiCommentContinueEnabled then begin
+        b.AnsiCommentMode := sccPrefixMatch;
+        b.AnsiIndentMode := FAnsiIndentMode;
+        b.AnsiMatch := FAnsiCommentMatch;
+        b.AnsiPrefix := FAnsiCommentPrefix;
+        b.AnsiMatchLine := sclMatchPrev;
+        b.AnsiMatchMode := AnsiCommentMatchMode;
+        b.AnsiCommentIndent := sbitCopySpaceTab;
+        b.AnsiIndentFirstLineMax := AnsiIndentAlignMax;
+      end
+      else begin
+        b.AnsiCommentMode := sccNoPrefix;
+        b.AnsiIndentMode := [];
+      end;
+
+      if FCurlyCommentContinueEnabled then begin
+        b.BorCommentMode := sccPrefixMatch;
+        b.BorIndentMode := FCurlyIndentMode;
+        b.BorMatch := FCurlyCommentMatch;
+        b.BorPrefix := FCurlyCommentPrefix;
+        b.BorMatchLine := sclMatchPrev;
+        b.BorMatchMode := CurlyCommentMatchMode;
+        b.BorCommentIndent := sbitCopySpaceTab;
+        b.BorIndentFirstLineMax := CurlyIndentAlignMax;
+      end
+      else begin
+        b.BorCommentMode := sccNoPrefix;
+        b.BorIndentMode := [];
+      end;
+
+      if FSlashCommentContinueEnabled then begin
+        b.SlashCommentMode := sccPrefixMatch;
+        b.SlashIndentMode := FSlashIndentMode;
+        b.SlashMatch := FSlashCommentMatch;
+        b.SlashPrefix := FSlashCommentPrefix;
+        b.SlashMatchLine := sclMatchPrev;
+        b.SlashMatchMode := SlashCommentMatchMode;
+        b.SlashCommentIndent := sbitCopySpaceTab;
+        b.ExtendSlashCommentMode := FSlashCommentExtend;
+        b.SlashIndentFirstLineMax := SlashIndentAlignMax;
+      end
+      else begin
+        b.SlashCommentMode := sccNoPrefix;
+        b.SlashIndentMode := [];
+      end;
+
+      b.StringBreakEnabled := FStringBreakEnabled;
+      b.StringBreakAppend  := FStringBreakAppend;
+      b.StringBreakPrefix  := FStringBreakPrefix;
+
+    end;
+
+    ASynEdit.TrimSpaceType := FTrimSpaceType;
+    ASynEdit.TabWidth := fTabWidth;
+    ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
+    {$IFDEF WinIME}
+    if ASynEdit is TIDESynEditor then begin
+      if UseMinimumIme
+      then TIDESynEditor(ASynEdit).CreateMinimumIme
+      else TIDESynEditor(ASynEdit).CreateFullIme;
+    end;
+    {$ENDIF}
+
+    if ASynEdit is TIDESynEditor then begin
+      TIDESynEditor(ASynEdit).HighlightUserWordCount := UserDefinedColors.Count;
+      for i := 0 to UserDefinedColors.Count - 1 do begin
+        TermsConf := UserDefinedColors.Lists[i];
+        mw := TIDESynEditor(ASynEdit).HighlightUserWords[i];
+        if TermsConf.GlobalList or (not TermsConf.HasKeyAssigned)
+        then begin
+          if TermsConf.GlobalTermsCache = nil then
+            TermsConf.GlobalTermsCache := mw.Terms
+          else
+            mw.Terms := TermsConf.GlobalTermsCache;
+        end
+        else begin
+          if mw.Terms = TermsConf.GlobalTermsCache then
+            mw.Terms := nil;
+          if TermsConf.GlobalTermsCache <> nil then
+            TermsConf.GlobalTermsCache.Clear;
+        end;
+
+        mw.MarkupInfo.Assign(TermsConf.ColorAttr);
+        mw.Clear;
+        mw.Terms.Assign(TermsConf);
+        mw.RestoreLocalChanges;
+        if TermsConf.AddTermCmd <> nil then
+          mw.AddTermCmd := TermsConf.AddTermCmd.Command;
+        if TermsConf.RemoveTermCmd <> nil then
+          mw.RemoveTermCmd := TermsConf.RemoveTermCmd.Command;
+        if TermsConf.ToggleTermCmd <> nil then
+          mw.ToggleTermCmd := TermsConf.ToggleTermCmd.Command;
+        mw.KeyAddTermBounds        := TermsConf.KeyAddTermBounds;
+        mw.KeyAddCase              := TermsConf.KeyAddCase;
+        mw.KeyAddWordBoundMaxLen   := TermsConf.KeyAddWordBoundMaxLen;
+        mw.KeyAddSelectBoundMaxLen := TermsConf.KeyAddSelectBoundMaxLen;
+        mw.KeyAddSelectSmart       := TermsConf.KeyAddSelectSmart;
+      end;
+    end;
+
+    {$IFnDEF WithoutSynMultiCaret}
+    if ASynEdit is TIDESynEditor then begin
+      TIDESynEditor(ASynEdit).MultiCaret.EnableWithColumnSelection := MultiCaretOnColumnSelect;
+      TIDESynEditor(ASynEdit).MultiCaret.DefaultMode := FMultiCaretDefaultMode;
+      TIDESynEditor(ASynEdit).MultiCaret.DefaultColumnSelectMode := FMultiCaretDefaultColumnSelectMode;
+      if FMultiCaretDeleteSkipLineBreak
+      then TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options + [smcoDeleteSkipLineBreak]
+      else TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options - [smcoDeleteSkipLineBreak];
+    end;
+    {$ENDIF}
+
+    // Display options
+    ASynEdit.Gutter.Visible := fVisibleGutter;
+    ASynEdit.Gutter.AutoSize := true;
+    ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
+    ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
+      fShowOnlyLineNumbersMultiplesOf;
+    ASynEdit.RightGutter.Visible := ShowOverviewGutter;
+    if ASynEdit is TIDESynEditor then
+      TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
+
+    ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
+    if not FUseCodeFolding then
+      ASynEdit.UnfoldAll;
+    ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
+
+    ASynEdit.Gutter.Width := fGutterWidth;
+    ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
+    if FGutterSeparatorIndex <> -1 then
+    ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
+
+    ASynEdit.RightEdge := fRightMargin;
+    if fVisibleRightMargin then
+      ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
+    else
+      ASynEdit.Options := ASynEdit.Options + [eoHideRightMargin];
+
+    ApplyFontSettingsTo(ASynEdit);
+    //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
+
+    ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
+    ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
+    ASynEdit.MaxUndo := fUndoLimit;
+    // The Highlighter on the SynEdit will have been initialized with the configured
+    // values already (including all the additional-attributes.
+    // Just copy the colors from the SynEdit's highlighter to the SynEdit's Markup and co
+    SetMarkupColors(ASynEdit);
+
+    MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+    if assigned(MarkCaret) then begin
+      if FMarkupCurWordNoTimer then
+        MarkCaret.WaitTime := 0
+      else
+        MarkCaret.WaitTime := FMarkupCurWordTime;
+      MarkCaret.FullWord := FMarkupCurWordFullLen > 0;
+      MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
+      MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
+      MarkCaret.Trim := FMarkupCurWordTrim;
+    end;
+
+    Markup := ASynEdit.MarkupByClass[TSynEditMarkupFoldColors];
+    if (Markup <> nil) then
+      Markup.Enabled := FUseMarkupOutline;
+
+    AssignKeyMapTo(ASynEdit, SimilarEdit);
+
+    ASynEdit.MouseOptions := [emUseMouseActions];
+    ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
+    ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
+    ASynEdit.MouseTextActions.Assign(FUserMouseSettings.TextActions);
+    ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
+    if ASynEdit.Gutter.CodeFoldPart <> nil then begin
+      ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(FUserMouseSettings.GutterActionsFold);
+      ASynEdit.Gutter.CodeFoldPart.MouseActionsCollapsed.Assign(FUserMouseSettings.GutterActionsFoldCol);
+      ASynEdit.Gutter.CodeFoldPart.MouseActionsExpanded.Assign(FUserMouseSettings.GutterActionsFoldExp);
+    end;
+    if ASynEdit.Gutter.LineNumberPart <> nil then begin
+      ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
+    end;
+    if ASynEdit.Gutter.ChangesPart<> nil then
+      ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
+
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) and ShowLineNumbers then
+      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines)
+    else
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
+      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
+    if ASynEdit.RightGutter.LineOverviewPart <> nil then begin
+      ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
+      ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
+    end;
+
+    ASynEdit.ScrollOnEditLeftOptions.Assign(ScrollOnEditLeftOptions);
+    ASynEdit.ScrollOnEditRightOptions.Assign(ScrollOnEditRightOptions);
+  finally
+    ASynEdit.EndUpdate;
+  end;
+end;
+
+function TEditorOptionsBase.GetCodeTemplateFileNameExpand:String;
+begin
+  result:=fCodeTemplateFileNameRaw;
+  IDEMacros.SubstituteMacros(result);
+end;
+
+function TEditorOptionsBase.GetTabPosition: TTabPosition;
+begin
+  Result := fTabPosition;
+end;
+
+procedure TEditorOptionsBase.GetSynEditPreviewSettings(APreviewEditor: TObject);
+// read synedit setings from config file
+var
+  ASynEdit: TSynEdit;
+begin
+  if not (APreviewEditor is TSynEdit) then
+    exit;
+  ASynEdit := TSynEdit(APreviewEditor);
+
+  // Get real settings
+  GetSynEditSettings(ASynEdit);
+
+  // Change to preview settings
+  ASynEdit.Options := ASynEdit.Options
+    - SynEditPreviewExcludeOptions + SynEditPreviewIncludeOptions;
+  ASynEdit.Options2 := ASynEdit.Options2 - SynEditPreviewExcludeOptions2;
+  ASynEdit.ReadOnly := True;
+end;
+
+{ TEditorOptionsDefaults }
+
+constructor TEditorOptionsDefaults.Create;
+begin
+  inherited Create;
+  Init;
+end;
+
+procedure TEditorOptionsDefaults.GetUserColorSchemeGroupData;
+// The defaults will not change. Reuse global singleton.
+begin
+  FUserColorSchemeGroup := ColorSchemeFactory;
+end;
+
+{ TEditorOptions }
+
+class function TEditorOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupEditor;
+end;
+
+class function TEditorOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := EditorOpts;
+end;
+
+procedure TEditorOptions.DoAfterWrite(Restore: boolean);
+begin
+  if not Restore then
+    Save;
+  inherited;
+end;
+
+constructor TEditorOptions.Create;
+var
+  ConfFileName: String;
+begin
+  inherited Create;
+  InitLocale;
+  FScrollOnEditLeftOptions := TSynScrollOnEditLeftOptions.Create;
+  FScrollOnEditRightOptions := TSynScrollOnEditRightOptions.Create;
+
+  ConfFileName := AppendPathDelim(GetPrimaryConfigPath) + EditOptsConfFileName;
+  CopySecondaryConfigFile(EditOptsConfFileName);
+  try
+    if not FileExistsUTF8(ConfFileName) then
+    begin
+      DebugLn('NOTE: editor options config file not found - using defaults');
+      XMLConfig := TRttiXMLConfig.CreateClean(ConfFileName);
+    end
+    else
+      XMLConfig := TRttiXMLConfig.Create(ConfFileName);
+  except
+    on E: Exception do
+    begin
+      DebugLn('WARNING: unable to read ', ConfFileName, ' ', E.Message);
+      XMLConfig := Nil;
+    end;
+  end;
+
+  // set defaults
+  Init;
+
+  // code templates (dci file)
+  fCodeTemplateFileNameRaw :=
+    TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeTemplatesFilename);
+  CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
+
+  FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
+  FMultiWinEditAccessOrder.InitDefaults;
+
+  FDefaultValues := TEditorOptionsDefaults.Create;
+end;
+
+destructor TEditorOptions.Destroy;
+begin
+  FreeAndNil(FDefaultValues);
+  FreeAndNil(FUserColorSchemeGroup);
+  inherited Destroy;
+end;
+
+procedure TEditorOptions.GetUserColorSchemeGroupData;
+begin
+  FUserColorSchemeGroup := TColorSchemeFactory.Create;
+  FUserColorSchemeGroup.Assign(ColorSchemeFactory); // Copy from global singleton.
+end;
+
 procedure TEditorOptions.Load;
 // load options from XML file
 var
@@ -4916,8 +5774,7 @@ begin
     begin
       SynEditOptName := GetSynEditOptionName(SynEditOpt);
       if SynEditOptName <> '' then
-        if XMLConfig.GetValue('EditorOptions/General/Editor/' + SynEditOptName,
-          SynEditOpt in DefOpts) then
+        if XMLConfig.GetValue('EditorOptions/General/Editor/'+SynEditOptName,SynEditOpt in DefOpts) then
           Include(fSynEditOptions, SynEditOpt)
         else
           Exclude(fSynEditOptions, SynEditOpt);
@@ -5308,831 +6165,6 @@ begin
     on E: Exception do
       DebugLn('[TEditorOptions.Save] ERROR: ', e.Message);
   end;
-end;
-
-function TEditorOptions.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
-  ): TModalResult;
-
-  function ResourceDCIAsText: String;
-  var
-    data: TResourceStream;
-    i: Int64;
-  begin
-    data := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
-    i := data.Size;
-    if i > 0 then begin
-      SetLength(Result, i);
-      data.Read(Result[1], i);
-    end;
-    data.Free;
-  end;
-
-var
-  s: String;
-  FileVersion, i, j, v: Integer;
-  NewAutoComplete: TSynEditAutoComplete;
-  Attr: TStringList;
-  Added: Boolean;
-begin
-  s := CodeTemplateFileNameExpand;
-  Result := mrAbort;
-  if FileExistsUTF8(s) then begin
-    try
-      LoadStringsFromFileUTF8(AnAutoComplete.AutoCompleteList, s);
-      Result := mrOK;
-    except
-      Result := mrAbort;
-    end;
-    if Result = mrAbort then
-      exit;
-
-    FileVersion := AnAutoComplete.Completions.Count;
-    if (FileVersion > 0) then begin
-      FileVersion := AnAutoComplete.CompletionAttributes[0].IndexOfName(DciFileVersionName);
-      if (FileVersion >= 0) then
-        FileVersion := StrToIntDef(AnAutoComplete.CompletionAttributes[0][FileVersion], 0);
-    end;
-    if FileVersion < DciFileVersion then begin
-      // Merge new entries
-      NewAutoComplete := TSynEditAutoComplete.Create(nil);
-      NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
-      Added := False;
-      for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
-        j := NewAutoComplete.CompletionAttributes[i].IndexOfName(DciVersionName);
-        if j < 0 then
-          continue;
-        v := StrToIntDef(NewAutoComplete.CompletionAttributes[i][j], 0);
-        if v <= FileVersion then
-          continue;
-        if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
-          continue;
-        Attr := TStringList.Create;
-        Attr.Assign(NewAutoComplete.CompletionAttributes[i]); // will be owned by AnAutoComplete;
-        AnAutoComplete.AddCompletion(
-          NewAutoComplete.Completions[i],
-          NewAutoComplete.CompletionValues[i],
-          NewAutoComplete.CompletionComments[i],
-          Attr);
-        Added := True;
-      end;
-      NewAutoComplete.Free;
-      if Added then
-        if BuildBorlandDCIFile(AnAutoComplete) then
-          SaveCodeTemplates(AnAutoComplete);
-    end;
-  end
-  else begin
-    AnAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
-  end;
-end;
-
-function TEditorOptions.SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete
-  ): TModalResult;
-begin
-  try
-    SaveStringsToFileUTF8(AnAutoComplete.AutoCompleteList, CodeTemplateFileNameExpand);
-    Result := mrOK;
-  except
-    Result := mrAbort;
-  end;
-end;
-
-procedure TEditorOptions.TranslateResourceStrings;
-begin
-
-end;
-
-class function TEditorOptions.GetGroupCaption: string;
-begin
-  Result := dlgGroupEditor;
-end;
-
-class function TEditorOptions.GetInstance: TAbstractIDEOptions;
-begin
-  Result := EditorOpts;
-end;
-
-procedure TEditorOptions.DoAfterWrite(Restore: boolean);
-begin
-  if not Restore then
-    Save;
-  inherited;
-end;
-
-procedure TEditorOptions.AssignKeyMapTo(ASynEdit: TSynEdit; SimilarEdit: TSynEdit);
-var
-  c, i: Integer;
-begin
-  if SimilarEdit<>nil then
-    ASynEdit.KeyStrokes.Assign(SimilarEdit.Keystrokes)
-  else
-    KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
-
-  c := ASynEdit.PluginCount - 1;
-  while (c >= 0) do begin
-
-    if SimilarEdit<>nil then begin
-      i := SimilarEdit.PluginCount - 1;
-      while (i >= 0) and not (SimilarEdit.Plugin[i].ClassType = ASynEdit.Plugin[c].ClassType) do
-        dec(i);
-    end
-    else
-      i:= -1;
-
-    if (ASynEdit.Plugin[c] is TSynPluginTemplateEdit) then begin
-      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
-      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
-      if i >= 0 then begin
-        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
-                               TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeyStrokes);
-        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
-                               TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
-      end else begin
-        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes,
-                        TLazSynPluginTemplateEditForm, ecIdePTmplOffset);
-        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
-                        TLazSynPluginTemplateEditFormOff, ecIdePTmplOutOffset);
-      end;
-    end;
-
-    if (ASynEdit.Plugin[c] is TSynPluginSyncroEdit) then begin
-      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Clear;
-      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
-      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
-      if i >= 0 then begin
-        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Assign(
-                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesSelecting);
-        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
-                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeyStrokes);
-        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
-                             TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
-      end else begin
-        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting,
-                        TLazSynPluginSyncroEditFormSel, ecIdePSyncroSelOffset);
-        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes,
-                        TLazSynPluginSyncroEditForm, ecIdePSyncroOffset);
-        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
-                        TLazSynPluginSyncroEditFormOff, ecIdePSyncroOutOffset);
-      end;
-    end;
-
-    if (ASynEdit.Plugin[c] is TSynPluginMultiCaret) then begin
-      // Only ecPluginMultiCaretClearAll
-      // the others are handled in SynEdit.Keystrokes
-      TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Clear;
-      if i >= 0 then begin
-        TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Assign(
-                               TSynPluginMultiCaret(SimilarEdit.Plugin[i]).KeyStrokes);
-      end else begin
-        KeyMap.AssignTo(TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes,
-                        TLazSynPluginTemplateMultiCaret, 0); //ecIdePTmplOffset);
-      end;
-    end;
-
-    dec(c);
-  end;
-end;
-
-function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
-begin
-  if LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil then
-  begin
-    Result := LazSyntaxHighlighterClasses[LazSynHilighter].Create(Nil);
-    GetHighlighterSettings(Result);
-  end
-  else
-    Result := Nil;
-end;
-
-function TEditorOptions.ReadColorScheme(const LanguageName: String): String;
-(* The name of the currently chosen color-scheme for that language *)
-begin
-  if LanguageName = '' then
-  begin
-    Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
-    exit;
-  end;
-  if LanguageName <> TPreviewPasSyn.GetLanguageName then
-    Result := XMLConfig.GetValue(
-      'EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) +
-      '/ColorScheme/Value', '')
-  else
-    Result := '';
-  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
-    Result := '';
-  if Result = '' then
-    Result := ReadPascalColorScheme;
-end;
-
-function TEditorOptions.ReadPascalColorScheme: String;
-(* The name of the currently chosen color-scheme for pascal code *)
-var
-  FormatVersion: Integer;
-begin
-  FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
-  if FormatVersion > 1 then
-    Result := XMLConfig.GetValue(
-      'EditorOptions/Color/Lang' + StrToValidXMLName(
-      TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
-  else
-    Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
-  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
-    Result := '';
-  if (Result = '') then begin
-    if DefaultColorSchemeName <> '' then
-      Result := DefaultColorSchemeName
-    else
-      Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
-  end;
-end;
-
-function TEditorOptions.GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter;
-  SynColorSchemeName: String): TColorSchemeLanguage;
-var
-  Scheme: TColorScheme;
-begin
-  Result := nil;
-  // initialize with defaults
-  if SynColorSchemeName = '' then
-    SynColorSchemeName := ReadColorScheme(aHighLighter.LanguageName);
-  if (SynColorSchemeName = '') then
-    exit;
-
-  Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorSchemeName];
-  if Scheme = nil then
-    exit;
-  Result := Scheme.ColorSchemeBySynClass[aHighLighter.ClassType];
-end;
-
-procedure TEditorOptions.WriteColorScheme(const LanguageName, SynColorScheme: String);
-begin
-  if (LanguageName = '') or (SynColorScheme = '') then
-    exit;
-  XMLConfig.SetValue('EditorOptions/Color/Lang' + StrToValidXMLName(
-    LanguageName) + '/ColorScheme/Value', SynColorScheme);
-  XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
-end;
-
-procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
-  SynColorScheme: String);
-// if SynColorScheme='' then default ColorScheme will be used
-var
-  LangScheme: TColorSchemeLanguage;
-begin
-  LangScheme := GetColorSchemeLanguage(Syn, SynColorScheme);
-  if LangScheme = nil then
-    exit;
-  LangScheme.ApplyTo(Syn);
-end;
-
-procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter;
-  ReadForOptions: Boolean);
-var
-  ConfName: String;
-  Path: String;
-  i, h, idx: Integer;
-  TheFoldInfo: TEditorOptionsFoldRecord;
-  DefHl, FoldHl: TSynCustomFoldHighlighter;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-
-  if (syn is TSynCustomFoldHighlighter) then begin
-    DefHl := TSynCustomFoldHighlighter(TCustomSynClass(Syn.ClassType).Create(nil));
-    try
-      ReadDefaultsForHighlighterFoldSettings(DefHl);
-      FoldHl := TSynCustomFoldHighlighter(Syn);
-      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-      for i := 0 to TheFoldInfo.Count - 1 do begin
-        idx := TheFoldInfo.Info^[i].Index;
-        ConfName := TheFoldInfo.Info^[i].Xml;
-        Path := 'EditorOptions/FoldConfig/Lang' +
-          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-        // try reading the old config first
-        FoldHl.FoldConfig[idx].Enabled :=
-          XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
-        XMLConfig.ReadObject(Path + 'Settings/', FoldHl.FoldConfig[idx], DefHl.FoldConfig[idx]);
-
-        (* if ReadForOptions=True then Enabled appies only to fmFold,fmHide.
-           This allows to store what selection was previously active *)
-        if not ReadForOptions then begin
-          if (not FoldHl.FoldConfig[idx].Enabled) or (not FUseCodeFolding) then
-            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmFold, fmHide];
-          if (not FUseMarkupWordBracket) then
-            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmMarkup];
-          if (not FUseMarkupOutline) then
-            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmOutline];
-
-          FoldHl.FoldConfig[idx].Enabled := FoldHl.FoldConfig[idx].Modes <> [];
-        end;
-
-        if (FoldHl is TSynPasSyn) and (idx = ord(cfbtIfThen)) then begin
-          FoldHl.FoldConfig[ord(cfbtIfElse)].Modes := FoldHl.FoldConfig[idx].Modes * [fmOutline];
-          FoldHl.FoldConfig[ord(cfbtIfElse)].Enabled := FoldHl.FoldConfig[idx].Enabled and (FoldHl.FoldConfig[ord(cfbtIfElse)].Modes <> []);
-        end;
-
-      end;
-    finally
-      DefHl.Free;
-    end;
-  end;
-end;
-
-procedure TEditorOptions.ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
-var
-  i, h: Integer;
-  TheFoldInfo: TEditorOptionsFoldRecord;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-  if (syn is TSynCustomFoldHighlighter) then begin
-    TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-    for i := 0 to TheFoldInfo.Count - 1 do
-      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do
-        Enabled := TheFoldInfo.Info^[i].Enabled;
-  end;
-end;
-
-procedure TEditorOptions.WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
-var
-  DefSyn: TSrcIDEHighlighter;
-  i, h:   Integer;
-  Path:   String;
-  ConfName: String;
-  TheFoldInfo: TEditorOptionsFoldRecord;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-
-  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
-  try
-    ReadDefaultsForHighlighterFoldSettings(DefSyn);
-
-    if (syn is TSynCustomFoldHighlighter) then begin
-      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-      for i := 0 to TheFoldInfo.Count - 1 do begin
-        ConfName := TheFoldInfo.Info^[i].Xml;
-        Path := 'EditorOptions/FoldConfig/Lang' +
-          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-        XMLConfig.DeletePath(Path + 'Enabled/');
-        XMLConfig.WriteObject(Path + 'Settings/',
-          TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
-          TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info^[i].Index]);
-      end;
-    end;
-
-  finally
-    DefSyn.Free;
-  end;
-end;
-
-procedure TEditorOptions.ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
-var
-  TheInfo: TEditorOptionsDividerRecord;
-  Conf: TSynDividerDrawConfig;
-  ConfName: String;
-  Path: String;
-  i, h: Integer;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
-
-  ReadDefaultsForHighlighterDivDrawSettings(Syn);
-
-  // read settings, that are different from the defaults
-  for i := 0 to TheInfo.Count - 1 do begin
-    Conf := Syn.DividerDrawConfig[i];
-    ConfName := TheInfo.Info^[i].Xml;
-    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
-      '/Type' + ConfName + '/' ;
-    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
-        Conf.MaxDrawDepth);
-    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
-        Conf.TopColor);
-    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
-        Conf.NestColor);
-  end;
-end;
-
-procedure TEditorOptions.ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
-var
-  TheInfo: TEditorOptionsDividerRecord;
-  i, h: Integer;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
-  for i := 0 to TheInfo.Count - 1 do begin
-    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
-    Syn.DividerDrawConfig[i].TopColor := clDefault;
-    Syn.DividerDrawConfig[i].NestColor := clDefault;
-  end;
-end;
-
-procedure TEditorOptions.WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
-var
-  DefSyn: TSrcIDEHighlighter;
-  i, h:   Integer;
-  Path:   String;
-  Conf, DefConf: TSynDividerDrawConfig;
-  TheInfo: TEditorOptionsDividerRecord;
-  ConfName: String;
-begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
-  TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
-
-  DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
-  try
-    ReadDefaultsForHighlighterDivDrawSettings(DefSyn);
-    for i := 0 to TheInfo.Count - 1 do begin
-      Conf := Syn.DividerDrawConfig[i];
-      DefConf := DefSyn.DividerDrawConfig[i]; // default value
-      ConfName := TheInfo.Info^[i].Xml;
-      Path := 'EditorOptions/DividerDraw/Lang' +
-        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-      XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,
-                               DefConf.MaxDrawDepth);
-      XMLConfig.SetDeleteValue(Path + 'TopColor/Value', Conf.TopColor,
-                               DefConf.TopColor);
-      XMLConfig.SetDeleteValue(Path + 'NestColor/Value', Conf.NestColor,
-                               DefConf.NestColor);
-    end;
-
-  finally
-    DefSyn.Free;
-  end;
-end;
-
-procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
-// read highlight settings from config file
-begin
-  ReadHighlighterSettings(Syn, '');
-  ReadHighlighterFoldSettings(Syn);
-  ReadHighlighterDivDrawSettings(Syn);
-  if Syn is TSynPasSyn then begin
-    TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
-    TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
-  end;;
-end;
-
-procedure TEditorOptions.SetMarkupColors(aSynEd: TSynEdit);
-var
-  Scheme: TColorSchemeLanguage;
-begin
-  // Find current color scheme for default colors
-  if (aSynEd.Highlighter = nil) then begin
-    aSynEd.Color := clWhite;
-    aSynEd.Font.Color := clBlack;
-    exit;
-  end;
-
-  // get current colorscheme:
-  Scheme := GetColorSchemeLanguage(aSynEd.Highlighter);
-
-  if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
-end;
-
-procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
-  AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
-var
-  SchemeGrp: TColorScheme;
-  Scheme: TColorSchemeLanguage;
-  Attrib: TColorSchemeAttribute;
-begin
-  if assigned(Syn) then begin
-    Scheme := GetColorSchemeLanguage(Syn);
-  end else begin
-    SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[DefaultColorSchemeName];
-    if SchemeGrp = nil then
-      exit;
-    Scheme := SchemeGrp.DefaultColors;
-  end;
-
-  Attrib := Scheme.AttributeByEnum[AddHilightAttr];
-  if Attrib <> nil then begin
-    Attrib.ApplyTo(aMarkup);
-    exit;
-  end;
-
-  // set default
-  aMarkup.Foreground := clNone;
-  aMarkup.Background := clNone;
-  aMarkup.FrameColor := clNone;
-  aMarkup.FrameEdges := sfeAround;
-  aMarkup.FrameStyle := slsSolid;
-  aMarkup.Style := [];
-  aMarkup.StyleMask := [];
-end;
-
-procedure TEditorOptions.ApplyFontSettingsTo(ASynEdit: TSynEdit);
-begin
-  ASynEdit.Font.Size := fEditorFontSize;// set size before name for XLFD !
-  ASynEdit.Font.Name := fEditorFont;
-  if fDisableAntialiasing then
-    ASynEdit.Font.Quality := fqNonAntialiased
-  else
-    ASynEdit.Font.Quality := fqDefault;
-end;
-
-function TEditorOptions.ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
-var
-  s, CurExt: String;
-  LangID, StartPos, EndPos: Integer;
-begin
-  Result := lshNone;
-  if (Ext = '') or (Ext = '.') or (HighlighterList = Nil) then
-    exit;
-  Ext := lowercase(Ext);
-  if (Ext[1] = '.') then
-    Ext := copy(Ext, 2, length(Ext) - 1);
-  LangID := 0;
-  while LangID < HighlighterList.Count do
-  begin
-    s := HighlighterList[LangID].FileExtensions;
-    StartPos := 1;
-    while StartPos <= length(s) do
-    begin
-      Endpos := StartPos;
-      while (EndPos <= length(s)) and (s[EndPos] <> ';') do
-        inc(EndPos);
-      CurExt := copy(s, Startpos, EndPos - StartPos);
-      if (CurExt <> '') and (CurExt[1] = '.') then
-        CurExt := copy(CurExt, 2, length(CurExt) - 1);
-      if lowercase(CurExt) = Ext then
-      begin
-        Result := HighlighterList[LangID].TheType;
-        exit;
-      end;
-      Startpos := EndPos + 1;
-    end;
-    inc(LangID);
-  end;
-end;
-
-procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit;
-  SimilarEdit: TSynEdit);
-// read synedit settings from config file
-// if SimilarEdit is given it is used for speed up
-var
-  MarkCaret: TSynEditMarkupHighlightAllCaret;
-  b: TSynBeautifierPascal;
-  i: Integer;
-  mw: TSourceSynEditMarkupHighlightAllMulti;
-  TermsConf: TEditorUserDefinedWords;
-  Markup: TSynEditMarkup;
-begin
-  // general options
-  ASynEdit.BeginUpdate(False);
-  try
-    ASynEdit.Options := fSynEditOptions;
-    ASynEdit.Options2 := fSynEditOptions2;
-    ASynEdit.BlockIndent := fBlockIndent;
-    ASynEdit.BlockTabIndent := FBlockTabIndent;
-    (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
-    if ASynEdit.Beautifier is TSynBeautifierPascal then begin
-      b := ASynEdit.Beautifier as TSynBeautifierPascal;
-
-      if FAnsiCommentContinueEnabled then begin
-        b.AnsiCommentMode := sccPrefixMatch;
-        b.AnsiIndentMode := FAnsiIndentMode;
-        b.AnsiMatch := FAnsiCommentMatch;
-        b.AnsiPrefix := FAnsiCommentPrefix;
-        b.AnsiMatchLine := sclMatchPrev;
-        b.AnsiMatchMode := AnsiCommentMatchMode;
-        b.AnsiCommentIndent := sbitCopySpaceTab;
-        b.AnsiIndentFirstLineMax := AnsiIndentAlignMax;
-      end
-      else begin
-        b.AnsiCommentMode := sccNoPrefix;
-        b.AnsiIndentMode := [];
-      end;
-
-      if FCurlyCommentContinueEnabled then begin
-        b.BorCommentMode := sccPrefixMatch;
-        b.BorIndentMode := FCurlyIndentMode;
-        b.BorMatch := FCurlyCommentMatch;
-        b.BorPrefix := FCurlyCommentPrefix;
-        b.BorMatchLine := sclMatchPrev;
-        b.BorMatchMode := CurlyCommentMatchMode;
-        b.BorCommentIndent := sbitCopySpaceTab;
-        b.BorIndentFirstLineMax := CurlyIndentAlignMax;
-      end
-      else begin
-        b.BorCommentMode := sccNoPrefix;
-        b.BorIndentMode := [];
-      end;
-
-      if FSlashCommentContinueEnabled then begin
-        b.SlashCommentMode := sccPrefixMatch;
-        b.SlashIndentMode := FSlashIndentMode;
-        b.SlashMatch := FSlashCommentMatch;
-        b.SlashPrefix := FSlashCommentPrefix;
-        b.SlashMatchLine := sclMatchPrev;
-        b.SlashMatchMode := SlashCommentMatchMode;
-        b.SlashCommentIndent := sbitCopySpaceTab;
-        b.ExtendSlashCommentMode := FSlashCommentExtend;
-        b.SlashIndentFirstLineMax := SlashIndentAlignMax;
-      end
-      else begin
-        b.SlashCommentMode := sccNoPrefix;
-        b.SlashIndentMode := [];
-      end;
-
-      b.StringBreakEnabled := FStringBreakEnabled;
-      b.StringBreakAppend  := FStringBreakAppend;
-      b.StringBreakPrefix  := FStringBreakPrefix;
-
-    end;
-
-    ASynEdit.TrimSpaceType := FTrimSpaceType;
-    ASynEdit.TabWidth := fTabWidth;
-    ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
-    {$IFDEF WinIME}
-    if ASynEdit is TIDESynEditor then begin
-      if UseMinimumIme
-      then TIDESynEditor(ASynEdit).CreateMinimumIme
-      else TIDESynEditor(ASynEdit).CreateFullIme;
-    end;
-    {$ENDIF}
-
-    if ASynEdit is TIDESynEditor then begin
-      TIDESynEditor(ASynEdit).HighlightUserWordCount := UserDefinedColors.Count;
-      for i := 0 to UserDefinedColors.Count - 1 do begin
-        TermsConf := UserDefinedColors.Lists[i];
-        mw := TIDESynEditor(ASynEdit).HighlightUserWords[i];
-        if TermsConf.GlobalList or (not TermsConf.HasKeyAssigned)
-        then begin
-          if TermsConf.GlobalTermsCache = nil then
-            TermsConf.GlobalTermsCache := mw.Terms
-          else
-            mw.Terms := TermsConf.GlobalTermsCache;
-        end
-        else begin
-          if mw.Terms = TermsConf.GlobalTermsCache then
-            mw.Terms := nil;
-          if TermsConf.GlobalTermsCache <> nil then
-            TermsConf.GlobalTermsCache.Clear;
-        end;
-
-        mw.MarkupInfo.Assign(TermsConf.ColorAttr);
-        mw.Clear;
-        mw.Terms.Assign(TermsConf);
-        mw.RestoreLocalChanges;
-        if TermsConf.AddTermCmd <> nil then
-          mw.AddTermCmd := TermsConf.AddTermCmd.Command;
-        if TermsConf.RemoveTermCmd <> nil then
-          mw.RemoveTermCmd := TermsConf.RemoveTermCmd.Command;
-        if TermsConf.ToggleTermCmd <> nil then
-          mw.ToggleTermCmd := TermsConf.ToggleTermCmd.Command;
-        mw.KeyAddTermBounds        := TermsConf.KeyAddTermBounds;
-        mw.KeyAddCase              := TermsConf.KeyAddCase;
-        mw.KeyAddWordBoundMaxLen   := TermsConf.KeyAddWordBoundMaxLen;
-        mw.KeyAddSelectBoundMaxLen := TermsConf.KeyAddSelectBoundMaxLen;
-        mw.KeyAddSelectSmart       := TermsConf.KeyAddSelectSmart;
-      end;
-    end;
-
-    {$IFnDEF WithoutSynMultiCaret}
-    if ASynEdit is TIDESynEditor then begin
-      TIDESynEditor(ASynEdit).MultiCaret.EnableWithColumnSelection := MultiCaretOnColumnSelect;
-      TIDESynEditor(ASynEdit).MultiCaret.DefaultMode := FMultiCaretDefaultMode;
-      TIDESynEditor(ASynEdit).MultiCaret.DefaultColumnSelectMode := FMultiCaretDefaultColumnSelectMode;
-      if FMultiCaretDeleteSkipLineBreak
-      then TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options + [smcoDeleteSkipLineBreak]
-      else TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options - [smcoDeleteSkipLineBreak];
-    end;
-    {$ENDIF}
-
-    // Display options
-    ASynEdit.Gutter.Visible := fVisibleGutter;
-    ASynEdit.Gutter.AutoSize := true;
-    ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
-    ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
-      fShowOnlyLineNumbersMultiplesOf;
-    ASynEdit.RightGutter.Visible := ShowOverviewGutter;
-    if ASynEdit is TIDESynEditor then
-      TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
-
-    ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
-    if not FUseCodeFolding then
-      ASynEdit.UnfoldAll;
-    ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
-
-    ASynEdit.Gutter.Width := fGutterWidth;
-    ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
-    if FGutterSeparatorIndex <> -1 then
-    ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
-
-    ASynEdit.RightEdge := fRightMargin;
-    if fVisibleRightMargin then
-      ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
-    else
-      ASynEdit.Options := ASynEdit.Options + [eoHideRightMargin];
-
-    ApplyFontSettingsTo(ASynEdit);
-    //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
-
-    ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
-    ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
-    ASynEdit.MaxUndo := fUndoLimit;
-    // The Highlighter on the SynEdit will have been initialized with the configured
-    // values already (including all the additional-attributes.
-    // Just copy the colors from the SynEdit's highlighter to the SynEdit's Markup and co
-    SetMarkupColors(ASynEdit);
-
-    MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
-    if assigned(MarkCaret) then begin
-      if FMarkupCurWordNoTimer then
-        MarkCaret.WaitTime := 0
-      else
-        MarkCaret.WaitTime := FMarkupCurWordTime;
-      MarkCaret.FullWord := FMarkupCurWordFullLen > 0;
-      MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
-      MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
-      MarkCaret.Trim := FMarkupCurWordTrim;
-    end;
-
-    Markup := ASynEdit.MarkupByClass[TSynEditMarkupFoldColors];
-    if (Markup <> nil) then
-      Markup.Enabled := FUseMarkupOutline;
-
-    AssignKeyMapTo(ASynEdit, SimilarEdit);
-
-    ASynEdit.MouseOptions := [emUseMouseActions];
-    ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
-    ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
-    ASynEdit.MouseTextActions.Assign(FUserMouseSettings.TextActions);
-    ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
-    if ASynEdit.Gutter.CodeFoldPart <> nil then begin
-      ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(FUserMouseSettings.GutterActionsFold);
-      ASynEdit.Gutter.CodeFoldPart.MouseActionsCollapsed.Assign(FUserMouseSettings.GutterActionsFoldCol);
-      ASynEdit.Gutter.CodeFoldPart.MouseActionsExpanded.Assign(FUserMouseSettings.GutterActionsFoldExp);
-    end;
-    if ASynEdit.Gutter.LineNumberPart <> nil then begin
-      ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
-    end;
-    if ASynEdit.Gutter.ChangesPart<> nil then
-      ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
-
-    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) and ShowLineNumbers then
-      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines)
-    else
-    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
-      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
-    if ASynEdit.RightGutter.LineOverviewPart <> nil then begin
-      ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
-      ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
-    end;
-
-    ASynEdit.ScrollOnEditLeftOptions.Assign(ScrollOnEditLeftOptions);
-    ASynEdit.ScrollOnEditRightOptions.Assign(ScrollOnEditRightOptions);
-  finally
-    ASynEdit.EndUpdate;
-  end;
-end;
-
-function TEditorOptions.GetCodeTemplateFileNameExpand:String;
-begin
-  result:=fCodeTemplateFileNameRaw;
-  IDEMacros.SubstituteMacros(result);
-end;
-
-function TEditorOptions.GetTabPosition: TTabPosition;
-begin
-  Result := fTabPosition;
-end;
-
-procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
-// read synedit setings from config file
-var
-  ASynEdit: TSynEdit;
-begin
-  if not (APreviewEditor is TSynEdit) then
-    exit;
-  ASynEdit := TSynEdit(APreviewEditor);
-
-  // Get real settings
-  GetSynEditSettings(ASynEdit);
-
-  // Change to preview settings
-  ASynEdit.Options := ASynEdit.Options
-    - SynEditPreviewExcludeOptions + SynEditPreviewIncludeOptions;
-  ASynEdit.Options2 := ASynEdit.Options2 - SynEditPreviewExcludeOptions2;
-  ASynEdit.ReadOnly := True;
 end;
 
 { TColorSchemeAttribute }
