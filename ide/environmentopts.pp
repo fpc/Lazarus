@@ -715,6 +715,7 @@ type
 
     //component list
     FComponentListKeepOpen: Boolean;
+    FComponentListPageIndex: Integer;
 
     // Desktop
     FDesktops: TDesktopOptList;
@@ -1039,6 +1040,7 @@ type
 
     //component list
     property ComponentListKeepOpen: Boolean read FComponentListKeepOpen write FComponentListKeepOpen;
+    property ComponentListPageIndex: Integer read FComponentListPageIndex write FComponentListPageIndex;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -2658,6 +2660,7 @@ begin
 
     //component list
     FComponentListKeepOpen:=FXMLCfg.GetValue(Path+'ComponentList/KeepOpen',false);
+    FComponentListPageIndex:=FXMLCfg.GetValue(Path+'ComponentList/PageIndex',0);
 
     // glyphs
     FShowButtonGlyphs := TApplicationShowGlyphs(FXMLCfg.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -3026,6 +3029,7 @@ begin
 
     //component list
     FXMLCfg.SetDeleteValue(Path+'ComponentList/KeepOpen',FComponentListKeepOpen,false);
+    FXMLCfg.SetDeleteValue(Path+'ComponentList/PageIndex',FComponentListPageIndex,0);
 
     // glyphs
     FXMLCfg.SetDeleteValue(Path+'ShowButtonGlyphs/Value',Ord(FShowButtonGlyphs), Ord(sbgSystem));

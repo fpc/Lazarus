@@ -36,6 +36,8 @@ uses
   // LCL
   LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
   Dialogs, ImgList,
+  // LazUtils
+  LazLoggerBase,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
@@ -49,7 +51,6 @@ type
 
   TComponentListForm = class(TForm)
     chbKeepOpen: TCheckBox;
-    ListTree: TTreeView;
     ButtonPanel: TPanel;
     miCollapse: TMenuItem;
     miCollapseAll: TMenuItem;
@@ -59,6 +60,7 @@ type
     LabelSearch: TLabel;
     PageControl: TPageControl;
     FilterPanel: TPanel;
+    ListTree: TTreeView;
     PalletteTree: TTreeView;
     InheritanceTree: TTreeView;
     pnPaletteTree: TPanel;
@@ -90,7 +92,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SelectionToolButtonClick(Sender: TObject);
   private
-    PrevPageIndex: Integer;
     PrevChangeStamp: Integer;
     // List for Component inheritence view
     FClassList: TStringList;
@@ -154,7 +155,6 @@ begin
   ListTree.Images := TPkgComponent.Images;
   PalletteTree.Images := TPkgComponent.Images;
   InheritanceTree.Images := TPkgComponent.Images;
-  PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
   begin
@@ -163,8 +163,8 @@ begin
     IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
   end;
-
   chbKeepOpen.Checked := EnvironmentOptions.ComponentListKeepOpen;
+  PageControl.PageIndex := EnvironmentOptions.ComponentListPageIndex;
 end;
 
 procedure TComponentListForm.AddSelectedComponent;
@@ -437,9 +437,11 @@ begin
         DoComponentInheritence(Comp);
       end;
     end;
-    PalletteTree.FullExpand;
     InheritanceTree.AlphaSort;
-    InheritanceTree.FullExpand;
+    {$IFnDEF NoComponentListTreeExpand}
+    InheritanceTree.FullExpand;    // Some users may not want the trees expanded.
+    PalletteTree.FullExpand;
+    {$ENDIF}
     PrevChangeStamp := IDEComponentPalette.ChangeStamp;
   finally
     FClassList.Free;
@@ -501,10 +503,8 @@ end;
 
 procedure TComponentListForm.PageControlChange(Sender: TObject);
 begin
+  DebugLn(['TComponentListForm.PageControlChange: Start']);
   FPageControlChange := True;
-  Assert(PageControl.PageIndex <> PrevPageIndex, Format(
-    'TComponentListForm.PageControlChange: PageControl.PageIndex = PrevPageIndex = %d',
-    [PrevPageIndex]));
   case PageControl.PageIndex of
     0: begin
          TreeFilterEd.FilteredTreeview := ListTree;
@@ -520,7 +520,7 @@ begin
         end;
   end;
   TreeFilterEd.InvalidateFilter;
-  PrevPageIndex := PageControl.PageIndex;
+  EnvironmentOptions.ComponentListPageIndex := PageControl.PageIndex;
   FActiveTree.BeginUpdate;
   tmDeselect.Enabled := True;
 end;
