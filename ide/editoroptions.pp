@@ -4447,7 +4447,7 @@ begin
             mo := TEditorMouseOptions.Create;
             mo.FName := n;
             mo.ImportFromXml(XMLConfig, 'Lazarus/MouseSchemes/Scheme' + n + '/');
-            FUserSchemes.AddObject(UTF8UpperCase(n), mo);
+            FUserSchemes.AddObject(n, mo);
           end;
         end;
       except
@@ -4466,7 +4466,7 @@ end;
 
 function TEditorMouseOptions.IndexOfUserScheme(SchemeName: String): Integer;
 begin
-  Result := FUserSchemes.IndexOf(UTF8UpperCase(SchemeName));
+  Result := FUserSchemes.IndexOf(SchemeName);
 end;
 
 function TEditorMouseOptions.GetSelectedUserSchemeIndex: Integer;
@@ -6314,7 +6314,7 @@ function TColorSchemeLanguage.GetAttribute(Index: String): TColorSchemeAttribute
 var
   Idx: Integer;
 begin
-  Idx := FAttributes.IndexOf(UpperCase(Index));
+  Idx := FAttributes.IndexOf(Index);
   if Idx = -1 then
     Result := nil
   else
@@ -6370,7 +6370,7 @@ begin
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
-  FAttributes.AddObject(UpperCase(FDefaultAttribute.StoredName), FDefaultAttribute);
+  FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
 end;
 
 constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
@@ -6391,7 +6391,7 @@ begin
       csa := TColorSchemeAttribute.Create(Self, hla.Caption, hla.StoredName);
       csa.Assign(hla);
       csa.Group := agnLanguage;
-      FAttributes.AddObject(UpperCase(csa.StoredName), csa);
+      FAttributes.AddObject(csa.StoredName, csa);
     end;
   end;
 
@@ -6401,7 +6401,7 @@ begin
                                         GetAddiHilightAttrName(aha) );
     csa.Features := ahaSupportedFeatures[aha];
     csa.Group    := ahaGroupMap[aha];
-    FAttributes.AddObject(UpperCase(csa.StoredName), csa);
+    FAttributes.AddObject(csa.StoredName, csa);
   end;
   FAttributes.Sorted := true;
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
@@ -6440,7 +6440,7 @@ begin
     SrcAttr := Src.AttributeAtPos[i];
     Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
     Attr.Assign(SrcAttr);
-    FAttributes.AddObject(UpperCase(Attr.StoredName), Attr);
+    FAttributes.AddObject(Attr.StoredName, Attr);
     if SrcAttr = Src.DefaultAttribute then
       FDefaultAttribute := Attr;
   end;
@@ -6982,7 +6982,7 @@ function TColorSchemeFactory.GetColorSchemeGroup(Index: String): TColorScheme;
 var
   Idx: integer;
 begin
-  Idx := FMappings.IndexOf(UpperCase(Index));
+  Idx := FMappings.IndexOf(Index);
   if Idx = -1 then
     Result := nil
   else
@@ -7030,7 +7030,7 @@ begin
   for i := 0 to Src.FMappings.Count - 1 do begin
     lMapping := TColorScheme.Create(Src.ColorSchemeGroupAtPos[i].Name);
     lMapping.Assign(Src.ColorSchemeGroupAtPos[i]);
-    FMappings.AddObject(UpperCase(lMapping.Name), lMapping);
+    FMappings.AddObject(lMapping.Name, lMapping);
   end;
   FMappings.Sorted := true;
 end;
@@ -7073,22 +7073,20 @@ end;
 procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig; AName, aPath: String);
 var
   lMapping: TColorScheme;
-  UpName: String;
   i, j: integer;
 begin
-  UpName := UpperCase(AName);
-  i := FMappings.IndexOf(UpName);
+  i := FMappings.IndexOf(AName);
   if i <> -1 then begin
     j := 0;
     repeat
       inc(j);
-      i := FMappings.IndexOf(UpName+'_'+IntToStr(j));
+      i := FMappings.IndexOf(AName+'_'+IntToStr(j));
     until i = -1;
     AName := AName+'_'+IntToStr(j);
     DebugLn(['TColorSchemeFactory.RegisterScheme: Adjusting AName to ', AName]);
   end;
   lMapping := TColorScheme.CreateFromXml(aXMLConfig, AName, aPath);
-  FMappings.AddObject(UpName, lMapping);
+  FMappings.AddObject(AName, lMapping);
 end;
 
 procedure TColorSchemeFactory.GetRegisteredSchemes(AList: TStrings);
@@ -7108,24 +7106,8 @@ end;
 { TQuickStringlist }
 
 function TQuickStringlist.DoCompareText(const s1, s2: string): PtrInt;
-var
-  i, l: Integer;
 begin
-  Result := length(s1) - length(s2);
-  if Result <> 0 then
-    exit;
-  i := 1;
-  if Result < 0 then
-    l := length(s1)
-  else
-    l := length(s2);
-  while i <= l do begin
-    Result := ord(s1[i]) - ord(s2[i]);
-    if Result <> 0 then
-      exit;
-    inc(i);
-  end;
-  Result := 0;
+  Result := CompareText(s1, s2);
 end;
 
 
