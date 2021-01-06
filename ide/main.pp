@@ -5314,8 +5314,8 @@ end;
 
 procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
 begin
-  if APackage=PackageGraph.SynEditPackage then
-    EditorOpts.TranslateResourceStrings;
+  //if APackage=PackageGraph.SynEditPackage then
+  //  EditorOpts.TranslateResourceStrings;  // ToDo
 end;
 
 function TMainIDE.DoOpenComponent(const UnitFilename: string;
