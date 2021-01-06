@@ -202,12 +202,12 @@ end;
 
 function TSpinEditExBase.MaxValueStored: Boolean;
 begin
-  Result := true;
+  Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
 function TSpinEditExBase.MinValueStored: Boolean;
 begin
-  Result := true;
+  Result := not SameValue(FMinValue, DefMinValue);
 end;
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
@@ -257,7 +257,7 @@ end;
 
 function TSpinEditExBase.IncrementStored: Boolean;
 begin
-  Result := true;
+  Result := not SameValue(FIncrement, DefIncrement);
 end;
 
 function TSpinEditExBase.IsLimited: Boolean;
@@ -478,21 +478,6 @@ begin
   inherited EditKeyPress(Key);
 end;
 
-function TCustomFloatSpinEditEx.IncrementStored: Boolean;
-begin
-  Result := not SameValue(FIncrement, DefIncrement);
-end;
-
-function TCustomFloatSpinEditEx.MaxValueStored: Boolean;
-begin
-  Result := not SameValue(FMaxValue, DefMaxValue);
-end;
-
-function TCustomFloatSpinEditEx.MinValueStored: Boolean;
-begin
-  Result := not SameValue(FMinValue, DefMinValue);
-end;
-
 function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
   ): Boolean;
 begin
@@ -632,21 +617,6 @@ begin
     Result := ValueS
   else
     Result := StringReplace(ValueS, AThousandSeparator, '', [rfReplaceAll]);
-end;
-
-function TCustomSpinEditEx.IncrementStored: Boolean;
-begin
-  Result := FIncrement <> DefIncrement;
-end;
-
-function TCustomSpinEditEx.MaxValueStored: Boolean;
-begin
-  Result := FMaxValue <> DefMaxValue;
-end;
-
-function TCustomSpinEditEx.MinValueStored: Boolean;
-begin
-  Result := FMinValue <> DefMinValue;
 end;
 
 procedure TCustomSpinEditEx.SetThousandSeparator(AValue: String);
