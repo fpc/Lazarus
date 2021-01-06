@@ -5025,8 +5025,7 @@ begin
 
     // Key Mappings options
     fKeyMappingScheme :=
-      XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',
-      StrToValidXMLName(KeyMapSchemeNames[kmsLazarus]));
+      XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme', KeyMapSchemeNames[kmsLazarus]);
     fKeyMap.LoadFromXMLConfig(XMLConfig
       , 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
@@ -5485,14 +5484,10 @@ function TEditorOptions.ReadColorScheme(const LanguageName: String): String;
 (* The name of the currently chosen color-scheme for that language *)
 begin
   if LanguageName = '' then
-  begin
-    Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
-    exit;
-  end;
+    Exit(ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name);
   if LanguageName <> TPreviewPasSyn.GetLanguageName then
     Result := XMLConfig.GetValue(
-      'EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) +
-      '/ColorScheme/Value', '')
+      'EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) + '/ColorScheme/Value', '')
   else
     Result := '';
   if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
@@ -5508,9 +5503,8 @@ var
 begin
   FormatVersion := XMLConfig.GetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
   if FormatVersion > 1 then
-    Result := XMLConfig.GetValue(
-      'EditorOptions/Color/Lang' + StrToValidXMLName(
-      TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
+    Result := XMLConfig.GetValue('EditorOptions/Color/Lang' +
+      StrToValidXMLName(TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
   else
     Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
   if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
@@ -5527,8 +5521,8 @@ procedure TEditorOptions.WriteColorScheme(const LanguageName, SynColorScheme: St
 begin
   if (LanguageName = '') or (SynColorScheme = '') then
     exit;
-  XMLConfig.SetValue('EditorOptions/Color/Lang' + StrToValidXMLName(
-    LanguageName) + '/ColorScheme/Value', SynColorScheme);
+  XMLConfig.SetValue('EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) +
+                     '/ColorScheme/Value', SynColorScheme);
   XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
 end;
 
@@ -5547,10 +5541,10 @@ end;
 procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter;
   ReadForOptions: Boolean);
 var
-  ConfName: String;
-  Path: String;
+  Path, ValidLang: String;
   i, h, idx: Integer;
-  TheFoldInfo: TEditorOptionsFoldRecord;
+  FoldRec: TEditorOptionsFoldRecord;
+  FoldInf: TEditorOptionsFoldInfo;
   DefHl, FoldHl: TSynCustomFoldHighlighter;
 begin
   h := HighlighterList.FindByHighlighter(Syn);
@@ -5558,17 +5552,17 @@ begin
     h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
 
-  if (syn is TSynCustomFoldHighlighter) then begin
+  if Syn is TSynCustomFoldHighlighter then begin
+    FoldHl := TSynCustomFoldHighlighter(Syn);
     DefHl := TSynCustomFoldHighlighter(TCustomSynClass(Syn.ClassType).Create(nil));
     try
       ReadDefaultsForHighlighterFoldSettings(DefHl);
-      FoldHl := TSynCustomFoldHighlighter(Syn);
-      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-      for i := 0 to TheFoldInfo.Count - 1 do begin
-        idx := TheFoldInfo.Info^[i].Index;
-        ConfName := TheFoldInfo.Info^[i].Xml;
-        Path := 'EditorOptions/FoldConfig/Lang' +
-          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+      ValidLang := StrToValidXMLName(Syn.LanguageName);
+      FoldRec := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+      for i := 0 to FoldRec.Count - 1 do begin
+        FoldInf := FoldRec.Info^[i];
+        idx := FoldInf.Index;
+        Path := 'EditorOptions/FoldConfig/Lang' + ValidLang + '/Type' + FoldInf.Xml + '/' ;
         // try reading the old config first
         FoldHl.FoldConfig[idx].Enabled :=
           XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
