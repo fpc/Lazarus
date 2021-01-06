@@ -251,8 +251,6 @@ const
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
   AdditionalHighlightGroupNames: array[TAhaGroupName] of String;
-  IndexOfLaskuri: integer; // For debugging TColorAttrStringlist.IndexOf(). Will be removed.
-  ColorSchemeLangLaskuri: integer;
 
 type
   (* ***  ColorSchemes  *** *)
@@ -261,14 +259,6 @@ type
 
   TQuickStringlist=class(TStringlist)
     Function DoCompareText(const s1,s2 : string) : PtrInt; override;
-  end;
-
-  // Dedicated list for TColorSchemeLanguage.FAttributes. For debugging, will be removed.
-  TColorAttrStringlist=class(TQuickStringlist)
-  protected
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
-  public
-    Function IndexOf(const S: string): Integer; override;
   end;
 
   TColorScheme = class;
@@ -322,7 +312,7 @@ type
   TColorSchemeLanguage = class(TObject)
   private
     FDefaultAttribute: TColorSchemeAttribute;
-    FAttributes: TColorAttrStringlist; // TColorSchemeAttribute
+    FAttributes: TQuickStringlist; // TColorSchemeAttribute
     FHighlighter: TSynCustomHighlighter;
     FLanguage: TLazSyntaxHighlighter;
     FOwner: TColorScheme;
@@ -5681,14 +5671,10 @@ begin
   for i := 0 to TheInfo.Count - 1 do begin
     Conf := Syn.DividerDrawConfig[i];
     ConfName := TheInfo.Info^[i].Xml;
-    Path := 'EditorOptions/DividerDraw/Lang' + StrToValidXMLName(Syn.LanguageName) +
-      '/Type' + ConfName + '/' ;
-    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value',
-        Conf.MaxDrawDepth);
-    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value',
-        Conf.TopColor);
-    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value',
-        Conf.NestColor);
+    Path := 'EditorOptions/DividerDraw/Lang' + Syn.LanguageName + '/Type' + ConfName + '/' ;
+    Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth);
+    Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value', Conf.TopColor);
+    Conf.NestColor := XMLConfig.GetValue(Path + 'NestColor/Value', Conf.NestColor);
   end;
 end;
 
@@ -6284,56 +6270,14 @@ procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: S
   Defaults: TColorSchemeAttribute; Version: Integer);
 var
   Path: String;
-  //AttriName: String;
-  //fs: TFontStyles;
 begin
   // FormatVersion >= 5
   (* Note: This is currently always called with a default, so the nil handling isn't needed*)
   Assert(Version > 4, 'TColorSchemeAttribute.LoadFromXml: Version ('+IntToStr(Version)+' < 5.');
-{
-  AttriName := OldAdditionalAttributeName(StoredName);
-  if (Version < 5) and (AttriName <> '') then begin
-    // Read Version 2-4, 4 if exist, or keep values
-    Path := aPath + StrToValidXMLName(AttriName) + '/';
-
-    if aXMLConfig.HasChildPaths(Path) then begin
-      if (Defaults <> nil) then
-        self.Assign(Defaults);
-      Defaults := Self;
-
-      BackGround := aXMLConfig.GetValue(Path + 'BackgroundColor/Value', Defaults.Background);
-      ForeGround := aXMLConfig.GetValue(Path + 'ForegroundColor/Value', Defaults.Foreground);
-      FrameColor := aXMLConfig.GetValue(Path + 'FrameColor/Value',      Defaults.FrameColor);
-      fs   := [];
-      if aXMLConfig.GetValue(Path + 'Style/Bold', fsBold in Defaults.Style) then
-        Include(fs, fsBold);
-      if aXMLConfig.GetValue(Path + 'Style/Italic', fsItalic in Defaults.Style) then
-        Include(fs, fsItalic);
-      if aXMLConfig.GetValue(Path + 'Style/Underline', fsUnderline in Defaults.Style) then
-        Include(fs, fsUnderline);
-      Style := fs;
-      fs   := [];
-      if aXMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Defaults.StyleMask) then
-        Include(fs, fsBold);
-      if aXMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Defaults.StyleMask) then
-        Include(fs, fsItalic);
-      if aXMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Defaults.StyleMask) then
-        Include(fs, fsUnderline);
-      StyleMask := fs;
-    end;
-  end;
-}
-  // Read the Version >= 5 if exist, or keep values
   if StoredName = '' then exit;
   Path := aPath + StrToValidXMLName(StoredName) + '/';
-  //if (Version <= 5) and (Defaults = nil) then  <- Juha: Should it be (Version < 5)?
-  //  Defaults := GetSchemeGlobal;
-
-  if aXMLConfig.HasPath(Path, False) then begin
-    aXMLConfig.ReadObject(Path, Self, Defaults);
-    //if (Version <= 5) then                     <- Juha: Should it be (Version < 5)?
-    //  UseSchemeGlobals := False;
-  end
+  if aXMLConfig.HasPath(Path, False) then
+    aXMLConfig.ReadObject(Path, Self, Defaults)
   else begin
     if (Defaults <> Self) and (Defaults <> nil) then begin
       // do not copy (Stored)Name or Features ...
@@ -6352,8 +6296,6 @@ begin
       ItalicPriority    := Defaults.ItalicPriority;
       UnderlinePriority := Defaults.UnderlinePriority;
     end;
-    //if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
-    //  UseSchemeGlobals := False;
   end;
 end;
 
@@ -6416,9 +6358,8 @@ constructor TColorSchemeLanguage.Create(AGroup: TColorScheme;
   ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
 begin
   inherited Create;
-  Inc(ColorSchemeLangLaskuri);
   FIsSchemeDefault := IsSchemeDefault;
-  FAttributes := TColorAttrStringlist.Create;
+  FAttributes := TQuickStringlist.Create;
   FOwner := AGroup;
   FHighlighter := nil;
   FLanguage := ALang;
@@ -7191,21 +7132,6 @@ begin
     inc(i);
   end;
   Result := 0;
-end;
-
-// For debug
-procedure TColorAttrStringlist.InsertItem(Index: Integer; const S: string; O: TObject);
-begin
-  if Sorted then
-    DebugLn(['TColorAttrStringlist.InsertItem: Sorted! Index=', Index, ', S="', S, '", Obj=', O]);
-  inherited InsertItem(Index, S, O);
-end;
-
-function TColorAttrStringlist.IndexOf(const S: string): Integer;
-begin
-  Assert(Sorted, 'TColorAttrStringlist.IndexOf: Not Sorted!');
-  Inc(IndexOfLaskuri);
-  Result:=inherited IndexOf(S);
 end;
 
 
