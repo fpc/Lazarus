@@ -576,12 +576,17 @@ begin
         0: Result := RegisterLoc(0); // EAX
         1: Result := RegisterLoc(2); // EDX
         2: Result := RegisterLoc(1); // ECX
+      else
+        Result := UnInitializedLoc;
       end;
     dm64: case AParamIdx of
        -1: Result := RegisterLoc(0); // RAX
         0: Result := RegisterLoc(2); // RCX
         1: Result := RegisterLoc(1); // RDX
         2: Result := RegisterLoc(8); // R8
+        3: Result := RegisterLoc(9); // R9
+      else
+        Result := UnInitializedLoc;
       end;
   end;
 end;
