@@ -33,7 +33,7 @@ uses
   {$ifdef windows}
   Windows,
   {$endif}
-  Classes, SysUtils, strutils;
+  Classes, SysUtils, StrUtils;
 
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
@@ -1324,7 +1324,7 @@ begin
           else
             Break;
           end;
-          // already lower, or otherwhise not affected
+          // already lower, or otherwise not affected
         end;
       end;
     end;
@@ -2487,8 +2487,7 @@ begin
         inc(OutCounter);
       end;
     end
-    { Now everything else }
-    else
+    else   { Now everything else }
     begin
       CharLen := UTF8CodepointSize(@AInStr[InCounter]);
       CharProcessed := False;
@@ -3303,7 +3302,7 @@ end;
   Compare two UTF8 encoded strings, case sensitive.
 
   Internally it uses WideCompareStr on the first Utf8 codepoint that differs between S1 and S2
-  and therefor has proper colation on platforms where the WidestringManager supports this
+  and therefore has proper collation on platforms where the WidestringManager supports this
   (Windows, *nix with cwstring unit)
 ------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: string): PtrInt;
@@ -3347,7 +3346,7 @@ begin
         //writeln('UCS: B1=',IntToHex(B1,2),', B2=',IntToHex(B2,2));
         Break;
       end;
-      Inc(S1); Inc(S2); Inc(I);
+      Inc(S1); Inc(S2); Inc(i);
     end;
   end;
   if (i < Count) then
@@ -3386,14 +3385,52 @@ end;
   Params: S1, S2 - UTF8 encoded strings
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S1 > S2.
   Compare two UTF8 encoded strings, case insensitive.
-  Note: Use this function instead of AnsiCompareText.
   This function guarantees proper collation on all supported platforms.
-  Internally it uses WideCompareText.
+  Internally it uses WideCompareText when codepoints have more than one byte.
  ------------------------------------------------------------------------------}
- function UTF8CompareText(const S1, S2: String): PtrInt;
- begin
-   Result := WideCompareText(Utf8ToUtf16(S1),Utf8ToUtf16(S2));
- end;
+function UTF8CompareText(const S1, S2: String): PtrInt;
+var
+  i, Count, Count1, Count2: sizeint;
+  Chr1, Chr2: Char;
+  P1, P2: PChar;
+begin
+  Count1 := Length(S1);
+  Count2 := Length(S2);
+  if Count1>Count2 then
+    Count := Count2
+  else
+    Count := Count1;
+  i := 0;
+  if Count>0 then
+  begin
+    P1 := @S1[1];
+    P2 := @S2[1];
+    while i < Count do
+    begin
+      if (P1^ > #191) or (P2^ > #191) then  // Multi-byte encoding.
+      begin
+        WriteLn('UTF8CompareText: Calling WideCompareText for "'+S1+'" <> "'+S2+'"');
+        Exit(WideCompareText(UTF8ToUTF16(S1),UTF8ToUTF16(S2)));
+      end;
+      Chr1 := P1^;
+      Chr2 := P2^;
+      if Chr1 <> Chr2 then
+      begin
+        if Chr1 in ['A'..'Z'] then
+          Inc(Chr1,32);
+        if Chr2 in ['A'..'Z'] then
+          Inc(Chr2,32);
+        if Chr1 <> Chr2 then
+          Break;
+      end;
+      Inc(P1); Inc(P2); Inc(i);
+    end;
+  end;
+  if i < Count then
+    Result := Byte(Chr1)-Byte(Chr2)
+  else
+    Result := Count1-Count2;
+end;
 
 function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 begin
