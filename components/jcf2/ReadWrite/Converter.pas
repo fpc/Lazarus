@@ -392,14 +392,17 @@ begin
 
   { put markers into the input }
   fsInputCode := StrInsert(FORMAT_END, fsInputCode, liRealInputEnd);
-  fsInputCode := StrInsert(FORMAT_START, fsInputCode, liRealInputStart);
-
+  { add a new line after FORMAT_START, prevents bad formating of first selected line. }
+  fsInputCode := StrInsert(FORMAT_START+#10, fsInputCode, liRealInputStart);
   Convert;
-
   { locate the markers in the output, and replace before and after }
   liOutputStart := Pos(FORMAT_START, fsOutputCode) + Length(FORMAT_START);
+  {remode new line added after FORMAT_START }
+  if (liOutputStart<length(fsOutputCode)) and (fsOutputCode[liOutputStart]=#13) then
+    inc(liOutputStart);
+  if (liOutputStart<length(fsOutputCode)) and (fsOutputCode[liOutputStart]=#10) then
+    inc(liOutputStart);
   liOutputEnd   := PosEx(FORMAT_END, fsOutputCode,liOutputStart);
-
   { splice }
   if aOnlyOutputSelection then
     lsNewOutput := Copy(fsOutputCode, liOutputStart, (liOutputEnd - liOutputStart))

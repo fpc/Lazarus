@@ -41,7 +41,7 @@ uses
   frClarifyCaseBlocks, frComments, frWarnings, frReservedCapsSettings, 
   frAnyCapsSettings, frIdentifierCapsSettings, frNotIdentifierCapsSettings, 
   frUnitCaps, frReplace, frUses, frTransform, frAsm, frPreProcessor, 
-  jcfuiconsts, LazarusPackageIntf;
+  JcfUIConsts, Diff, diffmerge, LazarusPackageIntf;
 
 implementation
 

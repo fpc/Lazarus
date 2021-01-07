@@ -34,7 +34,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils,
   // IdeIntf
   SrcEditorIntf,
   { local }
@@ -85,7 +85,7 @@ implementation
 
 uses
   { local }
-  JcfLog, JcfRegistrySettings, JcfMiscFunctions;
+  JcfLog, JcfRegistrySettings, diffmerge;
 
 constructor TEditorConverter.Create;
 begin
@@ -136,97 +136,12 @@ begin
 end;
 
 procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
-var
-  lLogicalCaretXY:TPoint;
-  lStart,lEnd:TPoint;
 begin
   if pcUnit = nil then
     exit;
   if psText <> fcConverter.InputCode then
-  begin
-    try
-      lLogicalCaretXY:=pcUnit.CursorTextXY;
-      pcUnit.BeginUpdate;
-      pcUnit.BeginUndoBlock;
-      lStart.X:=0;  //select all text.
-      lStart.Y:=0;
-      lEnd.X:=0;
-      if pcUnit.LineCount>0 then
-        lEnd.X:=length(pcUnit.Lines[pcUnit.LineCount-1])+1;
-      lEnd.Y:=pcUnit.LineCount;
-      //pcUnit.Lines.Text := psText;    // removes undo history.
-      pcUnit.ReplaceText(lStart,lEnd,psText);
-      pcUnit.CursorTextXY:=lLogicalCaretXY;
-      pcUnit.Modified := True;
-    finally
-      pcUnit.EndUndoBlock;  
-      pcUnit.EndUpdate;
-    end;
-  end;
+    DiffMergeEditor(pcUnit, psText);
 end;
-
-//BUGGY: inserts empty blank lines in "random" position in the editor.
-// and if only one line es added or deleted after formatting then doesn't syncronize well.
-// i think is better change all text in the editor.
-// TODO: delete
-{
-procedure TEditorConverter.WriteToIDE(const pcUnit: TSourceEditorInterface; const psText: string);
-var
-  lcSourceLines, lcDestLines: TStrings;
-  lcSameStart, lcSameEnd: TStrings;
-  lsSourceLine, lsDestLine: string;
-  liStart, liIndex, liMaxIndex: integer;
-  hasSourceLine: Boolean;
-begin
-  if pcUnit = nil then
-    exit;
-  lcSourceLines := TStringList.Create;
-  lcSourceLines.Text := fcConverter.InputCode;
-  lcDestLines := TStringList.Create;
-  lcDestLines.Text := psText;
-  lcSameStart := TStringList.Create;
-  lcSameEnd := TStringList.Create;
-
-  SplitIntoChangeSections(lcSourceLines, lcDestLines, lcSameStart, lcSameEnd);
-  try
-    pcUnit.BeginUpdate;
-    pcUnit.BeginUndoBlock;
-
-    liStart := lcSameStart.Count;
-    liIndex := 0;
-    liMaxIndex := Max(lcSourceLines.Count, lcDestLines.Count);
-    while (liIndex < liMaxIndex) do
-    begin
-      hasSourceLine := liIndex < lcSourceLines.Count;
-      if hasSourceLine then
-        lsSourceLine := lcSourceLines[liIndex]
-      else
-        lsSourceLine := '';
-
-      if liIndex < lcDestLines.Count then
-        lsDestLine := lcDestLines[liIndex]
-      else
-        lsDestLine := '';
-
-      if not hasSourceLine then
-        pcUnit.InsertLine(liStart + liIndex + 1, lsDestLine, True)
-      else
-      if not AnsiSameStr(lsSourceLine, lsDestLine) then
-        // the line is different, replace it
-        pcUnit.ReplaceLines(liStart + liIndex + 1, liStart + liIndex + 1, lsDestLine, True);
-
-       inc(liIndex);
-     end;
-   finally
-    pcUnit.EndUndoBlock;
-    pcUnit.EndUpdate;
-    lcSourceLines.Free;
-    lcDestLines.Free;
-    lcSameStart.Free;
-    lcSameEnd.Free;
-   end;
-end;
-}
 
 procedure TEditorConverter.AfterConvert;
 begin

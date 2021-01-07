@@ -82,6 +82,9 @@ type
 
 implementation
 
+uses
+  diffmerge;
+
 function FileIsAllowedType(const psFileName: string): boolean;
 const
   ALLOWED_FILE_TYPES: array[1..5] of string = ('.pas', '.pp', '.dpr', '.lpr', '.dpk');
@@ -275,7 +278,7 @@ begin
       while (wI > 1) and (fcConverter.OutputCode[wI] in [#10, #13, ' ']) do
         Dec(wI);
       outputstr := Copy(fcConverter.OutputCode, 1, wI);
-      srcEditor.ReplaceLines(BlockBegin.Y, BlockEnd.Y, outputstr, false);
+      DiffMergeEditor(srcEditor,outputstr,BlockBegin.Y,BlockEnd.Y);
     end
     else
     begin    //try formating wrapping selected code in fake unit.
@@ -291,7 +294,7 @@ begin
       fcConverter.GuiMessages := true;
       fcConverter.ConvertUsingFakeUnit;
       if not fcConverter.ConvertError then
-        srcEditor.ReplaceText(BlockBegin, BlockEnd, fcConverter.OutputCode);
+        DiffMergeEditor(srcEditor,fcConverter.OutputCode,BlockBegin.Y,BlockEnd.Y);
     end;
   finally
     fcConverter.Free;
