@@ -18,7 +18,7 @@
 unit TTTypes;
 
 interface
-
+{$mode objfpc}{$H+}
 type
 
   TError      = boolean;

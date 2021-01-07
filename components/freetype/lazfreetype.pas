@@ -35,7 +35,7 @@ The GNU General Public License (GPL), version 2.
 unit LazFreeType;
 
 interface
-
+{$mode objfpc}{$H+}
 {$R-}
 uses TTTypes, Classes;
 
