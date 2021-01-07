@@ -23,3 +23,7 @@ http://p.yusukekamiyamane.com/
 Created by Carlo Kok / RemObjects Software
 Fixed for Lazarus by Bogusіaw Brandys
 http://www.remobjects.com/ps.aspx
+
+TDiff by Angus Johnson
+Fixed for Freepascal by  Rickard Johansson (RJ TextEd)
+http://github.com/rickard67/TextDiff
