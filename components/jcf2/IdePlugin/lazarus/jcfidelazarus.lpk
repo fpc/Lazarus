@@ -24,6 +24,9 @@
       </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
+    <License Value="Mozilla Public License v1.1  or  GNU General Public License v2
+(dual license)
+"/>
     <Version Major="2"/>
     <Files>
       <Item>
