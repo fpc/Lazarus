@@ -8906,8 +8906,12 @@ begin
 end;
 
 procedure TIpHtmlNodeText.SetProps(const RenderProps: TIpHtmlProps);
+var
+  bgCol: TColor;
 begin
+  bgCol := PropsR.BgColor;
   PropsR.Assign(RenderProps);
+  PropsR.BgColor := bgCol;
 end;
 
 procedure TIpHtmlNodeText.Enqueue;
@@ -9503,9 +9507,13 @@ begin
 end;
 
 procedure TIpHtmlNodeP.SetProps(const RenderProps: TIpHtmlProps);
+var
+  bgCol: TColor;
 begin
+  bgCol := Props.BgColor;
   Props.Assign(RenderProps);
   Props.Alignment := Align;
+  Props.BgColor := bgCol;
   inherited SetProps(Props);
 end;
 
@@ -10241,9 +10249,13 @@ begin
 end;
 
 procedure TIpHtmlNodeDIV.SetProps(const RenderProps: TIpHtmlProps);
+var
+  bgCol: TColor;
 begin
+  bgCol := Props.BgColor;
   Props.Assign(RenderProps);
   Props.Alignment := Align;
+  Props.BgColor := bgCol;
   LoadAndApplyCSSProps;
   inherited SetProps(Props);
 end;
