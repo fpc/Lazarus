@@ -647,6 +647,7 @@ end;
 procedure TListFileSearcher.DoFileFound;
 begin
   FList.Add(FileName);
+  inherited;
 end;
 
 constructor TListFileSearcher.Create(AList: TStrings);
@@ -691,6 +692,7 @@ end;
 procedure TListDirectoriesSearcher.DoDirectoryFound;
 begin
   FDirectoriesList.Add(FileName);
+  inherited;
 end;
 
 function FindAllDirectories(const SearchPath : string;
