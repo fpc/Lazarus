@@ -4610,15 +4610,16 @@ begin
     Owner.Target.Brush.Color := Owner.BgColor;
     Owner.Target.FillRect(Owner.ClientRect);
   end else begin
-    if BackGround = '' then begin
-      if BGColor <> clNone then begin
-        Owner.Target.Brush.Color := BGColor;
-        Owner.Target.FillRect(Owner.ClientRect);
-      end else begin
-        Owner.Target.Brush.Color := Owner.BGColor;
-        Owner.Target.FillRect(Owner.ClientRect);
-      end;
+    // Fill page with background color
+    if BGColor <> clNone then begin
+      Owner.Target.Brush.Color := BGColor;
+      Owner.Target.FillRect(Owner.ClientRect);
+    end else begin
+      Owner.Target.Brush.Color := Owner.BGColor;
+      Owner.Target.FillRect(Owner.ClientRect);
     end;
+
+    // Draw background image
     if Background <> '' then begin
       if BgPicture = nil then
         Owner.DoGetImage(Self, Owner.BuildPath(Background), BgPicture);
@@ -4639,14 +4640,13 @@ begin
           end;
           Inc(Y, BgPicture.Height);
         end;
-      end else begin
-        Owner.Target.Brush.Color := Owner.BgColor;
-        Owner.Target.FillRect(Owner.ClientRect);
       end;
     end;
   end;
+
   inherited Render(RenderProps);
-  // restore style
+
+  // Restore style
   Owner.Target.Brush.Style:=bsSolid;
 end;
 
