@@ -8911,7 +8911,8 @@ var
 begin
   bgCol := PropsR.BgColor;
   PropsR.Assign(RenderProps);
-  PropsR.BgColor := bgCol;
+  if FParentNode = FOwner.Body then
+    PropsR.BgColor := bgCol;
 end;
 
 procedure TIpHtmlNodeText.Enqueue;
@@ -9513,7 +9514,8 @@ begin
   bgCol := Props.BgColor;
   Props.Assign(RenderProps);
   Props.Alignment := Align;
-  Props.BgColor := bgCol;
+  if FParentNode = FOwner.Body then
+    Props.BgColor := bgCol;
   inherited SetProps(Props);
 end;
 
@@ -10255,8 +10257,9 @@ begin
   bgCol := Props.BgColor;
   Props.Assign(RenderProps);
   Props.Alignment := Align;
-  Props.BgColor := bgCol;
   LoadAndApplyCSSProps;
+  if FParentNode = FOwner.Body then
+    Props.BgColor := bgCol;
   inherited SetProps(Props);
 end;
 
