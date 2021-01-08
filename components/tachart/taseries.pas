@@ -1287,6 +1287,7 @@ var
       TopLeft := ParentChart.GraphToImage(graphBar.a);
       BottomRight := ParentChart.GraphToImage(graphBar.b);
       TAGeometry.NormalizeRect(imageBar);
+      if IsRotated then inc(imageBar.Right) else dec(imageBar.Top);
 
       // Draw a line instead of an empty rectangle.
       if (Bottom = Top) and IsRotated then Dec(Top);
