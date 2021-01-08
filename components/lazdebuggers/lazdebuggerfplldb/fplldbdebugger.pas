@@ -418,6 +418,7 @@ begin
 
   FpDebugger.LockUnLoadDwarf;
   Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
+  ProcVal := nil;
   try
     if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
       ALocals.SetDataValidity(ddsInvalid);
