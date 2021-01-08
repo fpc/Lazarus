@@ -540,14 +540,10 @@ end;
 
 procedure TCustomUpDown.MouseEnter;
 begin  // This should never happen because buttons cover the whole component.
-  Assert(False, 'TCustomUpDown.MouseEnter called!');
-  CheckMouseEntering;
 end;
 
 procedure TCustomUpDown.MouseLeave;
 begin  // This should never happen because buttons cover the whole component.
-  Assert(False, 'TCustomUpDown.MouseLeave called!');
-  CheckMouseLeaving;
 end;
 
 procedure TCustomUpDown.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
