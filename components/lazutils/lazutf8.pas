@@ -3409,7 +3409,7 @@ begin
     begin
       if (P1^ > #191) or (P2^ > #191) then  // Multi-byte encoding.
       begin
-        WriteLn('UTF8CompareText: Calling WideCompareText for "'+S1+'" <> "'+S2+'"');
+        //WriteLn('UTF8CompareText: Calling WideCompareText for "'+S1+'" <> "'+S2+'"');
         Exit(WideCompareText(UTF8ToUTF16(S1),UTF8ToUTF16(S2)));
       end;
       Chr1 := P1^;
