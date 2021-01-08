@@ -1182,8 +1182,13 @@ begin
 end;
 
 function TFpDbgSymbolScope.GetProcedureAtAddress: TFpValue;
+var
+  Sym: TFpSymbol;
 begin
-  Result := SymbolAtAddress.Value;
+  Result := nil;
+  Sym := SymbolAtAddress;
+  if Sym <> nil then
+    Result := Sym.Value;
 end;
 
 function TFpDbgSymbolScope.GetSizeOfAddress: Integer;
