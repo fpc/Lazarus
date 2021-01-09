@@ -452,15 +452,17 @@ begin
       Result := HICON(TGtk3Image.Create(TGtk3Image(IconInfo^.hbmColor).Handle));
     end else
     begin
+      Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
+        TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
       // create cursor from pixbuf
-      W := gdk_pixbuf_get_width(TGtk3Image(IconInfo^.hbmColor).Handle);
+     { W := gdk_pixbuf_get_width(TGtk3Image(IconInfo^.hbmColor).Handle);
       H := gdk_pixbuf_get_height(TGtk3Image(IconInfo^.hbmColor).Handle);
       DebugLn('TGtk3WidgetSet.CreateIconIndirect W=',dbgs(W),' H=',dbgs(H));
       PixBuf := gdk_pixbuf_new_subpixbuf(TGtk3Image(IconInfo^.hbmColor).Handle, 0, 0, W, H);
       Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
         pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
       if pixbuf <> nil then
-        g_object_unref(PixBuf);
+        g_object_unref(PixBuf); }
     end;
   end;
 end;
@@ -606,36 +608,10 @@ begin
 end;
 
 function TGtk3WidgetSet.DrawFocusRect(DC: HDC; const aRect: TRect): boolean;
-var
-  Context: PGtkStyleContext;
-  AValue: TGValue;
 begin
   Result := False;
   if IsValidDC(DC) then
-  begin
-    if TGtk3DeviceContext(DC).Parent <> nil then
-      Context := TGtk3DeviceContext(DC).Parent^.get_style_context
-    else
-    if gtk_widget_get_default_style^.has_context then
-    begin
-      // Context := gtk_widget_get_default_style^.has_context
-      AValue.g_type := G_TYPE_POINTER;
-      AValue.set_pointer(nil);
-      g_object_get_property(gtk_widget_get_default_style,'context',@AValue);
-      Context := AValue.get_pointer;
-      AValue.unset;
-    end else
-      Context := nil;
-    if Context = nil then
-    begin
-      DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect drawing focus on non widget context isn''t implemented.');
-      exit;
-    end;
-    with aRect do
-      gtk_render_focus(Context ,TGtk3DeviceContext(DC).pcr, Left, Top, Right - Left, Bottom - Top);
-
-    Result := True;
-  end;
+    Result:=TGtk3DeviceContext(DC).drawFocusRect(aRect);
 end;
 
 function TGtk3WidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;

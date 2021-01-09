@@ -183,8 +183,15 @@ type
 
   { TGtk3Cursor }
 
-  TGtk3Cursor = class(TGtk3ContextObject)
-  // TODO
+  TGtk3Cursor = class(TGtk3Object)
+  private
+    fHandle:PGdkCursor;
+  public
+    constructor Create(ACur:integer);overload;
+    constructor Create(pixbuf:PGdkPixbuf;x,y:gint);overload;
+    constructor Create(img:TGtk3Image);overload;
+    destructor Destroy;override;
+    property Handle:PGdkCursor read fHandle;
   end;
 
   { TGtk3DeviceContext }
@@ -257,7 +264,7 @@ type
     procedure fillRect(x, y, w, h: Integer; ABrush: HBRUSH); overload;
     procedure fillRect(x, y, w, h: Integer); overload;
     function RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer): Boolean;
-
+    function drawFocusRect(const aRect: TRect): boolean;
     function getBpp: integer;
     function getDepth: integer;
     function getDeviceSize: TPoint;
@@ -299,7 +306,7 @@ function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 
 implementation
 
-uses gtk3int;
+uses gtk3int,controls;
 
 const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
@@ -450,6 +457,40 @@ begin
   R := (AColor and $FF) / 255;
   G := ((AColor shr 8) and $FF) / 255;
   B := ((AColor shr 16) and $FF) / 255;
+end;
+
+{ TGtk3Cursor }
+
+constructor TGtk3Cursor.Create(ACur:integer);
+var gdk_cur:integer;
+begin
+  case ACur of
+  crArrow: gdk_cur:=GDK_ARROW;
+  else
+    gdk_cur:=GDK_ARROW;
+  end;
+
+  Fhandle:=TGdkCursor.new(gdk_cur);
+end;
+
+constructor TGtk3Cursor.Create(pixbuf: PGdkPixbuf;x,y:gint);
+begin
+  fHandle:=TGdkCursor.new_from_pixbuf(TGdkDisplay.get_default(),pixbuf,x,y);
+end;
+
+constructor TGtk3Cursor.Create(img: TGtk3Image);
+var w,h:gint;
+begin
+  inherited Create;
+  w:=img.width;
+  h:=img.height;
+  Create(img.Handle,w,h);
+end;
+
+destructor TGtk3Cursor.Destroy;
+begin
+  PGdkCursor(fHandle)^.unref();
+  inherited Destroy;
 end;
 
 { TGtk3ContextObject }
@@ -1670,7 +1711,7 @@ begin
     ornt := Self.FCurrentFont.FLogFont.lfOrientation;
     if ornt<>0 then
       cairo_rotate(pcr, - pi * (ornt / 10)/180);
-    ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
+    ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
     cairo_set_source_rgb(pcr, R, G, B);
 
     FCurrentFont.Layout^.set_text(AText, ALen);
@@ -2060,6 +2101,42 @@ begin
   finally
     cairo_translate(pcr, -DX, -DY);
   end;
+end;
+
+function TGtk3DeviceContext.drawFocusRect(const aRect: TRect): boolean;
+var
+  Context: PGtkStyleContext;
+  AValue: TGValue;
+begin
+  Result := False;
+
+  if Parent <> nil then
+    Context := Parent^.get_style_context
+  else
+  begin
+    Context:=TGtkStyleContext.new();
+    Context^.add_class('button');
+    //gtk_style_context_get(Context,GTK_STATE_NORMAL,[]);
+ { if gtk_widget_get_default_style^.has_context then
+  begin
+    // Context := gtk_widget_get_default_style^.has_context
+    AValue.g_type := G_TYPE_POINTER;
+    AValue.set_pointer(nil);
+    g_object_get_property(gtk_widget_get_default_style,'context',@AValue);
+    Context := AValue.get_pointer;
+    AValue.unset;
+  end else
+    Context := nil;}
+  end;
+  if Context = nil then
+  begin
+    DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect drawing focus on non widget context isn''t implemented.');
+    exit;
+  end;
+  with aRect do
+    gtk_render_focus(Context ,pcr, Left, Top, Right - Left, Bottom - Top);
+
+  Result := True;
 end;
 
 function TGtk3DeviceContext.getBpp: integer;

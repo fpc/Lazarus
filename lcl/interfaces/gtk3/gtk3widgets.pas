@@ -1164,7 +1164,7 @@ begin
     end;
   GDK_BUTTON_RELEASE:
     begin
-      if not (csClickEvents in TGtk3Widget(Data).LCLObject.ControlStyle) then
+      //if not (csClickEvents in TGtk3Widget(Data).LCLObject.ControlStyle) then
         Result := TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
   GDK_KEY_PRESS:

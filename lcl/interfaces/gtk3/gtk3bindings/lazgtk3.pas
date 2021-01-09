@@ -1159,21 +1159,24 @@ const
   GTK_RECENT_MANAGER_ERROR_WRITE: TGtkRecentManagerError = 5;
   GTK_RECENT_MANAGER_ERROR_UNKNOWN: TGtkRecentManagerError = 6;
 
-type
-  TGtkResponseType = Integer;
+//type  ???
+//  TGtkResponseType = integer;
+//PPGtkResponseType = ^PGtkResponseType;
+//PGtkResponseType = ^TGtkResponseType;
+
 const
   { GtkResponseType }
-  GTK_RESPONSE_NONE: TGtkResponseType = -1;
-  GTK_RESPONSE_REJECT: TGtkResponseType = -2;
-  GTK_RESPONSE_ACCEPT: TGtkResponseType = -3;
-  GTK_RESPONSE_DELETE_EVENT: TGtkResponseType = -4;
-  GTK_RESPONSE_OK: TGtkResponseType = -5;
-  GTK_RESPONSE_CANCEL: TGtkResponseType = -6;
-  GTK_RESPONSE_CLOSE: TGtkResponseType = -7;
-  GTK_RESPONSE_YES: TGtkResponseType = -8;
-  GTK_RESPONSE_NO: TGtkResponseType = -9;
-  GTK_RESPONSE_APPLY: TGtkResponseType = -10;
-  GTK_RESPONSE_HELP: TGtkResponseType = -11;
+  GTK_RESPONSE_NONE = -1;
+  GTK_RESPONSE_REJECT = -2;
+  GTK_RESPONSE_ACCEPT = -3;
+  GTK_RESPONSE_DELETE_EVENT = -4;
+  GTK_RESPONSE_OK = -5;
+  GTK_RESPONSE_CANCEL = -6;
+  GTK_RESPONSE_CLOSE = -7;
+  GTK_RESPONSE_YES = -8;
+  GTK_RESPONSE_NO = -9;
+  GTK_RESPONSE_APPLY = -10;
+  GTK_RESPONSE_HELP = -11;
 
 type
   TGtkScrollStep = Integer;
@@ -8960,15 +8963,8 @@ type
     natural_size: gint;
   end;
 
-
-
-  PPGtkResponseType = ^PGtkResponseType;
-  PGtkResponseType = ^TGtkResponseType;
-
   TGtkScalePrivate = record
   end;
-
-
 
   PPGtkScaleButton = ^PGtkScaleButton;
   PGtkScaleButton = ^TGtkScaleButton;
