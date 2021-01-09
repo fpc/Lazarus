@@ -63,11 +63,14 @@ type
   private
     appleMenu: TCocoaMenuItem;
     attachedAppleMenu: Boolean;
+    isKeyEq: Boolean;
   public
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     procedure createAppleMenu(); message 'createAppleMenu';
     procedure overrideAppleMenu(AItem: TCocoaMenuItem); message 'overrideAppleMenu:';
     procedure attachAppleMenu(); message 'attachAppleMenu';
+    function performKeyEquivalent(theEvent: NSEvent): LCLObjCBoolean; override;
+    function lclIsKeyEquivalent: LCLObjCBoolean; message 'lclIsKeyEquivalent';
   end;
 
   { TCocoaMenuItem }
@@ -280,6 +283,18 @@ begin
   insertItem_atIndex(appleMenu, 0);
 end;
 
+function TCocoaMenu.performKeyEquivalent(theEvent: NSEvent): LCLObjCBoolean;
+begin
+  isKeyEq := true;
+  inherited performKeyEquivalent(theEvent);
+  isKeyEq := false;
+end;
+
+function TCocoaMenu.lclIsKeyEquivalent: LCLObjCBoolean;
+begin
+  Result := isKeyEq;
+end;
+
 { TCocoaMenuITem }
 
 procedure TCocoaMenuItem.UncheckSiblings(AIsChangingToChecked: LCLObjCBoolean);
@@ -385,6 +400,15 @@ end;
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
+  if (menu.isKindOfClass(TCocoaMenu)) then
+  begin
+    // Issue #37789
+    // Cocoa tries to find, if there's a menu with the key event
+    // so item is not actually selected yet. Thus should not send ItemSelected
+    if TCocoaMenu(menu).lclIsKeyEquivalent then
+      Exit;
+  end;
+
   //todo: call "measureItem"
   menuItemCallback.ItemSelected;
 end;
