@@ -53,14 +53,14 @@ end;
 
 procedure TUpDownButton.MouseEnter;
 begin
-  FUpDown.CheckMouseEntering;
-  inherited MouseEnter;
+  inherited MouseEnter; //does UpdateState o.a., so call this as well
+  FUpDown.MouseEnter;
 end;
 
 procedure TUpDownButton.MouseLeave;
 begin
-  FUpDown.CheckMouseLeaving;
-  inherited MouseLeave;
+  inherited MouseLeave; //does UpdateState o.a., so call this as well
+  FUpDown.MouseLeave;
 end;
 
 procedure TUpDownButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -539,11 +539,21 @@ begin
 end;
 
 procedure TCustomUpDown.MouseEnter;
-begin  // This should never happen because buttons cover the whole component.
+begin
+  if CheckMouseEntering then
+  begin
+    inherited MouseEnter;
+    FMouseInsideComp := True;
+  end;
 end;
 
 procedure TCustomUpDown.MouseLeave;
-begin  // This should never happen because buttons cover the whole component.
+begin
+  if CheckMouseLeaving then
+  begin
+    inherited MouseLeave;
+    FMouseInsideComp := False;
+  end;
 end;
 
 procedure TCustomUpDown.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -592,26 +602,22 @@ begin
     SetAssociate(nil);
 end;
 
-procedure TCustomUpDown.CheckMouseEntering;
+function TCustomUpDown.CheckMouseEntering: Boolean;
 // Mouse in entering this control.
 begin
-  if FMouseInsideComp then Exit;  // Already inside, moving between 2 buttons.
-  inherited MouseEnter;
-  FMouseInsideComp := True;
+  //debugln(['TCustomUpDown.CheckMouseEntering: FMouseInsideComp=',FMouseInsideComp]);
+  Result := not FMouseInsideComp;
 end;
 
-procedure TCustomUpDown.CheckMouseLeaving;
+function TCustomUpDown.CheckMouseLeaving: Boolean;
 // Mouse in leaving this control.
 var
   P: TPoint;
 begin
   GetCursorPos(P);
   P:=ScreenToClient(P);
-  if PtInRect(ClientRect, P) then
-    exit;                         // Still inside, moving between 2 buttons.
-  Assert(FMouseInsideComp, 'TCustomUpDown.DecMouseEnterLeaveCnt: FMouseInsideComp=False');
-  FMouseInsideComp := False;
-  inherited MouseLeave;
+  Result := not PtInRect(ClientRect, P);
+  //debugln(['TCustomUpDown.CheckMouseLeaving: PtInRect(ClientRect, P)=',PtInRect(ClientRect, P)]);
 end;
 
 function TCustomUpDown.GetPosition: SmallInt;

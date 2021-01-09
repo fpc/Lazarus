@@ -1904,8 +1904,8 @@ type
     FThousands: Boolean;
     FWrap: Boolean;
     FUseWS: Boolean;
-    procedure CheckMouseEntering;
-    procedure CheckMouseLeaving;
+    function CheckMouseEntering: Boolean;
+    function CheckMouseLeaving: Boolean;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     function GetFlat: Boolean;
