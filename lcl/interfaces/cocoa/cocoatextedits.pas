@@ -765,7 +765,7 @@ begin
   r := $FF xor byte(Round(clr.redComponent * 255));
   g := $FF xor byte(Round(clr.greenComponent * 255));
   b := $FF xor byte(Round(clr.blueComponent * 255));
-  Result := NSColor.colorWithRed_green_blue_alpha(r / 255, g / 255, b / 255, 1);
+  Result := NSColor.colorWithDeviceRed_green_blue_alpha(r / 255, g / 255, b / 255, 1);
 end;
 
 function TCocoaFieldEditor.becomeFirstResponder: LCLObjCBoolean;
