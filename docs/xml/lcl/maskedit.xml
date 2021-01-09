@@ -1542,6 +1542,87 @@
           </p>
           <code>AMaskEdit.EditMask := '999.999;1;0';</code>
           <p>
+            The EditMask is formed with a pattern of characters with the following meaning:
+          </p>
+          <table>
+            <tr>
+              <td><b>\  </b></td>
+              <td>after this you can set an arbitrary char</td>
+            </tr>
+            <tr>
+              <td><b>&gt;  </b></td>
+              <td>after this the chars is in upper case</td>
+            </tr>
+            <tr>
+              <td><b>&lt;  </b></td>
+              <td>after this the chars is in lower case</td>
+            </tr>
+            <tr>
+              <td><b>l  </b></td>
+              <td>only a letter but not necessary</td>
+            </tr>
+            <tr>
+              <td><b>L  </b></td>
+              <td>only a letter</td>
+            </tr>
+            <tr>
+              <td><b>a  </b></td>
+              <td>an alphanumeric char (['A'..'Z','a..'z','0'..'9']) but not necessary</td>
+            </tr>
+            <tr>
+              <td><b>A  </b></td>
+              <td>an alphanumeric char</td>
+            </tr>
+            <tr>
+              <td><b>c  </b></td>
+              <td>any Utf8 char but not necessary</td>
+            </tr>
+            <tr>
+              <td><b>C  </b></td>
+              <td>any Utf8 char #32 - #255</td>
+            </tr>
+            <tr>
+              <td><b>9  </b></td>
+              <td>only a number but not necessary</td>
+            </tr>
+            <tr>
+              <td><b>0  </b></td>
+              <td>only a number</td>
+            </tr>
+            <tr>
+              <td><b>#  </b></td>
+              <td>only a number or + or -, but not necessary</td>
+            </tr>
+            <tr>
+              <td><b>:  </b></td>
+              <td>automatically put the hour separator char</td>
+            </tr>
+            <tr>
+              <td><b>/  </b></td>
+              <td>automatically put the date separator char</td>
+            </tr>
+            <tr>
+              <td><b>h  </b></td>
+              <td>a hexadecimal character but not necessary (Lazarus extension, not supported by Delphi)</td>
+            </tr>
+            <tr>
+              <td><b>H  </b></td>
+              <td>a hexadecimal character (Lazarus extension, not supported by Delphi)</td>
+            </tr>
+            <tr>
+              <td><b>b  </b></td>
+              <td>a binary character but not necessary (Lazarus extension, not supported by Delphi)</td>
+            </tr>
+            <tr>
+              <td><b>B  </b></td>
+              <td>a binary character (Lazarus extension, not supported by Delphi)</td>
+            </tr>
+            <tr>
+              <td><b>!  </b></td>
+              <td>Trim leading blanks, otherwise trim trailing blanks from the data</td>
+            </tr>
+          </table>
+          <p>
             Setting a new value for the property causes the value to be decomposed into the internal <var>TInternalMask</var> representing the individual characters in the edit mask. Individual UTF-8 characters in <var>Value</var> are either added to the mask as literals or character types. <var>Clear</var> is called to remove the displayed value in the control, and the initial <var>Text</var> value is set to the value from <var>RealGetText</var>.
           </p>
         </descr>
