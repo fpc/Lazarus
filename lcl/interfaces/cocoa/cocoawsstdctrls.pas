@@ -999,7 +999,10 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
 var
-  field: TCocoaTextField;
+  field : TCocoaTextField;
+  w     : NSWindow;
+  rsp   : NSResponder;
+  ed    : TCocoaFieldEditor;
 begin
   field := GetTextField(AWinControl);
   if not Assigned(field) then Exit;
@@ -1008,6 +1011,16 @@ begin
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
     field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+
+  w := NSView(AWinControl.Handle).window;
+  if not Assigned(w) then Exit;
+  rsp := w.firstResponder;
+  if (Assigned(rsp)) and (rsp.isKindOfClass(TCocoaFieldEditor)) then
+  begin
+    ed := TCocoaFieldEditor(rsp);
+    if (NSObject(ed.delegate) = NSView(AWinControl.Handle)) then
+      ed.lclReviseCursorColor;
+  end;
 end;
 
 class procedure TCocoaWSCustomEdit.SetBorderStyle(
