@@ -437,7 +437,7 @@ var
   IDECommand: TIDECommand;
 begin
   IDECommand:=IDECommandList.FindIDECommand(AKeyRelation.Command);
-  if IDECommand.UserCount=0 then
+  if (IDECommand=nil) or (IDECommand.UserCount=0) then
     Exit(imgKeyItem);
   Result:=IDECommand.Users[0].ImageIndex;
   if Result=-1 then
