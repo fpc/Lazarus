@@ -227,7 +227,10 @@ const
     ('solid', 'dashed', 'solid', 'none', 'default');
 //  ('solid', 'dashed', 'double', 'none', 'default');  // NOTE: double not supported
 
-
+function FPColorToHTML(AColor: TFPColor): String;
+begin
+  Result := Format('#%.2x%.2x%.2x', [AColor.Red shr 8, AColor.Green shr 8, AColor.Blue shr 8]);
+end;
 
 { TListStyle_StyleList }
 
@@ -619,6 +622,11 @@ begin
       lTextPropsStr := lTextPropsStr + ' style:font-name-asian="Microsoft YaHei" ';
       lTextPropsStr := lTextPropsStr + ' style:font-name-complex="Mangal" ';
     end;
+    if (spbfFontColor in CurStyle.SetElements) then
+    begin
+      lTextPropsStr :=  lTextPropsStr + Format(' fo:color="%s" loext:opacity="100%%"',
+        [FPColorToHtml(CurStyle.Font.Color)]);
+    end;
     if (spbfFontBold in CurStyle.SetElements) then
     begin
       if CurStyle.Font.Bold then
@@ -647,7 +655,22 @@ begin
         // ToDo
       end;
     end;
-
+    if (spbfFontUnderline in CurStyle.SetElements) then
+    begin
+      if CurStyle.Font.Underline then
+      begin
+        lTextPropsStr := lTextPropsStr + ' style:text-underline-style="solid"';
+        lTextPropsStr := lTextPropsStr + ' style:text-underline-width="auto"';
+        lTextPropsStr := lTextPropsStr + ' style:text-underline-color="font-color"';
+      end;
+    end;
+    if (spbfFontStrikeThrough in CurStyle.SetElements) then
+    begin
+      if CurStyle.Font.StrikeThrough then
+      begin
+        lTextPropsStr := lTextPropsStr + ' style:text-line-through-style="solid" ';
+      end;
+    end;
     if CurStyle.GetKind() = vskTextSpan then
     begin
       {
@@ -1172,11 +1195,13 @@ begin
   sText := StringReplace(sText, #13, '<text:line-break/>', [rfReplaceAll]);
   sText := StringReplace(sText, #10, '', [rfReplaceAll]);
 
-  If lStyle<>Nil Then
-    FContent := FContent + '<text:span text:style-name="'+AEntityStyleName+'">' +
-      sText + '</text:span>'
-  Else
-  FContent := FContent + '<text:span>' + sText + '</text:span>'
+  If lStyle <> nil Then
+    sText := Format('<text:span text:style-name="%s">%s</text:span>', [
+      AEntityStyleName, sText])
+  else
+    sText := Format('<text:span>%s</text:span>', [sText]);
+
+  FContent := FContent + sText;
 end;
 
 procedure TvODTVectorialWriter.WriteField(AEntity: TvField;
