@@ -10074,9 +10074,8 @@ destructor TIpHtmlNodeA.Destroy;
 begin
   if HasRef then
     Owner.AnchorList.Remove(Self);
-  ClearAreaList;
-  MapAreaList.Free;
   inherited;
+  MapAreaList.Free;
 end;
 
 procedure TIpHtmlNodeA.BuildAreaList;
