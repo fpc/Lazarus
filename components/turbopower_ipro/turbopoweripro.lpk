@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="TurboPowerIPro"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Turbopower, portiert fuer Lazarus von Mattias Gaertner"/>
@@ -50,7 +50,7 @@
       <Item6>
         <Filename Value="iphttpbroker.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="iphttpbroker"/>
+        <UnitName Value="Iphttpbroker"/>
       </Item6>
       <Item7>
         <Filename Value="iphtml.pas"/>
@@ -99,6 +99,7 @@
         <Type Value="Binary"/>
       </Item17>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
@@ -113,7 +114,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>

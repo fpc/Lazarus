@@ -11,7 +11,7 @@ object IpHTMLPreview: TIpHTMLPreview
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object ToolbarPanel: TPanel
     Left = 0
     Height = 36

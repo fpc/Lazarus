@@ -1294,7 +1294,7 @@ begin
   end
   else
   begin
-    TextStyle.Opaque := True;
+    TextStyle.Opaque := False;
     FCanvas.Brush.Style := bsClear;
   end;
 
