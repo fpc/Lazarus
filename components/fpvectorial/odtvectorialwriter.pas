@@ -109,6 +109,7 @@ type
     function FloatToODTText(AFloat: Double): string;
     function BordersToString(ATableBorders, ACellBorders: TvTableBorders; ATopCell,
       ABottomCell, ALeftCell, ARightCell: Boolean): String;
+    function TextPropertiesToString(AStyle: TvStyle): String;
     // Routines to write those files
     procedure WriteMimetype;
     procedure WriteMetaInfManifest;
@@ -603,74 +604,14 @@ begin
 
   for i := 0 to AData.GetStyleCount() - 1 do
   begin
-    lTextPropsStr := '';
     lParagraphPropsStr := '';
     CurStyle := AData.GetStyle(i);
 
     if CurStyle.Parent = nil then CurStyleParent := 'Standard'
     else CurStyleParent := StyleNameToODTStyleName(AData, AData.FindStyleIndex(CurStyle.Parent), False);
 
-    if spbfFontSize in CurStyle.SetElements then
-    begin
-      lTextPropsStr := lTextPropsStr + ' fo:font-size="'+IntToStr(CurStyle.Font.Size)+'pt" ';
-      lTextPropsStr := lTextPropsStr + ' fo:font-size-asian="'+IntToStr(CurStyle.Font.Size)+'pt" ';
-      lTextPropsStr := lTextPropsStr + ' fo:font-size-complex="'+IntToStr(CurStyle.Font.Size)+'pt" ';
-    end;
-    if spbfFontName in CurStyle.SetElements then
-    begin
-      lTextPropsStr := lTextPropsStr + ' style:font-name="'+CurStyle.Font.Name+'" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-name-asian="Microsoft YaHei" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-name-complex="Mangal" ';
-    end;
-    if (spbfFontColor in CurStyle.SetElements) then
-    begin
-      lTextPropsStr :=  lTextPropsStr + Format(' fo:color="%s" loext:opacity="100%%"',
-        [FPColorToHtml(CurStyle.Font.Color)]);
-    end;
-    if (spbfFontBold in CurStyle.SetElements) then
-    begin
-      if CurStyle.Font.Bold then
-      begin
-        lTextPropsStr := lTextPropsStr + ' fo:font-weight="bold" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="bold" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="bold" ';
-      end
-      else
-      begin
-        lTextPropsStr := lTextPropsStr + ' fo:font-weight="normal" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="normal" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="normal" ';
-      end;
-    end;
-    if (spbfFontItalic in CurStyle.SetElements) then
-    begin
-      if CurStyle.Font.Italic then
-      begin
-        lTextPropsStr := lTextPropsStr + ' fo:font-style="italic" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-style-asian="italic" ';
-        lTextPropsStr := lTextPropsStr + ' style:font-style-complex="italic" ';
-      end
-      else
-      begin
-        // ToDo
-      end;
-    end;
-    if (spbfFontUnderline in CurStyle.SetElements) then
-    begin
-      if CurStyle.Font.Underline then
-      begin
-        lTextPropsStr := lTextPropsStr + ' style:text-underline-style="solid"';
-        lTextPropsStr := lTextPropsStr + ' style:text-underline-width="auto"';
-        lTextPropsStr := lTextPropsStr + ' style:text-underline-color="font-color"';
-      end;
-    end;
-    if (spbfFontStrikeThrough in CurStyle.SetElements) then
-    begin
-      if CurStyle.Font.StrikeThrough then
-      begin
-        lTextPropsStr := lTextPropsStr + ' style:text-line-through-style="solid" ';
-      end;
-    end;
+    lTextPropsStr := TextPropertiesToString(CurStyle);
+
     if CurStyle.GetKind() = vskTextSpan then
     begin
       {
@@ -1464,6 +1405,83 @@ Begin
   end;
 
   Result := Format('%s %s %s %s', [sLeft, sRight, sTop, sBottom]);
+end;
+
+function TvODTVectorialWriter.TextPropertiesToString(AStyle: TvStyle): String;
+var
+  fontStyleChanged: Boolean;
+begin
+  Result := '';
+  fontStyleChanged := false;
+
+  if spbfFontSize in AStyle.SetElements then
+  begin
+    Result := Result + ' fo:font-size="'+IntToStr(AStyle.Font.Size)+'pt" ';
+    Result := Result + ' fo:font-size-asian="'+IntToStr(AStyle.Font.Size)+'pt" ';
+    Result := Result + ' fo:font-size-complex="'+IntToStr(AStyle.Font.Size)+'pt" ';
+  end;
+
+  if spbfFontName in AStyle.SetElements then
+  begin
+    Result := Result + ' style:font-name="'+AStyle.Font.Name+'" ';
+    Result := Result + ' style:font-name-asian="Microsoft YaHei" ';
+    Result := Result + ' style:font-name-complex="Mangal" ';
+  end;
+
+  if (spbfFontColor in AStyle.SetElements) then
+  begin
+    Result := Result + Format(' fo:color="%s" loext:opacity="100%%"',
+      [FPColorToHtml(AStyle.Font.Color)]);
+  end;
+
+  if (spbfFontBold in AStyle.SetElements) then
+  begin
+    if AStyle.Font.Bold then
+    begin
+      Result := Result + ' fo:font-weight="bold" ';
+      Result := Result + ' style:font-weight-asian="bold" ';
+      Result := Result + ' style:font-weight-complex="bold" ';
+      fontStyleChanged := true;
+    end;
+  end;
+
+  if (spbfFontItalic in AStyle.SetElements) then
+  begin
+    if AStyle.Font.Italic then
+    begin
+      Result := Result + ' fo:font-style="italic" ';
+      Result := Result + ' style:font-style-asian="italic" ';
+      Result := Result + ' style:font-style-complex="italic" ';
+      fontStyleChanged := true;
+    end;
+  end;
+
+  if (spbfFontUnderline in AStyle.SetElements) then
+  begin
+    if AStyle.Font.Underline then
+    begin
+      Result := Result + ' style:text-underline-style="solid"';
+      Result := Result + ' style:text-underline-width="auto"';
+      Result := Result + ' style:text-underline-color="font-color"';
+      fontStyleChanged := true;
+    end;
+  end;
+
+  if (spbfFontStrikeThrough in AStyle.SetElements) then
+  begin
+    if AStyle.Font.StrikeThrough then
+    begin
+      Result := Result + ' style:text-line-through-style="solid" ';
+      fontStyleChanged := true;
+    end;
+  end;
+
+  if not fontStyleChanged then
+  begin
+    Result := Result + ' fo:font-weight="normal" ';
+    Result := Result + ' style:font-weight-asian="normal" ';
+    Result := Result + ' style:font-weight-complex="normal" ';
+  end;
 end;
 
 procedure TvODTVectorialWriter.WriteTable(ATable: TvTable;
