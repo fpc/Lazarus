@@ -720,8 +720,8 @@ begin
 
   FGraph := AOwner;
   SetLength(FPackageInfo, 0);
-  FFilesList := TFilenameToPointerTree.Create(true);
-  FRemovedFilesList := TFilenameToPointerTree.Create(true);
+  FFilesList := TFilenameToPointerTree.Create(false);
+  FRemovedFilesList := TFilenameToPointerTree.Create(false);
 end;
 
 destructor TLazPackageGraphFileCache.Destroy;
