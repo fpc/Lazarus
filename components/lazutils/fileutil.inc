@@ -87,10 +87,16 @@ end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;
 var
-  i: Integer;
+  i, FnPos: Integer;
+  FnExt: String;
 begin
+  FnPos := length(Filename);
+  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
+  if FnPos < 1 then
+    exit(false);          // no extension in filename
+  FnExt := LowerCase(Copy(Filename, FnPos, length(FileName)));
   for i:=Low(PascalFileExt) to High(PascalFileExt) do
-    if CompareFileExt(Filename,PascalFileExt[i],false)=0 then
+    if CompareStr(FnExt,PascalFileExt[i])=0 then
       exit(true);
   Result:=false;
 end;

@@ -204,7 +204,7 @@ begin
   else begin
     // default: depending on file type
     Result:=DefaultCompilerOptPath;
-    if CompareFileExt(fXMLConfig.Filename,'.lpk',false)=0 then
+    if CompareFileExt(fXMLConfig.Filename,'lpk',true)=0 then
     begin
       try
         FileVersion:=fXMLConfig.GetValue(PkgVersionPath,2);

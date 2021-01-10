@@ -1255,7 +1255,7 @@ begin
   if ([ofRegularFile,ofRevert,ofProjectLoading]*FFlags=[])
   and FilenameIsAbsolute(FFilename) and FileExistsCached(FFilename) then begin
     // check if file is a lazarus project (.lpi)
-    if (CompareFileExt(FFilename,'.lpi',false)=0) then
+    if (CompareFileExt(FFilename,'lpi',true)=0) then
     begin
       case
         IDEQuestionDialog(lisOpenProject, Format(lisOpenTheProject, [FFilename]),
@@ -1273,7 +1273,7 @@ begin
     end;
 
     // check if file is a lazarus package (.lpk)
-    if (CompareFileExt(FFilename,'.lpk',false)=0) then
+    if (CompareFileExt(FFilename,'lpk',true)=0) then
     begin
       case
         IDEQuestionDialog(lisOpenPackage,
@@ -1851,7 +1851,7 @@ begin
     OkToAdd:=True;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
       OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False)
-    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
+    else if CompareFileExtQuick(ActiveUnitInfo.Filename,'inc')=0 then
       OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,True);
     if OkToAdd then begin
       ActiveUnitInfo.IsPartOfProject:=true;
@@ -4143,7 +4143,7 @@ begin
                           +dlgFilterAll+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
-        if CompareFileExt(AFilename,'.lpi')<>0 then begin
+        if CompareFileExt(AFilename,'lpi',true)<>0 then begin
           // not a lpi file
           // check if it is a program source
 
@@ -5785,8 +5785,8 @@ begin
 
   // check, if a .lfm file is opened in the source editor
   if (LFMUnitInfo=nil) or
-    ((CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) and
-     (CompareFileExt(LFMUnitInfo.Filename,'.dfm',false)<>0)) then
+    ((CompareFileExt(LFMUnitInfo.Filename,'lfm',true)<>0) and
+     (CompareFileExtQuick(LFMUnitInfo.Filename,'dfm')<>0)) then
   begin
     if not Quiet then
     begin
@@ -6386,7 +6386,7 @@ begin
     end;
   end;
   try
-    if (CompareFileExt(LFMFilename,'lfm')<>0) then
+    if (CompareFileExt(LFMFilename,'lfm',true)<>0) then
     begin
       // no lfm format -> keep old info
       exit(true);
@@ -7408,7 +7408,7 @@ begin
           // Do not care if this fails. A user may have removed the line from source.
           Project1.RemoveCreateFormFromProjectFile(AnUnitInfo.ComponentName);
       end;
-      if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
+      if CompareFileExtQuick(AnUnitInfo.Filename,'inc')=0 then
         // include file
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
           ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,UnitPath);
@@ -7422,7 +7422,7 @@ begin
         UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
         if FilenameIsPascalUnit(AnUnitInfo.Filename) then
           ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,UnitPath);
-        if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
+        if CompareFileExtQuick(AnUnitInfo.Filename,'inc')=0 then
           ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,UnitPath);
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;

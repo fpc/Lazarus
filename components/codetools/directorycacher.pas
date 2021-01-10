@@ -452,7 +452,7 @@ begin
           end;
           // try also different extensions
           for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
-            if CompareFileExt(Filename,CTPascalExtension[pe],false)<>0 then
+            if CompareFileExtQuick(Filename,CTPascalExtension[pe])<>0 then
             begin
               AliasFilename:=ChangeFileExt(Filename,'.pas');
               if FileExistsCached(AliasFilename) then begin
@@ -869,7 +869,7 @@ begin
     end;
     // try different extensions too
     for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
-      if CompareFileExt(Result,CTPascalExtension[pe],false)<>0 then
+      if CompareFileExtQuick(Result,CTPascalExtension[pe])<>0 then
       begin
         AliasFilename:=ChangeFileExt(Result,CTPascalExtension[pe]);
         if FileExistsCached(AliasFilename) then begin

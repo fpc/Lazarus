@@ -432,7 +432,7 @@ begin
   Result:=false;
   AUnitName:='';
   Language:='';
-  if CompareFileExt(Filename, '.po', false)=0 then
+  if CompareFileExtQuick(Filename, 'po')=0 then
   begin
     NameWithoutExt:=ExtractFileNameWithoutExt(Filename);
     Ext:=ExtractFileExt(NameWithoutExt);
@@ -514,6 +514,7 @@ var
   BasePoFile: TPoFile;
   i: Integer;
   E: EPOFileError;
+  ExtLrj: Boolean;
 begin
   Result := false;
 
@@ -539,19 +540,19 @@ begin
     // Update po file with lrj, rst/rsj of RSTFiles
     for i:=0 to RSTFiles.Count-1 do begin
       Filename:=RSTFiles[i];
-      if (CompareFileExt(Filename,'.lrj')=0) or
-         (CompareFileExt(Filename,'.rst')=0) or
-         (CompareFileExt(Filename,'.rsj')=0) then
+      ExtLrj :=    (CompareFileExtQuick(Filename,'lrj')=0);
+      if ExtLrj or (CompareFileExtQuick(Filename,'rst')=0) or
+                   (CompareFileExtQuick(Filename,'rsj')=0) then
         try
           //DebugLn('');
           //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
           InputLines.Clear;
           InputLines.LoadFromFile(FileName);
 
-          if CompareFileExt(Filename,'.lrj')=0 then
+          if ExtLrj then
             BasePOFile.UpdateStrings(InputLines, stLrj)
           else
-            if CompareFileExt(Filename,'.rsj')=0 then
+            if CompareFileExtQuick(Filename,'rsj')=0 then
               BasePOFile.UpdateStrings(InputLines, stRsj)
             else
               BasePOFile.UpdateStrings(InputLines, stRst);

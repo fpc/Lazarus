@@ -3530,14 +3530,13 @@ var
   OpenEditor: Boolean;
 begin
   // replace macros
-  if pofConvertMacros in Flags then begin
+  if pofConvertMacros in Flags then
     if not GlobalMacroList.SubstituteStr(AFilename) then exit(mrCancel);
-  end;
 
   AFilename:=GetPhysicalFilenameCached(CleanAndExpandFilename(AFilename),false);
 
   // check file extension
-  if (CompareFileExt(AFilename,'.lpk',false)<>0)
+  if (CompareFileExt(AFilename,'lpk',true)<>0)
   and (not (pofRevert in Flags)) then begin
     DoQuestionDlg(lisPkgMangInvalidFileExtension,
       Format(lisPkgMangTheFileIsNotALazarusPackage, [AFilename]));

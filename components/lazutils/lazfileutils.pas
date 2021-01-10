@@ -28,8 +28,9 @@ uses
 
 function CompareFilenames(const Filename1, Filename2: string): integer; overload;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
-function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean = False): integer;
+function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename, Ext: string): integer;
+function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer; overload;
@@ -262,37 +263,60 @@ begin
   {$ENDIF}
 end;
 
-function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
 // Ext can contain a point or not
 var
-  n, e : AnsiString;
-  FileLen, FilePos, ExtLen, ExtPos: integer;
+  FnExt: String;
+  FnPos: integer;
 begin
-  FileLen := length(Filename);
-  ExtLen := length(Ext);
-  FilePos := FileLen;
-  while (FilePos>=1) and (Filename[FilePos]<>'.') do dec(FilePos);
-  if FilePos < 1 then begin
-    // no extension in filename
-    Result:=1;
-    exit;
-  end;
-  // skip point
-  inc(FilePos);
-  ExtPos := 1;
-  if (ExtPos <= ExtLen) and (Ext[1] = '.') then inc(ExtPos);
-
+  // Filename
+  FnPos := length(Filename);
+  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
+  if FnPos < 1 then
+    exit(1);          // no extension in filename
+  FnExt := Copy(Filename, FnPos+1, length(FileName)); // FnPos+1 skips point
+  // Ext
+  if (length(Ext) > 1) and (Ext[1] = '.') then
+    Delete(Ext, 1, 1);
   // compare extensions
-  n := Copy(Filename, FilePos, length(FileName));
-  e := Copy(Ext, ExtPos, length(Ext));
   if CaseSensitive then
-    Result := CompareStr(n, e)
+    Result := CompareStr(FnExt, Ext)
   else
-    Result := UTF8CompareText(n, e);
-  if Result < 0
-    then Result := -1
-  else
-    if Result > 0 then Result := 1;
+    Result := UTF8CompareText(FnExt, Ext);
+  if Result < 0 then
+    Result := -1
+  else if Result > 0 then
+    Result := 1;
+end;
+
+function CompareFileExt(const Filename, Ext: string): integer;
+begin
+  Result := CompareFileExt(Filename, Ext,
+                {$IFDEF CaseInsensitiveFilenames} False {$ELSE} True {$ENDIF} );
+end;
+
+function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
+// Compares case-insensitively but only with ASCII characters.
+// LowerExt must be lowercase. It can contain a point or not.
+var
+  FnExt: String;
+  FnPos: integer;
+begin
+  // Filename
+  FnPos := length(Filename);
+  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
+  if FnPos < 1 then
+    exit(1);          // no extension in filename
+  FnExt := LowerCase(Copy(Filename, FnPos+1, length(FileName))); // FnPos+1 skips point
+  // Ext
+  if (length(LowerExt) > 1) and (LowerExt[1] = '.') then
+    Delete(LowerExt, 1, 1);
+  // compare extensions
+  Result := CompareStr(FnExt, LowerExt);
+  if Result < 0 then
+    Result := -1
+  else if Result > 0 then
+    Result := 1;
 end;
 
 function ExtractFileNameOnly(const AFilename: string): string;

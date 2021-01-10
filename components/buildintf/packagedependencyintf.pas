@@ -121,7 +121,7 @@ var
   PkgName: String;
 begin
   Result:=false;
-  if CompareFileExt(AFilename,'.lpk',false)<>0 then exit;
+  if CompareFileExt(AFilename,'lpk',true)<>0 then exit;
   PkgName:=ExtractFileNameOnly(AFilename);
   if (PkgName='') or (not IsValidPkgName(PkgName)) then exit;
   Result:=true;

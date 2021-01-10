@@ -5864,8 +5864,7 @@ begin
 end;
 
 procedure TCodeToolManager.DoOnGatherUserIdentifiers(
-  Sender: TIdentCompletionTool; const ContextFlags: TIdentifierListContextFlags
-  );
+  Sender: TIdentCompletionTool; const ContextFlags: TIdentifierListContextFlags);
 begin
   if Assigned(FOnGatherUserIdentifiers) then
     FOnGatherUserIdentifiers(Sender, ContextFlags);
@@ -5874,9 +5873,9 @@ end;
 function TCodeToolManager.DoOnGetSrcPathForCompiledUnit(Sender: TObject;
   const AFilename: string): string;
 begin
-  if CompareFileExt(AFilename,'.ppu',false)=0 then
+  if CompareFileExt(AFilename,'ppu',true)=0 then
     Result:=GetPPUSrcPathForDirectory(ExtractFilePath(AFilename))
-  else if CompareFileExt(AFilename,'.dcu',false)=0 then
+  else if CompareFileExt(AFilename,'dcu')=0 then
     Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename))
   else
     Result:='';

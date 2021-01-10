@@ -1387,7 +1387,7 @@ var
     while Node<>nil do begin
       Item:=PStringToStringItem(Node.Data);
       Filename:=Item^.Value;
-      if (CompareFileExt(Filename,'ppu',false)=0) then begin
+      if (CompareFileExt(Filename,'ppu',true)=0) then begin
         // search source in fpc sources
         Filename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(Filename));
       end;

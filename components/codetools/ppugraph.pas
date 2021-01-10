@@ -697,7 +697,7 @@ begin
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
       Filename:=FileInfo.Name;
-      if (CompareFileExt(Filename,'ppu',false)<>0) then continue;
+      if (CompareFileExt(Filename,'ppu',true)<>0) then continue;
       AUnitName:=ExtractFileNameOnly(Filename);
       Filename:=AppendPathDelim(Directory)+Filename;
       if not LazIsValidIdent(AUnitName,true,true) then begin

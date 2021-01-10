@@ -338,7 +338,7 @@ begin
     FileNode:=nil;
     for i:=0 to Files.Count-1 do begin
       aFile:=Files[i];
-      if CompareFileExt(aFile.Filename,'.ppu',false)=0 then
+      if CompareFileExt(aFile.Filename,'ppu',true)=0 then
         inc(PPUCount)
       else
         inc(SrcCount);

@@ -59,7 +59,7 @@ uses
   CodeToolsStrConsts, ExprEval, DirectoryCacher, BasicCodeTools,
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
   // LazUtils
-  LazStringUtils, LazFileUtils, LazFileCache,
+  LazStringUtils, LazFileUtils, FileUtil, LazFileCache,
   LazUTF8, LazUTF8Classes, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
 
 const
@@ -1966,7 +1966,7 @@ begin
           if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
             File_Name:=ExtractFileNameOnly(Filename);
             if (not Units.Contains(File_Name))
-            or ((Ext<>'.ppu') and (CompareFileExt(Units[File_Name],'ppu',false)=0))
+            or ((Ext<>'.ppu') and (CompareFileExt(Units[File_Name],'ppu',true)=0))
             then
               Units[File_Name]:=Filename;
           end;
@@ -2049,7 +2049,7 @@ begin
     //if Pos('lazmkunit',Filename)>0 then
       //debugln(['GatherUnitsInFPMSources ===== ',Filename]);
     AVLNode:=Units.Tree.FindSuccessor(AVLNode);
-    if CompareFileExt(Filename,'ppu',false)<>0 then continue;
+    if CompareFileExt(Filename,'ppu',true)<>0 then continue;
     // check if filename has the form
     //                  /something/units/<FPCTarget>/<pkgname>/<unitname>.ppu
     // and if there is  /something/fpmkinst/<FPCTarget>/<pkgname>.fpm
@@ -2134,7 +2134,7 @@ function GatherUnitSourcesInDirectory(Directory: string; MaxLevel: integer
         if faDirectory and Info.Attr>0 then begin
           if Lvl<MaxLevel then
             Traverse(Dir+Filename+PathDelim,Tree,Lvl+1);
-        end else if FilenameIsPascalUnit(Filename) then begin
+        end else if FileProcs.FilenameIsPascalUnit(Filename) then begin
           AnUnitName:=ExtractFileNameOnly(Filename);
           if not Tree.Contains(AnUnitName) then
             Tree[AnUnitName]:=Dir+Filename;
@@ -2255,10 +2255,8 @@ begin
     LastDirScore:=0;
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
-      if (CompareFileExt(Filename,'PAS',false)=0)
-      or (CompareFileExt(Filename,'PP',false)=0)
-      or (CompareFileExt(Filename,'P',false)=0)
-      then begin
+      // FileProcs also has FilenameIsPascalUnit();
+      if FileUtil.FilenameIsPascalUnit(Filename) then begin
         if CompareFilenameOnly(PChar(Filename),length(Filename),'fpmake',6,true)=0
         then
           continue; // skip the fpmake.pp files
@@ -2877,7 +2875,7 @@ begin
     Item:=PStringToStringItem(Node.Data);
     Unit_Name:=Item^.Name;
     Filename:=Item^.Value;
-    if CompareFileExt(Filename,'.ppu',false)=0 then begin
+    if CompareFileExt(Filename,'ppu',true)=0 then begin
       SrcFilename:=UnitToSource[Unit_Name];
       if SrcFilename<>'' then begin
         DuplicateFilenames:=UnitToDuplicates[Unit_Name];
@@ -5414,8 +5412,7 @@ begin
   end;
 end;
 
-function TDefineTree.GetDCUSrcPathForDirectory(const Directory: string
-  ): string;
+function TDefineTree.GetDCUSrcPathForDirectory(const Directory: string): string;
 var Evaluator: TExpressionEvaluator;
 begin
   Evaluator:=GetDefinesForDirectory(Directory,true);
@@ -9118,7 +9115,7 @@ begin
       end;
       // check if the system ppu exists
       HasPPUs:=(Kind=pcFPC) and (Units<>nil)
-          and (CompareFileExt(Units['system'],'ppu',false)=0);
+          and (CompareFileExt(Units['system'],'ppu',true)=0);
       // check compiler version define
       if (CTConsoleVerbosity>=-1) and (Defines<>nil) then begin
         case Kind of
@@ -10424,7 +10421,7 @@ begin
   if (ConfigCache.Units<>nil) then begin
     UnitInFPCPath:=ConfigCache.Units[AnUnitName];
     //if Pos('lazmkunit',AnUnitName)>0 then debugln(['TFPCUnitSetCache.GetUnitSrcFile UnitInFPCPath=',UnitInFPCPath]);
-    if (CompareFileExt(UnitInFPCPath,'ppu',false)=0) then begin
+    if (CompareFileExt(UnitInFPCPath,'ppu',true)=0) then begin
       // there is a ppu
     end else if UnitInFPCPath<>'' then begin
       // there is a pp or pas in the FPC search path
@@ -10476,7 +10473,7 @@ begin
   if ConfigCache.Units=nil then exit;
   Result:=ConfigCache.Units[AUnitName];
   if Result='' then exit;
-  if CompareFileExt(Result,'.ppu',false)<>0 then
+  if CompareFileExt(Result,'ppu',true)<>0 then
     Result:='';
 end;
 

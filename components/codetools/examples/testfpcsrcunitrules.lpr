@@ -340,7 +340,7 @@ begin
       Item:=PStringToStringItem(Node.Data);
       aUnitName:=Item^.Name;
       Filename:=Item^.Value;
-      if CompareFileExt(Filename,'ppu',false)=0 then begin
+      if CompareFileExt(Filename,'ppu',true)=0 then begin
         // a ppu in the PPU search path
         if UnitToSrc[aUnitName]='' then begin
           inc(Cnt);
@@ -390,7 +390,7 @@ begin
       aUnitName:=Item^.Name;
       Files:=Item^.Value;
       PPUFile:=Units[aUnitName];
-      if CompareFileExt(PPUFile,'ppu',false)=0 then begin
+      if CompareFileExt(PPUFile,'ppu',true)=0 then begin
         if Cnt=0 then writeln;
         inc(Cnt);
         writeln('WARNING: duplicate source file for ppu ',aUnitName,' files=',Files);
@@ -437,7 +437,7 @@ begin
     PPUFile:=ConfigCache.Units[AnUnitName];
   if PPUFile='' then
     writeln('  WARNING: ',AnUnitName,' is not in PPU search path')
-  else if CompareFileExt(PPUFile,'ppu',false)<>0 then
+  else if CompareFileExt(PPUFile,'ppu',true)<>0 then
     writeln('  WARNING: fpc ppu search path has a source and not a ppu for ',AnUnitName,': ',PPUFile)
   else
     writeln('  in PPU search path: ',PPUFile);

@@ -387,7 +387,7 @@ begin
       Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
       if Package=nil then begin
         // Not found after everything we tried
-        if CompareFileExt(Filename,'.lpi')=0 then
+        if CompareFileExt(Filename,'lpi', true)=0 then
           Error(ErrorFileNotFound,'file not found: '+OriginalFilename)
         else
           Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
@@ -416,15 +416,15 @@ begin
     end
   else begin
     // File exists:
-    if CompareFileExt(Filename,'.lpk')=0 then begin
+    if CompareFileExt(Filename,'lpk',true)=0 then begin
       case PackageAction of
       lpaBuild: Result:=BuildPackage(Filename);
       lpaInstall: Result:=true; // this is handled in AddPackagesToInstallList
       lpaAddPkgLinks: Result:=true;
       end;
-    end else if CompareFileExt(Filename,'.lpi')=0 then
+    end else if CompareFileExt(Filename,'lpi',true)=0 then
       Result:=BuildProject(Filename)
-    else if CompareFileExt(Filename,'.lpr')=0 then begin
+    else if CompareFileExt(Filename,'lpr',true)=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
         Result:=BuildProject(Filename)
@@ -1061,7 +1061,7 @@ begin
     PkgFilename:='';
     if pvPkgSearch in fPkgGraphVerbosity then
       debugln(['Info: (lazarus) [TLazBuildApplication.AddPackagesToInstallList] "',PackageNamesOrFiles[i],'"']);
-    if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
+    if CompareFileExt(PackageNamesOrFiles[i],'lpk',true)=0 then
       PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
     else if IsValidPkgName(PackageNamesOrFiles[i]) then begin
       PackageLink:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]));
@@ -1122,7 +1122,7 @@ begin
   begin
     // Look for package name in all known packages
     PkgFilename:=PackageNamesOrFiles[i];
-    if CompareFileExt(PkgFilename,'.lpk')<>0 then begin
+    if CompareFileExt(PkgFilename,'lpk',true)<>0 then begin
       ErrorMsg+=PkgFilename+' is not a package (.lpk), so it is not registered.'+LineEnding;
       continue;
     end;

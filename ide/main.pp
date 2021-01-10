@@ -2327,10 +2327,10 @@ begin
   // try command line project
   if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
     AProjectFilename:=CmdLineFiles[0];
-    if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
+    if (CompareFileExt(AProjectFilename,'lpr',true)=0) then
       AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
     // only try to load .lpi files, other files are loaded later
-    if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+    if (CompareFileExt(AProjectFilename,'lpi',true)=0) then begin
       AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
       if FileExistsUTF8(AProjectFilename) then begin
         CmdLineFiles.Delete(0);
@@ -2416,7 +2416,7 @@ begin
         // => create a project
         DoNewProject(ProjectDescriptorEmptyProject);
       end;
-      if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+      if CompareFileExt(AFilename,'lpk',true)=0 then begin
         if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
         then
           break;
@@ -7567,9 +7567,9 @@ procedure TMainIDE.DoExecuteRemoteControl;
     AProjectFilename:='';
     for i:=Files.Count-1 downto 0 do begin
       AProjectFilename:=Files[0];
-      if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
+      if (CompareFileExt(AProjectFilename,'lpr',true)=0) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-      if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+      if (CompareFileExt(AProjectFilename,'lpi',true)=0) then begin
         // open a project
         Files.Delete(i); // remove from the list
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
@@ -7598,7 +7598,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
       for i:=0 to Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(Files.Strings[i]);
         DebugLn(['Hint: (lazarus) TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
-        if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+        if CompareFileExt(AFilename,'lpk',true)=0 then begin
           if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],true)=mrAbort
           then
             break;
@@ -8904,7 +8904,7 @@ begin
 
   if (ActiveUnitInfo.Component=nil)
   and (ActiveUnitInfo.Source<>nil) then begin
-    if (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
+    if (CompareFileExtQuick(ActiveUnitInfo.Filename,'inc')=0) then begin
       // include file => get unit
       UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
       if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
@@ -8918,7 +8918,7 @@ begin
         end;
       end;
     end;
-    if (CompareFileExt(ActiveUnitInfo.Filename,'.lfm',false)=0) then begin
+    if (CompareFileExt(ActiveUnitInfo.Filename,'lfm',true)=0) then begin
       // lfm file => get unit
       aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
       if aFilename<>'' then begin
@@ -12586,7 +12586,7 @@ begin
       end;
     end;
   end
-  else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
+  else if CompareFileExtQuick(AnUnitInfo.Filename,'inc')=0 then
     OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,True);
   if OkToAdd then
     ;

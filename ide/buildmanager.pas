@@ -872,7 +872,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
     if ConfigCache.Units=nil then exit;
     AFilename:=ConfigCache.Units['system'];
     if AFilename='' then exit;
-    if CompareFileExt(AFilename,'.ppu',false)<>0 then exit;
+    if CompareFileExt(AFilename,'ppu',true)<>0 then exit;
     Result:=true;
   end;
 
@@ -1688,7 +1688,7 @@ begin
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
             if FilenameIsPascalUnit(FileInfo.Name) then
               CurUnitTree:=SourceUnitTree
-            else if (CompareFileExt(FileInfo.Name,CompiledExt,false)=0) then
+            else if (CompareFileExt(FileInfo.Name,CompiledExt,true)=0) then
               CurUnitTree:=CompiledUnitTree
             else
               continue;

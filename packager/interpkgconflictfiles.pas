@@ -710,7 +710,7 @@ var
       Node:=Node.Successor;
       OFile:=TPGInterPkgFile(ONode.Data);
       if not FilenameIsCompiledSource(OFile.ShortFilename) then continue;
-      if CompareFileExt(OFile.ShortFilename,'.ppu',false)=0 then continue;
+      if CompareFileExt(OFile.ShortFilename,'ppu',true)=0 then continue;
       // search corresponding .ppu
       PPUFileName:=ChangeFileExt(OFile.FullFilename,'.ppu');
       SearchFile:=TPGInterPkgFile.Create(PPUFileName,'',nil);

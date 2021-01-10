@@ -899,13 +899,13 @@ var
 begin
   HasName:=ExtractFileNameOnly(AFilename)<>'';
   if HasName then begin
-    if CompareFileExt(AFilename,'.lfm',true)=0 then
+    if CompareFileExt(AFilename,'lfm',true)=0 then
       exit(pftLFM)
-    else if CompareFileExt(AFilename,'.lrs',true)=0 then
+    else if CompareFileExt(AFilename,'lrs',true)=0 then
       exit(pftLRS)
-    else if CompareFileExt(AFilename,'.inc',true)=0 then
+    else if CompareFileExtQuick(AFilename,'inc')=0 then
       exit(pftInclude)
-    else if CompareFileExt(AFilename,'.xml',true)=0 then
+    else if CompareFileExtQuick(AFilename,'xml')=0 then
       exit(pftIssues)
     else if FilenameIsPascalUnit(AFilename) then begin
       Result:=pftUnit;
@@ -2070,7 +2070,7 @@ var
 begin
   Result:='';
   AFilename:=TrimFilename(DefaultFilename);
-  if (CompareFileExt(AFilename,'lpk')<>0)
+  if (CompareFileExt(AFilename,'lpk',true)<>0)
   or (SysUtils.CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0) then
     exit;
   if not FilenameIsAbsolute(AFilename) then begin

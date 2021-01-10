@@ -383,11 +383,11 @@ begin
     // Update po file with lrj or/and rst/rsj files
     for i:=0 to SrcFiles.Count-1 do begin
       Filename:=SrcFiles[i];
-      if CompareFileExt(Filename,'.lrj',false)=0 then
+      if CompareFileExtQuick(Filename,'lrj')=0 then
         FileType:=stLrj
-      else if CompareFileExt(Filename,'.rst',false)=0 then
+      else if CompareFileExtQuick(Filename,'rst')=0 then
         FileType:=stRst
-      else if CompareFileExt(Filename,'.rsj',false)=0 then
+      else if CompareFileExtQuick(Filename,'rsj')=0 then
         FileType:=stRsj
       else
         continue;
