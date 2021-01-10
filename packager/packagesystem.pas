@@ -776,6 +776,7 @@ procedure TLazPackageGraphFileCache.Update;
 var
   I, L: Integer;
   xPck: TLazPackage;
+  PkgFile: TPkgFile;
 begin
   SetLength(FPackageInfo, FGraph.Count);
   FFilesList.Clear;
@@ -788,13 +789,15 @@ begin
 
     for L := 0 to xPck.FileCount-1 do
     begin
-      FFilesList[xPck.Files[L].GetFullFilename]:=xPck.Files[L];
-      FFilesList[xPck.Files[L].Filename]:=xPck.Files[L];
+      PkgFile := xPck.Files[L];
+      FFilesList[PkgFile.GetFullFilename]:=PkgFile;
+      FFilesList[PkgFile.Filename]:=PkgFile;
     end;
     for L := 0 to xPck.RemovedFilesCount-1 do
     begin
-      FRemovedFilesList[xPck.RemovedFiles[L].GetFullFilename]:=xPck.RemovedFiles[L];
-      FRemovedFilesList[xPck.RemovedFiles[L].Filename]:=xPck.RemovedFiles[L];
+      PkgFile := xPck.RemovedFiles[L];
+      FRemovedFilesList[PkgFile.GetFullFilename]:=PkgFile;
+      FRemovedFilesList[PkgFile.Filename]:=PkgFile;
     end;
   end;
 end;

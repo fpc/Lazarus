@@ -1087,10 +1087,9 @@ begin
   else begin
     MaxBytes:=PtrInt(PChar(s)+length(s)-StartBytePos);
     EndBytePos:=UTF8CodepointStart(StartBytePos,MaxBytes,CharCount);
-    if EndBytePos=nil then
-      Result:=copy(s,StartBytePos-PChar(s)+1,MaxBytes)
-    else
-      Result:=copy(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
+    if EndBytePos<>nil then
+      MaxBytes:=EndBytePos-StartBytePos;
+    Result:=copy(s,StartBytePos-PChar(s)+1,MaxBytes);
   end;
 end;
 
