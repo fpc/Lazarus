@@ -387,7 +387,7 @@ begin
         AddFilesToList(Dir+FRec.Name, List);
         //WriteLn('Checking Subfolder ',Dir+ FRec.Name);
       end
-      else if FilenameIsPascalUnit(FRec.Name) then
+      else if FilenameHasPascalExt(FRec.Name) then
       begin
         List.Add(Dir+FRec.Name);
       end;

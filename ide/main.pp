@@ -2038,7 +2038,7 @@ begin
       continue;
     case SrcType of
     ctnUnit:
-      if not FilenameIsPascalUnit(SrcFileName) then
+      if not FilenameHasPascalExt(SrcFileName) then
         continue;
     else
       // a pascal program can have any file name
@@ -4499,7 +4499,7 @@ begin
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
       if not FilenameIsAbsolute(CurFilename) then continue;
       if (AProject.MainFilename<>CurFilename)
-      and (not FilenameIsPascalUnit(CurFilename)) then
+      and (not FilenameHasPascalExt(CurFilename)) then
         continue;
       // check .lrj file
       LRJFilename:=ChangeFileExt(CurFilename,'.lrj');
@@ -12569,7 +12569,7 @@ begin
   ActiveSourceEditor:=nil;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   OkToAdd:=True;
-  if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
+  if FilenameHasPascalExt(AnUnitInfo.Filename) then begin
     OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);

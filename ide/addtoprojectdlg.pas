@@ -128,13 +128,13 @@ begin
       case TPrjFileCheck.AddingFile(fProject, NewFilename) of
         mrOk: begin
             // check if unitname already exists in selection
-            if FilenameIsPascalUnit(NewFilename) then
+            if FilenameHasPascalExt(NewFilename) then
             begin
               NewUnitName:=ExtractFileNameOnly(NewFilename);
               for j:=0 to fFileNames.Count-1 do
               begin
                 OtherFile:=fFileNames[j];
-                if FilenameIsPascalUnit(OtherFile)
+                if FilenameHasPascalExt(OtherFile)
                 and (CompareText(ExtractFileNameOnly(OtherFile), NewUnitName)=0)
                 then begin
                   IDEMessageDialog(lisProjAddUnitNameAlreadyExists,

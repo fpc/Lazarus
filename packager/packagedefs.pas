@@ -907,7 +907,7 @@ begin
       exit(pftInclude)
     else if CompareFileExtQuick(AFilename,'xml')=0 then
       exit(pftIssues)
-    else if FilenameIsPascalUnit(AFilename) then begin
+    else if FilenameHasPascalExt(AFilename) then begin
       Result:=pftUnit;
       AFilename:=CleanAndExpandFilename(AFilename);
       Code:=CodeToolBoss.LoadFile(aFilename,true,false);
@@ -1511,7 +1511,7 @@ procedure TPkgFile.UpdateUnitName;
 var
   NewUnitName: String;
 begin
-  if FilenameIsPascalUnit(Filename) then begin
+  if FilenameHasPascalExt(Filename) then begin
     NewUnitName:=ExtractFileNameOnly(Filename);
     if SysUtils.CompareText(NewUnitName,FUnitName)<>0 then
       FUnitName:=NewUnitName;

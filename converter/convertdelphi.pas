@@ -1578,7 +1578,7 @@ begin
     // Check unitname and create UnitInfo.
     CurUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
     if CurUnitInfo=nil then begin
-      if FilenameIsPascalUnit(AFileName) then begin
+      if FilenameHasPascalExt(AFileName) then begin
         CurUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
         Assert(CurUnitInfo=nil,
           Format('TConvertDelphiProject.AddUnit: Unitname %s exists twice',[PureUnitName]));
@@ -1876,7 +1876,7 @@ begin
   PkgFile:=LazPackage.FindPkgFile(AFileName,true,false);
   if PkgFile=nil then begin
     PureUnitName:=ExtractFileNameOnly(AFileName);
-    if FilenameIsPascalUnit(AFileName) then begin
+    if FilenameHasPascalExt(AFileName) then begin
       // Check unitname
       OffendingUnit:=LazPackage.FindUnit(PureUnitName);
       Assert(OffendingUnit=nil,

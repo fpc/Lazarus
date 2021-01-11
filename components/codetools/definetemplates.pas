@@ -2134,7 +2134,7 @@ function GatherUnitSourcesInDirectory(Directory: string; MaxLevel: integer
         if faDirectory and Info.Attr>0 then begin
           if Lvl<MaxLevel then
             Traverse(Dir+Filename+PathDelim,Tree,Lvl+1);
-        end else if FileProcs.FilenameIsPascalUnit(Filename) then begin
+        end else if FilenameIsPascalUnit(Filename) then begin
           AnUnitName:=ExtractFileNameOnly(Filename);
           if not Tree.Contains(AnUnitName) then
             Tree[AnUnitName]:=Dir+Filename;
@@ -2255,8 +2255,7 @@ begin
     LastDirScore:=0;
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
-      // FileProcs also has FilenameIsPascalUnit();
-      if FileUtil.FilenameIsPascalUnit(Filename) then begin
+      if FilenameHasPascalExt(Filename) then begin
         if CompareFilenameOnly(PChar(Filename),length(Filename),'fpmake',6,true)=0
         then
           continue; // skip the fpmake.pp files

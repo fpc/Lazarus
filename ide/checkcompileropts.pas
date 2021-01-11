@@ -716,7 +716,7 @@ begin
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
               continue;
             // check extension
-            if FilenameIsPascalUnit(FileInfo.Name) then begin
+            if FilenameHasPascalExt(FileInfo.Name) then begin
               AddWarning(lisCCOFPCUnitPathHasSource+Directory+FileInfo.Name);
               WarnedDirectories.Add(Directory);
               break;

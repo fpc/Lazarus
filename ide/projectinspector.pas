@@ -1184,7 +1184,7 @@ begin
   Item:=GetNodeItem(NodeData);
   if Item=nil then exit;
   if Item is TUnitInfo then begin
-    if FilenameIsPascalUnit(TUnitInfo(Item).Filename) then
+    if FilenameHasPascalExt(TUnitInfo(Item).Filename) then
       Result:=ImageIndexUnit
     else if (LazProject<>nil) and (LazProject.MainUnitinfo=Item) then
       Result:=ImageIndexProject

@@ -106,7 +106,7 @@ begin
   NewFilename:=AValues[0];
   NewUnitName:=AValues[1];
 
-  if not FilenameIsPascalUnit(NewFilename) then begin
+  if not FilenameHasPascalExt(NewFilename) then begin
     MessageDlg(lisPEInvalidUnitFilename,
       lisPVUAPascalUnitMustHaveTheExtensionPpOrPas,
       mtError,[mbCancel],0);

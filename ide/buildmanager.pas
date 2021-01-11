@@ -1228,7 +1228,7 @@ var
     if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then exit;
     if not FileExistsCached(AnUnitInfo.Filename) then exit;
     if StateFileAge>=FileAgeCached(AnUnitInfo.Filename) then exit;
-    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+    if FilenameHasPascalExt(AnUnitInfo.Filename) then
     begin
       if (SearchDirectoryInSearchPath(AProject.CompilerOptions.GetUnitPath(false),
                                 ExtractFilePath(AnUnitInfo.Filename))>0)
@@ -1545,7 +1545,7 @@ begin
   if (EnvironmentOptions.AmbiguousFileAction=afaWarnOnCompile)
   and not Compiling then exit;
 
-  if FilenameIsPascalUnit(AFilename) then begin
+  if FilenameHasPascalExt(AFilename) then begin
     Ext:=ExtractFileExt(AFilename);
     LowExt:=lowercase(Ext);
     for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
@@ -1573,7 +1573,7 @@ begin
     if FindFirstUTF8(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     begin
       ShortFilename:=ExtractFileName(Filename);
-      IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
+      IsPascalUnit:=FilenameHasPascalExt(ShortFilename);
       AUnitName:=ExtractFilenameOnly(ShortFilename);
       repeat
         if (FileInfo.Name='.') or (FileInfo.Name='..')
@@ -1584,7 +1584,7 @@ begin
         if (SysUtils.CompareText(ShortFilename,FileInfo.Name)=0)
         then begin
           // same name different case => ambiguous
-        end else if IsPascalUnit and FilenameIsPascalUnit(FileInfo.Name)
+        end else if IsPascalUnit and FilenameHasPascalExt(FileInfo.Name)
            and (SysUtils.CompareText(AUnitName,ExtractFilenameOnly(FileInfo.Name))=0)
         then begin
           // same unit name => ambiguous
@@ -1686,7 +1686,7 @@ begin
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
-            if FilenameIsPascalUnit(FileInfo.Name) then
+            if FilenameHasPascalExt(FileInfo.Name) then
               CurUnitTree:=SourceUnitTree
             else if (CompareFileExt(FileInfo.Name,CompiledExt,true)=0) then
               CurUnitTree:=CompiledUnitTree

@@ -61,7 +61,7 @@ function ProgramDirectoryWithBundle: string;
 
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function FileSize(const Filename: string): int64; overload; inline;
-function FilenameIsPascalUnit(const Filename: string): boolean;
+function FilenameHasPascalExt(const Filename: string): boolean;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
 

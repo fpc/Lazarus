@@ -987,7 +987,7 @@ begin
   if FDefaultFilename=AValue then exit;
   FDefaultFilename:=AValue;
   DefaultFileExt:=ExtractFileExt(FDefaultFilename);
-  FIsPascalUnit:=FilenameIsPascalUnit(DefaultFileExt);
+  FIsPascalUnit:=FilenameHasPascalExt(DefaultFileExt);
 end;
 
 procedure TProjectFileDescriptor.SetName(const AValue: string);
@@ -1048,9 +1048,9 @@ procedure TProjectFileDescriptor.UpdateDefaultPascalFileExtension(
   const DefPasExt: string);
 begin
   if DefPasExt='' then exit;
-  if FilenameIsPascalUnit(DefaultFileExt) then
+  if FilenameHasPascalExt(DefaultFileExt) then
     DefaultFileExt:=DefPasExt;
-  if FilenameIsPascalUnit(DefaultFilename) then
+  if FilenameHasPascalExt(DefaultFilename) then
     DefaultFilename:=ChangeFileExt(DefaultFilename,DefPasExt);
 end;
 

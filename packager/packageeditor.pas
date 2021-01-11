@@ -716,7 +716,7 @@ var
       else if not (CurPFT in PkgFileUnitTypes) then
         // all other files can be changed into all non unit types
         NewMenuItem.Enabled:=true
-      else if FilenameIsPascalUnit(SingleSelectedFile.Filename) then
+      else if FilenameHasPascalExt(SingleSelectedFile.Filename) then
         // a pascal file can be changed into anything
         NewMenuItem.Enabled:=true
       else
@@ -1588,7 +1588,7 @@ begin
         if not (Item is TPkgFile) then continue;
         CurFile:=TPkgFile(Item);
         if CurFile.FileType=CurPFT then continue;
-        if (not FilenameIsPascalUnit(CurFile.Filename))
+        if (not FilenameHasPascalExt(CurFile.Filename))
         and (CurPFT in PkgFileUnitTypes) then
           continue;
         CurFile.FileType:=CurPFT;

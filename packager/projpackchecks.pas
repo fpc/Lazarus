@@ -105,7 +105,7 @@ begin
     exit;
   end;
   // Pascal extension
-  Assert(FilenameIsPascalUnit(AFilename), 'TPkgFileCheck.UnitNameOk: Wrong extension.');
+  Assert(FilenameHasPascalExt(AFilename), 'TPkgFileCheck.UnitNameOk: Wrong extension.');
   Result:=mrOK;
 end;
 
@@ -389,7 +389,7 @@ begin
   if (NewFile<>nil) and NewFile.IsPartOfProject then
     exit(mrIgnore);
   // check unit name
-  if FilenameIsPascalUnit(AFilename) then
+  if FilenameHasPascalExt(AFilename) then
   begin
     UnitFilename:=ExtractFileNameOnly(AFilename);
     Result:=UnitNameOk(AFilename, UnitFilename);

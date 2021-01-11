@@ -1692,7 +1692,7 @@ end;
 
 function TUnitInfo.GetUsesUnitName: string;
 begin
-  if FilenameIsPascalUnit(Filename) then
+  if FilenameHasPascalExt(Filename) then
   begin
     if FUnitName<>'' then
       Result:=FUnitName
@@ -6048,8 +6048,8 @@ begin
     while AnUnitInfo<>nil do begin
       if FileExistsCached(AnUnitInfo.Filename) then begin
         if (BestUnitInfo=nil)
-        or (FilenameIsPascalUnit(AnUnitInfo.Filename)
-             and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
+        or (FilenameHasPascalExt(AnUnitInfo.Filename)
+             and (not FilenameHasPascalExt(BestUnitInfo.Filename)))
         then begin
           BestUnitInfo:=AnUnitInfo;
         end;

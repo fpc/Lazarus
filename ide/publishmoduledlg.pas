@@ -233,7 +233,7 @@ begin
   if CopyFile(AFilename, FDestDir+RelPath, [cffCreateDestDirectory,cffPreserveTime]) then
   begin
     FCopiedFiles.Add(AFilename);
-    if FilenameIsPascalUnit(AFilename) then
+    if FilenameHasPascalExt(AFilename) then
     begin    // Copy .lfm or .dfm file even if it is not part of project/package.
       LfmFile := ChangeFileExt(AFilename, '.lfm');
       if not FileExistsUTF8(LfmFile) then

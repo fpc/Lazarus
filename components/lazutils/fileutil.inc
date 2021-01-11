@@ -85,7 +85,7 @@ begin
   end;
 end;
 
-function FilenameIsPascalUnit(const Filename: string): boolean;
+function FilenameHasPascalExt(const Filename: string): boolean;
 var
   i, FnPos: Integer;
   FnExt: String;

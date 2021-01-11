@@ -45,11 +45,11 @@ uses
   {$ENDIF}
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
+  // BuildIntf
+  NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
-  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf,
-  IDEWindowIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, FormEditingIntf,
-  IDEExternToolIntf, ObjectInspector, UnitResources, ComponentReg,
-  SrcEditorIntf, EditorSyntaxHighlighterDef,
+  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
+  ObjectInspector, ComponentReg, SrcEditorIntf, EditorSyntaxHighlighterDef,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
@@ -312,11 +312,7 @@ function CreateSrcEditPageName(const AnUnitName, AFilename: string;
 begin
   Result:=AnUnitName;
   if Result='' then
-    Result:=AFilename;
-  if FilenameIsPascalUnit(Result) then
-    Result:=ExtractFileNameOnly(Result)
-  else
-    Result:=ExtractFileName(Result);
+    Result:=ExtractFileName(AFilename);
   Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
 end;
 
@@ -1765,7 +1761,7 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName, LFMFilename, LFMType, LFMComponentName, LFMClassName: string;
-  OkToAdd: boolean;
+  OkToAdd, IsPascal: boolean;
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
@@ -1833,8 +1829,8 @@ begin
     Owners.Free;
   end;
 
-  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
-  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+  IsPascal:=FilenameIsPascalUnit(ActiveUnitInfo.Filename);
+  if IsPascal and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
   begin
     // ask user to apply naming conventions
     Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
@@ -1849,16 +1845,15 @@ begin
     mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
   then begin
     OkToAdd:=True;
-    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+    if IsPascal then
       OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False)
     else if CompareFileExtQuick(ActiveUnitInfo.Filename,'inc')=0 then
       OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,True);
     if OkToAdd then begin
       ActiveUnitInfo.IsPartOfProject:=true;
       Project1.Modified:=true;
-      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-      then begin
+      if IsPascal and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then
+      begin
         ActiveUnitInfo.ReadUnitNameFromSource(false);
         ShortUnitName:=ActiveUnitInfo.CreateUnitName;
         if (ShortUnitName<>'') then begin
@@ -1870,9 +1865,8 @@ begin
     end;
   end;
 
-  if Project1.AutoCreateForms
-  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
-  and FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
+  if Project1.AutoCreateForms and IsPascal
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
   begin
     UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
     if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcCustomForm,pfcbcDataModule] then
@@ -5391,7 +5385,7 @@ begin
     OldFilePath:=ExtractFilePath(OldFilename);
     OldLFMFilename:='';
     // ToDo: use UnitResources
-    if FilenameIsPascalUnit(OldFilename) then begin
+    if FilenameHasPascalExt(OldFilename) then begin
       OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
       if not FileExistsUTF8(OldLFMFilename) then
         OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
@@ -5402,7 +5396,7 @@ begin
 
     // check new resource file
     NewLFMFilename:='';
-    if FilenameIsPascalUnit(NewFilename) then
+    if FilenameHasPascalExt(NewFilename) then
        NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if AnUnitInfo.ComponentName='' then begin
       // unit has no component
@@ -5441,8 +5435,7 @@ begin
     MainIDE.SetRecentFilesMenu;
 
     // add new path to unit path
-    if AnUnitInfo.IsPartOfProject
-    and (FilenameIsPascalUnit(NewFilename))
+    if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(NewFilename)
     and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
       OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
       if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then
@@ -5618,8 +5611,7 @@ begin
     end;
 
     // remove old path from unit path
-    if AnUnitInfo.IsPartOfProject
-    and (FilenameIsPascalUnit(OldFilename))
+    if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(OldFilename)
     and (OldFilePath<>'') then begin
       //DebugLn('RenameUnit OldFilePath="',OldFilePath,'" SourceDirs="',Project1.SourceDirectories.CreateSearchPathFromAllFiles,'"');
       if (SearchDirectoryInSearchPath(
@@ -5772,7 +5764,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   if (LFMUnitInfo<>nil)
-  and FilenameIsPascalUnit(LFMUnitInfo.Filename) then begin
+  and FilenameHasPascalExt(LFMUnitInfo.Filename) then begin
     LFMFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.lfm');
     if FileExistsInIDE(LFMFilename,[])
     and (OpenEditorFile(LFMFilename,-1,-1,nil,[])=mrOk)
@@ -7601,7 +7593,7 @@ begin
   AnUnitInfo:=Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
     if (not AnUnitInfo.HasResources)
-    and (not AnUnitInfo.IsVirtual) and FilenameIsPascalUnit(AnUnitInfo.Filename)
+    and (not AnUnitInfo.IsVirtual) and FilenameHasPascalExt(AnUnitInfo.Filename)
     then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if not FileExistsCached(LFMFilename) then
@@ -7717,8 +7709,7 @@ begin
             if Result=mrAbort then exit;
             continue; // try again
           end;
-          // check programname
-          //if FilenameIsPascalUnit(NewProgramFN)
+          // check program name
           if (Project1.IndexOfUnitWithName(NewProgramName,true,
                                            Project1.MainUnitInfo)>=0) then
           begin

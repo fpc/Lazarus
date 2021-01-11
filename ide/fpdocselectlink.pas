@@ -383,7 +383,7 @@ begin
     ProjFile:=AProject.Files[i];
     if ProjFile.IsPartOfProject then begin
       Filename:=ProjFile.Filename;
-      if FilenameIsPascalUnit(Filename) then begin
+      if FilenameHasPascalExt(Filename) then begin
         Filename:=ExtractFileNameOnly(Filename);
         DebugLn(['TFPDocLinkEditorDlg.AddProjectUnits ',Prefix,' ',Filename]);
         if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
@@ -409,7 +409,7 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     PkgFile:=APackage.Files[i];
     Filename:=PkgFile.GetFullFilename;
-    if FilenameIsPascalUnit(Filename) then begin
+    if FilenameHasPascalExt(Filename) then begin
       Filename:=ExtractFileNameOnly(Filename);
       if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
       begin

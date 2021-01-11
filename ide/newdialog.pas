@@ -44,9 +44,7 @@ uses
   ComCtrls, Controls, Dialogs, Forms, StdCtrls, ExtCtrls,
   ButtonPanel, ListViewFilterEdit,
   // LazUtils
-  LazUTF8,
-  // CodeTools
-  FileProcs,
+  LazUTF8, FileUtil,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
   LazIDEIntf, IDEHelpIntf, IDEDialogs,
@@ -278,10 +276,10 @@ Begin
 
     // Loop trough project units which have a component
     for i := 0 to Project1.UnitCount-1 do begin
-      if Project1.Units[i].IsPartOfProject
-      and FilenameIsPascalUnit(Project1.Units[i].Filename)
-      and (Project1.Units[i].ComponentName<>'') then
-        aComponentList.AddObject(Project1.Units[i].ComponentName, Project1.Units[i]);
+      AnUnitInfo := Project1.Units[i];
+      if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(AnUnitInfo.Filename)
+      and (AnUnitInfo.ComponentName<>'') then
+        aComponentList.AddObject(AnUnitInfo.ComponentName, AnUnitInfo);
     end;
     // Sort lists (by component name)
     aComponentList.Sort;

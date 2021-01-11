@@ -6976,7 +6976,7 @@ begin
   CurFilename:=ASrcEdit.FileName;
   ShortFileName:=ExtractFileName(CurFilename);
   MainCodeBuf:=nil;
-  if FilenameIsPascalUnit(ShortFileName)
+  if FilenameHasPascalExt(ShortFileName)
   or (CompareFileExtQuick(ShortFileName,'inc')=0) then
     MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer)
   else if FilenameIsPascalSource(ShortFileName) then
@@ -6993,7 +6993,7 @@ begin
                [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
         true,@OnPopupMenuOpenFile);
     end;
-    if FilenameIsPascalUnit(ShortFileName) then begin
+    if FilenameHasPascalExt(ShortFileName) then begin
       MaybeAddPopup('.lfm');
       MaybeAddPopup('.dfm');
       MaybeAddPopup('.lrs');
@@ -10201,7 +10201,7 @@ begin
   CurFilename:=SrcEdit.FileName;
   ShortFileName:=ExtractFileName(CurFilename);
   MainCodeBuf:=nil;
-  if FilenameIsPascalUnit(ShortFileName)
+  if FilenameHasPascalExt(ShortFileName)
   or (CompareFileExtQuick(ShortFileName,'inc')=0) then
     MainCodeBuf:=CodeToolBoss.GetMainCode(SrcEdit.CodeBuffer)
   else if FilenameIsPascalSource(ShortFileName) then
@@ -10901,7 +10901,7 @@ begin
       exit;
     end;
   end;
-  if FilenameIsPascalUnit(FileName) then
+  if FilenameHasPascalExt(FileName) then
     ShortName:=ExtractFileNameOnly(Filename)
   else
     ShortName:=ExtractFileName(FileName);

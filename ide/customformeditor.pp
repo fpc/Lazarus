@@ -361,7 +361,7 @@ var
   LFMCode: TCodeBuffer;
 begin
   Result:=pfcbcNone;
-  if not FilenameIsPascalUnit(aFilename) then exit;
+  if not FilenameHasPascalExt(aFilename) then exit;
   if not FilenameIsAbsolute(aFilename) then exit;
   LFMFilename:=ChangeFileExt(aFilename,'.lfm');
   if not FileExistsCached(LFMFilename) then exit;
