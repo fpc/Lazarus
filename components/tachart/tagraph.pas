@@ -1049,7 +1049,7 @@ begin
     end;
 
   if Assigned(OnAfterCustomDrawBackWall) then
-    OnAfterCustomDrawBackwall(Self, Drawer, FClipRect);
+    OnAfterCustomDrawBackwall(Self, ADrawer, FClipRect);
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackWall) then
     OnAfterDrawBackWall(Self, ic.Canvas, FClipRect);
 
