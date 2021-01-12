@@ -351,7 +351,6 @@ type
     FOldControlStyle: TControlStyle;
     FSelectedRows: TBookmarkList;
     FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
-    FKeyBookmark: TBookmark;
     FKeySign: Integer;
     FSavedRecord: Integer;
     FOnGetCellHint: TDbGridCellHintEvent;
@@ -1317,10 +1316,6 @@ begin
 
     if MultiSel and not (dgMultiSelect in FOptions) then begin
       FSelectedRows.Clear;
-      if FKeyBookmark<>nil then begin
-        FDatalink.DataSet.FreeBookmark(FKeyBookmark);
-        FKeyBookmark:=nil;
-      end;
     end;
 
     EndLayout;
@@ -2037,10 +2032,6 @@ begin
   {$endif}
   if not Value then begin
     FSelectedRows.Clear;
-    if FKeyBookmark<>nil then begin
-      FDatalink.DataSet.FreeBookmark(FKeyBookmark);
-      FKeyBookmark:=nil;
-    end;
     RemoveAutomaticColumns;
   end;
   LayoutChanged;
@@ -2352,6 +2343,7 @@ type
   TOperation=(opMoveBy,opCancel,opAppend,opInsert,opDelete);
 var
   DeltaCol,DeltaRow: Integer;
+  preSelIndex, posSelIndex: Integer;
 
   procedure DoOnKeyDown;
   begin
@@ -2400,41 +2392,37 @@ var
 
   procedure SelectNext(const AStart,ADown:Boolean);
   var
-    N: Integer;
+    N, curActiveRecord: Integer;
     CurBookmark: TBookmark;
   begin
     if dgPersistentMultiSelect in Options then
       exit;
 
     if (ssShift in Shift) then begin
-
-      CurBookmark := FDatalink.DataSet.GetBookmark;
-      if FKeyBookmark=nil then
-        FKeyBookmark:=CurBookmark;
-
-      if (FKeyBookmark=CurBookmark) then begin
-        if AStart then begin
-          SelectRecord(true);
-          if ADown then
-            FKeySign := 1
-          else
-            FKeySign := -1;
-          exit;
+      if dgMultiSelect in Options then begin
+        curBookmark := FDatalink.DataSet.GetBookmark;
+        try
+          if AStart then  preSelIndex := FSelectedRows.IndexOf(curBookmark)
+          else            posSelIndex := FSelectedRows.IndexOf(curBookmark);
+          if not AStart then begin
+            FSelectedRows.CurrentRowSelected := true;
+            // deal with selection of previous (not prior) record
+            curActiveRecord := FDatalink.ActiveRecord;
+            try
+              if ADown then FDatalink.ActiveRecord := FDatalink.ActiveRecord - 1
+              else          FDatalink.ActiveRecord := FDatalink.ActiveRecord + 1;
+              if (preSelIndex>=0) and (posSelIndex>=0) then begin
+                if preSelIndex<>posSelIndex then
+                  FSelectedRows.CurrentRowSelected := false
+              end else
+                FSelectedRows.CurrentRowSelected := true;
+            finally
+              FDatalink.ActiveRecord := curActiveRecord;
+            end;
+          end;
+        finally
+          FDatalink.DataSet.FreeBookmark(CurBookmark);
         end;
-        FKeySign := 0;
-      end else
-        FDatalink.DataSet.FreeBookmark(CurBookmark);
-
-      n := 4*Ord(FKeySign>=0) + 2*Ord(ADown) + 1*Ord(AStart);
-      case n of
-        0,6,8..11:
-          begin
-            SelectRecord(True);
-          end;
-        3,5:
-          begin
-            SelectRecord(False);
-          end;
       end;
     end else
       ClearSelection(true);
@@ -2785,10 +2773,6 @@ begin
     else
       begin
 
-        if FKeyBookmark<>nil then begin
-          FDatalink.DataSet.FreeBookmark(FKeyBookmark);
-          FKeyBookmark:=nil; // force new keyboard selection start
-        end;
 
         P:=MouseToCell(Point(X,Y));
         if Gz=gzFixedRows then
@@ -3837,10 +3821,6 @@ begin
       SelectedRows.Clear;
     if SelCurrent then
       SelectRecord(true);
-  end;
-  if FKeyBookmark<>nil then begin
-    FDatalink.DataSet.FreeBookmark(FKeyBookmark);
-    FKeyBookmark:=nil;
   end;
 end;
 
