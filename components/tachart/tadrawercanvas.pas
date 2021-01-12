@@ -76,7 +76,8 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
@@ -430,11 +431,18 @@ begin
     GetCanvas.Pen.Color := ColorOrMono(AColor);
 end;
 
-procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
+  AWidth: Integer = 1);
 begin
   GetCanvas.Pen.Style := AStyle;
+  GetCanvas.Pen.Width := AWidth;
   if not FXor then
     GetCanvas.Pen.Color := ColorOrMono(AColor);
+end;
+
+procedure TCanvasDrawer.SetPenWidth(AWidth: Integer);
+begin
+  GetCanvas.Pen.Width := AWidth;
 end;
 
 procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);

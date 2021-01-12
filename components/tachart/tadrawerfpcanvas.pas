@@ -78,7 +78,8 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
   end;
 
 implementation
@@ -336,10 +337,17 @@ begin
   FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
-procedure TFPCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+procedure TFPCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
+  AWidth: Integer = 1);
 begin
   FCanvas.Pen.Style := AStyle;
   FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
+  FCanvas.Pen.Width := AWidth;
+end;
+
+procedure TFPCanvasDrawer.SetPenWidth(AWidth: Integer);
+begin
+  FCanvas.Pen.Width := AWidth;
 end;
 
 function TFPCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;

@@ -69,7 +69,8 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
@@ -318,11 +319,17 @@ begin
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(
-  AStyle: TFPPenStyle; AColor: TChartColor);
+  AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
 begin
   Canvas.Pen.Style := AStyle;
+  Canvas.Pen.Width := AWidth;
   Canvas.Pen.Color := ColorOrMono(AColor);
   Canvas.Pen.Opacity := Opacity;
+end;
+
+procedure TBGRABitmapDrawer.SetPenWidth(AWidth: Integer);
+begin
+  Canvas.Pen.Width := AWidth;
 end;
 
 procedure TBGRABitmapDrawer.SetTransparency(ATransparency: TChartTransparency);

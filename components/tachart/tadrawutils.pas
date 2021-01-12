@@ -114,7 +114,8 @@ type
     procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
     function GetRightToLeft: Boolean;
     procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);

@@ -65,7 +65,8 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
   end;
 
 implementation
@@ -293,11 +294,18 @@ begin
     ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
-procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
+  AWidth: Integer = 1);
 begin
   FCanvas.Pen.Style := AStyle;
+  FCanvas.Pen.Width := AWidth;
   FCanvas.Pen.FPColor :=
     ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
+end;
+
+procedure TAggpasDrawer.SetPenWidth(AWidth: Integer);
+begin
+  FCanvas.Pen.Width := AWidth;
 end;
 
 function TAggPasDrawer.SimpleTextExtent(const AText: String): TPoint;

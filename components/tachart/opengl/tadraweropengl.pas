@@ -88,7 +88,8 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
@@ -424,11 +425,18 @@ begin
   FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
-procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
+  AWidth: Integer = 1);
 begin
   FPenStyle := AStyle;
+  FPenWidth := AWidth;
   FPenColor := FChartColorToFPColorFunc(AColor);
   ChartGLPenStyle(AStyle);
+end;
+
+procedure TOpenGLDrawer.SetPenWidth(AWidth: Integer);
+begin
+  FPenWidth := AWidth;
 end;
 
 procedure TOpenGLDrawer.SetTransparency(ATransparency: TChartTransparency);
