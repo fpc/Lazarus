@@ -498,7 +498,7 @@ end;
 function StrToIDEWindowState(const s: string): TIDEWindowState;
 begin
   for Result:=Low(TIDEWindowState) to High(TIDEWindowState) do
-    if UTF8CompareText(s,IDEWindowStateNames[Result])=0 then exit;
+    if CompareText(s,IDEWindowStateNames[Result])=0 then exit;
   Result:=iwsNormal;
 end;
 
