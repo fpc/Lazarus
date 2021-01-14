@@ -2049,6 +2049,14 @@ procedure TTestWatches.TestWatchesExpression;
     t.Add(AName, p+'Byte'+e +'='+ p2+'Byte'+e2,     weBool(n=n2) );
     t.Add(AName, p+'Byte'+e +'='+ p2+'Byte_2'+e2,   weBool(n+1=n2+240) );
 
+    t.Add(AName, p+'Single'+e +'='+ FloatToStr(100.125+n),    weBool(True) );
+    t.Add(AName, p+'Double'+e +'='+ FloatToStr(1000.125+n),    weBool(True) );
+
+    t.Add(AName, p+'Single'+e +'='+ p+'Byte'+e,    weBool(False) );
+    t.Add(AName, p+'Single'+e +'>'+ p+'Byte'+e,    weBool(True) );
+    t.Add(AName, p+'Single'+e +'<'+ p+'Byte'+e,    weBool(False) );
+    t.Add(AName, p+'Single'+e+'-99.125' +'='+ p+'Byte'+e,    weBool(True) );
+
     t.Add(AName, p+'String1e'+e + ' = '''' ',   weBool(True));
     t.Add(AName, p+'String10'+e + ' = '''+AChr1+'bc1'' ',   weBool(True));
     t.Add(AName, p+'String10'+e + '+''a'' = '''+AChr1+'bc1'' ',   weBool(False));
@@ -2272,6 +2280,31 @@ begin
     t.Add('Const-EQ: ', '''A'' <> #65#65',  weBool(True));
     t.Add('Const-EQ: ', '''A'' <> ''B''',   weBool(True));
 
+    t.Add('Const-EQ: ', '17.0 = $11',     weBool(True));
+    t.Add('Const-EQ: ', '18.0 = $11',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 <> 17',     weBool(False));
+    t.Add('Const-EQ: ', '18.0 <> 17',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 > 18',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 > 17',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 > 16',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 >= 18',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 >= 17',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 >= 16',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 < 18',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 < 17',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 < 16',     weBool(False));
+    t.Add('Const-EQ: ', '17.0 <= 18',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 <= 17',     weBool(True));
+    t.Add('Const-EQ: ', '17.0 <= 16',     weBool(False));
+
+    t.Add('Const-EQ: ', '17.5 = 17.5',     weBool(True));
+    t.Add('Const-EQ: ', '17.1 <> 17.5',    weBool(True));
+    t.Add('Const-EQ: ', '17.1 < 17.5',     weBool(True));
+    t.Add('Const-EQ: ', '17.8 > 17.5',     weBool(True));
+    t.Add('Const-EQ: ', '17.5 = 17.1',     weBool(False));
+    t.Add('Const-EQ: ', '17.5 <> 17.5',    weBool(False));
+    t.Add('Const-EQ: ', '17.8 < 17.5',     weBool(False));
+    t.Add('Const-EQ: ', '17.1 > 17.5',     weBool(False));
 
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);
