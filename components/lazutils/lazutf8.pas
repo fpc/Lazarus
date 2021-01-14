@@ -173,6 +173,7 @@ function UTF8CompareStr(const S1, S2: string): PtrInt; inline;
 function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
+function UTF8CompareTextP(S1, S2: PChar): PtrInt;
 function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;
 function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
@@ -3398,6 +3399,11 @@ end;
 function UTF8CompareText(const S1, S2: String): PtrInt;
 begin
   Result := WideCompareText(UTF8ToUTF16(S1),UTF8ToUTF16(S2));
+end;
+
+function UTF8CompareTextP(S1, S2: PChar): PtrInt;
+begin
+  Result := WideCompareText(UTF8ToUTF16(S1,StrLen(S1)), UTF8ToUTF16(S2,StrLen(S2)));
 end;
 
 function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;

@@ -319,16 +319,12 @@ end;
 
 function CompareFilenamesP(Filename1, Filename2: PChar;
   IgnoreCase: boolean = false): integer;
+{$IFDEF darwin}
 var
-  {$IFDEF darwin}
   F1: CFStringRef;
   F2: CFStringRef;
   Flags: CFStringCompareFlags;
-  {$ELSE}
-  File1, File2: string;
-  Len1: SizeInt;
-  Len2: SizeInt;
-  {$ENDIF}
+{$ENDIF}
 begin
   if (Filename1=nil) or (Filename1^=#0) then begin
     if (Filename2=nil) or (Filename2^=#0) then begin
@@ -356,19 +352,12 @@ begin
   CFRelease(F1);
   CFRelease(F2);
   {$ELSE}
-  if IgnoreCase then begin
-    // compare case insensitive
-    Len1:=StrLen(Filename1);
-    SetLength(File1,Len1);
-    System.Move(Filename1^,File1[1],Len1);
-    Len2:=StrLen(Filename2);
-    SetLength(File2,Len2);
-    System.Move(Filename2^,File2[1],Len2);
-    Result:=UTF8CompareText(File1,File2);
-  end else begin
+  if IgnoreCase then      // compare case insensitive
+    Result:=UTF8CompareTextP(Filename1, Filename2)
+  else begin
     // compare literally
     while (Filename1^=Filename2^) and (Filename1^<>#0) do begin
-      inc(Filename1);
+      Inc(Filename1);
       Inc(Filename2);
     end;
     Result:=ord(Filename1^)-ord(Filename2^);
