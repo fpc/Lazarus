@@ -28,15 +28,15 @@ uses
 
 function CompareFilenames(const Filename1, Filename2: string): integer; overload;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
-function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
-function CompareFileExt(const Filename, Ext: string): integer;
-function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer; overload;
 function CompareFilenamesP(Filename1, Filename2: PChar;
   IgnoreCase: boolean = false // false = use default
   ): integer;
+function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename, Ext: string): integer;
+function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
 
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
@@ -263,169 +263,6 @@ begin
   {$ENDIF}
 end;
 
-function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
-// Ext can contain a point or not
-var
-  FnExt: String;
-  FnPos: integer;
-begin
-  // Filename
-  FnPos := length(Filename);
-  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
-  if FnPos < 1 then
-    exit(1);          // no extension in filename
-  FnExt := Copy(Filename, FnPos+1, length(FileName)); // FnPos+1 skips point
-  // Ext
-  if (length(Ext) > 1) and (Ext[1] = '.') then
-    Delete(Ext, 1, 1);
-  // compare extensions
-  if CaseSensitive then
-    Result := CompareStr(FnExt, Ext)
-  else
-    Result := UTF8CompareLatinTextFast(FnExt, Ext);
-  if Result < 0 then
-    Result := -1
-  else if Result > 0 then
-    Result := 1;
-end;
-
-function CompareFileExt(const Filename, Ext: string): integer;
-begin
-  Result := CompareFileExt(Filename, Ext,
-                {$IFDEF CaseInsensitiveFilenames} False {$ELSE} True {$ENDIF} );
-end;
-
-function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
-// Compares case-insensitively but only with ASCII characters.
-// LowerExt must be lowercase. It can contain a point or not.
-var
-  FnExt: String;
-  FnPos: integer;
-begin
-  // Filename
-  FnPos := length(Filename);
-  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
-  if FnPos < 1 then
-    exit(1);          // no extension in filename
-  FnExt := LowerCase(Copy(Filename, FnPos+1, length(FileName))); // FnPos+1 skips point
-  // Ext
-  if (length(LowerExt) > 1) and (LowerExt[1] = '.') then
-    Delete(LowerExt, 1, 1);
-  // compare extensions
-  Result := CompareStr(FnExt, LowerExt);
-  if Result < 0 then
-    Result := -1
-  else if Result > 0 then
-    Result := 1;
-end;
-
-function ExtractFileNameOnly(const AFilename: string): string;
-var
-  StartPos: Integer;
-  ExtPos: Integer;
-begin
-  StartPos:=length(AFilename)+1;
-  while (StartPos>1)
-  and not (AFilename[StartPos-1] in AllowDirectorySeparators)
-  {$IF defined(Windows) or defined(HASAMIGA)}and (AFilename[StartPos-1]<>':'){$ENDIF}
-  do
-    dec(StartPos);
-  ExtPos:=length(AFilename);
-  while (ExtPos>=StartPos) and (AFilename[ExtPos]<>'.') do
-    dec(ExtPos);
-  if (ExtPos<StartPos) then ExtPos:=length(AFilename)+1;
-  Result:=copy(AFilename,StartPos,ExtPos-StartPos);
-end;
-
-function ExtractFileNameWithoutExt(const AFilename: string): string;
-var
-  p: Integer;
-begin
-  Result:=AFilename;
-  p:=length(Result);
-  while (p>0) do begin
-    case Result[p] of
-      PathDelim: exit;
-      {$ifdef windows}
-      '/': if ('/' in AllowDirectorySeparators) then exit;
-      {$endif}
-      '.': exit(copy(Result,1, p-1));
-    end;
-    dec(p);
-  end;
-end;
-
-{$IFDEF darwin}
-function GetDarwinSystemFilename(Filename: string): string;
-var
-  s: CFStringRef;
-  l: CFIndex;
-begin
-  if Filename='' then exit('');
-  s:=CFStringCreateWithCString(nil,Pointer(Filename),kCFStringEncodingUTF8);
-  l:=CFStringGetMaximumSizeOfFileSystemRepresentation(s);
-  SetLength(Result,l);
-  if Result<>'' then begin
-    CFStringGetFileSystemRepresentation(s,@Result[1],length(Result));
-    SetLength(Result,StrLen(PChar(Result)));
-  end;
-  CFRelease(s);
-end;
-
-// borrowed from CarbonProcs
-function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding): String;
-var
-  Str: Pointer;
-  StrSize: CFIndex;
-  StrRange: CFRange;
-begin
-  if AString = nil then
-  begin
-    Result := '';
-    Exit;
-  end;
-
-  // Try the quick way first
-  Str := CFStringGetCStringPtr(AString, Encoding);
-  if Str <> nil then
-    Result := PChar(Str)
-  else
-  begin
-    // if that doesn't work this will
-    StrRange.location := 0;
-    StrRange.length := CFStringGetLength(AString);
-
-    CFStringGetBytes(AString, StrRange, Encoding,
-      Ord('?'), False, nil, 0, StrSize{%H-});
-    SetLength(Result, StrSize);
-
-    if StrSize > 0 then
-      CFStringGetBytes(AString, StrRange, Encoding,
-        Ord('?'), False, @Result[1], StrSize, StrSize);
-  end;
-end;
-
-//NForm can be one of
-//kCFStringNormalizationFormD = 0; // Canonical Decomposition
-//kCFStringNormalizationFormKD = 1; // Compatibility Decomposition
-//kCFStringNormalizationFormC = 2; // Canonical Decomposition followed by Canonical Composition
-//kCFStringNormalizationFormKC = 3; // Compatibility Decomposition followed by Canonical Composition
-function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
-var
-  theString: CFStringRef;
-  Mutable: CFMutableStringRef;
-begin
-  theString:=CFStringCreateWithCString(nil, Pointer(FileName), kCFStringEncodingUTF8);
-  Mutable := CFStringCreateMutableCopy(nil, 0, theString);
-  if (NForm<0) or (NForm>3) then NForm := kCFStringNormalizationFormC;
-  CFStringNormalize(Mutable, NForm);
-  Result := CFStringToStr(Mutable,  kCFStringEncodingUTF8);
-  CFRelease(Mutable);
-  CFRelease(theString);
-end;
-
-{$ENDIF}
-
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 var
   len1: Integer;
@@ -537,6 +374,169 @@ begin
     Result:=ord(Filename1^)-ord(Filename2^);
   end;
   {$ENDIF}
+end;
+
+function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
+// Ext can contain a point or not
+var
+  FnExt: String;
+  FnPos: integer;
+begin
+  // Filename
+  FnPos := length(Filename);
+  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
+  if FnPos < 1 then
+    exit(1);          // no extension in filename
+  FnExt := Copy(Filename, FnPos+1, length(FileName)); // FnPos+1 skips point
+  // Ext
+  if (length(Ext) > 1) and (Ext[1] = '.') then
+    Delete(Ext, 1, 1);
+  // compare extensions
+  if CaseSensitive then
+    Result := CompareStr(FnExt, Ext)
+  else
+    Result := UTF8CompareLatinTextFast(FnExt, Ext);
+  if Result < 0 then
+    Result := -1
+  else if Result > 0 then
+    Result := 1;
+end;
+
+function CompareFileExt(const Filename, Ext: string): integer;
+begin
+  Result := CompareFileExt(Filename, Ext,
+                {$IFDEF CaseInsensitiveFilenames} False {$ELSE} True {$ENDIF} );
+end;
+
+function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
+// Compares case-insensitively but only with ASCII characters.
+// LowerExt must be lowercase. It can contain a point or not.
+var
+  FnExt: String;
+  FnPos: integer;
+begin
+  // Filename
+  FnPos := length(Filename);
+  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
+  if FnPos < 1 then
+    exit(1);          // no extension in filename
+  FnExt := LowerCase(Copy(Filename, FnPos+1, length(FileName))); // FnPos+1 skips point
+  // Ext
+  if (length(LowerExt) > 1) and (LowerExt[1] = '.') then
+    Delete(LowerExt, 1, 1);
+  // compare extensions
+  Result := CompareStr(FnExt, LowerExt);
+  if Result < 0 then
+    Result := -1
+  else if Result > 0 then
+    Result := 1;
+end;
+
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+var
+  s: CFStringRef;
+  l: CFIndex;
+begin
+  if Filename='' then exit('');
+  s:=CFStringCreateWithCString(nil,Pointer(Filename),kCFStringEncodingUTF8);
+  l:=CFStringGetMaximumSizeOfFileSystemRepresentation(s);
+  SetLength(Result,l);
+  if Result<>'' then begin
+    CFStringGetFileSystemRepresentation(s,@Result[1],length(Result));
+    SetLength(Result,StrLen(PChar(Result)));
+  end;
+  CFRelease(s);
+end;
+
+// borrowed from CarbonProcs
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding): String;
+var
+  Str: Pointer;
+  StrSize: CFIndex;
+  StrRange: CFRange;
+begin
+  if AString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  // Try the quick way first
+  Str := CFStringGetCStringPtr(AString, Encoding);
+  if Str <> nil then
+    Result := PChar(Str)
+  else
+  begin
+    // if that doesn't work this will
+    StrRange.location := 0;
+    StrRange.length := CFStringGetLength(AString);
+
+    CFStringGetBytes(AString, StrRange, Encoding,
+      Ord('?'), False, nil, 0, StrSize{%H-});
+    SetLength(Result, StrSize);
+
+    if StrSize > 0 then
+      CFStringGetBytes(AString, StrRange, Encoding,
+        Ord('?'), False, @Result[1], StrSize, StrSize);
+  end;
+end;
+
+//NForm can be one of
+//kCFStringNormalizationFormD = 0; // Canonical Decomposition
+//kCFStringNormalizationFormKD = 1; // Compatibility Decomposition
+//kCFStringNormalizationFormC = 2; // Canonical Decomposition followed by Canonical Composition
+//kCFStringNormalizationFormKC = 3; // Compatibility Decomposition followed by Canonical Composition
+function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
+var
+  theString: CFStringRef;
+  Mutable: CFMutableStringRef;
+begin
+  theString:=CFStringCreateWithCString(nil, Pointer(FileName), kCFStringEncodingUTF8);
+  Mutable := CFStringCreateMutableCopy(nil, 0, theString);
+  if (NForm<0) or (NForm>3) then NForm := kCFStringNormalizationFormC;
+  CFStringNormalize(Mutable, NForm);
+  Result := CFStringToStr(Mutable,  kCFStringEncodingUTF8);
+  CFRelease(Mutable);
+  CFRelease(theString);
+end;
+
+{$ENDIF}
+
+function ExtractFileNameOnly(const AFilename: string): string;
+var
+  StartPos: Integer;
+  ExtPos: Integer;
+begin
+  StartPos:=length(AFilename)+1;
+  while (StartPos>1)
+  and not (AFilename[StartPos-1] in AllowDirectorySeparators)
+  {$IF defined(Windows) or defined(HASAMIGA)}and (AFilename[StartPos-1]<>':'){$ENDIF}
+  do
+    dec(StartPos);
+  ExtPos:=length(AFilename);
+  while (ExtPos>=StartPos) and (AFilename[ExtPos]<>'.') do
+    dec(ExtPos);
+  if (ExtPos<StartPos) then ExtPos:=length(AFilename)+1;
+  Result:=copy(AFilename,StartPos,ExtPos-StartPos);
+end;
+
+function ExtractFileNameWithoutExt(const AFilename: string): string;
+var
+  p: Integer;
+begin
+  Result:=AFilename;
+  p:=length(Result);
+  while (p>0) do begin
+    case Result[p] of
+      PathDelim: exit;
+      {$ifdef windows}
+      '/': if ('/' in AllowDirectorySeparators) then exit;
+      {$endif}
+      '.': exit(copy(Result,1, p-1));
+    end;
+    dec(p);
+  end;
 end;
 
 function DirPathExists(DirectoryName: string): boolean;
