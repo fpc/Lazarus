@@ -9964,7 +9964,6 @@ begin
   FScript:=TfrScriptStrings.Create;
   UpdateObjectStringResources;
   {$ELSE}
-  TempBmp := TBitmap.Create;
   if not FRInitialized then
   begin
     FRInitialized := True;
