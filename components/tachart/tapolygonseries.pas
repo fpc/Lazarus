@@ -134,6 +134,20 @@ begin
   if nPoints = 0 then
     exit;
 
+  // Single polygon --> we can use the standard Polygon() routine
+  if nStart = 1 then
+  begin
+    SetLength(FPoints, nPoints);
+    ADrawer.SetBrush(FBrush);
+    ADrawer.SetPen(FPen);
+    ADrawer.Polygon(FPoints, 0, Length(FPoints));
+    exit;
+  end;
+
+  // If we get here we have multiple polygons. We must add points for a
+  // "clean retreat" to the starting point, and then we fill the borderless
+  // polygon and draw the border separately.
+
   // Use length of FStart array as last array element for easier calculation
   SavePolygonStartIndex(nPoints);
 
