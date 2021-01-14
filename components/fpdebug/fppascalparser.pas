@@ -2708,20 +2708,23 @@ begin
   if IsAdd then begin
     case tmp1.Kind of
       skPointer: ;
-      skInteger: Result := tmp1;
+      skInteger:  Result := tmp1;
       skCardinal: Result := tmp1;
+      skFloat:    Result := tmp1;
     end;
+    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'DoGetResultValue'){$ENDIF};
   end
   else begin
     case tmp1.Kind of
       skPointer: ;
-      skInteger: Result := TFpValueConstNumber.Create(-tmp1.AsInteger, True);
+      skInteger:  Result := TFpValueConstNumber.Create(-tmp1.AsInteger, True);
       skCardinal: Result := TFpValueConstNumber.Create(-tmp1.AsCardinal, True);
+      skFloat:    Result := TFpValueConstFloat.Create(-tmp1.AsFloat);
     end;
+    {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
   end;
   {$POP}
 
- {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
 { TFpPascalExpressionPartOperatorPlusMinus }

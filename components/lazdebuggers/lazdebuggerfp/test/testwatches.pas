@@ -2192,9 +2192,15 @@ begin
     t.Add('Const-Expr: ansistring ', '#A',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
     t.Add('Const-Expr: ansistring ', '#$X',    weAnsiStr('abc')).IgnKind.AddFlag(ehExpectError);
 
+    t.Add('Const-Op: ', '10',     weInteger(10));
+    t.Add('Const-Op: ', '-10',     weInteger(-10));
+    t.Add('Const-Op: ', '- -10',     weInteger(10)); // 2 unary
+    t.Add('Const-Op: ', '+10',     weInteger(10));
+
     t.Add('Const-Op: ', '107 + 1',     weInteger(108));
     t.Add('Const-Op: ', '107 - 1',     weInteger(106));
     t.Add('Const-Op: ', '107 + -1',    weInteger(106));
+    t.Add('Const-Op: ', '107 + +1',    weInteger(108));
     t.Add('Const-Op: ', '107 - -1',    weInteger(108));
     t.Add('Const-Op: ', '11 * 3',      weInteger(33));
     t.Add('Const-Op: ', '11 * -3',     weInteger(-33));
@@ -2207,6 +2213,35 @@ begin
     t.Add('Const-precedence: ', '11 * 3 + 1',      weInteger(34));
     t.Add('Const-bracket: ', '(1 + 11) * 3',      weInteger(36));
     t.Add('Const-bracket: ', '11 * (3 + 1)',      weInteger(44));
+
+    t.Add('Const-Op: ', '1.5',      weFloat(1.5));
+    t.Add('Const-Op: ', '-1.5',     weFloat(-1.5));
+    t.Add('Const-Op: ', '- -1.5',     weFloat(1.5));
+    t.Add('Const-Op: ', '+1.5',     weFloat(1.5));
+
+    t.Add('Const-Op: ', ' 10.5 + 1',      weFloat(11.5));
+    t.Add('Const-Op: ', ' 10.0 + 1',      weFloat(11));
+    t.Add('Const-Op: ', ' 10   + 1.5',    weFloat(11.5));
+    t.Add('Const-Op: ', '-10   + 1.5',    weFloat(-8.5));
+    t.Add('Const-Op: ', '-10   + -1.5',   weFloat(-11.5));
+
+    t.Add('Const-Op: ', ' 10.5 - 1',      weFloat(9.5));
+    t.Add('Const-Op: ', ' 10.0 - 1',      weFloat(9));
+    t.Add('Const-Op: ', ' 10   - 1.5',    weFloat(8.5));
+    t.Add('Const-Op: ', '-10   - 1.5',    weFloat(-11.5));
+    t.Add('Const-Op: ', '-10   - -1.5',   weFloat(-8.5));
+
+    t.Add('Const-Op: ', '10.5 * 3',      weFloat(31.5));
+    t.Add('Const-Op: ', '10.0 * 3',      weFloat(30));
+    t.Add('Const-Op: ', ' 9   * 1.5',    weFloat(13.5));
+    t.Add('Const-Op: ', '-9   * 1.5',    weFloat(-13.5));
+    t.Add('Const-Op: ', '-9   * -1.5',   weFloat(13.5));
+
+    t.Add('Const-Op: ', ' 31.5 / 3',      weFloat(10.5));
+    t.Add('Const-Op: ', ' 30.0 / 3',      weFloat(10));
+    t.Add('Const-Op: ', ' 13.5 / 1.5',    weFloat(9));
+    t.Add('Const-Op: ', '-13.5 / 1.5',    weFloat(-9));
+    t.Add('Const-Op: ', '-13.5 / -1.5',   weFloat(9));
 
     t.Add('Const-Op: ', '35 And 17',     weInteger(1));
     t.Add('Const-Op: ', '35 And 7',     weInteger(3));
