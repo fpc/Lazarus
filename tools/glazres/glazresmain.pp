@@ -1,5 +1,3 @@
-unit glazresmain;
-
 {
  ***************************************************************************
  *                                                                         *
@@ -25,8 +23,9 @@ unit glazresmain;
   Adapted by: Bart Broersma
 
   GLazRes aims to be a GUI implementation of the LazRes program.
-
 }
+
+unit glazresmain;
 
 {$mode objfpc}{$H+}
 
@@ -36,7 +35,7 @@ uses
   Classes, SysUtils, Types, IniFiles,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtDlgs, EditBtn,
   LResources, LCLProc, LCLType,
-  LazFileUtils, LazUTF8, LazUtf8Classes;
+  LazFileUtils, LazUTF8;
 
 type
 
@@ -439,7 +438,7 @@ procedure TGLazResForm.CreateLazarusResourceFile;
 var
   FileCount, Index:integer;
   S:string;
-  ResFileStream, BinFileStream: TFileStreamUtf8;
+  ResFileStream, BinFileStream: TFileStream;
   ResMemStream, BinMemStream: TMemoryStream;
   ResourceFilename, FullResourceFilename, BinFilename, BinExt, ResourceName, ResourceType,
     ExpS: String;
@@ -471,7 +470,7 @@ begin
   end;
   try
     AddMessageFmt(MsgCreatingLrs,[FullResourceFilename]);
-    ResFileStream:=TFileStreamUtf8.Create(FullResourceFileName,fmCreate);
+    ResFileStream:=TFileStream.Create(FullResourceFileName,fmCreate);
   except
     AddMessageFmt(ErrCreate,[ResourceFileName]);
     exit;
@@ -483,7 +482,7 @@ begin
       BinFilename:=FileListBox.Items[Index];
       AddMessageFmt(MsgProcessing,[BinFilename]);
       try
-        BinFileStream:=TFileStreamUtf8.Create(BinFilename, fmOpenRead);
+        BinFileStream:=TFileStream.Create(BinFilename, fmOpenRead);
         BinMemStream:=TMemoryStream.Create;
         try
           BinMemStream.CopyFrom(BinFileStream, BinFileStream.Size);

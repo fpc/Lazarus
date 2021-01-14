@@ -6001,7 +6001,7 @@ procedure TCustomTreeView.LoadFromFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStreamUTF8.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally
@@ -6023,7 +6023,7 @@ procedure TCustomTreeView.SaveToFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStreamUTF8.Create(FileName, fmCreate);
+  Stream := TFileStream.Create(FileName, fmCreate);
   try
     SaveToStream(Stream);
   finally

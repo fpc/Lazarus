@@ -25,7 +25,7 @@ unit laz2_XMLWrite;
 
 interface
 
-uses Classes, LazUTF8, laz2_DOM, SysUtils, laz2_xmlutils, lazutf8classes;
+uses Classes, LazUTF8, laz2_DOM, SysUtils, laz2_xmlutils;
 
 type
   TXMLWriterFlag = (
@@ -866,9 +866,9 @@ end;
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String;
   Flags: TXMLWriterFlags = []);
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
-  fs := TFileStreamUTF8.Create(AFileName, fmCreate);
+  fs := TFileStream.Create(AFileName, fmCreate);
   try
     WriteXMLFile(doc, fs, Flags);
   finally

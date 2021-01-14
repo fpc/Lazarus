@@ -40,7 +40,7 @@ interface
 uses 
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLogger,
+  FileUtil, LazFileUtils, LazUTF8, LazLogger,
   // IDE
   LazConf;
 
@@ -107,7 +107,7 @@ begin
   CfgFileName := AppendPathDelim(ProgramDirectory) + 'lazarus.cfg';
   if FileExistsUTF8(CfgFileName) then begin
     DebugLn(['using config file ', CfgFileName]);
-    CfgFileContent := TStringListUTF8.Create;
+    CfgFileContent := TStringList.Create;
     CfgFileContent.LoadFromFile(CfgFileName);
   end;
   Result := CfgFileContent;

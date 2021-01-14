@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazUTF8, LazUTF8Classes, LazDbgLog, LazStringUtils;
+  LazFileUtils, LazUTF8, LazDbgLog, LazStringUtils;
 
 type
   TSourceLog = class;
@@ -745,13 +745,13 @@ end;
 function TSourceLog.LoadFromFile(const Filename: string): boolean;
 var
   s: string;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   p: Integer;
 begin
   Result := False;
   LastError:='';
   try
-    fs := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyNone);
+    fs := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
     try
       SetLength(s, fs.Size);
       if s <> '' then
@@ -801,7 +801,7 @@ end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   s: String;
 begin
   {$IFDEF VerboseCTSave}
@@ -821,11 +821,11 @@ begin
     // keep filename case on disk
     if FileExistsUTF8(Filename) then begin
       InvalidateFileStateCache(Filename);
-      fs := TFileStreamUTF8.Create(Filename, fmOpenWrite or fmShareDenyNone);
+      fs := TFileStream.Create(Filename, fmOpenWrite or fmShareDenyNone);
       fs.Size := 0;
     end else begin
       InvalidateFileStateCache; // invalidate all (samba shares)
-      fs := TFileStreamUTF8.Create(Filename, fmCreate);
+      fs := TFileStream.Create(Filename, fmCreate);
     end;
     try
       if s <> '' then

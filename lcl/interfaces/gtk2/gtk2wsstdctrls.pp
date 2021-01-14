@@ -27,7 +27,7 @@ uses
   // LazUtils
   LazLoggerBase, LazTracer, LazStringUtils,
   // LCL
-  Controls, Graphics, StdCtrls, LMessages, LCLType, LazUtf8Classes, LazUTF8,
+  Controls, Graphics, StdCtrls, LMessages, LCLType, LazUTF8,
   // Widgetset
   WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,

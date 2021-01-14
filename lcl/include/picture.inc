@@ -529,7 +529,7 @@ begin
   Ext := ExtractFileExt(Filename);
   System.Delete(Ext, 1, 1); // delete '.'
   
-  Stream := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
     if Ext <> '' then
       LoadFromStreamWithFileExt(Stream, Ext)
@@ -608,7 +608,7 @@ begin
     
   if (Ext <> '') and (Ext[1] = '.') then System.Delete(Ext, 1, 1); // delete '.'
 
-  Stream := TFileStreamUTF8.Create(Filename, fmCreate);
+  Stream := TFileStream.Create(Filename, fmCreate);
   try
     SaveToStreamWithFileExt(Stream, Ext);
   finally

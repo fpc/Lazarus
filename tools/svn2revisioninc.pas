@@ -59,7 +59,7 @@ program Svn2RevisionInc;
 uses
   Classes, CustApp, SysUtils, Process, Dom, XmlRead,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, UTF8Process, LazLogger;
+  FileUtil, LazFileUtils, LazUTF8, UTF8Process, LazLogger;
 
 type
 
@@ -329,14 +329,14 @@ var
   var
     EntriesFileName: string;
     Line: string;
-    Lines: TStringListUTF8;
+    Lines: TStringList;
     i: Integer;
   begin
     Result:=false;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
     if FileExistsUTF8(EntriesFileName) then begin
       try
-        Lines:=TStringListUTF8.Create;
+        Lines:=TStringList.Create;
         try
           Lines.LoadFromFile(EntriesFileName);
           // skip three lines
@@ -441,12 +441,12 @@ end;
 
 function TSvn2RevisionApplication.IsValidRevisionInc: boolean;
 var
-  Lines: TStringListUTF8;
+  Lines: TStringList;
 begin
   Result := FileExistsUTF8(RevisionIncFileName);
   if Result then 
   begin
-    Lines := TStringListUTF8.Create;
+    Lines := TStringList.Create;
     try
       Lines.LoadFromFile(RevisionIncFileName);
       Result := (Lines.Count = 2) and

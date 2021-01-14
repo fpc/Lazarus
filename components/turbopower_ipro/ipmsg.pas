@@ -40,14 +40,10 @@ unit IpMsg;
 interface
 
 uses
-  LCLType,
-  LCLIntf,
-  LazFileUtils, LazUTF8Classes,
-  Classes,
-  SysUtils,
-  IpStrms,
-  IpUtils,
-  IpConst;
+  Classes, SysUtils,
+  LCLType, LCLIntf,
+  LazFileUtils,
+  IpStrms, IpUtils, IpConst;
 
 type
   TIpMimeEncodingMethod = (em7Bit, em8Bit, emBase64, emBinary, emBinHex,
@@ -1927,7 +1923,7 @@ var
   FS : TFileStream;
 begin
   if (FBody.Size > 0) then begin
-    FS := TFileStreamUTF8.Create(OutFile, fmCreate);
+    FS := TFileStream.Create(OutFile, fmCreate);
     try
       ExtractBodyStream(FS);
     finally
@@ -3498,7 +3494,7 @@ var
 begin
   EncodeMessage;
   Position := 0;
-  FS := TFileStreamUTF8.Create(aFileName, fmCreate);
+  FS := TFileStream.Create(aFileName, fmCreate);
   try
     FS.CopyFrom(MsgStream, MsgStream.Size);
   finally

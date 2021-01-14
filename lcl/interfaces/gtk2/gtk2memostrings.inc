@@ -253,9 +253,9 @@ end;
 
 procedure TGtk2MemoStrings.LoadFromFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(TheStream);
   finally
@@ -265,9 +265,9 @@ end;
 
 procedure TGtk2MemoStrings.SaveToFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  TheStream:=TFileStream.Create(FileName,fmCreate);
   try
     SaveToStream(TheStream);
   finally

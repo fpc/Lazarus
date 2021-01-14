@@ -36,7 +36,7 @@ uses
   // CodeTools
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazUTF8Classes, LazFileUtils, LazUTF8,
+  LazFileUtils, LazUTF8,
   // Other
   IDEWindowIntf, LazIDEIntf, BaseBuildManager,
   Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm, TransferMacros;
@@ -146,7 +146,7 @@ var
   TestFilename: String;
   Filename: String;
   WorkDir: String;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   sl:=TStringList.Create;
   List:=nil;
@@ -200,7 +200,7 @@ begin
     sl.Add('Working directory: '+WorkDir);
     // create empty file
     try
-      fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
+      fs:=TFileStream.Create(TestFilename,fmCreate);
       fs.Free;
     except
       sl.Add('ERROR: unable to create test file '+TestFilename);

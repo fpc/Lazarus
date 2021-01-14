@@ -100,8 +100,6 @@ begin
 end;
 {$else}
 {$ifdef linux}
-uses
-  LazUTF8Classes;
 
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
 
@@ -110,7 +108,7 @@ function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
     S: TStream;
     Sz: Integer;
   begin
-    S := TFileStreamUTF8.Create('/proc/' + IntToStr(Pid) + '/cmdline', fmOpenRead or fmShareDenyNone);
+    S := TFileStream.Create('/proc/' + IntToStr(Pid) + '/cmdline', fmOpenRead or fmShareDenyNone);
     try
       SetLength(Result, 255);
       Sz := S.Read(Result[1], 255);

@@ -40,9 +40,9 @@ unit IDEGuiCmdLine;
 interface
 
 uses
-  Classes, SysUtils, math,
+  Classes, SysUtils, Math,
   // LazUtils
-  LazUTF8Classes, LazUtilities, LazFileUtils,
+  LazUtilities, LazFileUtils,
   // Codetools
   FileProcs,
   // IDE
@@ -191,10 +191,10 @@ function SetupMainIDEInstance: boolean;
   procedure WritePIDFile(const Filename: string; aPID: int64);
   var
     Dir: String;
-    sl: TStringListUTF8;
+    sl: TStringList;
   begin
     debugln(['WritePIDFile File="',Filename,'" PID=',aPID]);
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.Add(IntToStr(aPID));
       try
@@ -218,13 +218,13 @@ function SetupMainIDEInstance: boolean;
 
   function ReadPIDFile(const Filename: string; out ConfigPID: int64): boolean;
   var
-    sl: TStringListUTF8;
+    sl: TStringList;
   begin
     Result:=false;
     ConfigPID:=-1;
     debugln(['ReadPIDFile ',Filename]);
     if not FileExistsUTF8(Filename) then exit;
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       try
         sl.LoadFromFile(Filename);
@@ -244,12 +244,12 @@ function SetupMainIDEInstance: boolean;
 
   procedure SendCmdlineActionsToMainInstance;
   var
-    sl: TStringListUTF8;
+    sl: TStringList;
     Param: String;
     Filename: String;
     i: Integer;
   begin
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.Add('Show');
       for i:=1 to ParamsAndCfgCount do begin

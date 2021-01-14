@@ -28,7 +28,7 @@ uses
   // LCL
   LCLProc, LCLType, Graphics, Controls, StdCtrls,
   // LazUtils
-  LazUtf8Classes, TextStrings, LazStringUtils,
+  TextStrings, LazStringUtils,
   // LCL Carbon
   CarbonEdits, CarbonListViews;
 
@@ -436,9 +436,9 @@ end;
 
 procedure TCarbonMemoStrings.LoadFromFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(TheStream);
   finally
@@ -448,9 +448,9 @@ end;
 
 procedure TCarbonMemoStrings.SaveToFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  TheStream:=TFileStream.Create(FileName,fmCreate);
   try
     SaveToStream(TheStream);
   finally

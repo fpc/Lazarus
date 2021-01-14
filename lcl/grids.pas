@@ -39,7 +39,7 @@ uses
   LCLStrConsts, LCLType, LCLIntf, Controls, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
   // LazUtils
-  LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg,
+  LazFileUtils, DynamicArray, Maps, LazUTF8, Laz2_XMLCfg,
   LazLoggerBase, LazUtilities, LCSVUtils, IntegerList
 {$ifdef WINDOWS}
   ,messages, imm
@@ -12025,9 +12025,9 @@ procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
   ADelimiter: Char=','; UseTitles: boolean=true; FromLine: Integer=0;
   SkipEmptyLines: Boolean=true);
 var
-  TheStream: TFileStreamUtf8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(AFileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromCSVStream(TheStream, ADelimiter, UseTitles, FromLine, SkipEmptyLines);
   finally
@@ -12110,9 +12110,9 @@ end;
 procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char;
   WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 var
-  TheStream: TFileStreamUtf8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(AFileName,fmCreate);
+  TheStream:=TFileStream.Create(AFileName,fmCreate);
   try
     SaveToCSVStream(TheStream, ADelimiter, WriteTitles, VisibleColumnsOnly);
   finally

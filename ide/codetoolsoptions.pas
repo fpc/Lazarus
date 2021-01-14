@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazUTF8Classes, LazFileCache, LazStringUtils,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazFileCache, LazStringUtils,
   // LCL
   LCLProc, LCLType,
   // CodeTools
@@ -1136,7 +1136,7 @@ end;
 procedure TCodeToolsOptions.CreateDefaultIndentationFile;
 var
   res: TResourceStream;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   // indentations (laz_indentation.pas)
   CopySecondaryConfigFile(DefaultIndentationFilename);
@@ -1145,7 +1145,7 @@ begin
     res := TResourceStream.Create(HInstance, PChar('indentation'), PChar(RT_RCDATA));
     try
       InvalidateFileStateCache;
-      fs := TFileStreamUTF8.Create(IndentationFilename, fmCreate);
+      fs := TFileStream.Create(IndentationFilename, fmCreate);
       try
         fs.CopyFrom(res, res.Size);
       finally

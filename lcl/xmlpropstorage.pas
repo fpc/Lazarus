@@ -20,7 +20,7 @@ uses
   // LCL
   LCLProc, Forms,
   // LazUtils
-  LazConfigStorage, LazUTF8, LazUTF8Classes;
+  LazConfigStorage, LazUTF8;
 
 type
   { TPropStorageXMLConfig }
@@ -307,14 +307,14 @@ constructor TXMLConfigStorage.Create(const Filename: string;
   LoadFromDisk: Boolean);
 var
   ms: TMemoryStream;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   FXMLConfig:=TPropStorageXMLConfig.Create(nil);
   FFilename:=Filename;
   FFreeXMLConfig:=true;
   if LoadFromDisk then
   begin
-    fs:=TFileStreamUTF8.Create(Filename,fmOpenRead+fmShareDenyWrite);
+    fs:=TFileStream.Create(Filename,fmOpenRead+fmShareDenyWrite);
     try
       ms:=TMemoryStream.Create;
       try
@@ -363,7 +363,7 @@ end;
 procedure TXMLConfigStorage.WriteToDisk;
 var
   ms: TMemoryStream;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   if FXMLConfig is TPropStorageXMLConfig then
   begin
@@ -371,7 +371,7 @@ begin
     try
       TPropStorageXMLConfig(FXMLConfig).SaveToStream(ms);
       ms.Position:=0;
-      fs:=TFileStreamUTF8.Create(GetFilename,fmCreate);
+      fs:=TFileStream.Create(GetFilename,fmCreate);
       try
         fs.CopyFrom(ms,ms.Size);
       finally

@@ -125,7 +125,7 @@ procedure TGraphic.SaveToFile(const Filename: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStreamUTF8.Create(Filename, fmCreate);
+  Stream := TFileStream.Create(Filename, fmCreate);
   try
     SaveToStream(Stream);
   finally
@@ -237,7 +237,7 @@ procedure TGraphic.LoadFromFile(const Filename: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally

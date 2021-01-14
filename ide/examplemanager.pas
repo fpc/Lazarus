@@ -5,10 +5,17 @@ unit ExampleManager;
 interface
 
 uses
-  Classes, SysUtils, lazutf8classes, ListFilterEdit, Forms, Controls, Dialogs,
-  StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc, FileUtil, LazFileUtils,
-  IDEWindowIntf, LazIDEIntf, IDEImagesIntf, MainIntf, EnvironmentOpts,
-  LazarusIDEStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn,
+  // LazControls
+  ListFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IdeIntf
+  IDEWindowIntf, LazIDEIntf, IDEImagesIntf, MainIntf,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 
@@ -362,7 +369,7 @@ begin
           ReadMe:=ExtractFilePath(ProjectsListBox.Items[i])+'README.txt';
           RealReadMe:=FindDiskFileCaseInsensitive(ReadMe);
           if RealReadMe <> '' then
-            LoadStringsFromFileUTF8(DescriptionMemo.Lines,RealReadMe)
+            DescriptionMemo.Lines.LoadFromFile(RealReadMe)
           else
             DescriptionMemo.Clear;
           Break;

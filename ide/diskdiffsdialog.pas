@@ -35,7 +35,7 @@ uses
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
-  LazUTF8Classes, LazFileUtils, UITypes,
+  LazFileUtils, UITypes,
   // IdeIntf
   IDEImagesIntf,
   // SynEdit
@@ -106,7 +106,7 @@ var
   CodeOk: Boolean;
   MemCode: TCodeBuffer;
   s, DiskEncoding, MemEncoding: String;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   for i:=AnUnitList.Count-1 downto 0 do
   begin
@@ -114,7 +114,7 @@ begin
     MemCode:=CurUnit.Source;
     CodeOk:=false;
     try
-      fs := TFileStreamUTF8.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
+      fs := TFileStream.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
       try
         SetLength(s{%H-}, fs.Size);
         if s <> '' then
@@ -150,7 +150,7 @@ var
   i: Integer;
   CurPackage: TLazPackage;
   PackageOk: Boolean;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   CurSource, DiskSource: string;
   AltFilename: String;
 begin
@@ -165,7 +165,7 @@ begin
       continue; // lpk has vanished, an alternative lpk was found => show
     try
       CurPackage.SaveToString(CurSource);
-      fs:=TFileStreamUTF8.Create(CurPackage.Filename,fmOpenRead);
+      fs:=TFileStream.Create(CurPackage.Filename,fmOpenRead);
       try
         if fs.Size=length(CurSource) then begin
           // size has not changed => load to see difference
@@ -314,7 +314,7 @@ function TDiskDiffsDlg.GetCachedDiff(FileOwner: TObject; AltFilename: string
   ): PDiffItem;
 var
   i: integer;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   Filename: String;
   AnUnitInfo: TUnitInfo;
   APackage: TLazPackage;
@@ -353,7 +353,7 @@ begin
       Filename:='';
       Source:='';
     end;
-    fs:=TFileStreamUTF8.Create(Filename,fmOpenRead);
+    fs:=TFileStream.Create(Filename,fmOpenRead);
     SetLength(Result^.TxtOnDisk,fs.Size);
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));

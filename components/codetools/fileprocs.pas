@@ -44,8 +44,7 @@ uses
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
-  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes,
-  LazStringUtils;
+  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazStringUtils;
 
 type
   TFPCStreamSeekType = int64;
@@ -394,12 +393,12 @@ end;
 -------------------------------------------------------------------------------}
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   if FileExistsUTF8(Filename) then begin
     try
       InvalidateFileStateCache(Filename);
-      fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite);
+      fs:=TFileStream.Create(Filename,fmOpenWrite);
       fs.Size:=0;
       fs.Free;
     except

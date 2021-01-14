@@ -26,7 +26,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, Unix, MTProcs,
-  LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase, LConvEncoding;
+  LazFileUtils, LazUTF8, LazLoggerBase, LConvEncoding;
 
 var
   FromEncoding: String;
@@ -110,7 +110,7 @@ procedure AskIconvInParallel(Index: PtrInt; {%H-}Data: Pointer;
 var
   FilenameOrig: String;
   FilenameUTF8: String;
-  SL: TStringListUTF8;
+  SL: TStringList;
   s: String;
   CharLen: integer;
   i: Integer;
@@ -130,7 +130,7 @@ begin
   FilenameUTF8:='testutf'+IntToStr(i)+'.txt';
   DeleteFileUTF8(FilenameOrig);
   DeleteFileUTF8(FilenameUTF8);
-  SL:=TStringListUTF8.Create;
+  SL:=TStringList.Create;
   SL.Add(chr(Index shr 8)+chr(Index and 255));
   SL.SaveToFile(FilenameOrig);
   if fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FilenameOrig+' >'+FilenameUTF8)=0

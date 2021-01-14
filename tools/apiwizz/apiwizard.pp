@@ -35,7 +35,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, LCLproc, ComCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazUTF8, LazUTF8Classes;
+  LazFileUtils, LazStringUtils, LazUTF8;
 
 type
 
@@ -353,13 +353,13 @@ var
   StartFound: Boolean;
   StartTag, EndTag: String;
   Line, LineName: String;
-  Lines: TStringListUTF8;
+  Lines: TStringList;
   n: Integer;
 begin
   AResult.Clear;
   if not FileExistsUTF8(AFileName) then Exit;
 
-  Lines := TStringListUTF8.Create;
+  Lines := TStringList.Create;
   Lines.LoadFromFile(AFileName);
 
   StartFound := False;
@@ -513,7 +513,7 @@ const
   PROC_DESC: array[TProcType] of String = ('Function',  'Procedure');
   PROC_RESULT: array[TProcType] of String = ('Result := ',  '');
 var
-  ApiText, ProcLines, ProcParams: TStringListUTF8;
+  ApiText, ProcLines, ProcParams: TStringList;
   S, DeclarationText: String;
   ProcName, FileName, IntfBase: String;
   PlatformPrefix, PlatformDir, PlatformObject: String;
@@ -553,9 +553,9 @@ begin
   end;
 
   LineCount := 0;
-  ProcParams := TStringListUTF8.Create;
-  ApiText := TStringListUTF8.Create;
-  ProcLines := TStringListUTF8.Create;
+  ProcParams := TStringList.Create;
+  ApiText := TStringList.Create;
+  ProcLines := TStringList.Create;
   try
     for Line := 0 to txtDeclarations.Lines.Count - 1 do
     begin

@@ -42,7 +42,7 @@ program LazRes;
 uses
   Classes, SysUtils, LazLogger, LResources, resource, reswriter,
   bitmapresource, groupresource, groupiconresource, groupcursorresource,
-  LazFileUtils, LazUTF8, LazUTF8Classes;
+  LazFileUtils, LazUTF8;
 
 type
   TOutputFileType = (ftLrs, ftRc, ftRes);
@@ -75,12 +75,12 @@ end;
 procedure OutputLRSFile(BinFilename, ResourceName: String; ResMemStream: TMemoryStream);
 var
   BinExt,ResourceType: String;
-  BinFileStream: TFileStreamUTF8;
+  BinFileStream: TFileStream;
   BinMemStream: TMemoryStream;
 begin
   dbgout(BinFilename);
   try
-    BinFileStream:=TFileStreamUTF8.Create(BinFilename,fmOpenRead);
+    BinFileStream:=TFileStream.Create(BinFilename,fmOpenRead);
     BinMemStream:=TMemoryStream.Create;
     try
       BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
@@ -164,9 +164,9 @@ var
 
   function GetResourceStream: TMemoryStream;
   var
-    FS: TFileStreamUTF8;
+    FS: TFileStream;
   begin
-    FS := TFileStreamUTF8.Create(FileName, fmOpenRead);
+    FS := TFileStream.Create(FileName, fmOpenRead);
     Result := TMemoryStream.Create;
     try
       Result.CopyFrom(FS, FS.Size);
@@ -296,7 +296,7 @@ end;
 var
   a: Integer;
   ResourceFilename,FullResourceFilename:String;
-  ResFileStream:TFileStreamUTF8;
+  ResFileStream:TFileStream;
   ResMemStream:TMemoryStream;
   FileList:TStringList;
   S: String;
@@ -309,7 +309,7 @@ begin
        ,' resourcefilename @filelist');
     exit;
   end;
-  FileList:=TStringListUTF8.Create;
+  FileList:=TStringList.Create;
   try
     if ParamStrUTF8(2)[1] = '@' then
     begin
@@ -356,7 +356,7 @@ begin
     end;
   
     try
-      ResFileStream:=TFileStreamUTF8.Create(ResourceFilename,fmCreate);
+      ResFileStream:=TFileStream.Create(ResourceFilename,fmCreate);
     except
       debugln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);

@@ -15,7 +15,7 @@ unit MacApplicationRes;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8Classes, LazFileUtils;
+  Classes, SysUtils, LazFileUtils;
   
 type
   EMacResourceException = Exception;
@@ -43,13 +43,13 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WriteInfoPlistFile(const Directory: string);
   var
-    sl: TStringListUTF8;
+    sl: TStringList;
     ExeName: String;
     PLInfoListFilename: String;
   begin
     ExeName:=ExtractFileName(Filename);
     PLInfoListFilename:=Directory+'Info.plist';
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.Add('<?xml version="1.0" encoding="UTF-8"?>');
       sl.Add('<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">');
@@ -97,11 +97,11 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WritePkgInfoFile(const Directory: string);
   var
-    sl: TStringListUTF8;
+    sl: TStringList;
     PkgInfoFilename: String;
   begin
     PkgInfoFilename:=Directory+'PkgInfo';
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.Add('APPL????');
       sl.SaveToFile(PkgInfoFilename);
@@ -112,11 +112,11 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WriteREADMErtfFile(const Directory, Title, Description: string);
   var
-    sl: TStringListUTF8;
+    sl: TStringList;
     ReadmeFilename: String;
   begin
     ReadmeFilename:=Directory+'README.rtf';
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.Add('{\rtf1\mac\ansicpg10000\cocoartf102');
       sl.Add('{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;}');
@@ -171,8 +171,7 @@ begin
   end;
 end;
 
-function GetMacOSXExecutableFilename(const BaseDir, ShortExeName: string
-  ): string;
+function GetMacOSXExecutableFilename(const BaseDir, ShortExeName: string): string;
 begin
   Result:=AppendPathDelim(BaseDir)+ShortExeName+'.app'+PathDelim
          +'Contents'+PathDelim+'MacOS'+ShortExeName;

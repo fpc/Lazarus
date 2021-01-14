@@ -69,7 +69,7 @@ uses
   StdCodeTools, EventCodeTool, CodeCreationDlg, IdentCompletionTool,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
-  FileUtil, LazFileUtils, LazUtilities, LazUTF8, LazUTF8Classes, UTF8Process,
+  FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils,
   LCLExceptionStacktrace,
@@ -7117,7 +7117,7 @@ var
   Filename, Ext: String;
 begin
   Dir:=AppendPathDelim(Dir);
-  Files:=TStringListUTF8.Create;
+  Files:=TStringList.Create;
   try
     CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
     for i:=0 to Files.Count-1 do begin
@@ -7352,7 +7352,7 @@ function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
   Process: TProcessUTF8;
   RunCmdLine, RunWorkingDirectory, ExeFile: string;
-  Params: TStringListUTF8;
+  Params: TStringList;
   RunAppBundle, Handled: Boolean;
   ARunMode: TRunParamsOptionsMode;
 begin
@@ -7380,7 +7380,7 @@ begin
     Exit(mrNone);
   end;
 
-  Params:=TStringListUTF8.Create;
+  Params:=TStringList.Create;
   Process := TProcessUTF8.Create(nil);
   try
     RunAppBundle:={$IFDEF Darwin}true{$ELSE}false{$ENDIF};
@@ -7616,7 +7616,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
 
 var
   Filename: String;
-  List: TStringListUTF8;
+  List: TStringList;
   Files: TStrings;
   i: Integer;
   CmdShow: Boolean;
@@ -7625,7 +7625,7 @@ begin
   if FileExistsUTF8(Filename) and (FRemoteControlFileAge<>FileAgeUTF8(Filename))
   then begin
     // the control file exists and has changed
-    List:=TStringListUTF8.Create;
+    List:=TStringList.Create;
     Files:=nil;
     try
       // load and delete the file
@@ -12620,11 +12620,11 @@ end;
 procedure TMainIDE.FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
 // Note: called by any thread
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   Encoding: String;
 begin
   s:='';
-  fs := TFileStreamUTF8.Create(aFilename, fmOpenRead or fmShareDenyNone);
+  fs := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyNone);
   try
     SetLength(s,fs.Size);
     if s<>'' then

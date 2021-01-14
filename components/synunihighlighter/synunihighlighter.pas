@@ -50,13 +50,10 @@ unit SynUniHighlighter;
 interface
 
 uses
-  SysUtils,
-  ////TL Windows,
+  Classes, SysUtils,
   Graphics,
-  Classes, FileUtil, LazUTF8Classes,
-  SynEditTypes,
-  GraphType, ////TL 2003-06-11: Added for TFontStyles
-  SynEditHighlighter;
+  GraphType, FileUtil,
+  SynEditTypes, SynEditHighlighter;
 
 Const
   _Root='Root';

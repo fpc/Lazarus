@@ -34,7 +34,7 @@ unit SynEditLines;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUtf8Classes, FPCAdds, SynEditTextBuffer;
+  Classes, SysUtils, FileUtil, FPCAdds, SynEditTextBuffer;
 
 type
 
@@ -98,7 +98,7 @@ type
     fBuffer: PChar;
     fBufPtr: Cardinal;
     fBufSize: Cardinal;
-    fFiler: TFileStreamUtf8;
+    fFiler: TFileStream;
     procedure Flush; virtual;
     procedure SetBufferSize(NewSize: Cardinal);
   public
@@ -168,7 +168,7 @@ type
 constructor TSynEditFileReader.Create(const FileName: string);
 begin
   inherited Create;
-  fFiler := TFileStreamUtf8.Create(FileName, fmOpenRead{ ToDo: or fmShareDenyWrite});
+  fFiler := TFileStream.Create(FileName, fmOpenRead{ ToDo: or fmShareDenyWrite});
   fFileSize := fFiler.Size;
   fFiler.Seek(0, soFromBeginning);
 end;
@@ -261,7 +261,7 @@ type
 constructor TSynEditFileWriter.Create(const FileName: string);
 begin
   inherited Create;
-  fFiler := TFileStreamUtf8.Create(FileName, fmCreate);
+  fFiler := TFileStream.Create(FileName, fmCreate);
   fFiler.Seek(0, soFromBeginning);
 end;
 

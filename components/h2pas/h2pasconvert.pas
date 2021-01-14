@@ -27,7 +27,7 @@ uses
   // LCL
   LCLProc, LResources, Forms, Controls, Dialogs, XMLPropStorage,
   // LazUtils
-  LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, LazUTF8Classes,
+  LazConfigStorage, FileUtil, LazFileUtils, LazFileCache,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
@@ -1028,7 +1028,7 @@ begin
   FCIncludesValid:=true;
   //DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
   try
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.LoadFromFile(Filename);
       for i:=0 to sl.Count-1 do begin
@@ -2241,7 +2241,7 @@ begin
       DebugLn(['TH2PasConverter.MergeIncludeFiles merging file '
          ,'"'+IncludeFile.Filename+'"'+' into "'+TextConverter.Filename+'"']);
       try
-        fs:=TFileStreamUTF8.Create(IncludeFile.Filename,fmOpenRead);
+        fs:=TFileStream.Create(IncludeFile.Filename,fmOpenRead);
         try
           SetLength(s,fs.Size);
           if s<>'' then begin

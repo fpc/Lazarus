@@ -27,10 +27,10 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus, ImgList,
+  Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
   LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
   // LazUtils
-  FPCAdds, LazFileUtils, lazutf8classes,
+  FPCAdds, LazFileUtils,
   // Codetools
   DefineTemplates,
   // IDE
@@ -277,7 +277,7 @@ begin
   //debugln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
 
   if FileExistsUTF8(ContributorsFileName) then
-    LoadStringsFromFileUTF8(Contributors.Lines,ContributorsFileName)
+    Contributors.Lines.LoadFromFile(ContributorsFileName)
   else
     Contributors.Lines.Text:=lisAboutNoContributors;
 end;
@@ -296,7 +296,7 @@ begin
     +'docs'+PathDelim+'acknowledgements.txt';
 
   if FileExistsUTF8(AcknowledgementsFileName) then
-    LoadStringsFromFileUTF8(Acknowledgements.Lines,AcknowledgementsFileName)
+    Acknowledgements.Lines.LoadFromFile(AcknowledgementsFileName)
   else
     Acknowledgements.Lines.Text:=lisAboutNoContributors;
 end;

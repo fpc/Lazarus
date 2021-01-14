@@ -37,8 +37,7 @@ uses
   Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
   Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls,
   // LazUtils
-  GraphType, UTF8Process, FileProcs, LazFileCache, LazFileUtils,
-  LazUTF8Classes, LazUTF8,
+  GraphType, UTF8Process, FileProcs, LazFileCache, LazFileUtils, LazUTF8,
   // SynEdit
   SynEdit, SynEditMarks,
   // IDEIntf
@@ -3417,7 +3416,7 @@ var
   Dlg: TSaveDialog;
   s: String;
   Filename: String;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   Dlg:=IDESaveDialogClass.Create(nil);
   try
@@ -3432,7 +3431,7 @@ begin
     s:=AllMessagesAsString(OnlyShown);
 
     try
-      fs:=TFileStreamUTF8.Create(Filename,fmCreate);
+      fs:=TFileStream.Create(Filename,fmCreate);
       try
         if s<>'' then
           fs.Write(s[1],length(s));

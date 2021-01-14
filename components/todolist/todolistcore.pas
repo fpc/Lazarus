@@ -131,10 +131,10 @@ type
 implementation
 
 uses
-  Dialogs, Controls,   // FCL, RTL
-  StrUtils, LazUTF8Classes,
+  // FCL, RTL
+  StrUtils,
   // LCL
-  LCLType, LclIntf, Forms, ActnList, ExtCtrls,
+  LCLType, LclIntf, Controls, Dialogs, Forms, ActnList, ExtCtrls,
   // LazUtils
   LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer,
   // Codetools
@@ -391,12 +391,12 @@ end;
 
 class procedure TToDoListCore.ExtractToCSV(const aListItems:TListItems;const aFilename:string);
 var
-  lCommaList: TStringListUTF8;
+  lCommaList: TStringList;
   i: Integer;
   lToDoItem: TTodoItem;
   s, t: String;
 begin
-  lCommaList:=TStringListUTF8.Create;
+  lCommaList:=TStringList.Create;
   try
     lCommaList.Add(csvHeader);
     i:=0;

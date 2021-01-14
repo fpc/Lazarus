@@ -51,7 +51,7 @@ uses
   LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, lazutf8classes, LazFileCache,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
   // LazControls
   DividerBevel,
   // Codetools
@@ -430,7 +430,7 @@ begin
   IdeBuildMode:=Profile.IdeBuildMode;
 
   EnvironmentOverrides:=TStringList.Create;
-  CmdLineParams:=TStringListUTF8.Create;
+  CmdLineParams:=TStringList.Create;
   Tool:=nil;
   try
     // setup external tool
@@ -948,7 +948,7 @@ function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
 var
   Filename: String;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   OptionsAsText: String;
 begin
   Result:=mrCancel;
@@ -960,7 +960,7 @@ begin
   Filename:=GetMakeIDEConfigFilename;
   try
     InvalidateFileStateCache;
-    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(Filename,fmCreate);
     try
       if fExtraOptions<>'' then begin
         // FPC expects console codepage for command line params

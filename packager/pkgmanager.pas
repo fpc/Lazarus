@@ -51,7 +51,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
-  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazTracer, LazUtilities, LazStringUtils,
+  LazUTF8, Laz2_XMLCfg, LazTracer, LazUtilities, LazStringUtils,
   LazFileUtils, LazFileCache, StringHashList, AvgLvlTree, ObjectLists, Translations,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
@@ -731,13 +731,13 @@ end;
 {$IFDEF UseLRS}
 procedure TPkgManager.AddToIconResource(const aIconFile, aResName: string);
 var
-  BinFileStream: TFileStreamUTF8;
+  BinFileStream: TFileStream;
   ResMemStream: TMemoryStream;
   ResType: String;
   OldLen, NewLen: integer;
 begin
   try
-    BinFileStream:=TFileStreamUTF8.Create(aIconFile,fmOpenRead);
+    BinFileStream:=TFileStream.Create(aIconFile,fmOpenRead);
     try
       ResMemStream:=TMemoryStream.Create;
       try
@@ -4785,7 +4785,7 @@ var
   UGUnit: TUGUnit;
 begin
   debugln(['TPkgManager.GetUnitsOfOwners piguListed=',piguListed in Flags,' piguUsed=',piguUsed in Flags,' piguAllUsed=',piguAllUsed in Flags]);
-  Result:=TStringListUTF8.Create;
+  Result:=TStringList.Create;
   if (OwnerList=nil) or (OwnerList.Count=0) then exit;
 
   Units:=TFilenameToPointerTree.Create(false);

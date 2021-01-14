@@ -48,7 +48,7 @@ uses
   LCLType, LCLIntf, LCLProc,
   Graphics, Forms, IntfGraphics, Printers, PostScriptUnicode,
   // LazUtils
-  GraphType, GraphMath, LazFileUtils, IntegerList, LazUTF8, LazUTF8Classes;
+  GraphType, GraphMath, LazFileUtils, IntegerList, LazUTF8;
   
 Type
 
@@ -1270,9 +1270,10 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.SaveToFile(aFileName: string);
-Var Lst : TStringListUTF8;
+Var
+  Lst : TStringList;
 begin
-  Lst:=TStringListUTF8.Create;
+  Lst:=TStringList.Create;
   try
      Lst.AddStrings(fHeader);
      Lst.AddStrings(fDocument);

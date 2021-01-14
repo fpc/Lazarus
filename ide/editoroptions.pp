@@ -44,8 +44,7 @@ uses
   // LCL
   Graphics, LCLProc, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazClasses, LazUTF8Classes, Laz2_XMLCfg,
-  LazStringUtils,
+  FileUtil, LazFileUtils, LazUTF8, LazClasses, Laz2_XMLCfg, LazStringUtils,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
@@ -5331,7 +5330,7 @@ begin
   Result := mrAbort;
   if FileExistsUTF8(s) then begin
     try
-      LoadStringsFromFileUTF8(AnAutoComplete.AutoCompleteList, s);
+      AnAutoComplete.AutoCompleteList.LoadFromFile(s);
       Result := mrOK;
     except
       Result := mrAbort;
@@ -5383,7 +5382,7 @@ function TEditorOptions.SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete
   ): TModalResult;
 begin
   try
-    SaveStringsToFileUTF8(AnAutoComplete.AutoCompleteList, CodeTemplateFileNameExpand);
+    AnAutoComplete.AutoCompleteList.SaveToFile(CodeTemplateFileNameExpand);
     Result := mrOK;
   except
     Result := mrAbort;

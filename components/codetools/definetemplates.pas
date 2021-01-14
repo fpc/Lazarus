@@ -60,7 +60,7 @@ uses
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
   // LazUtils
   LazStringUtils, LazFileUtils, FileUtil, LazFileCache,
-  LazUTF8, LazUTF8Classes, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
+  LazUTF8, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -1576,7 +1576,7 @@ function RunFPCInfo(const CompilerFilename: string;
 var
   Param: String;
   List: TStringList;
-  Params: TStringListUTF8;
+  Params: TStringList;
 begin
   Result:='';
   Param:='';
@@ -1590,7 +1590,7 @@ begin
   if Param='' then exit;
   Param:='-i'+Param;
   List:=nil;
-  Params:=TStringListUTF8.Create;
+  Params:=TStringList.Create;
   try
     Params.Add(Param);
     SplitCmdLineParams(Options,Params);
@@ -1867,11 +1867,11 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string; out
   UnitPaths: TStrings; out IncludePaths: TStrings; out UnitScopes: TStrings;
   out Defines, Undefines: TStringToStringTree; const Options: string): boolean;
 var
-  Params: TStringListUTF8;
+  Params: TStringList;
   Filename: String;
   WorkDir: String;
   List: TStringList;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   Result:=false;
   ConfigFiles:=nil;
@@ -1882,7 +1882,7 @@ begin
   Defines:=nil;
   Undefines:=nil;
 
-  Params:=TStringListUTF8.Create;
+  Params:=TStringList.Create;
   List:=nil;
   try
     Params.Add('-va');
@@ -1890,7 +1890,7 @@ begin
     if TestFilename<>'' then begin
       // create empty file
       try
-        fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
+        fs:=TFileStream.Create(TestFilename,fmCreate);
         fs.Free;
       except
         debugln(['Warning: [RunFPCVerbose] unable to create test file "'+TestFilename+'"']);
@@ -2031,7 +2031,7 @@ var
   S2SItem: PStringToStringItem;
   CurUnitName, Filename, PkgName, FPMFilename, FPMSourcePath, Line: String;
   p, EndPos, FPCTargetEndPos, i, FileCount: Integer;
-  sl: TStringListUTF8;
+  sl: TStringList;
   FPM: TPCFPMFileState;
 begin
   // try to resolve .ppu files via fpmkinst .fpm files
@@ -2082,7 +2082,7 @@ begin
       FPMSourcePath:='';
       if FileExistsCached(FPMFilename) then begin
         //debugln(['GatherUnitsInFPMSources Found .fpm: ',FPMFilename]);
-        sl:=TStringListUTF8.Create;
+        sl:=TStringList.Create;
         try
           try
             sl.LoadFromFile(FPMFilename);
@@ -3417,13 +3417,13 @@ end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 var
-  MakefileFPC: TStringListUTF8;
+  MakefileFPC: TStringList;
   i: Integer;
   Line: string;
   p: LongInt;
   NameValue: String;
 begin
-  MakefileFPC:=TStringListUTF8.Create;
+  MakefileFPC:=TStringList.Create;
   MakefileFPC.LoadFromFile(Filename);
   i:=0;
   while i<MakefileFPC.Count do begin
@@ -3954,7 +3954,7 @@ function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out
   Kind: TPascalCompiler; Run: boolean): boolean;
 var
   ShortFilename, Line: String;
-  Params: TStringListUTF8;
+  Params: TStringList;
   Lines: TStringList;
   i: Integer;
 begin
@@ -3987,7 +3987,7 @@ begin
   if Run then begin
     // run it and check for magics
     debugln(['Note: (lazarus) [IsCompilerExecutable] run "',AFilename,'"']);
-    Params:=TStringListUTF8.Create;
+    Params:=TStringList.Create;
     Lines:=nil;
     try
       Params.Add('-va');
@@ -6325,7 +6325,7 @@ var
   SrcOS: string;
   SrcOS2: String;
   Step: String;
-  Params: TStringListUTF8;
+  Params: TStringList;
 begin
   Result:=nil;
   //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
@@ -6343,7 +6343,7 @@ begin
   SetLength(Buf,1024);
   Step:='Init';
   try
-    Params:=TStringListUTF8.Create;
+    Params:=TStringList.Create;
     TheProcess := TProcessUTF8.Create(nil);
     try
       TheProcess.Executable:=CompilerPath;
@@ -6393,7 +6393,7 @@ begin
     //DebugLn('TDefinePool.CreateFPCTemplate First done UnitSearchPath="',UnitSearchPath,'"');
 
     // ask for target operating system -> ask compiler with switch -iTO
-    Params:=TStringListUTF8.Create;
+    Params:=TStringList.Create;
     TheProcess := TProcessUTF8.Create(nil);
     try
       TheProcess.Executable:=CompilerPath;
@@ -6445,7 +6445,7 @@ begin
     end;
     
     // ask for target processor -> ask compiler with switch -iTP
-    Params:=TStringListUTF8.Create;
+    Params:=TStringList.Create;
     TheProcess := TProcessUTF8.Create(nil);
     try
       TheProcess.Executable:=CompilerPath;
@@ -7875,7 +7875,7 @@ begin
   UnitPath:='';
   IncPath:='';
   Namespaces:='';
-  Params:=TStringListUTF8.Create;
+  Params:=TStringList.Create;
   try
     SplitCmdLineParams(CmdLine,Params);
     for i:=0 to Params.Count-1 do begin

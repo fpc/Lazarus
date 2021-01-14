@@ -65,7 +65,7 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LConvEncoding, LazLoggerBase,
   AvgLvlTree, StringHashList;
 
 type
@@ -509,7 +509,7 @@ end;
 
 function UpdatePOFile(RSTFiles: TStrings; const POFilename: string): boolean;
 var
-  InputLines: TStringListUTF8;
+  InputLines: TStringList;
   Filename: string;
   BasePoFile: TPoFile;
   i: Integer;
@@ -526,7 +526,7 @@ begin
     exit;
   end;
 
-  InputLines := TStringListUTF8.Create;
+  InputLines := TStringList.Create;
   try
     // Read base po items
     if FileExistsUTF8(POFilename) then
@@ -735,7 +735,7 @@ var
   f: TStream;
 begin
   FPoName := AFilename;
-  f := TFileStreamUTF8.Create(AFilename, fmOpenRead or fmShareDenyNone);
+  f := TFileStream.Create(AFilename, fmOpenRead or fmShareDenyNone);
   try
     Create(f, Full);
     if FHeader=nil then
@@ -1483,9 +1483,9 @@ end;
 
 procedure TPOFile.SaveToFile(const AFilename: string);
 var
-  OutLst: TStringListUTF8;
+  OutLst: TStringList;
 begin
-  OutLst := TStringListUTF8.Create;
+  OutLst := TStringList.Create;
   try
     SaveToStrings(OutLst);
     OutLst.SaveToFile(AFilename);

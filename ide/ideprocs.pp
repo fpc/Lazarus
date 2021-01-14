@@ -33,7 +33,7 @@ uses
   // RTL
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
+  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
   Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer,
   // LCL
   StdCtrls, ExtCtrls,
@@ -1329,12 +1329,12 @@ end;
 
 function CreateEmptyFile(const Filename: string): boolean;
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   Result:=false;
   try
     InvalidateFileStateCache;
-    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(Filename,fmCreate);
     fs.Free;
     Result:=true;
   except

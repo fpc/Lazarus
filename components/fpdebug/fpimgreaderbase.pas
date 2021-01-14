@@ -13,7 +13,7 @@ uses
   {$endif}
   fgl, lazfglhash,
   fpDbgSymTable,
-  Classes, SysUtils, LazUTF8Classes, DbgIntfBaseTypes, contnrs,
+  Classes, SysUtils, DbgIntfBaseTypes, contnrs,
   FpDbgCommon;
 
 type
@@ -225,7 +225,7 @@ begin
   end;
   {$ENDIF}
   FFileName := AFileName;
-  FStream := TFileStreamUTF8.Create(AFileName, fmOpenRead or fmShareDenyNone);
+  FStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyNone);
   inherited Create;
   {$endif}
 end;
@@ -292,7 +292,7 @@ begin
   if AMem = nil then
     exit;
   if FStream = nil then
-    FStream := TFileStreamUTF8.Create(FFileName, fmOpenRead or fmShareDenyNone);
+    FStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);
   {$endif}
@@ -309,7 +309,7 @@ begin
   if AMem = nil then
     exit;
   if FStream = nil then
-    FStream := TFileStreamUTF8.Create(FFileName, fmOpenRead or fmShareDenyNone);
+    FStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
   FList.Add(AMem);
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);

@@ -43,8 +43,6 @@ interface
 
 uses
   Classes, SysUtils, Laz_AVL_Tree,
-  // LazUtils
-  LazUTF8Classes,
   // Codetools
   FileProcs;
 
@@ -501,12 +499,12 @@ end;
 
 procedure TFPCMsgFile.LoadFromFile(const Filename: string);
 var
-  sl: TStringListUTF8;
+  sl: TStringList;
 begin
   {$IFDEF VerboseFPCMsgFile}
   debugln(['TFPCMsgFile.LoadFromFile START ',Filename]);
   {$ENDIF}
-  sl:=TStringListUTF8.Create;
+  sl:=TStringList.Create;
   try
     sl.LoadFromFile(Filename);
     LoadFromList(sl);

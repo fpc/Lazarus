@@ -26,7 +26,7 @@ unit laz2_XMLRead;
 interface
 
 uses
-  SysUtils, Classes, laz2_DOM, lazutf8classes;
+  SysUtils, Classes, laz2_DOM;
 
 type
   TErrorSeverity = (esWarning, esError, esFatal);
@@ -4183,7 +4183,7 @@ var
   FileStream: TStream;
 begin
   ADoc := nil;
-  FileStream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  FileStream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFile(ADoc, FileStream, FilenameToURI(AFilename), Flags);
   finally
@@ -4257,7 +4257,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String;
 var
   Stream: TStream;
 begin
-  Stream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFragment(AParentNode, Stream, FilenameToURI(AFilename), Flags);
   finally
@@ -4331,7 +4331,7 @@ var
   Stream: TStream;
 begin
   ADoc := nil;
-  Stream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadDTDFile(ADoc, Stream, FilenameToURI(AFilename));
   finally

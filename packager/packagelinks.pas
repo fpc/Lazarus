@@ -43,8 +43,8 @@ uses
   // LCL
   Forms,
   // LazUtils
-  Laz2_XMLCfg, LazFileCache, LazUTF8Classes, LazFileUtils, FileUtil,
-  LazTracer, LazUtilities, AvgLvlTree,
+  Laz2_XMLCfg, LazFileCache, LazFileUtils, FileUtil, LazUtilities, LazTracer,
+  AvgLvlTree,
   // Codetools
   FileProcs, CodeToolManager,
   // BuildIntf
@@ -434,7 +434,7 @@ var
   NewPkgName: string;
   PkgVersion: TPkgVersion;
   CurPkgLink, OldPkgLink, OtherPkgLink: TLazPackageLink;
-  sl: TStringListUTF8;
+  sl: TStringList;
   LPLFilename: String;
   LPKFilename, LazDir: string;
   Files: TStrings;
@@ -454,7 +454,7 @@ begin
   UnmappedGlobalLinks:=FGlobalLinks;
   FGlobalLinks:=TAvlTree.Create(@ComparePackageLinks);
   MappedGlobalLinks:=TAvlTree.Create(@ComparePackageLinks);
-  Files:=TStringListUTF8.Create;
+  Files:=TStringList.Create;
   PkgVersion:=TPkgVersion.Create;
   try
     GlobalLinksDir:=GetGlobalLinkDirectory;
@@ -470,7 +470,7 @@ begin
         continue;
       end;
       LPKFilename:='';
-      sl:=TStringListUTF8.Create;
+      sl:=TStringList.Create;
       try
         sl.LoadFromFile(LPLFilename);
         if sl.Count<=0 then begin

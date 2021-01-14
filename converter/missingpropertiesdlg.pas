@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, contnrs,
   LCLProc, Forms, Controls, Grids, LResources, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazUTF8Classes, LazUTF8, AvgLvlTree,
+  LazFileUtils, LazUTF8, AvgLvlTree,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools
@@ -279,12 +279,12 @@ end;
 
 function TDFMConverter.ConvertDfmToLfm(const aFilename: string): TModalResult;
 var
-  DFMStream, LFMStream, Utf8LFMStream: TMemoryStreamUTF8;
+  DFMStream, LFMStream, Utf8LFMStream: TMemoryStream;
 begin
   Result:=mrOk;
-  DFMStream:=TMemoryStreamUTF8.Create;
-  LFMStream:=TMemoryStreamUTF8.Create;
-  Utf8LFMStream:=TMemoryStreamUTF8.Create;
+  DFMStream:=TMemoryStream.Create;
+  LFMStream:=TMemoryStream.Create;
+  Utf8LFMStream:=TMemoryStream.Create;
   try
     // Note: The file is copied from DFM file earlier. Load it.
     try

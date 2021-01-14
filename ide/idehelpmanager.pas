@@ -38,7 +38,7 @@ uses
   LCLProc, LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
   Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs,
   // LazUtils
-  LConvEncoding, LazUTF8Classes, LazFileUtils, HTML2TextRender,
+  LConvEncoding, LazFileUtils, HTML2TextRender,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -768,7 +768,7 @@ function TLIHProviders.GetStream(const URL: string; Shared: boolean): TStream;
   procedure OpenFile(out Stream: TStream; const Filename: string;
     UseCTCache: boolean);
   var
-    fs: TFileStreamUTF8;
+    fs: TFileStream;
     ok: Boolean;
     Buf: TCodeBuffer;
     ms: TMemoryStream;
@@ -786,7 +786,7 @@ function TLIHProviders.GetStream(const URL: string; Shared: boolean): TStream;
       ok:=false;
       try
         DebugLn(['TLIHProviders.GetStream.OpenFile ',Filename]);
-        fs:=TFileStreamUTF8.Create(Filename,fmOpenRead);
+        fs:=TFileStream.Create(Filename,fmOpenRead);
         Stream:=fs;
         ok:=true;
       finally

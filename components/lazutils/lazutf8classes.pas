@@ -29,7 +29,7 @@ type
   public
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-  end;
+  end deprecated 'Use TStringList instead';
 
   { TMemoryStreamUTF8 }
 
@@ -37,17 +37,15 @@ type
   public
     procedure LoadFromFile(const FileName: string);
     procedure SaveToFile(const FileName: string);
-  end;
+  end deprecated 'Use TMemoryStream instead';
 
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
+  deprecated 'Just use TStrings.LoadFromFile';
 procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
+  deprecated 'Just use TStrings.SaveToFile';
 
-function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 implementation
-
-uses
-  LazFileUtils; //avoid circular reference with LazFileUtils
 
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
 var
@@ -83,12 +81,6 @@ begin
   finally
     uList.Free;
   end;
-end;
-
-function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1,
-  Index2: Integer): Integer;
-begin
-  Result:=CompareStr(UTF8LowerCase(List[Index1]),UTF8LowerCase(List[Index2]));
 end;
 
 { TMemoryStreamUTF8 }

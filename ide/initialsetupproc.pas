@@ -37,8 +37,7 @@ uses
   // CodeTools
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils, FileUtil,
-  LazLoggerBase, Laz2_XMLCfg,
+  LazFileCache, LazUTF8, LazFileUtils, FileUtil, LazLoggerBase, Laz2_XMLCfg,
   // IDE
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, FppkgHelper;
 
@@ -147,7 +146,7 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
   end;
 
 var
-  sl: TStringListUTF8;
+  sl: TStringList;
   VersionIncFile: String;
   Version: String;
 begin
@@ -166,7 +165,7 @@ begin
   if not SubFileExists('ide/lazarus.lpi',Result) then exit;
   VersionIncFile:=GetForcedPathDelims('ide/version.inc');
   if not SubFileExists(VersionIncFile,Result) then exit;
-  sl:=TStringListUTF8.Create;
+  sl:=TStringList.Create;
   try
     try
       sl.LoadFromFile(ADirectory+VersionIncFile);
@@ -685,7 +684,7 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
 
 var
   VersionFile: String;
-  sl: TStringListUTF8;
+  sl: TStringList;
   i: Integer;
   VersionNr: String;
   ReleaseNr: String;
@@ -712,7 +711,7 @@ begin
     VersionFile:=ADirectory+'compiler'+PathDelim+'version.pas';
     if FileExistsInternal(VersionFile) then
     begin
-      sl:=TStringListUTF8.Create;
+      sl:=TStringList.Create;
       try
         try
           sl.LoadFromFile(VersionFile);

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, IniFiles,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8Classes,
+  FileUtil, LazFileUtils,
   // ProjectTemplates
   ptstrconst;
 
@@ -285,12 +285,12 @@ end;
 procedure TProjectTemplate.InitFromDir(const DirName: String);
 
 Var
-  L : TStringListUTF8;
+  L : TStringList;
   FN : String;
   
 begin
   FDirectory:=IncludeTrailingPathDelimiter(DirName);
-  L:=TStringListUTF8.Create;
+  L:=TStringList.Create;
   Try
     FN:=FDirectory+'project.ini';
     If FileExistsUTF8(FN) then
@@ -397,7 +397,7 @@ end;
 procedure TProjectTemplate.CopyAndSubstituteFile(Const SrcFN,DestFN : String; Values : Tstrings);
 
 Var
-  L : TStringListUTF8;
+  L : TStringList;
   
 begin
   If pos(ExtractFileExt(SrcFN)+',',Exclude)<>0 then
@@ -407,7 +407,7 @@ begin
     end
   else
     begin
-    L:=TStringListUTF8.Create;
+    L:=TStringList.Create;
     try
       CreateFile(SrcFN,L,Values);
       L.SaveToFile(DestFN);

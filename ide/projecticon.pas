@@ -39,7 +39,7 @@ uses
   // LCL
   LCLProc, Graphics,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg, lazutf8classes,
+  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg,
   // Codetools
   FileProcs,
   // IdeIntf
@@ -185,7 +185,7 @@ end;
 
 function TProjectIcon.SaveIconFile: Boolean;
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   Result := False;
   if IsEmpty then exit;
@@ -193,7 +193,7 @@ begin
     exit(true);
   // write ico file
   try
-    fs:=TFileStreamUTF8.Create(IcoFileName,fmCreate);
+    fs:=TFileStream.Create(IcoFileName,fmCreate);
     try
       fs.Write(FData[0],length(FData));
       InvalidateFileStateCache(IcoFileName);
@@ -212,7 +212,7 @@ end;
 procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
   NewData: TIconData;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   if IsEmpty=AValue then exit;
   if AValue then
@@ -225,7 +225,7 @@ begin
   begin
     // We need to restore data from the .ico file
     try
-      fs:=TFileStreamUTF8.Create(IcoFileName,fmOpenRead);
+      fs:=TFileStream.Create(IcoFileName,fmOpenRead);
       try
         SetLength(NewData, fs.Size);
         if length(NewData)>0 then

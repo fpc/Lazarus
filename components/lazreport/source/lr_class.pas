@@ -20,7 +20,7 @@ uses
   Controls, Forms, Dialogs, Menus, Graphics, LCLProc, LCLType, LCLIntf,
   Printers, osPrinters,
   // LazUtils
-  LazFileUtils, LazUTF8, LazUTF8Classes,
+  LazFileUtils, LazUTF8,
   // IDEIntf
   PropEdits,
   // LazReport
@@ -10682,7 +10682,7 @@ end;
 
 procedure TfrReport.LoadFromFile(const FName: String);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
   Ext   : String;
 begin
   Ext:=ExtractFileExt(fName);
@@ -10691,7 +10691,7 @@ begin
   else
   begin
     CheckFileExists(fName);
-    Stream := TFileStreamUtf8.Create(FName, fmOpenRead);
+    Stream := TFileStream.Create(FName, fmOpenRead);
     LoadFromStream(Stream);
     Stream.Free;
     FileName := FName;
@@ -10729,7 +10729,7 @@ end;
 
 procedure TfrReport.SaveToFile(FName: String);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
   Ext   : string;
 begin
   Ext:=ExtractFileExt(fName);
@@ -10743,7 +10743,7 @@ begin
     SaveToXMLFile(fName)
   else
   begin
-    Stream := TFileStreamUtf8.Create(FName, fmCreate);
+    Stream := TFileStream.Create(FName, fmCreate);
     SaveToStream(Stream);
     Stream.Free;
   end;
@@ -10855,9 +10855,9 @@ end;
 
 procedure TfrReport.LoadPreparedReport(const FName: String);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
 begin
-  Stream := TFileStreamUtf8.Create(FName, fmOpenRead);
+  Stream := TFileStream.Create(FName, fmOpenRead);
   EMFPages.LoadFromStream(Stream);
   Stream.Free;
   CanRebuild := False;
@@ -10865,9 +10865,9 @@ end;
 
 procedure TfrReport.SavePreparedReport(const FName: String);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
 begin
-  Stream := TFileStreamUtf8.Create(FName, fmCreate);
+  Stream := TFileStream.Create(FName, fmCreate);
   if not CanRebuild and not (roDontUpgradePreparedReport in Options) then
     EMFPages.UpgradeToCurrentVersion;
   EMFPages.SaveToStream(Stream);
@@ -10877,7 +10877,7 @@ end;
 procedure TfrReport.LoadTemplate(const fname: String; comm: TStrings;
   Bmp: TBitmap; Load: Boolean);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
   b: Byte;
   fb: TBitmap;
   fm: TStringList;
@@ -10885,7 +10885,7 @@ var
 begin
   fb := TBitmap.Create;
   fm := TStringList.Create;
-  Stream := TFileStreamUtf8.Create(FName, fmOpenRead);
+  Stream := TFileStream.Create(FName, fmOpenRead);
   if Load then
   begin
     ReadMemo(Stream, fm);
@@ -10945,14 +10945,13 @@ begin
   end;
 end;
 
-procedure TfrReport.SaveTemplate(const fname: String; comm: TStrings;
-  Bmp: TBitmap);
+procedure TfrReport.SaveTemplate(const fname: String; comm: TStrings; Bmp: TBitmap);
 var
-  Stream: TFileStreamUtf8;
+  Stream: TFileStream;
   b: Byte;
   pos, lpos: Integer;
 begin
-  Stream := TFileStreamUtf8.Create(FName, fmCreate);
+  Stream := TFileStream.Create(FName, fmCreate);
   frWriteMemo(Stream, Comm);
   b := 0;
   pos := Stream.Position;
@@ -11217,7 +11216,7 @@ begin
 end;
 
 var
-  ExportStream: TFileStreamUtf8;
+  ExportStream: TFileStream;
 
 procedure TfrReport.ExportBeforeModal(Sender: TObject);
 var
@@ -11247,7 +11246,7 @@ begin
   if Trim(aFilename) = '' then
     raise Exception.create(sNoValidExportFilenameWasSupplied);
 
-  ExportStream := TFileStreamUtf8.Create(aFileName, fmCreate);
+  ExportStream := TFileStream.Create(aFileName, fmCreate);
   result := ExportTo(FilterClass, exportStream, true);
   if result then
   begin

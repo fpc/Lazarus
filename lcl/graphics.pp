@@ -59,7 +59,7 @@ uses
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   IntfGraphics, IcnsTypes, WSReferences,
   // LazUtils
-  GraphType, GraphMath, FPCAdds, LazUTF8Classes, LazLoggerBase, LazTracer, LazUtilities;
+  GraphType, GraphMath, FPCAdds, LazLoggerBase, LazTracer, LazUtilities;
 
 type
   PColor = ^TColor;

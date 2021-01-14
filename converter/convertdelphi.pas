@@ -39,8 +39,7 @@ uses
   // CodeTools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazStringUtils,
-  AvgLvlTree,
+  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazStringUtils, AvgLvlTree,
   // IDEIntf
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf, IDEOptEditorIntf,
@@ -1245,13 +1244,13 @@ end;
 
 function TConvertDelphiProjPack.ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
 var
-  sl: TStringListUTF8;
+  sl: TStringList;
   i: Integer;
   Line, s: string;
   c: char;
 begin
   try
-    sl:=TStringListUTF8.Create;
+    sl:=TStringList.Create;
     try
       sl.LoadFromFile(CFGFilename);
       for i:=0 to sl.Count-1 do begin

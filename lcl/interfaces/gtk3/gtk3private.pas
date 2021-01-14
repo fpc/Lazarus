@@ -21,7 +21,7 @@ unit gtk3private;
 
 interface
 
-uses Classes, SysUtils, Controls, LazGtk3, LazGObject2, LazGLib2, LazUtf8Classes;
+uses Classes, SysUtils, Controls, LazGtk3, LazGObject2, LazGLib2;
 
 type
 
@@ -913,9 +913,9 @@ end;
 
 procedure TGtk3MemoStrings.LoadFromFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(TheStream);
   finally
@@ -925,9 +925,9 @@ end;
 
 procedure TGtk3MemoStrings.SaveToFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  TheStream:=TFileStream.Create(FileName,fmCreate);
   try
     SaveToStream(TheStream);
   finally

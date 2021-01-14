@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Registry, ComCtrls,
-  LCLType, GraphType, LCLIntf, LMessages, LazFileUtils, lazutf8classes, LCLProc;
+  LCLType, GraphType, LCLIntf, LMessages, LazFileUtils, LCLProc;
 
 const
   InternetProfessionalVersion = 1.15;
@@ -523,7 +523,7 @@ function InternetSumOfFile(const FileName : string) : DWORD;
 var
   FileSt : TFileStream;
 begin
-  FileSt := TFileStreamUTF8.Create(FileName, CrcFileMode);
+  FileSt := TFileStream.Create(FileName, CrcFileMode);
   try
     Result := InternetSumOfStream(FileSt, 0);
   finally
@@ -739,9 +739,9 @@ end;
 { Calculates the MD5 Digest of a file }
 function MD5SumOfFile(const FileName : string) : string;
 var
-  FileSt : TFileStreamUTF8;
+  FileSt : TFileStream;
 begin
-  FileSt := TFileStreamUTF8.Create(FileName, CrcFileMode);
+  FileSt := TFileStream.Create(FileName, CrcFileMode);
   try
     Result := MD5SumOfStream(FileSt);
   finally

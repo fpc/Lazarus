@@ -12,8 +12,7 @@ interface
 {$I SynEdit.inc}
 
 uses
-  ////TL DsgnIntf,
-  componenteditors, ////TL added
+  componenteditors,
   Classes,
   SynUniHighlighter,
   SynUniDesigner,

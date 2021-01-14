@@ -48,7 +48,7 @@ interface
 uses
   SysUtils, Classes,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
   // Codetools
   DefineTemplates;
 
@@ -153,12 +153,12 @@ function CreateCompilerTestPascalFilename: string;
 
   function CreateFile(const Filename: string): boolean;
   var
-    fs: TFileStreamUTF8;
+    fs: TFileStream;
   begin
     if FileExistsUTF8(Filename) then exit(true);
     Result:=false;
     try
-      fs:=TFileStreamUTF8.Create(Filename,fmCreate);
+      fs:=TFileStream.Create(Filename,fmCreate);
       fs.Free;
       Result:=true;
     except

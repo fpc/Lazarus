@@ -24,7 +24,7 @@ program iconvtable;
 
 uses
   Classes, SysUtils, Unix,
-  LazFileUtils, LazUTF8, LazUTF8Classes;
+  LazFileUtils, LazUTF8;
 
 var
   Table: array[0..255] of shortstring;
@@ -108,7 +108,7 @@ begin
 end;
 
 var
-  SL: TStringListUTF8;
+  SL: TStringList;
   Filename1, Filename2: String;
   FromEncoding, ToEncoding: String;
   s: String;
@@ -122,7 +122,7 @@ begin
   FromEncoding:=ParamStrUTF8(1);
   ToEncoding:='UTF-8';
 
-  SL:=TStringListUTF8.Create;
+  SL:=TStringList.Create;
   for i:=0 to 255 do begin
     Table[i]:=chr(i);
     if i<32 then continue;

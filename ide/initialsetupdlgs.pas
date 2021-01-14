@@ -47,8 +47,7 @@ uses
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
-  FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazStringUtils, LazFileCache,
-  LazLoggerBase,
+  FileUtil, LazUTF8, LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
   // DebuggerIntf
@@ -1360,8 +1359,8 @@ var
   IsFirstStart: Boolean;
   PrimaryFilename: String;
   SecondaryFilename: String;
-  PrimaryEnvs: TStringListUTF8;
-  SecondaryEnvs: TStringListUTF8;
+  PrimaryEnvs: TStringList;
+  SecondaryEnvs: TStringList;
 begin
   IsFirstStart:=not FileExistsCached(EnvironmentOptions.Filename);
   if not IsFirstStart then begin
@@ -1371,8 +1370,8 @@ begin
     if FileExistsUTF8(PrimaryFilename)
     and FileExistsUTF8(SecondaryFilename) then begin
       // compare content of primary and secondary config
-      PrimaryEnvs:=TStringListUTF8.Create;
-      SecondaryEnvs:=TStringListUTF8.Create;
+      PrimaryEnvs:=TStringList.Create;
+      SecondaryEnvs:=TStringList.Create;
       try
         PrimaryEnvs.LoadFromFile(PrimaryFilename);
       except

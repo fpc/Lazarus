@@ -25,7 +25,7 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  UITypes, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
+  UITypes, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
   // IdeIntf
   SrcEditorIntf, PropEdits, ObjInspStrConsts;
   
@@ -419,7 +419,7 @@ begin
         end;
       tctFile:
         if FileExistsUTF8(FFilename) then begin
-          fs:=TFileStreamUTF8.Create(FFilename,fmOpenRead);
+          fs:=TFileStream.Create(FFilename,fmOpenRead);
           try
             SetLength(FSource,fs.Size);
             fs.Read(FSource[1],length(FSource));
@@ -451,10 +451,7 @@ begin
         end;
       tctFile:
         if FileExistsUTF8(FFilename) then begin
-          if FStrings is TStringListUTF8 then
-            FStrings.LoadFromFile(FFilename)
-          else
-            FStrings.LoadFromFile(UTF8ToSys(FFilename));
+          FStrings.LoadFromFile(FFilename);
           ResetFile;
         end;
       tctCodeBuffer:
@@ -477,7 +474,7 @@ begin
       case FCurrentType of
       tctSource:
         begin
-          fs:=TFileStreamUTF8.Create(FFilename,fmCreate);
+          fs:=TFileStream.Create(FFilename,fmCreate);
           try
             if FSource<>'' then begin
               fs.Write(FSource[1],length(FSource));
@@ -489,10 +486,7 @@ begin
         end;
       tctStrings:
         if FStrings<>nil then begin
-          if FStrings is TStringListUTF8 then
-            FStrings.LoadFromFile(FFilename)
-          else
-            FStrings.LoadFromFile(UTF8ToSys(FFilename));
+          FStrings.LoadFromFile(FFilename);
           ResetStrings;
         end;
       tctCodeBuffer:
@@ -554,7 +548,7 @@ begin
       RenameFileUTF8(FFilename,TrimmedFilename);
   tctSource:
     begin
-      fs:=TFileStreamUTF8.Create(TrimmedFilename,fmCreate);
+      fs:=TFileStream.Create(TrimmedFilename,fmCreate);
       try
         if FSource<>'' then
           fs.Write(FSource[1],length(FSource));
@@ -564,10 +558,7 @@ begin
     end;
   tctStrings:
     begin
-      if FStrings is TStringListUTF8 then
-        FStrings.SaveToFile(TrimmedFilename)
-      else
-        FStrings.SaveToFile(UTF8ToSys(TrimmedFilename));
+      FStrings.SaveToFile(TrimmedFilename);
       ResetStrings;
     end;
   tctCodeBuffer:
@@ -699,7 +690,7 @@ begin
       case CurrentType of
       tctSource:
         begin
-          fs:=TFileStreamUTF8.Create(AFilename,fmOpenRead);
+          fs:=TFileStream.Create(AFilename,fmOpenRead);
           try
             SetLength(FSource,fs.Size);
             if fSource<>'' then
@@ -711,10 +702,7 @@ begin
       tctFile:
         CopyFile(AFilename,FFilename);
       tctStrings:
-        if FStrings is TStringListUTF8 then
-          FStrings.LoadFromFile(FFilename)
-        else
-          FStrings.LoadFromFile(UTF8ToSys(FFilename));
+        FStrings.LoadFromFile(FFilename)
       end;
       Result:=true;
     except

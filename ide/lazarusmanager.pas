@@ -95,7 +95,7 @@ uses
   // LCL
   Forms, Controls, Dialogs,
   // LazUtils
-  UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8, LazUTF8Classes,
+  UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // CodeTools
   FileProcs,
   // IdeIntf

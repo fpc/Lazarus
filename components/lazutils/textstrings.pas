@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazUtf8Classes, LazUtilsStrConsts;
+  LazUtilsStrConsts;
 
 type
   { TTextStrings }
@@ -846,9 +846,9 @@ end;
 
 procedure TTextStrings.LoadFromFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(TheStream);
   finally
@@ -858,9 +858,9 @@ end;
 
 procedure TTextStrings.SaveToFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  TheStream:=TFileStream.Create(FileName,fmCreate);
   try
     SaveToStream(TheStream);
   finally

@@ -43,7 +43,7 @@ uses
   // LCL
   Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, ComCtrls, LCLType,
   // LazUtils
-  FileUtil, lazutf8classes,
+  FileUtil,
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IdeIntf
@@ -213,12 +213,12 @@ end;
 
 function TSelectedDiffFile.TextContents: string;
 var
-  dat: TStringListUTF8;
+  dat: TStringList;
 begin
   if fFile = nil then Exit('');
   if fFile.Editor = nil then
   begin
-    dat := TStringListUTF8.Create;
+    dat := TStringList.Create;
     try
       dat.LoadFromFile(fFile.Name);
       Result := dat.Text;

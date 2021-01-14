@@ -28,8 +28,7 @@ uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, Types, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF8Classes,
-  LazLoggerBase, LazTracer,
+  LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazLoggerBase, LazTracer,
   // LCL
   LCLStrConsts, LCLType;
 
@@ -2215,15 +2214,15 @@ end;
 procedure DbgOutThreadLog(const Msg: string);
 var
   PID: PtrInt;
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
   Filename: string;
 begin
   PID:=PtrInt(GetThreadID);
   Filename:='Log'+IntToStr(PID);
   if FileExistsUTF8(Filename) then
-    fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite or fmShareDenyNone)
+    fs:=TFileStream.Create(Filename,fmOpenWrite or fmShareDenyNone)
   else
-    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(Filename,fmCreate);
   fs.Position:=fs.Size;
   fs.Write(Msg[1], length(Msg));
   fs.Free;
@@ -2287,7 +2286,7 @@ procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 var
   S: TStream;
 begin
-  S := TFileStreamUTF8.Create(FileName, fmCreate);
+  S := TFileStream.Create(FileName, fmCreate);
   S.Write(AData^, ADataSize);
   S.Free;
 end;

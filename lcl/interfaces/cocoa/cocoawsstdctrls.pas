@@ -29,7 +29,7 @@ uses
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue, Forms,
   // LazUtils
-  LazUTF8, LazUTF8Classes, TextStrings,
+  LazUTF8, TextStrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -1388,9 +1388,9 @@ end;
 
 procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(TheStream);
   finally
@@ -1400,9 +1400,9 @@ end;
 
 procedure TCocoaMemoStrings.SaveToFile(const FileName: string);
 var
-  TheStream: TFileStreamUTF8;
+  TheStream: TFileStream;
 begin
-  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  TheStream:=TFileStream.Create(FileName,fmCreate);
   try
     SaveToStream(TheStream);
   finally
