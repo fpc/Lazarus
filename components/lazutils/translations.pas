@@ -402,14 +402,14 @@ begin
     begin
       if (ArgErr2 = 0) then
       begin
-        Result := Utf8CompareText(Extr1, Extr2) = 0;
+        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
       end
       else
       begin
         //Extr2 can have dangling %'s
         //e.g. Extr1 = "%s %d" Extr2 = "%s %d {%H}", it does not make sense, but it's not illegal
         if (ArgErr2 = Utf8Length(Extr1)+1) and not (ArgErr2 > Utf8Length(Extr2)) then Extr2 := Utf8Copy(Extr2,1,ArgErr2-1);
-        Result := Utf8CompareText(Extr1, Extr2) = 0;
+        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
       end;
     end
     else
@@ -418,7 +418,7 @@ begin
       //Only compare until the last valid argument in Extr1
       if (ArgErr1 = Utf8Length(Extr1)) then Utf8Delete(Extr1, ArgErr1, 1);
       if Utf8Length(Extr2) > Utf8Length(Extr1) then Extr2 := Utf8Copy(Extr2, 1, Utf8Length(Extr1));
-      Result := Utf8CompareText(Extr1, Extr2) = 0;
+      Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
     end;
     //writeln('CompareFormatArgs: Result = ',Result);
   end;

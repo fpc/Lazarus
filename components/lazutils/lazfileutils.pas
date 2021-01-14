@@ -282,7 +282,7 @@ begin
   if CaseSensitive then
     Result := CompareStr(FnExt, Ext)
   else
-    Result := UTF8CompareText(FnExt, Ext);
+    Result := UTF8CompareLatinTextFast(FnExt, Ext);
   if Result < 0 then
     Result := -1
   else if Result > 0 then

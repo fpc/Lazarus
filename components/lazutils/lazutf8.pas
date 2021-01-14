@@ -173,10 +173,19 @@ function UTF8CompareStr(const S1, S2: string): PtrInt; inline;
 function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
+function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;
 function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
+
+  { TStringListUTF8Fast }
+
+  TStringListUTF8Fast = class(TStringList)
+  protected  // Uses UTF8CompareLatinTextFast for comparison.
+    function DoCompareText(const s1,s2 : string): PtrInt; override;
+  end;
+
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
     trInvalidChar, trUnfinishedChar);
 
@@ -3078,7 +3087,7 @@ begin
     TextLen := Utf8Length(AText);
     SubTextLen := Utf8Length(ASubText);
     if (TextLen >= SubTextLen) then
-      Result := (Utf8CompareText(Utf8Copy(AText,1,SubTextLen),ASubText) = 0);
+      Result := (UTF8CompareLatinTextFast(Utf8Copy(AText,1,SubTextLen),ASubText) = 0);
   end;
 end;
 
@@ -3092,7 +3101,7 @@ begin
     TextLen := Utf8Length(AText);
     SubTextLen := Utf8Length(ASubText);
     if (TextLen >= SubTextLen) then
-      Result := (Utf8CompareText(Utf8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0);
+      Result := (UTF8CompareLatinTextFast(Utf8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0);
   end;
 end;
 
@@ -3315,7 +3324,6 @@ begin
   Result:=UTF8CompareStr(S1,StrLen(S1),S2,StrLen(S2));
 end;
 
-
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 var
   Count: SizeInt;
@@ -3385,47 +3393,71 @@ end;
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S1 > S2.
   Compare two UTF8 encoded strings, case insensitive.
   This function guarantees proper collation on all supported platforms.
-  Internally it uses WideCompareText when codepoints have more than one byte.
+  Internally it uses WideCompareText.
  ------------------------------------------------------------------------------}
 function UTF8CompareText(const S1, S2: String): PtrInt;
+begin
+  Result := WideCompareText(UTF8ToUTF16(S1),UTF8ToUTF16(S2));
+end;
+
+function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;
+// Like UTF8CompareText but does not return strict alphabetical order.
+// The order is deterministic and good for binary search and such uses.
+// Optimizes comparison of single-byte encoding and also multi-byte portions
+// when they are equal. Otherwise falls back to WideCompareText.
 var
-  i, Count, Count1, Count2: sizeint;
+  Count, Count1, Count2: sizeint;
   Chr1, Chr2: Char;
   P1, P2: PChar;
+  P1LastBytePointOffset: PChar;
 begin
   Count1 := Length(S1);
   Count2 := Length(S2);
-  if Count1>Count2 then
+  if Count1 > Count2 then
     Count := Count2
   else
     Count := Count1;
-  i := 0;
-  if Count>0 then
+  if Count > 0 then
   begin
     P1 := @S1[1];
     P2 := @S2[1];
-    while i < Count do
+    P1LastBytePointOffset := P1;
+    while Count > 0 do
     begin
-      if (P1^ > #191) or (P2^ > #191) then  // Multi-byte encoding.
-      begin
-        //WriteLn('UTF8CompareText: Calling WideCompareText for "'+S1+'" <> "'+S2+'"');
-        Exit(WideCompareText(UTF8ToUTF16(S1),UTF8ToUTF16(S2)));
-      end;
       Chr1 := P1^;
       Chr2 := P2^;
+
       if Chr1 <> Chr2 then
       begin
-        if Chr1 in ['A'..'Z'] then
-          Inc(Chr1,32);
-        if Chr2 in ['A'..'Z'] then
-          Inc(Chr2,32);
-        if Chr1 <> Chr2 then
-          Break;
-      end;
-      Inc(P1); Inc(P2); Inc(i);
+        if (ord(Chr1) or ord(Chr2)) < 128 then
+        begin
+          P1LastBytePointOffset := P1;
+          if (Chr1 in ['A'..'Z']) then
+            inc(Chr1, $20);
+          if (Chr2 in ['A'..'Z']) then
+            inc(Chr2, $20);
+          if Chr1 <> Chr2 then
+            break;
+        end
+        else
+        begin
+          p2 := p2 + (P1LastBytePointOffset - P1);
+          p1 := P1LastBytePointOffset;
+          Exit(WideCompareText(
+            UTF8ToUTF16(p1, Length(s1) - (p1 - @S1[1])),
+            UTF8ToUTF16(p2, Length(s2) - (p2 - @S2[1]))
+          ));
+        end;
+      end
+      else
+      if (ord(Chr1) or ord(Chr2)) < 128 then
+        P1LastBytePointOffset := P1;
+
+      Inc(P1); Inc(P2);
+      Dec(Count);
     end;
   end;
-  if i < Count then
+  if Count > 0 then
     Result := Byte(Chr1)-Byte(Chr2)
   else
     Result := Count1-Count2;
@@ -3995,6 +4027,14 @@ begin
     FPUpChars[c]:=upcase(c);
   end;
 end;
+
+{ TStringListUTF8Fast }
+
+function TStringListUTF8Fast.DoCompareText(const s1, s2: string): PtrInt;
+begin
+  Result:=UTF8CompareLatinTextFast(s1, s2);
+end;
+
 
 initialization
   InitFPUpchars;

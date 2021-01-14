@@ -11478,13 +11478,12 @@ begin
   end;
 end;
 
-function TCustomStringGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer
-  ): Integer;
+function TCustomStringGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
 begin
   if Assigned(OnCompareCells) then
     Result:=inherited DoCompareCells(Acol, ARow, Bcol, BRow)
   else begin
-    Result:=UTF8CompareText(Cells[ACol,ARow], Cells[BCol,BRow]);
+    Result:=UTF8CompareLatinTextFast(Cells[ACol,ARow], Cells[BCol,BRow]);
     if SortOrder=soDescending then
       result:=-result;
   end;

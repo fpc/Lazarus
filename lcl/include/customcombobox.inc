@@ -923,14 +923,14 @@ var i: integer;
 begin
   // insert as first
   if (Items.Count=0)
-  or (not CaseSensitive and (UTF8CompareText(Items[0],Item)<>0))
+  or (not CaseSensitive and (UTF8CompareLatinTextFast(Items[0],Item)<>0))
   or (CaseSensitive and (Items[0]<>Item)) then
   begin
     Items.InsertObject(0,Item,AnObject);
   end;
   // delete old
   for i:=Items.Count-1 downto 1 do begin
-    if (not CaseSensitive and (UTF8CompareText(Items[i],Item)=0))
+    if (not CaseSensitive and (UTF8CompareLatinTextFast(Items[i],Item)=0))
     or (CaseSensitive and (Items[i]=Item)) then
       Items.Delete(i);
   end;

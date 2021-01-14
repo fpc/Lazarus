@@ -1594,7 +1594,7 @@ begin
     begin
       if (Index <> i) and (FStrings.Names[i] <> '') then
       begin
-        if (Utf8CompareText(FStrings.Names[i], NewValue) = 0) then
+        if (UTF8CompareLatinTextFast(FStrings.Names[i], NewValue) = 0) then
         begin
           Result := False;
           ShowMessage(Format(rsVLEDuplicateKey,[NewValue, i + FixedRows]));

@@ -628,7 +628,7 @@ begin
       begin
         XMLFontConfigChilds := XMLFontConfig.ChildNodes;
         for i := 0 to XMLFontConfigChilds.Count-1 do
-          if UTF8CompareText(XMLFontConfigChilds.Item[i].NodeName, 'dir') = 0 then
+          if UTF8CompareLatinTextFast(XMLFontConfigChilds.Item[i].NodeName, 'dir') = 0 then
             FontsScanDir(XMLFontConfigChilds.Item[i].FirstChild.NodeValue,AFontPaths,AFontList);
       end;
     finally

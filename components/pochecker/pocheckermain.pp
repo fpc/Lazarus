@@ -557,7 +557,7 @@ end;
 
 function ListSortFunc(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := Utf8CompareText(List.Strings[Index1], List.Strings[Index2]);
+  Result := UTF8CompareLatinTextFast(List.Strings[Index1], List.Strings[Index2]);
 end;
 
 function TPoCheckerForm.LangFilterIndexToLangID(Index: Integer): TLangID;

@@ -436,8 +436,8 @@ var
 begin
   i:=TypeRadiogroup.ItemIndex;
   for Result:=Low(TEncloseSelectionType) to High(TEncloseSelectionType) do
-    if UTF8CompareText(TypeRadiogroup.Items[i],
-                       EncloseSelectionTypeDescription(Result))=0
+    if UTF8CompareLatinTextFast(TypeRadiogroup.Items[i],
+                                EncloseSelectionTypeDescription(Result))=0
     then
       exit;
   RaiseGDBException('TEncloseSelectionDialog.GetEncloseType');

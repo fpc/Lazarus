@@ -157,6 +157,7 @@ end;
 
 procedure TEditorMouseOptionsAdvFrame.ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol,
   BRow: Integer; var Result: integer);
+
   function CompareCol(i : Integer) : Integer;
   var
     j: Integer;
@@ -175,22 +176,26 @@ procedure TEditorMouseOptionsAdvFrame.ActionGridCompareCells(Sender: TObject; AC
         Result := ord(TSynEditMouseAction(TStringGrid(Sender).Objects[0, BRow]).ClickDir)
                 - ord(TSynEditMouseAction(TStringGrid(Sender).Objects[0, ARow]).ClickDir);
       else
-        Result := UTF8CompareText(TStringGrid(Sender).Cells[i, ARow], TStringGrid(Sender).Cells[i, BRow]);
+        Result := UTF8CompareLatinTextFast(TStringGrid(Sender).Cells[i, ARow],
+                                           TStringGrid(Sender).Cells[i, BRow]);
     end;
   end;
+
 var
   i: Integer;
 begin
   Result := 0;
   if Sender = nil then exit;
   if Sender = OtherActionGrid then begin
-    for i := 1 to 4 do if result = 0 then
-      Result := CompareCol(FOtherSort[i]);
+    for i := 1 to 4 do
+      if result = 0 then
+        Result := CompareCol(FOtherSort[i]);
     if Result = 0 then
       Result := CompareCol(9); // Priority
   end else begin
-    for i := 1 to 4 do if result = 0 then
-      Result := CompareCol(FSort[i]);
+    for i := 1 to 4 do
+      if result = 0 then
+        Result := CompareCol(FSort[i]);
     if Result = 0 then
       Result := CompareCol(7); // Priority
   end;
