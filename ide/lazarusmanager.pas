@@ -275,7 +275,7 @@ end;
 
 procedure TLazarusManager.Run;
 
-  procedure AddExpandedParam(Params: TStringListUTF8; Param: string);
+  procedure AddExpandedParam(Params: TStringList; Param: string);
   begin
     // skip startlazarus params
     if LeftStr(Param,length(StartLazarusPidOpt))=StartLazarusPidOpt then
@@ -293,7 +293,7 @@ var
   MsgResult: TModalResult;
   StartPath: String;
   EnvOverrides: TStringList;
-  Params: TStringListUTF8;
+  Params: TStringList;
   i: Integer;
 begin
   try
@@ -387,7 +387,7 @@ begin
 
       DebugLn(['Info: (startlazarus) [TLazarusManager.Run] starting ',FLazarusPath,' ...']);
       EnvOverrides:=TStringList.Create;
-      Params:=TStringListUTF8.Create;
+      Params:=TStringList.Create;
       FLazarusProcess := TLazarusProcess.Create;
       try
         {$IFDEF Linux}
