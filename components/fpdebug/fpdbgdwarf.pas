@@ -272,6 +272,7 @@ type
     FValue: QWord;
   protected
     function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
   end;
@@ -2153,6 +2154,11 @@ begin
   end;
 
   FValue := Result;
+end;
+
+function TFpValueDwarfCardinal.GetAsInteger: Int64;
+begin
+  Result := Int64(GetAsCardinal);
 end;
 
 function TFpValueDwarfCardinal.GetFieldFlags: TFpValueFieldFlags;

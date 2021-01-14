@@ -3090,13 +3090,12 @@ begin
 
   {$PUSH}{$R-}{$Q-}
   case tmp1.Kind of
-    skInteger: if tmp2.Kind in [skInteger, skCardinal] then
-                 Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, True);
-    skCardinal: if tmp2.Kind = skInteger then
-                  Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, True)
-                else
-                if tmp2.Kind = skCardinal then
-                  Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, False);
+    skInteger: if tmp2.Kind = skInteger then
+                 Result := TFpValueConstNumber.Create(tmp1.AsInteger AND tmp2.AsInteger, True)
+               else
+                  Result := TFpValueConstNumber.Create(tmp1.AsCardinal AND tmp2.AsCardinal, False);
+    skCardinal: if tmp2.Kind in [skInteger, skCardinal] then
+                  Result := TFpValueConstNumber.Create(tmp1.AsCardinal AND tmp2.AsCardinal, False);
     skBoolean: if tmp2.Kind = skBoolean then
                  Result := TFpValueConstBool.Create(tmp1.AsBool AND tmp2.AsBool);
   end;

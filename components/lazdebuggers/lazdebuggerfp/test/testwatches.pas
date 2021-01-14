@@ -2103,6 +2103,14 @@ procedure TTestWatches.TestWatchesExpression;
       .skipIf((ALoc in [tlConst]) or (ALoc2 in [tlConst]));
 
 
+    t.Add(AName, p+'Word'+e +' and '+ p+'LongWord'+e,           weInteger((100+n) and (1000+n)) );
+    t.Add(AName, p+'Word'+e +' and Byte('+ p+'Char'+e+')',      weInteger((100+n) and Byte(AChr1)) );
+    t.Add(AName, p+'Word'+e +' and '+ IntToStr(1002+n),         weInteger((100+n) and (1002+n)) );
+    t.Add(AName, p+'Word'+e +' and ShortInt('+ p+'Char'+e+')',  weInteger((100+n) and Byte(AChr1)) );
+
+    t.Add(AName, p+'ShortInt'+e +' and '+ p+'SmallInt'+e,       weInteger((50+n) and (500+n)) );
+    t.Add(AName, p+'ShortInt'+e +' and '+ p+'Word'+e,           weInteger((50+n) and (1000+n)) );
+    t.Add(AName, p+'ShortInt'+e +' and '+ IntToStr(1002+n),     weInteger((50+n) and (1002+n)) );
 
     for i := 0 to t.Count-1 do
       t.Tests[i].IgnTypeName();
