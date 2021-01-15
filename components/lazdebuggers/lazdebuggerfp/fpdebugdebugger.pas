@@ -1392,6 +1392,7 @@ begin
 
   PrettyPrinter := TFpPascalPrettyPrinter.Create(LocalScope.SizeOfAddress);
   PrettyPrinter.MemManager := LocalScope.MemManager;
+  PrettyPrinter.MemManager.DefaultContext := LocalScope.LocationContext;
 
   FResults := TResultList.Create;
   for i := 0 to ProcVal.MemberCount - 1 do begin
