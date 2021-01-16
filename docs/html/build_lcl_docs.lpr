@@ -62,6 +62,7 @@ type
     FXCTDir: string;
     FXCTFile: string;
     FXMLSrcDir: string;
+    FExtraOptions : String;
     procedure SetCSSFile(AValue: String);
     procedure SetFooterFilename(AValue: String);
     procedure SetIncludePath(AValue: string);
@@ -97,6 +98,7 @@ type
     property XCTDir: string read FXCTDir write SetXCTDir;
     property XMLSrcDir: string read FXMLSrcDir write SetXMLSrcDir;
     property XCTFile: string read FXCTFile;
+    property ExtraOptions : string read FExtraOptions write FExtraOptions;
   end;
 
 procedure GetEnvDef(var S: String; DefaultValue: String; EnvName: String);
@@ -435,6 +437,9 @@ begin
   Filename:=InputFile;
   if not FilenameIsAbsolute(Filename) then
     Filename:=TrimFilename(AppendPathDelim(OutDir)+Filename);
+  if ExtraOptions<>'' then
+     for i:=0 to InputList.count-1 do
+       InputList[i]:=ExtraOptions+' '+InputList[i];
   InputList.SaveToFile(Filename);
   InputList.Free;
 
@@ -577,6 +582,7 @@ begin
   ReadOptions;
 
   Run:=TFPDocRun.Create('lazutils');
+  Run.ExtraOptions:='-MObjFPC -Scghi'; // extra options from in lazutils makefile.
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
@@ -585,6 +591,7 @@ begin
   Run.Free;
 
   Run:=TFPDocRun.Create('lcl');
+  Run.ExtraOptions:='-MObjFPC -Sic'; // extra options from in LCL makefile.
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
   Run.UsedPkgs.Add('lazutils');
