@@ -588,9 +588,12 @@ procedure TTestWatches.TestWatchesValue;
 
   type
     TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer, tlPointerAny, tlClassConst, tlClassVar);
+    TTestIgn = set of (
+      tiPointerMath  // pointer math / (ptr+n)^ / ptr[n]
+    );
 
   procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
-    ALoc: TTestLoc = tlAny; APostFix: String = '');
+    ALoc: TTestLoc = tlAny; APostFix: String = ''; AIgnFlags: TTestIgn = []);
   var
     p, e: String;
     n, StartIdx, i, StartIdxClassConst: Integer;
@@ -659,12 +662,12 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Char3'+e,      weChar(' '));
 
 // tlConst => strings are stored as shortstring
-    t.Add(AName, p+'String1'+e,    weShortStr(AChr1, 'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String1e'+e,   weShortStr('',    'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String10'+e,   weShortStr(AChr1+'bc1',               'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String10e'+e,  weShortStr('',                        'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String255'+e,  weShortStr(AChr1+'bcd0123456789', 'ShortStr255'));
+    t.Add(AName, p+'String1'+e,    weShortStr(AChr1, 'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+    t.Add(AName, p+'String1e'+e,   weShortStr('',    'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+    t.Add(AName, p+'String10'+e,   weShortStr(AChr1+'bc1',               'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+    t.Add(AName, p+'String10e'+e,  weShortStr('',                        'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+    t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+    t.Add(AName, p+'String255'+e,  weShortStr(AChr1+'bcd0123456789', 'ShortStr255'))                                      .NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
 
     t.Add(AName, p+'Ansi1'+e,      weAnsiStr(Succ(AChr1)))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
       .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
@@ -685,10 +688,10 @@ procedure TTestWatches.TestWatchesValue;
 
     // char by index
     // TODO: no typename => calculated value ?
-    t.Add(AName, p+'String10'+e+'[2]',   weChar('b', '')).CharFromIndex;
+    t.Add(AName, p+'String10'+e+'[2]',   weChar('b', '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
     t.Add(AName, p+'Ansi2'+e+'[2]',      weChar('a', '')).CharFromIndex;
     t.Add(AName, p+'PChar2'+e+'[1]',     weChar('a', '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
-    t.Add(AName, p+'String10'+e+'[1]',   weChar(AChr1, '')).CharFromIndex;
+    t.Add(AName, p+'String10'+e+'[1]',   weChar(AChr1, '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
     t.Add(AName, p+'Ansi2'+e+'[1]',      weChar(AChr1, '')).CharFromIndex;
     t.Add(AName, p+'PChar2'+e+'[0]',     weChar(AChr1, '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
 
@@ -1187,6 +1190,7 @@ begin
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob var (@)^',   '(@gv', 001, 'B', tlAny, ')^');
+    AddWatches(t, 'glob var (@)[0]',   '(@gv', 001, 'B', tlAny, ')[0]');
 //    AddWatches(t, 'glob var @^',   '@gv', 001, 'B', tlAny, '^');
 
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
@@ -1240,6 +1244,17 @@ begin
 
     AddWatches(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     AddWatches(t, 'glob var named pointer',      'gvpt_', 001, 'B', tlPointer, '^'); // pointer
+    (*
+      ptr[0] is tested above: glob var (@)[0]',   '(@gv', 001, 'B', tlAny, ')[0]'
+      More pointer ops tested in Expression testcase
+      // Using array index [1] or greater will fail some pchar tests, as the become pchar<>string
+      // they need .CharFromIndex at least for Dwarf2...
+    *)
+    //AddWatches(t, 'glob var pointer 2 (@gva[1+0])',  'gvp2_', 006, 'L', tlPointer, '[0]'); // pointer
+    //AddWatches(t, 'glob var pointer 2 (@gva[1+2])',  'gvp2_', 009, 'O', tlPointer, '[2]'); // pointer // fails gvp2_Char[2] / gvp2_WideChar[2] and similar => needs to
+    AddWatches(t, 'glob var pointer 2 (@gva[1-1])',  'gvp2_', 005, 'K', tlPointer, '[-1]', [tiPointerMath]); // pointer
+    AddWatches(t, 'glob var pointer 2 (@gva[1]+2)^','(gvp2_', 009, 'O', tlPointer, '+2)^', [tiPointerMath]); // pointer
+    //AddWatches(t, 'glob var pointer 2 (@gva[1]-1)^','(gvp2_', 005, 'K', tlPointer, '-1)^'); // pointer
 
 // type names do not match....
     c := t.Count;
@@ -2305,6 +2320,10 @@ begin
     t.Add('Const-EQ: ', '17.5 <> 17.5',    weBool(False));
     t.Add('Const-EQ: ', '17.8 < 17.5',     weBool(False));
     t.Add('Const-EQ: ', '17.1 > 17.5',     weBool(False));
+
+    t.Add('Const-EQ: ', '12 = ''abc''',     weBool(False)).ExpectError();
+
+    t.Add('Pointer-Op: ', 'LongInt(Pointer(10)+4)',     weInteger(14));
 
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);

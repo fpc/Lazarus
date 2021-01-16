@@ -361,6 +361,8 @@ var
 (* LOCATION: global var  pointer <each type> *)
   // gvp_Byte: ^Byte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  // gvp2_Byte: ^Byte; // gvp2_Byte := @gvaByte[1];
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp2_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 
 (* LOCATION: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
   // gvp_Byte: PxByte;
@@ -378,6 +380,8 @@ var
 (* LOCATION: global var  untyped pointer // NO PRE-ASSIGNED VALUE *)
   // gv_ptr_Byte: pointer;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptr_, "_OP_=:pointer;//", "_O2_=:pointer;//" )
+  // gv_ptr2_Byte: pointer;  //gv_ptr2_Byte := @gvaByte[1]
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptr2_, "_OP_=:pointer;//", "_O2_=:pointer;//" )
   // gv_aptr_Byte: array [0..2] of pointer;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_aptr_, "_OP_=:array [0..2] of pointer;//", "_O2_=:array [0..2] of pointer;//" )
 
@@ -550,11 +554,16 @@ begin
 
 
 (* INIT: global var  ARRAY OF <each type> *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=SetLength(gva", "_OP_=,2);//", "_O2_=,2);//", _BLOCK_=TestSetLen)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=SetLength(gva", "_OP_=,4);//", "_O2_=,4);//", _BLOCK_=TestSetLen)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=5, CHR1='K', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[0]", _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=6, CHR1='L', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[1]", _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=8, CHR1='N', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[2]", _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gva, ADD=9, CHR1='O', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, "{e}=[3]", _BLOCK_=TestAssign)
   // gvp_a_Byte := @gvaByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_a_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gva ) // }
+
+  // gv_ptr2_Byte := @gvaByte[1];
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptr2_, "_OP_= {", "_O2_={ ", "//@@=} :=", _pre3_=@gva ) //, {e3}=[1] }
 
 
 (* INIT: global var  ARRAY [0..2] OF <each type> *)
@@ -572,6 +581,7 @@ begin
 
 (* INIT: global var  pointer <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp_, _OP_={, _O2_={, _pre3_=@gv, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp2_, _OP_={, _O2_={, _pre3_=@gva, "//@@=} :=", {e3}=[1], _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
 
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg
