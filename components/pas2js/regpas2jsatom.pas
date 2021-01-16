@@ -22,8 +22,9 @@ type
     FKeyWords,
     FCommands : TStrings;
     FActivationCommands : TStrings;
+    FFiles : TStrings;
     procedure AddCSSFile(aProject: TLazProject);
-    procedure AddFileToProject(aProject: TLazProject; const aFileName: string);
+    procedure AddFileToProject(const aFileName: string);
     procedure AddGlueFile(aProject: TLazProject);
     procedure AddKeyMapFile(aProject: TLazProject);
     procedure AddMenuFile(aProject: TLazProject);
@@ -116,12 +117,14 @@ begin
   FKeyWords:=TStringList.Create;
   FCommands:=TStringList.Create;
   FActivationCommands:=TStringList.Create;
+  FFiles:=TStringList.Create;
   InitVars;
   Name:='pas2jsatompackage';
 end;
 
 destructor TAtomPackageProjectDescriptor.destroy;
 begin
+  FreeAndNil(FFiles);
   FreeAndNil(FCommands);
   FreeAndNil(FKeywords);
   FreeAndNil(FActivationCommands);
@@ -329,7 +332,7 @@ begin
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 end;
 
 Procedure TAtomPackageProjectDescriptor.AddCSSFile(aProject : TLazProject);
@@ -349,7 +352,7 @@ begin
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 
 end;
 
@@ -370,7 +373,7 @@ begin
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 end;
 
 Procedure TAtomPackageProjectDescriptor.AddMenuFile(aProject : TLazProject);
@@ -390,7 +393,7 @@ begin
   finally
     Src.Free;
   end;
-  AddFileToProject(aProject,FN);
+  AddFileToProject(FN);
 end;
 
 Procedure TAtomPackageProjectDescriptor.AddPackageJSONFile(aProject : TLazProject);
@@ -398,7 +401,7 @@ Procedure TAtomPackageProjectDescriptor.AddPackageJSONFile(aProject : TLazProjec
 Var
   aJSON,B : TJSONObject;
   keys : TJSONArray;
-  S,N,V : String;
+  S,N,V,FN : String;
   JS : TJSONStringType;
   I : Integer;
   aStream : TStringStream;
@@ -429,7 +432,9 @@ begin
     aJSON.Add('dependencies',b);
     JS:=aJSON.FormatJSON;
     aStream:=TStringStream.Create(JS);
-    aStream.SaveToFile(FPackageDir+'package.json');
+    FN:=FPackageDir+'package.json';
+    aStream.SaveToFile(FN);
+    addFileToProject(FN);
   finally
     aJSON.Free;
   end;
@@ -478,19 +483,22 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:='lib/'+StripNonIdentifierChars(FPackageName)+'.js';
-  CompOpts.CustomOptions:='-Jiatomimports.js -Jirtl.js -Jc '+CompOpts.CustomOptions+' -Jiatomexports.js';
+  CompOpts.CustomOptions:='-Jiatomimports.js -Jirtl.js -Jc '+CompOpts.CustomOptions+' -Jaatomexports.js';
   SetDefaultNodeRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AddProjectFile(aProject);
   Result:=mrOK;
 end;
 
-Procedure TAtomPackageProjectDescriptor.AddFileToProject(aProject : TLazProject; Const aFileName : string);
+Procedure TAtomPackageProjectDescriptor.AddFileToProject(Const aFileName : string);
 
 begin
-  LazarusIDE.DoOpenEditorFile(aFileName, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);
+  FFiles.Add(aFileName);
 end;
 
 Function TAtomPackageProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TModalresult;
+
+Var
+  aFileName : String;
 
 begin
   AddGlueFile(aProject);
@@ -498,6 +506,8 @@ begin
   AddKeyMapFile(aProject);
   AddMenuFile(aProject);
   AddPackageJSONFile(aProject);
+  For aFileName in FFiles do
+    LazarusIDE.DoOpenEditorFile(aFileName, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);
   Result:=mrOK;
 end;
 

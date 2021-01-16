@@ -42,7 +42,7 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     Left = 120
     Height = 27
     Top = 78
-    Width = 184
+    Width = 280
     BorderSpacing.Top = 8
     OnEditingDone = edtNameEditingDone
     OnKeyPress = edtNameKeyPress
@@ -271,7 +271,7 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     Left = 120
     Height = 27
     Top = 114
-    Width = 184
+    Width = 280
     BorderSpacing.Top = 9
     OnKeyPress = edtClassNameKeyPress
     TabOrder = 9
