@@ -2801,6 +2801,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
   end;
   function ConcateCharData(ACharVal, AOtherVal: TFpValue): TFpValue;
   begin
+    Result := nil;
     if AOtherVal.FieldFlags * [svfString, svfWideString] <> [] then
       Result := TFpValueConstString.Create(ACharVal.AsString + AOtherVal.AsString)
     else
@@ -3216,6 +3217,7 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
   end;
   function CharDataEqualToValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
+    Result := nil;
     if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
       Result := TFpValueConstBool.Create((ACharVal.AsString = AOtherVal.AsString) xor AReverse)
     else
@@ -3254,6 +3256,7 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
   end;
   function CharDataGreaterThanValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
+    Result := nil;
     if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
       Result := TFpValueConstBool.Create((ACharVal.AsString > AOtherVal.AsString) xor AReverse)
     else
@@ -3292,6 +3295,7 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
   end;
   function CharDataSmallerThanValue(ACharVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
+    Result := nil;
     if (AOtherVal.FieldFlags * [svfString, svfWideString] <> []) then
       Result := TFpValueConstBool.Create((ACharVal.AsString < AOtherVal.AsString) xor AReverse)
     else
