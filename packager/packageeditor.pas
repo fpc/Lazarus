@@ -1936,16 +1936,17 @@ begin
   NewFlags:=[];
   if (NewFileType in PkgFileUnitTypes) then begin
     Include(NewFlags,pffAddToPkgUsesSection);
-    NewUnitName:=ExtractFilenameOnly(NewFilename);
-    //MainIDE.SaveSourceEditorChangesToCodeCache(nil);  // Not needed ?
     CodeBuffer:=CodeToolBoss.LoadFile(NewFilename,true,false);
     if CodeBuffer<>nil then begin
-      Assert(NewUnitName=CodeToolBoss.GetSourceName(CodeBuffer,false),
-             'TPackageEditorForm.DoAddNewFile: Unit name mismatch.');
+      NewUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
       if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer) then
         Include(NewFlags,pffHasRegisterProc);
-    end;
+    end
+    else
+      NewUnitName:=ExtractFilenameOnly(NewFilename);
   end;
+  DebugLn(['TPackageEditorForm.DoAddNewFile: NewUnitName=', NewUnitName,
+                                          ', NewFilename=', NewFilename]);
   LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
   FreeAndNil(FNextSelectedPart);
   FNextSelectedPart:=TPENodeData.Create(penFile,NewFilename,false);
