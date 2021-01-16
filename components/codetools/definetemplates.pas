@@ -524,7 +524,11 @@ type
     FOnPrepareTree: TNotifyEvent;
     FOnReadValue: TOnReadValue;
     FVirtualDirCache: TDirectoryDefines;
+    // Used by Calculate.
+    FExpandedDirectory: string;
+    FDirDef: TDirectoryDefines;
     function Calculate(DirDef: TDirectoryDefines): boolean;
+    procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
     procedure IncreaseChangeStep;
     procedure SetDirectoryCachePool(const AValue: TCTDirectoryCachePool);
     procedure RemoveDoubles(Defines: TDirectoryDefines);
@@ -5221,8 +5225,7 @@ begin
   while Result.Next<>nil do Result:=Result.Next;
 end;
 
-function TDefineTree.FindDirectoryInCache(
-  const Path: string): TDirectoryDefines;
+function TDefineTree.FindDirectoryInCache(const Path: string): TDirectoryDefines;
 var cmp: integer;
   ANode: TAVLTreeNode;
 begin
@@ -5713,7 +5716,7 @@ var
 begin
   LastDefTempl:=GetLastRootTemplate;
   TDefineTemplate.MergeTemplates(nil,FFirstDefineTemplate,LastDefTempl,
-                  SourceTemplate,true,NewNamePrefix);
+                                 SourceTemplate,true,NewNamePrefix);
   ClearCache;
 end;
 
@@ -5721,181 +5724,179 @@ function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 // calculates the values for a single directory
 // returns false on error
 var
-  ExpandedDirectory, EvalResult, TempValue: string;
-
-  procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
-  
-    procedure CalculateIfChildren;
-    begin
-      // execute children
-      CalculateTemplate(DefTempl.FirstChild,CurPath);
-      // jump to end of else templates
-      while (DefTempl.Next<>nil)
-      and (DefTempl.Next.Action in [da_Else,da_ElseIf])
-      do begin
-        if Assigned(OnCalculate) then
-          OnCalculate(Self,DefTempl,false,'',false,'',false);
-        DefTempl:=DefTempl.Next;
-      end;
-    end;
-
-  // procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
-  var SubPath, TempValue: string;
-    VarName: string;
-  begin
-    while DefTempl<>nil do begin
-      //DebugLn('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
-      case DefTempl.Action of
-      da_Block:
-        // calculate children
-        begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          CalculateTemplate(DefTempl.FirstChild,CurPath);
-        end;
-
-      da_Define:
-        // Define for a single Directory (not SubDirs)
-        begin
-          if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
-            ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
-            ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
-            DirDef.Values.Variables[VarName]:=TempValue;
-          end else begin
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,false,'',false,'',false);
-          end;
-        end;
-
-      da_DefineRecurse:
-        // Define for current and sub directories
-        begin
-          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
-          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
-          DirDef.Values.Variables[VarName]:=TempValue;
-        end;
-
-      da_Undefine:
-        // Undefine for a single Directory (not SubDirs)
-        if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
-          DirDef.Values.Undefine(VarName);
-        end else begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',false);
-        end;
-
-      da_UndefineRecurse:
-        // Undefine for current and sub directories
-        begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
-          DirDef.Values.Undefine(VarName);
-        end;
-
-      da_UndefineAll:
-        // Undefine every value for current and sub directories
-        begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          DirDef.Values.Clear;
-        end;
-
-      da_If, da_ElseIf:
-        begin
-          // test expression in value
-          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          EvalResult:=DirDef.Values.Eval(TempValue,true);
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,true,TempValue,true,EvalResult,EvalResult='1');
-          //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
-          if DirDef.Values.ErrorPosition>=0 then begin
-            FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
-            FErrorTemplate:=DefTempl;
-            //debugln(['CalculateTemplate "',FErrorDescription,'"']);
-          end else if EvalResult='1' then
-            CalculateIfChildren;
-        end;
-      da_IfDef,da_IfNDef:
-        // test if variable is defined
-        begin
-          //DebugLn('da_IfDef A Name=',DefTempl.Name,
-          //  ' Variable=',DefTempl.Variable,
-          //  ' Is=',dbgs(DirDef.Values.IsDefined(DefTempl.Variable)),
-          //  ' CurPath="',CurPath,'"',
-          //  ' Values.Count=',dbgs(DirDef.Values.Count));
-          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
-          if DirDef.Values.IsDefined(VarName)=(DefTempl.Action=da_IfDef) then begin
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,false,'',false,'',true);
-            CalculateIfChildren;
-          end else begin
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,false,'',false,'',false);
-          end;
-        end;
-
-      da_Else:
-        // execute children
-        begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          CalculateTemplate(DefTempl.FirstChild,CurPath);
-        end;
-
-      da_Directory:
-        begin
-          // template for a sub directory
-          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          // Note: CurPath can be ''
-          SubPath:=AppendPathDelim(CurPath)+TempValue;
-          // test if ExpandedDirectory is part of SubPath
-          if (SubPath<>'') and FilenameIsMatching(SubPath,ExpandedDirectory,false)
-          then begin
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,true,SubPath,false,'',true);
-            CalculateTemplate(DefTempl.FirstChild,SubPath);
-          end else begin
-            if Assigned(OnCalculate) then
-              OnCalculate(Self,DefTempl,true,SubPath,false,'',false);
-          end;
-        end;
-      end;
-      if ErrorTemplate<>nil then exit;
-      if DefTempl<>nil then
-        DefTempl:=DefTempl.Next;
-    end;
-  end;
-
-// function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
+  TempValue: string;
 begin
   {$IFDEF VerboseDefineCache}
   DebugLn('[TDefineTree.Calculate] ++++++ "',DirDef.Path,'"');
   {$ENDIF}
   Result:=true;
   FErrorTemplate:=nil;
-  ExpandedDirectory:=DirDef.Path;
-  if (ExpandedDirectory=VirtualDirectory)
+  FDirDef:=DirDef;
+  FExpandedDirectory:=DirDef.Path;
+  if (FExpandedDirectory=VirtualDirectory)
   and Assigned(OnGetVirtualDirectoryAlias) then
-    OnGetVirtualDirectoryAlias(Self,ExpandedDirectory);
-  if (ExpandedDirectory<>VirtualDirectory) then begin
-    ReadValue(DirDef,ExpandedDirectory,'',TempValue);
-    ExpandedDirectory:=TempValue;
+    OnGetVirtualDirectoryAlias(Self,FExpandedDirectory);
+  if (FExpandedDirectory<>VirtualDirectory) then begin
+    ReadValue(DirDef,FExpandedDirectory,'',TempValue);
+    FExpandedDirectory:=TempValue;
   end;
   DirDef.Values.Clear;
   // compute the result of all matching DefineTemplates
   CalculateTemplate(FFirstDefineTemplate,'');
-  if (ExpandedDirectory=VirtualDirectory)
+  if (FExpandedDirectory=VirtualDirectory)
   and (Assigned(OnGetVirtualDirectoryDefines)) then
     OnGetVirtualDirectoryDefines(Self,DirDef);
   Result:=(ErrorTemplate=nil);
+end;
+
+procedure TDefineTree.CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
+
+  procedure CalculateIfChildren;
+  begin
+    // execute children
+    CalculateTemplate(DefTempl.FirstChild,CurPath);
+    // jump to end of else templates
+    while (DefTempl.Next<>nil)
+    and (DefTempl.Next.Action in [da_Else,da_ElseIf])
+    do begin
+      if Assigned(OnCalculate) then
+        OnCalculate(Self,DefTempl,false,'',false,'',false);
+      DefTempl:=DefTempl.Next;
+    end;
+  end;
+
+var
+  EvalResult, SubPath, TempValue, VarName: string;
+begin
+  while DefTempl<>nil do begin
+    //DebugLn('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
+    case DefTempl.Action of
+    da_Block:
+      // calculate children
+      begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',true);
+        CalculateTemplate(DefTempl.FirstChild,CurPath);
+      end;
+
+    da_Define:
+      // Define for a single Directory (not SubDirs)
+      begin
+        if FilenameIsMatching(CurPath,FExpandedDirectory,true) then begin
+          ReadValue(FDirDef,DefTempl.Value,CurPath,TempValue);
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
+          ReadValue(FDirDef,DefTempl.Variable,CurPath,VarName);
+          FDirDef.Values.Variables[VarName]:=TempValue;
+        end else begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',false);
+        end;
+      end;
+
+    da_DefineRecurse:
+      // Define for current and sub directories
+      begin
+        ReadValue(FDirDef,DefTempl.Value,CurPath,TempValue);
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
+        ReadValue(FDirDef,DefTempl.Variable,CurPath,VarName);
+        FDirDef.Values.Variables[VarName]:=TempValue;
+      end;
+
+    da_Undefine:
+      // Undefine for a single Directory (not SubDirs)
+      if FilenameIsMatching(CurPath,FExpandedDirectory,true) then begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',true);
+        ReadValue(FDirDef,DefTempl.Variable,CurPath,VarName);
+        FDirDef.Values.Undefine(VarName);
+      end else begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',false);
+      end;
+
+    da_UndefineRecurse:
+      // Undefine for current and sub directories
+      begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',true);
+        ReadValue(FDirDef,DefTempl.Variable,CurPath,VarName);
+        FDirDef.Values.Undefine(VarName);
+      end;
+
+    da_UndefineAll:
+      // Undefine every value for current and sub directories
+      begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',true);
+        FDirDef.Values.Clear;
+      end;
+
+    da_If, da_ElseIf:
+      begin
+        // test expression in value
+        ReadValue(FDirDef,DefTempl.Value,CurPath,TempValue);
+        EvalResult:=FDirDef.Values.Eval(TempValue,true);
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,true,TempValue,true,EvalResult,EvalResult='1');
+        //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
+        if FDirDef.Values.ErrorPosition>=0 then begin
+          FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
+          FErrorTemplate:=DefTempl;
+          //debugln(['CalculateTemplate "',FErrorDescription,'"']);
+        end else if EvalResult='1' then
+          CalculateIfChildren;
+      end;
+    da_IfDef,da_IfNDef:
+      // test if variable is defined
+      begin
+        //DebugLn('da_IfDef A Name=',DefTempl.Name,
+        //  ' Variable=',DefTempl.Variable,
+        //  ' Is=',dbgs(FDirDef.Values.IsDefined(DefTempl.Variable)),
+        //  ' CurPath="',CurPath,'"',
+        //  ' Values.Count=',dbgs(FDirDef.Values.Count));
+        ReadValue(FDirDef,DefTempl.Variable,CurPath,VarName);
+        if FDirDef.Values.IsDefined(VarName)=(DefTempl.Action=da_IfDef) then begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
+          CalculateIfChildren;
+        end else begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',false);
+        end;
+      end;
+
+    da_Else:
+      // execute children
+      begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',true);
+        CalculateTemplate(DefTempl.FirstChild,CurPath);
+      end;
+
+    da_Directory:
+      begin
+        // template for a sub directory
+        ReadValue(FDirDef,DefTempl.Value,CurPath,TempValue);
+        // Note: CurPath can be ''
+        SubPath:=AppendPathDelim(CurPath)+TempValue;
+        // test if FExpandedDirectory is part of SubPath
+        if (SubPath<>'') and FilenameIsMatching(SubPath,FExpandedDirectory,false)
+        then begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,true,SubPath,false,'',true);
+          CalculateTemplate(DefTempl.FirstChild,SubPath);
+        end else begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,true,SubPath,false,'',false);
+        end;
+      end;
+    end;
+    if ErrorTemplate<>nil then exit;
+    if DefTempl<>nil then
+      DefTempl:=DefTempl.Next;
+  end;
 end;
 
 procedure TDefineTree.IncreaseChangeStep;
