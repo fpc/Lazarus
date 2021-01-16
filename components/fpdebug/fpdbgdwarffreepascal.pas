@@ -188,6 +188,7 @@ type
 
   TFpValueDwarfFreePascalArray = class(TFpValueDwarfArray)
   protected
+    function GetKind: TDbgSymbolKind; override;
     function GetMemberCount: Integer; override;
     function DoGetStride(out AStride: TFpDbgValueSize): Boolean; override;
     function DoGetMainStride(out AStride: TFpDbgValueSize): Boolean; override;
@@ -206,6 +207,7 @@ type
     function GetInternalStringType: TArrayOrStringType;
   protected
     procedure KindNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
   public
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
@@ -1009,6 +1011,14 @@ end;
 
 { TFpValueDwarfFreePascalArray }
 
+function TFpValueDwarfFreePascalArray.GetKind: TDbgSymbolKind;
+begin
+  if TypeInfo <> nil then
+    Result := TypeInfo.Kind
+  else
+    Result := inherited GetKind;
+end;
+
 function TFpValueDwarfFreePascalArray.GetMemberCount: Integer;
 var
   t, t2: TFpSymbol;
@@ -1135,6 +1145,7 @@ var
   t: Cardinal;
   t2: TFpSymbol;
   CharSize: TFpDbgValueSize;
+  LocData: array of byte;
 begin
   Result := FArrayOrStringType;
   if Result <> iasUnknown then
@@ -1161,22 +1172,32 @@ begin
       if Info.HasAttrib(DW_AT_byte_stride) or Info.HasAttrib(DW_AT_type) then
         break;
 
-      // This is a string
       // TODO: check the location parser, if it is a reference
-      //FIsShortString := iasShortString;
+
+      if InformationEntry.ReadValue(DW_AT_data_location, LocData) then begin
+        if (Length(LocData) = 3) and
+           (LocData[0] = $97) and
+           (LocData[1] = $31) and
+           (LocData[2] = $22)
+        then begin
+          FArrayOrStringType := iasShortString;
+          break;
+        end;
+      end;
+
       if not t2.ReadSize(nil, CharSize) then
         CharSize := ZeroSize; // TODO: error
       if (CharSize.Size = 2) then
         FArrayOrStringType := iasUnicodeString
       else
         FArrayOrStringType := iasAnsiString;
-      Result := FArrayOrStringType;
       break;
     end;
     Info.GoNext;
   end;
 
   Info.ReleaseReference;
+  Result := FArrayOrStringType;
 end;
 
 function TFpSymbolDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
@@ -1184,7 +1205,7 @@ function TFpSymbolDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
 begin
   if AnOuterType = nil then
     AnOuterType := Self;
-  if GetInternalStringType in [{iasShortString,} iasAnsiString, iasUnicodeString] then
+  if GetInternalStringType in [iasShortString, iasAnsiString, iasUnicodeString] then
     Result := TFpValueDwarfV3FreePascalString.Create(AnOuterType)
   else
     Result := inherited GetTypedValueObject(ATypeCast, AnOuterType);
@@ -1196,11 +1217,29 @@ begin
     iasShortString:
       SetKind(skString);
     iasAnsiString:
-      SetKind(skString); // TODO
+      SetKind(skString); // TODO skAnsiString
     iasUnicodeString:
       SetKind(skWideString);
     else
       inherited KindNeeded;
+  end;
+end;
+
+function TFpSymbolDwarfV3FreePascalSymbolTypeArray.DoReadSize(
+  const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean;
+begin
+  if GetInternalStringType in [iasAnsiString, iasUnicodeString] then begin
+    ASize := ZeroSize;
+    ASize.Size := CompilationUnit.AddressSize;
+    Result := True;
+  end
+  else begin
+    Result := inherited DoReadSize(AValueObj, ASize);
+    if (not Result) and (GetInternalStringType = iasArray) then begin
+      ASize := ZeroSize;
+      ASize.Size := CompilationUnit.AddressSize;
+      Result := True;
+    end;
   end;
 end;
 
