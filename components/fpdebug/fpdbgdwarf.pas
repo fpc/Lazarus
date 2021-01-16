@@ -822,6 +822,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     procedure KindNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
   public
     destructor Destroy; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -4818,6 +4819,14 @@ begin
     SetKind(skFunctionRef)
   else
     SetKind(skProcedureRef);
+end;
+
+function TFpSymbolDwarfTypeSubroutine.DoReadSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
+begin
+  ASize := ZeroSize;
+  ASize.Size := CompilationUnit.AddressSize;
+  Result := True;
 end;
 
 destructor TFpSymbolDwarfTypeSubroutine.Destroy;
