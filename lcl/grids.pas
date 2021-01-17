@@ -9095,16 +9095,6 @@ var
     DeltaRow := 0;
 
     aa := AAutoAdvance;
-    if UseRightToLeftAlignment then
-      case AAutoAdvance of
-        aaLeftUp:     aa := aaRightUp;
-        aaLeftDown:   aa := aaRightDown;
-        aaLeft:       aa := aaRight;
-        aaRightUp:    aa := aaLeftUp;
-        aaRightDown:  aa := aaLeftDown;
-        aaRight:      aa := aaLeft;
-      end;
-    // invert direction if necessary
     if Inverse then
       case aa of
         aaRight:      aa := aaLeft;
