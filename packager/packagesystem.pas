@@ -974,6 +974,7 @@ begin
       PkgLink.LPKFileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
+      NewPackage.BeginUpdate;
       NewPackage.Filename:=AFilename;
       NewPackage.OnModifySilently := @PkgModify;
       Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
@@ -1007,6 +1008,8 @@ begin
     else
       ReplacePackage(OldPackage,NewPackage);
   finally
+    if Assigned(NewPackage) then
+      NewPackage.EndUpdate;
     if Result<>mrOk then
       NewPackage.Free;
     EndUpdate;
@@ -1199,7 +1202,7 @@ var
   i: Integer;
 begin
   for i:=0 to Count-1 do
-    Packages[i].DefineTemplates.AllChanged;
+    Packages[i].DefineTemplates.AllChanged(false);
 end;
 
 function TLazPackageGraph.MacroFunctionPkgDir(const s: string;
@@ -1826,7 +1829,7 @@ end;
 function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
-  Result:=TLazPackage.Create;
+  Result:=TLazPackage.CreateAndClear;
   Result.OnModifySilently:=@PkgModify;
   Result.Name:=CreateUniquePkgName(Prefix,nil);
   AddPackage(Result);
@@ -2039,7 +2042,7 @@ end;
 
 function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
 begin
-  Result:=TLazPackage.Create;
+  Result:=TLazPackage.CreateAndClear;
   with Result do begin
     Missing:=true;
     UserReadOnly:=true;
@@ -6067,7 +6070,7 @@ begin
     // a valid lpk file of the installed package can not be found
     IsBasePkg:=IsStaticBasePackage(Dependency.PackageName);
     // -> create a broken package
-    BrokenPackage:=TLazPackage.Create;
+    BrokenPackage:=TLazPackage.CreateAndClear;
     with BrokenPackage do begin
       BeginUpdate;
       Missing:=true;

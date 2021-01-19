@@ -5212,7 +5212,7 @@ begin
     UpdateCaption;
     if Assigned(ProjInspector) then
       ProjInspector.UpdateTitle;
-    Project1.DefineTemplates.AllChanged;
+    Project1.DefineTemplates.AllChanged(false);
     IncreaseCompilerParseStamp;
 
     if Project1.UseAsDefault then
@@ -9785,8 +9785,8 @@ begin
   if FIDECodeToolsDefines=ctdNeedUpdate then begin
     FIDECodeToolsDefines:=ctdUpdating;
     if Project1<>nil then
-      Project1.DefineTemplates.AllChanged;
-    PkgBoss.RebuildDefineTemplates;
+      Project1.DefineTemplates.AllChanged(false);
+    PackageGraph.RebuildDefineTemplates;
     FIDECodeToolsDefines:=ctdReady;
     //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
     {$IFDEF VerboseAddProjPkg}
@@ -9905,12 +9905,12 @@ end;
 
 procedure TMainIDE.CompilerParseStampIncHandler;
 begin
-  if FIDECodeToolsDefines=ctdUpdating then exit;
+  if (FIDECodeToolsDefines=ctdUpdating) or (not FIDEStarted) then exit;
   {$IFDEF VerboseAddProjPkg}
   DebugLn(['TMainIDE.OnCompilerParseStampIncreased ']);
   {$ENDIF}
   FIDECodeToolsDefines:=ctdNeedUpdate;
-  CodeToolBoss.DefineTree.ClearCache;
+  //CodeToolBoss.DefineTree.ClearCache;
 end;
 
 procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager; Scanner: TLinkScanner);

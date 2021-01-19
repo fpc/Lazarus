@@ -648,10 +648,13 @@ end;
 procedure TExpressionEvaluator.RemoveDoubles(OnGetSameString: TOnGetSameString);
 var
   i: Integer;
+  V: String;
 begin
   for i:=0 to FCount-1 do begin
     OnGetSameString(FNames[i]);
-    OnGetSameString(FValues[i]);
+    V:=FValues[i];
+    if V<>'' then
+      OnGetSameString(V);
   end;
 end;
 

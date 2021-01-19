@@ -127,7 +127,6 @@ type
         ): TModalResult; virtual; abstract;
     function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; virtual; abstract;
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;
-    procedure RebuildDefineTemplates; virtual; abstract;
     procedure LazarusSrcDirChanged; virtual; abstract;
 
     // package compilation

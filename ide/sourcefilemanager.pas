@@ -3613,7 +3613,6 @@ begin
       MainBuildBoss.SetBuildTargetProject1(false);
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
-      Project1.DefineTemplates.AllChanged;
       Project1.DefineTemplates.Active:=true;
       DebugBoss.Reset;
     finally
@@ -7448,7 +7447,6 @@ begin
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1, MainIDE.IDEStarted);
 
-  Project1.DefineTemplates.AllChanged;
   //DebugLn('CompleteLoadingProjectInfo ',Project1.IDAsString);
   Project1.DefineTemplates.Active:=true;
 

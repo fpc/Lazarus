@@ -252,7 +252,6 @@ type
     procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
     function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; override;
-    procedure RebuildDefineTemplates; override;
     procedure LazarusSrcDirChanged; override;
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
@@ -3972,11 +3971,6 @@ begin
   finally
     SrcDirToPkg.Free;
   end;
-end;
-
-procedure TPkgManager.RebuildDefineTemplates;
-begin
-  PackageGraph.RebuildDefineTemplates;
 end;
 
 procedure TPkgManager.LazarusSrcDirChanged;

@@ -70,7 +70,6 @@ function CreateProjectTemplateWithID(const ProjectID: string): TDefineTemplate;
 // packages
 function FindPackagesTemplate: TDefineTemplate;
 function FindPackageTemplateWithID(const PkgID: string): TDefineTemplate;
-function CreatePackagesTemplate: TDefineTemplate;
 function CreatePackageTemplateWithID(const PkgID: string): TDefineTemplate;
 
 // miscellaneous
