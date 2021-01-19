@@ -2254,15 +2254,14 @@ begin
   II := TLazIntfImage.Create(0, 0);
   try
     II.LoadFromBitmap(ABitmap, AMask);
-
-    FI := TFPCompactImgRGBA8Bit.Create(SourceRect.Right-SourceRect.Left, SourceRect.Bottom-SourceRect.Top);
-
+    FI := TFPCompactImgRGBA8Bit.Create(SourceRect.Right-SourceRect.Left,
+                                       SourceRect.Bottom-SourceRect.Top);
     for X := SourceRect.Left to SourceRect.Right-1 do
     for Y := SourceRect.Top to SourceRect.Bottom-1 do
     begin
       if (X>=0) and (X<II.Width) and (Y>=0) and (Y<II.Height) then
       begin
-        C := II.Colors[X, Y];
+        II.GetInternalColorProc(X,Y,C);  // C := II.Colors[X, Y];
         if (AMask<>0) and II.Masked[X, Y] then
           C.Alpha := 0;
       end else

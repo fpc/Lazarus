@@ -269,6 +269,8 @@ type
     property MaskData: PByte read FRawImage.Mask;
     property DataDescription: TRawImageDescription read FRawImage.Description
                                                    write SetDataDescription;
+    property GetInternalColorProc: TLazIntfImageGetPixelProc read FGetInternalColorProc;
+    property SetInternalColorProc: TLazIntfImageSetPixelProc read FSetInternalColorProc;
     property TColors[x,y: integer]: TGraphicsColor read GetTColors write SetTColors;
     property Masked[x,y:integer]: Boolean read GetMasked write SetMasked;
   end;
@@ -3787,16 +3789,18 @@ procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst: Integer;
   YDst: Integer; AlphaMask: Boolean; AlphaTreshold: Word);
 var
   SrcImg: TLazIntfImage absolute ASource;
-  SrcHasMask, DstHasMask: Boolean;
+  SrcHasMask, DstHasMask, SrcMaskPix: Boolean;
   x, y, xStart, yStart, xStop, yStop: Integer;
   c: TFPColor;
+  Position: TRawImagePosition;
 begin
 {
   if (Src.Width<>Width) or (Src.Height<>Height) then
     SetSize(Src.Width,Src.Height);
 }
-  if (ASource is TLazIntfImage) and
-     FRawImage.Description.IsEqual(SrcImg.FRawImage.Description) and (XDst =  0) and (YDst = 0) then
+  if (ASource is TLazIntfImage)
+  and FRawImage.Description.IsEqual(SrcImg.FRawImage.Description)
+  and (XDst =  0) and (YDst = 0) then
   begin
     // same description -> copy
     if FRawImage.Data <> nil then
@@ -3812,30 +3816,44 @@ begin
   XStop := IfThen(Width - XDst < ASource.Width, Width - XDst, ASource.Width) - 1;
   YStop := IfTHen(Height - YDst < ASource.Height, Height - YDst, ASource.Height) - 1;
 
-  SrcHasMask := (ASource is TLazIntfImage) and (SrcImg.FRawImage.Description.MaskBitsPerPixel > 0);
-  DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
-
-  if DstHasMask and (ASource is TLazIntfImage)
-  then begin
-    for y:= yStart to yStop do
+  if ASource is TLazIntfImage then
+  begin
+    SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0;
+    DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
+    if DstHasMask then
+      for y:= yStart to yStop do
+        for x:=xStart to xStop do
+          Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
+    // Optimization for common case. Inner loop is called millions of times in a big app.
+    for y:=yStart to yStop do
       for x:=xStart to xStop do
-        Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
+      begin
+        SrcImg.FGetInternalColorProc(x,y,c);       // c := SrcImg.Colors[x,y];
+        if not DstHasMask and SrcHasMask and (c.alpha = $FFFF) then
+        begin                                      // copy mask to alpha channel
+          SrcImg.GetXYMaskPosition(x,y,Position);  //if SrcImg.Masked[x,y] then
+          SrcImg.FRawimage.ReadMask(Position, SrcMaskPix);
+          if SrcMaskPix then
+            c.alpha := 0;
+        end;
+        FSetInternalColorProc(x+XDst, y+YDst, c);  // Colors[x+XDst,y+YDst] := c;
+        if AlphaMask and DstHasMask and (c.alpha < AlphaTreshold) then begin
+          GetXYMaskPosition(x+XDst, y+YDst, Position); // Masked[x+XDst,y+YDst]:=True;
+          FRawImage.WriteMask(Position, True);
+          FMaskSet := True;
+        end;
+      end;
+  end
+  else begin
+    for y:=yStart to yStop do
+      for x:=xStart to xStop do
+      begin
+        c := ASource.Colors[x,y];
+        Colors[x+XDst,y+YDst] := c;
+        if AlphaMask and (c.alpha < AlphaTreshold) then
+          Masked[x+XDst,y+YDst] := True;
+      end;
   end;
-
-  for y:=yStart to yStop do
-    for x:=xStart to xStop do
-    begin
-      c := ASource.Colors[x,y];
-
-      if not DstHasMask and SrcHasMask and (c.alpha = $FFFF) then // copy mask to alpha channel
-        if SrcImg.Masked[x,y] then
-          c.alpha := 0;
-
-      Colors[x+XDst,y+YDst] := c;
-      if AlphaMask and (c.alpha < AlphaTreshold) then
-        Masked[x+XDst,y+YDst] := True;
-    end;
-
 end;
 
 { TLazReaderXPM }
