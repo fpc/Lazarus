@@ -11,6 +11,14 @@
 { http://www.base2ti.com/zlib.htm                    }
 {                                                    }
 {****************************************************}
+{*
+ * 2020.10.23 added export of annotation links for TfrMemoView.URLInfo.
+ *                                           (<setfan[at]smartsoftware[dot]com>)
+ *            The URI put into URLInfo is supposed to be a valid uri
+ *            (http://..., ftp://..., etc.) with all special characters already
+ *            escaped. You could use for example the functions EncodeURL and
+ *            EncodeURLElement from the Synapse project, unit synacode.
+ *}
 
 unit lr_e_pdf;
 
@@ -72,7 +80,7 @@ type
 
 implementation
 
-uses lr_Const;
+uses lr_Const, PRAnnotation;
 
 type
     TfrMemoView_ = class(TfrMemoView);
@@ -485,6 +493,7 @@ procedure TfrTNPDFExportFilter.OnText(X, Y: Integer; const Text: string;
     View: TfrView);
 var
     PRTLabel: TPRLabel;
+    PRTAnno: TPRAnnotation;
     nx, ny, ndx, ndy: Integer;
     gapx, gapy: integer;
     memo: TfrMemoView;
@@ -522,6 +531,18 @@ begin
         PRTLabel.FontUnderline := fsUnderline in memo.Font.Style;
         PRTLabel.Angle:= memo.Angle;
         PRTLabel.AlignJustified :=  memo.Justify and not memo.LastLine;
+        // suppose that URLInfo always contains a valid URI
+        if Trim(memo.URLInfo) <> '' then begin
+          // create link annotation
+          PRTAnno := TPRAnnotation.Create(PRPanel);
+          PRTAnno.Parent := PRPanel;
+          PRTAnno.SubType := asLink;
+          PRTAnno.Action.URI := memo.URLInfo;
+          PRTAnno.Left := PRTLabel.Left;
+          PRTAnno.Top := PRTLabel.Top;
+          PRTAnno.Width := PRTLabel.Width;
+          PRTAnno.Height := PRTLabel.Height;
+        end;
       end;
     finally
     end;
