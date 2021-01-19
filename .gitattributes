@@ -6089,6 +6089,8 @@ docs/xml/lazutils/compwriterpas.xml svneol=native#text/plain
 docs/xml/lazutils/dynamicarray.xml svneol=native#text/plain
 docs/xml/lazutils/dynhasharray.xml svneol=native#text/plain
 docs/xml/lazutils/dynqueue.xml svneol=native#text/plain
+docs/xml/lazutils/examples/fileutil.findallfiles.pas svneol=native#text/pascal
+docs/xml/lazutils/examples/readme.txt svneol=native#text/plain
 docs/xml/lazutils/extendedstrings.xml svneol=native#text/plain
 docs/xml/lazutils/filereferencelist.xml svneol=native#text/plain
 docs/xml/lazutils/fileutil.xml svneol=native#text/plain
@@ -6186,6 +6188,7 @@ docs/xml/lcl/dialogs/trymessagedlg.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/tryshowmessage.pas svneol=native#text/pascal
 docs/xml/lcl/dynamicarray/tarrayexample.pas svneol=native#text/plain
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/examples/readme.txt svneol=native#text/plain
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls/radiobutton.pas svneol=native#text/pascal
 docs/xml/lcl/extctrls/statusbar.pas svneol=native#text/plain

@@ -81,7 +81,7 @@
             <dd>Filename1 comes after Filename2</dd>
           </dl>
         </descr>
-        <errors></errors>
+        <errors/>
         <seealso>
           <link id="CompareFilenames"/>
         </seealso>
@@ -129,8 +129,8 @@
             The return is 1 if Filename does not contain a file extension.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <errors/>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -167,7 +167,7 @@
           </p>
         </descr>
         <seealso>
-          <link id ="CompareFileNames"/>
+          <link id="CompareFileNames"/>
         </seealso>
       </element>
 
@@ -302,7 +302,7 @@
             <var>ExtractFileNameOnly</var> is a <var>String</var> function used to extract the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -337,7 +337,7 @@
             The return value is False if TheFilename (without the optional device identifier) is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -369,7 +369,7 @@
             The return value is False if TheFilename (without the optional device identifier)is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -395,7 +395,7 @@
             In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation of FilenameIsAbsolute. The return value is False if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -508,7 +508,7 @@
             FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows environment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -523,17 +523,11 @@
 
       <element name="FileIsSymlink">
         <short>Indicates if the specified file is a symbolic link in the file system</short>
-        <descr>
-          <p>
-            <var>FileIsSymlink</var> is a <var>Boolean</var> function used to determine if the specified file name is a symbolic link on the local file system.
-          </p>
-          <p>
-            The implementation of FileIsSymlink is platform-specific. For UNIX-like environments, the <var>FpReadLink</var> function is used to determine if the symbolic link can be resolved to a physical file name in the local file system. For the Windows platform, <var>FileGetAttrUTF8</var> is called to get and examine the file attributes for the specified file name. The file attributes must include the value <b>FILE_ATTRIBUTE_REPARSE_POINT</b>, and one of the Windows API values such as <b>IO_REPARSE_TAG_SYMLINK</b> or <b>IO_REPARSE_TAG_MOUNT_POINT</b> for the corresponding file handle. For the Amiga platform, FileIsSymLink always returns <b>False</b>.
+        <descr><p><var>FileIsSymlink</var> is a <var>Boolean</var> function used to determine if the specified file name is a symbolic link on the local file system.
+          </p><p>The implementation of FileIsSymlink is platform-specific. For UNIX-like environments, the <var>FpReadLink</var> function is used to determine if the symbolic link can be resolved to a physical file name in the local file system. For the Windows platform, <var>FileGetAttrUTF8</var> is called to get and examine the file attributes for the specified file name. The file attributes must include the value <b>FILE_ATTRIBUTE_REPARSE_POINT</b>, and one of the Windows API values such as <b>IO_REPARSE_TAG_SYMLINK</b> or <b>IO_REPARSE_TAG_MOUNT_POINT</b> for the corresponding file handle. For the Amiga platform, FileIsSymLink always returns <b>False</b>.
           </p>
         </descr>
-        <seealso>
-          <link id="#rtl.System.FpReadLink"/>
-          <link id="FileGetAttrUTF8"/>
+        <seealso><link id="#rtl.BaseUnix.FpReadLink"/><link id="FileGetAttrUTF8"/>
         </seealso>
       </element>
       <element name="FileIsSymlink.Result">
@@ -547,20 +541,12 @@
         <short>
           Indicates if the specified file has a descriptor or handle on the local file system
         </short>
-        <descr>
-          <p>
-            <var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
-          </p>
-          <p>
-            The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
-          </p>
-          <p>
-            The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.
+        <descr><p><var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
+          </p><p>The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
+          </p><p>The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.
           </p>
         </descr>
-        <seealso>
-          <link id="FileOpenUTF8"/>
-          <link id="#rtl.System.fpfstat"/>
+        <seealso><link id="FileOpenUTF8"/><link id="#rtl.BaseUnix.fpfstat"/>
         </seealso>
       </element>
       <element name="FileIsHardLink.Result">
@@ -606,7 +592,7 @@
             FileIsWritable is a Boolean function which indicates if the specified file name is writable. For UNIX-like environments, FpAccess is used to get the return value. For Windows, FileGetAttrUTF8 is used to determine if faReadOnly is omitted from the attributes for the file.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -643,7 +629,7 @@
             Content in the file (up to 1024 characters) is checked to ensure that invalid Null and Control characters are not found in the file. The return value is True when the specified file name exists in the local file system, and does not contain Null or Control characters.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -663,7 +649,7 @@
 
       <!-- function Visibility: default -->
       <element name="FilenameIsTrimmed">
-        <short></short>
+        <short/>
         <descr>
           <p>
             FilenameIsTrimmed is an overloaded Boolean function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
@@ -672,7 +658,7 @@
             Use TrimFilename to remove leading or trailing whitespace, duplicate directory separators, or relative path symbols.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -703,7 +689,7 @@
         <descr>
           <var>TrimFilename</var> is a String function used to remove leading and trailing spaces (Decimal 32) in the specified path and file name. In addition, ResolveDots is called to expand directory characters (like '.' and '..') and to remove duplicate path delimiters (like '//').
         </descr>
-        <errors></errors>
+        <errors/>
         <seealso>
           <link id="ResolveDots"/>
           <link id="FileNameIsTrimmed"/>
@@ -751,7 +737,7 @@
             CleanAndExpandFilename is a String function used to remove whitespace and to resolve special characters in the specified file name. CleanAndExpandFilename calls TrimFilename and ExpandFileNameUTF8 to get the return value for the function. The return value is the current directory when Filename contains an empty string ('').
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -805,7 +791,7 @@
             The return value is an empty string (<b>''</b>) if Filename contains an empty string (<b>''</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -873,7 +859,7 @@
             CreateRelativePath is thread safe, and therefore, does not guarantee that the current directory is correct for file names like 'D:test.txt'.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -920,7 +906,7 @@
             This is a logical test;  FileIsInPath does not expand or follow symbolic links.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -951,7 +937,7 @@
             Please note: PathIsInPath ensures that a trailing path delimiter is included in the Path and Directory arguments prior to performing its comparison. On Windows, this results in a Path like 'C:' being treated as if it contains 'C:\'.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="PathIsInPath.Result">
         <short>True when Directory exists in Path</short>
@@ -978,7 +964,7 @@
             The return value is the same as the <var>aFileName</var> argument if the file name did not need to be shortened.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ShortDisplayFilename.Result">
         <short>Shortened version of the specifed file name</short>
@@ -991,11 +977,11 @@
       </element>
 
       <element name="TPathDelimSwitch">
-        <short></short>
+        <short/>
         <descr>
           <var>TPathDelimSwitch</var> is an enumerated type with values that indicate how path delimiters in file names are handled in routines like SwitchPathDelims, CheckPathDelim, and IsCurrentPathDelim. Values in the enumeration represent the various platform- or OS-specific path delimiters available in the Lazarus LCL at run-time.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TPathDelimSwitch.pdsNone">
         <short>No path delimiter changes were used</short>
@@ -1036,7 +1022,7 @@
             For Windows, this means any UNIX path delimiters (<b>/</b>) in FileName are converted into the Windows path delimiter (<b>\</b>). Conversely, for all other platforms and environments, the Windows path delimiter (<b>\</b>) is converted to the UNIX notation (<b>/</b>). All path delimiter substitutions in FileName occur inline.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ForcePathDelims.FileName">
         <short>File name examined in the routine</short>
@@ -1070,7 +1056,7 @@
             <var>AppendPathDelim</var> is a <var>String</var> function used to ensure that a trailing path delimiter is included in the specified Path. The return value includes the value in Path and the trailing path delimiter (when needed).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1093,7 +1079,7 @@
             <var>ChompPathDelim</var> is a <var>String</var> function used to remove a trailing path delimiter from the specified value in Path. For  environments where UNC paths are allowed, ChompPathDelim ensures that the UNC path delimiters are retained.  Windows Device identifiers, such as "D:"  are also retained in Path.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1186,7 +1172,7 @@
         <short>Value to compare to the current path delimiter for the system</short>
       </element>
       <element name="CheckPathDelim.Changed">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsCurrentPathDelim">
@@ -1219,7 +1205,7 @@
            </dd>
           </dl>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="IsCurrentPathDelim.Result">
         <short>Boolean result of the path delimiter comparison</short>
@@ -1343,7 +1329,7 @@
             Compiler defines determine the mechanism used to perform a comparison of the values in APath and SearchPath; i.e. <var>CaseInsensitiveFilenames</var> and <var>NotLiteralFilenames</var>. <var>CompareFilenames</var> is called to perform the comparison when inline comparison of string values in not supported.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="FindPathInSearchPath.Result">
         <short>Position or value for the located search path</short>
@@ -1371,7 +1357,7 @@
             <var>FileExistsUTF8</var> is a <var>Boolean</var> function which indicates if the specified file name exists in the local file system. For the Windows environment, FileExistsUTF8 uses FileGetAttrUTF8 to ensure that Filename does not have the <b>FILE_ATTRIBUTE_DIRECTORY</b> attribute. For UNIX-like environments, the FileExists function in <file>SysUtils</file> is used to get the return value.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1400,7 +1386,7 @@
             The return value is in FileDate format, and can be transformed to a TDateTime value with the FileDateToDateTime function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1423,7 +1409,7 @@
             <var>DirectoryExistsUTF8</var> is <var>Boolean</var> function used to determine if the specified path exists on the local file system. For the Windows environment, FileGetAttrUTF8 is called to see if <b>FILE_ATTRIBUTE_DIRECTORY</b> is included in the file attributes for the specified Directory. For UNIX-like environments, the DirectoryExists function in the <file>SysUtils</file> unit is used to get the return value.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1449,7 +1435,7 @@
             If an empty string ('') is passed in Filename, it is expanded to the current directory using GetCurrentDirUTF8. When FileName contains the tilde character (<b>~</b>), it is converted to the path to the home directory for the user using the <var>HOME</var> environment variable.  Relative paths in FileName are resolved by calling ResolveDots.
           </p>
         </descr>
-        <errors></errors>
+        <errors/>
         <seealso>
           <link id="GetCurrentDirUTF8"/>
           <link id="ResolveDots"/>
@@ -1487,7 +1473,7 @@
             The return value contains the result from GetLastError; a non-zero value indicates that no files matching the criteria were found.
           </p>
         </descr>
-        <errors></errors>
+        <errors/>
         <seealso>
           <link id="#rtl.SysUtils.FIndFirst"/>
         </seealso>
@@ -1529,7 +1515,7 @@
             The return value contains the result from GetLastError; a non-zero value indicates that an error was encountered.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1552,7 +1538,7 @@
             <var>FindCloseUTF8</var> is a procedure used to free resources allocated to the search record in F by the <var>FindFirstUTF8</var> routine. FindCloseUTF8 calls the FindClose function in the <file>SysUtils</file> unit.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
@@ -1576,7 +1562,7 @@
             The return value is the value from GetLastError; a non-zero value indicates that an error has occurred.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1633,7 +1619,7 @@
            </dd>
           </dl>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1688,7 +1674,7 @@
             The return value contains the result from GetLastError; a non-zero value indicates that an error has occurred.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1722,7 +1708,7 @@
             The return value contains True when Filename is successfully deleted from the local file system.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1751,8 +1737,8 @@
             The return value is True if the file is renamed successfully.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <errors/>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1789,7 +1775,7 @@
             When ImplicitCurrentDir is <b>False</b>, each path in DirList is searched for a file with the specified name. The search is stopped when the first file with the specified file name is found. The return value contains the path in DirList where the file name was located along with the file name, or an empty string ('') if the specified file is not found in the search.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1817,7 +1803,7 @@
             <var>FileIsReadOnlyUTF8</var> is a <var>Boolean</var> function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included in the file attributes.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1883,7 +1869,7 @@
            </dd>
           </dl>
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -1914,7 +1900,7 @@
             An error can occur if a directory with the specified name already exists in the local file system.
           </p>
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
@@ -2148,7 +2134,7 @@ Modified: MM/DD/YYYY hh:mm
           The return value can be 'Modified: ?' if an exception is encountered when getting the date/time value for the file.
         </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetFileDescription.Result">
         <short>String with the file information for the platform or OS</short>
@@ -2185,7 +2171,7 @@ Modified: MM/DD/YYYY hh:mm
             File attributes not found in Attrib are represented as '-' characters.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="DbgSFileAttr.Result">
         <short>String with information about the file attributes</short>
@@ -2325,7 +2311,7 @@ Modified: MM/DD/YYYY hh:mm
       </element>
 
       <element name="GetAppConfigDirUTF8">
-        <short></short>
+        <short/>
         <descr>
           <p>
             <var>GetAppConfigDirUTF8</var> is a <var>String</var> function used to get the directory on the local file system where application configuration and data files are stored.
@@ -2449,7 +2435,7 @@ Modified: MM/DD/YYYY hh:mm
             GetTempFileNameUTF8 examines the files in the specified directory to determine if a file already exists which starts with the value in  Prefix. If a file is located in the directory, a numeric suffix (starting at 0) is appended to the base file name in Prefix to build a temporary file name which does not already exist in the directory.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetTempFileNameUTF8.Result">
         <short>Temporary file name generated in the routine</short>
@@ -2482,7 +2468,7 @@ Modified: MM/DD/YYYY hh:mm
             Use ExtractUNCVolume to get host and path information from a file name expressed using UNC notation.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="IsUNCPath.Result">
         <short>True when the path contains UNC notation</short>
@@ -2550,7 +2536,7 @@ Modified: MM/DD/YYYY hh:mm
 C:\
           </code>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ExtractFileRoot.Result">
         <short>Root directory on the file system for the specified file name </short>
@@ -2560,34 +2546,34 @@ C:\
       </element>
 
       <element name="GetDarwinSystemFilename">
-        <short></short>
+        <short/>
         <descr>
           Implemented when the platform or OS includes the <b>darwin</b> compiler define. Used in the implementation of TryCreateRelativePath for the Darwin platform.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetDarwinSystemFilename.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDarwinSystemFilename.Filename">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDarwinNormalizedFilename">
-        <short></short>
+        <short/>
         <descr>
           Implemented when the platform or OS includes the <b>darwin</b> compiler define. Handles canonical string normalization forms for file names on the Darwin platform.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetDarwinNormalizedFilename.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDarwinNormalizedFilename.Filename">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDarwinNormalizedFilename.nForm">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SHGetFolderPathUTF8">
@@ -2626,8 +2612,8 @@ C:\
         <short>
           Ensures that whitespace and quoting use the format required for command line parameters
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="StrToCmdLineParam.Result">
         <short>
@@ -2640,8 +2626,8 @@ C:\
 
       <element name="MergeCmdLineParams">
         <short>Generates a string with the specified list of parameters</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MergeCmdLineParams.Result">
         <short>String representation for the list of parameters</short>
@@ -2652,8 +2638,8 @@ C:\
 
       <element name="SplitCmdLine">
         <short>Splits the specified command line into program and parameter values</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SplitCmdLine.CmdLine">
         <short>Command line examined in the function</short>
@@ -2667,8 +2653,8 @@ C:\
 
       <element name="PrepareCmdLineOption">
         <short>Ensures command line options are formatted properly</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="PrepareCmdLineOption.Result">
         <short>Command line option after quoting has been applied</short>

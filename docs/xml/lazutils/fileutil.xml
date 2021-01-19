@@ -10,16 +10,10 @@
       <short>
         Miscellaneous procedures, functions, types, and classes for manipulating files and file names
       </short>
-      <descr>
-        <p>
-          This unit contains functions, procedures, types, and classes used to maintain compatibility with the FileUtil unit in Delphi. File routines that deal with UTF-8 file names are located in the LazFileUtils unit.
-        </p>
-        <p>
-          File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b>
+      <descr><p>This unit contains functions, procedures, types, and classes used to maintain compatibility with the FileUtil unit in Delphi. File routines that deal with UTF-8 file names are located in the LazFileUtils unit.
+        </p><p>File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b>
           string operator.
-        </p>
-        <p>
-          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the defauilt system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these OS's use UTF-8 as system encoding so the WideStringManager is not needed.
+        </p><p>This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the defauilt system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these OS's use UTF-8 as system encoding so the WideStringManager is not needed.
         </p>
       </descr>
 
@@ -33,8 +27,8 @@
 
       <element name="UTF8FileHeader">
         <short>Byte Order Mark (BOM) used at the beginning of UTF-8-encoded files</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="FilenamesCaseSensitive">
@@ -44,7 +38,7 @@
         <descr>
           The value is determined by the presence of the <b>CaseInsensitiveFilenames</b> compiler define.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="FilenamesLiteral">
@@ -55,28 +49,28 @@
         <descr>
           The value is determined by the presence of the <b>NotLiteralFilenames</b> compiler define.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="ComparePhysicalFilenames">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ComparePhysicalFilenames.Filename1">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ComparePhysicalFilenames.Filename2">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ComparePhysicalFilenames.Result">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CompareFilenames">
@@ -109,15 +103,15 @@
       </element>
 
       <element name="ExtractShortPathNameUTF8">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExtractShortPathNameUTF8.FileName">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtractShortPathNameUTF8.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DeleteDirectory">
@@ -150,24 +144,24 @@
       </element>
 
       <element name="ProgramDirectoryWithBundle">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ProgramDirectoryWithBundle.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExpandUNCFileNameUTF8">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExpandUNCFileNameUTF8.FileName">
-        <short></short>
+        <short/>
       </element>
       <element name="ExpandUNCFileNameUTF8.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FileSize">
@@ -290,16 +284,16 @@
         <descr>
           Deprecated. Use the function from the LazFileUtils unit.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CreateAbsolutePath.Filename">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateAbsolutePath.BaseDirectory">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateAbsolutePath.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetAllFilesMask">
@@ -375,9 +369,9 @@
       </element>
 
       <element name="sffFindProgramInPath">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SearchFileInPath">
@@ -631,12 +625,12 @@
       </element>
 
       <element name="TDirectoryEnterEvent">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TDirectoryEnterEvent.FileIterator">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TFileSearcher">
@@ -665,21 +659,21 @@
       </element>
 
       <element name="TFileSearcher.FOnDirectoryEnter">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.FFileAttribute">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.FDirectoryAttribute">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.RaiseSearchingError">
@@ -777,42 +771,42 @@
         <short>
           Character used as a delimiter between file masks in the search critera
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.PathSeparator">
         <short>
           Character used as a delimiter between directory paths in the search criteria
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.FollowSymLink">
         <short>
           Indicates if a search should follow paths that are symbolic links
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.FileAttribute">
-        <short></short>
+        <short/>
         <descr>
           FileAttribute is a Word property. The default value for the property is
           <var>faAnyfile</var>.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.DirectoryAttribute">
-        <short></short>
+        <short/>
         <descr>
           DirectoryAttribute is a Word property. The default value for the property is
           <var>faDirectory</var>.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TFileSearcher.OnDirectoryFound">
@@ -829,8 +823,8 @@
 
       <element name="TFileSearcher.OnDirectoryEnter">
         <short>Event handler signalled when the searcher enters a new directory</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TListFileSearcher">
@@ -841,7 +835,7 @@
           TListFileSearcher is a TFileSearcher descendant used to used store files matching a specified
           search criteria in a TStrings class instance.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TListFileSearcher.FList">
@@ -852,8 +846,8 @@
         <short>
           Performs actions required to add a file name to the list of matches for the file searcher
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TListFileSearcher.Create">
@@ -863,7 +857,7 @@
         <descr>
           Create is the constructor for the class instance. Create calls the inherited constructor, and stores the TStrings instance in AList to the the internal member used in the class instance.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TListFileSearcher.Create.AList">
         <short>TStrings class instance used to store matching file names</short>
@@ -876,7 +870,7 @@
         <descr>
           TListDirectoriesSearcher is a TFileSearcher descendant used to store directory names matching the specified search criteria in a TStrings class instance.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TListDirectoriesSearcher.FDirectoriesList">
@@ -887,8 +881,8 @@
         <short>
           Performs actions needed to add a directory path to the list of matches for the searcher
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TListDirectoriesSearcher.Create">
@@ -898,39 +892,39 @@
         <descr>
           Create is the constructor for the class instance. Create calls the inherited constructor, and stores the value in AList to the internal member used to capture matching directory names in the class instance.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TListDirectoriesSearcher.Create.AList">
         <short>
           TStrings class instance used to store directory names matching the specified search criteria
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="FindAllFiles">
         <short>
           Returns the list of files in the specified path matching the search criteria
         </short>
-        <descr>
-          <p>
-            FindAllFiles is an overloaded method used to populate a TStringList class instance with a list of files match the specified search criteria. The procedure variant uses an existing TStringList class instance to store the matching file names. The function variant creates the TStringList
-            class instance used as the return value for the method.
-          </p>
+        <descr><p>FindAllFiles is an overloaded method used to populate a TStringList class instance with a list of files match the specified search criteria.
+The procedure variant uses an existing TStringList class instance to store the matching file names.
+The function variant creates the TStringList class instance used as the return value for the method.
+</p>
         </descr>
         <seealso/>
+      
+      <errors>The function <var>FindAllFiles</var> creates the stringlist internally. This may look very convenient at first sight, but it is very easy to create memory leaks that way.
+</errors><example file="examples/fileutil.findallfiles.pas"/>
       </element>
       <element name="FindAllFiles.Result">
         <short>List of file names matching the search criteria</short>
-        <descr>
-          The StringList is created in the FindAllFiles function; you should not instantiate it before calling the function.
-        </descr>
+        <descr>The StringList is created in the FindAllFiles function; you should not instantiate it before calling the function.
+</descr>
       </element>
       <element name="FindAllFiles.AList">
         <short>TStringList used to store file names matching the search criteria</short>
-        <descr>
-          AList must be instantiated before it is passed as an argument to the method. The TStringList instance must also be freed by the routine where it was created.
-        </descr>
+        <descr>AList must be instantiated before it is passed as an argument to the method. The TStringList instance must also be freed by the routine where it was created.
+</descr>
       </element>
       <element name="FindAllFiles.SearchPath">
         <short>Base path for searching files</short>
@@ -939,12 +933,13 @@
         <short>
           A list of masks, separated by a semicolon (;) to which found files should match
         </short>
-        <descr>
-          A list of masks, separated by a semicolon (;) to which found files should match. The mask can contain wildcards like * and ? and it also supports sets like [a-d,x]. See the Masks unit for more details.
-        </descr>
+        <descr>A list of masks, separated by a semicolon (;) to which found files should match. The mask can contain wildcards like * and ? and it also supports sets like [a-d,x]. See the Masks unit for more details.
+</descr>
       </element>
       <element name="FindAllFiles.SearchSubDirs">
         <short>If search recursively sub directories</short>
+      <descr>Parameter DirAttr is int file attribute: if file-system item has this attribute(s), it is considered as a directory. It can be <var>faDirectory</var>, <var>faSymLink</var>, (<var>faDirectory</var>+<var>faSymLink</var>) or maybe another bits can be used.
+</descr>
       </element>
       <element name="FindAllFiles.PathSeparator">
         <short>If search recursively sub directories</short>
@@ -954,58 +949,56 @@
         <short>
           Stores directory names matching the search criteria in a TStringList class instance
         </short>
-        <descr>
-          <p>
-            FindAllDirectories is an overloaded routine used to store directory path names that match the specified search criteria in a TStringList class instance. The procedure variant uses an existing TStringList class instance to store the matching directory names. The function variant allocates a TStringList class instance used to capture the matching directory names.
+        <descr><p>FindAllDirectories is an overloaded routine used to store directory path names that match the specified search criteria in a TStringList class instance. The procedure variant uses an existing TStringList class instance to store the matching directory names. The function variant allocates a TStringList class instance used to capture the matching directory names.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="FindAllDirectories.Result">
         <short>Stores directory names matching the search criteria</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindAllDirectories.AList">
         <short>Stores directory names matching the search criteria</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindAllDirectories.SearchPath">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindAllDirectories.SearchSubDirs">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindAllDirectories.PathSeparator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCopyFileFlag">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCopyFileFlag.cffOverwriteFile">
-        <short></short>
+        <short/>
       </element>
       <element name="TCopyFileFlag.cffCreateDestDirectory">
-        <short></short>
+        <short/>
       </element>
       <element name="TCopyFileFlag.cffPreserveTime">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TCopyFileFlags">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CopyFile">
@@ -1026,39 +1019,39 @@
         <short>The destination filename for the Copy</short>
       </element>
       <element name="CopyFile.Flags">
-        <short></short>
+        <short/>
       </element>
       <element name="CopyFile.PreserveTime">
         <short>If True, the timestamp of the original file is preserved in the copied file</short>
       </element>
       <element name="CopyFile.ExceptionOnError">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CopyDirTree">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CopyDirTree.Result">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CopyDirTree.SourceDir">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CopyDirTree.TargetDir">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CopyDirTree.Flags">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PascalFileExt">
@@ -1070,14 +1063,14 @@
 
       <element name="PascalSourceExt">
         <short>An array of file extensions considered to be Pascal source code</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="AllDirectoryEntriesMask">
         <short>File masked used to match all directories entries</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
     </module>
