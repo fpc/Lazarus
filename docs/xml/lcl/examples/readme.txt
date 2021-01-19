@@ -26,7 +26,6 @@ You can include example code in the documentation as follows:
     <code>
         // Place example code here.
     </code>
-    </p>
     </descr>
     </element>
 

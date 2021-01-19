@@ -1831,7 +1831,7 @@
         <short>Event used to get cell hints</short>
         <descr>
           <p>
-            <var>TGetCellHintEvent</var> is an object procedure type used to get a hint for a string grid cell. TGetCellHintEvent is the type used for the <var>OnGetCellHint</var> property in <var>TCustomGrid</var>.
+            <var>TGetCellHintEvent</var> is an object procedure type used to get a hint for a string grid cell. TGetCellHintEvent is the type used for the <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> property in <var>TCustomGrid</var>.
           </p>
           <p>
             Arguments passed to the procedure can be used to determine the content in HintText displayed as the cell hint.
@@ -8027,7 +8027,7 @@
         </short>
         <descr>
           <p>
-            <var>GetCellHintText</var> signals the <var>OnGetCellHint</var> event handler (when assigned) to get the hint text for the cell at the position in <var>ACol</var> and <var>ARow</var>. The return value contains the hint text returned from the event handler, or an empty string (<b>''</b>) when the event handler has not been assigned.
+            <var>GetCellHintText</var> signals the <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> event handler (when assigned) to get the hint text for the cell at the position in <var>ACol</var> and <var>ARow</var>. The return value contains the hint text returned from the event handler, or an empty string (<b>''</b>) when the event handler has not been assigned.
           </p>
           <p>
             GetCellHintText is called from the <var>ShowCellHintWindow</var> method when <var>Options</var> contains the value <var>goCellHints</var> and <var>CellHintPriority</var> is <b>not</b> set to <var>chpTruncOnly</var>.
@@ -10710,7 +10710,7 @@
      <element name="TCustomGrid.OnGetCellHint">
        <short>Gets the individual hint for each cell</short>
        <descr>
-         <var>OnGetCellHint</var> is a <var>TGetCellHintEvent</var> with the event handler signalled to get the hint for cells in the grid control. OnGetCellHint is signalled when the <link id="TGridOption.goCellHints"/> enumeration value is included in the <link id="TCustomGrid.Options"/> property.
+         <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> is a <var>TGetCellHintEvent</var> with the event handler signalled to get the hint for cells in the grid control. OnGetCellHint is signalled when the <link id="TGridOption.goCellHints"/> enumeration value is included in the <link id="TCustomGrid.Options"/> property.
        </descr>
        <seealso>
          <link id="TGridOption.goCellHints"/>
