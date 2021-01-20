@@ -162,12 +162,6 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
-  TIDECodetoolsDefines = (
-    ctdReady,
-    ctdNeedUpdate,
-    ctdUpdating
-    );
-
   { TMainIDE }
 
   TMainIDE = class(TMainIDEBase)
@@ -615,7 +609,6 @@ type
                                      const Filename: string; var Source: string);
     function CodeToolBossGetMethodName(const Method: TMethod;
                                        PropOwner: TObject): String;
-    procedure CodeToolBossPrepareTree(Sender: TObject);
     procedure CodeToolBossGetIndenterExamples(Sender: TObject;
                 Code: TCodeBuffer; Step: integer; // starting at 0
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
@@ -629,7 +622,6 @@ type
       Sender: TIdentifierList; FilteredList: TFPList; PriorityCount: Integer);
 
     function CTMacroFunctionProject(Data: Pointer): boolean;
-    procedure CompilerParseStampIncHandler;
     procedure CodeToolBossScannerInit({%H-}Self: TCodeToolManager;
       Scanner: TLinkScanner);
 
@@ -655,7 +647,6 @@ type
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
     FRestartWanted: Boolean;
-    FIDECodeToolsDefines: TIDECodetoolsDefines;
 
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
@@ -5108,10 +5099,15 @@ begin
   ChangeMacroValue('FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
   MainBuildBoss.EnvOptsChanged;
 
-  if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+  if MacroValueChanged then
+    CodeToolBoss.DefineTree.ClearCache;
   //debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
   if FPCCompilerChanged or FPCSrcDirChanged then
     MainBuildBoss.SetBuildTargetProject1(false);
+  // Update DefineTemplates (maybe not really needed)
+  // Should we test MacroValueChanged or FPCCompilerChanged or FPCSrcDirChanged?
+  Project1.DefineTemplates.AllChanged(false);
+  PackageGraph.RebuildDefineTemplates;
 
   // update environment
   UpdateAndInvalidateDesigners;
@@ -9548,8 +9544,8 @@ begin
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
     @CodeToolBossGetVirtualDirectoryDefines;
-  CodeToolBoss.DefineTree.OnPrepareTree:=@CodeToolBossPrepareTree;
-  CodeToolBoss.IdentifierList.OnGatherUserIdentifiersToFilteredList := @CodeToolBossGatherUserIdentifiersToFilteredList;
+  CodeToolBoss.IdentifierList.OnGatherUserIdentifiersToFilteredList :=
+    @CodeToolBossGatherUserIdentifiersToFilteredList;
 
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECT',nil,@CTMacroFunctionProject);
@@ -9594,8 +9590,6 @@ begin
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
-
-  CompilerParseStampIncreased:=@CompilerParseStampIncHandler;
 
   {$IFDEF CheckNodeTool}
   // codetools consistency check
@@ -9780,22 +9774,6 @@ begin
   end;
 end;
 
-procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
-begin
-  if FIDECodeToolsDefines=ctdNeedUpdate then begin
-    FIDECodeToolsDefines:=ctdUpdating;
-    if Project1<>nil then
-      Project1.DefineTemplates.AllChanged(false);
-    PackageGraph.RebuildDefineTemplates;
-    FIDECodeToolsDefines:=ctdReady;
-    //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
-    {$IFDEF VerboseAddProjPkg}
-    DebugLn(['TMainIDE.CodeToolBossPrepareTree 1 "',CodeToolBoss.GetUnitPathForDirectory('',true),'"']);
-    DebugLn(['TMainIDE.CodeToolBossPrepareTree 2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
-    {$ENDIF}
-  end;
-end;
-
 procedure TMainIDE.CodeToolBossGetIndenterExamples(Sender: TObject;
   Code: TCodeBuffer; Step: integer; var CodeBuffers: TFPList;
   var ExpandedFilenames: TStrings);
@@ -9901,16 +9879,6 @@ begin
   if IsJITMethod(Method) then
     DebugLn(['TMainIDE.OnCodeToolBossGetMethodName ',Result,' ',IsJITMethod(Method)]);
   {$ENDIF}
-end;
-
-procedure TMainIDE.CompilerParseStampIncHandler;
-begin
-  if (FIDECodeToolsDefines=ctdUpdating) or (not FIDEStarted) then exit;
-  {$IFDEF VerboseAddProjPkg}
-  DebugLn(['TMainIDE.OnCompilerParseStampIncreased ']);
-  {$ENDIF}
-  FIDECodeToolsDefines:=ctdNeedUpdate;
-  //CodeToolBoss.DefineTree.ClearCache;
 end;
 
 procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager; Scanner: TLinkScanner);

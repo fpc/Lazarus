@@ -686,15 +686,18 @@ begin
 end;
 
 procedure TPkgManager.AfterWritePackage(Sender: TObject; Restore: boolean);
+var
+  Pkg: TLazPackage;
 begin
-  //debugln(['TPkgManager.OnAfterWritePackage ',DbgSName(APackage),' Restore=',Restore]);
+  Pkg := (Sender as TPackageIDEOptions).Package;
+  //debugln(['TPkgManager.AfterWritePackage ',Pkg, ' Restore=',Restore]);
+  Pkg.DefineTemplates.AllChanged(false);
   if Restore then
-    (Sender as TPackageIDEOptions).Package.RestoreOptions;
+    Pkg.RestoreOptions;
 end;
 
 procedure TPkgManager.BeforeReadPackage(Sender: TObject);
 begin
-  //debugln(['TPkgManager.OnBeforeReadPackage ',DbgSName(APackage)]);
   (Sender as TPackageIDEOptions).Package.BackupOptions;
 end;
 
