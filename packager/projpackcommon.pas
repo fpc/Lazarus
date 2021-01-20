@@ -148,7 +148,7 @@ begin
   if FUpdateLock=0 then RaiseGDBException('TProjPackDefineTemplates.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-    if not LazarusIDE.IDEStarted then
+    if Assigned(LazarusIDE) and not LazarusIDE.IDEStarted then
       Include(FFlags, ptfLoading);
     if FFlags * [ptfIsPackageTemplate,ptfIDChanged]  // AND
               = [ptfIsPackageTemplate,ptfIDChanged] then
