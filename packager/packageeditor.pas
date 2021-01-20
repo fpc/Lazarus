@@ -3161,6 +3161,7 @@ type
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
+  InstCls: TAbstractPackageFileIDEOptionsClass;
   Instance: TAbstractPackageFileIDEOptions;
   InstanceList: TFPList;
   stag: TStage;
@@ -3177,7 +3178,8 @@ begin
       Rec := IDEEditorGroups[i];
       if not PassesFilter(Rec) then
         Continue;
-      Instance := TAbstractPackageFileIDEOptions(TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass).GetInstance(LazPackage, FOptionsShownOfFile));
+      InstCls := TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass);
+      Instance := TAbstractPackageFileIDEOptions(InstCls.GetInstance(LazPackage, FOptionsShownOfFile));
       if (InstanceList.IndexOf(Instance)<0) and Assigned(Instance) then
       begin
         InstanceList.Add(Instance);
@@ -3203,6 +3205,7 @@ type
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
+  InstCls: TAbstractPackageFileIDEOptionsClass;
   Instance: TAbstractPackageFileIDEOptions;
   stag: TStage;
 begin
@@ -3215,7 +3218,8 @@ begin
         Rec := IDEEditorGroups[i];
         if not PassesFilter(Rec) then
           Continue;
-        Instance := TAbstractPackageFileIDEOptions(TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass).GetInstance(LazPackage, FOptionsShownOfFile));
+        InstCls := TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass);
+        Instance := TAbstractPackageFileIDEOptions(InstCls.GetInstance(LazPackage, FOptionsShownOfFile));
         if Assigned(Instance) then
         begin
           case stag of
