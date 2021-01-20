@@ -3820,16 +3820,15 @@ begin
   begin
     SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0;
     DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
-    if DstHasMask then
-      for y:= yStart to yStop do
-        for x:=xStart to xStop do
-          Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
     // Optimization for common case. Inner loop is called millions of times in a big app.
     for y:=yStart to yStop do
       for x:=xStart to xStop do
       begin
         SrcImg.FGetInternalColorProc(x,y,c);       // c := SrcImg.Colors[x,y];
-        if not DstHasMask and SrcHasMask and (c.alpha = $FFFF) then
+        if DstHasMask then                    // This can be optimized if needed.
+          Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y]
+        else
+        if SrcHasMask and (c.alpha = $FFFF) then
         begin                                      // copy mask to alpha channel
           SrcImg.GetXYMaskPosition(x,y,Position);  //if SrcImg.Masked[x,y] then
           SrcImg.FRawimage.ReadMask(Position, SrcMaskPix);
