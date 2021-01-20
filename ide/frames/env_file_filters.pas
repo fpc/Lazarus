@@ -215,6 +215,7 @@ procedure LoadGridFromFileDialogFilter(Grid: TStringGrid; Filter: string;
           end;
           if p^='|' then break;
         until p^=#0;
+        if p^=#0 then break;
         inc(p);
       end;
     end;
