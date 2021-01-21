@@ -3678,10 +3678,8 @@ function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
   end;
 
 var
-  OldActiveDesktop: TDesktopOpt;
   OldActiveDesktopName: string;
-  lDskTpOpt: TCustomDesktopOpt;
-
+  OldActiveDesktop, lDskTpOpt: TCustomDesktopOpt;
 begin
   Result := nil;
   if FActiveDesktopName <> '' then
@@ -3711,8 +3709,8 @@ begin
   Result.Assign(FDesktop);
   if Assigned(IDEDockMaster) then
     Result.FDockedOpt.LoadDefaults;
-  OldActiveDesktop := TDesktopOpt(FDesktops.Find(OldActiveDesktopName));
-  if not Assigned(OldActiveDesktop) then
+  OldActiveDesktop := FDesktops.Find(OldActiveDesktopName);
+  if not (OldActiveDesktop is TDesktopOpt) then
   begin
     lDskTpOpt := FDesktops.Find('default');
     if Assigned(lDskTpOpt) and lDskTpOpt.InheritsFrom(TDesktopOpt) and lDskTpOpt.Compatible then
@@ -3721,7 +3719,7 @@ begin
       OldActiveDesktop := nil;
   end;
   if Assigned(OldActiveDesktop) then
-    Result.Assign(OldActiveDesktop, False, False);
+    Result.Assign(TDesktopOpt(OldActiveDesktop), False, False);
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
