@@ -6,7 +6,7 @@
     LazListClasses
     ========================================================================================
     -->
-    <module id="LazListClasses">
+    <module name="LazListClasses">
       <short>
         Provides list classes implemented using generics
       </short>
