@@ -620,6 +620,8 @@ Begin
 
       if (AForm <> nil) then
       begin
+        AForm.ControlStyle:=AForm.ControlStyle+[csNoDesignVisible];
+        LCLIntf.ShowWindow(AForm.Handle,SW_HIDE);
         FNonFormForms.Remove(AForm);
         (AForm as INonFormDesigner).LookupRoot := nil;
         Application.ReleaseComponent(AForm);
