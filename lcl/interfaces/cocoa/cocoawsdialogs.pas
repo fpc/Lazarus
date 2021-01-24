@@ -164,13 +164,18 @@ type
     FileDialog: TFileDialog;
     OpenDialog: TOpenDialog;
     selUrl: NSURL;
-    filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
-    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
     procedure panel_willExpand(sender: id; expanding: LCLObjCBoolean);
     procedure panelSelectionDidChange(sender: id);
+  end;
+
+  // Having path_shouldEnableURL is causing a slowness on a file selection
+  // Just having the method declared already introduces a lag in the file selection
+  TOpenSaveDelegateWithFilter = objcclass(TOpenSaveDelegate, NSOpenSavePanelDelegateProtocol)
+    filter: NSOpenSavePanelDelegateProtocol;
+    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
   end;
 
 { TOpenSaveDelegate }
@@ -181,7 +186,7 @@ begin
   inherited dealloc;
 end;
 
-function TOpenSaveDelegate.panel_shouldEnableURL(sender: id; url: NSURL
+function TOpenSaveDelegateWithFilter.panel_shouldEnableURL(sender: id; url: NSURL
   ): LCLObjCBoolean;
 begin
   if Assigned(filter) then
@@ -431,12 +436,17 @@ begin
 
   saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
 
-  callback:=TOpenSaveDelegate.alloc;
+  if not Assigned(lFilter) then
+    callback:=TOpenSaveDelegate.alloc
+  else begin
+    callback:=TOpenSaveDelegateWithFilter.alloc;
+    TOpenSaveDelegateWithFilter(callback).filter := lFilter;
+  end;
+  callback := callback.init;
   callback.autorelease;
   callback.FileDialog := FileDialog;
   if FileDialog is TOpenDialog then
     callback.OpenDialog := TOpenDialog(FileDialog);
-  callback.filter := lFilter;
   saveDlg.setDelegate(callback);
   saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
   saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
