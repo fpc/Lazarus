@@ -450,7 +450,7 @@ begin
       FileDialog.Files.Clear;
 
       if Assigned(openDlg) then
-        for i := 0 to openDlg.filenames.Count - 1 do
+        for i := 0 to openDlg.URLs.Count - 1 do
           FileDialog.Files.Add(NSStringToString(
             NSURL(openDlg.URLs.objectAtIndex(i)).path));
 
