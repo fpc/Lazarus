@@ -1021,9 +1021,6 @@ begin
 
     // load required packages
     PackageGraph.OpenRequiredDependencyList(Result.FirstRequiredDependency);
-
-    //Result.DefineTemplates.AllChanged;
-    //Result.DefineTemplates.Active:=true;
   finally
     Result.EndUpdate;
   end;

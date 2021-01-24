@@ -43,7 +43,7 @@ uses
   // LazUtils
   LazFileUtils, LazUTF8,
   // CodeTools
-  FileProcs,
+  FileProcs, CodeToolManager,
   // IdeIntf
   MacroIntf, MacroDefIntf,
   // IDE
@@ -113,11 +113,11 @@ type
 var
   GlobalMacroList: TTransferMacroList = nil;
 
-type
-  TCompilerParseStampIncreasedEvent = procedure of object;
+//type
+//  TCompilerParseStampIncreasedEvent = procedure of object;
 var
   CompilerParseStamp: integer = 0; // TimeStamp of base value for macros
-  CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
+  //CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
   BuildMacroChangeStamp: integer = 0; // TimeStamp of base value for build macros
 
 procedure IncreaseCompilerParseStamp;
@@ -135,8 +135,9 @@ begin
   if IDEMacros<>nil then
     IDEMacros.IncreaseBaseStamp;
   CTIncreaseChangeStamp(CompilerParseStamp);
-  if Assigned(CompilerParseStampIncreased) then
-    CompilerParseStampIncreased();
+  CodeToolBoss.DefineTree.ClearCache;
+  //if Assigned(CompilerParseStampIncreased) then
+  //  CompilerParseStampIncreased();
 end;
 
 procedure IncreaseBuildMacroChangeStamp;

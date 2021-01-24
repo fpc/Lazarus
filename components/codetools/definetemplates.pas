@@ -602,7 +602,7 @@ type
     procedure RemoveTemplatesOwnedBy(TheOwner: TObject;
                                const MustFlags, NotFlags: TDefineTemplateFlags);
     procedure ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
-                           const ChildName: string; AClearCache: boolean=true);
+      const ChildName: string);
     procedure ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
     procedure ReplaceRootSameName(const Name: string;
                                   ADefineTemplate: TDefineTemplate);
@@ -6008,7 +6008,7 @@ begin
 end;
 
 procedure TDefineTree.ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
-  const ChildName: string; AClearCache: boolean);
+  const ChildName: string);
 // if there is a DefineTemplate with the same name then replace it
 // else add as last
 var OldDefineTemplate: TDefineTemplate;
@@ -6016,8 +6016,7 @@ begin
   if (ChildName='') or (ParentTemplate=nil) then exit;
   OldDefineTemplate:=ParentTemplate.FindChildByName(ChildName);
   if OldDefineTemplate<>nil then begin
-    if AClearCache
-    and not OldDefineTemplate.IsEqual(NewDefineTemplate,true,false) then
+    if not OldDefineTemplate.IsEqual(NewDefineTemplate,true,false) then
       ClearCache;
     if NewDefineTemplate<>nil then
       NewDefineTemplate.InsertBehind(OldDefineTemplate);
@@ -6026,8 +6025,7 @@ begin
     OldDefineTemplate.Unbind;
     OldDefineTemplate.Free;
   end else begin
-    if AClearCache then
-      ClearCache;
+    ClearCache;
     ParentTemplate.AddChild(NewDefineTemplate);
   end;
 end;

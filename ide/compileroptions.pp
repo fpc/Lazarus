@@ -4884,7 +4884,6 @@ end;
 
 initialization
   CompilerParseStamp:=1;
-  CompilerParseStampIncreased:=nil;
   BuildMacroChangeStamp:=1;
 
 end.

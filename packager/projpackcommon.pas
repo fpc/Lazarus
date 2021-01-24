@@ -11,8 +11,6 @@ uses
   LazTracer, FileReferenceList,
   // Codetools
   DefineTemplates, CodeToolManager,
-  // IdeIntf
-  LazIDEIntf,
   // IDE
   CompilerOptions;
 
@@ -148,15 +146,12 @@ begin
   if FUpdateLock=0 then RaiseGDBException('TProjPackDefineTemplates.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-    if Assigned(LazarusIDE) and not LazarusIDE.IDEStarted then
-      Include(FFlags, ptfLoading);
     if FFlags * [ptfIsPackageTemplate,ptfIDChanged]  // AND
               = [ptfIsPackageTemplate,ptfIDChanged] then
       InternalIDChanged;
     if ptfSourceDirsChanged in FFlags then SourceDirectoriesChanged;
     if ptfOutputDirChanged in FFlags then OutputDirectoryChanged;
     if ptfCustomDefinesChanged in FFlags then CustomDefinesChanged;
-    Exclude(FFlags, ptfLoading);
   end;
 end;
 
