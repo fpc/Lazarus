@@ -6125,6 +6125,7 @@ docs/xml/lazutils/lazloggerbase.xml svneol=native#text/plain
 docs/xml/lazutils/lazloggerdummy.xml svneol=native#text/plain
 docs/xml/lazutils/lazloggerprofiling.xml svneol=native#text/plain
 docs/xml/lazutils/lazmethodlist.xml svneol=native#text/plain
+docs/xml/lazutils/lazpasreadutil.xml svneol=native#text/plain
 docs/xml/lazutils/lazstringutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazsysutils.xml svneol=native#text/plain
 docs/xml/lazutils/laztracer.xml svneol=native#text/plain

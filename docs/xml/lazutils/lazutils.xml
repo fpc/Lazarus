@@ -46,6 +46,7 @@
       <element name="LazLoggerDummy"/>
       <element name="LazLoggerProfiling"/>
       <element name="LazMethodList"/>
+      <element name="LazPasReadUtil"/>
       <element name="LazUnicode"/>
       <element name="LazUTF16"/>
       <element name="LazUTF8"/>

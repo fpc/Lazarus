@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazPasReadUtil
+  ====================================================================
+-->
+
+<module name="LazPasReadUtil">
+<short>Helper functions for component serialized Pascal.</short>
+<descr><p>Helper functions for component serialized Pascal.</p>
+      </descr>
+
+<!-- uses unit Visibility: default -->
+<element name="Classes">
+<short/>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ExecCustomCSP">
+<short>Call Instance.DefineProperties with a list of properties.</short>
+<descr><p>Call Instance.DefineProperties with a list of properties in
+  TBinaryObjectWriter format. This function is used by the auto generated
+  Pascal of TCompWriterPas for custom DefineProperties.</p>
+        </descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExecCustomCSP.Instance">
+<short/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExecCustomCSP.Data">
+<short/>
+</element>
+
+</module> <!-- LazPasReadUtil -->
+
+</package>
+</fpdoc-descriptions>
