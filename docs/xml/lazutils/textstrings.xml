@@ -7,27 +7,16 @@
   ====================================================================
 -->
     <module name="TextStrings">
-&#x9;    <short>
-          <var>TTextStrings</var> describes a TStrings descendant that is optimized for handling the complete text as whole (instead of line by line)</short>
+      <short>
+          <var>TTextStrings</var> describes a TStrings descendant that is optimized for handling the complete text as whole (instead of line by line)
+        </short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <!-- unresolved type references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazUtilsStrConsts"/>
+      
       <!-- record type Visibility: default -->
       <element name="TTextLineRange">
         <short>

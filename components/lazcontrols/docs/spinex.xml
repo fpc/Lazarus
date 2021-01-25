@@ -168,6 +168,17 @@
         <short>Value for the property</short>
       </element>
 
+      <element name="TSpinEditExBase.IncrementStored">
+        <short>Gets the storage specifier for the Increment property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.IncrementStored.Result">
+        <short>True when a value other than DefIncrement has been assigned to the Increment property</short>
+      </element>
+
       <element name="TSpinEditExBase.IsLimited">
         <short>Indicates if valid values have been assigned to the MinValue and MaxValue properties</short>
         <descr>
@@ -195,6 +206,28 @@
       </element>
       <element name="TSpinEditExBase.IsOutOfLimits.AValue">
         <short>Value examined in the method</short>
+      </element>
+
+      <element name="TSpinEditExBase.MaxValueStored">
+        <short>Gets the storage specifier for the MaxValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MaxValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.MaxValueStored.Result">
+        <short>True when a value other than DefMaxValue has been assigned to the MaxValue property</short>
+      </element>
+
+      <element name="TSpinEditExBase.MinValueStored">
+        <short>Gets the storage specifier for the MaxValue property</short>
+        <descr/>
+        <seealso>
+          <link id="TSpinEditExBase.MinValue"/>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.MinValueStored.Result">
+        <short>True when a value other than DefMaxValue has been assigned to the MinValue property</short>
       </element>
 
       <element name="TSpinEditExBase.UpdateControl">
@@ -263,28 +296,6 @@
       </element>
       <element name="TSpinEditExBase.UpDownClick.Button">
         <short>The button type for the TUpDown control</short>
-      </element>
-
-      <element name="TSpinEditExBase.IncrementStored">
-        <short>Gets the storage specifier for the Increment property</short>
-        <descr/>
-        <seealso>
-          <link id="TSpinEditExBase.Increment"/>
-        </seealso>
-      </element>
-      <element name="TSpinEditExBase.IncrementStored.Result">
-        <short>True when a value other than DefIncrement has been assigned to the property</short>
-      </element>
-
-      <element name="TSpinEditExBase.MaxValueStored">
-        <short>Gets the storage specifier for the MaxValue property</short>
-        <descr/>
-        <seealso>
-          <link id="TSpinEditExBase.MaxValue"/>
-        </seealso>
-      </element>
-      <element name="TSpinEditExBase.MaxValueStored.Result">
-        <short>True when a value other than DefMaxValue has been assigned to the property</short>
       </element>
 
       <!-- protected members and properties -->

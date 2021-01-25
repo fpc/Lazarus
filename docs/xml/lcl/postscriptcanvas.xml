@@ -57,7 +57,6 @@
 <element name="LazFileUtils"/>
 <element name="IntegerList"/>
 <element name="LazUTF8"/>
-<element name="LazUTF8Classes"/>
 
 <!-- object Visibility: default -->
 <element name="TPostscriptPrinterCanvas">

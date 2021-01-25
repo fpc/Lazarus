@@ -25,7 +25,6 @@
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="LazUTF8"/>
-      <element name="lazUTF8Classes"/>
       <element name="laz2_DOM"/>
       <element name="laz2_XMLUtils"/>
 

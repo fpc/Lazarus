@@ -15,82 +15,17 @@
         <p>This container will get the Form's Session Properties that you setup in <link id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on the file you specify on <link id="#LCL.XmlPropStorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link>.</p>
       </descr>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- Classes -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- SysUtils -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="XMLConf">
-        <short>This unit contains the implementation of a path/value pair generic container in XML format.</short>
-        <descr />
-        <seealso />
-      </element> <!-- XMLConf -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="DOM">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- DOM -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="XMLRead">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- XMLRead -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="XMLWrite">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- XMLWrite -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- LCLProc -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- Forms -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LazConfigStorage">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- LazConfigStorage -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LazUTF8">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- LazUTF8 -->
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LazUTF8Classes">
-        <short />
-        <descr />
-        <seealso />
-      </element> <!-- LazUTF8Classes -->
+      <!-- unresolved type references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="XMLConf"/>
+      <element name="DOM"/>
+      <element name="XMLRead"/>
+      <element name="XMLWrite"/>
+      <element name="LCLProc"/>
+      <element name="Forms"/>
+      <element name="LazConfigStorage"/>
+      <element name="LazUTF8"/>
 
       <!-- object Visibility: default -->
       <element name="TPropStorageXMLConfig">

@@ -21,7 +21,6 @@
       <element name="LazUtilities"/>
       <element name="LazMethodList"/>
       <element name="LazUTF8"/>
-      <element name="LazUTF8Classes"/>
       <element name="LazLoggerBase"/>
       <element name="LazTracer"/>
       <element name="LCLStrConsts"/>

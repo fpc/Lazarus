@@ -25,11 +25,8 @@
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="laz2_DOM"/>
-      <element name="lazUTF8Classes"/>
 
       <!-- enumeration type Visibility: default -->
-
-
       <element name="TErrorSeverity">
         <short>
           Represents error severity codes for XML read operations

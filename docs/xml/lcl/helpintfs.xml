@@ -13,25 +13,11 @@
 <descr>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved type references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="LCLProc"/>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
 <element name="EHelpSystemException">
 <short/>
 <descr>

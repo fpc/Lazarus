@@ -39,7 +39,6 @@
       <element name="Buttons"/>
       <element name="GraphType"/>
       <element name="LazUTF8"/>
-      <element name="LazUTF8Classes"/>
       <element name="LazLoggerBase"/>
       <element name="LazUtilities"/>
 
@@ -8283,7 +8282,7 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomListView.Delete.Item">
+      <element name="TCustomListView.Delete.AItem">
         <short/>
       </element>
 
@@ -8387,13 +8386,34 @@
         <short/>
       </element>
 
-      <element name="TCustomListView.InsertItem">
-        <short>Insert an Item into the List</short>
+      <element name="TCustomListView.Edit">
+        <short/>
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomListView.InsertItem.Item">
+      <element name="TCustomListView.Edit.AItem">
         <short/>
+      </element>
+
+      <element name="TCustomListView.InsertItem">
+        <short>Inserts an Item into the List</short>
+        <descr>
+          <p>
+            Signals the OnInsert event handler (when assigned) using the value in AItem as an argument.
+          </p>
+          <p>
+            InsertItem is called from the DoInsert method when an overridden method has been implemented in a descendent class and called from ItemInserted.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnInsert"/>
+          <link id="TCustomListView.DoInsert"/>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TListItem"/>
+        </seealso>
+      </element>
+      <element name="TCustomListView.InsertItem.AItem">
+        <short>Item with the values inserted into the Items for the control</short>
       </element>
 
       <element name="TCustomListView.ImageChanged">
@@ -10087,15 +10107,21 @@
       </element>
 
       <element name="TCustomUpDown.CheckMouseEntering">
-        <short/>
+        <short>Indicates if the mouse pointer has entered the control</short>
         <descr/>
         <seealso/>
       </element>
+      <element name="TCustomUpDown.CheckMouseEntering.Result">
+        <short>True when the mouse pointer in within the bounds for the control</short>
+      </element>
 
       <element name="TCustomUpDown.CheckMouseLeaving">
-        <short/>
+        <short>Indicates if the mouse pointer has exited the control</short>
         <descr/>
         <seealso/>
+      </element>
+      <element name="TCustomUpDown.CheckMouseLeaving.Result">
+        <short>True when the mouse pointer is not in the client rectangle for the control</short>
       </element>
 
       <element name="TCustomUpDown.GetPosition">

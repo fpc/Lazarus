@@ -1468,7 +1468,7 @@ end;
             <var>UTF8StartsText</var> determines if the value in <var>AText</var> begins with the value in <var>ASubText</var>. Both values can contain a valid UTF-8-encoded string. The return value is <b>False</b> when ASubText is an empty string (''), or ASubText contains more characters (codepoints) than the value in AText.
           </p>
           <p>
-            UTF8StartsText calls <var>Utf8Copy</var> and <var>Utf8CompareText</var> to perform a case-insensitive comparison between the values.
+            UTF8StartsText calls <var>Utf8Copy</var> and <var>UTF8CompareLatinTextFast</var> to perform a case-insensitive comparison between the values.
           </p>
         </descr>
         <seealso></seealso>
@@ -1492,7 +1492,7 @@ end;
             <var>UTF8EndsText</var> determines if the value in <var>AText</var> ends with the value in <var>ASubText</var>. Both values can contain a valid UTF-8-encoded string. The return value is <b>False</b> when ASubText is an empty string (''), or ASubText contains more characters (codepoints) than the value in AText.
           </p>
           <p>
-            UTF8StartsText calls <var>Utf8Copy</var> and <var>Utf8CompareText</var> to perform a case-insensitive comparison between the values.
+            UTF8StartsText calls <var>Utf8Copy</var> and <var>UTF8CompareLatinTextFast</var> to perform a case-insensitive comparison between the values.
           </p>
         </descr>
         <seealso></seealso>
@@ -1739,17 +1739,13 @@ end;
           <dl>
             <dt>0</dt>
             <dd>Values are the same</dd>
-            <dt>-1</dt>
+            <dt>&lt;1</dt>
             <dd>Value S1 comes before S2 in an alphabetic sort order</dd>
-            <dt>+1</dt>
+            <dt>&gt;1</dt>
             <dd>Value S1 comes after S2 in an alphabetic sort order</dd>
-            <dt>-2</dt>
-            <dd>Value S1 comes before S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
-            <dt>+2</dt>
-            <dd>Value S1 comes after S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
           </dl>
           <p>
-            Internally, UTF8CompareStr uses <var>WideCompareStr</var> on the first UTF-8 codepoint that differs between <var>S1</var> and <var>S2</var>. As a result, it has proper collation on platforms where the WidestringManager supports this (Windows, *nix with <file>cwstring</file> unit).
+            Internally, UTF8CompareStr calls <var>WideCompareText</var> using the values in S1 and S2 converted to UTF-16 code points.
           </p>
         </descr>
         <seealso></seealso>
@@ -1781,17 +1777,13 @@ end;
           <dl>
             <dt>0</dt>
             <dd>Values are the same</dd>
-            <dt>-1</dt>
+            <dt>&lt; 0</dt>
             <dd>Value S1 comes before S2 in an alphabetic sort order</dd>
-            <dt>+1</dt>
+            <dt>&gt; 0</dt>
             <dd>Value S1 comes after S2 in an alphabetic sort order</dd>
-            <dt>-2</dt>
-            <dd>Value S1 comes before S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
-            <dt>+2</dt>
-            <dd>Value S1 comes after S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
           </dl>
           <p>
-            Internally, UTF8CompareText uses <var>WideCompareText</var>. This function guarantees proper collation on all supported platforms. Use this function instead of <var>AnsiCompareText</var> to compare UTF-8-encoded values.
+            Internally, UTF8CompareText uses <var>WideCompareText</var> when multi-byte codepoints are found in the compared values. This function guarantees proper collation on all supported platforms.
           </p>
         </descr>
         <seealso></seealso>
@@ -1804,6 +1796,40 @@ end;
       </element>
       <element name="UTF8CompareText.S2">
         <short>Second value for the comparison</short>
+      </element>
+
+      <element name="UTF8CompareTextP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8CompareTextP.Result">
+        <short/>
+      </element>
+      <element name="UTF8CompareTextP.S1">
+        <short/>
+      </element>
+      <element name="UTF8CompareTextP.S2">
+        <short/>
+      </element>
+
+      <element name="UTF8CompareLatinTextFast">
+        <short/>
+        <descr>
+          <p>
+            Like UTF8CompareText but does not return strict alphabetical order. The order is deterministic and good for binary search and similar uses. Optimizes comparison of single-byte encoding and also multi-byte portions when they are equal. Otherwise falls back to WideCompareText.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="UTF8CompareLatinTextFast.Result">
+        <short/>
+      </element>
+      <element name="UTF8CompareLatinTextFast.S1">
+        <short/>
+      </element>
+      <element name="UTF8CompareLatinTextFast.S2">
+        <short/>
       </element>
 
       <element name="UTF8CompareStrCollated">
@@ -1854,6 +1880,29 @@ end;
       </element>
       <element name="CompareStrListUTF8LowerCase.Index2">
         <short>Position of the second text line</short>
+      </element>
+
+      <element name="TStringListUTF8Fast">
+        <short/>
+        <descr>
+          Uses UTF8CompareLatinTextFast for comparison.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TStringListUTF8Fast.DoCompareText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TStringListUTF8Fast.DoCompareText.Result">
+        <short/>
+      </element>
+      <element name="TStringListUTF8Fast.DoCompareText.s1">
+        <short/>
+      </element>
+      <element name="TStringListUTF8Fast.DoCompareText.s2">
+        <short/>
       </element>
 
       <element name="TConvertResult">

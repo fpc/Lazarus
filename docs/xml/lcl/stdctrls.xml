@@ -8009,7 +8009,7 @@
             DoDrawText calls the <var>DrawText</var> routine to draw the text on the <var>Canvas</var> using the text rectangle and flags passed as arguments. DrawText is called a second time to render the shadow for the label text when themes are not enabled. The shadow text uses the color <var>clBtnShadow</var>.
           </p>
           <p>
-            DoDrawText is called from the <var>CalculateSize</var> and <var>Paint</var> methods.
+            DoDrawText is called from the <var>Paint</var> method.
           </p>
         </descr>
         <seealso/>
@@ -8051,6 +8051,9 @@
             <var>CalculatePreferredSize</var> is an overridden method used to calculated the preferred size for the control. Values stored in the <var>Anchors</var>, <var>Constraints</var>, and <var>WordWrap</var> properties are used to determine the effective width for the control. CalculateSize is called to calculate the text rectangle for the control using the requested dimensions.
           </p>
           <p>
+            CalculatePreferredSize checks the assigned <var>Font</var> for the control to determine whether text rotation is used in its <var>Orientation</var> property. When a value other than <b>0</b> (<b>zero</b>) is used, the text rectangle is rotated by the number of radians needed for the property value. The values in <var>PreferredWidth</var> and <var>PreferredHeight</var> are updated for the new text rectangle.
+          </p>
+          <p>
             No actions are performed in the method if <var>Parent</var> has not been assigned (contains Nil), or when a handle has not been allocated in the Parent control.
           </p>
           <p>
@@ -8078,12 +8081,21 @@
             Calculates the size for the label text using the formatting defined in property values.
           </p>
           <p>
-            <var>NeededWidth</var> and <var>NeededHeight</var> are variable parameters updated in the method to reflect the values needed after applying DrawText flags to the label text. The flag values applied are determined by the following property values:
+            <var>NeededWidth</var> and <var>NeededHeight</var> are variable parameters updated in the method to reflect the values needed after applying DrawText flags to the label text. The DrawText flags include constants which represent the following properties:
           </p>
           <ul>
             <li>WordWrap</li>
             <li>HasMultiLine</li>
             <li>ShowAccelChar</li>
+            <li>UseRightToLeftReading</li>
+          </ul>
+          <p>
+            The following constants are also used in the DrawText flags:
+          </p>
+          <ul>
+            <li>DT_CALCRECT</li>
+            <li>DT_EXPANDTABS</li>
+            <li>DT_NOCLIP</li>
           </ul>
         </descr>
         <seealso/>
@@ -8097,7 +8109,6 @@
       <element name="TCustomLabel.CalculateSize.NeededHeight">
         <short>Height needed for the text</short>
       </element>
-
 
       <element name="TCustomLabel.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
@@ -8415,10 +8426,27 @@
         <short>Performs actions needed to draw the control on its Canvas</short>
         <descr>
           <p>
-            <var>Paint</var> is an overridden method in <var>TCustomLabel</var> used to draw the control on its <var>Canvas</var>. Paint ensures that property values in the control are applied to the text drawn in the method, including: AutoSize, Alignment, Layout, WordWrap, Transparent, Color, Font, ShowAccel, and Enabled.
+            <var>Paint</var> is an overridden method in <var>TCustomLabel</var> used to draw the control on its <var>Canvas</var>. Paint ensures that property values in the control are applied to the text drawn in the method, including:
+          </p>
+          <ul>
+            <li>AutoSize</li>
+            <li>Alignment</li>
+            <li>Layout</li>
+            <li>WordWrap</li>
+            <li>Transparent</li>
+            <li>Color</li>
+            <li>Font</li>
+            <li>ShowAccel</li>
+            <li>Enabled</li>
+            <li>Alignment</li>
+            <li>UseRightToLeftAlignment</li>
+            <li>UseRightToLeftReading</li>
+          </ul>
+          <p>
+            DoDrawText is called to render the label text using the DrawText flags needed for the property values.
           </p>
           <remark>
-            Please note: Paint does <b>not</b> call the inherited method, and as a result does not use the <var>OnPaint</var> event handler in the ancestor class.
+            Paint does <b>not</b> call the inherited method in TGraphicControl. As a result, it does not signal the <var>OnPaint</var> event handler in the ancestor class.
           </remark>
         </descr>
         <seealso>
@@ -8426,6 +8454,7 @@
           <link id="#lcl.controls.TControl.Caption"/>
           <link id="#lcl.controls.TGraphicControl.Canvas"/>
           <link id="#lcl.controls.TGraphicControl.Paint"/>
+          <link id="#lcl.controls.TGraphicControl.OnPaint"/>
         </seealso>
       </element>
 

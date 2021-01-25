@@ -7,9 +7,9 @@
   ====================================================================
 -->
     <module name="LResources">
-      <short>This unit maintains and stores all standard Lazarus resources
-        in the global <link id="#LCL.LResources.LazarusResources">LazarusResources</link> list
-        and provides methods and types for component streaming.</short>
+      <short>
+        This unit maintains and stores all standard Lazarus resources in the global <link id="#LCL.LResources.LazarusResources">LazarusResources</link> list and provides methods and types for component streaming.
+      </short>
       <descr>
         <p>A <link id="TLResource">Lazarus resource</link> is streamed as an UTF-8 string,
           with a name, value and value type.
@@ -21,35 +21,17 @@
           which transforms the LFM text to binary format and stores it as Lazarus resource include file.</p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="TypInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="TypInfo"/>
+      <element name="LCLProc"/>
+      <element name="LCLStrConsts"/>
+      <element name="LazConfigStorage"/>
+      <element name="FPCAdds"/>
+      <element name="DynQueue"/>
+      <element name="LazUTF8"/>
+      <element name="LazLoggerBase"/>
+
       <!-- constant Visibility: default -->
       <element name="LRSComment">
         <short>Text of the "automatically generated..." warning in resource files.
