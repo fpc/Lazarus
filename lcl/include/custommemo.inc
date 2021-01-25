@@ -158,7 +158,9 @@ begin
   {$ifdef DEBUG_MEMO}
   debugln('TCustomMemo.RealSetText "',AValue,'"');
   {$endif}
+  fTExtChangedByRealSetText:=True;
   Lines.Text := AValue;
+  fTExtChangedByRealSetText:=False;
 end;
 
 function TCustomMemo.GetCachedText(var CachedText: TCaption): boolean;
