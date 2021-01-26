@@ -1803,14 +1803,14 @@ begin
     SrcEditMenuFindOverloads := RegisterIDEMenuCommand(AParent,
         'FindOverloads', srkmecFindOverloadsCapt, nil, @ExecuteIdeMenuClick);
     {$IFnDEF EnableFindOverloads}
-    SrcEditMenuFindOverloads.Visible:=false;
+    SrcEditMenuFindOverloads.Visible := false;
     {$ENDIF}
     SrcEditMenuMakeResourceString := RegisterIDEMenuCommand(AParent,
         'MakeResourceString', lisMenuMakeResourceString, nil, @ExecuteIdeMenuClick);
   {%endregion}
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-           'EditorProperties', lisOptions, nil, nil, nil, 'menu_environment_options');
+    'EditorProperties', lisMenuGeneralOptions, nil, nil, nil, 'menu_environment_options');
 end;
 
 function dbgSourceNoteBook(snb: TSourceNotebook): string;
