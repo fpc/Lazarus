@@ -15,6 +15,7 @@ type
 
   TSynEditGutterLineInfo = record
     ShowDot: boolean;
+    ViewLine: Integer;
     LineRange: TLineRange;
   end;
   TSynEditGetGutterLineTextEvent = procedure(Sender: TSynGutterLineNumber; ALine: integer; out AText: string; const ALineInfo: TSynEditGutterLineInfo) of object;
@@ -283,10 +284,13 @@ begin
           and (iLine <> TCustomSynEdit(SynEdit).CaretY) and (iLine <> 1)
           and (iLine <> SynEdit.Lines.Count);
       // Get the formatted line number or dot
-      if Assigned(FOnFormatLineNumber) then
-        FOnFormatLineNumber(Self, iLine, s, LineInfo)
-      else
+      if Assigned(FOnFormatLineNumber) then begin
+        LineInfo.ViewLine := i;
+        FOnFormatLineNumber(Self, iLine, s, LineInfo);
+      end
+      else begin
         s := FormatLineNumber(iLine, LineInfo.ShowDot);
+      end;
       Inc(rcLine.Bottom, LineHeight);
       if i <> LineInfo.LineRange.Top then
         s := '';
