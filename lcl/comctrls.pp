@@ -839,6 +839,7 @@ type
     procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CreateTabNoteBookStrings: TTabControlNoteBookStrings; virtual;
+    function GetClientOrigin: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
