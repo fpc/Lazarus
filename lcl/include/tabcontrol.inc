@@ -758,6 +758,11 @@ begin
   Result := TTabControlNoteBookStrings.Create(Self);
 end;
 
+function TTabControl.GetClientOrigin: TPoint;
+begin
+  Result := TTabControlNoteBookStrings(FTabs).FNoteBook.ClientOrigin;
+end;
+
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
