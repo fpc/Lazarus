@@ -1663,6 +1663,7 @@ type
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
+    function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; override;
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
@@ -6059,6 +6060,12 @@ begin
   end
   else
     Result := Nil;
+end;
+
+function TEditorOptions.CreateSynHighlighter(
+  LazSynHilighter: TLazSyntaxHighlighter): TObject;
+begin
+  Result := CreateSyn(LazSynHilighter);
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);

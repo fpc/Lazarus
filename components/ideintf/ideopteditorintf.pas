@@ -51,6 +51,7 @@ type
   public
     // read-only access to options needed by external packages.
     // feel free to extend when needed
+    function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; virtual; abstract; // returns sub-class of TSynCustomHighlighter
     function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; virtual; abstract;
     property TabPosition: TTabPosition read GetTabPosition;
   end;
