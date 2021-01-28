@@ -9201,6 +9201,8 @@ begin
           IDEWindowCreators.ShowForm(SearchResultsView,true);
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
+        if IDETabMaster <> nil then
+          IDETabMaster.ShowCode(SrcEdit);
         try
           SrcEdit.BeginUpdate;
           SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
