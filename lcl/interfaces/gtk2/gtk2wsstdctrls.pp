@@ -412,6 +412,25 @@ begin
     Result := nil;
 end;
 
+procedure gtkDefaultPopupMenuDeactivate(Widget: PGtkWidget; data: gPointer); cdecl;
+begin
+  LastMouse.Button := 0;
+  LastMouse.ClickCount := 0;
+  LastMouse.Down := False;
+  LastMouse.MousePos := Point(0, 0);
+  LastMouse.Time := 0;
+  LastMouse.WinControl := nil;
+end;
+
+function gtkDefaultPopupMenuCloseFix(Widget: PGtkWidget; Menu: PGtkMenu;
+  data: gPointer): gboolean; cdecl;
+begin
+  // needed because closing popup menu without clicking on any menu item
+  // freezes various controls, eg SpeedButton
+  g_signal_connect(PGtkObject(Menu), 'deactivate',
+    gtk_signal_func(@gtkDefaultPopupMenuDeactivate), nil);
+end;
+
 {$I gtk2memostrings.inc}
 
 { TGtk2WSCustomListBox }
@@ -1063,6 +1082,9 @@ begin
     SetCallback(LM_COPY, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_PASTE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
+
+  g_signal_connect_after(PGtkObject(AGtkWidget), 'populate-popup',
+    gtk_signal_func(@gtkDefaultPopupMenuCloseFix), AWidgetInfo);
 end;
 
 class procedure TGtk2WSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
@@ -1759,6 +1781,9 @@ begin
     g_signal_connect(AMenu, 'show', G_CALLBACK(@GtkPopupShowCB), AWidgetInfo);
     g_signal_connect_after(AMenu, 'selection-done', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
   end;
+
+  g_signal_connect_after(PGtkObject(GTK_BIN(ComboWidget)^.child), 'populate-popup',
+    gtk_signal_func(@gtkDefaultPopupMenuCloseFix), AWidgetInfo);
 
   if (gtk_major_version >= 2) and (gtk_minor_version >= 10) then
     g_signal_connect(ComboWidget, 'notify', TGCallback(@GtkNotifyCB), AWidgetInfo);
