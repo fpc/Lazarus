@@ -612,7 +612,16 @@ var
 begin
   Result := False;
   if PopupMenu is TPopupMenu then
+  begin
     PopupMenu.Close;
+    // Fix freezing some controls (eg SpeedButton) when close PopupMenu
+    LastMouse.Button := 0;
+    LastMouse.ClickCount := 0;
+    LastMouse.Down := False;
+    LastMouse.MousePos := Point(0, 0);
+    LastMouse.Time := 0;
+    LastMouse.WinControl := nil;
+  end;
 end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
