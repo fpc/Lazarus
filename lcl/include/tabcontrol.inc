@@ -758,11 +758,6 @@ begin
   Result := TTabControlNoteBookStrings.Create(Self);
 end;
 
-function TTabControl.GetClientOrigin: TPoint;
-begin
-  Result := TTabControlNoteBookStrings(FTabs).FNoteBook.ClientOrigin;
-end;
-
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
@@ -794,13 +789,17 @@ begin
 end;
 
 function TTabControl.IndexOfTabAt(X, Y: Integer): Integer;
+var
+  Offs: TPoint;
 begin
-  Result:=TTabControlStrings(FTabs).IndexOfTabAt(X,Y);
+  Offs := TTabControlNoteBookStrings(FTabs).FNoteBook.ClientOrigin;
+  Offs := Offs.Subtract(ClientOrigin);
+  Result:=TTabControlStrings(FTabs).IndexOfTabAt(X-Offs.X, Y-Offs.Y);
 end;
 
 function TTabControl.IndexOfTabAt(P: TPoint): Integer;
 begin
-  Result:=TTabControlStrings(FTabs).IndexOfTabAt(P.x, P.y);
+  Result:=IndexOfTabAt(P.x, P.y);
 end;
 
 function TTabControl.GetHitTestInfoAt(X, Y: Integer): THitTests;
