@@ -611,7 +611,7 @@ begin
   while (L <= R) do
   begin
     I := L + (R - L) div 2;
-    CompareRes := UTF8CompareText(S, Strings[I]);
+    CompareRes := AnsiCompareText(S, Strings[I]);
     if (CompareRes > 0) then
       L := I + 1
     else

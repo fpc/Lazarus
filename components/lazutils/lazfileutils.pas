@@ -259,7 +259,8 @@ begin
   CFRelease(F1);
   CFRelease(F2);
   {$ELSE}
-  Result:=UTF8CompareText(Filename1, Filename2);
+  // AnsiCompareText uses UTF8CompareText on Windows, elsewhere system string manager.
+  Result:=AnsiCompareText(Filename1, Filename2);
   {$ENDIF}
 end;
 
