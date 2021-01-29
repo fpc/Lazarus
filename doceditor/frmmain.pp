@@ -27,9 +27,13 @@ unit FrmMain;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Menus, ActnList, ExtCtrls, ComCtrls, pgeditor,
-  LazFileUtils, LazUTF8, process, UTF8Process, StdActns, fpdeutil;
+  Classes, SysUtils, process,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, Menus, ActnList, ExtCtrls, ComCtrls, StdActns,
+  // LazUtils
+  LazFileUtils, LazLoggerBase, LazUTF8, UTF8Process,
+  // DocEditor
+  pgeditor, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);
@@ -183,7 +187,7 @@ type
     procedure MainFormDestroy(Sender: TObject);
     procedure QuickLinkClick(Sender: TObject);
   private
-    FRecent : TStringList;
+    FRecent : TStringListUTF8Fast;
     FRecentBuildSettingsFile: String;
     // Editor functions.
     procedure BuildReopenList;
@@ -269,7 +273,7 @@ procedure TMainForm.MainFormCreate(Sender: TObject);
 begin
   FormLocalization;
   //
-  FRecent:=TStringList.Create;
+  FRecent:=TStringListUTF8Fast.Create;
   LoadCommandLine;
   LoadOptions;
   LoadRecent;
