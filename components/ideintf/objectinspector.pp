@@ -4526,6 +4526,8 @@ begin
       OldSelection.Free;
     end;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
+    FillComponentList(True);
+    RefreshSelection;
   end;
 end;
 
