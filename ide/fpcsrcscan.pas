@@ -42,7 +42,7 @@ type
   TFPCSrcScan = class(TThread)
   protected
     fLogMsg: string;
-    Files: TStringList;
+    fFiles: TStringList;
     procedure Execute; override;
     procedure OnFilesGathered; // main thread, called after thread has collected Files
     procedure MainThreadLog;
@@ -102,15 +102,15 @@ begin
   try
     Log('TFPCSrcScan.Execute START '+Directory);
     // scan fpc source directory, check for terminated
-    Files:=GatherFilesInFPCSources(Directory,nil);
-    Log('TFPCSrcScan.Execute found some files: '+dbgs((Files<>nil) and (Files.Count>0)));
+    fFiles:=GatherFilesInFPCSources(Directory,nil);
+    Log('TFPCSrcScan.Execute found some files: '+dbgs((fFiles<>nil) and (fFiles.Count>0)));
   except
     on E: Exception do begin
       Log('TFPCSrcScan.Execute error: '+E.Message);
     end;
   end;
-  if Files=nil then
-    Files:=TStringList.Create;
+  if fFiles=nil then
+    fFiles:=TStringList.Create;
   // let main thread update the codetools fpc source cache
   Synchronize(@OnFilesGathered);
 end;
@@ -118,7 +118,7 @@ end;
 procedure TFPCSrcScan.OnFilesGathered;
 begin
   try
-    ApplyFPCSrcFiles(Directory,Files);
+    ApplyFPCSrcFiles(Directory,fFiles);
     // delete item in progress window
     debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
     ProgressItem.Window.Close;

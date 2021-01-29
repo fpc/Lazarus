@@ -1379,8 +1379,7 @@ begin
                       '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',8,OnProgress);
 end;
 
-function MakeRelativeFileList(Files: TStrings; out BaseDir: string
-  ): TStringList;
+function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
 var
   BaseDirLen: Integer;
   i: Integer;

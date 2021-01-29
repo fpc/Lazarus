@@ -525,7 +525,7 @@ type
 
   { TDebuggerPropertiesConfigList }
 
-  TDebuggerPropertiesConfigList = class(TStringList)
+  TDebuggerPropertiesConfigList = class(TStringListUTF8Fast)
   private
     function GetOpt(Index: Integer): TDebuggerPropertiesConfig;
   public
@@ -1200,8 +1200,7 @@ end;
 
 { TDebuggerPropertiesConfigList }
 
-function TDebuggerPropertiesConfigList.GetOpt(Index: Integer
-  ): TDebuggerPropertiesConfig;
+function TDebuggerPropertiesConfigList.GetOpt(Index: Integer): TDebuggerPropertiesConfig;
 begin
   Result := TDebuggerPropertiesConfig(Objects[Index]);
 end;
@@ -1219,18 +1218,20 @@ function TDebuggerPropertiesConfigList.EntryByName(AConfName, AConfClass: String
   ): TDebuggerPropertiesConfig;
 var
   i: Integer;
+  dpCfg: TDebuggerPropertiesConfig;
 begin
   Result := nil;
   i := Count - 1;
-  while (i >= 0) and (
-    Opt[i].IsDeleted or (not Opt[i].IsLoaded) or
-    (Opt[i].ConfigName <> AConfName) or
-    (Opt[i].ConfigClass <> AConfClass)
-  )
-  do
+  while i >= 0 do begin
+    dpCfg := Opt[i];
+    if (not dpCfg.IsDeleted) and dpCfg.IsLoaded
+    and (dpCfg.ConfigName = AConfName)
+    and (dpCfg.ConfigClass = AConfClass) then
+      Break;
     dec(i);
+  end;
   if i >= 0 then
-    Result := Opt[i];
+    Result := dpCfg;
 end;
 
 function TDebuggerPropertiesConfigList.EntryByUid(AnUid: String

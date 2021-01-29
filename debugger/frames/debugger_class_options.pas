@@ -568,7 +568,6 @@ begin
   FDebuggerFileHistory := TStringList.Create;
   FDebuggerFileHistory.OwnsObjects := True;
   FCopiedDbgPropertiesConfigList := TDebuggerPropertiesConfigList.Create;
-  FCopiedDbgPropertiesConfigList.CaseSensitive := False;
   // create the PropertyGrid
   PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,FPropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
