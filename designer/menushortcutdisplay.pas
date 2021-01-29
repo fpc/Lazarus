@@ -24,7 +24,7 @@ type
   strict private
     FLastSortIndex: integer;
     FMenu: TMenu;
-    FscList: TStringList;
+    FscList: TStringListUTF8Fast;
     FSingleMenuOnly: boolean;
     FShortcutsOnly: boolean;
     FShortcuts: TMenuShortcuts;
@@ -371,7 +371,7 @@ var
 begin
   Assert(FMenu<>nil,'TShortcutDisplayDlg.UpdateFromMenu: FMenu is nil');
   FreeAndNil(FscList);
-  FscList:=TStringList.Create;
+  FscList:=TStringListUTF8Fast.Create;
   FscList.CaseSensitive:=False;
   FDualDisplay.ClearContents;
   for i:=0 to FMenu.Items.Count-1 do

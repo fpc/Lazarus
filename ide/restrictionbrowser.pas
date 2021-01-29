@@ -32,7 +32,9 @@ interface
 uses
   Classes, Contnrs,
   // LCL
-  LCLPlatformDef, LCLProc, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
+  LCLPlatformDef, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
+  // LazUtils
+  LazUTF8, LazLoggerBase,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
@@ -150,7 +152,7 @@ end;
 procedure TRestrictionBrowserView.UpdateIssueList;
 var
   I, ID: PtrInt;
-  Issues: TStringList;
+  Issues: TStringListUTF8Fast;
   P: TLCLPlatform;
   WidgetSetFilter: TLCLPlatforms;
   Component: TComponent;
@@ -163,7 +165,7 @@ begin
     if (Component as TSpeedButton).Down then
       Include(WidgetSetFilter, P);
   end;
-  Issues := TStringList.Create;
+  Issues := TStringListUTF8Fast.Create;
   try
     for I := 0 to High(FIssueList) do
       if FIssueList[I].WidgetSet in WidgetSetFilter then

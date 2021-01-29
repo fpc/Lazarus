@@ -29,7 +29,7 @@ uses
   // LCL
   Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, ComCtrls, Menus,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase,
+  FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazUTF8,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeIntf
@@ -294,11 +294,11 @@ end;
 
 procedure TDebuggerClassOptionsFrame.FillDebuggerClassDropDown;
 var
-  List: TStringList;
+  List: TStringListUTF8Fast;
   i: Integer;
   d: TDebuggerClass;
 begin
-  List := TStringList.Create;
+  List := TStringListUTF8Fast.Create;
   for i := 0 to TBaseDebugManagerIntf.DebuggerCount - 1 do begin
     d := TBaseDebugManagerIntf.Debuggers[i];
     List.AddObject(d.Caption, TObject(d));

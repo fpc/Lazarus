@@ -1499,9 +1499,9 @@ end;
 procedure TPkgManager.SaveAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   Dependency:=PackageGraph.FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
@@ -2664,18 +2664,14 @@ var
     MovedFiles: TFilenameToPointerTree;
     ResFileList: TStringList;
     j: Integer;
-    OldFilenames: TStringList;
   begin
     Result:=false;
     TargetFilesEdit.BeginUpdate;
     SrcFilesEdit.BeginUpdate;
-    OldFilenames:=TStringList.Create;
     MovedFiles:=TFilenameToPointerTree.Create(false);
     try
-      for i:=0 to IDEFiles.Count-1 do
-        OldFilenames.Add(TIDEOwnedFile(IDEFiles[i]).GetFullFilename);
-      for i:=0 to OldFilenames.Count-1 do begin
-        OldFilename:=OldFilenames[i];
+      for i:=0 to IDEFiles.Count-1 do begin
+        OldFilename:=TIDEOwnedFile(IDEFiles[i]).GetFullFilename;
         if not MoveOrCopyFile(OldFilename,MovedFiles) then exit;
         ResFileList:=TStringList(UnitFilenameToResFileList[OldFilename]);
         if ResFileList=nil then continue;
@@ -2684,7 +2680,6 @@ var
       end;
     finally
       MovedFiles.Free;
-      OldFilenames.Free;
       SrcFilesEdit.EndUpdate;
       TargetFilesEdit.EndUpdate;
     end;
@@ -4498,7 +4493,7 @@ begin
   UnitList:=nil;
   CurPackages:=nil;
   AllPackages:=nil;
-  CurUnitNames:=TStringList.Create;
+  CurUnitNames:=TStringListUTF8Fast.Create;
   try
     for CurClassID:=0 to ComponentClasses.Count-1 do
     begin
@@ -4511,10 +4506,9 @@ begin
         CurCompReq:=nil;
         if UnitList=nil then
         begin
-          UnitList:=TStringList.Create;
+          UnitList:=TStringListUTF8Fast.Create;
           UnitList.Sorted:=True;
           UnitList.Duplicates:=dupIgnore;
-          UnitList.CaseSensitive:=False;
         end;
         try
           if CurRegComp.ComponentClass<>nil then
@@ -4525,8 +4519,8 @@ begin
           //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurUnitName=',CurUnitName]);
           if CurUnitName='' then
             CurUnitName:=CurRegComp.GetUnitName;
-          Assert(CurUnitNames.IndexOf(CurUnitName)<0,
-            'TPkgManager.GetUnitsAndDepsForComps: Name already in CurUnitNames.');
+          //Assert(CurUnitNames.IndexOf(CurUnitName)<0,
+          //  'TPkgManager.GetUnitsAndDepsForComps: Name already in CurUnitNames.');
           CurUnitNames.Add(CurUnitName);
           if CurCompReq<>nil then
             CurCompReq.RequiredUnits(CurUnitNames);
@@ -4547,18 +4541,16 @@ begin
               begin
                 if CurPackages=nil then
                 begin
-                  CurPackages:=TStringList.Create;
+                  CurPackages:=TStringListUTF8Fast.Create;
                   CurPackages.Sorted:=True;
                   CurPackages.Duplicates:=dupIgnore;
-                  CurPackages.CaseSensitive:=False;
                 end else
                   CurPackages.Clear;
                 if AllPackages=nil then
                 begin
-                  AllPackages:=TStringList.Create;
+                  AllPackages:=TStringListUTF8Fast.Create;
                   AllPackages.Sorted:=True;
                   AllPackages.Duplicates:=dupIgnore;
-                  AllPackages.CaseSensitive:=False;
                 end;
                 CurPackages.Add(RequiredPackage.Name);
                 if Assigned(CurCompReq) then
@@ -4715,7 +4707,8 @@ function TPkgManager.GetSourceFilesOfOwners(OwnerList: TFPList): TStrings;
 
   procedure AddFile(TheOwner: TObject; const Filename: string);
   begin
-    if Result=nil then Result:=TStringList.Create;
+    if Result=nil then
+      Result:=TStringList.Create;
     Result.AddObject(Filename,TheOwner);
   end;
 

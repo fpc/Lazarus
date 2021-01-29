@@ -36,7 +36,7 @@ uses
   // LCL
   LCLType, Forms, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase, UITypes,
+  FileUtil, LazFileUtils, LazLoggerBase, UITypes, LazUTF8,
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
@@ -94,10 +94,10 @@ type
     //  Some of them may be above the main project/package directory.
     FTopDir: string;
     // Project/package member files already copied. Not copied again by filters.
-    FCopiedFiles: TStringList;
+    FCopiedFiles: TStringListUTF8Fast;
     // Copying by filters failed.
     FCopyFailedCount: Integer;
-    FProjDirs: TStringList;
+    FProjDirs: TStringListUTF8Fast;
     FBackupDir, FLibDir: String;
     procedure AdjustTopDir(const AFileName: string);
     function CopyAFile(const AFileName: string): TModalResult;
@@ -162,8 +162,8 @@ begin
                        + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory);
   COpts := FProjPack.LazCompilerOptions as TBaseCompilerOptions;
   FLibDir := COpts.GetUnitOutPath(True,coptParsed);
-  FCopiedFiles := TStringList.Create;
-  FProjDirs := TStringList.Create;
+  FCopiedFiles := TStringListUTF8Fast.Create;
+  FProjDirs := TStringListUTF8Fast.Create;
 end;
 
 destructor TPublisher.Destroy;
@@ -369,7 +369,7 @@ begin
     begin
       for I := 0 to FCopiedFiles.Count - 1 do
       begin
-        RelPath := ExtractRelativePath(FTopDir, FCopiedFiles.Strings[I]);
+        RelPath := ExtractRelativePath(FTopDir, FCopiedFiles[I]);
         Drive := ExtractFileDrive(RelPath);
         if Trim(Drive) <> '' then
           RelPath := StringReplace(RelPath, AppendPathDelim(Drive), '', [rfIgnoreCase]);

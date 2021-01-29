@@ -156,18 +156,13 @@ end;
 
 procedure TCheckCompOptsForNewUnitDialog.FormCreate(Sender: TObject);
 var
-  sl: TStringList;
   i: Integer;
 begin
   Caption:=lisDirectivesForNewUnit;
   ButtonPanel1.OKButton.Caption:=lisContinue;
-
   ModeLabel.Caption:=lisSyntaxMode;
-  sl:=TStringList.Create;
   for i:=low(FPCSyntaxModes) to high(FPCSyntaxModes) do
-    sl.Add(FPCSyntaxModes[i]);
-  ModeComboBox.Items.Assign(sl);
-  sl.Free;
+    ModeComboBox.Items.Add(FPCSyntaxModes[i]);
   AnsistringCheckBox.Caption:=lisUseAnsistrings;
   DoNotWarnCheckBox.Caption:=lisDoNotShowThisDialogForThisProject;
 end;

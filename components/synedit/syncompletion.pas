@@ -44,10 +44,14 @@ unit SynCompletion;
 interface
 
 uses
-  LCLProc, LCLIntf, LCLType, LazUTF8, LMessages, Classes, Graphics, Forms,
-  Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types, Themes,
-  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins
-  {$IF FPC_FULLVERSION >= 20701}, character{$ENDIF};
+  Classes, SysUtils, Types, Character,
+  // LCL
+  LCLProc, LCLIntf, LCLType, LMessages, Graphics, Forms,
+  Controls, StdCtrls, ExtCtrls, Menus, Themes,
+  // LazUtils
+  LazUTF8,
+  // SynEdit
+  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins;
 
 type
   TSynBaseCompletionPaintItem =
@@ -1152,8 +1156,8 @@ begin
         end;
     end else begin
       for i := 0 to Pred(ItemList.Count) do
-        if 0 = WideCompareText(UTF8Decode(fCurrentString),
-                       UTF8Decode(Copy(ItemList[i], 1, Length(fCurrentString))))
+        if 0 = UTF8CompareLatinTextFast(fCurrentString,
+                                    Copy(ItemList[i], 1, Length(fCurrentString)))
         then begin
           Position := i;
           break;

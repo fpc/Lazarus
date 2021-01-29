@@ -8,6 +8,8 @@ uses
   Classes,
   // LCL
   Forms, Controls, ButtonPanel, StdCtrls, CheckLst,
+  // LazUtils
+  LazUTF8,
   // IDE
   Debugger, LazarusIDEStrConsts;
 
@@ -23,7 +25,7 @@ type
     Label1: TLabel;
   protected
     FBrkPointPoint: TIDEBreakPoint;
-    FGroupList: TStringList;
+    FGroupList: TStringListUTF8Fast;
     FAvailableGroups: TIDEBreakPointGroups;
   public
     { public declarations }
@@ -75,7 +77,7 @@ begin
   inherited Create(nil);
   FBrkPointPoint := ABrkPointPoint;
   FAvailableGroups := AAvailableGroups;
-  FGroupList := TStringList.Create;
+  FGroupList := TStringListUTF8Fast.Create;
   FGroupList.Delimiter := ';';
   FGroupList.DelimitedText := AGroupList;
 

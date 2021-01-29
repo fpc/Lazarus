@@ -205,11 +205,12 @@ begin
   FOptions:=AValue;
 end;
 
-procedure TCheckCompilerOptsDlg.SetMsgDirectory(Index: integer;
-  const CurDir: string);
+procedure TCheckCompilerOptsDlg.SetMsgDirectory(Index: integer; const CurDir: string);
 begin
-  if FDirectories=nil then FDirectories:=TStringList.Create;
-  while FDirectories.Count<=Index do FDirectories.Add('');
+  if FDirectories=nil then
+    FDirectories:=TStringList.Create;
+  while FDirectories.Count<=Index do
+    FDirectories.Add('');
   FDirectories[Index]:=CurDir;
 end;
 
@@ -694,13 +695,13 @@ var
   p: Integer;
   Directory: String;
   FileInfo: TSearchRec;
-  WarnedDirectories: TStringList;
+  WarnedDirectories: TStringListUTF8Fast;
 begin
   FTest:=cotCheckFPCUnitPathsContainSources;
   LabelTest.Caption:=dlgCCOTestSrcInPPUPaths;
 
   Result:=mrCancel;
-  WarnedDirectories:=TStringList.Create;
+  WarnedDirectories:=TStringListUTF8Fast.Create;
   p:=1;
   while p<=length(FPCCfgUnitPath) do begin
     Directory:=TrimFilename(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));

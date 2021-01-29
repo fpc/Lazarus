@@ -642,16 +642,16 @@ var
   Macros: TLazBuildMacros;
   Macro: TLazBuildMacro;
   LCLWidgetTypeMacro: TLazBuildMacro;
-  List: TStringList;
+  xList: TStringListUTF8Fast;
   MenuIndex: Integer;
   MacroMenuItem: TMenuItem;
   PkgList: TFPList;
 begin
   LCLWidgetTypeMacro:=Nil;
   PkgList:=nil;
-  List:=TStringList.Create;
+  xList:=TStringListUTF8Fast.Create;
   try
-    // First collect all macros from all used packages to a sorted list.
+    // First collect all macros from all used packages to a sorted xList.
     PackageGraph.GetAllRequiredPackages(nil,LazProject.FirstRequiredDependency,PkgList);
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
@@ -662,20 +662,20 @@ begin
           if Macro.Identifier = 'LCLWidgetType' then
             LCLWidgetTypeMacro:=Macro
           else if IsValidIdent(Macro.Identifier) then
-            List.AddObject(Macro.Identifier,Macro);
+            xList.AddObject(Macro.Identifier,Macro);
         end;
       end;
     end;
-    List.Sort;
+    xList.Sort;
     // LCLWidgetType gets its own button.
     BMMAddLclWidgetButton.Enabled:=Assigned(LCLWidgetTypeMacro);
     if Assigned(LCLWidgetTypeMacro) then
       AddLCLWidgetTypeValues(BMMAddLclWidgetPopupMenu, LCLWidgetTypeMacro);
     // Place other macros to the popup menu opened from "Add" button.
     MenuIndex:=BMMNewTargetMenuItem.MenuIndex;
-    for i:=0 to List.Count-1 do begin
+    for i:=0 to xList.Count-1 do begin
       inc(MenuIndex);
-      Macro:=TLazBuildMacro(List.Objects[i]);
+      Macro:=TLazBuildMacro(xList.Objects[i]);
       if BMMAddOtherPopupMenu.Items.Count=MenuIndex then
         BMMAddOtherPopupMenu.Items.Add(TMenuItem.Create(Self));
       MacroMenuItem:=BMMAddOtherPopupMenu.Items[MenuIndex];
@@ -684,7 +684,7 @@ begin
     end;
   finally
     PkgList.Free;
-    List.Free;
+    xList.Free;
   end;
 end;
 

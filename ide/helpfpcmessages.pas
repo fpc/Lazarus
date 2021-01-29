@@ -42,7 +42,7 @@ uses
   LCLProc, LCLIntf, Dialogs, Forms, Controls, StdCtrls, ExtCtrls, Graphics,
   ButtonPanel, LazHelpHTML,
   // LazUtils
-  LazConfigStorage, LazFileUtils, LazFileCache,
+  LazConfigStorage, LazFileUtils, LazFileCache, LazUTF8,
   // CodeTools
   FileProcs, CodeToolsFPCMsgs, CodeToolManager, CodeCache, DefineTemplates,
   // IdeIntf
@@ -639,10 +639,10 @@ end;
 
 procedure TEditIDEMsgHelpDialog.FillAdditionsList;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     for i:=0 to Additions.Count-1 do
       sl.Add(Additions[i].Name);

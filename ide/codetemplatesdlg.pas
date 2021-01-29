@@ -36,7 +36,7 @@ uses
   LCLProc, Forms, Controls, Dialogs, ClipBrd, StdCtrls, ExtCtrls, Menus,
   ButtonPanel, EditBtn,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase, LazStringUtils,
+  FileUtil, LazFileUtils, LazLoggerBase, LazStringUtils, LazUTF8,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
   // codetools
@@ -654,9 +654,8 @@ begin
       lastword:=re.MatchPos[0];
     until (not re.ExecNext);
   end;
-  s:=st[st.count-1];
-  st.Delete(st.count-1);
-  st.Insert(0,s);
+  if st.Count>1 then
+    st.Move(st.count-1, 0);
   if(iParam<0)then
   begin
     p.X:=SrcEdit.CursorTextXY.x;
@@ -1069,9 +1068,9 @@ end;
 procedure TCodeTemplateDialog.FillCodeTemplateListBox;
 var
   a: PtrInt;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     for a:=0 to SynAutoComplete.Completions.Count-1 do begin
       // Add the index in SynAutoComplete as Object, since both indexes won't

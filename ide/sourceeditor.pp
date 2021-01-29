@@ -1887,7 +1887,7 @@ var
   I: integer;
   Mng: TSourceEditorManager;
   New: TSourceListItem;
-  AddedFileNames: TStringList;
+  AddedFileNames: TStringListUTF8Fast;
 begin
   FSourceList.Clear;
   if FIncludeWords=icwDontInclude then
@@ -1906,7 +1906,7 @@ begin
 
   if FIncludeWords=icwIncludeFromAllUnits then
   begin
-    AddedFileNames := TStringList.Create;
+    AddedFileNames := TStringListUTF8Fast.Create;
     try
       AddedFileNames.Sorted := True;
       AddedFileNames.Duplicates := dupIgnore;
@@ -2286,7 +2286,7 @@ procedure TSourceEditCompletion.ccExecute(Sender: TObject);
 // init completion form
 // called by OnExecute just before showing
 var
-  S: TStrings;
+  SL: TStrings;
   Prefix: String;
   I: Integer;
   NewStr: String;
@@ -2334,12 +2334,12 @@ Begin
       FActiveEditTextHighLightColor := SynEditor.MarkupIdentComplWindow.HighlightColor;
   end;
 
-  S := TStringList.Create;
+  SL := TStringList.Create;
   try
     Prefix := CurrentString;
     case CurrentCompletionType of
      ctIdentCompletion:
-       if InitIdentCompletionValues(S) then begin
+       if InitIdentCompletionValues(SL) then begin
          ToggleReplaceWhole:=not CodeToolsOpts.IdentComplReplaceIdentifier;
        end else begin
          ItemList.Clear;
@@ -2361,16 +2361,16 @@ Begin
              NewStr:=#3'B'+NewStr+#3'b';
              while length(NewStr)<10+4 do NewStr:=NewStr+' ';
              NewStr:=NewStr+' '+Manager.CodeTemplateModul.CompletionComments[I];
-             S.Add(NewStr);
+             SL.Add(NewStr);
            end;
          end;
        end;
 
     end;
 
-    ItemList := S;
+    ItemList := SL;
   finally
-    S.Free;
+    SL.Free;
   end;
   CurrentString:=Prefix;
   // set colors
@@ -2671,8 +2671,7 @@ begin
         // let plugin rebuild completion list
         SL:=TStringList.Create;
         try
-          Manager.ActiveCompletionPlugin.PrefixChanged(CurrentString,
-            APosition,sl);
+          Manager.ActiveCompletionPlugin.PrefixChanged(CurrentString,APosition,sl);
           ItemList:=SL;
         finally
           SL.Free;
@@ -6819,7 +6818,7 @@ var
   EditorCur: TSourceEditor;
   P: TIDEPackage;
   RecMenu, ProjMenu, M: TIDEMenuSection;
-  EdList: TStringList;
+  EdList: TStringListUTF8Fast;
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
@@ -6846,13 +6845,11 @@ begin
 
   SrcEditMenuSectionEditors.Clear;
   if Manager <> nil then begin
-    EdList := TStringList.Create;
+    EdList := TStringListUTF8Fast.Create;
     EdList.OwnsObjects := False;
-    EdList.Sorted := True;
-    // sort
     for i := 0 to EditorCount - 1 do
       EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
-
+    EdList.Sorted := True;
 
     RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
     RecMenu.Visible := False;

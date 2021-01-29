@@ -46,8 +46,8 @@ type
     FModified: Boolean;
   private
     FAddResourceItemDuplicates: integer;
-    FResourceNameList: TStringList; // to keep resource names unique
-    FResourceFileNameList: TStringList; // to keep resource file names unique
+    FResourceNameList: TStringListUTF8Fast;     // to keep resource names unique
+    FResourceFileNameList: TStringListUTF8Fast; // to keep resource file names unique
     // Used to know what was resource name before editing.
     FCurrentResName: string;
     // Begin adding resources.
@@ -288,11 +288,11 @@ constructor TResourcesOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FResourceNameList := TStringList.Create;
+  FResourceNameList := TStringListUTF8Fast.Create;
   FResourceNameList.Sorted := True;
   FResourceNameList.Duplicates := dupError;
 
-  FResourceFileNameList := TStringList.Create;
+  FResourceFileNameList := TStringListUTF8Fast.Create;
   FResourceFileNameList.Sorted := True;
   FResourceFileNameList.Duplicates := dupError;
 end;

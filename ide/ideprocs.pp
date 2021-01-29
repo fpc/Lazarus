@@ -758,7 +758,7 @@ end;
 function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
 begin
   case ListType of
-  rltCaseInsensitive: Result:=UTF8LowerCase(s1)=UTF8LowerCase(s2);
+  rltCaseInsensitive: Result:=UTF8CompareLatinTextFast(s1,s2)=0;
   rltFile: Result:=CompareFilenames(ChompPathDelim(s1),ChompPathDelim(s2))=0;
   else Result:=s1=s2;
   end;
@@ -1059,10 +1059,10 @@ end;
 procedure RemoveDoubles(List: TStrings);
 var
   i: Integer;
-  List2: TStringList;
+  List2: TStringListUTF8Fast;
 begin
   if List=nil then exit;
-  List2:=TStringList.Create;
+  List2:=TStringListUTF8Fast.Create;
   List2.AddStrings(List);
   List2.Sort;
   List.Assign(List2);

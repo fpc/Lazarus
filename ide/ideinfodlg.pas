@@ -264,15 +264,15 @@ end;
 procedure TIDEInfoDialog.GatherEnvironmentVars(sl: TStrings);
 var
   i: Integer;
-  l: TStringList;
+  TempList: TStringListUTF8Fast;
 begin
   sl.Add('Environment variables:');
-  l:=TStringList.Create;
+  TempList:=TStringListUTF8Fast.Create;
   for i:=0 to GetEnvironmentVariableCount-1 do
-    l.Add(GetEnvironmentStringUTF8(i));
-  l.Sort;
-  sl.AddStrings(l);
-  l.free;
+    TempList.Add(GetEnvironmentStringUTF8(i));
+  TempList.Sort;
+  sl.AddStrings(TempList);
+  TempList.free;
   sl.Add('');
 end;
 

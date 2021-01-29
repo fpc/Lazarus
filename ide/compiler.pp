@@ -183,7 +183,7 @@ type
     fInvalidOptions: TStringList;        // and will be included in output.
     // List of categories parsed from "fpc -i". Contains category names,
     //  Objects[] contains another StringList for the selection list.
-    fSupportedCategories: TStringList;
+    fSupportedCategories: TStringListUTF8Fast;
     // Hierarchy of options parsed from "fpc -h".
     fRootOptGroup: TCompilerOptGroup;
     fCompilerExecutable: string;  // Compiler path must be set by caller.
@@ -938,7 +938,7 @@ begin
   inherited Create;
   fDefines := TStringList.Create;
   fInvalidOptions := TStringList.Create;
-  fSupportedCategories := TStringList.Create;
+  fSupportedCategories := TStringListUTF8Fast.Create;
   fSupportedCategories.Sorted := True;
   fGeneratedOptions := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Self, Nil);

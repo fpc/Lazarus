@@ -37,7 +37,7 @@ uses
   LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
   Dialogs, ImgList,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazUTF8,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
@@ -94,7 +94,7 @@ type
   private
     PrevChangeStamp: Integer;
     // List for Component inheritence view
-    FClassList: TStringList;
+    FClassList: TStringListUTF8Fast;
     FKeepSelected: Boolean;
     FInitialized: Boolean;
     FIgnoreSelection: Boolean;
@@ -398,13 +398,12 @@ begin
   ListTree.BeginUpdate;
   PalletteTree.BeginUpdate;
   InheritanceTree.Items.BeginUpdate;
-  FClassList := TStringList.Create;
+  FClassList := TStringListUTF8Fast.Create;
   try
     ListTree.Items.Clear;
     PalletteTree.Items.Clear;
     InheritanceTree.Items.Clear;
     FClassList.Sorted := true;
-    FClassList.CaseSensitive := false;
     FClassList.Duplicates := dupIgnore;
  //   ParentInheritence := InheritanceTree.Items.Add(nil, 'TComponent');
 //    FClassList.AddObject('TComponent', ParentInheritence);

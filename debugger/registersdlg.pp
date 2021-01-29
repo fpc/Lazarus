@@ -36,10 +36,17 @@ unit RegistersDlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Clipbrd,
-  BaseDebugManager, IDEWindowIntf, DebuggerStrConst,
-  ComCtrls, ActnList, Menus, Grids, Debugger, DebuggerDlg,
-  LazarusIDEStrConsts, IDEImagesIntf, DbgIntfDebuggerBase, Types;
+  SysUtils, Classes, Types,
+  // LCL
+  Controls, Forms, Clipbrd, ComCtrls, ActnList, Menus, Grids,
+  // LazUtils
+  LazUTF8,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IDE
+  BaseDebugManager, LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg;
 
 type
 
@@ -446,7 +453,7 @@ end;
 procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
   n, i, idx, Cnt: Integer;
-  List: TStringList;
+  List: TStringListUTF8Fast;
   S: String;
   Reg: TRegisters;
 begin
@@ -472,7 +479,7 @@ begin
       exit;
     end;
 
-    List := TStringList.Create;
+    List := TStringListUTF8Fast.Create;
     try
       //Get existing items
       for n := 1 to lvRegisters.RowCount - 1 do

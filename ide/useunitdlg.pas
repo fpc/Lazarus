@@ -30,11 +30,21 @@ unit UseUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, ButtonPanel,
-  Dialogs, LCLProc, FileProcs, Graphics, LCLType, SourceEditor, LazIDEIntf,
-  IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf, IDEWindowIntf, Project,
-  CodeCache, CodeToolManager, IdentCompletionTool, CodeTree, ListFilterEdit,
-  LinkScanner, EnvironmentOpts, MainIntf, LazFileUtils;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
+  // LazControls
+  ListFilterEdit,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // Codetools
+  FileProcs, LinkScanner, CodeCache, CodeTree, CodeToolManager, IdentCompletionTool,
+  // BuildIntf
+  ProjectIntf,
+  // IdeIntf
+  LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
+  // IDE
+  LazarusIDEStrConsts, SourceEditor, Project, EnvironmentOpts, MainIntf;
 
 type
 
@@ -63,9 +73,8 @@ type
       var AHeight: Integer);
   private
     UnitImgInd: Integer;
-    FMainUsedUnits: TStringList;
-    FImplUsedUnits: TStringList;
-    FProjUnits, FOtherUnits: TStringList;
+    FMainUsedUnits, FImplUsedUnits: TStringList;
+    FProjUnits, FOtherUnits: TStringListUTF8Fast;
     DlgType: TUseUnitDialogType;
     procedure AddImplUsedUnits;
     function GetProjUnits(SrcEdit: TSourceEditor): Boolean;
@@ -194,7 +203,7 @@ begin
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage('item_unit');
-  FProjUnits:=TStringList.Create;
+  FProjUnits:=TStringListUTF8Fast.Create;
 end;
 
 procedure TUseUnitDialog.FormDestroy(Sender: TObject);
@@ -360,14 +369,10 @@ begin
     FImplUsedUnits := TStringList.Create;
   end;
   Result := True;
-  if Assigned(FMainUsedUnits) then begin
+  if Assigned(FMainUsedUnits) then
     FMainUsedUnits.Sorted := True;
-    FMainUsedUnits.CaseSensitive := False;
-  end;
-  if Assigned(FImplUsedUnits) then begin
+  if Assigned(FImplUsedUnits) then
     FImplUsedUnits.Sorted := True;
-    FImplUsedUnits.CaseSensitive := False;
-  end;
   if SrcEdit.GetProjectFile is TUnitInfo then
     CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
   else
@@ -395,8 +400,7 @@ begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   Screen.BeginWaitCursor;
   try
-    FOtherUnits := TStringList.Create;
-    FOtherUnits.Sorted := True;
+    FOtherUnits := TStringListUTF8Fast.Create;
     SrcEdit := SourceEditorManager.ActiveEditor;
     with CodeToolBoss do
       if GatherUnitNames(SrcEdit.CodeBuffer) then
@@ -412,6 +416,7 @@ begin
                                   IdentifierList.FilteredItems[i]);
         end;
       end;
+    FOtherUnits.Sorted := True;
   finally
     Screen.EndWaitCursor;
   end;

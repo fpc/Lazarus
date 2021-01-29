@@ -26,10 +26,10 @@ interface
 
 uses
   Classes, SysUtils,
-  // LazUtils
-  FileUtil,
   // LCL
   Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls, Spin,
+  // LazUtils
+  FileUtil, LazUTF8,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -105,14 +105,14 @@ procedure TDesktopOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   i: Integer;
   LangID: String;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
   // language
   lblLanguage.Caption := dlgEnvLanguage;
   LanguageComboBox.Hint := dlgEnvLanguageHint;
 
   // languages: first the automatic, then sorted the rest
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   for i:=0 to LazarusTranslations.Count-1 do
   begin
     LangID:=LazarusTranslations[i].ID;

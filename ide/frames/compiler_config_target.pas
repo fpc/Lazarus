@@ -32,7 +32,7 @@ uses
   // LCL
   Controls, Dialogs, Graphics, StdCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils,
+  LazFileUtils, LazStringUtils, LazUTF8,
   // CodeTools
   DefineTemplates,
   // IdeIntf
@@ -229,7 +229,7 @@ end;
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
 var
   ParsingFrame: TCompilerParsingOptionsFrame;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
   if aTargetCPU = '' then
@@ -240,7 +240,7 @@ begin
   end;
 
   // Update selection list for target processor
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   GetTargetProcessors(aTargetCPU,sl);
   sl.Sort;
   sl.Insert(0,'('+lisDefault+')');

@@ -35,6 +35,8 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ButtonPanel, LCLProc,
+  // LazUtils
+  LazUTF8,
   // Codetools
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager, ExtractProcTool,
   // IdeIntf
@@ -304,12 +306,12 @@ procedure TExtractProcDialog.UpdateFunction;
 var
   AVLNode: TAVLTreeNode;
   Variable: TExtractedProcVariable;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
   FuncVariableComboBox.Items.BeginUpdate;
   FuncVariableComboBox.Items.Clear;
   if Variables<>nil then begin
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8Fast.Create;
     try
       AVLNode:=Variables.FindLowest;
       while AVLNode<>nil do begin

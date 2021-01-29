@@ -108,10 +108,10 @@ end;
 
 procedure TBuildModeDiffDialog.FillModeComboBox;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     if BuildModes<>nil then
       for i:=0 to BuildModes.Count-1 do

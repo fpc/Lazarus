@@ -36,9 +36,17 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase, strutils,
-  IDEWindowIntf, DebuggerStrConst, ComCtrls, ActnList, Menus, BaseDebugManager,
-  Debugger, DebuggerDlg, DbgIntfDebuggerBase;
+  SysUtils, Classes, StrUtils,
+  // LCL
+  Forms, ClipBrd, ComCtrls, ActnList, Menus,
+  // LazUtils
+  LazLoggerBase, LazUTF8,
+  // IdeIntf
+  IDEWindowIntf,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IDE
+  DebuggerStrConst, BaseDebugManager, Debugger, DebuggerDlg;
 
 type
 
@@ -387,7 +395,7 @@ end;
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
 var
   n, idx: Integer;                               
-  List: TStringList;
+  List: TStringListUTF8Fast;
   Item: TListItem;
   S: String;
   Locals: TIDELocals;
@@ -422,7 +430,7 @@ begin
     Caption:= lisLocals;
   end;
 
-  List := TStringList.Create;
+  List := TStringListUTF8Fast.Create;
   try
     BeginUpdate;
     try

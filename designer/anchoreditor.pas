@@ -39,7 +39,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, StdCtrls, Buttons, Spin, ExtCtrls, Graphics,
   // LazUtils
-  LazUtilities,
+  LazUtilities, LazUTF8,
   // IdeIntf
   IDECommands, PropEdits, IDEDialogs, IDEImagesIntf,
   // IDE
@@ -937,7 +937,7 @@ end;
 
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
   CurControl: TControl;
   j: Integer;
@@ -961,7 +961,7 @@ var
   end;
   
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   sl.Add(AnchorDesignerNoSiblingText);
   HasSelectedSiblings:=false;
   SelectedControls:=GetSelectedControls;

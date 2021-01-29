@@ -35,7 +35,7 @@ uses
   LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs, StdCtrls, ExtCtrls,
   Dialogs, ComCtrls, ButtonPanel,
   // LazUtils
-  FileUtil, LazFileUtils,
+  FileUtil, LazFileUtils, LazUTF8,
   // IDEIntf
   NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg,
   IDEDialogs,
@@ -608,7 +608,7 @@ end;
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
 var
   ANode: TAVLTreeNode;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   OldAncestorType: String;
 begin
   // get all available registered components
@@ -620,7 +620,7 @@ begin
                                          true,true);
   end;
   // put them into a list
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   ANode:=fPkgComponents.FindLowest;
   while ANode<>nil do begin
     sl.Add(TPkgComponent(ANode.Data).ComponentClass.ClassName);
@@ -641,10 +641,10 @@ procedure TAddToPackageDlg.UpdateAvailablePageNames;
 var
   i: Integer;
   APageName: String;
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
   // get all current pagenames (excluding the hidden page)
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   for i:=0 to IDEComponentPalette.Pages.Count-1 do begin
     APageName:=IDEComponentPalette.Pages[i].PageName;
     if APageName<>'' then

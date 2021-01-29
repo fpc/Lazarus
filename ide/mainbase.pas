@@ -60,7 +60,7 @@ uses
   // LCL
   LCLProc, Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazUTF8,
   // Codetools
   CodeToolManager,
   // SynEdit
@@ -1527,8 +1527,8 @@ var
   i, EditorIndex, ItemCountProject, ItemCountOther, IconInd: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
-  EdList: TStringList;
-  EditorCur: TSourceEditor;
+  EdList: TStringListUTF8Fast;
+  se: TSourceEditor;
   P: TIDEPackage;
   aSection: TIDEMenuSection;
   s: String;
@@ -1594,27 +1594,23 @@ begin
   if SourceEditorManager.SourceEditorCount > 0 then begin
     ItemCountProject := 0;
     ItemCountOther := 0;
-    EdList := TStringList.Create;
+    EdList := TStringListUTF8Fast.Create;
     EdList.OwnsObjects := False;
-    EdList.Sorted := True;
-    // sort
     for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
-      EdList.AddObject(SourceEditorManager.SourceEditors[i].PageName+' '
-                       +SourceEditorManager.SourceEditors[i].FileName
-                       +SourceEditorManager.SourceEditors[i].Owner.Name,
-                       TObject(PtrUInt(i))
-                      );
+      se := SourceEditorManager.SourceEditors[i];
+      EdList.AddObject(se.PageName+' '+se.FileName+se.Owner.Name, TObject(PtrUInt(i)));
     end;
+    EdList.Sorted := True;
     for i := 0 to EdList.Count - 1 do
     begin
       EditorIndex := PtrUInt(EdList.Objects[i]);
-      EditorCur := SourceEditorManager.SourceEditors[EditorIndex];
-      if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then begin
+      se := SourceEditorManager.SourceEditors[EditorIndex];
+      if (se.GetProjectFile <> nil) and (se.GetProjectFile.IsPartOfProject) then begin
         aSection := itmTabListProject;
         CurMenuItem := GetMenuItem(ItemCountProject, aSection);
         inc(ItemCountProject);
       end else begin
-        SourceEditorManager.OnPackageForSourceEditor(P, EditorCur);
+        SourceEditorManager.OnPackageForSourceEditor(P, se);
         if P <> nil then begin
           s := Format(lisTabsFor, [p.Name]);
           if itmTabListPackage.FindByName(S) is TIDEMenuSection then
@@ -1629,13 +1625,13 @@ begin
         end;
       end;
       aSection.Visible := True;
-      if EditorCur.SharedEditorCount > 1 then
-        CurMenuItem.Caption := EditorCur.PageName + ' ('+TForm(EditorCur.Owner).Caption+')'
+      if se.SharedEditorCount > 1 then
+        CurMenuItem.Caption := se.PageName + ' ('+TForm(se.Owner).Caption+')'
       else
-        CurMenuItem.Caption := EditorCur.PageName;
+        CurMenuItem.Caption := se.PageName;
       if CurMenuItem.MenuItem <> nil then
-        CurMenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
-      if (SourceEditorManager.ActiveEditor = EditorCur) and (aSection.MenuItem <> nil) then
+        CurMenuItem.Checked := SourceEditorManager.ActiveEditor = se;
+      if (SourceEditorManager.ActiveEditor = se) and (aSection.MenuItem <> nil) then
         aSection.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := EditorIndex;

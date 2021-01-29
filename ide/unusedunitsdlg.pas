@@ -34,7 +34,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  // LazUtils
+  LazUTF8, LazLoggerBase,
   // Codetools
   CodeCache, CodeToolManager,
   // IdeIntf
@@ -102,7 +104,7 @@ end;
 function ShowUnusedUnitsDialog(Code: TCodeBuffer): TModalResult;
 var
   UnusedUnitsDialog: TUnusedUnitsDialog;
-  Units: TStringList;
+  xUnits: TStringListUTF8Fast;
   RemoveUnits: TStrings;
   i: Integer;
   DlgResult: TModalResult;
@@ -114,17 +116,17 @@ begin
 
   UnusedUnitsDialog:=nil;
   RemoveUnits:=nil;
-  Units:=TStringList.Create;
+  xUnits:=TStringListUTF8Fast.Create;
   try
-    if not CodeToolBoss.FindUnusedUnits(Code,Units) then begin
+    if not CodeToolBoss.FindUnusedUnits(Code,xUnits) then begin
       DebugLn(['ShowUnusedUnitsDialog CodeToolBoss.FindUnusedUnits failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
       exit(mrCancel);
     end;
-    Units.Sort;
+    xUnits.Sort;
 
     UnusedUnitsDialog:=TUnusedUnitsDialog.Create(nil);
-    UnusedUnitsDialog.Units:=Units;
+    UnusedUnitsDialog.Units:=xUnits;
     UnusedUnitsDialog.Code:=Code;
     DlgResult:=UnusedUnitsDialog.ShowModal;
     if DlgResult=mrOk then
@@ -160,7 +162,7 @@ begin
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     RemoveUnits.Free;
     UnusedUnitsDialog.Free;
-    Units.Free;
+    xUnits.Free;
   end;
 end;
 

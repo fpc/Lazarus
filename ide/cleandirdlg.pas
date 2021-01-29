@@ -402,10 +402,8 @@ begin
   finally
     RemoveFilterRegExpr.Free;
     KeepFilterRegExpr.Free;
-    if not Result then begin
-      List.Free;
-      List:=nil;
-    end;
+    if not Result then
+      FreeAndNil(List);
   end;
 end;
 

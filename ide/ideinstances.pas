@@ -216,19 +216,16 @@ function TIDEInstances.ProjectIsOpenInAnotherInstance(aProjectFileName: string
 var
   xStartClient: TResponseClient;
   I: Integer;
-  xServerIDs, xOpenedProjectFiles: TStringList;
+  xServerIDs: TStringList;
   xProjFileName: string;
 begin
   aProjectFileName := ExtractFilePath(aProjectFileName)+ExtractFileNameOnly(aProjectFileName);
 
   xStartClient := nil;
   xServerIDs := nil;
-  xOpenedProjectFiles := nil;
   try
     xStartClient := TResponseClient.Create(nil);
     xServerIDs := TStringList.Create;
-    xOpenedProjectFiles := TStringList.Create;
-
     xStartClient.FindRunningServers(LazServerPrefix, xServerIDs);
 
     for I := 0 to xServerIDs.Count-1 do
@@ -246,9 +243,7 @@ begin
   finally
     xStartClient.Free;
     xServerIDs.Free;
-    xOpenedProjectFiles.Free;
   end;
-
   Result := False;
 end;
 
@@ -395,11 +390,11 @@ function TIDEInstances.AllowStartNewInstance(const aFiles: TStrings;
 var
   xStartClient: TResponseClient;
   I: Integer;
-  xServerIDs: TStringList;
+  xServerIDs: TStringListUTF8Fast;
 begin
   Result := ofrStartNewInstance;
   xStartClient := TResponseClient.Create(nil);
-  xServerIDs := TStringList.Create;
+  xServerIDs := TStringListUTF8Fast.Create;
   try                                      //check for multiple instances
     xStartClient.FindRunningServers(LazServerPrefix, xServerIDs);
     xServerIDs.Sort;

@@ -10,6 +10,8 @@ uses
   LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
   // LazControls
   ListFilterEdit,
+  // LazUtils
+  LazUTF8,
   // BuildIntf
   PackageIntf,
   // IdeIntf
@@ -31,7 +33,7 @@ type
     procedure OKButtonClick(Sender: TObject);
   private
     FResultDependencies: TPkgDependencyList;
-    FPackageNameList: TStringList;
+    FPackageNameList: TStringListUTF8Fast;
     procedure UpdateAvailableDependencyNames;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -112,7 +114,7 @@ end;
 constructor TAddFPMakeDependencyDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FPackageNameList := TStringList.Create;
+  FPackageNameList := TStringListUTF8Fast.Create;
 
   Caption:=lisProjAddNewRequirement;
 

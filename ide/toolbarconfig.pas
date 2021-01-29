@@ -30,7 +30,7 @@ uses
   // LazControls
   TreeFilterEdit,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   ToolBarIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
@@ -382,10 +382,10 @@ var
   xCategory: TIDEToolButtonCategory;
   xCaption: string;
   Node: TTreeNode;
-  SortedCtgList: TStringList;
+  SortedCtgList: TStringListUTF8Fast;
 begin
   TV.Items.BeginUpdate;
-  SortedCtgList := TStringList.Create;
+  SortedCtgList := TStringListUTF8Fast.Create;
   try
     SortedCtgList.OwnsObjects := False;
     for i := 0 to IDEToolButtonCategories.Count-1 do

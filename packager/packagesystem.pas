@@ -3110,7 +3110,6 @@ var
   OldPkgName: String;
   i: Integer;
   Macro: TLazBuildMacro;
-  RenamedMacros: TStringList;
   OldMacroName: String;
   BaseCompOpts: TBaseCompilerOptions;
 begin
@@ -3123,22 +3122,16 @@ begin
   if RenameMacros then
   begin
     // rename macros
-    RenamedMacros:=TStringList.Create;
-    try
-      for i:=0 to APackage.CompilerOptions.BuildMacros.Count-1 do
-      begin
-        Macro:=APackage.CompilerOptions.BuildMacros[i];
-        if SysUtils.CompareText(OldPkgName,copy(Macro.Identifier,1,length(OldPkgName)))=0
-        then begin
-          OldMacroName:=Macro.Identifier;
-          RenamedMacros.Add(OldMacroName);
-          Macro.Identifier:=NewName+copy(OldMacroName,length(OldPkgName)+1,256);
-          BaseCompOpts:=TBaseCompilerOptions(APackage.CompilerOptions);
-          BaseCompOpts.RenameMacro(OldMacroName,Macro.Identifier,true);
-        end;
+    for i:=0 to APackage.CompilerOptions.BuildMacros.Count-1 do
+    begin
+      Macro:=APackage.CompilerOptions.BuildMacros[i];
+      if SysUtils.CompareText(OldPkgName,copy(Macro.Identifier,1,length(OldPkgName)))=0
+      then begin
+        OldMacroName:=Macro.Identifier;
+        Macro.Identifier:=NewName+copy(OldMacroName,length(OldPkgName)+1,256);
+        BaseCompOpts:=TBaseCompilerOptions(APackage.CompilerOptions);
+        BaseCompOpts.RenameMacro(OldMacroName,Macro.Identifier,true);
       end;
-    finally
-      RenamedMacros.Free;
     end;
   end;
 
@@ -5526,7 +5519,7 @@ begin
         continue; // no lpk found again => do not show again
     end;
     if ListOfPackages=nil then
-      ListOfPackages:=TStringList.Create;
+      ListOfPackages:=TStringListUTF8Fast.Create;
     ListOfPackages.AddObject(NewFilename,APackage);
   end;
 end;

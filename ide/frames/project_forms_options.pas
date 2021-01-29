@@ -8,6 +8,8 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf, IDEImagesIntf,
   // IDE
@@ -237,7 +239,7 @@ var
 
   procedure FillAvailFormsListBox;
   var
-    sl: TStringList;
+    sl: TStringListUTF8Fast;
     i: integer;
   begin
     FormsAvailFormsListBox.Items.BeginUpdate;
@@ -245,7 +247,7 @@ var
 
     if (Project <> nil) then
     begin
-      sl := TStringList.Create;
+      sl := TStringListUTF8Fast.Create;
       try
         for i := 0 to Project.UnitCount - 1 do
           if (Project.Units[i].IsPartOfProject) and

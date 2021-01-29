@@ -44,8 +44,7 @@ uses
   CodeToolManager, DefineTemplates, CTUnitGraph, CTUnitGroupGraph,
   FileProcs, CodeCache, AvgLvlTree,
   // LazUtils
-  LazLoggerBase, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8,
-  LvlGraphCtrl,
+  LazLoggerBase, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8, LvlGraphCtrl,
   // IDE interface
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf, IDECommands, IDEDialogs,
@@ -255,7 +254,7 @@ type
     fImgIndexOverlayImplCycle: integer;
     fAllUnitsTVSearchStartNode: TTreeNode;
     fSelUnitsTVSearchStartNode: TTreeNode;
-    FGroupLvlGraphSelectionsList: TStringList;
+    FGroupLvlGraphSelectionsList: TStringListUTF8Fast;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
     procedure DoLoadedOpts(Sender: TObject);
@@ -565,7 +564,7 @@ procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
   Name := NonModalIDEWindowNames[nmiwUnitDependencies];
 
-  FGroupLvlGraphSelectionsList := TStringList.Create;
+  FGroupLvlGraphSelectionsList := TStringListUTF8Fast.Create;
   FPendingUnitDependencyRoute:=TStringList.Create;
   CreateUsesGraph(FUsesGraph,FGroups);
 
@@ -1989,8 +1988,8 @@ begin
     if IsProjectGroup(Group) then begin
       // project
       GroupObj:=LazarusIDE.ActiveProject;
-      GraphGroup.Selected:=(FGroupLvlGraphSelectionsList.Count=0) or
-        (FGroupLvlGraphSelectionsList.IndexOf(Group.Name)>= 0);
+      GraphGroup.Selected:=(FGroupLvlGraphSelectionsList.Count=0)
+                        or (FGroupLvlGraphSelectionsList.IndexOf(Group.Name)>=0);
       GraphGroup.ImageIndex := fImgIndexProject;
     end else begin
       // package

@@ -2792,7 +2792,6 @@ var
     I, J, LeftMost : Integer;
   begin
     try
-      Lines := nil;
       Lines := TStringList.Create;
       Lines.Text := Comment;
 

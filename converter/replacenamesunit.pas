@@ -20,7 +20,7 @@ type
   TStringMapUpdater = class
   private
     fStringToStringMap: TStringToStringTree;
-    fSeenNames: TStringList;
+    fSeenNames: TStringMap;
   public
     constructor Create(AStringToStringMap: TStringToStringTree);
     destructor Destroy; override;
@@ -204,7 +204,7 @@ end;
 constructor TStringMapUpdater.Create(AStringToStringMap: TStringToStringTree);
 begin
   fStringToStringMap:=AStringToStringMap;
-  fSeenNames:=TStringList.Create;
+  fSeenNames:=TStringMap.Create(False);
 end;
 
 destructor TStringMapUpdater.Destroy;
@@ -272,7 +272,7 @@ function TGridUpdater.AddUnique(AOldIdent: string): string;
 // Add a new Delphi -> Lazarus mapping to the grid.
 // Returns the replacement string.
 begin
-  if fSeenNames.IndexOf(AOldIdent)<0 then begin
+  if not fSeenNames.Contains(AOldIdent) then begin
     // Add only one instance of each name.
     fSeenNames.Add(AOldIdent);
     FindReplacement(AOldIdent, Result);

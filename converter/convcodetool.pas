@@ -84,7 +84,7 @@ type
     fResAction: TResAction;
     fAddUnitEvent: TAddUnitEvent;
     // Delphi Function names to replace with FCL/LCL functions.
-    fDefinedProcNames: TStringList;
+    fDefinedProcNames: TStringMap;
     // List of TFuncReplacement.
     fFuncsToReplace: TObjectList;
 
@@ -667,7 +667,7 @@ var
   var
     FuncDefInfo, FuncCallInfo: TFuncReplacement;
     IdentName: string;
-    i, x, IdentEndPos, IdentLen: Integer;
+    i, IdentEndPos, IdentLen: Integer;
   begin
     IdentEndPos:=xStart;
     with fCTLink.CodeTool, fCTLink.Settings do
@@ -679,7 +679,7 @@ var
       StrMove(PChar(IdentName), @Src[xStart], IdentLen);
       // Don't try to uselessly find short identifiers
       if (IdentLen<ReplaceFuncs.MinFuncLen) and (IdentName<>'Ptr') then Exit;
-      if fDefinedProcNames.Find(IdentName, x) then Exit;
+      if fDefinedProcNames.Contains(IdentName) then Exit;
       if not ReplaceFuncs.Funcs.Find(IdentName, i) then Exit;
       // Now function name is found in replacement list, get function info.
       FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
@@ -801,9 +801,7 @@ begin
   Result:=false;
   with fCTLink.CodeTool do begin
     fFuncsToReplace:=TObjectList.Create;
-    fDefinedProcNames:=TStringList.Create;
-    fDefinedProcNames.Sorted:=True;
-    fDefinedProcNames.Duplicates:=dupIgnore;
+    fDefinedProcNames:=TStringMap.Create(False);
     ActivateGlobalWriteLock;
     try
       BuildTree(lsrEnd);

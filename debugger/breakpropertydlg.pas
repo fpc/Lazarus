@@ -8,6 +8,8 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ButtonPanel, EditBtn, Spin,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   IDEHelpIntf,
   // DebuggerIntf
@@ -203,12 +205,12 @@ var
   ws: TDBGWatchPointScope;
   wk: TDBGWatchPointKind;
   i: SizeInt;
-  EnableGroupList, DisableGroupList: TStringList;
+  EnableGroupList, DisableGroupList: TStringListUTF8Fast;
 begin
   if FBreakpoint = nil then Exit;
 
-  EnableGroupList := TStringList.Create;
-  DisableGroupList := TStringList.Create;
+  EnableGroupList := TStringListUTF8Fast.Create;
+  DisableGroupList := TStringListUTF8Fast.Create;
 
   try
     EnableGroupList.Delimiter := ';';

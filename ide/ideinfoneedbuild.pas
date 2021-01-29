@@ -34,7 +34,7 @@ uses
   // LCL
   Forms, Controls, StdCtrls, ButtonPanel, LCLType,
   // LazUtils
-  LazUtilities,
+  LazUtilities, LazUTF8,
   // IdeIntf
   IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf,
   // IDE
@@ -195,10 +195,10 @@ end;
 
 procedure TIDEInfoNeedBuildDlg.FillTargets;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     for i:=0 to PackageGraph.Count-1 do
       sl.Add(PackageGraph[i].Name);

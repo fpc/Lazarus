@@ -19,6 +19,8 @@ uses
   Classes,
   // LCL
   Controls, ComCtrls, Menus,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   IDECommands, MenuIntf, IDEImagesIntf, SrcEditorIntf;
 
@@ -120,8 +122,8 @@ type
 
   TIDEToolButtonCategories = class
   private
-    FButtonNames: TStringList;
-    FCategories: TStringList;
+    FButtonNames: TStringListUTF8Fast;
+    FCategories: TStringListUTF8Fast;
     function GetItems(Index: Integer): TIDEToolButtonCategory;
   public
     constructor Create;
@@ -530,10 +532,10 @@ end;
 
 constructor TIDEToolButtonCategories.Create;
 begin
-  FButtonNames := TStringList.Create;
+  FButtonNames := TStringListUTF8Fast.Create;
   FButtonNames.Sorted := True;
   FButtonNames.Duplicates := dupIgnore;
-  FCategories := TStringList.Create;
+  FCategories := TStringListUTF8Fast.Create;
   FCategories.Sorted := True;
   FCategories.Duplicates := dupIgnore;
   FCategories.OwnsObjects := True;

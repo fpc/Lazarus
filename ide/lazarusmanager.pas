@@ -247,7 +247,7 @@ begin
   SplashForm := nil;
 
   // get command line parameters
-  FCmdLineParams := TStringList.Create;
+  FCmdLineParams := TStringListUTF8Fast.Create;
   ParseCommandLine(FCmdLineParams, FLazarusPID, FShowSplashOption);
   if FShowSplashOption then
     ShowSplash;

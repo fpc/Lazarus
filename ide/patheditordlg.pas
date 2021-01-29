@@ -26,7 +26,7 @@ uses
   LCLType, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazFileCache,
+  FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8,
   // LazControls
   ShortPathEdit,
   // IdeIntf
@@ -83,7 +83,7 @@ type
   private
     FBaseDirectory: string;
     FEffectiveBaseDirectory: string;
-    FTemplateList: TStringList;
+    FTemplateList: TStringListUTF8Fast;
     procedure AddPath(aPath: String; aObject: TObject);
     function GetPath: string;
     function BaseRelative(const APath: string): String;
@@ -408,7 +408,7 @@ procedure TPathEditorDialog.FormCreate(Sender: TObject);
 const
   Filt = 'Text file (*.txt)|*.txt|All files (*)|*';
 begin
-  FTemplateList := TStringList.Create;
+  FTemplateList := TStringListUTF8Fast.Create;
   Caption:=dlgDebugOptionsPathEditorDlgCaption;
   PathGroupBox.Caption:=lisPathEditSearchPaths;
   MoveUpButton.Hint:=lisPathEditMovePathUp;

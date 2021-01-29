@@ -46,7 +46,7 @@ uses
   // Codetools
   BasicCodeTools,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   PackageDependencyIntf, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf, PackageLinkIntf,
   // IDE
@@ -650,10 +650,10 @@ var
   NewPackageID: TLazPackageID;
   APackage: TLazPackage;
   FilteredBranch: TTreeFilterBranch;
-  List: TStringList;
+  List: TStringListUTF8Fast;
   i: Integer;
 begin
-  List:=TStringList.Create;
+  List:=TStringListUTF8Fast.Create;
   try
     for i:=0 to FNewInstalledPackages.Count-1 do begin
       NewPackageID:=TLazPackageID(FNewInstalledPackages[i]);

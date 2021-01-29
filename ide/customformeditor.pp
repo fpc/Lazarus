@@ -45,6 +45,7 @@ uses
   Forms, Menus, Dialogs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase, LazTracer,
+  LazUTF8,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
@@ -1969,7 +1970,7 @@ begin
         // cache defined properties
         if (DefinePropertiesReader<>nil)
         and (DefinePropertiesReader.DefinePropertyNames<>nil) then begin
-          CacheItem.DefineProperties:=TStringList.Create;
+          CacheItem.DefineProperties:=TStringListUTF8Fast.Create;
           CacheItem.DefineProperties.Assign(DefinePropertiesReader.DefinePropertyNames);
           debugln('TCustomFormEditor.FindDefineProperty Class=',APersistentClassName,
             ' DefineProps="',CacheItem.DefineProperties.Text,'"');
@@ -2004,7 +2005,7 @@ begin
     CacheItem:=TDefinePropertiesCacheItem(ANode.Data);
   end;
   if (CacheItem.DefineProperties=nil) then
-    CacheItem.DefineProperties:=TStringList.Create;
+    CacheItem.DefineProperties:=TStringListUTF8Fast.Create;
   if (CacheItem.DefineProperties.IndexOf(Identifier)<0) then
     CacheItem.DefineProperties.Add(Identifier);
 end;
@@ -2618,7 +2619,8 @@ end;
 procedure TDefinePropertiesReader.AddPropertyName(const Name: string);
 begin
   debugln('TDefinePropertiesReader.AddPropertyName Name="',Name,'"');
-  if FDefinePropertyNames=nil then FDefinePropertyNames:=TStringList.Create;
+  if FDefinePropertyNames=nil then
+    FDefinePropertyNames:=TStringListUTF8Fast.Create;
   if FDefinePropertyNames.IndexOf(Name)<=0 then
     FDefinePropertyNames.Add(Name);
 end;

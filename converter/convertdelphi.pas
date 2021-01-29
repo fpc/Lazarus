@@ -135,7 +135,7 @@ type
     // The user selected path when searching missing units.
     fPrevSelectedPath: string;
     // Missing units that are commented automatically in all units.
-    fAllCommentedUnits: TStringList;
+    fAllCommentedUnits: TStringListUTF8Fast;
     function DoMissingUnits({%H-}AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
     function GetCachedUnitPath(const AUnitName: string): string;
   protected
@@ -177,10 +177,10 @@ type
     // Main unit with resource code
     fMainUnitConverter: TDelphiUnit;
     // Unit search path for project settings.
-    fUnitSearchPaths: TStringList;
+    fUnitSearchPaths: TStringListUTF8Fast;
     // Units that are found and will be added to project or package and converted.
-    fUnitsToAddToProject: TStringList;
-    fFilesToDelete: TStringList;
+    fUnitsToAddToProject: TStringListUTF8Fast;
+    fFilesToDelete: TStringListUTF8Fast;
     fUseThreads: boolean;              // The project/package uses TThread.
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
@@ -957,16 +957,16 @@ constructor TConvertDelphiProjPack.Create(const AFilename, ADescription: string)
 begin
   inherited Create(AFilename, ADescription);
   fUseThreads:=False;
-  fUnitSearchPaths:=TStringList.Create;
+  fUnitSearchPaths:=TStringListUTF8Fast.Create;
   fUnitSearchPaths.Delimiter:=';';
   fUnitSearchPaths.StrictDelimiter:=True;
   fCachedUnitNames:=TStringToStringTree.Create(False);
   fCachedRealFileNames:=TStringToStringTree.Create(True);
-  fAllCommentedUnits:=TStringList.Create;
+  fAllCommentedUnits:=TStringListUTF8Fast.Create;
   fAllCommentedUnits.Sorted:=True;
-  fUnitsToAddToProject:=TStringList.Create;
+  fUnitsToAddToProject:=TStringListUTF8Fast.Create;
   fUnitsToAddToProject.Sorted:=True;
-  fFilesToDelete:=TStringList.Create;
+  fFilesToDelete:=TStringListUTF8Fast.Create;
   fFilesToDelete.Sorted:=True;
   fMainUnitConverter:=nil;
 end;
@@ -1384,7 +1384,6 @@ begin
       // Delete from file system because compiler would find it otherwise.
       if not DeleteFileUTF8(s) then
         exit(mrCancel);
-      //fFilesToDelete.Delete(i);
       fSettings.AddLogLine(mluNote, Format(lisConvDeletedFile,[s]));
     end;
   end;

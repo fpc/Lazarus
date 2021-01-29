@@ -37,7 +37,7 @@ uses
   // CodeTools
   CodeCache, CodeToolManager, FileProcs,
   // LazUtils
-  LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, AvgLvlTree,
+  LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
@@ -97,7 +97,7 @@ end;
 
 procedure TChgEncodingDialog.FormCreate(Sender: TObject);
 var
-  List: TStringList;
+  List: TStringListUTF8Fast;
   Encoding: string;
   i: Integer;
 begin
@@ -126,7 +126,7 @@ begin
   PreviewListView.Column[1].Caption:=uemEncoding;
 
   // get possible encodings
-  List:=TStringList.Create;
+  List:=TStringListUTF8Fast.Create;
   GetSupportedEncodings(List);
   for i:=List.Count-1 downto 0 do begin
     Encoding:=List[i];
@@ -139,7 +139,7 @@ begin
   NewEncodingComboBox.Text:='UTF-8';
 
   // get possible filters
-  List:=TStringList.Create;
+  List:=TStringListUTF8Fast.Create;
   List.Add('*.pas;*.pp;*.p;*.inc;*.lpr;*.lfm;*.lrs;*.txt');
   List.Sort;
   FileFilterCombobox.Items.Assign(List);
@@ -147,7 +147,7 @@ begin
   FileFilterCombobox.Text:=FileFilterCombobox.Items[0];
 
   // get possible projects and packages
-  List:=TStringList.Create;
+  List:=TStringListUTF8Fast.Create;
   for i:=0 to PackageGraph.Count-1 do
     if (List.IndexOf(PackageGraph[i].Name)<0)
     and (not PackageGraph[i].ReadOnly)

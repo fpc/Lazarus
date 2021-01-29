@@ -265,14 +265,14 @@ end;
 // Fill the list of inheritable items in the project
 procedure TNewOtherDialog.FillProjectInheritableItemsList;
 var
-  aComponentList: TStringList;
+  aComponentList: TStringListUTF8Fast;
   i: integer;
   ListItem: TListViewDataItem;
   AnUnitInfo: TUnitInfo;
 Begin
   try
     // Auxiliar stringlist to sort component list
-    aComponentList := TStringList.Create;
+    aComponentList := TStringListUTF8Fast.Create;
 
     // Loop trough project units which have a component
     for i := 0 to Project1.UnitCount-1 do begin

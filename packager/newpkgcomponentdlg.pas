@@ -33,6 +33,8 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, StdCtrls, ButtonPanel,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   PackageIntf,
   // IDE
@@ -89,11 +91,11 @@ end;
 
 procedure TNewPkgComponentDialog.FillPkgsListBox;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   Pkg: TLazPackage;
   i: Integer;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     for i:=0 to PackageGraph.Count-1 do begin
       Pkg:=PackageGraph[i];

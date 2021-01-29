@@ -54,7 +54,7 @@ uses
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
   PascalParserTool, LinkScanner, FileProcs, CodeIndex, StdCodeTools, SourceLog,
   // LazUtils
-  LazFileUtils, LazStringUtils, AvgLvlTree,
+  LazFileUtils, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,
@@ -782,11 +782,11 @@ end;
 
 procedure TCodeBrowserView.FillScopeComboBox;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
   if ScopeComboBox.Items.Count=0 then begin
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8Fast.Create;
     try
       if PackageGraph<>nil then begin
         for i:=0 to PackageGraph.Count-1 do
