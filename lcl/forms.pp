@@ -1356,6 +1356,8 @@ type
     FCaptureExceptions: boolean;
     FComponentsToRelease: TFPList;
     FComponentsReleasing: TFPList;
+    FComponentsToReleaseSavedByModal: TFPList;
+    FComponentsReleasingSavedByModal: TFPList;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
     FDoubleBuffered: TApplicationDoubleBuffered;
     FExceptionDialog: TApplicationExceptionDlg;
