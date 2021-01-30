@@ -111,7 +111,7 @@ type
     FWidgetNeedFontColorInitialization: Boolean;
     FChildOfComplexWidget: TChildOfComplexWidget;
     FOwnWidget: Boolean;
-    FProps: TStringList;
+    FProps: TStringListUTF8Fast;
     FPaintData: TPaintData;
     FCentralWidget: QWidgetH;
     FContext: HDC;
@@ -5643,8 +5643,7 @@ var
 begin
   if FProps=nil then
   begin
-    FProps:=TStringList.Create;
-    //FProps.CaseSensitive:=false;
+    FProps:=TStringListUTF8Fast.Create;
     FProps.Sorted:=true;
   end;
   i := Fprops.IndexOf(AnIndex);

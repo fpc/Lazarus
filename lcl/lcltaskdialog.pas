@@ -126,12 +126,13 @@ interface
 {$MODE DELPHI}
 
 uses
+  Classes, SysUtils,
+  LazUTF8,
   LCLType, LCLStrConsts, LCLIntf, InterfaceBase,
   {$IFDEF MSWINDOWS}
   Windows, CommCtrl, Messages,
   {$ENDIF}
-  LResources, Classes, SysUtils,
-  Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons;
+  LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons;
 
 {$IFDEF MSWINDOWS}
 var
@@ -1022,7 +1023,7 @@ begin
     end;
     // add selection list or query editor
     if Selection<>'' then begin
-      List := TStringList.Create;
+      List := TStringListUTF8Fast.Create;
       try
         Dialog.Form.Combo := TComboBox.Create(Dialog.Form);
         with Dialog.Form.Combo do begin

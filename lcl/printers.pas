@@ -22,7 +22,12 @@ unit Printers;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Graphics;
+  Classes, SysUtils,
+  // LazUtils
+  LazLoggerBase, LazUTF8,
+  // LCL
+  LCLProc, Graphics;
+
 type
   TPrinter = Class;
   EPrinter = class(Exception);
@@ -694,7 +699,7 @@ end;
 function TPrinter.GetPrinters: TStrings;
 begin
   if not Assigned(fPrinters) then
-    fPrinters:=TStringList.Create;
+    fPrinters:=TStringListUTF8Fast.Create;
   Result:=fPrinters;
   
   //Only 1 initialization

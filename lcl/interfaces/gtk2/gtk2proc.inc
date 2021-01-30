@@ -3670,7 +3670,7 @@ var
   Info: TSearchRec;
   DirName: PChar;
   Dir: string;
-  StrList: TStringList;
+  StrList: TStringListUTF8Fast;
   CurFileMask: String;
   
   procedure Add(List: PGtkCList; const s: string);
@@ -3691,7 +3691,7 @@ var
   end;
   
 begin
-  StrList := TStringList.Create;
+  StrList := TStringListUTF8Fast.Create;
   dirs := PGtkCList(FileSelection^.dir_list);
   files := PGtkCList(FileSelection^.file_list);
   DirName := gtk_file_selection_get_filename(FileSelection);

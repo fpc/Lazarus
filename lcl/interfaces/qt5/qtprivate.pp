@@ -558,7 +558,7 @@ end;
 
 procedure TQtComboStrings.Assign(Source: TPersistent);
 var
-  AList: TStringList;
+  AList: TStringListUTF8Fast;
 begin
   if (Source = Self) or (Source = nil) then Exit;
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
@@ -566,7 +566,7 @@ begin
     FOwner.BeginUpdate;
     if Sorted then
     begin
-      AList := TStringList.Create;
+      AList := TStringListUTF8Fast.Create;
       try
         AList.Assign(Source);
         AList.Sort;

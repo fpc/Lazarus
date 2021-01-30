@@ -848,7 +848,7 @@ begin
   ControlStyle := ControlStyle - [csCaptureMouse];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  FItems := TStringlist.Create;
+  FItems := TStringListUTF8Fast.Create;
   FItemIndex := -1;
   FItemWidth := 0;
   FMaxLength := 0;

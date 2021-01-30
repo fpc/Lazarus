@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LazUtils
-  Maps;
+  Maps, LazUTF8;
 
 type
   TUnicodeBlock = record
@@ -44,7 +44,7 @@ type
     FGlyphs: TMap;
     FBlocks: array of TUnicodeBlock;
     FEncodings: array of Integer;
-    FOutLst, FBaseFonts,FEncodedFonts,FUsedFonts: TStringList;
+    FOutLst, FBaseFonts, FEncodedFonts, FUsedFonts: TStringList;
     FLastFontIndex: Integer;
     FFont: string;
     procedure CountPSChars;
@@ -67,7 +67,7 @@ type
     property Font: string read FFont write SetFont;
     property FontSize: Integer read FFontSize write SetFontSize;
     property FOntStyle: Integer read FFontStyle write SetFontStyle;
-    property OutLst: TStringlist read FOutLst write FOutLst;
+    property OutLst: TStringList read FOutLst write FOutLst;
   end;
 
 implementation
@@ -294,9 +294,9 @@ end;
 constructor TPsUnicode.create;
 begin
   inherited create;
-  FBaseFonts := TStringList.Create;
-  FEncodedFonts := TStringList.Create;
-  FUsedFonts := TStringList.Create;
+  FBaseFonts := TStringListUTF8Fast.Create;
+  FEncodedFonts := TStringListUTF8Fast.Create;
+  FUsedFonts := TStringListUTF8Fast.Create;
   FLastFontIndex := -1;
   FFontSize := 12;
 end;

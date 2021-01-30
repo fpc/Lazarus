@@ -21,7 +21,12 @@ unit gtk3private;
 
 interface
 
-uses Classes, SysUtils, Controls, LazGtk3, LazGObject2, LazGLib2;
+uses
+  Classes, SysUtils,
+  // LazUtils
+  LazUTF8,
+  // LCL
+  Controls, LazGtk3, LazGObject2, LazGLib2;
 
 type
 
@@ -315,12 +320,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Sort;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   OldSorted: Boolean;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl := TStringList.Create;
+  sl := TStringListUTF8Fast.Create;
   sl.Assign(Self);
   sl.Sort;
   OldSorted := Sorted;
@@ -388,7 +393,7 @@ begin
       // => don't change if the content is already the same
       if Sorted then
       begin
-        CmpList := TStringList.Create;
+        CmpList := TStringListUTF8Fast.Create;
         CmpList.Assign(TStrings(Source));
         TStringList(CmpList).Sort;
       end

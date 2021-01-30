@@ -873,7 +873,7 @@ begin
       with TFileItem(Files.Objects[i]) do DoAddItem(FBasePath, FileInfo, CanAdd);
       if CanAdd then
       begin
-        NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil);
+        NewNode := Items.AddChildObject(ANode, Files[i], nil);
         TShellTreeNode(NewNode).FFileInfo := TFileItem(Files.Objects[i]).FileInfo;
         TShellTreeNode(NewNode).SetBasePath(TFileItem(Files.Objects[i]).FBasePath);
 

@@ -550,12 +550,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Sort;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   OldSorted: Boolean;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl := TStringList.Create;
+  sl := TStringListUTF8Fast.Create;
   sl.Assign(Self);
   sl.Sort;
   OldSorted := Sorted;
@@ -623,7 +623,7 @@ begin
       // => don't change if the content is already the same
       if Sorted then
       begin
-        CmpList := TStringList.Create;
+        CmpList := TStringListUTF8Fast.Create;
         CmpList.Assign(TStrings(Source));
         TStringList(CmpList).Sort;
       end

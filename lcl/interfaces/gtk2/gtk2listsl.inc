@@ -497,11 +497,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Sort;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   sl.Assign(Self);
   sl.Sort; // currently this is quicksort -> 
              // Disadvantages: - worst case on sorted list
@@ -517,7 +517,7 @@ function TGtkListStringList.IsEqual(List: TStrings;
   CompareObjects: boolean): boolean;
 var
   i, Cnt: integer;
-  CmpList: TStringList;
+  CmpList: TStringListUTF8Fast;
 begin
   if List=Self then begin
     Result:=true;
@@ -528,7 +528,7 @@ begin
   Cnt:=Count;
   if (Cnt<>List.Count) then exit;
   BeginUpdate;
-  CmpList:=TStringList.Create;
+  CmpList:=TStringListUTF8Fast.Create;
   try
     CmpList.Assign(List);
     CmpList.Sorted:=FSorted;

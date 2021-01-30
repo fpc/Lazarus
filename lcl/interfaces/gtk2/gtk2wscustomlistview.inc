@@ -1745,7 +1745,7 @@ begin
   New(Widgets);
   with Widgets^ do
   begin
-    ItemCache := TStringList.Create;
+    ItemCache := TStringListUTF8Fast.Create;
     Images := nil;
     OldTreeSelection := nil;
 

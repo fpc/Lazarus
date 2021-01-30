@@ -1248,7 +1248,7 @@ begin
   fcPenWidth  :=0;
   fcPenStyle  :=psSolid;
   
-  fHeader:=TStringList.Create;
+  fHeader:=TStringListUTF8Fast.Create;
   fBuffer:=TstringList.Create;
   fDocument:=TStringList.Create;
 

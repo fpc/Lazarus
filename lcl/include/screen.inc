@@ -61,10 +61,10 @@ end;
 constructor TScreen.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FFonts := TStringlist.Create;
+  FFonts := TStringListUTF8Fast.Create;
   FCursorMap := TMap.Create(its4, SizeOf(HCursor));
   FMonitors := TMonitorList.Create;
-  TStringlist(FFonts).Sorted := True;
+  //TStringlist(FFonts).Sorted := True;  Will be sorted in GetFonts
   FCustomForms := TFPList.Create;
   FCustomFormsZOrdered := TFPList.Create;
   FFormList := TFPList.Create;
