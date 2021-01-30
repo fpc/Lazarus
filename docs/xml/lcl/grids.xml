@@ -11328,9 +11328,7 @@
         <short>The number of visible columns in the grid control</short>
         <descr>
           <p>
-            <p>
-              <var>VisibleColCount</var> is a read-only <var>Integer</var> property with the number of columns displayed in the visible area for the control. The property value is derived using the cached VisibleGrid information in the GCache property. It is not included in the LCL streaming mechanism, and is an artifact from older LCL versions.
-            </p>
+            <var>VisibleColCount</var> is a read-only <var>Integer</var> property with the number of columns displayed in the visible area for the control. The property value is derived using the cached VisibleGrid information in the GCache property. It is not included in the LCL streaming mechanism, and is an artifact from older LCL versions.
           </p>
         </descr>
         <seealso/>
