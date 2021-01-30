@@ -4,7 +4,7 @@
   for details about the license.
  *****************************************************************************
 
-  Axises for TAChart series.
+  Axes for TAChart series.
 
   Authors: Alexander Klenin
 

@@ -130,7 +130,7 @@ type
 implementation
 
 uses
-  Math, StrUtils, spe, TAChartStrConsts;
+  Math, spe, TAChartStrConsts;
 
 operator := (AEq: IFitEquationText): String;
 begin

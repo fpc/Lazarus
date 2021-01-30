@@ -25,7 +25,7 @@ unit TAChartListbox;
 {$IFDEF DARWIN}
   {$DEFINE USE_BITMAPS}
 {$ENDIF}
-{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
+
 interface
 
 uses

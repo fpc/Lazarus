@@ -39,7 +39,7 @@ procedure Register;
 implementation
 
 uses
-  Math, TACustomSeries, TAEnumerators;
+  Math, TACustomSeries;
 
 constructor TChartLiveView.Create(AOwner: TComponent);
 begin
