@@ -25,7 +25,7 @@ unit TAChartListbox;
 {$IFDEF DARWIN}
   {$DEFINE USE_BITMAPS}
 {$ENDIF}
-
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
 uses
@@ -97,15 +97,17 @@ type
     procedure ClickedSeriesIcon(AIndex: Integer); virtual;
     function CreateLegendItems: TChartLegendItems;
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
-    procedure Populate;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ExchangeSeries(AIndex1, AIndex2: Integer);
     function FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
     procedure MeasureItem(AIndex: Integer; var AHeight: Integer); override;
+    procedure Populate;
     procedure RemoveSeries(ASeries: TCustomChartSeries);
     procedure SeriesChanged(ASender: TObject);
+    procedure Sort(Descending: Boolean = false);
 
     property Checked[AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Series[AIndex: Integer]: TCustomChartSeries read GetSeries;
@@ -435,6 +437,20 @@ begin
   end;
 end;
 
+{ Exchanges the series at the specified listbox indices . }
+procedure TChartListbox.ExchangeSeries(AIndex1, AIndex2: Integer);
+var
+  serIndex1, serIndex2: Integer;
+begin
+  FChart.DisableRedrawing;
+  serIndex1 := Series[AIndex1].Index;
+  serIndex2 := Series[AIndex2].Index;
+  Series[AIndex1].Index := serIndex2;
+  Series[AIndex2].Index := serIndex1;
+  Populate;
+  FChart.EnableRedrawing;
+end;
+
 function TChartListbox.FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
 { searches the internal legend items list for the specified series }
 begin
@@ -691,6 +707,42 @@ begin
   FOptions := AValue;
   EnsureSingleChecked;
   Invalidate;
+end;
+
+{ Sorts the listbox by the series names in ascending or descending order.
+  Note that only series with Legend.Order = -1 are considered, i.e.
+  series having a given legend position are ignored. }
+procedure TChartListbox.Sort(Descending: Boolean = false);
+var
+  list: TStringList;
+  ser: TCustomChartSeries;
+  i: Integer;
+  selSeries: TCustomChartSeries = nil;
+begin
+  if ItemIndex > -1 then
+    selSeries := Series[ItemIndex];
+
+  list := TStringList.Create;
+  try
+    for ser in CustomSeries(FChart) do
+      list.AddObject(ser.Title, ser);
+    list.Sort;
+
+    FChart.DisableRedrawing;
+    try
+      for i := 0 to list.Count-1 do
+      begin
+        ser := TCustomChartSeries(list.Objects[i]);
+        ser.Index := IfThen(Descending, list.Count - 1 - i, i);
+      end;
+      Populate;
+      if selSeries <> nil then ItemIndex := FindSeriesIndex(selSeries);
+    finally
+      FChart.EnableRedrawing;
+    end;
+  finally
+    list.Free;
+  end
 end;
 
 procedure Register;
