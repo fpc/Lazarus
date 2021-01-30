@@ -322,7 +322,7 @@ begin
 
   // add 'View all'
   fViewAllNode:=TreeView1.Items.AddChild(nil, lisCompPalComponentList);
-  fViewAllNode.ImageIndex:=IDEImages.GetImageIndex('item_package');
+  fViewAllNode.ImageIndex:=IDEImages.GetImageIndex('menu_view_components');
   fViewAllNode.SelectedIndex:=fViewAllNode.ImageIndex;
 
   for i := 0 to ComponentPalettePageDropDownExtraEntries.Count - 1 do begin
@@ -332,7 +332,7 @@ begin
   end;
 
   // add 'Options'
-  fOptionsNode:=TreeView1.Items.AddChild(nil, lisOptions);
+  fOptionsNode:=TreeView1.Items.AddChild(nil, lisMenuGeneralOptions);
   fOptionsNode.ImageIndex:=IDEImages.LoadImage('menu_environment_options');
   fOptionsNode.SelectedIndex:=fOptionsNode.ImageIndex;
 

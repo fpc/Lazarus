@@ -631,12 +631,13 @@ begin
         Name:='ComponentListMenuItem';
         Caption:=lisCompPalComponentList;
         OnClick:=@ComponentListClicked;
+        ImageIndex := IDEImages.LoadImage('menu_view_components');
       end;
       PalettePopupMenu.Items.Add(miCompList);
       miOptions:=TMenuItem.Create(PalettePopupMenu);
       with miOptions do begin
         Name:='OptionsMenuItem';
-        Caption:=lisOptions;
+        Caption:=lisMenuGeneralOptions;
         OnClick:=@OptionsClicked;
         ImageIndex := IDEImages.LoadImage('menu_environment_options');
       end;
@@ -795,7 +796,7 @@ begin
   MenuItem:=TMenuItem.Create(PopupMenu);
   with MenuItem do begin
     Name:='OptionsMenuItem';
-    Caption:=lisOptions;
+    Caption:=lisMenuGeneralOptions;
     OnClick:=@OptionsClicked;
     ImageIndex := IDEImages.LoadImage('menu_environment_options');
   end;

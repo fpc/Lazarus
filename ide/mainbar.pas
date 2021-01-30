@@ -649,7 +649,7 @@ begin
   OptionsPopupMenu.Images := IDEImages.Images_16;
   OptionsMenuItem := TMenuItem.Create(TheOwner);
   OptionsMenuItem.Name := 'miToolbarOption';
-  OptionsMenuItem.Caption := lisOptions;
+  OptionsMenuItem.Caption := lisMenuGeneralOptions;
   OptionsMenuItem.Enabled := True;
   OptionsMenuItem.Visible := True;
   OptionsMenuItem.ImageIndex := IDEImages.LoadImage('menu_environment_options');

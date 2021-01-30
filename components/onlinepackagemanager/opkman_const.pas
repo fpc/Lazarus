@@ -61,6 +61,7 @@ const
 resourcestring
   //package manager
   rsLazarusPackageManager = 'Online Package Manager';
+  rsMenuLazarusPackageManager = 'Online Package Manager ...';
 
   //main form
   rsPackagesFound = '(%s repository packages found, containing %s lpk files, total size %s)';

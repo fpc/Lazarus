@@ -6583,8 +6583,7 @@ resourcestring
   lisUnableToRun2 = 'Unable to run "%s"';
 
   lisSelectFrame = 'Select Frame';
-  lisDsgToggleShowingNonVisualComponents = 'Toggle showing nonvisual '
-    +'components';
+  lisDsgToggleShowingNonVisualComponents = 'Toggle showing nonvisual components';
   lisDsgShowNonVisualComponents = 'Show nonvisual components';
 
   // * Debug Event Log *
