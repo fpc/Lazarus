@@ -126,12 +126,12 @@ interface
 {$MODE DELPHI}
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF}
   Classes, SysUtils,
   LazUTF8,
   LCLType, LCLStrConsts, LCLIntf, InterfaceBase,
-  {$IFDEF MSWINDOWS}
-  Windows, CommCtrl, Messages,
-  {$ENDIF}
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons;
 
 {$IFDEF MSWINDOWS}
