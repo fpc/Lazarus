@@ -25,6 +25,7 @@ interface
 
 uses
   // RTL,FCL
+  MacOSAll,
   CocoaAll, Classes,
   // LCL
   Controls, StrUtils, SysUtils, Forms, Dialogs, Graphics, Masks,
@@ -135,6 +136,14 @@ type
     function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean; message 'panel:shouldEnableURL:';
   end;
 
+var
+  // if set to "true", then OpenDialog would create UTI identifiers
+  // for filtering files. As a result a broaded set of files might be available
+  // than specified in the extensions filter.
+  // "false" is forces the dialog to use panel_shouldEnableURL. It's a slower
+  // check (due to security implications), but it's LCL compatible
+  CocoaUseUTIFilter : Boolean = false;
+
 implementation
 
 uses
@@ -164,6 +173,7 @@ type
     FileDialog: TFileDialog;
     OpenDialog: TOpenDialog;
     selUrl: NSURL;
+    filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
@@ -174,7 +184,6 @@ type
   // Having path_shouldEnableURL is causing a slowness on a file selection
   // Just having the method declared already introduces a lag in the file selection
   TOpenSaveDelegateWithFilter = objcclass(TOpenSaveDelegate, NSOpenSavePanelDelegateProtocol)
-    filter: NSOpenSavePanelDelegateProtocol;
     function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
   end;
 
@@ -436,12 +445,12 @@ begin
 
   saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
 
-  if not Assigned(lFilter) then
+  if not Assigned(lFilter) or (CocoaUseUTIFilter) then
     callback:=TOpenSaveDelegate.alloc
   else begin
     callback:=TOpenSaveDelegateWithFilter.alloc;
-    TOpenSaveDelegateWithFilter(callback).filter := lFilter;
   end;
+  callback.filter := lFilter;
   callback := callback.init;
   callback.autorelease;
   callback.FileDialog := FileDialog;
@@ -865,8 +874,49 @@ var
   ns: NSString;
   i, lOSVer: Integer;
   lStr: String;
+  uti : CFStringRef;
+  ext : string;
+  j   : integer;
 begin
   if Filters = nil then Exit;
+  if CocoaUseUTIFilter then
+  begin
+    lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
+    NSFilters := NSMutableArray.alloc.init;
+    for i:=0 to lCurFilter.Count-1 do
+    begin
+      ext := lCurFilter[i];
+      if (ext='') then Continue;
+      if (ext='*.*') or (ext = '*') then begin
+        //uti:=CFSTR('public.content');
+        NSFilters.removeAllObjects;
+        break;
+      end else begin
+        // using the last part of the extension, as Cocoa doesn't suppot
+        // complex extensions, such as .tar.gz
+        j:=length(ext);
+        while (j>0) and (ext[j]<>'.') do dec(j);
+        if (j>0) then inc(j);
+        ext := System.Copy(ext, j, length(ext));
+        // todo: this API is deprecated in macOS 11. There's no UTType ObjC class
+        //       to be used
+        uti:=UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+          CFStringRef(NSString.stringWithUTF8String(PChar(ext))), CFSTR('public.data'));
+      end;
+      if Assigned(uti) then
+        NSFilters.addObject(id(uti));
+    end;
+
+    if (NSFilters.count = 0) then
+    begin
+      // select any file
+      NSFilters.addObject(id(CFSTR('public.content')));
+      NSFilters.addObject(id(CFSTR('public.data')));
+    end;
+    DialogHandle.setAllowedFileTypes(NSFilters);
+    NSFilters.autorelease;
+    exit;
+  end;
 
   if NSFilters = nil then
   begin
