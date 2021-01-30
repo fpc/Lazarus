@@ -1455,6 +1455,7 @@ var rect: TRect;
     p:TPoint;
     cb: ICommonCallback;
     cbo: TObject;
+  hv  : NSView;
 begin
   Result:=0;
   if not assigned(view) then
@@ -1463,16 +1464,15 @@ begin
   if Assigned(cb) then
   begin
     cbo := cb.GetCallbackObject;
+    if not (cbo is TLCLCommonCallback) then Exit;
     p:=Point;
-    view.lclScreenToLocal(p.X,p.Y);
-    rect:=view.lclClientFrame;
+    // The hit test is done by the out-side frame (Handle)
+    hv := TLCLCommonCallback(cbo).HandleFrame;
+    hv.lclScreenToLocal(p.X,p.Y);
+    rect:=hv.lclClientFrame;
     if PtInRect(rect, p) then
-    begin
-      if cbo is TLCLCommonCallback then
-        Result := HWND(TLCLCommonCallback(cbo).HandleFrame)
-      else
-        Result:=0;
-    end;
+      //if hv.lclClassName;
+      Result := HWND(hv)
   end
 end;
 
