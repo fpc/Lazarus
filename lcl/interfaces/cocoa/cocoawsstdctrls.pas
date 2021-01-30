@@ -2201,6 +2201,7 @@ var
   list    : TCocoaTableListView;
   scroll  : TCocoaScrollView;
   lclListBox: TCustomListBox absolute AWinControl;
+  cb  : TLCLListBoxCallback;
 begin
   list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
@@ -2208,7 +2209,8 @@ begin
     Result := 0;
     Exit;
   end;
-  list.callback := TLCLListBoxCallback.CreateWithView(list, AWinControl);
+  cb := TLCLListBoxCallback.CreateWithView(list, AWinControl);
+  list.callback := cb;
   list.addTableColumn(NSTableColumn.alloc.init);
   list.setHeaderView(nil);
   list.setDataSource(list);
@@ -2233,6 +2235,7 @@ begin
     Result := 0;
     Exit;
   end;
+  cb.HandleFrame := scroll;
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
