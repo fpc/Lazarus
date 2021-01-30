@@ -1,16 +1,16 @@
 object Form1: TForm1
   Left = 265
-  Height = 419
+  Height = 412
   Top = 182
   Width = 892
   Caption = 'TChartListbox demo'
-  ClientHeight = 419
+  ClientHeight = 412
   ClientWidth = 892
   OnCreate = FormCreate
   LCLVersion = '2.1.0.0'
   object Chart: TChart
     Left = 292
-    Height = 419
+    Height = 412
     Top = 0
     Width = 457
     AxisList = <    
@@ -53,6 +53,9 @@ object Form1: TForm1
     BackColor = clWhite
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
+    Legend.Alignment = laBottomCenter
+    Legend.ColumnCount = 4
+    Legend.Visible = True
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -72,21 +75,25 @@ object Form1: TForm1
       Title = 'exp(-x)'
       LinePen.Color = clGreen
     end
+    object GaussSeries: TLineSeries
+      Title = 'gaussian(x)'
+      LinePen.Color = clFuchsia
+    end
   end
   object ListboxPanel: TPanel
     Left = 754
-    Height = 419
+    Height = 412
     Top = 0
     Width = 138
     Align = alRight
     BevelOuter = bvNone
-    ClientHeight = 419
+    ClientHeight = 412
     ClientWidth = 138
     TabOrder = 1
     object ChartListbox: TChartListbox
       AnchorSideBottom.Control = Panel2
       Left = 6
-      Height = 379
+      Height = 372
       Hint = 'Move up'
       Top = 6
       Width = 126
@@ -104,7 +111,7 @@ object Form1: TForm1
     object Panel2: TPanel
       Left = 0
       Height = 22
-      Top = 391
+      Top = 384
       Width = 138
       Align = alBottom
       AutoSize = True
@@ -158,7 +165,7 @@ object Form1: TForm1
   end
   object Splitter: TSplitter
     Left = 749
-    Height = 419
+    Height = 412
     Top = 0
     Width = 5
     Align = alRight
@@ -166,14 +173,14 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 419
+    Height = 412
     Top = 0
     Width = 292
     Align = alLeft
     AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 419
+    ClientHeight = 412
     ClientWidth = 292
     TabOrder = 3
     object BtnAddSeries: TButton
@@ -217,7 +224,7 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbShowCheckboxes
       Left = 8
       Height = 25
-      Top = 269
+      Top = 263
       Width = 164
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -245,11 +252,11 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbCheckStyle
       Left = 8
       Height = 19
-      Top = 310
+      Top = 304
       Width = 114
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
-      BorderSpacing.Bottom = 12
+      BorderSpacing.Bottom = 8
       Caption = 'Show checkboxes'
       Checked = True
       OnChange = CbShowCheckboxesChange
@@ -262,7 +269,7 @@ object Form1: TForm1
       AnchorSideTop.Control = CbShowCheckboxes
       Left = 146
       Height = 19
-      Top = 310
+      Top = 304
       Width = 112
       BorderSpacing.Left = 24
       BorderSpacing.Right = 6
@@ -274,14 +281,14 @@ object Form1: TForm1
     end
     object CbCheckStyle: TCheckBox
       AnchorSideLeft.Control = Panel1
-      AnchorSideBottom.Control = CbKeepSeriesOut
+      AnchorSideBottom.Control = CbInverted
       Left = 8
       Height = 19
-      Top = 341
+      Top = 331
       Width = 91
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
-      BorderSpacing.Bottom = 32
+      BorderSpacing.Bottom = 8
       Caption = 'Radiobuttons'
       OnChange = CbCheckStyleChange
       TabOrder = 6
@@ -294,7 +301,7 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnToggleChart
       Left = 8
-      Height = 160
+      Height = 154
       Top = 103
       Width = 276
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -324,7 +331,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       Left = 201
       Height = 23
-      Top = 339
+      Top = 329
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Left = 4
@@ -340,7 +347,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       Left = 146
       Height = 15
-      Top = 343
+      Top = 333
       Width = 51
       Caption = 'Columns:'
       ParentColor = False
@@ -366,7 +373,7 @@ object Form1: TForm1
       AnchorSideBottom.Side = asrBottom
       Left = 8
       Height = 19
-      Top = 392
+      Top = 385
       Width = 245
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
@@ -406,6 +413,19 @@ object Form1: TForm1
       Caption = 'Add point'
       OnClick = BtnAddPointClick
       TabOrder = 11
+    end
+    object CbInverted: TCheckBox
+      AnchorSideLeft.Control = CbKeepSeriesOut
+      AnchorSideBottom.Control = CbKeepSeriesOut
+      Left = 8
+      Height = 19
+      Top = 358
+      Width = 63
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Bottom = 8
+      Caption = 'Inverted'
+      OnChange = CbInvertedChange
+      TabOrder = 12
     end
   end
   object RandomChartSource: TRandomChartSource

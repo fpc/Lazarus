@@ -27,6 +27,8 @@ type
     CbShowSeriesIcon: TCheckBox;
     CbCheckStyle: TCheckBox;
     CbKeepSeriesOut: TCheckBox;
+    CbInverted: TCheckBox;
+    GaussSeries: TLineSeries;
     ExpSeries: TLineSeries;
     ChartListbox: TChartListbox;
     ColorDialog: TColorDialog;
@@ -55,6 +57,7 @@ type
     procedure BtnToggleSINClick(Sender: TObject);
     procedure BtnAddPointClick(Sender: TObject);
     procedure BtnUpClick(Sender: TObject);
+    procedure CbInvertedChange(Sender: TObject);
     procedure CbShowCheckboxesChange(Sender: TObject);
     procedure CbShowSeriesIconChange(Sender: TObject);
     procedure CbCheckStyleChange(Sender: TObject);
@@ -99,6 +102,7 @@ begin
     SinSeries.AddXY(x, sin(x));
     CosSeries.AddXY(x, cos(x));
     ExpSeries.AddXY(x, exp(-x));
+    GaussSeries.AddXY(x, exp(-x*x));
   end;
 end;
 
@@ -158,59 +162,35 @@ end;
 procedure TForm1.BtnDownClick(Sender: TObject);
 var
   indx: Integer;
-  ser: TBasicChartSeries;
 begin
   indx := ChartListbox.ItemIndex;
   if (indx > -1) and (indx < ChartListbox.SeriesCount-1) then
   begin
-    ChartListbox.Chart := nil;
-    ser := ChartListbox.Series[indx];
-    ser.Index := indx + 1;
-    ChartListbox.Chart := Chart;
+    ChartListbox.ExchangeSeries(indx, indx + 1);
     ChartListbox.ItemIndex := indx + 1;
   end;
 end;
 
 procedure TForm1.BtnSortClick(Sender: TObject);
-var
-  List: TStringList;
-  i: Integer;
-  ser: TCustomChartSeries;
 begin
-  List := TStringList.Create;
-  try
-    for i:=0 to ChartListbox.SeriesCount-1 do
-    begin
-      ser := ChartListbox.Series[i];
-      List.AddObject(ChartListbox.Series[i].Title, ser);
-    end;
-    List.Sort;
-    ChartListbox.Chart := nil;
-    for i := 0 to List.Count-1 do
-    begin
-      ser := TCustomChartSeries(List.Objects[i]);
-      ser.Index := i;
-    end;
-    ChartListbox.Chart := Chart;
-  finally
-    List.Free;
-  end;
+  ChartListbox.Sort;  // Do use the descending parameter because sort order is already given by Legend.Inverted
 end;
 
 procedure TForm1.BtnUpClick(Sender: TObject);
 var
   indx: Integer;
-  ser: TBasicChartSeries;
 begin
   indx := ChartListbox.ItemIndex;
   if indx > 0 then
   begin
-    ChartListbox.Chart := nil;
-    ser := Chartlistbox.Series[indx];
-    ser.Index := indx - 1;
-    ChartListbox.Chart := Chart;
+    ChartListbox.ExchangeSeries(indx, indx-1);
     ChartListbox.ItemIndex := indx - 1;
   end;
+end;
+
+procedure TForm1.CbInvertedChange(Sender: TObject);
+begin
+  Chart.Legend.Inverted := CbInverted.Checked;
 end;
 
 procedure TForm1.CbShowCheckboxesChange(Sender: TObject);
