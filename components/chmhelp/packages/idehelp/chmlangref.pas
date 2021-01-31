@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil, LazFileUtils, LazUTF8,
-  LazHelpIntf, HelpIntfs, IDEHelpIntf, MacroIntf;
+  Dialogs, LazHelpIntf, HelpIntfs,
+  FileUtil, LazFileUtils, LazUTF8,
+  IDEHelpIntf, MacroIntf;
 
 const
   sFPCLangRef = 'FPC Language Reference';
@@ -20,7 +21,7 @@ type
   private
     FCHMSearchPath: string;
     FKeywordNodes: TList;
-    FKeyWordsList: TStringList;
+    FKeyWordsList: TStringListUTF8Fast;
     FRTLIndex: TStringList;
     procedure ClearKeywordNodes;
     procedure LoadChmIndex(const Path, ChmFileName: string;
@@ -68,7 +69,7 @@ constructor TLangRefHelpDatabase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FKeywordNodes := TList.Create;
-  FKeyWordsList := TStringList.Create;
+  FKeyWordsList := TStringListUTF8Fast.Create;
   FKeyWordsList.CaseSensitive := False;
   FRTLIndex := TStringList.Create;
   FRTLIndex.CaseSensitive := False;

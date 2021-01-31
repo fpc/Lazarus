@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process,
+  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process, LazUTF8,
   // LCL
   Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
   // IdeIntf
@@ -184,7 +184,7 @@ end;
 
 procedure TChmHelpViewer.OpenAllCHMsInSearchPath(const SearchPath: String);
 var
-  CHMFiles: TStringList;
+  CHMFiles: TStringListUTF8Fast;
   SearchPaths: TStringList; // SearchPath split to a StringList
   SearchFiles: TStringList; // Files found in SearchPath
   i: integer;
@@ -214,10 +214,8 @@ begin
    }
   // Just open all CHM files in all directories+subdirs in ;-delimited searchpath:
   SearchPaths:=TStringList.Create;
-  CHMFiles:=TStringList.Create;
+  CHMFiles:=TStringListUTF8Fast.Create;
   try
-    CHMFiles.Sorted:=true;
-    CHMFiles.Duplicates:=dupIgnore;
     SearchPaths.Delimiter:=';';
     SearchPaths.StrictDelimiter:=false;
     SearchPaths.DelimitedText:=SearchPath;
@@ -231,6 +229,8 @@ begin
       CHMFiles.AddStrings(SearchFiles);
       SearchFiles.Free;
     end;
+    CHMFiles.Sorted:=true;
+    CHMFiles.Duplicates:=dupIgnore;
     {$IFDEF CHMLOADTIMES}
     DebugLn(['CHMLOADTIMES: ',Format('Searching files in %s took %d ms',[SearchPath,DateTimeToTimeStamp(Now-StartTime).Time])]);
     StartTime := Now;
@@ -239,7 +239,7 @@ begin
     fHelpConnection.BeginUpdate;
     for i := 0 to CHMFiles.Count-1 do
     begin
-      if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then
+      if CompareFileExtQuick(CHMFiles[i], 'chm') = 0 then
       begin
         fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
         // This is probably no longer necessary as we're now waiting for the viewer's

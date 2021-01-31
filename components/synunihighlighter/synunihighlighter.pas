@@ -555,8 +555,7 @@ end;
 
 { TSynSymbolGroup }
 
-constructor TSynSymbolGroup.Create(s: string;
-  attr: TSynHighlighterAttributes);
+constructor TSynSymbolGroup.Create(s: string; attr: TSynHighlighterAttributes);
 begin
   Attribs:=attr;
   KeywordsList:=TStringList.Create;
@@ -933,7 +932,7 @@ var
   CurTagIndex:Integer;
   LineNumber:integer;
   Param:string;
-  xmlInfoTags:TStringList;
+  xmlInfoTags: TStringList;
 
   ////TL Guess FPC doesn't support optional parameters. Never used this in Delphi or Kylix.
   ////TL I'm going to remove them and explicitly state the parms in each call.
@@ -2699,11 +2698,11 @@ end;
 
 procedure TSynUniSyn.LoadFromFile(FileName: string);
 var
-  F: TFileStreamUTF8;
+  F: TFileStream;
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStreamUTF8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  F:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream( F );
   finally
@@ -2713,11 +2712,11 @@ end;
 
 procedure TSynUniSyn.SaveToFile(FileName: string);
 var
-  F: TFileStreamUTF8;
+  F: TFileStream;
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStreamUTF8.Create(FileName,fmOpenWrite or fmShareDenyNone);
+  F:=TFileStream.Create(FileName,fmOpenWrite or fmShareDenyNone);
   try
     SaveToStream( F );
   finally

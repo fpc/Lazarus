@@ -8,6 +8,8 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   Forms,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   ProjectIntf, NewItemIntf, FormEditingIntf;
 
@@ -156,16 +158,14 @@ Var
   D : TCustomFormDescr;
   
 begin
-  L:=TStringList.Create;
+  L:=TStringListUTF8Fast.Create;
   Try
     L.Sorted:=True;
     L.Duplicates:=dupIgnore;
     For I:=0 to CustomFormList.Count-1 do
       L.Add(TCustomFormDescr(CustomFormList[i]).Category);
     For I:=0 to L.Count-1 do
-    begin
       RegisterNewItemCategory(TNewIDEItemCategory.Create(L[i]));
-    end;
   Finally
     L.Free;
   end;

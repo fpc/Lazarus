@@ -14,6 +14,7 @@ uses
   ExtCtrls,
   Dialogs,
   ActnList, ComboEx,
+  LazUTF8,
   PackageIntf,
   IDEOptEditorIntf,
   IDEOptionsIntf, SynEdit,
@@ -429,7 +430,7 @@ constructor TFppkgPackageOptionsFrm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPackageVariantList := TFppkgPackageVariantList.Create(True);
-  FPackageList := TStringList.Create;
+  FPackageList := TStringListUTF8Fast.Create;
   TStringList(FPackageList).Sorted := True;
   TStringList(FPackageList).Duplicates := dupIgnore;
 end;

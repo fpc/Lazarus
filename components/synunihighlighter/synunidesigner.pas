@@ -961,15 +961,21 @@ begin
 end;
 
 procedure TSynUniDesigner.SortClick(Sender: TObject);
-var i:integer;
+var
+  i: integer;
+  s: String;
 begin
   With TStringList.Create do
     try
+      for i:=0 to Memo.Lines.Count-1 do
+      begin
+        s := Trim(Memo.Lines[i]);
+        if s<>'' then
+          Add(s);
+      end;
       Sorted:=true;
       Duplicates:=dupIgnore;
-      for i:=0 to Memo.Lines.Count-1 do if trim(Memo.lines[i])<>'' then add(trim(Memo.lines[i]));
-      sort;
-      Memo.text:=trim(text);
+      Memo.Text:=Trim(text);
     finally
       free;
     end;
