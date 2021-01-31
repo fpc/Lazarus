@@ -404,6 +404,7 @@ type
     // Also, because of bug 28015 FClipped cannot use ctx.Restore(Save)GraphicsState;
     // it will use CGContextRestore(Save)GState(CGContext()); to save/restore DC instead
     FClipped: Boolean;
+    FFlipped: Boolean;
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
@@ -486,6 +487,7 @@ type
     function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
 
     property Clipped: Boolean read FClipped;
+    property Flipped: Boolean read FFlipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
     property Size: TSize read FSize;
@@ -1797,6 +1799,7 @@ begin
   FSavedDCList := nil;
   FText := TCocoaTextLayout.Create;
   FClipped := False;
+  FFlipped := False;
 end;
 
 destructor TCocoaContext.Destroy;
@@ -1815,8 +1818,11 @@ begin
 
   FBkBrush.Free;
 
-  if Assigned(ctx) then
+  if Assigned(ctx) then begin
+    if Assigned(CGContext()) and Flipped then
+      CGContextRestoreGState(CGContext());
     ctx.release;
+    end;
   if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
@@ -1878,6 +1884,9 @@ begin
   cg := CGContext;
   Result := Assigned(cg);
   if not Result then Exit;
+
+  CGContextSaveGState(cg);
+  FFlipped := True;
 
   FSize.cx := width;
   FSize.cy := height;
