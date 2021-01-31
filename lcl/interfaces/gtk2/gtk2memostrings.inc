@@ -243,10 +243,17 @@ begin
 end;
 
 procedure TGtk2MemoStrings.SetTextStr(const Value: string);
+var
+  aText: string;
 begin
-  QueueCursorMove(0);
-  QueueSelectLength(0);
-  if (Value <> '') and (Text <> '') then
+  aText := Text;
+  // don't queue cursor movement if both old and new text are emtpy
+  if (aText<>'') or (Value<>'') then
+  begin
+    QueueCursorMove(0);
+    QueueSelectLength(0);
+  end;
+  if (Value <> '') and (aText <> '') then
     LockOnChange({%H-}PGtkObject(Owner.Handle), 1);
   gtk_text_buffer_set_text(FGtkBuf, PChar(Value), -1);
 end;
