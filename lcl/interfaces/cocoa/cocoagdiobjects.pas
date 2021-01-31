@@ -1314,8 +1314,13 @@ begin
 end;
 
 procedure TCocoaTextLayout.UpdateColor;
+var
+  lForegroundColor: NSColor;
 begin
-  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, ColorToNSColor(ForegroundColor), GetTextRange);
+  lForegroundColor := SysColorToNSColor(SysColorToSysColorIndex(ForegroundColor));
+  if lForegroundColor = nil then
+    lForegroundColor := ColorToNSColor(ColorToRGB(ForegroundColor));
+  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, lForegroundColor, GetTextRange);
   FTextStorage.addAttribute_value_range(NSBackgroundColorAttributeName, ColorToNSColor(BackgroundColor), GetTextRange);
 end;
 
@@ -1688,7 +1693,7 @@ end;
 
 procedure TCocoaContext.SetTextColor(AValue: TColor);
 begin
-  FText.ForegroundColor := TColor(ColorToRGB(AValue));
+  FText.ForegroundColor := AValue;
 end;
 
 procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);

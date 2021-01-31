@@ -65,6 +65,27 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 // extract ColorRef from any NSColor
 function NSColorToColorRef(const Color: NSColor): TColorRef;
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
+// convert to known NSColor or nil
+function SysColorToNSColor(nIndex: Integer): NSColor;
+
+// "dark" is not a good reference, as Apple might add more and more themes
+function IsDarkPossible: Boolean; inline;
+
+// returns if the application appearance is set to dark
+function IsAppDark: Boolean;
+
+// returns if the window appearance is set to dark
+function IsWinDark(win: NSWindow): Boolean;
+
+// Returns the appearance object that is active on the current thread.
+// returns true, if currently drawn (Painted) UI control is in Dark theme.
+function IsPaintDark: Boolean;
+
+// returns true, if Appear is assigned and bears name of Dark theme
+function IsAppearDark(Appear: NSAppearance): Boolean; inline;
+
+// weak-referenced NSAppearnceClass. Returns nil on any OS prior to 10.13
+function NSAppearanceClass: pobjc_class;
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
@@ -443,6 +464,173 @@ begin
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
+end;
+
+function SysColorToNSColor(nIndex: Integer): NSColor;
+const
+  ToolTipBack     = $C9FCF9;
+  ToolTipBack1010 = $EDEDED;
+  ToolTipBack1014 = $f0f0f0;
+  ToolTipBack1014Dark = $343434;
+begin
+  case NIndex of
+    COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION,
+    COLOR_WINDOWFRAME, COLOR_ACTIVEBORDER:
+      Result := NSColor.windowFrameColor;
+    COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION, COLOR_INACTIVEBORDER:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_CAPTIONTEXT,
+    COLOR_INACTIVECAPTIONTEXT:
+      Result := NSColor.windowFrameTextColor;
+    COLOR_WINDOW:
+      Result := NSColor.textBackgroundColor;
+    COLOR_BACKGROUND,
+    COLOR_FORM:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_MENU:
+      Result := NSColor.controlBackgroundColor;
+    COLOR_MENUTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_MENUBAR:
+      Result := NSColor.selectedTextBackgroundColor;
+    COLOR_MENUHILIGHT:
+      Result := NSColor.selectedMenuItemColor;
+    COLOR_WINDOWTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_APPWORKSPACE:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_HIGHLIGHT:
+      Result := NSColor.selectedControlColor;
+    COLOR_HOTLIGHT:
+      Result := NSColor.alternateSelectedControlColor;
+    COLOR_HIGHLIGHTTEXT:
+      Result := NSColor.selectedControlTextColor;
+    COLOR_SCROLLBAR:
+      Result := NSColor.scrollBarColor;
+    COLOR_BTNFACE:
+      Result := NSColor.controlBackgroundColor;
+    COLOR_BTNSHADOW:  // COLOR_3DSHADOW
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.5)
+      else
+        Result := NSColor.controlShadowColor;
+    COLOR_BTNHIGHLIGHT:
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.0)
+      else
+        Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
+    COLOR_BTNTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_GRAYTEXT:
+      Result := NSColor.disabledControlTextColor;
+    COLOR_3DDKSHADOW:
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.75)
+      else
+        Result := NSColor.controlDarkShadowColor;
+    COLOR_3DLIGHT:
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+        Result := NSColor.controlColor.shadowWithLevel(0.25)
+      else
+        Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
+
+    // macOS doesn't provide any API to get the hint window colors.
+    // default = macosx10.4 yellow color. (See InitInternals below)
+    // it's likely the tooltip color will change in future.
+    // Thus the variable is left public, so a user of LCL
+    // would be able to initialize it properly on start
+    COLOR_INFOTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_INFOBK:
+    begin
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
+      begin
+        if IsPaintDark then
+          Result := ColorToNSColor(ToolTipBack1014Dark)
+        else
+          Result := ColorToNSColor(ToolTipBack1014);
+      end else if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+        Result := ColorToNSColor(ToolTipBack1010)
+      else
+        Result := ColorToNSColor(ToolTipBack);
+    end;
+  else
+    Result := nil;
+  end;
+end;
+
+var
+  _NSAppearanceClass : pobjc_class = nil;
+  _NSAppearanceClassRead: Boolean = false;
+
+const
+  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
+  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
+
+function NSAppearanceClass: pobjc_class;
+begin
+  if not _NSAppearanceClassRead then
+  begin
+    _NSAppearanceClass := objc_getClass('NSAppearance');
+    _NSAppearanceClassRead := true;
+  end;
+  Result := _NSAppearanceClass;
+end;
+
+function IsAppearDark(Appear: NSAppearance): Boolean; inline;
+begin
+  Result := Assigned(Appear)
+            and (
+            Appear.name.isEqualToString(NSSTR(DarkName))
+            or
+            Appear.name.isEqualToString(NSSTR(DarkNameVibrant))
+            )
+end;
+
+function IsDarkPossible: Boolean; inline;
+begin
+  Result := NSAppKitVersionNumber > NSAppKitVersionNumber10_12;
+end;
+
+function IsAppDark: Boolean;
+var
+  Appear: NSAppearance;
+begin
+  if not isDarkPossible then
+  begin
+    Result := false;
+    Exit;
+  end;
+  if (not NSApplication(NSApp).respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
+    Result := false;
+    Exit;
+  end;
+
+  Result := IsAppearDark(NSApplication(NSApp).effectiveAppearance);
+end;
+
+function IsWinDark(win: NSWindow): Boolean;
+begin
+  if not Assigned(win) or not isDarkPossible then
+  begin
+    Result := false;
+    Exit;
+  end;
+  if (not win.respondsToSelector(ObjCSelector('effectiveAppearance'))) then begin
+    Result := false;
+    Exit;
+  end;
+
+  Result := IsAppearDark(win.effectiveAppearance);
+end;
+
+function IsPaintDark: Boolean;
+var
+  cls : pobjc_class;
+begin
+  cls := NSAppearanceClass;
+  if not Assigned(cls) then Exit;
+  Result := IsAppearDark(objc_msgSend(cls, ObjCSelector('currentAppearance')));
 end;
 
 function CFStringToString(AString: CFStringRef): String;
