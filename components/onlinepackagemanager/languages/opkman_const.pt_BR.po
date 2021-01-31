@@ -1300,6 +1300,10 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Versão"
 
+#: opkman_const.rsmenulazaruspackagemanager
+msgid "Online Package Manager ..."
+msgstr ""
+
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
