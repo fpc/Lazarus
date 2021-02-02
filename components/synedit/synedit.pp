@@ -504,27 +504,39 @@ type
   { TSynScrollOnEditLeftOptions }
 
   TSynScrollOnEditLeftOptions = class(TSynScrollOnEditOptions)
+  private const
+    CKeepBorderDistance        = 2;
+    CKeepBorderDistancePercent = 0;
+    CScrollExtraColumns        = 5;
+    CScrollExtraPercent        = 20;
+    CScrollExtraMax            = 10;
   public
     procedure SetDefaults; override;
   published
-    property KeepBorderDistance        default  2;
-    property KeepBorderDistancePercent default  0;
-    property ScrollExtraColumns        default  5;
-    property ScrollExtraPercent        default 10;
-    property ScrollExtraMax            default 20;
+    property KeepBorderDistance        default CKeepBorderDistance;
+    property KeepBorderDistancePercent default CKeepBorderDistancePercent;
+    property ScrollExtraColumns        default CScrollExtraColumns;
+    property ScrollExtraPercent        default CScrollExtraPercent;
+    property ScrollExtraMax            default CScrollExtraMax;
   end;
 
   { TSynScrollOnEditRightOptions }
 
   TSynScrollOnEditRightOptions = class(TSynScrollOnEditOptions)
+  private const
+    CKeepBorderDistance        = 0;
+    CKeepBorderDistancePercent = 0;
+    CScrollExtraColumns        = 10;
+    CScrollExtraPercent        = 30;
+    CScrollExtraMax            = 25;
   public
     procedure SetDefaults; override;
   published
-    property KeepBorderDistance        default  0;
-    property KeepBorderDistancePercent default  0;
-    property ScrollExtraColumns        default 10;
-    property ScrollExtraPercent        default 25;
-    property ScrollExtraMax            default 20;
+    property KeepBorderDistance        default CKeepBorderDistance;
+    property KeepBorderDistancePercent default CKeepBorderDistancePercent;
+    property ScrollExtraColumns        default CScrollExtraColumns;
+    property ScrollExtraPercent        default CScrollExtraPercent;
+    property ScrollExtraMax            default CScrollExtraMax;
   end;
 
   { TCustomSynEdit }
@@ -1919,22 +1931,22 @@ end;
 procedure TSynScrollOnEditLeftOptions.SetDefaults;
 begin
   inherited SetDefaults;
-  FKeepBorderDistance        := 2;
-  FKeepBorderDistancePercent := 0;
-  FScrollExtraColumns        := 5;
-  FScrollExtraMax            := 10;
-  FScrollExtraPercent        := 20;
+  FKeepBorderDistance        := CKeepBorderDistance;
+  FKeepBorderDistancePercent := CKeepBorderDistancePercent;
+  FScrollExtraColumns        := CScrollExtraColumns;
+  FScrollExtraMax            := CScrollExtraMax;
+  FScrollExtraPercent        := CScrollExtraPercent;
 end;
 
 { TSynScrollOnEditRightOptions }
 
 procedure TSynScrollOnEditRightOptions.SetDefaults;
 begin
-  FKeepBorderDistance        := 0;
-  FKeepBorderDistancePercent := 0;
-  FScrollExtraColumns        := 10;
-  FScrollExtraMax            := 25;
-  FScrollExtraPercent        := 30;
+  FKeepBorderDistance        := CKeepBorderDistance;
+  FKeepBorderDistancePercent := CKeepBorderDistancePercent;
+  FScrollExtraColumns        := CScrollExtraColumns;
+  FScrollExtraMax            := CScrollExtraMax;
+  FScrollExtraPercent        := CScrollExtraPercent;
 end;
 
 { TCustomSynEdit }
