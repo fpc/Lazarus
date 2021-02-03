@@ -24,7 +24,7 @@ msgstr "%1:s"
 #: fperrormessages.msgfperrattachprocess
 #, object-pascal-format
 msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
-msgstr ""
+msgstr "Falha ao anexar ao processo \"%1:s\".%0:s Mensagem de erro: %2:d \"%3:s\". %0:s%4:s"
 
 #: fperrormessages.msgfperrcannotdereferencetype
 #, object-pascal-format
@@ -38,20 +38,19 @@ msgid "Failed to read Mem at Address $%1:x"
 msgstr "Falha ao ler memória no endereço $%1:x"
 
 #: fperrormessages.msgfperrcannotwritememataddr
-#, object-pascal-format, fuzzy
-#| msgid "Failed to read Mem at Address $%1:x"
+#, object-pascal-format
 msgctxt "fperrormessages.msgfperrcannotwritememataddr"
 msgid "Failed to write Mem at Address $%1:x"
-msgstr "Falha ao ler memória no endereço $%1:x"
+msgstr "Falha ao gravar memória no endereço $%1:x"
 
 #: fperrormessages.msgfperrchangevariablenotsupported
 msgid "Changing the value of this variable is not supported"
-msgstr ""
+msgstr "Alteração do valor dessa variável não é suportada"
 
 #: fperrormessages.msgfperrcreateprocess
 #, object-pascal-format
 msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
-msgstr ""
+msgstr "Falha ao iniciar o processo \"%1:s\".%0:s Mensagem de erro: %2:d \"%3:s\". %0:s%4:s"
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
@@ -60,7 +59,7 @@ msgstr "Falha ao ler dados do registrador"
 #: fperrormessages.msgfperrfailedwritemem
 msgctxt "fperrormessages.msgfperrfailedwritemem"
 msgid "Failed to write data"
-msgstr ""
+msgstr "Falha ao gravar dados"
 
 #: fperrormessages.msgfperrinvalidnumber
 #, object-pascal-format
@@ -141,7 +140,7 @@ msgstr "Erro interno: Localização dos dados faltando"
 
 #: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
 msgid "Internal error writing data: Missing data location"
-msgstr ""
+msgstr "Erro interno ao gravar dados: Local dos dados faltando"
 
 #: fperrormessages.msgfpinternalerrfperrfailedreadmem
 msgid "Internal error: Failed to read data from memory"

@@ -13,7 +13,7 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
-msgstr ""
+msgstr "Diretório de modelos de pacote do Atom"
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
@@ -65,26 +65,24 @@ msgstr "caminho ausente para pas2js"
 
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
-msgstr ""
+msgstr "Pacote Atom"
 
 #: strpas2jsdesign.pjsdnewatompackagedescr
 msgid "A pas2js program running as Atom package."
-msgstr ""
+msgstr "Um programa pas2js executando como um pacote Atom"
 
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
-msgstr ""
+msgstr "Extensão de código do Visual Studio"
 
 #: strpas2jsdesign.pjsdnewvscodeextensiondescr
 msgid "A pas2js program running as Visual Studio Code extension."
-msgstr ""
+msgstr "Um programa pas2js executando como uma extensão de código do Visual Studio"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
-#, fuzzy
-#| msgid "A pas2js program running in node.js"
 msgctxt "strpas2jsdesign.pjsdnodejsappdescription"
 msgid "A pas2js program running in node.js."
-msgstr "Um programa pas2js executando em node.js"
+msgstr "Um programa pas2js executando em node.js."
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgctxt "strpas2jsdesign.pjsdnodejsapplication"
@@ -169,7 +167,7 @@ msgstr "Rodar RTL quando todas as páginas de recursos forem totalmente carregad
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
 msgid "Select Atom package template directory"
-msgstr ""
+msgstr "Selecionar diretório de modelos de pacote do Atom"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
@@ -185,7 +183,7 @@ msgstr "Selecionar executável pas2js"
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
 msgid "Select Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Selecionar diretório de modelos de extensão de código do Visual Studio"
 
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
@@ -222,14 +220,12 @@ msgstr "Usar esta URL para iniciar a aplicação"
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Diretório de modelos de extensão de código do Visual Studio"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser"
 msgctxt "strpas2jsdesign.pjsdwebappdescription"
 msgid "A pas2js program running in the browser."
-msgstr "Um programa pas2js executando no navegador"
+msgstr "Um programa pas2js executando no navegador."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgctxt "strpas2jsdesign.pjsdwebapplication"

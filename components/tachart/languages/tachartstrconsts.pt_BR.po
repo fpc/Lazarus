@@ -422,7 +422,7 @@ msgstr "Série Polar"
 
 #: tachartstrconsts.rspolygonseries
 msgid "Polygon series"
-msgstr ""
+msgstr "Séries polígonos"
 
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"

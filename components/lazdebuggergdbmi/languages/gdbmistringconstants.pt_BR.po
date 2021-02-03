@@ -24,7 +24,7 @@ msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplica�
 #: gdbmistringconstants.gdbmicommandstartapplicationerror
 #, object-pascal-format
 msgid "The application could not be started:%0:s%1s"
-msgstr ""
+msgstr "A aplicação não pode ser iniciada:%0:s%1s"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format

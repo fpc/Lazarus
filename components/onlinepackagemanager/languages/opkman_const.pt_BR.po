@@ -1079,11 +1079,11 @@ msgstr "Pacote não encontrado."
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage1
 msgid "Orphaned package"
-msgstr ""
+msgstr "Pacote órfão"
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage2
 msgid "currently has no active maintainer"
-msgstr ""
+msgstr "atualmente não há mantenedor ativo"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
@@ -1302,7 +1302,7 @@ msgstr "Versão"
 
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
-msgstr ""
+msgstr "Gerenciador de pacotes online ..."
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
