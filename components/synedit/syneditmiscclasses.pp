@@ -139,6 +139,8 @@ type
   private
     FMouseOptions: TSynEditorMouseOptions;
     fReadOnly: Boolean;
+    fHideSelection: boolean;
+    procedure SetHideSelection(Value: boolean);
   protected
     FWordBreaker: TSynWordBreaker;
     FBlockSelection: TSynEditSelection;
@@ -319,6 +321,7 @@ type
 
     property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
     property SelAvail: Boolean read GetSelAvail;
+    property HideSelection: boolean read fHideSelection write SetHideSelection default false;
 
     property Highlighter: TObject read GetHighlighterObj;
     property Marks: TObject read GetMarksObj;
@@ -852,6 +855,14 @@ end;
 function TSynEditBase.GetSelText: string;
 begin
   Result := FBlockSelection.SelText;
+end;
+
+procedure TSynEditBase.SetHideSelection(Value: boolean);
+begin
+  if fHideSelection <> Value then begin
+    FHideSelection := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TSynEditBase.SetMouseOptions(AValue: TSynEditorMouseOptions);

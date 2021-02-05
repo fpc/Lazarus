@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LCLProc,
-  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses;
+  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses, SynEditTypes;
 
 type
 
@@ -69,7 +69,6 @@ type
   end;
 
 implementation
-uses SynEdit, SynEditTypes;
 
 { TSynEditMarkupSelection }
 
@@ -101,7 +100,7 @@ var
   p1, p2 : TPoint;
 begin
   inherited DoMarkupChanged(AMarkup);
-  if (not FSelection.SelAvail) or (TCustomSynEdit(SynEdit).HideSelection and not TCustomSynEdit(SynEdit).Focused) then
+  if (not FSelection.SelAvail) or (SynEdit.HideSelection and not SynEdit.Focused) then
     exit;
 
   p1 := FSelection.FirstLineBytePos;  // always ordered
@@ -142,7 +141,7 @@ begin
   nSelStart := 0;
   nSelEnd := 0;
 
-  if (not TCustomSynEdit(SynEdit).HideSelection or TCustomSynEdit(SynEdit).Focused) then begin
+  if (not SynEdit.HideSelection or SynEdit.Focused) then begin
     p1 := FSelection.FirstLineBytePos;  // always ordered
     p2 := FSelection.LastLineBytePos;
 

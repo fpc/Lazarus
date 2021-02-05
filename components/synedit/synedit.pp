@@ -530,7 +530,6 @@ type
     FConfirmMouseDownMatchFound: Boolean;
     fBookMarkOpt: TSynBookMarkOpt;
     FMouseWheelAccumulator, FMouseWheelLinesAccumulator: Array [Boolean] of integer;
-    fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     FKeyStrokes: TSynEditKeyStrokes;
@@ -681,7 +680,6 @@ type
     procedure SetExtraLineSpacing(const Value: integer);
     procedure SetGutter(const Value: TSynGutter);
     procedure SetRightGutter(const AValue: TSynGutter);
-    procedure SetHideSelection(const Value: boolean);
     procedure RemoveHooksFromHighlighter;
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
@@ -1137,7 +1135,6 @@ type
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret write SetOverwriteCaret default ctBlock;
 
     // Selection
-    property HideSelection: boolean read fHideSelection write SetHideSelection default false;
     property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
 
@@ -5148,7 +5145,7 @@ begin
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
   FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
   UpdateScreenCaret;
-  if FHideSelection and SelAvail then
+  if HideSelection and SelAvail then
     Invalidate;
   {$IFDEF WinIME}
   FImeHandler.FocusKilled;
@@ -5171,7 +5168,7 @@ begin
   if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterSystem then // system painter does not use timer
     FScreenCaret.PaintTimer.ResetInterval;
   FScreenCaret.Visible := not(eoNoCaret in FOptions) and IsVisible;
-  //if FHideSelection and SelAvail then
+  //if HideSelection and SelAvail then
   //  Invalidate;
   inherited;
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
@@ -6514,14 +6511,6 @@ begin
     finally
       DecPaintLock;
     end;
-  end;
-end;
-
-procedure TCustomSynEdit.SetHideSelection(const Value: boolean);
-begin
-  if fHideSelection <> Value then begin
-    FHideSelection := Value;
-    Invalidate;
   end;
 end;
 
