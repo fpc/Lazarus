@@ -986,7 +986,7 @@ type
       out Attri: TSynHighlighterAttributes): boolean;                           //L505
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); override;
-    function GetWordAtRowCol(XY: TPoint): string;
+    function GetWordAtRowCol(XY: TPoint): string; override;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
     function NextWordPos: TPoint; virtual;
     function PrevWordPos: TPoint; virtual;

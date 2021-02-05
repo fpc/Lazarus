@@ -217,6 +217,7 @@ type
     function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual; abstract;
 
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); virtual; abstract;
+    function GetWordAtRowCol(XY: TPoint): string; virtual; abstract;
 
     // Cursor
     procedure UpdateCursorOverride; virtual; abstract;
