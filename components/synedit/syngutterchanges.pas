@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, FPCanvas, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, LazSynEditText;
+  SynEditMiscProcs, LazSynEditText, SynEditTypes;
 
 type
   { TSynGutterChanges }
@@ -29,8 +29,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TSynGutterChanges }
 
@@ -82,8 +80,8 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
-  c := TCustomSynEdit(SynEdit).Lines.Count;
+  LineHeight := SynEdit.LineHeight;
+  c := SynEdit.Lines.Count;
   t := ToIdx(GutterArea.TextArea.TopLine);
 
   if MarkupInfo.Background <> clNone then
@@ -108,7 +106,7 @@ begin
     rcLine.Top := rcLine.Bottom;
     Inc(rcLine.Bottom, LineHeight);
 
-    case TCustomSynEdit(SynEdit).GetLineState(iLine) of
+    case SynEdit.GetLineState(iLine) of
       slsNone: ;
       slsSaved:
         begin

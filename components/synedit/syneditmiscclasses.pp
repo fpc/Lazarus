@@ -291,6 +291,9 @@ type
     procedure InvalidateLine(Line: integer); virtual; abstract;
     procedure InvalidateGutterLines(FirstLine, LastLine: integer); virtual; abstract; // Currently invalidates full line => that may change
     procedure InvalidateLines(FirstLine, LastLine: integer); virtual; abstract;
+
+    // text / lines
+    function GetLineState(ALine: Integer): TSynLineState; virtual; abstract;
   public
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint; virtual; abstract;

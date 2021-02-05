@@ -67,6 +67,7 @@ type
     X, Y, Offs: Integer;
   end;
 
+  TSynLineState = (slsNone, slsSaved, slsUnsaved);
 
   TSynCoordinateMappingFlag = (
     scmLimitToLines,

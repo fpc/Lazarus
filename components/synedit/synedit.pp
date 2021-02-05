@@ -264,8 +264,6 @@ type
 
   TCustomSynEdit = class;
 
-  TSynLineState = (slsNone, slsSaved, slsUnsaved);
-
 
   { TLazSynEditPlugin }
 
@@ -947,7 +945,7 @@ type
                                   );
 
 
-    function GetLineState(ALine: Integer): TSynLineState;
+    function GetLineState(ALine: Integer): TSynLineState; override;
     procedure MarkTextAsSaved;
 
     // BoorMark
