@@ -277,6 +277,16 @@ type
     procedure InvalidateGutterLines(FirstLine, LastLine: integer); virtual; abstract; // Currently invalidates full line => that may change
     procedure InvalidateLines(FirstLine, LastLine: integer); virtual; abstract;
   public
+    // Byte to Char
+    function LogicalToPhysicalPos(const p: TPoint): TPoint; virtual; abstract;
+    function LogicalToPhysicalCol(const Line: String; Index, LogicalPos
+                              : integer): integer; virtual; abstract;
+    // Char to Byte
+    function PhysicalToLogicalPos(const p: TPoint): TPoint; virtual; abstract;
+    function PhysicalToLogicalCol(const Line: string;
+                                  Index, PhysicalPos: integer): integer; virtual; abstract;
+    function PhysicalLineLength(Line: String; Index: integer): integer; virtual; abstract;
+  public
     property Lines: TStrings read GetLines write SetLines;
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;

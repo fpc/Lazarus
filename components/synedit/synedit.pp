@@ -1001,14 +1001,14 @@ type
     procedure InvalidateLines(FirstLine, LastLine: integer); override;
 
     // Byte to Char
-    function LogicalToPhysicalPos(const p: TPoint): TPoint;
+    function LogicalToPhysicalPos(const p: TPoint): TPoint; override;
     function LogicalToPhysicalCol(const Line: String; Index, LogicalPos
-                              : integer): integer;
+                              : integer): integer; override;
     // Char to Byte
-    function PhysicalToLogicalPos(const p: TPoint): TPoint;
+    function PhysicalToLogicalPos(const p: TPoint): TPoint; override;
     function PhysicalToLogicalCol(const Line: string;
-                                  Index, PhysicalPos: integer): integer;
-    function PhysicalLineLength(Line: String; Index: integer): integer;
+                                  Index, PhysicalPos: integer): integer; override;
+    function PhysicalLineLength(Line: String; Index: integer): integer; override;
 
     (* from SynMemo - NOT recommended to use - Extremly slow code
        SynEdit (and SynMemo) is a Linebased Editor and not meant to be accessed as a contineous text
