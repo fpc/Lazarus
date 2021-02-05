@@ -638,16 +638,11 @@ type
     procedure GetLayoutHandler(Sender: TObject; aFormName: string;
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
-    FUserInputSinceLastIdle: boolean;
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed on idle.
     FComponentAddedDesigner: TDesigner; // Designer and unit where components were added.
     FComponentAddedUnit: TUnitInfo;
-    FNeedSaveEnvironment: boolean;
-    FCheckFilesOnDiskNeeded: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
-    FRestartWanted: Boolean;
-
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;
@@ -1645,7 +1640,8 @@ begin
     Application.Terminate;
     exit;
   end;
-  fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
+  // Idle work gets done initially before user action.
+  FIdleIdeActions := [iiaUserInputSinceLastIdle, iiaUpdateDefineTemplates];
   MainIDEBar.ApplicationIsActivate:=true;
   IDECommandList.AddCustomUpdateEvent(@UpdateMainIDECommands);
   LazIDEInstances.StartListening(@LazInstancesStartNewInstance, @LazInstancesGetOpenedProjectFileName);
@@ -3915,7 +3911,7 @@ end;
 
 procedure TMainIDE.mnuRestartClicked(Sender: TObject);
 begin
-  FRestartWanted := True;
+  Include(FIdleIdeActions, iiaRestartWanted);
 end;
 
 procedure TMainIDE.mnuQuitClicked(Sender: TObject);
@@ -5107,7 +5103,7 @@ begin
   // Update DefineTemplates (maybe not really needed)
   // Should we test MacroValueChanged or FPCCompilerChanged or FPCSrcDirChanged?
   Project1.DefineTemplates.AllChanged(false);
-  PackageGraph.RebuildDefineTemplates;
+  Include(FIdleIdeActions, iiaUpdateDefineTemplates);
 
   // update environment
   UpdateAndInvalidateDesigners;
@@ -5291,19 +5287,18 @@ end;
 
 procedure TMainIDE.SaveEnvironment(Immediately: boolean);
 begin
-  if not Immediately then
+  if Immediately then
   begin
-    if FIDEStarted then
-      fNeedSaveEnvironment:=true;
-    exit;
-  end;
-  fNeedSaveEnvironment:=false;
-  SaveDesktopSettings(EnvironmentOptions);
-  EnvironmentOptions.Save(false);
-  EditorMacroListViewer.SaveGlobalInfo;
-  //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
-  if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then
-    SaveOIFavoriteProperties(ObjectInspector1.Favorites);
+    Exclude(FIdleIdeActions, iiaSaveEnvironment);
+    SaveDesktopSettings(EnvironmentOptions);
+    EnvironmentOptions.Save(false);
+    EditorMacroListViewer.SaveGlobalInfo;
+    //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
+    if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then
+      SaveOIFavoriteProperties(ObjectInspector1.Favorites);
+  end
+  else if FIDEStarted then
+    Include(FIdleIdeActions, iiaSaveEnvironment);
 end;
 
 procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
@@ -8514,10 +8509,10 @@ begin
   if Screen.GetCurrentModalForm<>nil then exit;
 
   if not Instantaneous then begin
-    FCheckFilesOnDiskNeeded:=true;
+    Include(FIdleIdeActions, iiaCheckFilesOnDisk);
     exit;
   end;
-  FCheckFilesOnDiskNeeded:=false;
+  Exclude(FIdleIdeActions, iiaCheckFilesOnDisk);
 
   CheckFilesOnDiskEnabled:=False;
   AnUnitList:=nil;
@@ -12181,7 +12176,7 @@ end;
 
 procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
-  fUserInputSinceLastIdle:=true;
+  Include(FIdleIdeActions, iiaUserInputSinceLastIdle);
   if ToolStatus=itCodeTools then
     // abort codetools
     ToolStatus:=itCodeToolAborting;
@@ -12196,15 +12191,6 @@ var
   HasResources: Boolean;
   FileItem: PStringToStringItem;
 begin
-  if FNeedUpdateHighlighters then begin
-    {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.HandleApplicationIdle FNeedUpdateHighlighters']);
-    {$ENDIF}
-    UpdateHighlighters(true);
-  end;
-  if fNeedSaveEnvironment then
-    SaveEnvironment(true);
-
   GetDefaultProcessList.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
@@ -12215,12 +12201,13 @@ begin
     {$ENDIF}
     // Remember cursor position
     SourceEditorManager.AddJumpPointClicked(Self);
-    // Add component definitions to form source
+    // Add component definitions to form's source code
     Ancestor:=GetAncestorLookupRoot(FComponentAddedUnit);
     CodeToolBoss.CompleteComponent(FComponentAddedUnit.Source,
                                    FComponentAddedDesigner.LookupRoot, Ancestor);
     FComponentAddedDesigner:=nil;
   end;
+
   if Assigned(FDesignerToBeFreed) then begin
     for FileItem in FDesignerToBeFreed do begin
       if Project1=nil then break;
@@ -12231,12 +12218,38 @@ begin
     end;
     FreeAndNil(FDesignerToBeFreed);
   end;
-  if FUserInputSinceLastIdle then
+
+  if (FRemoteControlTimer=nil) and EnableRemoteControl then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.HandleApplicationIdle EnableRemoteControl']);
+    {$ENDIF}
+    SetupRemoteControl;
+  end;
+
+  if Screen.GetCurrentModalForm=nil then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.HandleApplicationIdle Screen.GetCurrentModalForm']);
+    {$ENDIF}
+    PkgBoss.OpenHiddenModifiedPackages;
+  end;
+
+  // FIdleIdeActions flags
+
+  if iiaUpdateHighlighters in FIdleIdeActions then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.HandleApplicationIdle UpdateHighlighters']);
+    {$ENDIF}
+    UpdateHighlighters(true);
+  end;
+
+  if iiaSaveEnvironment in FIdleIdeActions then
+    SaveEnvironment(true);
+
+  if iiaUserInputSinceLastIdle in FIdleIdeActions then
   begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.HandleApplicationIdle FUserInputSinceLastIdle']);
+    debugln(['TMainIDE.HandleApplicationIdle UserInputSinceLastIdle']);
     {$ENDIF}
-    FUserInputSinceLastIdle:=false;
     FormEditor1.CheckDesignerPositions;
     FormEditor1.PaintAllDesignerItems;
     GetCurrentUnit(SrcEdit,AnUnitInfo);
@@ -12265,28 +12278,26 @@ begin
       DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
-  if FCheckFilesOnDiskNeeded then begin
+
+  if iiaCheckFilesOnDisk in FIdleIdeActions then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.HandleApplicationIdle FCheckFilesOnDiskNeeded']);
+    debugln(['TMainIDE.HandleApplicationIdle CheckFilesOnDisk']);
     {$ENDIF}
     DoCheckFilesOnDisk(true);
   end;
-  if (FRemoteControlTimer=nil) and EnableRemoteControl then begin
+
+  if iiaUpdateDefineTemplates in FIdleIdeActions then begin
     {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.HandleApplicationIdle EnableRemoteControl']);
+    debugln(['TMainIDE.HandleApplicationIdle UpdateDefineTemplates']);
     {$ENDIF}
-    SetupRemoteControl;
+    PackageGraph.RebuildDefineTemplates;
   end;
-  if Screen.GetCurrentModalForm=nil then begin
-    {$IFDEF VerboseIdle}
-    debugln(['TMainIDE.HandleApplicationIdle Screen.GetCurrentModalForm']);
-    {$ENDIF}
-    PkgBoss.OpenHiddenModifiedPackages;
-  end;
-  if FRestartWanted then begin
-    FRestartWanted := False; { Avoid loop if restart cancelled }
+
+  if iiaRestartWanted in FIdleIdeActions then begin
+    Exclude(FIdleIdeActions, iiaRestartWanted); // Avoid loop if restart cancelled
     DoRestart;
   end;
+  FIdleIdeActions := [];
 end;
 
 procedure TMainIDE.HandleApplicationDeActivate(Sender: TObject);

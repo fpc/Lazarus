@@ -82,6 +82,16 @@ type
   );
   TResetToolFlags = set of TResetToolFlag;
 
+  TIdleIdeAction = (
+    iiaUpdateHighlighters,
+    iiaSaveEnvironment,
+    iiaUserInputSinceLastIdle,
+    iiaCheckFilesOnDisk,
+    iiaUpdateDefineTemplates,
+    iiaRestartWanted
+  );
+  TIdleIdeActions = set of TIdleIdeAction;
+
   { TMainIDEBase }
 
   TMainIDEBase = class(TMainIDEInterface)
@@ -91,7 +101,7 @@ type
     procedure SetDisplayState(AValue: TDisplayState);
     procedure UpdateWindowMenu;
   protected
-    FNeedUpdateHighlighters: boolean;
+    FIdleIdeActions: TIdleIdeActions;
 
     function CreateMenuSeparator(Section: TIDEMenuSection): TIDEMenuCommand;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -1718,7 +1728,7 @@ begin
   DoOpenRecentFile((Sender as TIDEMenuItem).Hint);
 end;
 
-procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean = false);
+procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean);
 var
   ASrcEdit: TSourceEditor;
   h: TLazSyntaxHighlighter;
@@ -1726,7 +1736,7 @@ var
   AnEditorInfo: TUnitEditorInfo;
 begin
   if Immediately then begin
-    FNeedUpdateHighlighters:=false;
+    Exclude(FIdleIdeActions, iiaUpdateHighlighters);
     for h := Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
       if Highlighters[h]<>nil then begin
         Highlighters[h].BeginUpdate;
@@ -1741,9 +1751,9 @@ begin
           ASrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
       end;
     end;
-  end else begin
-    FNeedUpdateHighlighters:=true;
-  end;
+  end
+  else
+    Include(FIdleIdeActions, iiaUpdateHighlighters);
 end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
