@@ -27,7 +27,7 @@ uses
   SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynEditKeyCmds,
   SynDesignStringConstants,
   PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs, ComponentEditors,
-  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
+  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf, SynEditTypes;
 
 type
 

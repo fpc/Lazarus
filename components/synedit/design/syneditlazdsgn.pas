@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils,
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
-  SynGutterMarks, SynGutterBase, SynEditMouseCmds,
+  SynGutterMarks, SynGutterBase, SynEditMouseCmds, SynEditTypes,
   {$IFDEF DesignSynGutterLineOverview} SynGutterLineOverview, {$ENDIF}
   SynEditKeyCmds, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
