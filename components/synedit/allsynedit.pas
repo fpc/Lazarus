@@ -32,7 +32,7 @@ uses
   SynHighlighterIni, SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, 
   SynEditTextSystemCharWidth, SynEditMarkupIfDef, SynPluginMultiCaret, 
   synhighlighterpike, SynEditMarkupFoldColoring, SynEditViewedLineMap, 
-  SynEditWrappedView, LazarusPackageIntf;
+  SynEditWrappedView, LazarusPackageIntf, SynBeautifierPascal;
 
 implementation
 
