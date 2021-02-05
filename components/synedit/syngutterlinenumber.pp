@@ -68,8 +68,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TSynGutterLineNumber }
 
@@ -244,8 +242,8 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
-  c := TCustomSynEdit(SynEdit).Lines.Count;
+  LineHeight := SynEdit.LineHeight;
+  c := SynEdit.Lines.Count;
   t := ToIdx(GutterArea.TextArea.TopLine);
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
@@ -265,7 +263,7 @@ begin
     if MarkupInfo.Foreground <> clNone then
       fTextDrawer.SetForeColor(MarkupInfo.Foreground)
     else
-      fTextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
+      fTextDrawer.SetForeColor(SynEdit.Font.Color);
     fTextDrawer.SetFrameColor(MarkupInfo.FrameColor);
     fTextDrawer.Style := MarkupInfo.Style;
     // prepare the rect initially
@@ -281,7 +279,7 @@ begin
       // line number is not the first, the last, the current line
       // or a multiple of ShowOnlyLineNumbersMultiplesOf
       LineInfo.ShowDot := ((iLine mod ShowOnlyLineNumbersMultiplesOf) <> 0)
-          and (iLine <> TCustomSynEdit(SynEdit).CaretY) and (iLine <> 1)
+          and (iLine <> SynEdit.CaretY) and (iLine <> 1)
           and (iLine <> SynEdit.Lines.Count);
       // Get the formatted line number or dot
       if Assigned(FOnFormatLineNumber) then begin

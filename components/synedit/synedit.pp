@@ -625,12 +625,9 @@ type
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
     function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
     function GetCanPaste: Boolean;
-    function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
-    function GetCaretX : Integer;
-    function GetCaretY : Integer;
     function GetCaretUndo: TSynEditUndoItem;
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
@@ -646,8 +643,6 @@ type
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
     function GetCharLen(const Line: string; CharStartPos: integer): integer; // TODO: deprecated
-    function GetLogicalCaretXY: TPoint;
-    procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     function GetMaxUndo: Integer;
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
@@ -671,8 +666,6 @@ type
                                    Mode: TSynSelectionMode = smCurrent;
                                    MakeSelectionVisible: Boolean = False
                                    );
-    procedure SetCaretX(const Value: Integer);
-    procedure SetCaretY(const Value: Integer);
     procedure SetGutter(const Value: TSynGutter);
     procedure SetRightGutter(const AValue: TSynGutter);
     procedure RemoveHooksFromHighlighter;
@@ -798,6 +791,15 @@ type
     procedure SetLeftChar(Value: Integer); override;
     procedure SetTopLine(Value: Integer); override;
 
+    function GetCaretX : Integer; override;
+    function GetCaretY : Integer; override;
+    function GetCaretXY: TPoint; override;
+    procedure SetCaretX(const Value: Integer); override;
+    procedure SetCaretY(const Value: Integer); override;
+    procedure SetCaretXY(Value: TPoint); override;
+    function GetLogicalCaretXY: TPoint; override;
+    procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint); override;
+
     function GetMouseActions: TSynEditMouseActions; override;
     function GetMouseSelActions: TSynEditMouseActions; override;
     function GetMouseTextActions: TSynEditMouseActions; override;
@@ -850,7 +852,6 @@ type
     function PrevWordLogicalPos(ABoundary: TLazSynWordBoundary = swbWordBegin): TPoint;
     procedure RecalcCharExtent;
     procedure RedoItem(Item: TSynEditUndoItem);
-    procedure SetCaretXY(Value: TPoint);
     procedure CaretChanged(Sender: TObject);
     procedure SetMouseOptions(AValue: TSynEditorMouseOptions); override;
     procedure SetName(const Value: TComponentName); override;
@@ -902,11 +903,6 @@ type
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
     procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
-
-    property CaretX: Integer read GetCaretX write SetCaretX;
-    property CaretY: Integer read GetCaretY write SetCaretY;
-    property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
-    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
 
     // Selection
     procedure ClearSelection;

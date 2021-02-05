@@ -204,6 +204,15 @@ type
     procedure SetExtraCharSpacing(const aExtraCharSpacing: integer); virtual; abstract;
     procedure SetExtraLineSpacing(const aExtraLineSpacing: integer); virtual; abstract;
 
+    function GetCaretX : Integer; virtual; abstract;
+    function GetCaretY : Integer; virtual; abstract;
+    function GetCaretXY: TPoint; virtual; abstract;
+    procedure SetCaretX(const Value: Integer); virtual; abstract;
+    procedure SetCaretY(const Value: Integer); virtual; abstract;
+    procedure SetCaretXY(Value: TPoint); virtual; abstract;
+    function GetLogicalCaretXY: TPoint; virtual; abstract;
+    procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint); virtual; abstract;
+
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
     property ViewedTextBuffer: TSynEditStringsLinked read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
@@ -317,6 +326,11 @@ type
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
+
+    property CaretX: Integer read GetCaretX write SetCaretX;
+    property CaretY: Integer read GetCaretY write SetCaretY;
+    property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
+    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
 
     property CharsInWindow: Integer read GetCharsInWindow;
     property CharWidth: integer read GetCharWidth;
