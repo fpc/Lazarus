@@ -141,6 +141,8 @@ type
     fReadOnly: Boolean;
     fHideSelection: boolean;
     fBookMarkOpt: TSynBookMarkOpt;
+    fExtraCharSpacing: integer;
+    fExtraLineSpacing: integer;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure SetHideSelection(Value: boolean);
   protected
@@ -203,10 +205,8 @@ type
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); virtual; abstract;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); virtual; abstract;
 
-    function GetExtraCharSpacing: integer; virtual; abstract;
-    function GetExtraLineSpacing: integer; virtual; abstract;
-    procedure SetExtraCharSpacing(const aExtraCharSpacing: integer); virtual; abstract;
-    procedure SetExtraLineSpacing(const aExtraLineSpacing: integer); virtual; abstract;
+    procedure SetExtraCharSpacing(const AValue: integer); virtual;
+    procedure SetExtraLineSpacing(const AValue: integer); virtual;
 
     function GetCaretX : Integer; virtual; abstract;
     function GetCaretY : Integer; virtual; abstract;
@@ -325,8 +325,8 @@ type
     function PhysicalLineLength(Line: String; Index: integer): integer; virtual; abstract;
   public
     property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt; // ToDo: check "write fBookMarkOpt"
-    property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing default 0;
-    property ExtraLineSpacing: integer read GetExtraLineSpacing write SetExtraLineSpacing default 0;
+    property ExtraCharSpacing: integer read fExtraCharSpacing write SetExtraCharSpacing default 0;
+    property ExtraLineSpacing: integer read fExtraLineSpacing write SetExtraLineSpacing default 0;
     property Lines: TStrings read GetLines write SetLines;
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
@@ -912,6 +912,16 @@ end;
 function TSynEditBase.GetSelText: string;
 begin
   Result := FBlockSelection.SelText;
+end;
+
+procedure TSynEditBase.SetExtraCharSpacing(const AValue: integer);
+begin
+  fExtraCharSpacing := AValue;
+end;
+
+procedure TSynEditBase.SetExtraLineSpacing(const AValue: integer);
+begin
+  fExtraLineSpacing := AValue;
 end;
 
 procedure TSynEditBase.SetHideSelection(Value: boolean);

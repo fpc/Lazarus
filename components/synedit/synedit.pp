@@ -803,8 +803,6 @@ type
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); override;
 
-    function GetExtraCharSpacing: integer; override;
-    function GetExtraLineSpacing: integer; override;
     procedure SetExtraCharSpacing(const Value: integer); override;
     procedure SetExtraLineSpacing(const Value: integer); override;
 
@@ -1832,16 +1830,6 @@ end;
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
 begin
   Result := FBlockSelection.SelectionMode;
-end;
-
-function TCustomSynEdit.GetExtraCharSpacing: integer;
-begin
-  Result := FPaintArea.ExtraCharSpacing;
-end;
-
-function TCustomSynEdit.GetExtraLineSpacing: integer;
-begin
-  Result := FPaintArea.ExtraLineSpacing;
 end;
 
 function TCustomSynEdit.GetFoldedCodeLineColor: TSynSelectedColor;
@@ -6658,6 +6646,7 @@ end;
 procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
 begin
   if ExtraCharSpacing=Value then exit;
+  inherited;
   FPaintArea.ExtraCharSpacing := Value;
   FontChanged(self);
 end;
@@ -7762,6 +7751,7 @@ end;
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
   if ExtraLineSpacing=Value then exit;
+  inherited;
   FPaintArea.ExtraLineSpacing := Value;
   FontChanged(self);
 end;
