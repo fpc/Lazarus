@@ -1,4 +1,4 @@
-unit synbeautifierpascal;
+unit SynBeautifierPascal;
 
 {$mode objfpc}{$H+}
 
