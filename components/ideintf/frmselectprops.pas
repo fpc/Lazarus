@@ -141,7 +141,7 @@ var
 begin
   //debugln('TSelectPropertiesForm.SetSelectedProps');
   L:=TStringList.Create;
-  L.UseLocale:=False;
+  {$IF FPC_FULLVERSION>=30200}L.UseLocale:=False;{$ENDIF}
   Try
     L.Delimiter:=';';
     L.DelimitedText:=AValue;

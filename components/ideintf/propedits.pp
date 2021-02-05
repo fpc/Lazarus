@@ -2735,7 +2735,7 @@ var
 begin
   if not AutoFill then Exit;
   Values:=TStringList.Create;
-  Values.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}Values.UseLocale := False;{$ENDIF}
   Values.Sorted:=paSortList in GetAttributes;
   try
     AddValue := @Values.Add;

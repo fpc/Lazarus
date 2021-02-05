@@ -84,10 +84,10 @@ begin
   SetSection('Replace');
   fcWords := TStringList.Create;
 
-  fcLeftWords := TStringList.Create;
-  fcLeftWords.UseLocale := False;      // Will compare with CompareText.
+  fcLeftWords := TStringList.Create;        // Will compare with CompareText.
+  {$IF FPC_FULLVERSION>=30200}fcLeftWords.UseLocale := False;{$ENDIF}
   fcRightWords := TStringList.Create;
-  fcRightWords.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}fcRightWords.UseLocale := False;{$ENDIF}
 end;
 
 destructor TSetReplace.Destroy;

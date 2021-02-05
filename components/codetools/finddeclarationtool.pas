@@ -1575,7 +1575,7 @@ begin
   inherited;
   FResults := TStringList.Create;
   FResults.CaseSensitive := True;  // Why CaseSensitive?
-  FResults.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}FResults.UseLocale := False;{$ENDIF}
   FResults.Duplicates := dupIgnore;
   FResults.Sorted := True;
 end;

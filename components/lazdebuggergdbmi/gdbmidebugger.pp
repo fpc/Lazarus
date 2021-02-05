@@ -8135,12 +8135,12 @@ end;
 constructor TGDBMILineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
   FSourceIndex := TStringList.Create;
-  FSourceIndex.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}FSourceIndex.UseLocale := False;{$ENDIF}
   FSourceIndex.Sorted := True;
   FSourceIndex.Duplicates := dupError;
   FSourceIndex.CaseSensitive := True;
   FRequestedSources := TStringList.Create;
-  FRequestedSources.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}FRequestedSources.UseLocale := False;{$ENDIF}
   FRequestedSources.Sorted := True;
   FRequestedSources.Duplicates := dupError;
   FRequestedSources.CaseSensitive := True;

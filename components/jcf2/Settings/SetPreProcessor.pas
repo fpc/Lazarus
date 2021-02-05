@@ -77,13 +77,13 @@ begin
   inherited;
   SetSection('PreProcessor');
 
-  fcDefinedSymbols := TStringList.Create;
-  fcDefinedSymbols.UseLocale := False;    // Will compare with CompareText.
+  fcDefinedSymbols := TStringList.Create;     // Will compare with CompareText.
+  {$IF FPC_FULLVERSION>=30200}fcDefinedSymbols.UseLocale := False;{$ENDIF}
   //fcDefinedSymbols.Sorted := True;
   fcDefinedSymbols.Duplicates := dupIgnore;
 
   fcDefinedOptions := TStringList.Create;
-  fcDefinedOptions.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}fcDefinedOptions.UseLocale := False;{$ENDIF}
   //fcDefinedOptions.Sorted := True;
   fcDefinedOptions.Duplicates := dupIgnore;
 end;

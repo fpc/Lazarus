@@ -88,12 +88,12 @@ begin
   inherited;
   SetSection('Clarify');
 
-  fcIgnoreUnusedParams := TStringList.Create;
-  fcIgnoreUnusedParams.UseLocale := False;    // Will compare with CompareText.
+  fcIgnoreUnusedParams := TStringList.Create;  // Will compare with CompareText.
+  {$IF FPC_FULLVERSION>=30200}fcIgnoreUnusedParams.UseLocale := False;{$ENDIF}
   fcIgnoreUnusedParams.Duplicates := dupIgnore;
 
   fcFileExtensions := TStringList.Create;
-  fcFileExtensions.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}fcFileExtensions.UseLocale := False;{$ENDIF}
   fcFileExtensions.Duplicates := dupIgnore;
 
 end;

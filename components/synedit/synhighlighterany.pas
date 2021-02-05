@@ -1139,7 +1139,7 @@ begin
     else
       HL.StringDelim:=sdSingleQuote;
     genlist:=TStringList.create;
-    genlist.UseLocale:=false;
+    {$IF FPC_FULLVERSION>=30200}genlist.UseLocale:=false;{$ENDIF}
     // read keywords
     hini.ReadSectionNames('Keywords',genlist);
     if genlist.count>0 then

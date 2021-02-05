@@ -52,8 +52,8 @@ begin
     ...
   }
 
-  mcWords := TStringList.Create();
-  mcWords.UseLocale := False;   // Will compare with CompareText.
+  mcWords := TStringList.Create();              // Will compare with CompareText.
+  {$IF FPC_FULLVERSION>=30200}mcWords.UseLocale := False;{$ENDIF}
 
   mcWords.Add('RAX');
   mcWords.Add('EAX');

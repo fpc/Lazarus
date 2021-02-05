@@ -231,7 +231,7 @@ var
 begin
   ControlsCount := 0;
   CurParentNameList := TStringList.Create;
-  CurParentNameList.UseLocale := False;
+  {$IF FPC_FULLVERSION>=30200}CurParentNameList.UseLocale := False;{$ENDIF}
 
   for i:=0 to ASelection.Count-1 do
     if ASelection.Items[i] is TControl then

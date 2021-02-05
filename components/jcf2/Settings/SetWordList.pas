@@ -83,8 +83,8 @@ begin
 
   SetSection(psSectionName);
 
-  fcWords := TStringList.Create;
-  fcWords.UseLocale := False;    // Will compare with CompareText.
+  fcWords := TStringList.Create;         // Will compare with CompareText.
+  {$IF FPC_FULLVERSION>=30200}fcWords.UseLocale := False;{$ENDIF}
   fcWords.Sorted := True;
   fcWords.Duplicates := dupIgnore;
 end;
