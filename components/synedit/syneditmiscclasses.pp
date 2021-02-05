@@ -199,6 +199,11 @@ type
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); virtual; abstract;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); virtual; abstract;
 
+    function GetExtraCharSpacing: integer; virtual; abstract;
+    function GetExtraLineSpacing: integer; virtual; abstract;
+    procedure SetExtraCharSpacing(const aExtraCharSpacing: integer); virtual; abstract;
+    procedure SetExtraLineSpacing(const aExtraLineSpacing: integer); virtual; abstract;
+
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
     property ViewedTextBuffer: TSynEditStringsLinked read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
@@ -305,6 +310,8 @@ type
                                   Index, PhysicalPos: integer): integer; virtual; abstract;
     function PhysicalLineLength(Line: String; Index: integer): integer; virtual; abstract;
   public
+    property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing default 0;
+    property ExtraLineSpacing: integer read GetExtraLineSpacing write SetExtraLineSpacing default 0;
     property Lines: TStrings read GetLines write SetLines;
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;

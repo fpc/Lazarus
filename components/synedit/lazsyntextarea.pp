@@ -224,6 +224,8 @@ type
     function  GetTextArea: TLazSynTextArea; override;
   protected
     procedure SetBackgroundColor(AValue: TColor); virtual;
+    function GetExtraCharSpacing: integer;
+    function GetExtraLineSpacing: integer;
     procedure SetExtraCharSpacing(AValue: integer); virtual;
     procedure SetExtraLineSpacing(AValue: integer); virtual;
     procedure SetForegroundColor(AValue: TColor); virtual;
@@ -252,8 +254,8 @@ type
     property Padding[Side: TLazSynBorderSide]: integer write SetPadding;
     property ForegroundColor: TColor   write SetForegroundColor;
     property BackgroundColor: TColor   write SetBackgroundColor;
-    property ExtraCharSpacing: integer write SetExtraCharSpacing;
-    property ExtraLineSpacing: integer write SetExtraLineSpacing;
+    property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing;
+    property ExtraLineSpacing: integer read GetExtraLineSpacing write SetExtraLineSpacing;
     property VisibleSpecialChars: TSynVisibleSpecialChars write SetVisibleSpecialChars;
     property RightEdgeColumn: integer  write SetRightEdgeColumn;
     property RightEdgeVisible: boolean write SetRightEdgeVisible;
@@ -1133,6 +1135,16 @@ begin
   FLeftGutterArea.Paint(ACanvas, AClip);
   FTextArea.Paint(ACanvas, AClip);
   FRightGutterArea.Paint(ACanvas, AClip);
+end;
+
+function TLazSynSurfaceManager.GetExtraCharSpacing: integer;
+begin
+  Result := FTextArea.ExtraCharSpacing;
+end;
+
+function TLazSynSurfaceManager.GetExtraLineSpacing: integer;
+begin
+  Result := FTextArea.ExtraLineSpacing;
 end;
 
 procedure TLazSynSurfaceManager.DoDisplayViewChanged;

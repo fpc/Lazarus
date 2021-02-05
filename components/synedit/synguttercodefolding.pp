@@ -123,8 +123,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 var
   GlobalPopUpImageList: TSynGutterImageList = nil;
@@ -439,9 +437,9 @@ begin
   tmp := FoldTypeForLine(ScrLine);
   case tmp of
     cfCollapsedFold, cfCollapsedHide:
-      Result := HandleActionProc(FMouseActionsCollapsed.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
+      Result := HandleActionProc(FMouseActionsCollapsed.GetActionsForOptions(SynEdit.MouseOptions), AnInfo);
     cfFoldStart, cfHideStart:
-      Result := HandleActionProc(FMouseActionsExpanded.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
+      Result := HandleActionProc(FMouseActionsExpanded.GetActionsForOptions(SynEdit.MouseOptions), AnInfo);
   end;
 
   if not Result then
@@ -533,9 +531,9 @@ end;
 procedure TSynGutterCodeFolding.ResetMouseActions;
 begin
   inherited;
-  FMouseActionsExpanded.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActionsExpanded.Options := SynEdit.MouseOptions;
   FMouseActionsExpanded.ResetUserActions;
-  FMouseActionsCollapsed.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActionsCollapsed.Options := SynEdit.MouseOptions;
   FMouseActionsCollapsed.ResetUserActions;
 end;
 
@@ -623,7 +621,7 @@ function TSynGutterCodeFolding.PreferedWidth: Integer;
 const PrefFullWidth = 10;
 begin
   Result :=
-    Max(PrefFullWidth div 2, Min(PrefFullWidth, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset));
+    Max(PrefFullWidth div 2, Min(PrefFullWidth, SynEdit.LineHeight - cNodeOffset));
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
@@ -728,8 +726,8 @@ var
 
 begin
   if not Visible then exit;
-  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
-  TextHeight := LineHeight - Max(0, TCustomSynEdit(SynEdit).ExtraLineSpacing);
+  LineHeight := SynEdit.LineHeight;
+  TextHeight := LineHeight - Max(0, SynEdit.ExtraLineSpacing);
   LineOffset := 0;
   if (FirstLine > 0) and
      (FoldView.FoldType[FirstLine-1] - [cfFoldBody] = [cfFoldEnd]) then

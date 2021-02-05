@@ -501,7 +501,6 @@ type
     FLines: TSynEditStringListBase;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
 
-    fExtraCharSpacing: integer;
     fMaxLeftChar: Integer; // 1024
     FOldWidth, FOldHeight: Integer;
 
@@ -536,7 +535,6 @@ type
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
     FMarkList: TSynEditMarkList;
-    fExtraLineSpacing: integer;
     FUseUTF8: boolean;
     fWantTabs: boolean;
     FLeftGutter, FRightGutter: TSynGutter;
@@ -675,14 +673,12 @@ type
                                    );
     procedure SetCaretX(const Value: Integer);
     procedure SetCaretY(const Value: Integer);
-    procedure SetExtraLineSpacing(const Value: integer);
     procedure SetGutter(const Value: TSynGutter);
     procedure SetRightGutter(const AValue: TSynGutter);
     procedure RemoveHooksFromHighlighter;
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
-    procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar: Integer;
     function  CurrentMaxLineLen: Integer;
@@ -808,6 +804,11 @@ type
     procedure SetMouseActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); override;
+
+    function GetExtraCharSpacing: integer; override;
+    function GetExtraLineSpacing: integer; override;
+    procedure SetExtraCharSpacing(const Value: integer); override;
+    procedure SetExtraLineSpacing(const Value: integer); override;
 
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
     procedure UpdateShowing; override;
@@ -1157,8 +1158,6 @@ type
     property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt;
     property BlockIndent: integer read FBlockIndent write SetBlockIndent default 2;
     property BlockTabIndent: integer read FBlockTabIndent write SetBlockTabIndent default 0;
-    property ExtraCharSpacing: integer read fExtraCharSpacing write SetExtraCharSpacing default 0;
-    property ExtraLineSpacing: integer read fExtraLineSpacing write SetExtraLineSpacing default 0;
     property Highlighter: TSynCustomHighlighter read fHighlighter write SetHighlighter;
     property Gutter: TSynGutter read FLeftGutter write SetGutter;
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
@@ -1841,6 +1840,16 @@ end;
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
 begin
   Result := FBlockSelection.SelectionMode;
+end;
+
+function TCustomSynEdit.GetExtraCharSpacing: integer;
+begin
+  Result := FPaintArea.ExtraCharSpacing;
+end;
+
+function TCustomSynEdit.GetExtraLineSpacing: integer;
+begin
+  Result := FPaintArea.ExtraLineSpacing;
 end;
 
 function TCustomSynEdit.GetFoldedCodeLineColor: TSynSelectedColor;
@@ -6659,8 +6668,7 @@ end;
 
 procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
 begin
-  if fExtraCharSpacing=Value then exit;
-  fExtraCharSpacing := Value;
+  if ExtraCharSpacing=Value then exit;
   FPaintArea.ExtraCharSpacing := Value;
   FontChanged(self);
 end;
@@ -7764,8 +7772,7 @@ end;
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
-  if fExtraLineSpacing=Value then exit;
-  fExtraLineSpacing := Value;
+  if ExtraLineSpacing=Value then exit;
   FPaintArea.ExtraLineSpacing := Value;
   FontChanged(self);
 end;
@@ -8581,7 +8588,7 @@ begin
       if Assigned(fHighlighter) then
         for i := 0 to Pred(fHighlighter.AttrCount) do
           fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
-      fTextDrawer.CharExtra := fExtraCharSpacing;
+      fTextDrawer.CharExtra := ExtraCharSpacing;
 
       FUseUTF8:=fTextDrawer.UseUTF8;
       FLines.IsUtf8 := FUseUTF8;
