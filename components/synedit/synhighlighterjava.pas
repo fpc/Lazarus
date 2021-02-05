@@ -50,7 +50,7 @@ interface
 uses
   SysUtils, Classes,
   LCLIntf, LCLType, Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkDocument, tkIdentifier, tkInvalid, tkKey,
@@ -234,9 +234,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   Identifiers: array[#0..#255] of ByteBool;

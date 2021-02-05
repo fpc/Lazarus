@@ -131,7 +131,8 @@ uses
   // Gutter
   SynGutterBase, SynGutter,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
-  SynEditTextBidiChars;
+  SynEditTextBidiChars,
+  SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()
@@ -1458,10 +1459,6 @@ type
 procedure Register;
 
 implementation
-
-uses
-  // units needed in Register procedure
-  SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview;
 
 var
   LOG_SynMouseEvents: PLazLoggerLogGroup;

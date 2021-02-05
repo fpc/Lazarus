@@ -50,7 +50,7 @@ interface
 
 uses
   SysUtils, Classes, FileUtil, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -166,9 +166,6 @@ function LoadLFMFile2Strings(const AFile: string; AStrings: TStrings;
 function SaveStrings2LFMFile(AStrings: TStrings; const AFile: string): integer;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 { A couple of useful Lazarus Form functions }
 

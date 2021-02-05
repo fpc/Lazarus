@@ -57,7 +57,7 @@ interface
 
 uses
   Classes, Graphics, SynEditTypes, SynEditHighlighter,
-  SynEditHighlighterFoldBase, SynEditHighlighterXMLBase;
+  SynEditHighlighterFoldBase, SynEditHighlighterXMLBase, SynEditStrConst;
 
 type
   TtkTokenKind = (tkAposAttrValue, tkAposEntityRef, tkAttribute, tkCDATA,
@@ -214,9 +214,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 const
   NameChars : set of char = ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', ':', '-'];

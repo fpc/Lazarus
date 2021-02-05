@@ -42,7 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  Classes, Menus, SysUtils, LCLIntf, LCLType;
+  Classes, Menus, SysUtils, LCLIntf, LCLType, SynEditStrConst;
 
 const
   //****************************************************************************
@@ -419,10 +419,6 @@ procedure RegisterKeyCmdIdentProcs(IdentToIntFn: TIdentToInt; IntToIdentFn: TInt
 procedure RegisterExtraGetEditorCommandValues(AProc: TGetEditorCommandValuesProc);
 
 implementation
-
-// FOR LAZARUS
-uses
-  SynEditStrConst;
 
 //=============================================================================
 // This code should move to the menus.pas

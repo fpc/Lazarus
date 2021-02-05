@@ -52,7 +52,8 @@ uses
   SysUtils,
   SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
   FileUtil, LazUTF8, FPCAdds, LCLType, LCLProc,
-  Graphics, Clipbrd;
+  Graphics, Clipbrd,
+  SynEditMiscProcs, SynEditStrConst;
 
 type
   PSynReplaceCharsArray = ^TSynReplaceCharsArray;
@@ -213,9 +214,6 @@ type
   ESynExport = class(Exception);
 
 implementation
-
-uses
-  SynEditMiscProcs, SynEditStrConst;
 
 { TSynCustomExporter }
 

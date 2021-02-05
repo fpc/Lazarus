@@ -44,7 +44,7 @@ uses
   SysUtils, Classes,
   LCLIntf, LCLType, LazUTF8,
   Controls, Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
   TtkTokenKind = (tkBrace, tkBracket, tkNull, tkSpace, tkText, tkComment,
@@ -125,9 +125,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 procedure TSynTeXSyn.MakeMethodTables;
 var

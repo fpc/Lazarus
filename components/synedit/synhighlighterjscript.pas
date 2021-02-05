@@ -55,7 +55,7 @@ uses
   Graphics,
   SynEditTypes,
   SynEditHighlighter,  SynEditHighlighterFoldBase,
-  SysUtils, Classes;
+  SysUtils, Classes, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -314,9 +314,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   Identifiers: array[#0..#255] of ByteBool;

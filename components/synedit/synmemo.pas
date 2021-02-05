@@ -44,7 +44,7 @@ unit SynMemo;
 interface
 
 uses
-  Classes, LCLIntf, Controls, SynEdit;
+  Classes, LCLIntf, Controls, SynEdit, SynEditMiscProcs;
 
 //SelStart and SelEnd are now in TCustomSynEdit                                 //DDH Addition
 
@@ -147,9 +147,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditMiscProcs;
 
 { TCustomSynMemo }
 

@@ -49,7 +49,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, SynEditTypes, SynEditHighlighter,
-  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase;
+  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst;
 
 const
   MAX_ESCAPEAMPS = 159;
@@ -508,9 +508,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   mHashTable: array[#0..#255] of Integer;

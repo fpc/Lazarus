@@ -51,7 +51,7 @@ interface
 uses
   IniFiles, //THashedStringList
   LCLIntf, LCLType,
-  SynEditHighlighter, SynEditTypes,
+  SynEditHighlighter, SynEditTypes, SynEditStrConst,
   Graphics, SysUtils, Classes;
 
 const
@@ -178,9 +178,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   GlobalKeywords: TStringList;

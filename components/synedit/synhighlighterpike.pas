@@ -50,7 +50,7 @@ interface
 uses
   SysUtils, Classes,
   LCLIntf, LCLType, Graphics,
-  SynEditHighlighter, synhighlighterjava;
+  SynEditHighlighter, synhighlighterjava, SynEditStrConst;
 
 type
   TSynPikeSyn = class(TSynJavaSyn)
@@ -108,9 +108,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 procedure TSynPikeSyn.InitIdent;
 var

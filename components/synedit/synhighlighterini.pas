@@ -51,7 +51,7 @@ interface
 uses
   Classes,
   Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkText, tkSection, tkKey, tkNull, tkNumber,
@@ -131,9 +131,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 procedure TSynIniSyn.MakeMethodTables;
 var

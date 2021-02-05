@@ -42,7 +42,7 @@ unit SynEditMiscProcs;
 interface
 
 uses
-  LCLIntf, LCLType, Classes, SynEditTypes, Graphics;
+  LCLIntf, LCLType, Classes, SynEditTypes, Graphics, SysUtils;
 
 type
   PIntArray = ^TIntArray;
@@ -83,9 +83,6 @@ function YToIdx(APointWithYPos: TPoint): TPoint; inline;
 function YToPos(APointWithYIdx: TPoint): TPoint; inline;
 
 implementation
-
-uses
-  SysUtils;
 
 function ToIdx(APos: Integer): Integer; inline;
 begin

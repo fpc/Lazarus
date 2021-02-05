@@ -59,7 +59,8 @@ uses
   SynEditTypes,
   SynEditHighlighter,
   SysUtils,
-  Classes;
+  Classes,
+  SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSecondKey,
@@ -154,9 +155,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 const
   ShellScriptKeysCount = 110;

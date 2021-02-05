@@ -44,7 +44,7 @@ unit SynEditAutoComplete;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc,
+  LCLIntf, LCLType, LCLProc, SysUtils, Menus,
   Classes, SynEdit, SynEditKeyCmds, SynEditPlugins,
   Controls;
 
@@ -137,9 +137,6 @@ type
   end;
 
 implementation
-
-uses
-  SysUtils, Menus;
 
 { TCustomSynAutoComplete }
 

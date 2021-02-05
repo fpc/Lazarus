@@ -58,7 +58,7 @@ interface
 
 uses
   SysUtils, Classes, LazUTF8, LazFileUtils, Controls, Graphics, Registry,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -227,9 +227,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   Identifiers: array[#0..#255] of ByteBool;

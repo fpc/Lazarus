@@ -52,7 +52,7 @@ uses
   SysUtils, Classes,
   LCLIntf, LCLType,
   Controls, Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkInvalidSymbol, tkKey, tkNull,
@@ -222,9 +222,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   Identifiers: array[#0..#255] of ByteBool;

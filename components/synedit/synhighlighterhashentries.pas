@@ -49,7 +49,7 @@ unit SynHighlighterHashEntries;
 interface
 
 uses
-  SynEditTypes, Classes;
+  SysUtils, SynEditTypes, Classes;
 
 type
   { Class to hold the keyword to recognize, its length and its token kind. The
@@ -117,9 +117,6 @@ procedure EnumerateKeywords(AKind: integer; KeywordList: string;
   Identifiers: TSynIdentChars; AKeywordProc: TEnumerateKeywordEvent);
 
 implementation
-
-uses
-  SysUtils;
 
 procedure EnumerateKeywords(AKind: integer; KeywordList: string;
   Identifiers: TSynIdentChars; AKeywordProc: TEnumerateKeywordEvent);

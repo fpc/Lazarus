@@ -55,7 +55,7 @@ uses
   SysUtils, Classes,
   LCLIntf, LCLType,
   Controls, Graphics,
-  SynEditTypes, SynEditHighlighter,
+  SynEditTypes, SynEditHighlighter, SynEditStrConst,
   SynHighlighterHashEntries;
 
 type
@@ -201,9 +201,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
 
 var
   Identifiers: TIdentifierTable;

@@ -34,7 +34,7 @@ unit SynHighlighterDiff;
 interface
 
 uses
-  Classes, Graphics, math,
+  Classes, Graphics, math, SynEditStrConst,
   SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
@@ -173,10 +173,6 @@ type
   end;
 
 implementation
-
-uses
-  SynEditStrConst;
-
 
 { TSynDiffSyn }
 
