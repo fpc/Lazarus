@@ -595,9 +595,6 @@ type
     function GetFoldState: String;
     function GetHiddenCodeLineColor: TSynSelectedColor;
     function GetModified: Boolean;
-    function GetMouseActions: TSynEditMouseActions;
-    function GetMouseSelActions: TSynEditMouseActions;
-    function GetMouseTextActions: TSynEditMouseActions;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TLazSynEditPlugin;
     function GetRightEdge: Integer;
@@ -614,10 +611,7 @@ type
     procedure SetHighlightAllColor(AValue: TSynSelectedColor);
     procedure SetIncrementColor(AValue: TSynSelectedColor);
     procedure SetLineHighlightColor(AValue: TSynSelectedColor);
-    procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseLinkColor(AValue: TSynSelectedColor);
-    procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
-    procedure SetMouseTextActions(AValue: TSynEditMouseActions);
     procedure SetOffTextCursor(AValue: TCursor);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetShareOptions(const AValue: TSynEditorShareOptions);
@@ -812,6 +806,13 @@ type
     procedure SetLeftChar(Value: Integer); override;
     procedure SetTopLine(Value: Integer); override;
 
+    function GetMouseActions: TSynEditMouseActions; override;
+    function GetMouseSelActions: TSynEditMouseActions; override;
+    function GetMouseTextActions: TSynEditMouseActions; override;
+    procedure SetMouseActions(const AValue: TSynEditMouseActions); override;
+    procedure SetMouseSelActions(const AValue: TSynEditMouseActions); override;
+    procedure SetMouseTextActions(AValue: TSynEditMouseActions); override;
+
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
     procedure UpdateShowing; override;
     procedure SetColor(Value: TColor); override;
@@ -985,7 +986,7 @@ type
       out TokenType, Start: Integer;
       out Attri: TSynHighlighterAttributes): boolean;                           //L505
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
-    procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer);
+    procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); override;
     function GetWordAtRowCol(XY: TPoint): string;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
     function NextWordPos: TPoint; virtual;
@@ -993,7 +994,7 @@ type
     function IdentChars: TSynIdentChars;
     function IsIdentChar(const c: TUTF8Char): boolean;
 
-    function IsLinkable(Y, X1, X2: Integer): Boolean;
+    function IsLinkable(Y, X1, X2: Integer): Boolean; override;
     procedure InvalidateGutter; override;
     procedure InvalidateLine(Line: integer); override;
     procedure InvalidateGutterLines(FirstLine, LastLine: integer); override; // Currently invalidates full line => that may change
@@ -1140,7 +1141,7 @@ type
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
 
     // Cursor
-    procedure UpdateCursorOverride;
+    procedure UpdateCursorOverride; override;
 
     // Colors
     property MarkupManager: TSynEditMarkupManager read fMarkupManager;
@@ -1167,10 +1168,6 @@ type
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
     property InsertMode: boolean read fInserting write SetInsertMode default true;
     property Keystrokes: TSynEditKeyStrokes read FKeystrokes write SetKeystrokes;
-    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions;
-    property MouseTextActions: TSynEditMouseActions read GetMouseTextActions write SetMouseTextActions;
-    // Mouseactions, if mouse is over selection => fallback to normal
-    property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;

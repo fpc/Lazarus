@@ -189,6 +189,13 @@ type
     procedure SetSelStart(const Value: Integer); virtual; abstract;
     procedure SetSelTextExternal(const Value: string); virtual; abstract;
 
+    function GetMouseActions: TSynEditMouseActions; virtual; abstract;
+    function GetMouseSelActions: TSynEditMouseActions; virtual; abstract;
+    function GetMouseTextActions: TSynEditMouseActions; virtual; abstract;
+    procedure SetMouseActions(const AValue: TSynEditMouseActions); virtual; abstract;
+    procedure SetMouseSelActions(const AValue: TSynEditMouseActions); virtual; abstract;
+    procedure SetMouseTextActions(AValue: TSynEditMouseActions); virtual; abstract;
+
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
     property ViewedTextBuffer: TSynEditStringsLinked read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
@@ -205,6 +212,11 @@ type
 
     function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; virtual; abstract;
     function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual; abstract;
+
+    procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); virtual; abstract;
+
+    // Cursor
+    procedure UpdateCursorOverride; virtual; abstract;
   public
     // Undo Redo
     procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
@@ -212,7 +224,6 @@ type
     procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
 
-    // Undo/Redo
     procedure ClearUndo; virtual; abstract;
     procedure Redo; virtual; abstract;
     procedure Undo; virtual; abstract;
@@ -259,6 +270,7 @@ type
     procedure UnRegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc); virtual; abstract;
 
   public
+    function IsLinkable(Y, X1, X2: Integer): Boolean; virtual; abstract;
     // invalidate lines
     procedure InvalidateGutter; virtual; abstract;
     procedure InvalidateLine(Line: integer); virtual; abstract;
@@ -285,6 +297,10 @@ type
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
+    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions;
+    // Mouseactions, if mouse is over selection => fallback to normal
+    property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions;
+    property MouseTextActions: TSynEditMouseActions read GetMouseTextActions write SetMouseTextActions;
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
 

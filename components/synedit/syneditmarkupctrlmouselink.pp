@@ -80,7 +80,6 @@ type
   end;
 
 implementation
-uses SynEdit;
 
 const
   LINK_CURSOR_PRIORITY = 1;
@@ -116,7 +115,7 @@ procedure TSynEditMarkupCtrlMouseLink.SetCursor(AValue: TCursor);
 begin
   if FCursor = AValue then Exit;
   FCursor := AValue;
-  TCustomSynEdit(SynEdit).UpdateCursorOverride;
+  SynEdit.UpdateCursorOverride;
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount,
@@ -161,7 +160,7 @@ begin
   if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
     // show link
     NewY := LastMouseCaret.Y;
-    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(FLastMouseCaretLogical,NewX1,NewX2);
+    SynEdit.GetWordBoundsAtRowCol(FLastMouseCaretLogical,NewX1,NewX2);
     if (NewY = CtrlMouseLine) and
        (NewX1 = CtrlMouseX1) and
        (NewX2 = CtrlMouseX2)
@@ -169,7 +168,7 @@ begin
       exit;
     if (FCtrlMouseLine >= 0) and (FCtrlMouseLine <> NewY) then
       InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
-    FCtrlLinkable := TCustomSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2);
+    FCtrlLinkable := SynEdit.IsLinkable(NewY, NewX1, NewX2);
     CtrlMouseLine := fLastMouseCaret.Y;
     CtrlMouseX1 := NewX1;
     CtrlMouseX2 := NewX2;
@@ -200,15 +199,15 @@ var
 begin
   Result := False;
 
-  if not (emUseMouseActions in TCustomSynEdit(SynEdit).MouseOptions) then begin
-    Result := (emShowCtrlMouseLinks in TCustomSynEdit(SynEdit).MouseOptions) and
+  if not (emUseMouseActions in SynEdit.MouseOptions) then begin
+    Result := (emShowCtrlMouseLinks in SynEdit.MouseOptions) and
               (AShift * ([ssShift, ssCtrl, ssAlt] + [SYNEDIT_LINK_MODIFIER]) = [SYNEDIT_LINK_MODIFIER]);
     exit;
   end;
 
   // todo: check FMouseSelActions if over selection?
-  for i := 0 to TCustomSynEdit(SynEdit).MouseActions.Count - 1 do begin
-    act := TCustomSynEdit(SynEdit).MouseActions.Items[i];
+  for i := 0 to SynEdit.MouseActions.Count - 1 do begin
+    act := SynEdit.MouseActions.Items[i];
     if (act.Command = emcMouseLink) and
        ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
        act.IsMatchingShiftState(AShift)
@@ -216,8 +215,8 @@ begin
       exit(True);
   end;
 
-  for i := 0 to TCustomSynEdit(SynEdit).MouseTextActions.Count - 1 do begin
-    act := TCustomSynEdit(SynEdit).MouseTextActions.Items[i];
+  for i := 0 to SynEdit.MouseTextActions.Count - 1 do begin
+    act := SynEdit.MouseTextActions.Items[i];
     if (act.Command = emcMouseLink) and
        ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
        act.IsMatchingShiftState(AShift)
@@ -225,10 +224,10 @@ begin
       exit(True);
   end;
 
-  if not TCustomSynEdit(SynEdit).SelAvail then exit;
+  if not SynEdit.SelAvail then exit;
 
-  for i := 0 to TCustomSynEdit(SynEdit).MouseSelActions.Count - 1 do begin
-    act := TCustomSynEdit(SynEdit).MouseSelActions.Items[i];
+  for i := 0 to SynEdit.MouseSelActions.Count - 1 do begin
+    act := SynEdit.MouseSelActions.Items[i];
     if (act.Command = emcMouseLink) and
        ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
        act.IsMatchingShiftState(AShift)
@@ -248,12 +247,12 @@ begin
   MarkupInfo.Foreground := clBlue; {TODO:  invert blue to bg .... see below}
   MarkupInfo.Background := clNone;
 
-  TCustomSynEdit(SynEdit).RegisterQueryMouseCursorHandler(@UpdateSynCursor);
+  SynEdit.RegisterQueryMouseCursorHandler(@UpdateSynCursor);
 end;
 
 destructor TSynEditMarkupCtrlMouseLink.Destroy;
 begin
-  TCustomSynEdit(SynEdit).UnregisterQueryMouseCursorHandler(@UpdateSynCursor);
+  SynEdit.UnregisterQueryMouseCursorHandler(@UpdateSynCursor);
   if Lines <> nil then begin;
     Lines.RemoveModifiedHandler(senrLinesModified, @LinesChanged);
   end;
