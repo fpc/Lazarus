@@ -1782,8 +1782,9 @@ begin
     g_signal_connect_after(AMenu, 'selection-done', G_CALLBACK(@GtkPopupHideCB), AWidgetInfo);
   end;
 
-  g_signal_connect_after(PGtkObject(GTK_BIN(ComboWidget)^.child), 'populate-popup',
-    gtk_signal_func(@gtkDefaultPopupMenuCloseFix), AWidgetInfo);
+  if TCustomComboBox(AWinControl).Style.HasEditBox then
+    g_signal_connect_after(PGtkObject(GTK_BIN(ComboWidget)^.child), 'populate-popup',
+      gtk_signal_func(@gtkDefaultPopupMenuCloseFix), AWidgetInfo);
 
   if (gtk_major_version >= 2) and (gtk_minor_version >= 10) then
     g_signal_connect(ComboWidget, 'notify', TGCallback(@GtkNotifyCB), AWidgetInfo);
