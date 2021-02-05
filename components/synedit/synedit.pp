@@ -634,8 +634,6 @@ type
     procedure DoEndKey;
     procedure DoTabKey;
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
-    function GetBlockBegin: TPoint;
-    function GetBlockEnd: TPoint;
     function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
     function GetCanPaste: Boolean;
     function GetCaretXY: TPoint;
@@ -679,8 +677,6 @@ type
     procedure ScanRanges(ATextChanged: Boolean = True);
     procedure IdleScanRanges(Sender: TObject; var Done: Boolean);
     procedure DoBlockSelectionChanged(Sender: TObject);
-    procedure SetBlockBegin(Value: TPoint);
-    procedure SetBlockEnd(Value: TPoint);
     procedure SetBlockIndent(const AValue: integer);
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
                                    Mode: TSynSelectionMode = smCurrent;
@@ -713,7 +709,6 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     function  GetSelectionMode : TSynSelectionMode;
     procedure SetSelectionMode(const Value: TSynSelectionMode);
-    procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
     function  CurrentMaxTopView: Integer;
@@ -804,6 +799,10 @@ type
     function CheckDragDropAccecpt(ANewCaret: TPoint; ASource: TObject; out ADropMove: boolean): boolean;
 
   protected
+    function GetBlockBegin: TPoint; override;
+    function GetBlockEnd: TPoint; override;
+    procedure SetBlockBegin(Value: TPoint); override;
+    procedure SetBlockEnd(Value: TPoint); override;
     function GetCharsInWindow: Integer; override;
     function GetCharWidth: integer; override;
     function GetLeftChar: Integer; override;
@@ -833,6 +832,7 @@ type
     function GetCanUndo: Boolean; override;
     function GetCaretObj: TSynEditCaret; override;
     function GetSelectedColor : TSynSelectedColor; override;
+    function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
     procedure HighlighterAttrChanged(Sender: TObject);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -857,6 +857,7 @@ type
     procedure SetOptions(Value: TSynEditorOptions); override;
     procedure SetOptions2(Value: TSynEditorOptions2); override;
     procedure SetSelectedColor(const AValue : TSynSelectedColor); override;
+    procedure SetSelTextExternal(const Value: string); override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
     procedure UndoItem(Item: TSynEditUndoItem);
@@ -872,10 +873,10 @@ type
       Line, Column: integer): TSynReplaceAction; virtual;
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
     property LastMouseCaret: TPoint read FLastMouseLocation.LastMouseCaret write SetLastMouseCaret; // TODO: deprecate? see MouseMove
-    function GetSelEnd: integer;                                                 //L505
-    function GetSelStart: integer;
-    procedure SetSelEnd(const Value: integer);
-    procedure SetSelStart(const Value: integer);
+    function GetSelEnd: integer; override;                                                //L505
+    function GetSelStart: integer; override;
+    procedure SetSelEnd(const Value: integer); override;
+    procedure SetSelStart(const Value: integer); override;
     property TextView : TSynEditStringsLinked read FTheLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream; AForceColumnMode: Boolean = False): Boolean;
@@ -992,10 +993,10 @@ type
     function IsIdentChar(const c: TUTF8Char): boolean;
 
     function IsLinkable(Y, X1, X2: Integer): Boolean;
-    procedure InvalidateGutter;
-    procedure InvalidateLine(Line: integer);
-    procedure InvalidateGutterLines(FirstLine, LastLine: integer); // Currently invalidates full line => that may change
-    procedure InvalidateLines(FirstLine, LastLine: integer);
+    procedure InvalidateGutter; override;
+    procedure InvalidateLine(Line: integer); override;
+    procedure InvalidateGutterLines(FirstLine, LastLine: integer); override; // Currently invalidates full line => that may change
+    procedure InvalidateLines(FirstLine, LastLine: integer); override;
 
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
@@ -1126,8 +1127,6 @@ type
     property Markup[Index: integer]: TSynEditMarkup read GetMarkup;
     property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup read GetMarkupByClass;
     property TrimSpaceType: TSynEditStringTrimmingType read GetTrimSpaceType write SetTrimSpaceType;
-
-    property TextViewsManager: TSynTextViewsManager read FTextViewsManager; experimental; // Only use to Add/remove views
   public
     // Caret
     procedure SetCaretTypeSize(AType: TSynCaretType;AWidth, AHeight, AXOffs, AYOffs: Integer);
@@ -2761,6 +2760,11 @@ end;
 function TCustomSynEdit.GetTextBuffer: TSynEditStrings;
 begin
   Result := FLines;
+end;
+
+function TCustomSynEdit.GetTextViewsManager: TSynTextViewsManager;
+begin
+  Result := FTextViewsManager;
 end;
 
 function TCustomSynEdit.GetLineText: string;

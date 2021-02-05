@@ -559,8 +559,6 @@ function dbgs(AClassification: TFoldNodeClassification): String; overload;
 
 implementation
 
-uses SynEdit;
-
 //var
 //  SYN_FOLD_DEBUG: PLazLoggerLogGroup;
 
@@ -2897,14 +2895,14 @@ begin
   Result := [];
   if not FEnabled then
     exit;
-  if (FEdit <> nil) and (TCustomSynEdit(FEdit).SelAvail) then begin
-    if (TCustomSynEdit(FEdit).BlockBegin.Y < ALineIdx+1) and
-       (TCustomSynEdit(FEdit).BlockEnd.Y  > ALineIdx+1)
+  if (FEdit <> nil) and (FEdit.SelAvail) then begin
+    if (FEdit.BlockBegin.Y < ALineIdx+1) and
+       (FEdit.BlockEnd.Y  > ALineIdx+1)
     then Result := [cfFoldBody];
-    if (TCustomSynEdit(FEdit).BlockEnd.Y  = ALineIdx+1) then Result := [cfFoldEnd];
-    if (TCustomSynEdit(FEdit).BlockBegin.Y = ALineIdx+1) then Result := [cfHideStart];
-    if (TCustomSynEdit(FEdit).BlockBegin.Y = ALineIdx+1) and
-       (TCustomSynEdit(FEdit).BlockEnd.Y  = ALineIdx+1) then Result := [cfHideStart, cfSingleLineHide];
+    if (FEdit.BlockEnd.Y  = ALineIdx+1) then Result := [cfFoldEnd];
+    if (FEdit.BlockBegin.Y = ALineIdx+1) then Result := [cfHideStart];
+    if (FEdit.BlockBegin.Y = ALineIdx+1) and
+       (FEdit.BlockEnd.Y  = ALineIdx+1) then Result := [cfHideStart, cfSingleLineHide];
   end;
   if (FHighlighter = nil) or (ALineIdx < 0) then
     exit;
@@ -2933,7 +2931,7 @@ end;
 function TSynEditFoldProvider.GetLineClassification(ALineIdx: Integer): TFoldNodeClassifications;
 begin
   Result := [];
-  if (FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail and (TCustomSynEdit(FEdit).BlockBegin.Y = ALineIdx+1) then
+  if (FEdit <> nil) and FEdit.SelAvail and (FEdit.BlockBegin.Y = ALineIdx+1) then
     Result := [fncBlockSelection];
 end;
 
@@ -2948,7 +2946,7 @@ function TSynEditFoldProvider.GetFoldsAvailable: Boolean;
 begin
   Result := FEnabled and (
               (FHighlighter <> nil) or
-              ((FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail)
+              ((FEdit <> nil) and FEdit.SelAvail)
             );
 end;
 
@@ -2994,7 +2992,7 @@ begin
     exit(0);
 
   if (FHighlighter = nil) or (ALineIdx < 0) then begin
-    if (AType=0) and (FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail and (TCustomSynEdit(FEdit).BlockBegin.Y=ALineIdx+1) then exit(1);
+    if (AType=0) and (FEdit <> nil) and FEdit.SelAvail and (FEdit.BlockBegin.Y=ALineIdx+1) then exit(1);
     exit(0);
   end;
   // Need to check alll nodes with FoldNodeInfoCount
@@ -3004,7 +3002,7 @@ begin
   // fallback for HL without GetFoldNodeInfoCountEx
   if Result < 0 then
     Result := FHighlighter.FoldBlockOpeningCount(ALineIdx, AType);
-  if (AType=0) and (FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail and (TCustomSynEdit(FEdit).BlockBegin.Y=ALineIdx+1) then
+  if (AType=0) and (FEdit <> nil) and FEdit.SelAvail and (FEdit.BlockBegin.Y=ALineIdx+1) then
     inc(Result);
 end;
 
@@ -3015,8 +3013,8 @@ function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
   begin
     Result.LineIndex    := ALineIdx;
     Result.NodeIndex    := NIdx;
-    Result.LogXStart    := TCustomSynEdit(FEdit).BlockBegin.x;
-    Result.LogXEnd      := TCustomSynEdit(FEdit).BlockBegin.x;
+    Result.LogXStart    := FEdit.BlockBegin.x;
+    Result.LogXEnd      := FEdit.BlockBegin.x;
     Result.FoldLvlStart := 0;
     Result.NestLvlStart := 0;
     Result.NestLvlEnd   := 1;
@@ -3030,14 +3028,14 @@ function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
 begin
   Result.FoldAction := [sfaInvalid];
   if (FHighlighter = nil) or (ALineIdx < 0) then begin
-    if (AType=0) and (FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail and (TCustomSynEdit(FEdit).BlockBegin.Y=ALineIdx+1) then
+    if (AType=0) and (FEdit <> nil) and FEdit.SelAvail and (FEdit.BlockBegin.Y=ALineIdx+1) then
       exit(BlockSelInfo(0));
     exit;
   end;
 
   FHighlighter.CurrentLines := FLines;
-  if (AType = 0) and (TCustomSynEdit(FEdit) <> nil) and TCustomSynEdit(FEdit).SelAvail and
-     (TCustomSynEdit(FEdit).BlockBegin.Y=ALineIdx+1) and
+  if (AType = 0) and (FEdit <> nil) and FEdit.SelAvail and
+     (FEdit.BlockBegin.Y=ALineIdx+1) and
      (AFoldIdx = FoldOpenCount(ALineIdx, AType)-1)
   then
     Result := BlockSelInfo(AFoldIdx)
@@ -3047,10 +3045,10 @@ end;
 
 function TSynEditFoldProvider.FoldLineLength(ALine, AFoldIndex: Integer): integer;
 begin
-  if (FEdit <> nil) and TCustomSynEdit(FEdit).SelAvail and (TCustomSynEdit(FEdit).BlockBegin.Y=ALine+1) and
+  if (FEdit <> nil) and FEdit.SelAvail and (FEdit.BlockBegin.Y=ALine+1) and
     (AFoldIndex = FoldOpenCount(ALine, 0)-1)
   then
-    exit(TCustomSynEdit(FEdit).BlockEnd.y - TCustomSynEdit(FEdit).BlockBegin.y);
+    exit(FEdit.BlockEnd.y - FEdit.BlockBegin.y);
 
   FHighlighter.CurrentLines := FLines;
   Result := FHighlighter.FoldLineLength(ALine, AFoldIndex);
@@ -3133,14 +3131,14 @@ begin
   FMarkupInfoHiddenCodeLine.Foreground := clNone;
   FMarkupInfoHiddenCodeLine.FrameColor := clNone;
 
-  TCustomSynEdit(FOwner).RegisterStatusChangedHandler(@DoBlockSelChanged, [scSelection]);
-  TCustomSynEdit(FOwner).RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
-  TCustomSynEdit(FOwner).TextViewsManager.AddTextView(Self);
+  FOwner.RegisterStatusChangedHandler(@DoBlockSelChanged, [scSelection]);
+  FOwner.RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
+  FOwner.TextViewsManager.AddTextView(Self);
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
-  TCustomSynEdit(FOwner).UnregisterCommandHandler(@ProcessMySynCommand);
+  FOwner.UnregisterCommandHandler(@ProcessMySynCommand);
   NextLines := nil;
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
@@ -3485,7 +3483,7 @@ begin
     fFoldTypeList[i].Classifications := NewClassifications;
   end;
   if (not FInTopLineChanged) and (FirstChanged > 0) then
-    TCustomSynEdit(FOwner).InvalidateGutterLines(FirstChanged, LastChanged + 1);
+    FOwner.InvalidateGutterLines(FirstChanged, LastChanged + 1);
 end;
 
 (* Lines *)

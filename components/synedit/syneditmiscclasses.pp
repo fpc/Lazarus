@@ -145,6 +145,7 @@ type
     FScreenCaret: TSynEditScreenCaret;
     FOptions: TSynEditorOptions;
     FOptions2: TSynEditorOptions2;
+    procedure DoTopViewChanged(Sender: TObject); virtual; abstract;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetCanRedo: boolean; virtual; abstract;
@@ -155,6 +156,7 @@ type
     function GetSelText: string;
     function GetSelAvail: Boolean;
     function GetSelectedColor: TSynSelectedColor; virtual; abstract;
+    function GetTextViewsManager: TSynTextViewsManager; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
     function GetFoldedTextBuffer: TObject; virtual; abstract;
@@ -175,6 +177,16 @@ type
     function GetTopLine: Integer; virtual; abstract;
     procedure SetLeftChar(Value: Integer); virtual; abstract;
     procedure SetTopLine(Value: Integer); virtual; abstract;
+
+    function GetBlockBegin: TPoint; virtual; abstract;
+    function GetBlockEnd: TPoint; virtual; abstract;
+    function GetSelEnd: Integer; virtual; abstract;
+    function GetSelStart: Integer; virtual; abstract;
+    procedure SetBlockBegin(Value: TPoint); virtual; abstract;
+    procedure SetBlockEnd(Value: TPoint); virtual; abstract;
+    procedure SetSelEnd(const Value: Integer); virtual; abstract;
+    procedure SetSelStart(const Value: Integer); virtual; abstract;
+    procedure SetSelTextExternal(const Value: string); virtual; abstract;
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
@@ -246,12 +258,17 @@ type
     procedure UnRegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc); virtual; abstract;
 
   public
+    // invalidate lines
+    procedure InvalidateGutter; virtual; abstract;
+    procedure InvalidateLine(Line: integer); virtual; abstract;
+    procedure InvalidateGutterLines(FirstLine, LastLine: integer); virtual; abstract; // Currently invalidates full line => that may change
+    procedure InvalidateLines(FirstLine, LastLine: integer); virtual; abstract;
+  public
     property Lines: TStrings read GetLines write SetLines;
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
-    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
 
     property CharsInWindow: Integer read GetCharsInWindow;
     property CharWidth: integer read GetCharWidth;
@@ -260,9 +277,19 @@ type
     property LinesInWindow: Integer read GetLinesInWindow;
     property TopLine: Integer read GetTopLine write SetTopLine;
 
+    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
+    property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
+    property SelStart: Integer read GetSelStart write SetSelStart;              // 1-based byte pos of first selected char
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;                    // 1-based byte pos of first char after selction end
+    property IsBackwardSel: Boolean read GetIsBackwardSel;
+    property SelText: string read GetSelText write SetSelTextExternal;
+
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
 
+    property TextViewsManager: TSynTextViewsManager read GetTextViewsManager; experimental; // Only use to Add/remove views
+
+    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
     property SelAvail: Boolean read GetSelAvail;
   end;
 
