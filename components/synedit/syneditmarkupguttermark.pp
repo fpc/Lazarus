@@ -72,10 +72,6 @@ type
 
 implementation
 
-uses
-  SynEdit;
-
-
 { TSynEditMarkupGutterMark }
 
 procedure TSynEditMarkupGutterMark.DoMarkupChanged(AMarkup: TSynSelectedColor);
@@ -100,7 +96,7 @@ var
   Section: PMarkSection;
   x: Integer;
 begin
-  MLine := TCustomSynEdit(SynEdit).Marks.Line[ARow];
+  MLine := (SynEdit.Marks as TSynEditMarkList).Line[ARow];
   if MLine = nil then begin
     SetLength(FRowData, 0);
     exit;

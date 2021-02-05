@@ -833,6 +833,7 @@ type
     function GetCanUndo: Boolean; override;
     function GetCaretObj: TSynEditCaret; override;
     function GetHighlighterObj: TObject; override;
+    function GetMarksObj: TObject; override;
     function GetSelectedColor : TSynSelectedColor; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
@@ -2870,6 +2871,11 @@ end;
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
 begin
   Result := FCaret.LineBytePos;
+end;
+
+function TCustomSynEdit.GetMarksObj: TObject;
+begin
+  Result := FMarkList;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);

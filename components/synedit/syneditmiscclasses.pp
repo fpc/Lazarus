@@ -154,6 +154,7 @@ type
     function GetReadOnly: boolean; virtual;
     function GetIsBackwardSel: Boolean;
     function GetHighlighterObj: TObject; virtual; abstract;
+    function GetMarksObj: TObject; virtual; abstract;
     function GetSelText: string;
     function GetSelAvail: Boolean;
     function GetSelectedColor: TSynSelectedColor; virtual; abstract;
@@ -320,6 +321,7 @@ type
     property SelAvail: Boolean read GetSelAvail;
 
     property Highlighter: TObject read GetHighlighterObj;
+    property Marks: TObject read GetMarksObj;
   end;
 
   { TSynEditFriend }
