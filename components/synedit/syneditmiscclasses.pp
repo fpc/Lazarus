@@ -153,6 +153,7 @@ type
     function GetCanRedo: boolean; virtual; abstract;
     function GetCanUndo: boolean; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
+    function GetModified: Boolean; virtual; abstract;
     function GetReadOnly: boolean; virtual;
     function GetIsBackwardSel: Boolean;
     function GetHighlighterObj: TObject; virtual; abstract;
@@ -166,6 +167,7 @@ type
     function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
     function GetPaintArea: TLazSynSurface; virtual; abstract; // TLazSynSurfaceManager
+    procedure SetModified(Value: boolean); virtual; abstract;
     procedure SetMouseOptions(AValue: TSynEditorMouseOptions); virtual;
     procedure SetReadOnly(Value: boolean); virtual;
     procedure StatusChanged(AChanges: TSynStatusChanges); virtual; abstract;
@@ -326,6 +328,7 @@ type
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
+    property Modified: Boolean read GetModified write SetModified;
 
     property CaretX: Integer read GetCaretX write SetCaretX;
     property CaretY: Integer read GetCaretY write SetCaretY;

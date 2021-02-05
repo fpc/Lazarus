@@ -336,8 +336,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TSynGutterLOvMark }
 
@@ -963,8 +961,8 @@ procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
-  FCurTopLine := TCustomSynEdit(SynEdit).TopLine;
-  FCurBottomLine := TCustomSynEdit(SynEdit).ScreenRowToRow(TCustomSynEdit(SynEdit).LinesInWindow);
+  FCurTopLine := SynEdit.TopLine;
+  FCurBottomLine := SynEdit.ScreenXYToTextXY(Point(0, SynEdit.LinesInWindow)).Y;
   ReCalc;
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
 end;
@@ -995,13 +993,13 @@ begin
   FColor := 0;
   Color := $C0C0C0;
   ViewedTextBuffer.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
-  TCustomSynEdit(SynEdit).RegisterStatusChangedHandler(@SynStatusChanged,
+  SynEdit.RegisterStatusChangedHandler(@SynStatusChanged,
                                                  [scTopLine, scLinesInWindow]);
 end;
 
 destructor TSynGutterLOvProviderCurrentPage.Destroy;
 begin
-  TCustomSynEdit(SynEdit).UnRegisterStatusChangedHandler(@SynStatusChanged);
+  SynEdit.UnRegisterStatusChangedHandler(@SynStatusChanged);
   ViewedTextBuffer.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
   inherited;
 end;
@@ -1110,7 +1108,7 @@ end;
 procedure TSynGutterLOvProviderModifiedLines.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
-  if (scModified in Changes) and not TCustomSynEdit(SynEdit).Modified then begin;
+  if (scModified in Changes) and not SynEdit.Modified then begin;
     FFirstTextLineChanged := 1;
     FLastTextLineChanged := 0; // open end
     InvalidateTextLines(FFirstTextLineChanged, TextBuffer.Count);
@@ -1121,7 +1119,7 @@ constructor TSynGutterLOvProviderModifiedLines.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ViewedTextBuffer.AddModifiedHandler(senrLinesModified, @LineModified);
-  TCustomSynEdit(SynEdit).RegisterStatusChangedHandler(@SynStatusChanged, [scModified]);
+  SynEdit.RegisterStatusChangedHandler(@SynStatusChanged, [scModified]);
   FFirstTextLineChanged := -1;
   FLastTextLineChanged := -1;
   Color := clYellow;
@@ -1131,7 +1129,7 @@ end;
 destructor TSynGutterLOvProviderModifiedLines.Destroy;
 begin
   ViewedTextBuffer.RemoveHanlders(self);
-  TCustomSynEdit(SynEdit).UnRegisterStatusChangedHandler(@SynStatusChanged);
+  SynEdit.UnRegisterStatusChangedHandler(@SynStatusChanged);
   inherited Destroy;
 end;
 
@@ -1223,14 +1221,16 @@ end;
 
 procedure TSynGutterLOvProviderBookmarks.BufferChanging(Sender: TObject);
 begin
-  TCustomSynEdit(SynEdit).Marks.UnRegisterChangeHandler(@DoMarkChange);
+  (SynEdit.Marks as TSynEditMarkList).UnRegisterChangeHandler(@DoMarkChange);
 end;
 
 procedure TSynGutterLOvProviderBookmarks.BufferChanged(Sender: TObject);
 var
   i: Integer;
+  LMarks: TSynEditMarkList;
 begin
-  TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler(@DoMarkChange,
+  LMarks := (SynEdit.Marks as TSynEditMarkList);
+  LMarks.RegisterChangeHandler(@DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
 
   while FMarkList.Count > 0 do begin
@@ -1238,32 +1238,34 @@ begin
     FMarkList.Delete(0);
   end;
 
-  for i := 0 to TCustomSynEdit(SynEdit).Marks.Count - 1 do
-    if TCustomSynEdit(SynEdit).Marks[i].Visible then
-      CreateGutterMark(TCustomSynEdit(SynEdit).Marks[i]);
+  for i := 0 to LMarks.Count - 1 do
+    if LMarks[i].Visible then
+      CreateGutterMark(LMarks[i]);
 end;
 
 constructor TSynGutterLOvProviderBookmarks.Create(AOwner: TComponent);
 var
   i: Integer;
+  LMarks: TSynEditMarkList;
 begin
   inherited Create(AOwner);
   Color := clBlue;
   ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanging, @BufferChanging);
   ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
 
-  TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler(@DoMarkChange,
+  LMarks := (SynEdit.Marks as TSynEditMarkList);
+  LMarks.RegisterChangeHandler(@DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
 
-  for i := 0 to TCustomSynEdit(SynEdit).Marks.Count - 1 do
-    if TCustomSynEdit(SynEdit).Marks[i].Visible then
-      CreateGutterMark(TCustomSynEdit(SynEdit).Marks[i]);
+  for i := 0 to LMarks.Count - 1 do
+    if LMarks[i].Visible then
+      CreateGutterMark(LMarks[i]);
 end;
 
 destructor TSynGutterLOvProviderBookmarks.Destroy;
 begin
   ViewedTextBuffer.RemoveHanlders(self);
-  TCustomSynEdit(SynEdit).Marks.UnRegisterChangeHandler(@DoMarkChange);
+  (SynEdit.Marks as TSynEditMarkList).UnRegisterChangeHandler(@DoMarkChange);
   inherited Destroy;
 end;
 
@@ -1538,7 +1540,7 @@ function TSynGutterLineOverview.MaybeHandleMouseAction(
 begin
   Result := False;
   if FLineMarks.IndexForLine(AnInfo.MouseY, False, True) >= 0 then
-    Result := HandleActionProc(FMouseActionsForMarks.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
+    Result := HandleActionProc(FMouseActionsForMarks.GetActionsForOptions(SynEdit.MouseOptions), AnInfo);
 
   if not Result then
     Result := inherited MaybeHandleMouseAction(AnInfo, HandleActionProc);
@@ -1570,10 +1572,10 @@ begin
   end;
 
   if Result then begin
-    if (TextLine < TCustomSynEdit(SynEdit).TopLine) or
-       (TextLine > TCustomSynEdit(SynEdit).TopLine + TCustomSynEdit(SynEdit).LinesInWindow)
+    if (TextLine < SynEdit.TopLine) or
+       (TextLine > SynEdit.TopLine + SynEdit.LinesInWindow)
     then
-      TCustomSynEdit(SynEdit).TopLine := Max(1, TextLine - TCustomSynEdit(SynEdit).LinesInWindow div 2);
+      SynEdit.TopLine := Max(1, TextLine - SynEdit.LinesInWindow div 2);
 
     AnInfo.NewCaret.LinePos := TextLine;
   end;

@@ -589,7 +589,6 @@ type
     function GetFoldedCodeLineColor: TSynSelectedColor;
     function GetFoldState: String;
     function GetHiddenCodeLineColor: TSynSelectedColor;
-    function GetModified: Boolean;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TLazSynEditPlugin;
     function GetRightEdge: Integer;
@@ -678,7 +677,6 @@ type
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
     procedure SetMaxUndo(const Value: Integer);
-    procedure SetModified(Value: boolean);
     procedure UpdateOptions;
     procedure UpdateOptions2;
     procedure UpdateMouseOptions;
@@ -823,6 +821,7 @@ type
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetLines: TStrings; override;
+    function GetModified: Boolean; override;
     function GetViewedTextBuffer: TSynEditStringsLinked; override;
     function GetFoldedTextBuffer: TObject; override;
     function GetTextBuffer: TSynEditStrings; override;
@@ -853,6 +852,7 @@ type
     procedure RecalcCharExtent;
     procedure RedoItem(Item: TSynEditUndoItem);
     procedure CaretChanged(Sender: TObject);
+    procedure SetModified(Value: boolean); override;
     procedure SetMouseOptions(AValue: TSynEditorMouseOptions); override;
     procedure SetName(const Value: TComponentName); override;
     procedure SetOptions(Value: TSynEditorOptions); override;
@@ -1108,7 +1108,6 @@ type
     property ScrollOnEditRightOptions: TSynScrollOnEditOptions read FScrollOnEditRightOptions write SetScrollOnEditRightOptions;
 
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
-    property Modified: Boolean read GetModified write SetModified;
     property PaintLock: Integer read fPaintLock;
 
     property UseUTF8: boolean read FUseUTF8;
