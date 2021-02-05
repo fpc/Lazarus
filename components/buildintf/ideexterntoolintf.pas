@@ -681,12 +681,12 @@ type
     FHint: string;
     FQuiet: boolean;
     FResolveMacros: boolean;
-    FParsers: TStrings;
+    FParserNames: TStrings;
     FShowConsole: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     procedure SetEnvironmentOverrides(AValue: TStringList);
-    procedure SetParsers(AValue: TStrings);
+    procedure SetParserNames(AValue: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -701,8 +701,7 @@ type
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property WorkingDirectory: string read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
-    property Scanners: TStrings read FParsers; deprecated 'use Parsers';
-    property Parsers: TStrings read FParsers write SetParsers;
+    property Parsers: TStrings read FParserNames write SetParserNames;
     property ShowConsole: boolean read FShowConsole write FShowConsole default false; // sets poNoConsole/poNewConsole, works only on MSWindows
     property HideWindow: boolean read FHideWindow write FHideWindow default true; // sets/unsets swoHide/swoShow, works only on MSWindows
     property ResolveMacros: boolean read FResolveMacros write FResolveMacros default true;
@@ -819,24 +818,24 @@ begin
   FEnvironmentOverrides.Assign(AValue);
 end;
 
-procedure TIDEExternalToolOptions.SetParsers(AValue: TStrings);
+procedure TIDEExternalToolOptions.SetParserNames(AValue: TStrings);
 begin
-  if FParsers.Equals(AValue) then Exit;
-  FParsers.Assign(AValue);
+  if FParserNames.Equals(AValue) then Exit;
+  FParserNames.Assign(AValue);
 end;
 
 constructor TIDEExternalToolOptions.Create;
 begin
   ResolveMacros:=true;
   FEnvironmentOverrides:=TStringList.Create;
-  FParsers:=TStringList.Create;
+  FParserNames:=TStringList.Create;
   FHideWindow:=true;
 end;
 
 destructor TIDEExternalToolOptions.Destroy;
 begin
   FreeAndNil(FEnvironmentOverrides);
-  FreeAndNil(FParsers);
+  FreeAndNil(FParserNames);
   inherited Destroy;
 end;
 
@@ -886,7 +885,7 @@ begin
   FShowConsole:=false;
   FHideWindow:=true;
   FResolveMacros:=true;
-  FParsers.Clear;
+  FParserNames.Clear;
   fTitle:='';
   fWorkingDirectory:='';
   FQuiet:=false;

@@ -458,7 +458,7 @@ type
 
   TIDEWindowsGlobalOptions = class
   private
-    FList: TStringList;
+    FOptList: TStringListUTF8Fast;
   public
     constructor Create;
     destructor Destroy; override;
@@ -568,22 +568,21 @@ procedure TIDEWindowsGlobalOptions.Add(const aFormIDPrefix: string;
 var
   xIndex: Integer;
 begin
-  xIndex := FList.Add(aFormIDPrefix);
-  if FList.Objects[xIndex] = nil then
-    FList.Objects[xIndex] := TIDEWindowGlobalOption.Create;
+  xIndex := FOptList.Add(aFormIDPrefix);
+  if FOptList.Objects[xIndex] = nil then
+    FOptList.Objects[xIndex] := TIDEWindowGlobalOption.Create;
 
-  TIDEWindowGlobalOption(FList.Objects[xIndex]).CanSetVisibility := CanSetVisibility;
+  TIDEWindowGlobalOption(FOptList.Objects[xIndex]).CanSetVisibility := CanSetVisibility;
 end;
 
-function TIDEWindowsGlobalOptions.CanSetVisibility(const aFormID: string
-  ): Boolean;
+function TIDEWindowsGlobalOptions.CanSetVisibility(const aFormID: string): Boolean;
 var
   I: Integer;
 begin
-  for I := 0 to FList.Count-1 do
-  if Copy(aFormID, 1, Length(FList[I])) = FList[I] then
+  for I := 0 to FOptList.Count-1 do
+  if Copy(aFormID, 1, Length(FOptList[I])) = FOptList[I] then
   begin
-    Result := TIDEWindowGlobalOption(FList.Objects[I]).CanSetVisibility;
+    Result := TIDEWindowGlobalOption(FOptList.Objects[I]).CanSetVisibility;
     Exit;
   end;
   Result := True;//default is true
@@ -593,14 +592,14 @@ constructor TIDEWindowsGlobalOptions.Create;
 begin
   inherited Create;
 
-  FList := TStringList.Create;
-  FList.Sorted := True;
-  FList.OwnsObjects := True;
+  FOptList := TStringListUTF8Fast.Create;
+  FOptList.Sorted := True;
+  FOptList.OwnsObjects := True;
 end;
 
 destructor TIDEWindowsGlobalOptions.Destroy;
 begin
-  FList.Free;
+  FOptList.Free;
   inherited Destroy;
 end;
 

@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazUTF8,
   // BuildIntf
   IDEOptionsIntf;
 
@@ -479,7 +479,7 @@ constructor TLazCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
 begin
   FOwner:=TheOwner;
   FCompileReasons:=crAll; // This default can be used in some comparisons.
-  FParsers:=TStringList.Create;
+  FParsers:=TStringListUTF8Fast.Create;
 end;
 
 destructor  TLazCompilationToolOptions.Destroy;

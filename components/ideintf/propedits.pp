@@ -2735,6 +2735,7 @@ var
 begin
   if not AutoFill then Exit;
   Values:=TStringList.Create;
+  Values.UseLocale := False;
   Values.Sorted:=paSortList in GetAttributes;
   try
     AddValue := @Values.Add;

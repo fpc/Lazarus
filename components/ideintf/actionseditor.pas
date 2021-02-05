@@ -28,6 +28,8 @@ uses
   // LCL
   LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
   Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList, ImgList,
+  // LazUtils
+  LazLoggerBase, LazUTF8,
   // IDEIntf
   ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,
   IDEImagesIntf;
@@ -1334,17 +1336,17 @@ end;
 procedure TActionCategoryProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
-  Values: TStringList;
-  Act:TContainedAction;
-  ActLst:TCustomActionList;
-  S:string;
+  Values: TStringListUTF8Fast;
+  Act: TContainedAction;
+  ActLst: TCustomActionList;
+  S: string;
 begin
   ActLst:=nil;
   Act:=GetComponent(0) as TContainedAction;
   if Assigned(Act) then
     ActLst:=Act.ActionList;
   if not Assigned(ActLst) then exit;
-  Values := TStringList.Create;
+  Values := TStringListUTF8Fast.Create;
   try
     for i:=0 to ActLst.ActionCount-1 do
     begin

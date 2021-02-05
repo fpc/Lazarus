@@ -28,7 +28,7 @@ uses
   // LCL
   Controls,
   // LazUtils
-  LazUtilities, LazLoggerBase, Laz2_XMLCfg, LazMethodList;
+  LazUtilities, LazLoggerBase, Laz2_XMLCfg, LazMethodList, LazUTF8;
 
 type
   TComponentPriorityCategory = (
@@ -228,7 +228,7 @@ type
     fOrigComponentPageCache: TStringList;  // Original
     fUserComponentPageCache: TStringList;  // User ordered
     // Used to find names that differ in character case only.
-    fOrigPageHelper: TStringList;
+    fOrigPageHelper: TStringListUTF8Fast;
     fHandlers: array[TComponentPaletteHandlerType] of TMethodList;
     fComponentPageClass: TBaseComponentPageClass;
     fSelected: TRegisteredComponent;
@@ -426,9 +426,9 @@ end;
 constructor TCompPaletteOptions.Create;
 begin
   inherited Create;
-  FPageNamesCompNames := TStringList.Create;
+  FPageNamesCompNames := TStringListUTF8Fast.Create;
   FPageNamesCompNames.OwnsObjects := True;
-  FHiddenPageNames := TStringList.Create;
+  FHiddenPageNames := TStringListUTF8Fast.Create;
   FVisible := True;
 end;
 
@@ -475,9 +475,9 @@ end;
 
 function TCompPaletteOptions.IsDefault: Boolean;
 begin
-  Result := (PageNames.Count = 0)
+  Result := (FPageNames.Count = 0)
     and (FPageNamesCompNames.Count = 0)
-    and (HiddenPageNames.Count = 0);
+    and (FHiddenPageNames.Count = 0);
 end;
 
 procedure TCompPaletteOptions.Load(XMLConfig: TXMLConfig; Path: String);
@@ -600,7 +600,7 @@ constructor TCompPaletteUserOrder.Create(aPalette: TBaseComponentPalette);
 begin
   inherited Create;
   fPalette:=aPalette;
-  FComponentPages := TStringList.Create;
+  FComponentPages := TStringListUTF8Fast.Create;
   FComponentPages.OwnsObjects := True;
 end;
 
@@ -679,13 +679,13 @@ begin
   Clear;
   fPalette.CacheOrigComponentPages;
   // First add user defined page order from EnvironmentOptions,
-  FComponentPages.Assign(fOptions.PageNames);
+  FComponentPages.Assign(fOptions.FPageNames);
   // then add other pages which don't have user configuration
   for PageI := 0 to fPalette.OrigPagePriorities.Count-1 do
   begin
     PgName:=fPalette.OrigPagePriorities.Keys[PageI];
     if (FComponentPages.IndexOf(PgName) = -1)
-    and (fOptions.HiddenPageNames.IndexOf(PgName) = -1) then
+    and (fOptions.FHiddenPageNames.IndexOf(PgName) = -1) then
       FComponentPages.Add(PgName);
   end;
   // Map components with their pages
@@ -802,13 +802,15 @@ begin
   fComponentCache:=TAVLTree.Create(@CompareIDEComponentByClass);
   fOrigComponentPageCache:=TStringList.Create;
   fOrigComponentPageCache.OwnsObjects:=True;
+  fOrigComponentPageCache.UseLocale:=False;
   fOrigComponentPageCache.CaseSensitive:=True;
   fOrigComponentPageCache.Sorted:=True;
   fUserComponentPageCache:=TStringList.Create;
   fUserComponentPageCache.OwnsObjects:=True;
+  fUserComponentPageCache.UseLocale:=False;
   fUserComponentPageCache.CaseSensitive:=True;
   fUserComponentPageCache.Sorted:=True;
-  fOrigPageHelper:=TStringList.Create; // Note: CaseSensitive = False
+  fOrigPageHelper:=TStringListUTF8Fast.Create; // Note: CaseSensitive = False
   fOrigPageHelper.Sorted:=True;
   fLastFoundCompClassName:='';
   fLastFoundRegComp:=Nil;

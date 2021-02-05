@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazLoggerBase, LazSysUtils;
+  LazLoggerBase, LazSysUtils, LazUTF8;
 
 type
 
@@ -75,8 +75,8 @@ function DbgsTimeUsed(AFormat: String; AName: String): string;
 implementation
 
 var
-  NamedMemWatches: TStringList = nil;
-  NamedTimer: TStringList = nil;
+  NamedMemWatches: TStringListUTF8Fast = nil;
+  NamedTimer: TStringListUTF8Fast = nil;
   NamedMemWatchesData: Array of record Sum, Last: Int64; end;
   NamedTimerData: array of record Sum, Last: QWord; end;
 
@@ -144,7 +144,7 @@ var
   idx: Integer;
 begin
   if NamedTimer = nil then begin
-    NamedTimer := TStringList.Create;
+    NamedTimer := TStringListUTF8Fast.Create;
     NamedTimer.Sorted := True;
     NamedTimer.Duplicates := dupError;
   end;
@@ -180,7 +180,7 @@ var
   idx: Integer;
 begin
   if NamedMemWatches = nil then begin
-    NamedMemWatches := TStringList.Create;
+    NamedMemWatches := TStringListUTF8Fast.Create;
     NamedMemWatches.Sorted := True;
     NamedMemWatches.Duplicates := dupError;
   end;

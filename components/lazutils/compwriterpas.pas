@@ -92,7 +92,7 @@ type
     FAccessClass: string;
     FAncestor: TPersistent;
     FAncestorPos: Integer;
-    FAncestors: TStringList;
+    FAncestors: TStringListUTF8Fast;
     FAssignOp: String;
     FCurIndent: integer;
     FCurrentPos: Integer;
@@ -499,7 +499,7 @@ procedure TCompWriterPas.WriteChildren(Component: TComponent;
   Step: TCWPChildrenStep);
 var
   SRoot, SRootA, SParent: TComponent;
-  SList: TStringList;
+  SList: TStringListUTF8Fast;
   SPos, i, SAncestorPos: Integer;
 begin
   // Write children list.
@@ -520,7 +520,7 @@ begin
       FRoot:=Component;
     if (FAncestor is TComponent) then
     begin
-      FAncestors:=TStringList.Create;
+      FAncestors:=TStringListUTF8Fast.Create;
       if csInline in TComponent(FAncestor).ComponentState then
         FRootAncestor := TComponent(FAncestor);
       TAccessComp(FAncestor).GetChildren(@AddToAncestorList,FRootAncestor);
@@ -1444,7 +1444,7 @@ begin
   FMaxColumn:=CSPDefaultMaxColumn;
   FExecCustomProc:=CSPDefaultExecCustomProc;
   FExecCustomProcUnit:=CSPDefaultExecCustomProcUnit;
-  FNeededUnits:=TStringList.Create;
+  FNeededUnits:=TStringListUTF8Fast.Create;
   FAccessClass:=CSPDefaultAccessClass;
   C:=TAccessComp.Create(nil);
   FDefaultDefineProperties:=TMethod(@C.DefineProperties).Code;

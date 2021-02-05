@@ -38,7 +38,7 @@ uses
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   TreeFilterEdit, ListFilterEdit,
   // LazUtils
-  GraphType, LazConfigStorage, LazLoggerBase,
+  GraphType, LazConfigStorage, LazLoggerBase, LazUTF8,
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
@@ -297,7 +297,7 @@ type
     FItemIndex: integer;
     FNameFont, FDefaultValueFont, FValueFont, FHighlightFont: TFont;
     FValueDifferBackgrndColor: TColor;
-    FNewComboBoxItems: TStringList;
+    FNewComboBoxItems: TStringListUTF8Fast;
     FOnModified: TNotifyEvent;
     FRows: TFPList;// list of TOIPropertyGridRow
     FSelection: TPersistentSelectionList;
@@ -2031,7 +2031,7 @@ end;
 procedure TOICustomPropertyGrid.AddStringToComboBox(const s: string);
 begin
   if FNewComboBoxItems=nil then
-    FNewComboBoxItems:=TStringList.Create;
+    FNewComboBoxItems:=TStringListUTF8Fast.Create;
   FNewComboBoxItems.Add(s);
 end;
 

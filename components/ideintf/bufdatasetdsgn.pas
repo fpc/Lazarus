@@ -5,7 +5,9 @@ unit bufdatasetdsgn;
 interface
 
 uses
-  Classes, SysUtils, DB, bufdataset, ComponentEditors, FieldsEditor, ObjInspStrConsts;
+  Classes, SysUtils, DB, bufdataset,
+  LazUTF8,
+  ComponentEditors, FieldsEditor, ObjInspStrConsts;
 
 Type
 
@@ -113,7 +115,7 @@ begin
   if not Assigned(Designer.PropertyEditorHook) then
     exit;
   FreeAndNil(FDatasetNames); // Free previous instance if any
-  FDatasetNames:=TStringList.Create;
+  FDatasetNames:=TStringListUTF8Fast.Create;
   Designer.PropertyEditorHook.GetComponentNames(GetTypeData(TypeInfo(TDataset)),@GetDatasetNames);
   Idx:=FDatasetNames.IndexOf(aBufDS.Name);
   if Idx<>-1 then
