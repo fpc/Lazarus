@@ -36,11 +36,11 @@ interface
 
 uses
   Classes, SysUtils,
-  // LazUtils
-  FileUtil, LazFileUtils, LazConfigStorage,
   // LCL
-  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
+  LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
   ExtCtrls, ButtonPanel, HelpIntfs,
+  // LazUtils
+  FileUtil, LazFileUtils, LazConfigStorage, LazLoggerBase, LazUTF8,
   // IdeIntf
   LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf, IDEOptEditorIntf,
   LazIDEIntf, BaseIDEIntf, IDEDialogs, IDEImagesIntf, SrcEditorIntf;
@@ -1092,10 +1092,10 @@ end;
 
 procedure TExternHelpGeneralOptsFrame.FillStoreInCombobox;
 var
-  sl: TStringList;
+  sl: TStringListUTF8Fast;
   i: Integer;
 begin
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8Fast.Create;
   try
     for i:=0 to PackageEditingInterface.GetPackageCount-1 do
       sl.Add(PackageEditingInterface.GetPackages(i).Name);

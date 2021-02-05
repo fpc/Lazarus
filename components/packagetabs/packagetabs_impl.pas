@@ -35,7 +35,7 @@ uses
   LCLIntf, Forms, Controls, StdCtrls, Buttons, ComCtrls, ExtCtrls,
   Graphics, Menus, Clipbrd,
   // LazUtils
-  LazUtilities, LazFileUtils, Laz2_XMLCfg,
+  LazUtilities, LazFileUtils, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   SrcEditorIntf, PackageIntf, LazIDEIntf, IDEImagesIntf, IDECommands,
   IDEOptEditorIntf, ProjectIntf,
@@ -98,7 +98,7 @@ type
     Title: string;
     Package: TIDEPackage;
     GroupTabLabel: TGroupTabLabelClass;
-    Files: TStringList;
+    Files: TStringListUTF8Fast;
 
     constructor Create(AType: TGroupType; const ATitle: string; APackage: TIDEPackage);
     destructor Destroy; override;
@@ -589,7 +589,7 @@ begin
   &Type := AType;
   Title := ATitle;
   Package := APackage;
-  Files := TStringList.Create;
+  Files := TStringListUTF8Fast.Create;
   Files.Sorted := True;
   Files.Duplicates := dupAccept;
 end;

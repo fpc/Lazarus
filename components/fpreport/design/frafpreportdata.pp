@@ -19,13 +19,15 @@ unit frafpreportdata;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, ComCtrls, StdCtrls, fpreport,
+  Classes, SysUtils,
+  FileUtil, LazUTF8,
+  Forms, Controls, ComCtrls, StdCtrls,
 {$ifdef VER3_0}
   fprepexprpars,
 {$ELSE}
   fpexprpars,
 {$endif}
-  fpreportdesignobjectlist;
+  fpreport, fpreportdesignobjectlist;
 
 type
 
@@ -224,7 +226,7 @@ begin
       Clear;
       if not Assigned(Report) then
         exit;
-      L:=TStringList.Create;
+      L:=TStringListUTF8Fast.Create;
       For I:=0 to BuiltinIdentifiers.IdentifierCount-1 do
         L.AddObject(BuiltinIdentifiers.Identifiers[i].Name,BuiltinIdentifiers.Identifiers[i]);
       L.Sort;
@@ -296,7 +298,7 @@ begin
     try
       BeginUpdate;
       Clear;
-      L:=TStringList.Create;
+      L:=TStringListUTF8Fast.Create;
       if not Assigned(Report) then
         exit;
       For I:=0 to Report.ReportData.Count-1 do
@@ -337,7 +339,7 @@ Var
   L : TStringList;
 
 begin
-  L:=TStringList.Create;
+  L:=TStringListUTF8Fast.Create;
   try
     For I:=0 to Vars.Count-1 do
       L.AddObject(Vars[i].Name,Vars[i]);
@@ -372,7 +374,7 @@ begin
     FReport.AddBuiltinsToExpressionIdentifiers(FIdentifiers);
   if FIdentifiers.FindIdentifier('PageCount')=Nil then
     FIdentifiers.AddIntegerVariable('PageCount',-1);
-  L:=TStringList.Create;
+  L:=TStringListUTF8Fast.Create;
   try
     For I:=0 to Fidentifiers.Count-1 do
       L.AddObject(Fidentifiers[i].Name,Fidentifiers[i]);

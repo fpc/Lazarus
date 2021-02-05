@@ -75,7 +75,7 @@ implementation
 constructor TListFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fOriginalData:=TStringList.Create;
+  fOriginalData:=TStringListUTF8Fast.Create;
   fSelectionList:=TStringList.Create;
   fSortedData:=TStringList.Create;
   if fFilteredListbox is TCustomCheckListBox then

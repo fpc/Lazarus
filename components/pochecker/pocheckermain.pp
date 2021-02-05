@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
-  LCLType, LazUTF8, LCLTranslator,
+  LCLType, LazUTF8,
   {$IFnDEF POCHECKERSTANDALONE}
   MenuIntf,
   {$ENDIF}

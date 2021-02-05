@@ -2073,7 +2073,7 @@ begin
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.WorkingDirectory:=Project.BaseDir;
       DebugLn(['TH2PasConverter.ConvertFile Tool.Executable="',Tool.Executable,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
-      Tool.Scanners.Add(SubToolH2Pas);
+      Tool.Parsers.Add(SubToolH2Pas);
       if not RunExternalTool(Tool) then
         exit(mrAbort);
       if IDEMessagesWindow.SelectFirstUrgentMessage(mluError,false) then

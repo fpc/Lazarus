@@ -84,6 +84,7 @@ begin
   SetSection(psSectionName);
 
   fcWords := TStringList.Create;
+  fcWords.UseLocale := False;    // Will compare with CompareText.
   fcWords.Sorted := True;
   fcWords.Duplicates := dupIgnore;
 end;
@@ -100,11 +101,9 @@ begin
   fcWords.Sorted := False;
 
   fbEnabled := pcStream.Read(REG_ENABLED, True);
-
   if not pcStream.Read(REG_WORDS, fcWords) then
     AddDefaultWords;
 
-  fcWords.Sort;
   fcWords.Sorted := True;
 end;
 

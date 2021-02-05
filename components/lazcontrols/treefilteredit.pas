@@ -36,8 +36,8 @@ type
   private
     fOwner: TTreeFilterEdit;
     fRootNode: TTreeNode;
-    fOriginalData: TStringList;     // Data supplied by caller.
-    fSortedData: TStringList;       // Data sorted for viewing.
+    fOriginalData: TStringList;       // Data supplied by caller.
+    fSortedData: TStringListUTF8Fast; // Data sorted for viewing.
     fImgIndex: Integer;
     // Full filename in node data is needed when showing the directory hierarchy.
     // It is stored automatically if AFullFilename is passed to contructor.
@@ -142,8 +142,8 @@ begin
   inherited Create;
   fOwner:=AOwner;
   fRootNode:=ARootNode; // RootNode can also be Nil. Then all items are at top level.
-  fOriginalData:=TStringList.Create;
-  fSortedData:=TStringList.Create;
+  fOriginalData:=TStringListUTF8Fast.Create;
+  fSortedData:=TStringListUTF8Fast.Create;
   fNodeTextToFullFilenameMap:=TStringToStringTree.Create(True);
   fNodeTextToDataMap:=TStringToPointerTree.Create(True);
   fImgIndex:=-1;

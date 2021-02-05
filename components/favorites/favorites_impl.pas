@@ -34,7 +34,7 @@ uses
   // LCL
   Graphics, ComCtrls, Menus, ImgList,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   ToolBarIntf, IDEImagesIntf, LazIDEIntf, ProjectIntf, IDEOptionsIntf,
   IDECommands, IDEUtils,
@@ -45,7 +45,7 @@ type
   TFavoritesHandler = class
   private
     FOldToolButtonClass: TIDEToolButtonClass;
-    FFavoriteProjects: TStringList;
+    FFavoriteProjects: TStringListUTF8Fast;
     FConfig: TXMLConfig;
 
     procedure AddToRecentProjectFiles(Sender: TObject; AFileName: string;
@@ -226,7 +226,7 @@ var
   xToolButton: TIDEButtonCommand;
 begin
   IDEEnvironmentOptions.AddHandlerAddToRecentProjectFiles(@AddToRecentProjectFiles);
-  FFavoriteProjects := TStringList.Create;
+  FFavoriteProjects := TStringListUTF8Fast.Create;
   FFavoriteProjects.Duplicates := dupIgnore;
   FFavoriteProjects.CaseSensitive := False;
   FFavoriteProjects.Sorted := True;

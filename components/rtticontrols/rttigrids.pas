@@ -25,8 +25,14 @@ unit RTTIGrids;
 interface
 
 uses
-  Classes, SysUtils, Controls, LCLProc, LCLType, ObjectInspector, PropEdits,
-  GraphPropEdits, TypInfo, RTTICtrls, Grids;
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLProc, LCLType, Controls, Grids,
+  // LazUtils
+  LazLoggerBase, LazUTF8,
+  // IdeIntf
+  ObjectInspector, PropEdits,
+  RTTICtrls;
 
 type
   { TTICustomPropertyGrid }
@@ -851,9 +857,9 @@ begin
             tkQWord{,tkDynArray,tkInterfaceRaw}];
   FProperties:=TList.Create;
   FListDirection:=tldObjectsAsRows;
-  FHideProperties:=TStringList.Create;
+  FHideProperties:=TStringListUTF8Fast.Create;
   FPropertyOrder:=TStringList.Create;
-  FShowOnlyProperties:=TStringList.Create;
+  FShowOnlyProperties:=TStringListUTF8Fast.Create;
   FAliasPropertyNames:=TAliasStrings.Create;
 end;
 
@@ -1184,16 +1190,14 @@ begin
     Result:=Properties[PropertyIndex];
 end;
 
-function TTICustomGrid.IndexOfGridProperty(const PropName: string
-  ): integer;
+function TTICustomGrid.IndexOfGridProperty(const PropName: string): integer;
 begin
   Result:=FProperties.Count-1;
   while (Result>=0) and (CompareText(Properties[Result].PropName,PropName)<>0)
   do dec(Result);
 end;
 
-function TTICustomGrid.FindGridProperty(const PropName: string
-  ): TTIGridProperty;
+function TTICustomGrid.FindGridProperty(const PropName: string): TTIGridProperty;
 var
   i: integer;
 begin

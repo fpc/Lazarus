@@ -134,6 +134,7 @@ begin
   SetSection('SpecificWordCaps');
 
   fcWords := TStringList.Create;
+  fcWords.UseLocale := False;    // Will compare with CompareText.
   fcWords.Duplicates := dupIgnore;
 end;
 
@@ -191,11 +192,7 @@ end;
 function TSetAnyWordCaps.HasWord(const psWord: string): boolean;
 begin
   if psWord = '' then
-  begin
-    Result := False;
-    exit;
-  end;
-
+    exit(False);
   Result := (fcWords.IndexOf(psWord) > -1);
 end;
 

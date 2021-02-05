@@ -2236,7 +2236,6 @@ end;
 
 procedure TFPReportDesignerForm.SetDesignOptions(AValue: TFPReportDesignOptions);
 
-
 begin
   if FDesignOptions=AValue then Exit;
   FDesignOptions:=AValue;

@@ -103,7 +103,7 @@ constructor TListViewFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fOriginalData:=TListViewDataList.Create;
-  fSelectionList:=TStringList.Create;
+  fSelectionList:=TStringListUTF8Fast.Create;
   fFilteredData:=TListViewDataList.Create;
 end;
 

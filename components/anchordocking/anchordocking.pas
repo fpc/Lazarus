@@ -103,7 +103,7 @@ uses
   Math, Classes, SysUtils, types, fgl,
   LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, Laz2_XMLCfg, LazFileCache,
+  LazConfigStorage, Laz2_XMLCfg, LazFileCache, LazUTF8,
   AnchorDockStr, AnchorDockStorage, AnchorDockPanel;
 
 {$IFDEF DebugDisableAutoSizing}
@@ -2411,10 +2411,10 @@ end;
 function TAnchorDockMaster.FullRestoreLayout(Tree: TAnchorDockLayoutTree;
   Scale: Boolean): Boolean;
 var
-  ControlNames: TStringList;
+  ControlNames: TStringListUTF8Fast;
 begin
   Result:=false;
-  ControlNames:=TStringList.Create;
+  ControlNames:=TStringListUTF8Fast.Create;
   fTreeNameToDocker:=TADNameToControl.Create;
   try
 
@@ -3299,7 +3299,7 @@ var
   SavedSites: TFPList;
   LayoutNode: TAnchorDockLayoutTreeNode;
   AFormOrDockPanel: TWinControl;
-  VisibleControls: TStringList;
+  VisibleControls: TStringListUTF8Fast;
 
   procedure SaveFormOrDockPanel(theFormOrDockPanel: TWinControl; SaveChildren: boolean; AMinimized:boolean);
   begin
@@ -3324,7 +3324,7 @@ var
 
 begin
   SavedSites:=TFPList.Create;
-  VisibleControls:=TStringList.Create;
+  VisibleControls:=TStringListUTF8Fast.Create;
   try
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
@@ -3424,10 +3424,10 @@ function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage;
   Scale: Boolean): boolean;
 var
   Tree: TAnchorDockLayoutTree;
-  ControlNames: TStringList;
+  ControlNames: TStringListUTF8Fast;
 begin
   Result:=false;
-  ControlNames:=TStringList.Create;
+  ControlNames:=TStringListUTF8Fast.Create;
   fTreeNameToDocker:=TADNameToControl.Create;
   Tree:=TAnchorDockLayoutTree.Create;
   try

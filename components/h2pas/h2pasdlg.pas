@@ -27,7 +27,7 @@ uses
   LCLProc, LCLType, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazConfigStorage, LazFileUtils, LazFileCache,
+  LazConfigStorage, LazFileUtils, LazFileCache, LazUTF8,
   // SynEdit
   SynEdit,
   // CodeTools
@@ -936,7 +936,7 @@ procedure TH2PasDialog.UpdateFilesPage(ScanIncludes: boolean);
 var
   i: Integer;
   CurFile: TH2PasFile;
-  OldSelection: TStringList;
+  OldSelection: TStringListUTF8Fast;
   s: String;
   OldExpandedState: TTreeNodeExpandedState;
   Node: TTreeNode;
@@ -953,7 +953,7 @@ begin
     OldSelected:='';
     if CHeaderFilesCheckTreeView.Selected<>nil then
       OldSelected:=CHeaderFilesCheckTreeView.Selected.Text;
-    OldSelection:=TStringList.Create;
+    OldSelection:=TStringListUTF8Fast.Create;
     Node:=CHeaderFilesCheckTreeView.GetFirstMultiSelected;
     while Node<>nil do begin
       //DebugLn(['TH2PasDialog.UpdateFilesPage Node.Text="',Node.Text,'" Index=',Node.Index]);

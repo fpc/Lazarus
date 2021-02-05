@@ -5,13 +5,15 @@ unit PoCheckerSettings;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage, Forms,
+  Classes, SysUtils,
+  Forms,
+  LazFileUtils, LazLoggerBase, LazConfigStorage, LazUTF8,
   {$ifdef POCHECKERSTANDALONE}
   PoCheckerXMLConfig,
   {$else}
   BaseIDEIntf,
   {$endif}
-  PoFamilies, LCLProc, LazFileUtils;
+  PoFamilies;
 
 type
 
@@ -29,7 +31,7 @@ type
     FResultsFormWindowState: TWindowState;
     FSelectDirectoryFilename: String;
     FTestTypes: TPoTestTypes;
-    FMasterPoList: TStringList;
+    FMasterPoList: TStringListUTF8Fast;
     FMasterPoSelList: TStringList;
     FMainFormGeometry: TRect;
     FGraphFormGeometry: TRect;
@@ -512,9 +514,9 @@ begin
   FExternalEditorName := '';
   FSelectDirectoryFilename := '';
   FLangFilterLanguageAbbr := '';
-  if Assigned(FMasterPoList) then FMasterPoList.Free;
-  if Assigned(FMasterPoSelList) then FMasterPoSelList.Free;
-  FMasterPoList := TStringList.Create;
+  FMasterPoList.Free;
+  FMasterPoSelList.Free;
+  FMasterPoList := TStringListUTF8Fast.Create;
   FMasterPoSelList := TStringList.Create;
   FMasterPoList.Sorted := True;
   FMasterPoList.Duplicates := dupIgnore;
@@ -549,7 +551,7 @@ end;
 
 destructor TPoCheckerSettings.Destroy;
 begin
-  if Assigned(FConfig) then FConfig.Free;
+  FConfig.Free;
   FMasterPoList.Free;
   FMasterPoSelList.Free;
   inherited Destroy;

@@ -5,8 +5,11 @@ unit frmFileBrowser;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, LResources, LCLType, Forms, Controls, Graphics,
-  Dialogs, EditBtn, FileCtrl, ComCtrls, StdCtrls, ExtCtrls;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, Dialogs, FileCtrl, ComCtrls, StdCtrls, ExtCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8;
 
 type
   TOpenFileEvent = procedure(Sender: TObject; const AFileName: string) of object;
@@ -223,7 +226,7 @@ var
   i: integer;
   FCurrentDir: string;
   //used to sort the directories.
-  SortList: TStringList;
+  SortList: TStringListUTF8Fast;
 begin
   if Dir <> '' then
   begin
@@ -235,8 +238,7 @@ begin
       if SysUtils.FindFirst(FCurrentDir, faAnyFile or $00000080, FileInfo) = 0 then
       begin
         try
-          SortList        := TStringList.Create;
-          SortList.Sorted := True;
+          SortList := TStringListUTF8Fast.Create;
           repeat
             // check if special file
             if (FileInfo.Name = '.') or (FileInfo.Name = '..') or (FileInfo.Name = '') then
@@ -258,6 +260,7 @@ begin
               SortList.Add(FileInfo.Name);
             end;
           until SysUtils.FindNext(FileInfo) <> 0;
+          SortList.Sorted := True;
           for i := 0 to SortList.Count - 1 do
           begin
             NewNode := TV.Items.AddChild(Node, SortList[i]);

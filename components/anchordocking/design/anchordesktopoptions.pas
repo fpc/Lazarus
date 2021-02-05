@@ -11,7 +11,7 @@ uses
   // LCL
   LCLProc, Forms, Controls, LCLType, LResources,
   // LazUtils
-  LazFileUtils, LazConfigStorage, Laz2_XMLCfg,
+  LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   IDEOptionsIntf, LazIDEIntf, BaseIDEIntf,
   // AnchorDocking
@@ -243,11 +243,11 @@ var
   SavedSites: TFPList;
   LayoutNode: TAnchorDockLayoutTreeNode;
   AForm: TCustomForm;
-  VisibleControls: TStringList;
+  VisibleControls: TStringListUTF8Fast;
 begin
   FTree.Clear;
   SavedSites:=TFPList.Create;
-  VisibleControls:=TStringList.Create;
+  VisibleControls:=TStringListUTF8Fast.Create;
   with DockMaster do
   try
     for i:=0 to ControlCount-1 do begin

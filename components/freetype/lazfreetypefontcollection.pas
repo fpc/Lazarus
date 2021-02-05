@@ -15,6 +15,8 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
+  LazUTF8,
+  // FreeType
   EasyLazFreeType, LazFreeType, TTTypes;
 
 type
@@ -909,14 +911,14 @@ end;
 procedure TFreeTypeFontCollection.AddFolder(AFolder: string;
   AIncludeSubdirs: Boolean = false);
 var
-  files: TStringList;
+  files: TStringListUTF8Fast;
   i: integer;
 begin
   AFolder := ExpandFileName(AFolder);
   if (length(AFolder) <> 0) and (AFolder[length(AFolder)] <> PathDelim) then
     AFolder += PathDelim;
 
-  files := TStringList.Create;
+  files := TStringListUTF8Fast.Create;
   BeginUpdate;
   try
     FindAllFiles(files, AFolder, '*.ttf', AIncludeSubdirs);

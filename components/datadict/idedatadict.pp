@@ -5,7 +5,10 @@ unit idedatadict;
 interface
 
 uses
-  Classes, SysUtils, fpdatadict, LazUTF8, LazIDEIntf, ldd_consts;
+  Classes, SysUtils, fpdatadict,
+  LazUTF8,
+  LazIDEIntf,
+  ldd_consts;
 
 Type
 
@@ -23,7 +26,7 @@ Type
     FDataDict: TFPDatadictionary;
     FDictName: String;
     FFileName: String;
-    FKnownDicts : TStringList;
+    FKnownDicts : TStringListUTF8Fast;
     procedure DDProgress(Sender: TObject; const Msg: String);
     procedure SetDictName(const AValue: String);
     procedure SetFileName(const AValue: String);
@@ -220,7 +223,7 @@ end;
 constructor TIDEDataDictionary.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FKnownDicts:=TStringList.Create;
+  FKnownDicts:=TStringListUTF8Fast.Create;
   FKnownDicts.Sorted:=True;
   Initialize;
 end;

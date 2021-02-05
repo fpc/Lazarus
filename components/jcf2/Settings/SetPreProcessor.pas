@@ -78,10 +78,12 @@ begin
   SetSection('PreProcessor');
 
   fcDefinedSymbols := TStringList.Create;
+  fcDefinedSymbols.UseLocale := False;    // Will compare with CompareText.
   //fcDefinedSymbols.Sorted := True;
   fcDefinedSymbols.Duplicates := dupIgnore;
 
   fcDefinedOptions := TStringList.Create;
+  fcDefinedOptions.UseLocale := False;
   //fcDefinedOptions.Sorted := True;
   fcDefinedOptions.Duplicates := dupIgnore;
 end;
@@ -114,16 +116,11 @@ begin
   fcDefinedSymbols.Sorted := False;
   if not pcStream.Read(REG_DEFINED_SYMBOLS, fcDefinedSymbols) then
     AddDefaultSymbols;
-
-  fcDefinedSymbols.Sort;
   fcDefinedSymbols.Sorted := True;
-
 
   fcDefinedOptions.Sorted := False;
   if not pcStream.Read(REG_DEFINED_OPTIONS, fcDefinedOptions) then
     AddDefaultOptions;
-
-  fcDefinedOptions.Sort;
   fcDefinedOptions.Sorted := True;
 end;
 

@@ -19,9 +19,11 @@ unit fpreportpreview;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, ActnList, Buttons, StdCtrls, Menus, fpreport, fpreportlclexport,
-  fpreportformexport;
+  Classes, SysUtils,
+  FileUtil, LazUTF8,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  ComCtrls, ActnList, Buttons, StdCtrls, Menus,
+  fpreport, fpreportlclexport, fpreportformexport;
 
 type
 
@@ -168,7 +170,7 @@ Var
 
 begin
   // Do Export
-  L:=TstringList.Create;
+  L:=TStringListUTF8Fast.Create;
   try
     For I:=0 to PMExport.Items.Count-1 do
       L.AddObject(PMExport.Items[I].Caption,PMExport.Items[I]);

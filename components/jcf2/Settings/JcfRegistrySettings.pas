@@ -280,7 +280,9 @@ begin
   fcReg := TRegIniFile.Create(REG_ROOT_KEY);
 
   fcExclusionsFiles := TStringList.Create;
-  fcExclusionsDirs  := TStringList.Create;
+  fcExclusionsFiles.UseLocale := False;      // Will compare with CompareText.
+  fcExclusionsDirs := TStringList.Create;
+  fcExclusionsDirs.UseLocale := False;
 end;
 
 destructor TJCFRegistrySettings.Destroy;

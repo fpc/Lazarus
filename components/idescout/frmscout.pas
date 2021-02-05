@@ -34,8 +34,15 @@ unit frmscout;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs, ComponentReg,
-  StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf, IDEScoutStrConsts;
+  Classes, SysUtils, Types,
+  // LCL
+  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
+  // LazUtils
+  FileUtil, LazUTF8,
+  // BuildIntf, IdeIntf
+  IDEOptionsIntf,
+  ComponentReg, IDECommands, LazIDEIntf, IDEOptEditorIntf,
+  IDEScoutStrConsts;
 
 Type
   TScoutTerrain = (stCommands,stRecentProjects,stRecentFiles,stRecentPackages,stComponents);
@@ -122,7 +129,7 @@ Type
     FKeyStrokeColor: TColor;
     FMatchColor: TColor;
     FShowCategory: Boolean;
-    FSearchItems: TStringList;
+    FSearchItems: TStringListUTF8Fast;
     FOrgCaption : String;
     FShowShortCutKey: Boolean;
     procedure ClearRefreshableItems;
@@ -524,7 +531,7 @@ end;
 
 procedure TIDEScoutForm.FormCreate(Sender: TObject);
 begin
-  FSearchItems:=TStringList.Create;
+  FSearchItems:=TStringListUTF8Fast.Create;
   FSearchItems.OwnsObjects:=True;
   Caption:=isrsIDEScout;
   FOrgCaption:=Caption;

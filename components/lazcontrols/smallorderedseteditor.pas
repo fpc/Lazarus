@@ -18,8 +18,10 @@ unit SmallOrderedSetEditor;
 interface
 
 uses
-  Classes, SysUtils, Types, math, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ButtonPanel, ComCtrls, Buttons, LCLType, Themes, LazLoggerBase;
+  Classes, SysUtils, Types, math,
+  Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ButtonPanel, ComCtrls, Buttons, LCLType, Themes,
+  LazLoggerBase, LazUTF8;
 
 type
   TSmOrdSetEditOption = (
@@ -59,7 +61,7 @@ type
     procedure UpdateButtonState;
   protected
     procedure SetOptions(const AValue: TSmOrdSetEditOptions); virtual;
-    function IndexOf(List: TStrings; Value: string): integer; virtual;
+    //function IndexOf(List: TStrings; Value: string): integer; virtual;
     procedure UpdateShowing; override;
     procedure ToggleNode(Node: TTreeNode); virtual;
   public
@@ -202,25 +204,25 @@ begin
   MoveUpBitBtn.Visible:=not (oseoHideUpDown in Options);
   MoveDownBitBtn.Visible:=not (oseoHideUpDown in Options);
 end;
-
+{
 function TSmallOrderedSetEditDlg.IndexOf(List: TStrings; Value: string): integer;
 begin
   Result:=List.IndexOf(Value);
 end;
-
+}
 function TSmallOrderedSetEditDlg.SetList(List, NewList: TStrings;
   ErrorOnDuplicate: boolean): boolean;
 var
-  CleanList: TStringList;
+  CleanList: TStringListUTF8Fast;
   i: Integer;
   s: String;
 begin
-  CleanList:=TStringList.Create;
+  CleanList:=TStringListUTF8Fast.Create;
   try
     for i:=0 to NewList.Count-1 do
     begin
       s:=NewList[i];
-      if IndexOf(CleanList,s)>=0 then
+      if CleanList.IndexOf(s)>=0 then
       begin
         if ErrorOnDuplicate then
           raise EListError.Create(DbgSName(Self)+': duplicate item '+IntToStr(i)+' "'+s+'"');
@@ -266,7 +268,7 @@ begin
   Node.SelectedIndex:=Node.ImageIndex;
   if Node.ImageIndex=0 then
   begin
-    i:=IndexOf(Items,Node.Text);
+    i:=Items.IndexOf(Node.Text);
     Items.Delete(i);
   end else begin
     j:=0;
@@ -302,7 +304,7 @@ begin
   for i:=FItems.Count-1 downto 0 do
   begin
     s:=FItems[i];
-    if IndexOf(AvailableItems,s)<0 then
+    if AvailableItems.IndexOf(s)<0 then
     begin
       if oseoErrorItemsContainNotAvailable in Options then
         raise EListError.Create(DbgSName(Self)+': item '+IntToStr(i)+' "'+s+'" is not in AvailableItems');
@@ -316,7 +318,7 @@ begin
   begin
     s:=AvailableItems[i];
     Node:=ItemsTreeView.Items.Add(nil,s);
-    if IndexOf(Items,s)>=0 then
+    if Items.IndexOf(s)>=0 then
       Node.ImageIndex:=1
     else
       Node.ImageIndex:=0;

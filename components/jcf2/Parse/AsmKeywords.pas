@@ -53,6 +53,7 @@ begin
   }
 
   mcWords := TStringList.Create();
+  mcWords.UseLocale := False;   // Will compare with CompareText.
 
   mcWords.Add('RAX');
   mcWords.Add('EAX');
