@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, testregistry, LCLProc, LCLType, Forms, TestBase,
   SynEdit, SynPluginSyncroEdit, SynEditKeyCmds, SynPluginTemplateEdit,
-  SynPluginSyncronizedEditBase;
+  SynPluginSyncronizedEditBase, SynEditTypes;
 
 type
 

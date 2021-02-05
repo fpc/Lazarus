@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, TestBase, TestHighlightPas,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynBeautifier,
+  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynBeautifier, SynEditTypes, SynBeautifierPascal,
   LCLType, LCLProc;
 
 type

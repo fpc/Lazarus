@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils, testregistry, LCLProc, Forms, TestBase,
-  SynEdit, SynEditKeyCmds;
+  SynEdit, SynEditKeyCmds, SynEditTypes;
 
 type
 

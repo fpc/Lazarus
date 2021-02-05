@@ -17,7 +17,7 @@ or between two empty lines
 
 uses
   Classes, SysUtils, Forms, testregistry, TestBase, LCLProc, LCLType,
-  SynEdit, SynEditKeyCmds, SynEditTextTrimmer;
+  SynEdit, SynEditKeyCmds, SynEditTextTrimmer, SynEditTypes;
 
 type
 

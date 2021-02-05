@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, testregistry, TestBase, math,
-  SynEdit, SynEditKeyCmds;
+  SynEdit, SynEditKeyCmds, SynEditTypes;
 
 type
 
