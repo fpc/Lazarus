@@ -6,7 +6,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit lazfglhash;
+unit LazFglHash;
 
 {$mode objfpc}{$H+}
 

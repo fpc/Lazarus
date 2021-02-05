@@ -41,6 +41,7 @@ type
   protected
     procedure InsertItem(Index: Integer; const S: string); override;
   public
+    constructor Create(aCaseSensitive: Boolean);
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
@@ -53,24 +54,24 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
-function Deduplicate(AStrings: TStrings): Boolean;
+function Deduplicate(AStrings: TStrings): Integer;
+
 
 implementation
 
-{
-  Removes duplicate strings (case sensitive) from AStrings.
-  When the AStrings owns and contains objects, the function will return false.
-}
-function Deduplicate(AStrings: TStrings): Boolean;
+function Deduplicate(AStrings: TStrings): Integer;
+// Removes duplicate strings (case sensitive) from AStrings.
+// Returns the number of duplicates removed.
 var
   DSL: TLookupStringList;
+  InCnt: Integer;
 begin
-  Result := False;
-  DSL := TLookupStringList.Create;
+  InCnt := AStrings.Count;
+  DSL := TLookupStringList.Create(True);
   try
     DSL.Assign(AStrings);
     AStrings.Assign(DSL);
-    Result := True;
+    Result := InCnt - AStrings.Count;
   finally
     DSL.Free;
   end;
@@ -78,10 +79,16 @@ end;
 
 { TLookupStringList }
 
-constructor TLookupStringList.Create;
+constructor TLookupStringList.Create(aCaseSensitive: Boolean);
 begin
   inherited Create;
-  FMap := TStringMap.Create(True);
+  CaseSensitive := aCaseSensitive;
+  FMap := TStringMap.Create(aCaseSensitive);
+end;
+
+constructor TLookupStringList.Create;
+begin
+  Create(False);  // Case-insensitive by default
 end;
 
 destructor TLookupStringList.Destroy;

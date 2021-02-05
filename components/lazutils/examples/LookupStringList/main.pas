@@ -5,8 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Dialogs, StdCtrls, Spin,
-  LookupStringList;
+  Classes, SysUtils, Math, Forms, Controls, Dialogs, StdCtrls, Spin, LookupStringList;
 
 type
 
@@ -113,13 +112,12 @@ begin
 
   if Trim(Memo.Text) = '' then
   begin
-    ShowMessage('Generating data. Please wait.');
     btnGenerateClick(nil);
+    ShowMessage('Generated data.');
   end;
 
-  ShowMessage('Saving memo to a file. Please wait.');
   Memo.Lines.SaveToFile('temp.txt');
-  ShowMessage('Dedupping the file.');
+  ShowMessage('Saved memo to a file.');
   T := Now;
   N := Memo.Lines.Count;
   DSL := TLookupStringList.Create;
@@ -128,7 +126,7 @@ begin
     lblLines.Caption := 'Duplicated Lines: ' + IntToStr(N - DSL.Count);
     DSL.SaveToFile('temp.txt');
     lblTime.Caption := 'Time: ' + TimeToStr(Now - T);
-    ShowMessage('Deleting the file.');
+    ShowMessage('Dedupping the file. Will delete it.');
     DeleteFile('temp.txt');
   finally
     DSL.Free;
