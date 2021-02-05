@@ -153,6 +153,7 @@ type
     function GetCaretObj: TSynEditCaret; virtual; abstract;
     function GetReadOnly: boolean; virtual;
     function GetIsBackwardSel: Boolean;
+    function GetHighlighterObj: TObject; virtual; abstract;
     function GetSelText: string;
     function GetSelAvail: Boolean;
     function GetSelectedColor: TSynSelectedColor; virtual; abstract;
@@ -291,6 +292,8 @@ type
 
     property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
     property SelAvail: Boolean read GetSelAvail;
+
+    property Highlighter: TObject read GetHighlighterObj;
   end;
 
   { TSynEditFriend }

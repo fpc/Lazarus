@@ -202,7 +202,6 @@ type
 
   
 implementation
-uses SynEdit;
 
 { TSynEditMarkup }
 
@@ -359,12 +358,12 @@ end;
 
 function TSynEditMarkup.ScreenRowToRow(aRow : Integer) : Integer;
 begin
-  Result := TCustomSynEdit(SynEdit).ScreenRowToRow(aRow);
+  Result := SynEdit.ScreenXYToTextXY(Point(0, aRow)).Y;
 end;
 
 function TSynEditMarkup.RowToScreenRow(aRow : Integer) : Integer;
 begin
-  Result := TCustomSynEdit(SynEdit).RowToScreenRow(aRow);
+  Result := SynEdit.TextXYToScreenXY(Point(0, aRow)).Y;
 end;
 
 function TSynEditMarkup.LogicalToPhysicalPos(const p : TPoint) : TPoint;
@@ -379,7 +378,7 @@ end;
 
 function TSynEditMarkup.Highlighter : TSynCustomHighlighter;
 begin
-  Result := TCustomSynEdit(SynEdit).Highlighter;
+  Result := SynEdit.Highlighter as TSynCustomHighlighter;
 end;
 
 function TSynEditMarkup.OwnedByMgr: Boolean;

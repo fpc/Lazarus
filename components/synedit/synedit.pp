@@ -831,6 +831,7 @@ type
     function GetCanRedo: Boolean; override;
     function GetCanUndo: Boolean; override;
     function GetCaretObj: TSynEditCaret; override;
+    function GetHighlighterObj: TObject; override;
     function GetSelectedColor : TSynSelectedColor; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
@@ -2780,6 +2781,11 @@ end;
 function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
 begin
   result := fMarkupHighAll.MarkupInfo;
+end;
+
+function TCustomSynEdit.GetHighlighterObj: TObject;
+begin
+  Result := fHighlighter;
 end;
 
 function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
