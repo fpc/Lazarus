@@ -49,7 +49,10 @@ uses
   // LCL
   LCLIntf, LCLType, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit
-  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses;
+  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, SynEditMouseCmds;
+
+const
+  SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
 
 type
 
@@ -99,6 +102,8 @@ type
   { TSynEditBase }
 
   TSynEditBase = class(TCustomControl)
+  private
+    FMouseOptions: TSynEditorMouseOptions;
   protected
     FWordBreaker: TSynWordBreaker;
     FBlockSelection: TSynEditSelection;
@@ -111,6 +116,7 @@ type
     function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
     function GetPaintArea: TLazSynSurface; virtual; abstract; // TLazSynSurfaceManager
+    procedure SetMouseOptions(AValue: TSynEditorMouseOptions); virtual;
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
@@ -118,7 +124,14 @@ type
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList) No uncommited (trailing/trimmable) spaces
     property WordBreaker: TSynWordBreaker read FWordBreaker;
   public
+    constructor Create(AOwner: TComponent); override;
+
+    function FindGutterFromGutterPartList(const APartList: TObject): TObject; virtual; abstract;
+  public
     property Lines: TStrings read GetLines write SetLines;
+
+    property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
+      default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
   end;
 
   { TSynEditFriend }
@@ -621,6 +634,21 @@ type
 
 
 implementation
+
+{ TSynEditBase }
+
+constructor TSynEditBase.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FMouseOptions := SYNEDIT_DEFAULT_MOUSE_OPTIONS;
+end;
+
+procedure TSynEditBase.SetMouseOptions(AValue: TSynEditorMouseOptions);
+begin
+  if FMouseOptions = AValue then Exit;
+  FMouseOptions := AValue;
+end;
 
 { TSynEditFriend }
 

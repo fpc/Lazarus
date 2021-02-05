@@ -134,8 +134,6 @@ uses
   SynEditTextBidiChars;
 
 const
-  ScrollBarWidth=0;
-
   // SynDefaultFont is determined in InitSynDefaultFont()
   SynDefaultFontName:    String       = '';
   SynDefaultFontHeight:  Integer      = 13;
@@ -363,8 +361,6 @@ const
     eoOverwriteBlock,
     eoAcceptDragDropEditing
   ];
-
-  SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
 
   SYNEDIT_DEFAULT_VISIBLESPECIALCHARS = [
     vscSpace,
@@ -665,7 +661,6 @@ type
     fStateFlags: TSynStateFlags;
     FOptions: TSynEditorOptions;
     FOptions2: TSynEditorOptions2;
-    FMouseOptions: TSynEditorMouseOptions;
     fStatusChanges: TSynStatusChanges;
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
@@ -841,7 +836,6 @@ type
     procedure UpdateOptions;
     procedure SetOptions2(const Value: TSynEditorOptions2);
     procedure UpdateOptions2;
-    procedure SetMouseOptions(AValue: TSynEditorMouseOptions);
     procedure UpdateMouseOptions;
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
     procedure SetRightEdge(Value: Integer);
@@ -978,6 +972,7 @@ type
     procedure RedoItem(Item: TSynEditUndoItem);
     procedure SetCaretXY(Value: TPoint);
     procedure CaretChanged(Sender: TObject);
+    procedure SetMouseOptions(AValue: TSynEditorMouseOptions); override;
     procedure SetName(const Value: TComponentName); override;
     procedure SetReadOnly(Value: boolean); virtual;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
@@ -1211,6 +1206,7 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure EraseBackground(DC: HDC); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function FindGutterFromGutterPartList(const APartList: TObject): TObject; override;
   public
     procedure FindMatchingBracket; virtual;
     function FindMatchingBracket(PhysStartBracket: TPoint;
@@ -1307,8 +1303,6 @@ type
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
-    property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
-      default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
@@ -2549,7 +2543,6 @@ begin
   fTSearch := TSynEditSearch.Create;
   FOptions := SYNEDIT_DEFAULT_OPTIONS;
   FOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
-  FMouseOptions := SYNEDIT_DEFAULT_MOUSE_OPTIONS;
   FShareOptions := SYNEDIT_DEFAULT_SHARE_OPTIONS;
   FVisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
   fMarkupSpecialChar.VisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
@@ -3830,19 +3823,30 @@ begin
          (Y >= FTextArea.Bounds.Top) and (Y < FTextArea.Bounds.Bottom) and
          IsPointInSelection(FInternalCaret.LineBytePos)
       then
-        if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(FMouseOptions), Info) then
+        if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(MouseOptions), Info) then
           exit;
       // mouse event occured in text?
-      if DoHandleMouseAction(FMouseTextActions.GetActionsForOptions(FMouseOptions), Info) then
+      if DoHandleMouseAction(FMouseTextActions.GetActionsForOptions(MouseOptions), Info) then
         exit;
     end;
 
-    DoHandleMouseAction(FMouseActions.GetActionsForOptions(FMouseOptions), Info);
+    DoHandleMouseAction(FMouseActions.GetActionsForOptions(MouseOptions), Info);
   finally
     if Info.IgnoreUpClick then
       include(fStateFlags, sfIgnoreUpClick);
     AnActionResult := Info.ActionResult;
   end;
+end;
+
+function TCustomSynEdit.FindGutterFromGutterPartList(const APartList: TObject): TObject;
+begin
+  if APartList is TSynGutterPartList then
+    Result := Gutter
+  else
+  if APartList is TSynRightGutterPartList then
+    Result := RightGutter
+  else
+    Result := nil;
 end;
 
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -6828,11 +6832,11 @@ end;
 
 procedure TCustomSynEdit.ResetMouseActions;
 begin
-  FMouseActions.Options := FMouseOptions;
+  FMouseActions.Options := MouseOptions;
   FMouseActions.ResetUserActions;
-  FMouseSelActions.Options := FMouseOptions;
+  FMouseSelActions.Options := MouseOptions;
   FMouseSelActions.ResetUserActions;
-  FMouseTextActions.Options := FMouseOptions;
+  FMouseTextActions.Options := MouseOptions;
   FMouseTextActions.ResetUserActions;
 
   FLeftGutter.ResetMouseActions;
@@ -8390,7 +8394,7 @@ begin
      As long as the default mouse actions are set, the below will act as normal
   *)
 
-  MOpt := FMouseOptions;
+  MOpt := MouseOptions;
   f := False;
   for m := low(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) to high(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) do
     if (m in SYNEDIT_OLD_MOUSE_OPTIONS) and (m in ChangedOptions) then begin
@@ -8447,16 +8451,16 @@ var
   ChangedOptions: TSynEditorMouseOptions;
   m: TSynEditorOption;
 begin
-  if FMouseOptions = AValue then Exit;
+  if MouseOptions = AValue then Exit;
 
-  ChangedOptions := (FMouseOptions-AValue)+(AValue-FMouseOptions);
-  FMouseOptions := AValue;
+  ChangedOptions := (MouseOptions-AValue)+(AValue-MouseOptions);
+  inherited;
   // changes take effect when MouseActions are accessed
 
   for m := low(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) to high(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) do
     if (m in SYNEDIT_OLD_MOUSE_OPTIONS) and
        (SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m] in ChangedOptions) and
-       not(SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m] in FMouseOptions)
+       not(SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m] in MouseOptions)
     then
       FOptions := FOptions - [m];
 
