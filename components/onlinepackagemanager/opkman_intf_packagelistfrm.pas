@@ -356,7 +356,7 @@ begin
   while Assigned(Node) do
   begin
     Data := FVST.GetNodeData(Node);
-    if UpperCase(Data^.LazarusPackageName + '.lpk') = UpperCase(AName) then
+    if CompareText(Data^.LazarusPackageName + '.lpk', AName) = 0 then
     begin
       Result := Node^.CheckState = csCheckedNormal;
       Break;

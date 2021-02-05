@@ -180,7 +180,7 @@ begin
   for I := 0 to FPackageLinks.Count - 1 do
   begin
     PackageLink := TPackageLink(FPackageLinks.Items[I]);
-    if UpperCase(PackageLink.Name) = UpperCase(AName) then
+    if CompareText(PackageLink.Name, AName) = 0 then
     begin
       Result := PackageLink;
       Break;
@@ -259,7 +259,7 @@ begin
     for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
     begin
       LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-      if UpperCase(LazPackage.Name) = UpperCase(AName) then
+      if CompareText(LazPackage.Name, AName) = 0 then
       begin
         LazPackage.Checked := True;
         MetaPackage.Checked := True;
@@ -282,7 +282,7 @@ begin
     for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
     begin
       LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-      if UpperCase(LazPackage.Name) = UpperCase(AName) then
+      if CompareText(LazPackage.Name, AName) = 0 then
       begin
         FPackagesToInstall.Add(LazPackage);
         Break;
@@ -295,32 +295,35 @@ function TOPMInterfaceEx.ResolveDependencies: TModalResult;
 var
   I, J: Integer;
   PackageList: TObjectList;
-  PkgFileName: String;
+  Msg, LazPkgName, PkgFileName: String;
   DependencyPkg: TLazarusPackage;
   MetaPkg: TMetaPackage;
-  Msg: String;
 begin
   Result := mrNone;
   FPackageDependecies.Clear;
   for I := 0 to FPackagesToInstall.Count - 1 do
   begin
+    LazPkgName := TLazarusPackage(FPackagesToInstall.Items[I]).Name;
     PackageList := TObjectList.Create(True);
     try
-      SerializablePackages.GetPackageDependencies(TLazarusPackage(FPackagesToInstall.Items[I]).Name, PackageList, True, True);
+      SerializablePackages.GetPackageDependencies(LazPkgName, PackageList, True, True);
       for J := 0 to PackageList.Count - 1 do
       begin
         PkgFileName := TPackageDependency(PackageList.Items[J]).PkgFileName + '.lpk';
         DependencyPkg := SerializablePackages.FindLazarusPackage(PkgFileName);
         if DependencyPkg <> nil then
         begin
-          if (not DependencyPkg.Checked) and
-              (UpperCase(TLazarusPackage(FPackagesToInstall.Items[I]).Name) <> UpperCase(PkgFileName)) and
-               ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[J]), DependencyPkg)) and
-                ((not (DependencyPkg.PackageState = psInstalled)) or ((DependencyPkg.PackageState = psInstalled) and (not (SerializablePackages.IsInstalledVersionOk(TPackageDependency(PackageList.Items[J]), DependencyPkg.InstalledFileVersion)))))) then
+          if (not DependencyPkg.Checked) and (CompareText(LazPkgName, PkgFileName) <> 0)
+          and ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[J]), DependencyPkg))
+          and
+            ((not (DependencyPkg.PackageState = psInstalled))
+              or ((DependencyPkg.PackageState = psInstalled)
+                and (not (SerializablePackages.IsInstalledVersionOk(
+                  TPackageDependency(PackageList.Items[J]), DependencyPkg.InstalledFileVersion)))))) then
           begin
             if (Result = mrNone) or (Result = mrYes) then
               begin
-                Msg := Format(rsMainFrm_rsPackageDependency0, [TLazarusPackage(FPackagesToInstall.Items[I]).Name, DependencyPkg.Name]);
+                Msg := Format(rsMainFrm_rsPackageDependency0, [LazPkgName, DependencyPkg.Name]);
                 Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], nil);
                 if Result in [mrNo, mrNoToAll] then
                   if MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbYes, mbNo], nil) <> mrYes then

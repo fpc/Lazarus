@@ -33,7 +33,7 @@ uses
   // LCL
   Dialogs, Forms, Controls,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // IdeIntf
   LazIDEIntf, PackageIntf,
   // OpkMan
@@ -298,11 +298,11 @@ var
     Result := True;
     for I := 0 to SLExcludedFolders.Count - 1 do
     begin
-      if UpperCase(SLExcludedFolders.Strings[I]) = UpperCase(AName) then
-        begin
-          Result := False;
-          Break;
-        end;
+      if CompareText(SLExcludedFolders.Strings[I], AName) = 0 then
+      begin
+        Result := False;
+        Break;
+      end;
     end;
   end;
 
@@ -317,7 +317,7 @@ var
     begin
       try
         repeat
-          if (UpperCase(ExtractFileExt(SR.Name)) = UpperCase('.lpk')) then
+          if CompareFileExtQuick(SR.Name, 'lpk') = 0 then
           begin
             PackageData := TPackageData.Create;
             PackageData.FName := SR.Name;
@@ -384,7 +384,8 @@ var
     begin
       for I := 0 to SLExcludedFiles.Count - 1 do
       begin
-        if UpperCase(SLExcludedFiles.Strings[I]) = UpperCase(ExtractFileExt(AName)) then
+        DebugLn(['OPM IsAllowed: ExcFile=', SLExcludedFiles.Strings[I], ', AName=', AName]);
+        if CompareFileExt(AName, SLExcludedFiles.Strings[I], False) = 0 then
         begin
           Result := False;
           Break;
@@ -394,11 +395,14 @@ var
     else
     begin
       for I := 0 to SLExcludedFolders.Count - 1 do
-        if UpperCase(SLExcludedFolders.Strings[I]) = UpperCase(AName) then
+      begin
+        DebugLn(['OPM IsAllowed: ExcFolder=', SLExcludedFolders.Strings[I], ', AName=', AName]);
+        if CompareText(SLExcludedFolders.Strings[I], AName) = 0 then
         begin
           Result := False;
           Break;
         end;
+      end;
     end;
   end;
 

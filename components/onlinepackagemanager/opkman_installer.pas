@@ -117,7 +117,7 @@ begin
   begin
     for I := 0 to PackageEditingInterface.GetPackageCount - 1 do
     begin
-      if UpperCase(PackageEditingInterface.GetPackages(I).Filename) = UpperCase(AFileName) then
+      if CompareText(PackageEditingInterface.GetPackages(I).Filename, AFileName) = 0 then
       begin
         Result := PackageEditingInterface.GetPackages(I);
         Break;
@@ -139,7 +139,7 @@ begin
       PkgFileName := Copy(FToInstall.Strings[I], 1, P - 1)
     else
       PkgFileName := FToInstall.Strings[I];
-    if UpperCase(PkgFileName) = UpperCase(AFileName) then
+    if CompareText(PkgFileName, AFileName) = 0 then
     begin
       Result := True;
       Break;
@@ -360,8 +360,9 @@ begin
               DependecyPackage := SerializablePackages.FindLazarusPackage(PackageDependency.PkgFileName + '.lpk');
               if DependecyPackage <> nil then
               begin
-                if UpperCase(DependecyPackage.Name) = UpperCase(TLazarusPackage(FPackageList.Items[I]).Name) then
-                begin
+                if CompareText(DependecyPackage.Name,
+                               TLazarusPackage(FPackageList.Items[I]).Name) = 0
+                then begin
                   CanGo := False;
                   SPos := I;
                   EPos := J;

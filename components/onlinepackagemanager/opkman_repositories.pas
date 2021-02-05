@@ -366,7 +366,7 @@ begin
   while Assigned(Node) do
   begin
     Data := FVST.GetNodeData(Node);
-    if (UpperCase(Data^.FAddress) = UpperCase(AAddress)) and (Data^.FUniqueID <> AUniqueID) then
+    if (CompareText(Data^.FAddress, AAddress) = 0) and (Data^.FUniqueID <> AUniqueID) then
     begin
       Result := True;
       Break;

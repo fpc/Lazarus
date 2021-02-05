@@ -1365,7 +1365,7 @@ begin
                 begin
                   DependencyPkg := TLazarusPackage(SerializablePackages.Items[DataSearch^.PID].LazarusPackages.Items[DataSearch^.PFID]);
                   if (FVST.CheckState[NodeSearch] <> csCheckedNormal) and
-                       (UpperCase(DataSearch^.LazarusPackageName) = UpperCase(PkgFileName)) and
+                       (CompareText(DataSearch^.LazarusPackageName, PkgFileName) = 0) and
                          ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[I]), DependencyPkg)) and
                            ((not (DependencyPkg.PackageState = psInstalled)) or ((DependencyPkg.PackageState = psInstalled) and (not (SerializablePackages.IsInstalledVersionOk(TPackageDependency(PackageList.Items[I]), DataSearch^.InstalledVersion)))))) then
                   begin

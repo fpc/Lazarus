@@ -142,38 +142,41 @@ procedure TPackageUnzipper.Execute;
 var
   I: Integer;
   DelDir: String;
+  MPkg: TMetaPackage;
 begin
   Sleep(50);
   FCnt := 0;
   FStartTime := GetTickCount64;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
-    if SerializablePackages.Items[I].IsExtractable then
+    MPkg := SerializablePackages.Items[I];
+    if MPkg.IsExtractable then
     begin
       if FNeedToBreak then
         Break;
       Inc(FCnt);
       FCurPos := 0;
-      FZipFile := SerializablePackages.Items[I].RepositoryFileName;
-      DelDir := FDstDir + SerializablePackages.Items[I].PackageBaseDir;
+      FZipFile := MPkg.RepositoryFileName;
+      DelDir := FDstDir + MPkg.PackageBaseDir;
       if FIsUpdate then
         if DirectoryExists(DelDir) then
           DeleteDirectory(DelDir, False);
       try
         FUnZipper.Clear;
-        FUnZipper.FileName := FSrcDir + SerializablePackages.Items[I].RepositoryFileName;
-        if SerializablePackages.Items[I].IsDirZipped then
+        FUnZipper.FileName := FSrcDir + MPkg.RepositoryFileName;
+        if MPkg.IsDirZipped then
           FUnZipper.OutputPath := FDstDir
         else
-          FUnZipper.OutputPath := FDstDir + SerializablePackages.Items[I].PackageBaseDir;
+          FUnZipper.OutputPath := FDstDir + MPkg.PackageBaseDir;
         FUnZipper.OnProgressEx := @DoOnProgressEx;
         FUnZipper.Examine;
         FUnZipper.UnZipAllFiles;
-        SerializablePackages.Items[I].ChangePackageStates(ctAdd, psExtracted);
-        if (SerializablePackages.Items[I].IsDirZipped ) and (UpperCase(SerializablePackages.Items[I].PackageBaseDir) <> UpperCase(SerializablePackages.Items[I].ZippedBaseDir)) then
+        MPkg.ChangePackageStates(ctAdd, psExtracted);
+        if (MPkg.IsDirZipped )
+        and (CompareText(MPkg.PackageBaseDir, MPkg.ZippedBaseDir) <> 0) then
         begin
-          CopyDirTree(FUnZipper.OutputPath + SerializablePackages.Items[I].ZippedBaseDir, DelDir, [cffOverwriteFile]);
-          DeleteDirectory(FUnZipper.OutputPath + SerializablePackages.Items[I].ZippedBaseDir, False);
+          CopyDirTree(FUnZipper.OutputPath + MPkg.ZippedBaseDir, DelDir, [cffOverwriteFile]);
+          DeleteDirectory(FUnZipper.OutputPath + MPkg.ZippedBaseDir, False);
         end;
         Synchronize(@DoOnZipProgress);
         FTotPos := FTotPos + FCurSize;
@@ -181,8 +184,8 @@ begin
         on E: Exception do
         begin
           FErrMsg := E.Message;
-          SerializablePackages.Items[I].ChangePackageStates(ctRemove, psExtracted);
-          SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
+          MPkg.ChangePackageStates(ctRemove, psExtracted);
+          MPkg.ChangePackageStates(ctAdd, psError);
           DeleteDirectory(DelDir, False);
           Synchronize(@DoOnZipError);
         end;

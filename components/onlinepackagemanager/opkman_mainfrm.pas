@@ -893,7 +893,7 @@ procedure TMainFrm.tbUninstallClick(Sender: TObject);
     for I := 0 to PackageEditingInterface.GetPackageCount - 1 do
     begin
       IDEPackge := PackageEditingInterface.GetPackages(I);
-      if UpperCase(IDEPackge.Filename) = UpperCase(AFileName) then
+      if CompareText(IDEPackge.Filename, AFileName) = 0 then
       begin
         Result := IDEPackge;
         Break;
@@ -1290,10 +1290,10 @@ end;
 procedure TMainFrm.miLoadClick(Sender: TObject);
 var
   SL: TStringList;
-  I: Integer;
+  TrimmedS: String;
+  I, CheckCount: Integer;
   Node: PVirtualNode;
   Data: PData;
-  CheckCount: Integer;
 begin
   if OD.Execute then
   begin
@@ -1303,11 +1303,12 @@ begin
       SL.LoadFromFile(OD.FileName);
       for I := 0 to SL.Count - 1 do
       begin
+        TrimmedS := Trim(SL.Strings[I]);
         Node := VisualTree.VST.GetFirst;
         while Node <> nil do
         begin
           Data := VisualTree.VST.GetNodeData(Node);
-          if UpperCase(Trim(Data^.LazarusPackageName)) = UpperCase(Trim(SL.Strings[I])) then
+          if CompareText(Trim(Data^.LazarusPackageName), TrimmedS) = 0 then
           begin
             VisualTree.VST.CheckState[Node] := csCheckedNormal;
             Inc(CheckCount);

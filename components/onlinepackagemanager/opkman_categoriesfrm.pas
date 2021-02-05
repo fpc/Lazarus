@@ -299,7 +299,7 @@ begin
   while Assigned(Node) do
   begin
     Data := FVST.GetNodeData(Node);
-    if UpperCase(Data^.FName) = UpperCase(AName) then
+    if CompareText(Data^.FName, AName) = 0 then
     begin
       FVST.CheckState[Node] := csCheckedNormal;
       Result := True;
@@ -331,7 +331,7 @@ begin
              Data := FVST.GetNodeData(Node);
              Data^.FName := Categories[I];
              Data^.FImageIndex := -1;
-             if UpperCase(CategoriesEng[I]) = 'OTHER' then
+             if CompareText(CategoriesEng[I], 'OTHER') = 0 then
                Data^.FType := 1
              else
                Data^.FType := 0;

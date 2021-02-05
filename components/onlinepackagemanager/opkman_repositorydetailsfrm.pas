@@ -69,7 +69,7 @@ begin
   Result := False;
   for I := 0 to Options.RemoteRepository.Count - 1 do
   begin
-    if UpperCase(Options.RemoteRepository.Strings[I]) = UpperCase(AAddress) then
+    if CompareText(Options.RemoteRepository.Strings[I], AAddress) = 0 then
     begin
       Result := True;
       Break;
