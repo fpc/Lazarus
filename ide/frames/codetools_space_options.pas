@@ -31,7 +31,7 @@ uses
   // CodeTools
   SourceChanger,
   // SynEdit
-  SynEdit,
+  SynEdit, SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE

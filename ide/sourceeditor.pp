@@ -63,7 +63,7 @@ uses
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynPluginMultiCaret,
   SynPluginSyncronizedEditBase, SourceSynEditor,
-  SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
+  SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,

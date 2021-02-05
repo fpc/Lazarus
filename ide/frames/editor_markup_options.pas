@@ -35,7 +35,7 @@ uses
   // SynEdit
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, SourceMarks, SynEditMarkupBracket,
+  EditorOptions, LazarusIDEStrConsts, SourceMarks, SynEditMarkupBracket, SynEditTypes,
   editor_color_options, editor_general_options, editor_keymapping_options,
   editor_codefolding_options;
 

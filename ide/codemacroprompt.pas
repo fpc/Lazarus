@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   BasicCodeTools, CodeToolManager,
-  SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
+  SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit, SynEditTypes,
   LazIDEIntf, SrcEditorIntf, LazUTF8;
 
 type

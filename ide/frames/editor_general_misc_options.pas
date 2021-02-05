@@ -34,7 +34,7 @@ uses
   // LCL
   LCLProc, StdCtrls, ExtCtrls, Spin,
   // SynEdit
-  SynEdit, SynEditTextTrimmer,
+  SynEdit, SynEditTextTrimmer, SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, DividerBevel, CheckBoxThemed,
   // IDE

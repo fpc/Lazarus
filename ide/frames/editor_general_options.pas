@@ -31,7 +31,7 @@ uses
   // LazControls
   DividerBevel,
   // SynEdit
-  SynEdit, SynHighlighterPas, SynPluginMultiCaret,
+  SynEdit, SynHighlighterPas, SynPluginMultiCaret, SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf,
   // IDE

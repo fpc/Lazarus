@@ -29,7 +29,7 @@ uses
   // LCL
   Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, LCLProc,
   // SynEdit
-  SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview, SynGutter,
+  SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview, SynGutter, SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // IDE
