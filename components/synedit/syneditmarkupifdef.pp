@@ -523,8 +523,6 @@ function dbgs(APeerType: TSynMarkupIfdefPeerType): String; overload;
 
 implementation
 
-uses
-  SynEdit;
 var
   TheDict: TSynRefCountedDict = nil;
   {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
