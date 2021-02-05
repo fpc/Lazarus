@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Menus, LCLType, SysUtils,
-  SynEdit, SynEditKeyCmds, SynEditTypes, SynEditStrConst;
+  SynEdit, SynEditKeyCmds, SynEditTypes, SynEditStrConst, SynEditMiscClasses;
 
 type
 

@@ -41,7 +41,7 @@ unit SynEditTypes;
 
 interface
 uses
-  SysUtils, types, Controls;
+  SysUtils, types, Classes, Controls, LCLType, SynEditKeyCmds;
 
 const
   TSynSpecialChars = [#128..#255]; // MG: special chars. Meaning depends on system encoding/codepage.
@@ -216,6 +216,23 @@ type
     bsBottom
   );
   TLazSynBorderSides = set of TLazSynBorderSide;
+
+  THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
+    var Handled: boolean; var Command: TSynEditorCommand;
+    var AChar: TUtf8Char;
+    Data: pointer; HandlerData: pointer) of object;
+  THookedCommandFlag = (
+    hcfInit,     // run before On[User]CommandProcess (outside UndoBlock / should not do execution)
+    hcfPreExec,  // Run before CommandProcessor (unless handled by On[User]CommandProcess)
+    hcfPostExec, // Run after CommandProcessor (unless handled by On[User]CommandProcess)
+    hcfFinish    // Run at the very end
+  );
+  THookedCommandFlags = set of THookedCommandFlag;
+
+  THookedKeyTranslationEvent = procedure(Sender: TObject;
+    Code: word; SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean;
+    var Handled: boolean; var Command: TSynEditorCommand;
+    FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes) of object;
 
 const
   SynFrameEdgeToSides: array [TSynFrameEdges] of TLazSynBorderSides =

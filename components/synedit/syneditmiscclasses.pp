@@ -49,7 +49,8 @@ uses
   // LCL
   LCLIntf, LCLType, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit
-  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, SynEditMouseCmds;
+  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, SynEditMouseCmds,
+  SynEditTextBase;
 
 const
   SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
@@ -84,6 +85,10 @@ const
   ];
 
 type
+
+  TSynUndoRedoItemEvent = function (Caller: TObject; Item: TSynEditUndoItem): Boolean of object;
+
+  TSynSelectedColor = class;
 
   { TSynWordBreaker }
 
@@ -142,11 +147,14 @@ type
     FOptions2: TSynEditorOptions2;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
+    function GetCanRedo: boolean; virtual; abstract;
+    function GetCanUndo: boolean; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
     function GetReadOnly: boolean; virtual;
     function GetIsBackwardSel: Boolean;
     function GetSelText: string;
     function GetSelAvail: Boolean;
+    function GetSelectedColor: TSynSelectedColor; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
     function GetFoldedTextBuffer: TObject; virtual; abstract;
@@ -157,6 +165,16 @@ type
     procedure StatusChanged(AChanges: TSynStatusChanges); virtual; abstract;
     procedure SetOptions(AOptions: TSynEditorOptions); virtual; abstract;
     procedure SetOptions2(AOptions2: TSynEditorOptions2); virtual; abstract;
+    procedure SetSelectedColor(const aSelectedColor: TSynSelectedColor); virtual; abstract;
+
+    function GetCharsInWindow: Integer; virtual; abstract;
+    function GetCharWidth: integer; virtual; abstract;
+    function GetLeftChar: Integer; virtual; abstract;
+    function GetLineHeight: integer; virtual; abstract;
+    function GetLinesInWindow: Integer; virtual; abstract;
+    function GetTopLine: Integer; virtual; abstract;
+    procedure SetLeftChar(Value: Integer); virtual; abstract;
+    procedure SetTopLine(Value: Integer); virtual; abstract;
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
@@ -168,11 +186,79 @@ type
 
     function FindGutterFromGutterPartList(const APartList: TObject): TObject; virtual; abstract;
   public
+    // Caret
+    function CaretXPix: Integer; virtual; abstract;
+    function CaretYPix: Integer; virtual; abstract;
+
+    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; virtual; abstract;
+    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual; abstract;
+  public
+    // Undo Redo
+    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
+    procedure BeginUpdate(WithUndoBlock: Boolean = True); virtual; abstract;
+    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; virtual; abstract;
+    procedure EndUpdate; virtual; abstract;
+
+    // Undo/Redo
+    procedure ClearUndo; virtual; abstract;
+    procedure Redo; virtual; abstract;
+    procedure Undo; virtual; abstract;
+    property CanRedo: boolean read GetCanRedo;
+    property CanUndo: boolean read GetCanUndo;
+  public
+    // handlers
+    procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
+      AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]); virtual; abstract;
+    procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent); virtual; abstract;
+
+    procedure RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc); virtual; abstract;
+    procedure UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc); virtual; abstract;
+    procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); virtual; abstract;
+    procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); virtual; abstract;
+
+    procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); virtual; abstract;
+    procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); virtual; abstract;
+
+    procedure RegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent); virtual; abstract;
+    procedure UnRegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent); virtual; abstract;
+
+    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges); virtual; abstract;
+    procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent); virtual; abstract;
+
+    procedure RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent); virtual; abstract;
+    procedure UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent); virtual; abstract;
+
+    procedure RegisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent); virtual; abstract;
+    procedure UnregisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent); virtual; abstract;
+
+    procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent); virtual; abstract;
+    procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent); virtual; abstract;
+    procedure RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent); virtual; abstract;
+    procedure UnregisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent); virtual; abstract;
+    procedure RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent); virtual; abstract;
+    procedure UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent); virtual; abstract;
+    procedure RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent); virtual; abstract;
+    procedure UnregisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent); virtual; abstract;
+
+    procedure RegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc; AnEvents: TSynPaintEvents); virtual; abstract;
+    procedure UnRegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc); virtual; abstract;
+    procedure RegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc; AnEvents: TSynScrollEvents); virtual; abstract;
+    procedure UnRegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc); virtual; abstract;
+
+  public
     property Lines: TStrings read GetLines write SetLines;
     // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
     property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
+    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
+
+    property CharsInWindow: Integer read GetCharsInWindow;
+    property CharWidth: integer read GetCharWidth;
+    property LeftChar: Integer read GetLeftChar write SetLeftChar;
+    property LineHeight: integer read GetLineHeight;
+    property LinesInWindow: Integer read GetLinesInWindow;
+    property TopLine: Integer read GetTopLine write SetTopLine;
 
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;

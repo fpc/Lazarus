@@ -115,7 +115,6 @@ type
   end;
 
 implementation
-uses SynEdit;
 
 { LazSynIme }
 
@@ -192,7 +191,7 @@ end;
 
 procedure LazSynImeSimple.DoStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
 begin
-  UpdateImeWinXY(TCustomSynEdit(FriendEdit).CaretXPix, TCustomSynEdit(FriendEdit).CaretYPix);
+  UpdateImeWinXY(FriendEdit.CaretXPix, FriendEdit.CaretYPix);
   if Changes * [scCaretX, scCaretY] <> [] then
     StopIme(False);
 end;
@@ -206,7 +205,7 @@ begin
   imc := ImmGetContext(FriendEdit.Handle);
   if (imc <> 0) then begin
     UpdateImeWinFont(imc);
-    UpdateImeWinXY(TCustomSynEdit(FriendEdit).CaretXPix, TCustomSynEdit(FriendEdit).CaretYPix, imc);
+    UpdateImeWinXY(FriendEdit.CaretXPix, FriendEdit.CaretYPix, imc);
     ImmReleaseContext(FriendEdit.Handle, imc);
   end;
 end;
@@ -281,18 +280,18 @@ begin
   FImeBlockSelection := TSynEditSelection.Create(ViewedTextBuffer, False);
   FImeBlockSelection.InvalidateLinesMethod := @InvalidateLines;
 
-  TCustomSynEdit(FriendEdit).RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scLeftChar, scTopLine, scModified]);
-  TCustomSynEdit(FriendEdit).RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
-  TCustomSynEdit(FriendEdit).RegisterBeforeMouseDownHandler(@DoOnMouse);
+  FriendEdit.RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scLeftChar, scTopLine, scModified]);
+  FriendEdit.RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
+  FriendEdit.RegisterBeforeMouseDownHandler(@DoOnMouse);
 end;
 
 destructor LazSynImeSimple.Destroy;
 begin
   TextDrawer := nil;
   FreeAndNil(FImeBlockSelection);
-  TCustomSynEdit(FriendEdit).UnregisterBeforeMouseDownHandler(@DoOnMouse);
-  TCustomSynEdit(FriendEdit).UnregisterCommandHandler(@DoOnCommand);
-  TCustomSynEdit(FriendEdit).UnRegisterStatusChangedHandler(@DoStatusChanged);
+  FriendEdit.UnregisterBeforeMouseDownHandler(@DoOnMouse);
+  FriendEdit.UnregisterCommandHandler(@DoOnCommand);
+  FriendEdit.UnRegisterStatusChangedHandler(@DoStatusChanged);
   inherited Destroy;
 end;
 
@@ -328,7 +327,7 @@ begin
       imc := ImmGetContext(FriendEdit.Handle);
       if (imc <> 0) then begin
         UpdateImeWinFont(imc);
-        UpdateImeWinXY(TCustomSynEdit(FriendEdit).CaretXPix, TCustomSynEdit(FriendEdit).CaretYPix, imc, True);
+        UpdateImeWinXY(FriendEdit.CaretXPix, FriendEdit.CaretYPix, imc, True);
         ImmReleaseContext(FriendEdit.Handle, imc);
       end;
     end;
@@ -354,8 +353,8 @@ begin
         if ImeCount > 0 then begin
           GetMem(p, ImeCount + 2);
           try
-            TCustomSynEdit(FriendEdit).BeginUpdate;
-            if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2) then
+            FriendEdit.BeginUpdate;
+            if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in FriendEdit.Options2) then
               SelectionObj.SelText := '';
             ImmGetCompositionStringW(imc, GCS_RESULTSTR, p, ImeCount + 2);
             p[ImeCount] := #0;
@@ -367,7 +366,7 @@ begin
             Msg.Result := 1;
           finally
             FreeMem(p, ImeCount + 2);
-            TCustomSynEdit(FriendEdit).EndUpdate;
+            FriendEdit.EndUpdate;
           end;
         end;
       end;
@@ -387,7 +386,7 @@ begin
   imc := ImmGetContext(FriendEdit.Handle);
   if (imc <> 0) then begin
     UpdateImeWinFont(imc);
-    UpdateImeWinXY(TCustomSynEdit(FriendEdit).CaretXPix, TCustomSynEdit(FriendEdit).CaretYPix, imc, True);
+    UpdateImeWinXY(FriendEdit.CaretXPix, FriendEdit.CaretYPix, imc, True);
     ImmReleaseContext(FriendEdit.Handle, imc);
   end;
   FInCompose := True;
@@ -434,13 +433,13 @@ begin
   if (FLeftPosForTarget < 1) or not FAdjustLeftCharForTargets then
     exit;
 
-  r := FRightPosForTarget - TCustomSynEdit(FriendEdit).CharsInWindow;
+  r := FRightPosForTarget - FriendEdit.CharsInWindow;
 
-  if (TCustomSynEdit(FriendEdit).LeftChar < r) then
-    TCustomSynEdit(FriendEdit).LeftChar := r;
+  if (FriendEdit.LeftChar < r) then
+    FriendEdit.LeftChar := r;
 
-  if (TCustomSynEdit(FriendEdit).LeftChar > FLeftPosForTarget) then
-    TCustomSynEdit(FriendEdit).LeftChar := FLeftPosForTarget;
+  if (FriendEdit.LeftChar > FLeftPosForTarget) then
+    FriendEdit.LeftChar := FLeftPosForTarget;
 
 end;
 
@@ -515,19 +514,19 @@ begin
   FImeMarkupSelection2.MarkupInfo.FrameStyle := slsSolid;
   FImeMarkupSelection2.MarkupInfo.FrameEdges := sfeBottom;
 
-  FImeMarkupSelection3.MarkupInfo.Assign(TCustomSynEdit(FriendEdit).SelectedColor);
+  FImeMarkupSelection3.MarkupInfo.Assign(FriendEdit.SelectedColor);
 
-  TCustomSynEdit(FriendEdit).RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scModified]);
-  TCustomSynEdit(FriendEdit).RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
-  TCustomSynEdit(FriendEdit).RegisterBeforeMouseDownHandler(@DoOnMouse);
+  FriendEdit.RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scModified]);
+  FriendEdit.RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
+  FriendEdit.RegisterBeforeMouseDownHandler(@DoOnMouse);
 
 end;
 
 destructor LazSynImeFull.Destroy;
 begin
-  TCustomSynEdit(FriendEdit).UnregisterBeforeMouseDownHandler(@DoOnMouse);
-  TCustomSynEdit(FriendEdit).UnregisterCommandHandler(@DoOnCommand);
-  TCustomSynEdit(FriendEdit).UnRegisterStatusChangedHandler(@DoStatusChanged);
+  FriendEdit.UnregisterBeforeMouseDownHandler(@DoOnMouse);
+  FriendEdit.UnregisterCommandHandler(@DoOnCommand);
+  FriendEdit.UnRegisterStatusChangedHandler(@DoStatusChanged);
   TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(FImeMarkupSelection);
   TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(FImeMarkupSelection2);
   TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(FImeMarkupSelection3);
@@ -580,13 +579,13 @@ begin
           dec(i);
         end;
         p1.x := x + i + 1;
-        p1 := FriendEdit.ClientToScreen(TCustomSynEdit(FriendEdit)
-                        .ScreenXYToTextXY(TSynEdit(FriendEdit).TextXYToScreenXY(p1)));
+        p1 := FriendEdit.ClientToScreen(FriendEdit
+                        .ScreenXYToTextXY(FriendEdit.TextXYToScreenXY(p1)));
 //        RowColumnToPixels(ViewedTextBuffer.LogicalToPhysicalPos(p1)));
 
         cp^.pt.y := p1.y;
         cp^.pt.x :=  p1.x;
-        cp^.cLineHeight := TCustomSynEdit(FriendEdit).LineHeight;
+        cp^.cLineHeight := FriendEdit.LineHeight;
         cp^.rcDocument.TopLeft := FriendEdit.ClientToScreen(FriendEdit.ClientRect.TopLeft);
         cp^.rcDocument.BottomRight := FriendEdit.ClientToScreen(FriendEdit.ClientRect.BottomRight);
         {$IFDEF WinIMEDebug}
@@ -697,13 +696,13 @@ begin
           CaretObj.LineBytePos := FImeBlockSelection.StartLineBytePos;
           grp := ViewedTextBuffer.UndoList.GroupUndo;
           ViewedTextBuffer.UndoList.GroupUndo := True;
-          TCustomSynEdit(FriendEdit).BeginUpdate;
+          FriendEdit.BeginUpdate;
           ViewedTextBuffer.UndoList.CurrentReason := ecImeStr;
           {$IFDEF WinIMEFullDeferOverwrite}
           if FHasPersistLock then
             SelectionObj.DecPersistentLock;
           FHasPersistLock := False;
-          if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2)
+          if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in FriendEdit.Options2)
           then begin
             SelectionObj.SelText := '';
             FImeBlockSelection.StartLineBytePos := SelectionObj.StartLineBytePos;
@@ -721,7 +720,7 @@ begin
           {$ENDIF}
           Msg.Result := 1;
         finally
-          TCustomSynEdit(FriendEdit).EndUpdate;
+          FriendEdit.EndUpdate;
           ViewedTextBuffer.UndoList.GroupUndo := grp;
           FreeMem(p, ImeCount + 2);
         end;
@@ -890,16 +889,16 @@ procedure LazSynImeFull.WMImeStartComposition(var Msg: TMessage);
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
   {$IFnDEF WinIMEFullDeferOverwrite}
-  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2)
+  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in FriendEdit.Options2)
   then begin
     {$IFnDEF WinIMEFullOverwriteSkipUndo}
     ViewedTextBuffer.UndoList.ForceGroupEnd;
     FUndoStamp1 := ViewedTextBuffer.UndoList.PeekItem;
     {$ENDIF}
-    TCustomSynEdit(FriendEdit).BeginUpdate;
+    FriendEdit.BeginUpdate;
     ViewedTextBuffer.UndoList.CurrentReason := ecImeStr;
     SelectionObj.SelText := '';
-    TCustomSynEdit(FriendEdit).EndUpdate;
+    FriendEdit.EndUpdate;
   {$IFnDEF WinIMEFullOverwriteSkipUndo}
     FUndoStamp2 := ViewedTextBuffer.UndoList.PeekItem;
     FNeedUndoOnCancel := FUndoStamp1 <> FUndoStamp2;
@@ -915,7 +914,7 @@ begin
   FHasPersistLock := True;
   {$ENDIF}
 
-  FImeMarkupSelection3.MarkupInfo.Assign(TCustomSynEdit(FriendEdit).SelectedColor);
+  FImeMarkupSelection3.MarkupInfo.Assign(FriendEdit.SelectedColor);
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := True;
   Msg.Result := 1;
@@ -930,7 +929,7 @@ begin
   {$IFnDEF WinIMEFullDeferOverwrite}
   {$IFnDEF WinIMEFullOverwriteSkipUndo}
   if FNeedUndoOnCancel and (ViewedTextBuffer.UndoList.PeekItem = FUndoStamp2) then
-    TCustomSynEdit(FriendEdit).Undo;
+    FriendEdit.Undo;
   {$ENDIF}
   {$ENDIF}
   {$IFDEF WinIMEFullDeferOverwrite}

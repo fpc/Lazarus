@@ -152,25 +152,6 @@ type
   TSynDropFilesEvent = procedure(Sender: TObject; X, Y: integer; AFiles: TStrings)
     of object;
 
-  THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
-    var Handled: boolean; var Command: TSynEditorCommand;
-    var AChar: TUTF8Char;
-    Data: pointer; HandlerData: pointer) of object;
-  THookedCommandFlag = (
-    hcfInit,     // run before On[User]CommandProcess (outside UndoBlock / should not do execution)
-    hcfPreExec,  // Run before CommandProcessor (unless handled by On[User]CommandProcess)
-    hcfPostExec, // Run after CommandProcessor (unless handled by On[User]CommandProcess)
-    hcfFinish    // Run at the very end
-  );
-  THookedCommandFlags = set of THookedCommandFlag;
-
-  THookedKeyTranslationEvent = procedure(Sender: TObject;
-    Code: word; SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean;
-    var Handled: boolean; var Command: TSynEditorCommand;
-    FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes) of object;
-
-  TSynUndoRedoItemEvent = function (Caller: TObject; Item: TSynEditUndoItem): Boolean of object;
-
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
   TChangeUpdatingEvent = procedure(ASender: TObject; AnUpdating: Boolean) of object;
@@ -609,15 +590,10 @@ type
     procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
-    function GetCharsInWindow: Integer;
-    function GetCharWidth: integer;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldedCodeLineColor: TSynSelectedColor;
     function GetFoldState: String;
     function GetHiddenCodeLineColor: TSynSelectedColor;
-    function GetLeftChar: Integer;
-    function GetLineHeight: integer;
-    function GetLinesInWindow: Integer;
     function GetModified: Boolean;
     function GetMouseActions: TSynEditMouseActions;
     function GetMouseSelActions: TSynEditMouseActions;
@@ -627,7 +603,6 @@ type
     function GetRightEdge: Integer;
     function GetRightEdgeColor: TColor;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
-    function GetTopLine: Integer;
     procedure SetBlockTabIndent(AValue: integer);
     procedure SetBracketMatchColor(AValue: TSynSelectedColor);
     procedure SetTextCursor(AValue: TCursor);
@@ -663,8 +638,6 @@ type
     function GetBlockEnd: TPoint;
     function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
     function GetCanPaste: Boolean;
-    function GetCanRedo: Boolean;
-    function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
     function GetFoldedCodeColor: TSynSelectedColor;
     function GetMarkup(Index: integer): TSynEditMarkup;
@@ -676,13 +649,11 @@ type
     function GetIncrementColor : TSynSelectedColor;
     function GetLineHighlightColor: TSynSelectedColor;
     function GetOnGutterClick : TGutterClickEvent;
-    function GetSelectedColor : TSynSelectedColor;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
     function GetTrimSpaceType: TSynEditStringTrimmingType;
     procedure SetBracketHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
-    procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
     function GetHookedCommandHandlersCount: integer;
@@ -729,7 +700,6 @@ type
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar: Integer;
     function  CurrentMaxLineLen: Integer;
-    procedure SetLeftChar(Value: Integer);
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
     procedure SetMaxUndo(const Value: Integer);
@@ -747,7 +717,6 @@ type
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
     function  CurrentMaxTopView: Integer;
-    procedure SetTopLine(Value: Integer);
     procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
@@ -835,6 +804,15 @@ type
     function CheckDragDropAccecpt(ANewCaret: TPoint; ASource: TObject; out ADropMove: boolean): boolean;
 
   protected
+    function GetCharsInWindow: Integer; override;
+    function GetCharWidth: integer; override;
+    function GetLeftChar: Integer; override;
+    function GetLineHeight: integer; override;
+    function GetLinesInWindow: Integer; override;
+    function GetTopLine: Integer; override;
+    procedure SetLeftChar(Value: Integer); override;
+    procedure SetTopLine(Value: Integer); override;
+
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
     procedure UpdateShowing; override;
     procedure SetColor(Value: TColor); override;
@@ -851,7 +829,10 @@ type
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;
     function GetMarkupMgr: TObject; override;
+    function GetCanRedo: Boolean; override;
+    function GetCanUndo: Boolean; override;
     function GetCaretObj: TSynEditCaret; override;
+    function GetSelectedColor : TSynSelectedColor; override;
     procedure FontChanged(Sender: TObject); override;
     procedure HighlighterAttrChanged(Sender: TObject);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -875,6 +856,7 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetOptions(Value: TSynEditorOptions); override;
     procedure SetOptions2(Value: TSynEditorOptions2); override;
+    procedure SetSelectedColor(const AValue : TSynSelectedColor); override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
     procedure UndoItem(Item: TSynEditUndoItem);
@@ -906,15 +888,15 @@ type
     destructor Destroy; override;
     procedure AfterLoadFromFile;
 
-    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
-    procedure BeginUpdate(WithUndoBlock: Boolean = True);
-    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
-    procedure EndUpdate;
+    procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
+    procedure BeginUpdate(WithUndoBlock: Boolean = True); override;
+    procedure EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
+    procedure EndUpdate; override;
 
   public
     // Caret
-    function CaretXPix: Integer;
-    function CaretYPix: Integer;
+    function CaretXPix: Integer; override;
+    function CaretYPix: Integer; override;
     procedure EnsureCursorPosVisible;
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
@@ -975,11 +957,9 @@ type
     property Marks: TSynEditMarkList read fMarkList;
 
     // Undo/Redo
-    procedure ClearUndo;
-    procedure Redo;
-    procedure Undo;
-    property CanRedo: boolean read GetCanRedo;
-    property CanUndo: boolean read GetCanUndo;
+    procedure ClearUndo; override;
+    procedure Redo; override;
+    procedure Undo; override;
 
     // Clipboard
     procedure CopyToClipboard;
@@ -1049,47 +1029,47 @@ type
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
     *)
-    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint;
-    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint;
+    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; override;
+    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
-      AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]);
-    procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
+      AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]); override;
+    procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent); override;
 
-    procedure RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
-    procedure UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
-    procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
-    procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
+    procedure RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc); override;
+    procedure UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc); override;
+    procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); override;
+    procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); override;
 
-    procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
-    procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+    procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); override;
+    procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); override;
 
-    procedure RegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
-    procedure UnRegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
+    procedure RegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent); override;
+    procedure UnRegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent); override;
 
-    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
-    procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges); override;
+    procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent); override;
 
-    procedure RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
-    procedure UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
+    procedure RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent); override;
+    procedure UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent); override;
 
-    procedure RegisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
-    procedure UnregisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
+    procedure RegisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent); override;
+    procedure UnregisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent); override;
 
-    procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
-    procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
-    procedure RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
-    procedure UnregisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
-    procedure RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
-    procedure UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
-    procedure RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
-    procedure UnregisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
+    procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent); override;
+    procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent); override;
+    procedure RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent); override;
+    procedure UnregisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent); override;
+    procedure RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent); override;
+    procedure UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent); override;
+    procedure RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent); override;
+    procedure UnregisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent); override;
 
-    procedure RegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc; AnEvents: TSynPaintEvents);
-    procedure UnRegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc);
-    procedure RegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc; AnEvents: TSynScrollEvents);
-    procedure UnRegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc);
+    procedure RegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc; AnEvents: TSynPaintEvents); override;
+    procedure UnRegisterPaintEventHandler(APaintEventProc: TSynPaintEventProc); override;
+    procedure RegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc; AnEvents: TSynScrollEvents); override;
+    procedure UnRegisterScrollEventHandler(AScrollEventProc: TSynScrollEventProc); override;
 
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
@@ -1125,13 +1105,7 @@ type
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
   public
-    property CharsInWindow: Integer read GetCharsInWindow;
-    property CharWidth: integer read GetCharWidth;
-    property LeftChar: Integer read GetLeftChar write SetLeftChar;
-    property LineHeight: integer read GetLineHeight;
-    property LinesInWindow: Integer read GetLinesInWindow;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar default 1024;
-    property TopLine: Integer read GetTopLine write SetTopLine;
 
     property ScrollOnEditLeftOptions: TSynScrollOnEditOptions read FScrollOnEditLeftOptions write SetScrollOnEditLeftOptions;
     property ScrollOnEditRightOptions: TSynScrollOnEditOptions read FScrollOnEditRightOptions write SetScrollOnEditRightOptions;
@@ -1164,7 +1138,6 @@ type
     property HideSelection: boolean read fHideSelection write SetHideSelection default false;
     property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
-    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
 
     // Cursor
     procedure UpdateCursorOverride;

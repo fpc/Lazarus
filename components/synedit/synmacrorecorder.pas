@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, Types,
   FileUtil, LCLType, Menus,
-  SynEdit, SynEditKeyCmds, SynEditPlugins, SynEditStrConst;
+  SynEdit, SynEditKeyCmds, SynEditPlugins, SynEditStrConst, SynEditTypes;
 
 type
   TSynMacroState = (msStopped, msRecording, msPlaying, msPaused); // msPaused = paused recording
