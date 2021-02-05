@@ -71,8 +71,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TSynEditMarkupBracket }
 
@@ -128,7 +126,7 @@ begin
     begin
       StartBracket := LogCaret;
       StartBracket.x := x;
-      EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracketLogical(StartBracket, False, False, False, False);
+      EndBracket := SynEdit.FindMatchingBracketLogical(StartBracket, False, False, False, False);
       if EndBracket.y < 0 then
         StartBracket.y := -1;
       Exit;
@@ -142,7 +140,7 @@ begin
     if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
     begin
       StartBracket := LogCaret;
-      EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracketLogical(LogCaret, False, False, False, False);
+      EndBracket := SynEdit.FindMatchingBracketLogical(LogCaret, False, False, False, False);
       if EndBracket.y < 0 then
         StartBracket.y := -1;
     end;
@@ -200,7 +198,7 @@ begin
   FNeedInvalidate := False;
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
-  if eoBracketHighlight in TCustomSynEdit(SynEdit).Options
+  if eoBracketHighlight in SynEdit.Options
   then FindMatchingBracketPair(Caret.LineBytePos, NewPos, NewAntiPos);
 
   // Always keep ordered

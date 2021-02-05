@@ -1089,15 +1089,15 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function FindGutterFromGutterPartList(const APartList: TObject): TObject; override;
   public
-    procedure FindMatchingBracket; virtual;
+    procedure FindMatchingBracket; override;
     function FindMatchingBracket(PhysStartBracket: TPoint;
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: Boolean
-                                ): TPoint; virtual; // Returns Physical
+                                ): TPoint; override; // Returns Physical
     function FindMatchingBracketLogical(LogicalStartBracket: TPoint;
                                         StartIncludeNeighborChars, MoveCaret,
                                         SelectBrackets, OnlyVisible: Boolean
-                                       ): TPoint; virtual; // Returns Logical
+                                       ): TPoint; override; // Returns Logical
     //code fold
     procedure CodeFoldAction(iLine: integer); deprecated;
     procedure UnfoldAll; deprecated;

@@ -234,6 +234,17 @@ type
     property CanRedo: boolean read GetCanRedo;
     property CanUndo: boolean read GetCanUndo;
   public
+    // matching brackets
+    procedure FindMatchingBracket; virtual; abstract;
+    function FindMatchingBracket(PhysStartBracket: TPoint;
+                                 StartIncludeNeighborChars, MoveCaret,
+                                 SelectBrackets, OnlyVisible: Boolean
+                                ): TPoint; virtual; abstract; // Returns Physical
+    function FindMatchingBracketLogical(LogicalStartBracket: TPoint;
+                                        StartIncludeNeighborChars, MoveCaret,
+                                        SelectBrackets, OnlyVisible: Boolean
+                                       ): TPoint; virtual; abstract; // Returns Logical
+  public
     // handlers
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]); virtual; abstract;
