@@ -7265,7 +7265,7 @@ procedure TWinControl.CNChar(var Message: TLMKeyUp);
 var
   c: TUTF8Char;
 begin
-  //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
+  //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if Widgetset.GetLCLCapability(lcSendsUTF8KeyPress) = LCL_CAPABILITY_NO then
   begin
     // current interface does not (yet) send UTF8 key press notifications -> emulate
@@ -7290,7 +7290,7 @@ begin
   end;
 
   {$ifdef VerboseKeyboard}
-    debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
+    debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode));
   {$endif}
 
   if DoKeyPress(Message) then

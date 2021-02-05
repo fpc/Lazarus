@@ -318,16 +318,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function IntfSendsUTF8KeyPress: Boolean;
-
-  Returns true if interface sends UTF8 KeyPress notifications.
-------------------------------------------------------------------------------}
-function IntfSendsUTF8KeyPress: Boolean;
-begin
-  Result := WidgetSet.IntfSendsUTF8KeyPress{%H-};
-end;
-
-{------------------------------------------------------------------------------
   function InvalidateFrame(aHandle: HWND; ARect: pRect; bErase: Boolean;
     BorderWidth: integer): Boolean;
 

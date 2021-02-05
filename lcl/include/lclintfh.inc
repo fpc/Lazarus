@@ -82,7 +82,6 @@ function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_B
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function IntfSendsUTF8KeyPress: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} deprecated;
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsMobilePlatform: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
