@@ -466,7 +466,7 @@ var
     AssertEquals(Format('%s / %s: Range-Count', [Name, AName]), length(ExpRanges), r.Count);
     for i := 0 to high(ExpRanges) do
       if ExpRanges[i] <> -1 then
-        AssertEquals(Format('%s / %s: Line %d', [Name, AName, i]), ExpRanges[i], PtrUInt(r[i]));
+        AssertEquals(Format('%s / %s: Line %d', [Name, AName, i]), ExpRanges[i], Integer(PtrUInt(r[i])));
   end;
 
   function RPoint(Y,X: Integer): TPoint;
