@@ -88,8 +88,6 @@ type
 
   TSynUndoRedoItemEvent = function (Caller: TObject; Item: TSynEditUndoItem): Boolean of object;
 
-  TSynSelectedColor = class;
-
   { TSynWordBreaker }
 
   TSynWordBreaker = class
@@ -132,6 +130,8 @@ type
   end;
 
   TLazSynSurface = class;
+  TSynSelectedColor = class;
+  TSynBookMarkOpt = class;
 
   { TSynEditBase }
 
@@ -140,6 +140,8 @@ type
     FMouseOptions: TSynEditorMouseOptions;
     fReadOnly: Boolean;
     fHideSelection: boolean;
+    fBookMarkOpt: TSynBookMarkOpt;
+    procedure BookMarkOptionsChanged(Sender: TObject);
     procedure SetHideSelection(Value: boolean);
   protected
     FWordBreaker: TSynWordBreaker;
@@ -222,6 +224,7 @@ type
     property WordBreaker: TSynWordBreaker read FWordBreaker;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     function FindGutterFromGutterPartList(const APartList: TObject): TObject; virtual; abstract;
   public
@@ -321,6 +324,7 @@ type
                                   Index, PhysicalPos: integer): integer; virtual; abstract;
     function PhysicalLineLength(Line: String; Index: integer): integer; virtual; abstract;
   public
+    property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt; // ToDo: check "write fBookMarkOpt"
     property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing default 0;
     property ExtraLineSpacing: integer read GetExtraLineSpacing write SetExtraLineSpacing default 0;
     property Lines: TStrings read GetLines write SetLines;
@@ -874,6 +878,20 @@ begin
   inherited Create(AOwner);
 
   FMouseOptions := SYNEDIT_DEFAULT_MOUSE_OPTIONS;
+  fBookMarkOpt := TSynBookMarkOpt.Create(Self);
+  fBookMarkOpt.OnChange := @BookMarkOptionsChanged;
+end;
+
+procedure TSynEditBase.BookMarkOptionsChanged(Sender: TObject);
+begin
+  InvalidateGutter;
+end;
+
+destructor TSynEditBase.Destroy;
+begin
+  FreeAndNil(fBookMarkOpt);
+
+  inherited Destroy;
 end;
 
 function TSynEditBase.GetReadOnly: boolean;

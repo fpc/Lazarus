@@ -43,9 +43,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
-
 
 { TSynGutterMarks }
 
@@ -60,7 +57,7 @@ end;
 procedure TSynGutterMarks.Init;
 begin
   inherited Init;
-  FBookMarkOpt := TCustomSynEdit(SynEdit).BookMarkOptions;
+  FBookMarkOpt := SynEdit.BookMarkOptions;
 end;
 
 function TSynGutterMarks.PreferedWidth: Integer;
@@ -155,9 +152,9 @@ begin
   j := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
   if aScreenLine <> iRange.Top then
     exit;
-  if (j < 0) or (j >= TCustomSynEdit(SynEdit).Lines.Count) then
+  if (j < 0) or (j >= SynEdit.Lines.Count) then
     exit;
-  MLine := TCustomSynEdit(SynEdit).Marks.Line[j + 1];
+  MLine := (SynEdit.Marks as TSynEditMarkList).Line[j + 1];
   if MLine = nil then
     exit;
 
@@ -166,7 +163,7 @@ begin
   else
     MLine.Sort(smsoBookMarkLast, smsoPriority);
 
-  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+  LineHeight := SynEdit.LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   lm := LeftMarginAtCurrentPPI;
   MarkRect := Rect(AClip.Left + lm,
@@ -239,7 +236,7 @@ begin
   rcLine.Bottom := rcLine.Top;
   if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
   begin
-    LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+    LineHeight := SynEdit.LineHeight;
     for i := FirstLine to LastLine do begin
       rcLine.Top := rcLine.Bottom;
       rcLine.Bottom := Min(AClip.Bottom, rcLine.Top + LineHeight);

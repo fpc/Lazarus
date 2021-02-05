@@ -525,7 +525,6 @@ type
     FMouseDownShift: TShiftState;
     FConfirmMouseDownMatchAct: TSynEditMouseAction;
     FConfirmMouseDownMatchFound: Boolean;
-    fBookMarkOpt: TSynBookMarkOpt;
     FMouseWheelAccumulator, FMouseWheelLinesAccumulator: Array [Boolean] of integer;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -614,7 +613,6 @@ type
       aCaretMode: TSynCaretAdjustMode; const AValue: String);
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
     procedure SurrenderPrimarySelection;
-    procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
     procedure DoBlockIndent;
     procedure DoBlockUnindent;
@@ -1150,7 +1148,6 @@ type
     property HiddenCodeLineColor: TSynSelectedColor read GetHiddenCodeLineColor write SetHiddenCodeLineColor;
 
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
-    property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt;
     property BlockIndent: integer read FBlockIndent write SetBlockIndent default 2;
     property BlockTabIndent: integer read FBlockTabIndent write SetBlockTabIndent default 0;
     property Highlighter: TSynCustomHighlighter read fHighlighter write SetHighlighter;
@@ -2280,8 +2277,6 @@ begin
   {$ENDIF} // WithSynExperimentalCharWidth
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
-  fBookMarkOpt := TSynBookMarkOpt.Create(Self);
-  fBookMarkOpt.OnChange := @BookMarkOptionsChanged;
 
   FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
   FLeftGutter.RegisterChangeHandler(@GutterChanged);
@@ -2673,7 +2668,6 @@ begin
   FreeAndNil(FImeHandler);
   {$ENDIF}
   FreeAndNil(fMarkupManager);
-  FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
   FreeAndNil(FMouseActionSearchHandlerList);
   FreeAndNil(FMouseActionExecHandlerList);
@@ -6251,7 +6245,7 @@ begin
       ImageIndex := Bookmark;
       BookmarkNumber := Bookmark;
       Visible := true;
-      InternalImage := (fBookMarkOpt.BookmarkImages = nil);
+      InternalImage := (BookMarkOptions.BookmarkImages = nil);
     end;
     for i := 0 to 9 do
       if assigned(fBookMarks[i]) and (fBookMarks[i].Line = Y) then
@@ -6460,9 +6454,9 @@ begin
         Invalidate;
       end;
     end;
-    if (fBookmarkOpt <> nil) then
-      if (AComponent = fBookmarkOpt.BookmarkImages) then begin
-        fBookmarkOpt.BookmarkImages := nil;
+    if (BookMarkOptions <> nil) then
+      if (AComponent = BookMarkOptions.BookmarkImages) then begin
+        BookMarkOptions.BookmarkImages := nil;
         InvalidateGutterLines(-1, -1);
       end;
   end;
@@ -8192,11 +8186,6 @@ begin
           ( (Value.Y < ptEnd.Y)   or (Value.X < ptEnd.X + i) );
       end;
   end;
-end;
-
-procedure TCustomSynEdit.BookMarkOptionsChanged(Sender: TObject);
-begin
-  InvalidateGutter;
 end;
 
 procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
