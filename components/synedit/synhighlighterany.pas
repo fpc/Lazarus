@@ -148,13 +148,13 @@ type
     procedure AnsiProc;
     procedure PasStyleProc;
     procedure CStyleProc;
-    procedure SetKeyWords(const Value: TStrings);
     procedure SetComments(Value: CommentStyles);
     function GetStringDelim: TStringDelim;
     procedure SetStringDelim(const Value: TStringDelim);
     function GetIdentifierChars: string;
     procedure SetIdentifierChars(const Value: string);
     procedure SetDetectPreprocessor(Value: boolean);
+    procedure SetKeyWords(const Value: TStrings);
     procedure SetConstants(const Value: TStrings);
     procedure SetObjects(const Value: TStrings);
     function IsObject(const AObject: string): boolean;
@@ -247,71 +247,68 @@ begin
   end;
 end;
 
-function TSynAnySyn.IsKeyword(const AKeyword: string): boolean;             //mh 2000-11-08
+function TSynAnySyn.IsKeyword(const AKeyword: string): boolean;
 var
-  First, Last, I, Compare: Integer;
-  Token: String;
+  I: Integer;
 begin
-  First := 0;
+  Result := TStringList(fKeywords).Find(AKeyword, I);
+{  First := 0;
   Last := fKeywords.Count - 1;
   Result := False;
-  Token := UpperCase(AKeyword);
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    Compare := AnsiCompareStr(fKeywords[i], Token);
+    Compare := UTF8CompareLatinTextFast(fKeywords[i], AKeyword);
     if Compare = 0 then
     begin
       Result := True;
       break;
     end else
       if Compare < 0 then First := I + 1 else Last := I - 1;
-  end;
+  end;  }
 end; { IsKeyWord }
 
 
-function TSynAnySyn.IsConstant(const AConstant: string): boolean;             //mh 2000-11-08
+function TSynAnySyn.IsConstant(const AConstant: string): boolean;
 var
-  First, Last, I, Compare: Integer;
-  Token: String;
+  I: Integer;
 begin
-  First := 0;
+  Result := TStringList(fConstants).Find(AConstant, I);
+{  First := 0;
   Last := fConstants.Count - 1;
   Result := False;
-  Token := UpperCase(AConstant);
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    Compare := AnsiCompareStr(fConstants[i], Token);
+    Compare := UTF8CompareLatinTextFast(fConstants[i], AConstant);
     if Compare = 0 then
     begin
       Result := True;
       break;
     end else
       if Compare < 0 then First := I + 1 else Last := I - 1;
-  end;
+  end;  }
 end; { IsConstant }
 
-function TSynAnySyn.IsObject(const AObject: string): boolean;             //mh 2000-11-08
+function TSynAnySyn.IsObject(const AObject: string): boolean;
 var
-  First, Last, I, Compare: Integer;
-  Token: String;
+  I: Integer;
 begin
-  First := 0;
+  Result := TStringList(fObjects).Find(AObject, I);
+{  First := 0;
   Last := fObjects.Count - 1;
   Result := False;
-  Token := UpperCase(AObject);
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    Compare := AnsiCompareStr(fObjects[i], Token);
+    Compare := UTF8CompareLatinTextFast(fObjects[i], AObject);
     if Compare = 0 then
     begin
       Result := True;
       break;
     end else
       if Compare < 0 then First := I + 1 else Last := I - 1;
-  end;
+  end; }
 end; { IsObject }
 
 
@@ -376,13 +373,13 @@ constructor TSynAnySyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fUserData:= TIniList.Create;
-  fKeyWords := TStringList.Create;
+  fKeyWords := TStringListUTF8Fast.Create;
   TStringList(fKeyWords).Sorted := True;
   TStringList(fKeyWords).Duplicates := dupIgnore;
-  fConstants := TStringList.Create;
+  fConstants := TStringListUTF8Fast.Create;
   TStringList(fConstants).Sorted := True;
   TStringList(fConstants).Duplicates := dupIgnore;
-  fObjects := TStringList.Create;
+  fObjects := TStringListUTF8Fast.Create;
   TStringList(fObjects).Sorted := True;
   TStringList(fObjects).Duplicates := dupIgnore;
   fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
@@ -864,21 +861,6 @@ begin
   fRange := TRangeState(PtrUInt(Value));
 end;
 
-procedure TSynAnySyn.SetKeyWords(const Value: TStrings);
-var
-  i: Integer;
-begin
-  if Value <> nil then
-    begin
-      Value.BeginUpdate;
-      for i := 0 to Value.Count - 1 do
-        Value[i] := UpperCase(Value[i]);
-      Value.EndUpdate;
-    end;
-  fKeyWords.Assign(Value);
-  DefHighLightChange(nil);
-end;
-
 procedure TSynAnySyn.SetComments(Value: CommentStyles);
 begin
   if fComments = Value then exit;
@@ -979,13 +961,28 @@ begin
   end;
 end;
 
-
 procedure TSynAnySyn.ApostropheProc;
 begin
   fTokenID := tkComment;
   repeat
     inc(Run);
   until fLine[Run] in [#0, #10, #13];
+end;
+
+
+procedure TSynAnySyn.SetKeyWords(const Value: TStrings);
+var
+  i: Integer;
+begin
+  if Value <> nil then
+    begin
+      Value.BeginUpdate;
+      for i := 0 to Value.Count - 1 do
+        Value[i] := UpperCase(Value[i]);
+      Value.EndUpdate;
+    end;
+  fKeyWords.Assign(Value);
+  DefHighLightChange(nil);
 end;
 
 procedure TSynAnySyn.SetConstants(const Value: TStrings);
@@ -1142,22 +1139,26 @@ begin
     else
       HL.StringDelim:=sdSingleQuote;
     genlist:=TStringList.create;
+    genlist.UseLocale:=false;
     // read keywords
     hini.ReadSectionNames('Keywords',genlist);
     if genlist.count>0 then
       for i:=0 to genlist.count-1 do
         genlist[i]:=uppercase(genlist[i]);
     HL.KeyWords.assign(genlist);
+
     hini.ReadSectionNames('Constants',genlist);
     if genlist.count>0 then
       for i:=0 to genlist.count-1 do
         genlist[i]:=uppercase(genlist[i]);
     HL.Constants.assign(genlist);
+
     hini.ReadSectionNames('Objects',genlist);
     if genlist.count>0 then
       for i:=0 to genlist.count-1 do
         genlist[i]:=uppercase(genlist[i]);
     HL.Objects.assign(genlist);
+
     genlist.free;
     makemethodtables;
   end;

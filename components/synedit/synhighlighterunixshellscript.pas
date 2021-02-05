@@ -55,7 +55,7 @@ interface
 
 uses
   Graphics,
-  GraphType, /////TL 2003-06-11: Added for font attribute declaration fsBold
+  GraphType, LazUTF8,
   SynEditTypes,
   SynEditHighlighter,
   SysUtils,
@@ -196,16 +196,15 @@ begin
   end;
 end;
 
-function TSynUNIXShellScriptSyn.IsKeyword(const AKeyword: string): boolean;                //mh 2000-11-08
+function TSynUNIXShellScriptSyn.IsKeyword(const AKeyword: string): boolean;
 var
-  First, Last, I, Compare: Integer;
-  Token: String;
+  I: Integer;
 begin
-  First := 0;
+  Result := TStringList(fKeywords).Find(AKeyword, I);
+{  First := 0;
   Last := fKeywords.Count - 1;
   Result := False;
   Token := UpperCase(AKeyword);
-
   while First <= Last do begin
     I := (First + Last) shr 1;
     Compare := CompareStr(fKeywords[I], Token);
@@ -214,15 +213,15 @@ begin
       break;
     end else
       if Compare < 0 then First := I + 1 else Last := I - 1;
-  end;
+  end;  }
 end; { IsKeyWord }
 
 function TSynUNIXShellScriptSyn.IsSecondKeyWord(aToken: String): Boolean;
 var
-  First, Last, I, Compare: Integer;
-  Token: String;
+  I: Integer;
 begin
-  First := 0;
+  Result := TStringList(fSecondKeys).Find(aToken, I);
+{  First := 0;
   Last := fSecondKeys.Count - 1;
   Result := False;
   Token := UpperCase(aToken);
@@ -237,7 +236,7 @@ begin
     end
     else
       if Compare < 0 then First := I + 1 else Last := I - 1;
-  end;
+  end;  }
 end; { IsSecondKeyWord }
 
 procedure TSynUNIXShellScriptSyn.MakeMethodTables;
@@ -272,10 +271,10 @@ var
 ////TL  SYNS_FilterUNIXShellScript = 'UNIX Shell Scripts (*.sh)|*.sh';
 begin
   inherited Create(AOwner);
-  fKeyWords := TStringList.Create;
+  fKeyWords := TStringListUTF8Fast.Create;
   TStringList(fKeyWords).Sorted := True;
   TStringList(fKeyWords).Duplicates := dupIgnore;
-  fSecondKeys := TStringList.Create;
+  fSecondKeys := TStringListUTF8Fast.Create;
   TStringList(fSecondKeys).Sorted := True;
   TStringList(fSecondKeys).Duplicates := dupIgnore;
   if not (csDesigning in ComponentState) then begin

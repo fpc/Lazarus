@@ -19,16 +19,15 @@ unit TAFonts;
 interface
 
 uses
-  SysUtils, Classes, EasyLazFreeType;
+  SysUtils, Classes,
+  FileUtil, LazFileUtils, LazUTF8,
+  EasyLazFreeType, LazFreeTypeFontCollection;
 
 procedure InitFonts(AFontDir: string = '');
 function LoadFont(AFontName: String; AStyle: TFreeTypeStyles): TFreeTypeFont;
 
 
 implementation
-
-uses
-  FileUtil, LazFileUtils, LazFreeTypeFontCollection;
 
 var
   FontsInitialized: Boolean = false;
@@ -94,13 +93,13 @@ procedure InitFonts(AFontDir: String = '');
     NanumMyeongjo.ttf) }
   procedure AddFolder(AFolder: string);
   var
-    files: TStringList;
+    files: TStringListUTF8Fast;
     i: integer;
   begin
     AFolder := ExpandFileName(AFolder);
     if (length(AFolder) <> 0) and (AFolder[length(AFolder)] <> PathDelim) then
       AFolder += PathDelim;
-    files := TStringList.Create;
+    files := TStringListUTF8Fast.Create;
     FontCollection.BeginUpdate;
     try
       FindAllFiles(files, AFolder, '*.ttf', true);

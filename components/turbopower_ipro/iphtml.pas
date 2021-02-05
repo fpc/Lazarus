@@ -53,7 +53,7 @@ uses
   //MemCheck,
   Types, contnrs,
   LCLType, GraphType, LCLProc, LCLIntf, LResources, LMessages, LCLMemManager,
-  Translations, FileUtil, LConvEncoding, LazUTF8,
+  Translations, FileUtil, LConvEncoding, LazUTF8, AvgLvlTree,
   IpHtmlTabList,
   Messages, SysUtils, Classes, Graphics,
   {$IFDEF UseGifImageUnit} //TODO all of this units not exists
@@ -2615,7 +2615,7 @@ type
     URLStack : TStringList;
     TargetStack : TStringList;
     Stp : Integer;
-    VisitedList : TStringList;
+    VisitedList : TStringMap;
     FVLinkColor: TColor;
     FLinkColor: TColor;
     FALinkColor: TColor;
@@ -5564,7 +5564,7 @@ end;
 
 procedure TIpHtml.ParseHead(Parent : TIpHtmlNode);
 var
-  Lst: TStringList;
+  Lst: TStringListUTF8Fast;
 begin
   {lead token is optional}
   if CurToken = IpHtmlTagHEAD then begin
@@ -5573,7 +5573,7 @@ begin
     if CurToken = IpHtmlTagHEADend then
       NextToken;
   end;
-  Lst := TStringList.Create;
+  Lst := TStringListUTF8Fast.Create;
   GetSupportedEncodings(Lst);
   if Lst.IndexOf(FDocCharset) = 0 then  // clear for UTF-8 to avoid conversion
     FDocCharset := '';
@@ -7680,8 +7680,8 @@ begin
   {$ELSE}
   AnimationFrames := TFPList.Create;
   {$ENDIF}
-  NameList := TStringList.Create;
-  IdList := TStringList.Create;
+  NameList := TStringListUTF8Fast.Create;
+  IdList := TStringListUTF8Fast.Create;
   DefaultImage := TPicture.Create;
   TmpBitmap := nil;
   try
@@ -15270,8 +15270,7 @@ begin
     csSetCaption, csOpaque, csDoubleClicks, csReplicatable];
   TargetStack := TStringList.Create;
   URLStack := TStringList.Create;
-  VisitedList := TStringList.Create;
-  VisitedList.Sorted := True;
+  VisitedList := TStringMap.Create(False);
   FLinksUnderlined := DEFAULT_LINKS_UNDERLINED;
   FTextColor := clBlack;
   FLinkColor := clBlue;
@@ -15359,7 +15358,7 @@ begin
       Push('', RelURL);
   end
   else  begin
-    if VisitedList.IndexOf(BaseURL) = -1 then
+    if not VisitedList.Contains(BaseURL) then
       VisitedList.Add(BaseURL);
     if (Target <> '') and (FMasterFrame <> nil) then
       TargetFrame := FMasterFrame.FindFrame(Target)
@@ -15622,7 +15621,7 @@ end;
 procedure TIpHtmlCustomPanel.URLCheck(Sender: TIpHtml; const URL: string;
   var Visited: Boolean);
 begin
-  Visited := VisitedList.IndexOf(URL) <> -1;
+  Visited := VisitedList.Contains(URL);
 end;
 
 procedure TIpHtmlCustomPanel.ReportURL(Sender: TIpHtml; const URL: string);

@@ -165,8 +165,7 @@ constructor TCustomSynAutoComplete.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fAutoCompleteList := TStringList.Create;
-  TStringList(fAutoCompleteList).OnChange :=
-     @CompletionListChanged;
+  TStringList(fAutoCompleteList).OnChange := @CompletionListChanged;
   fCompletions := TStringList.Create;
   fCompletionComments := TStringList.Create;
   fCompletionValues := TStringList.Create;

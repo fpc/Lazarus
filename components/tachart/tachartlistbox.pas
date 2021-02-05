@@ -29,8 +29,11 @@ unit TAChartListbox;
 interface
 
 uses
-  Classes, Controls, StdCtrls, Types,
-  TAChartUtils, TACustomSeries, TALegend, TAGraph;
+  Classes, Controls, SysUtils, Types, Math,
+  StdCtrls, Graphics, LCLIntf, LCLType, Themes,
+  IntegerList, LazUTF8,
+  TAChartUtils, TACustomSeries, TALegend, TAGraph,
+  TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
 
 type
@@ -192,10 +195,6 @@ procedure Register;
 
 
 implementation
-
-uses
-  Graphics, Math, LCLIntf, LCLType, SysUtils, Themes, IntegerList,
-  TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
 type
   TThemedStatesUsed = {%H-}tbRadioButtonUnCheckedNormal..tbCheckboxCheckedDisabled;
@@ -714,7 +713,7 @@ end;
   series having a given legend position are ignored. }
 procedure TChartListbox.Sort(Descending: Boolean = false);
 var
-  list: TStringList;
+  list: TStringListUTF8Fast;
   ser: TCustomChartSeries;
   i: Integer;
   selSeries: TCustomChartSeries = nil;
@@ -722,7 +721,7 @@ begin
   if ItemIndex > -1 then
     selSeries := Series[ItemIndex];
 
-  list := TStringList.Create;
+  list := TStringListUTF8Fast.Create;
   try
     for ser in CustomSeries(FChart) do
       list.AddObject(ser.Title, ser);

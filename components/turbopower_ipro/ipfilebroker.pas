@@ -59,7 +59,7 @@ type
 
   TIpCustomHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
   private
-    FProtocols : TStrings;
+    FProtocols : TStringListUTF8Fast;
     FGetHtml : TIpGetHtmlDataEvent;
     FGetImage : TIpGetImageDataEvent;
     FLeave : TIpLeaveHtmlDocumentEvent;
@@ -140,7 +140,7 @@ end;
 constructor TIpCustomHtmlDataProvider.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FProtocols := TStringList.Create;
+  FProtocols := TStringListUTF8Fast.Create;
 end;
 
 destructor TIpCustomHtmlDataProvider.Destroy;
@@ -173,7 +173,7 @@ begin
       else
         AddrRec.Scheme := IP_DEFAULT_SCHEME;
     end;
-    if FProtocols.IndexOf(UpperCase(AddrRec.Scheme)) > -1 then
+    if FProtocols.IndexOf(AddrRec.Scheme) > -1 then
       Result := True
   end;
   Initialize(AddrRec);

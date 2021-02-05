@@ -9,7 +9,7 @@ uses
   // LCL
   StdCtrls, Spin,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazFileUtils, LazUTF8,
   // IdeIntf
   LazIDEIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, IDEOptEditorIntf;
 
@@ -247,19 +247,17 @@ Function TPas2JSProjectOptionsFrame.FillFilesCombo(PRJ : TLazProject) : Integer;
 Var
   I : integer;
   HPF,PF : TLazProjectFile;
-  Ext : String;
-  L : TStringList;
+  L : TStringListUTF8Fast;
 
 begin
   Result:=-1;
   HPF:=Nil;
-  L:=TstringList.Create;
+  L:=TStringListUTF8Fast.Create;
   try
     For I:=0 to PRJ.FileCount-1 do
       begin
       PF:=PRJ.Files[i];
-      Ext:=LowerCase(ExtractFileExt(PF.Filename));
-      if Pos(Ext,'.html')>0 then
+      if CompareFileExtQuick(PF.Filename,'html')=0 then
         begin
         L.AddObject(PF.FileName,PF);
         If PF.CustomData[PJSIsProjectHTMLFile]='1' then
@@ -267,7 +265,7 @@ begin
         end;
       end;
       L.Sort;
-      CBHTMLFile.Items:=L;;
+      CBHTMLFile.Items:=L;
   finally
     L.Free;
   end;

@@ -1837,7 +1837,7 @@ begin
     Entry := fKeywords[KeyHash(PChar(fTableNames[i]))];
     while Assigned(Entry) do
     begin
-      if (UpperCase(Entry.Keyword) = Uppercase(fTableNames[i])) then
+      if CompareText(Entry.Keyword, fTableNames[i]) = 0 then
         Break;
       Entry := Entry.Next;
     end;

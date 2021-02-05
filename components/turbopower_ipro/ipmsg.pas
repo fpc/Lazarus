@@ -755,7 +755,7 @@ begin
 end;
 
 { Parse string into string list }
-procedure Parse(const Line : string; Delim : AnsiChar; var List : TStringList);
+procedure Parse(const Line : string; Delim : AnsiChar; List : TStringList);
 var
   iPos, jPos : Integer;
   Term : string;

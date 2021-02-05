@@ -331,7 +331,7 @@ type
 
   TSynCustomHighlighter = class(TComponent)
   private
-    fAttributes: TStringList;
+    fAttributes: TStringListUTF8Fast;
     fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities;
     FKnownLines: TSynEditLinesList;
@@ -1185,9 +1185,9 @@ end;
 
 function TSynHighlighterAttributes.LoadFromFile(Ini : TIniFile): boolean;       //DDH 10/16/01
 var
-  S: TStringList;
+  S: TStringListUTF8Fast;
 begin
-  S := TStringList.Create;
+  S := TStringListUTF8Fast.Create;
   try
     Ini.ReadSection(StoredName, S);
     if S.Count > 0 then
@@ -1311,7 +1311,7 @@ begin
   FKnownLines := TSynEditLinesList.Create;
   inherited Create(AOwner);
   fWordBreakChars := TSynWordBreakChars;
-  fAttributes := TStringList.Create;
+  fAttributes := TStringListUTF8Fast.Create;
   fAttributes.Duplicates := dupError;
   fAttributes.Sorted := TRUE;
   fAttrChangeHooks := TMethodList.Create;
@@ -1504,8 +1504,7 @@ begin
   Result := fAttributes.Count;
 end;
 
-function TSynCustomHighlighter.GetAttribute(idx: integer):
-  TSynHighlighterAttributes;
+function TSynCustomHighlighter.GetAttribute(idx: integer): TSynHighlighterAttributes;
 begin
   Result := nil;
   if (idx >= 0) and (idx < fAttributes.Count) then

@@ -4514,6 +4514,8 @@ var
 begin
   if KeywordsList = nil then begin
     KeywordsList := TStringList.Create;
+    KeywordsList.UseLocale := false;
+    KeywordsList.CaseSensitive := true;
     for i := 1 to High(RESERVED_WORDS_TP) do
       KeywordsList.AddObject(RESERVED_WORDS_TP[i], TObject(pcmTP));
     for i := 1 to High(RESERVED_WORDS_DELPHI) do
