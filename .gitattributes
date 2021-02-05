@@ -3920,7 +3920,6 @@ components/onlinepackagemanager/opkman_createrepositoryfrm.pas svneol=native#tex
 components/onlinepackagemanager/opkman_createrepositorypackagefrm.lfm svneol=native#text/plain
 components/onlinepackagemanager/opkman_createrepositorypackagefrm.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_downloader.pas svneol=native#text/pascal
-components/onlinepackagemanager/opkman_fpcdef.inc svneol=native#text/pascal
 components/onlinepackagemanager/opkman_installer.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_intf.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_intf_packagelistfrm.lfm svneol=native#text/plain

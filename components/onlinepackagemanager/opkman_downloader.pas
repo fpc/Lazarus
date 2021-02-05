@@ -26,15 +26,13 @@ unit opkman_downloader;
 
 {$mode objfpc}{$H+}
 
-{$INCLUDE opkman_fpcdef.inc}
-
 interface
 
 uses
   Classes, SysUtils, fpjson, LazIDEIntf, md5,
   // OpkMan
   opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
-  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
+  {$IF FPC_FULLVERSION>=30200}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);

@@ -26,8 +26,6 @@ unit opkman_zipper;
 
 {$mode objfpc}{$H+}
 
-{$INCLUDE opkman_fpcdef.inc}
-
 interface
 
 uses
@@ -36,7 +34,7 @@ uses
   FileUtil, LazFileUtils,
   // OpkMan
   opkman_serializablepackages, opkman_common,
-  {$IFDEF FPC320}zipper{$ELSE}opkman_zip{$ENDIF};
+  {$IF FPC_FULLVERSION>=30200}zipper{$ELSE}opkman_zip{$ENDIF};
 
 type
   TOnProgressEx = procedure(Sender : TObject; const ATotPos, ATotSize: Int64);

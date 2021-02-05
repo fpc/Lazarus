@@ -25,8 +25,6 @@ unit opkman_updates;
 
 {$mode objfpc}{$H+}
 
-{$INCLUDE opkman_fpcdef.inc}
-
 interface
 
 uses
@@ -37,8 +35,11 @@ uses
   // OpkMan
   opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
   opkman_OpenSSLfrm,
-  {$IFDEF FPC320}zipper,{$ELSE}opkman_zip,{$ENDIF}
-  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
+  {$IF FPC_FULLVERSION>=30200}
+  zipper, fphttpclient, opensslsockets;
+  {$ELSE}
+  opkman_zip, opkman_httpclient;
+  {$ENDIF}
 
 const
   OpkVersion = 1;
@@ -251,7 +252,7 @@ begin
   FreeOnTerminate := True;
   OnTerminate := @DoTerminated;
   FHTTPClient := TFPHTTPClient.Create(nil);
-  {$IFDEF FPC320}
+  {$IF FPC_FULLVERSION>=30200}
   FHTTPClient.IOTimeout := Options.ConTimeOut*1000;
   {$ENDIF}
   if Options.ProxyEnabled then

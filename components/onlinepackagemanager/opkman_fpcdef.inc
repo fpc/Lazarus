@@ -1,5 +1,0 @@
-{$IF FPC_VERSION = 3}
-  {$IF FPC_RELEASE > 1}
-    {$DEFINE FPC320}
-  {$ENDIF}
-{$ENDIF}

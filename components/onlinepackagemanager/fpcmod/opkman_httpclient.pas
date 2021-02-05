@@ -21,8 +21,6 @@ unit opkman_httpclient;
 
 {$mode objfpc}{$H+}
 
-{$INCLUDE opkman_fpcdef.inc}
-
 interface
 
 uses

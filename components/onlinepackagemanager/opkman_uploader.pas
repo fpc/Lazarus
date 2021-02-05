@@ -26,15 +26,13 @@ unit opkman_uploader;
 
 {$mode objfpc}{$H+}
 
-{$INCLUDE opkman_fpcdef.inc}
-
 interface
 
 uses
   Classes, SysUtils, base64,
   // OpkMan
   opkman_options, opkman_const,
-  {$IFDEF FPC320}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
+  {$IF FPC_FULLVERSION>=30200}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
 
 type
   TOnUploadProgress = procedure(Sender: TObject; AFileName: String) of object;
