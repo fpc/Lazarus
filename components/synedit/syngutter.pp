@@ -115,8 +115,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TLazSynGutterArea }
 
@@ -269,14 +267,14 @@ begin
   // Clear all
   TextDrawer.BeginDrawing(dc);
   TextDrawer.SetBackColor(Color);
-  TextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
+  TextDrawer.SetForeColor(SynEdit.Font.Color);
   TextDrawer.SetFrameColor(clNone);
    with AClip do
      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   TextDrawer.EndDrawing;
 
   AClip.Left := Surface.Left + LeftOffset;
-  AClip.Top  := Surface.TextBounds.Top + FirstLine * TCustomSynEdit(SynEdit).LineHeight;
+  AClip.Top  := Surface.TextBounds.Top + FirstLine * SynEdit.LineHeight;
 
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
