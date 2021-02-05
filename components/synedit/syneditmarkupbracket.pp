@@ -26,7 +26,7 @@ unit SynEditMarkupBracket;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls, LCLProc;
+  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, SynEditTypes, Controls, LCLProc;
 
 type
   TSynEditBracketHighlightStyle = (

@@ -128,7 +128,71 @@ type
   TSynQueryMouseCursorEvent = procedure(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
     var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject) of object;
 
-TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
+  TSynEditorOption = (
+    eoAutoIndent,              // Allows to indent the caret, when new line is created with <Enter>, with the same amount of leading white space as the preceding line
+    eoBracketHighlight,        // Allows to highlight bracket, which matches bracket under caret
+    eoEnhanceHomeKey,          // Toggles behaviour of <Home> key on line with leading spaces. If turned on, key will jump to first non-spacing char, if it's nearer to caret position. (Similar to Visual Studio.)
+    eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
+    eoHalfPageScroll,          // When scrolling with <PageUp> and <PageDown> keys, only scroll a half page at a time
+    eoHideRightMargin,         // Hides the vertical "right margin" line
+    eoKeepCaretX,              // When moving through lines without "Scroll past EOL" option, keeps the X position of the caret
+    eoNoCaret,                 // Hides caret (text blinking cursor) totally
+    eoNoSelection,             // Disables any text selection
+    eoPersistentCaret,         // Do not hide caret when focus is lost from control. (TODO: Windows still hides caret, if another component sets up a caret.)
+    eoScrollByOneLess,         // Scroll vertically, by <PageUp> and <PageDown> keys, less by one line
+    eoScrollPastEof,           // When scrolling to end-of-file, show last line at the top of the control, instead of the bottom
+    eoScrollPastEol,           // Allows caret to go into empty space beyond end-of-line position
+    eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
+    eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the scrollbar slider
+    eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
+    eoSmartTabs,               // When using <Tab> key, caret will go to the next non-space character of the previous line
+    eoTabIndent,               // Allows keys <Tab> and <Shift+Tab> act as block-indent and block-unindent, for selected blocks
+    eoTabsToSpaces,            // Converts tab characters to a specified number of space characters
+    eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved to file
+
+    // Not implemented
+    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
+    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
+    eoHideShowScrollbars,      //TODO If enabled, then the scrollbars will only show when necessary. If you have "Scroll past EOL" option, then the horizontal bar will always be there (it uses MaxLength instead)
+    eoDropFiles,               //TODO Allows control to accept file drag-drop operation
+    eoSmartTabDelete,          //TODO Similar to "Smart tabs", but when you delete characters
+    eoSpacesToTabs,            // Converts long substrings of space characters to tabs and spaces
+    eoAutoIndentOnPaste,       // Allows to indent text pasted from clipboard
+    //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+
+    // Only for compatibility, moved to TSynEditorMouseOptions
+    // keep in one block
+    eoAltSetsColumnMode,       // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
+    eoDragDropEditing,         // Allows to drag-and-drop text blocks within the control
+    eoRightMouseMovesCursor,   // When clicking with the right mouse button, for a popup menu, move the caret to clicked position
+    eoDoubleClickSelectsLine,  // Selects entire line with double-click, otherwise double-click selects only current word
+    eoShowCtrlMouseLinks       // Pressing <Ctrl> key (SYNEDIT_LINK_MODIFIER) will highlight the word under mouse cursor
+    );
+  TSynEditorOptions = set of TSynEditorOption;
+
+  TSynEditorOption2 = (
+    eoCaretSkipsSelection,     // Allows <Left> and <Right> keys to move caret to selected block edges, without deselecting the block
+    eoCaretMoveEndsSelection,  // <Left> and <Right> will clear the selection, but the caret will NOT move.
+                               // Combine with eoCaretSkipsSelection, and the caret will move to the other selection bound, if needed
+                               // Kind of overrides eoPersistentBlock
+    eoCaretSkipTab,            // Disables caret positioning inside tab-characters internal area
+    eoAlwaysVisibleCaret,      // Keeps caret on currently visible control area, when scrolling control
+    eoEnhanceEndKey,           // Toggles behaviour of <End> key on line with trailing spaces. If turned on, key will jump to last non-spacing char, if it's nearer to caret position.
+    eoFoldedCopyPaste,         // Remember folding states of blocks, on Copy/Paste operations
+    eoPersistentBlock,         // Keeps selection, even if caret moves away or text is edited
+    eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
+    eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
+    eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
+    eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
+    eoNoScrollOnSelectRange,   // SelectALl, SelectParagraph, SelectToBrace will not scroll
+    eoAcceptDragDropEditing    // Accept dropping text dragged from a SynEdit (self or other).
+                               // OnDragOver: To use OnDragOver, this flag should NOT be set.
+                               // WARNING: Currently OnDragOver also works, if drag-source is NOT TSynEdit, this may be change for other drag sources.
+                               //          This may in future affect if OnDragOver is called at all or not.
+  );
+  TSynEditorOptions2 = set of TSynEditorOption2;
+
+  TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
   TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
 
   TSynLineStyle = (

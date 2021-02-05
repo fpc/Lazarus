@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, LCLProc,
   SynEditMiscClasses, SynEditMiscProcs, LazSynEditText, SynEditPointClasses,
-  SynEditKeyCmds;
+  SynEditKeyCmds, SynEditTypes;
 
 type
 
@@ -264,7 +264,6 @@ function dbgs(AIndentFlags: TSynCommentIndentFlags): String; overload;
 function dbgs(AExtendMode: TSynCommentExtendMode): String; overload;
 
 implementation
-uses SynEdit;
 
 function dbgs(ACommentType: TSynCommentType): String;
 begin
@@ -399,9 +398,9 @@ begin
   if (Command = ecDeleteLastChar) and
      (FAutoIndent) and
      (ACaret.CharPos > 1) and
-     (not TCustomSynEdit(FCurrentEditor).ReadOnly) and
-     ( (not TCustomSynEdit(FCurrentEditor).SelAvail) or
-       (eoPersistentBlock in TCustomSynEdit(FCurrentEditor).Options2) ) and
+     (not FCurrentEditor.ReadOnly) and
+     ( (not FCurrentEditor.SelAvail) or
+       (eoPersistentBlock in FCurrentEditor.Options2) ) and
      (GetIndentForLine(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
   then begin
     FCurrentLines.UndoList.CurrentReason := ecSmartUnindent;

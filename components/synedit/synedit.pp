@@ -231,70 +231,6 @@ type
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
-  TSynEditorOption = (
-    eoAutoIndent,              // Allows to indent the caret, when new line is created with <Enter>, with the same amount of leading white space as the preceding line
-    eoBracketHighlight,        // Allows to highlight bracket, which matches bracket under caret
-    eoEnhanceHomeKey,          // Toggles behaviour of <Home> key on line with leading spaces. If turned on, key will jump to first non-spacing char, if it's nearer to caret position. (Similar to Visual Studio.)
-    eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
-    eoHalfPageScroll,          // When scrolling with <PageUp> and <PageDown> keys, only scroll a half page at a time
-    eoHideRightMargin,         // Hides the vertical "right margin" line
-    eoKeepCaretX,              // When moving through lines without "Scroll past EOL" option, keeps the X position of the caret
-    eoNoCaret,                 // Hides caret (text blinking cursor) totally
-    eoNoSelection,             // Disables any text selection
-    eoPersistentCaret,         // Do not hide caret when focus is lost from control. (TODO: Windows still hides caret, if another component sets up a caret.)
-    eoScrollByOneLess,         // Scroll vertically, by <PageUp> and <PageDown> keys, less by one line
-    eoScrollPastEof,           // When scrolling to end-of-file, show last line at the top of the control, instead of the bottom
-    eoScrollPastEol,           // Allows caret to go into empty space beyond end-of-line position
-    eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
-    eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the scrollbar slider
-    eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
-    eoSmartTabs,               // When using <Tab> key, caret will go to the next non-space character of the previous line
-    eoTabIndent,               // Allows keys <Tab> and <Shift+Tab> act as block-indent and block-unindent, for selected blocks
-    eoTabsToSpaces,            // Converts tab characters to a specified number of space characters
-    eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved to file
-
-    // Not implemented
-    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
-    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
-    eoHideShowScrollbars,      //TODO If enabled, then the scrollbars will only show when necessary. If you have "Scroll past EOL" option, then the horizontal bar will always be there (it uses MaxLength instead)
-    eoDropFiles,               //TODO Allows control to accept file drag-drop operation
-    eoSmartTabDelete,          //TODO Similar to "Smart tabs", but when you delete characters
-    eoSpacesToTabs,            // Converts long substrings of space characters to tabs and spaces
-    eoAutoIndentOnPaste,       // Allows to indent text pasted from clipboard
-    //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
-
-    // Only for compatibility, moved to TSynEditorMouseOptions
-    // keep in one block
-    eoAltSetsColumnMode,       // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
-    eoDragDropEditing,         // Allows to drag-and-drop text blocks within the control
-    eoRightMouseMovesCursor,   // When clicking with the right mouse button, for a popup menu, move the caret to clicked position
-    eoDoubleClickSelectsLine,  // Selects entire line with double-click, otherwise double-click selects only current word
-    eoShowCtrlMouseLinks       // Pressing <Ctrl> key (SYNEDIT_LINK_MODIFIER) will highlight the word under mouse cursor
-    );
-  TSynEditorOptions = set of TSynEditorOption;
-
-  TSynEditorOption2 = (
-    eoCaretSkipsSelection,     // Allows <Left> and <Right> keys to move caret to selected block edges, without deselecting the block
-    eoCaretMoveEndsSelection,  // <Left> and <Right> will clear the selection, but the caret will NOT move.
-                               // Combine with eoCaretSkipsSelection, and the caret will move to the other selection bound, if needed
-                               // Kind of overrides eoPersistentBlock
-    eoCaretSkipTab,            // Disables caret positioning inside tab-characters internal area
-    eoAlwaysVisibleCaret,      // Keeps caret on currently visible control area, when scrolling control
-    eoEnhanceEndKey,           // Toggles behaviour of <End> key on line with trailing spaces. If turned on, key will jump to last non-spacing char, if it's nearer to caret position.
-    eoFoldedCopyPaste,         // Remember folding states of blocks, on Copy/Paste operations
-    eoPersistentBlock,         // Keeps selection, even if caret moves away or text is edited
-    eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
-    eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
-    eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
-    eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
-    eoNoScrollOnSelectRange,   // SelectALl, SelectParagraph, SelectToBrace will not scroll
-    eoAcceptDragDropEditing    // Accept dropping text dragged from a SynEdit (self or other).
-                               // OnDragOver: To use OnDragOver, this flag should NOT be set.
-                               // WARNING: Currently OnDragOver also works, if drag-source is NOT TSynEdit, this may be change for other drag sources.
-                               //          This may in future affect if OnDragOver is called at all or not.
-  );
-  TSynEditorOptions2 = set of TSynEditorOption2;
-
   TSynEditorMouseOption = SynEditMouseCmds.TSynEditorMouseOption;
     //emUseMouseActions          // Enable mouse actions
     //emAltSetsColumnMode        // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
@@ -314,29 +250,6 @@ type
   TSynVisibleSpecialChars = SynEditTypes.TSynVisibleSpecialChars;
 
 const
-  // MouseAction related options MUST NOT be included here
-  SYNEDIT_DEFAULT_OPTIONS = [
-    eoAutoIndent,
-    eoScrollPastEol,
-    eoSmartTabs,
-    eoTabsToSpaces,
-    eoTrimTrailingSpaces,
-    eoGroupUndo,
-    eoBracketHighlight
-  ];
-
-  // Those will be prevented from being set => so evtl they may be removed
-  SYNEDIT_UNIMPLEMENTED_OPTIONS = [
-    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
-    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
-    eoDropFiles,               //TODO Allows the editor accept file drops
-    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
-    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
-    ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
-    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
-    eoSpacesToTabs             // Converts space characters to tabs and spaces
-  ];
-
   SYNEDIT_OLD_MOUSE_OPTIONS = [
     eoAltSetsColumnMode,       //
     eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
@@ -355,12 +268,6 @@ const
 
   SYNEDIT_DEFAULT_SHARE_OPTIONS = [
     eosShareMarks
-  ];
-
-  SYNEDIT_DEFAULT_OPTIONS2 = [
-    eoFoldedCopyPaste,
-    eoOverwriteBlock,
-    eoAcceptDragDropEditing
   ];
 
   SYNEDIT_DEFAULT_VISIBLESPECIALCHARS = [
@@ -627,7 +534,6 @@ type
     FScrollBarUpdateLock: Integer;
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
-    fReadOnly: Boolean;
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
     FLastTextChangeStamp: Int64;
@@ -660,8 +566,6 @@ type
     fTextDrawer: TheTextDrawer;
     FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
     fStateFlags: TSynStateFlags;
-    FOptions: TSynEditorOptions;
-    FOptions2: TSynEditorOptions2;
     fStatusChanges: TSynStatusChanges;
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
@@ -788,9 +692,6 @@ type
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     function GetMaxUndo: Integer;
-    function GetSelAvail: Boolean;
-    function GetIsBackwardSel: Boolean;
-    function GetSelText: string;
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
     procedure GutterChanged(Sender: TObject);
@@ -833,9 +734,7 @@ type
     procedure SetMaxLeftChar(Value: integer);
     procedure SetMaxUndo(const Value: Integer);
     procedure SetModified(Value: boolean);
-    procedure SetOptions(Value: TSynEditorOptions);
     procedure UpdateOptions;
-    procedure SetOptions2(const Value: TSynEditorOptions2);
     procedure UpdateOptions2;
     procedure UpdateMouseOptions;
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
@@ -857,7 +756,6 @@ type
     procedure RecalcScrollOnEdit(Sender: TObject);
     procedure RecalcCharsAndLinesInWin(CheckCaret: Boolean);
     procedure StatusChangedEx(Sender: TObject; Changes: TSynStatusChanges);
-    procedure StatusChanged(AChanges: TSynStatusChanges);
     procedure UndoRedoAdded(Sender: TObject);
     procedure ModifiedChanged(Sender: TObject);
     procedure UnlockUndo;
@@ -898,6 +796,7 @@ type
     procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
     procedure IncStatusChangeLock;
     procedure DecStatusChangeLock;
+    procedure StatusChanged(AChanges: TSynStatusChanges); override;
 
     property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
     property TextDrawer: TheTextDrawer read fTextDrawer;
@@ -954,7 +853,6 @@ type
     function GetMarkupMgr: TObject; override;
     function GetCaretObj: TSynEditCaret; override;
     procedure FontChanged(Sender: TObject); override;
-    function GetReadOnly: boolean; virtual;
     procedure HighlighterAttrChanged(Sender: TObject);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -975,7 +873,8 @@ type
     procedure CaretChanged(Sender: TObject);
     procedure SetMouseOptions(AValue: TSynEditorMouseOptions); override;
     procedure SetName(const Value: TComponentName); override;
-    procedure SetReadOnly(Value: boolean); virtual;
+    procedure SetOptions(Value: TSynEditorOptions); override;
+    procedure SetOptions2(Value: TSynEditorOptions2); override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
     procedure UndoItem(Item: TSynEditUndoItem);
@@ -1038,7 +937,6 @@ type
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;              // 1-based byte pos of first selected char
     property SelEnd: Integer read GetSelEnd write SetSelEnd;                    // 1-based byte pos of first char after selction end
-    property SelAvail: Boolean read GetSelAvail;
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
@@ -1301,13 +1199,9 @@ type
     // Mouseactions, if mouse is over selection => fallback to normal
     property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
-    // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
-    property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
-    property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property RightEdge: Integer read GetRightEdge write SetRightEdge default 80;
     property RightEdgeColor: TColor read GetRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
@@ -3011,21 +2905,6 @@ begin
     fBeautifier := FDefaultBeautifier
   else
     fBeautifier := NewBeautifier;
-end;
-
-function TCustomSynEdit.GetSelAvail: Boolean;
-begin
-  Result := FBlockSelection.SelAvail;
-end;
-
-function TCustomSynEdit.GetIsBackwardSel: Boolean;
-begin
-  Result := FBlockSelection.SelAvail and FBlockSelection.IsBackwardSel;
-end;
-
-function TCustomSynEdit.GetSelText: string;
-begin
-  Result := FBlockSelection.SelText;
 end;
 
 procedure TCustomSynEdit.SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
@@ -8417,7 +8296,7 @@ begin
   FUndoList.GroupUndo := eoGroupUndo in fOptions;
 end;
 
-procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
+procedure TCustomSynEdit.SetOptions2(Value: TSynEditorOptions2);
 var
   ChangedOptions: TSynEditorOptions2;
 begin
@@ -9248,19 +9127,6 @@ procedure TCustomSynEdit.InvalidateLine(Line: integer);
 begin
   InvalidateLines(Line, Line);
   InvalidateGutterLines(Line, Line);
-end;
-
-function TCustomSynEdit.GetReadOnly: boolean;
-begin
-  Result := fReadOnly;
-end;
-
-procedure TCustomSynEdit.SetReadOnly(Value: boolean);
-begin
-  if fReadOnly <> Value then begin
-    fReadOnly := Value;
-    StatusChanged([scReadOnly]);
-  end;
 end;
 
 procedure TCustomSynEdit.FindMatchingBracket;

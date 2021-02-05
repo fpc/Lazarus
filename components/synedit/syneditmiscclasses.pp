@@ -54,6 +54,35 @@ uses
 const
   SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
 
+  // MouseAction related options MUST NOT be included here
+  SYNEDIT_DEFAULT_OPTIONS = [
+    eoAutoIndent,
+    eoScrollPastEol,
+    eoSmartTabs,
+    eoTabsToSpaces,
+    eoTrimTrailingSpaces,
+    eoGroupUndo,
+    eoBracketHighlight
+  ];
+
+  SYNEDIT_DEFAULT_OPTIONS2 = [
+    eoFoldedCopyPaste,
+    eoOverwriteBlock,
+    eoAcceptDragDropEditing
+  ];
+
+  // Those will be prevented from being set => so evtl they may be removed
+  SYNEDIT_UNIMPLEMENTED_OPTIONS = [
+    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
+    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
+    eoDropFiles,               //TODO Allows the editor accept file drops
+    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
+    ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
+    eoSpacesToTabs             // Converts space characters to tabs and spaces
+  ];
+
 type
 
   { TSynWordBreaker }
@@ -104,19 +133,30 @@ type
   TSynEditBase = class(TCustomControl)
   private
     FMouseOptions: TSynEditorMouseOptions;
+    fReadOnly: Boolean;
   protected
     FWordBreaker: TSynWordBreaker;
     FBlockSelection: TSynEditSelection;
     FScreenCaret: TSynEditScreenCaret;
+    FOptions: TSynEditorOptions;
+    FOptions2: TSynEditorOptions2;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
+    function GetReadOnly: boolean; virtual;
+    function GetIsBackwardSel: Boolean;
+    function GetSelText: string;
+    function GetSelAvail: Boolean;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
     function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
     function GetPaintArea: TLazSynSurface; virtual; abstract; // TLazSynSurfaceManager
     procedure SetMouseOptions(AValue: TSynEditorMouseOptions); virtual;
+    procedure SetReadOnly(Value: boolean); virtual;
+    procedure StatusChanged(AChanges: TSynStatusChanges); virtual; abstract;
+    procedure SetOptions(AOptions: TSynEditorOptions); virtual; abstract;
+    procedure SetOptions2(AOptions2: TSynEditorOptions2); virtual; abstract;
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
@@ -129,9 +169,15 @@ type
     function FindGutterFromGutterPartList(const APartList: TObject): TObject; virtual; abstract;
   public
     property Lines: TStrings read GetLines write SetLines;
+    // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
+    property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
+    property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
 
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
+
+    property SelAvail: Boolean read GetSelAvail;
   end;
 
   { TSynEditFriend }
@@ -644,10 +690,38 @@ begin
   FMouseOptions := SYNEDIT_DEFAULT_MOUSE_OPTIONS;
 end;
 
+function TSynEditBase.GetReadOnly: boolean;
+begin
+  Result := fReadOnly;
+end;
+
+function TSynEditBase.GetSelAvail: Boolean;
+begin
+  Result := FBlockSelection.SelAvail;
+end;
+
+function TSynEditBase.GetIsBackwardSel: Boolean;
+begin
+  Result := FBlockSelection.SelAvail and FBlockSelection.IsBackwardSel;
+end;
+
+function TSynEditBase.GetSelText: string;
+begin
+  Result := FBlockSelection.SelText;
+end;
+
 procedure TSynEditBase.SetMouseOptions(AValue: TSynEditorMouseOptions);
 begin
   if FMouseOptions = AValue then Exit;
   FMouseOptions := AValue;
+end;
+
+procedure TSynEditBase.SetReadOnly(Value: boolean);
+begin
+  if fReadOnly <> Value then begin
+    fReadOnly := Value;
+    StatusChanged([scReadOnly]);
+  end;
 end;
 
 { TSynEditFriend }
