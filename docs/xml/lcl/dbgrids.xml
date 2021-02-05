@@ -8,7 +8,13 @@
       </short>
       <descr>
         <p>
-          <var>dbgrids.pas</var> contains classes and types needed to implement a database-aware grid control.
+          <file>dbgrids.pas</file> contains classes and types needed to implement a database-aware grid control. The following components are added to the <b>Data Controls</b> tab in the Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TDBGrid</li>
+        </ul>
+        <p>
+          The unit also includes the <var>TComponentDatalink</var> component, which is used as the data link for TCustomDBGrid. It was taken from an article by Joanna Carter: <b><i>"The Ultimate Datalink?"</i></b>, published in Delphi Magazine Issue #30 February 1998.
         </p>
       </descr>
 
@@ -44,7 +50,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomDBGrid.EmptyGrid"/>
           <link id="TCustomDBGrid.Options"/>
         </seealso>
       </element>
@@ -75,8 +80,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDBGridOptions">TDBGridOptions</link>
-          <link id="#lcl.DBGrids.TDBGrid.Options">TDBGrid.Options</link>
+          <link id="#lcl.dbgrids.TDBGridOptions">TDBGridOptions</link>
+          <link id="#lcl.dbgrids.TDBGrid.Options">TDBGrid.Options</link>
         </seealso>
       </element>
       <element name="TDBGridOption.dgEditing">
@@ -243,7 +248,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDBGrid.OptionsExtra">TDBGrid.OptionsExtra</link>
+          <link id="#lcl.dbgrids.TDBGrid.OptionsExtra">TDBGrid.OptionsExtra</link>
         </seealso>
       </element>
       <element name="TDbGridExtraOption.dgeAutoColumns">
@@ -263,12 +268,12 @@
         </short>
         <descr>
           <p>
-            <var>TDbGridExtraOptions</var> is a set type used to store zero (<b>0</b>) or more values from the <var>TDbGridExtraOption</var> enumeration. TDbGridExtraOptions is the type used to implement the <var>ExtraOptions</var> property in <var>TCustomDBGrid</var> and descendent classes.
+            <var>TDbGridExtraOptions</var> is a set type used to store zero (<b>0</b>) or more values from the <var>TDbGridExtraOption</var> enumeration. TDbGridExtraOptions is the type used to implement the <var>OptionsExtra</var> property in <var>TCustomDBGrid</var> and descendent classes.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomDbGrid.ExtraOptions"/>
-          <link id="TDbGrid.ExtraOptions"/>
+          <link id="TCustomDbGrid.OptionsExtra"/>
+          <link id="TDbGrid.OptionsExtra"/>
           <link id="TDbGridExtraOption"/>
         </seealso>
       </element>
@@ -496,8 +501,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDBGrid.OnSelectEditor"/>
-          <link id="#lcl.DBGrids.TCustomDBGrid.SelectEditor"/>
+          <link id="#lcl.dbgrids.TDBGrid.OnSelectEditor">TDBGrid.OnSelectEditor</link>
+          <link id="#lcl.dbgrids.TCustomDBGrid.SelectEditor">TCustomDBGrid.SelectEditor</link>
         </seealso>
       </element>
       <element name="TDbGridSelEditorEvent.Sender">
@@ -523,7 +528,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TDBGrid.OnPrepareCanvas">TDBGrid.OnPrepareCanvas</link>
+          <link id="#lcl.dbgrids.TDBGrid.OnPrepareCanvas">TDBGrid.OnPrepareCanvas</link>
         </seealso>
       </element>
       <element name="TPrepareDbGridCanvasEvent.Sender">
@@ -616,7 +621,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TBookmarkList">TBookmarkList</link>
+          <link id="#lcl.dbgrids.TBookmarkList">TBookmarkList</link>
         </seealso>
       </element>
 
@@ -859,7 +864,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TBookmarkList.Create.AGrid">
@@ -1051,7 +1056,7 @@
         </descr>
         <seealso>
           <link id="TCustomDBGrid.DataLink"/>
-          <link id="#fcl.DB.TDataLink">TDataLink</link>
+          <link id="#fcl.db.TDataLink">TDataLink</link>
         </seealso>
       </element>
 
@@ -1139,7 +1144,7 @@
         </descr>
         <seealso>
           <link id="TComponentDataLink.OnRecordChanged"/>
-          <link id="#fcl.db.TDataLink.RecordChanged"/>
+          <link id="#fcl.db.TDataLink.RecordChanged">TDataLink.RecordChanged</link>
         </seealso>
       </element>
       <element name="TComponentDataLink.RecordChanged.Field">
@@ -1191,8 +1196,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.LayoutChanged"/>
           <link id="TCustomDBGrid.LayoutChanged"/>
+          <link id="#fcl.db.TDataLink.LayoutChanged">TDataLink.LayoutChanged</link>
         </seealso>
       </element>
 
@@ -1206,8 +1211,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.ActiveRecord"/>
-          <link id="#fcl.db.TDataLink.DatasetScrolled"/>
+          <link id="#fcl.db.TDataLink.ActiveRecord">TDataLink.ActiveRecord</link>
+          <link id="#fcl.db.TDataLink.DatasetScrolled">TDataLink.DatasetScrolled</link>
         </seealso>
       </element>
       <element name="TComponentDataLink.DatasetScrolled.Distance">
@@ -1251,7 +1256,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TDataLink.EditingChanged"/>
+          <link id="#fcl.db.TDataLink.EditingChanged">TDataLink.EditingChanged</link>
         </seealso>
       </element>
 
@@ -1455,9 +1460,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TField">TField</link>
           <link id="TColumn">TColumn</link>
-          <link id="#lcl.Grids.TGridColumnTitle.GetDefaultCaption">TGridColumnTitle.GetDefaultCaption</link>
+          <link id="#fcl.db.TField">TField</link>
+          <link id="#lcl.grids.TGridColumnTitle.GetDefaultCaption">TGridColumnTitle.GetDefaultCaption</link>
         </seealso>
       </element>
       <element name="TColumnTitle.GetDefaultCaption.Result">
@@ -1488,9 +1493,9 @@
         <seealso>
           <link id="TDBGrid.Columns">TDBGrid.Columns</link>
           <link id="TDBGridColumns">TDBGridColumns</link>
-          <link id="#lcl.Grids.TGridColumn">TGridColumn</link>
-          <link id="#fcl.DB.TField">TField</link>
-          <link id="#fcl.DB.TDataset">TDataset</link>
+          <link id="#lcl.grids.TGridColumn">TGridColumn</link>
+          <link id="#fcl.db.TField">TField</link>
+          <link id="#fcl.db.TDataset">TDataset</link>
         </seealso>
       </element>
 
@@ -1526,8 +1531,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TGridColumn.Grid">TGridColumn.Grid</link>
           <link id="TCustomDBGrid">TCustomDBGrid</link>
+          <link id="#lcl.grids.TGridColumn.Grid">TGridColumn.Grid</link>
           <link id="#fcl.db.TDataset">TDataset</link>
         </seealso>
       </element>
@@ -1801,7 +1806,7 @@
         </descr>
         <seealso>
           <link id="TColumn.FieldName"/>
-          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
+          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
         </seealso>
       </element>
       <element name="TColumn.GetDisplayName.Result">
@@ -1820,7 +1825,7 @@
         <seealso>
           <link id="TGridColumn.GetDefaultReadOnly"/>
           <link id="TCustomDBGrid.ReadOnly"/>
-          <link id="#fcl.Db.TField.ReadOnly"/>
+          <link id="#fcl.db.TField.ReadOnly">TField.ReadOnly</link>
         </seealso>
       </element>
       <element name="TColumn.GetDefaultReadOnly.Result">
@@ -1860,8 +1865,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TGridColumn.PickList"/>
-          <link id="#fcl.DB.TField"/>
+          <link id="#lcl.grids.TGridColumn.PickList">TGridColumn.PickList</link>
+          <link id="#fcl.db.TField">TField</link>
         </seealso>
       </element>
       <element name="TColumn.GetPickList.Result">
@@ -1936,14 +1941,12 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the <var>TColumn</var> instance.
-            Create calls the inherited <var>Create</var> constructor and sets the
-            DesignIndex used for the new entry in the
+            <var>Create</var> is the constructor for the <var>TColumn</var> instance. Create calls the inherited <var>Create</var> constructor and sets the DesignIndex used for the new entry in the
             <link id="#rtl.classes.TCollection">TCollection</link>. Create is called by the <link id="#rtl.classes.TCollection.Add">TCollection.Add</link> method and should not be called directly under normal circumstances.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TGridColumn.Create">TGridColumn.Create</link>
+          <link id="#lcl.grids.TGridColumn.Create">TGridColumn.Create</link>
           <link id="#rtl.classes.TCollection">TCollection</link>
         </seealso>
       </element>
@@ -1967,7 +1970,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TColumn.Assign.Source">
@@ -2014,8 +2017,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.db.TField"/>
           <link id="TColumn.LinkField"/>
+          <link id="#fcl.db.TField">TField</link>
         </seealso>
       </element>
 
@@ -2054,9 +2057,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBGrids.TColumn">TColumn</link>
-          <link id="#lcl.DBGrids.TDBGridColumns">TDBGridColumns</link>
-          <link id="#lcl.DBGrids.TDBGrid.Columns">TDBGrid.Columns</link>
+          <link id="#lcl.dbgrids.TColumn">TColumn</link>
+          <link id="#lcl.dbgrids.TDBGridColumns">TDBGridColumns</link>
+          <link id="#lcl.dbgrids.TDBGrid.Columns">TDBGrid.Columns</link>
         </seealso>
       </element>
       <element name="TColumnOrder.coDesignOrder">
@@ -2139,7 +2142,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Update"/>
+          <link id="#lcl.grids.TGridColumns.Update">TGridColumns.Update</link>
+          <link id="#rtl.classes.TCollection.Update">TCollection.Update</link>
         </seealso>
       </element>
       <element name="TDBGridColumns.Update.Item">
@@ -2244,7 +2248,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Add">TCollection.Add</link>
+          <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
         </seealso>
       </element>
       <element name="TDBGridColumns.Add.Result">
@@ -2349,8 +2353,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.HowToUseGrids">HowToUseGrids</link>
-          <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
+          <link id="#lcl.grids.HowToUseGrids">How To Use Grids</link>
+          <link id="#lcl.dbctrls.HowToUseDataAwareControls">How To Use Data-Aware Controls</link>
         </seealso>
       </element>
 
@@ -3343,7 +3347,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.CreateColumns">TCustomGrid.CreateColumns</link>
+          <link id="#lcl.grids.TCustomGrid.CreateColumns">TCustomGrid.CreateColumns</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.CreateColumns.Result">
@@ -3356,18 +3360,18 @@
         </short>
         <descr></descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
 
       <element name="TCustomDBGrid.DefineProperties">
         <descr>
           <remark>
-            Provides an empty implementation that avoids calling the  inherited DefineProperties method.  TCustomGrid defines ColWidths, RowHeights and Cells properties which do not use facilities available in the data-aware grid control.
+            Provides has an empty implementation and avoids calling the inherited DefineProperties method. TCustomGrid defines ColWidths, RowHeights and Cells properties which do not use facilities available in the data-aware grid control.
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
+          <link id="#lcl.grids.TCustomGrid.DefineProperties">TCustomGrid.DefineProperties</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.DefineProperties.Filer">
@@ -3435,7 +3439,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl.DoExit">TWinControl.DoExit</link>
+          <link id="#lcl.controls.TWinControl.DoExit">TWinControl.DoExit</link>
         </seealso>
       </element>
 
@@ -3449,8 +3453,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.DoMouseWheelDown">TControl.DoMouseWheelDown
-          </link>
+          <link id="#lcl.controls.TControl.DoMouseWheelDown">TControl.DoMouseWheelDown</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.DoMouseWheelDown.Result">
@@ -3490,7 +3493,7 @@
         </short>
         <descr></descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
+          <link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
         </seealso>
       </element>
 
@@ -3507,7 +3510,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.DoPrepareCanvas">TCustomGrid.DoPrepareCanvas</link>
+          <link id="#lcl.grids.TCustomGrid.DoPrepareCanvas">TCustomGrid.DoPrepareCanvas</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.DoPrepareCanvas.aCol">
@@ -3828,7 +3831,7 @@
             </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.EditorDoGetValue">TCustomGrid.EditorDoGetValue</link>
+          <link id="#lcl.grids.TCustomGrid.EditorDoGetValue">TCustomGrid.EditorDoGetValue</link>
         </seealso>
       </element>
 
@@ -3846,8 +3849,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.EditorCanAcceptKey">TCustomGrid.EditorCanAcceptKey
-          </link>
+          <link id="#lcl.grids.TCustomGrid.EditorCanAcceptKey">TCustomGrid.EditorCanAcceptKey</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.EditorCanAcceptKey.ch">
@@ -4066,7 +4068,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.GetDefaultRowHeight">TCustomGrid.GetDefaultRowHeight</link>
+          <link id="#lcl.grids.TCustomGrid.GetDefaultRowHeight">TCustomGrid.GetDefaultRowHeight</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.GetDefaultRowHeight.Result">
@@ -4110,7 +4112,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.GetEditMask">TCustomGrid.GetEditMask</link>
+          <link id="#lcl.grids.TCustomGrid.GetEditMask">TCustomGrid.GetEditMask</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.GetEditMask.Result">
@@ -4316,7 +4318,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.GetSBVisibility"/>
+          <link id="#lcl.grids.TCustomGrid.GetSBVisibility">TCustomGrid.GetSBVisibility</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.GetSBVisibility.HsbVisible">
@@ -4360,7 +4362,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.HeaderClick">TCustomGrid.HeaderClick</link>
+          <link id="#lcl.grids.TCustomGrid.HeaderClick">TCustomGrid.HeaderClick</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.HeaderClick.IsColumn">
@@ -4595,7 +4597,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.MoveSelection">TCustomGrid.MoveSelection</link>
+          <link id="#lcl.grids.TCustomGrid.MoveSelection">TCustomGrid.MoveSelection</link>
         </seealso>
       </element>
 
@@ -5255,7 +5257,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.Create">TCustomGrid.Create</link>
+          <link id="#lcl.grids.TCustomGrid.Create">TCustomGrid.Create</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.Create.AOwner">
@@ -5318,7 +5320,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.EditorByStyle">TCustomGrid.EditorByStyle</link>
+          <link id="#lcl.grids.TCustomGrid.EditorByStyle">TCustomGrid.EditorByStyle</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.EditorByStyle.Result">
@@ -5356,9 +5358,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Grids.TCustomGrid.Destroy">TCustomGrid.Destroy</link>
           <link id="TCustomDBGrid.DataLink">TCustomDBGrid.DataLink</link>
           <link id="TCustomDBGrid.SelectedRows">TCustomDBGrid.SelectedRows</link>
+          <link id="#lcl.grids.TCustomGrid.Destroy">TCustomGrid.Destroy</link>
         </seealso>
       </element>
 
@@ -5387,7 +5389,7 @@
         <short/>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TComponent.ExecuteAction"/>
+          <link id="#rtl.classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.ExecuteAction.Result">
@@ -5401,7 +5403,7 @@
         <short/>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TComponent.UpdateAction"/>
+          <link id="#rtl.classes.TComponent.UpdateAction">TComponent.UpdateAction</link>
         </seealso>
       </element>
       <element name="TCustomDBGrid.UpdateAction.Result">
@@ -5552,12 +5554,12 @@
          </p>
           <p>
             TDBGrid inherits many of its properties from
-            <link id="#lcl.Grids.TCustomGrid">TCustomGrid</link> and its immediate ancestor <link id="TCustomDBGrid">TCustomDBGrid</link>.
+            <link id="#lcl.grids.TCustomGrid">TCustomGrid</link> and its immediate ancestor <link id="TCustomDBGrid">TCustomDBGrid</link>.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
-          <link id="#lcl.Grids.HowToUseGrids">HowToUseGrids</link>
+          <link id="#lcl.dbctrls.HowToUseDataAwareControls">How To Use Data-Aware Controls</link>
+          <link id="#lcl.grids.HowToUseGrids">How To Use Grids</link>
         </seealso>
       </element>
 
@@ -5577,7 +5579,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
         </seealso>
       </element>
 
@@ -6140,13 +6142,13 @@
             <var>OnKeyDown</var> is a TKeyEvent event handler signalled when a key is down while the control has focus. OnKeyDown is called from the KeyDown method when processing keys specific to the data-aware grid.
           </p>
           <p>
-            <var>OnKeyDown</var> differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link>. With <var>OnKeyDown</var> the key may have already been down when the control receives focus. With <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
+            <var>OnKeyDown</var> differs from <link id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link>. With <var>OnKeyDown</var> the key may have already been down when the control receives focus. With <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
           </p>
         </descr>
         <seealso>
           <link id="TDBGrid.OnKeyPress">TDBGrid.OnKeyPress</link>
           <link id="TDBGrid.OnKeyUp">TDBGrid.OnKeyUp</link>
-          <link id="#lcl.Controls.TKeyEvent">TKeyEvent</link>
+          <link id="#lcl.controls.TKeyEvent">TKeyEvent</link>
         </seealso>
       </element>
 
@@ -6157,7 +6159,7 @@
           </p>
           <p>
             <var>OnKeyPress</var> differs from
-            <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key  needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
+            <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key  needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
           </p>
         </descr>
         <seealso></seealso>

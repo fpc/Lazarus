@@ -9,7 +9,25 @@
     <module name="ComCtrls">
       <short>Common controls used in Lazarus forms</short>
       <descr>
-        <file>comctrls.pp</file> contains classes and types like those found in the Delphi <file>comctrls</file> unit.
+        <p>
+          <file>comctrls.pp</file> contains classes and types like those found in the Delphi <file>comctrls</file> unit.
+        </p>
+        <p>
+          <b>Components on the Common Controls Tab</b>
+        </p>
+        <ul>
+          <li>TTrackbar</li>
+          <li>TProgressBar</li>
+          <li>TTreeView</li>
+          <li>TListView</li>
+          <li>TStatusBar</li>
+          <li>TToolBar</li>
+          <li>TCoolBar</li>
+          <li>TUpDown</li>
+          <li>TPageControl</li>
+          <li>TTabControl</li>
+          <li>THeaderControl</li>
+        </ul>
       </descr>
 
       <!-- unresolved type references Visibility: default -->
@@ -267,7 +285,7 @@
           <var>GetDisplayName</var> is an overridden String function which returns the value displayed as the name of the collection item. The value in the Text property is used as the return value when it is not an empty string (''). Otherwise, the inherited GetDisplayName method is called to get the return value.
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
+          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
         </seealso>
       </element>
       <element name="TStatusPanel.GetDisplayName.Result">
@@ -291,7 +309,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Index"/>
+          <link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
         </seealso>
       </element>
       <element name="TStatusPanel.SetIndex.Value">
@@ -407,7 +425,7 @@
         <descr/>
         <seealso>
           <link id="TStatusPanels.Items"/>
-          <link id="#RTL.Classes.TCollection.GetItem"/>
+          <link id="#RTL.Classes.TCollection.GetItem">TCollection.GetItem</link>
         </seealso>
       </element>
       <element name="TStatusPanels.GetItem.Result">
@@ -435,7 +453,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Owner"/>
+          <link id="#rtl.classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
         </seealso>
       </element>
       <element name="TStatusPanels.GetOwner.Result">
@@ -615,7 +633,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
 
@@ -625,7 +643,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
+          <link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
         </seealso>
       </element>
 
@@ -635,7 +653,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
 
@@ -656,7 +674,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.CalculatePreferredSize"/>
+          <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
         </seealso>
       </element>
 
@@ -670,7 +688,7 @@
         <seealso>
           <link id="TStatusBar.Panels"/>
           <link id="TStatusBar.UpdateHandleObject"/>
-          <link id="#LCL.Controls.TControl.BiDiMode"/>
+          <link id="#lcl.controls.TControl.BiDiMode">TControl.BiDiMode</link>
         </seealso>
       </element>
       <element name="TStatusBar.SetBiDiMode.AValue">
@@ -751,7 +769,7 @@
             Calls <var>BeginUpdate</var> to reduce the number of refreshes needed when updating panels in the status bar. Adjusts the width of all items in the <var>Panels</var> collection using the factor in <var>AXProportion</var>. The value in <var>AYProportion</var> is ignored in the method. Calls <var>EndUpdate</var> prior to exit from the method.
           </p>
         <remark>
-          Please note: No actions are performed in the method when <var>AMode</var> contains a <var>TLayoutAdjustmentPolicy</var> value other than <var>lapAutoAdjustWithoutHorizontalScrolling</var> or      <var>lapAutoAdjustForDPI</var>.
+          No actions are performed in the method when <var>AMode</var> contains a <var>TLayoutAdjustmentPolicy</var> value other than <var>lapAutoAdjustWithoutHorizontalScrolling</var> or <var>lapAutoAdjustForDPI</var>.
         </remark>
         </descr>
         <seealso/>
@@ -783,8 +801,8 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
-          <link id="#lcl.Controls.TWinControl.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TStatusBar.Create.TheOwner">
@@ -797,8 +815,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#lcl.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -811,7 +829,7 @@
             <var>InvalidatePanel</var> renders the panel with specified index non-valid. Calls <var>UpdateHandleObject</var> to ensure that the widget set class is notified of the change to the specified panel.
           </p>
           <remark>
-            Please note: No actions are performed in the method when the PanelParts argument is an empty set (<b>[]</b>).
+            No actions are performed in the method when the PanelParts argument is an empty set (<b>[]</b>).
           </remark>
         </descr>
         <seealso/>
@@ -842,7 +860,7 @@
           <var>ExecuteAction</var>: if required action is a Hint-related, sets the Hint in place, otherwise calls inherited method
         </short>
         <seealso>
-          <link id="#rtl.Classes.TComponent.ExecuteAction"/>
+          <link id="#rtl.classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
         </seealso>
       </element>
 
@@ -1072,11 +1090,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
           <link id="TTabSheet"/>
           <link id="TPageControl"/>
           <link id="TCustomTabControl.Page"/>
           <link id="TCustomTabControl.ActivePageComponent"/>
+          <link id="#lcl.extctrls.MultiPage-Controls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -1258,7 +1276,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.Create"/>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomPage.Create.TheOwner">
@@ -1304,7 +1322,7 @@
         </errors>
         <seealso>
           <link id="TCustomPage"/>
-          <link id="#LCL.Controls.TControl.CheckNewParent"/>
+          <link id="#lcl.controls.TControl.CheckNewParent">TControl.CheckNewParent</link>
         </seealso>
       </element>
       <element name="TCustomPage.CheckNewParent.AParent">
@@ -1622,7 +1640,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TNBPages.Create.thePageList">
@@ -1893,7 +1911,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="#lcl.extctrls.Multi-PageControls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -2239,7 +2257,7 @@
         <descr/>
         <seealso>
           <link id="TCustomTabControl.SetImageListAsync"/>
-          <link id="#LCL.Forms.TApplication.QueueAsyncCall"/>
+          <link id="#LCL.forms.TApplication.QueueAsyncCall">TApplication.QueueAsyncCall</link>
         </seealso>
       </element>
       <element name="TCustomTabControl.DoImageListDestroyResolutionHandle.Sender">
@@ -2483,7 +2501,7 @@
           <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <element name="TCustomTabControl.GetControlClassDefaultSize.Result">
@@ -2614,7 +2632,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomTabControl.Create.TheOwner">
@@ -2627,9 +2645,9 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -2778,7 +2796,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+          <link id="TCustomListView.HotTrack"/>
         </seealso>
       </element>
 
@@ -2977,8 +2995,8 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.extctrls.Multi-PageControls">Using Multi-Page Controls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
       </element>
 
@@ -3022,7 +3040,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TTabSheet.Create.TheOwner">
@@ -3035,7 +3053,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -3109,11 +3127,11 @@
             While a given page is selected, it is also possible to drop other controls (such as buttons, memo boxes etc) on to the page from the Component Palette.
           </p>
           <p>
-            Inherits most of its properties from <link id="#lcl.ComCtrls.TCustomTabControl">TCustomTabControl</link>
+            Inherits most of its properties from <link id="#lcl.comctrls.TCustomTabControl">TCustomTabControl</link>
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="#lcl.extctrls.Multi-PageControls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -3212,7 +3230,7 @@
           Client cannot be added to TPageControl itself but new TabSheet should be added and client placed onto it.
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.DoAddDockClient">TWinControl.DoAddDockClient</link>
+          <link id="#lcl.controls.TWinControl.DoAddDockClient">TWinControl.DoAddDockClient</link>
         </seealso>
       </element>
 
@@ -3243,7 +3261,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.DoRemoveDockClient"/>
+          <link id="#lcl.controls.TWinControl.DoRemoveDockClient">TWinControl.DoRemoveDockClient</link>
         </seealso>
       </element>
 
@@ -3550,7 +3568,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TTabControlStrings.Create.TheTabControl">
@@ -3677,7 +3695,7 @@
         <descr/>
         <errors>An exception is raised if the Update count is zero</errors>
         <seealso>
-          <link id="#rtl.Classes.TStrings.EndUpdate">TStrings.EndUpdate</link>
+          <link id="#rtl.classes.TStrings.EndUpdate">TStrings.EndUpdate</link>
         </seealso>
       </element>
 
@@ -3712,7 +3730,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
+          <link id="#lcl.comctrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
         </seealso>
       </element>
 
@@ -3894,13 +3912,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Menus.TPopupMenu"/>
-          <link id="#LCL.Controls.TControl.GetPopupMenu"/>
-          <link id="#LCL.Controls.TControl.PopupMenu"/>
-          <link id="#LCL.Controls.TControl.Parent"/>
           <link id="TTabControl"/>
           <link id="TPageControl.Options"/>
-          <link id="CTabControlOption.nboHidePageListPopup"/>
+          <link id="#lcl.menus.TPopupMenu">TPopupMenu</link>
+          <link id="#lcl.controls.TControl.GetPopupMenu">TControl.GetPopupMenu</link>
+          <link id="#lcl.controls.TControl.PopupMenu">TControl.PopupMenu</link>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
       <element name="TNoteBookStringsTabControl.GetPopupMenu.Result">
@@ -3963,7 +3980,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStringList.Get"/>
+          <link id="#rtl.classes.TStringList.Get">TStringList.Get</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Get.Result">
@@ -3988,7 +4005,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStringList.GetObject"/>
+          <link id="#rtl.classes.TStringList.GetObject">TStringList.GetObject</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.GetObject.Result">
@@ -4073,7 +4090,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStringList.Put"/>
+          <link id="#rtl.classes.TStringList.Put">TStringList.Put</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Put.Index">
@@ -4089,7 +4106,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStringList.PutObject"/>
+          <link id="#rtl.classes.TStringList.PutObject">TStringList.PutObject</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.PutObject.Index">
@@ -4135,7 +4152,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStringList.SetUpdateState"/>
+          <link id="#rtl.classes.TStringList.SetUpdateState">TStringList.SetUpdateState</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.SetUpdateState.Updating">
@@ -4155,8 +4172,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
           <link id="TTabControlStrings.Create"/>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Create.TheTabControl">
@@ -4169,7 +4186,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Destroy"/>
+          <link id="#rtl.classes.TStrings.Destroy">TStrings.Destroy</link>
         </seealso>
       </element>
 
@@ -4179,7 +4196,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Clear"/>
+          <link id="#rtl.Classes.TStrings.Clear">TStrings.Clear</link>
         </seealso>
       </element>
 
@@ -4189,7 +4206,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Delete"/>
+          <link id="#rtl.Classes.TStrings.Delete">TStrings.Delete</link>
         </seealso>
       </element>
       <element name="TTabControlNoteBookStrings.Delete.Index">
@@ -4262,7 +4279,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="#lcl.extctrls.Multi-PageControls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -5322,8 +5339,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent"/>
-          <link id="#rtl.Objects.TObject"/>
+          <link id="#rtl.classes.TPersistent">TPersistent</link>
+          <link id="#rtl.objects.TObject">TObject</link>
         </seealso>
       </element>
 
@@ -5642,7 +5659,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign"/>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TListItem.Assign.ASource">
@@ -5655,7 +5672,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TListItem.Create.AOwner">
@@ -5668,7 +5685,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
@@ -6124,7 +6141,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.DefineProperties"/>
+          <link id="#rtl.classes.TPersistent.DefineProperties">TPersistent.DefineProperties</link>
         </seealso>
       </element>
       <element name="TListItems.DefineProperties.Filer">
@@ -6258,7 +6275,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TListItems.Create.AOwner">
@@ -6271,7 +6288,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy"/>
+          <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
@@ -6660,7 +6677,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Index"/>
+          <link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
         </seealso>
       </element>
       <element name="TListColumn.SetIndex.AValue">
@@ -6673,7 +6690,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
+          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
         </seealso>
       </element>
       <element name="TListColumn.GetDisplayName.Result">
@@ -6695,7 +6712,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Create"/>
+          <link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
       </element>
       <element name="TListColumn.Create.ACollection">
@@ -6708,7 +6725,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Destroy"/>
+          <link id="#rtl.classes.TCollectionItem.Destroy">TCollectionItem.Destroy</link>
         </seealso>
       </element>
 
@@ -6718,7 +6735,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign"/>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TListColumn.Assign.ASource">
@@ -6860,7 +6877,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Create"/>
+          <link id="#rtl.classes.TCollection.Create">TCollection.Create</link>
         </seealso>
       </element>
       <element name="TListColumns.Create.TheOwner">
@@ -6873,7 +6890,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Destroy"/>
+          <link id="#rtl.classes.TCollection.Destroy">TCollection.Destroy</link>
         </seealso>
       </element>
 
@@ -6883,7 +6900,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Update">TCollection.Update</link>
+          <link id="#rtl.classes.TCollection.Update">TCollection.Update</link>
         </seealso>
       </element>
 
@@ -6897,7 +6914,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Add"/>
+          <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
         </seealso>
       </element>
       <element name="TListColumns.Add.Result">
@@ -6925,7 +6942,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Assign"/>
+          <link id="#rtl.classes.TCollection.Assign">TCollection.Assign</link>
         </seealso>
       </element>
       <element name="TListColumns.Assign.Source">
@@ -8198,7 +8215,7 @@
           <var>InitializeWnd</var> - calls inherited method, then sets style, adds columns, sets imagelists and item depending properties (scroll bars, sorting etc), adds items and sets other miscellaneous properties (default item height, hot track styles, hover time etc)
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.InitializeWnd"/>
+          <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
         </seealso>
       </element>
 
@@ -8207,7 +8224,7 @@
           <var>FinalizeWnd</var> stores the list origin then calls inherited method
         </short>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.FinalizeWnd"/>
+          <link id="#lcl.controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
         </seealso>
       </element>
 
@@ -8343,7 +8360,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoAutoAdjustLayout"/>
+          <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
         </seealso>
       </element>
       <element name="TCustomListView.DoAutoAdjustLayout.AMode">
@@ -8625,7 +8642,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DblClick"/>
+          <link id="#lcl.controls.TControl.DblClick">TControl.DblClick</link>
         </seealso>
       </element>
 
@@ -8640,7 +8657,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.KeyDown"/>
+          <link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
         </seealso>
       </element>
       <element name="TCustomListView.KeyDown.Key">
@@ -8996,8 +9013,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomListView.Create.AOwner">
@@ -9010,8 +9027,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
-          <link id="#LCL.Controls.TWinControl.Destroy"/>
+          <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -9330,7 +9347,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ComCtrls.TCustomListView.HotTrack"/>
+          <link id="TCustomListView.HotTrack"/>
         </seealso>
       </element>
 
@@ -9458,7 +9475,7 @@
             <var>TListView </var>- a window showing a list of items which may or may not have associated icons.
           </p>
           <p>
-            At first this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link> but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var> and it can have images associated with the list <var>Items</var>.
+            At first this control looks very like <link id="#lcl.stdctrls.TListBox">TListBox</link> but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var> and it can have images associated with the list <var>Items</var>.
           </p>
           <p>
             The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (<b>...</b>) next to the <var>Items</var> entry in the Object Inspector.
@@ -9754,7 +9771,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+          <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
         </seealso>
       </element>
 
@@ -9764,7 +9781,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Loaded"/>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
 
@@ -9773,7 +9790,7 @@
           <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
 
@@ -9783,8 +9800,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
-          <link id="#LCL.Controls.TWinControl.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomProgressBar.Create.AOwner">
@@ -9882,7 +9899,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
       </element>
 
@@ -10482,7 +10499,7 @@
           <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#LCL.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <element name="TCustomUpDown.GetControlClassDefaultSize.Result">
@@ -10521,7 +10538,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
         </seealso>
       </element>
       <element name="TCustomUpDown.Notification.AComponent">
@@ -10537,7 +10554,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Click">TControl.Click</link>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
         </seealso>
       </element>
       <element name="TCustomUpDown.Click.Button">
@@ -10668,8 +10685,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#lcl.Controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomUpDown.Create.AOwner">
@@ -10682,8 +10699,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -10783,7 +10800,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#LCL.ComCtrls.TToolButton"/>
+          <link id="TToolButton"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -10839,7 +10856,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TBasicActionLink.AssignClient"/>
+          <link id="#rtl.classes.TBasicActionLink.AssignClient">TBasicActionLink.AssignClient</link>
         </seealso>
       </element>
       <element name="TToolButtonActionLink.AssignClient.AClient">
@@ -10909,8 +10926,8 @@
         <seealso>
           <link id="TToolBar"/>
           <link id="#lcl.stdctrls.TButton">TButton</link>
-          <link id="#lcl.Buttons.TSpeedButton">TSpeedButton</link>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.buttons.TSpeedButton">TSpeedButton</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -11162,7 +11179,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetActionLinkClass"/>
+          <link id="#lcl.controls.TControl.GetActionLinkClass">TControl.GetActionLinkClass</link>
         </seealso>
       </element>
       <element name="TToolButton.GetActionLinkClass.Result">
@@ -11175,7 +11192,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.ActionChange"/>
+          <link id="#lcl.controls.TControl.ActionChange">TControl.ActionChange</link>
         </seealso>
       </element>
       <element name="TToolButton.ActionChange.Sender">
@@ -11191,8 +11208,9 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
-          <link id="#LCL.Controls.TControl.AssignTo">TControl.AssignTo</link>
+          <!-- Protected method excluded in RTL docs.... for some reason.-->
+          <link id="#rtl.classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+          <link id="#lcl.controls.TControl.AssignTo">TControl.AssignTo</link>
         </seealso>
       </element>
       <element name="TToolButton.AssignTo.Dest">
@@ -11219,7 +11237,7 @@
           <short/>
           <descr/>
           <seealso>
-            <link id="#LCL.Controls.TControl.MouseMove"/>
+            <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
           </seealso>
         </element>
       <element name="TToolButton.MouseMove.Shift"/>
@@ -11309,7 +11327,7 @@
           <var>GetControlClassDefaultSize</var> returns its own defaults, overriding inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
 
@@ -11317,7 +11335,7 @@
         <short/>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Loaded"/>
+          <link id="#rtl.classes.TComponent.Loaded">TComponent.Loaded</link>
         </seealso>
       </element>
 
@@ -11412,8 +11430,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
-          <link id="#LCL.Controls.TGraphicControl.Create"/>
+          <link id="#lcl.controls.TGraphicControl.Create">TGraphicControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TToolButton.Create.TheOwner">
@@ -11569,7 +11587,7 @@
             A <var>DropDownMenu</var> that appears when this button is selected.
           </p>
           <p>
-            It uses the same code as a <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link> and offers a series of additional menu choices.
+            It uses the same code as a <link id="#lcl.menus.TPopupMenu">TPopupMenu</link> and offers a series of additional menu choices.
         </p>
         </descr>
       </element>
@@ -11585,7 +11603,7 @@
         <descr>
           <p>Is this button a member of a group?</p>
           <p>
-            This would mean behavior similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link> where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.
+            This would mean behavior similar to the radio buttons in a <link id="#lcl.extctrls.TRadioGroup">TRadioGroup</link> where only one button in the group can be selected, or the check boxes in a <link id="#lcl.extctrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.
           </p>
         </descr>
       </element>
@@ -11666,7 +11684,7 @@
         <short>Determines the style of the tool button.</short>
         <descr>See TToolButtonStyle for the possible Style values.</descr>
         <seealso>
-          <link id="#LCL.ComCtrls.TToolButtonStyle"/>
+          <link id="TToolButtonStyle"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -12127,7 +12145,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
 
@@ -12324,7 +12342,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TToolBar.Create.TheOwner">
@@ -12337,8 +12355,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -12408,7 +12426,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ComCtrls.TToolButton.Style"/>
+          <link id="TToolButton.Style"/>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
@@ -12535,7 +12553,7 @@
          </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Invalidate"/>
+          <link id="#lcl.Controls.TWinControl.Invalidate">TWinControl.Invalidate</link>
         </seealso>
       </element>
 
@@ -14415,7 +14433,7 @@
           <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding the inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <element name="TCustomTrackBar.GetControlClassDefaultSize.Result">
@@ -14452,8 +14470,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomTrackBar.Create.AOwner">
@@ -14583,11 +14601,11 @@
             The <var>Position</var> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement.
           </p>
           <p>
-            In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.
+            In the example, movement of the slider is detected and shown in the associated <link id="#lcl.comctrls.TProgressBar">TProgressBar</link>.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
         <example file="comctrls/TrackBarEx.pas"/>
       </element>
@@ -15554,7 +15572,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls"/>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
       </element>
 
@@ -16104,7 +16122,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TTreeNode.Create.AnOwner">
@@ -16117,7 +16135,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
@@ -16647,7 +16665,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TTreeNode.Assign.Source">
@@ -16894,7 +16912,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.ComCtrls.TTreeNode.SelectedIndex">TTreeNode.SelectedIndex</link>
+          <link id="#lcl.comctrls.TTreeNode.SelectedIndex">TTreeNode.SelectedIndex</link>
         </seealso>
       </element>
 
@@ -16989,7 +17007,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.ComCtrls.TTreeNode.ImageIndex">TTreeNode.ImageIndex</link>
+          <link id="TTreeNode.ImageIndex"/>
         </seealso>
       </element>
 
@@ -17392,7 +17410,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TTreeNodes.Create.AnOwner">
@@ -17405,7 +17423,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
@@ -17809,7 +17827,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TTreeNodes.Assign.Source">
@@ -19231,7 +19249,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.Progress">Progress</link>
+          <link id="#lcl.graphics.Progress">Progress</link>
         </seealso>
       </element>
       <element name="TCustomTreeView.CustomDraw.Result">
@@ -19514,7 +19532,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Click"/>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
         </seealso>
       </element>
 
@@ -19525,7 +19543,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DblClick"/>
+          <link id="#lcl.controls.TControl.DblClick">TControl.DblClick</link>
         </seealso>
       </element>
 
@@ -19533,7 +19551,7 @@
         <short></short>
         <descr></descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.TripleClick"/>
+          <link id="#lcl.controls.TControl.TripleClick">TControl.TripleClick</link>
         </seealso>
       </element>
 
@@ -19541,7 +19559,7 @@
         <short></short>
         <descr></descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.QuadClick"/>
+          <link id="#lcl.controls.TControl.QuadClick">TControl.QuadClick</link>
         </seealso>
       </element>
 
@@ -20014,7 +20032,7 @@
         <short>Additionally highlight/underline tree-item when mouse is over it.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.ComCtrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
+          <link id="#lcl.comctrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
         </seealso>
       </element>
 
@@ -20317,8 +20335,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomTreeView.Create.AnOwner">
@@ -20331,8 +20349,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -20980,8 +20998,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls"/>
-          <link id="#LCL.ComCtrls.TCustomTreeView"/>
+          <link id="TCustomTreeView"/>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
         </seealso>
       </element>
 
@@ -21375,7 +21393,7 @@
           <var>Create</var> - constructor for THeaderSection: calls inherited <var>Create</var> then initializes state, visibility, alignment, size and Index
         </short>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
+          <link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
       </element>
       <element name="THeaderSection.Create.ACollection">
@@ -21387,7 +21405,7 @@
           <var>Assign</var> - if <var>Source</var> is of correct type, copies properties directly, otherwise calls inherited <var>Assign</var> which probably raises an exception
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="THeaderSection.Assign.Source">
@@ -21473,7 +21491,7 @@
         <descr/>
         <seealso>
           <link id="THeaderSections.Items"/>
-          <link id="#RTL.Classes.TCollection.GetItem"/>
+          <link id="#rtl.classes.TCollection.GetItem">TCollection.GetItem</link>
         </seealso>
       </element>
       <element name="THeaderSections.GetItem.Result">
@@ -21488,7 +21506,7 @@
         <descr/>
         <seealso>
           <link id="THeaderSections.Items"/>
-          <link id="#RTL.Classes.TCollection.GetItem"/>
+          <link id="#rtl.classes.TCollection.GetItem">TCollection.GetItem</link>
         </seealso>
       </element>
       <element name="THeaderSections.SetItem.Index">
@@ -21503,25 +21521,25 @@
           <var>GetOwner</var> returns a HeaderControl, overriding inherited value
         </short>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Owner"/>
+          <link id="#rtl.classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
         </seealso>
       </element>
       <element name="THeaderSections.GetOwner.Result">
         <short/>
       </element>
 
-      <element name="THeaderSections.Update" link="#rtl.Classes.TCollection.Update">
+      <element name="THeaderSections.Update" link="#rtl.classes.TCollection.Update">
         <short>Performs actions needed when a collection item has been changed</short>
         <descr>
           <p>
             <var>Update</var> is an overridden method used to notify observers of a change to the specified item in the collection.
           </p>
           <remark>
-            Please note: Update does <b>not</b> call the inherited method which notifies observers of the change.
+            Update does <b>not</b> call the inherited method which notifies observers of the change.
           </remark>
         </descr>
         <seealso>
-          <link id="#RTL.Classes.TCollection.Update"/>
+          <link id="#rtl.classes.TCollection.Update">TCollection.Update</link>
         </seealso>
       </element>
       <element name="THeaderSections.Update.Item">
@@ -21683,7 +21701,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="#lcl.extctrls.Multi-PageControls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -21879,7 +21897,7 @@
           <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding inherited values
         </short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <element name="TCustomHeaderControl.GetControlClassDefaultSize.Result">
@@ -21918,8 +21936,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomHeaderControl.Create.AOwner">
@@ -21932,8 +21950,8 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -22062,7 +22080,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Using Multi-Page Controls</link>
         </seealso>
       </element>
 
@@ -22208,7 +22226,7 @@
           <p>
             Register is a procedure used to register components in the <file>comctrls.pp</file> unit in the Lazarus IDE. Register adds the following components:
           </p>
-          <p><b>Common Controls Tab></b></p>
+          <p><b>Common Controls Tab</b></p>
           <ul>
             <li>TTrackbar</li>
             <li>TProgressBar</li>

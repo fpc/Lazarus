@@ -7,8 +7,12 @@
     ====================================================================
     -->
     <module name="UTF8Process">
-      <short>Defines a version of the FCL TProcess component that allows UTF-8-encoded arguments</short>
-      <descr/>
+      <short>Implements a version of the FCL TProcess component that allows UTF-8-encoded arguments</short>
+      <descr>
+        <p>
+          <file>utf8process.pp</file> implements the <var>TProcessUTF8</var> component which provides a TProcess descendant that allows UTF-8-encoded values in its properties. The TProcessUTF8 component is added to the <b>System</b> tab in the Lazarus IDE Component Palette.
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="Classes"/>
@@ -50,8 +54,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.process.TProcess"/>
-          <link id="#lcl.asyncprocess.TAsyncProcess"/>
+          <link id="#fcl.process.TProcess">TProcess</link>
+          <link id="#lcl.asyncprocess.TAsyncProcess">TAsyncProcess</link>
         </seealso>
       </element>
 
@@ -63,7 +67,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.process.TProcess.ProcessHandle"/>
+          <link id="#fcl.process.TProcess.ProcessHandle">TProcess.ProcessHandle</link>
         </seealso>
       </element>
       <element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
@@ -121,15 +125,14 @@
         </descr>
         <seealso>
           <link id="TProcessUTF8.ParseCmdLine"/>
-          <link id="#fcl.process.TProcess.Executable"/>
-          <link id="#fcl.process.TProcess.Parameters"/>
-          <link id="#fcl.process.TProcess.CommandLine"/>
-          <link id="#fcl.process.TProcess.Environment"/>
-          <link id="#fcl.process.TProcess.Execute"/>
-          <link id="#fcl.process.TProcess.Options"/>
-          <link id="#fcl.process.TProcess.input"/>
-          <link id="#fcl.process.TProcess.Options"/>
-          <link id="#fcl.process.TProcess.Options"/>
+          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
+          <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
+          <link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
+          <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
+          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+          <link id="#fcl.process.TProcess.Input">TProcess.Input</link>
+          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
         </seealso>
       </element>
 
@@ -152,9 +155,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TProcessUTF8.Executable"/>
-          <link id="TProcessUTF8.Parameters"/>
           <link id="#lazutils.lazfileutils.SplitCmdLineParams"/>
+          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
         </seealso>
       </element>
       <element name="TProcessUTF8.ParseCmdLine.CmdLine">
@@ -194,11 +197,11 @@
         </errors>
         <seealso>
           <link id="TProcessUTF8.Execute"/>
-          <link id="#fcl.process.TProcess.Execute"/>
-          <link id="#fcl.process.TProcess.CommandLine"/>
-          <link id="#fcl.process.TProcess.Executable"/>
-          <link id="#fcl.process.TProcess.Parameters"/>
-          <link id="#fcl.process.TProcess.Environment"/>
+          <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
+          <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
+          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
+          <link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
         </seealso>
       </element>
       <element name="RunCmdFromPath.ProgramFilename">

@@ -10,7 +10,24 @@
       <short>
         Contains types, constants, classes, and routines used to implement visual controls
       </short>
-      <descr/>
+      <descr>
+        <p>
+          <file>controls.pp</file> contains classes, types, constants, and routines used to implement visual controls used in the Lazarus Component Library (<b>LCL</b>). Most of the classes are base classes, or used in the implementation of controls defined in others units.
+        </p>
+        <p>
+          The following components are added to the <b>Common Controls</b> tab in the Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TImageList</li>
+        </ul>
+        <p>
+          The following components are registered but not displayed on the  Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TCustomControl</li>
+          <li>TGraphicControl</li>
+        </ul>
+      </descr>
 
       <!-- unresolved external references; interface uses clause -->
       <element name="Classes"/>
@@ -461,8 +478,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.UITypes.ModalResultStr"/>
-          <link id="#LCL.UITypes.TModalResult"/>
+          <link id="#lcl.uitypes.ModalResultStr">ModalResultStr</link>
+          <link id="#lcl.uitypes.TModalResult">TModalResult</link>
         </seealso>
       </element>
 
@@ -622,7 +639,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomFlowPanel.CMControlChange"/>
+          <link id="#lcl.extctrls.TCustomFlowPanel">TCustomFlowPanel</link>
         </seealso>
       </element>
       <element name="TCMControlChange.Msg">
@@ -1416,9 +1433,9 @@
           </p>
         </descr>
         <seealso>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
           <link id="TGraphicControl"/>
           <link id="TCustomControl"/>
-          <link id="#lcl.Graphics.TCanvas"/>
         </seealso>
       </element>
 
@@ -1607,7 +1624,7 @@
         <seealso>
           <link id="TImageListHelper.DrawForControl"/>
           <link id="TImageListHelper.ResolutionForControl"/>
-          <link id="#LCL.ImgList.TCustomImageList"/>
+          <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
           <link id="TControl"/>
         </seealso>
       </element>
@@ -1659,7 +1676,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ImgList.TCustomImageList.DrawForPPI"/>
+          <link id="#lcl.imglist.TCustomImageList.DrawForPPI">TCustomImageList.DrawForPPI</link>
         </seealso>
       </element>
       <element name="TImageListHelper.DrawForControl.ACanvas">
@@ -1699,7 +1716,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ImgList.TScaledImageListResolution"/>
+          <link id="#lcl.imglist.TScaledImageListResolution">TScaledImageListResolution</link>
           <link id="TControl"/>
           <link id="TControlCanvas"/>
         </seealso>
@@ -1770,7 +1787,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TComponent.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TDragImageListResolution.Create.TheOwner">
@@ -2566,7 +2583,7 @@
         <short>Remembers the dragged control</short>
         <descr/>
         <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TDragObject.Create.AControl">
@@ -2590,7 +2607,7 @@
       <element name="TDragObject.HideDragImage">
         <short>Asks the image list to hide the drag image</short>
         <seealso>
-          <link id="#lcl.Controls.TDragObject.ShowDragImage">ShowDragImage</link>
+          <link id="TDragObject.ShowDragImage"/>
         </seealso>
       </element>
 
@@ -2598,7 +2615,7 @@
         <short>Asks the image list to show the drag image</short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TDragObject.HideDragImage">HideDragImage</link>
+          <link id="TDragObject.HideDragImage"/>
         </seealso>
       </element>
 
@@ -3723,7 +3740,13 @@
         <seealso/>
       </element>
 
-      <element name="TSizeConstraints.AssignTo" link="#rtl.Classes.TPersistent.Assign"/>
+      <element name="TSizeConstraints.AssignTo">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
+        </seealso>
+      </element>
       <element name="TSizeConstraints.AssignTo.Dest">
         <short/>
       </element>
@@ -4540,18 +4563,18 @@
           <p>
             If you want to have the top of B the same as the top of C use
           </p>
-          <code>
+  <code>
   B.AnchorSide[akTop].Side:=asrTop;
   B.AnchorSide[akTop].Control:=C;
-          </code>
+  </code>
           <p>
             If you want to keep a distance of 10 pixels between B and C use
           </p>
-          <code>
+  <code>
   B.BorderSpacing.Right:=10;
   B.AnchorSide[akRight].Side:=asrLeft;
   B.AnchorSide[akRight].Control:=C;
-          </code>
+  </code>
           <p>
             Do not setup in both directions, because this will create a circle, and circles are not allowed.
           </p>
@@ -4568,17 +4591,17 @@
           <p>
             Centering A relative to B:
           </p>
-          <code>
+<code>
   A.AnchorSide[akTop].Side:=asrCenter;
   A.AnchorSide[akTop].Control:=B;
-          </code>
+</code>
           <p>
             Or use this equivalent:
           </p>
-          <code>
+<code>
   A.AnchorSide[akBottom].Side:=asrCenter;
   A.AnchorSide[akBottom].Control:=B;
-          </code>
+</code>
         </descr>
         <seealso/>
         <notes>
@@ -4808,7 +4831,7 @@
         <short>Sets the client's Caption, if the old values match</short>
         <descr/>
         <seealso>
-          <link id="#LCL.ActnList.TActionLink.SetCaption">TActionLink.SetCaption</link>
+          <link id="#lcl.actnlist.TActionLink.SetCaption">TActionLink.SetCaption</link>
         </seealso>
       </element>
       <element name="TControlActionLink.SetCaption.Value">
@@ -4891,7 +4914,7 @@
         <short>Compose the hint string, depending on HintShortCuts</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Forms.TApplication.HintShortCuts"/>
+          <link id="#lcl.forms.TApplication.HintShortCuts">TApplication.HintShortCuts</link>
         </seealso>
       </element>
       <element name="TControlActionLink.DoShowHint.Result">
@@ -5735,8 +5758,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealGetText"/>
+          <link id="TControl.RealGetText"/>
+          <link id="TControl.GetTextBuf"/>
         </seealso>
       </element>
       <element name="TControl.GetText.Result">
@@ -6022,8 +6045,8 @@
         </descr>
         <seealso>
           <link id="TControl.Text"/>
-          <link id="#lcl.Controls.TControl.RealSetText"/>
-          <link id="#lcl.Controls.TControl.SetTextBuf"/>
+          <link id="TControl.RealSetText"/>
+          <link id="TControl.SetTextBuf"/>
         </seealso>
       </element>
       <element name="TControl.SetText.Value">
@@ -6074,12 +6097,12 @@
             IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.
           </remark>
           <p>
-            During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size. That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.
+            During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size. That's why you should always call <link id="#lcl.controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.AutoSize"/>
-          <link id="#lcl.Controls.TControl.AdjustSize"/>
+          <link id="TControl.AutoSize"/>
+          <link id="TControl.AdjustSize"/>
         </seealso>
       </element>
 
@@ -6197,9 +6220,10 @@
       </element>
 
       <element name="TControl.ConstrainedResize">
-        <short>
-          Invokes the <link id="#lcl.Controls.TControl.OnConstrainedResize"/> handler, allowing to modify the suggested Constraints
-        </short>
+        <short>Invokes the OnConstrainedResize handler</short>
+        <seealso>
+          <link id="TControl.OnConstrainedResize"/>
+        </seealso>
       </element>
       <element name="TControl.ConstrainedResize.MinWidth">
         <short/>
@@ -6245,7 +6269,7 @@
 
       <element name="TControl.DoOnResize">
         <short>
-          Invokes the <link id="#lcl.Controls.TControl.OnResize">OnResize</link> notification handler
+          Invokes the <link id="#lcl.controls.TControl.OnResize">OnResize</link> notification handler
         </short>
       </element>
 
@@ -6461,7 +6485,8 @@
         </descr>
         <seealso>
           <link id="TControl.GetScrolledClientRect"/>
-          <link id="#lcl.Forms.TScrollingWinControl.GetClientScrollOffset"/>
+          <link id="#lcl.forms.TScrollingWinControl.GetClientScrollOffset">
+            TScrollingWinControl.GetClientScrollOffset</link>
         </seealso>
         <notes><note>!?</note></notes>
       </element>
@@ -7309,15 +7334,15 @@
       </element>
 
       <element name="TControl.DblClick">
-        <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>
-          handler</short>
+        <short>
+          Invokes the <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link> handler
+        </short>
       </element>
 
       <element name="TControl.TripleClick">
-        <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link>
-          handler</short>
+        <short>
+          Invokes the <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link> handler
+        </short>
       </element>
 
       <element name="TControl.QuadClick">
@@ -7527,7 +7552,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#RTL.Classes.TPersistent.Assign"/>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TControl.AssignTo.Dest">
@@ -7605,9 +7630,9 @@
           This method is called by <var>GetText</var>, when GetTextBuf is not overridden.
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="TControl.GetTextBuf"/>
+          <link id="TControl.RealSetText"/>
+          <link id="TControl.SetTextBuf"/>
         </seealso>
       </element>
       <element name="TControl.RealGetText.Result">
@@ -7620,9 +7645,9 @@
           This method is called by <var>SetText</var>, when SetTextBuf is not overridden.
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="TControl.SetTextBuf"/>
+          <link id="TControl.RealGetText"/>
+          <link id="TControl.GetTextBuf"/>
         </seealso>
       </element>
       <element name="TControl.RealSetText.Value">
@@ -7724,7 +7749,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Notification"/>
+          <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
         </seealso>
       </element>
       <element name="TControl.Notification.AComponent">
@@ -8375,8 +8400,8 @@
           <p>The handler can provide a special DragDock object, otherwise a default object is created.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TDragDockObject"/>
           <link id="TControl.OnStartDrag"/>
+          <link id="TDragDockObject"/>
         </seealso>
       </element>
 
@@ -8388,8 +8413,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TDragObject"/>
           <link id="TControl.OnStartDock"/>
+          <link id="TDragObject"/>
         </seealso>
       </element>
 
@@ -8737,7 +8762,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.AutoSize"/>
+          <link id="TControls.AutoSize"/>
         </seealso>
       </element>
 
@@ -8958,14 +8983,14 @@
         <short>Sets the bounds of the control initially, when it is created</short>
         <descr>Does nothing while the control is loaded.</descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
+          <link id="TControl.SetBounds"/>
         </seealso>
       </element>
       <element name="TControl.SetInitialBounds.aLeft">
-        <short>X coordinate of top left pixel</short>
+        <short>X coordinate for the top, left pixel</short>
       </element>
       <element name="TControl.SetInitialBounds.aTop">
-        <short>Y coordinate of top left pixel</short>
+        <short>Y coordinate for the top, left pixel</short>
       </element>
       <element name="TControl.SetInitialBounds.aWidth">
         <short>Width of control</short>
@@ -9331,8 +9356,8 @@
           <p>Detaches the control from Parent, removes graphics, frees memory and Operating System handles, pointers etc.</p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#lcl.lclclasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -9404,7 +9429,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.HasParent">TComponent.HasParent</link>
+          <link id="#rtl.classes.TComponent.HasParent">TComponent.HasParent</link>
         </seealso>
       </element>
       <element name="TControl.HasParent.Result">
@@ -9528,8 +9553,8 @@
       <element name="TControl.Hide">
         <short>Hides this control, by setting Visible to False</short>
         <seealso>
-          <link id="#lcl.Controls.TControl.Visible"/>
-          <link id="#lcl.Controls.TControl.Show"/>
+          <link id="TControl.Visible"/>
+          <link id="TControl.Show"/>
         </seealso>
       </element>
 
@@ -9635,7 +9660,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
+          <link id="TControl.RealGetText"/>
         </seealso>
       </element>
       <element name="TControl.GetTextBuf.Result">
@@ -9666,7 +9691,7 @@
           <p>Don't use or override it, unless really necessary.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="TControl.RealSetText"/>
         </seealso>
       </element>
       <element name="TControl.SetTextBuf.Buffer">
@@ -10075,7 +10100,7 @@
         </descr>
         <seealso>
           <link id="TControl.ActionLink"/>
-          <link id="#rtl.Classes.TBasicAction"/>
+          <link id="#rtl.classes.TBasicAction"/>
         </seealso>
       </element>
 
@@ -10087,7 +10112,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAlign">TAlign</link>
+          <link id="TAlign"/>
         </seealso>
       </element>
 
@@ -10097,7 +10122,7 @@
           <p>Determines which sides of the control are anchored to other controls.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAnchors"/>
+          <link id="TAnchors"/>
         </seealso>
       </element>
 
@@ -10141,7 +10166,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.Autosize">Using AutoSize</link>
+          <link id="#lcl.controls.Autosize">Using AutoSize</link>
         </seealso>
       </element>
 
@@ -10195,8 +10220,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealGetText"/>
-          <link id="#lcl.Controls.TControl.RealSetText"/>
+          <link id="TControl.RealGetText"/>
+          <link id="TControl.RealSetText"/>
         </seealso>
       </element>
 
@@ -10233,8 +10258,8 @@
           The origin is always (0,0). Bottom and Right reflect the ClientWidth and ClientHeight for the control.
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TRect"/>
           <link id="TControl.GetLogicalClientRect"/>
+          <link id="#rtl.classes.TRect">TRect</link>
         </seealso>
       </element>
 
@@ -10252,10 +10277,10 @@
         </descr>
         <seealso>
           <link id="TControl.ParentColor"/>
-          <link id="#lcl.Graphics.TColor"/>
           <link id="TControl.GetDefaultColor"/>
           <link id="TControl.GetColorResolvingParent"/>
           <link id="TControl.GetRGBColorResolvingParent"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
         </seealso>
       </element>
 
@@ -10263,7 +10288,7 @@
         <short>The minimum and maximum Width and Height for this control</short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TSizeConstraints"/>
+          <link id="TSizeConstraints"/>
         </seealso>
       </element>
 
@@ -10282,7 +10307,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TControlState"/>
+          <link id="TControlState"/>
         </seealso>
       </element>
 
@@ -10292,7 +10317,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TControlStyle"/>
+          <link id="TControlStyle"/>
         </seealso>
       </element>
 
@@ -10302,9 +10327,9 @@
       </element>
 
       <element name="TControl.Font">
-        <short>The <link id="#lcl.Graphics.TFont">font</link> to be used for text display in this control</short>
+        <short>The <link id="#lcl.graphics.TFont">font</link> to be used for text display in this control</short>
         <seealso>
-          <link id="#lcl.Graphics.TFont"/>
+          <link id="#lcl.graphics.TFont">TFont</link>
         </seealso>
       </element>
 
@@ -10331,7 +10356,7 @@
         <short>Event handler for a change of the Bounds of the control</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
 
@@ -10346,7 +10371,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
 
@@ -10371,9 +10396,8 @@
         </descr>
         <seealso>
           <link id="TControl.OnConstrainedResize"/>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
-        <notes><note>???</note></notes>
       </element>
 
       <element name="TControl.OnShowHint">
@@ -10381,8 +10405,8 @@
         <descr/>
         <seealso>
           <link id="TControl.Hint"/>
-          <link id="#lcl.Controls.THintInfo"/>
-          <link id="#lcl.Controls.TControlShowHintEvent"/>
+          <link id="THintInfo"/>
+          <link id="TControlShowHintEvent"/>
         </seealso>
         <notes><note>Tasks, Usage?</note></notes>
       </element>
@@ -10394,12 +10418,12 @@
           <p>Every TControl must have a Parent, else it is never shown.</p>
           <p>The Parent of a floating form is Nil.</p>
           <p>Set the parent last to reduce updates. For example: </p>
-          <code>
+<code>
   Button1 := TButton.Create(Self);
   Button1.Name := 'Button1';
   Button1.Caption := 'Click me'; // parent is not set, so it does not update the whole form
   Button1.Parent := Form1; // set parent as last, the LCL now applies all properties
-          </code>
+</code>
           <p>Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.</p>
         </descr>
       </element>
@@ -10410,14 +10434,14 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Menus.TPopupMenu"/>
           <link id="TControl.OnContextPopup"/>
           <link id="TContextPopupEvent"/>
+          <link id="#lcl.menus.TPopupMenu">TPopupMenu</link>
         </seealso>
       </element>
 
       <element name="TControl.ShowHint">
-        <short>Enables the <link id="#lcl.Controls.TControl.Hint">Hint</link> display</short>
+        <short>Enables the <link id="#lcl.controls.TControl.Hint">Hint</link> display</short>
         <descr>
           <p>
             When True, the Hint text is shown when the mouse hovers over the control.
@@ -10427,9 +10451,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TControl.Hint">Hint</link>
-          <link id="#lcl.Controls.TControl.OnShowHint">OnShowHint</link>
-          <link id="TControl.ParentShowHint">ParentShowHint</link>
+          <link id="TControl.Hint"/>
+          <link id="TControl.OnShowHint"/>
+          <link id="TControl.ParentShowHint"/>
         </seealso>
       </element>
 
@@ -10445,9 +10469,9 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.IsVisible"/>
-          <link id="#lcl.Controls.TControl.Show"/>
-          <link id="#lcl.Controls.TControl.Hide"/>
+          <link id="TControl.IsVisible"/>
+          <link id="TControl.Show"/>
+          <link id="TControl.Hide"/>
         </seealso>
       </element>
 
@@ -10473,9 +10497,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWndMethod">TWndMethod</link>
-          <link id="#lcl.LMessages.TLMessage">TLMessage</link>
-          <link id="TControl.Perform">Perform</link>
+          <link id="TWndMethod"/>
+          <link id="#lcl.lmessages.TLMessage">TLMessage</link>
+          <link id="TControl.Perform"/>
         </seealso>
       </element>
 
@@ -10988,12 +11012,10 @@
         <short>Set during DoAllAutosize</short>
       </element>
       <element name="TWinControlFlag.wcfAligningControls">
-        <short>Set during <link id="TWinControl.AlignControls"/>
-        </short>
+        <short>Set during <link id="TWinControl.AlignControls"/></short>
       </element>
       <element name="TWinControlFlag.wcfEraseBackground">
         <short/>
-        <notes><note>?</note></notes>
       </element>
       <element name="TWinControlFlag.wcfCreatingHandle">
         <short>Set while constructing the handle of this control</short>
@@ -11883,7 +11905,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoSetBounds"/>
+          <link id="TControl.DoSetBounds"/>
         </seealso>
       </element>
       <element name="TWinControl.DoSetBounds.ALeft">
@@ -11929,7 +11951,7 @@
         <short>Called by DoAllAutoSize after all bounds are computed</short>
         <descr/>
         <seealso>
-          <link id="#lcl.forms.TCustomForm.AllAutoSized"/>
+          <link id="#lcl.forms.TCustomForm.AllAutoSized">TCustomForm.AllAutoSized</link>
         </seealso>
       </element>
 
@@ -12046,7 +12068,7 @@
         <short>Scales (resizes) all child controls</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.ChangeScale"/>
+          <link id="TControl.ChangeScale"/>
         </seealso>
       </element>
       <element name="TWinControl.ScaleControls.Multiplier">
@@ -13160,7 +13182,7 @@
         </descr>
         <seealso>
           <link id="TWinControl.CreateWnd"/>
-          <link id="#lcl.lcltype.TCreateParams"/>
+          <link id="#lcl.lcltype.TCreateParams">TCreateParams</link>
         </seealso>
       </element>
       <element name="TWinControl.CreateParams.Params">
@@ -13230,7 +13252,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Loaded">TControl.Loaded</link>
+          <link id="TControl.Loaded"/>
         </seealso>
       </element>
 
@@ -13387,7 +13409,7 @@
           </dl>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
+          <link id="TControl.WndProc"/>
         </seealso>
       </element>
       <element name="TWinControl.WndProc.Message">
@@ -13486,7 +13508,7 @@
           The Brush used to paint the background of the control
         </short>
         <seealso>
-          <link id="#lcl.graphics.TBrush"/>
+          <link id="#lcl.graphics.TBrush">TBrush</link>
         </seealso>
       </element>
 
@@ -13512,7 +13534,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TControlChildSizing"/>
+          <link id="TControlChildSizing"/>
         </seealso>
       </element>
 
@@ -14235,10 +14257,10 @@
             Checks if the control can get focus when parent form is visible, i.e. if all its parents except the form are visible and enabled.
           </p>
           <p>A possible usage:</p>
-          <code>
+<code>
 if FormFoo.EditFoo.CanFocus then
   FormFoo.ActiveControl := FormFoo.EditFoo;
-          </code>
+</code>
           <remark>
             CanFocus returns True even if the parent form isn't actually visible, and a subsequent SetFocus call could throw an exception. Use <var>CanSetFocus</var> in this case.
           </remark>
@@ -14260,10 +14282,10 @@ if FormFoo.EditFoo.CanFocus then
             Checks if the control can receive focus, i.e. if all its parents are visible and enabled.
           </p>
           <p>A possible usage:</p>
-          <code>
+<code>
 if MyControl.CanSetFocus then
   MyControl.SetFocus;
-          </code>
+</code>
           <p>
             <var>CanSetFocus</var> should be preferred over <var>CanFocus</var> if used in CanSetFocus/SetFocus combination because it checks also if the parent form can receive focus and thus prevents the "cannot focus an invisible window" LCL exception.
           </p>
@@ -14396,7 +14418,7 @@ if MyControl.CanSetFocus then
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.DefaultHandler"/>
+          <link id="#rtl.system.TObject.DefaultHandler">TObject.DefaultHandler</link>
         </seealso>
       </element>
       <element name="TWinControl.DefaultHandler.AMessage">
@@ -14697,10 +14719,10 @@ if MyControl.CanSetFocus then
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TCustomControl"/>
+          <link id="TCustomControl"/>
           <link id="TGraphicControl.Paint"/>
           <link id="TGraphicControl.OnPaint"/>
-          <link id="#lcl.Graphics.TCanvas"/>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
 
@@ -14785,8 +14807,8 @@ if MyControl.CanSetFocus then
           <link id="TControl.ClientRect"/>
           <link id="TControl.ClientWidth"/>
           <link id="TControl.ClientHeight"/>
-          <link id="#lcl.Graphics.TCanvas"/>
           <link id="TControl.BoundsRect"/>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
 
@@ -14876,7 +14898,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Graphics.TCanvas"/>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
 
@@ -14924,7 +14946,7 @@ if MyControl.CanSetFocus then
 
       <element name="TDockZone">
         <short>
-          Represents a node in a <link id="#lcl.Controls.TDockTree">TDockTree</link>
+          Represents a node in a <link id="#lcl.controls.TDockTree">TDockTree</link>
       </short>
         <descr>
           <p>
@@ -15315,16 +15337,13 @@ if MyControl.CanSetFocus then
           <remark>
             The TLazDockTree implementation never was finished, due to problems with the anchor "docking" mechanism. Use the EasyDockManager (examples/dockmanager) instead.
           </remark>
-
+          <p>
+            This is an abstract class. A real implementation is e.g. in ldocktree.pas.
+          </p>
+          <p>
+            Docking means here: Combining several windows to one. A window can here be a TCustomForm or a floating control (undocked) or a TDockForm. A window can be docked to another to the left, right, top, bottom or "into". The docking source window will be resized, to fit to the docking target window.
+          </p>
           <pre>
-    This is an abstract class. A real implementation is e.g. in ldocktree.pas.
-
-    Docking means here: Combining several windows to one. A window can here be
-    a TCustomForm or a floating control (undocked) or a TDockForm.
-    A window can be docked to another to the left, right, top, bottom or "into".
-    The docking source window will be resized, to fit to the docking target
-    window.
-
     Example1: Docking "A" (source window) left to "B" (target window)
 
        +---+    +----+
@@ -15398,7 +15417,7 @@ if MyControl.CanSetFocus then
         </pre>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TDockManager"/>
+          <link id="TDockManager"/>
         </seealso>
       </element>
 
@@ -15789,9 +15808,9 @@ if MyControl.CanSetFocus then
           <p>
             <var>AnchorAlign</var> is an array constant that contains elements with <var>TAnchors</var> set values. Values in AnchorAlign are indexed by <var>TAlign</var> enumeration values. This allows the TAlign value to retrieve the set of Anchors used for the specified align option. For example:
           </p>
-          <code>
+<code>
 AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
-          </code>
+</code>
         </descr>
         <seealso/>
       </element>
@@ -16088,7 +16107,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
           Calls CursorToIdent to find correct entry in look-up table.
         </descr>
         <seealso>
-          <link id="#lcl.Controls.CursorToIdent"/>
+          <link id="CursorToIdent"/>
         </seealso>
       </element>
       <element name="CursorToString.Result">
@@ -16425,7 +16444,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.registercomponents"/>
+          <link id="#rtl.classes.registercomponents">RegisterComponents</link>
         </seealso>
       </element>
 
@@ -16438,7 +16457,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             <var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space
           </p>
           <p>
-            Many controls call  <link id="#lcl.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing.
+            Many controls call  <link id="#lcl.controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing.
           </p>
           <p>
             IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.
@@ -16447,7 +16466,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.
           </p>
           <p>
-            That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.
+            That's why you should always call <link id="#lcl.controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.
           </p>
           <p>
             <var>TControl.AdjustSize</var> calls <var>DoAutoSize</var> in a smart fashion.
@@ -16456,7 +16475,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             During loading and handle creation the calls are delayed.
           </p>
           <p>
-            This method is essentially the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden in descendent components,  it is not useful to perform all tests, which can result in too much overhead. To reduce the overhead, the LCL  calls <var>AdjustSize</var> instead.
+            This method is essentially the same as <link id="#lcl.controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden in descendent components,  it is not useful to perform all tests, which can result in too much overhead. To reduce the overhead, the LCL  calls <var>AdjustSize</var> instead.
           </p>
           <p>
             When setting <var>AutoSize</var> to <b>True</b>, the LCL auto-sizes the width and height for the control. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start with a simple scenario:
@@ -16473,7 +16492,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             </li>
           </ul>
           <p>
-            The new size is calculated by the protected method <link id="#lcl.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>. This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not auto-size the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.
+            The new size is calculated by the protected method <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>. This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not auto-size the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.
           </p>
           <p>
             Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.
@@ -16503,10 +16522,10 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
           <p>
             Each time you change Left and Top, the LCL starts the movement  instantly. If you want to change both Left and Top, use the following instead:
           </p>
-          <code>
+<code>
 with Button1 do
     SetBounds(NewLeft,NewTop,Width,Height);
-          </code>
+</code>
           <p><b>Width and Height</b></p>
           <p>
             The Size in pixels must not be negative; most widgetsets do not allow Width and/or Height to be Zero (0). Some controls (on some platforms )define a larger minimum constraint. Instead of sizing a control to Width=0 and/or Height=0, set Visible to <b>False</b>. During resizing and moving, Width and Height are not always in sync with the size of the Handle object.
@@ -16514,9 +16533,9 @@ with Button1 do
           <p><b>BoundsRect</b></p>
           <p>Same as Bounds(Left,Top,Width,Height).</p>
           <p>Common newbie mistake:</p>
-          <code>
+<code>
 BoundsRect.Left:=3; // WRONG: common newbie mistake
-          </code>
+</code>
           <p>
             This has no effect, because reading BoundsRect is a function. It creates a temporary TRect on the stack.
           </p>
@@ -16703,17 +16722,18 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
           <p>
             Anchor docking allows one to anchor every side of a control to an arbitrary side of another control, i.e. the left side of an Edit control can be anchored to the right side of its associated Label.
           </p>
-          <code>Example1
-    If you want to have the top of B the same as the top of C:
-    --------
-       +-----+  +-----+
-       |  B  |  |  C  |
-       |     |  +-----+
-       +-----+
-      use
-        B.AnchorSide[akTop].Control:=C;
-        B.AnchorSide[akTop].Side:=asrTop;
-          </code>
+  <code>Example1
+If you want to have the top of B the same as the top of C:
+
+   +-----+  +-----+
+   |  B  |  |  C  |
+   |     |  +-----+
+   +-----+
+
+  use
+    B.AnchorSide[akTop].Control:=C;
+    B.AnchorSide[akTop].Side:=asrTop;
+  </code>
           <p>
             When you want to have a gap between both controls, set e.g. B.Borderspacing.Right to the desired amount. Setting C.Borderspacing.Left will have the same effect, and both can be used together; the resulting gap then reflects the maximum value of both properties.
           </p>
@@ -16723,21 +16743,22 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
           <p>
             Anchor docking also allows one to center a control relative to another control.
           </p>
-          <code>Example2
-    For centering A relative to B:
-    --------
-            +-------+
-      +---+ |       |
-      | A | |   B   |
-      +---+ |       |
-            +-------+
-      use
-        A.AnchorSide[akTop].Side:=asrCenter;
-        A.AnchorSide[akTop].Control:=B;
-      Or use this, it's equivalent:
-        A.AnchorSide[akBottom].Side:=asrCenter;
-        A.AnchorSide[akBottom].Control:=B;
-          </code>
+<code>Example2
+For centering A relative to B:
+
+        +-------+
++---+ |       |
+| A | |   B   |
++---+ |       |
+      +-------+
+
+use
+  A.AnchorSide[akTop].Side:=asrCenter;
+  A.AnchorSide[akTop].Control:=B;
+Or use this, it's equivalent:
+  A.AnchorSide[akBottom].Side:=asrCenter;
+  A.AnchorSide[akBottom].Control:=B;
+</code>
           <p>
             TControlChildSizing and TControlChildrenLayout offers additional means for aligning and separating controls.
           </p>

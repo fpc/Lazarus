@@ -8,7 +8,47 @@
     -->
     <module name="ExtCtrls">
       <short>Contains extra controls commonly used in Lazarus forms</short>
-      <descr/>
+      <descr>
+        <p>
+          <file>extctrls.pp</file> contains extra controls commonly used in Lazarus Component Library (<b>LCL</b>) applications. It adds components to the following tabs in the Lazarus IDE Component Palette:
+        </p>
+        <p>
+          <b>Standard</b> Tab
+        </p>
+        <ul>
+          <li>TRadioGroup</li>
+          <li>TCheckGroup</li>
+          <li>TPanel</li>
+        </ul>
+        <p>
+          <b>Additional</b> Tab
+        </p>
+        <ul>
+          <li>TImage</li>
+          <li>TShape</li>
+          <li>TBevel</li>
+          <li>TPaintBox</li>
+          <li>TNotebook</li>
+          <li>TLabeledEdit</li>
+          <li>TSplitter</li>
+          <li>TTrayIcon</li>
+          <li>TControlBar</li>
+          <li>TFlowPanel</li>
+        </ul>
+        <p>
+          <b>System</b> Tab
+        </p>
+        <ul>
+          <li>TTimer</li>
+          <li>TIdleTimer</li>
+        </ul>
+        <p>
+          Register but not displayed
+        </p>
+        <ul>
+          <li>TPage</li>
+        </ul>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="SysUtils"/>
@@ -2975,7 +3015,7 @@
         <short>Object instance for the event notification</short>
       </element>
 
-      <element name="TCustomRadioGroup.ItemEnter" link="#LCL.Controls.TWinControl.DoEnter">
+      <element name="TCustomRadioGroup.ItemEnter">
         <short/>
         <descr/>
         <seealso/>
@@ -2984,7 +3024,7 @@
         <short/>
       </element>
 
-      <element name="TCustomRadioGroup.ItemExit" link="#LCL.Controls.TWinControl.DoExit">
+      <element name="TCustomRadioGroup.ItemExit">
         <short/>
         <descr/>
         <seealso/>
@@ -3395,12 +3435,10 @@
             <var>OnItemEnter</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when a radio button in the group receives focus. An application must implement and assign an object procedure to the property to respond to the event notification.
           </p>
           <p>
-            OnItemEnter is signalled from the <var>ItemEnter</var> method (when assigned).
+            OnItemEnter is signalled  (when assigned) from the <var>ItemEnter</var> method.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomRadioGroup.ItemEnter"/>
-          <link id="TCustomRadioGroup.UpdateItems"/>
           <link id="#lcl.stdctrls.TRadioButton.OnEnter"/>
         </seealso>
       </element>
@@ -3409,15 +3447,13 @@
         <short>Event handler signalled when a radio button in the group loses focus</short>
         <descr>
           <p>
-            OnItemExit is a TNotifyEvent property which implements an event handler signalled when a radio button in the group loses focus. An application must implement and assign an object procedure to the property to respond to the event notification.
+            <var>OnItemExit</var> is a <var>TNotifyEvent</var> property which implements an event handler signalled when a radio button in the group loses focus. An application must implement and assign an object procedure to the property to respond to the event notification.
           </p>
           <p>
             OnItemExit is signalled from the <var>ItemExit</var> method (when assigned).
           </p>
         </descr>
         <seealso>
-          <link id="TCustomRadioGroup.ItemExit"/>
-          <link id="TCustomRadioGroup.UpdateItems"/>
           <link id="#lcl.stdctrls.TRadioButton.OnExit"/>
         </seealso>
       </element>
@@ -3426,7 +3462,7 @@
         <short>Event called when the selected item changes</short>
         <descr>
           <p>
-            This event was introduced in Lazarus 0.9.31, and is called when the selected item is changed. It is triggered when this is done by the user via, for example the mouse or keyboard, and is also triggered when the selected item is changed programmatically.
+            This event was introduced in Lazarus 0.9.31, and is called when the selected item is changed. It is triggered when changed using the mouse or the keyboard, and is triggered when the selected item is changed programmatically.
           </p>
         </descr>
         <seealso>
@@ -4915,9 +4951,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Classes.TAlignment"/>
           <link id="#LCL.Controls.TControl.Invalidate"/>
           <link id="#LCL.StdCtrls.TCustomEdit.Alignment"/>
+          <link id="#rtl.classes.TAlignment"/>
         </seealso>
       </element>
 
@@ -5276,7 +5312,7 @@
 
       <element name="TFlowPanelControl.Index" link="#LCL.Classes.TCollectionItem.Index">
         <short>
-          Ordinal position for flowed control in the TFlowPanelControlList collection
+          Ordinal position for the flowed control in the TFlowPanelControlList collection
         </short>
         <descr>
           <p>
@@ -5569,22 +5605,23 @@
         <short>Gets the ordinal position in ControlList for the specified control</short>
         <descr>
           <p>
-            <var>GetControlIndex</var> is a convenience method used to get the ordinal position in <var>ControlList</var> for the specified flowed control.
+            <var>GetControlIndex</var> is a convenience method used to get the ordinal position in <var>ControlList</var> for the specified <var>TFlowPanelControl</var>. Calls <var>TFlowPanelControlList.IndexOf</var> to get the return value, which can be -1 if <var>AControl</var> is not found in ControlList.
          </p>
          <p>
-           Use <var>SetControlList</var> to store an <var>Index</var> value for the specified flowed control.
+           Use <var>SetControlIndex</var> to set the ordinal position in ControlList for the specified flowed control.
          </p>
         </descr>
         <seealso>
+          <link id="TCustomFlowPanel.ControlList"/>
           <link id="TFlowPanelControlList.IndexOf"/>
           <link id="TFlowPanelControl.Index"/>
         </seealso>
       </element>
       <element name="TCustomFlowPanel.GetControlIndex.Result">
-        <short></short>
+        <short>Position in the control list for the specified controlm, or -1 when not found</short>
       </element>
       <element name="TCustomFlowPanel.GetControlIndex.AControl">
-        <short></short>
+        <short>Flowed control to locate in ControlList</short>
       </element>
 
       <element name="TCustomFlowPanel.SetControlIndex">
@@ -5593,22 +5630,22 @@
         <seealso></seealso>
       </element>
       <element name="TCustomFlowPanel.SetControlIndex.AControl">
-        <short>Control to locate in the list of controls</short>
+        <short>Control to locate and update in the list of controls</short>
       </element>
       <element name="TCustomFlowPanel.SetControlIndex.Index">
         <short>Value assigned to the Index property for the specified control</short>
       </element>
 
       <element name="TCustomFlowPanel.AutoWrap">
-        <short>Determine if controls in TCustomFlowPanel are wrapped.</short>
+        <short>Determines if controls in TCustomFlowPanel are wrapped.</short>
       </element>
 
       <element name="TCustomFlowPanel.ControlList">
-        <short>Use ControlList to set extra options of flow panel controls.</short>
+        <short>Collection used to stored TFlowPanelControl instances on the panel</short>
       </element>
 
       <element name="TCustomFlowPanel.FlowStyle">
-        <short>Use FlowStyle to determine the flow direction of the flow panel layout.</short>
+        <short>Contains the flow direction used to position controls on the panel</short>
       </element>
 
       <element name="TCustomFlowPanel.FlowLayout">

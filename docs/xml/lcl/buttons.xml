@@ -3,8 +3,16 @@
   <package name="lcl">
 
     <module name="Buttons">
-      <short>Contains types and classes used to implement specialized button classes</short>
-      <descr></descr>
+      <short>Contains types and classes used to implement specialized buttons</short>
+      <descr>
+        <p>
+          <file>buttons.pp</file> contains classes, types, and routines used to implements specialized button controls. It registers the following components on the <b>Additional</b> tab in the Lazarus IDE component palette:
+        </p>
+        <ul>
+          <li>TBitBtn</li>
+          <li>TSpeedButton</li>
+        </ul>
+      </descr>
 
       <!-- unresolved type references -->
       <element name="Types"/>
@@ -39,10 +47,10 @@
         <seealso>
           <link id="TBitBtn.Layout"/>
           <link id="TSpeedButton.Layout"/>
-          <link id="#LCL.Grids.TCustomGrid"/>
-          <link id="#LCL.Grids.TCustomStringGrid"/>
-          <link id="#LCL.Grids.TGridColumn"/>
-          <link id="#LCL.Grids.TGridColumnTitle.ImageLayout"/>
+          <link id="#lcl.grids.TCustomGrid">TCustomGrid</link>
+          <link id="#lcl.grids.TCustomStringGrid">TCustomStringGrid</link>
+          <link id="#lcl.grids.TGridColumn">TGridColumn</link>
+          <link id="#lcl.grids.TGridColumnTitle.ImageLayout">TGridColumnTitle.ImageLayout</link>
         </seealso>
       </element>
       <element name="TButtonLayout.blGlyphLeft">
@@ -135,8 +143,8 @@
         </descr>
         <seealso>
           <link id="TCustomSpeedButton.ButtonGlyph"/>
-          <link id="#LCL.Menus.TMenu"/>
-          <link id="#LCL.Menus.TMenuItem"/>
+          <link id="#lcl.menus.TMenu">TMenu</link>
+          <link id="#lcl.menus.TMenuItem">TMenuItem</link>
         </seealso>
       </element>
 
@@ -444,7 +452,7 @@
             <var>SetTransparentMode</var> is a procedure used to set the value in the <var>TransparentMode</var> property to the specified <var>TGlyphTransparencyMode</var> value. <var>SetTransparentMode</var> ensures that the bitmap in the <var>Glyph</var> property is updated to use the same transparency mode.
           </p>
           <remark>
-            Please note: <var>SetTransparentMode</var> is <b>not</b> the write access specifier for <var>TransparentMode</var>, which is a read-only property.
+            <var>SetTransparentMode</var> is <b>not</b> the write access specifier for <var>TransparentMode</var>, which is a read-only property.
           </remark>
         </descr>
         <seealso>
@@ -515,7 +523,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Destroy"/>
+          <link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
         </seealso>
       </element>
 
@@ -570,7 +578,7 @@
 
       <element name="TButtonGlyph.Draw">
         <short>
-          Draws the image in the specified rectangle, within the client rectangle at specified offset, with the specified state and transparency
+          Draws the image in the specified rectangle, within the client rectangle at a specified offset, with the specified state and transparency
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -1294,7 +1302,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
           <link id="#LCL.StdCtrls.TCustomButton.Create">TCustomButton.Create</link>
         </seealso>
       </element>
@@ -1469,8 +1477,8 @@
         <short>Indicates the policy for showing or hiding the glyph image of this button</short>
         <descr></descr>
         <seealso>
-          <link id="#LCL.Menus.TGlyphShowMode"/>
-          <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
+          <link id="#lcl.menus.TGlyphShowMode">TGlyphShowMode</link>
+          <link id="#lcl.forms.TApplication.ShowMenuGlyphs">TApplication.ShowMenuGlyphs</link>
         </seealso>
       </element>
 
@@ -1749,7 +1757,7 @@
           <link id="TSpeedButtonActionLink.IsImageIndexLinked"/>
           <link id="TSpeedButton.ImageIndex"/>
           <link id="TSpeedButton.Images"/>
-          <link id="#lcl.actnlist.TActionLink.SetImageIndex"/>
+          <link id="#lcl.actnlist.TActionLink.SetImageIndex">TActionLink.SetImageIndex</link>
         </seealso>
       </element>
       <element name="TSpeedButtonActionLink.SetImageIndex.Value">
@@ -1778,7 +1786,7 @@
         </descr>
         <seealso>
           <link id="TSpeedButtonActionLink.SetImageIndex"/>
-          <link id="TSpeedButtonActionLink.Action"/>
+          <link id="#rtl.classes.TBasicActionLink.Action">TBasicActionLink.Action</link>
         </seealso>
       </element>
       <element name="TSpeedButtonActionLink.IsImageIndexLinked.Result">
@@ -2414,7 +2422,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TGraphicControl.Create"/>
+          <link id="#lcl.controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomSpeedButton.Create.AOwner">
@@ -2429,7 +2437,7 @@
           <var>Destroy</var> is the destructor for <var>TCustomSpeedButton</var>. It frees resources allocated to the Glyph property, and calls the inherited <var>Destroy</var> method.
         </descr>
         <seealso>
-          <link id="#lcl.controls.TGraphicControl.Destroy"/>
+          <link id="#lcl.controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
         </seealso>
       </element>
 
@@ -2820,12 +2828,10 @@
       </element>
 
       <element name="LoadGlyphFromLazarusResource">
-        <short>
-          <var>LoadGlyphFromLazarusResource</var> loads a glyph image with the specified name from a Lazarus Resource file (<file>.lrs</file>)
-        </short>
+        <short>Loads the named glyph image from a Lazarus Resource file</short>
         <descr>
           <p>
-            Used in the implementation of the LoadGlyphFromLazarusResource method in both TCustomBitBtn and TCustomSpeedButton.
+            <var>LoadGlyphFromLazarusResource</var> loads a glyph image with the specified name from a Lazarus Resource file (<file>.lrs</file>). Used in the implementation of the LoadGlyphFromLazarusResource method in both <var>TCustomBitBtn</var> and <var>TCustomSpeedButton</var>.
           </p>
         </descr>
         <seealso>
@@ -2896,7 +2902,7 @@
           </p>
         </descr>
         <seealso>
-          <link id=" LoadGlyphFromStock"/>
+          <link id="LoadGlyphFromStock"/>
         </seealso>
       </element>
       <element name="GetButtonIcon.Result">
@@ -2979,10 +2985,10 @@
       </element>
 
       <element name="Register">
-        <short>
-          Registers TBitBtn and TSpeedButton classes on the Additional tab in the Lazarus IDE
-        </short>
-        <descr></descr>
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          Registers the <var>TBitBtn</var> and <var>TSpeedButton</var> components on the <b>Additional</b> tab in the Lazarus IDE component palette.
+        </descr>
       </element>
 
     </module>

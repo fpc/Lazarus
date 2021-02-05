@@ -7,10 +7,18 @@
     ====================================================================
     -->
     <module name="ExtDlgs">
-      <short>
-        Contains useful extra dialogs such as Calendar, Calculator and Open/Save Picture
-      </short>
-      <descr/>
+      <short>Contains extended dialogs used for Calendar, Calculator and Picture Open/Save tasks</short>
+      <descr>
+        <p>
+          <file>extdlgs.pas</file> contains extended dialogs available in Lazarus Component Library (<b>LCL</b>) applications. It adds the following components to <b>Dialogs</b> tab in the Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TOpenPictureDialog</li>
+          <li>TSavePictureDialog</li>
+          <li>TCalendarDialog</li>
+          <li>TCalculatorDialog</li>
+        </ul>
+      </descr>
 
       <!-- unresolved type references -->
       <element name="Types"/>
@@ -54,9 +62,9 @@
 
       <element name="TPreviewFileControl.FPreviewFileDialog"/>
 
-      <element name="TPreviewFileControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPreviewFileControl.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
 
       <element name="TPreviewFileControl.SetPreviewFileDialog">
         <short>
@@ -71,21 +79,22 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TPreviewFileControl.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
+      <element name="TPreviewFileControl.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
         <descr>
           <p>
             Overridden to ensure proper handling of the WS_CHILD flag in Style in the Parent control.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.LCLType.TCreateParams"/>
+          <link id="#lcl.controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
+          <link id="#lcl.lcltype.TCreateParams">TCreateParams</link>
         </seealso>
       </element>
       <element name="TPreviewFileControl.CreateParams.Params">
-        <short/>
+        <short>Creation parameters updated in the method</short>
       </element>
 
-      <element name="TPreviewFileControl.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TPreviewFileControl.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -94,7 +103,8 @@
         </descr>
         <seealso>
           <link id="TPreviewFileControl.GetControlClassDefaultSize"/>
-          <link id="#lcl.Controls.TControl.SetInitialBounds"/>
+          <link id="#lcl.controls.TControl.SetInitialBounds">TControl.SetInitialBounds</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TPreviewFileControl.Create.TheOwner">
@@ -113,7 +123,7 @@
         </seealso>
       </element>
 
-      <element name="TPreviewFileDialog" link="#lcl.Dialogs.TOpenDialog">
+      <element name="TPreviewFileDialog" link="#lcl.dialogs.TOpenDialog">
         <short>
           <var>TPreviewFileDialog</var> - a dialog that allows the contents of a file to be inspected before opening the file
         </short>
@@ -124,7 +134,7 @@
         </descr>
         <seealso>
           <link id="TPreviewFileControl"/>
-          <link id="#lcl.Dialogs.TOpenDialog"/>
+          <link id="#lcl.dialogs.TOpenDialog">TOpenDialog</link>
         </seealso>
       </element>
 
@@ -145,7 +155,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPreviewFileDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TPreviewFileDialog.CreatePreviewControl">
         <short>
@@ -181,7 +191,7 @@
         </seealso>
       </element>
 
-      <element name="TPreviewFileDialog.DoExecute" link="#LCL.Dialogs.TOpenDialog.DoExecute">
+      <element name="TPreviewFileDialog.DoExecute" link="#lcl.dialogs.TOpenDialog.DoExecute">
         <short>Creates the PreviewFileControl and displays the dialog</short>
         <descr>
           <p>
@@ -197,12 +207,12 @@
         <seealso>
           <link id="TPreviewFileDialog.CreatePreviewControl"/>
           <link id="TPreviewFileDialog.PreviewFileControl"/>
-          <link id="#lcl.Dialogs.TCommonDialog.Execute"/>
-          <link id="#lcl.Dialogs.TCommonDialog.UserChoice"/>
+          <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
+          <link id="#lcl.dialogs.TCommonDialog.UserChoice">TCommonDialog.UserChoice</link>
         </seealso>
       </element>
 
-      <element name="TPreviewFileDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TPreviewFileDialog.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -210,8 +220,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Dialogs.TCommonDialog.FCompStyle"/>
-          <link id="#lcl.LCLType.csPreviewFileDialog"/>
+          <link id="#lcl.lcltype.csPreviewFileDialog">csPreviewFileDialog</link>
         </seealso>
       </element>
       <element name="TPreviewFileDialog.Create.TheOwner">
@@ -230,7 +239,7 @@
         <seealso>
           <link id="TPreviewFileControl"/>
           <link id="TPreviewFileDialog.CreatePreviewControl"/>
-          <link id="#LCL.Dialogs.TCommonDialog.Execute"/>
+          <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
         </seealso>
       </element>
 
@@ -255,7 +264,7 @@
       <element name="TOpenPictureDialog.FPictureGroupBox"/>
       <element name="TOpenPictureDialog.FPreviewFilename"/>
 
-      <element name="TOpenPictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TOpenPictureDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TOpenPictureDialog.IsFilterStored">
         <short>
@@ -355,11 +364,11 @@
           <link id="TOpenPictureDialog.ImageCtrl"/>
           <link id="TOpenPictureDialog.PictureGroupBox"/>
           <link id="TOpenPictureDialog.ClearPreview"/>
-          <link id="#LCL.Dialogs.TFileDialog.FileName"/>
+          <link id="#lcl.dialogs.TFileDialog.FileName">TFileDialog.FileName</link>
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TOpenPictureDialog.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -377,14 +386,14 @@
           <link id="TOpenPictureDialog.ImageCtrl"/>
           <link id="TOpenPictureDialog.DefaultFilter"/>
           <link id="TOpenPictureDialog.Filter"/>
-          <link id="#lcl.Graphics.GraphicFilter"/>
+          <link id="#lcl.graphics.GraphicFilter">GraphicFilter</link>
         </seealso>
       </element>
       <element name="TOpenPictureDialog.Create.TheOwner">
         <short>Owner for the class instance</short>
       </element>
 
-      <element name="TOpenPictureDialog.DoClose" link="#LCL.Dialogs.TCommonDialog.DoClose">
+      <element name="TOpenPictureDialog.DoClose" link="#lcl.dialogs.TCommonDialog.DoClose">
         <short>
           Performs actions needed when the dialog is closed
         </short>
@@ -400,12 +409,11 @@
           <link id="TOpenPictureDialog.ClearPreview"/>
           <link id="TOpenPictureDialog.PictureGroupBox"/>
           <link id="TOpenPictureDialog.ImageCtrl"/>
-          <link id="#lcl.Dialogs.TCommonDialog.DoClose"/>
-          <link id="#lcl.Dialogs.TCommonDialog.OnClose"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnClose">TCommonDialog.OnClose</link>
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.DoSelectionChange" link="#LCL.Dialogs.TOpenDialog.DoSelectionChange">
+      <element name="TOpenPictureDialog.DoSelectionChange" link="#lcl.dialogs.TOpenDialog.DoSelectionChange">
         <short>
           Performs actions needed when the selected file name for the dialog is changed
         </short>
@@ -421,13 +429,12 @@
           <link id="TOpenPictureDialog.PreviewFileName"/>
           <link id="TOpenPictureDialog.ImageCtrl"/>
           <link id="TOpenPictureDialog.PictureGroupBox"/>
-          <link id="#LCL.Dialogs.TOpenDialog.FileName"/>
-          <link id="#LCL.Dialogs.TOpenDialog.DoSelectionChange"/>
-          <link id="#LCL.Dialogs.TOpenDialog.OnSelectionChange"/>
+          <link id="#lcl.dialogs.TOpenDialog.FileName">TOpenDialog.FileName</link>
+          <link id="#lcl.dialogs.TOpenDialog.OnSelectionChange">TOpenDialog.OnSelectionChange</link>
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.DoShow" link="#lcl.Dialogs.TCommonDialog.DoShow">
+      <element name="TOpenPictureDialog.DoShow" link="#lcl.dialogs.TCommonDialog.DoShow">
         <short>
           Performs actions needed to display the preview dialog in its initial state
         </short>
@@ -441,8 +448,7 @@
         </descr>
         <seealso>
           <link id="TOpenPictureDialog.ClearPreview"/>
-          <link id="#lcl.Dialogs.TCommonDialog.DoShow"/>
-          <link id="#lcl.Dialogs.TCommonDialog.OnShow"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnShow">TCommonDialog.OnShow</link>
         </seealso>
       </element>
 
@@ -463,9 +469,9 @@
         </descr>
         <seealso>
           <link id="TOpenPictureDialog.Filter"/>
-          <link id="#lcl.Dialogs.TFileDialog.DefaultExt"/>
-          <link id="#lcl.Graphics.TGraphic"/>
-          <link id="#lcl.ImgList.TCustomImageList"/>
+          <link id="#lcl.dialogs.TFileDialog.DefaultExt">TFileDialog.DefaultExt</link>
+          <link id="#lcl.graphics.TGraphic">TGraphic</link>
+          <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
         </seealso>
       </element>
       <element name="TOpenPictureDialog.GetFilterExt.Result">
@@ -486,11 +492,11 @@
         <seealso>
           <link id="TOpenPictureDialog.Create"/>
           <link id="TOpenPictureDialog.Filter"/>
-          <link id="#lcl.Graphics.GraphicFilter"/>
+          <link id="#lcl.graphics.GraphicFilter">GraphicFilter</link>
         </seealso>
       </element>
 
-      <element name="TOpenPictureDialog.Filter" link="#LCL.Dialogs.TFileDialog.Filter">
+      <element name="TOpenPictureDialog.Filter" link="#lcl.dialogs.TFileDialog.Filter">
         <short>
           Contains a delimited list of descriptions and extensions for file available in the dialog
         </short>
@@ -509,7 +515,7 @@
           <link id="TOpenPictureDialog.Create"/>
           <link id="TOpenPictureDialog.DefaultFilter"/>
           <link id="TOpenPictureDialog.GetFilterExt"/>
-          <link id="#lcl.Dialogs.TFileDialog.FilterIndex"/>
+          <link id="#lcl.dialogs.TFileDialog.FilterIndex">TFileDialog.FilterIndex</link>
         </seealso>
       </element>
 
@@ -528,27 +534,27 @@
         </seealso>
       </element>
 
-      <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TSavePictureDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TSavePictureDialog.DefaultTitle">
         <short>Gets the default value for the Title property</short>
         <descr>
           <p>
-            <var>DefaultTitle</var> is an overridden <var>String</var> function in <var>TSavePictureDialog</var>. It returns the value in <var>rsfdFileSaveAs</var> as the <var>Title</var> used for the dialog. DefaultTitle is used in the constructor in <var>TCommonDialog</var> to set the value for the <var>Title</var> property.
+            <var>DefaultTitle</var> is an overridden <var>String</var> function in <var>TSavePictureDialog</var>. It returns the value in <var>rsfdFileSaveAs</var> as the <var>Title</var> used for the dialog. DefaultTitle is used in the constructor in <var>TCommonDialog</var> to set the value for its <var>Title</var> property.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Dialogs.TCommonDialog.Create"/>
-          <link id="#lcl.Dialogs.TCommonDialog.Title"/>
+          <link id="#lcl.dialogs.TOpenDialog.DefaultTitle">TOpenDialog.DefaultTitle</link>
+          <link id="#lcl.dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
+          <link id="#lcl.dialogs.TCommonDialog.Title">TCommonDialog.Title</link>
           <link id="#lcl.lclstrconsts.rsfdFileSaveAs"/>
-          <link id="TOpenPictureDialog.DefaultTitle"/>
         </seealso>
       </element>
       <element name="TSavePictureDialog.DefaultTitle.Result">
         <short>Default value for the Title property</short>
       </element>
 
-      <element name="TSavePictureDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TSavePictureDialog.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -561,7 +567,7 @@
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TExtCommonDialog" link="#lcl.Dialogs.TCommonDialog">
+      <element name="TExtCommonDialog" link="#lcl.dialogs.TCommonDialog">
         <short>The common base class for custom drawn dialogs (Calculator and Calendar)</short>
         <descr>
           <p>
@@ -573,9 +579,9 @@
           <link id="TExtCommonDialog.DialogPosition"/>
           <link id="TExtCommonDialog.Left"/>
           <link id="TExtCommonDialog.Top"/>
-          <link id="#lcl.Dialogs.TCommonDialog"/>
           <link id="TCalculatorDialog"/>
           <link id="TCalendarDialog"/>
+          <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
         </seealso>
       </element>
 
@@ -595,7 +601,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TExtCommonDialog.GetHeight" link="#lcl.Dialogs.TCommonDialog.GetHeight">
+      <element name="TExtCommonDialog.GetHeight" link="#lcl.dialogs.TCommonDialog.GetHeight">
         <short>Gets the value for the Height property</short>
         <descr/>
         <seealso>
@@ -617,7 +623,7 @@
         <short>Value for the property</short>
       </element>
 
-      <element name="TExtCommonDialog.GetWidth" link="#lcl.Dialogs.TCommonDialog.GetWidth">
+      <element name="TExtCommonDialog.GetWidth" link="#lcl.dialogs.TCommonDialog.GetWidth">
         <short>Gets the value for the Width property</short>
         <descr/>
         <seealso>
@@ -671,21 +677,21 @@
         </seealso>
       </element>
 
-      <element name="TExtCommonDialog.Create" link="#lcl.Dialogs.TCommonDialog.Create">
+      <element name="TExtCommonDialog.Create" link="#lcl.dialogs.TCommonDialog.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method. Create sets the default value for the <var>DialogPosition</var> property to <var>poMainFormCenter</var>.
         </descr>
         <seealso>
           <link id="TExtCommonDialog.DialogPosition"/>
-          <link id="#lcl.Forms.TPosition"/>
+          <link id="#lcl.forms.TPosition">TPosition</link>
         </seealso>
       </element>
       <element name="TExtCommonDialog.Create.AOwner">
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TExtCommonDialog.Destroy" link="#lcl.Dialogs.TCommonDialog.Destroy">
+      <element name="TExtCommonDialog.Destroy" link="#lcl.dialogs.TCommonDialog.Destroy">
         <short>Destructor for the class instance</short>
         <descr/>
         <seealso/>
@@ -732,7 +738,7 @@
             <var>DialogPosition</var> is a <var>TPosition</var> property which specifies the position where the dialog is displayed. The default value for the property is <var>poMainFormCenter</var>, and indicates that the dialog is centered both horizontally and vertically on the main form for the application.
           </p>
           <p>
-            See <link id="#lcl.Forms.TPosition"/> for more information about the values in the TPosition enumeration and their meanings.
+            See <link id="#lcl.forms.TPosition">TPosition</link> for more information about the values in the enumeration and their meanings.
           </p>
           <p>
             The value in DialogPosition is used in descendent classes when the dialog is Executed.
@@ -741,7 +747,7 @@
         <seealso>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalendarDialog.Execute"/>
-          <link id="#lcl.Forms.TPosition"/>
+          <link id="#lcl.forms.TPosition">TPosition</link>
         </seealso>
       </element>
 
@@ -772,7 +778,7 @@
         </descr>
         <seealso>
           <link id="TExtCommonDialog"/>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
         </seealso>
       </element>
 
@@ -820,7 +826,7 @@
         <short>New value for the property</short>
       </element>
 
-      <element name="TCalculatorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalculatorDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCalculatorDialog.OnDialogClose">
         <short>Implements the event handler signalled when the dialog is closed</short>
@@ -834,8 +840,8 @@
         </descr>
         <seealso>
           <link id="TCalculatorDialog.OnDialogClose"/>
-          <link id="#lcl.dialogs.TCommonDialog.OnClose"/>
-          <link id="#lcl.dialogs.TCommonDialog.Execute"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnClose">TCommonDialog.OnClose</link>
+          <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogClose.Sender">
@@ -858,7 +864,7 @@
         <seealso>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalculatorDialog.OnDialogShow"/>
-          <link id="#lcl.dialogs.TCommonDialog.OnShow"/>
+          <link id="#lcl.dialogs.TCommonDialog.OnShow">TCommonDialog.OnShow</link>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogShow.Sender">
@@ -878,8 +884,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.dialogs.TCommonDialog.Execute"/>
-          <link id="#lcl.dialogs.TCommonDialog.OnCanClose"/>
+          <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
+          <link id="#lcl.dialogs.TCommonDialog.OnCanClose">TCommonDialog.OnCanClose</link>
         </seealso>
       </element>
       <element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
@@ -925,7 +931,7 @@
         <short>Key examined in the event handler</short>
       </element>
 
-      <element name="TCalculatorDialog.DefaultTitle" link="#lcl.Dialogs.TCommonDialog.DefaultTitle">
+      <element name="TCalculatorDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle">
         <short>
           Gets the default value used in the Title property for the calculator dialog
         </short>
@@ -938,9 +944,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Dialogs.TCommonDialog.Title"/>
-          <link id="#lcl.Dialogs.TCommonDialog.Create"/>
           <link id="TCalculatorDialog.Create"/>
+          <link id="#lcl.dialogs.TCommonDialog.Title">TCommonDialog.Title</link>
+          <link id="#lcl.dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
         </seealso>
       </element>
       <element name="TCalculatorDialog.DefaultTitle.Result">
@@ -955,7 +961,7 @@
         <seealso/>
       </element>
 
-      <element name="TCalculatorDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCalculatorDialog.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
         </descr>
@@ -966,13 +972,13 @@
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TCalculatorDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TCalculatorDialog.Destroy" link="#rtl.classes.TComponent.Destroy">
         <short>Destructor for the class instance</short>
         <descr/>
         <seealso/>
       </element>
 
-      <element name="TCalculatorDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
+      <element name="TCalculatorDialog.Execute">
         <short>Creates, configures, and displays the form for the calculator dialog</short>
         <descr>
           <p>
@@ -1007,8 +1013,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.CreateCalculatorForm"/>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="TCalculatorDialog.DialogPosition"/>
           <link id="TCalculatorDialog.Left"/>
           <link id="TCalculatorDialog.Top"/>
@@ -1016,6 +1020,9 @@
           <link id="TCalculatorDialog.Memory"/>
           <link id="TCalculatorDialog.Precision"/>
           <link id="TCalculatorDialog.Value"/>
+          <link id="#lcl.calcform.CreateCalculatorForm">CreateCalculatorForm</link>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
+          <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
         </seealso>
       </element>
       <element name="TCalculatorDialog.Execute.Result">
@@ -1032,8 +1039,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="TCalculatorDialog.Value"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
         </seealso>
       </element>
 
@@ -1047,8 +1054,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="TCalculatorDialog.Execute"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
         </seealso>
       </element>
 
@@ -1062,8 +1069,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
           <link id="TCalculatorDialog.Execute"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
         </seealso>
       </element>
 
@@ -1086,9 +1093,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.TCalculatorLayout"/>
-          <link id="#lcl.CalcForm.CreateCalculatorForm"/>
           <link id="TCalculatorDialog.Execute"/>
+          <link id="#lcl.calcform.TCalculatorLayout">TCalculatorLayout</link>
+          <link id="#lcl.calcform.CreateCalculatorForm">CreateCalculatorForm</link>
         </seealso>
       </element>
 
@@ -1107,13 +1114,13 @@
         <seealso>
           <link id="TCalculatorDialog.Value"/>
           <link id="TCalculatorDialog.CalcDisplay"/>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
-          <link id="#lcl.CalcForm.CalcDefPrecision"/>
-          <link id="#rtl.SysUtils.FloatToStrF"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
+          <link id="#lcl.calcform.CalcDefPrecision">CalcDefPrecision</link>
+          <link id="#rtl.sysutils.FloatToStrF">FloatToStrF</link>
         </seealso>
       </element>
 
-      <element name="TCalculatorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title"/>
+      <element name="TCalculatorDialog.Title" link="#lcl.dialogs.TCommonDialog.Title"/>
 
       <element name="TCalculatorDialog.Value">
         <short>
@@ -1142,13 +1149,13 @@
             <var>OnCalcKey</var> is a <var>TKeyPressEvent</var> property used as the event handler for key press events in the calculator dialog form. OnCalcKey is signalled from the <var>CalcKey</var> method which is assigned as the <var>OnCalcKey</var> event handler in <var>DlgForm</var>.
           </p>
           <p>
-            Applications must implement an object procedure using the signature in <var><link id="#lcl.Controls.TKeyPressEvent"/></var> to respond to the event notification.
+            Applications must implement an object procedure using the signature in <var>TKeyPressEvent</var> to respond to the event notification.
           </p>
         </descr>
         <seealso>
           <link id="TCalculatorDialog.CalcKey"/>
-          <link id="#lcl.CalcForm.TCalculatorForm.OnCalcKey"/>
-          <link id="#lcl.Controls.TKeyPressEvent"/>
+          <link id="#lcl.calcform.TCalculatorForm.OnCalcKey">TCalculatorForm.OnCalcKey</link>
+          <link id="#lcl.controls.TKeyPressEvent">TKeyPressEvent</link>
         </seealso>
       </element>
 
@@ -1161,14 +1168,14 @@
             <var>OnChange</var> is a <var>TNotifyEvent</var> property used as the event handler signalled when the value for the calculator dialog is changed. OnChange is signalled from the <var>Change</var> method when the calculator dialog returns a modified  value for the <var>Value</var> property.
           </p>
           <p>
-            Applications must implement an object procedure using the signature in <var><link id="#rtl.Classes.TNotifyEvent"/></var> to respond to the event notification.
+            Applications must implement an object procedure using the signature in <var>TNotifyEvent</var> to respond to the event notification.
           </p>
         </descr>
         <seealso>
           <link id="TCalculatorDialog.Change"/>
           <link id="TCalculatorDialog.Execute"/>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
 
@@ -1180,10 +1187,10 @@
           <var>OnDisplayChange</var> is a <var>TNotifyEvent</var> property used as the event handler signalled when the display value for the calculator dialog is changed. OnDisplayChange is signalled from the <var>DisplayChanged</var> method which is assigned as the <var>OnDisplayChange</var> event handler in <var>DlgForm</var>.
         </descr>
         <seealso>
-          <link id="#lcl.CalcForm.TCalculatorForm.OnDisplayChange"/>
           <link id="TCalculatorDialog.Execute"/>
           <link id="TCalculatorDialog.DisplayChange"/>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#lcl.calcform.TCalculatorForm.OnDisplayChange">TCalculatorForm.OnDisplayChange</link>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
 
@@ -1272,7 +1279,7 @@
           <link id="TExtCommonDialog.DialogPosition"/>
           <link id="TExtCommonDialog.DlgForm"/>
           <link id="TCalendarDialog.Execute"/>
-          <link id="#lcl.Calendar.TCalendar"/>
+          <link id="#lcl.calendar.TCalendar">TCalendar</link>
         </seealso>
       </element>
 
@@ -1370,7 +1377,7 @@
         <short></short>
       </element>
 
-      <element name="TCalendarDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalendarDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCalendarDialog.GetNewDate">
         <short>
@@ -1405,7 +1412,7 @@
         <short></short>
       </element>
 
-      <element name="TCalendarDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCalendarDialog.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr/>
         <seealso/>
@@ -1414,7 +1421,7 @@
         <short>Owner of the class instance</short>
       </element>
 
-      <element name="TCalendarDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
+      <element name="TCalendarDialog.Execute" link="#lcl.dialogs.TCommonDialog.Execute">
         <short>
           Configures and dIsplays the form for the calendar dialog, and captures the results
         </short>

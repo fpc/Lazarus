@@ -497,10 +497,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.Printing"/>
-          <link id="#lcl.graphics.TCanvas.OnChanging"/>
           <link id="EPrinter"/>
+          <link id="#lcl.graphics.TCanvas.OnChanging">TCanvas.OnChanging</link>
         </seealso>
       </element>
 
@@ -676,7 +675,6 @@
           <link id="TPrinterCanvas.PaperHeight"/>
           <link id="TPrinterCanvas.PageHeight"/>
           <link id="TPrinterCanvas.YDPI"/>
-          <link id="TPrinter.PaperRect"/>
           <link id="TPrinter.YDPI"/>
           <link id="TPaperRect.PhysicalRect"/>
           <link id="TPaperRect.WorkRect"/>
@@ -705,7 +703,6 @@
           <link id="TPrinterCanvas.PaperWidth"/>
           <link id="TPrinterCanvas.PageWidth"/>
           <link id="TPrinterCanvas.XDPI"/>
-          <link id="TPrinter.PaperRect"/>
           <link id="TPrinter.XDPI"/>
           <link id="TPaperRect.PhysicalRect"/>
           <link id="TPaperRect.WorkRect"/>
@@ -734,7 +731,6 @@
           <link id="TPrinterCanvas.PaperHeight"/>
           <link id="TPrinterCanvas.PageHeight"/>
           <link id="TPrinterCanvas.YDPI"/>
-          <link id="TPrinter.PaperRect"/>
           <link id="TPrinter.YDPI"/>
           <link id="TPaperRect.PhysicalRect"/>
           <link id="TPaperRect.WorkRect"/>
@@ -763,7 +759,6 @@
           <link id="TPrinterCanvas.PaperWidth"/>
           <link id="TPrinterCanvas.PageWidth"/>
           <link id="TPrinterCanvas.XDPI"/>
-          <link id="TPrinter.PaperRect"/>
           <link id="TPrinter.XDPI"/>
           <link id="TPaperRect.PhysicalRect"/>
           <link id="TPaperRect.WorkRect"/>
@@ -902,7 +897,6 @@
         <seealso>
           <link id="TPaperSize.PaperRect"/>
           <link id="TPaperSize.PaperRectOf"/>
-          <link id="TPaperSize.GetDefaultPaperRect"/>
         </seealso>
       </element>
 
@@ -1189,7 +1183,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.system.TObject.Destroy"/>
+          <link id="#rtl.objects.TObject.Destroy">TObject.Destroy</link>
         </seealso>
       </element>
 
@@ -1251,23 +1245,24 @@
 
       <element name="TPrinterFlags">
         <short>Represents status flag values used for printer devices</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TPrinterFlags</var> is a set type which contains values representing printer status flags, and includes the following values and meanings:
+          </p>
+          <dl>
+            <dt>pfPrinting</dt>
+            <dd>Device is printing</dd>
+            <dt>pfAborted</dt>
+            <dd>Abort process</dd>
+            <dt>pfDestroying</dt>
+            <dd>Printer object is being destroyed</dd>
+            <dt>pfPrintersValid</dt>
+            <dd>Printer list is valid</dd>
+            <dt>pfRawMode</dt>
+            <dd>Printer is in raw mode</dd>
+          </dl>
+        </descr>
         <seealso/>
-      </element>
-      <element name="TPrinterFlags.pfPrinting">
-        <short>Device is printing</short>
-      </element>
-      <element name="TPrinterFlags.pfAborted">
-        <short>Abort process</short>
-      </element>
-      <element name="TPrinterFlags.pfDestroying">
-        <short>Printer object is being destroyed</short>
-      </element>
-      <element name="TPrinterFlags.pfPrintersValid">
-        <short>Printer list is valid</short>
-      </element>
-      <element name="TPrinterFlags.pfRawMode">
-        <short>Printer is in raw mode</short>
       </element>
 
       <element name="TPrinter">
@@ -1546,11 +1541,10 @@
         </descr>
         <seealso>
           <link id="TPrinter.Printing"/>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.Canvas"/>
           <link id="TPrinter.RawMode"/>
-          <link id="TPrinterCanvas.Refresh"/>
+          <link id="TPrinter.Refresh"/>
           <link id="TPrinterCanvas.BeginDoc"/>
         </seealso>
       </element>
@@ -1683,7 +1677,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Printers"/>
-          <link id="TPrinter.GetPrinters"/>
         </seealso>
       </element>
       <element name="TPrinter.DoEnumPrinters.Lst">
@@ -1717,8 +1710,8 @@
         </descr>
         <seealso>
           <link id="TPrinter.PaperSize"/>
-          <link id="TPrinter.CheckSupportedPapers"/>
           <link id="TPaperSize"/>
+          <link id="TPaperSize.CheckSupportedPapers"/>
         </seealso>
       </element>
       <element name="TPrinter.DoEnumPapers.Lst">
@@ -1760,8 +1753,7 @@
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.DoEnumPrinters"/>
           <link id="TPrinter.SelectCurrentPrinterOrDefault"/>
-          <link id="TPrinterFlags.pfPrintersValid"/>
-          <link id="TPrinterFlags.pfDestroying"/>
+          <link id="TPrinterFlags"/>
         </seealso>
       </element>
 
@@ -1805,7 +1797,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Copies"/>
-          <link id="TPrinter.GetCopies"/>
         </seealso>
       </element>
       <element name="TPrinter.DoGetCopies.Result">
@@ -1824,7 +1815,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Copies"/>
-          <link id="TPrinter.SetCopies"/>
         </seealso>
       </element>
       <element name="TPrinter.DoSetCopies.aValue">
@@ -1863,7 +1853,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Orientation"/>
-          <link id="TPrinter.SetOrientation"/>
           <link id="TPrinterOrientation"/>
         </seealso>
       </element>
@@ -1908,7 +1897,6 @@
         <seealso>
           <link id="TPrinter.PaperSize"/>
           <link id="TPaperSize.PaperName"/>
-          <link id="TPaperSize.GetPaperName"/>
         </seealso>
       </element>
       <element name="TPrinter.DoGetPaperName.Result">
@@ -1994,7 +1982,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="TPrinter.SupportedPapers"/>
+          <link id="TPaperSize.SupportedPapers"/>
         </seealso>
       </element>
       <element name="TPrinter.DoGetPaperRect.Result">
@@ -2157,7 +2145,6 @@
         <seealso>
           <link id="TPrinter.RawMode"/>
           <link id="TPrinter.Canvas"/>
-          <link id="TPrinter.GetCanvas"/>
           <link id="EPrinter"/>
         </seealso>
       </element>
@@ -2182,7 +2169,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.RawMode"/>
-          <link id="TPrinter.SetRawMode"/>
           <link id="TPrinter.Printing"/>
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.Canvas"/>
@@ -2304,13 +2290,12 @@
             </p>
         </descr>
         <seealso>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.Printing"/>
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.DoAbort"/>
           <link id="TPrinter.BeginDoc"/>
           <link id="TPrinter.EndDoc"/>
-          <link id="TPrinterFlags.pfAborted"/>
+          <link id="TPrinterFlags"/>
         </seealso>
       </element>
 
@@ -2338,7 +2323,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.RawMode"/>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.Printing"/>
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.Canvas"/>
@@ -2376,7 +2360,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Printing"/>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.PrinterFlags"/>
           <link id="TPrinter.RawMode"/>
           <link id="TPrinter.Canvas"/>
@@ -2384,8 +2367,7 @@
           <link id="TPrinter.Aborted"/>
           <link id="TPrinter.Abort"/>
           <link id="TPrinter.BeginDoc"/>
-          <link id="TPrinterFlags.pfPrinting"/>
-          <link id="TPrinterFlags.pfAborted"/>
+          <link id="TPrinterFlags"/>
         </seealso>
       </element>
 
@@ -2413,7 +2395,6 @@
           </ul>
         </descr>
         <seealso>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.PageNumber"/>
           <link id="TPrinter.Canvas"/>
           <link id="TPrinter.RawMode"/>
@@ -2574,7 +2555,6 @@
         </errors>
         <seealso>
           <link id="TPrinter.BeginDoc"/>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.DoResetFontsList"/>
           <link id="TPrinter.Fonts"/>
           <link id="TPrinter.Printing"/>
@@ -2784,7 +2764,6 @@
           <link id="TPaperRect.WorkRect"/>
           <link id="TPrinterCanvas.Printer"/>
           <link id="TPrinterCanvas.PageHeight"/>
-          <link id="TPrinterCanvas.GetPageHeight"/>
         </seealso>
       </element>
 
@@ -2811,7 +2790,6 @@
           <link id="TPaperRect.WorkRect"/>
           <link id="TPrinterCanvas.Printer"/>
           <link id="TPrinterCanvas.PageWidth"/>
-          <link id="TPrinterCanvas.GetPageWidth"/>
         </seealso>
       </element>
 
@@ -2974,7 +2952,7 @@
           <link id="TPrinter.XDPI"/>
           <link id="TPrinterCanvas.YDPI"/>
           <link id="TPrinterCanvas.Printer"/>
-          <link id="TPrinterCanvas.Font"/>
+          <link id="#lcl.graphics.TCanvas.Font">TCanvas.Font</link>
         </seealso>
       </element>
 
@@ -3027,7 +3005,6 @@
         </descr>
         <seealso>
           <link id="TPrinter.Printing"/>
-          <link id="TPrinter.CheckPrinting"/>
           <link id="TPrinter.DoGetBinName"/>
           <link id="TPrinter.DoSetBinName"/>
           <link id="TPrinter.SupportedBins"/>

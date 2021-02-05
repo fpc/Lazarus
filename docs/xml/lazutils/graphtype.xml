@@ -813,27 +813,28 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <short>Init for an unmasked 24 bit RGB image (LSB Blue).</short>
         <descr>
           <p>Init_BPP24_B8G8R8_BIO_TTB - initiator for specified format</p>
-          <pre>{ pf24bit:
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=24 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
-} </pre>
+          <pre>
+{ pf24bit:
+  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=24 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+}</pre>
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP24_B8G8R8_M1_BIO_TTB">
         <short>Init for a masked 24 bit RGB image (LSB Blue)</short>
         <descr>
           <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specified format</p>
-          <pre>{ pf24bit:
-
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=24 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- Masked
+          <pre>
+{ pf24bit:
+  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=24 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+  Masked
 }</pre>
         </descr>
       </element>
@@ -842,16 +843,16 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8_BIO_TTB</var> - initiator for specified format</p>
-          <pre>{ pf32bit:
-
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=32 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- No alpha
- No mask
-} </pre>
+          <pre>
+{ pf32bit:
+  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=32 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+  No alpha
+  No mask
+}</pre>
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8_M1_BIO_TTB">
@@ -859,17 +860,16 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8_M1_BIO_TTB</var> - initiator for specified format</p>
-          <pre>{ pf32bit:
-
- Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=32 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- no alpha
- with mask
-}
-</pre>
+          <pre>
+{ pf32bit:
+  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=32 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+  no alpha
+  with mask
+}</pre>
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_BIO_TTB">
@@ -877,17 +877,16 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_BIO_TTB</var> - initiator for specified format</p>
-          <pre>{ pf32bit:
-
- Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=32 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- alpha
- no mask
-}
-</pre>
+          <pre>
+{ pf32bit:
+  Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=32 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+  alpha
+  no mask
+}</pre>
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB">
@@ -895,17 +894,16 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_M1_BIO_TTB</var> - initiator for specified format</p>
-          <pre>{ pf32bit:
-
- Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
- BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
- LineOrder=riloTopToBottom
- BitsPerPixel=32 LineEnd=rileDWordBoundary
- RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
- alpha
- masked
-}
-</pre>
+          <pre>
+{ pf32bit:
+  Format=ricfRGBA HasPalette=false Depth=32 PaletteColorCount=0
+  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+  LineOrder=riloTopToBottom
+  BitsPerPixel=32 LineEnd=rileDWordBoundary
+  RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+  alpha
+  masked
+}</pre>
         </descr>
       </element>
       <element name="TRawImageDescription.GetDescriptionFromMask">

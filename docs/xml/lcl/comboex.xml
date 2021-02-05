@@ -93,7 +93,7 @@
         <seealso>
           <link id="TCustomComboBoxEx.Style"/>
           <link id="TComboBoxEx.Style"/>
-          <link id="#lcl.StdCtrls.TCustomComboBox.Style"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Style">TCustomComboBox.Style</link>
           <link id="TCustomComboBoxEx.DrawItem"/>
         </seealso>
       </element>
@@ -210,7 +210,7 @@
         <short>Alias to the TSortType in <file>ComCtrls.pp</file></short>
         <descr/>
         <seealso>
-          <link id="#lcl.ComCtrls.TSortType"/>
+          <link id="#lcl.ComCtrls.TSortType">TSortType</link>
         </seealso>
       </element>
 
@@ -358,7 +358,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.DisplayName"/>
+          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
         </seealso>
       </element>
 
@@ -470,11 +470,11 @@
         <seealso>
           <link id="TComboExItems.Notify"/>
           <link id="TListControlItems.Items"/>
-          <link id="#rtl.Classes.TCollectionItem.Collection"/>
-          <link id="#rtl.Classes.TCollection.Owner"/>
-          <link id="#rtl.Classes.TCollection.Count"/>
-          <link id="#rtl.Classes.TCollection.Delete"/>
-          <link id="#rtl.Classes.TComponent.ComponentState"/>
+          <link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
+          <link id="#rtl.classes.TCollection.Owner">TCollection.Owner</link>
+          <link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
+          <link id="#rtl.classes.TCollection.Delete">TCollection.Delete</link>
+          <link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
         </seealso>
       </element>
 
@@ -526,7 +526,7 @@
         </descr>
         <seealso>
           <link id="TComboExItems"/>
-          <link id="#rtl.Classes.TOwnedCollection"/>
+          <link id="#rtl.classes.TOwnedCollection">TOwnedCollection</link>
         </seealso>
       </element>
 
@@ -607,7 +607,7 @@
           <link id="TListControlItems.CaseSensitive"/>
           <link id="TListControlItems.Sort"/>
           <link id="TListControlItems.SortType"/>
-          <link id="#rtl.SysUtils.CompareStr"/>
+          <link id="#rtl.sysutils.CompareStr">CompareStr</link>
         </seealso>
       </element>
       <element name="TListControlItems.CompareItems.Result">
@@ -650,11 +650,11 @@
         <short/>
       </element>
 
-      <element name="TListControlItems.Update" link="#rtl.Classes.TCollection.Update">
+      <element name="TListControlItems.Update" link="#rtl.classes.TCollection.Update">
         <short/>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TCollection.Update"/>
+          <link id="#rtl.classes.TCollection.Update">TCollection.Update</link>
         </seealso>
       </element>
       <element name="TListControlItems.Update.AItem">
@@ -670,7 +670,7 @@
         </descr>
         <seealso>
           <link id="TListControlItem"/>
-          <link id="#rtl.Classes.TCollection.Add"/>
+          <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
         </seealso>
       </element>
       <element name="TListControlItems.Add.Result">
@@ -703,7 +703,7 @@
         <seealso/>
       </element>
 
-      <element name="TListControlItems.Items" link="#rtl.Classes.TCollection.Items">
+      <element name="TListControlItems.Items" link="#rtl.classes.TCollection.Items">
         <short>Provides indexed access to the list of items maintained in the collection</short>
         <descr>
           <p>
@@ -719,10 +719,10 @@
         <seealso>
           <link id="TListControlItem"/>
           <link id="TListControlItems.Count"/>
-          <link id="#rtl.Classes.TCollection.Add"/>
-          <link id="#rtl.Classes.TCollection.Insert"/>
-          <link id="#rtl.Classes.TCollection.Clear"/>
-          <link id="#rtl.Classes.TCollection.Delete"/>
+          <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
+          <link id="#rtl.classes.TCollection.Insert">TCollection.Insert</link>
+          <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
+          <link id="#rtl.classes.TCollection.Delete">TCollection.Delete</link>
         </seealso>
       </element>
       <element name="TListControlItems.Items.AIndex">
@@ -909,7 +909,7 @@
         <short>Pointer to the arbitrary data associated with the item</short>
       </element>
 
-      <element name="TComboExItems.Insert" link="#rtl.Classes.TCollection.Insert">
+      <element name="TComboExItems.Insert" link="#rtl.classes.TCollection.Insert">
         <short>Inserts a collection item at the specified position in the collection</short>
         <descr>
           <p>
@@ -920,7 +920,7 @@
           <link id="TComboExItem"/>
           <link id="TComboExItems.Add"/>
           <link id="TComboExItems.AddItem"/>
-          <link id="#rtl.Classes.TCollection.Insert"/>
+          <link id="#rtl.classes.TCollection.Insert">TCollection.Insert</link>
         </seealso>
       </element>
       <element name="TComboExItems.Insert.Result">
@@ -942,7 +942,7 @@
         </descr>
         <seealso>
           <link id="TListControlItems.Items"/>
-          <link id="#rtl.Classes.TCollection.GetEnumerator"/>
+          <link id="#rtl.classes.TCollection.GetEnumerator">TCollection.GetEnumerator</link>
         </seealso>
       </element>
       <element name="TComboExItems.ComboItems.AIndex">
@@ -1261,8 +1261,8 @@
         <seealso>
           <link id="TComboExItems"/>
           <link id="TComboExItems.AddItem"/>
-          <link id="#RTL.Classes.TCollection.Assign"/>
-          <link id="#RTL.Classes.TCollection.Clear"/>
+          <link id="#rtl.classes.TCollection.Assign">TCollection.Assign</link>
+          <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
         </seealso>
       </element>
       <element name="TCustomComboBoxEx.AssignItemsEx.AItems">
@@ -1282,7 +1282,7 @@
         <seealso>
           <link id="TCustomComboBoxEx.ItemsEx"/>
           <link id="TListControlItems.Items"/>
-          <link id="#RTL.Classes.TCollection.Clear"/>
+          <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
         </seealso>
       </element>
 
@@ -1296,8 +1296,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#RTL.Classes.TCollection.Delete"/>
           <link id="TCustomComboBoxEx.ItemsEx"/>
+          <link id="#rtl.classes.TCollection.Delete">TCollection.Delete</link>
         </seealso>
       </element>
       <element name="TCustomComboBoxEx.Delete.AIndex">
@@ -1963,7 +1963,7 @@
           <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
           <link id="TCustomCheckCombo.InitializeWnd"/>
           <link id="TCheckComboItemState"/>
-          <link id="#rtl.Classes.TStrings.Objects"/>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
         </seealso>
       </element>
 
@@ -2083,11 +2083,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomCheckCombo.ItemIndex"/>
           <link id="TCustomCheckCombo.Toggle"/>
           <link id="TCustomCheckCombo.KeyDown"/>
-          <link id="#lcl.StdCtrls.TCustomComboBox.DropDown"/>
-          <link id="#lcl.StdCtrls.TCustomComboBox.Select"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.DropDown"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Select"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
         </seealso>
       </element>
 
@@ -2108,7 +2108,7 @@
         </descr>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomComboBox.Items"/>
-          <link id="#rtl.Classes.TStringList.Duplicates"/>
+          <link id="#rtl.classes.TStringList.Duplicates">TStringList.Duplicates</link>
         </seealso>
       </element>
       <element name="TCustomCheckCombo.Create.AOwner">
@@ -2163,8 +2163,8 @@
           <link id="TCustomCheckCombo.ClearItemStates"/>
           <link id="TCustomCheckCombo.InitItemStates"/>
           <link id="TCheckComboItemState"/>
-          <link id="#rtl.Classes.TStrings.Assign"/>
-          <link id="#rtl.Classes.TStrings.Objects"/>
+          <link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
         </seealso>
       </element>
       <element name="TCustomCheckCombo.AssignItems.AItems">
@@ -2180,8 +2180,8 @@
         </descr>
         <seealso>
           <link id="TCustomCheckCombo.ClearItemStates"/>
-          <link id="#rtl.Classes.TStringList.Clear"/>
-          <link id="#rtl.Classes.TStrings.Objects"/>
+          <link id="#rtl.classes.TStringList.Clear">TStringList.Clear</link>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
           <link id="TCheckComboItemState"/>
         </seealso>
       </element>
@@ -2196,7 +2196,7 @@
         </descr>
         <seealso>
           <link id="TCustomCheckCombo.Objects"/>
-          <link id="#rtl.classes.TStrings.Delete"/>
+          <link id="#rtl.classes.TStrings.Delete">TStrings.Delete</link>
         </seealso>
       </element>
       <element name="TCustomCheckCombo.DeleteItem.AIndex">
@@ -2267,8 +2267,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Count"/>
-          <link id="#lcl.StdCtrls.TCustomComboBox.Items"/>
+          <link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.Items">TCustomComboBox.Items</link>
           <link id="TCustomCheckCombo.AddItem"/>
           <link id="TCustomCheckCombo.DeleteItem"/>
           <link id="TCustomCheckCombo.Clear"/>

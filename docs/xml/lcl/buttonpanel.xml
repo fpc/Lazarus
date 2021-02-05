@@ -103,7 +103,7 @@
           <link id="TCustomButtonPanel.CancelButton"/>
           <link id="TCustomButtonPanel.CloseButton"/>
           <link id="TCustomButtonPanel.HelpButton"/>
-          <link id="#lcl.buttons.TCustomBitBtn"/>
+          <link id="#lcl.buttons.TCustomBitBtn">TCustomBitBtn</link>
         </seealso>
       </element>
 
@@ -115,7 +115,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Buttons.TCustomBitBtn.Create"/>
+          <link id="#LCL.Buttons.TCustomBitBtn.Create">TCustomBitBtn.Create</link>
         </seealso>
       </element>
       <element name="TPanelBitBtn.Create.AOwner">
@@ -218,7 +218,7 @@
         </descr>
         <seealso>
           <link id="TButtonPanel"/>
-          <link id="#lcl.extctrls.TCustomPanel"/>
+          <link id="#lcl.extctrls.TCustomPanel">TCustomPanel</link>
         </seealso>
       </element>
 
@@ -459,7 +459,7 @@
         <seealso>
           <link id="TCustomButtonPanel.ShowBevel"/>
           <link id="TCustomButtonPanel.Align"/>
-          <link id="#LCL.ExtCtrls.TBevel"/>
+          <link id="#LCL.ExtCtrls.TBevel">TBevel</link>
         </seealso>
       </element>
 
@@ -613,13 +613,13 @@
             Loaded ensures that glyphs for panel buttons are either assigned or cleared based on the value in the <var>ShowGlyphs</var> property. When ShowGlyphs is <b>True</b>, each of the button instances is given the corresponding value in the internal list of glyphs for the class instance. Otherwise, the glyph is set to <b>Nil</b> to suppress display of the graphic image on the button. These are the same actions performed when the value in the ShowGlyph property is changed.
           </p>
           <p>
-            Please note: <var>AutoSize</var> is temporarily disabled in the control while assigning the button glyphs, and re-enabled prior to exit.
+            <var>AutoSize</var> is temporarily disabled in the control while assigning the button glyphs, and re-enabled prior to exit.
           </p>
         </descr>
         <seealso>
           <link id="TCustomButtonPanel.ShowGlyphs"/>
-          <link id="#lcl.controls.TControl.AutoSize"/>
-          <link id="#lcl.extctrls.TCustomPanel.Loaded"/>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+          <link id="#lcl.extctrls.TCustomPanel.Loaded">TCustomPanel.Loaded</link>
         </seealso>
       </element>
 
@@ -833,8 +833,8 @@
         </descr>
         <seealso>
           <link id="TButtonPanel.BorderSpacing"/>
-          <link id="#LCL.Controls.TWinControl.ReAlign"/>
-          <link id="#LCL.Controls.TControl.InvalidatePreferredSize"/>
+          <link id="#LCL.Controls.TWinControl.ReAlign">TWinControl.ReAlign</link>
+          <link id="#LCL.Controls.TControl.InvalidatePreferredSize">TControl.InvalidatePreferredSize</link>
         </seealso>
       </element>
 

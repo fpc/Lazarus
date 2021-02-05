@@ -7,8 +7,20 @@
     ====================================================================
     -->
     <module name="EditBtn">
-      <short>Defines specialized edit controls with attached speed buttons</short>
-      <descr/>
+      <short>Implements specialized edit controls with attached speed buttons</short>
+      <descr>
+        <p>
+          <file>editbtn.pas</file> contains specialized edit controls with an attached speed button used to perform an action when it is clicked. The following components are added to the <b>Misc</b> tab in the Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TEditButton</li>
+          <li>TFileNameEdit</li>
+          <li>TDirectoryEdit</li>
+          <li>TDateEdit</li>
+          <li>TTimeEdit</li>
+          <li>TCalcEdit</li>
+        </ul>
+      </descr>
 
       <!-- unresolved type references -->
       <element name="Classes"/>
@@ -40,7 +52,7 @@
       <element name="ImgList"/>
 
       <element name="NullDate">
-        <short>Represents a date type without a value assigned</short>
+        <short>Represents a TDateTime type without a value assigned</short>
         <descr/>
         <seealso/>
       </element>
@@ -49,24 +61,36 @@
         <short>Implements the embedded edit control used in TCustomEditButton</short>
         <descr>
           <p>
-            <var>TEbEdit</var> is a <var>TGEEdit</var> descendant which implements the embedded edit control used in <var>TCustomEditButton</var>. TEbEdit provides overridden methods to alter the behavior of the control when handing <var>OnEnter</var> and <var>OnExit</var> notifications.
+            <var>TEbEdit</var> is a <var>TGEEdit</var> descendant which implements the embedded edit control used in <var>TCustomEditButton</var>. TEbEdit provides overridden methods to alter the behavior of the control when handling <var>OnEnter</var> and <var>OnExit</var> notifications.
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.GroupedEdit.TGEEdit"/>
+          <link id="#lcl.groupededit.TGEEdit">TGEEdit</link>
         </seealso>
       </element>
 
       <element name="TEbEdit.DoEnter">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Performs actions needed when the control is entered</short>
+        <descr>
+          <p>
+            Ensures that the button visibility and spacing for the Owner control are handled when the Owner is derived from TCustomEditButton. Calls the inherited method prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.maskedit.TCustomMaskEdit.DoEnter">TCustomMaskEdit.DoEnter</link>
+        </seealso>
       </element>
 
       <element name="TEbEdit.DoExit">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Performs actions needed when the control is exited</short>
+        <descr>
+          <p>
+            Ensures that the button visibility and spacing for the Owner control are handled when the Owner is derived from TCustomEditButton. Calls the inherited method prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.maskedit.TCustomMaskEdit.DoExit">TCustomMaskEdit.DoExit</link>
+        </seealso>
       </element>
 
       <element name="TEditSpeedButton">
@@ -358,7 +382,7 @@
           <link id="TCustomEditButton.Edit"/>
           <link id="TCustomEditButton.Button"/>
           <link id="TCustomEditButton.Create"/>
-          <link id="#LCL.Controls.TControl.SetInitialBounds"/>
+          <link id="#lcl.controls.TControl.SetInitialBounds">TControl.SetInitialBounds</link>
         </seealso>
       </element>
       <element name="TCustomEditButton.GetControlClassDefaultSize.Result">
@@ -372,17 +396,17 @@
             <var>CalcButtonVisible</var> is a <var>Boolean</var> function used to determine whether the <var>Button</var> for the control should be visible. The return value is True when the control is Visible and the Edit has focus, or the control is not configured to display its button only when focused.
           </p>
           <remark>
-            Please note: The return value is always True at design-time.
+            The return value is always True at design-time.
           </remark>
           <p>
-            CalcButtonVisible is used in the implementation of the      <var>CheckButtonVisible</var> method.
+            CalcButtonVisible is used in the implementation of the <var>CheckButtonVisible</var> method.
           </p>
         </descr>
         <seealso>
           <link id="TCustomEditButton.Button"/>
           <link id="TCustomEditButton.ButtonOnlyWhenFocused"/>
           <link id="TCustomEditButton.Edit"/>
-          <link id="#LCL.Controls.TControl.Visible"/>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
         </seealso>
       </element>
       <element name="TCustomEditButton.CalcButtonVisible.Result">
@@ -580,9 +604,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+          <link id="#lcl.stdctrls.TCustomEdit.Create">TCustomEdit.Create</link>
+          <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <element name="TCustomEditButton.Create.AOwner">
@@ -608,7 +632,7 @@
           <link id="TCustomEditButton"/>
           <link id="TCustomEditButton.Edit"/>
           <link id="TCustomEditButton.Button"/>
-          <link id="#LCL.GroupedEdit.TCustomAbstractGroupedEdit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit">TCustomAbstractGroupedEdit</link>
         </seealso>
       </element>
 
@@ -1238,10 +1262,10 @@
           <link id="TCustomControlFilterEdit.Filter"/>
           <link id="TCustomControlFilterEdit.InvalidateFilter"/>
           <link id="TCustomControlFilterEdit.ApplyFilter"/>
-          <link id="#LCL.Forms.Application"/>
-          <link id="#LCL.Forms.TApplication"/>
-          <link id="#LCL.Forms.TApplication.AddOnIdleHandler"/>
-          <link id="#LCL.Forms.TApplication.RemoveOnIdleHandler"/>
+          <link id="#lcl.forms.Application">Application</link>
+          <link id="#lcl.forms.TApplication">TApplication</link>
+          <link id="#lcl.forms.TApplication.AddOnIdleHandler">TApplication.AddOnIdleHandler</link>
+          <link id="#lcl.forms.TApplication.RemoveOnIdleHandler">TApplication.RemoveOnIdleHandler</link>
         </seealso>
       </element>
 
@@ -1496,9 +1520,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Dialogs.TCommonDialog"/>
-          <link id="#LCL.Dialogs.TOpenDialog"/>
-          <link id="#LCL.Dialogs.TSaveDialog"/>
+          <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
+          <link id="#lcl.dialogs.TOpenDialog">TOpenDialog</link>
+          <link id="#lcl.dialogs.TSaveDialog">TSaveDialog</link>
         </seealso>
       </element>
       <element name="TFileNameEdit.CreateDialog.Result">
@@ -1831,7 +1855,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Dialogs.TSelectDirectoryDialog"/>
+          <link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
         </seealso>
       </element>
 
@@ -1892,8 +1916,8 @@
           <link id="TDirectoryEdit.RootDir"/>
           <link id="TDirectoryEdit.DialogOptions"/>
           <link id="TDirectoryEdit.DialogTitle"/>
-          <link id="#LCL.Dialogs.TSelectDirectoryDialog"/>
-          <link id="#LCL.Dialogs.TCommonDialog"/>
+          <link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+          <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
         </seealso>
       </element>
       <element name="TDirectoryEdit.CreateDialog.Result">
@@ -1914,8 +1938,8 @@
           <link id="TDirectoryEdit.RunDialog"/>
           <link id="TDirectoryEdit.OnAcceptDirectory"/>
           <link id="TDirectoryEdit.Directory"/>
-          <link id="#LCL.Dialogs.TSelectDirectoryDialog"/>
-          <link id="#LCL.Dialogs.TCommonDialog"/>
+          <link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+          <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
         </seealso>
       </element>
       <element name="TDirectoryEdit.GetDialogResult.Result">
@@ -1984,8 +2008,8 @@
           <link id="TDirectoryEdit.Directory"/>
           <link id="TDirectoryEdit.OnAcceptDirectory"/>
           <link id="TDirectoryEdit.ButtonClick"/>
-          <link id="#LCL.Dialogs.TCommonDialog"/>
-          <link id="#LCL.Dialogs.TSelectDirectoryDialog"/>
+          <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
+          <link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
         </seealso>
       </element>
 
@@ -2343,8 +2367,7 @@
           <link id="TDateEdit.ButtonClick"/>
           <link id="TDateEdit.OnAcceptDate"/>
           <link id="TDateEdit.Date"/>
-          <link id="#LCL.CalendarPopup.ShowCalendarPopup"/>
-          <link id="#LCL.CalendarPopup.ShowCalendarPopup.OnReturnDate"/>
+        <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
         </seealso>
       </element>
       <element name="TDateEdit.CalendarPopupReturnDate.Sender">
@@ -2369,9 +2392,7 @@
         <seealso>
           <link id="TDateEdit.ButtonClick"/>
           <link id="TDateEdit.DroppedDown"/>
-          <link id="#LCL.CalendarPopup.ShowCalendarPopup"/>
-          <link id="#LCL.CalendarPopup.ShowCalendarPopup.OnShow"/>
-          <link id="#LCL.CalendarPopup.ShowCalendarPopup.OnHide"/>
+          <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
         </seealso>
       </element>
       <element name="TDateEdit.CalendarPopupShowHide.Sender">
@@ -2408,9 +2429,9 @@
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.EditEditingDone"/>
           <link id="TDateEdit.RealSetText"/>
-          <link id="#RTL.SysUtils.DefaultFormatSettings"/>
-          <link id="#RTL.SysUtils.DateToStr"/>
-          <link id="#RTL.SysUtils.FormatDateTime"/>
+          <link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+          <link id="#rtl.sysutils.DateToStr">DateToStr</link>
+          <link id="#rtl.sysutils.FormatDateTime">FormatDateTime</link>
         </seealso>
       </element>
       <element name="TDateEdit.DateToText.Result">
@@ -2435,7 +2456,7 @@
         </descr>
         <seealso>
           <link id="ResBtnCalendar"/>
-          <link id="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
+          <link id="TCustomEditButton.GetDefaultGlyphName"/>
         </seealso>
       </element>
       <element name="TDateEdit.GetDefaultGlyphName.Result">
@@ -2534,7 +2555,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.EditBtn.TCustomEditButton.Create"/>
+          <link id="TCustomEditButton.Create"/>
         </seealso>
       </element>
       <element name="TDateEdit.Create.AOwner">
@@ -2802,7 +2823,7 @@
           <link id="TTimeEdit.ParseInput"/>
           <link id="TTimeEdit.Create"/>
           <link id="NullDate"/>
-          <link id="#RTL.SysUtils.EmptyStr"/>
+          <link id="#rtl.sysutils.EmptyStr">EmptyStr</link>
         </seealso>
       </element>
 
@@ -3361,9 +3382,20 @@
       </element>
 
       <element name="Register">
-        <short>
-          Registers components in the unit for use in the Lazarus IDE
-        </short>
+        <short>Registers components in the unit for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is the procedure used to add components to the component palette in the Lazarus IDE. Register adds the following components to the <b>Misc</b> tab on the component palette:
+          </p>
+          <ul>
+            <li>TEditButton</li>
+            <li>TFileNameEdit</li>
+            <li>TDirectoryEdit</li>
+            <li>TDateEdit</li>
+            <li>TTimeEdit</li>
+            <li>TCalcEdit</li>
+          </ul>
+        </descr>
       </element>
 
     </module>

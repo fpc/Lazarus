@@ -8,9 +8,13 @@
     -->
     <module name="Toolwin">
       <short>
-        Implements a control which can paint its client area with borders
+        Implements a control which can paint its client area with optional borders
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>toolwin.pp</file> implements a control which can paint its client area with optional borders using a raised or lowered drawing style. It defines the common ancestor for controls like TToolBar and TCoolBar.
+        </p>
+      </descr>
 
       <!-- unresolved type references Visibility: default -->
       <element name="Classes"/>
@@ -112,9 +116,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl"/>
-          <link id="#LCL.ComCtrls.TToolbar"/>
-          <link id="#LCL.ComCtrls.TCoolbar"/>
+          <link id="#lcl.controls.TCustomControl">TCustomControl</link>
+          <link id="#lcl.comctrls.TToolbar">TToolbar</link>
+          <link id="#lcl.comctrls.TCustomCoolbar">TCustomCoolbar</link>
+          <link id="#lcl.comctrls.TCoolbar">TCoolbar</link>
         </seealso>
       </element>
 

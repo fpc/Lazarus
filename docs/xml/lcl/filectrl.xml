@@ -8,7 +8,15 @@
     -->
     <module name="FileCtrl">
       <short>Implements list box and combo-box controls used to select files on the local file system</short>
-      <descr/>
+      <descr>
+        <p>
+          <file>filectrl.pp</file> contains classes, types, and routines used to implement list box and combo-box controls used to select files on the local file system. It adds the following components to the <b>Misc</b> tab in the Lazarus IDE Component Palette:
+        </p>
+        <ul>
+          <li>TFileListBox</li>
+          <li>TFilterComboBox</li>
+        </ul>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="Classes"/>
@@ -32,7 +40,7 @@
           <dl>
             <dt>ftNormal</dt>
             <dd>
-              This represents a file lacking any other file attributes; repesented in TSearchRec with the Integer value <b>0</b> (<b>zero</b>).
+              This represents a file lacking any other file attributes; represented in TSearchRec with the Integer value <b>0</b> (<b>zero</b>).
             </dd>
             <dt>fsAnyFile</dt>
             <dd>
@@ -43,10 +51,10 @@
         <seealso>
           <link id="TFileListBox"/>
           <link id="TFileType"/>
-          <link id="#rtl.sysutils.TSearchRec"/>
-          <link id="#rtl.sysutils.FindFirst"/>
-          <link id="#rtl.sysutils.FindNext"/>
-          <link id="#rtl.sysutils.FindClose"/>
+          <link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+          <link id="#rtl.sysutils.FindFirst">FindFirst</link>
+          <link id="#rtl.sysutils.FindNext">FindNext</link>
+          <link id="#rtl.sysutils.FindClose">FindClose</link>
         </seealso>
       </element>
       <element name="TFileAttr.ftReadOnly">
@@ -59,7 +67,7 @@
       </element>
       <element name="TFileAttr.ftSystem">
         <short>
-          File is a sytem file. For UNIX-like environements, this means that it is a character, block, or FIFO file.
+          File is a system file. For UNIX-like environments, this means that it is a character, block, or FIFO file.
         </short>
       </element>
       <element name="TFileAttr.ftVolumeID">
@@ -69,7 +77,7 @@
       </element>
       <element name="TFileAttr.ftDirectory">
         <short>
-          FIle is a directory entry.
+          File is a directory entry.
         </short>
       </element>
       <element name="TFileAttr.ftArchive">
@@ -79,7 +87,7 @@
       </element>
       <element name="TFileAttr.ftNormal">
         <short>
-          File has no other file attribtes.
+          File has no other file attributes.
         </short>
       </element>
 
@@ -103,7 +111,7 @@
             <var>TCustomFileListBox</var> is a TCustomListBox descendant which implements the base type for <var>TFileListBox</var>. TCustomFileListBox extends the ancestor with properties, methods, and events used to select a file or directory on the local file system in a list box control.
           </p>
           <p>
-            Use the <var>Drive</var> and <var>Directory</var> properties to specify the location on the local file sytem displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
+            Use the <var>Drive</var> and <var>Directory</var> properties to specify the location on the local file system displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
           </p>
           <p>
             Use <var>FileType</var> to specify the files and/or directories which can be displayed in the control.
@@ -128,8 +136,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomListBox"/>
           <link id="TFileListBox"/>
+          <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
         </seealso>
       </element>
 
@@ -215,8 +223,8 @@
         <seealso>
           <link id="TCustomFileListBox.FileName"/>
           <link id="TCustomFileListBox.Directory"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TCustomFileListBox.OnChange"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
         </seealso>
       </element>
 
@@ -245,27 +253,27 @@
           </p>
         </descr>
         <seealso>
-           <link id="#rtl.Classes.TComponent.Loaded"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
+           <link id="#rtl.classes.TComponent.Loaded">TComponent.Loaded</link>
         </seealso>
       </element>
 
       <element name="TCustomFileListBox.IndexOfFile">
-        <short>Gets the ordinal position for the specifed file name in Items</short>
+        <short>Gets the ordinal position for the specified file name in Items</short>
         <descr>
           <p>
             <var>IndexOfFile</var> is an Integer function used to get the ordinal position for the specified  file name in the list of file names in the control. <var>AFilename</var> contains the file name to locate in the method.
           </p>
           <p>
-            IndexOfFile handles drive and volume entries that may be stored in <var>Items</var> by ignoring the square brackets (<b>[]</b>) used to surround values with the corresponding file attributes. The <var>CompareFileNames</var> routine from <file>LazFileUtils</file> is used to perform file name comparisions.
+            IndexOfFile handles drive and volume entries that may be stored in <var>Items</var> by ignoring the square brackets (<b>[]</b>) used to surround values with the corresponding file attributes. The <var>CompareFileNames</var> routine from <file>LazFileUtils</file> is used to perform file name comparisons.
           </p>
           <p>
             The return value is <b>-1</b> when AFilename is not stored in the Items property.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
-          <link id="#lazutils.lazfileutils.CompareFileNames"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
+          <link id="#lazutils.lazfileutils.CompareFileNames">CompareFileNames</link>
         </seealso>
       </element>
       <element name="TCustomFileListBox.IndexOfFile.Result">
@@ -285,7 +293,7 @@
         <seealso>
           <link id="TCustomFileListBox.FileName"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
-           <link id="#LCL.Controls.TWinControl.KeyUp"/>
+           <link id="#lcl.controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
         </seealso>
       </element>
       <element name="TCustomFileListBox.KeyUp.Key">
@@ -303,9 +311,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomListBox.SetItemIndex"/>
-          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
           <link id="TCustomFileListBox.FileName"/>
+          <link id="#lcl.stdctrls.TCustomListBox.SetItemIndex">TCustomListBox.SetItemIndex</link>
+          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex">TCustomListBox.ItemIndex</link>
         </seealso>
       </element>
       <element name="TCustomFileListBox.SetItemIndex.AIndex">
@@ -340,11 +348,11 @@
           <link id="TCustomFileListBox.Mask"/>
           <link id="TCustomFileListBox.Drive"/>
           <link id="TCustomFileListBox.Directory"/>
-          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
           <link id="TCustomFileListBox.Sorted"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
+          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect">TCustomListBox.MultiSelect</link>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomFileListBox.Create.TheOwner">
@@ -359,7 +367,7 @@
           </p>
         </descr>
         <seealso>
-           <link id="#rtl.Classes.TComponent.Destroy"/>
+           <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -375,11 +383,11 @@
         </descr>
         <seealso>
           <link id="TCustomFileListBox.FileName"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
-          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
-          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
           <link id="TCustomFileListBox.DoChangeFile"/>
-          <link id="#lcl.controls.TControl.Click"/>
+          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex">TCustomListBox.ItemIndex</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
+          <link id="#lcl.stdctrls.TCustomListBox.MultiSelect">TCustomListBox.MultiSelect</link>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
         </seealso>
       </element>
 
@@ -445,16 +453,17 @@
             Changing the value in Directory causes the <var>UpdateFileList</var> method to be called to reload the file and or directory names stored in the <var>Items</var> property.
           </p>
           <remark>
-            Changing the value in Directory does not automatically update the value in Drive. If Directory includes a drive designator like 'D:\config\', it is not proogated to the Drive property. In addition, setting a value in Drive does not update the value in Director. The only time Drive and Directory are automatically sync'd is in the Create constructor.
+            Changing the value in Directory does not automatically update the value in Drive. If Directory includes a drive designator like 'D:\config\', the drive portion is not applied to the Drive property. In addition, setting a value in Drive does not update the value in Directory. The only time Drive and Directory are automatically sync'd is in the Create constructor.
           </remark>
         </descr>
         <seealso>
           <link id="TCustomFileListBox.FileName"/>
-          <link id="TCustomFileListBox.ItemIndex"/>
+          <link id="TCustomFileListBox.Drive"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
           <link id="TCustomFileListBox.Click"/>
           <link id="TCustomFileListBox.KeyUp"/>
           <link id="TCustomFileListBox.SetItemIndex"/>
+          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex">TCustomListBox.ItemIndex</link>
         </seealso>
       </element>
 
@@ -474,8 +483,8 @@
           <link id="TCustomFileListBox.IndexOfFile"/>
           <link id="TCustomFileListBox.UpdateFileList"/>
           <link id="TCustomFileListBox.OnChange"/>
-          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
+          <link id="#lcl.stdctrls.TCustomListBox.ItemIndex">TCustomListBox.ItemIndex</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
         </seealso>
       </element>
 
@@ -495,9 +504,9 @@
         </descr>
         <seealso>
           <link id="TCustomFileListBox.UpdateFileList"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TFileType"/>
           <link id="TFileAttr"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
         </seealso>
       </element>
 
@@ -519,8 +528,8 @@
         </descr>
         <seealso>
           <link id="TCustomFileListBox.UpdateFileList"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
           <link id="TCustomFilterComboBox.Mask"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
         </seealso>
       </element>
 
@@ -549,8 +558,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomListBox.Sorted"/>
-          <link id="#lcl.stdctrls.TCustomListBox.Items"/>
+          <link id="#lcl.stdctrls.TCustomListBox.Sorted">TCustomListBox.Sorted</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
         </seealso>
       </element>
 
@@ -561,7 +570,7 @@
             <var>TFileListBox</var> is a <var>TCustomFileListBox</var> descendant which implements a file selection list box control. It is used to select a file or directory on the local file system. TFileListBox sets the visibility for properties introduced in an ancestor class, and does not contains any new properties, methods, or events.
           </p>
           <p>
-            Use the Drive and Directory properties to specify the location on the local file sytem displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
+            Use the Drive and Directory properties to specify the location on the local file system displayed in the list box. Please note that Drive is not used on UNIX-like file systems.
           </p>
           <p>
             Use FileType to specify the files and/or directories which can be displayed in the control.
@@ -584,55 +593,55 @@
         </seealso>
       </element>
 
-      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect"/>
-      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType"/>
-      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TFileListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
-      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight"/>
-      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask"/>
-      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect"/>
-      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange"/>
-      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
-      <element name="TFileListBox.Directory" link="#LCL.FileCtrl.TCustomFileListBox.Directory"/>
-      <element name="TFileListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TFileListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TFileListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TFileListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TFileListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TFileListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TFileListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TFileListBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TFileListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TFileListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TFileListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TFileListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
-      <element name="TFileListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
-      <element name="TFileListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TFileListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TFileListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TFileListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TFileListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TFileListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TFileListBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TFileListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TFileListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted"/>
-      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
-      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex"/>
-      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TFileListBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TFileListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TFileListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange"/>
-      <element name="TFileListBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TFileListBox.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TFileListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TFileListBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TFileListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TFileListBox.ExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
+      <element name="TFileListBox.FileType" link="#lcl.filectrl.TCustomFileListBox.FileType"/>
+      <element name="TFileListBox.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TFileListBox.IntegralHeight" link="#lcl.stdctrls.TCustomListBox.IntegralHeight"/>
+      <element name="TFileListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
+      <element name="TFileListBox.Mask" link="#lcl.filectrl.TCustomFileListBox.Mask"/>
+      <element name="TFileListBox.MultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+      <element name="TFileListBox.OnChange" link="#lcl.filectrl.TCustomFileListBox.OnChange"/>
+      <element name="TFileListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+      <element name="TFileListBox.Directory" link="#lcl.filectrl.TCustomFileListBox.Directory"/>
+      <element name="TFileListBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TFileListBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TFileListBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TFileListBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TFileListBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TFileListBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TFileListBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TFileListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TFileListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TFileListBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TFileListBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TFileListBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TFileListBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TFileListBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TFileListBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TFileListBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TFileListBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TFileListBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TFileListBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TFileListBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TFileListBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TFileListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TFileListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TFileListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TFileListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TFileListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+      <element name="TFileListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+      <element name="TFileListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TFileListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TFileListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
+      <element name="TFileListBox.Visible" link="#lcl.controls.TControl.Visible"/>
+      <element name="TFileListBox.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TFileListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TFileListBox.OnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
+      <element name="TFileListBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 
       <element name="TCustomFilterComboBox">
         <short>Specifies a combo-box used to select a file filter</short>
@@ -650,16 +659,16 @@
             Use <var>ItemIndex</var> to get the ordinal position in Filter for the selected filter. Use the <var>OnSelect</var> event handler to perform actions needed when a new value is selected in the combo-box.
           </p>
           <p>
-            TCustomFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the seleted filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
+            TCustomFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the selected filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
             TCustomFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomComboBox"/>
           <link id="TFilterComboBox"/>
-          <link id="#lcl.shellctrls.TShellListView"/>
+          <link id="#lcl.stdctrls.TCustomComboBox">TCustomComboBox</link>
+          <link id="#lcl.shellctrls.TShellListView">TShellListView</link>
         </seealso>
       </element>
 
@@ -701,12 +710,12 @@
         <seealso>
           <link id="TCustomFilterComboBox.Mask"/>
           <link id="TCustomFilterComboBox.ShellListView"/>
-          <link id="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.OnSelect">TCustomComboBox.OnSelect</link>
         </seealso>
       </element>
 
       <element name="TCustomFilterComboBox.Notification" link="#lcl.controls.TControl.Notification">
-        <short>Handles notification messages for subcomponents in the control</short>
+        <short>Handles notification messages for sub-components in the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -725,7 +734,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomComboBox.Create"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Create">TCustomComboBox.Create</link>
         </seealso>
       </element>
       <element name="TCustomFilterComboBox.Create.TheOwner">
@@ -759,7 +768,7 @@
             AClearStrings indicates whether existing values in AStrings are cleared before adding values found in the method.
           </p>
           <p>
-            AAddDescription insicates if the descriptive text for file filter(s) are added to the string list.
+            AAddDescription indicates if the descriptive text for file filter(s) are added to the string list.
           </p>
           <p>
             AAddFilter indicates if the file mask portion of the filter is added to the string list.
@@ -767,11 +776,10 @@
           <p>
             When AAddDescription = <b>True</b> and AAddFilter = <b>False</b>, the following values would be stored in AStrings:
           </p>
-          <pre>
-Text files (*.txt *.pas)
+<pre>Text files (*.txt *.pas)
 Binaries (*.exe)</pre>
           <p>
-            Adapted from the converter initially created for QtWSDialogs.pas
+            Adapted from the converter initially created for QtWSDialogs.pas.
           </p>
         </descr>
         <seealso>
@@ -829,7 +837,7 @@ Binaries (*.exe)</pre>
         <seealso>
           <link id="TCustomFilterComboBox.Mask"/>
           <link id="TCustomFilterComboBox.Select"/>
-          <link id="#lcl.shellctrls.TShellListView"/>
+          <link id="#lcl.shellctrls.TShellListView">TShellListView</link>
         </seealso>
       </element>
 
@@ -846,7 +854,7 @@ Binaries (*.exe)</pre>
             Use <var>ItemIndex</var> to get the ordinal position in Filter for the selected filter. Use the <var>OnSelect</var> event handler to perform actions needed when a new value is selected in the combo-box.
           </p>
           <p>
-            TFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the seleted filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
+            TFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the selected filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
             TFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that Some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
@@ -854,16 +862,16 @@ Binaries (*.exe)</pre>
         </descr>
         <seealso>
           <link id="TCustomFilterComboBox"/>
-          <link id="#lcl.shellctrls.TShellListView"/>
+          <link id="#lcl.shellctrls.TShellListView">TShellListView</link>
         </seealso>
       </element>
 
-      <element name="TFilterComboBox.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TFilterComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TFilterComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete"/>
-      <element name="TFilterComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TFilterComboBox.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TFilterComboBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TFilterComboBox.AutoComplete" link="#lcl.stdctrls.TCustomComboBox.AutoComplete"/>
+      <element name="TFilterComboBox.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
 
-      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TFilterComboBox.AutoSize" link="#lcl.controls.TControl.AutoSize">
         <descr>
           <p>
             Please note that some themes (or styles) in Windows may use a fixed height for the combo-box.
@@ -871,67 +879,66 @@ Binaries (*.exe)</pre>
         </descr>
       </element>
 
-      <element name="TFilterComboBox.BidiMode" link="#LCL.Controls.TControl.BidiMode"/>
-      <element name="TFilterComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TFilterComboBox.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TFilterComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TFilterComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TFilterComboBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
-      <element name="TFilterComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TFilterComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TFilterComboBox.BidiMode" link="#lcl.controls.TControl.BidiMode"/>
+      <element name="TFilterComboBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TFilterComboBox.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TFilterComboBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TFilterComboBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TFilterComboBox.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TFilterComboBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TFilterComboBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 
       <element name="TFilterComboBox.Filter">
-        <short>Contains oneor more file filters used in the combo-box</short>
+        <short>Contains one or more file filters used in the combo-box</short>
         <descr>
           <p>
             <var>Filter</var> is a <var>String</var> property which is published in <var>TFilterComboBox</var>. Filter contains the file filter(s) which are used in the <var>Items</var> property. Each filter value in the string  contains a textual description and mask. For example:
           </p>
           <code>'Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe'.</code>
           <p>
-            Setting a new value for the property causes <var>ConvertFilterToStrings</var> to be called to parse and store the filter descriptions in the Items property. Existing values in Items are cleared before storing the new filter values. The value in <var>ItemIndex</var> is set to <b>0</b> to select the initial filter in Items.
+            Setting a new value for the property causes <var>ConvertFilterToStrings</var> to be called to parse and store the filter descriptions in the <var>Items</var> property. Existing values in Items are cleared before storing the new filter values. The value in <var>ItemIndex</var> is set to <b>0</b> to select the initial filter in Items.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFilterComboBox.Items"/>
           <link id="TCustomFilterComboBox.ConvertFilterToStrings"/>
-          <link id="#lcl.stdctrls.TCustomComboBox.SetFilter"/>
-          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Items">TCustomComboBox.Items</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex">TCustomComboBox.ItemIndex</link>
         </seealso>
       </element>
 
-      <element name="TFilterComboBox.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TFilterComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
-      <element name="TFilterComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBidiMode"/>
-      <element name="TFilterComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TFilterComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TFilterComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TFilterComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TFilterComboBox.ShellListView" link="#LCL.FileCtrl.TCustomFilterComboBox.ShellListView"/>
-      <element name="TFilterComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TFilterComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TFilterComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TFilterComboBox.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TFilterComboBox.ItemIndex" link="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
+      <element name="TFilterComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+      <element name="TFilterComboBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TFilterComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TFilterComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TFilterComboBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TFilterComboBox.ShellListView" link="#lcl.filectrl.TCustomFilterComboBox.ShellListView"/>
+      <element name="TFilterComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TFilterComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TFilterComboBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
       <element name="TFilterComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
-      <element name="TFilterComboBox.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TFilterComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange"/>
-      <element name="TFilterComboBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TFilterComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp"/>
-      <element name="TFilterComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TFilterComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TFilterComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TFilterComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TFilterComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TFilterComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown"/>
-      <element name="TFilterComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TFilterComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TFilterComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
-      <element name="TFilterComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
-      <element name="TFilterComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TFilterComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TFilterComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TFilterComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TFilterComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TFilterComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
+      <element name="TFilterComboBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
+      <element name="TFilterComboBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TFilterComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TFilterComboBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TFilterComboBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TFilterComboBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TFilterComboBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TFilterComboBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TFilterComboBox.OnDropDown" link="#lcl.stdctrls.TCustomComboBox.OnDropDown"/>
+      <element name="TFilterComboBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TFilterComboBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TFilterComboBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TFilterComboBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TFilterComboBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TFilterComboBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TFilterComboBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TFilterComboBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TFilterComboBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TFilterComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
-      <element name="TFilterComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TFilterComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
       <element name="MinimizeName">
         <short>Returns a shortened version of a file name, so that it fits within the given MaxWidth</short>
@@ -946,7 +953,7 @@ Binaries (*.exe)</pre>
             No actions are performed in the routine when path information is not included in FileName. Normalizes all path delimiters in the file name to the first path delimiter found in the argument.
           </p>
           <p>
-            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with one <b>'...'</b> value until the shortened file name fits within the specified width.
+            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with one <b>'...'</b> string value until the shortened file name fits within the specified width.
           </p>
         </descr>
       </element>
@@ -967,7 +974,7 @@ Binaries (*.exe)</pre>
         <short>Registers components in the unit for use in the Lazarus IDE</short>
         <descr>
           <p>
-            <var>Register</var> is a procedure used to register components in the unit for use in the Lazarus IDE. Register calls <var>RegisterComponents</var> to add the <var>TFileListBox</var> and <var>TFilterComboBox</var> comnponents on the <b>Misc</b> tab in the Lazarus IDE.
+            <var>Register</var> is a procedure used to register components in the unit for use in the Lazarus IDE. Register calls <var>RegisterComponents</var> to add the <var>TFileListBox</var> and <var>TFilterComboBox</var> components on the <b>Misc</b> tab in the Lazarus IDE.
           </p>
         </descr>
       </element>

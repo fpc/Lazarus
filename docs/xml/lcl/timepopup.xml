@@ -7,8 +7,15 @@
     ====================================================================
     -->
     <module name="TimePopup">
-      <short>Contains Forms, Types, and routines used to display a pop-up for TTimeEdit</short>
-      <descr/>
+      <short>Contains forms, types, and routines used to display a pop-up for TTimeEdit</short>
+      <descr>
+        <p>
+          Contains the <var>TTimePopupForm</var> form and the <var>ShowTimePopup</var> routine used to create, configure, and display the pop-up form.
+        </p>
+        <p>
+          Author: Michael Fuchs
+        </p>
+      </descr>
 
       <!-- used untis -->
       <element name="System"/>
@@ -72,7 +79,7 @@
         <seealso>
           <link id="ShowTimePopup"/>
           <link id="TReturnTimeEvent"/>
-          <link id="#lcl.EditBtn.TTimeEdit"/>
+          <link id="#lcl.editbtn.TTimeEdit">TTimeEdit</link>
         </seealso>
       </element>
 
@@ -246,7 +253,7 @@
         <seealso>
           <link id="TTimePopupForm.GetTime"/>
           <link id="ShowTimePopup"/>
-          <link id="#lcl.Forms.TCustomForm.Close"/>
+          <link id="#lcl.forms.TCustomForm.Close">TCustomForm.Close</link>
         </seealso>
       </element>
 
@@ -282,8 +289,8 @@
         </descr>
         <seealso>
           <link id="TTimePopupForm.FormDeactivate"/>
-          <link id="#lcl.Forms.Application"/>
-          <link id="#lcl.Forms.TApplication.RemoveOnDeactivateHandler"/>
+          <link id="#lcl.forms.Application">Application</link>
+          <link id="#lcl.forms.TApplication.RemoveOnDeactivateHandler">TApplication.RemoveOnDeactivateHandler</link>
         </seealso>
       </element>
       <element name="TTimePopupForm.FormClose.Sender">
@@ -302,8 +309,8 @@
         </descr>
         <seealso>
           <link id="TTimePopupForm"/>
-          <link id="#lcl.Forms.Application"/>
-          <link id="#lcl.Forms.TApplication.AddOnDeactivateHandler"/>
+          <link id="#lcl.forms.Application">Application</link>
+          <link id="#lcl.forms.TApplication.AddOnDeactivateHandler">TApplication.AddOnDeactivateHandler</link>
         </seealso>
       </element>
       <element name="TTimePopupForm.FormCreate.Sender">

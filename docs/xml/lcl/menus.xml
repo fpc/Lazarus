@@ -2,102 +2,75 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    Menus
-  ====================================================================
--->
+    ====================================================================
+      Menus
+    ====================================================================
+    -->
     <module name="Menus">
-      <short>Menus to be used in Forms created with the Lazarus IDE</short>
-      <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="InterfaceBase">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ActnList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ImgList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLClasses">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TMenuItem"/>
-      <!-- object Visibility: default -->
+      <short>Implements menus used in forms created with the Lazarus IDE</short>
+      <descr>
+        <p>
+          <file>menus.pp</file> contains classes, types, and routines used to implement menus used on TForm  instances in the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          Authors:  Shane Miller and Marc Weustink
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Standard</b> Tab
+        </p>
+        <ul>
+          <li>TMainMenu</li>
+          <li>TPopupMenu</li>
+        </ul>
+        <p>
+          <b>Registered</b> but not displayed:
+        </p>
+        <ul>
+          <li>TMenuItem</li>
+        </ul>
+      </descr>
+
+      <!-- unresolved references -->
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLStrConsts"/>
+      <element name="LCLType"/>
+      <element name="LCLProc"/>
+      <element name="LCLIntf"/>
+      <element name="LCLClasses"/>
+      <element name="LResources"/>
+      <element name="LMessages"/>
+      <element name="ActnList"/>
+      <element name="Graphics"/>
+      <element name="ImgList"/>
+      <element name="Themes"/>
+      <element name="LazMethodList"/>
+      <element name="LazLoggerBase"/>
+
       <element name="EMenuError">
         <short>
-          <var>EMenuError </var>
-- Exception handler for error in Menu access</short>
+          Exception raised when an error occurs while accessing a menu item
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMenuItem.Items"/>
+          <link id="TMenuItem.Delete"/>
+          <link id="TMenuItem.Remove"/>
+        </seealso>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TGlyphShowMode">
         <short>
           <var>TGlyphShowMode</var> indicates if the glyph image of a menu or button should shown or not and in which circunstances</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
-          <link id="#LCL.Forms.TApplicationShowGlyphs"/>
-          <link id="#LCL.Buttons.TCustomBitBtn.GlyphShowMode"/>
+          <link id="#lcl.forms.TApplication.ShowMenuGlyphs">TApplication.ShowMenuGlyphs</link>
+          <link id="#lcl.forms.TApplicationShowGlyphs">TApplicationShowGlyphs</link>
+          <link id="#lcl.buttons.TCustomBitBtn.GlyphShowMode">TCustomBitBtn.GlyphShowMode</link>
         </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -2328,37 +2301,42 @@ customize by choosing various menu items.</p>
         <errors/>
         <seealso/>
       </element>
+
       <topic name="HowToUseMenus">
         <short>
-          <var>HowToUseMenus</var>
-
-
-
- - hints for creating Menus for your Forms</short>
+          <var>HowToUseMenus</var> - hints for creating Menus for your Forms
+        </short>
         <descr>
           <p>
-            <var>HowToUseMenus</var>
-
-
-
- - hints for creating Menus for your Forms</p>
+            <var>TMainMenu</var> is the Main Menu that appears at the top of most forms; form designers can customize by choosing various menu items. <var>TPopupMenu</var> is a menu window that pops up with pertinent, usually context-sensitive, details and choices when the right mouse button is clicked near a control.
+          </p>
           <p>
-            <var>TMainMenu</var>
-
-
-
- is the Main Menu that appears at the top of most forms; form designers can
-customize by choosing various menu items. <var>TPopupMenu</var> is a menu window that pops up with pertinent, usually context-sensitive, details and choices when the right mouse button is clicked near a control</p>
-          <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Popup menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.</p>
-          <p>To see the Menu Editor, right-click on the Main Menu  or Popup Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.</p>
-          <p>An Edit box is displayed, containing a Button labeled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.</p>
-          <p>Any or all of the <link id="TMenuItem">MenuItems</link> that you add can be configured using the Object Inspector.</p>
-          <p>At the least you should give each item a <var>Caption</var> which will appear on the Menu Bar (you may also wish to give it a more meaningful <var>Name</var>). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
-          <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the <var>ShortCut</var> property of the MenuItem.</p>
-          <p>It is often helpful to use the Menu controls in conjunction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customized <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.</p>
-          <p>By default a number of standard actions is pre-loaded from <link id="#lcl.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lcl.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.</p>
+            Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Popup menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.
+          </p>
+          <p>
+            To see the Menu Editor, right-click on the Main Menu  or Popup Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.
+          </p>
+          <p>
+            An Edit box is displayed, containing a Button labeled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.
+          </p>
+          <p>
+            Any or all of the <link id="TMenuItem">MenuItems</link> that you add can be configured using the Object Inspector.
+          </p>
+          <p>
+            At the least you should give each item a <var>Caption</var> which will appear on the Menu Bar (you may also wish to give it a more meaningful <var>Name</var>). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"
+          </p>
+          <p>
+            If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the <var>ShortCut</var> property of the MenuItem.
+          </p>
+          <p>
+            It is often helpful to use the Menu controls in conjunction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customized <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.
+          </p>
+          <p>
+            By default a number of standard actions is pre-loaded from <link id="#lcl.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lcl.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.
+          </p>
         </descr>
       </topic>
+
       <element name="TMenuItem.BitmapChange">
         <short>
           <var>BitmapChange</var> - update the image associated with the menu item when the Bitmap has been changed</short>
@@ -2471,19 +2449,26 @@ customize by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <short>
           <var>TPopupAlignment</var> -  enumerated type to describe the position of popup menu relative to the popup coordinate</short>
         <descr>
-          <pre>paLeft - position popup menu so it left corner is at the popup coordinate
-    paRight - position popup menu menu so it right corner is at the popup coordinate
-    paCenter - center popup menu around popup coordinate
-</pre>
+            <dl>
+              <dt>paLeft</dt>
+              <dd>Positions the popup menu so its left corner is at the popup coordinate</dd>
+              <dt>paRight</dt>
+              <dd>Positions the popup menu menu so its right corner is at the popup coordinate</dd>
+              <dt>paCenter</dt>
+              <dd>Centers the popup menu around the popup coordinate</dd>
+            </dl>
         </descr>
       </element>
       <element name="TTrackButton">
         <short>
           <var>TTrackButton</var> - enumerated type described which mouse buttons can be used to activate (click) menu items</short>
         <descr>
-          <pre>tbRightButton - both left and right buttons are used to activate a menu item
-tbLeftButton - only left button is used to activate a menu item
-</pre>
+          <dl>
+            <dt>tbRightButton</dt>
+            <dd>Both left and right buttons are used to activate a menu item</dd>
+            <dt>tbLeftButton</dt>
+            <dd>Only the left button is used to activate a menu item</dd>
+          </dl>
         </descr>
       </element>
       <element name="TPopupMenu.Alignment">

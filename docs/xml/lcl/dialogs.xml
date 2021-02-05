@@ -152,9 +152,17 @@
       <!-- constant Visibility: default -->
       <element name="MsgDlgBtnToBitBtnKind">
         <short>A constant array used to convert the kind of message buttons to the kind of BitButton.</short>
-        <descr>This array gives you for each possible button type in a messagebox the corresponding kind of BitButton. <br/>
-For instance MsgDlgBtnToBitBtnKind[mbYes] has the value of bkYes. <br/>
-It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
+        <descr>
+          <p>
+            This array gives you for each possible button type in a messagebox the corresponding kind of BitButton.
+          </p>
+          <p>
+            For instance MsgDlgBtnToBitBtnKind[mbYes] has the value of bkYes.
+          </p>
+          <p>
+            It is the reverse of BitBtnKindToMsgDlgBtn.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
@@ -165,80 +173,30 @@ It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
-        <short>
-          <var>TCommonDialog</var>
-: the base type from which other dialogs are derived</short>
-        <descr>TCommonDialog: the base type from which all other dialogs are derived. <br/>
-
-Use the "Create" method to make an instance of the dialog, <br/>
-
-the "Execute" method to show it to the user <br/>
-
-and the "Close" method to release it and free the used resources.</descr>
+        <short>The base type from which other dialogs are derived</short>
+        <descr>
+          <p>
+            TCommonDialog is the base type from which all other dialogs are derived.
+          </p>
+          <p>
+            Use Create to make an instance of the dialog, and the Execute method to show it to the user. Use the Close method to release it and free the used resources.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FHandle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FOnCanClose">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FOnShow">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FOnClose">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FTitle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FUserChoice">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FHelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialog.FCanCloseCalled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
+
+      <element name="TCommonDialog.FHandle"/>
+      <element name="TCommonDialog.FHeight"/>
+      <element name="TCommonDialog.FWidth"/>
+      <element name="TCommonDialog.FOnCanClose"/>
+      <element name="TCommonDialog.FOnShow"/>
+      <element name="TCommonDialog.FOnClose"/>
+      <element name="TCommonDialog.FTitle"/>
+      <element name="TCommonDialog.FUserChoice"/>
+      <element name="TCommonDialog.FHelpContext"/>
+      <element name="TCommonDialog.FCanCloseCalled"/>
+
       <element name="TCommonDialog.SetHandle">
         <short/>
         <descr/>
@@ -304,9 +262,11 @@ and the "Close" method to release it and free the used resources.</descr>
       <!-- function Visibility: public -->
       <element name="TCommonDialog.Execute">
         <short>A public method causing the dialog box to appear, offer the relevant choices to the user and act upon the choice</short>
-        <descr>Use the execute method of a dialog to show it <br/>
-and then check the result to see if the user made a valid choice and pressed the OK button.
-</descr>
+        <descr>
+          <p>
+            Use the execute method of a dialog to show it and then check the result to see if the user made a valid choice and pressed the OK button.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -337,7 +297,8 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- procedure Visibility: public -->
       <element name="TCommonDialog.DoShow">
         <short>
-          <var>DoShow</var> - the procedure that actually takes care of showing the dialog box</short>
+          <var>DoShow</var> - the procedure that actually takes care of showing the dialog box
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -641,19 +602,28 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- property Visibility: published -->
       <element name="TFileDialog.Filter">
         <short>A string which contains possible filename filters (e.g. .doc, .xmp, .pas etc).</short>
-        <descr>This is a string which contains the filters a user can choose from. <br/>
-
-The available filters and their description are separated by pipe symbols. <br/>
-
-To set this property during runtime assign a value like: "All files|*.*|Lazarus Project files|*.lpr"<br/>
-
-An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*.pas;*.pp;*.p"<br/>
+        <descr>
+          <p>
+            This is a string which contains the filters a user can choose from. The available filters and their description are separated by pipe symbols.
+          </p>
+          <p>
+            To set this property during runtime assign a value like:
+          </p>
+          <code>"All files|*.*|Lazarus Project files|*.lpr"</code>
+          <p>
+            An entry can contain multiple masks separated by semicolon, like:
+          </p>
+          <code>"Pascal units|*.pas;*.pp;*.p"</code>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.FilterIndex">
         <short>This property sets which file filter is the default.</short>
-        <descr>This property sets which file filter is the default. For example, set this property to 2 to set the second filter as default.</descr>
+        <descr>
+          <p>
+            This property sets which file filter is the default. For example, set this property to 2 to set the second filter as default.
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.InitialDir">
@@ -669,136 +639,92 @@ An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*
       <element name="TFileDialog.OnTypeChange">
         <short>Event Handler when the selected file type is changed</short>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TOpenOption">
-        <short>
-          <var>TOpenOption</var> - a list of possible options which can be used in OpenDialog</short>
-        <descr><p><var>TOpenOption</var> - a list of possible options which can be used in OpenDialog</p><pre>ofReadOnly,
-    ofOverwritePrompt, // if selected file exists shows a message, that file
-                       // will be overwritten
-    ofHideReadOnly,    // hide read only file
-    ofNoChangeDir,     // do not change current directory
-    ofShowHelp,        // show a help button
-    ofNoValidate,
-    ofAllowMultiSelect,// allow multiselection
-    ofExtensionDifferent,
-    ofPathMustExist,   // shows an error message if selected path does not exist
-    ofFileMustExist,   // shows an error message if selected file does not exist
-    ofCreatePrompt,
-    ofShareAware,
-    ofNoReadOnlyReturn,// do not return filenames that are readonly
-    ofNoTestFileCreate,
-    ofNoNetworkButton,
-    ofNoLongNames,
-    ofOldStyleDialog,
-    ofNoDereferenceLinks,// do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS)
-    ofNoResolveLinks,  // do not resolve links after Execute
-    ofEnableIncludeNotify,
-    ofEnableSizing,    // dialog can be resized, e.g. via the mouse
-    ofDontAddToRecent, // do not add the path to the history list
-    ofForceShowHidden, // show hidden files
-    ofViewDetail,      // details are OS and interface dependent
-    ofAutoPreview      // details are OS and interface dependent
-</pre>
+        <short>Options which can be used in OpenDialog</short>
+        <descr>
+          <p>
+            <var>TOpenOption</var> contains a list of possible options which can be used in an Open dialog.
+          </p>
         </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofReadOnly">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofOverwritePrompt">
-        <short/>
+        <short>If selected file exists shows a message, that file will be overwritten</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofHideReadOnly">
-        <short/>
+        <short>hide read only file</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoChangeDir">
-        <short/>
+        <short>do not change current directory</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofShowHelp">
-        <short/>
+        <short>show a help button</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoValidate">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofAllowMultiSelect">
-        <short/>
+        <short>allow multiselection</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofExtensionDifferent">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofPathMustExist">
-        <short/>
+        <short>shows an error message if selected path does not exist</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofFileMustExist">
-        <short/>
+        <short>shows an error message if selected file does not exist</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofCreatePrompt">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofShareAware">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoReadOnlyReturn">
-        <short/>
+        <short>do not return filenames that are readonly</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoTestFileCreate">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoNetworkButton">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoLongNames">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofOldStyleDialog">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofNoDereferenceLinks">
-        <short/>
+        <short>do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
+      <element name="TOpenOption.ofNoResolveLinks">
+        <short>do not resolve links after Execute</short>
+      </element>
       <element name="TOpenOption.ofEnableIncludeNotify">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofEnableSizing">
-        <short/>
+        <short>dialog can be resized, e.g. via the mouse</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofDontAddToRecent">
-        <short/>
+        <short>do not add the path to the history list</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofForceShowHidden">
-        <short/>
+        <short>show hidden files</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofViewDetail">
-        <short/>
+        <short>details are OS and interface dependent</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofAutoPreview">
-        <short/>
+        <short>OS and interface dependent</short>
       </element>
+
       <!-- set type Visibility: default -->
       <element name="TOpenOptions">
         <short>
@@ -815,14 +741,12 @@ An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*
       </element>
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
-        <short>
-          <var>TOpenDialog</var>
-: open a file in the current directory, selected by File Dialog.</short>
+        <short>Opens a file in the current directory, selected by File Dialog.</short>
         <descr>
-          <var>TOpenDialog</var>
-: open a file in the current directory, selected by File Dialog. <br/>
-
-If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
+          <p>
+            <var>TOpenDialog</var> opens a file in the current directory, selected by File Dialog. If the required file is not in the current directory, another directory can be selected with SelectDirectory.
+          </p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TOpenDialog.FOnFolderChange">
@@ -949,27 +873,41 @@ If the required file is not in the current directory, another directory can be s
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnFolderChange">
         <short>Event triggered when the user changes the folder in the OpenDialog.</short>
-        <descr>This event is called when the user changes the folder (directory) in the OpenDialog. <br/>
-Note: changing the folder will also trigger the OnSelectionChange event.</descr>
+        <descr>
+          <p>
+            This event is called when the user changes the folder (directory) in the OpenDialog.
+          </p>
+          <p>
+            Note: changing the folder will also trigger the OnSelectionChange event.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnSelectionChange">
         <short>Event triggered when the user changes the selection made in the OpenDialog.</short>
-        <descr>This event is triggered when the user changes the selected file in the OpenDialog. <br/>
-Note: When the user changes the folder OnSelectionChange will be called first.</descr>
+        <descr>
+          <p>
+            This event is triggered when the user changes the selected file in the OpenDialog.
+          </p>
+          <p>
+            Note: When the user changes the folder OnSelectionChange will be called first.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TSaveDialog">
         <short>
           <var>TSaveDialog</var> - Dialog for saving the current buffer to a file</short>
-        <descr>Save Dialog:  invoked when the application requires to save a file. <br/>
-
-If the file is already open or a filename has been specified, then the current buffer is written to that file; <br/>
-
-if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.
-</descr>
+        <descr>
+          <p>
+            Save Dialog:  invoked when the application requires to save a file.
+          </p>
+          <p>
+            If the file is already open or a filename has been specified, then the current buffer is written to that file. If no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.
+          </p>
+      </descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSaveDialog.Create" link="#LCL.Dialogs.TOpenDialog.Create">
@@ -985,7 +923,11 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
       <!-- object Visibility: default -->
       <element name="TSelectDirectoryDialog">
         <short>Select Directory Dialog</short>
-        <descr>Select Directory Dialog: allows the user to select a directory when the directory structure is displayed as a tree.</descr>
+        <descr>
+          <p>
+            SelectDirectoryDialog allows the user to select a directory when the directory structure is displayed as a tree.
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#lcl.editbtn.tdirectoryedit">TDirectoryEdit</link>
@@ -1021,11 +963,14 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
       <element name="TColorDialog">
         <short>
           <var>TColorDialog</var> - dialog for selecting a color to use in graphics and text</short>
-        <descr>Color Dialog:  presents a palette of colors to allow the user to select the required color for text or graphics.
-<br/>
-
-Call the Execute function to show the color dialog.
-</descr>
+        <descr>
+          <p>
+            TColorDialog presents a palette of colors to allow the user to select the required color for text or graphics.
+          </p>
+          <p>
+            Call the Execute function to show the color dialog.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1682,9 +1627,11 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TFontDialog.PreviewText">
         <short>The text displayed as an example in the preview pane of the dialog, using the selected font</short>
-        <descr>As a standard, the preview plane of the dialog <br/>
-shows all letters both in uppercase and lowercase.
-</descr>
+        <descr>
+          <p>
+            As a standard, the preview plane of the dialog shows all letters both in uppercase and lowercase.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
@@ -1761,12 +1708,13 @@ shows all letters both in uppercase and lowercase.
       <element name="TFindDialog">
         <short>
           <var>TFindDialog</var> - a dialog used for finding text within the current editor or text buffer</short>
-        <descr>Opens a dialog box allowing the user to enter text for searching, for example in a text editor.<br/>
-
-As TFindDialog is the parent class for the TReplaceDialog, <br/>
-it contains definitions for the Replace method, <br/>
-but the Replace option does not actually appear when the dialog is displayed: <br/>
-you need to use TReplaceDialog to do that<br/>
+        <descr>
+          <p>
+            Opens a dialog box allowing the user to enter text for searching, for example in a text editor.
+          </p>
+          <p>
+            As TFindDialog is the parent class for the TReplaceDialog, it contains definitions for the Replace method, but the Replace option does not actually appear when the dialog is displayed: you need to use TReplaceDialog to do that.
+          </p>
         </descr>
         <errors/>
         <seealso>
@@ -2159,10 +2107,14 @@ you need to use TReplaceDialog to do that<br/>
       <!-- object Visibility: default -->
       <element name="TReplaceDialog">
         <short>A dialog allowing the user to replace text</short>
-        <descr>The dialog appears and offers boxes for the user to enter text for searching and text to replace it, <br/>
-for example while editing a file or large piece of text. <br/>
-
-A number of buttons appear, offering the choice to replace this instance, find next, replace all</descr>
+        <descr>
+          <p>
+            The dialog appears and offers boxes for the user to enter text for searching and text to replace it, for example while editing a file or large piece of text.
+          </p>
+          <p>
+            A number of buttons appear, offering the choice to replace this instance, find next, replace all.
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="TFindDialog"/>
@@ -2450,59 +2402,44 @@ A number of buttons appear, offering the choice to replace this instance, find n
       <!-- function Visibility: default -->
       <element name="MessageDlg">
         <short>Message Dialog</short>
-        <descr>Show a message to the user and receive his response. 
-<br/>
-
-
-There are four versions of this function. <br/>
-
-The first version displays a dialog with the standard caption, <br/>
-
-the second, third and fourth versions enable you to set the caption.<br/>
-          <br/>
-
-
-The third version allows for a Default button; <br/>
-
-the fourth version contains a help keyword instead of using context-based help.
-<br/>
-          <br/>
-
-
-If the first 'Caption' argument is missing, no caption is shown on the box.<br/>
-          <br/>
-
-
-    This is the most complete and elaborate of the message dialogs, <br/>
-
-and allows the programmer considerable control over the appearance of the dialog box.<br/>
-          <br/>
-
-
-
-    The arguments defining the kind of box and its icon are types rather than integer constants, <br/>
-
-and the buttons can be specified as a set in square brackets <br/>
-
-e.g. [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
-          <br/>
-
-
-
-    The HelpCtx argument allows the use of Context Help<br/>
-          <br/>
-
-
-    The return value from the Function is the identity of the button pressed, <br/>
-
-expressed as an integer (see the constant definitions in <link id="Controls.TControl">TControl</link>
-
-, [mrNone..mrAll]). <br/>
-If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
-If the user presses the escape key, the result depends on the widgetset: <br/>
-- if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
-- otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present
-(the dialog will not close (when the Escape key is pressed) if none of these buttons are present).
+        <descr>
+          <p>
+            Show a message to the user and receive his response. There are four versions of this function.
+          </p>
+          <p>
+            The first version displays a dialog with the standard caption. The second, third and fourth versions enable you to set the caption.
+          </p>
+          <p>
+            The third version allows for a Default button;.
+          </p>
+          <p>
+            The fourth version contains a help keyword instead of using context-based help.
+          </p>
+          <p>
+            If the first Caption argument is missing, no caption is shown on the box.
+          </p>
+          <p>
+            This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.
+          </p>
+          <p>
+            The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets e.g. [mbRetry, mbIgnore, mbAbort, mbCancel].
+          </p>
+          <p>
+            The HelpCtx argument allows the use of Context Help
+          </p>
+          <p>
+            The return value from the Function is the identity of the button pressed, expressed as an integer (see the constant definitions in <link id="Controls.TControl">TControl</link> , [mrNone..mrAll]).
+          </p>
+          <p>
+            If the user clicks the [X]-bordericon, the return value will be mrCancel.
+          </p>
+          <p>
+            If the user presses the escape key, the result depends on the widgetset:
+          </p>
+          <ul>
+            <li>If the widgetset has implemented a native dialog, the result will be mrCancel.</li>
+            <li>Otherwise the result will be mrCancel, mrNo or mrOk (in that order) when mbCancel, mbNo or mbOk is present. The dialog will not close when the Escape key is pressed if none of these buttons are present.</li>
+          </ul>
         </descr>
         <errors/>
         <seealso/>
@@ -2511,13 +2448,22 @@ If the user presses the escape key, the result depends on the widgetset: <br/>
       <!-- function result Visibility: default -->
       <element name="MessageDlg.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
-        <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expressed as an integer.<br/>
-If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
-If the user presses the escape key, the result depends on the widgetset: <br/>
-- if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
-- otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present
-(the dialog will not close (when the Escape key is pressed) if none of these buttons are present).
+        <descr>
+          <p>
+            The result of this function is the button the user pressed to close the dialog expressed as an integer.
+          </p>
+          <p>
+            If the user clicks the [X]-bordericon, the return value will be mrCancel.
+          </p>
+          <p>
+            If the user presses the escape key, the result depends on the widgetset:
+          </p>
+          <ul>
+            <li>If the widgetset has implemented a native dialog, the result will be mrCancel.</li>
+            <li>
+              Otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present. The dialog will not close when the Escape key is pressed if none of these buttons are present.
+            </li>
+          </ul>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -2528,19 +2474,29 @@ If the user presses the escape key, the result depends on the widgetset: <br/>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. <br/>
-You can choose from <br/>
-mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>
+          <p>
+            The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.
+          </p>
+      </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which set of button captions have to be shown on the dialog. <br/>
-You can choose from predefined sets: <br/>
-mbAbortRetryIgnore, <br/>
-mbOKCancel, <br/>
-mbYesNo, mbYesNoCancel, <br/>
-or you can make your own set.</descr>
+        <descr>
+          <p>
+            Buttons indicate which set of button captions have to be shown on the dialog. You can choose from predefined sets:
+          </p>
+          <ul>
+            <li>mbAbortRetryIgnore</li>
+            <li>mbOKCancel</li>
+            <li>mbYesNo</li>
+            <li>mbYesNoCancel</li>
+          </ul>
+          <p>
+            Or,  you can make your own set.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.HelpCtx">
@@ -2563,26 +2519,34 @@ or you can make your own set.</descr>
       <!-- function Visibility: default -->
       <element name="MessageDlgPos">
         <short>An extended MessageDlg function.</short>
-        <descr>This function performs the same function as the <link id="MessageDlg">MessageDlg</link>
-
-
-function. <br/>
-It has been extended with parameters to place the dialog on a certain position on the screen instead of in the center of the screen.
-<br/>
-The MessageDlgPos function does not enable you to choose the caption of the dialog.</descr>
+        <descr>
+          <p>
+            This function performs the same function as the <link id="MessageDlg">MessageDlg</link> function. It has been extended with parameters to place the dialog on a certain position on the screen instead of in the center of the screen.
+          </p>
+          <p>
+            The MessageDlgPos function does not enable you to choose the caption of the dialog.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="MessageDlgPos.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
-        <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expressed as an integer.<br/>
-If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
-If the user presses the escape key, the result depends on the widgetset: <br/>
-- if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
-- otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present
-(the dialog will not close (when the Escape key is pressed) if none of these buttons are present).
+        <descr>
+          <p>
+            The result of this function is the button the user pressed to close the dialog expressed as an integer.
+          </p>
+          <p>
+            If the user clicks the [X]-bordericon, the return value will be mrCancel.
+          </p>
+          <p>
+            If the user presses the escape key, the result depends on the widgetset:
+          </p>
+          <ul>
+            <li>If the widgetset has implemented a native dialog, the result will be mrCancel.</li>
+            <li>Otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present. The dialog will not close when the Escape key is pressed if none of these buttons are present.</li>
+          </ul>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -2593,20 +2557,29 @@ If the user presses the escape key, the result depends on the widgetset: <br/>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. <br/>
-You can choose from <br/>
-mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>
+          <p>
+            The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. <br/>
-You can choose from predefined sets: <br/>
-mbAbortRetryIgnore, <br/>
-mbOKCancel, <br/>
-mbYesNo, <br/>
-mbYesNoCancel, <br/>
-or you can make your own set.</descr>
+        <descr>
+          <p>
+            Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets:
+          </p>
+          <ul>
+            <li>mbAbortRetryIgnore</li>
+            <li>mbOKCancel</li>
+            <li>mbYesNo</li>
+            <li>mbYesNoCancel</li>
+          </ul>
+          <p>
+            Or, you can make your own set.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPos.HelpCtx">
@@ -2633,13 +2606,20 @@ or you can make your own set.</descr>
       <!-- function result Visibility: default -->
       <element name="MessageDlgPosHelp.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
-        <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expressed as an integer.<br/>
-If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
-If the user presses the escape key, the result depends on the widgetset: <br/>
-- if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
-- otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present
-(the dialog will not close (when the Escape key is pressed) if none of these buttons are present).
+        <descr>
+          <p>
+            The result of this function is the button the user pressed to close the dialog expressed as an integer.
+          </p>
+          <p>
+            If the user clicks the [X]-bordericon, the return value will be mrCancel.
+          </p>
+          <p>
+            If the user presses the escape key, the result depends on the widgetset:
+          </p>
+          <ul>
+            <li>If the widgetset has implemented a native dialog, the result will be mrCancel.</li>
+            <li>Otherwise the result will be mrCancel, mrNo or mrOk (in that order) if mbCancel, mbNo or mbOk is present. The dialog will not close when the Escape key is pressed if none of these buttons are present.</li>
+          </ul>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -2650,20 +2630,29 @@ If the user presses the escape key, the result depends on the widgetset: <br/>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.DlgType">
         <short>The type of dialog to be shown</short>
-        <descr>The DlgType parameter indicates the type of dialog to show. <br/>
-You can choose from <br/>
-mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.</descr>
+        <descr>
+          <p>
+            The DlgType parameter indicates the type of dialog to show. You can choose from mtWarning, mtError, mtInformation, mtConfirmation or mtCustom.
+          </p>
+      </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. <br/>
-You can choose from predefined sets: <br/>
-mbAbortRetryIgnore, <br/>
-mbOKCancel, <br/>
-mbYesNo, <br/>
-mbYesNoCancel, <br/>
-or you can make your own set.</descr>
+        <descr>
+          <p>
+            Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets:
+          </p>
+          <ul>
+            <li>mbAbortRetryIgnore</li>
+            <li>mbOKCancel</li>
+            <li>mbYesNo</li>
+            <li>mbYesNoCancel</li>
+          </ul>
+          <p>
+            Or, you can make your own set.
+          </p>
+      </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlgPosHelp.HelpCtx">
@@ -2688,19 +2677,28 @@ or you can make your own set.</descr>
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
         <short>Show a question to the user and get a response</short>
-        <descr><p>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. <br/>
-You can define your own captions and return values of this function.
-</p><p>Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. <br/>
-For each TModalResult a button is created. <br/>
-To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
-</p><p>The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
-</p><p>You can mark one default button using the 'IsDefault' option. When the user presses 'Return' this button is triggered.
-</p><p>Some widgetsets provide an Escape key and/or a close button. This results in mrCancel even if it is not in the given button list. Use the 'IsCancel' option to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
-</p><pre>case QuestionDlg('COPYING',
-                   'Abort?',
-                   mtConfirmation,
-                   [mrNo, '&amp;No','IsDefault',
-                   mrYes,'&amp;Yes'],0) 
+        <descr>
+          <p>
+            QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.
+          </p>
+          <p>
+            Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. For each TModalResult a button is created. To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
+          </p>
+          <p>
+            The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
+          </p>
+          <p>
+            You can mark one default button using the 'IsDefault' option. When the user presses 'Return' this button is triggered.
+          </p>
+          <p>
+            Some widgetsets provide an Escape key and/or a close button. This results in mrCancel even if it is not in the given button list. Use the 'IsCancel' option to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
+          </p>
+<code>
+case QuestionDlg('COPYING',
+    'Abort?',
+    mtConfirmation,
+    [mrNo, '&amp;No','IsDefault',
+    mrYes,'&amp;Yes'],0)
 of
    mrYes : ShowMessage('You clicked Yes');
    mrNo : ShowMessage('You clicked No');
@@ -2708,7 +2706,7 @@ else
   // mrCancel
   ShowMessage('You cancelled the dialog.');
 end;
-</pre>
+</code>
         </descr>
         <errors/>
         <seealso>
@@ -2738,20 +2736,21 @@ end;
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.Buttons">
         <short>An array of return values and caption for the buttons on the question dialog.</short>
-        <descr>Buttons is defined as a array of const. <br/>
-This means you can define any number of buttons to be shown. <br/>
-If your array consists of only predefined return values like mrOK and mrCancel, <br/>
-the standard OK and Cancel buttons will be shown.<br/>
-          <br/>
-
-
-The strength of this function is however that you can fill the array like: <br/>
-[400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake'],  <br/>
-which will create a dialog with three buttons; <br/>
-the captions of the buttons will be the strings given in the array. <br/>
-
-The return value of the function will be 400, 401 or 402, <br/>
-depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.</descr>
+        <descr>
+          <p>
+            Buttons is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists of only predefined return values like mrOK and mrCancel, the standard OK and Cancel buttons will be shown.
+          </p>
+          <p>
+            The strength of this function is however that you can fill the array like:
+          </p>
+          <code>[400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake']</code>
+          <p>
+            This will create a dialog with three buttons; the captions of the buttons will be the strings given in the array.
+          </p>
+          <p>
+            The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.HelpCtx">
@@ -2765,32 +2764,13 @@ depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'M
       <!-- procedure Visibility: default -->
       <element name="ShowMessage">
         <short>Show Message</short>
-        <descr>Procedure ShowMessage (const Msg: string);<br/>
-
-
-
-    The simplest message dialog: takes a simple string as argument, <br/>
-
-
-displays it in a stereotyped box, <br/>
-
-
-and waits for a mouse-click or enter-key event <br/>
-
-
-before returning to the calling routine or program.<br/>
-          <br/>
-
-
-
-    This is a modal procedure call, <br/>
-
-
-that is the box is displayed, receives focus, <br/>
-
-
-and does not relinquish focus until the OK box is clicked or otherwise selected.<br/>
-          <br/>
+        <descr>
+          <p>
+            The simplest message dialog: takes a simple string as argument, displays it in a box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.
+          </p>
+          <p>
+            This is a modal procedure call; the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.
+          </p>
         </descr>
         <errors/>
         <seealso>
@@ -2806,11 +2786,11 @@ and does not relinquish focus until the OK box is clicked or otherwise selected.
       <!-- procedure Visibility: default -->
       <element name="ShowMessageFmt">
         <short>Shows a message assembled from a format string and an array of arguments.</short>
-        <descr>This procedure is an extension to the <link id="ShowMessage">ShowMessage</link>
-
-
- procedure. The parameters it takes are the same as the <link id="#rtl.SysUtils.Format">Format</link>
- function.</descr>
+        <descr>
+          <p>
+            This procedure is an extension to the <link id="ShowMessage">ShowMessage</link> procedure. The parameters it takes are the same as the <link id="#rtl.SysUtils.Format">Format</link> function.
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="ShowMessage"/>
@@ -2850,11 +2830,15 @@ and does not relinquish focus until the OK box is clicked or otherwise selected.
         <short>Use InputQuery to show a dialog box to get some input from the user</short>
         <descr>
           <p>Two versions of this function which displays a prompt and expects user input of textual data;</p>
-          <p>The first includes a MaskInput boolean argument <br/>which determines whether the user input is masked out by asterisks in the text-input box <br/>(like during entry of a password),
- <br/>the second omits this property. </p>
-          <p>The text entered by the user is returned in the variable argument 'Value'. 
-The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). </p>
-          <p>Omitting the MaskInput argument is equivalent to setting it FALSE.</p>
+          <p>
+            The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), the second omits this property.
+          </p>
+          <p>
+            The text entered by the user is returned in the variable argument 'Value'. The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar).
+          </p>
+          <p>
+            Omitting the MaskInput argument is equivalent to setting it FALSE.
+          </p>
         </descr>
         <errors/>
         <seealso>
@@ -2884,20 +2868,22 @@ The function result is a boolean which returns TRUE if the OK button was pressed
       <!-- argument Visibility: default -->
       <element name="InputQuery.Value">
         <short>The value the user entered.</short>
-        <descr>When the DialogBox is shown the text in the Editbox will be Value. <br/>
-This string can be altered or amended by the user. <br/>
-When ENTER is pressed or OK clicked, Value will be the (possibly amended) text from the Editbox.</descr>
+        <descr>
+          <p>
+            When the DialogBox is shown the text in the Editbox will be Value. This string can be altered or amended by the user. When ENTER is pressed or OK clicked, Value will be the (possibly amended) text from the Editbox.
+          </p>
+        </descr>
       </element>
       <!-- function Visibility: default -->
       <element name="InputBox">
         <short>Displays a box with defined title and prompt, and expects user input in a text box</short>
         <descr>
           <p>
-            <printshort id="InputBox"/>
-. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
-</p>
-          <p>If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
-</p>
+            A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
+          </p>
+          <p>
+            If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
+          </p>
         </descr>
         <errors/>
         <seealso>
@@ -2924,10 +2910,6 @@ When ENTER is pressed or OK clicked, Value will be the (possibly amended) text f
       <!-- argument Visibility: default -->
       <element name="InputBox.APrompt">
         <short>The text asking the user for his input</short>
-        <descr>
-          <printshort id="InputBox.APrompt"/>
-
-.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputBox.ADefault">
@@ -2937,13 +2919,14 @@ When ENTER is pressed or OK clicked, Value will be the (possibly amended) text f
       <!-- function Visibility: default -->
       <element name="PasswordBox">
         <short>Password Box</short>
-        <descr>PasswordBox: a specialized form of the InputQuery. <br/>
-
-The editbox on the dialog box will mask the input. <br/>
-The only parameters are aCaption and aPrompt.<br/>
-
-    Behaves very similarly to the InputQuery function with MaskInput = TRUE; <br/>
-the difference is that the password that was typed in is returned as the result of the function (like InputBox).</descr>
+        <descr>
+          <p>
+            PasswordBox is a specialized form of InputQuery. The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.
+          </p>
+          <p>
+            Behaves very similarly to the InputQuery function with MaskInput set to TRUE; the difference is that the password that was typed in is returned as the result of the function (like InputBox).
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="InputQuery"/>
@@ -2985,11 +2968,17 @@ the difference is that the password that was typed in is returned as the result 
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
         <short>A function that allows one to user to select a directory.</short>
-        <descr>This function will show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>
-
-Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
-
-There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
+        <descr>
+          <p>
+            This function will show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree.
+          </p>
+          <p>
+            Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.
+          </p>
+          <p>
+            There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -3006,8 +2995,11 @@ There are two version of this function, the second one having the ability to ind
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.InitialDirectory">
         <short>The directory the dialog should start in.</short>
-        <descr>The directory the dialog should start in. <br/>
-If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
+        <descr>
+          <p>
+            The directory the dialog should start in. If a valid directory is given, the selected directory in the tree will be set to this directory.
+          </p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.Directory">
@@ -3075,40 +3067,99 @@ If a valid directory is given, the selected directory in the tree will be set to
       <element name="TFileDialog.FindMaskInFilter">
         <short>Find position of a mask in the given filter</short>
       </element>
-    <element name="TTaskDialog"><short>Creates full-features modal dialogs at runtime.</short><descr>Non-visual component, creates modal dialogs in runtime, with rich UI elements, like Windows TaskDialog API.</descr>
+    <element name="TTaskDialog">
+      <short>Creates full-features modal dialogs at runtime.</short>
+      <descr>Non-visual component, creates modal dialogs in runtime, with rich UI elements, like Windows TaskDialog API.</descr>
       </element>
-    <element name="TTaskDialog.Buttons"><short>Collection of items that describe buttons in dialog. Additional to CommonButtons.</short>
-      </element><element name="TTaskDialog.Caption"><short>Caption of the dialog form.</short>
-      </element><element name="TTaskDialog.Title"><short>Header text that is shown on the top, with big font and bold style. Use "\n" for new lines.</short>
-      </element><element name="TTaskDialog.VerificationText"><short>If not empty, dialog shows check-box with this caption, at the bottom.</short>
+    <element name="TTaskDialog.Buttons">
+      <short>Collection of items that describe buttons in dialog. Additional to CommonButtons.</short>
       </element>
-    <element name="TTaskDialog.Text"><short>Text that is shown as main information in the dialog. Use "\n" for new lines.</short>
-      </element><element name="TTaskDialog.DefaultButton"><short>Index of default button, from set of CommonButtons property.</short>
-      </element><element name="TTaskDialog.CommonButtons"><short>Set of standard buttons in dialog: OK, Cancel, Yes etc. Additional to Buttons.</short>
-      </element><element name="TTaskDialog.ExpandButtonCaption"><short>Dialog can have "expand button", with specified caption that shows additional info.</short>
-      </element><element name="TTaskDialog.ExpandedText"><short>Text that is shown when dialog is expanded. Use "\n" for new lines.</short>
-      </element><element name="TTaskDialog.Flags"><short>Set of advanced options for dialog.</short>
-      </element><element name="TTaskDialog.FooterIcon"><short>Icon for the footer area, at the bottom.</short>
-      </element><element name="TTaskDialog.FooterText"><short>Text that shows in the footer area, at the bottom. Use "\n" for new lines.</short>
-      </element><element name="TTaskDialog.MainIcon"><short>Icon for the main info in dialog.</short>
-      </element><element name="TTaskDialog.RadioButtons"><short>Collection of items that describe radio-buttons; they are shown in the lower part. Use "\n" to add info to buttons (shown in hint in emulated dialog, or in a new line in native Windows dialog.)</short>
+      <element name="TTaskDialog.Caption">
+        <short>Caption of the dialog form.</short>
       </element>
-    <element name="TTaskDialogFlag.tfEnableHyperlinks"><short>Allow HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) using HTML tag "a href=...".</short>
-      </element><element name="TTaskDialogFlag.tfUseHiconMain"><short>Use custom main icon with CustomMainIcon property.</short>
-      </element><element name="TTaskDialogFlag.tfAllowDialogCancellation"><short>Allow canceling the dialog by Esc key, or Alt+F4 (i.e. OS default hotkey).</short>
-      </element><element name="TTaskDialogFlag.tfVerificationFlagChecked"><short>Bottom check-box (verification) shows in the checked state.</short>
-      </element><element name="TTaskDialogFlag.tfCanBeMinimized"><short>Allow minimizing the dialog.</short>
-      </element><element name="TTaskDialogFlag.tfRtlLayout"><short>Use Right-to-Left layout for texts.</short>
-      </element><element name="TTaskDialogFlag.tfShowProgressBar"><short>Show additional progress-bar.</short>
-      </element><element name="TTaskDialogFlag.tfExpandedByDefault"><short>Initially show dialog in expanded state.</short>
-      </element><element name="TTaskDialogFlag.tfExpandFooterArea"><short>Show ExpandedText in the footer, instead of near the main text.</short>
-      </element><element name="TTaskDialogFlag.tfNoDefaultRadioButton"><short>Don't check any of radio-buttons.</short>
-      </element><element name="TTaskDialogFlag.tfShowMarqueeProgressBar"><short>Show additional progress-bar, in the marquee style, never ending progress.</short>
-      </element><element name="TTaskDialogFlag.tfUseHiconFooter"><short>Use custom footer icon with CustomFooterIcon property.</short>
-      </element><element name="TTaskDialogFlag.tfUseCommandLinks"><short>Custom buttons will be shown as big buttons in the middle of the dialog. Use "\n" to add info to buttons (shown in hint in emulated dialog).</short>
-      </element><element name="TTaskDialogFlag.tfUseCommandLinksNoIcon"><short>Don't show glyphs for custom buttons in the "command links" mode.</short>
-      </element><element name="TTaskDialogFlag.tfCallbackTimer"><short>Execute the timer callback event every 200 milliseconds.</short>
-      </element><element name="TTaskDialogFlag.tfPositionRelativeToWindow"><short>Form position will be poOwnerFormCenter, instead of poScreenCenter.</short>
+      <element name="TTaskDialog.Title">
+        <short>Header text that is shown on the top, with big font and bold style. Use "\n" for new lines.</short>
+      </element>
+      <element name="TTaskDialog.VerificationText">
+        <short>If not empty, dialog shows check-box with this caption, at the bottom.</short>
+      </element>
+    <element name="TTaskDialog.Text">
+      <short>Text that is shown as main information in the dialog. Use "\n" for new lines.</short>
+      </element>
+      <element name="TTaskDialog.DefaultButton">
+        <short>Index of default button, from set of CommonButtons property.</short>
+      </element>
+      <element name="TTaskDialog.CommonButtons">
+        <short>Set of standard buttons in dialog: OK, Cancel, Yes etc. Additional to Buttons.</short>
+      </element>
+      <element name="TTaskDialog.ExpandButtonCaption">
+        <short>Dialog can have "expand button", with specified caption that shows additional info.</short>
+      </element>
+      <element name="TTaskDialog.ExpandedText">
+        <short>Text that is shown when dialog is expanded. Use "\n" for new lines.</short>
+      </element>
+      <element name="TTaskDialog.Flags">
+        <short>Set of advanced options for dialog.</short>
+      </element>
+      <element name="TTaskDialog.FooterIcon">
+        <short>Icon for the footer area, at the bottom.</short>
+      </element>
+      <element name="TTaskDialog.FooterText">
+        <short>Text that shows in the footer area, at the bottom. Use "\n" for new lines.</short>
+      </element>
+      <element name="TTaskDialog.MainIcon">
+        <short>Icon for the main info in dialog.</short>
+      </element>
+      <element name="TTaskDialog.RadioButtons">
+        <short>Collection of items that describe radio-buttons; they are shown in the lower part. Use "\n" to add info to buttons (shown in hint in emulated dialog, or in a new line in native Windows dialog.)</short>
+      </element>
+    <element name="TTaskDialogFlag.tfEnableHyperlinks">
+      <short>Allow HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) using HTML tag "a href=...".</short>
+      </element>
+      <element name="TTaskDialogFlag.tfUseHiconMain">
+        <short>Use custom main icon with CustomMainIcon property.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfAllowDialogCancellation">
+        <short>Allow canceling the dialog by Esc key, or Alt+F4 (i.e. OS default hotkey).</short>
+      </element>
+      <element name="TTaskDialogFlag.tfVerificationFlagChecked">
+        <short>Bottom check-box (verification) shows in the checked state.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfCanBeMinimized">
+        <short>Allow minimizing the dialog.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfRtlLayout">
+        <short>Use Right-to-Left layout for texts.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfShowProgressBar">
+        <short>Show additional progress-bar.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfExpandedByDefault">
+        <short>Initially show dialog in expanded state.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfExpandFooterArea">
+        <short>Show ExpandedText in the footer, instead of near the main text.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfNoDefaultRadioButton">
+        <short>Don't check any of radio-buttons.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfShowMarqueeProgressBar">
+        <short>Show additional progress-bar, in the marquee style, never ending progress.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfUseHiconFooter">
+        <short>Use custom footer icon with CustomFooterIcon property.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfUseCommandLinks">
+        <short>Custom buttons will be shown as big buttons in the middle of the dialog. Use "\n" to add info to buttons (shown in hint in emulated dialog).</short>
+      </element>
+      <element name="TTaskDialogFlag.tfUseCommandLinksNoIcon">
+        <short>Don't show glyphs for custom buttons in the "command links" mode.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfCallbackTimer">
+        <short>Execute the timer callback event every 200 milliseconds.</short>
+      </element>
+      <element name="TTaskDialogFlag.tfPositionRelativeToWindow">
+        <short>Form position will be poOwnerFormCenter, instead of poScreenCenter.</short>
       </element>
     </module>
     <!-- Dialogs -->

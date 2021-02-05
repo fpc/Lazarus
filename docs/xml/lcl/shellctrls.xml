@@ -8,7 +8,18 @@
     -->
     <module name="ShellCtrls">
     <short>Contains controls which display files and directories</short>
-    <descr></descr>
+    <descr>
+      <p>
+        <file>shellctrls.pas</file> contains tree view and list view controls used to access files and directories on the local file system. The following components are added to the Lazarus IDE component palette:
+      </p>
+      <p>
+        <b>Misc</b> Tab
+      </p>
+      <ul>
+        <li>TShellTreeView</li>
+        <li>TShellListView</li>
+      </ul>
+    </descr>
 
       <!-- unresolved type references Visibility: default -->
       <element name="Classes"/>
@@ -138,8 +149,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ComCtrls.TCustomTreeView"/>
           <link id="TShellTreeView"/>
+          <link id="#lcl.comctrls.TCustomTreeView">TCustomTreeView</link>
         </seealso>
       </element>
 
@@ -331,7 +342,7 @@
           <link id="TCustomShellListView.Root"/>
           <link id="TShellTreeNode"/>
           <link id="EShellCtrl"/>
-          <link id="#LCL.ComCtrls.TCustomTreeView.Selected"/>
+          <link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
         </seealso>
       </element>
 
@@ -384,9 +395,9 @@
         <seealso>
           <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
           <link id="TShellTreeView.AutoExpand"/>
-          <link id="#LCL.ComCtrls.TCustomTreeView.AutoExpand"/>
-          <link id="TTreeNode"/>
           <link id="TShellTreeNode"/>
+          <link id="TTreeNode"/>
+          <link id="#lcl.comctrls.TCustomTreeView.AutoExpand">TCustomTreeView.AutoExpand</link>
         </seealso>
       </element>
       <element name="TCustomShellTreeView.CanExpand.Result">
@@ -770,7 +781,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ComCtrls.TListItem"/>
+          <link id="#lcl.comctrls.TListItem">TListItem</link>
           <link id="TCustomShellTreeView.OnAddItem"/>
         </seealso>
       </element>
@@ -919,13 +930,13 @@
           </p>
         </descr>
         <seealso>
-          <link id="TShellListView.ViewStyle"/>
           <link id="TCustomShellListView.Create"/>
-          <link id="#lcl.comctrls.TCustomListView.ViewStyle"/>
-          <link id="#lcl.comctrls.TCustomListView.Columns"/>
-          <link id="#lcl.comctrls.TListColumns"/>
-          <link id="#lcl.comctrls.TViewStyle"/>
-          <link id="#lcl.controls.TControl.Width"/>
+          <link id="TShellListView.ViewStyle"/>
+          <link id="#lcl.comctrls.TCustomListView.ViewStyle">TCustomListView.ViewStyle</link>
+          <link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+          <link id="#lcl.comctrls.TListColumns">TListColumns</link>
+          <link id="#lcl.comctrls.TViewStyle">TViewStyle</link>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
         </seealso>
       </element>
 
@@ -994,8 +1005,8 @@
           <link id="TCustomShellListView.ObjectTypes"/>
           <link id="TCustomShellListView.Resize"/>
           <link id="TShellListView.ViewStyle"/>
-          <link id="#lcl.comctrls.TCustomListView.ViewStyle"/>
-          <link id="#lcl.comctrls.TCustomListView.Columns"/>
+          <link id="#lcl.comctrls.TCustomListView.ViewStyle">TCustomListView.ViewStyle</link>
+          <link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
         </seealso>
       </element>
       <element name="TCustomShellListView.Create.AOwner">
@@ -1025,7 +1036,7 @@
         </descr>
         <seealso>
           <link id="TCustomShellListView.Root"/>
-          <link id="#LCL.ComCtrls.TListItem"/>
+          <link id="#lcl.comctrls.TListItem">TListItem</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -1062,7 +1073,7 @@
           <link id="TCustomShellListView.PopulateWithRoot"/>
           <link id="TCustomShellListView.MaskCaseSensitivity"/>
           <link id="TCustomShellTreeView.GetFilesInDir"/>
-          <link id="#LCL.ComCtrls.TCustomListView.Clear"/>
+          <link id="#lcl.comctrls.TCustomListView.Clear">TCustomListView.Clear</link>
         </seealso>
       </element>
 
@@ -1124,8 +1135,8 @@
           <link id="TCustomShellTreeView.ShellListView"/>
           <link id="TShellTreeView"/>
           <link id="TCustomShellTreeView"/>
-          <link id="#LCL.ComCtrls.TCustomTreeView.Selected"/>
-          <link id="#LCL.ComCtrls.TCustomListView.Clear"/>
+          <link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+          <link id="#lcl.comctrls.TCustomListView.Clear">TCustomListView.Clear</link>
         </seealso>
       </element>
 

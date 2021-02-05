@@ -222,16 +222,21 @@
           <var>InsertControl</var> - undocks <var>AControl</var> and docks it into the tree</short>
         <descr>
           <p>
-            <var>InsertControl</var> - undocks AControl and docks it into the tree</p>
-          <pre>It creates a new TDockZone for AControl and inserts it as a new leaf.
-  It automatically changes the tree, so that the parent of the new TDockZone
-  will have the Orientation for InsertAt.
-
-  Example 1:
-
-    A newly created TLazDockTree has only a DockSite (TLazDockForm) and a single
-    TDockZone - the RootZone, which has as ChildControl the DockSite.
-
+            <var>InsertControl</var> - undocks AControl and docks it into the tree
+          </p>
+          <p>
+            It creates a new TDockZone for AControl and inserts it as a new leaf.
+            It automatically changes the tree, so that the parent of the new TDockZone
+            will have the Orientation for InsertAt.
+          </p>
+          <p>
+            <b>Example 1:</b>
+          </p>
+          <p>
+            A newly created TLazDockTree has only a DockSite (TLazDockForm) and a single
+            TDockZone - the RootZone, which has as ChildControl the DockSite.
+          </p>
+<pre>
     Visual:
       +-DockSite--+
       |           |
@@ -262,7 +267,7 @@
     Tree of TDockZone:
       RootZone (DockSite,doHorizontal)
        +-Zone2 (Form1,doNoOrient)
-       +-Zone3 (Form2,doNoOrient)  </pre>
+       +-Zone3 (Form2,doNoOrient)</pre>
         </descr>
         <errors/>
         <seealso/>
@@ -368,10 +373,11 @@
           <var>TLazDockForm</var> - the default DockSite for a TLazDockTree and for TCustomAnchoredDockManager</short>
         <descr>
           <p>
-            <var>TLazDockForm</var> - the default DockSite for a TLazDockTree and for TCustomAnchoredDockManager</p>
-          <pre>Note: There are two docking managers:
-      TLazDockTree uses TLazDockZone to allow docking in rows and columns.
-      TCustomAnchoredDockManager does not use TLazDockZone and allows arbitrary layouts.   </pre>
+            <var>TLazDockForm</var> - the default DockSite for a TLazDockTree and for TCustomAnchoredDockManager
+          </p>
+          <p>
+            Note: There are two docking managers: TLazDockTree uses TLazDockZone to allow docking in rows and columns. TCustomAnchoredDockManager does not use TLazDockZone and allows arbitrary layouts.
+          </p>
         </descr>
         <errors/>
         <seealso/>
@@ -715,11 +721,8 @@ minimum size</short>
           <var>TCustomAnchoredDockManager</var> - implements an LCL <var>TDockManager</var> via anchoring</short>
         <descr>
           <p>
-            <var>TCustomAnchoredDockManager</var> - implements an LCL <var>TDockManager</var> via anchoring</p>
-          <pre>It implements docking, undocking, enlarging, shrinking.
-
-    The TCustomLazDockingManager component in LDockCtrl uses this
-    docking manager and extends it by layouts that can be stored/restored.</pre>
+            <var>TCustomAnchoredDockManager</var> - implements an LCL <var>TDockManager</var> via anchoring. It implements docking, undocking, enlarging, shrinking. The TCustomLazDockingManager component in LDockCtrl uses this docking manager and extends it by layouts that can be stored/restored.
+          </p>
         </descr>
       </element>
       <element name="TCustomAnchoredDockManager.FOwnerComponent">
@@ -841,19 +844,18 @@ initializes splitter size, title height and width</short>
           <var>UndockControl</var> - removes a control from a docking form. It breaks all anchors and cleans up.</short>
         <descr>
           <p>
-            <var>UndockControl</var> - removes a control from a docking form.</p>
-          <pre>It breaks all anchors and cleans up.
-
-  The created gap will be tried to fill up.
-  It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
-  longer needed.
-
- Examples:
-
-  Search Order:
-
-  1. A TLazDockSplitter dividing only two controls:
-
+            <var>UndockControl</var> - removes a control from a docking form. It breaks all anchors and cleans up. The created gap will be tried to fill up. It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no longer needed.
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <p>
+            Search Order:
+          </p>
+          <p>
+            1. A TLazDockSplitter dividing only two controls:
+          </p>
+  <pre>
      Before:
      |-------------
      | +--+ | +---
@@ -871,9 +873,11 @@ initializes splitter size, title height and width</short>
      | +---
      |-------------
 
-
-  2. Four spiral splitters:
-
+</pre>
+          <p>
+            2. Four spiral splitters:
+          </p>
+<pre>
      Before:
               |
            A  |
@@ -895,18 +899,16 @@ initializes splitter size, title height and width</short>
               |
               |------
               |   D
-
-
-  3. No TLazDockSplitter. Control is the only child of a TLazDockPage
-     In this case the page will be deleted.
-     If the TLazDockPages has no children left, it is recursively undocked.
-
-  4. No TLazDockSplitter, Control is the only child of a TLazDockForm.
-     The TLazDockForm is deleted and the Control is floated.
-     This normally means: A form will simply be placed on the desktop, other
-     controls will be docked into their DockSite.
-
-  5. Otherwise: this control was not docked.</pre>
+</pre>
+          <p>
+            3. No TLazDockSplitter. Control is the only child of a TLazDockPage In this case the page will be deleted. If the TLazDockPages has no children left, it is recursively undocked.
+          </p>
+          <p>
+            4. No TLazDockSplitter, Control is the only child of a TLazDockForm. The TLazDockForm is deleted and the Control is floated. This normally means: A form will simply be placed on the desktop, other controls will be docked into their DockSite.
+          </p>
+          <p>
+            5. Otherwise: this control was not docked.
+          </p>
         </descr>
         <errors>Raises an exception if the control is already undocked</errors>
       </element>
