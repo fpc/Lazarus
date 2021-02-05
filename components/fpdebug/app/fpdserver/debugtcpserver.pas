@@ -15,7 +15,7 @@ uses
   sockets,
   syncobjs,
   FpDbgClasses,
-  lazfglhash,
+  LazFglHash,
   lazCollections,
   fpjson,
   fgl,

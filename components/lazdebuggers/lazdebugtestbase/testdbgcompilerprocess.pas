@@ -280,8 +280,7 @@ begin
   OutputStream.Free;
 end;
 
-function TCompilerProcess.CallCompiler(const ACommand, ACurDir: String
-  ): Boolean;
+function TCompilerProcess.CallCompiler(const ACommand, ACurDir: String): Boolean;
 var
   FpcBuild: TProcessUTF8;
   OutputLines: TStrings;

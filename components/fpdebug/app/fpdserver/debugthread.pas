@@ -15,7 +15,7 @@ uses
   DbgIntfDebuggerBase,
   lazCollections,
   syncobjs,
-  lazfglhash,
+  LazFglHash,
   fpjson,
   FpDbgClasses;
 

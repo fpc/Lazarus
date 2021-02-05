@@ -39,8 +39,10 @@ unit FpImgReaderWinPE;
 interface
 
 uses
-  Classes, {$ifdef windows}windows,{$endif} SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes,
-  LazLoggerBase, fpDbgSymTable, DbgIntfBaseTypes;
+  Classes, {$ifdef windows}windows,{$endif} SysUtils, math,
+  LazLoggerBase, LazUTF8,
+  DbgIntfBaseTypes,
+  FpImgReaderBase, FpImgReaderWinPETypes, fpDbgSymTable;
   
 type
 
@@ -48,7 +50,7 @@ type
 
   TPEFileSource = class(TDbgImageReader)
   private
-    FSections: TStringList;
+    FSections: TStringListUTF8Fast;
     FFileLoader : TDbgFileLoader;
     FOwnLoader  : Boolean;
     FCodeBase   : DWord;
@@ -100,7 +102,7 @@ end;
 
 constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 begin
-  FSections := TStringList.Create;
+  FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := False;  // need sections in original order / Symbols use "SectionNumber"
   //FSections.Duplicates := dupError;
   FSections.CaseSensitive := False;

@@ -41,9 +41,11 @@ unit FpDbgDwarfDataClasses;
 interface
 
 uses
-  Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, LazLoggerBase,
-  LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes;
+  Classes, Types, SysUtils, contnrs, Math,
+  Maps, LazClasses, LazFileUtils, LazLoggerBase, LazUTF8,
+  // FpDebug
+  FpDbgUtil, FpDbgInfo, FpDbgDwarfConst,
+  FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes;
 
 type
   TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
@@ -606,7 +608,7 @@ type
     end;
     {$IFDEF DwarfTestAccess} private {$ENDIF}
 
-    FLineNumberMap: TStringList;
+    FLineNumberMap: TStringListUTF8Fast;
 
     FAddressMap: TMap; // Holds a key for each DW_TAG_subprogram / TFpSymbolDwarfDataProc, stores TDwarfAddressInfo
     FAddressMapBuild: Boolean;
@@ -4243,7 +4245,7 @@ begin
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
-  FLineNumberMap := TStringList.Create;
+  FLineNumberMap := TStringListUTF8Fast.Create;
   FLineNumberMap.Sorted := True;
   FLineNumberMap.Duplicates := dupError;
 
@@ -4342,9 +4344,10 @@ begin
 end;
 
 function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
+
+  function FindIndex: Integer;
   var
     Name: String;
-  function FindIndex: Integer;
   begin
     // try fullname first
     Result := FLineNumberMap.IndexOf(AFileName);
@@ -4354,14 +4357,12 @@ function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWar
     Result := FLineNumberMap.IndexOf(Name);
     if Result <> -1 then Exit;
 
-    Name := UpperCase(Name);
     for Result := 0 to FLineNumberMap.Count - 1 do
-    begin
-      if Name = UpperCase(ExtractFileName(FLineNumberMap[Result]))
-      then Exit;
-    end;
-    Result := -1
+      if UTF8CompareLatinTextFast(Name, ExtractFileName(FLineNumberMap[Result])) = 0 then
+        Exit;
+    Result := -1;
   end;
+
 var
   idx: Integer;
 begin

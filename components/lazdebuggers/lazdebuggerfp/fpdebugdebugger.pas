@@ -7,11 +7,15 @@ unit FpDebugDebugger;
 interface
 
 uses
-  Classes, SysUtils, fgl, math, Forms, Maps, process, LazLogger, LazClasses,
-  Dialogs, FpDbgClasses, FpDbgInfo, contnrs, FpErrorMessages, FpPascalBuilder,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, FpdMemoryTools, FpPascalParser,
-  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgDwarf,
-  FpDbgUtil, FpDebugDebuggerUtils;
+  Classes, SysUtils, fgl, math, contnrs, process,
+  Forms, Dialogs,
+  Maps, LazLogger, LazUTF8,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  FpDebugDebuggerUtils,
+  // FpDebug
+  FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
+  FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
+  FpDbgDwarf, FpDbgUtil;
 
 type
 
@@ -603,7 +607,7 @@ type
 
   TFpLineInfo = class(TDBGLineInfo) //class(TGDBMILineInfo)
   private
-    FRequestedSources: TStringList;
+    FRequestedSources: TStringListUTF8Fast;
   protected
     function  FpDebugger: TFpDebugDebugger;
     procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
@@ -736,8 +740,7 @@ procedure Register;
 implementation
 
 uses
-  FpDbgDisasX86,
-  FpDbgCommon;
+  FpDbgDisasX86;
 
 var
   DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
@@ -2847,7 +2850,7 @@ end;
 
 constructor TFpLineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
-  FRequestedSources := TStringList.Create;
+  FRequestedSources := TStringListUTF8Fast.Create;
   inherited Create(ADebugger);
 end;
 

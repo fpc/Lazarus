@@ -35,7 +35,7 @@ uses
   dynlibs,
   {$ENDIF}
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, LazUTF8,
   // Codetools
   PPUParser, CodeTree, FileProcs, LazFileUtils, BasicCodeTools, CodeGraph,
   CodeToolManager, CodeToolsStructs;
@@ -244,7 +244,7 @@ procedure TPPUMember.GetMissingUnits(var List: TStrings);
       CurUnitName:=UsesList[i];
       if Group.Groups.FindMemberWithUnitName(CurUnitName)=nil then begin
         if List=nil then
-          List:=TStringList.Create;
+          List:=TStringListUTF8Fast.Create;
         if List.IndexOf(CurUnitName)<0 then
           List.Add(CurUnitName);
       end;
@@ -817,7 +817,7 @@ var
   List: TStringList;
 begin
   AVLNode:=FMembers.FindLowest;
-  List:=TStringList.Create;
+  List:=TStringListUTF8Fast.Create;
   while AVLNode<>nil do begin
     Member:=TPPUMember(AVLNode.Data);
     if not (pmfAutoDisabled in Member.Flags) then begin

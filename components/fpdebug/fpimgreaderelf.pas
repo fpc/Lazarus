@@ -32,10 +32,10 @@ interface
 
 uses
   Classes, SysUtils,
-  FpImgReaderBase,
-  fpDbgSymTable, DbgIntfBaseTypes,
-  FpImgReaderElfTypes, LCLProc,  // these files are part of
-  FpDbgCommon;
+  LazUTF8, LazLoggerBase,
+  DbgIntfBaseTypes,
+  // FpDebug
+  FpImgReaderBase, fpDbgSymTable, FpImgReaderElfTypes, FpDbgCommon;
 
 type
   TElfSection = packed record
@@ -67,7 +67,7 @@ type
 
   TElfDbgSource = class(TDbgImageReader) // executable parser
   private
-    FSections: TStringList;
+    FSections: TStringListUTF8Fast;
     FFileLoader     : TDbgFileLoader;
     fOwnSource  : Boolean;
     fElfFile    : TElfFile;
@@ -346,7 +346,7 @@ var
   i: Integer;
   fs: TElfSection;
 begin
-  FSections := TStringList.Create;
+  FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := True;
   //FSections.Duplicates := dupError;
   FSections.CaseSensitive := False;

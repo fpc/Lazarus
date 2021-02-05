@@ -11,7 +11,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
-  fgl, lazfglhash,
+  fgl, LazFglHash,
   fpDbgSymTable,
   Classes, SysUtils, DbgIntfBaseTypes, contnrs,
   FpDbgCommon;

@@ -57,7 +57,7 @@ uses
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, LFMTrees, SourceChanger, CustomCodeTool, CodeToolsStructs,
   // LazUtils
-  LazFileUtils, LazFileCache, AvgLvlTree;
+  LazFileUtils, LazFileCache, LazUTF8, AvgLvlTree;
 
 type
   TStandardCodeTool = class;
@@ -1424,12 +1424,12 @@ begin
   BuildTree(lsrMainUsesSectionEnd);
   UsesNode:=FindMainUsesNode(UseContainsSection);
   if UsesNode=nil then exit;
-  FoundInUnits:=TStringList.Create;
-  MissingInUnits:=TStringList.Create;
+  FoundInUnits:=TStringListUTF8Fast.Create;
+  MissingInUnits:=TStringListUTF8Fast.Create;
   if IgnoreNormalUnits then
     NormalUnits:=nil
   else
-    NormalUnits:=TStringList.Create;
+    NormalUnits:=TStringListUTF8Fast.Create;
   Node:=UsesNode.FirstChild;
   while Node<>nil do begin
     // read next unit name
@@ -6656,7 +6656,7 @@ var
   begin
     if Found then begin
       if FoundIncludeFiles=nil then
-        FoundIncludeFiles:=TStringList.Create;
+        FoundIncludeFiles:=TStringListUTF8Fast.Create;
       NewFilename:=TrimFilename(AFilename);
       if FoundIncludeFiles.IndexOf(NewFilename)<0 then
         FoundIncludeFiles.Add(NewFilename);

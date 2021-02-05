@@ -5,7 +5,10 @@ unit TestCommonSources;
 interface
 
 uses
-  Classes, SysUtils, LCLType, strutils, LazFileUtils, TestOutputLogger;
+  Classes, SysUtils, strutils,
+  LCLType,
+  LazFileUtils, LazUTF8,
+  TestOutputLogger;
 
 {$R sources.rc}
 
@@ -19,7 +22,7 @@ type
     FFileName: String;
     FFolder: String;
     FOtherSources: Array of TCommonSource;
-    FBreakPoints: TStringList;
+    FBreakPoints: TStringListUTF8Fast;
     function GetBreakPoints(AName: String): Integer;
     function GetFullFileName: String;
     function GetOtherBreakPoints(AUnitName, AName: String): Integer;
@@ -43,7 +46,7 @@ function GetCommonSourceFor(AName: String): TCommonSource;
 
 implementation
 var
-  CommonSources: TStringList;
+  CommonSources: TStringListUTF8Fast;
   BlockRecurseName: String;
 
 function GetCommonSourceFor(AName: String): TCommonSource;
@@ -82,7 +85,7 @@ begin
   i := FBreakPoints.IndexOf(AName);
   if (i < 0) or (FBreakPoints.Objects[i] = nil) then
     raise Exception.Create('Break unknown '+AName);
-  Result := Integer(PtrInt(FBreakPoints.Objects[i]));
+  Result := PtrInt(FBreakPoints.Objects[i]);
 //TestLogger.DebugLn(['Break: ',AName, '  ',Result]);
 end;
 
@@ -148,7 +151,7 @@ begin
   FData.LoadFromStream(r);
   r.Free;
 
-  FBreakPoints := TStringList.Create;
+  FBreakPoints := TStringListUTF8Fast.Create;
   if FData.Count < 1 then exit;
 
   // TEST_USES
@@ -233,7 +236,7 @@ begin
 end;
 
 initialization
-  CommonSources := TStringList.Create;
+  CommonSources := TStringListUTF8Fast.Create;
 
 finalization;
   while CommonSources.Count > 0 do begin

@@ -34,10 +34,12 @@ uses
   // LCL
   LCLProc, FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
   ExtCtrls, ComCtrls,
-  AvgLvlTree,
+  // LazUtils
+  AvgLvlTree, LazUTF8,
+  // BuildIntf
+  ProjectIntf, PackageIntf,
   // IDEIntf
-  ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
-  PackageIntf,
+  LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
   BasicCodeTools, FileProcs, LazFileUtils, LazFileCache, CodyStrConsts,
   CodeToolManager, CodeCache, PPUParser, PPUCodeTools, DefineTemplates,
@@ -217,7 +219,7 @@ end;
 constructor TPPUDlgLinkedFile.Create;
 begin
   inherited Create;
-  Units:=TStringList.Create;
+  Units:=TStringListUTF8Fast.Create;
 end;
 
 destructor TPPUDlgLinkedFile.Destroy;

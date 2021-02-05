@@ -1574,7 +1574,8 @@ constructor TFindIdentifierInUsesSection_FindMissingFPCUnit.Create;
 begin
   inherited;
   FResults := TStringList.Create;
-  FResults.CaseSensitive := True;
+  FResults.CaseSensitive := True;  // Why CaseSensitive?
+  FResults.UseLocale := False;
   FResults.Duplicates := dupIgnore;
   FResults.Sorted := True;
 end;

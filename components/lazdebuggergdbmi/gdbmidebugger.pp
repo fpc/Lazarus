@@ -916,7 +916,7 @@ type
     FInIdle: Boolean;
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
-    FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
+    FSourceNames: TStringListUTF8Fast; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FInProcessStopped: Boolean; // paused, but maybe state run
     FCommandNoneMiState: Array [TGDBMIExecCommandType] of Boolean;
     FCommandAsyncState: Array [TGDBMIExecCommandType] of Boolean;
@@ -8135,10 +8135,12 @@ end;
 constructor TGDBMILineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
   FSourceIndex := TStringList.Create;
+  FSourceIndex.UseLocale := False;
   FSourceIndex.Sorted := True;
   FSourceIndex.Duplicates := dupError;
   FSourceIndex.CaseSensitive := True;
   FRequestedSources := TStringList.Create;
+  FRequestedSources.UseLocale := False;
   FRequestedSources.Sorted := True;
   FRequestedSources.Duplicates := dupError;
   FRequestedSources.CaseSensitive := True;
@@ -8436,7 +8438,7 @@ begin
   FTargetInfo.TargetPID := 0;
   FTargetInfo.TargetFlags := [];
   FDebuggerFlags := [];
-  FSourceNames := TStringList.Create;
+  FSourceNames := TStringListUTF8Fast.Create;
   FSourceNames.Sorted := True;
   FSourceNames.Duplicates := dupError;
   FSourceNames.CaseSensitive := False;

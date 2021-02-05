@@ -25,11 +25,15 @@ uses
   {$IFdef WithWinMemReader}
   windows,
   {$ENDIF}
-  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
-  LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
-  Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
-  FpDbgCommon;
+  Classes, sysutils, math,
+  Forms,
+  LazLoggerBase, LazUTF8, LazClasses,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  // FpDebug
+  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpDbgLoader, FpDbgDwarf,
+  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgCommon,
+  LldbDebugger, LldbInstructions, LldbHelper;
 
 type
 
@@ -251,7 +255,7 @@ type
 
   TFpLldbLineInfo = class(TDBGLineInfo)
   private
-    FRequestedSources: TStringList;
+    FRequestedSources: TStringListUTF8Fast;
   protected
     function  FpDebugger: TFpLldbDebugger;
     procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
@@ -891,7 +895,7 @@ end;
 
 constructor TFpLldbLineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
-  FRequestedSources := TStringList.Create;
+  FRequestedSources := TStringListUTF8Fast.Create;
   inherited Create(ADebugger);
 end;
 

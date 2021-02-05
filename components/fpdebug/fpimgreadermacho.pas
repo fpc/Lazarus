@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, SysUtils, contnrs,
-  macho, FpImgReaderMachoFile, FpImgReaderBase, LazLoggerBase,
+  LazFglHash, LazLoggerBase, LazUTF8,
   DbgIntfBaseTypes,
-  lazfglhash,
-  fpDbgSymTable, FpDbgUtil;
+  // FpDebug
+  macho, FpImgReaderMachoFile, FpImgReaderBase, fpDbgSymTable, FpDbgUtil;
 
 type
 
@@ -18,7 +18,7 @@ type
   TDbgMachoDataSource = class(TDbgImageReader)
   private
     fSource     : TDbgFileLoader;
-    FSections: TStringList;
+    FSections: TStringListUTF8Fast;
     fSubFiles: TStringList;
     fAddressMapList: TDbgAddressMapList;
     fOwnSource  : Boolean;
@@ -407,7 +407,7 @@ begin
 
   ReadFile;
 
-  FSections := TStringList.Create;
+  FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := True;
   FSections.Duplicates := dupAccept;
   FSections.CaseSensitive := False;

@@ -34,7 +34,9 @@ unit PPUParser;
 interface
 
 uses
-  Classes, SysUtils, contnrs, FileProcs, LazFileUtils;
+  Classes, SysUtils, contnrs,
+  FileProcs,
+  LazFileUtils, LazUTF8;
 
 const
   PPUIsEndianBig = {$IFDEF ENDIAN_BIG}True{$ELSE}False{$ENDIF};
@@ -2544,7 +2546,7 @@ begin
   while not EndOfEntry do begin
     AUnitName:=ReadEntryShortstring;
     if List=nil then
-      List:=TStringList.Create;
+      List:=TStringListUTF8Fast.Create;
     if List.IndexOf(AUnitName)<0 then
       List.Add(AUnitName);
     ReadEntryDWord; // CRC
