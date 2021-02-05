@@ -36,7 +36,7 @@ uses
   // SynEdit
   SynEdit, SynEditTextTrimmer, SynEditTypes,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, DividerBevel, CheckBoxThemed,
+  IDEOptionsIntf, IDEOptEditorIntf, DividerBevel,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options;
 
