@@ -5313,10 +5313,9 @@ function TEditorOptions.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
   begin
     data := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
     i := data.Size;
-    if i > 0 then begin
-      SetLength(Result, i);
+    SetLength(Result, i);
+    if i > 0 then
       data.Read(Result[1], i);
-    end;
     data.Free;
   end;
 
@@ -5324,7 +5323,7 @@ var
   s: String;
   FileVersion, i, j, v: Integer;
   NewAutoComplete: TSynEditAutoComplete;
-  Attr: TStringList;
+  Attr, ExAtr: TStrings;
   Added: Boolean;
 begin
   s := CodeTemplateFileNameExpand;
@@ -5341,9 +5340,10 @@ begin
 
     FileVersion := AnAutoComplete.Completions.Count;
     if (FileVersion > 0) then begin
-      FileVersion := AnAutoComplete.CompletionAttributes[0].IndexOfName(DciFileVersionName);
+      ExAtr := AnAutoComplete.CompletionAttributes[0];
+      FileVersion := ExAtr.IndexOfName(DciFileVersionName);
       if (FileVersion >= 0) then
-        FileVersion := StrToIntDef(AnAutoComplete.CompletionAttributes[0][FileVersion], 0);
+        FileVersion := StrToIntDef(ExAtr.ValueFromIndex[FileVersion], 0);
     end;
     if FileVersion < DciFileVersion then begin
       // Merge new entries
@@ -5351,16 +5351,17 @@ begin
       NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
       Added := False;
       for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
-        j := NewAutoComplete.CompletionAttributes[i].IndexOfName(DciVersionName);
+        ExAtr := NewAutoComplete.CompletionAttributes[i];
+        j := ExAtr.IndexOfName(DciVersionName);
         if j < 0 then
           continue;
-        v := StrToIntDef(NewAutoComplete.CompletionAttributes[i][j], 0);
+        v := StrToIntDef(ExAtr.ValueFromIndex[j], 0);
         if v <= FileVersion then
           continue;
         if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
           continue;
-        Attr := TStringList.Create;
-        Attr.Assign(NewAutoComplete.CompletionAttributes[i]); // will be owned by AnAutoComplete;
+        Attr := TStringListUTF8Fast.Create;
+        Attr.Assign(ExAtr); // will be owned by AnAutoComplete;
         AnAutoComplete.AddCompletion(
           NewAutoComplete.Completions[i],
           NewAutoComplete.CompletionValues[i],
