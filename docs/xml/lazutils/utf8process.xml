@@ -155,7 +155,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lazutils.lazfileutils.SplitCmdLineParams"/>
+          <link id="#lazutils.lazfileutils.SplitCmdLineParams">SplitCmdLineParams</link>
           <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
           <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
         </seealso>
@@ -222,9 +222,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lazutils.lazfileutils.FilenameIsAbsolute"/>
-          <link id="#lazutils.lazfileutils.CleanAndExpandFilename"/>
-          <link id="#lazutils.fileutil.FindDefaultExecutablePath"/>
+          <link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
+          <link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+          <link id="#lazutils.fileutil.FindDefaultExecutablePath">FindDefaultExecutablePath</link>
         </seealso>
       </element>
       <element name="FindFilenameOfCmd.Result">

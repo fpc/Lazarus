@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          LazHelpHTML contains types and classes used to integrate and access help files in HTML format (.htm or .html file extensions).
+          <file>lazhelphtml.pas</file> contains types and classes used to integrate and access help files in HTML format (.htm or .html file extensions). It registers <var>THTMLHelpDatabase</var> and  <var>THTMLBrowserHelpViewer</var> components on the <b>System</b> tab in the Lazarus IDE component palette.
         </p>
       </descr>
 
@@ -143,7 +143,7 @@
         </descr>
         <seealso>
           <link id="THTMLHelpDatabase.KeywordPrefix"/>
-          <link id="#LCL.LazHelpIntf.THelpNode"/>
+          <link id="#lcl.lazhelpintf.THelpNode">THelpNode</link>
         </seealso>
       </element>
 
@@ -188,7 +188,7 @@
             The ErrMsg parameter is a variable argument updated to contain specific information about return values other than shrSuccess.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="THTMLHelpDatabase.ShowURL.Result">
         <short>
@@ -283,7 +283,7 @@
             Please note that the list of node is populated at run-time only; the list is not populated at design-time.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="THTMLHelpDatabase.GetNodesForKeyword.Result">
         <short>Status of the help display request</short>
@@ -322,8 +322,8 @@
         </descr>
         <seealso>
           <link id="THTMLHelpDatabase.ShowURL"/>
-          <link id="#LCL.LazHelpIntf.THelpDatabases"/>
-          <link id="#LCL.HelpIntfs.THelpManager"/>
+          <link id="#lcl.lazhelpintf.THelpDatabases">THelpDatabases</link>
+          <link id="#lcl.helpintfs.THelpManager">THelpManager</link>
         </seealso>
       </element>
       <element name="THTMLHelpDatabase.GetEffectiveBaseURL.Result">
@@ -356,8 +356,8 @@
 
       <element name="THTMLHelpDatabase.Save">
         <short>Saves configuration settings to the specified storage</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLHelpDatabase.Save.Storage">
         <short>Storage for the configuration settings</short>
@@ -367,16 +367,16 @@
         <short>
           Default value for the BaseURL used in the HTML help database
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="THTMLHelpDatabase.BaseURL">
         <short>
           BaseURL for the HTML help database
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="THTMLHelpDatabase.AutoRegister">
@@ -462,7 +462,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#LCL.LazHelpIntf.THelpViewer"/>
+          <link id="#lcl.lazhelpintf.THelpViewer">THelpViewer</link>
         </seealso>
       </element>
 
@@ -509,7 +509,7 @@
         <seealso>
           <link id="THelpDatabase.AddSupportedMimeType"/>
           <link id="THTMLBrowserHelpViewer.BrowserParams"/>
-          <link id="#LCL.LazHelpIntf.THelpViewer.ParameterHelp"/>
+          <link id="#lcl.lazhelpintf.THelpViewer.ParameterHelp">THelpViewer.ParameterHelp</link>
         </seealso>
       </element>
       <element name="THTMLBrowserHelpViewer.Create.TheOwner">
@@ -589,8 +589,8 @@
         <short>
           Locates the default browser application used for HTML help topics
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Browser">
         <short>Browser application used for the HTML help viewer</short>
@@ -603,8 +603,8 @@
         <short>
           Stores property values from the specified help browser to the current class instance
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLBrowserHelpViewer.Assign.Source">
         <short>
@@ -616,8 +616,8 @@
         <short>
           Loads configuration settings for the help viewer from the specified storage
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLBrowserHelpViewer.Load.Storage">
         <short>Storage for the configuration settings</short>
@@ -627,8 +627,8 @@
         <short>
           Save configuration settings for the help viewer to the specified storage
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLBrowserHelpViewer.Save.Storage">
         <short>Storage for the configuration settings</short>
@@ -638,8 +638,8 @@
         <short>
           Gets the localized name for the HTML help browser/viewer application
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THTMLBrowserHelpViewer.GetLocalizedName.Result">
         <short>Value for the localized name of the application</short>
@@ -722,10 +722,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.LazHelpIntf.THelpViewer"/>
-          <link id="#LCL.LazHelpIntf.THelpViewer.AutoRegister"/>
-          <link id="#LCL.LazHelpIntf.THelpViewer.RegisterSelf"/>
-          <link id="#LCL.LazHelpIntf.THelpViewer.UnregisterSelf"/>
+          <link id="#lcl.lazhelpintf.THelpViewer">THelpViewer</link>
+          <link id="#lcl.lazhelpintf.THelpViewer.AutoRegister">THelpViewer.AutoRegister</link>
+          <link id="#lcl.lazhelpintf.THelpViewer.RegisterSelf">THelpViewer.RegisterSelf</link>
+          <link id="#lcl.lazhelpintf.THelpViewer.UnregisterSelf">THelpViewer.UnregisterSelf</link>
         </seealso>
       </element>
 

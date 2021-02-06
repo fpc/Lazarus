@@ -36,7 +36,7 @@
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
           <link id="TLazThreadedQueue"/>
-          <link id="#FCL.SyncObjs.TCriticalSection"/>
+          <link id="#fcl.syncobjs.TCriticalSection">TCriticalSection</link>
         </seealso>
       </element>
 
@@ -93,7 +93,7 @@
         <seealso>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
-          <link id="#FCL.SyncObjs.TCriticalSection.Create"/>
+          <link id="#fcl.syncobjs.TCriticalSection.Create">TCriticalSection.Create</link>
         </seealso>
       </element>
 
@@ -117,7 +117,7 @@
         <seealso>
           <link id="TLazMonitor.SpinCount"/>
           <link id="TLazMonitor.DefaultSpinCount"/>
-          <link id="#FCL.SyncObjs.TCriticalSection.Enter"/>
+          <link id="#fcl.syncobjs.TCriticalSection.Enter">TCriticalSection.Enter</link>
         </seealso>
       </element>
 
@@ -459,7 +459,7 @@
         <seealso>
           <link id="TLazThreadedQueue.DoShutDown"/>
           <link id="TLazThreadedQueue.Create"/>
-          <link id="#FCL.SyncObjs.TCriticalSection.Destroy"/>
+          <link id="#fcl.syncobjs.TCriticalSection.Destroy">TCriticalSection.Destroy</link>
         </seealso>
       </element>
 
@@ -498,8 +498,8 @@
         </descr>
         <seealso>
           <link id="TLazThreadedQueue.ShutDown"/>
-          <link id="#fcl.syncobjs.TWaitResult"/>
-          <link id="#rtl.system.RTLeventWaitFor"/>
+          <link id="#fcl.syncobjs.TWaitResult">TWaitResult</link>
+          <link id="#rtl.system.RTLEventWaitFor">RTLEventWaitFor</link>
         </seealso>
       </element>
       <element name="TLazThreadedQueue.PushItem.Result">
@@ -525,7 +525,7 @@
         </descr>
         <seealso>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
-          <link id="#FCL.SyncObjs.TWaitResult"/>
+          <link id="#fcl.syncobjs.TWaitResult">TWaitResult</link>
         </seealso>
       </element>
       <!-- function result Visibility: public -->
@@ -560,7 +560,7 @@
         <seealso>
           <link id="TLazThreadedQueue.PopItem"/>
           <link id="TLazThreadedQueue.ShutDown"/>
-          <link id="#FCL.SyncObjs.TWaitResult"/>
+          <link id="#fcl.syncobjs.TWaitResult">TWaitResult</link>
         </seealso>
       </element>
       <!-- function result Visibility: public -->
@@ -677,7 +677,7 @@
           <link id="TLazThreadedQueue.DoShutDown"/>
           <link id="TLazThreadedQueue.PushItem"/>
           <link id="TLazThreadedQueue.PopItemTimeout"/>
-          <link id="#FCL.SyncObjs.TWaitResult"/>
+          <link id="#fcl.syncobjs.TWaitResult">TWaitResult</link>
         </seealso>
       </element>
 

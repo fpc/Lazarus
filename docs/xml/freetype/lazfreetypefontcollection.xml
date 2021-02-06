@@ -10,7 +10,11 @@
       <short>
         Contains a font collection and font collection items used in the FreeType library
       </short>
-      <descr/>
+      <descr>
+        <p>
+          <file>lazfreetypefontcollection.pas</file> contains classes, type, and routines used for a font collection and font collection items used in the FreeType library.
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="Classes"/>
@@ -259,7 +263,7 @@
         <short>Implements a font collection item with styles mapped to font family names</short>
         <descr/>
         <seealso>
-          <link id="#freetypelaz.EasyLazFreeType.TCustomFamilyCollectionItem"/>
+          <link id="#freetypelaz.easylazfreetype.TCustomFamilyCollectionItem">TCustomFamilyCollectionItem</link>
         </seealso>
       </element>
 

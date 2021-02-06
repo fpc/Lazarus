@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          html2textrender.pas contains an HTML-to-Text renderer. It converts HTML into plain text by converting tags and their attributes to a representation as plain text.
+          <file>html2textrender.pas</file> contains an HTML-to-Text renderer. It converts HTML into plain text by converting tags and their attributes to a representation as plain text.
         </p>
       </descr>
 
@@ -25,7 +25,7 @@
         <short></short>
         <descr>
           <p>
-            THTML2TextRenderer is an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes. Converted text includes configurable indentation for HTML tags that affect the indentation level. The following HTML tags include special processing in the renderer:
+            <var>THTML2TextRenderer</var> is an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes. Converted text includes configurable indentation for HTML tags that affect the indentation level. The following HTML tags include special processing in the renderer:
           </p>
           <ul>
             <li>HTML</li>
@@ -360,7 +360,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#RTL.System.LineEnding"/>
+          <link id="#rtl.system.LineEnding">LineEnding</link>
         </seealso>
       </element>
 

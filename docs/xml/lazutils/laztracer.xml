@@ -26,7 +26,7 @@
         <seealso>
           <link id="GetStackTracePointers"/>
           <link id="StackTraceAsString"/>
-          <link id="#LCL.LCLProc.TDebugLCLItemInfo"/>
+          <link id="#lcl.lclproc.TDebugLCLItemInfo">TDebugLCLItemInfo</link>
         </seealso>
       </element>
 

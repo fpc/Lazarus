@@ -54,7 +54,7 @@
         </descr>
         <seealso>
           <link id="TLCLReferenceComponent"/>
-          <link id="#RTL.Classes.TComponent"/>
+          <link id="#rtl.classes.TComponent">TComponent</link>
         </seealso>
       </element>
 
@@ -92,7 +92,7 @@
             <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor. It also provides support for additional debugging information when <b>DebugLCLComponents</b> has been defined.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLCLComponent.Create.TheOwner">
         <short>Owner of the class instance</short>
@@ -132,7 +132,6 @@
             An override is required as soon as a component allows one to add notification handlers. Then all such handlers must be removed, when their owner (AnObject) is destroyed.
           </p>
         </descr>
-        <errors/>
         <seealso/>
       </element>
       <element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
@@ -150,7 +149,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.IntfUTF8KeyPress"/>
+          <link id="#lcl.controls.TWinControl.IntfUTF8KeyPress">TWinControl.IntfUTF8KeyPress</link>
         </seealso>
       </element>
 
@@ -183,8 +182,6 @@
         <seealso>
           <link id="TLCLReferenceComponent.ReferenceNeeded"/>
         </seealso>
-        <notes><note>can be?</note>
-        </notes>
       </element>
 
       <!-- variable Visibility: private -->
@@ -227,7 +224,6 @@
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.GetReferenceHandle">
         <short>Override this method to return the Handle from the reference</short>
-        <notes><note>what is Handle?</note></notes>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceHandle.Result">
         <short/>

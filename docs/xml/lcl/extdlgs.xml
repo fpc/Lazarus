@@ -547,7 +547,7 @@
           <link id="#lcl.dialogs.TOpenDialog.DefaultTitle">TOpenDialog.DefaultTitle</link>
           <link id="#lcl.dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
           <link id="#lcl.dialogs.TCommonDialog.Title">TCommonDialog.Title</link>
-          <link id="#lcl.lclstrconsts.rsfdFileSaveAs"/>
+          <link id="#lcl.lclstrconsts.rsfdFileSaveAs">rsfdFileSaveAs</link>
         </seealso>
       </element>
       <element name="TSavePictureDialog.DefaultTitle.Result">
@@ -1136,7 +1136,7 @@
         </descr>
         <seealso>
           <link id="TCalendarDialog.Execute"/>
-          <link id="#lcl.CalcForm.TCalculatorForm"/>
+          <link id="#lcl.calcform.TCalculatorForm">TCalculatorForm</link>
         </seealso>
       </element>
 

@@ -466,7 +466,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TFileDialog.DoExecute" link="#LCL.Dialogs.TCommonDialog.DoExecute">
+      <element name="TFileDialog.DoExecute" link="#lcl.dialogs.TCommonDialog.DoExecute">
         <descr/>
         <errors/>
         <seealso/>
@@ -554,7 +554,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TFileDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
+      <element name="TFileDialog.Execute" link="#lcl.dialogs.TCommonDialog.Execute">
         <descr/>
         <errors/>
         <seealso/>
@@ -589,7 +589,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title"/>
+      <element name="TFileDialog.Title" link="#lcl.dialogs.TCommonDialog.Title"/>
       <!-- property Visibility: published -->
       <element name="TFileDialog.DefaultExt">
         <short>Sets the default file extension for the file dialog box.</short>
@@ -824,7 +824,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TOpenDialog.DoExecute" link="#LCL.Dialogs.TCommonDialog.DoExecute">
+      <element name="TOpenDialog.DoExecute" link="#lcl.dialogs.TCommonDialog.DoExecute">
         <descr/>
         <errors/>
         <seealso/>
@@ -910,7 +910,7 @@
       </descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSaveDialog.Create" link="#LCL.Dialogs.TOpenDialog.Create">
+      <element name="TSaveDialog.Create" link="#lcl.dialogs.TOpenDialog.Create">
         <short/>
         <descr/>
         <errors/>
@@ -934,7 +934,7 @@
         </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TSelectDirectoryDialog.CheckFileMustExist" link="#LCL.Dialogs.TOpenDialog.CheckFileMustExist">
+      <element name="TSelectDirectoryDialog.CheckFileMustExist" link="#lcl.dialogs.TOpenDialog.CheckFileMustExist">
         <short/>
         <descr/>
         <errors/>
@@ -949,7 +949,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSelectDirectoryDialog.Create" link="#LCL.Dialogs.TOpenDialog.Create">
+      <element name="TSelectDirectoryDialog.Create" link="#lcl.dialogs.TOpenDialog.Create">
         <short/>
         <descr/>
         <errors/>
@@ -995,7 +995,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title">
+      <element name="TColorDialog.Title" link="#lcl.dialogs.TCommonDialog.Title">
         <descr>You can set the caption of the color dialog by changing this property.
 </descr>
         <seealso/>
@@ -1115,7 +1115,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TColorButton.Click" link="#LCL.Controls.TControl.Click">
+      <element name="TColorButton.Click" link="#lcl.controls.TControl.Click">
         <short/>
         <descr/>
         <errors/>
@@ -1182,7 +1182,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TColorButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
+      <element name="TColorButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -1207,38 +1207,38 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TColorButton.Destroy" link="#LCL.Buttons.TCustomSpeedButton.Destroy">
+      <element name="TColorButton.Destroy" link="#lcl.buttons.TCustomSpeedButton.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Action" link="#LCL.Controls.TControl.Action">
+      <element name="TColorButton.Action" link="#lcl.controls.TControl.Action">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TColorButton.Align" link="#lcl.controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TColorButton.Anchors" link="#lcl.controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.AllowAllUp" link="#LCL.Buttons.TCustomSpeedButton.AllowAllUp">
+      <element name="TColorButton.AllowAllUp" link="#lcl.buttons.TCustomSpeedButton.AllowAllUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TColorButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
@@ -1278,7 +1278,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Constraints" link="#LCL.Controls.TControl.Constraints">
+      <element name="TColorButton.Constraints" link="#lcl.controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
@@ -1297,67 +1297,67 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Down" link="#LCL.Buttons.TCustomSpeedButton.Down">
+      <element name="TColorButton.Down" link="#lcl.buttons.TCustomSpeedButton.Down">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TColorButton.Enabled" link="#lcl.controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Flat" link="#LCL.Buttons.TCustomSpeedButton.Flat">
+      <element name="TColorButton.Flat" link="#lcl.buttons.TCustomSpeedButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TColorButton.Font" link="#lcl.controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Hint" link="#LCL.Controls.TControl.Hint">
+      <element name="TColorButton.Hint" link="#lcl.controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Layout" link="#LCL.Buttons.TCustomSpeedButton.Layout">
+      <element name="TColorButton.Layout" link="#lcl.buttons.TCustomSpeedButton.Layout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Margin" link="#LCL.Buttons.TCustomSpeedButton.Margin">
+      <element name="TColorButton.Margin" link="#lcl.buttons.TCustomSpeedButton.Margin">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Spacing" link="#LCL.Buttons.TCustomSpeedButton.Spacing">
+      <element name="TColorButton.Spacing" link="#lcl.buttons.TCustomSpeedButton.Spacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Transparent" link="#LCL.Buttons.TCustomSpeedButton.Transparent">
+      <element name="TColorButton.Transparent" link="#lcl.buttons.TCustomSpeedButton.Transparent">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TColorButton.Visible" link="#lcl.controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TColorButton.OnClick" link="#lcl.controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
@@ -1370,67 +1370,67 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TColorButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TColorButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TColorButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TColorButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint">
+      <element name="TColorButton.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TColorButton.OnResize" link="#lcl.controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+      <element name="TColorButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TColorButton.ShowHint" link="#lcl.controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TColorButton.ParentFont" link="#lcl.controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TColorButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TColorButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
@@ -1570,7 +1570,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFontDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TFontDialog.Create" link="#rtl.classes.TComponent.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -1580,14 +1580,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFontDialog.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TFontDialog.Destroy" link="#rtl.classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title">
+      <element name="TFontDialog.Title" link="#lcl.dialogs.TCommonDialog.Title">
         <descr/>
         <seealso/>
       </element>
@@ -2049,7 +2049,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TFindDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
+      <element name="TFindDialog.Execute" link="#lcl.dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -2145,7 +2145,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TReplaceDialog.CreateForm" link="#LCL.Dialogs.TFindDialog.CreateForm">
+      <element name="TReplaceDialog.CreateForm" link="#lcl.dialogs.TFindDialog.CreateForm">
         <short/>
         <descr/>
         <errors/>
@@ -2156,14 +2156,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TReplaceDialog.SetFormValues" link="#LCL.Dialogs.TFindDialog.SetFormValues">
+      <element name="TReplaceDialog.SetFormValues" link="#lcl.dialogs.TFindDialog.SetFormValues">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TReplaceDialog.GetFormValues" link="#LCL.Dialogs.TFindDialog.GetFormValues">
+      <element name="TReplaceDialog.GetFormValues" link="#lcl.dialogs.TFindDialog.GetFormValues">
         <short/>
         <descr/>
         <errors/>
@@ -2184,13 +2184,13 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TReplaceDialog.ReplaceText" link="#LCL.Dialogs.TFindDialog.ReplaceText">
+      <element name="TReplaceDialog.ReplaceText" link="#lcl.dialogs.TFindDialog.ReplaceText">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TReplaceDialog.OnReplace" link="#LCL.Dialogs.TFindDialog.OnReplace">
+      <element name="TReplaceDialog.OnReplace" link="#lcl.dialogs.TFindDialog.OnReplace">
         <short/>
         <descr/>
         <seealso/>
@@ -2317,7 +2317,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomPrintDialog.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomPrintDialog.Create" link="#rtl.classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -3025,17 +3025,17 @@ end;
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.classes.registercomponents"/>
+          <link id="#rtl.classes.RegisterComponents">RegisterComponents</link>
         </seealso>
       </element>
       <element name="TCommonDialog.DefaultTitle">
         <short>
           <var>DefaultTitle</var> - returns the default title for a dialog</short>
       </element>
-      <element name="TOpenDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
-      <element name="TSaveDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
-      <element name="TSelectDirectoryDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
-      <element name="TColorDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TOpenDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TSaveDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TSelectDirectoryDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TColorDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
       <element name="TColorDialog.Destroy">
         <short>
           <var>Destroy</var> - destructor for <var>TColorDialog</var>: frees custom colors then calls inherited <var>Destroy</var>
@@ -3047,20 +3047,20 @@ end;
         <short>
           <var>CustomColors</var> - a customized list of colors that can be used instead of the system-supplied list</short>
       </element>
-      <element name="TColorButton.GroupIndex" link="#LCL.Buttons.TCustomSpeedButton.GroupIndex"/>
-      <element name="TFontDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
+      <element name="TColorButton.GroupIndex" link="#lcl.buttons.TCustomSpeedButton.GroupIndex"/>
+      <element name="TFontDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
       <element name="TColorButton.GetDisabledPattern">
         <short>
           <var>GetDisabledPattern</var> - returns a BitMap with a disabled pattern</short>
       </element>
-      <element name="TCommonDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TOpenDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TSaveDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TSelectDirectoryDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TColorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TColorButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TFontDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCommonDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TFileDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TOpenDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TSaveDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TSelectDirectoryDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TColorDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TColorButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TFontDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
       <element name="TFileDialog.ExtractAllFilterMasks">
         <short>Extracts all file masks from a filter</short>
       </element>

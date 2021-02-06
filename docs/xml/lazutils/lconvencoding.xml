@@ -70,9 +70,6 @@
         <seealso>
           <link id="TConvertEncodingErrorMode"/>
           <link id="UTF8ToSingleByte"/>
-          <link id="CodepagesAsian.DBCSToUTF8"/>
-          <link id="CodepagesAsian.UTF8ToDBCS"/>
-          <link id="CodepagesAsian.UnicodeToCP936"/>
         </seealso>
       </element>
 
@@ -637,24 +634,24 @@
         <short>Converts a string with single-byte values to UTF-8 using a character mapping table</short>
         <descr/>
         <seealso>
-          <link id="CharToUTF8Table"/>
-          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_1ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_15ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayISO_8859_2ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1250ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1251ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1252ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1253ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1254ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1255ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1255ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP1257ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP437ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP850ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayCP866ToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayKOI8RToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayKOI8UToUTF8"/>
-          <link id="#lazutils.CodePagesCommon.ArrayMacintoshUToUTF8"/>
+          <link id="TCharToUTF8Table"/>
+          <link id="#lazutils.codepagescommon.ArrayISO_8859_1ToUTF8">ArrayISO_8859_1ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayISO_8859_15ToUTF8">ArrayISO_8859_15ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayISO_8859_2ToUTF8">ArrayISO_8859_2ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1250ToUTF8">ArrayCP1250ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1251ToUTF8">ArrayCP1251ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1252ToUTF8">ArrayCP1252ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1253ToUTF8">ArrayCP1253ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1254ToUTF8">ArrayCP1254ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1255ToUTF8">ArrayCP1255ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1255ToUTF8">ArrayCP1255ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP1257ToUTF8">ArrayCP1257ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP437ToUTF8">ArrayCP437ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP850ToUTF8">ArrayCP850ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayCP866ToUTF8">ArrayCP866ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayKOI8RToUTF8">ArrayKOI8RToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayKOI8UToUTF8">ArrayKOI8UToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayMacintoshToUTF8">ArrayMacintoshToUTF8</link>
         </seealso>
       </element>
       <element name="SingleByteToUTF8.Result">

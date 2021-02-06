@@ -76,7 +76,7 @@
             </p>
         </descr>
         <seealso>
-          <link id="#rtl.system.LineEnding"/>
+          <link id="#rtl.system.LineEnding">LineEnding</link>
         </seealso>
       </element>
 
@@ -306,7 +306,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#lazutils.lazutf8.Utf8EscapeControlChars"/>
+          <link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
         </seealso>
       </element>
       <element name="SpecialCharsToHex.Result">
@@ -411,7 +411,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.sysutils.LineEnding"/>
+          <link id="#rtl.system.LineEnding">LineEnding</link>
         </seealso>
       </element>
       <element name="BreakString.Result">
@@ -494,8 +494,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TStrings"/>
-          <link id="#rtl.classes.TStringList"/>
+          <link id="#rtl.classes.TStrings">TStrings</link>
+          <link id="#rtl.classes.TStringList">TStringList</link>
         </seealso>
       </element>
       <element name="StringListPartToText.Result">
@@ -885,7 +885,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.sysutils.IsValidIdent"/>
+          <link id="#rtl.sysutils.IsValidIdent">IsValidIdent</link>
         </seealso>
       </element>
       <element name="LazIsValidIdent.Result"/>

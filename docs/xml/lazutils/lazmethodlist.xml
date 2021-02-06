@@ -22,7 +22,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TMethod"/>
+          <link id="#rtl.system.TMethod">TMethod</link>
         </seealso>
       </element>
 
@@ -128,8 +128,8 @@
           </p>
         </errors>
         <seealso>
-          <link id="#rtl.Classes.EListError">EListError</link>
           <link id="TMethodList.Items">TMethodList.Items</link>
+          <link id="#rtl.classes.EListError">EListError</link>
         </seealso>
       </element>
       <element name="TMethodList.RaiseIndexOutOfBounds.Index">
@@ -362,7 +362,7 @@
         <seealso>
           <link id="TMethodList.Items">TMethodList.Items</link>
           <link id="TMethodList.Delete">TMethodList.Delete</link>
-          <link id="#rtl.System.TMethod"/>
+          <link id="#rtl.system.TMethod">TMethod</link>
         </seealso>
       </element>
       <element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
@@ -378,7 +378,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
       <element name="TMethodList.CallNotifyEvents.Sender">
@@ -446,8 +446,8 @@
           <link id="TMethodList.GetReversedEnumerator">
             TMethodList.GetReversedEnumerator
           </link>
-          <link id="#rtl.System.TMethod"/>
-          <link id="#rtl.Classes.EListError">EListError</link>
+          <link id="#rtl.system.TMethod">TMethod</link>
+          <link id="#rtl.classes.EListError">EListError</link>
         </seealso>
       </element>
       <element name="TMethodList.Items.Index">

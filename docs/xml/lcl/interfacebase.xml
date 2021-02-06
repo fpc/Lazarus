@@ -8,7 +8,7 @@
     -->
     <module name="InterfaceBase">
       <short>
-        Provides an platform independent widgetset and helper functions.
+        Provides a platform independent widgetset and helper functions.
       </short>
       <descr/>
 
@@ -2254,7 +2254,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.LCLType._ABC"/>
+          <link id="#lcl.lcltype._ABC">_ABC</link>
         </seealso>
       </element>
       <element name="TWidgetSet.GetCharABCWidths.Result">
@@ -2326,7 +2326,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#lcl.LCLType.HORZRES"/>
+          <link id="#lcl.lcltype.HORZRES">HORZRES</link>
         </seealso>
       </element>
       <element name="TWidgetSet.GetDeviceCaps.Result">
@@ -2357,7 +2357,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#lcl.LCLType.DIB_RGB_COLORS"/>
+          <link id="#lcl.lcltype.DIB_RGB_COLORS">DIB_RGB_COLORS</link>
         </seealso>
       </element>
       <element name="TWidgetSet.GetDIBits.Result">
@@ -2600,7 +2600,7 @@
         <descr/>
         <seealso>
           <link id="TWidgetSet.SetROP2"/>
-          <link id="#lcl.LCLType.R2_COPYPEN"/>
+          <link id="#lcl.lcltype.R2_COPYPEN">R2_COPYPEN</link>
         </seealso>
       </element>
       <element name="TWidgetSet.GetROP2.Result">
@@ -3613,7 +3613,7 @@
         <seealso>
           <link id="TWidgetSet.BitBlt"/>
           <link id="TWidgetSet.StretchBlt"/>
-          <link id="#lcl.LCLIntf.MakeROP4"/>
+          <link id="#lcl.lclintf.MakeROP4">MakeROP4</link>
         </seealso>
       </element>
       <element name="TWidgetSet.MaskBlt.Result">
@@ -4681,8 +4681,8 @@
         <short>Changes the shape of the mouse cursor.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TCursor"/>
           <link id="TWidgetSet.CreateStandardCursor"/>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TWidgetSet.SetCursor.Result">
@@ -4901,7 +4901,7 @@
         </descr>
         <seealso>
           <link id="TWidgetSet.GetROP2"/>
-          <link id="#lcl.LCLType.R2_COPYPEN"/>
+          <link id="#lcl.lcltype.R2_COPYPEN">R2_COPYPEN</link>
         </seealso>
       </element>
       <element name="TWidgetSet.SetROP2.Result">
@@ -6030,8 +6030,8 @@
         <short>Creates one of the standard cursors.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TCursor"/>
           <link id="TWidgetSet.SetCursor"/>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TWidgetSet.CreateStandardCursor.Result">

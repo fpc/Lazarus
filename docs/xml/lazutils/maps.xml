@@ -319,7 +319,7 @@
         <short>Exception raised when a modification is made to a locked Map</short>
         <descr/>
         <seealso>
-          <link id="'TBaseMap'"/>
+          <link id="TBaseMap"/>
         </seealso>
       </element>
 
@@ -338,7 +338,7 @@
         </seealso>
       </element>
 
-      <element name="TBaseMap" link="#rtl.Classes.TPersistent">
+      <element name="TBaseMap">
         <short>
           Implements the base class for a map for unique IDs to arbitrary data
         </short>
@@ -353,6 +353,9 @@
             Author: Marc Weustink
           </p>
         </descr>
+        <seealso>
+          <link id="#rtl.classes.TPersistent">TPersistent</link>
+        </seealso>
       </element>
 
       <element name="TBaseMap.FTree"/>
@@ -490,7 +493,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LazUtils.Maps.TMap.GetData"/>
+          <link id="#lazutils.maps.TMap.GetData">TMap.GetData</link>
         </seealso>
       </element>
       <element name="TBaseMap.InternalGetData.Result">
@@ -520,7 +523,7 @@
         </descr>
         <seealso>
           <link id="TBaseMap.Delete"/>
-          <link id="#LazUtils.Maps.TMap.GetDataPtr"/>
+          <link id="#lazutils.maps.TMap.GetDataPtr">TMap.GetDataPtr</link>
         </seealso>
       </element>
       <element name="TBaseMap.InternalGetDataPtr.Result">

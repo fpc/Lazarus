@@ -255,8 +255,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lazutils.laz2_DOM.TDOMNode"/>
           <link id="TXMLReaderFlag"/>
+          <link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
         </seealso>
       </element>
 
@@ -780,9 +780,9 @@
           </p>
         </errors>
         <seealso>
-          <link id="#lazutils.laz2_DOM.TDOMNode"/>
           <link id="TXMLInputSource"/>
           <link id="TXMLContextAction"/>
+          <link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
         </seealso>
       </element>
 

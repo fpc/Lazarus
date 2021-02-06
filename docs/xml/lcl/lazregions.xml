@@ -10,7 +10,7 @@
       <short>Implements non-native regions with support for managing their Z-order</short>
       <descr>
         <p>
-          Used to implement clipping regions in <var>TLazCanvas</var>, and regions used in custom-drawn LCL controls.
+          <file>lazregions.pas</file> contains classes, types, and routines used to implement clipping regions in <var>TLazCanvas</var>, and regions used in custom-drawn LCL controls.
         </p>
         <p>
           Author: Felipe Monteiro de Carvalho
@@ -81,7 +81,7 @@
             <var>GetBoundingRect</var> is a <var>TRect</var> function used to get the rectangle with the Bounds for a  rectangular area in a region. In TLazRegionPart, the return value contains an empty rectangle (with zero assigned to its Left, Top, Right, Bottom, Width, and Height members).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: public -->
@@ -95,7 +95,7 @@
           </p>
         </descr>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegionPart.IsPointInPart.Result">
         <short>
@@ -132,7 +132,7 @@
             <var>Rect</var> is a <var>TRect</var> member which contains the rectangular area that is the bounds for the region.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: public -->
@@ -145,7 +145,7 @@
             Overrides the method in the ancestor class to use the <var>Rect</var> member as the bounds for the region.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegionRect.IsPointInPart.Result">
         <short>
@@ -183,15 +183,15 @@
       <!-- variable Visibility: public -->
       <element name="TLazRegionPolygon.Points">
         <short>Array of TPoint values that define the vertices for the polygonal region</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TLazRegionPolygon.FillMode">
         <short>Fill mode used for the polygon</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- function Visibility: public -->
@@ -241,26 +241,26 @@
 
       <element name="TLazRegionEllipse.X1">
         <short>Horizontal coordinate for the vertex</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLazRegionEllipse.Y1">
         <short>Vertical coordinate for the vertex</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLazRegionEllipse.X2">
         <short>Horizontal coordinate for the co-vertex</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLazRegionEllipse.Y2">
         <short>Vertical coordinate for the co-vertex</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLazRegionEllipse.IsPointInPart">
@@ -273,7 +273,7 @@
           </p>
           <code>(X/a)^2 + (Y/b)^2 &lt;= 1</code>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegionEllipse.IsPointInPart.Result">
         <short>True when the specified point is located inside the area for the ellipse</short>
@@ -286,49 +286,49 @@
       </element>
 
       <element name="TFPCustomRegion">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6 or older. Defined in <file>fpcanvas.pp</file> in the FCL for later FPC  versions.
         </version>
       </element>
 
       <element name="TFPCustomRegion.GetBoundingRect">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
       </element>
       <element name="TFPCustomRegion.GetBoundingRect.Result">
-        <short></short>
+        <short/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
       </element>
 
       <element name="TFPCustomRegion.IsPointInRegion">
-        <short></short>
+        <short/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.Result">
-        <short></short>
+        <short/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.AX">
-        <short></short>
+        <short/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.AY">
-        <short></short>
+        <short/>
         <version>
           Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
         </version>
@@ -347,8 +347,8 @@
         </descr>
         <seealso>
           <link id="TLazRegionWithChilds"/>
-          <link id="#LCL.LazCanvas.TLazCanvas"/>
-          <link id="#LCL.LazCanvas.TLazCanvasState.ClipRegion"/>
+          <link id="#lcl.lazcanvas.TLazCanvas">TLazCanvas</link>
+          <link id="#lcl.lazcanvas.TLazCanvasState.ClipRegion">TLazCanvasState.ClipRegion</link>
         </seealso>
       </element>
 
@@ -357,8 +357,8 @@
         <short>
           List with the Rectangles, Polygons, and Ellipses that define the display area for the region
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
@@ -369,14 +369,14 @@
             Use <var>Rect</var> to access the <var>TRect</var> structure with the bounds for the rectangular region.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TLazRegion.Rect">
         <short>TRect instance with the bounds for the region</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- constructor Visibility: public -->
@@ -387,7 +387,7 @@
             <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor to initialize the class instance. Create allocates resources needed for the <var>Parts</var> member, and sets the default value for <var>IsSimpleRectRegion</var> to <b>True</b>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- destructor Visibility: public -->
@@ -401,7 +401,7 @@
             Destroy does not call <var>Parts.Clear</var> prior to freeing the <var>Parts</var> member; that action is performed in the destructor for the <var>TFPList</var> class instance.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TLazRegion.Assign">
@@ -412,7 +412,7 @@
             Calls <var>AddPartsFromRegion</var> to capture the values from the source region.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.Assign.ASrcRegion">
         <short>Region with the values stored in the method</short>
@@ -425,7 +425,7 @@
             Frees all of the <var>TLazRegionPart</var> instances in the <var>Parts</var> member, and clears the list.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TLazRegion.CombineWith">
@@ -448,7 +448,7 @@
             In the current LCL version, only <var>RGN_COPY</var> and <var>RGN_OR</var> are implemented; all other values are ignored and no actions are performed in the method. RGN_COPY causes the Parts in ASrcRegion to be assigned to the Parts in the current class instance. RGN_OR cause the Parts in ASrcRegion to the be added to the Parts in the current class instance.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.CombineWith.ASrcRegion">
         <short>Source region with values applied in the method</short>
@@ -480,7 +480,7 @@
             <dd>An error occurred. Not used in GetRegionKind.</dd>
           </dl>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.GetRegionKind.Result">
         <short>Region flag value for the class instance</short>
@@ -490,8 +490,8 @@
         <short>
           Indicates whether the Rect member contains empty or invalid rectangle coordinates
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLazRegion.IsSimpleRectEmpty.Result">
         <short>
@@ -599,9 +599,9 @@
       <!-- procedure Visibility: public -->
       <element name="TLazRegion.SetAsSimpleRectRegion">
         <short>Sets the area for the region to the specified rectangle</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.SetAsSimpleRectRegion.ARect">
         <short>TRect with the bounds for the region</short>
@@ -642,7 +642,7 @@
             DoChangeToComplexRegion changes the value in IsSimpleRectRegion to <b>False</b>, and calls <var>AddRectangle</var> to store the value in <var>Rect</var> in the <var>Parts</var> member.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: public -->
@@ -653,7 +653,7 @@
             <var>GetBoundingRect</var> is a <var>TRect</var> function used to get the rectangle structure with the bounds for the region. GetBoundingRect uses the value in the <var>Rect</var> member as the return value for the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.GetBoundingRect.Result">
         <short>TRect with the bounds for the region</short>
@@ -670,7 +670,7 @@
             Returns <b>True</b> when the specified point is located inside the rectangle or one of the subregions.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegion.IsPointInRegion.Result">
         <short>
@@ -692,7 +692,7 @@
             <var>TLazRegionWithChilds</var> is a <var>TLazRegion</var> descendant which implements a region which can hold a list of other region holders. Use <var>Parent</var> to access the complex region which owns the current class instance. Use <var>Childs</var> to access the list of subregions for the class instance.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
@@ -703,7 +703,7 @@
             <var>Parent</var> is not maintain in methods for the class instance; it is available for use in widget set classes which utilize the region.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
@@ -714,7 +714,7 @@
             The order in this list is also the Z-Order of the sub regions inside it. The element with index zero is the bottom-most one.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
@@ -723,7 +723,7 @@
         <descr>
           Contains an available link to another object.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- constructor Visibility: public -->
@@ -734,7 +734,7 @@
             <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited constructor to initialize the class instance, and allocates resources needed for the <var>Childs</var> member.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- destructor Visibility: public -->
@@ -745,7 +745,7 @@
             <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the <var>Childs</var> member are freed. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: public -->
@@ -759,7 +759,7 @@
             Part of the behavior is implemented in TLazRegionWithChilds.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TLazRegionWithChilds.IsPointInRegion.Result">
         <short>

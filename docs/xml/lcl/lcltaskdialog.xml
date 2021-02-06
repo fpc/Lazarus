@@ -8,19 +8,28 @@
     -->
     <module name="LCLTaskDialog">
       <short>Implement a TaskDialog window for LCL</short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>lcltaskdialog.pas</file> implements a task dialog . It is implemented natively on Windows Vista and Windows 7 (or later). On Windows XP, it is emulated.
+        </p>
+        <p>
+          This unit was originally a part of the freeware Synopse mORMot framework, licensed under a MPL/GPL/LGPL tri-license; version 1.19. It has been relicensed with permission from Arnaud Bouchez, the original author, and all contributors.
+        </p>
+        <p>
+          The original file name is SynTaskDialog.pas.
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
+      <element name="Windows"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazUTF8"/>
       <element name="LCLType"/>
       <element name="LCLStrConsts"/>
       <element name="LCLIntf"/>
       <element name="InterfaceBase"/>
-      <element name="Windows"/>
-      <element name="CommCtrl"/>
-      <element name="Messages"/>
       <element name="LResources"/>
-      <element name="Classes"/>
-      <element name="SysUtils"/>
       <element name="Menus"/>
       <element name="Graphics"/>
       <element name="Forms"/>
@@ -30,162 +39,164 @@
       <element name="Buttons"/>
 
       <element name="TaskDialogIndirect">
-        <short></short>
+        <short/>
         <descr>
-          Filled once in the initialization block. You can set this reference to Nil to force Delphi dialogs even on Windows Vista/Seven (e.g. make sense if TaskDialogBiggerButtons=true).
+          <p>
+            Filled once in the initialization block. You can set this reference to Nil to force Delphi dialogs even on Windows Vista/Seven (e.g. make sense if TaskDialogBiggerButtons=true).
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TaskDialogIndirect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TaskDialogIndirect.AConfig">
-        <short></short>
+        <short/>
       </element>
       <element name="TaskDialogIndirect.Res">
-        <short></short>
+        <short/>
       </element>
       <element name="TaskDialogIndirect.ResRadio">
-        <short></short>
+        <short/>
       </element>
       <element name="TaskDialogIndirect.VerifyFlag">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration type Visibility: default -->
       <element name="TCommonButton">
-        <short></short>
+        <short/>
         <descr>
           The standard common buttons handled by the Task Dialog.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbOK">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbYes">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbNo">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbCancel">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbRetry">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TCommonButton.cbClose">
-        <short></short>
+        <short/>
       </element>
 
       <!-- set type Visibility: default -->
       <element name="TCommonButtons">
-        <short></short>
+        <short/>
         <descr>
           Set of standard common buttons handled by the Task Dialog.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration type Visibility: default -->
       <element name="TTaskDialogIcon">
-        <short></short>
+        <short/>
         <descr>
           The available main icons for the Task Dialog.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiBlank">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiWarning">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiQuestion">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiError">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiInformation">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiNotUsed">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogIcon.tiShield">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration type Visibility: default -->
       <element name="TTaskDialogFooterIcon">
-        <short></short>
+        <short/>
         <descr>
           The available footer icons for the Task Dialog.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiBlank">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiWarning">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiQuestion">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiError">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiInformation">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFooterIcon.tfiShield">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration type Visibility: default -->
       <element name="TTaskDialogFlag">
-        <short></short>
+        <short/>
         <descr>
           <p>
             The available configuration flags for the Task Dialog. Most are standard TDF_* flags used for Vista/Seven native API (see http://msdn.microsoft.com/en-us/library/bb787473(v=vs.85).aspx for TASKDIALOG_FLAGS).
@@ -197,327 +208,329 @@
             Our emulation code will handle only tdfUseCommandLinks, tdfUseCommandLinksNoIcon, and tdfQuery options.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfEnableHyperLinks">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfUseHIconMain">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfUseHIconFooter">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfAllowDialogCancellation">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfUseCommandLinks">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfUseCommandLinksNoIcon">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfExpandFooterArea">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfExpandByDefault">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfVerificationFlagChecked">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfShowProgressBar">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfShowMarqueeProgressBar">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfCallbackTimer">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfPositionRelativeToWindow">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfRtlLayout">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfNoDefaultRadioButton">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfCanBeMinimized">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfQuery">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfQueryMasked">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogFlag.tdfQueryFieldFocused">
-        <short></short>
+        <short/>
       </element>
 
       <!-- set type Visibility: default -->
       <element name="TTaskDialogFlags">
-        <short></short>
+        <short/>
         <descr>
           Set of available configuration flags for the Task Dialog.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- pointer type Visibility: default -->
       <element name="PTaskDialog">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- procedure type Visibility: default -->
       <element name="TTaskDialogButtonClickedEvent">
-        <short></short>
+        <short/>
         <descr>
-          This callback will be triggerred when a task dialog button is clicked. To prevent the task dialog from closing, the application must set ACanClose to FALSE. Otherwise, the task dialog is closed and the button ID is returned via the original TTaskDialog.Execute() result.
+          <p>
+            This callback will be triggerred when a task dialog button is clicked. To prevent the task dialog from closing, the application must set ACanClose to FALSE. Otherwise, the task dialog is closed and the button ID is returned via the original TTaskDialog.Execute() result.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialogButtonClickedEvent.Sender">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialogButtonClickedEvent.AButtonID">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialogButtonClickedEvent.ACanClose">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration type Visibility: default -->
       <element name="TTaskDialogElement">
-        <short></short>
+        <short/>
         <descr>
-          The visual components of this Task Dialog. Maps low-level TDE_CONTENT...TDE_MAIN_INSTRUCTION constants, the query editor and checkbox. tdeEdit is for the query editor. tdeVerif is for the checkbox.
+          <p>
+            The visual components of this Task Dialog. Maps low-level TDE_CONTENT...TDE_MAIN_INSTRUCTION constants, the query editor and checkbox. tdeEdit is for the query editor. tdeVerif is for the checkbox.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeContent">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeExpandedInfo">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeFooter">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeMainInstruction">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeEdit">
-        <short></short>
+        <short/>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TTaskDialogElement.tdeVerif">
-        <short></short>
+        <short/>
       </element>
 
       <!-- class Visibility: default -->
       <element name="TEmulatedTaskDialog">
-        <short></short>
+        <short/>
         <descr>
           The actual form class used for emulation.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- procedure Visibility: protected -->
       <element name="TEmulatedTaskDialog.HandleEmulatedButtonClicked">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TEmulatedTaskDialog.HandleEmulatedButtonClicked.Sender">
-        <short></short>
+        <short/>
       </element>
 
       <!-- procedure Visibility: public -->
       <element name="TEmulatedTaskDialog.KeyDown">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TEmulatedTaskDialog.KeyDown.Key">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TEmulatedTaskDialog.KeyDown.Shift">
-        <short></short>
+        <short/>
       </element>
 
       <!-- constructor Visibility: public -->
       <element name="TEmulatedTaskDialog.CreateNew">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TEmulatedTaskDialog.CreateNew.AOwner">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TEmulatedTaskDialog.CreateNew.Num">
-        <short></short>
+        <short/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TEmulatedTaskDialog.Owner">
-        <short></short>
+        <short/>
         <descr>
           The Task Dialog structure which created the form.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TEmulatedTaskDialog.Element">
-        <short></short>
+        <short/>
         <descr>
           The labels corresponding to the Task Dialog main elements.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TEmulatedTaskDialog.Combo">
-        <short></short>
+        <short/>
         <descr>
           The Task Dialog selection list.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TEmulatedTaskDialog.Edit">
-        <short></short>
+        <short/>
         <descr>
           The Task Dialog optional query editor.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: public -->
       <element name="TEmulatedTaskDialog.Verif">
-        <short></short>
+        <short/>
         <descr>
           The Task Dialog optional checkbox.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- record type Visibility: default -->
       <element name="TTaskDialogImplementation">
-        <short></short>
+        <short/>
         <descr>
-          Structure for low-level access to the task dialog implementation. Points either to the HWND handle of the new TaskDialog API or to the emulation dialog.
+          <p>
+            Structure for low-level access to the task dialog implementation. Points either to the HWND handle of the new TaskDialog API or to the emulation dialog.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogImplementation.OnButtonClicked">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogImplementation.Emulated">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogImplementation.Wnd">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogImplementation.Form">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- record type Visibility: default -->
       <element name="TTaskDialog">
-        <short></short>
+        <short/>
         <descr>
           <p>
             Implements a TaskDialog. Uses the new TaskDialog API under Vista/Seven, and emulate it with pure Pascal code and standard themed components under XP or 2K. Creating a TTaskDialog object/record on the stack will initialize all of its string parameters to ''. Set the appropriate string parameters, then call Execute() with all additional parameters.
@@ -528,7 +541,7 @@
           <p>
             Typical usage:
           </p>
-          <code>
+<code>
 var Task: TTaskDialog;
 begin
   Task.Inst := 'Saving application settings';
@@ -542,158 +555,188 @@ begin
   if Task.VerifyChecked then
   ShowMessage(Task.Verify);
 end;
-          </code>
+</code>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Title">
-        <short></short>
+        <short/>
         <descr>
           The main title of the dialog window. If left void, the title of the application main form is used.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Inst">
-        <short></short>
+        <short/>
         <descr>
-          The main instruction (first line on top of window). Any '\n' will be converted into a line feed. If left void, the text is taken from the current dialog icon kind.
+          <p>
+            The main instruction (first line on top of window). Any '\n' will be converted into a line feed. If left void, the text is taken from the current dialog icon kind.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Content">
-        <short></short>
+        <short/>
         <descr>
-          The dialog's primary content content text. Any '\n' will be converted into a line feed.
+          <p>
+            The dialog's primary content content text. Any '\n' will be converted into a line feed.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Buttons">
-        <short></short>
+        <short/>
         <descr>
-          A #13#10 or #10 separated list of custom buttons. They will be identified with an ID number starting at 100. By default, the buttons will be created at the dialog bottom, just like the common buttons. If tdfUseCommandLinks flag is set, the custom buttons will be created as big button in the middle of the dialog window; in this case, any '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
+          <p>
+            A #13#10 or #10 separated list of custom buttons. They will be identified with an ID number starting at 100. By default, the buttons will be created at the dialog bottom, just like the common buttons. If tdfUseCommandLinks flag is set, the custom buttons will be created as big button in the middle of the dialog window; in this case, any '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Radios">
-        <short></short>
+        <short/>
         <descr>
-          A #13#10 or #10 separated list of custom radio buttons. Tthey will be identified with an ID number starting at 200. aRadioDef parameter can be set to define the default selected value. '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
+          <p>
+            A #13#10 or #10 separated list of custom radio buttons. Tthey will be identified with an ID number starting at 200. aRadioDef parameter can be set to define the default selected value. '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Info">
-        <short></short>
+        <short/>
         <descr>
-          The expanded information content text. Any '\n' will be converted into a line feed. The Delphi emulation will always show the Info content (there is no collapse/expand button).
+          <p>
+            The expanded information content text. Any '\n' will be converted into a line feed. The Delphi emulation will always show the Info content (there is no collapse/expand button).
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.InfoExpanded">
-        <short></short>
+        <short/>
         <descr>
-          The button caption to be displayed when the information is expanded. Not used under XP: the Delphi emulation will always show the Info content.
+          <p>
+            The button caption to be displayed when the information is expanded. Not used under XP: the Delphi emulation will always show the Info content.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.InfoCollapse">
-        <short></short>
+        <short/>
         <descr>
-          The button caption to be displayed when the information is collapsed. Not used under XP: the Delphi emulation will always show the Info content.
+          <p>
+            The button caption to be displayed when the information is collapsed. Not used under XP: the Delphi emulation will always show the Info content.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Footer">
-        <short></short>
+        <short/>
         <descr>
-          The footer content text. Any '\n' will be converted into a line feed.
+          <p>
+            The footer content text. Any '\n' will be converted into a line feed.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Verify">
-        <short></short>
+        <short/>
         <descr>
-          The text of the bottom most optional checkbox.
+          <p>
+            The text of the bottom most optional checkbox.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Selection">
-        <short></short>
+        <short/>
         <descr>
-          A #13#10 or #10 separated list of items to be selected. If set, a Combo Box will be displayed to select. If tdfQuery is in the flags, the combo box will be in addition mode and the user will be able to edit the Query text or fill the field with one item of the selection. This selection is not handled via the Vista/Seven TaskDialog, but with our Delphi emulation code (via a TComboBox).
+          <p>
+            A #13#10 or #10 separated list of items to be selected. If set, a Combo Box will be displayed to select. If tdfQuery is in the flags, the combo box will be in addition mode and the user will be able to edit the Query text or fill the field with one item of the selection. This selection is not handled via the Vista/Seven TaskDialog, but with our Delphi emulation code (via a TComboBox).
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Query">
-        <short></short>
+        <short/>
         <descr>
-          Text to be edited. If tdfQuery is in the flags, will contain the default query text.
+          <p>
+            Text to be edited. If tdfQuery is in the flags, will contain the default query text.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.RadioRes">
-        <short></short>
+        <short/>
         <descr>
-          The selected radio item; the first is numbered 0.
+          <p>
+            The selected radio item; the first is numbered 0.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.SelectionRes">
-        <short></short>
+        <short/>
         <descr>
-          After execution, contains the selected item from the Selection list.
+          <p>
+            After execution, contains the selected item from the Selection list.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.VerifyChecked">
-        <short></short>
+        <short/>
         <descr>
-          Reflect the the bottom most optional checkbox state. If Verify is not '', should be set before execution. After execution, will contain the final checkbox state.
+          <p>
+            Reflect the bottom-most optional checkbox state. If Verify is not '', should be set before execution. After execution, will contain the final checkbox state.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialog.Dialog">
-        <short></short>
+        <short/>
         <descr>
-          Low-level access to the task dialog implementation.
+          <p>
+            Low-level access to the task dialog implementation.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: default -->
       <element name="TTaskDialog.Execute">
-        <short></short>
+        <short/>
         <descr>
           <p>
             Launches the TaskDialog form.
@@ -723,261 +766,270 @@ end;
             aOnButtonClicked can be set to a callback triggerred when a button is clicked.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
       <element name="TTaskDialog.Execute.Result">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aCommonButtons">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aButtonDef">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aFlags">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aDialogIcon">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aFooterIcon">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aRadioDef">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aWidth">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aParent">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aNonNative">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aEmulateClassicStyle">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.Execute.aOnButtonClicked">
-        <short></short>
+        <short/>
       </element>
 
       <!-- procedure Visibility: default -->
       <element name="TTaskDialog.SetElementText">
-        <short></short>
+        <short/>
         <descr>
-          Allow a OnButtonClicked callback to change the Task Dialog main elements. Note that tdeVerif could be modified only in emulation mode, since the API does not give any runtime access to the checkbox caption. Other elements will work in both emulated and native modes.
+          <p>
+            Allow a OnButtonClicked callback to change the Task Dialog main elements. Note that tdeVerif could be modified only in emulation mode, since the API does not give any runtime access to the checkbox caption. Other elements will work in both emulated and native modes.
+          </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.SetElementText.element">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialog.SetElementText.Text">
-        <short></short>
+        <short/>
       </element>
 
       <!-- record type Visibility: default -->
       <element name="TTaskDialogEx">
-        <short></short>
+        <short/>
         <descr>
-          A wrapper around the TTaskDialog.Execute method. Used to provide a "flat" access to task dialog parameters.
+          <p>
+            A wrapper around the TTaskDialog.Execute method. Used to provide a "flat" access to task dialog parameters.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.Base">
-        <short></short>
+        <short/>
         <descr>
-          The associated main TTaskDialog instance.
+          <p>
+            The associated main TTaskDialog instance.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.CommonButtons">
-        <short></short>
+        <short/>
         <descr>
-          Some common buttons to be displayed.
+          <p>
+            Some common buttons to be displayed.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.ButtonDef">
-        <short></short>
+        <short/>
         <descr>
           The default button ID.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.Flags">
-        <short></short>
+        <short/>
         <descr>
-          The associated configuration flags for this Task Dialog. In emulation mode, aFlags will handle only tdfUseCommandLinks, tdfUseCommandLinksNoIcon, and tdfQuery options.
+          <p>
+            The associated configuration flags for this Task Dialog. In emulation mode, aFlags will handle only tdfUseCommandLinks, tdfUseCommandLinksNoIcon, and tdfQuery options.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.DialogIcon">
-        <short></short>
+        <short/>
         <descr>
           Used to specify the dialog icon.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.FooterIcon">
-        <short></short>
+        <short/>
         <descr>
           Used to specify the footer icon.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.RadioDef">
-        <short></short>
+        <short/>
         <descr>
           The default radio button ID.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.Width">
-        <short></short>
+        <short/>
         <descr>
           Can be used to force a custom form width (in pixels).
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.NonNative">
-        <short></short>
+        <short/>
         <descr>
           If TRUE, the Delphi emulation code will always be used.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.EmulateClassicStyle">
-        <short></short>
+        <short/>
         <descr>
           Can be used to enforce conformity with the non-themed user interface.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TTaskDialogEx.OnButtonClicked">
-        <short></short>
+        <short/>
         <descr>
           This event handler will be fired on a button dialog click.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- procedure Visibility: default -->
       <element name="TTaskDialogEx.Init">
-        <short></short>
+        <short/>
         <descr>
           <p>
             Will initialize the dialog parameters. Can be used to display some information with less parameters. For example:
           </p>
-          <code>
+<code>
 var TaskEx: TTaskDialogEx;
 // ...
 TaskEx.Init;
 TaskEx.Base.Title := 'Task Dialog Test';
 TaskEx.Base.Inst := 'Callback Test';
 TaskEx.Execute;
-          </code>
+</code>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function Visibility: default -->
       <element name="TTaskDialogEx.Execute">
-        <short></short>
+        <short/>
         <descr>
-          Main (and unique) method used to show the dialog. It is a wrapper around the TTaskDialog.Execute method.
+          <p>
+            Main (and unique) method used to show the dialog. It is a wrapper around the TTaskDialog.Execute method.
+          </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
       <element name="TTaskDialogEx.Execute.Result">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialogEx.Execute.aParent">
-        <short></short>
+        <short/>
       </element>
 
       <!-- function Visibility: default -->
       <element name="UnAmp">
-        <short></short>
+        <short/>
         <descr>
-          Return the text without '&amp;' (Ampersand) characters.
+          <p>
+            Return the text without '&amp;' (Ampersand) characters.
+          </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
       <element name="UnAmp.Result">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="UnAmp.s">
-        <short></short>
+        <short/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="DefaultTaskDialog">
-        <short></short>
+        <short/>
         <descr>
           <p>
             A default Task Dialog wrapper instance. Can be used to display some information with fewer parameters, just like the TTaskDialogEx.Init method. For example:
@@ -991,48 +1043,47 @@ TaskEx.Base.Inst := 'Callback Test';
 TaskEx.Execute;
           </code>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function type Visibility: default -->
       <element name="TTaskDialogTranslate">
-        <short></short>
+        <short/>
         <descr>
           Function used to translate captions.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- function result Visibility: default -->
       <element name="TTaskDialogTranslate.Result">
-        <short></short>
+        <short/>
       </element>
 
       <!-- argument Visibility: default -->
       <element name="TTaskDialogTranslate.aString">
-        <short></short>
+        <short/>
       </element>
 
       <!-- variable Visibility: default -->
       <element name="TaskDialog_Translate">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <!-- function Visibility: default -->
       <element name="DefaultFont">
-        <short></short>
+        <short/>
         <descr>
-          Will map a default font, according to the available fonts. If Calibri is installed, it will be used by default. Falls back to Tahoma otherwise.
+          <p>
+            Will map a default font, according to the available fonts. If Calibri is installed, it will be used by default. Falls back to Tahoma otherwise.
+          </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="DefaultFont.Result">
-        <short></short>
+        <short/>
       </element>
 
     </module>

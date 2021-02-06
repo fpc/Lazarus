@@ -7,10 +7,10 @@
     ====================================================================
     -->
     <module name="DynQueue">
-      <short>
-        <file>dynqueue.pp</file> contains types and classes needed to implement a dynamic FIFO queue for arbitrary data
-      </short>
-      <descr/>
+      <short>implements a dynamic FIFO queue</short>
+      <descr>
+        <file>dynqueue.pp</file> contains types and classes needed to implement a dynamic FIFO queue for arbitrary data.
+      </descr>
 
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes"/>
@@ -77,7 +77,7 @@
         </descr>
         <seealso>
           <link id="TDynamicQueueItem"/>
-          <link id="#LCL.LResources.TCustomLazComponentQueue"/>
+          <link id="#lcl.lresources.TCustomLazComponentQueue">TCustomLazComponentQueue</link>
         </seealso>
       </element>
 

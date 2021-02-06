@@ -10,7 +10,14 @@
       <short>
         Contains classes and types used in TCustomImageList, the base class for TImageList
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>imglist.pp</file> implements <var>TImageList</var> and <var>TChangelink</var> in the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          Orginal author: Marc Weustink
+        </p>
+      </descr>
 
       <!-- unresolved externals -->
       <element name="Types"/>
@@ -41,7 +48,6 @@
       <element name="LazUtilities"/>
       <element name="AvgLvlTree"/>
 
-      <!-- "type" alias type Visibility: default -->
       <element name="TImageIndex">
         <short>Type used for an image list index (integer)</short>
         <descr>
@@ -159,7 +165,7 @@
             <var>TDrawingStyle</var> is an enumerated type with values that control the drawing style  used for images in TCustomImageList. TDrawingStyle affects the blending of the image with its background color when a mask is used in the image. These values have no significance when a mask is not present in the image. TDrawingStyle corresponds to the style values used in the WIN ImageList_Draw API.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TDrawingStyle.dsFocus">
         <short>Draws the image background using its focused color</short>
@@ -186,7 +192,7 @@
             <var>TImageType</var> indicates if an image contains contains the display data from an image or the mask for its transparent parts. The mask controls the parts of the image drawn using transparency. TImageType is the type used for the TCustomImageList.ImageType property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TImageType.itImage">
         <short>Does not represent a mask</short>
@@ -314,7 +320,7 @@
         <short>
           Performs actions needed to insert raw image data at the specified position
         </short>
-        <descr></descr>
+        <descr/>
       </element>
       <element name="TCustomImageListResolution.InternalInsert.AIndex">
         <short>Position where image data is inserted in the list</short>
@@ -327,7 +333,7 @@
         <short>
           Performs actions needed to move the storage position for image data
         </short>
-        <descr></descr>
+        <descr/>
       </element>
       <element name="TCustomImageListResolution.InternalMove.ACurIndex">
         <short>Current position of the image moved in the method</short>
@@ -345,7 +351,7 @@
         <short>
           Performs actions needed to replace image data at the specified position
         </short>
-        <descr></descr>
+        <descr/>
       </element>
       <element name="TCustomImageListResolution.InternalReplace.AIndex">
         <short>Position in the list where the image data is stored</short>
@@ -358,7 +364,7 @@
         <short>
           Performs actions needed to store raw image data at the specified position
         </short>
-        <descr></descr>
+        <descr/>
       </element>
       <element name="TCustomImageListResolution.InternalSetData.Result">
         <short>Pointer to the 32-bit RGBA raw image data stored in the method</short>
@@ -391,7 +397,7 @@
         <errors>
           Raises an EInvalidOperation exception if the index value is not in range. Raised with the message in SInvalidIndex.
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.CheckIndex.AIndex">
         <short>Ordinal position in the list to validate in the method</short>
@@ -438,7 +444,7 @@
             The current implementation does not adjust the number of allocated data blocks for the resolution after an image is deleted.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.Delete.AIndex">
         <short>Ordinal position for the image deleted in the method</short>
@@ -466,7 +472,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LazUtils.GraphType.TRawImage"/>
+          <link id="#lazutils.graphtype.TRawImage">TRawImage</link>
           <link id="TCustomImageListResolution.GetFullBitmap"/>
           <link id="TCustomImageList.GetFullRawImage"/>
         </seealso>
@@ -591,8 +597,8 @@
         <short>
           Creates the Reference image list using the facilities for the widget set
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.WSCreateReference.Result">
         <short>Class instance for the reference class</short>
@@ -620,8 +626,8 @@
 
       <element name="TCustomImageListResolution.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomImageListResolution.GetHotSpot">
@@ -631,7 +637,7 @@
             <var>GetHotSpot</var> is a <var>TPoint</var> function used to get the HotSpot for an image stored in the resolution. The HotSpot is an offset from the drawing position to the image origin. A HotSpot is used only in TDragImageList. In TCustomImageList, its position is always (<b>0,0</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.GetHotSpot.Result">
         <short>Point with the horizontal and vertical offset for the image hot spot</short>
@@ -696,8 +702,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LazUtils.GraphType.TRawImageDescription"/>
           <link id="TCustomImageListResolution.GetRawImage"/>
+          <link id="#lazutils.graphtype.TRawImageDescription">TRawImageDescription</link>
         </seealso>
       </element>
       <element name="TCustomImageListResolution.FillDescription.ADesc">
@@ -731,7 +737,7 @@
             No actions are performed in the method when Index contains an invalid position in the list of images, or when Image has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.GetBitmap.Index">
         <short>Ordinal position for the image in the list</short>
@@ -770,7 +776,7 @@
             No actions are performed in the method when Count contains 0 (<b>zero</b>), or when Image has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.GetIcon.Index">
         <short>Ordinal position for the image requested in the method</short>
@@ -806,7 +812,7 @@
             No actions are performed in the method when Count contains 0 (<b>zero</b>), or Image has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.GetFullBitmap.Image">
         <short>Bitmap image with the combined images for the resolution</short>
@@ -888,7 +894,7 @@
             No actions are performed in the method when AIndex contains a value that is an invalid position for the images in the resolution.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.Draw.ACanvas">
         <short>Canvas where the image is drawn</short>
@@ -1004,7 +1010,7 @@
             The reference class is also used to render the overlay image indicated by the  AOverlay parameter. The overlay image is drawn to the canvas at the offsets in AX and AY using the Width and Height for images in the resolution. The overlay image is not drawn if AOverlay contains a value outside the range allowed in TOverlay.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolution.DrawOverlay.ACanvas">
         <short>Canvas where the image and its overlay are rendered</short>
@@ -1284,47 +1290,47 @@
         <short>Draws the scaled image sized to the target rectangle</short>
       </element>
       <element name="TScaledImageListResolution.StretchDraw.ACanvas">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.StretchDraw.Index">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.StretchDraw.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.StretchDraw.Enabled">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TScaledImageListResolution.DrawOverlay" link="#lcl.imglist.TCustomImageListResolution.DrawOverlay">
         <short>Draws an overlay using the scaled image at the specified position</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ACanvas">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AX">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AY">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AOverlay">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AEnabled">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ADrawEffect">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ADrawingStyle">
-        <short></short>
+        <short/>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AImageType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TScaledImageListResolution.Width">
@@ -1356,7 +1362,7 @@
             <var>Valid</var> is a read-only <var>Boolean</var> property that indicates if the source image resolution for the class instance has been assigned. Valid ensures that the <var>TCustomImageListResolution</var> instance passed to the class constructor contains an assigned class instance and not the value <b>Nil</b>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TCustomImageListResolutionClass">
@@ -1492,7 +1498,7 @@
             FindBestToCopyFrom is used in the implementation of the <var>FindBestToScaleFrom</var> method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolutions.FindBestToCopyFrom.Result">
         <short>Ordinal position of the image resolution selected in the method</short>
@@ -1511,7 +1517,7 @@
             <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor. Create allocates resources needed for the internal object list which stores the image resolutions in the container. Create sets the value for the <var>ImageList</var> property to <var>AImageList</var>. Create stores the class type in <var>AResolutionClass</var> to an internal member used in the container.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageListResolutions.Create.AImageList">
         <short>Image list that owns the container</short>
@@ -1529,7 +1535,7 @@
             <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated to the internal list used to store image resolutions in the container. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TCustomImageListResolutions.FindBestToScaleFrom">
@@ -1674,7 +1680,7 @@
             Count determines the upper range boundary (<b>Count - 1</b>) available when accessing the image resolutions in the container. The lower range boundary is always <b>0</b> (<b>zero</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="TCustomImageListResolutionEnumerator">
@@ -1977,7 +1983,7 @@
 
       <element name="TCustomImageList.NotifyChangeLink">
         <short>Notifies all subscribed objects of a change in the image list</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TCustomImageList.Change"/>
           <link id="TCustomImageList.OnChange"/>
@@ -2448,7 +2454,7 @@
             </tr>
           </table>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageList.DefineProperties.Filer">
         <short>TFiler class used to read and write the component</short>
@@ -2886,7 +2892,7 @@
           <link id="TCustomImageList.Change"/>
           <link id="TCustomImageList.OnChange"/>
           <link id="TCustomImageList.Resolutions"/>
-          <link id="#lcl.LResources.ReadLRSCardinal"/>
+          <link id="#lcl.lresources.ReadLRSCardinal">ReadLRSCardinal</link>
         </seealso>
       </element>
       <element name="TCustomImageList.ReadAdvData.AStream">
@@ -3224,7 +3230,7 @@
             For this resolution, all images are copied and added to the current class instance using their <var>TBitmap</var> image data. For the remaining resolutions (if any), the <var>TCustomImageListResolutions.Find</var> method is used to locate the  resolution in the current class with compatible images (similar width and height values) as the resolution in AValue. Each of the source images for the resolution are stored in the current class instance using their raw image data.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageList.AddImages.AValue">
         <short>
@@ -3244,7 +3250,7 @@
             Every pixel in the image(s) with the color in <var>MaskColor</var> will become transparent in the stored image(s).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageList.AddMasked.Result">
         <short>The index of the first added image, -1 if unsuccessful</short>
@@ -3278,8 +3284,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.CreateBitmapFromLazarusResource"/>
           <link id="TCustomImageList.Add"/>
+          <link id="#lcl.graphics.CreateBitmapFromLazarusResource">CreateBitmapFromLazarusResource</link>
         </seealso>
       </element>
       <element name="TCustomImageList.AddLazarusResource.Result">
@@ -3322,9 +3328,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.CreateGraphicFromResourceName"/>
           <link id="TCustomImageList.Add"/>
           <link id="TCustomImageList.AddIcon"/>
+          <link id="#lcl.graphics.CreateGraphicFromResourceName">CreateGraphicFromResourceName</link>
         </seealso>
       </element>
       <element name="TCustomImageList.AddResourceName.Result">
@@ -3615,9 +3621,9 @@
             <link id="TCustomImageList.Width"/>
             <link id="TCustomImageList.GetResolution"/>
             <link id="TCustomImageListResolution.DrawOverlay"/>
-            <link id="#LazUtils.GraphType.TGraphicsDrawEffect"/>
             <link id="TDrawingStyle"/>
             <link id="TOverlay"/>
+            <link id="#lazutils.graphtype.TGraphicsDrawEffect">TGraphicsDrawEffect</link>
           </seealso>
         </element>
         <element name="TCustomImageList.DrawOverlay.ACanvas">
@@ -3673,7 +3679,7 @@
           <link id="TCustomImageList.Width"/>
           <link id="TCustomImageList.GetResolution"/>
           <link id="TCustomImageListResolution"/>
-          <link id="#LazUtils.GraphType.TGraphicsDrawEffect"/>
+          <link id="#lazutils.graphtype.TGraphicsDrawEffect">TGraphicsDrawEffect</link>
         </seealso>
       </element>
       <element name="TCustomImageList.GetBitmap.Index">
@@ -3739,7 +3745,7 @@
         </descr>
         <seealso>
           <link id="TCustomImageList.GetResolution"/>
-          <link id="#LazUtils.GraphType.TRawImage"/>
+          <link id="#lazutils.graphtype.TRawImage">TRawImage</link>
         </seealso>
       </element>
       <element name="TCustomImageList.GetFullRawImage.Image">
@@ -3757,7 +3763,7 @@
             <var>GetHotSpot</var> is a <var>TPoint</var> function used to get the HotSpot for an image stored in the image list. The HotSpot is an offset from the drawing position to the image origin. A HotSpot is used only in TDragImageList. In TCustomImageList, its position is always (<b>0,0</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomImageList.GetHotSpot.Result">
         <short>TPoint with the coordinates for the image hot spot</short>
@@ -3822,7 +3828,7 @@
           <link id="TCustomImageList.Resolutions"/>
           <link id="TCustomImageList.ScaleImage"/>
           <link id="TCustomImageListResolution"/>
-          <link id="#lcl.Graphics.TCustomIcon"/>
+          <link id="#lcl.graphics.TCustomIcon">TCustomIcon</link>
         </seealso>
       </element>
       <element name="TCustomImageList.InsertIcon.AIndex">
@@ -4899,7 +4905,7 @@
             This property exists only for Delphi compatibility. ShareImages is not used in the current implementation of TCustomImageList.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- property Visibility: public -->
@@ -4947,8 +4953,8 @@
         <short>
           Indicates the actions performed for resources with missing image sizes
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLGlyphsMissingResources.gmrAllMustExist">
         <short>
@@ -4970,8 +4976,8 @@
         <short>
           Represents glyphs for buttons or icons used in LCL controls
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLGlyphs.TEntryKey">
         <short>Record representing glyph names</short>
@@ -5008,8 +5014,8 @@
 
       <element name="TLCLGlyphs.GetImageIndex">
         <short>Gets the position of the specified resource</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLGlyphs.GetImageIndex.Result">
         <short>Ordinal position for the specified resource name</short>
@@ -5020,8 +5026,8 @@
 
       <element name="TLCLGlyphsMissingResources.TLCLGlyphs.RegisterResolutions">
         <short>Register a list of resolutions using the specified suffixes</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLGlyphs.RegisterResolutions.AResolutionWidths">
         <short>List of image widths to register</short>
@@ -5039,8 +5045,8 @@
 
       <element name="TLCLGlyphs.Create">
         <short>Constructor for the class instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLCLGlyphs.Create.AOwner">
         <short>Owner of the class instance</short>
@@ -5048,14 +5054,14 @@
 
       <element name="TLCLGlyphs.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLCLGlyphs.MissingResources">
         <short>Indicates the action performed for missing resources</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="LCLGlyphs">

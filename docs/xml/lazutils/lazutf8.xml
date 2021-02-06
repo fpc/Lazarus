@@ -35,7 +35,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.system.DefaultSystemCodePage"/>
+          <link id="#rtl.system.DefaultSystemCodePage">DefaultSystemCodePage</link>
         </seealso>
       </element>
       <element name="NeedRTLAnsi.Result">
@@ -69,8 +69,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.system.Utf8ToAnsi"/>
-          <link id="#rtl.sysutils.TFormatSettings"/>
+          <link id="#rtl.system.Utf8ToAnsi">Utf8ToAnsi</link>
+          <link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
         </seealso>
       </element>
       <element name="UTF8ToSys.Result">
@@ -96,8 +96,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.system.AnsiToUTF8"/>
-          <link id="#rtl.sysutils.TFormatSettings"/>
+          <link id="#rtl.system.AnsiToUTF8">AnsiToUTF8</link>
+          <link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
         </seealso>
       </element>
       <element name="SysToUTF8.Result">
@@ -128,7 +128,7 @@
           <link id="WinCPToUTF8"/>
           <link id="GetEnvironmentStringUTF8"/>
           <link id="GetEnvironmentVariableUTF8"/>
-          <link id="#rtl.system.OemToChar"/>
+          <link id="#rtl.system.OemToChar">OemToChar</link>
         </seealso>
       </element>
       <element name="ConsoleToUTF8.Result">
@@ -153,7 +153,7 @@
         <seealso>
           <link id="UTF8ToSys"/>
           <link id="UTF8ToWinCP"/>
-          <link id="#rtl.system.CharToOem"/>
+          <link id="#rtl.system.CharToOem">CharToOem</link>
         </seealso>
       </element>
       <element name="UTF8ToConsole.Result">
@@ -172,7 +172,7 @@
             Converts the string from Windows code page to UTF-8. Used with some Windows-specific functions. For all Windows versions supporting 8-bit codepages (but not WinCE).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="WinCPToUTF8.Result">
         <short>UTF-8-encoded values for the string</short>
@@ -190,7 +190,7 @@
             Converts the UTF-8-encoded string to the Windows code page encoding Used by <var>Write</var>  and <var>WriteLn</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8ToWinCP.Result">
         <short>UTF-8-encoded input values</short>
@@ -265,7 +265,7 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#rtl.sysutils.TFormatSettings"/>
+          <link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
         </seealso>
       </element>
       <element name="GetLocaleFormatSettingsUTF8.LCID">
@@ -335,7 +335,7 @@
             <var>SysErrorMessageUTF8</var> is used to get the UTF-8-encoded system error message for the specified error code. SysErrorMessageUTF8 calls the <var>SysUtils.SysErrorMessage</var> function and converts the error message using <var>SysToUTF8</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="SysErrorMessageUTF8.Result">
         <short>UTF-8-encoded value for the system error message</short>
@@ -353,7 +353,7 @@
             Returns the size of the UTF-8 codepoint in bytes. The return value is for a single codepoint.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointSize.Result">
         <short>Number of bytes for the codepoint</short>
@@ -371,7 +371,7 @@
             Fast version of <var>UTF8CodepointSize</var>. Assumes the UTF-8 codepoint is valid. The return value is for a single codepoint.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointSizeFast.Result">
         <short>Number of bytes for the codepoint</short>
@@ -424,7 +424,7 @@ end;
             An overloaded variant of the function is provided which uses the <var>PChar</var> type to access the byte values in the string.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Length.Result">
         <short>Number of codepoints in the byte values for the string</short>
@@ -448,7 +448,7 @@ end;
             <var>UTF8LengthFast</var> gets the length of a UTF-8-encoded string in codepoints (or characters). UTF8LengthFast is the fast version of <var>UTF8Length</var>. It does not call the UTF8CodepointSize function. The UTF-8-encoded data is assumed to be valid. The native data size for the CPU is used to process blocks of UTF-8-encoded data. For a 64-bit CPU, this means that 8 bytes are read and processed at once.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8LengthFast.Result">
         <short>Number of codepoints in the string</short>
@@ -487,7 +487,7 @@ end;
             UTF8CodepointToUnicode does not check whether the codepoint is actually defined in Unicode tables.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointToUnicode.Result">
         <short>Unicode character value for the UTF-8 character</short>
@@ -524,17 +524,16 @@ end;
             For speed reasons, this function only checks for 1, 2, 3, or 4 byte encoding errors. It does not check whether the codepoint is defined in the Unicode table.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CharacterToUnicode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharacterToUnicode.p">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharacterToUnicode.CharLen">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UnicodeToUTF8">
@@ -557,7 +556,7 @@ end;
             Raises an <var>Exception</var> when Utf8TryFindCodepointStartCodePoint is an invalid Unicode character value. Raised with the message 'UnicodeToUTF8: invalid Unicode: XXXXXXXX'.
           </p>
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UnicodeToUTF8.Result">
         <short>Number of bytes needed for the UTF-8-encode value</short>
@@ -578,7 +577,7 @@ end;
             <var>UnicodeToUTF8SkipErrors</var> is a simple and fast function used to write a single Unicode codepoint as a UTF-8-encoded value in Buf. It returns the number of bytes written. It does not append a terminating null (#0) character. It does not check if the codepoint actually exists in Unicode tables. It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequence.
           </p>
          </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UnicodeToUTF8SkipErrors.Result">
         <short>UTF-8-encoded value for the codepoint</short>
@@ -608,7 +607,7 @@ end;
             UnicodeToUTF8Inline does not process #0 byte values for the codepoint, as done for UTF-32.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UnicodeToUTF8Inline.Result">
         <short>Number of bytes required for the UTF-8-encoded value</short>
@@ -635,7 +634,7 @@ end;
             The return value is a String type with the byte values from the conversion, or an empty string ('') when s does not contain a valid UTF-8-encoded string.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8ToDoubleByteString.Result">
         <short>DBCS values for the specified codepoints</short>
@@ -656,8 +655,7 @@ end;
             The return value contains the byte values from the conversion.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8ToDoubleByte.Result">
         <short>Number of double bytes converted in the function</short>
@@ -684,7 +682,7 @@ end;
             Len is the length in bytes.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8FindNearestCharStart.Result">
         <short>Position where the next codepoint begins</short>
@@ -714,7 +712,7 @@ end;
             UTF8CodepointStrictSize will <b>NOT</b> "look" beyond the terminating #0 in a PChar, so this is safe with AnsiString values.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="Utf8TryFindCodepointStart.Result">
         <short>True when the bytes at the specified position are a valid UTF-8 codepoint</short>
@@ -750,7 +748,7 @@ end;
             The return value contains the byte values for the codepoint, or Nil when a valid codepoint was not found.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointStart.Result">
         <short>Byte values for the codepoint, or Nil</short>
@@ -766,25 +764,25 @@ end;
       </element>
 
       <element name="UTF8CharStart">
-        <short></short>
+        <short/>
         <descr>
           <remark>
             Deprecated. Use UTF8CodepointStart instead.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CharStart.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharStart.UTF8Str">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharStart.Len">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharStart.CharIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8CodepointToByteIndex">
@@ -796,41 +794,41 @@ end;
             Finds the byte index of the n-th UTF-8 codepoint, ignoring BIDI (byte len of substr).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointToByteIndex.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CodepointToByteIndex.UTF8Str">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CodepointToByteIndex.Len">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CodepointToByteIndex.CodepointIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8CharToByteIndex">
-        <short></short>
+        <short/>
         <descr>
           <remark>
             Deprecated. Use UTF8CodepointToByteIndex instead.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CharToByteIndex.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharToByteIndex.UTF8Str">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharToByteIndex.Len">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharToByteIndex.CharIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8FixBroken">
@@ -842,13 +840,13 @@ end;
             Replaces all invalid UTF-8 characters with spaces. Stops at the first occurrence of the byte value #0 (Decimal 0).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8FixBroken.P">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8FixBroken.S">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8CodepointStrictSize">
@@ -861,7 +859,7 @@ end;
             UTF8CodepointStrictSize stops examining the byte values in P when #0 is encountered.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CodepointStrictSize.Result">
         <short>Number of bytes needed for the codepoint</short>
@@ -879,14 +877,13 @@ end;
             Deprecated. Use UTF8CodepointStrictSize instead.
           </remark>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CharacterStrictLength.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8CharacterStrictLength.P">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8CStringToUTF8String">
@@ -911,7 +908,7 @@ end;
             The return value is a string which contains the number of codepoints in <var>SourceStart</var> specified in <var>SourceLen</var>, or an empty string ('') when SourceLen is 0 (zero).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CStringToUTF8String.Result">
         <short>UTF-8-encode string with C-style quoting removed</short>
@@ -935,7 +932,7 @@ end;
             Returns 0 if the search text is not found in the string.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Pos.Result">
         <short>Character position where the search text was located</short>
@@ -959,7 +956,7 @@ end;
             UTF8Copy behaves like a substring function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Copy.Result">
         <short>String with codepoints copied from the specified source</short>
@@ -992,7 +989,7 @@ end;
             An overloaded variant of the procedure is provided for platforms where the Win1252 code page is used. On these platforms, raw byte values values in s  are converted to the UTF-8 code page prior to performing the delete operation.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Delete.s">
         <short>String with values to delete in the procedure</short>
@@ -1013,7 +1010,7 @@ end;
             Inserts the specified values into a string at the given position. The value in <var>StartCharIndex</var> starts at <b>1</b>, and represents the n-th codepoint in the string where values are inserted.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Insert.source">
         <short>UTF-8 String where values are inserted</short>
@@ -1043,7 +1040,7 @@ end;
             UTF8StringReplace uses the same algorithm as the <var>StringReplace</var> function, but uses <var>UTF8LowerCase</var> for case insensitive search (when enabled in Flags).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8StringReplace.Result">
         <short>UTF-8-encoded values after the replace operation</short>
@@ -1079,7 +1076,7 @@ end;
             ALanguage indicates the language code to use for the conversion. ALanguage should be specified using ISO 639-1 format, which uses 2 characters to represent each language. If the language has no code in ISO 639-1, then the 3-chars code from ISO 639-2 should be used. For example: "tr"for the Turkish language locale. Special handling is provided in the function for Turkish ('tr') and Azeri ('az') language codes. ALanguage can be set to an empty string ('') for maximum speed in the conversion.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8LowerCase.Result">
         <short>Lowercase values for the specified string</short>
@@ -1103,7 +1100,7 @@ end;
             ALanguage indicates the language code to use for the conversion. ALanguage should be specified using ISO 639-1 format, which uses 2 characters to represent each language. If the language has no code in ISO 639-1, then the 3-chars code from ISO 639-2 should be used. For example: "tr"for the Turkish language locale. Special handling is provided in the function for Turkish ('tr') and Azeri ('az') language codes.ALanguage can be set to an empty string ('') for maximum speed in the conversion.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8UpperCase.Result">
         <short>Uppercase values for the specified string</short>
@@ -1122,7 +1119,7 @@ end;
         <descr>
           Inline variant of UTF8UpperCase.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8UpperString.Result">
         <short>Uppercase values for the string</short>
@@ -1149,7 +1146,7 @@ end;
             No actions are performed in the method when the number of bytes for the converted value differs from the number of bytes in the original value. In this case, the return value contains the unmodified string in AInStr. The return value is an empty string ('') when AInStr is an empty string ('').
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8SwapCase.Result">
         <short>String with the converted case values</short>
@@ -1173,7 +1170,7 @@ end;
             UTF8ProperCase converts all of the values in AInStr to their lowercase equivalents, before converting letters following a word delimiter to uppercase.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8ProperCase.Result">
         <short>Converting values for the string</short>
@@ -1197,7 +1194,7 @@ end;
             <var>StopOnNonUTF8</var> indicates if the function should exit when an encoded value is found that is not defined for the UTF-8 encoding, or for single byte characters inserted in the middle of a UTF-8 encoding (used in XSS attacks).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="FindInvalidUTF8Codepoint.Result">
         <short>Offset into the string for the error</short>
@@ -1224,20 +1221,19 @@ end;
             It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk. If StopOnNonUTF8 is false it will ignore undefined codes. For example #128. By default it stops on such codes.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="FindInvalidUTF8Character.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.p">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="FindInvalidUTF8Character.StopOnNonASCII">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8StringOfChar">
@@ -1252,7 +1248,7 @@ end;
             The return value is filled with byte values for the codepoint (1 to 4 bytes as per the UTF-8 encoding). The process is repeated until the number of codepoints in <var>N</var> have been stored in the return value.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8StringOfChar.Result`">
         <short>String with the specified number of occurrence of the codepoint</short>
@@ -1279,7 +1275,7 @@ end;
             Values added to the string in S are inserted at the beginning of the string (prepended).
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8AddChar.Result">
         <short>Updated value for the string</short>
@@ -1306,7 +1302,7 @@ end;
             No actions are performed in the function when AUtf8Char is an empty string (''), or contains a malformed UTF-8 codepoint.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8AddCharR.Result">
         <short>Updated value for the string</short>
@@ -1330,7 +1326,7 @@ end;
             <var>UTF8PadLeft</var> is used to add the specified number of values in <var>AUtf8Char</var> to the beginning of a string. The default value for AUtf8Char is #32 ([SPACE]), but can contain any valid UTF-8 codepoint (1 to 4 bytes). UTF8PadLeft calls <var>Utf8AddChar</var> to create the return value for the function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8PadLeft.Result">
         <short>Updated value for the string with characters inserted at the beginning</short>
@@ -1354,7 +1350,7 @@ end;
             <var>UTF8PadRight</var> is used to append the specified number of UTF-8 codepoints to the end of a string. The default value for <var>AUtf8Char</var> is #32 ([SPACE]), but can contain any valid UTF-8 codepoint (1 to 4 bytes). UTF8PadRight calls <var>Utf8AddCharR</var> to create the return value for the function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8PadRight.Result">
         <short>Updated value for the string</short>
@@ -1378,7 +1374,7 @@ end;
             <var>UTF8PadCenter</var> is used to center align a string to the specified length (number of codepoints). <var>N</var> indicates the length of the modified string after padding on the left and right with the UTF-8 codepoint in <var>AUtf8Char</var>. The default value for AUtf8Char is #32 ([SPACE]), but can contains any valid UTF-8 codepoint (1 to 4 bytes).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8PadCenter.Result">
         <short>Modified value for the string after center alignment</short>
@@ -1402,7 +1398,7 @@ end;
             <var>UTF8LeftStr</var> is used to get the specified number of characters (codepoints) at the beginning of the UTF-8-encoded string. UTF8LeftStr calls <var>Utf8Copy</var> to get the return value for the function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element namer="UTF8LeftStr.Result">
         <short>Values from the specified string</short>
@@ -1423,7 +1419,7 @@ end;
             <var>UTF8RightStr</var> is used to get the specified number of characters (codepoints) at the end of the UTF-8-encoded string. UTF8RightStr calls <var>Utf8Copy</var> to get the return value for the function.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8RightStr.Result">
         <short>Values from the string</short>
@@ -1447,16 +1443,16 @@ end;
         <notes>
           <note>This needs work.</note>
         </notes>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8QuotedStr.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8QuotedStr.S">
-        <short></short>
+        <short/>
       </element>
       <element name="UTF8QuotedStr.Quote">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UTF8StartsText">
@@ -1471,7 +1467,7 @@ end;
             UTF8StartsText calls <var>Utf8Copy</var> and <var>UTF8CompareLatinTextFast</var> to perform a case-insensitive comparison between the values.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8StartsText.Result">
         <short>True when the strings starts with the specified text</short>
@@ -1495,7 +1491,7 @@ end;
             UTF8StartsText calls <var>Utf8Copy</var> and <var>UTF8CompareLatinTextFast</var> to perform a case-insensitive comparison between the values.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8EndsText.Result">
         <short>True when the strings ends with the specified text</short>
@@ -1569,7 +1565,7 @@ end;
             No actions are performed in the function when S is an empty string (''), MaxCol is set to 0 (zero), or BreakChars is an empty set.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8WrapText.Result">
         <short>Word-wrapped version of the specified text</short>
@@ -1596,7 +1592,7 @@ end;
             <var>TEscapeMode</var> is an enumerated type with values that determine the output style for escaped characters in <var>Utf8EscapeControlChars</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TEscapeMode.emPascal">
         <short>Pascal-style escape characters '#27'</short>
@@ -1646,7 +1642,7 @@ end;
         </descr>
         <seealso>
           <link id="UTF8FixBroken"/>
-          <link id="'TEscapeMode'"/>
+          <link id="TEscapeMode"/>
         </seealso>
       </element>
       <element name="Utf8EscapeControlChars.Result">
@@ -1716,7 +1712,7 @@ end;
             <var>UTF8Trim</var> removes spaces, tabs, line breaks and control characters at both the start and the end of the UTF-8-encoded value in <var>s</var>. Use <var>Flags</var> to delete at the start only or at the end only, or to to not delete line breaks. Control characters are the Unicode sets C0 and C1, and the left-to-right and right-to-left marks.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8Trim.Result">
         <short>Trimmed values for the string</short>
@@ -1748,7 +1744,7 @@ end;
             Internally, UTF8CompareStr calls <var>WideCompareText</var> using the values in S1 and S2 converted to UTF-16 code points.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CompareStr.Result">
         <short>Relative order for the compared values</short>
@@ -1786,7 +1782,7 @@ end;
             Internally, UTF8CompareText uses <var>WideCompareText</var> when multi-byte codepoints are found in the compared values. This function guarantees proper collation on all supported platforms.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CompareText.Result">
         <short>Relative order for the compared values</short>
@@ -1841,7 +1837,7 @@ end;
             <var>UTF8CompareStrCollated</var> is used to compare two strings using language-specific sorting. The return value contains the relative sort order for the compared values, as defined for <var>UTF8CompareStr</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UTF8CompareStrCollated.Result">
         <short>Relative order for the compared values</short>
@@ -1914,7 +1910,7 @@ end;
             <var>TConvertResult</var> is an enumeration type with values that indicate the result from <var>ConvertUTF8ToUTF16</var> and <var>ConvertUTF16ToUTF8</var> function calls.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TConvertResult.trNoError">
         <short>No error in the conversion</short>
@@ -1944,7 +1940,7 @@ end;
             <var>TConvertOption</var> is an enumeration type with values that indicate options enabled during UTF-8 &lt;-&gt; UTF-16 conversions.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TConvertOption.toInvalidCharError">
         <short>Stop on invalid source char and report error</short>
@@ -2046,7 +2042,7 @@ end;
             </dd>
           </dl>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ConvertUTF8ToUTF16.Result">
         <short>Converted values from the function</short>
@@ -2177,7 +2173,7 @@ end;
             Converts the UTF-8 encoded string to UTF-16 encoding (system endian).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="UTF16ToUTF8">
@@ -2257,7 +2253,7 @@ end;
             The implementation for the routine is platform or operating-system specific. For the Darwin platform, localizations in the Main bundle are checked for language and fallback values. For other platforms, the <var>GetLanguageIDs</var> routine in the <file>GetText</file> unit is called is called to get the default Language Code ID. The value in FallbackLang appends the country code to the value in Lang.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="LazGetLanguageIDs.Lang">
         <short>Language code for the platform</short>
@@ -2273,7 +2269,7 @@ end;
             <var>LazGetShortLanguageID</var> strips country information from the language ID, making it simpler to use. Ideally the resulting ID should conform to ISO 639-1, or ISO 639-2 when the  language code is not in ISO 639-1.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="LazGetShortLanguageID.Lang">
         <short>Language ID examined in the routine</short>
@@ -2288,7 +2284,7 @@ end;
             <var>FPUpChars</var> is an array of char type and uses the Lower and Upper bounds permitted for the char type. Values in FPUpChars are assigned in the initialization section for the <file>lazutf8.pas</file> unit, and contains the uppercase equivalent for all characters in the char type.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="UTF8GetStandardCodePage">
@@ -2304,7 +2300,7 @@ end;
             The return value is set from the <var>CP_UTF8</var> constant.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
     </module>

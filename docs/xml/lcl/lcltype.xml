@@ -9,13 +9,17 @@
     <module name="LCLType">
       <short>Provides compatiblity with the Delphi Windows unit</short>
       <descr>
-        This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility.
+        <p>
+          <file>lcltype.pas</file> is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility.
+        </p>
       </descr>
+
       <!-- unresolved external references -->
       <element name="UTF8Bidi"/>
       <element name="Windows"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
+
       <!-- alias type Visibility: default -->
       <element name="TUTF8Char">
         <short>A type that can hold an UTF-8 encoded character.</short>
@@ -438,8 +442,8 @@
           Fills the destination area with Src.
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
-          <link id="#lcl.Graphics.cmSrcCopy"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
+          <link id="#lcl.graphics.cmSrcCopy">cmSrcCopy</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -448,7 +452,7 @@
           Fills the destination area with (Dst or Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -457,7 +461,7 @@
           Fills the destination area with (Dst and Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -466,7 +470,7 @@
           Fills the destination area with (Dst xor Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -475,7 +479,7 @@
           Fills the destination area with ((not Dst) and Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -484,7 +488,7 @@
           Fills the destination area with (not Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -493,7 +497,7 @@
           Fills the destination area with (not (Dst or Src))
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -502,7 +506,7 @@
           Fills the destination area with (Src and Pattern)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -511,7 +515,7 @@
           Fills the destination area with (Dst or not Src)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -520,7 +524,7 @@
           Fills the destination area with (Pattern)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -529,7 +533,7 @@
           Fills the destination area with (Dst or (not Src) or Pattern)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -538,7 +542,7 @@
           Fills the destination area with (Dst xor Pattern)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -547,7 +551,7 @@
           Fills the destination area with (not Dst)
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -556,7 +560,7 @@
           Fills the destination area with all black.
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -565,7 +569,7 @@
           Fills the destination area with all white.
         </short>
         <seealso>
-          <link id="#lcl.LCLIntf.BitBlt"/>
+          <link id="#lcl.lclintf.BitBlt">BitBlt</link>
         </seealso>
       </element>
       <!-- array type Visibility: default -->
@@ -611,7 +615,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.LCLIntf.ExtTextOut">ExtTextOut</link>
+          <link id="#lcl.lclintf.ExtTextOut">ExtTextOut</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -621,7 +625,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.LCLIntf.ExtTextOut">ExtTextOut</link>
+          <link id="#lcl.lclintf.ExtTextOut">ExtTextOut</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -4931,8 +4935,8 @@
           <p/>
         </descr>
         <seealso>
-          <link id="#lcl.LCLIntf.GetScrollInfo">GetScrollInfo</link>
-          <link id="#lcl.LCLIntf.SetScrollInfo">SetScrollInfo</link>
+          <link id="#lcl.lclintf.GetScrollInfo">GetScrollInfo</link>
+          <link id="#lcl.lclintf.SetScrollInfo">SetScrollInfo</link>
         </seealso>
       </element>
       <element name="tagScrollInfo.cbSize">
@@ -9926,9 +9930,9 @@ Values with highest bit set are system colors or themed colors. For example clNo
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.LCLIntf.CreateBrushIndirect"/>
           <link id="BS_SOLID"/>
           <link id="HS_HORIZONTAL"/>
+          <link id="#lcl.lclintf.CreateBrushIndirect">CreateBrushIndirect</link>
         </seealso>
       </element>
       <element name="tagLOGBRUSH.lbStyle">
@@ -12001,16 +12005,15 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the left mouse button, equivalent to ssLeft from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_Control"/>
           <link id="MK_RButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON1"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12018,16 +12021,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the right mouse button, equivalent to ssRight from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_Control"/>
           <link id="MK_LButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON1"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12035,16 +12038,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the shift key, equivalent to ssShift from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Control"/>
           <link id="MK_LButton"/>
           <link id="MK_RButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON1"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12052,16 +12055,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the control key, equivalent to ssCtrl from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_LButton"/>
           <link id="MK_RButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON1"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12069,16 +12072,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the middle mouse button, equivalent to ssMiddle from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_Control"/>
           <link id="MK_LButton"/>
           <link id="MK_RButton"/>
           <link id="MK_XBUTTON1"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12086,16 +12089,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the first extra mouse button, equivalent to ssExtra1 from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_Control"/>
           <link id="MK_LButton"/>
           <link id="MK_RButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -12103,16 +12106,16 @@ Values with highest bit set are system colors or themed colors. For example clNo
         <short>A key state constant to represent the second extra mouse button, equivalent to ssExtra2 from TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
-          <link id="#LCL.Forms.KeyDataToShiftState"/>
-          <link id="#LCL.Forms.ShiftStateToKeys"/>
           <link id="MK_Shift"/>
           <link id="MK_Control"/>
           <link id="MK_LButton"/>
           <link id="MK_RButton"/>
           <link id="MK_MButton"/>
           <link id="MK_XBUTTON1"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
+          <link id="#lcl.forms.KeyDataToShiftState">KeyDataToShiftState</link>
+          <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->

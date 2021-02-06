@@ -223,7 +223,7 @@
           <link id="TXMLConfig.ReadFromStream"/>
           <link id="TXMLConfig.WriteToStream"/>
           <link id="TXMLConfig.WriteXMLFile"/>
-          <link id="#LazUtils.Laz2_XMLRead.ReadXMLFile"/>
+          <link id="#lazutils.laz2_xmlread.ReadXMLFile">ReadXMLFile</link>
         </seealso>
       </element>.
       <element name="TXMLConfig.ReadXMLFile.ADoc">
@@ -556,7 +556,7 @@
           <link id="TXMLConfig.ReadXMLFile"/>
           <link id="TXMLConfig.WriteToStream"/>
           <link id="TXMLConfig.WriteXMLFile"/>
-          <link id="#LazUtils.Laz2_XMLRead.ReadXMLFile"/>
+          <link id="#lazutils.laz2_xmlread.ReadXMLFile">ReadXMLFile</link>
         </seealso>
       </element>
       <element name="TXMLConfig.ReadFromStream.s">
@@ -578,7 +578,7 @@
         <seealso>
           <link id="TXMLConfig.Document"/>
           <link id="TXMLConfig.WriteFlags"/>
-          <link id="#LazUtils.Laz2_XMLWrite.WriteXMLFile"/>
+          <link id="#lazutils.laz2_xmlwrite.WriteXMLFile">WriteXMLFile</link>
         </seealso>
       </element>
       <element name="TXMLConfig.WriteToStream.s">
@@ -837,7 +837,7 @@
         <descr></descr>
         <seealso>
           <link id="TXMLConfig.FindNode"/>
-          <link id="#LazUtils.Laz2_Dom.TDOMNode.HasChildNodes"/>
+          <link id="#lazutils.laz2_dom.TDOMNode.HasChildNodes">TDOMNode.HasChildNodes</link>
         </seealso>
       </element>
       <element name="TXMLConfig.HasChildPaths.Result">
@@ -852,7 +852,7 @@
         <descr></descr>
         <seealso>
           <link id="TXMLConfig.FindNode"/>
-          <link id="#LazUtils.Laz2_Dom.TDOMNode.GetChildCount"/>
+          <link id="#lazutils.laz2_dom.TDOMNode.GetChildCount">GetChildCount</link>
         </seealso>
       </element>
       <element name="TXMLConfig.GetChildCount.Result">
@@ -1363,7 +1363,7 @@ ACfg.SetValue('list/items/item[2]/value', 'valueC');
           </remark>
 
           <remark>
-            Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not XPath-compatible.
+            Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not fully XPath-compatible.
           </remark>
         </descr>
         <seealso>

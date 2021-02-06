@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          LazFileUtils contains types, procedures, and functions used for file and directory operations. This file is part of the LazUtils package.
+          <file>lazfileutils.pas</file> contains types, procedures, and functions used for file and directory operations. This file is part of the LazUtils package.
         </p>
         <remark>
           All functions are thread safe unless explicitly stated.
@@ -277,8 +277,8 @@
           <link id="FileCreateUTF8"/>
           <link id="DeleteFileUTF8"/>
           <link id="InvalidateFileStateCache"/>
-          <link id="#rtl.SysUtils.FileWrite"/>
-          <link id="#rtl.SysUtils.FileClose"/>
+          <link id="#rtl.sysutils.FileWrite">FileWrite</link>
+          <link id="#rtl.sysutils.FileClose">FileClose</link>
         </seealso>
       </element>
 
@@ -523,11 +523,17 @@
 
       <element name="FileIsSymlink">
         <short>Indicates if the specified file is a symbolic link in the file system</short>
-        <descr><p><var>FileIsSymlink</var> is a <var>Boolean</var> function used to determine if the specified file name is a symbolic link on the local file system.
-          </p><p>The implementation of FileIsSymlink is platform-specific. For UNIX-like environments, the <var>FpReadLink</var> function is used to determine if the symbolic link can be resolved to a physical file name in the local file system. For the Windows platform, <var>FileGetAttrUTF8</var> is called to get and examine the file attributes for the specified file name. The file attributes must include the value <b>FILE_ATTRIBUTE_REPARSE_POINT</b>, and one of the Windows API values such as <b>IO_REPARSE_TAG_SYMLINK</b> or <b>IO_REPARSE_TAG_MOUNT_POINT</b> for the corresponding file handle. For the Amiga platform, FileIsSymLink always returns <b>False</b>.
+        <descr>
+          <p>
+            <var>FileIsSymlink</var> is a <var>Boolean</var> function used to determine if the specified file name is a symbolic link on the local file system.
+          </p>
+          <p>
+            The implementation of FileIsSymlink is platform-specific. For UNIX-like environments, the <var>FpReadLink</var> function is used to determine if the symbolic link can be resolved to a physical file name in the local file system. For the Windows platform, <var>FileGetAttrUTF8</var> is called to get and examine the file attributes for the specified file name. The file attributes must include the value <b>FILE_ATTRIBUTE_REPARSE_POINT</b>, and one of the Windows API values such as <b>IO_REPARSE_TAG_SYMLINK</b> or <b>IO_REPARSE_TAG_MOUNT_POINT</b> for the corresponding file handle. For the Amiga platform, FileIsSymLink always returns <b>False</b>.
           </p>
         </descr>
-        <seealso><link id="#rtl.BaseUnix.FpReadLink"/><link id="FileGetAttrUTF8"/>
+        <seealso>
+          <link id="FileGetAttrUTF8"/>
+          <link id="#rtl.baseunix.FpReadLink">FpReadLink</link>
         </seealso>
       </element>
       <element name="FileIsSymlink.Result">
@@ -541,12 +547,20 @@
         <short>
           Indicates if the specified file has a descriptor or handle on the local file system
         </short>
-        <descr><p><var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
-          </p><p>The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
-          </p><p>The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.
+        <descr>
+          <p>
+            <var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
+          </p>
+          <p>
+            The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
+          </p>
+          <p>
+            The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.
           </p>
         </descr>
-        <seealso><link id="FileOpenUTF8"/><link id="#rtl.BaseUnix.fpfstat"/>
+        <seealso>
+          <link id="FileOpenUTF8"/>
+          <link id="#rtl.BaseUnix.FpFstat">FpFstat</link>
         </seealso>
       </element>
       <element name="FileIsHardLink.Result">
@@ -567,8 +581,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.BaseUnix.FpAccess"/>
           <link id="FileExistsUTF8"/>
+          <link id="#rtl.baseunix.FpAccess">FpAccess</link>
         </seealso>
       </element>
 
@@ -1006,7 +1020,7 @@
         <seealso>
           <link id="TPathDelimSwitch"/>
           <link id="SwitchPathDelims"/>
-          <link id="#RTL.System.DirectorySeparator"/>
+          <link id="#rtl.system.DirectorySeparator">DirectorySeparator</link>
         </seealso>
       </element>
 
@@ -1475,7 +1489,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.SysUtils.FIndFirst"/>
+          <link id="#rtl.sysutils.FindFirst">FindFirst</link>
         </seealso>
       </element>
 
@@ -1833,7 +1847,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.SysUtils.GetCurrentDir"/>
+          <link id="#rtl.sysutils.GetCurrentDir">GetCurrentDir</link>
         </seealso>
       </element>
 
@@ -1933,7 +1947,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.SysUtils.RemoveDir"/>
+          <link id="#rtl.sysutils.RemoveDir">RemoveDir</link>
         </seealso>
       </element>
 
@@ -1998,8 +2012,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#RTL.SysUtils.FileOpen"/>
           <link id="UTF8ToSys"/>
+          <link id="#rtl.sysutils.FileOpen">FileOpen</link>
         </seealso>
       </element>
       <element name="FileOpenUTF8.Result">
@@ -2024,7 +2038,7 @@
         </descr>
         <seealso>
           <link id="UTF8ToSys"/>
-          <link id="#RTL.SysUtils.FileCreate"/>
+          <link id="#rtl.sysutils.FileCreate">FileCreate</link>
         </seealso>
       </element>
       <element name="FileCreateUTF8.Result">
@@ -2046,7 +2060,7 @@
           <var>FileSizeUTF8</var> is an <var>Int64</var> function used to get the size for the file specified in the UTF-8-encoded <var>Filename</var> argument. FileSizeUTF8 calls <var>Utf8ToSys</var> to convert the value in Filename to the system string type type, and calls the <var>FindFirst</var> routine in the <file>SysUtils</file> unit to get the size for the specified file name.
         </descr>
         <seealso>
-          <link id="#RTL.SysUtils.FindFirst"/>
+          <link id="#rtl.sysutils.FindFirst">FindFirst</link>
         </seealso>
       </element>
       <element name="FileSizeUtf8.Result">
@@ -2342,8 +2356,8 @@ Modified: MM/DD/YYYY hh:mm
           </p>
         </descr>
         <seealso>
-          <link id="#RTL.SysUtils.GetAppConfigDir"/>
           <link id="ForceDirectoriesUTF8"/>
+          <link id="#rtl.sysutils.GetAppConfigDir">GetAppConfigDir</link>
         </seealso>
       </element>
       <element name="GetAppConfigDirUTF8.Result">
@@ -2388,8 +2402,8 @@ Modified: MM/DD/YYYY hh:mm
         </errors>
         <seealso>
           <link id="ForceDirectoriesUTF8"/>
-          <link id="#RTL.SysUtils.GetAppConfigFile"/>
-          <link id="#LazUtils.LazUTF8.SysToUTF8"/>
+          <link id="#rtl.sysutils.GetAppConfigFile">GetAppConfigFile</link>
+          <link id="#lazutils.lazutf8.SysToUTF8">SysToUTF8</link>
         </seealso>
       </element>
       <element name="GetAppConfigFileUTF8.Result">

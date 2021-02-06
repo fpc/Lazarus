@@ -6,12 +6,21 @@
       AsyncProcess
     ====================================================================
     -->
-
     <module name="AsyncProcess">
       <short>
         Implements a process with asynchronous event notifications
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>asyncprocess.pp</file> implements a process with asynchronous event notifications for data availability and process termination. The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>System</b> Tab
+        </p>
+        <ul>
+          <li>TAsyncProcess</li>
+        </ul>
+      </descr>
 
       <!-- unresolved  references -->
       <element name="Classes"/>
@@ -33,8 +42,8 @@
         <seealso>
           <link id="TAsyncProcess.OnReadData"/>
           <link id="TAsyncProcess.OnTerminate"/>
-          <link id="#lazutils.utf8process.TProcessUTF8"/>
-          <link id="#fcl.process.TProcess.Output"/>
+          <link id="#lazutils.utf8process.TProcessUTF8">TProcessUTF8</link>
+          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
         </seealso>
       </element>
 
@@ -61,7 +70,7 @@
         <seealso>
           <link id="TAsyncProcess.NumBytesAvailable"/>
           <link id="TAsyncProcess.GetNumBytesAvailable"/>
-          <link id="#fcl.process.TProcess.Options"/>
+          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
         </seealso>
       </element>
       <element name="TAsyncProcess.GetNumBytesAvailable.Result">
@@ -138,7 +147,7 @@
         </descr>
         <seealso>
           <link id="TAsyncProcess.Execute"/>
-          <link id="#lcl.interfacebase.TPipeReason"/>
+          <link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
         </seealso>
       </element>
 
@@ -179,7 +188,7 @@
         <seealso>
           <link id="TAsyncProcess.HandlePipeInput"/>
           <link id="TAsyncProcess.HandleProcessTermination"/>
-          <link id="#fcl.process.TProcess.Options"/>
+          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
         </seealso>
       </element>
 
@@ -195,7 +204,7 @@
         <seealso>
           <link id="TAsyncProcess.UnhookProcessHandle"/>
           <link id="TAsyncProcess.UnhookPipeHandle"/>
-          <link id="#fcl.process.TProcess.Destroy"/>
+          <link id="#fcl.process.TProcess.Destroy">TProcess.Destroy</link>
         </seealso>
       </element>
 
@@ -217,8 +226,8 @@
         <seealso>
           <link id="TAsyncProcess.Execute"/>
           <link id="TAsyncProcess.OnReadData"/>
-          <link id="#fcl.process.TProcess.Options"/>
-          <link id="#fcl.process.TProcess.Output"/>
+          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
         </seealso>
       </element>
 
@@ -236,9 +245,9 @@
         </descr>
         <seealso>
           <link id="TAsyncProcess.NumBytesAvailable"/>
-          <link id="#lcl.interfacebase.TPipeReason"/>
-          <link id="#fcl.process.TProcess.Output"/>
-          <link id="#rtl.classes.TNotifyEvent"/>
+          <link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
+          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
 
@@ -256,11 +265,28 @@
         </descr>
         <seealso>
           <link id="TAsyncProcess.HandleProcessTermination"/>
-          <link id="#rtl.classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
+
+      <element name="Register">
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE.
+            The following components are added to the Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>System</b> Tab
+          </p>
+          <ul>
+            <li>TAsyncProcess</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+
     </module>
     <!-- AsyncProcess -->
-
   </package>
 </fpdoc-descriptions>

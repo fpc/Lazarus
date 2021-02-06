@@ -8,9 +8,13 @@
     -->
     <module name="lazdialogs">
       <short>
-        Contains classes, types, and routines needed for Lazarus dialogs on custom-drawn and non-desktop environments
+        Contains classes, types, and routines needed for Lazarus dialogs in custom-drawn and non-desktop environments
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>lazdialogs.pas</file> contains classes, types, and routines needed for Lazarus dialogs in custom-drawn and non-desktop environments.
+        </p>
+      </descr>
 
       <element name="TLazFileDialogKind">
         <short>
@@ -178,8 +182,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.CreateNew"/>
           <link id="TLazarusFileDialogForm.Initialize"/>
+          <link id="#lcl.forms.TCustomForm.CreateNew">TCustomForm.CreateNew</link>
         </seealso>
       </element>
 
@@ -397,7 +401,7 @@
         <seealso>
           <link id="TLazarusFileDialogForm"/>
           <link id="TLazarusFileDialogForm.FileName"/>
-          <link id="#LCL.Forms.TCustomForm.ShowModal"/>
+          <link id="#lcl.forms.TCustomForm.ShowModal">TCustomForm.ShowModal</link>
         </seealso>
       </element>
       <element name="TLazOpenDialog.DoExecute.Result">

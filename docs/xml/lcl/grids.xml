@@ -1043,7 +1043,7 @@
         <seealso>
           <link id="TCustomGrid"/>
           <link id="TGridMessage"/>
-          <link id="#lcl.maskedit.TCustomMaskEdit"/>
+          <link id="#lcl.maskedit.TCustomMaskEdit">TCustomMaskEdit"</link>
         </seealso>
       </element>
 
@@ -1138,7 +1138,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.AutoSize"/>
+          <link id="#lcl.stdctrls.TCustomEdit.AutoSize">TCustomEdit.AutoSize</link>
         </seealso>
       </element>
       <element name="TStringCellEditor.Create.AOwner">
@@ -2146,7 +2146,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
 
@@ -2161,7 +2161,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Destroy"/>
+          <link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
         </seealso>
       </element>
 
@@ -2195,11 +2195,11 @@
         <short>Gets a pointer to the default values used in a new column and row properties instance</short>
         <descr>
           <p>
-            Used in the implementation of the doNewItem method.
+            Used in the implementation of the doNewItem method called when a new column row is added to the virtual grid.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.doNewItem"/>
+          <link id="TVirtualGrid.doNewItem"/>
           <link id="PColRowProps"/>
         </seealso>
       </element>
@@ -2391,7 +2391,8 @@
         </descr>
         <seealso>
           <link id="TGridColumnTitle.Alignment"/>
-          <link id="TCustomGrid.SaveColumns"/>
+          <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
         </seealso>
       </element>
       <element name="TGridColumnTitle.IsAlignmentStored.Result">
@@ -2403,7 +2404,8 @@
         <descr/>
         <seealso>
           <link id="TGridColumnTitle.Caption"/>
-          <link id="TCustomGrid.SaveColumns"/>
+          <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
         </seealso>
       </element>
       <element name="TGridColumnTitle.IsCaptionStored.Result">
@@ -2415,7 +2417,8 @@
         <descr/>
         <seealso>
           <link id="TGridColumnTitle.Color"/>
-          <link id="TCustomGrid.SaveColumns"/>
+          <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
         </seealso>
       </element>
       <element name="TGridColumnTitle.IsColorStored.Result">
@@ -2427,7 +2430,8 @@
         <descr/>
         <seealso>
           <link id="TGridColumnTitle.Font"/>
-          <link id="TCustomGrid.SaveColumns"/>
+          <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
         </seealso>
       </element>
       <element name="TGridColumnTitle.IsFontStored.Result">
@@ -2439,7 +2443,8 @@
         <descr/>
         <seealso>
           <link id="TGridColumnTitle.Layout"/>
-          <link id="TCustomGrid.SaveColumns"/>
+          <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
         </seealso>
       </element>
       <element name="TGridColumnTitle.IsLayoutStored.Result">
@@ -2588,7 +2593,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
+          <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
@@ -2600,9 +2605,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="TGridColumn.Font"/>
+          <link id="TGridColumnTitle.Column"/>
+          <link id="TGridColumnTitle.Font"/>
           <link id="TGridColumn.Grid"/>
-          <link id="TGridColumn.Column"/>
+          <link id="TGridColumn.Font"/>
+          <link id="TGrid.TitleFont"/>
         </seealso>
       </element>
 
@@ -3349,12 +3356,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
           <link id="TGridColumn.Title"/>
           <link id="TGridColumn.Font"/>
           <link id="TGridColumn.IsDefaultFont"/>
           <link id="TGridColumn.ButtonStyle"/>
           <link id="TGridColumn.DropDownRows"/>
+          <link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
       </element>
       <element name="TGridColumn.Create.ACollection">
@@ -3388,7 +3395,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TCollectionItem.Destroy"/>
+          <link id="#rtl.classes.TCollectionItem.Destroy">TCollectionItem.Destroy</link>
         </seealso>
       </element>
 
@@ -3716,12 +3723,11 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.TitleFont"/>
-          <link id="TCustomGrid.TitleFontIsDefault"/>
           <link id="TGridColumns"/>
-          <link id="TGridColumn.FontChanged"/>
-          <link id="#lcl.controls.TCustomControl.FontChanged"/>
-          <link id="#lcl.controls.TControl.ControlState"/>
-          <link id="#lcl.controls.TControl.Font"/>
+          <link id="TGridColumn.Font"/>
+          <link id="#lcl.controls.TCustomControl.FontChanged">TCustomControl.FontChanged</link>
+          <link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
         </seealso>
       </element>
 
@@ -3775,7 +3781,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TCollection.Create"/>
+          <link id="#rtl.classes.TCollection.Create">TCollection.Create</link>
         </seealso>
       </element>
       <element name="TGridColumns.Create.AGrid">
@@ -3798,7 +3804,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TCollection.Clear"/>
+          <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
         </seealso>
       </element>
 
@@ -3825,7 +3831,7 @@
         <seealso>
           <link id="TGridColumns.Items"/>
           <link id="TGridColumn"/>
-          <link id="#RTL.Classes.TCollection.Count"/>
+          <link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
         </seealso>
       </element>
       <element name="TGridColumns.IndexOf.Result">
@@ -3853,7 +3859,7 @@
         </descr>
         <seealso>
           <link id="TGridColumns.Items"/>
-          <link id="#rtl.classes.TCollection.Count"/>
+          <link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
         </seealso>
       </element>
       <element name="TGridColumns.HasIndex.Result">
@@ -3887,9 +3893,9 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.CreateColumns"/>
-          <link id="TGridColumns.InsertColumn"/>
           <link id="TCustomGrid.ColumnsChanged"/>
-          <link id="#rtl.classes.TCollection.Owner"/>
+          <link id="TGridColumns.InsertColumn"/>
+          <link id="#rtl.classes.TCollection.Owner">TCollection.Owner</link>
         </seealso>
       </element>
 
@@ -3918,7 +3924,7 @@
           <link id="TGridColumns.Add"/>
           <link id="TGridColumns.InsertColumn"/>
           <link id="TGridColumns.RemoveColumn"/>
-          <link id="#RTL.Classes.TCollection.Delete"/>
+          <link id="#rtl.classes.TCollection.Delete">TCollection.Delete</link>
         </seealso>
       </element>
       <element name="TGridColumns.Items.Index">
@@ -3963,7 +3969,7 @@
         </descr>
         <seealso>
           <link id="TGridRectArray"/>
-          <link id="#rtl.types.TRect"/>
+          <link id="#rtl.types.TRect">TRect</link>
         </seealso>
       </element>
 
@@ -4427,10 +4433,8 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.ColCount"/>
-          <link id="TCustomGrid.SetColCount"/>
           <link id="TCustomGrid.InternalSetColCount"/>
           <link id="TCustomGrid.RowCount"/>
-          <link id="TCustomGrid.SetRowCount"/>
         </seealso>
       </element>
       <element name="TCustomGrid.AdjustCount.IsColumn">
@@ -4934,9 +4938,9 @@
           <link id="TCustomGrid.Grid"/>
           <link id="TCustomGrid.Col"/>
           <link id="TCustomGrid.Row"/>
-          <link id="#lcl.controls.TCustomControl.Canvas"/>
-          <link id="#lcl.controls.TControl.Font"/>
           <link id="TGridMessage"/>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
         </seealso>
       </element>
 
@@ -4984,7 +4988,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.EditorPos"/>
           <link id="TCustomGrid.EditorDoSetValue"/>
         </seealso>
       </element>
@@ -5108,7 +5111,7 @@
         <short>Gets the number of pixels needed for the grid border (when used)</short>
         <descr/>
         <seealso>
-          <link id="TCustomGrid.InternalNeedBorder"/>
+          <link id="TCustomGrid.DrawBorder"/>
         </seealso>
       </element>
       <element name="TCustomGrid.GetBorderWidth.Result">
@@ -5448,7 +5451,6 @@
         <seealso>
           <link id="TCustomGrid.Create"/>
           <link id="TCustomGrid.TitleFont"/>
-          <link id="TCustomGrid.TitleFontIsDefault"/>
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.VisibleCount"/>
           <link id="TCustomGrid.ColumnsChanged"/>
@@ -5511,7 +5513,9 @@
       </element>
 
       <element name="TCustomGrid.RestoreCursor">
-        <short>Restores the SavedCursor for the grid, and resets CursorState to its default value</short>
+        <short>
+          Restores the internal saved cursor for the grid, and resets CursorState to its default value
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -6022,7 +6026,7 @@
         <seealso>
           <link id="TCustomGrid.GridFlags"/>
           <link id="TGridFlagsOption"/>
-          <link id="#lcl.controls.TWinControl.AdjustClientRect"/>
+          <link id="#lcl.controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
         </seealso>
       </element>
       <element name="TCustomGrid.AdjustClientRect.ARect">
@@ -6126,7 +6130,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TControl.AssignTo"/>
+          <link id="#lcl.controls.TControl.AssignTo">TControl.AssignTo</link>
         </seealso>
       </element>
       <element name="TCustomGrid.AssignTo.Dest">
@@ -6298,7 +6302,7 @@
           <link id="TCustomGrid.GCache"/>
           <link id="TCustomGrid.FlipRect"/>
           <link id="TGridFlagsOption"/>
-          <link id="#lcl.controls.TControl.UseRightToLeftAlignment"/>
+          <link id="#lcl.controls.TControl.UseRightToLeftAlignment">TControl.UseRightToLeftAlignment</link>
         </seealso>
       </element>
       <element name="TCustomGrid.CalcFocusRect.ARect">
@@ -6338,7 +6342,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.CalculatePreferredSize"/>
+          <link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
         </seealso>
       </element>
       <element name="TCustomGrid.CalculatePreferredSize.PreferredWidth">
@@ -6368,9 +6372,6 @@
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.Editor"/>
           <link id="TCustomGrid.EditorShow"/>
-          <link id="TCustomGrid.IMEStartComposition"/>
-          <link id="TCustomGrid.IMEComposition"/>
-          <link id="TCustomGrid.IMEEndComposition"/>
           <link id="TGridColumns.Enabled"/>
           <link id="TGridColumn.ReadOnly"/>
         </seealso>
@@ -6671,10 +6672,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.SetFixedCols"/>
-          <link id="TCustomGrid.SetRowCount"/>
-          <link id="TCustomGrid.OnTitleFontChanged"/>
-          <link id="TGridColumns.Update"/>
+          <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TGridColumns"/>
           <link id="TGridColumn"/>
         </seealso>
       </element>
@@ -6739,8 +6740,8 @@
         <seealso>
           <link id="TCustomGrid.CheckPosition"/>
           <link id="TCustomGrid.VisualChange"/>
-          <link id="#lcl.controls.TWinControl.CreateWnd"/>
-          <link id="#lcl.controls.TWinControl.Handle"/>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#lcl.controls.TWinControl.Handle">TWinControl.Handle</link>
         </seealso>
       </element>
 
@@ -6763,7 +6764,7 @@
           <link id="TCustomGrid.Col"/>
           <link id="TCustomGrid.Row"/>
           <link id="TCustomGrid.ColRow"/>
-          <link id="#lcl.controls.TControl.Click"/>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
         </seealso>
       </element>
 
@@ -6795,7 +6796,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TControl.DblClick"/>
+          <link id="#lcl.controls.TControl.DblClick">TControl.DblClick</link>
         </seealso>
       </element>
 
@@ -6837,8 +6838,8 @@
         <seealso>
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.ColCount"/>
-          <link id="TCustomGrid.HeaderClick`"/>
-          <link id="#lcl.controls.TWinControl.DialogChar"/>
+          <link id="TCustomGrid.HeaderClick"/>
+          <link id="#lcl.controls.TWinControl.DialogChar">TWinControl.DialogChar</link>
         </seealso>
       </element>
       <element name="TCustomGrid.DialogChar.Result">
@@ -6943,11 +6944,11 @@
         <seealso>
           <link id="TCustomGrid.Editor"/>
           <link id="TCustomGrid.GridFlags"/>
-          <link id="TCustomGrid.CanFocus"/>
           <link id="TCustomGrid.EditorHide"/>
           <link id="TGridFlags"/>
           <link id="TGridFlagsOption"/>
-          <link id="#lcl.forms.TCustomForm.ActiveControl"/>
+          <link id="#lcl.forms.TCustomForm.ActiveControl">TCustomForm.ActiveControl</link>
+          <link id="#lcl.controls.TWinControl.CanFocus">TWinControl.CanFocus</link>
         </seealso>
       </element>
 
@@ -7213,7 +7214,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.DoUTF8KeyPress"/>
+          <link id="#lcl.controls.TWinControl.DoUTF8KeyPress">TWinControl.DoUTF8KeyPress</link>
         </seealso>
       </element>
       <element name="TCustomGrid.DoUTF8KeyPress.Result">
@@ -7227,11 +7228,11 @@
         <short>Draws the border for the grid control</short>
         <descr/>
         <seealso>
-          <link id="TCustomGrid.InternalNeedBorder"/>
+          <link id="TCustomGrid.DrawBorder"/>
           <link id="TCustomGrid.BorderStyle"/>
           <link id="TCustomGrid.Flat"/>
-          <link id="#lcl.controls.TControl.ClientHeight"/>
-          <link id="#lcl.controls.TControl.ClientWidth"/>
+          <link id="#lcl.controls.TControl.ClientHeight">TControl.ClientHeight</link>
+          <link id="#lcl.controls.TControl.ClientWidth">TControl.ClientWidth</link>
         </seealso>
       </element>
 
@@ -7249,7 +7250,7 @@
           <link id="TCustomGrid.GCache"/>
           <link id="TCustomGrid.DrawRow"/>
           <link id="TCustomGrid.Paint"/>
-          <link id="TGridDataCache.VisibleGrid"/>
+          <link id="TGridDataCache"/>
         </seealso>
       </element>
 
@@ -7283,7 +7284,7 @@
           <link id="TCustomGrid.DrawFillRect"/>
           <link id="TCustomGrid.DrawCellGrid"/>
           <link id="TCustomGrid.DrawRow"/>
-          <link id="#lcl.controls.TControl.Canvas"/>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
         </seealso>
       </element>
       <element name="TCustomGrid.DrawCell.aCol">
@@ -7332,7 +7333,7 @@
           <link id="TCustomGrid.GridLineColor"/>
           <link id="TCustomGrid.GridLineStyle"/>
           <link id="TCustomGrid.GridLineWidth"/>
-          <link id="TCustomGrid.UseRightToLeftAlignment"/>
+          <link id="#lcl.controls.TControl.UseRightToLeftAlignment">TControl.UseRightToLeftAlignment</link>
         </seealso>
       </element>
       <element name="TCustomGrid.DrawCellGrid.ACol">
@@ -7489,10 +7490,10 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.DefaultDrawCell"/>
           <link id="TCustomGrid.GetImageForCheckBox"/>
           <link id="TCustomGrid.OnUserCheckBoxImage"/>
           <link id="TCustomGrid.OnUserCheckBoxBitmap"/>
-          <link id="TCustomGrid.DrawCellCheckboxBitmaps"/>
         </seealso>
       </element>
       <element name="TCustomGrid.DrawGridCheckboxBitmaps.aCol">
@@ -7926,13 +7927,14 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.Column"/>
+          <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.TitleFont"/>
-          <link id="TCustomGrid.TitleFontIsStored"/>
-          <link id="#lcl.controls.TCustomControl.FontChanged"/>
-          <link id="#lcl.controls.TControl.Font"/>
-          <link id="#lcl.controls.TControl.ControlState"/>
-          <link id="#lcl.graphics.TFont.OnChange"/>
+          <link id="TGridColumn.Title"/>
+          <link id="TGridColumnTitle.Font"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+          <link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+          <link id="#lcl.controls.TCustomControl.FontChanged">TCustomControl.FontChanged</link>
+          <link id="#lcl.graphics.TFont">TFont</link>
         </seealso>
       </element>
       <element name="TCustomGrid.FontChanged.Sender">
@@ -8208,7 +8210,7 @@
           <link id="TCustomGrid.GetColumnAlignment"/>
           <link id="TCustomGrid.Columns"/>
           <link id="TCustomGrid.DefaultTextStyle"/>
-          <link id="#rtl.classes.TAlignment"/>
+          <link id="#rtl.classes.TAlignment">TAlignment</link>
         </seealso>
       </element>
       <element name="TCustomGrid.GetDefaultColumnAlignment.Result">
@@ -8432,8 +8434,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.lclintf.GetScrollInfo"/>
-          <link id="#lcl.lcltype.TScrollInfo"/>
+          <link id="#lcl.lclintf.GetScrollInfo">GetScrollInfo</link>
+          <link id="#lcl.lcltype.TScrollInfo">TScrollInfo</link>
         </seealso>
       </element>
       <element name="TCustomGrid.GetScrollBarPosition.Result">
@@ -9056,7 +9058,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.KeyDown"/>
+          <link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
         </seealso>
       </element>
       <element name="TCustomGrid.KeyDown.Key">
@@ -9094,7 +9096,7 @@
         </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.KeyPress"/>
+          <link id="#lcl.controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
         </seealso>
       </element>
       <element name="TCustomGrid.KeyPress.Key">
@@ -9349,7 +9351,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TCustomControl.Paint"/>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
         </seealso>
       </element>
 
@@ -9400,7 +9402,7 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.ShowCellHintWIndow"/>
-          <link id="#lcl.dbgrids.TCustomDBGrid.PrepareCellHints"/>
+          <link id="#lcl.dbgrids.TCustomDBGrid.PrepareCellHints">TCustomDBGrid.PrepareCellHints</link>
         </seealso>
       </element>
       <element name="TCustomGrid.PrepareCellHints.ACol">
@@ -9645,8 +9647,8 @@
         <seealso>
           <link id="TGridFlags"/>
           <link id="TGridFlagsOption"/>
-          <link id="#LCL.Controls.TWinControl.HandleAllocated"/>
-          <link id="#LCL.LCLIntf.ShowScrollBar"/>
+          <link id="#lcl.controls.TWinControl.HandleAllocated">TWinControl.HandleAllocated</link>
+          <link id="#lcl.lclintf.ShowScrollBar">ShowScrollBar</link>
         </seealso>
       </element>
       <element name="TCustomGrid.ScrollBarShow.Which">
@@ -9684,7 +9686,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.ScrollBy"/>
+          <link id="#lcl.controls.TWinControl.ScrollBy">TWinControl.ScrollBy</link>
         </seealso>
       </element>
       <element name="TCustomGrid.ScrollBy.DeltaX">
@@ -9768,7 +9770,7 @@
         <short>Sets the value in the Color property</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Color"/>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
         </seealso>
       </element>
       <element name="TCustomGrid.SetColor.Value">
@@ -9796,7 +9798,6 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.CursorState"/>
-          <link id="TCustomGrid.RestoreCursor"/>
           <link id="TCustomGrid.ColSizingCursor"/>
           <link id="TCustomGrid.RowSizingCursor"/>
         </seealso>
@@ -10172,7 +10173,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.WMSize"/>
+          <link id="#lcl.controls.TWinControl.WMSize">TWinControl.WMSize</link>
         </seealso>
       </element>
       <element name="TCustomGrid.WMSize.Message">
@@ -10610,23 +10611,23 @@
           </p>
         </descr>
         <seealso>
+          <link id="TCustomGrid.EditorMode"/>
           <link id="TCustomGrid.EditorShow"/>
           <link id="TCustomGrid.EditorHide"/>
-          <link id="TCustomGrid.EditorSetMode"/>
           <link id="TCustomGrid.ColCount"/>
           <link id="TCustomGrid.RowCount"/>
           <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.FixedRows"/>
           <link id="TCustomGrid.KeyPress"/>
-          <link id="TCustomGrid.MouseWheel"/>
           <link id="TCustomGrid.ClearCols"/>
           <link id="TCustomGrid.Clear"/>
           <link id="TCustomGrid.ClearRows"/>
           <link id="TCustomGrid.DefaultColWidth"/>
           <link id="TCustomGrid.DefaultRowHeight"/>
-          <link id="TCustomGrid.ShowCellHintWIndow"/>
+          <link id="TCustomGrid.ShowCellHintWindow"/>
           <link id="TCustomGrid.PrepareCanvas"/>
           <link id="TCustomGrid.DrawRow"/>
-          <link id="TCustomGrid.FixPosition"/>
+          <link id="TCustomGrid.OnMouseWheel"/>
         </seealso>
       </element>
 
@@ -10781,8 +10782,8 @@
           <link id="TCustomGrid.RowCount"/>
           <link id="TCustomGrid.ColCount"/>
           <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.FixedRows"/>
           <link id="TCustomGrid.EditorMode"/>
-          <link id="TCustomGrid.CheckFixedCount"/>
           <link id="TCustomGrid.MoveNextSelectable"/>
           <link id="TCustomGrid.UpdateSelectionRange"/>
         </seealso>
@@ -11428,7 +11429,6 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.DrawCell"/>
-          <link id="TCustomGrid.DefaultDrawCell"/>
           <link id="TCustomGrid.DefaultDrawing"/>
           <link id="TCustomGrid.PrepareCanvas"/>
           <link id="TOnDrawCell"/>
@@ -11561,8 +11561,8 @@
        <short>Event handler signalled when a column is saved in the SaveColumns method</short>
        <descr/>
        <seealso>
-         <link id="TCustomGrid.DoSaveColumn"/>
-         <link id="TCustomGrid.SaveColumns"/>
+         <link id="TCustomGrid.SaveToFile"/>
+         <link id="TCustomGrid.SaveToStream"/>
        </seealso>
      </element>
 
@@ -11570,8 +11570,8 @@
        <short>Event handler signalled when a column is loaded in the LoadColumns method</short>
        <descr/>
        <seealso>
-         <link id="TCustomGrid.DoLoadColumn"/>
-         <link id="TCustomGrid.LoadColumns"/>
+         <link id="TCustomGrid.LoadFromFile"/>
+         <link id="TCustomGrid.LoadFromStream"/>
        </seealso>
      </element>
 
@@ -11792,10 +11792,9 @@
         <short>Updates the grid control when the value in a cell Editor is changed</short>
         <descr/>
         <seealso>
-          <link id="TCustomGrid.SetEditText"/>
-          <link id="TStringCellEditor.Change"/>
-          <link id="TPickListCellEditor.Select"/>
-          <link id="TPickListCellEditor.Change"/>
+          <link id="TCustomGrid.EditorTextChanged"/>
+          <link id="TStringCellEditor"/>
+          <link id="TPickListCellEditor"/>
         </seealso>
       </element>
       <element name="TCustomGrid.EditorTextChanged.aCol">
@@ -11870,8 +11869,9 @@
         <seealso>
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.RangeSelectMode"/>
-          <link id="TGridOption.goRangeSelect"/>
-          <link id="TRangeSelectMode.rsmMulti"/>
+          <link id="TRangeSelectMode"/>
+          <link id="TGridOptions"/>
+          <link id="TGridOption"/>
         </seealso>
       </element>
       <element name="TCustomGrid.HasMultiSelection.Result">
@@ -12106,8 +12106,7 @@
           <link id="TCustomGrid.OnSaveColumn"/>
           <link id="TCustomGrid.SaveGridOptions"/>
           <link id="TCustomGrid.LoadFromStream"/>
-          <link id="#LazUtils.Laz2_XMLCfg.TXMLConfig"/>
-          <link id="#LazUtils.Laz2_XMLCfg.TXMLConfig.WriteToStream"/>
+          <link id="#lazutils.laz2_xmlcfg.TXMLConfig.WriteToStream">TXMLConfig.WriteToStream</link>
         </seealso>
       </element>
       <element name="TCustomGrid.SaveToStream.AStream">
@@ -13034,12 +13033,11 @@
         <short>Constructor for the class instance</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for <var>TCustomDrawGrid</var>. Create calls CreateVirtualGrid to allocate resources for the virtual grid used in the control, and calls the inherited constructor prior to exiting from the method.
+            <var>Create</var> is the overridden constructor for <var>TCustomDrawGrid</var>. Creates the  virtual grid used in the control, and calls the inherited constructor prior to exiting from the method.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.Create"/>
-          <link id="TCustomGrid.CreateVirtualGrid"/>
         </seealso>
       </element>
       <element name="TCustomDrawGrid.Create.AOwner">
@@ -13359,7 +13357,6 @@
         <seealso>
           <link id="TCustomDrawGrid.OnHeaderSized"/>
           <link id="THeaderSizingEvent"/>
-          <link id="THeaderSizeEvent"/>
         </seealso>
       </element>
 
@@ -13403,7 +13400,6 @@
         </descr>
         <seealso>
           <link id="TCustomDrawGrid.SetEditText"/>
-          <link id="TCustomGrid.EditorGetValue"/>
           <link id="TCustomGrid.EditorTextChanged"/>
           <link id="TStringCellEditor.KeyDown"/>
           <link id="TSetEditEvent"/>
@@ -13576,8 +13572,8 @@
         <seealso>
           <link id="TStringGridStrings.Add"/>
           <link id="TStringGridStrings.Get"/>
-          <link id="TStringGridStrings.GetObject"/>
           <link id="TStringGridStrings.Put"/>
+          <link id="TStringGridStrings.GetObject"/>
           <link id="TStringGridStrings.PutObject"/>
         </seealso>
       </element>
@@ -13598,7 +13594,7 @@
         <short>Gets the string at the specified index position</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TStrings.Get"/>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Get.Result">
@@ -13612,7 +13608,7 @@
         <short>Gets the value for the Count property</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TStrings.Count"/>
+          <link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetCount.Result">
@@ -13623,8 +13619,8 @@
         <short>Gets the value for the indexed Objects property</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TStrings.Objects"/>
-          <link id="#rtl.classes.TStrings.GetObject"/>
+          <link id="TStringGridStrings.PutObject"/>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.GetObject.Result">
@@ -13639,9 +13635,7 @@
         <descr/>
         <seealso>
           <link id="TStringGridStrings.Get"/>
-          <link id="#rtl.classes.TStrings.Strings"/>
-          <link id="#rtl.classes.TStrings.Put"/>
-          <link id="#rtl.classes.TStrings.Get"/>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Put.Index">
@@ -13656,9 +13650,7 @@
         <descr/>
         <seealso>
           <link id="TStringGridStrings.GetObject"/>
-          <link id="#rtl.classes.TStrings.Objects"/>
-          <link id="#rtl.classes.TStrings.PutObject"/>
-          <link id="#rtl.classes.TStrings.GetObject"/>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.PutObject.Index">
@@ -13694,7 +13686,7 @@
         <short>Destructor for the class instance</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Destroy"/>
+          <link id="#rtl.classes.TStrings.Destroy">TStrings.Destroy</link>
         </seealso>
       </element>
 
@@ -13703,9 +13695,9 @@
         <descr/>
         <seealso>
           <link id="TCustomStringGrid.Cells"/>
-          <link id="#rtl.Classes.TStrings.Add"/>
-          <link id="#rtl.Classes.TStrings.Strings"/>
-          <link id="#rtl.Classes.TStrings.Values"/>
+          <link id="#rtl.classes.TStrings.Add">TStrings.Add</link>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
+          <link id="#rtl.classes.TStrings.Values">TStrings.Values</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Add.Result">
@@ -13719,7 +13711,7 @@
         <short>Stores property values from Source into the current class instance</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Assign"/>
+          <link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Assign.Source">
@@ -13730,7 +13722,7 @@
         <short>Removes all values for the column or row represented by the class instance</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Clear"/>
+          <link id="#rtl.classes.TStrings.Clear">TStrings.Clear</link>
         </seealso>
       </element>
 
@@ -13745,7 +13737,7 @@
           Raises an <var>EGridException</var> exception with the message <b>'Cannot delete value.'</b>
         </errors>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Delete"/>
+          <link id="#rtl.classes.TStrings.Delete">TStrings.Delete</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Delete.Index">
@@ -13758,7 +13750,7 @@
           Raises an <var>EGridException</var> exception with the message <b>'Cannot insert  value.'</b>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TStrings.Insert"/>
+          <link id="#rtl.classes.TStrings.Insert">TStrings.Insert</link>
         </seealso>
       </element>
       <element name="TStringGridStrings.Insert.Index">
@@ -13991,7 +13983,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#lcl.grids.TCustomGrid.CalcCellExtent"/>
+          <link id="#lcl.grids.TCustomGrid.CalcCellExtent">TCustomGrid.CalcCellExtent</link>
         </seealso>
       </element>
       <element name="TCustomStringGrid.CalcCellExtent.ACol">
@@ -14016,10 +14008,7 @@
             Called from the DefineProperties method.
           </p>
         </descr>
-        <seealso>
-          <link id="TCustomStringGrid.DefineProperties"/>
-          <link id="#rtl.classes.TPersistent.DefineProperties"/>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TCustomStringGrid.DefineCellsProperty.Filer">
         <short>TFiler instance updated in the method</short>
@@ -14046,7 +14035,7 @@
         <seealso>
           <link id="TCustomGrid.DoCompareCells"/>
           <link id="TCustomGrid.OnCompareCells"/>
-          <link id="#lazutils.lazutf8.UTF8CompareLatinTextFast"/>
+          <link id="#lazutils.lazutf8.UTF8CompareLatinTextFast">UTF8CompareLatinTextFast</link>
         </seealso>
       </element>
       <element name="TCustomStringGrid.DoCompareCells.Result">
@@ -14348,7 +14337,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Grids.TCustomDrawGrid.Create"/>
+          <link id="TCustomDrawGrid.Create"/>
         </seealso>
       </element>
       <element name="TCustomStringGrid.Create.AOwner">
@@ -14363,7 +14352,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Grids.TCustomDrawGrid.Destroy"/>
+          <link id="TCustomDrawGrid.Destroy"/>
         </seealso>
       </element>
 
@@ -15193,7 +15182,7 @@
             ToDo:
             Samples of what can be made and what to leave for OnDrawCell?
             Discuss OnEditingDone.
-             Examples for editing a pick list.
+            Examples for editing a pick list.
           </note>
         </notes>
       </topic>

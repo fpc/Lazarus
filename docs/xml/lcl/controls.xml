@@ -7742,10 +7742,10 @@
         <short>Notification handler for insertion or deletion of components</short>
         <descr>
           <p>
-            First, the inherited <link id="#rtl.Classes.TComponent.Notification"/> is invoked, to notify all attached notification handlers.
+            First, the inherited <var>TComponent.Notification</var> is called to notify all attached notification handlers.
           </p>
           <p>
-            If Operation is removal, additional actions are performed, depending on AComponent: PopupMenu, Action, or anchors to the removed control are detached.
+            If <var>Operation</var> is <var>opRemove</var>, additional actions are performed, depending on <var>AComponent</var>: the PopupMenu, Action, or anchors for the removed control are detached.
           </p>
         </descr>
         <seealso>
@@ -10100,7 +10100,7 @@
         </descr>
         <seealso>
           <link id="TControl.ActionLink"/>
-          <link id="#rtl.classes.TBasicAction"/>
+          <link id="#rtl.classes.TBasicAction">TBasicAction</link>
         </seealso>
       </element>
 
@@ -12255,14 +12255,22 @@
       </element>
 
       <element name="TWinControl.WMKillFocus">
-        <short>
-          Handler for loosing Focus event. Eventually triggers <link id="#lcl.Controls.TControl.EditingDone"/>.
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Handles the LM_KILLFOCUS  message for the control</short>
+        <descr>
+          <p>
+            <var>WMKillFocus</var> is a method used to handle the LM_KILLFOCUS  control message  received when a control loses focus. WMKillFocus ensures that the <var>EditingDone</var> method is called for the control when the parent form has been assigned and is Active.
+          </p>
+          <p>
+            No actions are performed in the method at design-time, or when the control is being freed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.EditingDone"/>
+          <link id="#lcl.forms.GetParentForm">GetParentForm</link>
+        </seealso>
       </element>
       <element name="TWinControl.WMKillFocus.Message">
-        <short/>
+        <short>Message examined in the method</short>
       </element>
 
       <element name="TWinControl.WMShowWindow">
@@ -12790,7 +12798,7 @@
             Key event handlers are invoked in sequence, until a handler is located which responds to the key.
           </p>
           <p>
-            First, all application wide handlers are invoked (<link id="#lcl.Forms.TApplication.NotifyKeyDownBeforeHandler"/>).
+            First, all application wide handlers are invoked (<var>TApplication.NotifyKeyDownBeforeHandler</var>).
           </p>
           <p>
             Second, the form handler is invoked when KeyPreview is requested.
@@ -12805,17 +12813,20 @@
             If none of the  handlers accept / respond to the key, the widget set class is used to process  the key.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.OnKeyDown"/>
+          <link id="#lcl.Forms.TApplication.NotifyKeyDownBeforeHandler">
+            TApplication.NotifyKeyDownBeforeHandler</link>
+        </seealso>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.Result">
         <short>Set to True when the key was handled</short>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.Message">
-        <short/>
+        <short>Message examined in the method</short>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.IsRecurseCall">
         <short/>
-        <notes><note>?</note></notes>
       </element>
 
       <element name="TWinControl.DoRemainingKeyDown">

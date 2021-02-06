@@ -8,7 +8,11 @@
     -->
     <module name="CustomTimer">
       <short>Contains the definition of the base class for <var>TTimer</var></short>
-      <descr/>
+      <descr>
+        <p>
+          <file>customtimer.pas</file> defines <var>TCustomTimer</var>, the component used as the ancestor for timer components in the Lazarus Component Library (<b>LCL</b>).
+        </p>
+      </descr>
 
       <element name="Classes"/>
       <element name="SysUtils"/>
@@ -40,12 +44,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.ExtCtrls.TTimer"/>
           <link id="TCustomTimer.Enabled"/>
           <link id="TCustomTimer.Interval"/>
           <link id="TCustomTimer.OnTimer"/>
           <link id="TCustomTimer.OnStartTimer"/>
           <link id="TCustomTimer.OnStopTimer"/>
+          <link id="#lcl.extctrls.TTimer">TTimer</link>
         </seealso>
       </element>
 
@@ -79,8 +83,8 @@
           <link id="TCustomTimer.Enabled"/>
           <link id="TCustomTimer.Interval"/>
           <link id="TCustomTimer.UpdateTimer"/>
-          <link id="#fcl.CustApp.TCustomApplication.HandleException"/>
-          <link id="#fcl.CustApp.CustomApplication"/>
+          <link id="#fcl.custapp.TCustomApplication.HandleException">TCustomApplication.HandleException</link>
+          <link id="#fcl.custapp.CustomApplication">CustomApplication</link>
         </seealso>
       </element>
       <element name="TCustomTimer.SetEnabled">
@@ -201,10 +205,10 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
           <link id="TCustomTimer.Interval"/>
           <link id="TCustomTimer.Enabled"/>
           <link id="TCustomTimer.OnTimer"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomTimer.Create.AOwner">
@@ -225,11 +229,11 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy"/>
           <link id="TCustomTimer.Enabled"/>
           <link id="TCustomTimer.OnTimer"/>
           <link id="TCustomTimer.KillTimer"/>
           <link id="TCustomTimer.OnStopTimer"/>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
       <element name="TCustomTimer.Enabled">

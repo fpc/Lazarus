@@ -206,11 +206,11 @@
         </short>
         <descr>
           <p>
-            <var>TLazCanvas</var> is a <var>TFPImageCanvas</var> descendant. TLazCanvas extends the ancestor class to support stretching filters and features found in the <var>TCanvas</var> class from the LCL. TLazCanvas also fixes various small problems and incompatibilities between <var>TFPImageCanvas</var> versions, making the interface smoother and more consistent.
+            <var>TLazCanvas</var> is an FCL <var>TFPImageCanvas</var> descendant. TLazCanvas extends the ancestor class to support stretching filters and features found in the <var>TCanvas</var> class from the LCL. TLazCanvas also fixes various small problems and incompatibilities between <var>TFPImageCanvas</var> versions, making the interface smoother and more consistent.
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Graphics.TCanvas"/>
+          <link id="#LCL.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
 

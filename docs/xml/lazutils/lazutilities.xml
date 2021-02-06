@@ -88,8 +88,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.typinfo.GetEnumValue"/>
-          <link id="#rtl.typinfo.PTypeInfo"/>
+          <link id="#rtl.typinfo.GetEnumValue">GetEnumValue</link>
+          <link id="#rtl.typinfo.PTypeInfo">PTypeInfo</link>
         </seealso>
       </element>
       <element name="GetEnumValueDef.Result">

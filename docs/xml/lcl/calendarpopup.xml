@@ -8,7 +8,14 @@
     -->
     <module name="CalendarPopup">
       <short>Implements a pop-up form with a TCalendar control for TDateEdit</short>
-      <descr/>
+      <descr>
+        <p>
+          <file>calendarpopup.pas</file> implements a non-modal calendar popup for a TDateEdit control. It includes a ShowCalendarPopup routine to configure, display, and capture the return value for the pop-up form.
+        </p>
+        <p>
+          Author: Vincent Snijders
+        </p>
+      </descr>
 
       <!-- used units -->
       <element name="System"/>
@@ -59,7 +66,7 @@
         </descr>
         <seealso>
           <link id="ShowCalendarPopup"/>
-          <link id="#lcl.EditBtn.TDateEdit"/>
+          <link id="#lcl.editbtn.TDateEdit">TDateEdit</link>
         </seealso>
       </element>
 
@@ -90,12 +97,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Calendar.TCustomCalendar.HitTest"/>
-          <link id="#lcl.Calendar.TCalendarPart"/>
+          <link id="#lcl.calendar.TCustomCalendar.HitTest">TCustomCalendar.HitTest</link>
+          <link id="#lcl.calendar.TCalendarPart">TCalendarPart</link>
         </seealso>
       </element>
       <element name="TCalendarPopupForm.CalendarDblClick.Sender">
-        <short></short>
+        <short>Object for the event notification</short>
       </element>
 
       <element name="TCalendarPopupForm.CalendarKeyDown">
@@ -117,7 +124,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Forms.TCustomForm.Close"/>
+          <link id="#lcl.forms.TCustomForm.Close">TCustomForm.Close</link>
         </seealso>
       </element>
       <element name="TCalendarPopupForm.CalendarKeyDown.Sender">
@@ -148,8 +155,8 @@
 
       <element name="TCalendarPopupForm.FormCreate">
         <short>Implements the OnCreate event handler for the form</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCalendarPopupForm.FormCreate.Sender">
         <short>Object for the event notification</short>
@@ -192,8 +199,8 @@
         <short>
           Ensures that the form and the calling control are visible on the current monitor
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCalendarPopupForm.KeepInView.PopupOrigin">
         <short>Coordinates where the pop-up form is displayed</short>
@@ -224,7 +231,7 @@
         <seealso>
           <link id="TCalendarPopupForm"/>
           <link id="TReturnDateEvent"/>
-          <link id="#lcl.Calendar.TDisplaySettings"/>
+          <link id="#lcl.calendar.TDisplaySettings">TDisplaySettings</link>
         </seealso>
       </element>
       <element name="ShowCalendarPopup.APosition">

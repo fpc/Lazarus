@@ -10,7 +10,17 @@
       <short>
         Defines classes for a masked edit control, i.e. editing with a masking string in place to obscure, format, or validate the text entered in the control
       </short>
-      <descr/>
+      <descr>
+        <p>
+          <file>maskedit.pp</file> implements an masked edit control which can be used to format, vaidate, or obscure the text entered in the control. The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Additional</b> Tab
+        </p>
+        <ul>
+          <li>TMaskEdit</li>
+        </ul>
+      </descr>
 
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes"/>
@@ -1062,7 +1072,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.CanShowEmulatedTextHint"/>
+          <link id="#lcl.stdctrls.TCustomEdit.CanShowEmulatedTextHint">TCustomEdit.CanShowEmulatedTextHint</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.CanShowEmulatedTextHint.Result">
@@ -1254,7 +1264,7 @@
           </p>
         </descr>
         <seealso>
-           <link id="#LCL.StdCtrls.TCustomEdit.TextChanged"/>
+           <link id="#lcl.stdctrls.TCustomEdit.TextChanged">TCustomEdit.TextChanged</link>
         </seealso>
       </element>
 
@@ -1268,8 +1278,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.Change"/>
-          <link id="#LCL.StdCtrls.TCustomEdit.OnChange"/>
+          <link id="#lcl.stdctrls.TCustomEdit.Change">TCustomEdit.Change</link>
+          <link id="#lcl.stdctrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
         </seealso>
       </element>
 
@@ -1291,7 +1301,7 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.IsMasked"/>
-          <link id="#lcl.stdctrls.TCustomEdit.CharCase"/>
+          <link id="#lcl.stdctrls.TCustomEdit.CharCase">TCustomEdit.CharCase</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.SetCharCase.Value">
@@ -1331,8 +1341,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.SetNumbersOnly"/>
-          <link id="#LCL.StdCtrls.TCustomEdit.NumbersOnly"/>
+          <link id="#lcl.stdctrls.TCustomEdit.SetNumbersOnly">TCustomEdit.SetNumbersOnly</link>
+          <link id="#lcl.stdctrls.TCustomEdit.NumbersOnly">TCustomEdit.NumbersOnly</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.SetNumbersOnly.Value">
@@ -1349,7 +1359,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Loaded"/>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
 
@@ -1397,7 +1407,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.DoEnter"/>
+          <link id="#lcl.stdctrls.TCustomEdit.DoEnter">TCustomEdit.DoEnter</link>
         </seealso>
       </element>
 
@@ -1405,7 +1415,7 @@
         <short>Performs actions needed when the control is exited</short>
         <descr></descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.DoExit"/>
+          <link id="#lcl.stdctrls.TCustomEdit.DoExit">TCustomEdit.DoExit</link>
         </seealso>
       </element>
 
@@ -1423,7 +1433,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.KeyDown"/>
+          <link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.KeyDown.Key">
@@ -1442,7 +1452,7 @@
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.UTF8KeyPress"/>
-          <link id="#LCL.Controls.TWinControl.KeyPress"/>
+          <link id="#lcl.controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.KeyPress.Key">
@@ -1457,7 +1467,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.MouseUp"/>
+          <link id="#lcl.stdctrls.TCustomEdit.MouseUp">TCustomEdit.MouseUp</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.MouseUp.Button">
@@ -1528,7 +1538,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
+          <link id="#lcl.stdctrls.TCustomEdit.MaxLength">TCustomEdit.MaxLength</link>
         </seealso>
       </element>
 
@@ -1629,10 +1639,10 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomMaskEdit.CutToClipBoard" link="#LCL.StdCtrls.TCustomEdit.CutToClipboard"/>
-      <element name="TCustomMaskEdit.PasteFromClipBoard" link="#LCL.StdCtrls.TCustomEdit.PasteFromClipboard"/>
+      <element name="TCustomMaskEdit.CutToClipBoard" link="#lcl.stdctrls.TCustomEdit.CutToClipboard"/>
+      <element name="TCustomMaskEdit.PasteFromClipBoard" link="#lcl.stdctrls.TCustomEdit.PasteFromClipboard"/>
 
-      <element name="TCustomMaskEdit.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomMaskEdit.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -1645,7 +1655,7 @@
         <seealso>
           <link id="TCustomMaskEdit.ClearInternalMask"/>
           <link id="TMaskEditTrimType.metTrimRight"/>
-          <link id="#LCL.StdCtrls.TCustomEdit.RealGetText"/>
+          <link id="#lcl.stdctrls.TCustomEdit.RealGetText">TCustomEdit.RealGetText</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.Create.AOwner">
@@ -1673,7 +1683,7 @@
           <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.RestoreMask"/>
           <link id="TCustomMaskEdit.SetTextApplyMask"/>
-          <link id="#LCL.StdCtrls.TCustomEdit.Clear"/>
+          <link id="#lcl.stdctrls.TCustomEdit.Clear">TCustomEdit.Clear</link>
         </seealso>
       </element>
 
@@ -1738,10 +1748,10 @@
 
       <element name="TMaskEdit.IsMasked" link="#lcl.maskedit.TCustomMaskEdit.IsMasked"/>
       <element name="TMaskEdit.EditText" link="#lcl.maskedit.TCustomMaskEdit.EditText"/>
-      <element name="TMaskEdit.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TMaskEdit.Alignment" link="#LCL.StdCtrls.TCustomEdit.Alignment"/>
+      <element name="TMaskEdit.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TMaskEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
 
-      <element name="TMaskEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TMaskEdit.Anchors" link="#lcl.controls.TControl.Anchors">
         <descr>
           <p>One of the standard properties, which should be supported by all descendants.</p>
           <p>Determines how the control is to be anchored to its client or parent control.</p>
@@ -1750,9 +1760,9 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TMaskEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
 
-      <element name="TMaskEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TMaskEdit.AutoSize" link="#lcl.controls.TControl.AutoSize">
         <descr>
           <p>One of the standard properties, which should be supported by all descendants.</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -1761,7 +1771,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TMaskEdit.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
 
       <element name="TMaskEdit.BorderSpacing">
         <short>Determines the border spacing for this control</short>
@@ -1776,9 +1786,9 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TMaskEdit.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
 
-      <element name="TMaskEdit.CharCase" link="#LCL.StdCtrls.TCustomEdit.CharCase">
+      <element name="TMaskEdit.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase">
         <descr>
           <p>
             Indicates how text is displayed in a text editing control in the following ways:
@@ -1793,7 +1803,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TMaskEdit.Color" link="#lcl.controls.TControl.Color">
         <descr>
           <p>One of the standard properties, which should be supported by all descendants.</p>
           <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
@@ -1802,7 +1812,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.Constraints" link="#LCL.Controls.TControl.Constraints">
+      <element name="TMaskEdit.Constraints" link="#lcl.controls.TControl.Constraints">
         <descr>
           <p>One of the standard properties, which should be supported by all descendants.</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -1810,11 +1820,11 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TMaskEdit.DragKind" link="#LCL.Controls.TControl.DragKind"/>
-      <element name="TMaskEdit.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TMaskEdit.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TMaskEdit.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TMaskEdit.DragMode" link="#lcl.controls.TControl.DragMode"/>
 
-      <element name="TMaskEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TMaskEdit.Enabled" link="#lcl.controls.TControl.Enabled">
         <descr>
           <p>
             One of the standard properties, which should be supported by all descendants.
@@ -1829,7 +1839,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TMaskEdit.Font" link="#lcl.controls.TControl.Font">
         <descr>
           <p>
             One of the standard properties, which should be supported by all descendants.
@@ -1845,11 +1855,11 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
-      <element name="TMaskEdit.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TMaskEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TMaskEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TMaskEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TMaskEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+      <element name="TMaskEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TMaskEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TMaskEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TMaskEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 
       <element name="TMaskEdit.PopupMenu">
         <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
@@ -1864,7 +1874,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TMaskEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly">
         <short>
           <var>ReadOnly</var> indicates if the contents of the edit box may only be read, not written or erased
         </short>
@@ -1885,12 +1895,12 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TMaskEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1.</descr>
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TMaskEdit.TabStop" link="#lcl.controls.TWinControl.TabStop">
         <short/>
         <descr>
           <p>
@@ -1903,7 +1913,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TMaskEdit.Visible" link="#lcl.controls.TControl.Visible">
         <short/>
         <descr>
           <p>
@@ -1916,9 +1926,9 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
+      <element name="TMaskEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 
-      <element name="TMaskEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TMaskEdit.OnClick" link="#lcl.controls.TControl.OnClick">
         <short/>
         <descr>
           <p>
@@ -1934,7 +1944,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TMaskEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
         <short/>
         <descr>
           <p>
@@ -1944,15 +1954,15 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TMaskEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TMaskEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TMaskEdit.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
-      <element name="TMaskEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TMaskEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TMaskEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TMaskEdit.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TMaskEdit.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TMaskEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+      <element name="TMaskEdit.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+      <element name="TMaskEdit.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TMaskEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TMaskEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 
-      <element name="TMaskEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TMaskEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown">
         <short/>
         <descr>
           <p>
@@ -1965,7 +1975,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TMaskEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress">
         <short/>
         <descr>
           <p>
@@ -1978,7 +1988,7 @@
         <seealso/>
       </element>
 
-      <element name="TMaskEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TMaskEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp">
         <short/>
         <descr>
           <p>
@@ -1989,21 +1999,21 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.OnKeyUp"/>
+          <link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
         </seealso>
       </element>
 
-      <element name="TMaskEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TMaskEdit.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TMaskEdit.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TMaskEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TMaskEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TMaskEdit.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TMaskEdit.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TMaskEdit.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TMaskEdit.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
-      <element name="TMaskEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TMaskEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TMaskEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TMaskEdit.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TMaskEdit.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TMaskEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TMaskEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TMaskEdit.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TMaskEdit.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TMaskEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TMaskEdit.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+      <element name="TMaskEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TMaskEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
 
       <element name="TMaskEdit.Text">
@@ -2012,8 +2022,8 @@
           Text is a public property in TMaskEdit which provides access to the value for the edit control.
         </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomEdit.Text"/>
-          <link id="#LCL.Controls.TControl.Text"/>
+          <link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
+          <link id="#lcl.controls.TControl.Text">TControl.Text</link>
           <link id="TCustomMaskEdit.EditText"/>
           <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.RealGetText"/>
@@ -2024,8 +2034,8 @@
         </notes>
       </element>
 
-      <element name="TMaskEdit.TextHint" link="#LCL.StdCtrls.TCustomEdit.TextHint"/>
-      <element name="TMaskEdit.SpaceChar" link="#LCL.MaskEdit.TCustomMaskEdit.SpaceChar"/>
+      <element name="TMaskEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+      <element name="TMaskEdit.SpaceChar" link="#lcl.maskedit.TCustomMaskEdit.SpaceChar"/>
 
       <element name="FormatMaskText">
         <short>Applies an edit mask to the specified string value</short>
@@ -2117,7 +2127,7 @@
         </descr>
         <seealso>
           <link id="TMaskEdit"/>
-          <link id="#RTL.Classes.RegisterComponents"/>
+          <link id="#rtl.classes.RegisterComponents">RegisterComponents</link>
         </seealso>
       </element>
 

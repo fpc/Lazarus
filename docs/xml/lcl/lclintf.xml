@@ -7,7 +7,7 @@
       ====================================================================
     -->
     <module name="LCLIntf">
-      <short>Contains WinAPI like functions for Delphi compatibility</short>
+      <short>Contains WinAPI-like functions for Delphi compatibility</short>
       <descr>
         <p>
           This unit was created for Delphi compatibility. It contains selected functions from the Delphi Windows unit, which finally are implemented in the widgetsets.
@@ -57,28 +57,27 @@
           <p>
             The angles Angle16Deg and Angle16DegLength are measure in 1/16th of a degree. For example, a full circle equals 5760 (16*360). Positive values of Angle16Deg and Angle16DegLength mean counter-clockwise rotation while negative values mean a clockwise direction, from the point of view of who looks at the screen.
           </p>
-          <p>Zero degrees is at the 3'o clock position (right).</p>
+          <p>Zero degrees is at the 3 o'clock position (right).</p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="Arc.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.Left">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.Top">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.Right">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.Bottom">
-        <short></short>
+        <short/>
       </element>
       <element name="Arc.Angle16Deg">
         <short>The starting angle in 1/16 degrees, starting right and continuing counter-clockwise</short>
@@ -105,7 +104,6 @@
             The Chord is outlined by the current Pen and filled with the current Brush.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="#lcl.LCLIntf.Pie">LCLIntf.Pie</link>
           <link id="#lcl.Graphics.TCanvas.Chord">Graphics.TCanvas.Chord</link>
@@ -116,19 +114,19 @@
         <short>False on failure</short>
       </element>
       <element name="AngleChord.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="AngleChord.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="AngleChord.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="AngleChord.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="AngleChord.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="AngleChord.angle1">
         <short>The starting angle in 1/16 degrees, starting right and continuing counter-clockwise</short>
@@ -147,8 +145,7 @@
             BeginPaint prepares the specified window for painting and fills a PAINTSTRUCT structure with information about the painting.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
         <notes>
           <note>?</note>
         </notes>
@@ -217,23 +214,21 @@
               painting?)</dd>
           </dl>
         </descr>
-        <errors></errors>
         <seealso>
-          <link id="#lcl.LCLType.BLACKNESS"/>
-          <link id="#lcl.LCLType.DSTINVERT"/>
-          <link id="#lcl.LCLType.MERGECOPY"/>
-          <link id="#lcl.LCLType.MERGEPAINT"/>
-          <link id="#lcl.LCLType.NOTSRCCOPY"/>
-          <link id="#lcl.LCLType.NOTSRCERASE"/>
-          <link id="#lcl.LCLType.SRCCOPY"/>
-          <link id="#lcl.LCLType.PATINVERT"/>
-          <link id="#lcl.LCLType.PATPAINT"/>
-          <link id="#lcl.LCLType.SRCAND"/>
-          <link id="#lcl.LCLType.SRCCOPY"/>
-          <link id="#lcl.LCLType.SRCERASE"/>
-          <link id="#lcl.LCLType.SRCINVERT"/>
-          <link id="#lcl.LCLType.SRCPAINT"/>
-          <link id="#lcl.LCLType.WHITENESS"/>
+          <link id="#lcl.lcltype.BLACKNESS">BLACKNESS</link>
+          <link id="#lcl.lcltype.DSTINVERT">DSTINVERT</link>
+          <link id="#lcl.lcltype.MERGECOPY">MERGECOPY</link>
+          <link id="#lcl.lcltype.MERGEPAINT">MERGEPAINT</link>
+          <link id="#lcl.lcltype.NOTSRCCOPY">NOTSRCCOPY</link>
+          <link id="#lcl.lcltype.NOTSRCERASE">NOTSRCERASE</link>
+          <link id="#lcl.lcltype.PATINVERT">PATINVERT</link>
+          <link id="#lcl.lcltype.PATPAINT">PATPAINT</link>
+          <link id="#lcl.lcltype.SRCAND">SRCAND</link>
+          <link id="#lcl.lcltype.SRCCOPY">SRCCOPY</link>
+          <link id="#lcl.lcltype.SRCERASE">SRCERASE</link>
+          <link id="#lcl.lcltype.SRCINVERT">SRCINVERT</link>
+          <link id="#lcl.lcltype.SRCPAINT">SRCPAINT</link>
+          <link id="#lcl.lcltype.WHITENESS">WHITENESS</link>
         </seealso>
       </element>
       <element name="BitBlt.Result">
@@ -269,9 +264,8 @@
 
       <element name="CallNextHookEx">
         <short>Calls the next procedure in the hook chain</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CallNextHookEx.Result">
         <short>Depends on the Hook type</short>
@@ -291,34 +285,31 @@
 
       <element name="CallWindowProc">
         <short>Calls another Window procedure, to handle a message</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CallWindowProc.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CallWindowProc.lpPrevWndFunc">
-        <short></short>
+        <short/>
       </element>
       <element name="CallWindowProc.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="CallWindowProc.Msg">
-        <short></short>
+        <short/>
       </element>
       <element name="CallWindowProc.WParam">
-        <short></short>
+        <short/>
       </element>
       <element name="CallWindowProc.LParam">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClientToScreen">
-        <short>Converts (relative) Client coordinates into absolute Screen coordinates.
-        </short>
-        <descr></descr>
-        <errors></errors>
+        <short>Converts (relative) Client coordinates into absolute Screen coordinates</short>
+        <descr/>
         <seealso>
           <link id="ScreenToClient"/>
         </seealso>
@@ -327,7 +318,7 @@
         <short>False on failure</short>
       </element>
       <element name="ClientToScreen.Handle">
-        <short>The window with the client area</short>
+        <short>The window handle with the client area</short>
       </element>
       <element name="ClientToScreen.P">
         <short>The point to convert</short>
@@ -359,11 +350,10 @@
             <dd>The result is the union of two combined regions except for any overlapping areas.</dd>
           </dl>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CombineRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CombineRgn.Dest">
         <short>The Handle of the destination region. This region must already exist!
@@ -381,18 +371,17 @@
 
       <element name="CreateBitmap">
         <short>Creates a bitmap object</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateBitmap.Result">
         <short>The bitmap Handle, zero on failure</short>
       </element>
       <element name="CreateBitmap.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateBitmap.Height">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateBitmap.Planes">
         <short>The number of color planes</short>
@@ -409,8 +398,7 @@
         <descr>
           A brush is used to fill image areas (background...). It has a color and a pattern, e.g. BS_SOLID.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CreateBrushIndirect.Result">
         <short>The brush Handle, zero on failure</short>
@@ -423,8 +411,7 @@
         <short>Creates a Caret (text cursor)</short>
         <descr>This description is taken from the WinAPI, no guarantee for other platforms.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CreateCaret.Result">
         <short>False on failure</short>
@@ -444,9 +431,8 @@
 
       <element name="CreateCompatibleBitmap">
         <short>Creates a bitmap that is compatible with the given DC</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateCompatibleBitmap.Result">
         <short>The bitmap handle, zero on failure</short>
@@ -463,9 +449,8 @@
 
       <element name="CreateCompatibleDC">
         <short>Creates an memory Device Context, compatible with the device of the given DC</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateCompatibleDC.Result">
         <short>The memory DC, zero on failure</short>
@@ -478,9 +463,8 @@
         <short>
           Creates a Device Dependent Bitmap (DDB) from a Device Independent Bitmap (DIB).
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateDIBitmap.Result">
         <short>The bitmap handle, zero on failure</short>
@@ -492,7 +476,7 @@
         <short>The bitmap info header</short>
       </element>
       <element name="CreateDIBitmap.dwUsage">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateDIBitmap.InitBits">
         <short>An array containing the bitmap pixels</short>
@@ -501,14 +485,13 @@
         <short>CBM_INIT when InitBits contains valid data, else zero</short>
       </element>
       <element name="CreateDIBitmap.wUsage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateDIBSection">
         <short>Creates a bitmap into which the application can write</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateDIBSection.Result">
         <short>The bitmap Handle, zero on failure</short>
@@ -536,30 +519,28 @@
 
       <element name="CreateEllipticRgn">
         <short>Creates an elliptic region</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateEllipticRgn.Result">
         <short>The region Handle, zero on failure</short>
       </element>
       <element name="CreateEllipticRgn.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateEllipticRgn.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateEllipticRgn.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateEllipticRgn.Y2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFontIndirect">
         <short>Creates a logical font, selectable into any DC</short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="CreateFontIndirectEx"/>
         </seealso>
@@ -575,8 +556,7 @@
         <short>
           Creates a logical font, selectable into any DC. Allows for a long font name.
         </short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="CreateFontIndirect"/>
         </seealso>
@@ -593,28 +573,26 @@
 
       <element name="CreateIconIndirect">
         <short>Creates an icon or cursor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateIconIndirect.Result">
         <short>The Handle, zero on failure</short>
       </element>
       <element name="CreateIconIndirect.IconInfo">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePalette">
         <short>Creates a logical palette, selectable into any DC</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreatePalette.Result">
         <short>The palette Handle, zero on failure</short>
       </element>
       <element name="CreatePalette.LogPalette">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePatternBrush">
@@ -627,7 +605,7 @@
             Monochrome bitmaps obtain the actual text (0) or background (1) color of the DC.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CreatePatternBrush.Result">
         <short>The brush handle, zero on failure</short>
@@ -638,22 +616,20 @@
 
       <element name="CreatePenIndirect">
         <short>Creates a logical Pen, selectable into any DC</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreatePenIndirect.Result">
         <short>The pen Handle, zero on failure</short>
       </element>
       <element name="CreatePenIndirect.LogPen">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePolygonRgn">
         <short>Creates a polygonal region</short>
         <descr>The last point is connected to the first point, to close the region.</descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="CreatePolygonRgn.Result">
         <short>The region Handle, zero on failure</short>
@@ -670,48 +646,48 @@
 
       <element name="CreateRectRgn">
         <short>Creates a rectangular region</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateRectRgn.Result">
         <short>The region handle, zero on failure</short>
       </element>
       <element name="CreateRectRgn.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRectRgn.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRectRgn.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRectRgn.Y2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateRoundRectRgn">
-        <short>
-          Creates a rectangular region with rounded corners. All parameters in logical units.
-        </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Creates a rectangular region with rounded corners</short>
+        <descr>
+          <p>
+            Creates a rectangular region with rounded corners. All parameters in logical units.
+          </p>
+        </descr>
+        <seealso/>
       </element>
       <element name="CreateRoundRectRgn.Result">
         <short>The region Handle, zero on failure</short>
       </element>
       <element name="CreateRoundRectRgn.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRoundRectRgn.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRoundRectRgn.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRoundRectRgn.Y2">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRoundRectRgn.nWidthEllipse">
         <short>The extent of the ellipse, used for the rounded corners</short>
@@ -722,19 +698,19 @@
       <!-- procedure Visibility: default -->
       <element name="DeleteCriticalSection">
         <short>Deletes an unowned critical section</short>
-        <descr></descr>
-        <errors>Results are unpredictable when the section is owned, i.e. has been entered but not yet left.
+        <descr/>
+        <errors>
+          Results are unpredictable when the section is owned, i.e. has been entered but not yet left.
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="DeleteCriticalSection.CritSection">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DeleteDC">
-        <short>Deletes an Device Context, created by CreateDC</short>
-        <descr></descr>
-        <errors></errors>
+        <short>Deletes a Device Context, created by CreateDC</short>
+        <descr/>
         <seealso>
           <link id="ReleaseDC"/>
         </seealso>
@@ -743,27 +719,26 @@
         <short>False on failure</short>
       </element>
       <element name="DeleteDC.hDC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DeleteObject">
-        <short>Frees an GDI object</short>
+        <short>Frees a GDI object</short>
         <descr>The bitmap of a pattern brush is not destroyed with the brush.</descr>
         <errors>The function fails when the Handle is selected into an DC.</errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="DeleteObject.Result">
         <short>False on failure</short>
       </element>
       <element name="DeleteObject.GDIObject">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DestroyCaret">
         <short>Destroys the caret but doesn't free the bitmap</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DestroyCaret.Result">
         <short>False on failure</short>
@@ -774,9 +749,8 @@
 
       <element name="DestroyCursor">
         <short>Destroys an mouse cursor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DestroyCursor.Result">
         <short>False on failure</short>
@@ -787,22 +761,20 @@
 
       <element name="DestroyIcon">
         <short>Destroys an icon</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DestroyIcon.Result">
         <short>False on failure</short>
       </element>
       <element name="DestroyIcon.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DPtoLP">
         <short>Converts an array of Device Points (coordinates) into Logical Points</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DPtoLP.Result">
         <short>False on failure</short>
@@ -818,513 +790,481 @@
       </element>
 
       <element name="DrawFrameControl">
-        <short>Draws a window frame control, of the specified type and style</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Draws a window frame for a control of the specified type and style</short>
+        <descr/>
+        <seealso/>
       </element>
-
       <element name="DrawFrameControl.Result">
-        <short>False on failure</short>
+        <short>Returns False when the control type is anything other than a button</short>
       </element>
       <element name="DrawFrameControl.DC">
-        <short></short>
+        <short>Device context where the operation is performed</short>
       </element>
       <element name="DrawFrameControl.Rect">
-        <short></short>
+        <short>Rectangle with the bounds for the control</short>
       </element>
       <element name="DrawFrameControl.uType">
-        <short></short>
+        <short>Identifies the type of control for the frame</short>
       </element>
       <element name="DrawFrameControl.uState">
-        <short></short>
+        <short>Identifies the state for the control</short>
       </element>
 
       <element name="DrawFocusRect">
-        <short>Shows or hides a floating rectangle</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Determines if the focuis rectangle is handled by the widgetset class</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawFocusRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawFocusRect.DC">
-        <short></short>
+        <short>Device content for the operation</short>
       </element>
       <element name="DrawFocusRect.Rect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DrawEdge">
-        <short>Draws one or more edges of a rectangle</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Draws one or more edges for a rectangle</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawEdge.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawEdge.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawEdge.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawEdge.edge">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawEdge.grfFlags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DrawText">
-        <short>Draws formatted text within a rectangle</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Draws formatted text on the specified device context</short>
+        <descr/>
+        <seealso>
+          <link id="TextOut"/>
+          <link id="GetTextMetrics"/>
+        </seealso>
       </element>
-
       <element name="DrawText.Result">
-        <short></short>
+        <short>1 on success, 0 when text could not be drawn</short>
       </element>
-
       <element name="DrawText.DC">
-        <short></short>
+        <short>Device context used to measure and render the specified Text</short>
       </element>
-
       <element name="DrawText.Str">
-        <short></short>
+        <short>Text drawn in the routine</short>
       </element>
-
       <element name="DrawText.Count">
-        <short></short>
+        <short>Length of the value in Str; calculated when Count is negative</short>
       </element>
-
       <element name="DrawText.Rect">
-        <short></short>
+        <short>Rectangle where the text was drawn</short>
       </element>
-
       <element name="DrawText.Flags">
-        <short></short>
+        <short>DrawText flags examined in the routine</short>
       </element>
 
       <element name="EnableScrollBar">
         <short>Enables or disables the arrows of a scrollbar control, or of the scrollbars of a window.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
-
       <element name="EnableScrollBar.Result">
-        <short></short>
+        <short/>
       </element>
-
       <element name="EnableScrollBar.Wnd">
-        <short></short>
+        <short/>
       </element>
-
       <element name="EnableScrollBar.wSBflags">
-        <short></short>
+        <short/>
       </element>
-
       <element name="EnableScrollBar.wArrows">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EnableWindow">
         <short>
           Enables or disables mouse and keyboard input to the specified window or control.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
-
       <element name="EnableWindow.Result">
-        <short></short>
+        <short/>
       </element>
-
       <element name="EnableWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
-
       <element name="EnableWindow.bEnable">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EndPaint">
         <short>Ends painting a window, started with BeginPaint</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="EndPaint.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EndPaint.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EndPaint.PS">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="EnterCriticalSection">
         <short>Enters a critical section</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="EnterCriticalSection.CritSection">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EnumDisplayMonitors">
         <short>Invokes a callback function for every available display monitor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="EnumDisplayMonitors.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumDisplayMonitors.hdc">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumDisplayMonitors.lprcClip">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumDisplayMonitors.lpfnEnum">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumDisplayMonitors.dwData">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EnumFontFamilies">
         <short>Invokes a callback function for every font available on a specified device</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="EnumFontFamilies.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamilies.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamilies.Family">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamilies.EnumFontFamProc">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamilies.LParam">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EnumFontFamiliesEx">
         <short>Invokes a callback function for every available font that matches certain criteria.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="EnumFontFamiliesEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamiliesEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamiliesEx.lpLogFont">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamiliesEx.Callback">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamiliesEx.Lparam">
-        <short></short>
+        <short/>
       </element>
       <element name="EnumFontFamiliesEx.Flags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Ellipse">
         <short>Draws a filled circle or ellipse, bounded by a rectangle</short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
       </element>
       <element name="Ellipse.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="Ellipse.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="Ellipse.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="Ellipse.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="Ellipse.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="Ellipse.y2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExcludeClipRect">
         <short>Excludes a rectangle from the clipping region, i.e. allows one to paint within the rectangle.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExcludeClipRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ExcludeClipRect.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="ExcludeClipRect.Left">
-        <short></short>
+        <short/>
       </element>
       <element name="ExcludeClipRect.Top">
-        <short></short>
+        <short/>
       </element>
       <element name="ExcludeClipRect.Right">
-        <short></short>
+        <short/>
       </element>
       <element name="ExcludeClipRect.Bottom">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExtCreatePen">
         <short>Creates a logical pen, selectable into any DC</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExtCreatePen.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtCreatePen.dwPenStyle">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtCreatePen.dwWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtCreatePen.lplb">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtCreatePen.dwStyleCount">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtCreatePen.lpStyle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExtTextOut">
         <short>Draws an string without formatting (single line)</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExtTextOut.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.X">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Options">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtTextOut.Dx">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExtSelectClipRGN">
         <short>Combines the passed Region with the current clipping region</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExtSelectClipRGN.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtSelectClipRGN.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtSelectClipRGN.rgn">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtSelectClipRGN.Mode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FillRect">
         <short>Fills a rectangle by using the specified brush</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FillRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRect.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRect.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRect.Brush">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FillRgn">
         <short>Fills a region using the specified brush</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FillRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRgn.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRgn.RegionHnd">
-        <short></short>
+        <short/>
       </element>
       <element name="FillRgn.hbr">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FloodFill">
         <short>Fills an area of the display surface with the current brush</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FloodFill.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.X">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.Color">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.FillStyle">
-        <short></short>
+        <short/>
       </element>
       <element name="FloodFill.Brush">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FrameRect">
         <short>Draws a border around a rectangle</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FrameRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FrameRect.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="FrameRect.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="FrameRect.hBr">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetActiveWindow">
         <short>Returns the Handle of the active window of the calling thread</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetActiveWindow.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetBitmapBits">
         <short>Fills an buffer with the bitmap bits</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetBitmapBits.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetBitmapBits.Bitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="GetBitmapBits.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="GetBitmapBits.Bits">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetBkColor">
         <short>Returns the background color of an device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetBkColor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetBkColor.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCapture">
         <short>Returns the window that captures mouse messages</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCapture.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCaretPos">
         <short>Returns the caret position, in client coordinates</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCaretPos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCaretPos.lpPoint">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClientRect">
@@ -1338,123 +1278,116 @@
             A child control with Align=alClient will completely fill the clientrect.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetClientRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClientRect.handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClientRect.Rect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClipBox">
         <short>
           Returns the smallest rectangle which includes the entire clipping region of an device context.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetClipBox.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClipBox.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClipBox.lpRect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClipRGN">
         <short>Returns the clipping region of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetClipRGN.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClipRGN.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClipRGN.RGN">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCursorPos">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCursorPos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCursorPos.lpPoint">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCurrentObject">
         <short>Returns an currently selected object in an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCurrentObject.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCurrentObject.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCurrentObject.uObjectType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCharABCWidths">
         <short>Returns the ABC widths of an range of character codes</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCharABCWidths.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCharABCWidths.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCharABCWidths.p2">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCharABCWidths.p3">
-        <short></short>
+        <short/>
       </element>
       <element name="GetCharABCWidths.ABCStructs">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDC">
         <short>Returns the handle of an Device Context (DC) for the client area of a window.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetDC.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDC.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDeviceCaps">
         <short>Returns various device specific information</short>
         <descr>
           <p>
-            Returns information about any DC, which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas. The following constants can be utilized in the
-            index argument:
+            Returns information about any DC (Device Context), which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas. The following constants can be utilized in the index argument:
           </p>
           <ul>
             <li>HORZSIZE</li>
@@ -1481,276 +1414,259 @@ begin
 end;
 </code>
         </descr>
-        <errors></errors>
         <seealso>
-          <link id="#lcl.Forms.TScreen.PixelsPerInch"/>
-          <link id="#lcl.LCLType.HORZSIZE"/>
-          <link id="#lcl.LCLType.VERTSIZE"/>
-          <link id="#lcl.LCLType.HORZRES"/>
-          <link id="#lcl.LCLType.BITSPIXEL"/>
-          <link id="#lcl.LCLType.PLANES"/>
-          <link id="#lcl.LCLType.SIZEPALETTE"/>
-          <link id="#lcl.LCLType.LOGPIXELSX"/>
-          <link id="#lcl.LCLType.LOGPIXELSY"/>
-          <link id="#lcl.LCLType.VERTRES"/>
-          <link id="#lcl.LCLType.NUMRESERVED"/>
+          <link id="#lcl.forms.TScreen.PixelsPerInch">TScreen.PixelsPerInch</link>
+          <link id="#lcl.lcltype.HORZSIZE">HORZSIZE</link>
+          <link id="#lcl.lcltype.VERTSIZE">VERTSIZE</link>
+          <link id="#lcl.lcltype.HORZRES">HORZRES</link>
+          <link id="#lcl.lcltype.BITSPIXEL">BITSPIXEL</link>
+          <link id="#lcl.lcltype.PLANES">PLANES</link>
+          <link id="#lcl.lcltype.SIZEPALETTE">SIZEPALETTE</link>
+          <link id="#lcl.lcltype.LOGPIXELSX">LOGPIXELSX</link>
+          <link id="#lcl.lcltype.LOGPIXELSY">LOGPIXELSY</link>
+          <link id="#lcl.lcltype.VERTRES">VERTRES</link>
+          <link id="#lcl.lcltype.NUMRESERVED">NUMRESERVED</link>
         </seealso>
       </element>
       <element name="GetDeviceCaps.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDeviceCaps.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDeviceCaps.Index">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDoubleClickTime">
         <short>Returns the double-click time, in milliseconds</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetDoubleClickTime.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDIBits">
-        <short>Fills an buffer with the bitmap bits</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Fill an buffer with the bitmap bits</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetDIBits.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDIBits.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDIBits.Bitmap">
         <short>The (device dependent) bitmap handle</short>
       </element>
       <element name="GetDIBits.StartScan">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDIBits.NumScans">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDIBits.Bits">
         <short>Pointer to the output buffer, or Nil to get the required dimensions</short>
       </element>
       <element name="GetDIBits.BitInfo">
-        <short></short>
+        <short/>
       </element>
       <element name="GetDIBits.Usage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetFocus">
         <short>Returns the handle of the window that has the focus in the current thread.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetFocus.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetFontLanguageInfo">
         <short>Returns language information about the currently selected font</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetFontLanguageInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetFontLanguageInfo.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetForegroundWindow">
         <short>Returns the window that the user is currently working with, session wide</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetForegroundWindow.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetIconInfo">
         <short>Returns information about an Icon or Cursor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetIconInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetIconInfo.AIcon">
-        <short></short>
+        <short/>
       </element>
       <element name="GetIconInfo.AIconInfo">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetKeyState">
         <short>The status of a virtual key</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetKeyState.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetKeyState.nVirtKey">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetMapMode">
         <short>Returns the mapping mode of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetMapMode.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetMapMode.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetMonitorInfo">
         <short>Returns information about an display monitor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetMonitorInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetMonitorInfo.hMonitor">
-        <short></short>
+        <short/>
       </element>
       <element name="GetMonitorInfo.lpmi">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetObject">
         <short>Returns information about a graphics object</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetObject.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetObject.GDIObject">
-        <short></short>
+        <short/>
       </element>
       <element name="GetObject.BufSize">
-        <short></short>
+        <short/>
       </element>
       <element name="GetObject.Buf">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetPaletteEntries">
         <short>Retrieves an range of color entries from a logical palette</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetPaletteEntries.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPaletteEntries.Palette">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPaletteEntries.StartIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPaletteEntries.NumEntries">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPaletteEntries.PaletteEntries">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetParent">
         <short>Returns the parent window of a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetParent.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetParent.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetProp">
         <short>Retrieves an property value for a window.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetProp.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetProp.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetProp.Str">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetRgnBox">
         <short>Returns the bounding rectangle of a region, containing the entire region</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetRgnBox.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRgnBox.RGN">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRgnBox.lpRect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetROP2">
         <short>The current Foreground Mixing Mode in an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetROP2.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetROP2.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollInfo">
         <short>Returns all or selected information about a ScrollBar.
         </short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
-          <link id="#lcl.LCLType.tagScrollInfo"/>
           <link id="SetScrollInfo"/>
+          <link id="#lcl.lcltype.tagScrollInfo">tagScrollInfo</link>
         </seealso>
       </element>
       <element name="GetScrollInfo.Result">
@@ -1769,239 +1685,230 @@ end;
 
       <element name="GetStockObject">
         <short>Retrieves a handle to one of the predefined graphic objects</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetStockObject.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetStockObject.Value">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetSysColor">
         <short>Retrieves the system color for standard display elements</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetSysColor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSysColor.nIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetSysColorBrush">
         <short>Retrieves a system brush for standard display elements</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetSysColorBrush.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSysColorBrush.nIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetSystemPaletteEntries">
         <short>Retrieves an range of color entries from the system palette for a device</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetSystemPaletteEntries.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSystemPaletteEntries.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSystemPaletteEntries.StartIndex">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSystemPaletteEntries.NumEntries">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSystemPaletteEntries.PaletteEntries">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetSystemMetrics">
         <short>Retrieves various system metrics</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetSystemMetrics.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetSystemMetrics.nIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTextColor">
         <short>The current text color in an device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTextColor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextColor.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTextExtentExPoint">
         <short>Calculates the number of characters, that fit into some horizontal space</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTextExtentExPoint.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.MaxWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.MaxCount">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.PartialWidths">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentExPoint.Size">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTextExtentPoint">
         <short>Computes the display width and height of an string</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTextExtentPoint.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint.Size">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTextExtentPoint32">
         <short>Computes the display width and height of an string</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTextExtentPoint32.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint32.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint32.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint32.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextExtentPoint32.Size">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTextMetrics">
         <short>Retrieves the metrics for the currently selected font</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTextMetrics.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextMetrics.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTextMetrics.TM">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetViewPortExtEx">
         <short>Returns the size of the viewport of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetViewPortExtEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetViewPortExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetViewPortExtEx.Size">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetViewPortOrgEx">
         <short>Returns the origin of the viewport of an device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetViewPortOrgEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetViewPortOrgEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetViewPortOrgEx.P">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowExtEx">
         <short>Returns the extent of a window, in logical units</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetWindowExtEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowExtEx.Size">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowLong">
         <short>Returns attributes of a window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetWindowLong.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowLong.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowLong.int">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowRect">
@@ -2020,13 +1927,13 @@ end;
         </seealso>
       </element>
       <element name="GetWindowRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowRect.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowRect.Rect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowSize">
@@ -2038,80 +1945,77 @@ end;
             This function is a Lazarus addition and does not exist in the Windows API. It returns the Width and Height of a window, including the window decoration. To get the size of a form without the window decoration just use TCustomForm.Width and TCustomForm.Height or TCustomForm.ClientWidth and TCustomForm.ClientHeight.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="GetWindowRect"/>
-          <link id="#lcl.Forms.TForm.ClientWidth"/>
-          <link id="#lcl.Forms.TForm.ClientHeight"/>
+          <link id="#lcl.forms.TForm.ClientWidth">TForm.ClientWidth</link>
+          <link id="#lcl.forms.TForm.ClientHeight">TForm.ClientHeight</link>
         </seealso>
       </element>
       <element name="GetWindowSize.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowSize.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowSize.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowSize.Height">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowOrgEx">
         <short>Retrieves the window origin of an device context, in logical units</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetWindowOrgEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowOrgEx.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="GetWindowOrgEx.P">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GradientFill">
         <short>Fills rectangle or triangle areas with gradient colors</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GradientFill.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.Vertices">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.NumVertices">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.Meshes">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.NumMeshes">
-        <short></short>
+        <short/>
       </element>
       <element name="GradientFill.Mode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="HideCaret">
         <short>Removes the caret from the screen</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="HideCaret.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="HideCaret.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IntersectClipRect">
@@ -2121,203 +2025,191 @@ end;
         <descr>
           The result can be one of the following constants: Error, NullRegion, SimpleRegion, ComplexRegion, or Region_Error
         </descr>
-        <errors></errors>
         <seealso>
-          <link id="#lcl.LCLType.Region_Error"/>
+          <link id="#lcl.lcltype.Region_Error">Region_Error</link>
         </seealso>
       </element>
       <element name="IntersectClipRect.Result">
         <short>The region type, zero on failure</short>
       </element>
       <element name="IntersectClipRect.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="IntersectClipRect.Left">
-        <short></short>
+        <short/>
       </element>
       <element name="IntersectClipRect.Top">
-        <short></short>
+        <short/>
       </element>
       <element name="IntersectClipRect.Right">
-        <short></short>
+        <short/>
       </element>
       <element name="IntersectClipRect.Bottom">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateRect">
         <short>Marks a display area for repaint</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="InvalidateRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRect.aHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRect.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRect.bErase">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateRgn">
         <short>Marks a display area for repaint</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="InvalidateRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRgn.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRgn.Rgn">
-        <short></short>
+        <short/>
       </element>
       <element name="InvalidateRgn.Erase">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsDBCSLeadByte">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsDBCSLeadByte.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsDBCSLeadByte.TestChar">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsIconic">
         <short>True when the window is minimized</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsIconic.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsIconic.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsWindow">
         <short>Checks whether a handle refers to a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsWindow.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsWindowEnabled">
         <short>Determines whether a window can receive mouse and keyboard input</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsWindowEnabled.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsWindowEnabled.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsWindowVisible">
         <short>The definite Visible state of a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsWindowVisible.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsWindowVisible.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsZoomed">
         <short>True when the window is maximized</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsZoomed.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsZoomed.handle">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="InitializeCriticalSection">
         <short>Initializes a Critical Section object</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="InitializeCriticalSection.CritSection">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="LeaveCriticalSection">
         <short>Releases a critical section, for use by other threads</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="LeaveCriticalSection.CritSection">
-        <short></short>
+        <short/>
       </element>
 
       <element name="LineTo">
         <short>
           Draws a line from the current position up to, but not including, the specified point
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="LineTo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="LineTo.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="LineTo.X">
-        <short></short>
+        <short/>
       </element>
       <element name="LineTo.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="LPtoDP">
         <short>Converts logical coordinates into device coordinates</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="LPtoDP.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="LPtoDP.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="LPtoDP.Points">
-        <short></short>
+        <short/>
       </element>
       <element name="LPtoDP.Count">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MaskBlt">
@@ -2332,224 +2224,219 @@ end;
             Rop contains both a foreground and a background raster operation (see MakeROP4). When a (monochrome) mask bitmap is present, its bits select either the foreground (1) or background (0) raster operation.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="BitBlt"/>
           <link id="MakeROP4"/>
         </seealso>
       </element>
       <element name="MaskBlt.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.DestDC">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.X">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.Height">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.SrcDC">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.XSrc">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.YSrc">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.Mask">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.XMask">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.YMask">
-        <short></short>
+        <short/>
       </element>
       <element name="MaskBlt.Rop">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MessageBox">
         <short>
           The MessageBox function displays an modal dialog, with the given text, caption, icon and buttons.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MessageBox.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MessageBox.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="MessageBox.lpText">
-        <short></short>
+        <short/>
       </element>
       <element name="MessageBox.lpCaption">
-        <short></short>
+        <short/>
       </element>
       <element name="MessageBox.uType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MonitorFromPoint">
         <short>Finds an monitor from screen coordinates</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MonitorFromPoint.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromPoint.ptScreenCoords">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromPoint.dwFlags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MonitorFromRect" link="#lcl.InterfaceBase.MonitorFromRect"/>
       <element name="MonitorFromRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromRect.lprcScreenCoords">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromRect.dwFlags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MonitorFromWindow" link="#lcl.InterfaceBase.MonitorFromWindow">
         <short>Finds the monitor covering most of a window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MonitorFromWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="MonitorFromWindow.dwFlags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MoveToEx">
         <short>Moves the current position to the specified point</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MoveToEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MoveToEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="MoveToEx.X">
-        <short></short>
+        <short/>
       </element>
       <element name="MoveToEx.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="MoveToEx.OldPoint">
-        <short></short>
+        <short/>
       </element>
 
       <element name="OffsetRgn">
         <short>Moves a region relative</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="OffsetRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="OffsetRgn.RGN">
-        <short></short>
+        <short/>
       </element>
       <element name="OffsetRgn.nXOffset">
-        <short></short>
+        <short/>
       </element>
       <element name="OffsetRgn.nYOffset">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PeekMessage.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage.lpMsg">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage.wMsgFilterMin">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage.wMsgFilterMax">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PeekMessage.wRemoveMsg">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Pie">
         <short>Draws a filled pie-shaped wedge, from an ellipse and two radials.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="Pie.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.sx">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.sy">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.ex">
-        <short></short>
+        <short/>
       </element>
       <element name="Pie.ey">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier">
@@ -2557,32 +2444,31 @@ end;
         <descr>
           Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the first point to the fourth point with the second and third points being the control points. If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. If the continuous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. Any additional points which do not add up to a full Bézier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points for an drawing to occur. If the Filled Flag is set to TRUE then the resulting Poly-Bézier will be drawn as a Polygon.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="PolyBezier.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier.Points">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier.NumPts">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier.Filled">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PolyBezier.Continuous">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Polygon">
@@ -2590,23 +2476,22 @@ end;
         <descr>
           Use Polygon to draw a closed, many-sided shape on the canvas, using the value of Pen. After drawing the complete shape, Polygon fills the shape using the value of Brush. The Points parameter is an array of points that give the vertices of the polygon. Winding determines how the polygon is filled. When Winding is True, Polygon fills the shape using the Winding fill algorithm. When Winding is False, Polygon uses the even-odd (alternative) fill algorithm. StartIndex gives the index of the first point in the array to use. All points before this are ignored. NumPts indicates the number of points to use, starting at StartIndex. If NumPts is -1 (the default), Polygon uses all points from StartIndex to the end of the array. The first point is always connected to the last point. To draw a polygon on the canvas, without filling it, use the Polyline method, specifying the first point a second time at the end.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="Polygon.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="Polygon.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="Polygon.Points">
-        <short></short>
+        <short/>
       </element>
       <element name="Polygon.NumPts">
-        <short></short>
+        <short/>
       </element>
       <element name="Polygon.Winding">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Polyline">
@@ -2614,24 +2499,23 @@ end;
         <descr>
           Use Polyline to connect a set of points on the canvas. If you specify only two points, Polyline draws a single line. The Points parameter is an array of points to be connected. StartIndex identifies the first point in the array to use. NumPts indicates the number of points to use. If NumPts is -1 (the default), PolyLine uses all the points from StartIndex to the end of the array. Calling the MoveTo function with the value of the first point, and then repeatedly calling LineTo with all subsequent points will draw the same image on the canvas. However, unlike LineTo, Polyline does not change the value of PenPos.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="Polyline.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Polyline.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Polyline.Points">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Polyline.NumPts">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PostMessage">
@@ -2644,158 +2528,150 @@ end;
             The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="#lcl.LCLIntf.SendMessage">LCLIntf.SendMessage</link>
         </seealso>
       </element>
 
       <element name="PostMessage.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PostMessage.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PostMessage.Msg">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PostMessage.WParam">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PostMessage.LParam">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PtInRegion">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PtInRegion.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PtInRegion.RGN">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PtInRegion.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PtInRegion.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RealizePalette">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="RealizePalette.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RealizePalette.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="Rectangle.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle.X1">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle.Y1">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle.X2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Rectangle.Y2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RectVisible">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="RectVisible.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RectVisible.dc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RectVisible.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RedrawWindow">
         <short>Redraws (part of) a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RedrawWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RedrawWindow.Wnd">
-        <short></short>
+        <short/>
       </element>
       <element name="RedrawWindow.lprcUpdate">
-        <short></short>
+        <short/>
       </element>
       <element name="RedrawWindow.hrgnUpdate">
-        <short></short>
+        <short/>
       </element>
       <element name="RedrawWindow.flags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ReleaseCapture">
         <short>Restores normal mouse input processing, after
           <link id="SetCapture"/>.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ReleaseCapture.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ReleaseDC">
         <short>Releases an Device Context obtained by GetDC</short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="DeleteDC"/>
         </seealso>
@@ -2807,90 +2683,85 @@ end;
         <short>The window associated with the DC</short>
       </element>
       <element name="ReleaseDC.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RemoveProp">
         <short>Removes a named property from a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RemoveProp.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RemoveProp.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="RemoveProp.Str">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RoundRect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RoundRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.X1">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.Y1">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.X2">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.Y2">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.RX">
-        <short></short>
+        <short/>
       </element>
       <element name="RoundRect.RY">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RestoreDC">
         <short>Restores an Device Context (DC) to an previously saved state</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RestoreDC.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RestoreDC.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="RestoreDC.SavedDC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SaveDC">
         <short>Saves the state of an Device Context in the context stack</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SaveDC.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SaveDC.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScreenToClient">
         <short>Converts absolute Screen coordinates into Client relative coordinates.
         </short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="ClientToScreen"/>
         </seealso>
@@ -2906,46 +2777,45 @@ end;
       </element>
 
       <element name="ScrollWindowEx">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ScrollWindowEx.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.dx">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.dy">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.prcScroll">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.prcClip">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.hrgnUpdate">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.prcUpdate">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ScrollWindowEx.flags">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SendMessage">
@@ -2959,538 +2829,518 @@ end;
             The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.
           </p>
         </descr>
-        <errors></errors>
         <seealso>
           <link id="#lcl.LCLIntf.PostMessage">LCLIntf.PostMessage</link>
         </seealso>
       </element>
       <element name="SendMessage.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SendMessage.HandleWnd">
         <short>The handle of the window to receive the message</short>
       </element>
       <element name="SendMessage.Msg">
-        <short></short>
+        <short/>
       </element>
       <element name="SendMessage.WParam">
-        <short></short>
+        <short/>
       </element>
       <element name="SendMessage.LParam">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetActiveWindow">
         <short>Sets focus to the specified window, if the application is on top</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetActiveWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetActiveWindow.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetBkColor">
         <short>Sets the current background color of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetBkColor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetBkColor.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetBkColor.Color">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetBkMode">
         <short>Sets the background mix mode (transparency) of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetBkMode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetBkMode.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetBkMode.bkMode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCapture">
         <short>Sets the mouse capture to the specified window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetCapture.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCapture.AHandle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCaretPos">
         <short>Moves the Caret to the specified coordinates</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetCaretPos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCaretPos.X">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCaretPos.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCaretPosEx">
         <short>Moves the Caret into a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetCaretPosEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCaretPosEx.handle">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCaretPosEx.X">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCaretPosEx.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCursor">
         <short>Changes the shape of the mouse cursor</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetCursor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCursor.hCursor">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCursorPos">
         <short>Changes the position of the mouse cursor</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetCursorPos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCursorPos.X">
-        <short></short>
+        <short/>
       </element>
       <element name="SetCursorPos.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetMapMode">
         <short>Sets the mapping mode of an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetMapMode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetMapMode.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetMapMode.fnMapMode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetMenu">
         <short>Assigns a menu to a window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetMenu.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetMenu.AWindowHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="SetMenu.AMenuHandle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetParent">
         <short>Changes the parent of a window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetParent.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetParent.hWndChild">
-        <short></short>
+        <short/>
       </element>
       <element name="SetParent.hWndParent">
-        <short></short>
+        <short/>
       </element>
 
 
       <element name="SetProp">
         <short>Adds a property to a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetProp.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetProp.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="SetProp.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="SetProp.Data">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetROP2">
         <short>Sets the Foreground Mixing Mode in an device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetROP2.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetROP2.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetROP2.Mode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectClipRGN">
         <short>Sets the ClipRegion of an DeviceContext</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SelectClipRGN.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SelectClipRGN.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SelectClipRGN.RGN">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectObject">
         <short>Selects an object into an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SelectObject.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SelectObject.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SelectObject.GDIObj">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectPalette">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SelectPalette.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectPalette.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectPalette.Palette">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SelectPalette.ForceBackground">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetFocus">
         <short>Sets the keyboard input focus to the specified window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetFocus.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetFocus.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetForegroundWindow">
         <short>Moves a window in front of all other windows, and activates it.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetForegroundWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetForegroundWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollInfo">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SetScrollInfo.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollInfo.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollInfo.SBStyle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollInfo.ScrollInfo">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollInfo.Redraw">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetStretchBltMode">
         <short>Sets the StrechBlt mode for an device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetStretchBltMode.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetStretchBltMode.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetStretchBltMode.StretchMode">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetSysColors">
         <short>Sets the colors for one or more display elements of window borders and desktop</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetSysColors.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetSysColors.cElements">
-        <short></short>
+        <short/>
       </element>
       <element name="SetSysColors.lpaElements">
-        <short></short>
+        <short/>
       </element>
       <element name="SetSysColors.lpaRgbValues">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetTextCharacterExtra">
         <short>Sets extra inter-character spacing in text output</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetTextCharacterExtra.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetTextCharacterExtra._hdc">
-        <short></short>
+        <short/>
       </element>
       <element name="SetTextCharacterExtra.nCharExtra">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetTextColor">
         <short>Sets the text color in an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SetTextColor.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetTextColor.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetTextColor.Color">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetViewPortExtEx">
         <short>Sets the extent of the viewport for a device context</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetViewPortExtEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortExtEx.XExtent">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortExtEx.YExtent">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortExtEx.OldSize">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetViewPortOrgEx">
         <short>Sets the device origin corresponding to the window origin (0,0) in an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetViewPortOrgEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortOrgEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortOrgEx.NewX">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortOrgEx.NewY">
-        <short></short>
+        <short/>
       </element>
       <element name="SetViewPortOrgEx.OldPoint">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetWindowExtEx">
         <short>Sets the extent of the window for an device context</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetWindowExtEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowExtEx.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowExtEx.XExtent">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowExtEx.YExtent">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowExtEx.OldSize">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetWindowLong">
         <short>Sets an attribute of a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetWindowLong.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowLong.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowLong.Idx">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowLong.NewLong">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetWindowOrgEx">
         <short>Specifies which window point maps to the viewport origin (0,0)</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetWindowOrgEx.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowOrgEx.dc">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowOrgEx.NewX">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowOrgEx.NewY">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowOrgEx.OldPoint">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetWindowPos">
         <short>Changes the size, position, and Z order of a window</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetWindowPos.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.hWndInsertAfter">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.X">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.cx">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.cy">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowPos.uFlags">
-        <short></short>
+        <short/>
       </element>
       <!-- function SetWindowRgn Visibility: default -->
       <element name="SetWindowRgn">
@@ -3516,573 +3366,549 @@ end;
         </seealso>
       </element>
       <element name="SetWindowRgn.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowRgn.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowRgn.hRgn">
-        <short></short>
+        <short/>
       </element>
       <element name="SetWindowRgn.bRedraw">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ShowCaret">
         <short>Shows the Caret (text cursor)</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ShowCaret.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowCaret.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ShowScrollBar">
         <short>Shows or hides a ScrollBar</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ShowScrollBar.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowScrollBar.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowScrollBar.wBar">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowScrollBar.bShow">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ShowWindow">
         <short>Shows a window in an specific state</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ShowWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="ShowWindow.nCmdShow">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchBlt">
         <short>
           Copies a rectangular region into an device context, shrinking or stretching it as required.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="StretchBlt.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.DestDC">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.X">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.Width">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.Height">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.SrcDC">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.XSrc">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.YSrc">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.SrcWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.SrcHeight">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchBlt.Rop">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchDIBits">
         <short>Copies a rectangular region from a DIB into an device context, shrinking or stretching it
           as required.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="StretchDIBits.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.DestX">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.DestY">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.DestWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.DestHeight">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.SrcX">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.SrcY">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.SrcWidth">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.SrcHeight">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.Bits">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.BitsInfo">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.Usage">
-        <short></short>
+        <short/>
       </element>
       <element name="StretchDIBits.Rop">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SystemParametersInfo">
         <short>Retrieves or sets one of the system-wide parameters</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SystemParametersInfo.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SystemParametersInfo.uiAction">
-        <short></short>
+        <short/>
       </element>
       <element name="SystemParametersInfo.uiParam">
-        <short></short>
+        <short/>
       </element>
       <element name="SystemParametersInfo.pvParam">
-        <short></short>
+        <short/>
       </element>
       <element name="SystemParametersInfo.fWinIni">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut">
         <short>Draws an string without formatting (single line)</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TextOut.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut.Str">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextOut.Count">
-        <short></short>
+        <short/>
       </element>
 
       <element name="UpdateWindow">
         <short>Forces an immediate repaint of a window, if required</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="UpdateWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="UpdateWindow.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="WindowFromPoint">
         <short>Finds the window containing the specified point</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="WindowFromPoint.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="WindowFromPoint.Point">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AdjustWindowRectEx">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="AdjustWindowRectEx.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AdjustWindowRectEx.Rect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AdjustWindowRectEx.Style1">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AdjustWindowRectEx.MenuExist">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AdjustWindowRectEx.Style2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CharLowerBuff">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CharLowerBuff.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CharLowerBuff.pStr">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CharLowerBuff.Len">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CopyRect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CopyRect.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CopyRect.DestRect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CopyRect.SrcRect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateEllipticRgnIndirect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreateEllipticRgnIndirect.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateEllipticRgnIndirect.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreateFont.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Height">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Width">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Escapement">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Orientation">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Weight">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Italic">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Underline">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.StrikeOut">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.CharSet">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.OutputPrecision">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.ClipPrecision">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.Quality">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.PitchAndFamily">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateFont.FaceName">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePen">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreatePen.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePen.Style">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePen.Width">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePen.Color">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateRectRgnIndirect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateRectRgnIndirect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRectRgnIndirect.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateSolidBrush">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateSolidBrush.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateSolidBrush.Color">
-        <short></short>
+        <short/>
       </element>
 
       <element name="EqualRect">
         <short>Returns True when the rectangles are identical</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="EqualRect.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="EqualRect.lprc1">
-        <short></short>
+        <short/>
       </element>
       <element name="EqualRect.lprc2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollPos">
         <short>Returns the scollbar position</short>
         <descr>If the scrollbar is not visible, then the return value is 0.</descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetScrollPos.Result">
         <short>The position, zero if the scrollbar is not visible</short>
       </element>
       <element name="GetScrollPos.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetScrollPos.nBar">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollRange">
         <short>Returns the minimum and maximum Position values of a ScrollBar.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetScrollRange.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetScrollRange.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="GetScrollRange.nBar">
-        <short></short>
+        <short/>
       </element>
       <element name="GetScrollRange.lpMinPos">
-        <short></short>
+        <short/>
       </element>
       <element name="GetScrollRange.lpMaxPos">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetRValue">
         <short>Extracts the red color value from a COLORREF</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetRValue.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRValue.RGB">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetGValue">
         <short>Extracts the green color value from a COLORREF</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetGValue.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetGValue.RGB">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetBValue">
         <short>Extracts the blue color value from a COLORREF</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetBValue.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetBValue.RGB">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetRGBValues">
         <short>Extracts the red, green and blue color values from a COLORREF</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetRGBValues.RGB">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBValues.R">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBValues.G">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBValues.B">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetRGBIntValues">
         <short>Extracts the red, green and blue color values from a COLORREF</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetRGBIntValues.RGB">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBIntValues.R">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBIntValues.G">
-        <short></short>
+        <short/>
       </element>
       <element name="GetRGBIntValues.B">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IndexToOverlayMask">
         <short>Converts an imagelist index into an overlay index.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IndexToOverlayMask.Result">
         <short>Ready for combination with another imagelist index.
@@ -4109,8 +3935,7 @@ end;
             This method can be used to add or subtract a border around the rectangle.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="InflateRect.Result">
         <short>Always True</short>
@@ -4135,8 +3960,7 @@ end;
             If SrcRect1 and SrcRect2 do not overlap the Result is false, else true.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="IntersectRect.Result">
         <short>False when the rectangles don't overlap</short>
@@ -4145,23 +3969,22 @@ end;
         <short>Receives the intersection</short>
       </element>
       <element name="IntersectRect.SrcRect1">
-        <short></short>
+        <short/>
       </element>
       <element name="IntersectRect.SrcRect2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsCharAlphaNumeric">
         <short>Checks for ASCII letter or digit characters</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsCharAlphaNumeric.Result">
         <short>True when the character is a letter or digit</short>
       </element>
       <element name="IsCharAlphaNumeric.c">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsRectEmpty">
@@ -4169,20 +3992,18 @@ end;
         <descr>
           IsEmptyRect returns true if the area of the rectangle is empty, i.e. has a zero or negative width or height.
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="IsRectEmpty.Result">
         <short>True if the rectangle is empty</short>
       </element>
       <element name="IsRectEmpty.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="KillTimer">
         <short>Removes an timer</short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="SetTimer"/>
         </seealso>
@@ -4199,9 +4020,8 @@ end;
 
       <element name="MakeLong">
         <short>Copies two words into a double word</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MakeLong.Result">
         <short>The combined doubleword</short>
@@ -4214,30 +4034,28 @@ end;
       </element>
 
       <element name="MakeROP4">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MakeROP4.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeROP4.fore">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeROP4.back">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MakeWord">
         <short>Copies two bytes into a word</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="MakeWord.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeWord.A">
         <short>The low byte</short>
@@ -4249,11 +4067,10 @@ end;
       <element name="MakeWParam">
         <short>Copies two words into a double word, usable as a message wParam</short>
         <descr>The result has the size of an pointer.</descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="MakeWParam.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeWParam.l">
         <short>The low word</short>
@@ -4264,12 +4081,11 @@ end;
 
       <element name="MakeLParam" link="MakeWParam">
         <short>Copies two words into a double word, usable as a message lParam</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MakeLParam.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeLParam.l">
         <short>The low word</short>
@@ -4280,12 +4096,11 @@ end;
 
       <element name="MakeLResult" link="MakeWParam">
         <short>Copies two words into a double word, usable as a message Result</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MakeLResult.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MakeLResult.l">
         <short>The low word</short>
@@ -4297,21 +4112,20 @@ end;
       <element name="OffSetRect">
         <short>Move Left/Right by dx, Top/Bottom by dy. Return Top and Left are &gt;= 0.
         </short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="OffSetRect.Result">
         <short>False if resulting Top or Left are negative</short>
       </element>
       <element name="OffSetRect.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="OffSetRect.dx">
-        <short></short>
+        <short/>
       </element>
       <element name="OffSetRect.dy">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PtInRect">
@@ -4321,32 +4135,30 @@ end;
             Top and Left side are part of the rectangle, but Bottom and Right side are outside.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="PtInRect.Result">
         <short>True when Point is within Rect</short>
       </element>
       <element name="PtInRect.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="PtInRect.Point">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PointToSmallPoint">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PointToSmallPoint.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PointToSmallPoint.P">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RGB">
@@ -4358,8 +4170,7 @@ end;
             Windows API type COLORREF. Their actual physical order depends on the endianness of the machine.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="RGB.Result">
         <short>The combined COLORREF created with the given color channels</short>
@@ -4378,17 +4189,16 @@ end;
 
       <element name="ScrollWindow">
         <short>Scrolls the content of a window, by a number of pixels</short>
-        <descr></descr>
-        <errors></errors>
+        <descr/>
         <seealso>
           <link id="ScrollWindowEx"/>
         </seealso>
       </element>
       <element name="ScrollWindow.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ScrollWindow.hWnd">
-        <short></short>
+        <short/>
       </element>
       <element name="ScrollWindow.XAmount">
         <short>Horizontal distance (positive to scroll right)</short>
@@ -4406,40 +4216,38 @@ end;
 
       <element name="SetRect">
         <short>Copies coordinates into a rectangle</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetRect.Result">
         <short>Always True</short>
       </element>
       <element name="SetRect.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="SetRect.xLeft">
-        <short></short>
+        <short/>
       </element>
       <element name="SetRect.yTop">
-        <short></short>
+        <short/>
       </element>
       <element name="SetRect.xRight">
-        <short></short>
+        <short/>
       </element>
       <element name="SetRect.yBottom">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetRectEmpty">
         <short>Clears the rectangle to all zero coordinates</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetRectEmpty.Result">
         <short>Always True</short>
       </element>
       <element name="SetRectEmpty.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetScrollPos">
@@ -4473,7 +4281,7 @@ end;
       <element name="SetScrollRange">
         <short>Sets the minimum and maximum position values of an ScrollBar.
         </short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="SetScrollInfo"/>
         </seealso>
@@ -4482,19 +4290,19 @@ end;
         <short>Always True</short>
       </element>
       <element name="SetScrollRange.Handle">
-        <short></short>
+        <short/>
       </element>
       <element name="SetScrollRange.nBar">
-        <short></short>
+        <short/>
       </element>
       <element name="SetScrollRange.nMinPos">
-        <short></short>
+        <short/>
       </element>
       <element name="SetScrollRange.nMaxPos">
-        <short></short>
+        <short/>
       </element>
       <element name="SetScrollRange.bRedraw">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetTimer">
@@ -4512,7 +4320,7 @@ end;
         </descr>
         <seealso>
           <link id="KillTimer"/>
-          <link id="#lcl.LCLType.TTimerProc"/>
+          <link id="#lcl.lcltype.TTimerProc">TTimerProc</link>
         </seealso>
       </element>
       <element name="SetTimer.Result">
@@ -4533,15 +4341,14 @@ end;
 
       <element name="SmallPointToPoint">
         <short>Converts an TSmallPoint into an TPoint</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SmallPointToPoint.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SmallPointToPoint.P">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SubtractRect">
@@ -4557,17 +4364,16 @@ end;
             The bounding box is the <b>rectangle</b> that covers the entire resulting area.
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="SubtractRect.Result">
         <short>False when the resulting rectangle is empty</short>
       </element>
       <element name="SubtractRect.lprcDst">
-        <short></short>
+        <short/>
       </element>
       <element name="SubtractRect.lprcSrc1">
-        <short></short>
+        <short/>
       </element>
       <element name="SubtractRect.lprcSrc2">
         <short>The rectangle to subtract</short>
@@ -4587,8 +4393,7 @@ end;
             Rectangles with a zero or negative width or height are treated as empty rectangles (ignored).
           </p>
         </descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="UnionRect.Result">
         <short>
@@ -4596,1501 +4401,1428 @@ end;
         </short>
       </element>
       <element name="UnionRect.DestRect">
-        <short></short>
+        <short/>
       </element>
       <element name="UnionRect.SrcRect1">
-        <short></short>
+        <short/>
       </element>
       <element name="UnionRect.SrcRect2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AddEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="AddEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="AddEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="AddEventHandler.AFlags">
-        <short></short>
+        <short/>
       </element>
       <element name="AddEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="AddEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AddProcessEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="AddProcessEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="AddProcessEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="AddProcessEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="AddProcessEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AddPipeEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="AddPipeEventHandler.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="AddPipeEventHandler.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="AddPipeEventHandler.AEventHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="AddPipeEventHandler.AData">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AllocateHWnd">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="AllocateHWnd.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="AllocateHWnd.Method">
-        <short></short>
+        <short/>
       </element>
 
       <element name="AskUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="AskUser.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="AskUser.DialogCaption">
-        <short></short>
+        <short/>
       </element>
       <element name="AskUser.DialogMessage">
-        <short></short>
+        <short/>
       </element>
       <element name="AskUser.DialogType">
-        <short></short>
+        <short/>
       </element>
       <element name="AskUser.Buttons">
-        <short></short>
+        <short/>
       </element>
       <element name="AskUser.HelpCtx">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CallDefaultWndHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CallDefaultWndHandler.Sender">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CallDefaultWndHandler.Message">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardFormatToMimeType">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ClipboardFormatToMimeType.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardFormatToMimeType.FormatID">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetData">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ClipboardGetData.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetData.ClipboardType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetData.FormatID">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetData.Stream">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetFormats">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ClipboardGetFormats.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetFormats.ClipboardType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetFormats.Count">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetFormats.List">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetOwnerShip">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ClipboardGetOwnerShip.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetOwnerShip.ClipboardType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetOwnerShip.OnRequestProc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetOwnerShip.FormatCount">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardGetOwnerShip.Formats">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardRegisterFormat">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ClipboardRegisterFormat.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ClipboardRegisterFormat.AMimeType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateEmptyRegion">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreateEmptyRegion.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePixmapIndirect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreatePixmapIndirect.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePixmapIndirect.Data">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreatePixmapIndirect.TransColor">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateRegionCopy">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CreateRegionCopy.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateRegionCopy.SrcRGN">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateRubberBand">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateRubberBand.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRubberBand.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateRubberBand.ABrush">
-        <short></short>
+        <short/>
       </element>
 
       <element name="CreateStandardCursor">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CreateStandardCursor.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CreateStandardCursor.ACursor">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DCClipRegionValid">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="DCClipRegionValid.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="DCClipRegionValid.DC">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DeallocateHWnd">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DeallocateHWnd.Wnd">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DestroyRubberBand">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DestroyRubberBand.ARubberBand">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DrawDefaultDockImage">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawDefaultDockImage.AOldRect">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawDefaultDockImage.ANewRect">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawDefaultDockImage.AOperation">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DrawGrid">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DrawGrid.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawGrid.R">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawGrid.DX">
-        <short></short>
+        <short/>
       </element>
       <element name="DrawGrid.DY">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExtUTF8Out">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="ExtUTF8Out.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.X">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Options">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Rect">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Count">
-        <short></short>
+        <short/>
       </element>
       <element name="ExtUTF8Out.Dx">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FontCanUTF8">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FontCanUTF8.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FontCanUTF8.Font">
-        <short></short>
+        <short/>
       </element>
 
       <element name="FontIsMonoSpace">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FontIsMonoSpace.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FontIsMonoSpace.Font">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="Frame.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame3d">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="Frame3d.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame3d.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame3d.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame3d.FrameWidth">
-        <short></short>
+        <short/>
       </element>
 
       <element name="Frame3d.Style">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetAcceleratorString">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetAcceleratorString.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetAcceleratorString.AVKey">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetAcceleratorString.AShiftState">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCaretRespondToFocus">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetCaretRespondToFocus.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCaretRespondToFocus.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCaretRespondToFocus.ShowHideOnFocus">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClientBounds">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetClientBounds.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClientBounds.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetClientBounds.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetCmdLineParamDescForInterface">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetCmdLineParamDescForInterface.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetControlConstraints">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetControlConstraints.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetControlConstraints.Constraints">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDCOriginRelativeToWindow">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetDCOriginRelativeToWindow.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDCOriginRelativeToWindow.PaintDC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDCOriginRelativeToWindow.WindowHandle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDCOriginRelativeToWindow.OriginDiff">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDesignerDC">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetDesignerDC.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDesignerDC.WindowHandle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDeviceSize">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetDeviceSize.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDeviceSize.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetDeviceSize.p">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetLCLOwnerObject">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetLCLOwnerObject.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetLCLOwnerObject.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollBarSize">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetScrollBarSize.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollBarSize.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollBarSize.SBStyle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollbarVisible">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetScrollbarVisible.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollbarVisible.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetScrollbarVisible.SBStyle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowRelativePosition">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="GetWindowRelativePosition.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowRelativePosition.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowRelativePosition.Left">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetWindowRelativePosition.Top">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IntfSendsUTF8KeyPress">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="IntfSendsUTF8KeyPress.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateFrame">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="InvalidateFrame.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateFrame.aHandle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateFrame.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateFrame.bErase">
-        <short></short>
+        <short/>
       </element>
 
       <element name="InvalidateFrame.BorderWidth">
-        <short></short>
+        <short/>
       </element>
 
       <element name="IsDesignerDC">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsDesignerDC.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="IsDesignerDC.WindowHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="IsDesignerDC.DC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MoveWindowOrgEx">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="MoveWindowOrgEx.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MoveWindowOrgEx.dc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MoveWindowOrgEx.dX">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MoveWindowOrgEx.dY">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PromptUser.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DialogCaption">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.Buttons">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.ButtonCount">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DefaultIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.EscapeResult">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PromptUserAtXY.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DialogCaption">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.Buttons">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.ButtonCount">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DefaultIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.EscapeResult">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RadialArc">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RadialArc.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.left">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.top">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.right">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.bottom">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.sx">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.sy">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.ex">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialArc.ey">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RadialChord">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RadialChord.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.sx">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.sy">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.ex">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialChord.ey">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RadialPie">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RadialPie.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.x1">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.y1">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.x2">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.y2">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.Angle1">
-        <short></short>
+        <short/>
       </element>
       <element name="RadialPie.Angle2">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_CreateBitmaps">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_CreateBitmaps.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_CreateBitmaps.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_CreateBitmaps.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_CreateBitmaps.AMask">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_CreateBitmaps.ASkipMask">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_DescriptionFromBitmap">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_DescriptionFromBitmap.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_DescriptionFromBitmap.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_DescriptionFromBitmap.ADesc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_DescriptionFromDevice">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_DescriptionFromDevice.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_DescriptionFromDevice.ADC">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_DescriptionFromDevice.ADesc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_FromBitmap">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_FromBitmap.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromBitmap.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromBitmap.ABitmap">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromBitmap.AMask">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromBitmap.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_FromDevice">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_FromDevice.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromDevice.ARawImage">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromDevice.ADC">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_FromDevice.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RawImage_QueryDescription">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RawImage_QueryDescription.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_QueryDescription.AFlags">
-        <short></short>
+        <short/>
       </element>
       <element name="RawImage_QueryDescription.ADesc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RegroupMenuItem">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="RegroupMenuItem.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RegroupMenuItem.hndMenu">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RegroupMenuItem.GroupIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ReleaseDesignerDC">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ReleaseDesignerDC.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ReleaseDesignerDC.hWnd">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ReleaseDesignerDC.DC">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RemoveEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RemoveEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RemoveProcessEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RemoveProcessEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RemovePipeEventHandler">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RemovePipeEventHandler.AHandler">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RequestInput">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="RequestInput.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RequestInput.InputCaption">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RequestInput.InputPrompt">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RequestInput.MaskInput">
-        <short></short>
+        <short/>
       </element>
 
       <element name="RequestInput.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="SendCachedLCLMessages">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="DrawSplitter">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SetCaretRespondToFocus">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SetCaretRespondToFocus.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCaretRespondToFocus.handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetCaretRespondToFocus.ShowHideOnFocus">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetComboMinDropDownSize">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="SetComboMinDropDownSize.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetComboMinDropDownSize.Handle">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetComboMinDropDownSize.MinItemsWidth">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetComboMinDropDownSize.MinItemsHeight">
-        <short></short>
+        <short/>
       </element>
 
       <element name="SetComboMinDropDownSize.MinItemCount">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="SetEventHandlerFlags">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetEventHandlerFlags.AHandler">
-        <short></short>
+        <short/>
       </element>
       <element name="SetEventHandlerFlags.NewFlags">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="SetRubberBandRect">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SetRubberBandRect.ARubberBand">
-        <short></short>
+        <short/>
       </element>
       <element name="SetRubberBandRect.ARect">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="StretchMaskBlt.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.DestDC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.Width">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.Height">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.SrcDC">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.XSrc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.YSrc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.SrcWidth">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.SrcHeight">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.Mask">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.XMask">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.YMask">
-        <short></short>
+        <short/>
       </element>
 
       <element name="StretchMaskBlt.Rop">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextUTF8Out">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TextUTF8Out.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TextUTF8Out.DC">
-        <short></short>
+        <short/>
       </element>
       <element name="TextUTF8Out.X">
-        <short></short>
+        <short/>
       </element>
       <element name="TextUTF8Out.Y">
-        <short></short>
+        <short/>
       </element>
       <element name="TextUTF8Out.Str">
-        <short></short>
+        <short/>
       </element>
       <element name="TextUTF8Out.Count">
-        <short></short>
+        <short/>
       </element>
 
 
       <element name="ExcludeClipRgn">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="ExcludeClipRgn.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExcludeClipRgn.dc">
-        <short></short>
+        <short/>
       </element>
 
       <element name="ExcludeClipRgn.rgn">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="NotifyUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="NotifyUser.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="NotifyUser.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <!-- procedure Visibility: default -->
       <element name="NotifyUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="NotifyUserAtXY.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="NotifyUserAtXY.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="NotifyUserAtXY.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="NotifyUserAtXY.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PromptUser.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.Buttons">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.DefaultIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUser.EscapeResult">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="PromptUserAtXY.Result">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DialogMessage">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DialogType">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.Buttons">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.DefaultIndex">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.EscapeResult">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.X">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PromptUserAtXY.Y">
-        <short></short>
+        <short/>
       </element>
 
       <element name="PredefinedClipboardFormat">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="PredefinedClipboardFormat.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="PredefinedClipboardFormat.AFormat">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MsgKeyDataToShiftState">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MsgKeyDataToShiftState.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="MsgKeyDataToShiftState.KeyData">
-        <short></short>
+        <short/>
       </element>
 
       <element name="GetTickCount">
@@ -6100,7 +5832,7 @@ end;
             GetTickCount is a  DWord function used to get the number of ticks (milliseconds) elapsed since the computer was started. GetTickCount calls the GetTickCount64 function in LazSysUtils to get the return value.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetTickCount.Result">
         <short>Elapsed ticks (milliseconds)</short>
@@ -6113,44 +5845,48 @@ end;
             GetTickCount64 is a QWord function used to get the number of ticks (milliseconds) elapsed since the computer was started. GetTickCount64 calls the GetTickCount64 function in LazSysUtils to get the return value.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetTickCount64.Result">
         <short>Elapsed ticks (milliseconds)</short>
       </element>
 
       <element name="FindDefaultBrowser">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Gets the path to the default browser and its parameters</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindDefaultBrowser.Result">
-        <short></short>
+        <short>True the default browser was found for the platform</short>
       </element>
       <element name="FindDefaultBrowser.ABrowser">
-        <short></short>
+        <short>Qualified path to the executable for the default browser</short>
       </element>
       <element name="FindDefaultBrowser.AParams">
-        <short></short>
+        <short>Parameters needed to start the default browser for the platform</short>
       </element>
 
       <element name="OpenURL">
         <short>Open a given URL with the default browser</short>
         <descr>
-          The function uses FindDefaultBrowser to find the default browser. If it can be found it starts it and returns true. The AURL is passed as parameter. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt.
+          <p>
+            The function uses FindDefaultBrowser to find the default browser for the platfrom. If it was found,  it is started and the returns value is set to <b>True</b>.
+          </p>
+          <p>
+            AURL is passed as parameter to the browser application. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt. AURL is quoted when passed as an argument to ensure that space(s) in the path or file name are handled properly.
+          </p>
         </descr>
       </element>
       <element name="OpenURL.Result">
-        <short></short>
+        <short>True if the browser was found and called to open the URL</short>
       </element>
       <element name="OpenURL.AURL">
-        <short></short>
+        <short>URL with the resource to open in the browser</short>
       </element>
 
       <element name="OpenDocument">
         <short>
-          Opens the specified document using the default application for the platform or widget set
+          Opens the specified document using the default application for the platform or widgetset
         </short>
         <descr>
           <p>
@@ -6163,7 +5899,7 @@ end;
             The return value contains True if an application is available to for the specified file name. The return value is False if an application cannot be found for the specified file, or the file does not exist in the given path.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="OpenDocument.Result">
         <short>True if an application was found and the document was opened</short>
@@ -6173,43 +5909,42 @@ end;
       </element>
 
       <element name="TOpenParamStringProc">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TOpenParamStringProc.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TOpenParamStringProc.AString">
-        <short></short>
+        <short/>
       </element>
 
       <element name="OnShowSelectItemDialogResult">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="OnListViewDialogResult">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="OpenURLWidgetsetImplementation">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="OpenDocumentWidgetsetImplementation">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 
     </module>
     <!-- LCLIntf -->
-
   </package>
 </fpdoc-descriptions>

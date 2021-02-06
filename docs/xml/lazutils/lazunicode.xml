@@ -42,8 +42,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LazUtils.LazUTF16.UTF16Copy"/>
-          <link id="#LazUtils.LazUTF8.UTF8Copy"/>
+          <link id="#lazutils.lazutf16.UTF16Copy">UTF16Copy</link>
+          <link id="#lazutils.lazutf8.UTF8Copy">UTF8Copy</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -366,7 +366,7 @@
           Enumerator which combines diacritical marks
         </short>
         <descr>
-          Operator that allows in For ... In loops. This enumerator combines diacritical marks. It is used by default although there are more rules for combining codepoints. Diacritical marks cover rules for most western languages.
+          Operator enables For ... In loops. This enumerator combines diacritical marks. It is used by default although there are more rules for combining codepoints. Diacritical marks cover rules for most western languages.
         </descr>
       </element>
       <element name="Enumerator.Result">
@@ -375,7 +375,6 @@
       <element name="Enumerator.A">
         <short>Values to traverse in the enumerator</short>
       </element>
-
 
     </module>
     <!-- LazUnicode -->

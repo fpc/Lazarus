@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          The classes provide the same methods and properties for <var>Integer</var> types as provided for <var>Strings</var> in <var>TStringList</var>. They provide an overloaded <var>Sort</var> method to ensure that the specialization types are handled in the methods.
+          <file>integerlist.pas</file> contains a list for Integer values implemented using generics, and provides the same methods and properties for <var>Integer</var> types as provided for <var>Strings</var> in <var>TStringList</var>. They provide an overloaded <var>Sort</var> method to ensure that the specialization types are handled in the methods.
         </p>
       </descr>
 
@@ -24,7 +24,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#RTL.fgl.TFPGList"/>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
         </seealso>
       </element>
 
@@ -36,7 +36,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 
@@ -48,7 +48,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList"/>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
         </seealso>
       </element>
 
@@ -60,7 +60,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 
@@ -73,8 +73,8 @@
         </descr>
         <seealso>
           <link id="TCardinalList.Sort"/>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
-          <link id="#rtl.fgl.TFPGList"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
         </seealso>
       </element>
 
@@ -86,7 +86,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 
@@ -99,8 +99,8 @@
         </descr>
         <seealso>
           <link id="TIntegerList.Sort"/>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
-          <link id="#rtl.fgl.TFPGList"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
         </seealso>
       </element>
 
@@ -112,7 +112,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 
@@ -124,8 +124,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList"/>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 
@@ -137,7 +137,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList.Sort"/>
+          <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
         </seealso>
       </element>
 

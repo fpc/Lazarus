@@ -50,42 +50,96 @@
 
       <element name="DbgOut">
         <short>Write message to log</short>
-        <descr><p>Writes the text to the log. Does not append a new line.<br/>
-The Argument can be:<br/>
-One or more string(s)<br/>
-An open array of const: All values are converted to string and joined<br/>
-A single string and open array of const:  Will be passed to Format<br/>
-Any of the above with a PLazLoggerLogGroup as filter<br/>
-This is a forwarder to the log TLazLogger object. See there for details.<br/>
+        <descr>
+          <p>
+            Writes the text to the log. Does not append a new line.
+            The Argument can be:
+          </p>
+          <ul>
+            <li>One or more string(s)</li>
+            <li>An open array of const: All values are converted to string and joined</li>
+            <li>A single string and open array of const:  Will be passed to Format</li>
+            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+          </ul>
+          <p>
+            This is a forwarder to the log TLazLogger object. See there for details.
           </p>
         </descr>
-        <seealso><link id="#LazUtils.LazLogger.GetDebugLogger"/><link id="#LazUtils.LazLogger.SetDebugLogger"/>
+        <seealso>
+          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+
       <element name="DebugLn">
         <short>Write message to log</short>
-        <descr><p>Writes the text to the log. Does append a new line.</p><p>The Argument can be:</p><ul><li>One or more string</li><li>An open array of const: All values are converted to string and joined</li><li>A single string and open array of const:  Will be passed to Format</li><li>Any of the above with a PLazLoggerLogGroup as filter</li><li>This is a forwarder to the log TLazLogger object. See there for details.</li>
+        <descr>
+          <p>
+            Writes the text to the log. Does append a new line.
+          </p>
+          <p>
+            The Argument can be:
+          </p>
+          <ul>
+            <li>One or more string</li>
+            <li>An open array of const: All values are converted to string and joined</li>
+            <li>A single string and open array of const:  Will be passed to Format</li>
+            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
           </ul>
+          <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
         </descr>
-        <seealso><link id="#LazUtils.LazLogger.GetDebugLogger"/><link id="#LazUtils.LazLogger.SetDebugLogger"/>
+        <seealso>
+          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+
       <element name="DebugLnEnter">
         <short>Write message to log</short>
-        <descr><p>Writes the text to the log. Does append a new line. Increases the current intend.
-          </p><p>The Argument can be:</p><p>One or more string</p><p>An open array of const: All values are converted to string and joined</p><p>A single string and open array of const:  Will be passed to Format</p><p>Any of the above with a PLazLoggerLogGroup as filter</p><p>This is a forwarder to the log TLazLogger object. See there for details.</p>
+        <descr>
+          <p>
+            Writes the text to the log. Does append a new line. Increases the current intend.
+          </p>
+          <p>
+            The Argument can be:
+          </p>
+          <ul>
+            <li>One or more string</li>
+            <li>An open array of const: All values are converted to string and joined</li>
+            <li>A single string and open array of const:  Will be passed to Format</li>
+            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+          </ul>
+          <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
         </descr>
-        <seealso><link id="#LazUtils.LazLogger.GetDebugLogger"/><link id="#LazUtils.LazLogger.SetDebugLogger"/>
+        <seealso>
+          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+
       <element name="DebugLnExit">
         <short>Write message to log</short>
-        <descr><p>Writes the text to the log. Does append a new line. Increases the current intend.
-          </p><p>The Argument can be:</p><p>One or more string</p><p>An open array of const: All values are converted to string and joined</p><p>A single string and open array of const:  Will be passed to Format</p><p>Any of the above with a PLazLoggerLogGroup as filter</p><p>This is a forwarder to the log TLazLogger object. See there for details.</p>
+        <descr>
+          <p>
+            Writes the text to the log. Does append a new line. Increases the current intend.
+          </p>
+          <p>
+            The Argument can be:
+          </p>
+          <ul>
+            <li>One or more string</li>
+            <li>An open array of const: All values are converted to string and joined</li>
+            <li>A single string and open array of const:  Will be passed to Format</li>
+            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+            <li>This is a forwarder to the log TLazLogger object. See there for details.</li>
+          </ul>
         </descr>
-        <seealso><link id="#LazUtils.LazLogger.GetDebugLogger"/><link id="#LazUtils.LazLogger.SetDebugLogger"/>
+        <seealso>
+          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+
       <element name="DbgS">
         <short>Create a text representation for the specified value.</short>
         <descr><p>Create a text representation for the specified value. Does not produce a log output.</p>
@@ -670,6 +724,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
         </descr>
         <seealso/>
       </element>
+
       <element name="TLazLoggerFile.AddBlockHandler">
         <short/>
         <descr/>
@@ -678,6 +733,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
       <element name="TLazLoggerFile.AddBlockHandler.AHandler">
         <short/>
       </element>
+
       <element name="TLazLoggerFile.RemoveBlockHandler">
         <short/>
         <descr/>
@@ -686,6 +742,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
       <element name="TLazLoggerFile.RemoveBlockHandler.AHandler">
         <short/>
       </element>
+
       <element name="TLazLoggerFile.BlockHandlerCount">
         <short/>
         <descr/>
@@ -694,6 +751,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
       <element name="TLazLoggerFile.BlockHandlerCount.Result">
         <short/>
       </element>
+
       <element name="TLazLoggerFile.LogName">
         <short>The name of the log file</short>
         <descr>
@@ -701,11 +759,13 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
         </descr>
         <seealso/>
       </element>
+
       <element name="TLazLoggerFile.UseStdOut">
         <short>Enable writing to STDOUT, if LogName is not set</short>
         <descr/>
         <seealso/>
       </element>
+
       <element name="TLazLoggerFile.CloseLogFileBetweenWrites">
         <short>Enable opening and closing the log for each write</short>
         <descr/>
@@ -720,6 +780,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
       <element name="GetDebugLogger.Result">
         <short/>
       </element>
+
       <element name="SetDebugLogger">
         <short/>
         <descr/>
@@ -728,6 +789,7 @@ This is a forwarder to the log TLazLogger object. See there for details.<br/>
       <element name="SetDebugLogger.ALogger">
         <short/>
       </element>
+
       <element name="DebugLogger">
         <short/>
         <descr/>

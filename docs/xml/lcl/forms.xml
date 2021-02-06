@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<link id="#rtl.sysutils.Exception">Exception</link><?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
@@ -8,9 +8,32 @@
     -->
     <module name="Forms">
       <short>
-        Contains types and classes used to implement Forms, which are the basis for the Lazarus Graphical User Interface
+        Implements Forms, which are the basis for the Lazarus Graphical User Interface
       </short>
-      <descr/>
+      <descr>
+        <p>
+          <file>forms.pp</file> contains classes, types, and routines used to implement forms, which are used as the basis a graphical user interface in the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Standard</b> Tab
+        </p>
+        <ul>
+          <li>TFrame</li>
+        </ul>
+        <p>
+          <b>Additional </b>Tab
+        </p>
+        <ul>
+          <li>TScrollBox</li>
+          <li>TApplicationProperties</li>
+        </ul>
+        <p>
+          The unit also includes the TApplication and TScreen classes used in the Application and Screen singletons.
+        </p>
+      </descr>
 
       <!-- unresolved type references -->
       <element name="Classes"/>
@@ -187,12 +210,12 @@
         <seealso>
           <link id="TApplication.Hint"/>
           <link id="TApplication.OnHint"/>
-          <link id="#LCL.ComCtrls.TStatusBar.ExecuteAction"/>
-          <link id="#LCL.StdActns.THintAction"/>
+          <link id="#lcl.comctrls.TStatusBar.ExecuteAction">TStatusBar.ExecuteAction</link>
+          <link id="#lcl.stdactns.THintAction">THintAction</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomHintAction.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TCustomHintAction.Hint" link="#lcl.actnlist.TCustomAction.Hint">
         <short>The text used for the Hint</short>
         <descr/>
         <seealso/>
@@ -243,7 +266,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TControlScrollBar">
-        <short>Type of a scrollbar in a <link id="#lcl.Forms.TScrollingWinControl"/></short>
+        <short>Type for a scrollbar in TScrollingWinControl</short>
         <descr>
           <p>
             Scrollable controls supply their own <b>integrated</b> scrollbars, one for horizontal and one for vertical scrolling. This class allows access to (one of) these integrated scrollbars.
@@ -301,10 +324,10 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetAutoScroll">
-        <short>The AutoScroll state for the associated <link id="TScrollingWinControl"/></short>
+        <short>The AutoScroll state for the associated TScrollingWinControl control</short>
         <descr>
           <remark>
-            Please note: GetAutoScroll is not used as the read access specifier for a property. It is used in methods to ensure that the class reflects the current state for its associated control.
+            GetAutoScroll is not used as the read access specifier for the AutoScroll property. It is used in methods to ensure that the class reflects the current state for its associated control.
           </remark>
         </descr>
         <seealso>
@@ -456,7 +479,7 @@
           <link id="TControlScrollBar.Position"/>
           <link id="TControlScrollBar.UpdateScrollBar"/>
           <link id="TControlScrollBar.ScrollHandler"/>
-          <link id="#LCL.LMessages.TLMScroll"/>
+          <link id="#lcl.lmessages.TLMScroll">TLMScroll</link>
         </seealso>
       </element>
       <!-- Visibility: public -->
@@ -481,8 +504,8 @@
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ScrollBarShouldBeVisible">
         <short>Determines whether a scrollbar is required</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TControlScrollBar.ScrollBarShouldBeVisible.Result">
         <short>True when Visible, and Range is larger than the Page size</short>
@@ -511,7 +534,7 @@
           </dl>
         </descr>
         <seealso>
-          <link id="#rtl.System.TObject.Create"/>
+          <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TControlScrollBar.Create.AControl">
@@ -534,7 +557,7 @@
           <link id="TControlScrollBar.Increment"/>
           <link id="TControlScrollBar.Position"/>
           <link id="TControlScrollBar.Range"/>
-          <link id="#rtl.Classes.TPersistent.Assign"/>
+          <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TControlScrollBar.Assign.Source">
@@ -833,9 +856,9 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TScrollingWinControl.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.AlignControls" link="#LCL.Controls.TWinControl.AlignControls">
+      <element name="TScrollingWinControl.AlignControls" link="#lcl.controls.TWinControl.AlignControls">
         <short>Also calculates sizes for the scrollbars if required</short>
         <descr/>
         <seealso>
@@ -877,7 +900,7 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd"/>
+      <element name="TScrollingWinControl.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd"/>
       <!-- function Visibility: protected -->
       <element name="TScrollingWinControl.GetClientScrollOffset">
         <short>The virtual origin of the physical client area</short>
@@ -890,7 +913,7 @@
         <short>The ScrollBar Positions, or (0,0) if no scrollbars in use</short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetLogicalClientRect" link="#LCL.Controls.TControl.GetLogicalClientRect">
+      <element name="TScrollingWinControl.GetLogicalClientRect" link="#lcl.controls.TControl.GetLogicalClientRect">
         <short>Returns the full virtual ClientRect.
         </short>
         <descr/>
@@ -902,7 +925,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.DoOnResize" link="#LCL.Controls.TControl.DoOnResize">
+      <element name="TScrollingWinControl.DoOnResize" link="#lcl.controls.TControl.DoOnResize">
         <short>Also updates scrollbars if needed</short>
         <descr/>
         <seealso>
@@ -913,15 +936,15 @@
         <short>
           Calculates the size of the client area for the control excluding visible scroll bars
         </short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TScrollingWinControl.AutoScroll"/>
           <link id="TScrollingWinControl.VertScrollBar"/>
           <link id="TScrollingWinControl.HorzScrollBar"/>
-          <link id="#LCL.Controls.TControl.Height"/>
-          <link id="#LCL.Controls.TControl.Width"/>
-          <link id="#LCL.Controls.TControl.ClientHeight"/>
-          <link id="#LCL.Controls.TControl.ClientWidth"/>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
+          <link id="#lcl.controls.TControl.ClientHeight">TControl.ClientHeight</link>
+          <link id="#lcl.controls.TControl.ClientWidth">TControl.ClientWidth</link>
         </seealso>
       </element>
       <element name="TScrollingWinControl.GetPreferredSizeClientFrame.aWidth">
@@ -1000,7 +1023,7 @@
             Resizing is an empty implementation in TScrollingWinControl. It must be implemented in descendent form or control classes.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TScrollingWinControl.Resizing.State">
         <short/>
@@ -1012,12 +1035,12 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.SetAutoSize" link="#lcl.Controls.TControl.AutoSize"/>
+      <element name="TScrollingWinControl.SetAutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TScrollingWinControl.SetAutoSize.Value">
         <short>New value for the property</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScrollingWinControl.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TScrollingWinControl.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TScrollingWinControl.Create.TheOwner">
         <short>Owner of the class instance</short>
       </element>
@@ -1034,14 +1057,14 @@
           <link id="TScrollingWinControl.VertScrollBar"/>
         </seealso>
       </element>
-      <element name="TScrollingWinControl.ScreenToClient" link="#LCL.Controls.TControl.ScreenToClient"/>
+      <element name="TScrollingWinControl.ScreenToClient" link="#lcl.controls.TControl.ScreenToClient"/>
       <element name="TScrollingWinControl.ScreenToClient.Result">
         <short/>
       </element>
       <element name="TScrollingWinControl.ScreenToClient.APoint">
         <short/>
       </element>
-      <element name="TScrollingWinControl.ClientToScreen" link="#LCL.Controls.TControl.ClientToScreen"/>
+      <element name="TScrollingWinControl.ClientToScreen" link="#lcl.controls.TControl.ClientToScreen"/>
       <element name="TScrollingWinControl.ClientToScreen.Result">
         <short/>
       </element>
@@ -1055,7 +1078,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
       <element name="TScrollingWinControl.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -1072,9 +1095,9 @@
         <short/>
       </element>
       <element name="TScrollingWinControl.ScrollInView">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TScrollingWinControl.ScrollInView.AControl">
         <short>Control which provides the bounds adjusted in the method</short>
@@ -1103,67 +1126,67 @@
           <link id="TScrollingWinControl"/>
         </seealso>
       </element>
-      <element name="TScrollBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TScrollBox.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TScrollBox.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TScrollBox.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TScrollBox.Create.AOwner">
         <short>Owner of the class instance</short>
       </element>
-      <element name="TScrollBox.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TScrollBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TScrollBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TScrollBox.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TScrollBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TScrollBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TScrollBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TScrollBox.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
-      <element name="TScrollBox.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
-      <element name="TScrollBox.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
-      <element name="TScrollBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TScrollBox.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
-      <element name="TScrollBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TScrollBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
-      <element name="TScrollBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TScrollBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TScrollBox.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TScrollBox.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TScrollBox.ParentBackground" link="#LCL.Controls.TControl.ParentBackground"/>
-      <element name="TScrollBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TScrollBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TScrollBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TScrollBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TScrollBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TScrollBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TScrollBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TScrollBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TScrollBox.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TScrollBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TScrollBox.OnConstrainedResize" link="#LCL.Controls.TControl.OnConstrainedResize"/>
-      <element name="TScrollBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TScrollBox.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
-      <element name="TScrollBox.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
-      <element name="TScrollBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TScrollBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TScrollBox.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
-      <element name="TScrollBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TScrollBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TScrollBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TScrollBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
-      <element name="TScrollBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TScrollBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TScrollBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TScrollBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TScrollBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TScrollBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TScrollBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TScrollBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TScrollBox.OnMouseWheelHorz" link="#LCL.Controls.TControl.OnMouseWheelHorz"/>
-      <element name="TScrollBox.OnMouseWheelLeft" link="#LCL.Controls.TControl.OnMouseWheelLeft"/>
-      <element name="TScrollBox.OnMouseWheelRight" link="#LCL.Controls.TControl.OnMouseWheelRight"/>
-      <element name="TScrollBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TScrollBox.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
-      <element name="TScrollBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TScrollBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TScrollBox.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint"/>
+      <element name="TScrollBox.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TScrollBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TScrollBox.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TScrollBox.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TScrollBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TScrollBox.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TScrollBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TScrollBox.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+      <element name="TScrollBox.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+      <element name="TScrollBox.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
+      <element name="TScrollBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TScrollBox.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
+      <element name="TScrollBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TScrollBox.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TScrollBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TScrollBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TScrollBox.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TScrollBox.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TScrollBox.ParentBackground" link="#lcl.controls.TControl.ParentBackground"/>
+      <element name="TScrollBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TScrollBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TScrollBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TScrollBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TScrollBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TScrollBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TScrollBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TScrollBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TScrollBox.Visible" link="#lcl.controls.TControl.Visible"/>
+      <element name="TScrollBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TScrollBox.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
+      <element name="TScrollBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TScrollBox.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
+      <element name="TScrollBox.OnDockOver" link="#lcl.controls.TWinControl.OnDockOver"/>
+      <element name="TScrollBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TScrollBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TScrollBox.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+      <element name="TScrollBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TScrollBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TScrollBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TScrollBox.OnGetSiteInfo" link="#lcl.controls.TWinControl.OnGetSiteInfo"/>
+      <element name="TScrollBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TScrollBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TScrollBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TScrollBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TScrollBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TScrollBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TScrollBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TScrollBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TScrollBox.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+      <element name="TScrollBox.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+      <element name="TScrollBox.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
+      <element name="TScrollBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TScrollBox.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+      <element name="TScrollBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TScrollBox.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
+      <element name="TScrollBox.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
       <element name="TCustomDesignControl">
         <short>Provides a designer surface for scaling and layout of its child controls</short>
         <descr>
@@ -1192,12 +1215,12 @@
       <element name="TCustomDesignControl.FDesignTimePPI"/>
       <element name="TCustomDesignControl.FPixelsPerInch"/>
       <element name="TCustomDesignControl.DesignTimePPIIsStored">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomDesignControl.DesignTimePPIIsStored.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomDesignControl.SetDesignTimePPI">
         <short>Sets the value for the DesignTimePPI property</short>
@@ -1231,15 +1254,15 @@
             <var>DoAutoAdjustLayout</var> adjusts the height and width for the design surface by the specified scaling factors. Similarly, the <var>BorderSpacing</var> and <var>Constraints</var> in the control are adjusted using the scaling factors. Finally, the <var>SetBounds</var> method is called to apply the new values for Height and Width to the design surface.
           </p>
           <remark>
-            Please note: No actions are performed in the method when the Parent property has not been assigned (contains <b>Nil</b>). In addition, no actions are performed when <var>AMode</var> omits the <var>lapAutoAdjustWithoutHorizontalScrolling</var> and <var>lapAutoAdjustForDPI</var>  enumeration values.
+            No actions are performed in the method when the Parent property has not been assigned (contains <b>Nil</b>). In addition, no actions are performed when <var>AMode</var> omits the <var>lapAutoAdjustWithoutHorizontalScrolling</var> and <var>lapAutoAdjustForDPI</var>  enumeration values.
           </remark>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TLayoutAdjustmentPolicy.lapAutoAdjustWithoutHorizontalScrolling"/>
-          <link id="#LCL.Controls.TLayoutAdjustmentPolicy.lapAutoAdjustForDPI"/>
-          <link id="#LCL.Controls.TControl.Constraints"/>
-          <link id="#LCL.Controls.TControl.BorderSpacing"/>
-          <link id="#LCL.Controls.TControl.Parent"/>
+          <link id="#lcl.controls.TControl.AutoAdjustLayout">TControl.AutoAdjustLayout</link>
+          <link id="#lcl.controls.TControl.Constraints">TControl.Constraints</link>
+          <link id="#lcl.controls.TControl.BorderSpacing">TControl.BorderSpacing</link>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+          <link id="#lcl.controls.TLayoutAdjustmentPolicy"/>
         </seealso>
       </element>
       <element name="TCustomDesignControl.DoAutoAdjustLayout.AMode">
@@ -1271,7 +1294,7 @@
           <link id="TCustomDesignControl.PixelsPerInch"/>
           <link id="TCustomDesignControl.Scaled"/>
           <link id="TApplication.Scaled"/>
-          <link id="#LCL.Controls.TControl.Font"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
         </seealso>
       </element>
       <element name="TCustomDesignControl.Create.TheOwner">
@@ -1333,20 +1356,20 @@
           <link id="TCustomDesignControl.PixelsPerInch"/>
           <link id="TCustomDesignControl.Scaled"/>
           <link id="TApplication.Scaled"/>
-          <link id="#LCL.Controls.TControl.Font"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
         </seealso>
       </element>
       <element name="TCustomDesignControl.PixelsPerInch">
         <short>Run-time Pixels Per Inch for the designer surface</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomDesignControl.Scaled">
         <short>
           Indicates if the design surface is scaled to reflect changes in display density (Pixels Per Inch)
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomFrame">
@@ -1403,8 +1426,8 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomFrame.ReadDesignLeft">
         <short>Implements reading the Left property for the designer surface</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomFrame.ReadDesignLeft.Reader">
         <short/>
@@ -1412,8 +1435,8 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomFrame.ReadDesignTop">
         <short>Implements reading the Right property for the designer surface</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomFrame.ReadDesignTop.Reader">
         <short/>
@@ -1421,8 +1444,8 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomFrame.WriteDesignLeft">
         <short>Implements writing the Left property for the designer surface</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomFrame.WriteDesignLeft.Writer">
         <short/>
@@ -1430,21 +1453,20 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomFrame.WriteDesignTop">
         <short>Implements writing the Top property for the designer surface</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomFrame.WriteDesignTop.Writer">
         <short/>
       </element>
-      <element name="TCustomFrame.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomFrame.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.GetChildren">
         <short>
-          Invokes Proc for all Controls and also for all Components without a Parent
+          Invokes <var>Proc</var> for all Controls and also for all Components without a Parent
         </short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
           <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
         </seealso>
       </element>
@@ -1476,19 +1498,19 @@
           Also updates the ActionLists, and performs automatic layout adjustments when needed.
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.SetParent"/>
-          <link id="#LCL.Controls.TControl.Parent"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+          <link id="#lcl.controls.TControl.SetParent">TControl.SetParent</link>
         </seealso>
       </element>
       <element name="TCustomFrame.SetParent.AParent">
         <short>Value assigned to the Parent property</short>
       </element>
-      <element name="TCustomFrame.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties"/>
+      <element name="TCustomFrame.DefineProperties" link="#rtl.classes.TComponent.DefineProperties"/>
       <element name="TCustomFrame.DefineProperties.Filer">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
+      <element name="TCustomFrame.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
       <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
         <short/>
       </element>
@@ -1522,14 +1544,14 @@
           is not derived from TFrame.
         </errors>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create"/>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomFrame.Create.AOwner">
         <short>Owner of the class instance</short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomFrame.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomFrame.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -1564,62 +1586,62 @@
       <element name="TFrame.LCLVersionIsStored.Result">
         <short/>
       </element>
-      <element name="TFrame.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TFrame.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TFrame.Create.TheOwner">
         <short>Owner of the class instance</short>
       </element>
-      <element name="TFrame.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TFrame.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TFrame.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TFrame.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TFrame.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TFrame.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
-      <element name="TFrame.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
-      <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
-      <element name="TFrame.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
-      <element name="TFrame.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TFrame.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TFrame.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
-      <element name="TFrame.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
-      <element name="TFrame.DragKind" link="#LCL.Controls.TControl.DragKind"/>
-      <element name="TFrame.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TFrame.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TFrame.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TFrame.LCLVersion" link="#LCL.LCLVersion.lcl_version"/>
-      <element name="TFrame.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TFrame.OnConstrainedResize" link="#LCL.Controls.TControl.OnConstrainedResize"/>
-      <element name="TFrame.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TFrame.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TFrame.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
-      <element name="TFrame.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
-      <element name="TFrame.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TFrame.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TFrame.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
-      <element name="TFrame.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TFrame.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
-      <element name="TFrame.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
-      <element name="TFrame.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
-      <element name="TFrame.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TFrame.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TFrame.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TFrame.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TFrame.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TFrame.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TFrame.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TFrame.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TFrame.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TFrame.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
-      <element name="TFrame.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
-      <element name="TFrame.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TFrame.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TFrame.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TFrame.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TFrame.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TFrame.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TFrame.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TFrame.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TFrame.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
-      <element name="TFrame.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TFrame.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TFrame.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TFrame.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TFrame.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TFrame.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TFrame.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TFrame.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+      <element name="TFrame.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+      <element name="TFrame.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
+      <element name="TFrame.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TFrame.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TFrame.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
+      <element name="TFrame.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TFrame.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TFrame.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TFrame.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TFrame.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TFrame.LCLVersion" link="#lcl.lclversion.lcl_version"/>
+      <element name="TFrame.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TFrame.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
+      <element name="TFrame.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TFrame.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TFrame.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
+      <element name="TFrame.OnDockOver" link="#lcl.controls.TWinControl.OnDockOver"/>
+      <element name="TFrame.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TFrame.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TFrame.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+      <element name="TFrame.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TFrame.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TFrame.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TFrame.OnGetSiteInfo" link="#lcl.controls.TWinControl.OnGetSiteInfo"/>
+      <element name="TFrame.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TFrame.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TFrame.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TFrame.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TFrame.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TFrame.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TFrame.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TFrame.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TFrame.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TFrame.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+      <element name="TFrame.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TFrame.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
+      <element name="TFrame.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TFrame.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TFrame.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TFrame.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TFrame.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TFrame.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TFrame.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TFrame.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TFrame.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TBorderIcon">
         <short>
@@ -1750,7 +1772,7 @@
         <seealso/>
       </element>
       <!-- range type Visibility: default -->
-      <element name="TModalResult" link="#LCL.UITypes.TModalResult">
+      <element name="TModalResult" link="#lcl.uitypes.TModalResult">
         <short>Dummy type for the values that can be returned as a modal result</short>
         <descr>
           <p>
@@ -2143,8 +2165,8 @@
       </element>
       <element name="TCustomForm.FreeIconHandles">
         <short>Destroys the form icons</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.IconChanged">
         <short>Loads the new form icons, and notifies the widget set and all forms</short>
@@ -2166,17 +2188,13 @@
             <var>DelayedEvent</var> discards duplicate calls to the method; only the most recent message is processed. It is used in conjunction with the <var>QueueAsyncCall</var> method in <var>TApplication</var>. DelayedEvent decrements an internal counter used to track the number of pending delayed event messages. When the counter reaches zero (0), the message is applied.
           </p>
           <p>
-            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored for the delayed event. For delayed <var>OnChangeBounds</var>  and <var>OnChangeBounds</var> messages,  the <var>DoOnShow</var> and/or <var>Activate</var> methods are called for the corresponding message when the form is <var>Active</var>. If the form has not already been displayed and activated, the Activate, DoOnResize, or the DoOnChangeBounds method is called for the corresponding delayed message.
-          </p>
-          <p>
-            DelayedEvent is used in the implementation of the <var>WMSize</var> and <var>WMMove</var> methods.
+            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored for the delayed event. For delayed <var>OnChangeBounds</var>  and <var>OnChangeBounds</var> messages,  the <var>DoOnShow</var> and/or <var>Activate</var> methods are called when the form is <var>Active</var>. If the form has not already been displayed and activated, the Activate, DoOnResize, or the DoOnChangeBounds method is called for the corresponding delayed message.
           </p>
         </descr>
         <seealso>
           <link id="TApplication.QueueAsyncCall"/>
           <link id="TCustomForm.WindowState"/>
           <link id="TCustomForm.WMSize"/>
-          <link id="TCustomForm.WMMove"/>
           <link id="TCustomForm.Activate"/>
           <link id="TCustomForm.DoShow"/>
           <link id="TScrollingWinControl.DoOnResize"/>
@@ -2262,8 +2280,8 @@
       </element>
       <element name="TCustomForm.SetLastFocusedControl">
         <short>Remembers the last focused control</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.SetLastFocusedControl.AControl">
         <short/>
@@ -2340,8 +2358,8 @@
           <link id="TCustomForm.AddHandlerCreate"/>
           <link id="TCustomForm.AddHandlerFirstShow"/>
           <link id="TFormHandlerType"/>
-          <link id="#LazUtils.LazMethodList.TMethodList"/>
-          <link id="#RTL.Classes.TMethod"/>
+          <link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
+          <link id="#rtl.classes.TMethod">TMethod</link>
         </seealso>
       </element>
       <element name="TCustomForm.AddHandler.HandlerType">
@@ -2378,12 +2396,12 @@
           Don't show a main menu for dialog forms, i.e. when BorderStyle=bsDialog
           (Delphi compatible).
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomForm.UpdateShowInTaskBar">
         <short>Notifies the widget set of the change</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.WMActivate">
         <short>Handles the LM_ACTIVATE message which activates or deactivates the form</short>
@@ -2414,14 +2432,6 @@
       </element>
       <element name="TCustomForm.WMHelp.Message">
         <short/>
-      </element>
-      <element name="TCustomForm.WMMove">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomForm.WMMove.Message">
-        <short></short>
       </element>
       <element name="TCustomForm.WMShowWindow">
         <short/>
@@ -2520,12 +2530,12 @@
         <short/>
       </element>
       <element name="TCustomForm.WMDPIChanged">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.WMDPIChanged.Msg">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomForm.FActionLists">
         <short>
@@ -2534,7 +2544,7 @@
       </element>
       <element name="TCustomForm.FFormBorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
       <element name="TCustomForm.FFormState" link="#lcl.forms.TCustomForm.FormState"/>
-      <element name="TCustomForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomForm.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomForm.DoShowWindow">
         <short>
           When a control is not Active, sets the Focus to the first control in the TabOrder for the form
@@ -2561,9 +2571,9 @@
         <seealso>
           <link id="TCustomForm.OnActivate"/>
           <link id="TCustomForm.OnShow"/>
-          <link id="TCustomForm.OnChangeBounds"/>
           <link id="TCustomForm.OnResize"/>
           <link id="TCustomForm.WindowState"/>
+          <link id="#lcl.controls.TControl.OnChangeBounds">TControl.OnChangeBounds</link>
         </seealso>
       </element>
       <element name="TCustomForm.ActiveChanged">
@@ -2591,11 +2601,11 @@
         </descr>
         <seealso/>
       </element>
-      <element name="TCustomForm.ColorIsStored" link="#LCL.Controls.TControl.Color"/>
+      <element name="TCustomForm.ColorIsStored" link="#lcl.controls.TControl.Color"/>
       <element name="TCustomForm.ColorIsStored.Result">
         <short/>
       </element>
-      <element name="TCustomForm.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
+      <element name="TCustomForm.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
         <short>Initializes parameters used to create the handle for the form instance</short>
         <descr>
           <p>
@@ -2606,13 +2616,13 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateParams"/>
+          <link id="#lcl.controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
         </seealso>
       </element>
       <element name="TCustomForm.CreateParams.Params">
         <short>Values examined and updated in the method</short>
       </element>
-      <element name="TCustomForm.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd">
+      <element name="TCustomForm.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd">
         <short>Creates the widget, updates the widget-dependent properties.
         </short>
         <descr/>
@@ -2669,7 +2679,7 @@
         </descr>
         <seealso>
           <link id="TCustomForm.BeginFormUpdate"/>
-          <link id="#LCL.Controls.TWinControl.FormEndUpdated"/>
+          <link id="#lcl.controls.TWinControl.FormEndUpdated">TWinControl.FormEndUpdated</link>
         </seealso>
       </element>
       <element name="TCustomForm.HandleCreateException">
@@ -2705,17 +2715,17 @@
       <element name="TCustomForm.HandleShowHideException.Result">
         <short>True when the exception was handled</short>
       </element>
-      <element name="TCustomForm.InitializeWnd" link="#LCL.Controls.TControl.InitializeWnd">
+      <element name="TCustomForm.InitializeWnd" link="#lcl.controls.TControl.InitializeWnd">
         <short>Initializes the widget, also for AlphaBlend and AllowDropFiles</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.Loaded">
         <short>Also renews ActiveControl and Visible</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Loaded"/>
-          <link id="#LCL.Forms.TScrollingWinControl.Loaded"/>
+          <link id="TScrollingWinControl.Loaded"/>
+          <link id="#rtl.classes.TComponent.Loaded">TComponent.Loaded</link>
         </seealso>
       </element>
       <element name="TCustomForm.ChildHandlesCreated">
@@ -2731,15 +2741,15 @@
           <link id="#LCL.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
         </seealso>
       </element>
-      <element name="TCustomForm.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TCustomForm.Notification" link="#rtl.classes.TComponent.Notification"/>
       <element name="TCustomForm.Notification.AComponent">
         <short/>
       </element>
       <element name="TCustomForm.Notification.Operation">
         <short/>
       </element>
-      <element name="TCustomForm.PaintWindow" link="#LCL.Controls.TCustomControl.PaintWindow"/>
-      <element name="TCustomForm.RequestAlign" link="#LCL.Controls.TControl.RequestAlign">
+      <element name="TCustomForm.PaintWindow" link="#lcl.controls.TCustomControl.PaintWindow"/>
+      <element name="TCustomForm.RequestAlign" link="#lcl.controls.TControl.RequestAlign">
         <short>
           Calls the user Alignment handler (AlignControls). Here: NOP for a top-level form.
         </short>
@@ -2775,7 +2785,7 @@
       <element name="TCustomForm.Resizing.State">
         <short>Window state applied in the method</short>
       </element>
-      <element name="TCustomForm.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
+      <element name="TCustomForm.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize">
         <short>Here: clip width and height of a top-level form to the monitor WorkArea</short>
         <descr>
         </descr>
@@ -2799,7 +2809,7 @@
       <element name="TCustomForm.SetZOrder.Topmost">
         <short>True for BringToFront</short>
       </element>
-      <element name="TCustomForm.SetParent" link="#LCL.Controls.TControl.Parent"/>
+      <element name="TCustomForm.SetParent" link="#lcl.controls.TControl.Parent"/>
       <element name="TCustomForm.SetParent.NewParent">
         <short/>
       </element>
@@ -2819,11 +2829,11 @@
           <link id="#LCL.Controls.TWinControl.UpdateShowing">TWinControl.UpdateShowing</link>
         </seealso>
       </element>
-      <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible"/>
+      <element name="TCustomForm.SetVisible" link="#lcl.controls.TControl.SetVisible"/>
       <element name="TCustomForm.SetVisible.Value">
         <short>New value for the property</short>
       </element>
-      <element name="TCustomForm.AllAutoSized" link="#LCL.Controls.TWinControl.AllAutoSized">
+      <element name="TCustomForm.AllAutoSized" link="#lcl.controls.TWinControl.AllAutoSized">
         <short>If the the form is about to show, calculate its metrics</short>
         <descr>
         </descr>
@@ -2853,10 +2863,10 @@
         <descr>
         </descr>
         <seealso>
-          <link id="TScreenNotification.snFormVisibleChanged"/>
+          <link id="TScreenNotification"/>
         </seealso>
       </element>
-      <element name="TCustomForm.WndProc" link="#LCL.Controls.TControl.WndProc"/>
+      <element name="TCustomForm.WndProc" link="#lcl.controls.TControl.WndProc"/>
       <element name="TCustomForm.WndProc.TheMessage">
         <short>
           Handled messages include: Activate, SetFocus, KillFocus, Exit, Enter, Window Position Changing, and DrawItem
@@ -2866,8 +2876,8 @@
       <element name="TCustomForm.VisibleIsStored.Result">
         <short/>
       </element>
-      <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize"/>
-      <element name="TCustomForm.SetAutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TCustomForm.DoAutoSize" link="#lcl.controls.TControl.DoAutoSize"/>
+      <element name="TCustomForm.SetAutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TCustomForm.SetAutoSize.Value">
         <short/>
       </element>
@@ -2907,7 +2917,7 @@
         <errors>
           Raises an EResNotFound exception if RequireDerivedFormResource is set for the application, and a resource is not found for the form.
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomForm.BeginAutoDrag">
         <short>Checked BeginDrag</short>
@@ -2917,14 +2927,14 @@
         <seealso/>
         <notes><note>why?</note></notes>
       </element>
-      <element name="TCustomForm.DoDock" link="#LCL.Controls.TControl.DoDock"/>
+      <element name="TCustomForm.DoDock" link="#lcl.controls.TControl.DoDock"/>
       <element name="TCustomForm.DoDock.NewDockSite">
         <short/>
       </element>
       <element name="TCustomForm.DoDock.ARect">
         <short/>
       </element>
-      <element name="TCustomForm.GetFloating" link="#LCL.Controls.TControl.GetFloating"/>
+      <element name="TCustomForm.GetFloating" link="#lcl.controls.TControl.GetFloating"/>
       <element name="TCustomForm.GetFloating.Result">
         <short/>
       </element>
@@ -2993,12 +3003,12 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.Showing"/>
           <link id="TCustomForm.Visible"/>
           <link id="TCustomForm.Menu"/>
           <link id="TApplication.OnIdle"/>
           <link id="TApplication.Idle"/>
-          <link id="#LCL.Controls.TControl.InitiateAction"/>
+          <link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
+          <link id="#lcl.controls.TControl.InitiateAction">TControl.InitiateAction</link>
         </seealso>
       </element>
       <element name="TCustomForm.ClientHandle">
@@ -3008,13 +3018,13 @@
         <seealso>
         </seealso>
       </element>
-      <element name="TCustomForm.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomForm.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TCustomForm.Create.AOwner">
         <short>Owner for the class instance</short>
       </element>
       <element name="TCustomForm.CreateNew">
         <short>Creates a form without a resource</short>
-        <descr></descr>
+        <descr/>
         <seealso/>
       </element>
       <element name="TCustomForm.CreateNew.AOwner">
@@ -3050,7 +3060,7 @@
       </element>
       <element name="TCustomForm.AfterConstruction"/>
       <element name="TCustomForm.BeforeDestruction"/>
-      <element name="TCustomForm.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomForm.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomForm.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -3095,7 +3105,7 @@
       <element name="TCustomForm.DefocusControl.Removing">
         <short>True when the control is removed</short>
       </element>
-      <element name="TCustomForm.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
+      <element name="TCustomForm.DestroyWnd" link="#lcl.controls.TWinControl.DestroyWnd"/>
       <element name="TCustomForm.EnsureVisible">
         <short>
           Ensures that the form is fully visible, and optionally brings it in front of all other forms
@@ -3123,7 +3133,7 @@
       <element name="TCustomForm.FocusControl.WinControl">
         <short>The control receiving the focus</short>
       </element>
-      <element name="TCustomForm.FormIsUpdating" link="#LCL.Controls.TControl.FormIsUpdating">
+      <element name="TCustomForm.FormIsUpdating" link="#lcl.controls.TControl.FormIsUpdating">
         <short>
           Indicates if the BeginFormUpdate method has been called without a corresponding EndFormUpdate method call
         </short>
@@ -3164,15 +3174,15 @@
         <short>
           Gets the form that is the effective parent for the pop-up, dialog, or splash screen
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomForm.GetRealPopupParent.Result">
         <short>
           Form instance that is the parent for the pop-up form, or Nil for a splash screen
         </short>
       </element>
-      <element name="TCustomForm.Hide" link="#LCL.Controls.TControl.Hide"/>
+      <element name="TCustomForm.Hide" link="#lcl.controls.TControl.Hide"/>
       <element name="TCustomForm.IntfDropFiles">
         <short>
           Invokes the <link id="TCustomForm.OnDropFiles">OnDropFiles</link> handler of the form. This function is called by the LCL interface.
@@ -3193,7 +3203,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#lcl.Controls.TControl.ShowHelp"/>
+          <link id="#lcl.controls.TControl.ShowHelp">TControl.ShowHelp</link>
         </seealso>
        </element>
       <element name="TCustomForm.IntfHelp.AComponent">
@@ -3215,9 +3225,9 @@
       </element>
       <element name="TCustomForm.MakeFullyVisible">
         <short>Extends or shrinks the form to a monitor</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomForm.MakeFullyVisible.AMonitor">
         <short>The monitor to use, Nil means the design-time monitor</short>
@@ -3231,15 +3241,15 @@
         <short>
           Returns True if AutoSize should be skipped or delayed because of a missing handle
         </short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
         <notes><note>propagate back into TControl?</note></notes>
       </element>
       <element name="TCustomForm.AutoSizeDelayedHandle.Result">
         <short/>
       </element>
-      <element name="TCustomForm.GetPreferredSize" link="#LCL.Controls.TControl.GetPreferredSize"/>
+      <element name="TCustomForm.GetPreferredSize" link="#lcl.controls.TControl.GetPreferredSize"/>
       <element name="TCustomForm.GetPreferredSize.PreferredWidth">
         <short/>
       </element>
@@ -3284,7 +3294,7 @@
       <element name="TCustomForm.CanFocus.Result">
         <short>True when the form can receive focus in the application</short>
       </element>
-      <element name="TCustomForm.SetFocus" link="#LCL.Controls.TWinControl.SetFocus"/>
+      <element name="TCustomForm.SetFocus" link="#lcl.controls.TWinControl.SetFocus"/>
       <element name="TCustomForm.SetFocusedControl">
         <short>Handles focus switch to a control (enter/exit messages)</short>
         <descr/>
@@ -3316,7 +3326,7 @@
       <element name="TCustomForm.SetRestoredBounds.ADefaultPosition">
         <short/>
       </element>
-      <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show"/>
+      <element name="TCustomForm.Show" link="#lcl.controls.TControl.Show"/>
       <element name="TCustomForm.ShowModal">
         <short>Displays the form as a modal Dialog</short>
         <descr>
@@ -3360,8 +3370,7 @@
         <short>Invokes Proc for all Controls and also for all Components with no Parent</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
-          <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+          <link id="#lcl.controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
         </seealso>
       </element>
       <element name="TCustomForm.GetChildren.Proc">
@@ -3371,7 +3380,7 @@
         <short>Components are enumerated only if Root is Self</short>
       </element>
       <element name="TCustomForm.WantChildKey">
-        <short></short>
+        <short/>
         <descr>Always returns False in TCustomForm</descr>
         <seealso/>
         <notes><note>?</note></notes>
@@ -3385,7 +3394,7 @@
       <element name="TCustomForm.WantChildKey.Message">
         <short>Key message from the child control</short>
       </element>
-      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject"/>
+      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject"/>
       <element name="TCustomForm.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
@@ -3451,7 +3460,7 @@
         <descr>
           A non-<b>nil</b> result is returned only when FormStyle contains <var>fsMDIForm</var> or <var>fsMDIChild</var>; otherwise Result is <b>nil</b>.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TCustomForm.ActiveMDIChild.Result">
         <short>Nil if the form is neither an MDI host nor child</short>
@@ -3469,17 +3478,17 @@
       </element>
       <element name="TCustomForm.AutoScale">
         <short>Sets scaled to True and AutoAdjustLayout to current monitor PPI</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
-      <element name="TCustomForm.Dock" link="#LCL.Controls.TControl.Dock"/>
+      <element name="TCustomForm.Dock" link="#lcl.controls.TControl.Dock"/>
       <element name="TCustomForm.Dock.NewDockSite">
         <short/>
       </element>
       <element name="TCustomForm.Dock.ARect">
         <short/>
       </element>
-      <element name="TCustomForm.UpdateDockCaption" link="#LCL.Controls.TWinControl.UpdateDockCaption"/>
+      <element name="TCustomForm.UpdateDockCaption" link="#lcl.controls.TWinControl.UpdateDockCaption"/>
       <element name="TCustomForm.UpdateDockCaption.Exclude">
         <short/>
       </element>
@@ -3619,9 +3628,9 @@
         </descr>
         <seealso>
           <link id="TCustomForm.AutoScroll"/>
-          <link id="#lcl.Controls.TFormBorderStyle"/>
-          <link id="#lcl.Controls.TBorderStyle"/>
-          <link id="#lcl.Controls.TCustomControl.BorderStyle"/>
+          <link id="#lcl.controls.TFormBorderStyle">TFormBorderStyle</link>
+          <link id="#lcl.controls.TBorderStyle">TBorderStyle</link>
+          <link id="#lcl.controls.TCustomControl.BorderStyle">TCustomControl.BorderStyle</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3637,13 +3646,13 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Caption" link="#LCL.Controls.TControl.Caption">
+      <element name="TCustomForm.Caption" link="#lcl.controls.TControl.Caption">
         <short>The text displayed in the title bar for the form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TCustomForm.Color" link="#lcl.controls.TControl.Color">
         <short>The background color for the form</short>
         <descr>The form's background color.</descr>
         <seealso/>
@@ -3691,8 +3700,8 @@
         <short>
           Value from ShowInTaskBar adjusted for the default taskbar behavior in the application
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormState">
@@ -3735,7 +3744,7 @@
           </dl>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TFormStyle"/>
+          <link id="#lcl.controls.TFormStyle">TFormStyle</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3768,7 +3777,7 @@
         <seealso>
           <link id="TCustomForm.BigIconHandle"/>
           <link id="TCustomForm.SmallIconHandle"/>
-          <link id="#LCL.Graphics.TIcon"/>
+          <link id="#lcl.graphics.TIcon">TIcon</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3834,7 +3843,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Menus.TMainMenu"/>
+          <link id="#lcl.menus.TMainMenu">TMainMenu</link>
           <link id="Screen"/>
           <link id="TScreen.Forms"/>
         </seealso>
@@ -3856,7 +3865,6 @@
         <seealso>
           <link id="TModalResult"/>
           <link id="TCustomForm.ShowModal"/>
-          <link id="TCustomForm.CloseModal"/>
           <link id="TCustomForm.Close"/>
           <link id="TCustomForm.FormState"/>
           <link id="TCustomForm.CloseQuery"/>
@@ -3971,7 +3979,6 @@
         </descr>
         <seealso>
           <link id="TCustomForm.Close"/>
-          <link id="TCustomForm.CloseModal"/>
           <link id="TCustomForm.DoClose"/>
           <link id="TCloseEvent"/>
         </seealso>
@@ -4018,7 +4025,7 @@
         <seealso>
           <link id="TCustomForm.DoCreate"/>
           <link id="TFormHandlerType"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4029,7 +4036,6 @@
         </descr>
         <seealso>
           <link id="TApplication.OnDeactivate"/>
-          <link id="TApplication.Deactivate"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4108,12 +4114,12 @@
           <link id="TCustomForm.Hide"/>
           <link id="TCustomForm.Visible"/>
           <link id="TCustomForm.CMShowingChanged"/>
-          <link id="#LCL.Controls.TWinControl.Showing"/>
-          <link id="#RTL.Classes.TNotifyEvent"/>
+          <link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TCustomForm.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnShortcut">
         <short>
@@ -4175,7 +4181,7 @@
           <link id="TWindowState"/>
         </seealso>
       </element>
-      <element name="TCustomForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TCustomForm.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Position">
         <short>The initial placement for the form</short>
@@ -4191,10 +4197,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TPosition"/>
-          <link id="TCustomForm.AutoSize"/>
-          <link id="TCustomForm.UpdateControlState"/>
+          <link id="TForm.AutoSize"/>
           <link id="TCustomForm.MoveToDefaultPosition"/>
+          <link id="TPosition"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4208,10 +4213,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomForm.Left"/>
           <link id="TCustomForm.WMSize"/>
-          <link id="TCustomForm.WMMove"/>
-          <link id="#LCL.Controls.TControl.DoOnChangeBounds"/>
+          <link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
+          <link id="#lcl.controls.TControl.Left">TControl.Left</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4225,10 +4229,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomForm.Top"/>
           <link id="TCustomForm.WMSize"/>
-          <link id="TCustomForm.WMMove"/>
-          <link id="#LCL.Controls.TControl.DoOnChangeBounds"/>
+          <link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
+          <link id="#lcl.controls.TControl.Left">TControl.Left</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4240,10 +4243,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomForm.Width"/>
           <link id="TCustomForm.WMSize"/>
-          <link id="TCustomForm.WMMove"/>
-          <link id="#LCL.Controls.TControl.DoOnChangeBounds"/>
+          <link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4255,10 +4257,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomForm.Height"/>
           <link id="TCustomForm.WMSize"/>
-          <link id="TCustomForm.WMMove"/>
-          <link id="#LCL.Controls.TControl.DoOnChangeBounds"/>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+          <link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
         </seealso>
       </element>
 
@@ -4282,7 +4283,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TCustomForm.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TCustomForm.WindowState">
         <short>
@@ -4297,9 +4298,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomForm.Showing"/>
+          <link id="TCustomForm.Show"/>
           <link id="TWindowState"/>
-          <link id="#lcl.lclintf.ShowWindow"/>
+          <link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
+          <link id="#lcl.lclintf.ShowWindow">ShowWindow</link>
         </seealso>
       </element>
 
@@ -4311,147 +4313,147 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.forms.TCustomForm"/>
+          <link id="TCustomForm"/>
         </seealso>
       </element>
 
       <element name="TForm" link="#lcl.forms.TCustomForm"/>
+
       <element name="TForm.FLCLVersion" link="#lcl.forms.TForm.LCLVersion"/>
+
       <element name="TForm.LCLVersionIsStored" link="#lcl.forms.TForm.LCLVersion"/>
-      <element name="TForm.LCLVersionIsStored.Result">
-        <short/>
-      </element>
+      <element name="TForm.LCLVersionIsStored.Result" link="#lcl.forms.TForm.LCLVersion.Result"/>
 
       <element name="TForm.WSRegisterClass">
-        <short></short>
+        <short/>
         <descr>
           WSRegisterClass is an overridden class procedure used to register the widget set class used to create new instances of the form.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd"/>
-      <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded"/>
-      <element name="TForm.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TForm.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd"/>
+      <element name="TForm.Loaded" link="#lcl.forms.TCustomForm.Loaded"/>
+      <element name="TForm.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TForm.Create.TheOwner">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Cascade">
         <short>Arranges MDI child forms so they overlap</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Next">
         <short>Activates the next child MDI form (fsMDIChild) in the form sequence</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Previous">
         <short>Activates the previous MDI child form in the form sequence</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Tile">
         <short>Arranges MDI child forms side by side</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TForm.ClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
-      <element name="TForm.DockManager" link="#LCL.Controls.TWinControl.DockManager"/>
-      <element name="TForm.Action" link="#LCL.Controls.TControl.Action"/>
+      <element name="TForm.DockManager" link="#lcl.controls.TWinControl.DockManager"/>
+      <element name="TForm.Action" link="#lcl.controls.TControl.Action"/>
       <element name="TForm.ActiveControl" link="#lcl.forms.TCustomForm.ActiveControl"/>
-      <element name="TForm.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TForm.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TForm.AllowDropFiles" link="#lcl.forms.TCustomForm.AllowDropFiles"/>
       <element name="TForm.AlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
       <element name="TForm.AlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
-      <element name="TForm.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TForm.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TForm.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TForm.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TForm.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TForm.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TForm.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TForm.BorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
       <element name="TForm.BorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
-      <element name="TForm.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
-      <element name="TForm.Caption" link="#LCL.Controls.TControl.Caption"/>
-      <element name="TForm.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
-      <element name="TForm.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
-      <element name="TForm.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
-      <element name="TForm.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TForm.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TForm.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
+      <element name="TForm.Caption" link="#lcl.controls.TControl.Caption"/>
+      <element name="TForm.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+      <element name="TForm.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+      <element name="TForm.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
+      <element name="TForm.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TForm.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TForm.DefaultMonitor" link="#lcl.forms.TCustomForm.DefaultMonitor"/>
       <element name="TForm.DesignTimePPI" link="#lcl.forms.TCustomDesignControl.DesignTimePPI"/>
-      <element name="TForm.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
-      <element name="TForm.DoubleBuffered" link="#LCL.Controls.TControl.DoubleBuffered"/>
-      <element name="TForm.DragKind" link="#LCL.Controls.TControl.DragKind"/>
-      <element name="TForm.DragMode" link="#LCL.Controls.TControl.DragMode"/>
-      <element name="TForm.Enabled" link="#LCL.Controls.TControl.Enabled"/>
-      <element name="TForm.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TForm.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
+      <element name="TForm.DoubleBuffered" link="#lcl.controls.TControl.DoubleBuffered"/>
+      <element name="TForm.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TForm.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TForm.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TForm.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TForm.FormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
       <element name="TForm.HelpFile" link="#lcl.forms.TCustomForm.HelpFile"/>
       <element name="TForm.Icon" link="#lcl.forms.TCustomForm.Icon"/>
       <element name="TForm.KeyPreview" link="#lcl.forms.TCustomForm.KeyPreview"/>
       <element name="TForm.Menu" link="#lcl.forms.TCustomForm.Menu"/>
       <element name="TForm.OnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>
-      <element name="TForm.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
-      <element name="TForm.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TForm.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+      <element name="TForm.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TForm.OnClose" link="#lcl.forms.TCustomForm.OnClose"/>
       <element name="TForm.OnCloseQuery" link="#lcl.forms.TCustomForm.OnCloseQuery"/>
       <element name="TForm.OnContextPopup" link="#lcl.forms.TCustomForm.OnContextPopup"/>
       <element name="TForm.OnCreate" link="#lcl.forms.TCustomForm.OnCreate"/>
-      <element name="TForm.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TForm.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
       <element name="TForm.OnDeactivate" link="#lcl.forms.TCustomForm.OnDeactivate"/>
       <element name="TForm.OnDestroy" link="#lcl.forms.TCustomForm.OnDestroy"/>
-      <element name="TForm.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
-      <element name="TForm.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
-      <element name="TForm.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
-      <element name="TForm.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TForm.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
+      <element name="TForm.OnDockOver" link="#lcl.controls.TWinControl.OnDockOver"/>
+      <element name="TForm.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TForm.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
       <element name="TForm.OnDropFiles" link="#lcl.forms.TCustomForm.OnDropFiles"/>
-      <element name="TForm.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
-      <element name="TForm.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
+      <element name="TForm.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+      <element name="TForm.OnGetSiteInfo" link="#lcl.controls.TWinControl.OnGetSiteInfo"/>
       <element name="TForm.OnHelp" link="#lcl.forms.TCustomForm.OnHelp"/>
       <element name="TForm.OnHide" link="#lcl.forms.TCustomForm.OnHide"/>
-      <element name="TForm.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
-      <element name="TForm.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
-      <element name="TForm.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
-      <element name="TForm.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TForm.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TForm.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TForm.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="TForm.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="TForm.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
-      <element name="TForm.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TForm.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TForm.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint"/>
-      <element name="TForm.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TForm.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TForm.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TForm.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TForm.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TForm.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TForm.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TForm.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TForm.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TForm.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TForm.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TForm.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TForm.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
+      <element name="TForm.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TForm.OnShortCut" link="#lcl.forms.TCustomForm.OnShortcut"/>
       <element name="TForm.OnShow" link="#lcl.forms.TCustomForm.OnShow"/>
-      <element name="TForm.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
-      <element name="TForm.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
-      <element name="TForm.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TForm.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TForm.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+      <element name="TForm.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+      <element name="TForm.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
+      <element name="TForm.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TForm.OnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
-      <element name="TForm.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TForm.ParentDoubleBuffered" link="#LCL.Controls.TControl.ParentDoubleBuffered"/>
-      <element name="TForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TForm.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TForm.ParentDoubleBuffered" link="#lcl.controls.TControl.ParentDoubleBuffered"/>
+      <element name="TForm.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TForm.PixelsPerInch" link="#lcl.forms.TCustomForm.PixelsPerInch"/>
-      <element name="TForm.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TForm.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TForm.PopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
       <element name="TForm.PopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
       <element name="TForm.Position" link="#lcl.forms.TCustomForm.Position"/>
-      <element name="TForm.SessionProperties" link="#LCL.Controls.TControl.SessionProperties"/>
-      <element name="TForm.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TForm.SessionProperties" link="#lcl.controls.TControl.SessionProperties"/>
+      <element name="TForm.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TForm.ShowInTaskBar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
-      <element name="TForm.UseDockManager" link="#LCL.Controls.TWinControl.UseDockManager"/>
+      <element name="TForm.UseDockManager" link="#lcl.controls.TWinControl.UseDockManager"/>
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams using
           different versions of the LCL</short>
       </element>
       <element name="TForm.Scaled"/>
-      <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TForm.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TForm.WindowState" link="#lcl.forms.TCustomForm.WindowState"/>
       <!-- "class of" type Visibility: default -->
       <element name="TFormClass" link="#lcl.forms.TForm">
@@ -4466,7 +4468,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient">
+      <element name="TCustomDockForm.DoAddDockClient" link="#lcl.controls.TWinControl.DoAddDockClient">
         <short>Makes the client occupy the entire client area (alClient)</short>
         <descr/>
         <seealso/>
@@ -4478,7 +4480,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient">
+      <element name="TCustomDockForm.DoRemoveDockClient" link="#lcl.controls.TWinControl.DoRemoveDockClient">
         <short>Closes (releases) the form after the last client has been undocked</short>
         <descr/>
         <seealso/>
@@ -4487,7 +4489,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.GetSiteInfo" link="#LCL.Controls.TWinControl.GetSiteInfo">
+      <element name="TCustomDockForm.GetSiteInfo" link="#lcl.controls.TWinControl.GetSiteInfo">
         <short>Disallows docking of an second client</short>
         <descr/>
         <seealso/>
@@ -4505,7 +4507,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
+      <element name="TCustomDockForm.Loaded" link="#lcl.forms.TCustomForm.Loaded">
         <short>
           Tries to make all child controls dockclients. This is of little use in practice,
           a floating hostdocksite should have no child controls.
@@ -4514,15 +4516,15 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDockForm.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TCustomDockForm.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TCustomDockForm.Create.TheOwner">
         <short>Owner for the class instance</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TCustomDockForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle"/>
-      <element name="TCustomDockForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle"/>
-      <element name="TCustomDockForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch"/>
+      <element name="TCustomDockForm.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TCustomDockForm.BorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
+      <element name="TCustomDockForm.FormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
+      <element name="TCustomDockForm.PixelsPerInch" link="#lcl.forms.TCustomForm.PixelsPerInch"/>
       <!-- object Visibility: default -->
       <element name="THintWindow">
         <short>
@@ -4614,7 +4616,7 @@
       </element>
       <element name="THintWindow.SetHintRectAdjust">
         <short>Sets the value for the HintRectAdjust property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="THintWindow.HintRectAdjust"/>
         </seealso>
@@ -4622,12 +4624,12 @@
       <element name="THintWindow.SetHintRectAdjust.AValue">
         <short>New value for the property</short>
       </element>
-      <element name="THintWindow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="THintWindow.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.WMNCHitTest">
         <short>Treats the whole window as transparent</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.WMNCHitTest.Message">
         <short/>
@@ -4646,11 +4648,11 @@
           <link id="THintWindow.HintRect"/>
           <link id="THintWindow.AutoHide"/>
           <link id="THintWindow.ActivateHint"/>
-          <link id="#LCL.Controls.TControl.Visible"/>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="THintWindow.DoShowWindow" link="#LCL.Forms.TCustomForm.DoShowWindow"/>
+      <element name="THintWindow.DoShowWindow" link="#lcl.forms.TCustomForm.DoShowWindow"/>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.UpdateRegion">
         <short>Updates the Window Region fir the hint window</short>
@@ -4674,7 +4676,7 @@
         <short>Sets the value for the Color property</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Color"/>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
         </seealso>
       </element>
       <element name="THintWindow.SetColor.Value">
@@ -4684,8 +4686,8 @@
         <short>
           Indicates if a background from theme services is used when drawing the hint window
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.UseBGThemes.Result">
         <short>True when ThemeServices are used for the background</short>
@@ -4694,8 +4696,8 @@
         <short>
           Indicates if theme services are used for the foreground rendered for the hint window
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.UseFGThemes.Result">
         <short>
@@ -4703,12 +4705,12 @@
         </short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint"/>
+      <element name="THintWindow.Paint" link="#lcl.controls.TCustomControl.Paint"/>
       <element name="THintWindow.FSysHintFont"/>
       <element name="THintWindow.SysHintFont">
         <short>System font used to draw text in the hint window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.SysHintFont.Result">
         <short>TFont instance for the system font provided by the widget set</short>
@@ -4721,10 +4723,10 @@
             Destroy is a class destructor. Destroy ensures a reference to the System Font used for hint windows is freed.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="THintWindow.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="THintWindow.Create" link="#rtl.classes.TComponent.Create">
         <short>Constructor for the class instance</short>
         <descr>
           <p>
@@ -4757,7 +4759,7 @@
             Create uses the default size from the class type for the control to set the initial bounds for the hint window.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="THintWindow.Create.AOwner">
         <short>Owner of the class instance</short>
@@ -4851,7 +4853,7 @@
       </element>
       <element name="THintWindow.OffsetHintRect">
         <short>Moves the hint rectangle by the specified amounts</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="THintWindow.HintRect"/>
           <link id="THintWindow.HintRectAdjust"/>
@@ -4875,27 +4877,27 @@
         <short>Indicates the height for the hint rectanlge must be maintained</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.InitializeWnd" link="#LCL.Controls.TControl.InitializeWnd"/>
+      <element name="THintWindow.InitializeWnd" link="#lcl.controls.TControl.InitializeWnd"/>
       <element name="THintWindow.IsHintMsg">
         <short>Indicates if the specified message is relevant to a hint window display</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.IsHintMsg.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="THintWindow.IsHintMsg.Msg">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="THintWindow.ReleaseHandle">
         <short>Destroys an allocated handle for the widget</short>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.DestroyHandle"/>
+          <link id="#lcl.controls.TWinControl.DestroyHandle">TWinControl.DestroyHandle</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.SetBounds" link="#LCL.Controls.TControl.InitializeWnd"/>
+      <element name="THintWindow.SetBounds" link="#lcl.controls.TControl.InitializeWnd"/>
       <element name="THintWindow.SetBounds.ALeft">
         <short/>
       </element>
@@ -4909,14 +4911,14 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="THintWindow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="THintWindow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
       <element name="THintWindow.GetControlClassDefaultSize.Result">
         <short/>
       </element>
-      <element name="THintWindow.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="THintWindow.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
-      <element name="THintWindow.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
-      <element name="THintWindow.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="THintWindow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="THintWindow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="THintWindow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="THintWindow.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
       <!-- property Visibility: public -->
       <element name="THintWindow.Alignment">
         <short>Text alignment used for the hint window</short>
@@ -4949,13 +4951,13 @@
       </element>
       <element name="THintWindow.HintRectAdjust">
         <short>Contains the bounds with additional space used for the hint display</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindow.HintData">
         <short>Pointer to data used to formulate text displayed in the hint window</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="THintWindow.AutoHide">
@@ -4967,7 +4969,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="THintWindow.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="THintWindow.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <!-- property Visibility: public -->
       <element name="THintWindow.HideInterval">
         <short>The time after which the displayed hint disappears</short>
@@ -4984,26 +4986,26 @@
       </element>
       <element name="THintWindowRendered">
         <short>For a rendered hint with a child control added by an external provider</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindowRendered.Create">
         <short>Constructor for the class instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindowRendered.Create.AOwner">
         <short>Owner of the class instance</short>
       </element>
       <element name="THintWindowRendered.Destroy">
         <short>Destructor for the class instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="THintWindowRendered.ActivateRendered">
         <short>Shows hint contents are rendered by a provider on child control</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TMonitor">
@@ -5036,7 +5038,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.LCLType.TMonitorInfo"/>
+          <link id="#lcl.lcltype.TMonitorInfo">TMonitorInfo</link>
         </seealso>
       </element>
       <element name="TMonitor.GetInfo.Result">
@@ -5048,7 +5050,7 @@
       <!-- function Visibility: private -->
       <element name="TMonitor.GetLeft">
         <short>Gets the value for the Left property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TMonitor.Left"/>
         </seealso>
@@ -5153,8 +5155,8 @@
         <short>
           List notification handler, destroys the Monitor object on removal from the list
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TMonitorList.Notify.Ptr">
         <short>The monitor object</short>
@@ -5168,7 +5170,7 @@
         <descr>
           Items is the default property for the monitor list.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TMonitorList.Items.AIndex">
         <short>Ordinal position for a monitor in the list</short>
@@ -5354,8 +5356,8 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.DestroyMonitors">
         <short>Clears the Monitors list</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetCursors" link="#lcl.forms.TScreen.Cursors"/>
@@ -5546,9 +5548,9 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.RestoreLastActive">
         <short>Moves the Focus back to the previously focused control</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.AddHandler">
@@ -5580,9 +5582,9 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.DoAddDataModule" link="#lcl.forms.TScreen.DataModules">
         <short>Adds the specified DataModule to the list</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TScreen.DoAddDataModule.DataModule">
         <short>Data module instance added in the method</short>
@@ -5590,9 +5592,9 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.DoRemoveDataModule" link="#lcl.forms.TScreen.DataModules">
         <short>Removes the specified DataModule from the list</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TScreen.DoRemoveDataModule.DataModule">
         <short>Data module removed in the method</short>
@@ -5600,9 +5602,9 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.NotifyScreenFormHandler">
         <short>Notifies all registered handlers for the given event</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TScreen.NotifyScreenFormHandler.HandlerType">
         <short>Event type for the notification</short>
@@ -5656,7 +5658,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScreen.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TScreen.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TScreen.Create.AOwner">
         <short/>
       </element>
@@ -5767,7 +5769,7 @@
       <!-- function Visibility: public -->
       <element name="TScreen.FindNonDesignerForm">
         <short>Finds the named form, excluding designer forms</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TScreen.FindForm"/>
         </seealso>
@@ -5823,9 +5825,9 @@
       <!-- procedure Visibility: private -->
       <element name="TScreen.UpdateMonitors">
         <short>Builds the list of available monitors</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.UpdateScreen">
@@ -5834,7 +5836,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TScreen.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject"/>
+      <element name="TScreen.RemoveAllHandlersOfObject" link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject"/>
       <element name="TScreen.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
@@ -5925,9 +5927,9 @@
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerFormVisibleChanged">
         <short>Adds a notification handler</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TScreen.AddHandlerFormVisibleChanged.OnFormVisibleChanged">
         <short/>
@@ -5938,8 +5940,8 @@
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerFormVisibleChanged">
         <short>Removes a notification handler</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TScreen.RemoveHandlerFormVisibleChanged.OnFormVisibleChanged">
         <short/>
@@ -6040,23 +6042,23 @@
         <short>Override the Cursor property with a temporary value. Use EndTempCursor to release it.</short>
       </element>
       <element name="TScreen.BeginTempCursor.aCursor">
-        <short></short>
+        <short/>
       </element>
       <element name="TScreen.EndTempCursor">
         <short>Release the temporary cursor set with BeginTempCursor.</short>
       </element>
       <element name="TScreen.EndTempCursor.aCursor">
-        <short></short>
+        <short/>
       </element>
       <element name="TScreen.BeginWaitCursor">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TScreen.EndWaitCursor">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveControl">
@@ -6144,14 +6146,14 @@
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopLeft" link="#lcl.forms.TScreen.DesktopRect">
         <short>The leftmost coordinate of the desktop</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopTop" link="#lcl.forms.TScreen.DesktopRect">
         <short>The topmost coordinate of the desktop</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopHeight" link="#lcl.forms.TScreen.DesktopRect">
@@ -6164,13 +6166,13 @@
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopRect">
         <short>The total extent of the desktop, spanning all monitors</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.FocusedForm">
         <short>The form that holds Focus</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TScreen.ActiveForm"/>
           <link id="TScreen.ActiveCustomForm"/>
@@ -6228,16 +6230,16 @@
       <!-- property Visibility: public -->
       <element name="TScreen.MenuFont">
         <short>The font used in menus</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.SystemFont">
         <short>
           The default font used for system task dialogs and controls like TSpeedButton
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Fonts">
@@ -6465,7 +6467,7 @@
           TCMHintShow is a record type used to represent a CM_HINTSHOW control message passed as an argument to control methods.
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.CMHintShow"/>
+          <link id="#lcl.controls.TControl.CMHintShow">TControl.CMHintShow</link>
         </seealso>
       </element>
       <!-- variable Visibility: default -->
@@ -6685,7 +6687,7 @@
 
           TApplicationHandlerType is used as an index value for the internal array of TMethodList instances used in TApplication. It is passed as an argument to the AddHandler and RemoveHandler methods in TApplication to identify the method list where the handler is stored. It is also used in the implementation of TApplication methods used to retrieve, execute, or maintain handlers such as: Destroy and RemoveAllHandlersOfObject.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplicationHandlerType.ahtIdle">
         <short>Application becoming idle</short>
@@ -6746,21 +6748,12 @@
       </element>
       <element name="TApplicationHandlerType.ahtHint">
         <short>Handler invoked on Hint request</short>
-        <notes><note>purpose?</note></notes>
       </element>
       <element name="TApplicationHandlerType.ahtShowHint">
         <short>Handler invoked on Hint becoming visible</short>
-        <notes><note>purpose?</note></notes>
       </element>
       <element name="TApplicationHandlerType.ahtGetMainFormHandle">
         <short>Handler provides the Handle for the main form</short>
-        <descr></descr>
-        <notes>
-          <note>?</note>
-          <note>application/taskbar window?</note>
-          <note>purpose?</note>
-          <note>what's the purpose for *not* returning MainForm.Handle???</note>
-        </notes>
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PAsyncCallQueueItem" link="#lcl.forms.TAsyncCallQueueItem">
@@ -6901,7 +6894,7 @@
           <link id="TApplication.ShowMenuGlyphs"/>
           <link id="TApplicationProperties.ShowButtonGlyphs"/>
           <link id="TApplicationProperties.ShowMenuGlyphs"/>
-          <link id="#LCL.Menus.TGlyphShowMode"/>
+          <link id="#lcl.menus.TGlyphShowMode">TGlyphShowMode</link>
         </seealso>
       </element>
       <element name="TApplicationShowGlyphs.sbgAlways">
@@ -6941,8 +6934,8 @@
         <short>
           Enumeration with values used in the DoubleBuffered property in TApplication
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
         <notes><note>?</note></notes>
       </element>
       <element name="TApplicationDoubleBuffered.adbDefault">
@@ -6951,10 +6944,10 @@
         </short>
       </element>
       <element name="TApplicationDoubleBuffered.adbFalse">
-        <short></short>
+        <short/>
       </element>
       <element name="TApplicationDoubleBuffered.adbTrue">
-        <short></short>
+        <short/>
       </element>
       <!-- object Visibility: default -->
       <element name="TApplication">
@@ -6995,7 +6988,7 @@
       <!-- variable Visibility: private -->
       <element name="TApplication.FComponentsReleasing">
         <short>The list of components which currently are released (destroyed)</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplication.Release"/>
         </seealso>
@@ -7170,7 +7163,7 @@
         <short>Determines the main form handle, using all available handlers</short>
         <seealso>
           <link id="TApplication.OnGetMainFormHandle"/>
-          <link id="TApplicationHandlerType.ahtOnGetMainFormHandle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.GetMainFormHandle.Result">
@@ -7313,7 +7306,7 @@
         <short>True when HelpManager is not Nil</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.WndProc" link="#LCL.Controls.TControl.WndProc"/>
+      <element name="TApplication.WndProc" link="#lcl.controls.TControl.WndProc"/>
       <element name="TApplication.WndProc.AMessage">
         <short/>
       </element>
@@ -7338,7 +7331,7 @@
         <short>Adds an application notification handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType"/>
+
         </seealso>
       </element>
       <element name="TApplication.AddHandler.HandlerType">
@@ -7355,7 +7348,7 @@
         <short>Removes an application notification handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType"/>
+
         </seealso>
       </element>
       <element name="TApplication.RemoveHandler.HandlerType">
@@ -7399,7 +7392,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnIdle"/>
-          <link id="TApplicationHandlerType.ahtIdle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.NotifyIdleHandler.Done">
@@ -7411,7 +7404,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnIdleEnd"/>
-          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -7420,7 +7413,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnActivate"/>
-          <link id="TApplicationHandlerType.ahtActivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -7429,7 +7422,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnDeactivate"/>
-          <link id="TApplicationHandlerType.ahtDeactivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -7464,7 +7457,7 @@
         </descr>
         <seealso>
           <link id="TApplication.OnHelp"/>
-          <link id="TApplicationHandlerType.ahtHelp"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.DoOnHelp.Result">
@@ -7559,8 +7552,8 @@
       <!-- procedure Visibility: protected -->
       <element name="TApplication.ReleaseComponents">
         <short>Destroys all components marked for release</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoBeforeFinalization">
@@ -7583,7 +7576,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TApplication.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TApplication.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TApplication.Create.AOwner">
         <short>The Owner object that invoked this instance of TApplication</short>
       </element>
@@ -7610,7 +7603,7 @@
         <errors>
           Destroy calls <var>RaiseGDBException</var> to raise an exception if the current class instance is unassigned (contains <b>Nil</b>). Uses the exception message 'TApplication.Destroy Self=nil'.
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ActivateHint">
@@ -7771,7 +7764,7 @@
       <element name="TApplication.ExecuteAction">
         <short>Invokes the <var>OnActionExecute</var> handler</short>
         <seealso>
-          <link id="#rtl.Classes.TComponent.ExecuteAction"/>
+          <link id="#rtl.classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
         </seealso>
       </element>
       <element name="TApplication.ExecuteAction.Result">
@@ -7806,7 +7799,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.CustApp.TCustomApplication.HandleException"/>
+          <link id="#fcl.custapp.TCustomApplication.HandleException">TCustomApplication.HandleException</link>
         </seealso>
       </element>
       <element name="TApplication.HandleException.Sender">
@@ -7960,8 +7953,8 @@
           <link id="Screen"/>
           <link id="TApplication.Icon"/>
           <link id="TApplication.Flags"/>
-          <link id="#LCL.InterfaceBase.WidgetSet"/>
-          <link id="#FCL.CustApp.TCustomApplication.Initialize"/>
+          <link id="#lcl.interfacebase.WidgetSet">WidgetSet</link>
+          <link id="#fcl.custapp.TCustomApplication.Initialize">TCustomApplication.Initialize</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -8125,9 +8118,9 @@
         <seealso/>
       </element>
       <element name="TApplication.ShowException.E">
-        <short>The exception to show</short>
+        <short>The exception to display for the application</short>
         <seealso>
-          <link id="#rtl.sysutils.exception"/>
+          <link id="#rtl.sysutils.Exception">Exception</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -8161,7 +8154,7 @@
         <short>Notifies all user input handlers</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtUserInput"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>of what?</note></notes>
       </element>
@@ -8173,7 +8166,7 @@
         <short>Notifies all ahtKeyDownBefore handlers</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownBeforeHandler.Sender">
@@ -8190,7 +8183,7 @@
         <short>Notifies all ahtKeyDownAfter handlers, eventually reacts on F1 (Help)</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownHandler.Sender">
@@ -8237,7 +8230,7 @@
         <short>Adds an application Idle handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnIdleHandler.Handler">
@@ -8251,7 +8244,7 @@
         <short>Removes an application Idle handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleHandler.Handler">
@@ -8262,7 +8255,7 @@
         <short>Adds an application IdleEnd handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnIdleEndHandler.Handler">
@@ -8276,7 +8269,7 @@
         <short>Removes an application IdleEnd handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleEndHandler.Handler">
@@ -8287,7 +8280,7 @@
         <short>Adds an application user input handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtUserInput"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnUserInputHandler.Handler">
@@ -8301,7 +8294,7 @@
         <short>Removes an application user input handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtUserInput"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnUserInputHandler.Handler">
@@ -8312,7 +8305,7 @@
         <short>Adds an application key down before interface handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownBeforeHandler.Handler">
@@ -8326,7 +8319,7 @@
         <short>Removes an application key down before interface handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownBeforeHandler.Handler">
@@ -8337,7 +8330,7 @@
         <short>Adds an application key down after interface handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownHandler.Handler">
@@ -8351,7 +8344,7 @@
         <short>Removes an application key down after interface handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownHandler.Handler">
@@ -8362,7 +8355,7 @@
         <short>Adds an application activation handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtActivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnActivateHandler.Handler">
@@ -8376,7 +8369,7 @@
         <short>Removes an application activation handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtActivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnActivateHandler.Handler">
@@ -8387,7 +8380,7 @@
         <short>Adds an application deactivation handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtDeactivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnDeactivateHandler.Handler">
@@ -8401,7 +8394,7 @@
         <short>Removes an application deactivation handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtDeactivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnDeactivateHandler.Handler">
@@ -8412,7 +8405,7 @@
         <short>Adds an application exception handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtException"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnExceptionHandler.Handler">
@@ -8426,7 +8419,7 @@
         <short>Removes an application exception handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtException"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnExceptionHandler.Handler">
@@ -8437,7 +8430,7 @@
         <short>Adds an application logoff handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>?</note></notes>
       </element>
@@ -8452,7 +8445,7 @@
         <short>Removes an application logoff handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>?</note></notes>
       </element>
@@ -8464,7 +8457,7 @@
         <short>Adds an application logoff query handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnQueryEndSessionHandler.Handler">
@@ -8478,7 +8471,7 @@
         <short>Removes an application logoff query handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnQueryEndSessionHandler.Handler">
@@ -8489,7 +8482,7 @@
         <short>Adds an application minimizing handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtMinimize"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnMinimizeHandler.Handler">
@@ -8503,7 +8496,7 @@
         <short>Removes an application minimizing handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtMinimize"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnMinimizeHandler.Handler">
@@ -8514,7 +8507,7 @@
         <short>Adds an application becoming modal handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalBegin"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnModalBeginHandler.Handler">
@@ -8528,7 +8521,7 @@
         <short>Removes an application becoming modal handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalBegin"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalBeginHandler.Handler">
@@ -8539,7 +8532,7 @@
         <short>Adds an application exiting modal state handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnModalEndHandler.Handler">
@@ -8553,7 +8546,7 @@
         <short>Removes an application exiting modal state handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalEndHandler.Handler">
@@ -8564,7 +8557,7 @@
         <short>Adds an application exiting minimized state handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtRestore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnRestoreHandler.Handler">
@@ -8578,7 +8571,7 @@
         <short>Removes an application exiting minimized state handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtRestore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnRestoreHandler.Handler">
@@ -8589,7 +8582,7 @@
         <short>Adds an application dropped files handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtDropFiles"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnDropFilesHandler.Handler">
@@ -8603,7 +8596,7 @@
         <short>Removes an application dropped files handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtDropFiles"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnDropFilesHandler.Handler">
@@ -8614,7 +8607,7 @@
         <short>Adds an application Help handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHelp"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnHelpHandler.Handler">
@@ -8628,7 +8621,7 @@
         <short>Removes an application Help handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHelp"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnHelpHandler.Handler">
@@ -8639,7 +8632,7 @@
         <short>Adds an application Hint handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnHintHandler.Handler">
@@ -8653,7 +8646,7 @@
         <short>Removes an application Hint handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnHintHandler.Handler">
@@ -8664,7 +8657,7 @@
         <short>Adds an application Hint show handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtShowHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnShowHintHandler.Handler">
@@ -8678,7 +8671,7 @@
         <short>Removes an application Hint show handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtShowHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnShowHintHandler.Handler">
@@ -8689,7 +8682,7 @@
         <short>Adds an application MainForm Handle handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnGetMainFormHandleHandler.Handler">
@@ -8703,7 +8696,7 @@
         <short>Removes an application MainForm Handle handler</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnGetMainFormHandleHandler.Handler">
@@ -8746,7 +8739,7 @@
         </descr>
         <seealso>
           <link id="TApplication.OnQueryEndSession"/>
-          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.IntfQueryEndSession.Cancel">
@@ -8758,7 +8751,7 @@
         <descr>Notifies all OnEndSession handlers.</descr>
         <seealso>
           <link id="TApplication.OnEndSession"/>
-          <link id="TApplicationHandlerType.ahtEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -8767,17 +8760,17 @@
         <descr>Notifies all activation handlers.</descr>
         <seealso>
           <link id="TApplication.OnActivate"/>
-          <link id="TApplicationHandlerType.ahtActivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>?</note></notes>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfAppDeactivate">
         <short>Called by the interface on application deactivation</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplication.OnDeactivate"/>
-          <link id="TApplicationHandlerType.ahtDeactivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>?</note></notes>
       </element>
@@ -8787,7 +8780,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnMinimize"/>
-          <link id="TApplicationHandlerType.ahtMinimize"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -8796,7 +8789,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnRestore"/>
-          <link id="TApplicationHandlerType.ahtRestore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -8805,7 +8798,7 @@
         <descr/>
         <seealso>
           <link id="TApplication.OnDropFiles"/>
-          <link id="TApplicationHandlerType.ahtDropFiles"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.IntfDropFiles.FileNames">
@@ -8815,7 +8808,7 @@
       <element name="TApplication.IntfThemeOptionChange">
         <short>Called by the interface when a theme option has changed</short>
         <descr/>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplication.IntfThemeOptionChange.AThemeServices">
         <short/>
@@ -8825,17 +8818,17 @@
       </element>
       <element name="TApplication.IsRightToLeft">
         <short>Indicates if BiDiMode contains a value other than bdLeftToRight</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TApplication.IsRightToLeft.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.IsRTLLang">
         <short>Checks the given language name for use of right-to-left reading</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TApplication.IsRTLLang.Result">
         <short>True when the language code uses right-to-left reading</short>
@@ -8846,9 +8839,9 @@
       <!-- function Visibility: public -->
       <element name="TApplication.Direction">
         <short>Gets the BidiMode value for the specified language name</short>
-        <descr></descr>
+        <descr/>
         <errors></errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplication.Direction.Result">
         <short>TBiDiMode value for the specified language</short>
@@ -8944,12 +8937,12 @@
       <element name="TApplication.DoubleBuffered">
         <short>Indicates if the application uses double buffering</short>
         <descr>Default value is adbDefault. Hint: platform specific.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplication.ExtendedKeysSupport">
-        <short></short>
+        <short/>
         <descr>See VK_LSHIFT in LCLType for more details.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplication.ExceptionDialog">
         <short>Indicates the dialog type used for an exception in the application</short>
@@ -9073,7 +9066,7 @@
         <short>
           Indicates the layout and sizing policy used for forms and controls in the application
         </short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TLayoutAdjustmentPolicy"/>
         </seealso>
@@ -9117,14 +9110,13 @@
             The value for the property is derived using the <var>OnGetMainFormHandle</var> event handler (when assigned) or a <var>TGetHandleEvent</var> handler assigned in the application. When neither of these mechanisms provides a value other than zero (0), the window handle assigned in the <var>MainForm</var> property is used.
           </p>
           <p>
-            MainFormHandle is used in the implementation of methods in WidgetSet classes, primarily for the Windows platform, and in custom drawn controls.
+            MainFormHandle is used in the implementation of methods in WidgetSet classes, primarily for the Windows platform, and in custom-drawn controls.
           </p>
         </descr>
         <seealso>
           <link id="TApplication.MainForm"/>
           <link id="TApplication.OnGetMainFormHandle"/>
-          <link id="TApplication.AddHandler"/>
-          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9185,15 +9177,15 @@
       </element>
       <element name="TApplication.TaskBarBehavior">
         <short>How forms are represented in the TaskBar</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TApplication.UpdateFormatSettings">
         <short>
           Indicates if application format settings are updated when changed in a widget set class
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnActionExecute">
@@ -9213,14 +9205,14 @@
       <element name="TApplication.OnActivate">
         <short>Event handler for activation of the application</short>
         <seealso>
-          <link id="TApplicationHandlerType.ahtActivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnDeactivate">
         <short>Event handler for deactivation of the application</short>
         <seealso>
-          <link id="TApplicationHandlerType.ahtDeactivate"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.OnGetMainFormHandle">
@@ -9235,27 +9227,27 @@
         <seealso>
           <link id="TApplication.MainFormHandle"/>
           <link id="TApplication.MainForm"/>
-          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.OnIdle">
         <short>Event handler for application entering Idle state</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdle"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.OnIdleEnd">
         <short>Event handler for application leaving Idle state</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.OnEndSession">
         <short>Event handler for ending a session of the application</short>
         <seealso>
-          <link id="TApplicationHandlerType.ahtEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>or logoff?</note></notes>
       </element>
@@ -9263,7 +9255,7 @@
         <short>This event handler can deny to end the session</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.OnMinimize">
@@ -9274,7 +9266,7 @@
           Event handler signalled when a message dialog in the application has been completed
         </short>
         <descr>Used in the CustomDraw interface.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnModalBegin">
@@ -9282,7 +9274,7 @@
         <descr>
         </descr>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalBegin"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9291,7 +9283,7 @@
         <descr>
         </descr>
         <seealso>
-          <link id="TApplicationHandlerType.ahtModalEnd"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9312,7 +9304,7 @@
         <short>Event handler when help is requested</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHelp"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9320,7 +9312,7 @@
         <short>Event handler when a hint is requested</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9329,7 +9321,7 @@
           before the normal target handles the key</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
         <notes><note>?</note></notes>
       </element>
@@ -9338,7 +9330,7 @@
         <short>Event handler for showing an Hint</short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtShowHint"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9348,7 +9340,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="TApplicationHandlerType.ahtUserInput"/>
+          <link id="TApplicationHandlerType"/>
           <link id="TApplication.NotifyUserInputHandler"/>
         </seealso>
       </element>
@@ -9370,8 +9362,8 @@
       <short>
         Handler invoked when there a circular exception occurs before the application is halted.
       </short>
-      <descr></descr>
-      <seealso></seealso>
+      <descr/>
+      <seealso/>
     </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowButtonGlyphs">
@@ -9383,9 +9375,9 @@
       <!-- property Visibility: public -->
       <element name="TApplication.ShowMenuGlyphs">
         <short>Sets the default policy for showing or hiding glyph images in menus</short>
-        <descr></descr>
+        <descr/>
         <seealso>
-          <link id="#LCL.Menus.TGlyphShowMode"/>
+          <link id="#lcl.menus.TGlyphShowMode">TGlyphShowMode</link>
         </seealso>
         <notes><note>?</note></notes>
       </element>
@@ -9421,43 +9413,43 @@
         <short>
           Indicates if forms and controls in the application can be scaled to different display densities (Pixels per Inch)
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DefaultApplicationBiDiMode">
         <short>Contains the default BiDiMode value used for the current LCL version</short>
         <descr>Default value is bdLeftToRight. </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintColor">
         <short>The default hint window color</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintPause">
         <short>The default pause before the hint window displays (in milliseconds)</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintShortPause">
         <short>The default Hint reshow pause (in milliseconds)</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintHidePause">
         <short>The default pause before hint is hidden (in milliseconds)</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintHidePausePerChar">
         <short>The default pause added to DefHintHidePause (in milliseconds)</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TApplicationProperties">
@@ -9548,7 +9540,7 @@
       <element name="TApplicationProperties.FOnRestore" link="#lcl.forms.TApplicationProperties.OnRestore"/>
       <element name="TApplicationProperties.SetExceptionDialog">
         <short>Sets the value for the ExceptionDialog property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplicationProperties.ExceptionDialog"/>
         </seealso>
@@ -9603,7 +9595,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TApplicationProperties.SetHintHidePause">
         <short>Sets the value for the HintHidePause property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplicationProperties.HintHidePause"/>
         </seealso>
@@ -9701,7 +9693,7 @@
       </element>
       <element name="TApplicationProperties.SetOnActivate">
         <short>Sets the value for the OnActivate property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplicationProperties.OnActivate"/>
         </seealso>
@@ -9711,7 +9703,7 @@
       </element>
       <element name="TApplicationProperties.SetOnDeactivate">
         <short>Sets the value for the OnDeactivate property</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TApplicationProperties.OnDeactivate"/>
         </seealso>
@@ -9894,7 +9886,6 @@
         </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
       </element>
       <element name="TApplicationProperties.Create.AOwner">
@@ -9938,7 +9929,7 @@
       <element name="TApplicationProperties.ExceptionDialog">
         <short>Indicates the dialog type displayed for an exception</short>
         <descr>The default value is aedOkCancelDialog.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TApplicationProperties.HelpFile" link="#lcl.forms.TApplication.HelpFile"/>
       <element name="TApplicationProperties.Hint" link="#lcl.forms.TApplication.Hint"/>
@@ -9953,14 +9944,14 @@
       <element name="TApplicationProperties.ShowMainForm" link="#lcl.forms.TApplication.ShowMainForm"/>
       <element name="TApplicationProperties.Title" link="#lcl.forms.TApplication.Title"/>
       <element name="TApplicationProperties.OnActivate" link="#lcl.forms.TApplication.OnActivate">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TApplicationProperties.OnDeactivate" link="#lcl.forms.TApplication.OnDeactivate">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TApplicationProperties.OnException" link="#lcl.forms.TApplication.OnException"/>
       <element name="TApplicationProperties.OnGetMainFormHandle" link="#lcl.forms.TApplication.OnGetMainFormHandle"/>
@@ -10098,9 +10089,9 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TFormPropertyStorage.FormCreate">
-        <short></short>
+        <short/>
         <descr>Calls the Restore method.</descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TFormPropertyStorage.FormCreate.Sender">
         <short/>
@@ -10118,28 +10109,28 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFormPropertyStorage.Create" link="#rtl.Classes.TComponent.Create"/>
+      <element name="TFormPropertyStorage.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TFormPropertyStorage.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFormPropertyStorage.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
+      <element name="TFormPropertyStorage.Destroy" link="#rtl.classes.TComponent.Destroy"/>
       <!-- function Visibility: default -->
       <element name="KeysToShiftState">
         <short>Converts modifier keys from the LParam of a
           mouse message to a TShiftState</short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
           <link id="ShiftStateToKeys"/>
           <link id="KeyDataToShiftState"/>
-          <link id="#LCL.LCLType.MK_Shift"/>
-          <link id="#LCL.LCLType.MK_Control"/>
-          <link id="#LCL.LCLType.MK_LButton"/>
-          <link id="#LCL.LCLType.MK_RButton"/>
-          <link id="#LCL.LCLType.MK_MButton"/>
-          <link id="#LCL.LCLType.MK_XBUTTON1"/>
-          <link id="#LCL.LCLType.MK_XBUTTON2"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+          <link id="#lcl.lcltype.MK_SHIFT">MK_SHIFT</link>
+          <link id="#lcl.lcltype.MK_CONTROL">MK_CONTROL</link>
+          <link id="#lcl.lcltype.MK_LBUTTON">MK_LBUTTON</link>
+          <link id="#lcl.lcltype.MK_RBUTTON">MK_RBUTTON</link>
+          <link id="#lcl.lcltype.MK_MBUTTON">MK_MBUTTON</link>
+          <link id="#lcl.lcltype.MK_XBUTTON1">MK_XBUTTON1</link>
+          <link id="#lcl.lcltype.MK_XBUTTON2">MK_XBUTTON2</link>
         </seealso>
       </element>
       <element name="KeysToShiftState.Result">
@@ -10156,25 +10147,23 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
           <link id="KeysToShiftState"/>
           <link id="ShiftStateToKeys"/>
-          <link id="#LCL.LCLType.MK_Shift"/>
-          <link id="#LCL.LCLType.MK_Control"/>
-          <link id="#LCL.LCLType.MK_LButton"/>
-          <link id="#LCL.LCLType.MK_RButton"/>
-          <link id="#LCL.LCLType.MK_MButton"/>
-          <link id="#LCL.LCLType.MK_XBUTTON1"/>
-          <link id="#LCL.LCLType.MK_XBUTTON2"/>
+          <link id="#lcl.lcltype.MK_SHIFT">MK_SHIFT</link>
+          <link id="#lcl.lcltype.MK_CONTROL">MK_CONTROL</link>
+          <link id="#lcl.lcltype.MK_LBUTTON">MK_LBUTTON</link>
+          <link id="#lcl.lcltype.MK_RBUTTON">MK_RBUTTON</link>
+          <link id="#lcl.lcltype.MK_MBUTTON">MK_MBUTTON</link>
+          <link id="#lcl.lcltype.MK_XBUTTON1">MK_XBUTTON1</link>
+          <link id="#lcl.lcltype.MK_XBUTTON2">MK_XBUTTON2</link>
         </seealso>
-        <notes><note>?</note></notes>
       </element>
       <element name="KeyDataToShiftState.Result">
         <short/>
       </element>
       <element name="KeyDataToShiftState.KeyData">
         <short/>
-        <notes><note>?</note></notes>
       </element>
       <!-- function Visibility: default -->
       <element name="ShiftStateToKeys">
@@ -10196,16 +10185,16 @@
           </ul>
         </descr>
         <seealso>
-          <link id="#RTL.Classes.TShiftState"/>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
           <link id="KeysToShiftState"/>
           <link id="KeyDataToShiftState"/>
-          <link id="#LCL.LCLType.MK_Shift"/>
-          <link id="#LCL.LCLType.MK_Control"/>
-          <link id="#LCL.LCLType.MK_LButton"/>
-          <link id="#LCL.LCLType.MK_RButton"/>
-          <link id="#LCL.LCLType.MK_MButton"/>
-          <link id="#LCL.LCLType.MK_XBUTTON1"/>
-          <link id="#LCL.LCLType.MK_XBUTTON2"/>
+          <link id="#lcl.lcltype.MK_SHIFT">MK_SHIFT</link>
+          <link id="#lcl.lcltype.MK_CONTROL">MK_CONTROL</link>
+          <link id="#lcl.lcltype.MK_LBUTTON">MK_LBUTTON</link>
+          <link id="#lcl.lcltype.MK_RBUTTON">MK_RBUTTON</link>
+          <link id="#lcl.lcltype.MK_MBUTTON">MK_MBUTTON</link>
+          <link id="#lcl.lcltype.MK_XBUTTON1">MK_XBUTTON1</link>
+          <link id="#lcl.lcltype.MK_XBUTTON2">MK_XBUTTON2</link>
         </seealso>
         <notes><note>into what?</note></notes>
       </element>
@@ -10245,8 +10234,8 @@
       <!-- function Visibility: default -->
       <element name="dbgs">
         <short>Formats various typed values into readable text</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="dbgs.Result">
         <short>The formatted value</short>
@@ -10260,7 +10249,7 @@
       <element name="dbgs.Kind">
         <short/>
       </element>
-<!-- alias type Visibility: default -->
+      <!-- alias type Visibility: default -->
       <element name="TFocusState">
         <short>Pointer to focus state information for the last active control in an application</short>
         <descr/>
@@ -10304,7 +10293,7 @@
         <short/>
       </element>
       <element name="TIsFormDesignFunction">
-        <short></short>
+        <short/>
         <descr>
           TIsFormDesignFunction is a Boolean function type used in the IsFormDesign variable.
         </descr>
@@ -10316,7 +10305,7 @@
         <short>Returns True when the form has csDesignInstance in its component state</short>
       </element>
       <element name="TIsFormDesignFunction.AForm">
-        <short></short>
+        <short/>
       </element>
       <!-- variable Visibility: default -->
       <element name="OnGetDesignerForm">
@@ -10368,15 +10357,15 @@
         <short/>
       </element>
       <element name="GetTopFormSkipNonDocked">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetTopFormSkipNonDocked.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetTopFormSkipNonDocked.Control">
-        <short></short>
+        <short/>
       </element>
       <element name="ValidParentForm">
         <short>Gets a valid parent form for the specified control</short>
@@ -10391,7 +10380,7 @@
         <errors>
           Raises an EInvalidOperation exception with the message in sParentRequired when a valid parent form is not found for the specified control.
         </errors>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ValidParentForm.Result">
         <short>Form instance that is the parent form for the control</short>
@@ -10416,26 +10405,26 @@
         <short/>
       </element>
       <element name="GetParentDesignControl">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetParentDesignControl.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetParentDesignControl.Control">
-        <short></short>
+        <short/>
       </element>
       <element name="NeedParentDesignControl">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="NeedParentDesignControl.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="NeedParentDesignControl.Control">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="IsAccel">
@@ -10606,7 +10595,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Dialogs.DefaultMessageBox"/>
+          <link id="#lcl.dialogs.DefaultMessageBox">DefaultMessageBox</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -10673,7 +10662,7 @@
           <link id="Application"/>
           <link id="Screen"/>
           <link id="WidgetSet"/>
-          <link id="#LCL.LCLProc.CallInterfaceFinalizationHandlers"/>
+          <link id="#lcl.lclproc.CallInterfaceFinalizationHandlers">CallInterfaceFinalizationHandlers</link>
         </seealso>
       </element>
       <!-- procedure Visibility: default -->

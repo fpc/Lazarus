@@ -4,9 +4,36 @@
 
     <!-- DBExtCtrls -->
     <module name="DBExtCtrls">
-      <short>
-        <var>dbextctrls.pp</var> contains extended database controls
-      </short>
+      <short>Contains extended database controls</short>
+      <descr>
+        <p>
+          <var>dbextctrls.pp</var> contains extended database-aware controls used in the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Data Controls</b> Tab
+        </p>
+        <ul>
+          <li>TDBNavigator</li>
+          <li>TDBText</li>
+          <li>TDBEdit</li>
+          <li>TDBMemo</li>
+          <li>TDBImage</li>
+          <li>TDBListBox</li>
+          <li>TDBLookupListBox</li>
+          <li>TDBComboBox</li>
+          <li>TDBLookupComboBox</li>
+          <li>TDBCheckBox</li>
+          <li>TDBRadioGroup</li>
+          <li>TDBCalendar</li>
+          <li>TDBGroupBox</li>
+        </ul>
+        <p>
+          It also registers TFieldClass instances (defined in DefaultFieldClasses) associated with FCL database field types, and includes TIntegerField as an alias for TLongintField.
+        </p>
+      </descr>
 
       <!-- unresolved type reference visibility: default -->
     <element name="Classes"/>
@@ -18,7 +45,7 @@
     <element name="EditBtn"/>
 
       <!-- class Visibility: default -->
-      <element name="TDBDateEdit" link="#lcl.EditBtn.TDateEdit">
+      <element name="TDBDateEdit">
         <short>
           TDBDateEdit implements a data-aware editing control for a date field in a dataset
         </short>
@@ -31,16 +58,16 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.EditBtn.TDateEdit"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#fcl.DB.TField"/>
-          <link id="#fcl.DB.TDatasource"/>
-          <link id="#rtl.Classes.TBasicAction"/>
+          <link id="#lcl.editbtn.TDateEdit">TDateEdit</link>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#fcl.db.TField">TField</link>
+          <link id="#fcl.db.TDatasource">TDatasource</link>
+          <link id="#rtl.classes.TBasicAction">TBasicAction</link>
         </seealso>
       </element>
 
       <!-- variable Visibility: private -->
-      <element name="TDBDateEdit.FDataLink" link="#lcl.DBCtrls.TFieldDataLink"/>
+      <element name="TDBDateEdit.FDataLink" link="#lcl.dbctrls.TFieldDataLink"/>
 
       <!-- procedure Visibility: private -->
       <element name="TDBDateEdit.DataChange">
@@ -59,9 +86,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
+          <link id="TDBDateEdit.Field"/>
+          <link id="#lcl.dbctrls.TFieldDataLink.Field">TFieldDataLink.Field</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.OnDataChange">TFieldDataLink.OnDataChange</link>
         </seealso>
       </element>
       <!-- argument Visibility: private -->
@@ -83,9 +110,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
+          <link id="TDBDateEdit.Field"/>
+          <link id="#lcl.dbctrls.TFieldDataLink.Field">TFieldDataLink.Field</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.OnUpdateData">TFieldDataLink.OnUpdateData</link>
         </seealso>
       </element>
       <!-- argument Visibility: private -->
@@ -107,8 +134,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+          <link id="TDBDateEdit.Field"/>
+          <link id="TDBDateEdit.DataSource"/>
         </seealso>
       </element>
       <!-- function result Visibility: private -->
@@ -130,8 +157,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#fcl.DB.TDataSource"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#fcl.db.TDatasource">TDatasource</link>
         </seealso>
       </element>
       <!-- function result Visibility: private -->
@@ -153,9 +180,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+          <link id="TDBDateEdit.DataField"/>
+          <link id="TDBDateEdit.Field"/>
+          <link id="TDBDateEdit.DataSource"/>
         </seealso>
       </element>
       <!-- argument Visibility: private -->
@@ -177,8 +204,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#fcl.DB.TDataSource"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#fcl.db.TDatasource">TDatasource</link>
         </seealso>
       </element>
       <!-- argument Visibility: private -->
@@ -218,7 +245,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="TDBDateEdit.Field"/>
         </seealso>
       </element>
       <!-- function result Visibility: private -->
@@ -363,9 +390,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Modified"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Editing">TFieldDataLink.Editing</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Modified">TFieldDataLink.Modified</link>
         </seealso>
       </element>
 
@@ -380,9 +407,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Editing">TFieldDataLink.Editing</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Reset">TFieldDataLink.Reset</link>
         </seealso>
       </element>
 
@@ -397,9 +424,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Editing">TFieldDataLink.Editing</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.Reset">TFieldDataLink.Reset</link>
         </seealso>
       </element>
 
@@ -412,9 +439,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.OnDataChange">TFieldDataLink.OnDataChange</link>
+          <link id="#lcl.dbctrls.TFieldDataLink.OnUpdateData">TFieldDataLink.OnUpdateData</link>
         </seealso>
       </element>
       <!-- argument Visibility: public -->
@@ -447,8 +474,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TBasicAction"/>
-          <link id="#lcl.Forms.TApplication.OnActionExecute"/>
+          <link id="#rtl.classes.TBasicAction">TBasicAction</link>
+          <link id="#lcl.forms.TApplication.OnActionExecute">TApplication.OnActionExecute</link>
         </seealso>
       </element>
       <!-- function result Visibility: public -->
@@ -462,15 +489,14 @@
 
       <!-- function Visibility: public -->
       <element name="TDBDateEdit.UpdateAction">
-        <short>
-        </short>
+        <short/>
         <descr>
           <p>
             <var>UpdateAction</var> is an overridden Boolean function which implements support for using TBasicAction to update the value in the control from its dataset. UpdateAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to performs its UpdateAction method with the specified action value. The return value is True if the action is handled by the ancestor or DataLink.
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TBasicAction"/>
+          <link id="#rtl.classes.TBasicAction">TBasicAction</link>
         </seealso>
       </element>
       <!-- function result Visibility: public -->
@@ -496,10 +522,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="#fcl.DB.TField"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="TDBDateEdit.DataField"/>
+          <link id="TDBDateEdit.DataSource"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#fcl.db.TField">TField</link>
         </seealso>
       </element>
 
@@ -517,9 +543,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
-          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="TDBDateEdit.DataField"/>
+          <link id="TDBDateEdit.DataSource"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
         </seealso>
       </element>
 
@@ -534,8 +560,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.TFieldDataLink"/>
-          <link id="#fcl.DB.TDataSource"/>
+          <link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+          <link id="#fcl.db.TDatasource">TDatasource</link>
         </seealso>
       </element>
 
@@ -543,7 +569,28 @@
         <short>Registers components for use  in the Lazarus IDE</short>
         <descr>
           <p>
-            <var>Register</var> is the procedure used to registers components for use  in the Lazarus IDE. Register calls <var>RegisterComponents</var> to add the <var>TDBDateEdit</var> component to the <b>Data Controls</b> tab in the Lazarus IDE.
+            The following components are added to the Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>Data Controls</b> Tab
+          </p>
+          <ul>
+            <li>TDBNavigator</li>
+            <li>TDBText</li>
+            <li>TDBEdit</li>
+            <li>TDBMemo</li>
+            <li>TDBImage</li>
+            <li>TDBListBox</li>
+            <li>TDBLookupListBox</li>
+            <li>TDBComboBox</li>
+            <li>TDBLookupComboBox</li>
+            <li>TDBCheckBox</li>
+            <li>TDBRadioGroup</li>
+            <li>TDBCalendar</li>
+            <li>TDBGroupBox</li>
+          </ul>
+          <p>
+            It also registers TFieldClass instances (defined in DefaultFieldClasses) associated with FCL database field types, and includes TIntegerField as an alias for TLongintField.
           </p>
         </descr>
       </element>
