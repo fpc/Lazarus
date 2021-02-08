@@ -34,7 +34,8 @@ unit InvertAssignTool;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils,
+  LazStringUtils;
 
 function InvertAssignment(InText: string): string;
 
@@ -119,7 +120,7 @@ begin
   end;
 end;
 
-function IsAWholeLine(ALine: String): Boolean;
+function IsAWholeLine(const ALine: String): Boolean;
 begin
   // This function is useful for when the text is put back
   // in the synedit, things like this don't happen:
@@ -136,15 +137,14 @@ begin
   // begin if CallSomeFunction > 0 then DoThis else exit;
   // end;
   Result := False;
-  ALine := LowerCase(ALine);
   if (Pos(';', ALine) > 0)
-  or (Pos('if ', ALine) > 0)
-  or (Pos('begin', ALine) > 0)
-  or (Pos('end', ALine) > 0)
-  or (Pos('then', ALine) > 0)
-  or (Pos('else', ALine) > 0)
-  or (Pos('and', ALine) > 0)
-  or (Pos('or', ALine) > 0)
+  or (PosI('if ', ALine) > 0)
+  or (PosI('begin', ALine) > 0)
+  or (PosI('end', ALine) > 0)
+  or (PosI('then', ALine) > 0)
+  or (PosI('else', ALine) > 0)
+  or (PosI('and', ALine) > 0)
+  or (PosI('or', ALine) > 0)
   or (Pos('//', ALine) > 0)
   then Result := True;
 end;

@@ -3504,7 +3504,8 @@ begin
     for a:=0 to FRelations.Count-1 do begin
       Name:=lowercase(Relations[a].Name);
       for b:=1 to length(Name) do
-        if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
+        if not (Name[b] in ['a'..'z','0'..'9']) then
+          Name[b]:='_';
 
       if FileVersion<2 then
         NewValue:=XMLConfig.GetValue(Path+Name,'')

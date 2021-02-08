@@ -5804,9 +5804,8 @@ begin
   Result := lshNone;
   if (Ext = '') or (Ext = '.') or (HighlighterList = Nil) then
     exit;
-  Ext := lowercase(Ext);
-  if (Ext[1] = '.') then
-    Ext := copy(Ext, 2, length(Ext) - 1);
+  if Ext[1] = '.' then
+    Delete(Ext, 1, 1);
   LangID := 0;
   while LangID < HighlighterList.Count do
   begin
@@ -5819,12 +5818,9 @@ begin
         inc(EndPos);
       CurExt := copy(s, Startpos, EndPos - StartPos);
       if (CurExt <> '') and (CurExt[1] = '.') then
-        CurExt := copy(CurExt, 2, length(CurExt) - 1);
-      if lowercase(CurExt) = Ext then
-      begin
-        Result := HighlighterList[LangID].TheType;
-        exit;
-      end;
+        Delete(CurExt, 1, 1);
+      if CompareText(CurExt, Ext) = 0 then
+        exit(HighlighterList[LangID].TheType);
       Startpos := EndPos + 1;
     end;
     inc(LangID);

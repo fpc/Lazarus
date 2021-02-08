@@ -10,7 +10,7 @@ uses
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus, Buttons,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
+  LazFileUtils, LazStringUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
   // SynEdit
   SynMacroRecorder, SynEdit, SynEditKeyCmds,
   // IdeIntf
@@ -837,16 +837,14 @@ begin
   FOrigText := Atext;
   FHasError := False;
   FErrorText := '';
-
   FText := TrimRight(FText);
   FPosCompensate := Length(FOrigText) - Length(FText);
-
   FText := TrimLeft(FText);
   i := length(FText);
   if (i > 11) and
-     (lowercase(copy(FText, 1, 5)) = 'begin') and
+     LazStartsText('begin', FText) and
      (FText[6] in [#9,#10,#13,' ']) and
-     (lowercase(copy(FText, i-3, 4)) = 'end.') and
+     LazEndsText('end.', FText) and
      (FText[i-4] in [#9,#10,#13,' '])
   then begin
     FText := copy(FText, 7, i-11);

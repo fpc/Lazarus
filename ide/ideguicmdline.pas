@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LazUtils
-  LazUtilities, LazFileUtils,
+  LazUtilities, LazFileUtils, LazStringUtils,
   // Codetools
   FileProcs,
   // IDE
@@ -96,7 +96,7 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
       try
         sl.LoadFromFile(Filename);
         if sl.Count=0 then exit;
-        if Pos('lazarus',lowercase(sl[0]))<1 then exit;
+        if PosI('lazarus',sl[0])<1 then exit;
         Result:=true;
       except
       end;
@@ -112,7 +112,7 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
     s: string;
   begin
     Result:=(kernproc_getpath(aPID,s)<>-1)
-        and (Pos('lazarus',lowercase(s))>0);
+        and (PosI('lazarus',s)>0);
   end;
   {$ENDIF}
 
@@ -133,7 +133,7 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
     if processName<>nil then begin
       s:=CFStringToStr(processName);
       CFRelease(processName);
-      Result:=Pos('lazarus',lowercase(s))>0;
+      Result:=PosI('lazarus',s)>0;
     end;
   end;
   {$ENDIF}

@@ -247,7 +247,7 @@ begin
     ACleanPos:=FindNextCompilerDirectiveWithName(Src, 1, 'Apptype',
                                                  Scanner.NestedComments, ParamPos);
     if (ACleanPos>0) and (ACleanPos<=SrcLen) and (ParamPos>0) then
-      Result:=LowerCase(copy(Src,ParamPos,7))='console';
+      Result:=CompareText(copy(Src,ParamPos,7), 'console') = 0;
   end;
 end;
 

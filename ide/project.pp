@@ -5287,6 +5287,7 @@ end;
 function TProject.GetAutoCreatedFormsList: TStrings;
 var
   i, j: integer;
+  S, StartS, EndS: String;
 begin
   if (MainUnitID >= 0) then
   begin
@@ -5294,11 +5295,14 @@ begin
     if Result <> nil then
       for i := 0 to Result.Count - 1 do
       begin
-        j := Pos(':', Result[i]);
-        if j > 0 then
-          if 't' + LowerCase(Copy(Result[i], 1, j - 1)) = LowerCase(
-            Copy(Result[i], j + 1, Length(Result[i]) - j)) then
-            Result[i] := Copy(Result[i], 1, j - 1);
+        S := Result[i];
+        j := Pos(':', S);
+        if j > 0 then begin
+          StartS := Copy(S, 1, j-1);
+          EndS := Copy(S, j+1, Length(S)-j);
+          if CompareText('t'+StartS, EndS) = 0 then
+            Result[i] := StartS;
+        end;
       end;// shorten lines of type 'FormName:TFormName' to simply 'FormName'
   end
   else

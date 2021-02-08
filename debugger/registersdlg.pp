@@ -454,7 +454,6 @@ procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
   n, i, idx, Cnt: Integer;
   List: TStringListUTF8Fast;
-  S: String;
   Reg: TRegisters;
 begin
   if (not ToolButtonPower.Down) then exit;
@@ -483,10 +482,7 @@ begin
     try
       //Get existing items
       for n := 1 to lvRegisters.RowCount - 1 do
-      begin
-        S := UpperCase(lvRegisters.Cells[1,n]);
-        List.AddObject(S, TObject(ptruint(n)));
-      end;
+        List.AddObject(lvRegisters.Cells[1,n], TObject(PtrUInt(n)));
 
       // add/update entries
       Cnt := Reg.Count;          // Count may trigger changes
@@ -494,7 +490,7 @@ begin
 
       for n := 0 to Cnt - 1 do
       begin
-        idx := List.IndexOf(Uppercase(Reg[n].Name));
+        idx := List.IndexOf(Reg[n].Name);
         if idx = -1
         then begin
           // New entry

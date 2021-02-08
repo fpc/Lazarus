@@ -4279,12 +4279,8 @@ begin
     Result:=EditorComponent.Lines.Text;
 end;
 
-{-------------------------------------------------------------------------------
-  method TSourceEditor.UpperCaseSelection
-
-  Turns current text selection uppercase.
--------------------------------------------------------------------------------}
 procedure TSourceEditor.UpperCaseSelection;
+// Turns current text selection uppercase.
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
@@ -4294,12 +4290,8 @@ begin
                               );
 end;
 
-{-------------------------------------------------------------------------------
-  method TSourceEditor.LowerCaseSelection
-
-  Turns current text selection lowercase.
--------------------------------------------------------------------------------}
 procedure TSourceEditor.LowerCaseSelection;
+// Turns current text selection lowercase.
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;

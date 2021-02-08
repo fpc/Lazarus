@@ -40,7 +40,7 @@ interface
 uses 
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLogger,
+  FileUtil, LazFileUtils, LazStringUtils, LazUTF8, LazLogger,
   // IDE
   LazConf;
 
@@ -118,10 +118,10 @@ function GetParamsAndCfgFile: TStrings;
   var
     i: Integer;
   begin
-    if LowerCase(copy(ACurParam, 1, Length(AMatch))) = LowerCase(AMatch) then begin
+    if LazStartsText(AMatch, ACurParam) then begin
       i := ParamsAndCfgFileContent.Count - 1;
       while i >= 0 do begin
-        if LowerCase(copy(ParamsAndCfgFileContent[i], 1, Length(AClean))) = LowerCase(AClean) then
+        if LazStartsText(AClean, ParamsAndCfgFileContent[i]) then
           ParamsAndCfgFileContent.Delete(i);
         dec(i);
       end;

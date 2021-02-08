@@ -42,6 +42,8 @@ uses
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
   Graphics, Grids,
+  // LazUtils
+  LazStringUtils,
   // Codetools
   CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
   // IDEIntf
@@ -569,7 +571,7 @@ begin
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
   lRowObject.FullProcedureName := lNodeText;
 
-  if Pos('procedure', LowerCase(lNodeText)) > 0 then
+  if PosI('procedure', lNodeText) > 0 then
     lRowObject.ImageIdx := FImageIdxProcedure
   else
     lRowObject.ImageIdx := FImageIdxFunction;

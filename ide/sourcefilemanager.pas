@@ -1018,15 +1018,13 @@ end;
 
 function TFileOpener.OpenUnknownFile: TModalResult;
 var
-  Ext, NewProgramName, LPIFilename, ACaption, AText: string;
+  NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
   LoadFlags: TLoadBufferFlags;
   SourceType: String;
 begin
-  Ext:=lowercase(ExtractFileExt(FFilename));
-
   if ([ofProjectLoading,ofRegularFile]*FFlags=[]) and (MainIDE.ToolStatus=itNone)
-  and (Ext='.lpi') then begin
+  and (CompareFileExtQuick(FFilename,'lpi')=0) then begin
     // this is a project info file -> load whole project
     Result:=MainIDE.DoOpenProjectFile(FFilename,[ofAddToRecent]);
     if Result = mrOK then
@@ -7635,7 +7633,7 @@ begin
         AFilename:=Trim(Project1.GetTitle);
       if AFilename='' then
         AFilename:='project1';
-      Ext := LowerCase(ExtractFileExt(AFilename));
+      Ext := ExtractFileExt(AFilename);
       if UseMainSourceFile then
       begin
         if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then

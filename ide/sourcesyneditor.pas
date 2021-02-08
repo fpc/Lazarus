@@ -715,7 +715,6 @@ begin
     if AnSkipDisabled and not Entry.Enabled then
       Continue;
 
-
     WeakerByEnabled := wEqual;
     if (not Entry.Enabled) and AEnabled then WeakerByEnabled := wEntry;
     if Entry.Enabled and (not AEnabled) then WeakerByEnabled := wParam;
@@ -723,14 +722,12 @@ begin
     if AnOnlyWeakerOrEqual and (WeakerByEnabled = wParam) then  // Entry can not be weaker
       continue;
 
-
     if (ATerm <> Entry.SearchTerm) and
        ( (ACasesSensitive and Entry.MatchCase) or
-         (LowerCase(ATerm) <> LowerCase(Entry.SearchTerm))
+         (CompareText(ATerm, Entry.SearchTerm) <> 0)
        )
     then
       continue;
-
 
     // which one is weakerByCase?
     WeakerByCase := wEqual;
@@ -742,7 +739,6 @@ begin
 
     if AnOnlyWeakerOrEqual and (WeakerByCase = wParam) then  // Entry can not be weaker
       continue;
-
 
     WeakerByBounds := wEqual;
     case ABoundaries of
@@ -848,7 +844,7 @@ var
       t := Terms[Result];
       if t.Enabled and
          ( (t.SearchTerm = s) or
-           ( (not t.MatchCase) and (LowerCase(t.SearchTerm)= LowerCase(s)) )  ) and
+           ( (not t.MatchCase) and (CompareText(t.SearchTerm,s)=0) ) ) and
          ( (t.MatchWordBounds = soNoBounds) or
            ( (t.MatchWordBounds = soBoundsAtStart) and b1 ) or
            ( (t.MatchWordBounds = soBoundsAtEnd) and b2 ) or

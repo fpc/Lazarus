@@ -565,7 +565,7 @@ begin
       if (Colors<>nil) and (TextHilightColor<>clNone)
       and (aCompletion.CurrentString<>'') then
       begin
-        PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
+        PrefixPosition := PosI(aCompletion.CurrentString, s);
         if PrefixPosition > 0 then
         begin
           // paint before prefix

@@ -40,7 +40,7 @@ uses
   // LCL
   Forms, ClipBrd, ComCtrls, ActnList, Menus,
   // LazUtils
-  LazLoggerBase, LazUTF8,
+  LazLoggerBase, LazStringUtils, LazUTF8,
   // IdeIntf
   IDEWindowIntf,
   // DebuggerIntf
@@ -112,7 +112,7 @@ type
   end;
 
 function ValueToRAW(const AValue: string): string;
-function ExtractValue(AValue: string; AType: string = ''): string;
+function ExtractValue(const AValue: string; AType: string = ''): string;
 
 implementation
 
@@ -248,19 +248,18 @@ begin
     ProcessOther;
 end;
 
-function ExtractValue(AValue: string; AType: string): string;
+function ExtractValue(const AValue: string; AType: string): string;
 var
   StringStart: SizeInt;
 begin
   Result := AValue;
-  if (AType='') and (AValue<>'') and CharInSet(AValue[1], ['a'..'z', 'A'..'Z']) then // no type - guess from AValue
-  begin
+  if (AType='') and (AValue<>'') and CharInSet(AValue[1], ['a'..'z', 'A'..'Z']) then
+  begin                                            // no type - guess from AValue
     StringStart := Pos('(', AValue);
     if StringStart>0 then
       AType := Copy(AValue, 1, StringStart-1);
   end;
-  AType := Lowercase(AType);
-  if (Pos('char', AType)>0) or (Pos('string', AType)>0) then // extract string value
+  if (PosI('char',AType)>0) or (PosI('string',AType)>0) then // extract string value
   begin
     StringStart := Pos('''', Result);
     if StringStart>0 then
@@ -397,7 +396,6 @@ var
   n, idx: Integer;                               
   List: TStringListUTF8Fast;
   Item: TListItem;
-  S: String;
   Locals: TIDELocals;
   Snap: TSnapshot;
 begin
@@ -447,15 +445,13 @@ begin
       for n := 0 to lvLocals.Items.Count - 1 do
       begin
         Item := lvLocals.Items[n];
-        S := Item.Caption;
-        S := UpperCase(S);
-        List.AddObject(S, Item);
+        List.AddObject(Item.Caption, Item);
       end;
 
       // add/update entries
       for n := 0 to Locals.Count - 1 do
       begin
-        idx := List.IndexOf(Uppercase(Locals.Names[n]));
+        idx := List.IndexOf(Locals.Names[n]);
         if idx = -1
         then begin
           // New entry

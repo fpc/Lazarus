@@ -2957,13 +2957,13 @@ var
   NewLCLWidgetSet: TLCLPlatform;
 begin
   with MiscellaneousOptions do begin
-    NewTargetOS:=LowerCase(BuildLazOpts.TargetOS);
-    NewTargetCPU:=LowerCase(BuildLazOpts.TargetCPU);
+    NewTargetOS:=BuildLazOpts.TargetOS;
+    NewTargetCPU:=BuildLazOpts.TargetCPU;
     NewLCLWidgetSet:=BuildLazOpts.TargetPlatform;
   end;
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
-  Result:=((NewTargetOS='') or (NewTargetOS=GetCompiledTargetOS))
-      and ((NewTargetCPU='') or (NewTargetCPU=GetCompiledTargetCPU))
+  Result:=((NewTargetOS='') or (CompareText(NewTargetOS, GetCompiledTargetOS)=0))
+      and ((NewTargetCPU='') or (CompareText(NewTargetCPU, GetCompiledTargetCPU)=0))
       and (NewLCLWidgetSet<>lpNoGUI);
       // Note: no need to check if CompilerFilename is the default
 end;

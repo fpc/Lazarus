@@ -41,7 +41,7 @@ uses
   // RTL+FCL
   Classes, SysUtils, types, Laz_AVL_Tree,
   // LazUtils
-  LazLoggerBase,
+  LazStringUtils, LazLoggerBase,
   // LCL
   LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, StdCtrls, ExtCtrls,
   // CodeTools
@@ -2592,8 +2592,7 @@ begin
     Include(FFlags,cevCodeRefreshNeeded);
     exit;
   end;
-  if (FLastCodeFilter='')
-  or (System.Pos(lowercase(FLastCodeFilter),lowercase(TheFilter))>0)
+  if (FLastCodeFilter='') or (PosI(FLastCodeFilter,TheFilter)>0)
   then begin
     // longer filter => just delete nodes
     ApplyCodeFilter;

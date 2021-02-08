@@ -495,7 +495,7 @@ var
   XY: TPoint;
   Code: TCodeBuffer;
   p, AtomStart: integer;
-  Src, Token: String;
+  Src: String;
 begin
   Result:=true;
   Value:='';
@@ -505,8 +505,8 @@ begin
   Code.LineColToPosition(XY.y,XY.x,p);
   Src:=Code.Source;
   ReadRawNextPascalAtom(Src,p,AtomStart,true,true);
-  Token:=lowercase(copy(Src,AtomStart,p-AtomStart));
-  if (Token='else') or (Token='do') or (Token=';') or (Token=')') or (Token=']') then
+  if StringCase(copy(Src,AtomStart,p-AtomStart),
+                [ 'else', 'do', ';', ')', ']' ], True, False) >= 0 then
     exit;
   Value:=';';
 end;

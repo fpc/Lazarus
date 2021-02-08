@@ -3571,9 +3571,9 @@ begin
 
   for i := 0 to TBaseDebugManagerIntf.DebuggerCount  -1 do begin
     DbgClassType := TBaseDebugManagerIntf.Debuggers[i];
-    ActiveClassSeen := ActiveClassSeen or (LowerCase(DbgClassType.ClassName) = LowerCase(ActiveClassName));
+    ActiveClassSeen := ActiveClassSeen or (CompareText(DbgClassType.ClassName, ActiveClassName)=0);
     Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(FXMLCfg, XML_PATH_DEBUGGER_CONF_OLD,
-      DbgClassType, LowerCase(DbgClassType.ClassName) = LowerCase(ActiveClassName));
+      DbgClassType, CompareText(DbgClassType.ClassName, ActiveClassName)=0);
     if not Entry.IsLoaded then begin
       Entry.Free;
       Continue;

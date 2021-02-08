@@ -183,7 +183,7 @@ begin
         lisEnvOptDlgInvalidDebuggerFilename,
         lisEnvOptDlgInvalidDebuggerFilenameMsg)
       then
-        if UpperCase(lExpandedName)<>UpperCase(AFilename) then begin // Changed ?
+        if CompareText(lExpandedName, AFilename) <> 0 then begin // Changed ?
           SetComboBoxText(cmbDebuggerPath,AFilename,cstFilename);
           FSelectedDbgPropertiesConfig.DebuggerFilename := AFilename;
         end;

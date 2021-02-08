@@ -347,7 +347,7 @@ begin
     UnitN:=fMissingUnits[i];
     if AUnitUpdater.FindReplacement(UnitN, s) then begin
       // Don't replace Windows unit with LCL units in a console application.
-      if (LowerCase(UnitN)='windows') and fOwnerTool.IsConsoleApp then
+      if (CompareText(UnitN,'windows')=0) and fOwnerTool.IsConsoleApp then
         s:='';
       if Assigned(AMapToEdit) then
         AMapToEdit[UnitN]:=s                      // Add for interactive editing.
