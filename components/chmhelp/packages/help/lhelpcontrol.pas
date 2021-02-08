@@ -13,7 +13,9 @@ Currently, the only help viewer that supports this protocol is the lhelp CHM hel
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLoggerBase, SimpleIPC, process, UTF8Process;
+  Classes, SysUtils, SimpleIPC, process,
+  // LazUtils
+  LazFileUtils, LazLoggerBase, UTF8Process;
 
 const
   PROTOCOL_VERSION='2'; //IDE<>LHelp communication protocol version. Please update when breaking compatibility

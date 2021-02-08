@@ -15,43 +15,14 @@
       <EnableI18N Value="True" LFM="False"/>
       <OutDir Value="languages"/>
     </i18n>
-    <BuildModes Count="2">
+    <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
-      <Item2 Name="debug">
-        <CompilerOptions>
-          <Version Value="11"/>
-          <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="lhelp"/>
-          </Target>
-          <SearchPaths>
-            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-          </SearchPaths>
-          <Parsing>
-            <SyntaxOptions>
-              <CStyleOperator Value="False"/>
-            </SyntaxOptions>
-          </Parsing>
-          <CodeGeneration>
-            <Checks>
-              <IOChecks Value="True"/>
-              <RangeChecks Value="True"/>
-              <OverflowChecks Value="True"/>
-              <StackChecks Value="True"/>
-            </Checks>
-          </CodeGeneration>
-          <Linking>
-            <Debugging>
-              <UseHeaptrc Value="True"/>
-            </Debugging>
-            <Options>
-              <Win32>
-                <GraphicApplication Value="True"/>
-              </Win32>
-            </Options>
-          </Linking>
-        </CompilerOptions>
-      </Item2>
+      <SharedMatrixOptions Count="4">
+        <Item1 ID="214272031317" Value="-dCHM_DEBUG_TIME"/>
+        <Item2 ID="183734626213" Value="-dUPDATE_CNT"/>
+        <Item3 ID="934914140281" Value="-dTREE_DEBUG"/>
+        <Item4 ID="139067857239" Value="-dLDEBUG"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -71,17 +42,20 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="TurboPowerIPro"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="lazmouseandkeyinput"/>
       </Item1>
       <Item2>
-        <PackageName Value="lhelpcontrolpkg"/>
+        <PackageName Value="TurboPowerIPro"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lhelpcontrolpkg"/>
       </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
     </RequiredPackages>
     <Units Count="10">
       <Unit0>
@@ -99,38 +73,40 @@
         <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
-        <Filename Value="chmpopup.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="HelpPopupForm"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="lhelpcore.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit4>
-      <Unit5>
+        <UnitName Value="LHelpCore"/>
+      </Unit3>
+      <Unit4>
         <Filename Value="lnethttpdataprovider.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
+        <UnitName Value="LNetHTTPDataProvider"/>
+      </Unit4>
+      <Unit5>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BaseContentProvider"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit7>
-      <Unit8>
+        <UnitName Value="ChmContentProvider"/>
+      </Unit6>
+      <Unit7>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="HTTPContentProvider"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="lhelpstrconsts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LHelpStrConsts"/>
       </Unit8>
       <Unit9>
-        <Filename Value="lhelpstrconsts.pas"/>
+        <Filename Value="filecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
     </Units>
@@ -150,8 +126,14 @@
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <VerifyObjMethodCallValidity Value="True"/>
       <Optimizations>
-        <OptimizationLevel Value="3"/>
+        <OptimizationLevel Value="2"/>
       </Optimizations>
     </CodeGeneration>
     <Linking>

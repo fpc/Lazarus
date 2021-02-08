@@ -10,6 +10,7 @@ uses
 type
 
   { TFileContentProvider }
+  TFileContentProviderClass = Class of TFileContentProvider;
 
   TFileContentProvider = class(TBaseContentProvider)
   private
@@ -23,22 +24,42 @@ type
     procedure GoBack; override;
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
+    class function GetRegisteredFileTypes(): TStringList;
 
-    constructor Create(AParent: TWinControl; AImageList: TImageList); override;
+    constructor Create(AParent: TWinControl; AImageList: TImageList; AUpdateCount: Integer); override;
   end;
-  function RegisterFileType(const FileType: String; ContentProvider: TBaseContentProviderClass): Boolean;
-  
+
+  function RegisterFileType(const AFileType: String; ContentProvider: TBaseContentProviderClass): Boolean;
+
 implementation
 
 var
   FileContentProviders: TStringList;
 
-function RegisterFileType(const FileType: String;
+function RegisteredFileTypes( ) : TStringList;
+begin
+  if FileContentProviders = nil Then // Singleton
+    FileContentProviders := TStringList.Create;
+  Result := FileContentProviders;
+end;
+
+function RegisterFileType(const AFileType: String;
   ContentProvider: TBaseContentProviderClass): Boolean;
 begin
   Result := False;
-  if FileContentProviders.IndexOf(FileType) > -1 then exit;
-  FileContentProviders.AddObject(FileType, TObject(ContentProvider));
+  if RegisteredFileTypes.IndexOf(AFileType) > -1 then Exit;
+  RegisteredFileTypes.AddObject(AFileType, TObject(ContentProvider));
+end;
+
+function GetRegisteredFileType (
+  const AProviderClass: TBaseContentProviderClass ) : String;
+var
+  fIndex: Integer;
+begin
+  Result := '';
+  fIndex := RegisteredFileTypes.IndexOfObject(TObject(AProviderClass));
+  if fIndex = -1 then Exit;
+  Result := RegisteredFileTypes[fIndex];
 end;
 
 { TFileContentProvider }
@@ -80,33 +101,30 @@ class function TFileContentProvider.GetProperContentProvider(const AURL: String
 var
   fIndex: Integer;
   fExt: String;
-  fFile: String;
-  fPos: Integer;
 begin
   Result := nil;
-  fFile := Copy(AUrl,8, Length(AURL));
-  fPos := Pos('://', fFile);
-  if fPos > 0 then begin
-    fFile := Copy(fFIle, 1, fPos-1);
-
-  end;
-  fExt := ExtractFileExt(fFile);
+  fExt := ExtractFileExt(GetUrlFilePath(AURL));
 
   //WriteLn(fExt);
-  fIndex := FileContentProviders.IndexOf(fExt);
+  fIndex := RegisteredFileTypes.IndexOf(fExt);
   if fIndex = -1 then exit;
-  Result := TBaseContentProviderClass(FileContentProviders.Objects[fIndex]);
+  Result := TBaseContentProviderClass(RegisteredFileTypes.Objects[fIndex]);
 end;
 
-constructor TFileContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
+class function TFileContentProvider.GetRegisteredFileTypes ( ) : TStringList;
 begin
-  inherited Create(AParent, AImageList);
+  Result:=RegisteredFileTypes();
+end;
+
+constructor TFileContentProvider.Create(AParent: TWinControl;
+    AImageList: TImageList; AUpdateCount: Integer);
+begin
+  inherited Create(AParent, AImageList, AUpdateCount);
 end;
 
 initialization
 
-  FileContentProviders := TStringList.Create;
-  RegisterContentProvider('file://', TFileContentProvider);
+  RegisterContentProviderClass('file://', TFileContentProvider);
   
 finalization
 

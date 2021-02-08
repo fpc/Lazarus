@@ -1,4 +1,4 @@
-unit lhelpstrconsts;
+unit LHelpStrConsts;
 
 {$mode objfpc}{$H+}
 
@@ -11,12 +11,13 @@ resourcestring
   slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz = 'LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors';
   slhelp_Ok = 'Ok';
   slhelp_PleaseEnterAURL = 'Please enter a URL';
-  slhelp_SupportedURLTypeS = 'Supported URL type(s): (%s)';
+  slhelp_SupportedURLTypeS = 'Supported URL type(s): [ %s ]';
   slhelp_File = '&File';
   slhelp_Open = '&Open ...';
   slhelp_OpenRecent = 'Open Recent';
   slhelp_OpenURL = 'Open &URL ...';
   slhelp_Close = '&Close';
+  slhelp_Hide = '&Hide';
   slhelp_EXit = 'E&xit';
   slhelp_View = '&View';
   slhelp_ShowContents = 'Show contents';
@@ -46,6 +47,16 @@ resourcestring
   slhelp_SearchResults = 'Search Results:';
   slhelp_Copy = 'Copy';
   slhelp_PageCannotBeFound = 'Page cannot be found!';
+  slhelp_CopyHtmlSource = 'Copy html source';
+  slhelp_CloseConfirm = 'You can use the Esc to hide Help. Are you realy want to close lHelp?';
+
+  slhelp_Actions = '&Actions';
+  slhelp_ActionsTOC = '&TOC';
+  slhelp_ActionsIndex = 'Search by &index';
+  slhelp_ActionsSearch = '&Search by text';
+  slhelp_ActionsGoHome = 'Go home';
+  slhelp_ActionsGoBack = 'Go back';
+  slhelp_ActionsGoForward = 'Go forward';
 
   // --help
   slhelp_LHelpOptions = '  LHelp options:';

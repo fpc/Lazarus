@@ -1,11 +1,12 @@
 object HelpForm: THelpForm
-  Left = 582
-  Height = 535
-  Top = 318
-  Width = 758
+  Left = 413
+  Height = 585
+  Top = 199
+  Width = 829
   Caption = 'LHelp'
-  ClientHeight = 515
-  ClientWidth = 758
+  ClientHeight = 563
+  ClientWidth = 829
+  DesignTimePPI = 106
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
     0000200000000100200000000000000400006400000064000000000000000000
@@ -45,56 +46,73 @@ object HelpForm: THelpForm
     0000000000000000000000000000000000000000000000000000000000000000
     0000
   }
+  KeyPreview = True
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
-  OnKeyUp = FormKeyUp
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
+  OnWindowStateChange = FormWindowStateChange
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.0.11.0'
   Visible = True
   object PageControl: TPageControl
     Left = 0
-    Height = 481
-    Top = 34
-    Width = 758
+    Height = 525
+    Top = 38
+    Width = 829
     Align = alClient
+    MultiLine = True
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
     OnEnter = PageControlEnter
+    Options = [nboMultiLine]
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 34
+    Height = 38
     Top = 0
-    Width = 758
-    ButtonHeight = 32
-    ButtonWidth = 32
+    Width = 829
+    ButtonHeight = 35
+    ButtonWidth = 35
     Caption = 'ToolBar1'
     EdgeBorders = []
     Images = ImageListToolbar
+    ParentFont = False
     TabOrder = 1
     object HomeBttn: TToolButton
-      Left = 41
+      Left = 44
+      Hint = 'Home'
       Top = 0
-      Caption = 'HomeBttn'
+      Caption = 'Go Home'
       ImageIndex = 0
-      OnClick = HomeToolBtnClick
+      OnClick = MiActionsGoHomeClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BackBttn: TToolButton
-      Left = 73
+      Left = 79
+      Hint = 'Go Back'
       Top = 0
-      Caption = 'BackBttn'
+      Caption = 'Go back'
       ImageIndex = 1
-      OnClick = BackToolBtnClick
+      OnClick = MiActionsGoBackClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object ForwardBttn: TToolButton
-      Left = 105
+      Left = 114
+      Hint = 'Go forward'
       Top = 0
-      Caption = 'ForwardBttn'
+      Caption = 'Go forward'
       ImageIndex = 2
-      OnClick = ForwardToolBtnClick
+      OnClick = MiActionsGoForwardClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object FileButton: TToolButton
       Left = 1
@@ -104,16 +122,16 @@ object HelpForm: THelpForm
       OnClick = FileMenuOpenItemClick
     end
     object ToolButton1: TToolButton
-      Left = 33
-      Height = 32
+      Left = 36
+      Height = 35
       Top = 0
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
   end
   object MainMenu1: TMainMenu
-    left = 208
-    top = 80
+    Left = 230
+    Top = 96
     object FileMenuItem: TMenuItem
       Caption = '&File'
       object FileMenuOpenItem: TMenuItem
@@ -134,13 +152,19 @@ object HelpForm: THelpForm
         ShortCut = 16471
         OnClick = FileMenuCloseItemClick
       end
+      object MiHide: TMenuItem
+        Caption = 'Hide'
+        Hint = 'Hide'
+        ShortCut = 27
+        OnClick = MiHideClick
+      end
       object FileSeperater: TMenuItem
         Caption = '-'
       end
-      object FileMenuExitItem: TMenuItem
-        Caption = 'E&xit'
-        ShortCut = 27
-        OnClick = FileMenuExitItemClick
+      object MiQuit: TMenuItem
+        Caption = 'Quit'
+        ShortCut = 32883
+        OnClick = MiQuitClick
       end
     end
     object ViewMenuItem: TMenuItem
@@ -162,11 +186,47 @@ object HelpForm: THelpForm
         OnClick = ViewShowSepTabsClick
       end
     end
+    object MiActions: TMenuItem
+      Caption = '&Actions'
+      object MiActionsTOC: TMenuItem
+        Caption = 'TOC'
+        ShortCut = 16468
+        OnClick = MiActionsTOCClick
+      end
+      object MiActionsIndex: TMenuItem
+        Caption = 'Search by index'
+        ShortCut = 16457
+        OnClick = MiActionsIndexClick
+      end
+      object MiActionsSearch: TMenuItem
+        Caption = 'Search by text'
+        ShortCut = 16467
+        OnClick = MiActionsSearchClick
+      end
+      object MenuItem2: TMenuItem
+        Caption = '-'
+      end
+      object MiActionsGoHome: TMenuItem
+        Caption = 'Go Home'
+        ShortCut = 32804
+        OnClick = MiActionsGoHomeClick
+      end
+      object MiActionsGoBack: TMenuItem
+        Caption = 'Go Back'
+        ShortCut = 32805
+        OnClick = MiActionsGoBackClick
+      end
+      object MiActionsGoForward: TMenuItem
+        Caption = 'Go Forward'
+        ShortCut = 32807
+        OnClick = MiActionsGoForwardClick
+      end
+    end
     object HelpMenuItem: TMenuItem
       Caption = '&Help'
+      OnClick = HelpMenuItemClick
       object AboutItem: TMenuItem
         Caption = '&About...'
-        ShortCut = 112
         OnClick = AboutItemClick
       end
     end
@@ -174,12 +234,12 @@ object HelpForm: THelpForm
   object OpenDialog1: TOpenDialog
     Filter = 'Help files (*.chm)|*.chm|All files (*.*)|*'
     FilterIndex = 0
-    left = 248
-    top = 92
+    Left = 232
+    Top = 176
   end
   object ImageList1: TImageList
-    left = 80
-    top = 75
+    Left = 48
+    Top = 96
     Bitmap = {
       4C690400000010000000100000007001E300B0CE2A000000000000000000F609
       0200E1281B00005959000090AF00329FCCFF75888800003A3A00000E0E00FA11
@@ -315,14 +375,14 @@ object HelpForm: THelpForm
   object ApplicationProperties1: TApplicationProperties
     ShowButtonGlyphs = sbgSystem
     ShowMenuGlyphs = sbgSystem
-    left = 80
-    top = 136
+    Left = 56
+    Top = 176
   end
   object ImageListToolbar: TImageList
     Height = 22
     Width = 22
-    left = 120
-    top = 88
+    Left = 144
+    Top = 96
     Bitmap = {
       4C69040000001600000016000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000A4190000A4FF0000A4FF0000

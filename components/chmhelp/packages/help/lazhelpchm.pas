@@ -20,8 +20,13 @@ unit LazHelpCHM;
 interface
 
 uses
-  Classes, SysUtils, LazHelpIntf, LazConfigStorage, HelpIntfs,
-  Dialogs, Forms, LazLoggerBase, FileUtil, LazFileUtils, LHelpControl, LResources;
+  Classes, SysUtils,
+  // LCL
+  LazHelpIntf, HelpIntfs, LResources, Dialogs, Forms,
+  // LazUtils
+  LazConfigStorage, LazLoggerBase, FileUtil, LazFileUtils,
+  // ChmHelp
+  LHelpControl;
 
 const
   CHMMimeType = 'application/chm';

@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process, LazUTF8,
+  FileUtil, LazLoggerBase, LazFileUtils, LazConfigStorage, UTF8Process, LazUTF8,
   // LCL
   Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
   // IdeIntf

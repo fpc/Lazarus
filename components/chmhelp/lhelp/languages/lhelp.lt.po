@@ -20,6 +20,34 @@ msgstr "Apie"
 msgid "&About ..."
 msgstr "&Apie…"
 
+#: lhelpstrconsts.slhelp_actions
+msgid "&Actions"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionsgoback
+msgid "Go back"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionsgoforward
+msgid "Go forward"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionsgohome
+msgid "Go home"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionsindex
+msgid "Search by &index"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionssearch
+msgid "&Search by text"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_actionstoc
+msgid "&TOC"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
 #, object-pascal-format
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
@@ -34,6 +62,10 @@ msgstr "Neįmanoma apdoroti šio tipo poturinio „%s“ adresui: %s%s"
 msgid "&Close"
 msgstr "Už&verti"
 
+#: lhelpstrconsts.slhelp_closeconfirm
+msgid "You can use the Esc to hide Help. Are you realy want to close lHelp?"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
 msgstr "Turiniai"
@@ -45,6 +77,10 @@ msgstr "    --context  :  Rodyti su šiuo turiniu sisijusią žinyno informacij�
 #: lhelpstrconsts.slhelp_copy
 msgid "Copy"
 msgstr "Kopijuoti"
+
+#: lhelpstrconsts.slhelp_copyhtmlsource
+msgid "Copy html source"
+msgstr ""
 
 #: lhelpstrconsts.slhelp_exit
 msgid "E&xit"
@@ -69,6 +105,10 @@ msgstr "Žinyno failai (*.chm)|*.chm|Visi failai (*.*)|*"
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
 msgstr "    --help     :  Rodyti šia informaciją"
+
+#: lhelpstrconsts.slhelp_hide
+msgid "&Hide"
+msgstr ""
 
 #: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
 msgid "    --hide     :  Start hidden but accept communications via IPC"
@@ -178,8 +218,8 @@ msgstr "Rodyti turinį"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
 #, object-pascal-format
-msgid "Supported URL type(s): (%s)"
-msgstr "Palaikomas adreso tipas(-ai): (%s)"
+msgid "Supported URL type(s): [ %s ]"
+msgstr "Palaikomas adreso tipas(-ai): [ %s ]"
 
 #: lhelpstrconsts.slhelp_tableofcontentsloading
 msgid "Table of Contents Loading ..."

@@ -42,10 +42,11 @@ type
     fBranchCount: DWord;
     fStop: PBoolean;
     fLastNode: TTreeNode;
-    procedure AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
+    procedure AddSiteMapItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode; ANextNode: TTreeNode);
   public
     constructor Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
-    procedure DoFill(ParentNode: TTreeNode);
+    destructor Destroy; override;
+    procedure DoFill(ParentNode: TTreeNode; ASortRoot: Boolean);
   end;
 
 implementation
@@ -87,7 +88,7 @@ begin
       else
       begin            // ';' was found, this may be an HTML entity like "&xxx;".
         AmpStr := Copy(AText, AmpPos+1, i-AmpPos-1);
-        ws := UTF8Encode(AmpStr);
+        ws := UTF8ToUTF16(UTF8Encode(AmpStr));
         if ResolveHTMLEntityReference(ws, Entity) then
           Result := Result + UnicodeToUTF8(cardinal(Entity))
         else
@@ -120,7 +121,8 @@ end;
 
 { TContentsFiller }
 
-procedure TContentsFiller.AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
+procedure TContentsFiller.AddSiteMapItem(AItem: TChmSiteMapItem;
+  AParentNode: TTreeNode; ANextNode: TTreeNode);
 var
   NewNode: TContentTreeNode;
   X: Integer;
@@ -135,7 +137,10 @@ begin
   begin
     // Add new child node
     fLastNode := AParentNode;
-    NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
+    if Assigned(ANextNode) then
+      NewNode := TContentTreeNode(fTreeView.Items.Insert(ANextNode, txt))
+    else
+      NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
     {$IF FPC_FULLVERSION>=30200}
     URL:='';
     for x:=0 to AItem.SubItemcount-1 do
@@ -173,7 +178,7 @@ begin
     Application.ProcessMessages;
 
   for X := 0 to AItem.Children.Count-1 do
-    AddItem(AItem.Children.Item[X], NewNode);
+    AddSiteMapItem(AItem.Children.Item[X], NewNode, nil);
 end;
 
 constructor TContentsFiller.Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
@@ -185,15 +190,53 @@ begin
   fChm := AChm;
 end;
 
-procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
+destructor TContentsFiller.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TContentsFiller.DoFill(ParentNode: TTreeNode; ASortRoot: Boolean);
 var
-  X: Integer;
+  IdxSm, IdxSrc: Integer;
 begin
   fTreeView.BeginUpdate;
-
-  for X := 0 to fSitemap.Items.Count-1 do
-    AddItem(fSitemap.Items.Item[X], ParentNode);
-
+  fTreeView.Enabled:= False;
+  if ASortRoot and (fTreeView.Items.Count > 0) and not Assigned(ParentNode) then
+  begin;
+    // merge sorted TreeNodes
+    IdxSrc:=0;
+    IdxSm:=0;
+    while (IdxSrc <> fTreeView.Items.TopLvlCount-1 ) and (IdxSm <> fSitemap.Items.Count-1) do
+    begin
+      if (UTF8CompareStrCollated(
+          LowerCase(fSitemap.Items.Item[IdxSm].Text),
+          LowerCase(fTreeView.Items.TopLvlItems[IdxSrc].Text)) <= 0) then
+      begin
+        // insert sitemap  before fTreeView Node
+        AddSiteMapItem(fSitemap.Items.Item[IdxSm], ParentNode, fTreeView.Items.TopLvlItems[IdxSrc]);
+        if IdxSm < fSitemap.Items.Count-1 then
+          Inc(IdxSm);
+      end
+        else
+      begin
+        if IdxSrc < fTreeView.Items.TopLvlCount-1 then
+          Inc(IdxSrc)
+      end;
+      // Add a rest of nodes from sitemap
+      if (IdxSrc = fTreeView.Items.TopLvlCount-1)  then
+      begin
+        AddSiteMapItem(fSitemap.Items.Item[IdxSm], ParentNode, ParentNode);
+        Inc(IdxSm);
+      end;
+    end;
+  end
+    else
+  begin
+    // Simple add of nodes
+    for IdxSm := 0 to fSitemap.Items.Count-1 do
+      AddSiteMapItem(fSitemap.Items.Item[IdxSm], ParentNode, nil);
+  end;
+  fTreeView.Enabled:= True;
   fTreeView.EndUpdate;
 end;
 

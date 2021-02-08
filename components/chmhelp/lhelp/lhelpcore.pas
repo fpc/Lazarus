@@ -22,7 +22,7 @@ Icons from Tango theme:
 http://tango.freedesktop.org/Tango_Icon_Library
 }
 
-unit lhelpcore;
+unit LHelpCore;
 
 {$IFDEF LNET_VISUAL}
 {$DEFINE USE_LNET} // you must manually add the lnetvisual.lpk package to the dependancy list
@@ -40,10 +40,10 @@ uses
   Forms, Controls, Dialogs, Buttons, ComCtrls, ExtCtrls, Menus, StdCtrls,
   LCLProc, LCLType, LCLIntf, DefaultTranslator,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLogger,
+  LazFileUtils, LazUTF8, LazLoggerBase,
   // ChmHelp
   {$IFDEF USE_LNET}HTTPContentProvider,{$ENDIF}
-  BaseContentProvider, ChmContentProvider, lhelpstrconsts;
+  BaseContentProvider, filecontentprovider, ChmContentProvider, lhelpstrconsts;
 
 type
 
@@ -63,7 +63,7 @@ type
   THelpForm = class(TForm)
     ApplicationProperties1: TApplicationProperties;
     FileMenuCloseItem: TMenuItem;
-    FileMenuExitItem: TMenuItem;
+    MiQuit: TMenuItem;
     FileMenuItem: TMenuItem;
     FileMenuOpenItem: TMenuItem;
     FileSeperater: TMenuItem;
@@ -74,6 +74,14 @@ type
     HelpMenuItem: TMenuItem;
     AboutItem: TMenuItem;
     FileMenuOpenRecentItem: TMenuItem;
+    MiHide: TMenuItem;
+    MiActionsGoBack: TMenuItem;
+    MiActionsGoForward: TMenuItem;
+    MiActionsGoHome: TMenuItem;
+    MiActions: TMenuItem;
+    MiActionsSearch: TMenuItem;
+    MiActionsIndex: TMenuItem;
+    MiActionsTOC: TMenuItem;
     ViewShowStatus: TMenuItem;
     ViewShowSepTabs: TMenuItem;
     PageControl: TPageControl;
@@ -87,17 +95,24 @@ type
     ViewMenuContents: TMenuItem;
     ViewMenuItem: TMenuItem;
     procedure AboutItemClick(Sender: TObject);
-    procedure BackToolBtnClick(Sender: TObject);
     procedure FileMenuCloseItemClick(Sender: TObject);
-    procedure FileMenuExitItemClick(Sender: TObject);
     procedure FileMenuOpenItemClick(Sender: TObject);
     procedure FileMenuOpenURLItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormKeyDown ( Sender: TObject; var Key: Word; Shift: TShiftState
+      ) ;
     procedure FormShow(Sender: TObject);
-    procedure ForwardToolBtnClick(Sender: TObject);
-    procedure HomeToolBtnClick(Sender: TObject);
+    procedure FormWindowStateChange(Sender: TObject);
+    procedure MiActionsGoForwardClick ( Sender: TObject ) ;
+    procedure HelpMenuItemClick ( Sender: TObject ) ;
+    procedure MiHideClick ( Sender: TObject ) ;
+    procedure MiActionsGoBackClick ( Sender: TObject ) ;
+    procedure MiActionsGoHomeClick ( Sender: TObject ) ;
+    procedure MiActionsIndexClick ( Sender: TObject ) ;
+    procedure MiQuitClick ( Sender: TObject ) ;
+    procedure MiActionsSearchClick ( Sender: TObject ) ;
+    procedure MiActionsTOCClick ( Sender: TObject ) ;
     procedure PageControlChange(Sender: TObject);
     procedure PageControlEnter(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
@@ -120,8 +135,12 @@ type
     fShowSepTabs: Boolean;
     fShowStatus: Boolean;
     fHasShowed: Boolean;
+    fMustClose: boolean;
+    fDefWinMax: Boolean;
+    fDefWinSize: TRect;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
     fUpdateCount: Integer;
+    fLastHiddenRequest: String;
     // Keep track of whether size/position preferences were loaded and applied to form
     fLayoutApplied: boolean;
     // Applies layout (size/position/fullscreen) preferences once in lhelp lifetime
@@ -133,6 +152,7 @@ type
     procedure SavePreferences;
     // Add filename to recent files (MRU) list
     procedure AddRecentFile(AFileName: String);
+    procedure DeleteRecentFile(AFileName: String);
     procedure ContentTitleChange({%H-}sender: TObject);
     procedure OpenRecentItemClick(Sender: TObject);
     // Send response back to server (IDE)
@@ -156,16 +176,17 @@ type
     // Update UI visibility
     procedure RefreshState;
     procedure ShowError(AError: String);
-    // Set keyup handler for control (and any child controls)
-    procedure SetKeyUp(AControl: TControl);
     // BeginUpdate tells each content provider to possibly stop some events
     procedure BeginUpdate;
     // EndUpdate tells each content provider to resume normal behavior
     procedure EndUpdate;
+    // Bring App on Top and show
+    procedure ShowApp();
+    // Event process
+    procedure DoShowContent(Sender:Tobject);
   public
     { public declarations }
   end;
-  
 
 var
   HelpForm: THelpForm;
@@ -176,14 +197,14 @@ var
 
 const
   INVALID_FILE_TYPE = 1;
-  VERSION_STAMP = '2014-10-16'; //used in displaying version in about form etc
+  VERSION_STAMP = '2020-12-10'; //used in displaying version in about form etc
 
 implementation
 
 {$R *.lfm}
 
 uses 
-  LHelpControl;
+  LHelpControl, MouseAndkeyInput;
 
 const
   DigitsInPID=5; // Number of digits in the formatted PID according to the Help Protocol
@@ -195,12 +216,6 @@ type
   end;
 
 { THelpForm }
-
-
-procedure THelpForm.BackToolBtnClick(Sender: TObject);
-begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
-end;
 
 procedure THelpForm.AboutItemClick(Sender: TObject);
 var
@@ -218,6 +233,7 @@ begin
     l := TLabel.Create(f);
     l.Parent := f;;
     l.Align := alTop;
+    l.Alignment:=taCenter;
     l.BorderSpacing.Around := 6;
     l.Caption := Format(slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz, [LineEnding, VERSION_STAMP, LineEnding +
       LineEnding, LineEnding]);
@@ -241,7 +257,6 @@ begin
   end;
 end;
 
-
 procedure THelpForm.FileMenuCloseItemClick(Sender: TObject);
 begin
   if Assigned(ActivePage) then
@@ -250,11 +265,6 @@ begin
     ActivePage.Free;
     RefreshState;
   end;
-end;
-
-procedure THelpForm.FileMenuExitItemClick(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
@@ -291,21 +301,33 @@ procedure THelpForm.FileMenuOpenURLItemClick(Sender: TObject);
 var
   fRes: String;
   URLSAllowed: String;
-  Protocol: TStrings;
-  i: Integer;
+  FileExt: String;
+  Protocol: TStringList;
+  FileTypes: TStringList;
+  i, ii: Integer;
 begin
   Protocol := GetContentProviderList;
-  try
-    URLSAllowed:='';
-    for i := 0 to Protocol.Count-1 do
+  URLSAllowed:='';
+  for i := 0 to Protocol.Count-1 do
+  begin
+    FileExt := '';
+    if i < 1 then
+      URLSAllowed := URLSAllowed + Protocol[i]
+    else
+      URLSAllowed := URLSAllowed + ', ' +Protocol[i];
+    if TBaseContentProviderClass(Protocol.Objects[i]) = TFileContentProvider then
     begin
-      if i < 1 then
-        URLSAllowed := URLSAllowed + Protocol[i]
-      else
-        URLSAllowed := URLSAllowed + ', ' +Protocol[i]
+      FileTypes := TFileContentProviderClass(Protocol.Objects[i]).GetRegisteredFileTypes();
+      for ii := 0 to Pred(FileTypes.Count) do
+      begin
+        if ii < 1  Then
+          FileExt:= FileTypes[ii]
+        else
+          FileExt:= FileExt + ', '+FileTypes[ii];
+      end;
+      if FileExt<>'' then
+        URLSAllowed := URLSAllowed + '(*'+FileExt+')';
     end;
-  finally
-    Protocol.Free;
   end;
 
   URLSAllowed := Trim(URLSAllowed);
@@ -322,13 +344,20 @@ end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  if not fMustClose then
+    if MessageDlg(slhelp_LHelp, slhelp_CloseConfirm, mtConfirmation, mbYesNo, '') <> mrYes then
+  begin
+    CloseAction:= caNone;
+    Application.Minimize();
+    Exit;
+  end;
   //close all tabs to avoid AV with many tabs
-  while Assigned(ActivePage) do
+  BeginUpdate;
+  PageControl.ShowTabs:= False;
+  while TContentTab(ActivePage) <>nil do
     ActivePage.Free;
-  ////was before: close tab
-  ////FileMenuCloseItemClick(Sender);
-
-  Visible := false;
+  EndUpdate;
+  //Visible := false;
   Application.ProcessMessages;
   StopComms;
   SavePreferences;
@@ -341,18 +370,34 @@ begin
   FileMenuOpenRecentItem.Caption := slhelp_OpenRecent;
   FileMenuOpenURLItem.Caption := slhelp_OpenURL;
   FileMenuCloseItem.Caption := slhelp_Close;
-  FileMenuExitItem.Caption := slhelp_EXit;
+  MiHide.Caption := slhelp_Hide;
+  MiQuit.Caption := slhelp_EXit;
+  MiActions.Caption:= slhelp_Actions;
+  MiActionsTOC.Caption:= slhelp_ActionsTOC;
+  MiActionsIndex.Caption:= slhelp_ActionsIndex;
+  MiActionsSearch.Caption:= slhelp_ActionsSearch;
+  MiActionsGoHome.Caption:= slhelp_ActionsGoHome;
+  MiActionsGoBack.Caption:= slhelp_ActionsGoBack;
+  MiActionsGoForward.Caption:= slhelp_ActionsGoForward;
   ViewMenuItem.Caption := slhelp_View;
   ViewMenuContents.Caption := slhelp_ShowContents;
   ViewShowStatus.Caption := slhelp_OpenNewTabWithStatusBar;
   ViewShowSepTabs.Caption := slhelp_OpenNewFileInSeparateTab;
   HelpMenuItem.Caption := slhelp_Help;
+
+  BackBttn.Hint:= MiActionsGoBack.Caption;
+  ForwardBttn.Hint:= MiActionsGoForward.Caption;
+  HomeBttn.Hint:= MiActionsGoHome.Caption;
+  FileButton.Hint:= FileMenuOpenItem.Caption;
+
   AboutItem.Caption := slhelp_About2;
 
   OpenDialog1.Title := slhelp_OpenExistingFile;
   OpenDialog1.Filter := slhelp_HelpFilesChmChmAllFiles;
 
+  fMustClose:= false;
   fContext := -1;
+  fUpdateCount:= 0;
   // Safe default:
   fHide := false;
   // ReadCommandLineOptions will set fHide if requested
@@ -368,17 +413,25 @@ begin
     WindowState := wsMinimized
   else
     RefreshState;
-  SetKeyUp(Self);
 end;
 
-procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure THelpForm.FormKeyDown ( Sender: TObject; var Key: Word;
+  Shift: TShiftState ) ;
 begin
-  if Key = VK_ESCAPE then
-    Close;
-  // Backspace: go to previous page (as if BackBttn were clicked)
-  if Key = VK_BACK then
-    if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
+  //if (Shift = [ssAlt]) then
+  //case Key of
+  //  VK_Left: begin
+  //    MiActionsGoHomeClick(Sender); key:= 0;
+  //  end;
+  //  VK_RIGHT: begin
+  //    MiActionsGoForwardClick(Sender); key:= 0;
+  //  end;
+  //  VK_Home: begin
+  //     MiActionsGoBackClick(Sender); key:= 0;
+  //  end;
+  //end;
 end;
+
 
 procedure THelpForm.FormShow(Sender: TObject);
 begin
@@ -387,14 +440,52 @@ begin
   FHasShowed := True;
 end;
 
-procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
+procedure THelpForm.MiActionsGoForwardClick ( Sender: TObject ) ;
 begin
   if Assigned(ActivePage) then ActivePage.ContentProvider.GoForward;
 end;
 
-procedure THelpForm.HomeToolBtnClick(Sender: TObject);
+procedure THelpForm.HelpMenuItemClick ( Sender: TObject ) ;
+begin
+
+end;
+
+procedure THelpForm.MiHideClick ( Sender: TObject ) ;
+begin
+  if WindowState <> wsMinimized then
+    Application.Minimize();
+  //Visible := False;
+end;
+
+procedure THelpForm.MiActionsGoBackClick ( Sender: TObject ) ;
+begin
+  if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
+end;
+
+procedure THelpForm.MiActionsGoHomeClick ( Sender: TObject ) ;
 begin
   if Assigned(ActivePage) then ActivePage.ContentProvider.GoHome;
+end;
+
+procedure THelpForm.MiActionsIndexClick ( Sender: TObject ) ;
+begin
+  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateIndexControl;
+end;
+
+procedure THelpForm.MiQuitClick ( Sender: TObject ) ;
+begin
+  fMustClose:= True;
+  Close();
+end;
+
+procedure THelpForm.MiActionsSearchClick ( Sender: TObject ) ;
+begin
+  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateSearchControl;
+end;
+
+procedure THelpForm.MiActionsTOCClick ( Sender: TObject ) ;
+begin
+  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateTOCControl;
 end;
 
 procedure THelpForm.PageControlChange(Sender: TObject);
@@ -407,21 +498,39 @@ begin
   RefreshState;
 end;
 
+procedure THelpForm.FormWindowStateChange(Sender: TObject);
+begin
+  if Windowstate = wsNormal then
+  begin
+    Left   := fDefWinSize.Left;
+    Top    := fDefWinSize.Top;
+    Width  := fDefWinSize.Width;
+    Height := fDefWinSize.Height;
+  end;
+end;
+
 procedure THelpForm.ApplyLayoutPreferencesOnce;
 begin
   if not Assigned(fConfig) then exit;
   if (not fHide) and (not fLayoutApplied) then
   begin
-    if fConfig.GetValue('Position/Maximized', false) then
+    fDefWinSize.Left := fConfig.GetValue('Position/Left/Value', Left);
+    fDefWinSize.Top    := fConfig.GetValue('Position/Top/Value', Top);
+    fDefWinSize.Width  := fConfig.GetValue('Position/Width/Value', Width);
+    fDefWinSize.Height := fConfig.GetValue('Position/Height/Value', Height);
+    fDefWinMax:= fConfig.GetValue('Position/Maximized', false);
+
+    if fDefWinMax then
     begin
-      Windowstate := wsMaximized
+      Windowstate := wsMaximized;
     end
     else
     begin
-      Left   := fConfig.GetValue('Position/Left/Value', Left);
-      Top    := fConfig.GetValue('Position/Top/Value', Top);
-      Width  := fConfig.GetValue('Position/Width/Value', Width);
-      Height := fConfig.GetValue('Position/Height/Value', Height);
+      Windowstate := wsNormal;
+      Left   := fDefWinSize.Left;
+      Top    := fDefWinSize.Top;
+      Width  := fDefWinSize.Width;
+      Height := fDefWinSize.Height;
     end;
     // Keep track so we do not reapply initial settings as user may have
     // changed size etc in the meantime.
@@ -477,7 +586,10 @@ begin
   // server-dependent constant together with a process ID.
   // Strip out the formatted process ID to get fixed config file names for
   // one server
-  ServerPart := Copy(AIPCName, 1, length(AIPCName)-DigitsInPID);
+  if (AIPCName <> '') then
+    ServerPart := Copy(AIPCName, 1, length(AIPCName)-DigitsInPID)
+  else
+    ServerPart:= 'standalone';
   PrefFile := Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
 
   fConfig := TXMLConfig.Create(Self);
@@ -557,6 +669,15 @@ begin
     FileMenuOpenRecentItem.Items[MaxHistory-1].Free;
 end;
 
+procedure THelpForm.DeleteRecentFile ( AFileName: String ) ;
+var
+  i: Integer;
+begin
+  for i := FileMenuOpenRecentItem.Count-1 downto 0 do
+    if TRecentMenuItem(FileMenuOpenRecentItem.Items[i]).URL = AFileName then
+      FileMenuOpenRecentItem.Delete(i);
+end;
+
 procedure THelpForm.ContentTitleChange(sender: TObject);
 begin
   if ActivePage = nil then
@@ -573,7 +694,10 @@ begin
   if res = Ord(srSuccess) then
     AddRecentFile(Item.URL)
   else
+  begin
     MessageDlg(Format(slhelp_NotFound, [Item.URL]), mtError, [mbOK], 0);
+    DeleteRecentFile(Item.URL);
+  end;
 end;
 
 procedure THelpForm.SendResponse(Response: DWord);
@@ -596,7 +720,6 @@ var
   FileReq: TFileRequest;
   ConReq: TContextRequest;
   MiscReq: TMiscRequest;
-  MustClose: boolean=false;
   Stream: TStream;
   Res: LongWord;
   Url: String='';
@@ -612,34 +735,50 @@ begin
       rtFile:
       begin
         Url := 'file://'+FileReq.FileName;
+        DebugLn('got rtFile, filename '+filereq.filename);
+        {$IFDEF SHOW_ON_REQUEST}
+        fHide := false;
+        RefreshState;
+        ShowApp();
+        {$ENDIF}
         Res := OpenURL(URL);
-        //debugln('got rtfile, filename '+filereq.filename);
       end;
       rtUrl:
       begin
         Stream.Position := 0;
         FillByte(UrlReq{%H-},SizeOf(UrlReq),0);
         Stream.Read(UrlReq, SizeOf(UrlReq));
+        {$IFDEF SHOW_ON_REQUEST}
+        fHide := false;
+        RefreshState;
+        ShowApp();
+        {$ENDIF}
         if UrlReq.FileRequest.FileName <> '' then
         begin
           Url := 'file://'+UrlReq.FileRequest.FileName;
+          DebugLn('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
           Res := OpenUrl(URL+'://'+UrlReq.Url);
         end
         else
         begin
           Url := UrlReq.Url;
+          DebugLn('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
           Res := OpenURL(Url);
         end;
-        //debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
       end;
       rtContext:
       begin
         Stream.Position := 0;
         FillByte(ConReq{%H-},SizeOf(ConReq),0);
         Stream.Read(ConReq, SizeOf(ConReq));
-        Url := 'file://'+FileReq.FileName;
+        Url := 'file://'+ConReq.FileRequest.FileName;
+        DebugLn('got rtcontext, filename '+ConReq.FileRequest.FileName+', context '+inttostr(ConReq.HelpContext));
+        {$IFDEF SHOW_ON_REQUEST}
+        fHide := false;
+        RefreshState;
+        ShowApp();
+        {$ENDIF}
         Res := OpenURL(Url, ConReq.HelpContext);
-        //debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
       end;
       rtMisc:
       begin
@@ -649,41 +788,47 @@ begin
         case MiscReq.RequestID of
           mrClose:
           begin
-            MustClose:=true;
+            fMustClose:=true;
             Res:= ord(srSuccess);
-            //debugln('got rtmisc/mrClose');
+            //DebugLn('got rtmisc/mrClose');
           end;
           mrShow:
           begin
-            fHide := false;
-            if WindowState = wsMinimized then
-              WindowState := wsNormal;
-            RefreshState;
             Res := ord(srSuccess);
-            //debugln('got rtmisc/mrShow');
+            DebugLn('got rtmisc/mrShow');
+            fHide := false;
+            if (fUpdateCount = 0) and (fLastHiddenRequest <> '')then
+            begin
+              DebugLn('mrShow OpenUrl '+fLastHiddenRequest);
+              Res := OpenURL(fLastHiddenRequest);
+              fLastHiddenRequest:= '';
+            end;
+            RefreshState;
+            ShowApp();
           end;
           mrVersion:
           begin
             // Protocol version encoded in the filename
             // Verify what we support
-            if strtointdef(FileReq.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
+            if strtointdef(MiscReq.FileRequest.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
               Res := ord(srSuccess)
             else
               Res := ord(srError); //version not supported
-            //debugln('got rtmisc/');
+            DebugLn('got rtmisc/version ( ver=' + MiscReq.FileRequest.FileName + ' )' +
+                    ' Success: ', BoolToStr((Res = ord(srSuccess)), true));
           end;
           mrBeginUpdate:
           begin
+            DebugLn('got BeginUpdate');
             BeginUpdate;
             Res := ord(srSuccess);
           end;
           mrEndUpdate:
           begin
+            DebugLn('got EndUpdate');
             EndUpdate;
             Res := ord(srSuccess);
-          end
-          else {Unknown request}
-            Res := ord(srUnknown);
+          end;
         end;
       end; //rtMisc
     end;
@@ -699,29 +844,25 @@ begin
     // Keep after SendResponse to avoid timing issues (e.g. writing to log file):
     //debugln('Just sent TLHelpResponse code: '+inttostr(Res));
 
-    if MustClose then
+    // On received any command:
+    if (fMustClose = false) and (fHide = false) then
     begin
-      Application.ProcessMessages;
-      Sleep(10);
-      Application.Terminate;
-    end;
-
-    // We received mrShow:
-    if (MustClose=false) and (fHide=false) then
-    begin
-      Self.SendToBack;
-      Self.BringToFront;
-      Self.ShowOnTop;
       // If lhelp was run with hidden parameter, we need to apply
       // layout preferences once:
       ApplyLayoutPreferencesOnce;
+    end;
+
+    if fMustClose then
+    begin
+      Close;
+      Application.Terminate;
     end;
   end;
 end;
 
 procedure THelpForm.ReadCommandLineOptions;
 var
-  X: Integer;
+  X, S: Integer;
   IsHandled: array[0..50] of boolean;
   URL: String;
   StrItem: PStringItem;
@@ -741,6 +882,7 @@ begin
         fServerName := ParamStrUTF8(X);
         IsHandled[X] := True;
         inc(X);
+        DebugLn('Start IPCNAME = ', fServerName);
       end;
     end
     else if LowerCase(ParamStrUTF8(X)) = '--context' then
@@ -752,6 +894,7 @@ begin
         begin
           IsHandled[X] := True;
           inc(X);
+          DebugLn('Start CONTEXT = ', IntToStr(fContext));
         end;
     end
     else if LowerCase(ParamStrUTF8(X)) = '--hide' then
@@ -759,6 +902,7 @@ begin
       IsHandled[X] := True;
       inc(X);
       fHide:=true;
+      DebugLn('Start HIDE = True');
     end
     else
     begin
@@ -780,15 +924,20 @@ begin
       if pos('file://', FileName) = 1 then
       begin
         System.Delete(Filename,1,length('file://'));
+        S:= System.Pos('?', Filename);
+        if S > 0 then System.Delete(Filename, S, Length(FileName));
         Filename := SetDirSeparators(Filename);
         if not FileExistsUTF8(Filename) then
         begin
-          debugln(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);
+          DebugLn(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);
           continue;
         end;
       end;
-      StrItem := New(PStringItem);
+      // https://www.freepascal.org/docs-html/rtl/system/initialize.html
+      GetMem(StrItem, SizeOf(TStringItem));
+      Initialize(StrItem^);
       StrItem^.FString := URL;
+      DebugLn('Start URL = ', URL);
       Application.QueueAsyncCall(TDataEvent(@LateOpenURL), {%H-}PtrUInt(StrItem));
       Break;
     end;
@@ -848,88 +997,103 @@ begin
 end;
 
 function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
-  function GetURLPrefix: String;
-  var
-    fPos: Integer;
-  begin
-    fPos := Pos('://', AURL);
-    Result := Copy(AURL, 1, fPos+2);
-  end;
+
 var
   fURLPrefix: String;
   fContentProvider: TBaseContentProviderClass;
   fRealContentProvider: TBaseContentProviderClass;
   fPage: TContentTab = nil;
+  fFirstSameTypePage: TContentTab = nil;
   I: Integer;
   fIsNewPage: Boolean = false;
 begin
- Result := Ord(srInvalidURL);
- fURLPrefix := GetURLPrefix;
- fContentProvider := GetContentProvider(fURLPrefix);
- 
- if fContentProvider = nil then
- begin
-   ShowError(Format(slhelp_CannotHandleThisTypeOfContentForUrl, [fURLPrefix, LineEnding, AURL]));
-   Result := Ord(srInvalidURL);
-   Exit;
- end;
- fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
- 
- if fRealContentProvider = nil then
- begin
-   ShowError(Format(slhelp_CannotHandleThisTypeOfSubcontentForUrl, [fURLPrefix, LineEnding, AURL]));
-   Result := Ord(srInvalidURL);
-   Exit;
- end;
+  Result := Ord(srInvalidURL);
+  fURLPrefix := GetUriPrefix(AURL);
+  fContentProvider := GetContentProvider(fURLPrefix);
 
- if not fShowSepTabs then
-   for I := 0 to PageControl.PageCount-1 do
-   begin
-     if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then
-     begin
-       fPage := TContentTab(PageControl.Pages[I]);
-       if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
-       begin
-         PageControl.ActivePage := PageControl.Pages[I];
-         Result := Ord(srSuccess);
-       end
-       else
-         Result := Ord(srInvalidFile);
-       Exit;
-     end;
-   end;
+  if fContentProvider = nil then
+  begin
+    ShowError(Format(slhelp_CannotHandleThisTypeOfContentForUrl, [fURLPrefix, LineEnding, AURL]));
+    Result := Ord(srInvalidURL);
+    Exit;
+  end;
 
- if fPage = nil then
- begin
-   // no existing page that can handle this content, so create one
-   fIsNewPage := true;
-   fPage := TContentTab.Create(PageControl);
-   fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
-   fPage.ContentProvider.OnTitleChange := @ContentTitleChange;
-   fPage.Parent := PageControl;
-   SetKeyUp(fPage);
-   fPage.ContentProvider.LoadPreferences(fConfig);
-   if fPage.ContentProvider is TChmContentProvider then
+  fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
+  if fRealContentProvider = nil then
+  begin
+    ShowError(Format(slhelp_CannotHandleThisTypeOfSubcontentForUrl, [fURLPrefix, LineEnding, AURL]));
+    Result := Ord(srInvalidURL);
+    Exit;
+  end;
+
+  Result := Ord(srInvalidFile);
+
+  if (fUpdateCount > 0) then
+  begin
+    fLastHiddenRequest:= AURL;
+    //DebugLn('set fLastHiddenRequest: ', AURL);
+  end;
+
+  // Searching a page for loading or refreshing data
+  for I := 0 to PageControl.PageCount-1 do
+  begin
+    fPage := TContentTab(PageControl.Pages[I]);
+    if fRealContentProvider.ClassName = fPage.ContentProvider.ClassName then
+    begin
+      if fFirstSameTypePage = nil then fFirstSameTypePage:= fPage;
+      if fPage.ContentProvider.HasLoadedData(AURL) then // need to update data
+       break;
+    end;
+    fPage := nil;
+  end;
+
+  if (fPage = nil) and (Assigned(fFirstSameTypePage) and (not fShowSepTabs)) then
+  begin // Page with data not found but exists the page with same type
+    fPage := fFirstSameTypePage;
+  end;
+
+  if (fPage <> nil ) then // load or refresh a data within this page
+  begin
+    if fPage.ContentProvider.LoadURL(AURL, AContext) then
+    begin
+     PageControl.ActivePage := fPage;
+     Result := Ord(srSuccess);
+    end
+    else
+    begin
+     fPage := nil;
+     Result := Ord(srInvalidFile);
+    end;
+  end;
+
+  if fPage = nil then
+  begin
+    // none existing page that can handle this content, so create one
+    fIsNewPage := true;
+    fPage := TContentTab.Create(PageControl);
+    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1, fUpdateCount);
+    fPage.ContentProvider.OnTitleChange := @ContentTitleChange;
+    //fPage.ContentProvider.OnContentComplete := @DoShowContent;
+    fPage.Parent := PageControl;
+    //SetKeyUp(fPage);
+    fPage.ContentProvider.LoadPreferences(fConfig);
+    if fPage.ContentProvider is TChmContentProvider then
      (fPage.ContentProvider as TChmContentProvider).ShowStatusbar := fShowStatus;
- end;
 
- if fUpdateCount > 0 then
-   fPage.ContentProvider.BeginUpdate;
-
- if fPage.ContentProvider.LoadURL(AURL, AContext) then
- begin
-   PageControl.ActivePage := fPage;
-   RefreshState;
-   Result := Ord(srSuccess);
- end
- else begin
-   Result := Ord(srInvalidURL);
-   if fIsNewPage then
-     fPage.Free;
- end;
-
- if not fHide then
-   ShowOnTop;
+    // BeginUpdate doing into Create
+    if fPage.ContentProvider.LoadURL(AURL, AContext) then
+    begin
+      PageControl.ActivePage := fPage;
+      RefreshState;
+      Result := Ord(srSuccess);
+    end
+    else
+    begin
+      Result := Ord(srInvalidURL);
+      if fIsNewPage then
+        fPage.Free;
+    end;
+  end;
 end;
 
 
@@ -941,7 +1105,8 @@ begin
   // context shown
   fContext := -1;
 
-  Dispose(Url);
+  Finalize(Url^);
+  Freemem(Url);
   RefreshState;
 end;
 
@@ -969,7 +1134,7 @@ begin
       end;
     end;
   end
-  else
+    else
   begin
     en := Assigned(ActivePage);
     // Show content page
@@ -981,12 +1146,18 @@ begin
         Visible := true;
         TabsControl.Visible := true;
         Splitter.Visible := true;
+        ActivateProvider;
       end;
     end;
   end;
 
-  BackBttn.Enabled := en;
-  ForwardBttn.Enabled := en;
+  MiActionsGoBack.Enabled:= en;
+  MiActionsGoForward.Enabled:=en;
+  MiActionsGoHome.Enabled:=en;
+  MiActionsIndex.Enabled:=en;
+  MiActionsTOC.Enabled:=en;
+  MiActionsSearch.Enabled:=en;
+
   HomeBttn.Enabled := en;
   FileMenuCloseItem.Enabled := en;
   ViewMenuContents.Enabled := en;
@@ -1002,25 +1173,13 @@ begin
   ShowMessage(AError);
 end;
 
-procedure THelpForm.SetKeyUp(AControl: TControl);
-var
-  WCont: TWinControl absolute AControl;
-  i: Integer;
-begin
-  if (AControl = nil) or not (AControl.InheritsFrom(TWinControl)) then
-    Exit;
-  for i := 0 to WCont.ControlCount-1 do
-    SetKeyUp(WCont.Controls[i]);
-  WCont.OnKeyUp:=@FormKeyUp;
-end;
-
 procedure THelpForm.BeginUpdate;
 var
   Tab: TContentTab;
   i: Integer;
 begin
   Inc(fUpdateCount);
-  if fUpdateCount = 1 then
+  //WriteLn(Format('>> fUpdateCount:=%d',[fUpdateCount]));
   begin
     for i := 0 to PageControl.PageCount-1 do
     begin
@@ -1039,8 +1198,7 @@ begin
   Dec(fUpdateCount);
   if fUpdateCount < 0 then
    fUpdateCount:=0;
-
-  if fUpdateCount = 0 then
+  //WriteLn(Format('<< fUpdateCount:=%d',[fUpdateCount ]));
   begin
     for i := 0 to PageControl.PageCount-1 do
     begin
@@ -1049,6 +1207,28 @@ begin
     end;
   end;
 end;
+
+procedure THelpForm.ShowApp();
+begin
+  if (fHide = false) then
+  begin
+    fMustClose:= false;
+    Application.Restore;
+    Application.BringToFront;
+{$IFDEF WINDOWS}
+    // Go to TOC TreeView and to get focus on foreground window
+    KeyInput.Apply([ssCtrl]);
+    KeyInput.Press(VK_T);
+    KeyInput.UnApply([ssCtrl]);
+{$ENDIF}
+  end;
+end;
+
+procedure THelpForm.DoShowContent(Sender: Tobject);
+begin
+  ShowApp();
+end;
+
 
 { TContentTab }
 

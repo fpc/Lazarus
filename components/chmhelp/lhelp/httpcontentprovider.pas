@@ -30,8 +30,11 @@ type
     procedure GoHome; override;
     procedure GoBack; override;
     procedure GoForward; override;
+    procedure ActivateTOCControl; override;
+    procedure ActivateIndexControl; override;
+    procedure ActivateSearchControl; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
-    constructor Create(AParent: TWinControl; AImageList: TImageList); override;
+    constructor Create(AParent: TWinControl; AImageList: TImageList; AUpdateCount:Integer); override;
   end;
 
 implementation
@@ -98,15 +101,37 @@ begin
   fHtml.GoForward;
 end;
 
+procedure THTTPContentProvider.ActivateTOCControl;
+begin
+  //
+end;
+
+procedure THTTPContentProvider.ActivateIndexControl;
+begin
+  //
+end;
+
+procedure THTTPContentProvider.ActivateSearchControl;
+begin
+  //
+end;
+
+procedure THTTPContentProvider.ProcGlobalKeyUp(var Key: Word; Shift: TShiftState
+  );
+begin
+  //
+end;
+
 class function THTTPContentProvider.GetProperContentProvider(const AURL: String
   ): TBaseContentProviderClass;
 begin
   Result := THTTPContentProvider;
 end;
 
-constructor THTTPContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
+constructor THTTPContentProvider.Create(AParent: TWinControl; AImageList: TImageList;
+                                    AUpdateCount: Integer);
 begin
-  inherited Create(AParent, AImageList);
+  inherited Create(AParent, AImageList, );
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do begin
@@ -118,7 +143,7 @@ begin
   fHtml := TIpHtmlPanel.Create(Parent);
   with fHtml do begin
     DataProvider := fHttpDataProvider;
-    //OnDocumentOpen := @IpHtmlPanelDocumentOpen;
+    OnDocumentOpen := @IpHtmlPanelDocumentOpen;
     OnHotChange := @IpHtmlPanelHotChange;
     PopupMenu := fPopUp;
     Parent := AParent;

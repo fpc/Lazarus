@@ -26,8 +26,8 @@ uses
   cthreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  SysUtils, Classes, Controls, Dialogs, Forms,
-  SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore, lhelpstrconsts;
+  SysUtils, Classes, Controls, Dialogs, Forms, lazmouseandkeyinput,
+  SimpleIPC, lhelpcontrolpkg, lhelpcore, lhelpstrconsts, filecontentprovider;
 
 var
   X: Integer;
@@ -64,7 +64,6 @@ begin
     end;
   end;
   Application.CreateForm(THelpForm, HelpForm);
-  Application.CreateForm(THelpPopupForm, HelpPopupForm);
 
   try
     Application.Run;

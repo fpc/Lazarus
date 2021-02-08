@@ -14,36 +14,38 @@ unit ChmDataProvider;
 interface
 
 uses
-  Classes, SysUtils, IpHtml, iputils, IpMsg, Graphics, chmreader,
-  LCLType, Controls,
-  FPImage,
-  {$IF FPC_FULLVERSION>=20602} //fpreadgif exists since at least this version
-  FPReadgif,
-  {$ENDIF}
-  FPReadbmp,
-  FPReadxpm,
-  FPReadJPEG,
-  FPReadpng,
-  FPWritebmp,
+  Classes, SysUtils, chmreader,
+  FPImage, FPReadgif, FPReadbmp, FPReadxpm, FPReadJPEG, FPReadpng, FPWritebmp,
   FPWritePNG,
-  IntFGraphics,
-  lhelpstrconsts;
-
+  // LCL
+  Graphics, LCLType, Controls, IntFGraphics,
+  // LazUtils
+  LazFileUtils, LazLoggerBase,
+  // Turbopower IPro
+  IpHtml, iputils, IpMsg,
+  // ChmHelp
+  LHelpStrConsts;
 
 type
 
   THelpPopupEvent = procedure(HelpFile: String; URL: String);
   THtmlPageLoadStreamEvent = procedure (var AStream: TStream) of object;
 
+  { TCHMFileListPublic }
+
+  TCHMFileListPublic = class(TChmFileList)
+  end;
+
   { TIpChmDataProvider }
 
   TIpChmDataProvider = class(TIpAbstractHtmlDataProvider)
   private
-    fChm: TChmFileList;
+    fChms: TCHMFileListPublic;
     fCurrentPage: String;
     fCurrentPath: String;
     FOnGetHtmlPage: THtmlPageLoadStreamEvent;
     fOnHelpPopup: THelpPopupEvent;
+    function GetChms: TChmFileList;
     function StripInPageLink(AURL: String): String;
   protected
     function DoGetHtmlStream(const URL: string;
@@ -59,15 +61,16 @@ type
     function GetDirsParents(ADir: String): TStringList;
     function DoGetStream(const URL: string): TStream; override;
   public
-    constructor Create(AOwner: TComponent; AChm: TChmFileList); reintroduce;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetHtmlText(AURL: String): RawByteString;
-    property Chm: TChmFileList read fChm write fChm;
+    property Chms: TChmFileList read GetChms;
+    procedure DoOpenChm ( const AFile: String; ACloseCurrent: Boolean );
+    procedure DoCloseChms;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
     property CurrentPage: String read fCurrentPage;
     property CurrentPath: String read fCurrentPath write fCurrentPath;
     property OnGetHtmlPage: THtmlPageLoadStreamEvent read FOnGetHtmlPage write FOnGetHtmlPage;
-
   end;
 
 implementation
@@ -84,7 +87,12 @@ begin
     Result := Copy(Result, 1, i-1);
 end;
 
-function TIpChmDataProvider.GetHtmlText(AURL: string): RawByteString;
+function TIpChmDataProvider.GetChms: TChmFileList;
+begin
+  Result:= fChms;
+end;
+
+function TIpChmDataProvider.GetHtmlText ( AURL: String ) : RawByteString;
 var
   stream: TStream;
   ms: TMemoryStream;
@@ -100,7 +108,7 @@ begin
       // --> buffer to memory stream
       ms := TMemoryStream.Create;
       try
-        ms.CopyFrom(stream, stream.Size);
+        ms.CopyFrom(stream, 0);
         SetLength(Result, ms.Size);
         Move(ms.Memory^, Result[1], ms.Size);
       finally
@@ -112,20 +120,41 @@ begin
   end;
 end;
 
+procedure TIpChmDataProvider.DoOpenChm ( const AFile: String;
+  ACloseCurrent: Boolean ) ;
+begin
+  if fChms.IsAnOpenFile(AFile) then Exit;
+  if ACloseCurrent then DoCloseChms;
+  if not FileExistsUTF8(AFile) or DirectoryExistsUTF8(AFile) then
+    Exit;
+  TCHMFileListPublic(fChms).OpenNewFile(AFile);
+  // Code for Indexes has been moved to the OpenFile handler
+end;
+
+procedure TIpChmDataProvider.DoCloseChms;
+begin
+  if assigned(fChms) then
+    while Chms.Count > 0 do fChms.Delete(0);
+end;
+
 function TIpChmDataProvider.DoGetHtmlStream(const URL: string;
   PostData: TIpFormDataEntity): TStream;
-var Tmp:string;
+var
+  Msg:string;
 begin
-  Result := fChm.GetObject(StripInPageLink(URL));
+  //WriteLn('DoGetHtmlStream() Url: ', URL);
+  Result := fChms.GetObject(StripInPageLink(URL));
   // If for some reason we were not able to get the page return something so that
   // we don't cause an AV
   if Result = nil then begin
     Result := TMemoryStream.Create;
-    Tmp := '<HTML>' + slhelp_PageCannotBeFound + '</HTML>';
-    Result.Write(Tmp,Length(tmp));
+    Msg := '<html><span align="center">' + slhelp_PageCannotBeFound + '</span></html>';
+    Result.Write(Pointer(Msg)^, Length(Msg));
   end;
+  Result.Position:= 0;
   if Assigned(FOnGetHtmlPage) then
       FOnGetHtmlPage(Result);
+   Result.Position:= 0;
 end;
 
 function TIpChmDataProvider.DoCheckURL(const URL: string;
@@ -133,26 +162,27 @@ function TIpChmDataProvider.DoCheckURL(const URL: string;
 var
   Reader: TChmReader = nil;
 begin
-  //DebugLn('RequestedUrl: ',URL);
-  Result := fChm.ObjectExists(StripInPageLink(Url), Reader) > 0;
+  Result:= true;
+  //DebugLn('CD DoCheckURL() Url: ', URL);
+  Result := fChms.ObjectExists(StripInPageLink(Url), Reader) > 0;
   if Result then begin
     ContentType := 'text/html';
     fCurrentPath := ExtractFilePath(Url);
-    Result := True;
     fCurrentPage := URL;
+    //DebugLn('CD checked url: ', URL);
   end;
 end;
 
 procedure TIpChmDataProvider.DoLeave(Html: TIpHtml);
 begin
-  //
-//  //DebugLn('Left: ');
+  // For free a data resources
+  //DebugLn('CD Left: ');
 end;
 
 procedure TIpChmDataProvider.DoReference(const URL: string);
 begin
-  //
-  ////DebugLn('Reference=',URL);
+  // For get all references from document
+  // DebugLn('CD Reference=',URL);
 end;
 
 procedure TIpChmDataProvider.DoGetImage(Sender: TIpHtmlNode; const URL: string;
@@ -161,13 +191,11 @@ var
   Stream: TMemoryStream;
   FileExt: String;
 begin
-  //DebugLn('Getting Image ',(Url));
-  Picture := nil;
-
+  //DebugLn('CD Getting Image ',(Url));
   FileExt := ExtractFileExt(URL);
 
   Picture := TPicture.Create;
-  Stream := fChm.GetObject('/'+URL);
+  Stream := fChms.GetObject('/'+URL);
   try
     if Assigned(Stream) then
     begin
@@ -185,20 +213,19 @@ function TIpChmDataProvider.CanHandle(const URL: string): Boolean;
 var
   Reader: TChmReader = nil;
 begin
-  Result := True;
+  //DebugLn('CD CanHandle() Url: ', URL);
+  Result:=True;
   if Pos('Java', URL) = 1 then
     Result := False;
 
-  if (fChm.ObjectExists(StripInPageLink(url), Reader)= 0) and
-     (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url)), Reader) = 0)
+  // Here is opened the new chm file if required
+  if (fChms.ObjectExists(StripInPageLink(url), Reader)= 0) and
+     (fChms.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url)), Reader) = 0)
   then
     Result := False;
-
-  //DebugLn('CanHandle ',Url,' = ', Result);
-  //if not Result then if fChm.ObjectExists(BuildURL('', URL)) > 0 Then result := true;
-
   if (not Result) and (Pos('#', URL) = 1) then
     Result := True;
+  //DebugLn('CD CanHandle() ResultUrl: ', Result);
 end;
 
 function TIpChmDataProvider.BuildURL(const OldURL, NewURL: string): string;
@@ -255,8 +282,8 @@ begin
 
   finally
     ParentDirs.Free;
-    //WriteLn('res = ', Result);
   end;
+  //DebugLn('CD BuildURL() Url: ', Result);
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;
@@ -279,6 +306,7 @@ function TIpChmDataProvider.DoGetStream(const URL: string): TStream;
 var
  NewURL: String;
 begin
+  //DebugLn('CD DoGetStream() Url: ', URL);
   Result := nil;
   if Length(URL) = 0 then
     Exit;
@@ -286,18 +314,21 @@ begin
     NewURL := BuildUrl(fCurrentPath,URL)
   else
     NewURL := URL;
-
-  Result := fChm.GetObject(NewURL);
+  Result := fChms.GetObject(NewURL);
+  if Result <> nil then Result.Position:= 0;
+  //if Result = nil then DebugLn('CD Err DoGetStream URL: '+URL);
 end;
 
-constructor TIpChmDataProvider.Create(AOwner: TComponent; AChm: TChmFileList);
+constructor TIpChmDataProvider.Create ( AOwner: TComponent ) ;
 begin
   inherited Create(AOwner);
-  fChm := AChm;
+  fChms := TCHMFileListPublic.Create('');
 end;
 
 destructor TIpChmDataProvider.Destroy;
 begin
+  DoCloseChms;
+  FreeAndnil(fChms);
   inherited Destroy;
 end;
 
