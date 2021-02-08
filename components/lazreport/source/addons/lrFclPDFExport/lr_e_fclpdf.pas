@@ -40,7 +40,10 @@ unit lr_e_fclpdf;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, LR_ChBox, LR_BarC, LR_Shape, LR_RRect, fpPDF, Graphics, fpTTF;
+  Classes, SysUtils,
+  Graphics,
+  LazStringUtils,
+  LR_Class, LR_ChBox, LR_BarC, LR_Shape, LR_RRect, fpPDF, fpTTF;
 
 type
   TExportFonts = class;
@@ -414,10 +417,9 @@ var
 begin
   DrawRectView(View);
 
-  S:=UpperCase(TfrMemoView(View).URLInfo);
-  if (S <> '') and ((Copy(S, 1,  7) = 'HTTP://') or (Copy(S, 1, 8) = 'HTTPS://')) then
+  S:=TfrMemoView(View).URLInfo;
+  if LazStartsText('HTTP://', S) or LazStartsText('HTTPS://', S) then
     WriteURL(View.Left, View.Top, View.Width, View.Height, TfrMemoView(View).URLInfo);
-
 
   //prepare font
   FCurFont:=FFontItems.AddItem(View.Font.Name, View.Font.Style);

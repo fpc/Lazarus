@@ -525,11 +525,11 @@ begin
   Panel2.Visible := false;
 
   ListParams := TStringList.Create;
-  strtmp := UpperCase(MsgMemo.Lines.Text);
+  strtmp := MsgMemo.Lines.Text;
 
   indx := pos('%', strtmp);
-  while (indx>0)and(indx<Length(strtmp)) do begin
-    chrtmp := strtmp[indx+1];
+  while (indx>0) and (indx<Length(strtmp)) do begin
+    chrtmp := UpCase(strtmp[indx+1]);
     if chrtmp in FormatParams then
       ListParams.Add('%'+chrtmp);
     Delete(strtmp, indx, 1);

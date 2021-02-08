@@ -901,7 +901,7 @@ type
     procedure Clear;
     procedure Delete(Index: Integer);
     function FindObjectByID(ID: Integer): Integer;
-    function FindObject(aName: String): TfrObject;
+    function FindObject(const aName: String): TfrObject;
     function FindRTObject(const aName: String): TfrObject;
     procedure ChangePaper(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
     procedure ShowBandByName(const s: String);
@@ -1009,7 +1009,7 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(Stream: TStream);
     procedure SavetoXML(XML: TLrXMLConfig; const Path: String);
-    function PageByName(APageName:string):TfrPage;
+    function PageByName(const APageName: string): TfrPage;
 
     property Pages[Index: Integer]: TfrPage read GetPages; default;
     property Count: Integer read GetCount;
@@ -1221,7 +1221,7 @@ type
     procedure SetScript(AValue: TfrScriptStrings);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
-    function FindObjectByName(AName:string):TfrObject;
+    function FindObjectByName(AName: string): TfrObject;
     procedure ExecScript;
     procedure CheckFileExists(FName: string);
   protected
@@ -1260,7 +1260,7 @@ type
     function FindVariable(Variable: String): Integer;
     procedure GetVariableValue(const s: String; var aValue: Variant);
     procedure GetVarList(CatNo: Integer; List: TStrings);
-    procedure GetIntrpValue(AName: String; var AValue: Variant);
+    procedure GetIntrpValue(const AName: String; var AValue: Variant);
     procedure GetCategoryList(List: TStrings);
     function FindObject(const aName: String): TfrObject;
     // internal events used through report building
@@ -7606,23 +7606,17 @@ begin
   end;
 end;
 
-function TfrPage.FindObject(aName: String): TfrObject;
+function TfrPage.FindObject(const aName: String): TfrObject;
 var
   i: Integer;
 begin
   Result := nil;
-  aName:=UpperCase(aName);
-  if UpperCase(Name) = aName then
+  if CompareText(Name, aName) = 0 then
     Result:=Self
   else
   for i := 0 to Objects.Count - 1 do
-  begin
-    if UpperCase(TfrObject(Objects[i]).Name) = aName then
-    begin
-      Result :=TfrObject(Objects[i]);
-      Exit;
-    end;
-  end;
+    if CompareText(TfrObject(Objects[i]).Name, aName) = 0 then
+      Exit(TfrObject(Objects[i]));
 end;
 
 function TfrPage.FindRTObject(const aName: String): TfrObject;
@@ -9036,7 +9030,7 @@ begin
       if b = gtAddIn then
       begin
         s := ReadString(Stream);
-        if UpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
+        if CompareText(s, 'TFRFRAMEDMEMOVIEW') = 0 then
           AddObject(gtMemo, '')
         else
           AddObject(gtAddIn, s);
@@ -9044,7 +9038,7 @@ begin
       else
         AddObject(b, '');
       t.LoadFromStream(Stream);
-      if UpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
+      if CompareText(s, 'TFRFRAMEDMEMOVIEW') = 0 then
         Stream.Read({%H-}buf[1], 8);
     end;
   end;
@@ -9094,7 +9088,7 @@ begin
       clname := XML.GetValue(aSubPath+'ClassName/Value', 'TFRVIEW'); // TODO: Check default
       if aTyp=gtAddin then
       begin
-        if UpperCase(clname)='TFRFRAMEDMEMOVIEW' then
+        if CompareText(clname,'TFRFRAMEDMEMOVIEW') = 0 then
           addObject(Pages[i], gtMemo, '')
         else
           addObject(Pages[i], gtAddin, clName)
@@ -9192,18 +9186,14 @@ begin
   end;
 end;
 
-function TfrPages.PageByName(APageName: string): TfrPage;
+function TfrPages.PageByName(const APageName: string): TfrPage;
 var
   i:integer;
 begin
-  APageName:=UpperCase(APageName);
   Result:=nil;
   for i:=0 to FPages.Count - 1 do
-    if APageName = UpperCase(TfrPage(FPages[i]).Name) then
-    begin
-      Result:=TfrPage(FPages[i]);
-      exit;
-    end;
+    if CompareText(APageName, TfrPage(FPages[i]).Name) = 0 then
+      Exit(TfrPage(FPages[i]));
 end;
 
 {-----------------------------------------------------------------------}
@@ -10460,7 +10450,7 @@ begin
   for i:=0 to CurReport.Pages.Count - 1 do
   begin
     Page := CurReport.Pages[i];
-    if UpperCase(Page.Name) = ObjName then
+    if CompareText(Page.Name, ObjName) = 0 then
     begin
       // PageName.ObjName.Method
       Obj:=Page;
@@ -10470,7 +10460,7 @@ begin
         ObjName:=Copy2SymbDel(Method, '.');
         for j:=0 to Page.Objects.Count - 1  do
         begin
-          if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
+          if CompareText(TfrObject(Page.Objects[j]).Name, ObjName) = 0 then
           begin
             Obj:=TfrObject(Page.Objects[j]);
             break;
@@ -10484,7 +10474,7 @@ begin
     begin
       for j:=0 to Page.Objects.Count - 1  do
       begin
-        if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
+        if CompareText(TfrObject(Page.Objects[j]).Name, ObjName) = 0 then
         begin
             Obj:=TfrObject(Page.Objects[j]);
             break;
@@ -11948,7 +11938,6 @@ var
   APgName:string;
   Pg:TfrPage;
 begin
-  AName:=UpperCase(AName);
   Result:=nil;
   if (Pos('.', AName)>0) then
   begin
@@ -12115,7 +12104,7 @@ begin
   end;
 end;
 
-procedure TfrReport.GetIntrpValue(AName: String; var AValue: Variant);
+procedure TfrReport.GetIntrpValue(const AName: String; var AValue: Variant);
 var
   t:  TfrObject;
   PropName: String;
@@ -12206,22 +12195,22 @@ begin
     if IdentToColor(AName, FColorVal) then
       AValue := FColorVal
     else
-    if UpperCase(AName) = 'MROK' then //try std ModalResult values
+    if CompareText(AName, 'MROK') = 0 then //try std ModalResult values
       AValue := mrOk
     else
-    if UpperCase(AName) = 'MRCANCEL' then //try std ModalResult values
+    if CompareText(AName, 'MRCANCEL') = 0 then //try std ModalResult values
       AValue := mrCancel
     else
-    if (UpperCase(AName) = 'FINALPASS') and Assigned(CurReport) then
+    if (CompareText(AName, 'FINALPASS') = 0) and Assigned(CurReport) then
       AValue := CurReport.FinalPass
     else
-    if (UpperCase(AName) = 'CURY') and Assigned(CurPage) then
+    if (CompareText(AName, 'CURY') = 0) and Assigned(CurPage) then
       AValue := CurPage.CurY
     else
-    if (UpperCase(AName) = 'PAGEHEIGHT') and Assigned(CurPage) then
+    if (CompareText(AName, 'PAGEHEIGHT') = 0) and Assigned(CurPage) then
       AValue := CurPage.Height
     else
-    if (UpperCase(AName) = 'PAGEWIDTH') and Assigned(CurPage) then
+    if (CompareText(AName, 'PAGEWIDTH') = 0) and Assigned(CurPage) then
       AValue := CurPage.Width;
   end;
 end;

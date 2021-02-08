@@ -145,8 +145,8 @@ procedure MakeCompTable;
 var
   I: Char;
 begin
-  for I := #0 to #255 do CompTableSensitive[I] := ord(I);
-  for I := #0 to #255 do CompTableNoneSensitive[I] := ord(uppercase(I)[1]);
+  for I := #0 to #255 do CompTableSensitive[I] := Ord(I);
+  for I := #0 to #255 do CompTableNoneSensitive[I] := Ord(UpCase(I));
 end;
 
 function GetLineCountOfString(const aText: string): integer;

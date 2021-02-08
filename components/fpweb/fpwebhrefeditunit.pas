@@ -35,8 +35,9 @@ unit fpWebHREFEditUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ButtonPanel, StdCtrls, Buttons;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ButtonPanel, StdCtrls, Buttons,
+  FileUtil, LazStringUtils;
 
 type
 
@@ -136,7 +137,7 @@ begin
       if LazarusIDE.ActiveProject.Files[i].IsPartOfProject then
       begin
         S:=LazarusIDE.ActiveProject.Files[i].Filename;
-        if Copy(UpperCase(ExtractFileExt(S)), 1, 4) = '.HTM' then
+        if LazStartsText('.HTM', ExtractFileExt(S)) then
           cbHREF.Items.Add(S);
       end;
     end;

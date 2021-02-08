@@ -1667,7 +1667,7 @@ begin
        Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
     *)
     if (CurPtr < EndPtr) and (CurPtr^ in ['a'..'z']) then
-      CurPtr^ := UpperCase(CurPtr^)[1];
+      CurPtr^ := UpCase(CurPtr^);
     inc(CurPtr);
   end;
   if CurPtr = EndPtr then
@@ -2006,13 +2006,11 @@ function TGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
   ARequest: TGDBPTypeRequest): Integer;
 var
   e: TGDBPTypeRequestCacheEntry;
-  s: String;
   HashVal: Integer;
 begin
-  s := UpperCase(ARequest.Request);
   // There are usually a couple of dozen entry total. Even if most are the same len the search will be quick
   // Including stackframe, means nested procedures go in different lists.
-  HashVal := Length(s) mod (TGDBPTypeReqCacheListCount div 8) * 8
+  HashVal := Length(ARequest.Request) mod (TGDBPTypeReqCacheListCount div 8) * 8
              + AStackFrame mod 4 * 2
              + ord(ARequest.ReqType);
   Result := -1;
@@ -2022,7 +2020,7 @@ begin
   while Result >= 0 do begin
     e := TGDBPTypeRequestCacheEntry(FLists[HashVal][Result]);
     if (e.ThreadId = AThreadId) and (e.StackFrame = AStackFrame) and
-       (e.Request.Request = s) and
+       (CompareText(e.Request.Request, ARequest.Request) = 0) and
        (e.Request.ReqType = ARequest.ReqType)
     then begin
       Result := Result * TGDBPTypeReqCacheListCount + HashVal;

@@ -1059,7 +1059,8 @@ begin
     then begin
       if (n <> '') and (n[1] = '$') then // dwarf3 // TODO: make required in dwarf3
         delete(n, 1, 1);
-      if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
+      if (copy(n,1,4) = 'high')
+      and (CompareText(copy(n, 5, length(n)), DbgSymbol.Name) = 0) then begin
         UpperBoundSym := TFpSymbolDwarf.CreateSubClass('', Info);
         if UpperBoundSym <> nil then begin
           val := UpperBoundSym.Value;

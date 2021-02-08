@@ -53,7 +53,7 @@ function GetCommonSourceFor(AName: String): TCommonSource;
 var
   i: Integer;
 begin
-  if UpperCase(AName) = UpperCase(BlockRecurseName) then
+  if CompareText(AName, BlockRecurseName) = 0 then
     raise Exception.Create('BlockRecurseName');
   i := CommonSources.IndexOf(AName);
   if i >= 0 then

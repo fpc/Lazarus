@@ -1524,19 +1524,19 @@ end;
 function TIpMimeEntity.DecodeContentTransferEncoding(const aEncoding : string) :
   TIpMimeEncodingMethod;
 begin
-  if (UpperCase(aEncoding) = UpperCase(str7Bit)) then
+  if CompareText(aEncoding, str7Bit) = 0 then
     Result := em7bit
-  else if (UpperCase(aEncoding) = UpperCase(str8Bit)) then
+  else if CompareText(aEncoding, str8Bit) = 0 then
     Result := em8bit
-  else if (UpperCase(aEncoding) = UpperCase(strBase64)) then
+  else if CompareText(aEncoding, strBase64) = 0 then
     Result := emBase64
-  else if (UpperCase(aEncoding) = UpperCase(strBinary)) then
+  else if CompareText(aEncoding, strBinary) = 0 then
     Result := emBinary
-  else if (UpperCase(aEncoding) = UpperCase(strBinHex)) then
+  else if CompareText(aEncoding, strBinHex) = 0 then
     Result := emBinHex
-  else if (UpperCase(aEncoding) = UpperCase(strQuoted)) then
+  else if CompareText(aEncoding, strQuoted) = 0 then
     Result := emQuoted
-  else if (UpperCase(aEncoding) = UpperCase(strUUEncode)) then
+  else if CompareText(aEncoding, strUUEncode) = 0 then
     Result := emUUEncode
   else
     Result := emUnknown;
@@ -2529,10 +2529,9 @@ begin
   WS1 := TMemoryStream.Create;
   try
     { start with file name }
-    if (Length(aFileName) < MaxLine) then
-      HeaderFileName := UpperCase(ExtractFileName(aFileName))
-    else
-      HeaderFileName := Copy(UpperCase(ExtractFileName(aFileName)), 1, MaxLine);
+    HeaderFileName := UpperCase(ExtractFileName(aFileName));
+    if (Length(aFileName) >= MaxLine) then
+      SetLength(HeaderFileName, MaxLine);
     WS1.Write(HeaderFileName, Length(HeaderFileName) + 1);
 
     { build rest of file header and header CRC and add to working stream }

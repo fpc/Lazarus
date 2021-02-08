@@ -714,7 +714,7 @@ begin
   end;
 
   for i := 0 to Reg.Count - 1 do
-    if UpperCase(Reg[i].Name) = rname then
+    if CompareText(Reg[i].Name, rname) = 0 then
       begin
         RegVObj := Reg[i].ValueObjFormat[rdDefault];
         if RegVObj <> nil then

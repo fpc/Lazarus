@@ -53,7 +53,7 @@ uses
   //MemCheck,
   Types, contnrs,
   LCLType, GraphType, LCLProc, LCLIntf, LResources, LMessages, LCLMemManager,
-  Translations, FileUtil, LConvEncoding, LazUTF8, AvgLvlTree,
+  Translations, FileUtil, LazStringUtils, LConvEncoding, LazUTF8, AvgLvlTree,
   IpHtmlTabList,
   Messages, SysUtils, Classes, Graphics,
   {$IFDEF UseGifImageUnit} //TODO all of this units not exists
@@ -4388,7 +4388,6 @@ begin
   PropPath := trim(PropPath);
   if PropPath = '' then
     Exit;
-  PropPath := UpperCase(PropPath);
   if C.ClassInfo <> nil then begin
     LCount := GetPropList(C.ClassInfo, tkProperties, nil);
     LSize := LCount * SizeOf(Pointer);
@@ -4401,14 +4400,14 @@ begin
             J := pos('.', PropPath);
             if J <> 0 then begin
               SubPropPath := copy(PropPath, 1, J - 1);
-              if SubPropPath = UpperCase(PList^[I]^.Name) then begin
+              if CompareText(SubPropPath, PList^[I]^.Name) = 0 then begin
                 O := TObject(GetOrdProp(C, PList^[I]));
                 SetPropertyValue(O, copy(PropPath, J + 1, MAXINT), NewValue);
                 Exit;
               end;
             end;
           end else begin
-            if PropPath = UpperCase(PList^[I]^.Name) then begin
+            if CompareText(PropPath, PList^[I]^.Name) = 0 then begin
               SetPropertyValueLow(PList^[I], C, NewValue);
               Exit;
             end;

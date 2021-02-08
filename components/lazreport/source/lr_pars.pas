@@ -267,15 +267,14 @@ begin
             end
             else if s[k] = '(' then
             begin
-              s1 := UpperCase(s1);
               Get3Parameters(s, k, s2, s3, s4);
-              if s1 = 'COPY' then
+              if CompareText(s1, 'COPY') = 0 then
               begin
                 ci := StrToInt(Calc(s3));
                 cn := StrToInt(Calc(s4));
                 nm[st] := UTF8Copy(Calc(s2), ci, cn);
               end
-              else if s1 = 'IF' then
+              else if CompareText(s1, 'IF') = 0 then
               begin
                 vCalc := Calc(S2);
                 if VarIsEmpty(vCalc) or varIsNull(vCalc) then
@@ -296,9 +295,9 @@ begin
                 DebugLnExit('TfrParser.CalcOPZ IF <- Res=%s',[string(nm[st])]);
                 {$ENDIF}
               end
-              else if s1 = 'STRTODATE' then
+              else if CompareText(s1, 'STRTODATE') = 0 then
                 nm[st] := StrToDate(Calc(s2))
-              else if s1 = 'STRTOTIME' then
+              else if CompareText(s1, 'STRTOTIME') = 0 then
                 nm[st] := StrToTime(Calc(s2))
               else if Assigned(FOnFunction) then
               begin
@@ -409,7 +408,7 @@ label 1;
 var
   i, i1, j, p: Integer;
   stack: String;
-  res, s1, s2, s3, s4: String;
+  res, s2, s3, s4: String;
   vr: Boolean;
   c: Char;
 
@@ -535,50 +534,49 @@ begin
           res := res + s2 + ' '
         else
         begin
-          s1 := UpperCase(s2);
-          if s1 = 'INT' then
+          if CompareText(s2, 'INT') = 0 then
           begin
             s[i - 1] := ttInt;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'FRAC' then
+          else if CompareText(s2, 'FRAC') = 0 then
           begin
             s[i - 1] := ttFrac;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'ROUND' then
+          else if CompareText(s2, 'ROUND') = 0 then
           begin
             s[i - 1] := ttRound;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'OR' then
+          else if CompareText(s2, 'OR') = 0 then
           begin
             s[i - 1] := ttOr;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'AND' then
+          else if CompareText(s2, 'AND') = 0 then
           begin
             s[i - 1] := ttAnd;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'NOT' then
+          else if CompareText(s2, 'NOT') = 0 then
           begin
             s[i - 1] := ttNot;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'STR' then
+          else if CompareText(s2, 'STR') = 0 then
           begin
             s[i - 1] := ttStr;
             Dec(i);
             goto 1;
           end
-          else if s1 = 'MOD' then
+          else if CompareText(s2, 'MOD') = 0 then
           begin
             s[i - 1] := ttMod;
             Dec(i);

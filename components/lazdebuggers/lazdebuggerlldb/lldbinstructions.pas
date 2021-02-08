@@ -20,7 +20,7 @@ interface
 uses
   SysUtils, Classes, strutils,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazStringUtils,
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
   // CmdLineDebuggerBase
@@ -453,7 +453,7 @@ begin
     end;
     FBreakId:= i;
 
-    if StrContains(found[1], 'pending') then
+    if Pos('pending', found[1]) > 0 then
       FState := vsPending
     else
     if StrMatches(found[1], ['', ' locations'], found2) then begin
@@ -580,9 +580,9 @@ var
   s: String;
 begin
   Result := False;
-  if LeftStr(AData, 7) = 'error: ' then begin
-    s := MaskQuotedText(LowerCase(AData));
-    if (StrContains(s, 'debug map time') and StrContains(s, 'file will be ignored'))
+  if StartsStr('error: ', AData) then begin
+    s := MaskQuotedText(AData);
+    if (PosI('debug map time', s) > 0) and (PosI('file will be ignored', s) > 0)
     then begin
       FDwarfLoadErrors := FDwarfLoadErrors + AData + LineEnding;
       exit;

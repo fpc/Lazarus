@@ -17,14 +17,18 @@ unit sparta_ComponentPalette;
 interface
 
 uses
-  Forms, Classes, SysUtils, Controls, ComCtrls, ComponentReg, ExtCtrls, Buttons,
-  Math, LazIDEIntf, PropEdits, LResources, LCLType, Graphics,
+  Forms, Classes, SysUtils, Math,
+  // LCL
+  Controls, ComCtrls, ExtCtrls, Buttons, LResources, LCLType, Graphics,
+  // LazUtils
+  LazStringUtils,
 {$IF FPC_FULLVERSION>=30200}
   Generics.Collections,
 {$ELSE}
   sparta_Generics.Collections,
 {$ENDIF}
-  FormEditingIntf, IDEImagesIntf;
+  // IdeIntf
+  ComponentReg, LazIDEIntf, PropEdits, FormEditingIntf, IDEImagesIntf;
 
 type
 
@@ -225,7 +229,6 @@ var
   LPComponents: TPanel;
   LButtons: TList<TControl>;
   LVisibleButtons: Integer;
-  LCompName: string;
   LSearchResult: TTabSheet;
 
   procedure AddButton(AButton: TSpeedButton);
@@ -279,8 +282,7 @@ begin
       for j := 0 to LPComponents.ControlCount - 1 do
       begin
         LCtrl := LPComponents.Controls[j];
-        LCompName := UpperCase(TRegisteredComponent(LCtrl.Tag).ComponentClass.ClassName);
-        if Pos(FFilter, LCompName) > 0 then
+        if PosI(FFilter, TRegisteredComponent(LCtrl.Tag).ComponentClass.ClassName) > 0 then
         begin
           LButtons.Add(LCtrl);
           LCtrl.Visible := True;

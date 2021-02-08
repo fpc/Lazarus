@@ -502,7 +502,7 @@ begin
     if HasTpInfo then begin
       for i := 0 to Length(MemberTests) - 1 do begin
         j := WV.TypeInfo.Fields.Count - 1;
-        while (j >= 0) and (uppercase(WV.TypeInfo.Fields[j].Name) <> UpperCase(MemberTests[i].Name)) do dec(j);
+        while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
         TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
                  (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
                  DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;

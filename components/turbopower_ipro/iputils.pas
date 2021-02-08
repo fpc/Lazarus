@@ -35,8 +35,9 @@ unit IpUtils;
 interface
 
 uses
-  SysUtils, Classes, Controls, Registry, ComCtrls,
-  LCLType, GraphType, LCLIntf, LMessages, LazFileUtils, LCLProc;
+  SysUtils, Classes, Registry,
+  LCLType, LCLIntf, LMessages, Controls, ComCtrls,
+  GraphType, LazFileUtils, LazStringUtils;
 
 const
   InternetProfessionalVersion = 1.15;
@@ -1717,7 +1718,7 @@ begin
   else
     Port := ':' + OldAddrRec.Port;
 
-  if UpperCase(NewAddrRec.Scheme) = 'FILE' then begin
+  if CompareText(NewAddrRec.Scheme, 'FILE') = 0 then begin
     { New is a local file }
     Result := NewAddrRec.Scheme + '://' + NewAddrRec.Path;
   end else if NewAddrRec.Scheme <> '' then begin
@@ -1731,7 +1732,7 @@ begin
     Result := Result + NewURL;  { just append }
   end else if (NewAddrRec.Scheme = '') and (NewURL[1] <> '.') then begin
     { New is probably a direct path off the current path }
-    if UpperCase(OldAddrRec.Scheme) = 'FILE' then begin
+    if CompareText(OldAddrRec.Scheme, 'FILE') = 0 then begin
       Path := ExtractFilePath(OldAddrRec.Path);
       Result := Scheme + Path;
     end
@@ -1978,7 +1979,7 @@ function MonStrToInt(MonStr : string) : Integer;
 var
   P : Integer;
 begin
-  P := Pos(UpperCase(MonStr), MonthString);
+  P := PosI(MonStr, MonthString);
   if P > 0 then
     Result := (P div 9) + 1
   else
@@ -2421,12 +2422,12 @@ begin
         end;
 
         ' ' : begin
-          if UpperCase (TimeZone) = 'AM' then begin
+          if CompareText(TimeZone, 'AM') = 0 then begin
             AMPM := True;
             PM := False;
             State := IdTimeZoneAlpha;
             TimeZone := '';
-          end else if UpperCase (TimeZone) = 'PM' then begin
+          end else if CompareText(TimeZone, 'PM') = 0 then begin
             AMPM := True;
             PM := True;
             State := IdTimeZoneAlpha;
@@ -2512,11 +2513,11 @@ begin
   end;
 
   if State = idTimeZoneAlpha then begin
-    if UpperCase (TimeZone) = 'AM' then begin
+    if CompareText(TimeZone, 'AM') = 0 then begin
       AMPM := True;
       PM := False;
       TimeZone := '';
-    end else if UpperCase (TimeZone) = 'PM' then begin
+    end else if CompareText(TimeZone, 'PM') = 0 then begin
       AMPM := True;
       PM := True;
       TimeZone := '';
@@ -2533,7 +2534,7 @@ begin
 
   { validate day of week and Month name vs. expected }
 //  if not ((Pos(UpperCase(Dow), DayString)   mod 9) = 1) then Exit; // !!!
-  if not ((Pos(UpperCase(Mon), MonthString) mod 9) = 1) then Exit;
+  if not ((PosI(Mon, MonthString) mod 9) = 1) then Exit;
 
   { correct two digit years }
   Year := EpochStr(Year);

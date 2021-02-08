@@ -2852,16 +2852,16 @@ begin
   HadTimeout := HadTimeout and LastExecwasTimeOut;
   if R.State <> dsError
   then begin
-    if UpperCase(LeftStr(R.Values, 15)) = UpperCase('type = ^TOBJECT')
+    if LazStartsText('type = ^TOBJECT', R.Values)
     then include(TargetInfo^.TargetFlags, tfClassIsPointer);
   end;
   R := CheckHasType('Exception', tfFlagHasTypeException);
   HadTimeout := HadTimeout and LastExecwasTimeOut;
   if R.State <> dsError
   then begin
-    if LeftStr(R.Values, 17) = 'type = ^Exception'
+    if StartsStr('type = ^Exception', R.Values)
     then include(TargetInfo^.TargetFlags, tfFlagMaybeDwarf3);
-    if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
+    if LazStartsText('type = ^EXCEPTION', R.Values)
     then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
   end;
   CheckHasType('Shortstring', tfFlagHasTypeShortstring);
@@ -5942,9 +5942,9 @@ begin
   DoSetMaxValueMemLimit();
   DoSetAssemblerStyle();
 
-  if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
+  if (FTheDebugger.FileName <> '') and (PosI('reading symbols from', CmdResp) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
-    if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
+    if PosI('no symbol table is loaded', FFullCmdReply) > 0 then begin
       ExecuteCommand('-file-exec-and-symbols %s',
                      [FTheDebugger.ConvertToGDBPath(FTheDebugger.FileName, cgptExeName)], R);
       DoSetPascal; // TODO: check with ALL versions of gdb, if that value needs to be refreshed or not.
@@ -7099,7 +7099,7 @@ var
 
     // Did we just leave an SEH finally block?
     if (FStepStartedInFinSub = sfsStepExited) and (FTheDebugger.FStoppedReason = srNone) then begin
-      if (UpperCase(FTheDebugger.FCurrentLocation.FuncName) <> '__FPC_SPECIFIC_HANDLER') and
+      if (CompareText(FTheDebugger.FCurrentLocation.FuncName, '__FPC_SPECIFIC_HANDLER') <> 0) and
          (FTheDebugger.FCurrentLocation.SrcFile <> '')
       then begin
         DoEndStepping;
@@ -13553,7 +13553,7 @@ var
       end;
 
       s := uppercase(AType.Fields[j].Name);
-      if uppercase(Payload) <> s
+      if CompareText(Payload, s) <> 0
       then begin
         debugln(DBGMI_STRUCT_PARSER, 'Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
         Break;
@@ -13585,7 +13585,7 @@ var
     GDBParser.Free;
   end;
 
-  procedure PutValuesInClass(const AType: TGDBType; ATextInfo: String);
+  procedure PutValuesInClass(AType: TGDBType; const ATextInfo: String);
   var
     //GDBParser: TGDBStringIterator;
     //Payload: String;
@@ -13629,10 +13629,10 @@ var
       SkipSpaces;
     end;
 
-    procedure ProcessAncestor(ATypeName: String);
+    procedure ProcessAncestor(const ATypeName: String);
     var
       HelpPtr, HelpPtr2: PChar;
-      NewName, NewVal, Sn, Sc: String;
+      NewName, NewVal: String;
       i: Integer;
       NewField: TDBGField;
     begin
@@ -13693,15 +13693,13 @@ var
         NewVal := copy(HelpPtr, 1, HelpPtr2 + 1 - HelpPtr);  // name of field
 
         i := AType.Fields.Count - 1;
-        Sn := UpperCase(NewName);
-        Sc := UpperCase(ATypeName);
         while (i >= 0)
-        and ( (uppercase(AType.Fields[i].Name) <> Sn)
-           or (uppercase(AType.Fields[i].ClassName) <> Sc) )
+        and ( (CompareText(AType.Fields[i].Name, NewName) <> 0)
+           or (CompareText(AType.Fields[i].ClassName, ATypeName) <> 0) )
         do dec(i);
 
         if i < 0 then begin
-          if (Sc <> 'TOBJECT') or (pos('VPTR', Sn) < 1) then begin
+          if (CompareText(ATypeName, 'tobject') <> 0) or (PosI('vptr', NewName) < 1) then begin
             if not(defFullTypeInfo in FEvalFlags) then begin
               NewField := TDBGField.Create(NewName, TGDBType.Create(skSimple, ''), flPublic, [], '');
               AType.Fields.Add(NewField);

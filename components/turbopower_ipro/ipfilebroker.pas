@@ -31,8 +31,10 @@ unit Ipfilebroker;
 
 interface
 
-uses Classes, SysUtils, LResources, Graphics, LCLProc, LazFileUtils, LazUTF8,
-     ipconst, iputils, iphtml, ipmsg;
+uses
+  Classes, SysUtils,
+  LResources, Graphics, LazFileUtils, LazStringUtils, LazUTF8,
+  ipconst, iputils, iphtml, ipmsg;
 
 const
   IP_DEFAULT_SCHEME : string = 'HTTP';
@@ -290,9 +292,9 @@ begin
   IpParseURL(FN, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
   //DebugLn('TIpFileDataProvider.CanHandle FN="'+FN+'"');
-  ContentType := UpperCase(GetLocalContent(FN));
-  Result := (FileExistsUTF8(FN)) and ((Pos('TEXT/HTML', ContentType) > 0) or
-    (Pos('IMAGE/', ContentType) > 0));
+  ContentType := GetLocalContent(FN);
+  Result := FileExistsUTF8(FN) and ((PosI('TEXT/HTML', ContentType) > 0)
+                                 or (PosI('IMAGE/', ContentType) > 0));
   Finalize(FileAddrRec);
 end;
 
@@ -353,8 +355,8 @@ begin
   Picture := nil;
   IpParseURL(URL, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
-  Content := UpperCase(GetLocalContent(FN));
-  if Pos('IMAGE/', Content) > 0 then begin
+  Content := GetLocalContent(FN);
+  if PosI('IMAGE/', Content) > 0 then begin
     try
       Picture := TPicture.Create;
       Picture.LoadFromFile(FN);

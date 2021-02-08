@@ -1738,7 +1738,7 @@ begin
     if Instr is TX86AsmInstruction then begin
       case TX86AsmInstruction(Instr).X86OpCode of
         OPmov:
-          if UpperCase(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value) = 'RBP' then
+          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'RBP') = 0 then
             FFinState := fsMov;
         OPcall:
           if FFinState = fsMov then begin
@@ -3170,7 +3170,7 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
     end;
 
     sym := CurrentProcess.FindProcSymbol(CurrentThread.GetInstructionPointerRegisterValue);
-    r := (sym <> nil) and (UpperCase(sym.Name) <> '__FPC_SPECIFIC_HANDLER') and
+    r := (sym <> nil) and (CompareText(sym.Name, '__FPC_SPECIFIC_HANDLER') <> 0) and
          (sym.FileName <> '');
     sym.ReleaseReference;
     if r then
@@ -4541,7 +4541,7 @@ begin
       if (P <> nil) and
          ( (P.Name = 'FPC_ASSERT') or (P.Name = 'fpc_assert') or
            (P.Name = 'ASSERT') or (P.Name = 'assert') or
-           (UpperCase(copy(P.Name, 1, length(SYS_ASSERT_NAME))) = SYS_ASSERT_NAME) )
+           (CompareText(copy(P.Name, 1, length(SYS_ASSERT_NAME)), SYS_ASSERT_NAME) = 0) )
       then begin
         dec(f);
         Result := CList[f].AnAddress - 1;

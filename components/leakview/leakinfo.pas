@@ -11,7 +11,7 @@ uses
   // CodeTools
   CodeToolManager, CodeCache,
   // LazUtils
-  FileUtil, LazFileUtils, LazClasses, LazLoggerBase,
+  FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
   // IDEIntf
   TextTools,
   // LeakView
@@ -339,7 +339,7 @@ begin
   if CaseSensetive then
     Result := Pos(SubStr, Trc[TrcIndex])>0
   else // slow?
-    Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
+    Result := PosI(SubStr, Trc[TrcIndex])>0;
 end;
 
 function THeapTrcInfo.IsTraceLine(const Idx: Integer;
@@ -437,8 +437,8 @@ begin
 
   i := 1;
   while (i < length(SubStr)) and (SubStr[i] in [' ', #9, '#', '~', '"', '''']) do inc(i);
-  Result := (pos(UpperCase(CallTracePrefix), UpperCase(SubStr)) = i) or
-            (pos(UpperCase(RawTracePrefix), UpperCase(SubStr)) = i);
+  Result := (PosI(CallTracePrefix, SubStr) = i) or
+            (PosI(RawTracePrefix, SubStr) = i);
 end;
 
 function THeapTrcInfo.TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;

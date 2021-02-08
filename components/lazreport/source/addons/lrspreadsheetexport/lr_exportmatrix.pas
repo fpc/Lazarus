@@ -38,7 +38,10 @@ unit LR_ExportMatrix;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, Graphics;
+  Classes, SysUtils,
+  Graphics,
+  LazStringUtils,
+  LR_Class;
 
 type
 
@@ -289,8 +292,8 @@ begin
       FLayout:=TfrMemoView(AObj).Layout;
       FWordWrap:=TfrMemoView(AObj).WordWrap;
                                     //http://www.lazarus-ide.org/
-      S:=UpperCase(TfrMemoView(AObj).URLInfo);
-      if (S <> '') and ((Copy(S, 1,  7) = 'HTTP://') or (Copy(S, 1, 8) = 'HTTPS://')) then
+      S:=TfrMemoView(AObj).URLInfo;
+      if LazStartsText('HTTP://', S) or LazStartsText('HTTPS://', S) then
           URLInfo:=TfrMemoView(AObj).URLInfo;
     end
     else

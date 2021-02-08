@@ -899,18 +899,18 @@ function TLibraryMap.GetLib(const AName: String; out ALib: TDbgLibrary;
 var
   Iterator: TMapIterator;
   Lib: TDbgLibrary;
-  n: String;
+  s: String;
 begin
   Result := False;
   Iterator := TMapIterator.Create(Self);
-  n := UpperCase(AName);
   while not Iterator.EOM do
   begin
     Iterator.GetData(Lib);
     if IsFullName then
-      Result := UpperCase(Lib.Name) = n
+      s := Lib.Name;
     else
-      Result := UpperCase(ExtractFileName(Lib.Name)) = n;
+      s := ExtractFileName(Lib.Name);
+    Result := CompareText(s, AName) = 0;
     if Result
     then begin
       ALib := Lib;

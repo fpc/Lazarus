@@ -143,18 +143,18 @@ end;
 procedure TfpWebNewHTMLFileForm.FillLinks;
 var
   i:integer;
-  S, Ext:string;
+  S, Ext: string;
 begin
   if Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
     for i:=0 to LazarusIDE.ActiveProject.FileCount - 1 do
     begin
       S:=LazarusIDE.ActiveProject.Files[i].Filename;
-      Ext:=UpperCase(ExtractFileExt(S));
-      if Ext = '.JS' then
+      Ext:=ExtractFileExt(S);
+      if CompareText(Ext, '.JS') = 0 then
         edtJS.Items.Add(S)
       else
-      if Ext = '.CSS' then
+      if CompareText(Ext, '.CSS') = 0 then
         edtCSS.Items.Add(S);
     end;
   end;

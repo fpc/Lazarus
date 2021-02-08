@@ -1081,7 +1081,7 @@ const
 
     function IsTrue(value: string): boolean;
     begin
-      Result := not ((UpperCase(value) = 'FALSE') or (value = '0'));
+      Result := not ((CompareText(value,'FALSE') = 0) or (value = '0'));
     end; { IsTrue }
 
   begin

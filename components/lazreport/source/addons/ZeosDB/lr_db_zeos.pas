@@ -23,7 +23,7 @@ type
   { TQueryParamList }
 
   TQueryParamList = class(TFPObjectList)
-    function ParamByName(AParamName:string):TQueryParam;
+    function ParamByName(const AParamName:string):TQueryParam;
     function Add(AParamType:TFieldType; const AParamName, AParamValue:string):TQueryParam;
   end;
 
@@ -127,15 +127,14 @@ end;
 
 { TQueryParamList }
 
-function TQueryParamList.ParamByName(AParamName: string): TQueryParam;
+function TQueryParamList.ParamByName(const AParamName: string): TQueryParam;
 var
   i:integer;
 begin
   Result:=nil;
-  AParamName:=UpperCase(AParamName);
   for i:=0 to Count - 1 do
   begin
-    if UpperCase(TQueryParam(Items[i]).ParamName) = AParamName then
+    if CompareText(TQueryParam(Items[i]).ParamName), AParamName) = 0 then
     begin
       Result:=TQueryParam(Items[i]);
       exit;
@@ -465,15 +464,14 @@ begin
   inherited Destroy;
 end;
 
-function StrToFieldType(AStrTypeName:string):TFieldType;
+function StrToFieldType(const AStrTypeName:string):TFieldType;
 var
   i:TFieldType;
 begin
   Result:=ftUnknown;
-  AStrTypeName:=UpperCase(AStrTypeName);
   for i in TFieldType do
   begin
-    if UpperCase(Fieldtypenames[i]) = AStrTypeName then
+    if CompareText(Fieldtypenames[i], AStrTypeName) = 0 then
     begin
       Result:=i;
       exit;

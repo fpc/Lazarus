@@ -282,7 +282,7 @@ begin
       '_', '0'..'9', 'a'..'z', 'A'..'Z': Identifiers[I]:=True;
     else Identifiers[I]:=False;
     end;
-    J:=UpperCase(I)[1];
+    J:=UpCase(I);
     Case I of
       'a'..'z', 'A'..'Z', '_': mHashTable[I]:=Ord(J)-64;
     else mHashTable[Char(I)]:=0;

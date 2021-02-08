@@ -193,8 +193,10 @@ var
 begin
   OnActivate := nil;
   B := False;
-  if Prop = 'MAXDATE' then DateTimePickerMax.SetFocus
-  else if Prop = 'MINDATE' then DateTimePickerMin.SetFocus
+  if CompareText(Prop, 'MAXDATE') = 0 then
+    DateTimePickerMax.SetFocus
+  else if CompareText(Prop, 'MINDATE') = 0 then
+    DateTimePickerMin.SetFocus
   else begin
     DateTimePicker1.SetFocus;
     B := DateTimePicker1.NullInputAllowed;
@@ -216,12 +218,12 @@ var
 begin
   if Assigned(Caller) then begin
     CallerDateTimePicker := Caller;
-    Prop := UpperCase(PropertyName);
+    Prop := PropertyName;
     BiDiMode := CallerDateTimePicker.BiDiMode;
 
     Modified := False;
     DateTimePicker1.Kind := dtkDateTime;
-    if UpperCase(PropertyType) = 'TTIME' then
+    if CompareText(PropertyType, 'TTIME') = 0 then
       DateTimePicker1.SelectTime
     else
       DateTimePicker1.SelectDate;
@@ -425,16 +427,14 @@ end;
 function TDateTimePickerDateTimePropEditor.GetValue: string;
 var
   DT: TDateTime;
-  S: String;
 begin
   DT := TDateTime(GetFloatValue);
   if IsNullDate(DT) then
     Result := 'NULL'
   else begin
-    S := UpperCase(GetPropType^.Name);
-    if S = 'TDATE' then
+    if CompareText(GetPropType^.Name, 'TDATE') = 0 then
       Result := DateToStr(DT)
-    else if S = 'TTIME' then
+    else if CompareText(GetPropType^.Name, 'TTIME') = 0 then
       Result := TimeToStr(DT)
     else
       Result := DateTimeToStr(DT);
@@ -447,10 +447,9 @@ var
 begin
   S := Trim(Value);
   if (S > '') and (UpCase(S[1]) <> 'N') then begin
-    S := UpperCase(GetPropType^.Name);
-    if S = 'TDATE' then
+    if CompareText(GetPropType^.Name, 'TDATE') = 0 then
       SetFloatValue(StrToDate(Value))
-    else if S = 'TTIME' then
+    else if CompareText(GetPropType^.Name, 'TTIME') = 0 then
       SetFloatValue(StrToTime(Value))
     else
       inherited SetValue(Value);

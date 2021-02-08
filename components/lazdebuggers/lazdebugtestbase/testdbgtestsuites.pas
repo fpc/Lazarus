@@ -352,7 +352,7 @@ begin
   if ACaseSense then
     Result :=  Got = Expected
   else
-    Result := UpperCase(Got) = UpperCase(Expected);
+    Result := CompareText(Got, Expected) = 0;
   Name := Name + ': Expected "'+Expected+'", Got "'+Got+'"';
   if Result
   then AddTestSuccess(Name, MinDbgVers, MinFpcVers, AIgnoreReason)

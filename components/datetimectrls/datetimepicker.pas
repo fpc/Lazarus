@@ -1034,7 +1034,7 @@ begin
     AValue := TrimRight(AValue);
     FMonthNames := AValue;
 
-    if UpperCase(AValue) = 'SHORT' then
+    if CompareText(AValue, 'SHORT') = 0 then
       for I := Low(TMonthNameArray) to High(TMonthNameArray) do
         FMonthNamesArray[I] := AnsiToUtf8(DefaultFormatSettings.ShortMonthNames[I])
     else begin

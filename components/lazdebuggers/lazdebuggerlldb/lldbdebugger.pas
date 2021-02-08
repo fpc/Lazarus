@@ -2293,10 +2293,10 @@ begin
   if TLldbDebuggerProperties(Debugger.GetProperties).SkipGDBDetection then
     FGotLLDB := True
   else
-  if StrContains(UpperCase(ALine), 'LLDB') then
+  if PosI('LLDB', ALine) > 0 then
     FGotLLDB := True
   else
-  if StrContains(UpperCase(ALine), '(GDB)') then
+  if PosI('(GDB)', ALine) > 0 then
     Debugger.SetErrorState('GDB detected', 'The external debugger identified itself as GDB. The IDE expected LLDB.');
 end;
 

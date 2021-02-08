@@ -468,8 +468,8 @@ begin
        gdb 7.7 and 7.8 fail to find members, if lowercased
        Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
     *)
-    if (i<=l) and  (Result[i] in ['a'..'z']) then
-      Result[i] := UpperCase(Result[i])[1];
+    if (i<=l) and (Result[i] in ['a'..'z']) then
+      Result[i] := UpCase(Result[i]);
     inc(i);
   end;
 end;

@@ -712,7 +712,7 @@ begin
     begin
       with CustomForms[i] do
       begin
-        if (UpperCase(ClassName)='TDATAMODULEFORM')  then
+        if CompareText(ClassName,'TDATAMODULEFORM') = 0  then
           for j := 0 to ComponentCount - 1 do
           begin
             if (Components[j] is TDataModule) then

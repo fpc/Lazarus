@@ -5,8 +5,9 @@ unit ChmProg;
 interface
 
 uses
-  Classes, SysUtils,
-  Dialogs, FileUtil, LazFileUtils, LazUTF8, LazLogger,
+  Classes, SysUtils, chmreader, chmFiftiMain,
+  Dialogs,
+  FileUtil, LazFileUtils, LazUTF8, LazLogger,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 
@@ -21,7 +22,7 @@ type
   private
     FCHMSearchPath: string;
     FDirectiveNodes: TFPList;
-    function SearchForDirective(ADirective: string;
+    function SearchForDirective(const ADirective: string;
       var ListOfNodes: THelpNodeQueryList): Boolean;
     procedure ClearDirectiveNodes;
   public
@@ -45,8 +46,6 @@ var
 
 implementation
 
-uses chmreader, chmFiftiMain;
-
 procedure RegisterFPCDirectivesHelpDatabase;
 begin
   if not Assigned(FPCDirectivesHelpDatabase) then
@@ -57,22 +56,19 @@ end;
 
 { TFPCDirectivesHelpDatabase }
 
-function TFPCDirectivesHelpDatabase.SearchForDirective(ADirective: string;
+function TFPCDirectivesHelpDatabase.SearchForDirective(const ADirective: string;
   var ListOfNodes: THelpNodeQueryList): Boolean;
 var
   chm: TChmFileList;
   fchm: TChmReader;
-  DocTitle, URL: string;
+  DocTitle, URL, Filename: string;
   ms: TMemoryStream;
   SearchReader: TChmSearchReader;
   TitleResults: TChmWLCTopicArray;
   i, k: Integer;
   DirectiveNode: THelpNode;
-  Filename: String;
 begin
-  ADirective := UpperCase(ADirective);
   Result := False;
-
   Filename:=FindCHMFile;
   if Filename='' then exit;
 
@@ -94,9 +90,10 @@ begin
     for k := 0 to High(TitleResults) do
     begin
       URL := fchm.LookupTopicByID(TitleResults[k].TopicIndex, DocTitle);
-      i := Pos(ADirective, DocTitle);
-      if (i = 0) or (Length(DocTitle) >= i + Length(ADirective))
-        and (upCase(DocTitle[i + Length(ADirective)]) in ['A'..'Z','0'..'9']) then Continue;
+      i := PosI(ADirective, DocTitle);
+      if i = 0 then Continue;
+      if Length(DocTitle) = i+Length(ADirective)-1 then Continue;
+      if DocTitle[i+Length(ADirective)] in ['A'..'Z','a'..'z','0'..'9'] then Continue;
       if (Length(URL) > 0) and (URL[1] = '/') then
         Delete(URL, 1, 1);
       if URL = '' then Continue;

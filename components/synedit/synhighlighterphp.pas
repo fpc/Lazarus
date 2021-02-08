@@ -237,7 +237,6 @@ begin
       '_', '0'..'9', 'a'..'z', 'A'..'Z': Identifiers[I] := True;
     else Identifiers[I] := False;
     end;
-//    J := UpperCase(I)[1];
     J := UpCase(I);
     Case I in ['_', 'A'..'Z', 'a'..'z'] of
       True: mHashTable[I] := Ord(J) - 64
