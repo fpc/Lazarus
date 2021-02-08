@@ -438,7 +438,7 @@ begin
         begin
           if SymbolArr32^[i].st_name<>0 then
             begin
-            SectIdx := SymbolArr64^[i].st_shndx;
+            SectIdx := SymbolArr32^[i].st_shndx;
             if (SectIdx < 0) or (SectIdx >= fElfFile.seccount) then
               continue;
             Sect := @fElfFile.sections[SectIdx];
