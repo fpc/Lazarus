@@ -63,7 +63,7 @@ msgid "&Close"
 msgstr "&Zamknij"
 
 #: lhelpstrconsts.slhelp_closeconfirm
-msgid "You can use the Esc to hide Help. Are you realy want to close lHelp?"
+msgid "You can hide Help via Esc key. Do you really want to close LHelp?"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_contents
@@ -79,7 +79,7 @@ msgid "Copy"
 msgstr "Kopiuj"
 
 #: lhelpstrconsts.slhelp_copyhtmlsource
-msgid "Copy html source"
+msgid "Copy HTML source"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_exit

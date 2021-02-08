@@ -47,8 +47,8 @@ resourcestring
   slhelp_SearchResults = 'Search Results:';
   slhelp_Copy = 'Copy';
   slhelp_PageCannotBeFound = 'Page cannot be found!';
-  slhelp_CopyHtmlSource = 'Copy html source';
-  slhelp_CloseConfirm = 'You can use the Esc to hide Help. Are you realy want to close lHelp?';
+  slhelp_CopyHtmlSource = 'Copy HTML source';
+  slhelp_CloseConfirm = 'You can hide Help via Esc key. Do you really want to close LHelp?';
 
   slhelp_Actions = '&Actions';
   slhelp_ActionsTOC = '&TOC';
