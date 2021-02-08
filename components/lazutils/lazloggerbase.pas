@@ -583,12 +583,9 @@ begin
 end;
 
 function TLazLoggerLogGroupList.IndexOf(const AConfigName: String): integer;
-var
-  s: String;
 begin
   Result := Count - 1;
-  s := UpperCase(AConfigName);
-  while (Result >= 0) and (Item[Result]^.ConfigName <> s) do
+  while (Result >= 0) and (CompareText(Item[Result]^.ConfigName, AConfigName) <> 0) do
     dec(Result);
 end;
 

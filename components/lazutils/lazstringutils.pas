@@ -37,6 +37,9 @@ type
 const
   EndOfLine: shortstring = LineEnding;
 
+function PosI(const SubStr, S: string): integer;
+function LazStartsText(const ASubText, AText: string): Boolean;
+function LazEndsText(const ASubText, AText: string): Boolean;
 function IsNumber(s: String): Boolean;
 
 // Functions for line endings
@@ -110,6 +113,61 @@ const
   MaxTextLen = 80;
 
 implementation
+
+function PosI(const SubStr, S: string): integer;
+// A case-insensitive version of Pos().
+// Note: StrUtils has ContainsText but its implementation is VERY slow.
+var
+  Len1, Len2, Cnt1, Cnt2: integer;
+  SubFirst: Char;
+begin
+  Len1 := Length(SubStr);
+  Len2 := Length(S);
+  if (Len1 = 0) or (Len1 > Len2) then
+    Exit(0);
+  SubFirst := LowerCase(SubStr[1]);
+  Result := 0;
+  for Cnt1 := 1 to Len2-Len1+1 do
+  begin                         // Outer loop finds the first matching character.
+    if LowerCase(S[Cnt1]) = SubFirst then
+    begin                       // Maybe a start of the substring.
+      Result := Cnt1;
+      for Cnt2 := 2 to Len1 do
+        if LowerCase(S[Cnt1+Cnt2-1]) <> LowerCase(SubStr[Cnt2]) then
+        begin
+          Result := 0;          // No match
+          break;
+        end;
+    end;
+    if Result > 0 then
+      break;
+  end;
+end;
+
+function LazStartsText(const ASubText, AText: string): Boolean;
+// A fast implementation of StartsText.
+// The version in RTL calls AnsiCompareText and is VERY slow.
+begin
+  if (Length(AText) >= Length(ASubText)) and (ASubText <> '') then
+    Result := StrLIComp(PChar(ASubText), PChar(AText), Length(ASubText)) = 0
+  else
+    Result := False;
+end;
+
+function LazEndsText(const ASubText, AText: string): Boolean;
+// A fast implementation of StartsText.
+// The version in RTL calls AnsiCompareText and is VERY slow.
+var
+  LS, LT: SizeInt;
+begin
+  LS := Length(ASubText);
+  LT := Length(AText);
+  if (LT >= LS) and (ASubText <> '') then
+    Result := StrLIComp(PChar(ASubText), @AText[LT-LS+1], LS) = 0
+  else
+    Result := False;
+end;
+
 
 function IsNumber(s: String): Boolean;
 var
@@ -1096,7 +1154,7 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
   const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
 var
   n, i, idx: Integer;
-  S, Source, Match: String;
+  Source, Match: String;
   HasEscape: Boolean;
 begin
   Source := ASource;
@@ -1106,9 +1164,6 @@ begin
     idx := 0;
     Match := '';
     HasEscape := False;
-    if AnIgnoreCase
-    then S := UpperCase(Source)
-    else S := Source;
     for n := Low(ASkipTo) to High(ASkipTo) do
     begin
       if ASkipTo[n] = ''
@@ -1117,33 +1172,26 @@ begin
         Continue;
       end;
       if AnIgnoreCase
-      then i := Pos(UpperCase(ASkipTo[n]), S)
-      else i := Pos(ASkipTo[n], S);
+      then i := PosI(ASkipTo[n], Source)
+      else i := Pos(ASkipTo[n], Source);
       if i > idx
       then begin
         idx := i;
         Match := ASkipTo[n];
       end;
     end;
-    if (idx = 0) and not HasEscape
-    then begin
-      Result := '';
-      Exit;
-    end;
+    if (idx = 0) and not HasEscape then Exit('');
     if idx > 0
     then Delete(Source, 1, idx + Length(Match) - 1);
   end;
 
-  if AnIgnoreCase
-  then S := UpperCase(Source)
-  else S := Source;
   idx := MaxInt;
   for n := Low(AnEnd) to High(AnEnd) do
   begin
     if AnEnd[n] = '' then Continue;
     if AnIgnoreCase
-    then i := Pos(UpperCase(AnEnd[n]), S)
-    else i := Pos(AnEnd[n], S);
+    then i := PosI(AnEnd[n], Source)
+    else i := Pos(AnEnd[n], Source);
     if (i > 0) and (i < idx) then idx := i;
   end;
 
@@ -1277,30 +1325,29 @@ end;
 
 function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer;
 var
-  Search, S: String;
+  S: String;
 begin
-  if High(ACase) = -1
-  then begin
-    Result := -1;
-    Exit;
-  end;
-
-  if AIgnoreCase
-  then Search := UpperCase(AString)
-  else Search := AString;
-
+  if High(ACase) = -1 then Exit(-1);
   for Result := Low(ACase) to High(ACase) do
   begin
-    if AIgnoreCase
-    then S := UpperCase(ACase[Result])
-    else S := ACase[Result];
-
-    if Search = S then Exit;
+    S := ACase[Result];
+    // Exact match
+    if AIgnoreCase then begin
+      if CompareText(AString, S) = 0 then Exit;
+    end
+    else begin
+      if AString = S then Exit;
+    end;
     if not APartial then Continue;
-    if Length(Search) >= Length(S) then Continue;
-    if StrLComp(PChar(Search), PChar(S), Length(Search)) = 0 then Exit;
+    if Length(AString) >= Length(S) then Continue;
+    // Partial match
+    if AIgnoreCase then begin
+      if StrLIComp(PChar(AString), PChar(S), Length(AString)) = 0 then Exit;
+    end
+    else begin
+      if StrLComp(PChar(AString), PChar(S), Length(AString)) = 0 then Exit;
+    end;
   end;
-
   Result := -1;
 end;
 

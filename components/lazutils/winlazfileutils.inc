@@ -541,7 +541,7 @@ begin
     inc(I);
     if not (Path[I] in AllowDirectorySeparators) then
       Exit('');
-    if UpperCase(Copy(Path, I + 1, 3)) = 'UNC' then
+    if CompareText(Copy(Path, I+1, 3), 'UNC') = 0 then
     begin
       inc(I, 4);
       if I < Len then

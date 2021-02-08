@@ -33,6 +33,8 @@ uses
   Classes, SysUtils, contnrs, Math, dateutils, laz.VirtualTrees,
   // LCL
   Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
+  // LazUtils
+  LazStringUtils,
   // IDEIntf
   LCLIntf, PackageIntf,
   // OpkMan
@@ -941,7 +943,7 @@ procedure TVisualTree.FilterTree(const AFilterBy: TFilterBy; const AText:
   var
     P: Integer;
   begin
-    P := Pos(UpperCase(AText), UpperCase(ADataText));
+    P := PosI(AText, ADataText);
     if P > 0 then
       FVST.IsVisible[Node] := True
     else
@@ -987,7 +989,7 @@ begin
         begin
           if Data^.DataType = 12 then
           begin
-            if Pos(UpperCase(CategoriesEng[AExtraParam]), UpperCase(Data^.Category)) > 0 then
+            if PosI(CategoriesEng[AExtraParam], Data^.Category) > 0 then
               FilterNode(Node, 'PackageCategory')
             else
               FilterNode(Node, '')

@@ -187,7 +187,7 @@ begin
         inc(p);
       if p>fHtmlLen then break;
       if fHTML[p]='=' then
-        AttrName:=UpperCase(copy(fHTML,Start,p-Start));
+        AttrName:=copy(fHTML,Start,p-Start);
     end;
     // Attribute "value"
     if fHTML[p]='"' then
@@ -197,7 +197,7 @@ begin
       while (p<=fHtmlLen) and (fHTML[p]<>'"') do
         inc(p);
       if p>fHtmlLen then break;
-      AttrValue:=UpperCase(copy(fHTML,Start,p-Start));
+      AttrValue:=copy(fHTML,Start,p-Start);
     end;
     inc(p);
     if (fHTML[p-1]='>') then break;  // end of tag
@@ -214,7 +214,8 @@ begin
         AddNewLine;
     'DIV':
       begin
-        fInDivTitle:=(AttrName='CLASS') and (AttrValue='TITLE');
+        fInDivTitle:=(CompareText(AttrName,'CLASS')=0)
+                 and (CompareText(AttrValue,'TITLE')=0);
         if fInDivTitle then
         begin
           AddNewLine;
