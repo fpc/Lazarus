@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, chmreader, chmFiftiMain,
   Dialogs,
-  FileUtil, LazFileUtils, LazUTF8, LazLogger,
+  FileUtil, LazFileUtils, LazUTF8, LazLogger, LazStringUtils,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 
