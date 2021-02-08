@@ -152,6 +152,9 @@ type
 
     function getClientRect: TRect; virtual;
     function getClientBounds: TRect; virtual;
+
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);virtual;
+
     function GetContainerWidget: PGtkWidget; virtual;
     function GetPosition(out APoint: TPoint): Boolean; virtual;
     procedure Release; override;
@@ -280,6 +283,7 @@ type
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
     function GetTrackBarOrientation: TTrackBarOrientation;
     procedure SetScalePos(AValue: TTrackBarScalePos);
     procedure SetTickMarks(AValue: TTickMark; ATickStyle: TTickStyle);
@@ -778,6 +782,7 @@ type
     function GetScrolledWindow: PGtkScrolledWindow; override;
     class function decoration_flags(Aform: TCustomForm): longint;
   public
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
     destructor Destroy; override;
     procedure Activate; override;
     procedure Gtk3ActivateWindow(AEvent: PGdkEvent);
@@ -1059,6 +1064,8 @@ end;
 const act_count:integer=0;
 
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
+var
+  NotifyUserInput:boolean;
 begin
   {$IFDEF GTK3DEBUGCOMBOBOX}
   if (Data <> nil) and (wtComboBox in TGtk3Widget(Data).WidgetType) and
@@ -1414,6 +1421,8 @@ begin
   NewSize.cx := AGdkRect^.width;
   NewSize.cy := AGdkRect^.height;
 
+  //writeln(format('Gkt3SizeAllocate w=%d h=%d',[NewSize.cx,NewSize.cy]));
+
   if not Assigned(ACtl.LCLObject) then exit;
 
   // do not loop with LCL but do not apply it to TQtMainWindow !
@@ -1751,6 +1760,8 @@ begin
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 
+  if Mouse.CursorPos=MousePos then exit;
+
   Msg.Keys := GdkModifierStateToLCL(Event^.motion.state, False);
 
   Msg.Msg := LM_MOUSEMOVE;
@@ -1825,15 +1836,16 @@ end;
 
 function TGtk3Widget.GtkEventResize(Sender: PGtkWidget; Event: PGdkEvent
   ): Boolean; cdecl;
+var alloc:TGtkAllocation;
 begin
-  {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGSIZE)}
+  {-$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGSIZE)}
   DebugLn('GtkEventResize: ',dbgsName(LCLObject),' Send=',dbgs(Event^.configure.send_event),
   ' x=',dbgs(Round(event^.configure.x)),
   ' y=',dbgs(Round(event^.configure.y)),
-  ' w=',dbgs(Round(event^.configure.height)),
-  ' h=',dbgs(Round(event^.configure.width)));
-  {$ENDIF}
-  Result := False;
+  ' w=',dbgs(Round(event^.configure.width)),
+  ' h=',dbgs(Round(event^.configure.height)));
+  {-$ENDIF}
+  Result := false;
 end;
 
 procedure TGtk3Widget.GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent);
@@ -2820,6 +2832,41 @@ begin
   end;
 end;
 
+procedure TGtk3Widget.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
+var
+  ARect: TGdkRectangle;
+  Alloc: TGtkAllocation;
+  AMinSize, ANaturalSize: gint;
+begin
+  ARect.x := ALeft;
+  ARect.y := ATop;
+  ARect.width := AWidth;
+  ARect.Height := AHeight;
+  with Alloc do
+  begin
+    x := ALeft;
+    y := ATop;
+    width := AWidth;
+    height := AHeight;
+  end;
+  BeginUpdate;
+  try
+    {fixes gtk3 assertion}
+    Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
+    Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
+
+    Widget^.size_allocate(@ARect);
+    Widget^.set_allocation(@Alloc);
+    if LCLObject.Parent <> nil then
+      move(ALeft, ATop);
+    // we must trigger get_preferred_width after changing size
+    {if wtProgressBar in WidgetType then
+      getContainerWidget^.set_size_request(AWidth, AHeight);}
+  finally
+    EndUpdate;
+  end;
+end;
+
 function TGtk3Widget.GetContainerWidget: PGtkWidget;
 begin
   if Assigned(FCentralWidget) then
@@ -3132,6 +3179,12 @@ begin
   FCentralWidget := TGtkFixed.new;
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
+
+  {fWidgetRGBA[0].R:=0.8;
+  fWidgetRGBA[0].Alpha:=0.7;
+  PgtkFrame(Result)^.override_color(GTK_STATE_NORMAL,@Self.FWidgetRGBA[0]);}
+  // nil resets color to gtk default
+  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
 end;
 
 function TGtk3GroupBox.getText: String;
@@ -3643,6 +3696,7 @@ end;
 function TGtk3TrackBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   ATrack: TCustomTrackBar;
+  Alloc:TGtkAllocation;
 begin
   ATrack := TCustomTrackBar(LCLObject);
   FWidgetType := FWidgetType + [wtTrackBar];
@@ -3650,8 +3704,13 @@ begin
   FOrientation := ATrack.Orientation;
   if ATrack.Reversed then
     PGtkScale(Result)^.set_inverted(True);
-
   PGtkScale(Result)^.set_digits(0);
+end;
+
+procedure TGtk3TrackBar.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  Widget^.set_size_request(AWidth,AHeight);
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 function TGtk3TrackBar.GetTrackBarOrientation: TTrackBarOrientation;
@@ -6655,6 +6714,11 @@ begin
   check := TGtkCheckButton.new;
   Result := PGtkWidget(check);
   check^.set_use_underline(True);
+  {fWidgetRGBA[0].G:=0.8;
+  fWidgetRGBA[0].Alpha:=0.7;
+  check^.override_color(GTK_STATE_NORMAL,@Self.FWidgetRGBA[0]);}
+  // nil resets color to gtk default
+  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
 end;
 
 { TGtk3RadioButton }
@@ -6968,7 +7032,7 @@ begin
 
   Msg.Width := Word(AWidget^.window^.get_width);
   Msg.Height := Word(AWidget^.window^.get_height);
-  // DebugLn('GetWindowState SizeType=',dbgs(Msg.SizeType),' realized ',dbgs(AWidget^.get_realized));
+  DebugLn('GetWindowState SizeType=',dbgs(Msg.SizeType),' realized ',dbgs(AWidget^.get_realized));
   TGtk3Window(AData).DeliverMessage(Msg);
   // DeliverMessage(Msg);
 end;
@@ -7021,7 +7085,7 @@ begin
   if not Assigned(LCLObject.Parent) then
   begin
     Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
-
+    Result^.set_size_request(0,0);
     gtk_widget_realize(Result);
     decor:=decoration_flags(AForm);
     gdk_window_set_decorations(Result^.window, decor);
@@ -7125,6 +7189,83 @@ begin
 
   // DebugLn('GetClientRect ',dbgsName(LCLObject),' Result ',dbgs(Result));
 end;
+
+procedure TGtk3Window.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
+var
+  ARect: TGdkRectangle;
+  Geometry: TGdkGeometry;
+  AHints: TGdkWindowHints;
+  AFixedWidthHeight: Boolean;
+  AForm: TCustomForm;
+  AMinSize, ANaturalSize: gint;
+begin
+  AForm := TCustomForm(LCLObject);
+  BeginUpdate;
+  ARect.x := ALeft;
+  ARect.y := ATop;
+  ARect.width := AWidth;
+  ARect.Height := AHeight;
+  try
+    {fixes gtk3 assertion}
+    Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
+    Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
+
+    Widget^.size_allocate(@ARect);
+    if not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
+    begin
+      AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
+      with Geometry do
+      begin
+        if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
+          min_width := AForm.Constraints.MinWidth
+        else
+          min_width := AForm.Width;
+        if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
+          max_width := AForm.Constraints.MaxWidth
+        else
+        max_width := AForm.Width;
+        if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
+          min_height := AForm.Constraints.MinHeight
+        else
+          min_height := AForm.Height;
+        if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
+          max_height := AForm.Constraints.MaxHeight
+        else
+          max_height := AForm.Height;
+
+        base_width := AForm.Width;
+        base_height := AForm.Height;
+        width_inc := 1;
+        height_inc := 1;
+        min_aspect := 0;
+        max_aspect := 1;
+        win_gravity := PGtkWindow(Widget)^.get_gravity;
+      end;
+
+      if AFixedWidthHeight then
+        PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry,
+          GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE)
+      else
+      begin
+        if AForm.BorderStyle <> bsNone then
+        begin
+          AHints := GDK_HINT_POS or GDK_HINT_BASE_SIZE;
+          if (AForm.Constraints.MinHeight > 0) or (AForm.Constraints.MinWidth > 0) then
+            AHints := AHints or GDK_HINT_MIN_SIZE;
+          if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then
+            AHints := AHints or GDK_HINT_MAX_SIZE;
+
+          PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry, AHints);
+        end;
+      end;
+    end;
+    PGtkWindow(Widget)^.resize(AWidth, AHeight);
+    PGtkWindow(Widget)^.move(ALeft, ATop);
+  finally
+    EndUpdate;
+  end;
+end;
+
 
 function TGtk3Window.getHorizontalScrollbar: PGtkScrollbar;
 begin

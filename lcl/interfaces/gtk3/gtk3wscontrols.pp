@@ -336,51 +336,17 @@ begin
 end;
 
 class procedure TGtk3WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  AWidget: PGtkWidget;
-  ARect: TGdkRectangle;
-  Alloc: TGtkAllocation;
-  AMinSize, ANaturalSize: gint;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then
     Exit;
   {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
   DebugLn('TGtk3WSWinControl.SetBounds ',dbgsName(AWinControl),Format(' ALeft %d ATop %d AWidth %d AHeight %d',[ALeft, ATop, AWidth, AHeight]));
   {$ENDIF}
-  AWidget := TGtk3Widget(AWinControl.Handle).Widget;
-  ARect.x := ALeft;
-  ARect.y := ATop;
-  ARect.width := AWidth;
-  ARect.Height := AHeight;
-  with Alloc do
-  begin
-    x := ALeft;
-    y := ATop;
-    width := AWidth;
-    height := AHeight;
-  end;
-  TGtk3Widget(AWinControl.Handle).BeginUpdate;
-  try
-    {fixes gtk3 assertion}
-    AWidget^.get_preferred_width(@AMinSize, @ANaturalSize);
-    AWidget^.get_preferred_height(@AMinSize, @ANaturalSize);
-
-    AWidget^.size_allocate(@ARect);
-    AWidget^.set_size_request(AWidth, AHeight);
-    if AWinControl.Parent <> nil then
-      TGtk3Widget(AWinControl.Handle).move(ALeft, ATop);
-    // we must trigger get_preferred_width after changing size
-    if wtProgressBar in TGtk3Widget(AWinControl.Handle).WidgetType then
-      TGtk3Widget(AWinControl.Handle).getContainerWidget^.set_size_request(AWidth, AHeight);
-  finally
-    TGtk3Widget(AWinControl.Handle).EndUpdate;
-  end;
-
+  TGtk3Widget(AWinControl.Handle).SetBounds(ALeft,ATop,AWidth,AHeight);
   {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
   DebugLn('TGtk3WSWinControl.SetBounds ',dbgsName(AWinControl),' isRealized=',dbgs(AWidget^.get_realized),
     ' IsMapped=',dbgs(AWidget^.get_mapped));
   {$ENDIF}
-
 end;
     
 class procedure TGtk3WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
