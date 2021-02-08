@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditTypes, LazSynEditText, SynEditPointClasses,
-  SynEditMiscClasses, Controls, SynEditHighlighter, LCLProc;
+  SynEditMiscClasses, Controls, SynEditHighlighter, SynEditMiscProcs, LCLProc;
 
 type
   TLazSynDisplayRtlInfo = record
@@ -358,7 +358,7 @@ end;
 
 function TSynEditMarkup.ScreenRowToRow(aRow : Integer) : Integer;
 begin
-  Result := SynEdit.ScreenXYToTextXY(Point(0, aRow)).Y;
+  Result := SynEdit.ScreenXYToTextXY(Point(1, ToPos(aRow))).Y;
 end;
 
 function TSynEditMarkup.RowToScreenRow(aRow : Integer) : Integer;
