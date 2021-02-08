@@ -907,7 +907,7 @@ begin
   begin
     Iterator.GetData(Lib);
     if IsFullName then
-      s := Lib.Name;
+      s := Lib.Name
     else
       s := ExtractFileName(Lib.Name);
     Result := CompareText(s, AName) = 0;
