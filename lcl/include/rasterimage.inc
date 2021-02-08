@@ -753,7 +753,7 @@ begin
   WorkStream := TMemoryStream.Create;
   try
     WriteStream(WorkStream);
-    // Store our worstream as savestream
+    // Store our workstream as savestream
     FSharedImage.SaveStream := WorkStream;
     WorkStream := nil;
   finally
