@@ -5,7 +5,10 @@ unit Unit1;
 interface
 
 uses
-  SysUtils, Forms, StdCtrls, ExtCtrls, SynEdit, SynCompletion;
+  SysUtils,
+  Forms, StdCtrls, ExtCtrls,
+  LazStringUtils,
+  SynEdit, SynCompletion;
 
 type
 
@@ -65,7 +68,7 @@ procedure TForm1.DoExecute(Sender: TObject);
 *)
   procedure Add(s: String);
   begin
-    if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
+    if LazStartsText(SynCompletion1.CurrentString, s) then
       SynCompletion1.ItemList.Add(s);
   end;
 begin
@@ -98,7 +101,7 @@ procedure TForm1.DoSearchPosition(var APosition: integer);
 *)
   procedure Add(s: String);
   begin
-    if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
+    if LazStartsText(SynCompletion1.CurrentString, s) then
       SynCompletion1.ItemList.Add(s);
   end;
 begin
