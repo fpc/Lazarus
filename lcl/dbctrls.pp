@@ -248,6 +248,7 @@ Type
     property Visible;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -409,6 +410,7 @@ Type
     property Items;
     property MultiSelect;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -513,6 +515,7 @@ Type
     property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
 //    property MultiSelect;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -613,6 +616,7 @@ Type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -695,6 +699,7 @@ Type
     property Hint;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -811,6 +816,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnCloseUp;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -932,6 +938,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnCloseUp;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -1046,6 +1053,7 @@ Type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBiDiMode;
@@ -1105,6 +1113,7 @@ Type
     property Enabled;
     property Font;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -1199,6 +1208,7 @@ Type
     property KeepOriginXWhenClipped;
     property KeepOriginYWhenClipped;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDBImageRead: TOnDBImageRead read  FOnDBImageRead write FOnDBImageRead;
     property OnDBImageWrite: TOnDBImageWrite read FOnDBImageWrite write FOnDBImageWrite;
@@ -1214,6 +1224,7 @@ Type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnResize;
     property OnStartDrag;
     property ParentShowHint;
     property Proportional;
@@ -1275,6 +1286,7 @@ Type
     property ParentDoubleBuffered;
     property Visible;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -1468,6 +1480,7 @@ type
     property Font;
     property Hints;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
