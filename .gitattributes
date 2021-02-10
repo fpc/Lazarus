@@ -2687,6 +2687,7 @@ components/lazdebuggers/lazdebuggerlldb/lldbinstructions.pas svneol=native#text/
 components/lazdebuggers/lazdebugtestbase/lazdebugtestbase.lpk svneol=native#text/plain
 components/lazdebuggers/lazdebugtestbase/lazdebugtestbase.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebugtestbase/sources.rc svneol=native#text/pascal
+components/lazdebuggers/lazdebugtestbase/sources.res -text
 components/lazdebuggers/lazdebugtestbase/testapps/WatchesScopePrg.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebugtestbase/testapps/WatchesScopeUnit1.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebugtestbase/testapps/WatchesScopeUnit2.pas svneol=native#text/pascal
