@@ -10,7 +10,7 @@ uses
   LazFileUtils, LazUTF8,
   TestOutputLogger;
 
-{.$R sources.rc}
+{$R sources.rc} // change to .res if you do not have windres (or fpcres). Ensure you have the latest .res pre-compiled resource
 
 type
 
