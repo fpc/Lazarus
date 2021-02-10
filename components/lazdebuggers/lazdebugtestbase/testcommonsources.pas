@@ -10,7 +10,7 @@ uses
   LazFileUtils, LazUTF8,
   TestOutputLogger;
 
-{$R sources.rc}
+{.$R sources.rc}
 
 type
 

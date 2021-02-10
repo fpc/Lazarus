@@ -8,9 +8,8 @@ uses
   TestDisAss, TestException, Testwatches, TestBreakPoint,
   TestEnvironment, TestArgV, LazLogger;
 
-{$R *.res}
-
 begin
+  Application.Title:='';
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
   Application.Run;

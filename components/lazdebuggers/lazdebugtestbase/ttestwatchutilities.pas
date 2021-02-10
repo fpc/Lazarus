@@ -372,14 +372,13 @@ type
 function TStringArrayHelper.IndexOfFieldName(AName: String; ALength: Integer;
   Sep: char): Integer;
 var
-  i: Integer;
   p: SizeInt;
 begin
   ALength := Min(ALength, Length(Self));
   Result := 0;
   while Result < ALength do begin
     p := pos(Sep, Self[Result]);
-    if (p >= 0) and (CompareText(trim(Copy(Self[Result], 1, p-1)), AName) = 0 then
+    if (p >= 0) and (CompareText(trim(Copy(Self[Result], 1, p-1)), AName) = 0) then
       exit;
     inc(Result);
   end;
@@ -387,8 +386,7 @@ begin
     Result := -1;
 end;
 
-function TStringArrayHelper.ValueOfFieldName(AnIndex: Integer; Sep: char
-  ): String;
+function TStringArrayHelper.ValueOfFieldName(AnIndex: Integer; Sep: char): String;
 begin
   Result := trim(copy(Self[AnIndex], pos(Sep, Self[AnIndex])+1, MaxInt));
 end;
