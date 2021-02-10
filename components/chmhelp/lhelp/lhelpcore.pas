@@ -872,7 +872,7 @@ begin
   X := 1;
   while X <= ParamCount do
   begin
-    if LowerCase(ParamStrUTF8(X)) = '--ipcname' then
+    if CompareText(ParamStrUTF8(X), '--ipcname') = 0 then
     begin
       // IPC name; includes unique PID or other identifier
       IsHandled[X] := True;
@@ -885,7 +885,7 @@ begin
         DebugLn('Start IPCNAME = ', fServerName);
       end;
     end
-    else if LowerCase(ParamStrUTF8(X)) = '--context' then
+    else if CompareText(ParamStrUTF8(X), '--context') = 0 then
     begin
       IsHandled[X] := True;
       inc(X);
@@ -897,7 +897,7 @@ begin
           DebugLn('Start CONTEXT = ', IntToStr(fContext));
         end;
     end
-    else if LowerCase(ParamStrUTF8(X)) = '--hide' then
+    else if CompareText(ParamStrUTF8(X), '--hide') = 0 then
     begin
       IsHandled[X] := True;
       inc(X);

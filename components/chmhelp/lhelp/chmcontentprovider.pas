@@ -25,7 +25,7 @@ uses
   // LCL
   LCLIntf, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Menus,
   // LazUtils
-  LazFileUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
+  LazFileUtils, LazStringUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
   // Turbopower IPro
   IpHtml,
   // ChmHelp
@@ -216,7 +216,7 @@ begin
    for i := 0 to Words.Count-1 do
    begin
      aWord := Words[i];
-     fPos := Pos(aWord, LowerCase(ATextNode.TextContent));
+     fPos := PosI(aWord, ATextNode.TextContent);
      while fpos > 0 do
      begin
        WordStart:= TDOMText(ATextNode).SplitText(fPos-1);
@@ -279,7 +279,7 @@ end;
 procedure TChmContentProvider.CompareIndexNodes(Sender: TObject; Node1,
   Node2: TTreeNode; var Compare: Integer);
 begin
-  Compare:= UTF8CompareStrCollated(LowerCase(Node1.Text), LowerCase(Node2.Text));
+  Compare:= UTF8CompareLatinTextFast(Node1.Text, Node2.Text);
 end;
 
 procedure TChmContentProvider.ProcTreeKeyDown(Sender: TObject; var Key: Word;
@@ -424,7 +424,7 @@ var
   ChmIndex: Integer;
   NewUrl: String;
   FilteredURL: String;
-  fPos: Integer;
+  xPos: Integer;
   StartTime: TDateTime;
   EndTime: TDateTime;
   Time: String;
@@ -434,9 +434,9 @@ begin
 
   StartTime := Now;
 
-  fPos := Pos('#', Uri);
-  if fPos > 0 then
-    FilteredURL := Copy(Uri, 1, fPos -1)
+  xPos := Pos('#', Uri);
+  if xPos > 0 then
+    FilteredURL := Copy(Uri, 1, xPos -1)
   else
     FilteredURL := Uri;
   {$IFDEF LDEBUG}
@@ -759,12 +759,10 @@ procedure TChmContentProvider.IpHtmlPanelHotClick(Sender: TObject);
 var
   HelpFile: String;
   aPos: integer;
-  lcURL: String;
 begin
   // chm-links look like: mk:@MSITStore:D:\LazPortable\docs\chm\iPro.chm::/html/lh3zs3.htm
-  lcURL := Lowercase(fHtml.HotURL);
-  if (Pos('javascript:helppopup(''', lcURL) = 1) or
-     (Pos('javascript:popuplink(''', lcURL) = 1)
+  if LazStartsText('javascript:helppopup(''', fHtml.HotURL) or
+     LazStartsText('javascript:popuplink(''', fHtml.HotURL)
   then begin
     HelpFile := Copy(fHtml.HotURL, 23, Length(fHtml.HotURL) - (23-1));
     HelpFile := Copy(HelpFile, 1, Pos('''', HelpFile)-1);
@@ -921,18 +919,16 @@ end;
 
 procedure TChmContentProvider.SearchEditChange(Sender: TObject);
 var
-  ItemName: String;
   SearchText: String;
   Node: TTreeNode;
 begin
   if fIndexEdit <> Sender then
     Exit;
-  SearchText := LowerCase(fIndexEdit.Text);
+  SearchText := fIndexEdit.Text;
   Node := fIndexView.Items.GetFirstNode;
   while Node<>nil do
   begin
-    ItemName := LowerCase(Copy(Node.Text, 1, Length(SearchText)));
-    if ItemName = SearchText then
+    if LazStartsText(SearchText, Node.Text) then
     begin
       fIndexView.Items.GetLastNode.MakeVisible;
       Node.MakeVisible;
@@ -1272,21 +1268,21 @@ end;
 
 function TChmContentProvider.LoadURL(const AURL: String; const AContext: THelpContext=-1): Boolean;
 var
-  fFile: String;
-  fURL: String = '';
+  XFile: String;
+  xURL: String = '';
   CurCHM: TChmReader;
   ContextURL: String;
 begin
   Result := False;
-  fFile := GetUrlFilePath(AUrl);
-  fURL := GetUrlFile(AUrl);
+  XFile := GetUrlFilePath(AUrl);
+  xURL := GetUrlFile(AUrl);
 
-  fChmDataProvider.DoOpenChm(fFile, False);
+  fChmDataProvider.DoOpenChm(XFile, False);
 
   fHistoryIndex := -1;
   fHistory.Clear;
 
-  CurCHM := GetChmReader(fFile);
+  CurCHM := GetChmReader(XFile);
   if CurCHM = nil then Exit;
 
   // Load TOC is executed by TChmContentProvider.NewChmOpened() now
@@ -1298,11 +1294,11 @@ begin
     if (Length(ContextURL) > 0) and not (ContextURL[1] in ['/', '\']) then
       Insert('/', ContextURL , 1);
     if Length(ContextURL) > 0 then
-      fURL := ContextURL;
+      xURL := ContextURL;
   end;
 
-  if fURL <> '' then
-    DoLoadUri(MakeURI(fURL, CurCHM))
+  if xURL <> '' then
+    DoLoadUri(MakeURI(xURL, CurCHM))
   else
     DoLoadUri(MakeURI(CurCHM.DefaultPage, CurCHM));
   Result := True;

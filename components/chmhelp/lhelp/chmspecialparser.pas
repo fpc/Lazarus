@@ -208,10 +208,9 @@ begin
     IdxSm:=0;
     while (IdxSrc <> fTreeView.Items.TopLvlCount-1 ) and (IdxSm <> fSitemap.Items.Count-1) do
     begin
-      if (UTF8CompareStrCollated(
-          LowerCase(fSitemap.Items.Item[IdxSm].Text),
-          LowerCase(fTreeView.Items.TopLvlItems[IdxSrc].Text)) <= 0) then
-      begin
+      if (UTF8CompareLatinTextFast(fSitemap.Items.Item[IdxSm].Text,
+                                  fTreeView.Items.TopLvlItems[IdxSrc].Text) <= 0)
+      then begin
         // insert sitemap  before fTreeView Node
         AddSiteMapItem(fSitemap.Items.Item[IdxSm], ParentNode, fTreeView.Items.TopLvlItems[IdxSrc]);
         if IdxSm < fSitemap.Items.Count-1 then

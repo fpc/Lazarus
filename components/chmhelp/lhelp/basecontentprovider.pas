@@ -77,25 +77,38 @@ var
 
 function GetUriPrefix ( const AUri: String ) : String;
 var
-  fPos: Integer;
+  xPos: Integer;
 begin
-  Result := Trim(AUri);
-  fPos := Pos('://', Result);
-  if fPos >0 Then
-    Result := Copy(Result, 1, fPos+2);
+  Assert(AUri = Trim(AUri), 'GetUriPrefix: AUri should be trimmed.');
+  Result := AUri;
+  xPos := Pos('://', AUri);
+  if xPos > 0 Then
+    SetLength(Result, xPos+2);  // Include '://' in result.
+end;
+
+function GetUriPrefixLen ( const AUri: String ) : integer;
+var
+  xPos: Integer;
+begin
+  xPos := Pos('://', AUri);
+  if xPos > 0 Then
+    Result := xPos+2
+  else
+    Result := Length(AUri);
 end;
 
 function GetUrlFilePath ( const AUri: String ) : String;
 var
-  fPos: Integer;
+  xPos: Integer;
 begin
-  Result := Copy(AUri,Length(GetUriPrefix(AUri))+1, Length(AUri));
-  fPos := Pos('://', Result);
-  if fPos > 0 then
-    Result := Copy(Result, 1, fPos-1);
-  fPos := Pos('?', Result);
-  if fPos > 0 then
-    Result := Copy(Result, 1, fPos-1);
+  Result := Copy(AUri, GetUriPrefixLen(AUri)+1, Length(AUri));
+  xPos := Pos('://', Result);
+  Assert(xPos = 0, 'GetUrlFilePath: "://" was found in Result.');
+  //if xPos > 0 then
+  //  Result := Copy(Result, 1, xPos-1);
+  xPos := Pos('?', Result);
+  if xPos > 0 then
+    SetLength(Result, xPos-1);  // Leave parameters out.
 end;
 
 function GetURIFileName(Const AURI: String): String;
@@ -105,33 +118,33 @@ var
 begin
   FileStart := Pos(':', AURI)+1;
   FileEnd := Pos('::', AURI);
-
   Result := Copy(AURI, FileStart, FileEnd-FileStart);
 end;
 
 function GetUrlFile(const AUrl: String): String;
 var
-  fPos: Integer;
+  xPos: Integer;
 begin
-  Result := Copy(AUrl,Length(GetUriPrefix(AUrl)), Length(AUrl));
-  fPos := Pos('://', Result);
-  if fPos > 0 then
-    Result := Copy(Result, fPos+3, Length(Result))
-  else
-    Result:= '';
+  Result := Copy(AUrl, GetUriPrefixLen(AUrl), Length(AUrl));
+  xPos := Pos('://', Result);
+  Assert(xPos = 0, 'GetUrlFilePath: "://" was found in Result.');
+  //if xPos > 0 then
+  //  Result := Copy(Result, xPos+3, Length(Result))
+  //else
+    Result:= '';    // Result will always be '' !
 end;
 
 function GetUrlWoContext(const AUrl: String): String;
 var
-  fPos: Integer;
+  xPos: Integer;
 begin
-  Result:= AUrl;
-  fPos := Pos('?', Result);
-  if fPos > 0 then
-    Result := Copy(Result, 1, fPos-1);
-  fPos := Pos('#', Result);
-  if fPos > 0 then
-    Result := Copy(Result, 1, fPos-1);
+  Result := AUrl;
+  xPos := Pos('?', Result);
+  if xPos > 0 then
+    SetLength(Result, xPos-1);
+  xPos := Pos('#', Result);
+  if xPos > 0 then
+    SetLength(Result, xPos-1);
 end;
 
 function GetURIURL(Const AURI: String): String;
@@ -153,12 +166,12 @@ end;
 
 function GetContentProvider(const Protocol: String): TBaseContentProviderClass;
 var
-  fIndex: Integer;
+  Ind: Integer;
 begin
   Result := nil;
-  fIndex := GetContentProviderList.IndexOf(Protocol);
-  if fIndex = -1 then Exit;
-  Result := TBaseContentProviderClass(GetContentProviderList.Objects[fIndex]);
+  Ind := GetContentProviderList.IndexOf(Protocol);
+  if Ind = -1 then Exit;
+  Result := TBaseContentProviderClass(GetContentProviderList.Objects[Ind]);
 end;
 
 function GetContentProviderList: TStringList;
