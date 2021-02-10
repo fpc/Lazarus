@@ -36,11 +36,7 @@ uses
   // CodeTools
   CodeToolsStructs,
   // Wiki
-  {$IF FPC_FULLVERSION<20701}
-  myfphttpclient,
-  {$ELSE}
   fphttpclient, HTTPDefs,
-  {$ENDIF}
   WikiParser, WikiFormat;
 
 const

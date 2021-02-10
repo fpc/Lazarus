@@ -69,7 +69,7 @@
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
-      <CompilerPath Value="/usr/lib/fpc/3.3.1/ppcx64"/>
+      <CompilerPath Value="fpc"/>
     </Other>
   </CompilerOptions>
   <Debugging>
