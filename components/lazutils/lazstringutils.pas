@@ -37,6 +37,10 @@ type
 const
   EndOfLine: shortstring = LineEnding;
 
+{$IF FPC_FULLVERSION=30004}
+function StartsStr(const ASubText, AText: string): Boolean;
+function EndsStr(const ASubText, AText: string): Boolean;
+{$ENDIF}
 function PosI(const SubStr, S: string): integer;
 function LazStartsText(const ASubText, AText: string): Boolean;
 function LazEndsText(const ASubText, AText: string): Boolean;
@@ -113,6 +117,25 @@ const
   MaxTextLen = 80;
 
 implementation
+
+{$IF FPC_FULLVERSION=30004}                  // Is found in versions > 3.0.4
+function StartsStr(const ASubText, AText: string): Boolean;
+begin
+  if (Length(AText) >= Length(ASubText)) and (ASubText <> '') then
+    Result := StrLComp(PChar(ASubText), PChar(AText), Length(ASubText)) = 0
+  else
+    Result := False;
+end;
+
+function EndsStr(const ASubText, AText: string): Boolean;
+begin
+  if Length(AText) >= Length(ASubText) then
+    Result := StrLComp(PChar(ASubText),
+      PChar(AText) + Length(AText) - Length(ASubText), Length(ASubText)) = 0
+  else
+    Result := False;
+end;
+{$ENDIF}
 
 function PosI(const SubStr, S: string): integer;
 // A case-insensitive version of Pos().
