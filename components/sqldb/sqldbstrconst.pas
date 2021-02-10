@@ -1,4 +1,4 @@
-unit sqldbstrconst;
+unit SqlDbStrConst;
 
 {$mode objfpc}{$H+}
 

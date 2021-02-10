@@ -19,6 +19,8 @@ interface
 
 uses
   Classes, SysUtils, strutils, math,
+  // LazUtils
+  LazStringUtils,
   // DebuggerIntf
   DbgIntfBaseTypes;
 

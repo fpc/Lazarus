@@ -14,7 +14,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin,
   // LazUtils
-  LazFileCache, LazFileUtils, FileUtil,
+  LazFileCache, LazFileUtils, LazStringUtils, FileUtil,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
   // Pas2Js
@@ -205,7 +205,7 @@ begin
     IDEMessageDialog('Error',ErrMsg,mtError,[mbOk]);
     exit(false);
   end;
-  if Pos('pas2js',lowercase(ExtractFileNameOnly(NewExe)))<1 then
+  if PosI('pas2js',ExtractFileNameOnly(NewExe))<1 then
   begin
     IDEMessageDialog('Warning','The pas2js executable filename "'+NewExe+'" does not look like pas2js',mtWarning,[mbOk]);
     exit(true);

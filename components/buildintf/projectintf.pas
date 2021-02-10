@@ -1147,9 +1147,8 @@ begin
   if CompOpts=nil then exit;
   SyntaxMode:=CompOpts.SyntaxMode;
   if SyntaxMode<>'' then begin
-    Result:='{$mode '+lowercase(SyntaxMode)+'}';
-    if CompOpts.UseAnsiStrings
-    and (SysUtils.CompareText(SyntaxMode,'Delphi')<>0) then
+    Result:='{$mode '+SyntaxMode+'}';
+    if CompOpts.UseAnsiStrings and (CompareText(SyntaxMode,'Delphi')<>0) then
       Result:=Result+'{$H+}';
   end;
 end;

@@ -645,17 +645,16 @@ var
 begin
   if FDict.Count > 0 then
     exit;
-
   SetLength(FNextTermWIthSameWord, FTerms.Count);
 
   for i := 0 to FTerms.Count - 1 do begin
     FNextTermWIthSameWord[i] := -1;
     if not FTerms[i].Enabled then
       Continue;
-    s := LowerCase(FTerms[i].SearchTerm);
+    s := FTerms[i].SearchTerm;
     FDict.Add(FTerms[i].SearchTerm, i);
     for j := i + 1 to FTerms.Count - 1 do
-      if LowerCase(FTerms[j].SearchTerm) = s then begin
+      if CompareText(FTerms[j].SearchTerm, s) = 0 then begin
         FNextTermWIthSameWord[i] := j;
         break;
       end;
@@ -1341,8 +1340,7 @@ begin
       inc(Result);
   end
   else begin
-    ATerm := LowerCase(ATerm);
-    while (Result < c) and (LowerCase(Items[Result].SearchTerm) <> ATerm) do
+    while (Result < c) and (CompareText(Items[Result].SearchTerm, ATerm) <> 0) do
       inc(Result);
   end;
   if Result >= c then

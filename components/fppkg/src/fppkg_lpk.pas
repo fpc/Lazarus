@@ -27,15 +27,13 @@ begin
 
   try
     xml.Filename := AFileName;
-
-    pkgtype := LowerCase(xml.GetValue('Package/Type/Value', ''));
-
+    pkgtype := xml.GetValue('Package/Type/Value', '');
     //default
     Result := lpRunTime;
 
-    if pkgtype = 'designtime' then
-      Result := lpDesignTime;
-    if pkgtype = 'runanddesigntime' then
+    if CompareText(pkgtype, 'designtime') = 0 then
+      Result := lpDesignTime
+    else if CompareText(pkgtype, 'runanddesigntime') = 0 then
       Result := lpBoth;
 
   finally

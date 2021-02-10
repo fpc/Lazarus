@@ -3896,14 +3896,13 @@ end;
 
 function IsPas2jsTargetOS(TargetOS: string): boolean;
 begin
-  TargetOS:=LowerCase(TargetOS);
-  Result:=(TargetOS='browser') or (TargetOS='nodejs');
+  Result:=(CompareText(TargetOS,'browser')=0)
+       or (CompareText(TargetOS,'nodejs')=0);
 end;
 
 function IsPas2jsTargetCPU(TargetCPU: string): boolean;
 begin
-  TargetCPU:=LowerCase(TargetCPU);
-  Result:=Pos('ecmascript',TargetCPU)>0;
+  Result:=PosI('ecmascript',TargetCPU)>0;
 end;
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
@@ -3938,14 +3937,14 @@ function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler;
 var
   ShortFilename: String;
 begin
-  ShortFilename:=LowerCase(ExtractFileNameOnly(Filename));
+  ShortFilename:=ExtractFileNameOnly(Filename);
 
   // *pas2js*
-  if Pos('pas2js',ShortFilename)>0 then
+  if PosI('pas2js',ShortFilename)>0 then
     exit(pcPas2js);
 
   // dcc*.exe
-  if (LeftStr(ShortFilename,3)='dcc')
+  if LazStartsText('dcc',ShortFilename)
   and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
   then
     exit(pcDelphi);
@@ -4042,13 +4041,13 @@ begin
   if not Result then exit;
 
   // allow scripts like fpc*.sh and fpc*.bat
-  ShortFilename:=LowerCase(ExtractFileNameOnly(AFilename));
+  ShortFilename:=ExtractFileNameOnly(AFilename);
   //debugln(['IsFPCExecutable Short=',ShortFilename]);
-  if (LeftStr(ShortFilename,3)='fpc') then
+  if LazStartsText('fpc',ShortFilename) then
     exit(true);
 
   // allow ppcxxx.exe
-  if (LeftStr(ShortFilename,3)='ppc')
+  if (LazStartsText('ppc',ShortFilename))
   and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
@@ -4071,8 +4070,8 @@ begin
   if not Result then exit;
 
   // allow scripts like *pas2js*
-  ShortFilename:=LowerCase(ExtractFileNameOnly(AFilename));
-  if Pos('pas2js',ShortFilename)>0 then
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  if PosI('pas2js',ShortFilename)>0 then
     exit(true);
 
   ErrorMsg:='pas2js executable should start with pas2js';
@@ -6347,7 +6346,7 @@ begin
     try
       TheProcess.Executable:=CompilerPath;
       Params.Add('-va');
-      if (Pos('pas2js',lowercase(ExtractFileName(CompilerPath)))<1)
+      if (PosI('pas2js',ExtractFileName(CompilerPath))<1)
           and FileExistsCached(EnglishErrorMsgFilename) then
           Params.Add('-Fr'+EnglishErrorMsgFilename);
       if CompilerOptions<>'' then
@@ -8150,8 +8149,7 @@ var
   i: Integer;
 begin
   if RulesSortedForFilenameStart=nil then
-    RulesSortedForFilenameStart:=
-                             TAVLTree.Create(@CompareFPCSourceRulesViaFilename);
+    RulesSortedForFilenameStart:=TAVLTree.Create(@CompareFPCSourceRulesViaFilename);
   for i:=0 to Count-1 do
     if Items[i].FitsTargets(Targets) then
       RulesSortedForFilenameStart.Add(Items[i]);

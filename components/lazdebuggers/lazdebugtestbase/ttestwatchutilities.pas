@@ -379,7 +379,7 @@ begin
   Result := 0;
   while Result < ALength do begin
     p := pos(Sep, Self[Result]);
-    if (p >= 0) and (LowerCase(trim(Copy(Self[Result], 1, p-1))) = LowerCase(AName)) then
+    if (p >= 0) and (CompareText(trim(Copy(Self[Result], 1, p-1)), AName) = 0 then
       exit;
     inc(Result);
   end;
@@ -1788,7 +1788,7 @@ begin
     v := AContext.WatchVal.Value;
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
 
-    if (LowerCase(v) = 'nil') then begin
+    if CompareText(v, 'nil') = 0 then begin
       Result := TestEquals('Length/nil', Expect.ExpFullArrayLen, 0, AContext, AnIgnoreRsn);
       exit;
     end;
@@ -1858,14 +1858,16 @@ begin
 
       if AContext.WatchVal.TypeInfo <> nil then begin
         a := AContext.WatchVal.TypeInfo.Fields.Count -1;
-        while (a >= 0) and (LowerCase(AContext.WatchVal.TypeInfo.Fields[a].Name) <> LowerCase(sr.ExpFieldName)) do
+        while (a >= 0)
+        and (CompareText(AContext.WatchVal.TypeInfo.Fields[a].Name, sr.ExpFieldName) <> 0) do
           dec(a);
         TestTrue('typeinfo has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
       end;
 
       if EvalCallResDBGType <> nil then begin
         a := EvalCallResDBGType.Fields.Count -1;
-        while (a >= 0) and (LowerCase(EvalCallResDBGType.Fields[a].Name) <> LowerCase(sr.ExpFieldName)) do
+        while (a >= 0)
+        and (CompareText(EvalCallResDBGType.Fields[a].Name, sr.ExpFieldName) <> 0) do
           dec(a);
         TestTrue('EvalCallResDBGType has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
       end;

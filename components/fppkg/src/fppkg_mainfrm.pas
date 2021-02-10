@@ -773,10 +773,10 @@ begin
       end;
 
       //add images to supported packages
-      if LowerCase(pkg.Support) = 'fpc' then
+      if CompareText(pkg.Support, 'fpc') = 0 then
         li.ImageIndex := FPC_SUPPORTED
       else
-      if LowerCase(pkg.Support) = 'lazarus' then
+      if CompareText(pkg.Support, 'lazarus') = 0 then
         li.ImageIndex := LAZARUS_SUPPORTED
       else
         li.ImageIndex := COMMUNITY_SUPPORTED;

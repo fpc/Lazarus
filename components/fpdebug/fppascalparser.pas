@@ -1533,20 +1533,19 @@ begin
   s := GetText;
   Result := FExpression.GetDbgSymbolForIdentifier(s);
   if Result = nil then begin
-    s := LowerCase(s);
-    if s = 'nil' then begin
+    if CompareText(s, 'nil') = 0 then begin
       tmp := TFpValueConstAddress.Create(NilLoc);
       Result := TFpPasParserValueAddressOf.Create(tmp, Expression.Context.LocationContext);
       tmp.ReleaseReference;
       {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
     end
     else
-    if s = 'true' then begin
+    if CompareText(s, 'true') = 0 then begin
       Result := TFpValueConstBool.Create(True);
       {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
     end
     else
-    if s = 'false' then begin
+    if CompareText(s, 'false') = 0 then begin
       Result := TFpValueConstBool.Create(False);
       {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
     end
@@ -3026,14 +3025,14 @@ begin
     end;
   end
   else
-  if LowerCase(GetText) = 'div' then begin
+  if CompareText(GetText, 'div') = 0 then begin
     case tmp1.Kind of
       skInteger:  Result := NumDivIntByValue(tmp1, tmp2);
       skCardinal: Result := NumDivCardinalByValue(tmp1, tmp2);
     end;
   end
   else
-  if LowerCase(GetText) = 'mod' then begin
+  if CompareText(GetText, 'mod') = 0 then begin
     case tmp1.Kind of
       skInteger:  Result := NumModIntByValue(tmp1, tmp2);
       skCardinal: Result := NumModCardinalByValue(tmp1, tmp2);

@@ -5497,7 +5497,7 @@ begin
     Content := FindAttribute(htmlAttrCONTENT);
     if not FHasBOM then begin
       if SameText(HttpEquiv, 'content-type') then begin
-        j := pos('charset=', lowercase(Content));
+        j := PosI('charset=', Content);
         if j>0 then begin
           j := j+8;
           i := j;
@@ -5511,7 +5511,7 @@ begin
       end
       else
         fDocCharset := FindAttribute(htmlAttrCHARSET);
-      if pos('windows', Lowercase(fDocCharset)) = 1 then
+      if LazStartsText('windows', fDocCharset) then
         fDocCharset := NormalizeEncoding(StringReplace(fDocCharset, 'windows', 'cp', [rfIgnoreCase]));
     end;
     Scheme := FindAttribute(htmlAttrSCHEME);
@@ -14428,9 +14428,8 @@ begin
     raise EIpHtmlException.Create(SHtmlNoDataProvider);
   if not FDataProvider.DoCheckURL(St, ResourceType) then
     raise EIpHtmlException.Create(SHtmlResUnavail + St);
-  ResourceType := LowerCase(ResourceType);
 
-  if ( Pos('text/', ResourceType) <> 1) and (pos('image/', ResourceType) <> 1) then begin
+  if ( PosI('text/', ResourceType) <> 1) and (PosI('image/', ResourceType) <> 1) then begin
     FViewer.FHotURL := St;
     FViewer.DoHotClick;
     Result := True;
@@ -14609,13 +14608,12 @@ begin
       raise EIpHtmlException.Create(SHtmlResUnavail + St);
     IsImage := False;
     S := nil;
-    ResourceType := Lowercase(ResourceType);
-    if pos('image/', ResourceType) = 1 then begin
+    if PosI('image/', ResourceType) = 1 then begin
       IsImage := True;
       S := BuildImagePage(St);
     end else
 
-    if Pos('text/', ResourceType) <> 1 then begin
+    if PosI('text/', ResourceType) <> 1 then begin
       FViewer.FHotURL := St;
       FViewer.DoHotClick;
       Exit;

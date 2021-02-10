@@ -6,9 +6,11 @@ unit FpDbgDwarfFreePascal;
 interface
 
 uses
-  Classes, SysUtils, Types, math, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
-  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, DbgIntfBaseTypes,
-  LazLoggerBase;
+  Classes, SysUtils, Types, math,
+  FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
+  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools,
+  DbgIntfBaseTypes,
+  LazLoggerBase, LazStringUtils;
 
 type
 
@@ -258,8 +260,8 @@ var
   i, j, AVersion: Integer;
 begin
   AVersion := 0;
-  s := LowerCase(ACU.Producer)+' ';
-  i := pos('free pascal', s) + 11;
+  s := ACU.Producer+' ';
+  i := PosI('free pascal', s) + 11;
 
   if i > 11 then begin
     while (i < Length(s)) and (s[i] in [' ', #9]) do
@@ -299,11 +301,8 @@ begin
 end;
 
 class function TFpDwarfFreePascalSymbolClassMap.ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean;
-var
-  s: String;
 begin
-  s := LowerCase(ACU.Producer);
-  Result := pos('free pascal', s) > 0;
+  Result := PosI('free pascal', ACU.Producer) > 0;
 end;
 
 var

@@ -327,10 +327,10 @@ class procedure TToDoListCore.CreateToDoItem(aTLFile: TTLScannedFile;
   const aTokenString: string; aLineNumber: Integer);
 
 var
-  lParsingString, lLowerString, lTokenToCheckFor : string;
+  lParsingString, lTokenToCheckFor : string;
   lToDoTokenFound: boolean;
   lTodoType, lFoundToDoType: TToDoType;
-  lTokenStyle, lFoundTokenStyle:TTokenStyle;
+  lTokenStyle, lFoundTokenStyle: TTokenStyle;
   lParts: TStringList;
 
 begin
@@ -341,7 +341,6 @@ begin
   // Remove leading and trailing blanks from input
   lParsingString := Trim(lParsingString);
   // See if it's a TODO or DONE item
-  lLowerString := LowerCase(lParsingString);
 
   lToDoTokenFound:=False;
 
@@ -351,10 +350,11 @@ begin
     begin
       for lTodoType := Low(TToDoType) to High (TToDoType) do
         begin
-          lTokenToCheckFor := LowerCase(TODO_TOKENS[lTokenStyle, lTodoType]);
-          if (Pos(lTokenToCheckFor, lLowerString) = 1) // Token match
-            and ((Length(lLowerString)=Length(lTokenToCheckFor)) // Exact match, no further chars. Should not happen?
-                 or not (lLowerString[Length(lTokenToCheckFor) + 1] in ['a'..'z'])) then // Extra char is not alpha
+          lTokenToCheckFor := TODO_TOKENS[lTokenStyle, lTodoType];
+          if (LazStartsText(lTokenToCheckFor, lParsingString)) // Token match
+            and ( (Length(lParsingString)=Length(lTokenToCheckFor)) // Exact match, no further chars. Should not happen?
+               or not (lParsingString[Length(lTokenToCheckFor)+1] in ['A'..'Z','a'..'z'])
+            ) then // Extra char is not alpha
             begin
               lToDoTokenFound := True;
               lFoundToDoType := lTodoType;

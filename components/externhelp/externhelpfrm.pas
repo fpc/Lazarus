@@ -40,7 +40,7 @@ uses
   LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
   ExtCtrls, ButtonPanel, HelpIntfs,
   // LazUtils
-  FileUtil, LazFileUtils, LazConfigStorage, LazLoggerBase, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazConfigStorage, LazLoggerBase, LazUTF8,
   // IdeIntf
   LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf, IDEOptEditorIntf,
   LazIDEIntf, BaseIDEIntf, IDEDialogs, IDEImagesIntf, SrcEditorIntf;
@@ -1418,7 +1418,7 @@ begin
     if (ContextList.Count>0) and (ContextList.List[0].Descriptor=pihcFilename)
     then begin
       // extract unit filename
-      AUnitName:=lowercase(ExtractFileNameOnly(ContextList.List[0].Context));
+      AUnitName:=ExtractFileNameOnly(ContextList.List[0].Context);
       DebugLn('TExternalHelpDatabase.ShowHelp A Unitname=',AUnitname,' NewNode.HelpType=',dbgs(ord(NewNode.HelpType)),' NewNode.Title=',NewNode.Title,' NewNode.URL=',NewNode.URL);
       if AUnitName<>'' then begin
 
@@ -1452,7 +1452,7 @@ begin
           // replace special macros (Identifier)
           URL:=NewNode.URL;
           repeat
-            p:=System.Pos('$(identifier)',lowercase(URL));
+            p:=PosI('$(identifier)',URL);
             if p<1 then break;
             URL:=copy(URL,1,p-1)+Identifier
                                +copy(URL,p+length('$(identifier)'),length(URL));

@@ -3016,8 +3016,8 @@ end;
 function TFindDeclarationTool.FindUnitFileInUsesSection(
   UsesNode: TCodeTreeNode; const AFilename: string): TCodeTreeNode;
 var
-  TargetLoUnitName: string;
-  TargetLoShortFilename: string;
+  TargetUnitName: string;
+  TargetShortFilename: string;
 
   function CheckUseNode(Node: TCodeTreeNode): boolean;
   var
@@ -3033,9 +3033,9 @@ var
 
     // quick check: compare unitname
     if UnitInFilename<>'' then begin
-      if lowercase(ExtractFilename(UnitInFilename))<>TargetLoShortFilename then
+      if CompareText(ExtractFilename(UnitInFilename),TargetShortFilename)<>0 then
         exit;
-    end else if LowerCase(AUnitName)<>TargetLoUnitName then
+    end else if CompareText(AUnitName,TargetUnitName)<>0 then
       exit;
 
     // search in search paths
@@ -3046,9 +3046,9 @@ var
 begin
   Result:=nil;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then exit;
-  TargetLoUnitName:=LowerCase(ExtractFileNameOnly(AFilename));
-  TargetLoShortFilename:=LowerCase(ExtractFileName(AFilename));
-  if TargetLoShortFilename='' then exit;
+  TargetUnitName:=ExtractFileNameOnly(AFilename);
+  TargetShortFilename:=ExtractFileName(AFilename);
+  if TargetShortFilename='' then exit;
   Result:=UsesNode.LastChild;
   while Result<>nil do begin
     if CheckUseNode(Result) then exit;

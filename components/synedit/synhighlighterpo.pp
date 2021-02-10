@@ -400,15 +400,12 @@ end;
 
 function TSynPoSyn.IsKeyword(const AKeyword: string): boolean;
 var
-  Token: String;
   i: Integer;
 begin
   //There are only 3 keywords, so no need to make a hashtable
-  Token := LowerCase(AKeyWord);
-  for i := 1 to PoKeysCount do if (PoKeys[i] = Token) then
-  begin
-    Exit(True);
-  end;
+  for i := 1 to PoKeysCount do
+    if CompareText(PoKeys[i], AKeyWord) = 0 then
+      Exit(True);
   Result := False;
 end;
 

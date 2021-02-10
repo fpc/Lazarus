@@ -339,8 +339,8 @@ begin
       //property status
       SubItems.Add(StatusItem.PropStatus);
       //check if file is versioned
-      if (LowerCase(StatusItem.ItemStatus) <> 'unversioned') and
-         (LowerCase(StatusItem.ItemStatus) <> 'added') then
+      if (CompareText(StatusItem.ItemStatus, 'unversioned') <> 0) and
+         (CompareText(StatusItem.ItemStatus, 'added') <> 0) then
       begin
         //revision
         SubItems.Add(IntToStr(StatusItem.Revision));

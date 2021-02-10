@@ -5,26 +5,14 @@ unit FPDServerDebugger;
 interface
 
 uses
-  Classes,
-  ssockets,
-  fgl,
-  forms,
-  DbgIntfDebuggerBase,
-  DbgIntfBaseTypes,
-  maps,
-  fpjson,
+  Classes, strutils, SysUtils, ssockets, fgl, process, syncobjs, fpjson,
+  forms, dialogs,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes,
 //  jsonparser,
   {$IFDEF UNIX}
   BaseUnix,
   {$ENDIF}
-  LazLoggerBase,
-  process,
-  dialogs,
-  syncobjs,
-  lazCollections,
-  LazSysUtils,
-  strutils,
-  SysUtils, UTF8Process;
+  LazLoggerBase, lazCollections, LazSysUtils, LazStringUtils, UTF8Process, maps;
 
 type
   TThreadedQueueString = specialize TLazThreadedQueue<string>;
@@ -1149,7 +1137,7 @@ begin
     begin
     result := false;
     port := -1;
-    if pos('gdb', LowerCase(ExtractFileName(ExternalDebugger)))>0 then
+    if PosI('gdb', ExtractFileName(ExternalDebugger)) > 0 then
       ShowMessage('The name of the external debugger contains ''gdb''. The currently selected FPDebug-debugger can not work in combination with gdb. The debugger will most likely fail to start.');
     FDebugProcess := TProcessUTF8.Create(nil);
     try

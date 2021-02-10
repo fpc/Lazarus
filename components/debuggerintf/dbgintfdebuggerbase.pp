@@ -6587,8 +6587,9 @@ var
 begin
   i := MDebuggerClasses.Count - 1;
   while i >= 0 do begin
-    if LowerCase(TDebuggerClass(MDebuggerClasses.Objects[i]).ClassName) = LowerCase(AIndex) then
-      exit(TDebuggerClass(MDebuggerClasses.Objects[i]));
+    Result := TDebuggerClass(MDebuggerClasses.Objects[i]);
+    if CompareText(Result.ClassName, AIndex) = 0 then
+      exit;
     dec(i);
   end;
   Result := nil;

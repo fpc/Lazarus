@@ -5,9 +5,18 @@ unit SQLStringsPropertyEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, strutils,
-  SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids, Menus,
-  SrcEditorIntf, clipbrd, StdCtrls, fpsqltree, fpsqlparser, sqldbstrconst;
+  Classes, SysUtils, StrUtils, SQLDb, db, fpsqltree, fpsqlparser,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, StdCtrls, Clipbrd,
+  DBGrids, Menus,
+  // LazUtils
+  FileUtil, LazStringUtils,
+  // IdeIntf
+  SrcEditorIntf,
+  // SynEdit
+  SynEdit, SynHighlighterSQL,
+  // SqlDb
+  sqldbstrconst;
 
 type
 
@@ -162,11 +171,11 @@ begin
   D:=sqlStandard;
   If Assigned(FConnection) then
     begin
-    if (copy(LowerCase(FConnection.ClassName),1,3)='tib') then
+    if LazStartsText('tib', FConnection.ClassName) then
       D:=sqlinterbase6
-    else if (copy(LowerCase(FConnection.ClassName),1,7)='toracle') then
+    else if LazStartsText('toracle', FConnection.ClassName) then
       D:=sqloracle
-    else if (Copy(LowerCase(FConnection.ClassName),1,6)='tmysql') then
+    else if LazStartsText('tmysql', FConnection.ClassName) then
       D:=sqlmysql;
     end;
   if (CheckConnection) then

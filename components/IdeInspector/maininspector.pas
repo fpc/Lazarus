@@ -6,11 +6,11 @@ interface
 
 uses
   Classes, SysUtils, types, typinfo, math,
-  // LazUtils
-  FileUtil, LazConfigStorage,
   // LCL
   LCLProc, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls, StdCtrls,
   Buttons, Menus,
+  // LazUtils
+  FileUtil, LazConfigStorage, LazStringUtils,
   // IdeIntf
   BaseIDEIntf, MenuIntf, LazIDEIntf, ObjectInspector, PropEdits,
   // IdeInspector
@@ -150,7 +150,7 @@ const
     // Extra additions
     'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr', 'ssCaps', 'ssNum',
     'ssScroll', 'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2'
-{$IF FPC_FULLVERSION >= 30101}
+{$IF FPC_FULLVERSION >= 30301}
     , 'ssScrollH'
 {$ENDIF}
     );
@@ -292,7 +292,7 @@ begin
       s2 := copy(s2, i, length(s));
     if s2<>'' then
       s := s + '  ' + s2;
-    i := pos('line ', LowerCase(s));
+    i := PosI('line ', s);
     if i > 0 then begin
       s2 := Trim(copy(s, i+4, length(s2)));
       i := pos(' ', s2)-1;

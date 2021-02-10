@@ -2217,8 +2217,8 @@ var
     List: TGDBMINameValueList;
   begin
     if (FErrorMsg = '') or
-       (pos('no such file', LowerCase(FErrorMsg)) > 0) or
-       (pos('not exist', LowerCase(FErrorMsg)) < 0)
+       (PosI('no such file', FErrorMsg) > 0) or
+       (PosI('not exist', FErrorMsg) < 0)
     then begin
       List := TGDBMINameValueList.Create(R);
       FErrorMsg := DeleteEscapeChars((List.Values['msg']));
@@ -2484,9 +2484,9 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
     then FResultData.State := dsStop
-    else if LeftStr(Line, 8) = '&"Error '
+    else if LazStartsText('&"Error ', Line)
     then FResultData.State := dsError;
-    if LowerCase(copy(Line, 1, length(FLogWarnings))) = FLogWarnings
+    if LazStartsText(FLogWarnings, Line)
     then FInLogWarning := True;
     if FInLogWarning
     then FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
@@ -3105,10 +3105,10 @@ var
   begin
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     Warning := Line;
-    if Copy(Warning, 1, 2) = '&"' then
+    if StartsStr('&"', Warning) then
       Delete(Warning, 1, 2);
-    if Copy(Warning, Length(Warning) - 2, 3) = '\n"' then
-      Delete(Warning, Length(Warning) - 2, 3);
+    if EndsStr('\n"', Warning) then
+      SetLength(Warning, Length(Warning) - 3);
     if InLogWarning then
     begin
       Warning := MakePrintable(UnEscapeBackslashed(Trim(Warning), [uefOctal, uefTab, uefNewLine]));
@@ -3147,9 +3147,9 @@ var
       exit;
 
     i := 1;
-    if (Line[1] = '&') and  (Line[2] = '"') then
+    if (Line[1] = '&') and (Line[2] = '"') then
       i := 3;
-    if LowerCase(Copy(Line, i, Length(LogWarning))) = LogWarning then
+    if LazStartsText(LogWarning, Line) then
       AInLogWarning := True;
       //Delete(Line, 1, Length(LogWarning));
 
@@ -3560,7 +3560,7 @@ begin
     if ExecuteCommand('set target-async on', R, []) and (R.State <> dsError) then begin
       ExecuteCommand('show target-async', R, []);
       FTheDebugger.FAsyncModeEnabled := (R.State <> dsError) and
-        (pos('mode is on', LowerCase(R.Values)) > 0);
+        (PosI('mode is on', R.Values) > 0);
     end;
     if not FTheDebugger.FAsyncModeEnabled then
       ExecuteCommand('set target-async off', R, []);
@@ -8782,18 +8782,18 @@ function TGDBMIDebuggerBase.CheckForInternalError(ALine, ACurCommandText: String
 
   function IsErrorLine(const L: String): Boolean;
   begin
-    Result := (Pos('internal-error:', LowerCase(L)) > 0) or
-              (Pos('internal to gdb has been detected', LowerCase(L)) > 0) or
-              (Pos('further debugging may prove unreliable', LowerCase(L)) > 0) or
-              (Pos('command aborted.', LowerCase(L)) > 0);
+    Result := (PosI('internal-error:', L) > 0) or
+              (PosI('internal to gdb has been detected', L) > 0) or
+              (PosI('further debugging may prove unreliable', L) > 0) or
+              (PosI('command aborted.', L) > 0);
   end;
   function IsErrorContinued(const L: String): Boolean;
   begin
     Result := (L <> '') and (L[1] = '&') and
               (
                 IsErrorLine(L) or
-                (Pos('this is a bug, please report it', LowerCase(L)) > 0) or
-                ( (Pos('for instructions', LowerCase(L)) > 0) and (Pos('bugs', LowerCase(L)) > 0) ) or
+                (PosI('this is a bug, please report it',L) > 0) or
+                ( (PosI('for instructions',L) > 0) and (PosI('bugs',L) > 0) ) or
                 (L = '&"\n\n"')
               );
   end;
@@ -8979,7 +8979,7 @@ begin
           BreakPoint := TGDBMIBreakPoint(FindBreakpoint(i));
         if (BreakPoint <> nil) and (BreakPoint.Valid = vsPending) and
            (List.IndexOf('pending') < 0) and
-           (pos('pend', lowercase(List.Values['addr'])) <= 0)
+           (PosI('pend', List.Values['addr']) <= 0)
         then
           BreakPoint.SetPendingToValid(vsValid);
         List.Free;
@@ -9991,7 +9991,7 @@ begin
           end;
         end;
       else
-        if pos('path for the index cache', LowerCase(Line)) < 1 then
+        if PosI('path for the index cache', Line) < 1 then
           S := S + Line + LineEnding;
       end;
     Line := ReadLine;
@@ -10300,7 +10300,7 @@ begin
         then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
         APending := (ResultList.IndexOf('pending') >= 0) or
-          (pos('pend', lowercase(ResultList.Values['addr'])) > 0);
+          (PosI('pend', ResultList.Values['addr']) > 0);
         if APending and (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
         then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
@@ -10961,7 +10961,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
        * newer GDB may return AnsiString/PChar prefixed with an address (shortstring have no address)
          {name="ARGANSISTRING",value="0x43cc84 'Ansi'"}
       *)
-      if (lowercase(copy(Value, 1, 8)) = '(pchar) ') then begin
+      if LazStartsText('(pchar) ', Value) then begin
         delete(Value, 1, 8);
         if GetLeadingAddr(Value, addr) then begin
           if addr = 0
@@ -10970,7 +10970,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
         end;
       end
       else
-      if (lowercase(copy(Value, 1, 13)) = '(ansistring) ') then begin
+      if LazStartsText('(ansistring) ', Value) then begin
         delete(Value, 1, 13);
         if GetLeadingAddr(Value, addr) then begin
           if addr = 0
@@ -11773,7 +11773,7 @@ begin
 
   if TestForceBreak then begin
     if (AResult.State = dsError) then begin
-      if pos('unknown option', LowerCase(AResult.Values)) > 0 then
+      if PosI('unknown option', AResult.Values) > 0 then
         Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
       s := '-break-insert ' + copy(ACommand, 17, MaxInt);
 
@@ -11782,7 +11782,7 @@ begin
       if AResult.State <> dsError then
         Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected)
       else
-      if pos('unknown option', LowerCase(AResult.Values)) > 0 then // still unknow option, diff opt caused the err
+      if PosI('unknown option', AResult.Values) > 0 then // still unknow option, diff opt caused the err
         Exclude(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
     end
     else begin
@@ -11841,14 +11841,14 @@ begin
     if (s = '') or (s = '#') then
       continue;
 
-    if copy(s,1,2) = '#!' then begin
+    if StartsStr('#!', s) then begin
       delete(s, 1, 2);
       s := LowerCase(Trim(s));
-      if copy(s, 1, length(OptTimeout)) = OptTimeout then begin
+      if StartsStr(OptTimeout, s) then begin
         t := StrToIntDef(copy(s, 1+length(OptTimeout), MaxInt), DefaultTimeOut);
       end;
 
-      if copy(s, 1, length(OptTimeoutWarn)) = OptTimeoutWarn then begin
+      if StartsStr(OptTimeoutWarn, s) then begin
         if copy(s, 1+length(OptTimeout), MaxInt) = 'true' then
           f := []
         else
@@ -12774,7 +12774,7 @@ begin
   if (not Result) and (ALoc in [iblAsterix, iblNamed]) then begin
     if ALoc = iblAsterix then
       Delete(ABreakLoc, 1,1); // *name
-    FNoSymErr := pos('no symbol \"'+LowerCase(ABreakLoc)+'\" ', LowerCase(R.Values)) > 0;
+    FNoSymErr := PosI('no symbol \"'+ABreakLoc+'\" ', R.Values) > 0;
   end;
   if not Result then exit;
   FEnabled := True; // TODO: What if some bp are disabled?
@@ -14127,11 +14127,11 @@ var
         Val(addrtxt, addr, e);
         if e <> 0 then
           Exit;
-
-        AnExpression := Lowercase(ResultInfo.TypeName);
-        case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type',
-                                       'wchar', 'widechar', 'widestring', 'unicodestring',
-                                       'pointer'])
+        //AnExpression := Lowercase(ResultInfo.TypeName);
+        case StringCase(ResultInfo.TypeName,
+                        ['char', 'character', 'ansistring', '__vtbl_ptr_type',
+                         'wchar', 'widechar', 'widestring', 'unicodestring',
+                         'pointer'], True, False)
         of
           0, 1, 2: begin // 'char', 'character', 'ansistring'
             // check for addr 'text' / 0x1234 'abc'
@@ -14180,7 +14180,8 @@ var
             if AnExpression[1] = 't'
             then begin
               AnExpression[1] := 'T';
-              if Length(AnExpression) > 1 then AnExpression[2] := UpperCase(AnExpression[2])[1];
+              if Length(AnExpression) > 1 then
+                AnExpression[2] := UpCase(AnExpression[2]);
             end;
             FTextValue := PascalizePointer(UnEscapeBackslashed(FTextValue), AnExpression);
           end;
@@ -14250,9 +14251,9 @@ var
     UseAt := True;
     case TypeInfo.Kind of // (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant)
       skPointer: begin
-          case StringCase(Lowercase(TypeInfo.TypeName),
-                          ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar', 'pointer']
-                         )
+          case StringCase(TypeInfo.TypeName,
+                          ['char', 'character', 'ansistring', '__vtbl_ptr_type',
+                           'wchar', 'widechar', 'pointer'], True, False)
           of
             2: UseAt := False;
             3: UseAt := False;

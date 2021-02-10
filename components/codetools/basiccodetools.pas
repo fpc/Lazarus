@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, strutils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  LazFileUtils, LazStringUtils, LazUTF8,
   // Codetools
   SourceLog, KeywordFuncLists, FileProcs;
 
@@ -359,14 +359,13 @@ function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
 // form components
 function FindFormClassDefinitionInSource(const Source, FormClassName:string;
    var FormClassNameStartPos, FormBodyStartPos: integer):boolean;
-function FindFormComponentInSource(const Source: string;
-  FormBodyStartPos: integer;
+function FindFormComponentInSource(const Source: string; FormBodyStartPos: integer;
   const ComponentName, ComponentClassName: string): integer;
 function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
   const ComponentName, ComponentClassName: string): boolean;
 function RemoveFormComponentFromSource(Source:TSourceLog;
   FormBodyStartPos: integer;
-  ComponentName, ComponentClassName: string): boolean;
+  const ComponentName, ComponentClassName: string): boolean;
 function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // procedure specifiers
@@ -435,10 +434,10 @@ begin
   // search for include directives
   repeat
     Atom:=ReadNextPascalAtom(Source,Position,AtomStart);
-    if (copy(Atom,1,2)='{$') or (copy(Atom,1,3)='(*$') then begin
+    if StartsStr('{$',Atom) or StartsStr('(*$', Atom) then begin
       SplitCompilerDirective(Atom,DirectiveName,Filename);
-      DirectiveName:=lowercase(DirectiveName);
-      if (DirectiveName='i') or (DirectiveName='include') then begin
+      if (DirectiveName='i') or (DirectiveName='I')
+      or (CompareText(DirectiveName,'include')=0) then begin
         // include directive
         dec(Index);
         if Index=0 then begin
@@ -486,8 +485,8 @@ function SplitCompilerDirective(const Directive:string;
    out DirectiveName,Parameters:string):boolean;
 var EndPos,DirStart,DirEnd:integer;
 begin
-  if (copy(Directive,1,2)='{$') or (copy(Directive,1,3)='(*$') then begin
-    if copy(Directive,1,2)='{$' then begin
+  if StartsStr('{$',Directive) or StartsStr('(*$',Directive) then begin
+    if StartsStr('{$',Directive) then begin
       DirStart:=3;
       DirEnd:=length(Directive);
     end else begin
@@ -675,14 +674,14 @@ begin
   UsesEnd:=ProgramTermEnd;
   ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then begin
     // no uses section in interface -> add one
     Source.Insert(ProgramTermEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=ProgramTermEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then exit;
   Result:=RenameUnitInUsesSection(Source,UsesStart,OldUnitName
     ,NewUnitName,NewInFile);
@@ -709,14 +708,14 @@ begin
   UsesEnd:=ProgramTermEnd;
   ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then begin
     // no uses section after program term -> add one
     Source.Insert(ProgramTermEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=ProgramTermEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then exit;
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
@@ -735,14 +734,14 @@ begin
   UsesEnd:=InterfaceWordEnd;
   ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then begin
     // no uses section in interface -> add one
     Source.Insert(InterfaceWordEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=InterfaceWordEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then exit;
   Result:=RenameUnitInUsesSection(Source,UsesStart,OldUnitName
     ,NewUnitName,NewInFile);
@@ -763,14 +762,14 @@ begin
   UsesEnd:=InterfaceWordEnd;
   ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then begin
     // no uses section in interface -> add one
     Source.Insert(InterfaceWordEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=InterfaceWordEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  if CompareText(copy(Source.Source,UsesStart,UsesEnd-UsesStart),'uses')<>0
   then exit;
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
@@ -796,7 +795,7 @@ begin
   UsesEnd:=ProgramTermEnd;
   Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(Atom)='uses') then exit;
+  if CompareText(Atom,'uses')<>0 then exit;
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
@@ -816,7 +815,7 @@ begin
   UsesEnd:=InterfaceWordEnd;
   Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   if UsesEnd>length(Source.Source) then exit;
-  if not (lowercase(Atom)='uses') then exit;
+  if CompareText(Atom,'uses')<>0 then exit;
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
@@ -828,12 +827,12 @@ begin
   Result:=false;
   if SrcUnitName='' then exit;
   if UsesStart<1 then exit;
-  if not (lowercase(copy(Source,UsesStart,4))='uses') then exit;
+  if CompareText(copy(Source,UsesStart,4),'uses')<>0 then exit;
   UsesEnd:=UsesStart+4;
   // parse through all used units and see if it is there
   repeat
     Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(SrcUnitName)) then begin
+    if CompareText(Atom,SrcUnitName)=0 then begin
       // unit found
       Result:=true;
       exit;
@@ -861,7 +860,7 @@ begin
   if (NewUnitName='') or (NewUnitName=';')
   or (OldUnitName=';') or (UsesStart<1) then exit;
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
+  if CompareText(copy(Source.Source,UsesStart,4),'uses')<>0 then exit;
   // parse through all used units and see if it is already there
   if NewInFile<>'' then
     NewUnitTerm:=NewUnitName+' in '''+NewInFile+''''
@@ -870,7 +869,7 @@ begin
   s:=', ';
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(OldUnitName)) then begin
+    if CompareText(Atom,OldUnitName)=0 then begin
       // unit already used
       OldUsesStart:=UsesStart;
       // find comma or semicolon
@@ -905,12 +904,12 @@ begin
   Result:=false;
   if (AnUnitName='') or (AnUnitName=';') or (UsesStart<1) then exit;
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
+  if CompareText(copy(Source.Source,UsesStart,4),'uses')<>0 then exit;
   // parse through all used units and see if it is already there
   s:=', ';
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(AnUnitName)) then begin
+    if CompareText(Atom,AnUnitName)=0 then begin
       // unit found
       Result:=true;
       exit;
@@ -944,12 +943,12 @@ begin
     exit;
   // search interface section
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
+  if CompareText(copy(Source.Source,UsesStart,4),'uses')<>0 then exit;
   // parse through all used units and see if it is there
   OldUsesEnd:=-1;
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(AnUnitName)) then begin
+    if CompareText(Atom,AnUnitName)=0 then begin
       // unit found
       OldUsesStart:=UsesStart;
       // find comma or semicolon
@@ -1087,14 +1086,12 @@ begin
   Result:=true;
 end;
 
-function FindFormComponentInSource(const Source: string;
-  FormBodyStartPos: integer;
+function FindFormComponentInSource(const Source: string; FormBodyStartPos: integer;
   const ComponentName, ComponentClassName: string): integer;
-var AtomStart, OldPos: integer;
-  Atom,LowComponentName,LowComponentClassName: string;
+var
+  AtomStart, OldPos: integer;
+  Atom: string;
 begin
-  LowComponentName:=lowercase(ComponentName);
-  LowComponentClassName:=lowercase(ComponentClassName);
   Result:=FormBodyStartPos;
   repeat
     Atom:=lowercase(ReadNextPascalAtom(Source,Result,AtomStart));
@@ -1104,10 +1101,9 @@ begin
       exit;
     end;
     OldPos:=Result;
-    if (lowercase(ReadNextPascalAtom(Source,Result,AtomStart))=LowComponentName)
+    if (CompareText(ReadNextPascalAtom(Source,Result,AtomStart),ComponentName)=0)
     and (ReadNextPascalAtom(Source,Result,AtomStart)=':')
-    and (lowercase(ReadNextPascalAtom(Source,Result,AtomStart))=
-          LowComponentClassName)
+    and (CompareText(ReadNextPascalAtom(Source,Result,AtomStart),ComponentClassName)=0)
     and (ReadNextPascalAtom(Source,Result,AtomStart)=';') then begin
       Result:=OldPos;
       exit;
@@ -1158,12 +1154,10 @@ end;
 
 function RemoveFormComponentFromSource(Source:TSourceLog;
   FormBodyStartPos: integer;
-  ComponentName, ComponentClassName: string): boolean;
+  const ComponentName, ComponentClassName: string): boolean;
 var AtomStart, Position, ComponentStart, LineStart, LineEnd: integer;
   Atom: string;
 begin
-  ComponentName:=lowercase(ComponentName);
-  ComponentClassName:=lowercase(ComponentClassName);
   Position:=FormBodyStartPos;
   repeat
     Atom:=lowercase(ReadNextPascalAtom(Source.Source,Position,AtomStart));
@@ -1172,11 +1166,10 @@ begin
       Result:=false;
       exit;
     end;
-    if (Atom=ComponentName) then begin
+    if CompareText(Atom,ComponentName)=0 then begin
       ComponentStart:=AtomStart;
       if (ReadNextPascalAtom(Source.Source,Position,AtomStart)=':')
-      and (lowercase(ReadNextPascalAtom(Source.Source,Position,AtomStart))=
-         ComponentClassName)
+      and (CompareText(ReadNextPascalAtom(Source.Source,Position,AtomStart),ComponentClassName)=0)
       then begin
         GetLineStartEndAtPosition(Source.Source,ComponentStart,LineStart,LineEnd);
         if (LineEnd<=length(Source.Source))

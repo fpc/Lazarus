@@ -1276,15 +1276,15 @@ var
         xitDef: ReadDef;
         xitOpenSymbol: CurRange.OpenSymbol.Symbol:=GetData(xitOpenSymbol);
         xitCloseSymbol: CurRange.CloseSymbol.Symbol:=GetData(xitCloseSymbol);
-        xitCloseOnTerm: CurRange.CloseOnTerm:=lowercase(GetData(xitCloseOnTerm))='true';
-        xitCloseOnEol: CurRange.CloseOnEol:=lowercase(GetData(xitCloseOnEol))='true';
-        xitAnyTerm: if Lowercase(GetData(xitAnyTerm))='true' then
+        xitCloseOnTerm: CurRange.CloseOnTerm:=CompareText(GetData(xitCloseOnTerm),'true')=0;
+        xitCloseOnEol: CurRange.CloseOnEol:=CompareText(GetData(xitCloseOnEol),'true')=0;
+        xitAnyTerm: if CompareText(GetData(xitAnyTerm),'true')=0 then
                       CurRange.OpenSymbol.BrakeType:=btAny
                     else
                       CurRange.OpenSymbol.BrakeType:=btTerm;
         xitDelimiterChars: CurRange.TermSymbols:=String2Set(GetData(xitDelimiterChars));
         xitNum: ReadNum;
-        xitCaseSensitive: CurRange.CaseSensitive:=lowercase(GetData(xitCaseSensitive))='true';
+        xitCaseSensitive: CurRange.CaseSensitive:=CompareText(GetData(xitCaseSensitive),'true')=0;
         xitKW: begin
                  NewSymbolGroup:=TSynSymbolGroup.Create('',CurRange.AddNewAttribs('unknown'));
                  NewSymbolGroup.Name:=Param;
@@ -2584,15 +2584,15 @@ var
         xitDef: ReadDef;
         xitOpenSymbol: CurRange.OpenSymbol.Symbol:=GetData(xitOpenSymbol);
         xitCloseSymbol: CurRange.CloseSymbol.Symbol:=GetData(xitCloseSymbol);
-        xitCloseOnTerm: CurRange.CloseOnTerm:=lowercase(GetData(xitCloseOnTerm))='true';
-        xitCloseOnEol: CurRange.CloseOnEol:=lowercase(GetData(xitCloseOnEol))='true';
-        xitAnyTerm: if Lowercase(GetData(xitAnyTerm))='true' then
+        xitCloseOnTerm: CurRange.CloseOnTerm:=CompareText(GetData(xitCloseOnTerm),'true')=0;
+        xitCloseOnEol: CurRange.CloseOnEol:=CompareText(GetData(xitCloseOnEol),'true')=0;
+        xitAnyTerm: if CompareText(GetData(xitAnyTerm),'true')=0 then
                       CurRange.OpenSymbol.BrakeType:=btAny
                     else
                       CurRange.OpenSymbol.BrakeType:=btTerm;
         xitDelimiterChars: CurRange.TermSymbols:=String2Set(GetData(xitDelimiterChars));
         xitNum: ReadNum;
-        xitCaseSensitive: CurRange.CaseSensitive:=lowercase(GetData(xitCaseSensitive))='true';
+        xitCaseSensitive: CurRange.CaseSensitive:=CompareText(GetData(xitCaseSensitive),'true')=0;
         xitKW: begin
                  NewSymbolGroup:=TSynSymbolGroup.Create('',CurRange.AddNewAttribs('unknown'));
                  NewSymbolGroup.Name:=Param;

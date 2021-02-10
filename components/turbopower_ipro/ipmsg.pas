@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils,
   LCLType, LCLIntf,
-  LazFileUtils,
+  LazFileUtils, LazStringUtils,
   IpStrms, IpUtils, IpConst;
 
 type
@@ -103,8 +103,6 @@ type
     private
       FCollection  : TIpHeaderCollection;
       FName        : string;
-      FNameL       : string;
-        { Lower case version of FName. Used to speed up header searches. }
       FProperty    : Boolean;
       FValue       : TStringList;
     protected
@@ -117,8 +115,6 @@ type
       property Collection : TIpHeaderCollection
                read FCollection write FCollection;
       property Name : string read FName write SetName;
-      property NameL : string read FNameL;
-        { Lower case version of Name property. }
       property IsProperty : Boolean read FProperty write FProperty;
         { Set to True if this header is exposed via an iPRO property. }
       property Value : TStringList read FValue write SetValue;
@@ -136,7 +132,7 @@ type
     public                                                               
       constructor Create (AOwner : TPersistent);
 
-      function HasHeader (AName : string) : Integer;
+      function HasHeader(const AName: string): Integer;
       procedure HeaderByName (AName   : string;
                               Headers : TStringList);
       procedure LoadHeaders (AHeaderList : TStringList;                  
@@ -1052,7 +1048,6 @@ end;
 procedure TIpHeaderItem.SetName(const Name : string);
 begin
   FName := Name;
-  FNameL := LowerCase(Name);
 end;
 
 procedure TIpHeaderItem.SetValue (v : TStringList);                      
@@ -1078,18 +1073,15 @@ begin
   Result := FOwner;                                                      
 end;                                                                     
 
-function TIpHeaderCollection.HasHeader (AName : string) : Integer;
+function TIpHeaderCollection.HasHeader(const AName : string) : Integer;
 var                                                                      
   i : Integer;                                                           
 begin                                                                    
-  Result := -1;                                                          
-  AName := LowerCase(AName);
   for i := 0 to Count - 1 do
-    if Items[i].NameL = AName then begin                      
-      Result := i;                                                       
-      Break;                                                             
-    end;                                                                 
-end;                                                                     
+    if CompareText(Items[i].Name, AName) = 0 then
+      Exit(i);
+  Result := -1;
+end;
 
 procedure TIpHeaderCollection.HeaderByName (AName   : string;            
                                             Headers : TStringList);      
@@ -3085,7 +3077,7 @@ var
         asBegin     : begin
           if s[i] in [' ', #09] then
             Inc (i)
-          else if LowerCase (Copy (s, i, 5)) = 'begin' then begin
+          else if CompareText(Copy(s,i,5), 'begin') = 0 then begin
             State := asHaveBegin;
             Inc (i, 5);
           end else
@@ -3209,22 +3201,14 @@ var
     end;
   end;
 
-  function IsAttachmentEnd (const s : string) : Boolean;
-  begin
-    if LowerCase (Copy (s, 1, 3)) = 'end' then
-      Result := True
-    else
-      Result := False;
-  end;
-
   procedure CheckForAttachment (const s : string);
   begin
     if IsAttachmentStart (s) then begin
       if AttDepth = 0 then
         Inc (FAttachmentCount);
       Inc (AttDepth);
-    end else if (IsAttachmentEnd (s)) and
-                (FAttachmentCount > 0) then
+    end
+    else if LazStartsText('end', s) and (FAttachmentCount > 0) then
       Dec (AttDepth);
   end;
 var

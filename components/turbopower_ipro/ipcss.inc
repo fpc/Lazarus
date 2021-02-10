@@ -207,7 +207,7 @@ end;
 function FontWeightFromString(S: String): TCSSFontWeight;
 begin
   Result := cfwNormal;
-  S := trim(LowerCase(S));
+  S := trim(S);
   case S[1] of
     '1': if S = '100' then Result := cfw100;
     '2': if S = '200' then Result := cfw200;
@@ -218,9 +218,9 @@ begin
     '7': if S = '700' then Result := cfw700;
     '8': if S = '800' then Result := cfw800;
     '9': if S = '900' then Result := cfw900;
-    'b': if S = 'bold' then Result := cfwBold
-         else if S = 'bolder' then Result := cfwBolder;
-    'l': if S = 'lighter' then Result := cfwLighter;
+    'B','b': if CompareText(S, 'bold') = 0 then Result := cfwBold
+        else if CompareText(S, 'bolder') = 0 then Result := cfwBolder;
+    'L','l': if CompareText(S, 'lighter') = 0 then Result := cfwLighter;
   end;
 end;
 
@@ -513,27 +513,26 @@ end;
 
 function SizePxFromString(S: String): Integer;
 begin
-  S := Copy(S, 1, PosI('PX',S)-1);
+  S := Copy(S, 1, PosI('px',S)-1);
   Result := StrToIntDef(S, 0);
 end;
 
-function StrToCssMargin(S: string): TCSSMargin;
+function StrToCssMargin(const S: string): TCSSMargin;
 var
   i: SizeInt;
 begin
-  S:=lowercase(S);
   Result.Style:=cmsAuto;
   Result.Size:=0;
-  if (S='') or (S='auto') then exit;
+  if (S='') or (CompareText(S,'auto')=0) then exit;
 
-  i:=Pos('px',S);
+  i:=PosI('px',S);
   if i>0 then begin
     Result.Style:=cmsPx;
     Result.Size:=StrToIntDef(copy(S,1,i-1),0);
     exit;
   end;
 
-  i:=Pos('em',S);
+  i:=PosI('em',S);
   if i>0 then begin
     Result.Style:=cmsEm;
     Result.Size:=StrToIntDef(copy(S,1,i-1),0);
@@ -865,32 +864,32 @@ procedure TCSSProps.ReadCommands(ACommands: TStrings);
 var
   Args: TStringlist;
   ACommand: String;
-  Command: String;
+  Cmd: String;
   I: Integer;
 begin
   for I := 0 to ACommands.Count-1 do
   begin
     ACommand := ACommands[I];
     if ACommand='' then continue;
-    Command := LowerCase(GetCommandName(ACommand));
-    if Command='' then continue;
+    Cmd := LowerCase(GetCommandName(ACommand));
+    if Cmd='' then continue;
 
     Args := GetCommandArgs(ACommand);
     try
-      case Command[1] of
-      'c': if Command = 'color' then
+      case Cmd[1] of
+      'c': if Cmd = 'color' then
              if Args.Count > 0 then
                Color := ColorFromString(Args[0])
              else
                Color := clDefault;
 
-      'b': if Command = 'background-color' then begin
+      'b': if Cmd = 'background-color' then begin
              if Args.Count > 0 then
                BGColor := ColorFromString(Args[0])
              else
                BGColor := clDefault;
            end else
-           if Command = 'background' then
+           if Cmd = 'background' then
            begin
              if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
              if Args.Count > 1 then ; // background image
@@ -898,37 +897,37 @@ begin
              if Args.Count > 3 then ; // background attachment
              if Args.Count > 4 then ; // background position
            end
-           else if Command = 'border' then
+           else if Cmd = 'border' then
            begin
              if Args.Count > 0 then Border.Width := SizePxFromString(Args[0]);
              if Args.Count > 1 then Border.Style := BorderStyleFromString(Args[1]);
              if Args.Count > 2 then Border.Color := ColorFromString(Args[2]);
            end
-           else if Command = 'border-width' then
+           else if Cmd = 'border-width' then
            begin
              if Args.Count > 0 then Border.Width := SizePxFromString(Args[0]);
            end
-           else if Command = 'border-color' then
+           else if Cmd = 'border-color' then
            begin
              if Args.Count > 0 then Border.Color := ColorFromString(Args[0]);
            end
-           else if Command = 'border-style' then
+           else if Cmd = 'border-style' then
            begin
              if Args.Count > 0 then Border.Style := BorderStyleFromString(Args[0]);
            end;
 
       'm':
-        if Command = 'margin-top' then begin
+        if Cmd = 'margin-top' then begin
           if Args.Count > 0 then MarginTop := StrToCssMargin(Args[0]);
         end
-        else if Command = 'margin-left' then begin
+        else if Cmd = 'margin-left' then begin
           if Args.Count > 0 then MarginLeft := StrToCssMargin(Args[0]);
         end
-        else if Command = 'margin-bottom' then begin
+        else if Cmd = 'margin-bottom' then begin
           if Args.Count > 0 then MarginBottom := StrToCssMargin(Args[0]);
-        end else if Command = 'margin-right' then begin
+        end else if Cmd = 'margin-right' then begin
           if Args.Count > 0 then MarginRight := StrToCssMargin(Args[0]);
-        end else if Command = 'margin' then begin
+        end else if Cmd = 'margin' then begin
           case Args.Count of
           1:begin
               // 1 arg: all four the same
@@ -960,25 +959,25 @@ begin
           end;
         end;
 
-      't': if (Command = 'text-align') then
+      't': if (Cmd = 'text-align') then
            begin
              if Args.Count > 0 then Alignment := GetAlignmentForStr(Args[0]);
            end;
 
       'f':
-          if (Length(Command) > 7) and (Args.Count > 0) then
-            case Command[7] of
-              'a': if (Command = 'font-family') then
+          if (Length(Cmd) > 7) and (Args.Count > 0) then
+            case Cmd[7] of
+              'a': if (Cmd = 'font-family') then
                      Font.Name := Args.CommaText; //Args[0];
-              'i': if (Command = 'font-size') then
+              'i': if (Cmd = 'font-size') then
                      Font.Size := Args[0];
-              't': if (Command = 'font-style') then
+              't': if (Cmd = 'font-style') then
                      Font.Style := CSSFontStyleFromName(Args[0]);
-              'e': if (Command = 'font-weight') then
+              'e': if (Cmd = 'font-weight') then
                      Font.Weight := FontWeightFromString(Args[0]);
             end;
       'w':
-        if (Command = 'width') and (Args.Count > 0) then
+        if (Cmd = 'width') and (Args.Count > 0) then
           FWidth := StrToCSSLength(Args[0]);
       end;
     finally

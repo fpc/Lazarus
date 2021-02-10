@@ -28,6 +28,8 @@ uses
   Classes, SysUtils,
   // LCL
   Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
+  // LazUtils
+  LazStringUtils,
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
@@ -371,8 +373,6 @@ begin
 end;
 
 function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean;
-var
-  LowerText: String;
 
   function SearchComboBox({%H-}AControl: TCustomComboBox): Boolean;
   begin
@@ -385,10 +385,10 @@ var
   begin
     Result:=False;
     for i := 0 to AControl.Items.Count-1 do begin
-      if Pos(LowerText, LowerCase(AControl.Items[i]))>0 then begin
-        //if Length(LowerText)>2 then
+      if PosI(AText, AControl.Items[i])>0 then begin
+        //if Length(AText)>2 then
         //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "',
-        //      LowerText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
+        //      AText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
         // ToDo: Indicate found item somehow.
         Result:=True;
       end;
@@ -439,7 +439,7 @@ var
       else if AControl is TCustomMemo then
         Result:=SearchMemo(TCustomMemo(AControl))
       else begin
-        Result:=Pos(LowerText, LowerCase(AControl.Caption))>0;
+        Result:=PosI(AText, AControl.Caption)>0;
         // Indicate the match
         if Result then
           AControl.Font.Style:=MatchFontStyle
@@ -463,7 +463,6 @@ var
   end;
 
 begin
-  LowerText:=LowerCase(AText);
   Result:=Search(Self);
 end;
 

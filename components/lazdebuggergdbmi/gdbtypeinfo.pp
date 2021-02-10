@@ -492,46 +492,46 @@ var
     case CurPtr^ of
       's', 'S': begin
           if (LineEndPtr - CurPtr >= 6 )
-          and  (UpperCase(copy(CurPtr, 1, 7)) = 'SET OF ')
+          and (StrLIComp('SET OF ', CurPtr, 7) = 0)
           then
             Result := ptprkSet;
         end;
       'r', 'R': begin
           if (LineEndPtr - CurPtr >= 5 )
-          and (UpperCase(copy(CurPtr, 1, 6)) = 'RECORD')
+          and (StrLIComp('RECORD', CurPtr, 6) = 0)
           and ((CurPtr+6)^ in [' ', ')', #13, #0])
           then
             Result := ptprkRecord;
         end;
       'c', 'C': begin
           if (LineEndPtr - CurPtr >= 4 )
-          and (UpperCase(copy(CurPtr, 1, 5)) = 'CLASS')
+          and (StrLIComp('CLASS', CurPtr, 5) = 0)
           and ((CurPtr+5)^ in [' ', ')', #13, #0])
           then
             Result := ptprkClass;
         end;
       'a', 'A': begin
           if (LineEndPtr - CurPtr >= 5 )
-          and (UpperCase(copy(CurPtr, 1, 6)) = 'ARRAY ')
+          and (StrLIComp('ARRAY ', CurPtr, 6) = 0)
           then
             Result := ptprkArray;
         end;
       '<': begin
           if (LineEndPtr - CurPtr >= 35 )
-          and (copy(CurPtr, 1, 36) = '<invalid unnamed pascal type code 8>')
+          and (StrLComp('<invalid unnamed pascal type code 8>', CurPtr, 36) = 0)
           then
             Result := ptprkSet;
         end;
       'p', 'P': begin
           if (LineEndPtr - CurPtr >= 8 )
-          and (UpperCase(copy(CurPtr, 1, 9)) = 'PROCEDURE')
+          and (StrLIComp('PROCEDURE', CurPtr, 9) = 0)
           and ((CurPtr+9)^ in [' ', '(', ')', #13, #0])
           then
             Result := ptprkProcedure;
         end;
       'f', 'F': begin
           if (LineEndPtr - CurPtr >= 7 )
-          and (UpperCase(copy(CurPtr, 1, 8)) = 'FUNCTION')
+          and (StrLIComp('FUNCTION', CurPtr, 8) = 0)
           and ((CurPtr+8)^ in [' ', '(', ')', #13, #0])
           then
             Result := ptprkFunction;
@@ -827,16 +827,16 @@ begin
     // deal with https://sourceware.org/bugzilla/show_bug.cgi?id=16016
     i := i + 7;
     if ATypeText[i] = '^' then inc(i);
-    if (UpperCase(copy(ATypeText, i, 9)) <> 'TOBJECT =') then begin
+    if CompareText(copy(ATypeText, i, 9), 'TOBJECT =') <> 0 then begin
       while (i < Length(ATypeText)) and not(ATypeText[i] in [#0..#32,'=',':']) do
         inc(i);
-      if (UpperCase(copy(ATypeText, i, 9)) = ' = CLASS ') and
+      if (CompareText(copy(ATypeText, i, 9), ' = CLASS ') = 0) and
          (Length(ATypeText) > i + 9) and
          (ATypeText[i+9] in [#10, #13])
       then begin
         j := i + 10;
         if (ATypeText[j] in [#10, #13]) then inc(j);
-        if (uppercase(copy(ATypeText, j, 8)) = '  PUBLIC') and
+        if (CompareText(copy(ATypeText, j, 8), '  PUBLIC') = 0) and
            (Length(ATypeText) > j + 8) and
            (ATypeText[j+8] in [#10, #13])
         then
@@ -2305,8 +2305,8 @@ var
     end;
 
     FMaybeShortString := (FFields.Count = 2) and // shortstring have 2 fields: length and st
-       (lowercase(FFields[0].Name) = 'length') and
-       (lowercase(FFields[1].Name) = 'st');
+       (CompareText(FFields[0].Name, 'length') = 0) and
+       (CompareText(FFields[1].Name, 'st') = 0);
 
     if (FTypeName = 'Variant') or
        (FTypeName = 'VARIANT') then
@@ -2411,8 +2411,9 @@ var
           l := Length(S2);
           j := 1;
           while true do begin
-            while (j <= l) and (S2[j] in ['^','(', ' ']) do inc(j);
-            if (lowercase(copy(S2, j, 6)) = 'array ') then begin
+            while (j <= l) and (S2[j] in ['^','(', ' ']) do
+              inc(j);
+            if StrLIComp('array ', @S2[j], 6) = 0 then begin
               inc(j, 5+3);
               while (j <= l) and
                     not ( (S2[j-3] = ' ') and (S2[j-2] in ['o','O']) and (S2[j-1] in ['f','F']) and (S2[j] = ' ') )
@@ -2422,7 +2423,7 @@ var
             end;
             break;
           end;
-          if (lowercase(copy(S2, j, 7)) = 'record ') and
+          if (StrLIComp('record ', @S2[j], 7) = 0) and
              not( (copy(S2, j+7, 1) = ';') or (copy(S2, j+7, 6) = '{...};') )
           then begin
             i := 1;
@@ -2564,7 +2565,8 @@ var
   begin
     if IsReqError(gptrPtypeCustomAutoCast) or
        (not(FReqResults[gptrPtypeCustomAutoCast].Result.Kind = ptprkClass)) or
-       (LowerCase(FAutoTypeCastName) = LowerCase(PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName))) // don't typecast to itself
+       (CompareText(FAutoTypeCastName,             // don't typecast to itself
+                    PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName)) = 0)
     then begin
       FinishProcessClass; // normal class finish
       exit;

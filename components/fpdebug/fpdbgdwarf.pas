@@ -815,7 +815,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     //copied from TFpSymbolDwarfDataProc
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String;
+      out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
     // TODO: deal with DW_TAG_pointer_type
@@ -990,7 +991,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function  DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
 
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
-    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String;
+      out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
 
   public
@@ -4754,21 +4756,20 @@ begin
   Result := FLastMember;
 end;
 
-function TFpSymbolDwarfTypeSubroutine.GetNestedSymbolExByName(
-  const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+function TFpSymbolDwarfTypeSubroutine.GetNestedSymbolExByName(const AIndex: String;
+  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Info: TDwarfInformationEntry;
-  s, s2: String;
+  s: String;
   i: Integer;
 begin
   CreateMembers;
   AnParentTypeSymbol := Self;
-  s2 := LowerCase(AIndex);
   FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember'){$ENDIF};
-  FLastMember := nil;;
+  FLastMember := nil;
   for i := 0 to FProcMembers.Count - 1 do begin
     Info := TDwarfInformationEntry(FProcMembers[i]);
-    if Info.ReadName(s) and (LowerCase(s) = s2) then begin
+    if Info.ReadName(s) and (CompareText(s, AIndex) = 0) then begin
       FLastMember := TFpSymbolDwarf.CreateSubClass('', Info);
       {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember');{$ENDIF}
       break;
@@ -5876,17 +5877,16 @@ function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(const AIndex: String;
   out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 var
   Info: TDwarfInformationEntry;
-  s, s2: String;
+  s: String;
   i: Integer;
 begin
   CreateMembers;
   AnParentTypeSymbol := nil;
-  s2 := LowerCase(AIndex);
   FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember'){$ENDIF};
-  FLastMember := nil;;
+  FLastMember := nil;
   for i := 0 to FProcMembers.Count - 1 do begin
     Info := TDwarfInformationEntry(FProcMembers[i]);
-    if Info.ReadName(s) and (LowerCase(s) = s2) then begin
+    if Info.ReadName(s) and (CompareText(s, AIndex) = 0) then begin
       FLastMember := TFpSymbolDwarf.CreateSubClass('', Info);
       {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember');{$ENDIF}
       break;
