@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="DockedFormEditor"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="source"/>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Linking>
+        <Debugging>
+          <UseValgrind Value="True"/>
+          <UseExternalDbgSyms Value="True"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="17">
+      <Item1>
+        <Filename Value="source\dockedregister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="DockedRegister"/>
+      </Item1>
+      <Item2>
+        <Filename Value="dockedstrconsts.pas"/>
+        <UnitName Value="DockedStrConsts"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source\dockedformaccesses.pas"/>
+        <UnitName Value="DockedFormAccesses"/>
+      </Item3>
+      <Item4>
+        <Filename Value="source\dockedmainide.pas"/>
+        <UnitName Value="DockedMainIDE"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\dockedresizeframe.pas"/>
+        <UnitName Value="DockedResizeFrame"/>
+      </Item5>
+      <Item6>
+        <Filename Value="source\dockedresizer.pas"/>
+        <UnitName Value="DockedResizer"/>
+      </Item6>
+      <Item7>
+        <Filename Value="source\dockedoptionside.pas"/>
+        <UnitName Value="DockedOptionsIDE"/>
+      </Item7>
+      <Item8>
+        <Filename Value="source\dockedoptionsframe.pas"/>
+        <DisableI18NForLFM Value="True"/>
+        <UnitName Value="DockedOptionsFrame"/>
+      </Item8>
+      <Item9>
+        <Filename Value="source\dockedtools.pas"/>
+        <UnitName Value="DockedTools"/>
+      </Item9>
+      <Item10>
+        <Filename Value="source\dockeddesignform.pas"/>
+        <UnitName Value="DockedDesignForm"/>
+      </Item10>
+      <Item11>
+        <Filename Value="source\dockedmodulepagecontrol.pas"/>
+        <UnitName Value="DockedModulePageControl"/>
+      </Item11>
+      <Item12>
+        <Filename Value="source\dockedsourceeditorwindow.pas"/>
+        <UnitName Value="DockedSourceEditorWindow"/>
+      </Item12>
+      <Item13>
+        <Filename Value="source\dockedsourceeditorpagecontrols.pas"/>
+        <UnitName Value="DockedSourceEditorPageControls"/>
+      </Item13>
+      <Item14>
+        <Filename Value="source\dockedanchordesigner.pas"/>
+        <UnitName Value="DockedAnchorDesigner"/>
+      </Item14>
+      <Item15>
+        <Filename Value="source\dockedbasicanchordesigner.pas"/>
+        <UnitName Value="DockedBasicAnchorDesigner"/>
+      </Item15>
+      <Item16>
+        <Filename Value="source\dockedanchorcontrol.pas"/>
+        <UnitName Value="DockedAnchorControl"/>
+      </Item16>
+      <Item17>
+        <Filename Value="source\dockedanchorgrip.pas"/>
+        <UnitName Value="dockedanchorgrip"/>
+      </Item17>
+    </Files>
+    <CompatibilityMode Value="True"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="language"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="DebuggerIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="CodeTools"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

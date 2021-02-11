@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: dockedstrconsts.sanchorbottomcolorcaption
+msgid "Bottom Anchor"
+msgstr ""
+
+#: dockedstrconsts.sanchorbottomcolorhint
+msgid "Color of bottom side, when bottom is anchored"
+msgstr ""
+
+#: dockedstrconsts.sanchorcontrolbordercaption
+msgid "Border Around Control"
+msgstr ""
+
+#: dockedstrconsts.sanchorcontrolborderhint
+msgid "Color of borders around selected control"
+msgstr ""
+
+#: dockedstrconsts.sanchorcontrolcolorcaption
+msgid "Control Background"
+msgstr ""
+
+#: dockedstrconsts.sanchorcontrolcolorhint
+msgid "Normal panel background color"
+msgstr ""
+
+#: dockedstrconsts.sanchorleftcolorcaption
+msgid "Left Anchor"
+msgstr ""
+
+#: dockedstrconsts.sanchorleftcolorhint
+msgid "Color of left side, when left is anchored"
+msgstr ""
+
+#: dockedstrconsts.sanchorrightcolorcaption
+msgid "Right Anchor"
+msgstr ""
+
+#: dockedstrconsts.sanchorrightcolorhint
+msgid "Color of right side, when right is anchored"
+msgstr ""
+
+#: dockedstrconsts.sanchors
+msgid "Anchors"
+msgstr ""
+
+#: dockedstrconsts.sanchortabvisiblecaption
+msgid "Show Tab Anchors"
+msgstr ""
+
+#: dockedstrconsts.sanchortabvisiblehint
+msgid "Show Anchor Designer"
+msgstr ""
+
+#: dockedstrconsts.sanchortargetcolorcaption
+msgid "Anchor Target"
+msgstr ""
+
+#: dockedstrconsts.sanchortargetcolorhint
+msgctxt "dockedstrconsts.sanchortargetcolorhint"
+msgid "Color of selected Anchor of selected control"
+msgstr ""
+
+#: dockedstrconsts.sanchortopcolorcaption
+msgid "Top Anchor"
+msgstr ""
+
+#: dockedstrconsts.sanchortopcolorhint
+msgid "Color of top side, when top is anchored"
+msgstr ""
+
+#: dockedstrconsts.sargumentoutofrange
+msgctxt "dockedstrconsts.sargumentoutofrange"
+msgid "Argument out of range"
+msgstr ""
+
+#: dockedstrconsts.scaptiondockedformeditor
+msgid "Docked Form Editor"
+msgstr ""
+
+#: dockedstrconsts.scapturedistancecaption
+msgid "Capture Distance"
+msgstr ""
+
+#: dockedstrconsts.scapturedistancehint
+msgid "Minimal distance to capture a control with mouse"
+msgstr ""
+
+#: dockedstrconsts.scirculardependency
+msgid "This will create a circular dependency"
+msgstr ""
+
+#: dockedstrconsts.scode
+#, fuzzy
+msgctxt "dockedstrconsts.scode"
+msgid "Code"
+msgstr "Код"
+
+#: dockedstrconsts.scolorscaption
+msgid "Colors"
+msgstr ""
+
+#: dockedstrconsts.sdesigner
+#, fuzzy
+msgctxt "dockedstrconsts.sdesigner"
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: dockedstrconsts.sforcerefreshingcaption
+msgid "Force Refreshing At Sizing"
+msgstr ""
+
+#: dockedstrconsts.sforcerefreshinghint
+msgid "Force refreshing form when user is sizing it"
+msgstr ""
+
+#: dockedstrconsts.smouseborderfactorcaption
+msgid "Mouse Border Factor"
+msgstr ""
+
+#: dockedstrconsts.smouseborderfactorhint
+msgid "Factor to border more precise small distances"
+msgstr ""
+
+#: dockedstrconsts.sresizercolorcaption
+msgid "Resizer Color"
+msgstr ""
+
+#: dockedstrconsts.sresizercolorhint
+msgid "Color of resizer bars"
+msgstr ""
+
+#: dockedstrconsts.stabpositionbottom
+msgid "Bottom"
+msgstr ""
+
+#: dockedstrconsts.stabpositioncaption
+msgid "Tab Position"
+msgstr ""
+
+#: dockedstrconsts.stabpositionhint
+msgid "Position of Tab Code, Designer, Anchors"
+msgstr ""
+
+#: dockedstrconsts.stabpositionleft
+msgid "Left"
+msgstr ""
+
+#: dockedstrconsts.stabpositionright
+msgid "Right"
+msgstr ""
+
+#: dockedstrconsts.stabpositiontop
+msgid "Top"
+msgstr ""
+
+#: dockedstrconsts.streataligncaption
+msgid "Automatic Treat Aligns"
+msgstr ""
+
+#: dockedstrconsts.streatalignhint
+msgid "Automatically replacing Aligns with appropriate Anchors"
+msgstr ""
+
+#: dockedstrconsts.streatbordercaption
+msgid "Automatic Treat Around Border"
+msgstr ""
+
+#: dockedstrconsts.streatborderhint
+msgid "Automatically replacing Bordering Around and adapt side Borderings if needed"
+msgstr ""
+
+#: dockedstrconsts.swarningcaption
+msgid "Warning"
+msgstr ""
+
