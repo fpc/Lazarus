@@ -1570,7 +1570,7 @@ begin
   { Make sure the path has no backslash. }
   FPath := aPath;
   if FPath[length(FPath)] = '\' then
-    SetLength(FPath, pred(length(FPath)))
+    SetLength(FPath, pred(length(FPath)));
 
   { Check that it really exists. }
   if not DirExists(aPath) then
