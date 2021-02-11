@@ -317,7 +317,7 @@ end;
 
 procedure TTestDbgDebugger.DoBetweenWaitForFinish;
 begin
-  sleep(25);
+  sleep(3);
 end;
 
 function TTestDbgDebugger.MatchesCompiler(ACompiler: TTestDbgCompiler): Boolean;

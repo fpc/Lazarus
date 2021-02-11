@@ -212,7 +212,8 @@ type
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
       AMaxLen: Integer = -1; AComma: char = ','): TStringArray;
   protected
-    function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec): Boolean; virtual;
+    function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean = True): Boolean; virtual;
+    function EvaluateExprCmd(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean = True): Boolean; virtual;
     procedure WaitWhileEval; virtual;
 
     function TestMatches(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
@@ -1142,15 +1143,18 @@ begin
 end;
 
 function TWatchExpectationList.EvaluateWatch(AWatchExp: PWatchExpectation;
-  AThreadId: Integer; constref CurLoc: TDBGLocationRec): Boolean;
+  AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean
+  ): Boolean;
 var
   i: Integer;
 begin
-  with CurLoc do
-    FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
-      ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
-      '###### '+LineEnding);
+  //with CurLoc do
+  //  FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
+  //    ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
+  //    '###### '+LineEnding);
   AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Value;
+  if not AWaitForEval then
+    exit(True);
 
   for i := 1 to 5 do begin
     Application.Idle(False);
@@ -1158,12 +1162,23 @@ begin
     if Result then break;
     WaitWhileEval;
   end;
-  FTest.LogText('<<<<< ' + dbgs(AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Validity) + ': ' +
-    AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Value );
+  //FTest.LogText('<<<<< ' + dbgs(AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Validity) + ': ' +
+  //  AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Value );
+end;
 
-
+function TWatchExpectationList.EvaluateExprCmd(AWatchExp: PWatchExpectation;
+  AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean
+  ): Boolean;
+var
+  i: Integer;
+begin
+  Result := true;
   if AWatchExp^.EvalCallTestFlags <> [] then begin
-    // TODO: set thread/stack
+    with CurLoc do
+      FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
+        ' (AT '+ SrcFile + ':' + IntToStr(SrcLine) +')' +
+        '###### '+LineEnding);
+      // TODO: set thread/stack
     FCurEvalCallWatchExp := AWatchExp;
     AWatchExp^.EvalCallResReceived := False;
 
@@ -1171,13 +1186,15 @@ begin
 
     for i := 1 to 5 do begin
       Application.Idle(False);
-      if AWatchExp^.EvalCallResReceived then break;
+      Result := AWatchExp^.EvalCallResReceived;
+      if Result then break;
       WaitWhileEval;
     end;
 
     FTest.LogText('<<<<< CB:'+ dbgs(AWatchExp^.EvalCallResReceived)+ ' Res'+ dbgs(AWatchExp^.EvalCallResSuccess)+
       ' Tp:'+dbgs(AWatchExp^.EvalCallResDBGType <> nil)+ ' '+ AWatchExp^.EvalCallResText  );
   end;
+
   FCurEvalCallWatchExp := nil;
 end;
 
@@ -2119,10 +2136,23 @@ var
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
   l := LazDebugger.GetLocation;
+
+  // Fire up all watches / so the debugger does not need to wait for the testcase
+  for i := 0 to Length(FList)-1 do
+    EvaluateWatch(@FList[i], t, l, False);
+
+  // Wait for the results
   for i := 0 to Length(FList)-1 do begin
     EvaluateWatch(@FList[i], t, l);
     if (i mod 16) = 0 then TestLogger.DbgOut('.');
   end;
+
+  // Eval by ReqCommand
+  for i := 0 to Length(FList)-1 do begin
+    EvaluateExprCmd(@FList[i], t, l);
+    if (i mod 16) = 0 then TestLogger.DbgOut('.');
+  end;
+
   TestLogger.DebugLn('');
 end;
 
