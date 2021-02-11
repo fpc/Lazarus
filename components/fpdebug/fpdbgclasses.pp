@@ -348,6 +348,8 @@ type
   { TFpDbgBreakpoint }
 
   TFpDbgBreakpoint = class(TObject)
+  private
+    FFreeByDbgProcess: Boolean;
   public
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; virtual; abstract;
     function HasLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
@@ -358,6 +360,9 @@ type
 
     procedure SetBreak; virtual; abstract;
     procedure ResetBreak; virtual; abstract;
+
+    // FreeByDbgProcess: The breakpoint will be freed by TDbgProcess.Destroy
+    property FreeByDbgProcess: Boolean read FFreeByDbgProcess write FFreeByDbgProcess;
   end;
 
   { TFpInternalBreakBase }
@@ -1754,10 +1759,16 @@ begin
   FProcessID:=0;
   SetLastLibraryUnloaded(nil);
 
-  for i := 0 to FBreakpointList.Count - 1 do
+  for i := 0 to FBreakpointList.Count - 1 do begin
     FBreakpointList[i].FProcess := nil;
-  for i := 0 to FWatchPointList.Count - 1 do
+    if FBreakpointList[i].FreeByDbgProcess then
+      FBreakpointList[i].Free;
+  end;
+  for i := 0 to FWatchPointList.Count - 1 do begin
     FWatchPointList[i].FProcess := nil;
+    if FWatchPointList[i].FreeByDbgProcess then
+      FWatchPointList[i].Free;
+  end;
   FreeAndNil(FBreakpointList);
   FreeAndNil(FWatchPointList);
   //Assert(FBreakMap.Count=0, 'No breakpoints left');

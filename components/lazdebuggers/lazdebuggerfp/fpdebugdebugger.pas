@@ -32,7 +32,7 @@ unit FpDebugDebugger;
 interface
 
 uses
-  Classes, SysUtils, fgl, math, contnrs, process,
+  Classes, SysUtils, fgl, math, process,
   Forms, Dialogs,
   Maps, LazLogger, LazUTF8,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
@@ -45,6 +45,7 @@ uses
 type
 
   TFpDebugDebugger = class;
+  TFPBreakpoint = class;
 
   (* WorkerThreads:
      The below subclasses implement ONLY work that is done in the MAIN THREAD.
@@ -130,6 +131,28 @@ type
     procedure DoRemovedFromLinkedList; override; // _DecRef
   public
     constructor Create(ADebugger: TFpDebugDebuggerBase; AWatchValue: TWatchValue);
+  end;
+
+  { TFpThreadWorkerBreakPointSetUpdate }
+
+  TFpThreadWorkerBreakPointSetUpdate = class(TFpThreadWorkerBreakPointSet)
+  private
+    FDbgBreakPoint: TFPBreakpoint;
+  protected
+     procedure UpdateBrkPoint_DecRef(Data: PtrInt = 0); override;
+  public
+    constructor Create(ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint); overload;
+    procedure AbortSetBreak; override;
+    procedure RemoveBreakPoint_DecRef; override;
+  end;
+
+  { TFpThreadWorkerBreakPointRemoveUpdate }
+
+  TFpThreadWorkerBreakPointRemoveUpdate = class(TFpThreadWorkerBreakPointRemove)
+  protected
+    procedure DoUnQueued; override;
+  public
+    constructor Create(ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint); overload;
   end;
 
   { TDbgControllerStepOverOrFinallyCmd
@@ -278,8 +301,6 @@ type
     FCacheLocation, FCacheLocation2: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
-    FCacheReadWrite: TDBGWatchPointKind;
-    FCacheScope: TDBGWatchPointScope;
     FCacheThreadId, FCacheStackFrame: Integer;
     FCacheContext: TFpDbgSymbolScope;
     //
@@ -336,33 +357,22 @@ type
     function GetIsIdle: Boolean; override;
     function GetCommands: TDBGCommands; override;
 
-    procedure LockCommandProcessing; override;
-    procedure UnLockCommandProcessing; override;
   protected
     // Helper vars to run in debug-thread
     FCallStackEntryListThread: TDbgThread;
     FCallStackEntryListFrameRequired: Integer;
-    procedure DoAddBreakLine;
     procedure DoAddBreakFuncLib;
     procedure DoAddBreakLocation;
-    procedure DoAddBWatch;
     procedure DoReadData;
     procedure DoReadPartialData;
-    procedure DoPrepareCallStackEntryList;
-    procedure DoFreeBreakpoint;
     procedure DoFindContext;
     procedure DoSetStackFrameForBasePtr;
     //
     function AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
-    function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddBreak(const AFuncName: String; ALib: TDbgLibrary = nil; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
-    function AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
-                      AScope: TDBGWatchPointScope): TFpDbgBreakpoint;
-    procedure FreeBreakpoint(const ABreakpoint: TFpDbgBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean; inline;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
-    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil); inline;
     function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
       CurAddr: TDBGPtr = 0): TDBGPtr;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
@@ -373,6 +383,8 @@ type
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
+    procedure LockCommandProcessing; override;
+    procedure UnLockCommandProcessing; override;
     function GetLocationRec(AnAddress: TDBGPtr=0; AnAddrOffset: Integer = 0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
@@ -487,6 +499,7 @@ type
 
   TFPBreakpoint = class(TDBGBreakPoint)
   private
+    FThreadWorker: TFpThreadWorkerBreakPoint;
     FSetBreakFlag: boolean;
     FResetBreakFlag: boolean;
     FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
@@ -504,14 +517,7 @@ type
   { TFPBreakpoints }
 
   TFPBreakpoints = class(TDBGBreakPoints)
-  private
-    FDelayedRemoveBreakpointList: TObjectList;
-  protected
-    procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpDbgBreakpoint);
   public
-    constructor Create(const ADebugger: TDebuggerIntf; const ABreakPointClass: TDBGBreakPointClass);
-    destructor Destroy; override;
     function Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
   end;
 
@@ -975,6 +981,89 @@ begin
   FWatchValue.AddFreeNotification(@DoWatchFreed_DecRef);
   inherited Create(ADebugger, twpWatch, FWatchValue.Expression, FWatchValue.StackFrame, FWatchValue.ThreadId,
     FWatchValue.DisplayFormat, FWatchValue.RepeatCount, FWatchValue.EvaluateFlags);
+end;
+
+{ TFpThreadWorkerBreakPointSetUpdate }
+
+procedure TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef(Data: PtrInt
+  );
+var
+  WorkItem: TFpThreadWorkerBreakPointRemoveUpdate;
+begin
+  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: system.ThreadID = classes.MainThreadID');
+
+  if FDbgBreakPoint <> nil then begin
+    assert(FDbgBreakPoint.FThreadWorker = Self, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: FDbgBreakPoint.FThreadWorker = Self');
+    FDbgBreakPoint.FThreadWorker := nil;
+    DecRef;
+  end
+  else
+    FResetBreakPoint := True;
+
+  if FResetBreakPoint then begin
+    if InternalBreakpoint <> nil then begin
+      WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(FDebugger, InternalBreakpoint);
+      FpDebugger.FWorkQueue.PushItem(WorkItem);
+      WorkItem.DecRef;
+    end;
+  end
+  else
+  if FDbgBreakPoint <> nil then begin
+    assert(FDbgBreakPoint.FInternalBreakpoint = nil, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: FDbgBreakPoint.FInternalBreakpoint = nil');
+    FDbgBreakPoint.FInternalBreakpoint := InternalBreakpoint;
+    if not assigned(InternalBreakpoint) then
+      FDbgBreakPoint.FValid:=vsInvalid // pending?
+    else
+      FDbgBreakPoint.FValid:=vsValid;
+  end;
+
+  UnQueue_DecRef;
+end;
+
+constructor TFpThreadWorkerBreakPointSetUpdate.Create(
+  ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint);
+var
+  CurThreadId, CurStackFrame: Integer;
+begin
+  FDbgBreakPoint := ADbgBreakPoint;
+  case ADbgBreakPoint.Kind of
+    bpkAddress: inherited Create(ADebugger, ADbgBreakPoint.Address);
+    bpkSource:  inherited Create(ADebugger, ADbgBreakPoint.Source, ADbgBreakPoint.Line);
+    bpkData: begin
+      TFpDebugDebugger(ADebugger).GetCurrentThreadAndStackFrame(CurThreadId, CurStackFrame);
+      inherited Create(ADebugger, ADbgBreakPoint.WatchData, ADbgBreakPoint.WatchScope,
+        ADbgBreakPoint.WatchKind, CurStackFrame, CurThreadId);
+    end;
+  end;
+end;
+
+procedure TFpThreadWorkerBreakPointSetUpdate.AbortSetBreak;
+begin
+  FResetBreakPoint := True;
+  RequestStop;
+end;
+
+procedure TFpThreadWorkerBreakPointSetUpdate.RemoveBreakPoint_DecRef;
+begin
+  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerBreakPointSetUpdate.RemoveBreakPoint_DecRef: system.ThreadID = classes.MainThreadID');
+  FDbgBreakPoint := nil;
+  UnQueue_DecRef;
+end;
+
+{ TFpThreadWorkerBreakPointRemoveUpdate }
+
+procedure TFpThreadWorkerBreakPointRemoveUpdate.DoUnQueued;
+begin
+  if FInternalBreakpoint = nil then
+    exit;
+  FInternalBreakpoint.FreeByDbgProcess := True;
+  inherited DoUnQueued;
+end;
+
+constructor TFpThreadWorkerBreakPointRemoveUpdate.Create(
+  ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint);
+begin
+  inherited Create(ADebugger, ADbgBreakPoint.FInternalBreakpoint);
 end;
 
 { TDbgControllerStepOverFirstFinallyLineCmd }
@@ -1469,7 +1558,6 @@ end;
 
 procedure TFPLocals.RequestData(ALocals: TLocals);
 var
-  AController: TDbgController;
   WorkItem: TFpThreadWorkerLocalsUpdate;
 begin
   if not FpDebugger.IsPausedAndValid then begin
@@ -1483,48 +1571,6 @@ begin
 end;
 
 { TFPBreakpoints }
-
-procedure TFPBreakpoints.DoStateChange(const AOldState: TDBGState);
-var
-  ABrkPoint: FpDbgClasses.TFpDbgBreakpoint;
-  i: Integer;
-begin
-  inherited DoStateChange(AOldState);
-  if (Debugger.State in [dsPause, dsInternalPause, dsStop]) or
-     (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State in [dsRun, dsInit]))
-  then
-  begin
-    if FDelayedRemoveBreakpointList.Count>0 then begin
-      debuglnEnter(DBG_BREAKPOINTS, ['TFPBreakpoints.DoStateChange  REMOVE DELAYED']);
-      for i := FDelayedRemoveBreakpointList.Count-1 downto 0 do
-      begin
-        ABrkPoint := FpDbgClasses.TFpDbgBreakpoint(FDelayedRemoveBreakpointList[i]);
-        TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(ABrkPoint);
-        TFpDebugDebugger(Debugger).FreeBreakpoint(ABrkPoint);
-        ABrkPoint := nil;
-        FDelayedRemoveBreakpointList.Delete(i);
-      end;
-      debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoints.DoStateChange  REMOVE DELAYED ' ]);
-    end;
-  end;
-end;
-
-procedure TFPBreakpoints.AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TFpDbgBreakpoint);
-begin
-  FDelayedRemoveBreakpointList.Add(ABreakpoint);
-end;
-
-constructor TFPBreakpoints.Create(const ADebugger: TDebuggerIntf; const ABreakPointClass: TDBGBreakPointClass);
-begin
-  inherited create(ADebugger, ABreakPointClass);
-  FDelayedRemoveBreakpointList := TObjectList.Create(false);
-end;
-
-destructor TFPBreakpoints.Destroy;
-begin
-  FDelayedRemoveBreakpointList.Free;
-  inherited Destroy;
-end;
 
 function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
 var
@@ -1540,69 +1586,60 @@ begin
 end;
 
 procedure TFPBreakpoint.SetBreak;
-var
-  CurThreadId, CurStackFrame: Integer;
-  CurContext: TFpDbgSymbolScope;
-  WatchPasExpr: TFpPascalExpression;
-  R: TFpValue;
-  s: TFpDbgValueSize;
 begin
-  assert(FInternalBreakpoint=nil);
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-  case Kind of
-    bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Address);
-    bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
-    bpkData: begin
-        TFpDebugDebugger(Debugger).GetCurrentThreadAndStackFrame(CurThreadId, CurStackFrame);
-        CurContext := TFpDebugDebugger(Debugger).GetContextForEvaluate(CurThreadId, CurStackFrame);
-        if CurContext <> nil then begin
-          WatchPasExpr := TFpPascalExpression.Create(WatchData, CurContext);
-          R := WatchPasExpr.ResultValue; // Address and Size
-// TODO: Cache current value
-          if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
-// pass context
-            FInternalBreakpoint := TFpDebugDebugger(Debugger).AddWatch(R.Address.Address, SizeToFullBytes(s), WatchKind, WatchScope);
-          end;
-          WatchPasExpr.Free;
-          CurContext.ReleaseReference;
-        end;
-      end;
-  end;
-  debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
+  assert(FThreadWorker = nil, 'TFPBreakpoint.SetBreak: FThreadWorker = nil');
+  assert(FInternalBreakpoint=nil);
+
+  FThreadWorker := TFpThreadWorkerBreakPointSetUpdate.Create(TFpDebugDebugger(Debugger), Self);
+  TFpDebugDebugger(Debugger).FWorkQueue.PushItem(FThreadWorker);
+
   FIsSet:=true;
-  if not assigned(FInternalBreakpoint) then
-    FValid:=vsInvalid // pending?
-  else
-    FValid:=vsValid;
+  debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
 end;
 
 procedure TFPBreakpoint.ResetBreak;
+var
+  WorkItem: TFpThreadWorkerBreakPointRemoveUpdate;
 begin
+  FIsSet:=false;
+  if FThreadWorker <> nil then begin
+    debugln(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  CANCEL / REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
+    assert(FThreadWorker is TFpThreadWorkerBreakPointSetUpdate, 'TFPBreakpoint.ResetBreak: FThreadWorker is TFpThreadWorkerBreakPointSetUpdate');
+    assert(FInternalBreakpoint = nil, 'TFPBreakpoint.ResetBreak: FInternalBreakpoint = nil');
+    FThreadWorker.AbortSetBreak;
+    FThreadWorker.RemoveBreakPoint_DecRef;
+    FThreadWorker.DecRef;
+    FThreadWorker := nil;
+    exit;
+  end;
+
   // If Debugger is not assigned, the Controller's currentprocess is already
   // freed. And so are the corresponding InternalBreakpoint's.
   if assigned(Debugger) and assigned(FInternalBreakpoint) then
     begin
     debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-    TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-    TFpDebugDebugger(Debugger).FreeBreakpoint(FInternalBreakpoint);
+    WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(TFpDebugDebugger(Debugger), Self);
+    TFpDebugDebugger(Debugger).FWorkQueue.PushItem(WorkItem);
+    WorkItem.DecRef;
     FInternalBreakpoint := nil;
     debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.ResetBreak ' ]);
     end;
-  FIsSet:=false;
 end;
 
 destructor TFPBreakpoint.Destroy;
 begin
-  if assigned(Debugger) and
-     ( (Debugger.State = dsRun) and (not TFpDebugDebugger(Debugger).FSendingEvents) ) and
-     assigned(FInternalBreakpoint) then
-    begin
-    TFPBreakpoints(Collection).AddBreakpointToDelayedRemoveList(FInternalBreakpoint);
-    FInternalBreakpoint:=nil;
-//    TFpDebugDebugger(Debugger).QuickPause;
-    end
-  else
-    ResetBreak;
+  (* No need to request a pause. This will run, as soon as the debugger gets to the next pause.
+     If the next pause is a hit on this breakpoint, then it will be ignored
+  *)
+  ResetBreak;
+
+  if FThreadWorker <> nil then begin
+    FThreadWorker.AbortSetBreak;
+    FThreadWorker.RemoveBreakPoint_DecRef;
+    FThreadWorker.DecRef;
+    FThreadWorker := nil;
+  end;
   inherited Destroy;
 end;
 
@@ -1625,11 +1662,7 @@ begin
     end
   else if Debugger.State = dsStop then
     begin
-    debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.DoStateChange  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-    TFpDebugDebugger(Debugger).FreeBreakpoint(FInternalBreakpoint);
-    debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.DoStateChange ' ]);
-    FInternalBreakpoint := nil;
-    FIsSet:=false;
+    ResetBreak;
     end;
   inherited DoStateChange(AOldState);
 end;
@@ -1646,7 +1679,7 @@ begin
     else if not Enabled and FIsSet then
       FResetBreakFlag := True;
     end
-  else if (ADebugger.State = dsRun) and ((Enabled and not FIsSet) or (not Enabled and FIsSet)) then
+  else if (ADebugger.State = dsRun) and (Enabled and not FIsSet) then
     ADebugger.QuickPause;
   inherited;
 end;
@@ -2894,8 +2927,6 @@ var
   Context: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
   Opts: TFpInt3DebugBreakOptions;
-  StackEntry: TDbgCallstackEntry;
-  s: String;
 begin
   // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
   if AnEventType = deBreakpoint then
@@ -2904,7 +2935,7 @@ begin
 
   if assigned(Breakpoint) then begin
     ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
-    if ABreakPoint <> nil then begin
+    if (ABreakPoint <> nil) and (ABreakPoint.Enabled) then begin
 
       // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
       if ABreakPoint.Expression <> '' then begin
@@ -2943,6 +2974,8 @@ begin
             '', ftInformation, [frOk]);
       end;
     end
+    else
+      continue := True; // removed or disabled breakpoint
   end
   else
   if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
@@ -3033,7 +3066,6 @@ var
   EvalFlags: TDBGEvaluateFlags;
   AConsoleTty, ResText: string;
   addr: TDBGPtrArray;
-  ResType: TDBGType;
   Cmd: TDBGCommand;
   WorkItem: TFpThreadWorkerControllerRun;
   AThreadId, AStackFrame: Integer;
@@ -3317,8 +3349,7 @@ end;
 procedure TFpDebugDebugger.RunQuickPauseTasks(AForce: Boolean);
 begin
   if AForce or
-     FQuickPause or
-     (TFPBreakpoints(Breakpoints).FDelayedRemoveBreakpointList.Count > 0)
+     FQuickPause
   then
     TFPBreakpoints(Breakpoints).DoStateChange(dsRun);
 end;
@@ -3395,11 +3426,6 @@ begin
   Result := (FWorkQueue.Count = 0) or FIsIdle;
 end;
 
-procedure TFpDebugDebugger.DoAddBreakLine;
-begin
-  FCacheBreakpoint := TDbgInstance(FDbgController.CurrentProcess).AddBreak(FCacheFileName, FCacheLine, FCacheBoolean);
-end;
-
 procedure TFpDebugDebugger.DoAddBreakFuncLib;
 begin
   if FCacheLib <> nil then
@@ -3416,11 +3442,6 @@ begin
     FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheLocation, FCacheBoolean);
 end;
 
-procedure TFpDebugDebugger.DoAddBWatch;
-begin
-  FCacheBreakpoint := FDbgController.CurrentProcess.AddWatch(FCacheLocation, FCacheLine, FCacheReadWrite, FCacheScope);
-end;
-
 procedure TFpDebugDebugger.DoReadData;
 begin
   FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^);
@@ -3429,16 +3450,6 @@ end;
 procedure TFpDebugDebugger.DoReadPartialData;
 begin
   FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^, FCacheBytesRead);
-end;
-
-procedure TFpDebugDebugger.DoPrepareCallStackEntryList;
-begin
-  FCallStackEntryListThread.PrepareCallStackEntryList(FCallStackEntryListFrameRequired);
-end;
-
-procedure TFpDebugDebugger.DoFreeBreakpoint;
-begin
-  FCacheBreakpoint.Free;
 end;
 
 procedure TFpDebugDebugger.DoFindContext;
@@ -3473,22 +3484,6 @@ begin
       result := FDbgController.CurrentProcess.AddBreak(ALocation, AnEnabled);
 end;
 
-function TFpDebugDebugger.AddBreak(const AFileName: String; ALine: Cardinal;
-  AnEnabled: Boolean): TFpDbgBreakpoint;
-begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheFileName:=AFileName;
-    FCacheLine:=ALine;
-    FCacheBoolean:=AnEnabled;
-    FCacheBreakpoint := nil;
-    ExecuteInDebugThread(@DoAddBreakLine);
-    result := FCacheBreakpoint;
-  end
-  else
-    result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine, AnEnabled);
-end;
-
 function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
   AnEnabled: Boolean): TFpDbgBreakpoint;
 begin
@@ -3506,37 +3501,6 @@ begin
       result := ALib.AddBreak(AFuncName, AnEnabled)
     else
       result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled);
-end;
-
-function TFpDebugDebugger.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
-  AReadWrite: TDBGWatchPointKind; AScope: TDBGWatchPointScope
-  ): TFpDbgBreakpoint;
-begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheLocation:=ALocation;
-    FCacheLine:=ASize;
-    FCacheReadWrite:=AReadWrite;
-    FCacheScope:=AScope;
-    FCacheBreakpoint := nil;
-    ExecuteInDebugThread(@DoAddBWatch);
-    result := FCacheBreakpoint;
-  end
-  else
-    result := FDbgController.CurrentProcess.AddWatch(ALocation, ASize, AReadWrite, AScope);
-end;
-
-procedure TFpDebugDebugger.FreeBreakpoint(
-  const ABreakpoint: TFpDbgBreakpoint);
-begin
-  if ABreakpoint = nil then exit;
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheBreakpoint:=ABreakpoint;
-    ExecuteInDebugThread(@DoFreeBreakpoint);
-  end
-  else
-    ABreakpoint.Free;
 end;
 
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
@@ -3589,26 +3553,6 @@ begin
         AData:=qw;
       end;
   end;
-end;
-
-procedure TFpDebugDebugger.PrepareCallStackEntryList(AFrameRequired: Integer;
-  AThread: TDbgThread);
-begin
-  if AThread = nil then
-    AThread := FDbgController.CurrentThread;
-  // In case of linux, check if required, before handind to other thread
-  if (AFrameRequired >= 0) and
-     (AThread.CallStackEntryList <> nil) and
-     (AFrameRequired < AThread.CallStackEntryList.Count) then
-    exit;
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCallStackEntryListThread := AThread;
-    FCallStackEntryListFrameRequired := AFrameRequired;
-    ExecuteInDebugThread(@DoPrepareCallStackEntryList);
-  end
-  else
-    AThread.PrepareCallStackEntryList(AFrameRequired);
 end;
 
 function TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr;
