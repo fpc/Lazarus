@@ -38,6 +38,7 @@ uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads,
   // FpDebug
+  {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
   FpDbgDwarf, FpDbgUtil;
@@ -2923,6 +2924,7 @@ end;
 procedure TFpDebugDebugger.FreeDebugThread;
 begin
   FWorkQueue.TerminateAllThreads(True);
+  {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
   Application.ProcessMessages; // run the AsyncMethods
 end;
 
@@ -3111,6 +3113,7 @@ begin
     end;
     FWorkQueue.Clear;
     FWorkQueue.ThreadCount := 1;
+    {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}
     WorkItem := TFpThreadWorkerControllerRun.Create(Self);
     FWorkQueue.PushItem(WorkItem);
     FWorkQueue.WaitForItem(WorkItem, True);
@@ -3659,6 +3662,7 @@ begin
     end;
   FWorkQueue.TerminateAllThreads(True);
   Application.ProcessMessages; // run the AsyncMethods
+  {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
 
   Application.RemoveAsyncCalls(Self);
   FreeAndNil(FDbgController);

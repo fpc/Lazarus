@@ -4,6 +4,8 @@ unit FpDbgCommon;
 
 interface
 
+uses Classes;
+
 type
 // Target information, could be different from host debugger
   TMachineType = (mtNone, mtSPARC, mt386, mt68K, mtPPC, mtPPC64, mtARM, mtARM64,
@@ -22,6 +24,13 @@ type
 // This function returns the host descriptor
 // Use when target information not yet loaded - assumes that debug target is the same as host
 function hostDescriptor: TTargetDescriptor;
+
+{$IFDEF FPDEBUG_THREAD_CHECK}
+procedure AssertFpDebugThreadId(const AName: String);
+procedure AssertFpDebugThreadIdNotMain(const AName: String);
+procedure SetCurrentFpDebugThreadIdForAssert(AnId: TThreadID);
+property CurrentFpDebugThreadIdForAssert: TThreadID write SetCurrentFpDebugThreadIdForAssert;
+{$ENDIF}
 
 implementation
 
@@ -48,6 +57,31 @@ begin
                    {$elseif defined(MSWINDOWS)} osWindows {$endif};
   end;
 end;
+
+{$IFDEF FPDEBUG_THREAD_CHECK}
+var
+  FCurrentFpDebugThreadIdForAssert: TThreadID;
+  FCurrentFpDebugThreadIdValidForAssert: Boolean;
+
+procedure AssertFpDebugThreadId(const AName: String);
+begin
+  if FCurrentFpDebugThreadIdValidForAssert then
+    assert(GetCurrentThreadId = FCurrentFpDebugThreadIdForAssert, AName);
+end;
+
+procedure AssertFpDebugThreadIdNotMain(const AName: String);
+begin
+  AssertFpDebugThreadId(AName);
+  assert(GetCurrentThreadId<>MainThreadID, AName + ' runnig outside main thread');
+end;
+
+procedure SetCurrentFpDebugThreadIdForAssert(AnId: TThreadID);
+begin
+  FCurrentFpDebugThreadIdForAssert := AnId;
+  FCurrentFpDebugThreadIdValidForAssert := True;
+end;
+
+{$ENDIF}
 
 end.
 

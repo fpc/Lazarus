@@ -1000,6 +1000,7 @@ var
   Len, i: Integer;
   BList: TFpInternalBreakpointArray;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocotion');{$ENDIF}
   LocData := GetDataPtr(ALocation);
 
   if LocData <> nil then begin
@@ -1046,6 +1047,7 @@ var
   LocData: PInternalBreakLocationEntry;
   Len, i: Integer;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.RemoveLocotion');{$ENDIF}
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
     DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
@@ -1126,6 +1128,7 @@ end;
 
 function TBreakLocationMap.GetEnumerator: TBreakLocationMapEnumerator;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TBreakLocationMap.GetEnumerator');{$ENDIF}
   Result := TBreakLocationMapEnumerator.Create(Self);
 end;
 
@@ -3123,6 +3126,7 @@ procedure TFpInternalBreakpoint.ResetBreak;
 var
   i: Integer;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
   if FProcess = nil then
     exit;
   for i := 0 to High(FLocation) do
@@ -3133,6 +3137,7 @@ procedure TFpInternalBreakpoint.SetBreak;
 var
   i: Integer;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.SetBreak');{$ENDIF}
   if FProcess = nil then
     exit;
   for i := 0 to High(FLocation) do
@@ -3228,6 +3233,7 @@ var
   R: Boolean;
   i: Integer;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalWatchpoint.SetBreak');{$ENDIF}
   if FProcess = nil then
     exit;
   //TODO: read current mem content. So in case of overlap it can be checked
@@ -3259,6 +3265,7 @@ end;
 
 procedure TFpInternalWatchpoint.ResetBreak;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalWatchpoint.ResetBreak');{$ENDIF}
   if FProcess = nil then
     exit;
 
