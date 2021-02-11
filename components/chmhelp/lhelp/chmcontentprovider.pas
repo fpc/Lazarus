@@ -204,23 +204,21 @@ end;
 
 procedure THTMLWordHighlighter.CheckTextNode(var ATextNode: TDomNode);
 var
-  i: Integer;
-  fPos: Integer;
-  WordStart,
-  After: TDOMText;
+  i, xPos: Integer;
+  WordStart, After: TDOMText;
   Span: TDomElement;
-  aWord: String;
+  aWord: DOMString;
   Parent: TDomNode;
 begin
    Parent := AtextNode.ParentNode;
    for i := 0 to Words.Count-1 do
    begin
-     aWord := Words[i];
-     fPos := PosI(aWord, ATextNode.TextContent);
-     while fpos > 0 do
+     aWord := LowerCase(DOMString(Words[i]));
+     xPos := Pos(aWord, LowerCase(ATextNode.TextContent));
+     while xpos > 0 do
      begin
-       WordStart:= TDOMText(ATextNode).SplitText(fPos-1);
-       After := WordStart.SplitText(Length(aword));
+       WordStart:= TDOMText(ATextNode).SplitText(xPos-1);
+       After := WordStart.SplitText(Length(aWord));
        Span := doc.CreateElement('span');
        // TODO: lHtml don`t perceive background color :(
        Span.SetAttribute('style', DOMString('color:' + Color +
@@ -231,7 +229,7 @@ begin
        // or we'll keep finding our new node again and again
        ATextNode := After;
 
-       fPos := Pos(aWord, ATextNode.TextContent);
+       xPos := Pos(aWord, LowerCase(ATextNode.TextContent));
      end;
    end;
 end;
@@ -1345,7 +1343,8 @@ end;
 
 procedure TChmContentProvider.ActivateProvider;
 begin
-  //DebugLn('CHP FLastUri: '+fLastURI);
+  //DebugLn('CHP ActivateProvider() FLastUri: '+fLastURI);
+  // For show Home after load of all chms from Lazarus
   if (fChms.Count >0) and (fLastURI = '') then
     GoHome;
 end;

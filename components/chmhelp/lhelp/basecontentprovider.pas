@@ -103,9 +103,8 @@ var
 begin
   Result := Copy(AUri, GetUriPrefixLen(AUri)+1, Length(AUri));
   xPos := Pos('://', Result);
-  Assert(xPos = 0, 'GetUrlFilePath: "://" was found in Result.');
-  //if xPos > 0 then
-  //  Result := Copy(Result, 1, xPos-1);
+  if xPos > 0 then
+    Result := Copy(Result, 1, xPos-1);
   xPos := Pos('?', Result);
   if xPos > 0 then
     SetLength(Result, xPos-1);  // Leave parameters out.
@@ -127,11 +126,10 @@ var
 begin
   Result := Copy(AUrl, GetUriPrefixLen(AUrl), Length(AUrl));
   xPos := Pos('://', Result);
-  Assert(xPos = 0, 'GetUrlFilePath: "://" was found in Result.');
-  //if xPos > 0 then
-  //  Result := Copy(Result, xPos+3, Length(Result))
-  //else
-    Result:= '';    // Result will always be '' !
+  if xPos > 0 then
+    Result := Copy(Result, xPos+3, Length(Result))
+  else
+    Result:= '';
 end;
 
 function GetUrlWoContext(const AUrl: String): String;
