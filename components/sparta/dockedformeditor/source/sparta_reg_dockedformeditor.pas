@@ -12,6 +12,8 @@
 
 unit sparta_reg_DockedFormEditor;
 
+{$WARNING Package Sparta_DockedFormEditor is deprecated}
+{$WARNING You can use DockedFormEditor instead}
 {$mode delphi}{$H+}
 
 interface

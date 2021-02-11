@@ -26,6 +26,8 @@
 
 unit sparta_Generics.Collections;
 
+{$WARNING Package Sparta_Generics is deprecated}
+{$WARNING You can use FPC 3.2.0+ Generics instead}
 {$MODE DELPHI}{$H+}
 {$MACRO ON}
 {$COPERATORS ON}

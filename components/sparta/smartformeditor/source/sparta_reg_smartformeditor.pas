@@ -12,6 +12,8 @@
 
 unit sparta_reg_SmartFormEditor;
 
+{$WARNING Package Sparta_SmartFormEditor is deprecated}
+{$WARNING It will be removed from Lazarus sources in next major release}
 {$mode objfpc}{$H+}
 
 interface

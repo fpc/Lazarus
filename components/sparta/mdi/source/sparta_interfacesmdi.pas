@@ -1,5 +1,7 @@
 unit sparta_InterfacesMDI;
 
+{$WARNING Package Sparta_MDI is deprecated}
+{$WARNING It will be removed from Lazarus sources in next major release}
 {$mode objfpc}{$H+}
 
 interface
