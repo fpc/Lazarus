@@ -85,6 +85,18 @@ msgctxt "dockedstrconsts.sargumentoutofrange"
 msgid "Argument out of range"
 msgstr ""
 
+#: dockedstrconsts.sattachcontrol
+msgid "Attach Control"
+msgstr ""
+
+#: dockedstrconsts.sattachpoint
+msgid "Attach Control Sides"
+msgstr ""
+
+#: dockedstrconsts.sattachside
+msgid "Attach Control Side"
+msgstr ""
+
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
 msgstr ""
@@ -116,6 +128,18 @@ msgstr ""
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Designer"
 msgstr "Desenho"
+
+#: dockedstrconsts.sdetachcontrol
+msgid "Detach Control"
+msgstr ""
+
+#: dockedstrconsts.sdetachpoint
+msgid "Detach Control Sides"
+msgstr ""
+
+#: dockedstrconsts.sdetachside
+msgid "Detach Control Side"
+msgstr ""
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"

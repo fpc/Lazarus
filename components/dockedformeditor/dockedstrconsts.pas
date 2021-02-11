@@ -28,11 +28,17 @@ resourceString
   SAnchorRightColorHint       = 'Color of right side, when right is anchored';
   SAnchorBottomColorCaption   = 'Bottom Anchor';
   SAnchorBottomColorHint      = 'Color of bottom side, when bottom is anchored';
+  SAttachControl              = 'Attach Control';
+  SAttachPoint                = 'Attach Control Sides';
+  SAttachSide                 = 'Attach Control Side';
   SCaptionDockedFormEditor    = 'Docked Form Editor';
   SCaptureDistanceCaption     = 'Capture Distance';
   SCaptureDistanceHint        = 'Minimal distance to capture a control with mouse';
   SCircularDependency         = 'This will create a circular dependency';
   SColorsCaption              = 'Colors';
+  SDetachControl              = 'Detach Control';
+  SDetachPoint                = 'Detach Control Sides';
+  SDetachSide                 = 'Detach Control Side';
   SForceRefreshingCaption     = 'Force Refreshing At Sizing';
   SForceRefreshingHint        = 'Force refreshing form when user is sizing it';
   SMouseBorderFactorCaption   = 'Mouse Border Factor';

@@ -25,7 +25,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, math,
   // LCL
-  Controls, ExtCtrls, Graphics;
+  Controls, ExtCtrls, Graphics, Menus;
 
 type
 
@@ -53,10 +53,12 @@ type
     FParent: TWinControl;
     function  CalculateBestRect(AControl: TControl): TRect;
     function  GetGrip(AIndex: Integer): TAnchorGrip;
+    function  GetPopupMenu: TPopupMenu;
     procedure InitGrip(AGrip: TAnchorGrip; ACursor: TCursor);
     procedure SetOnMouseDown(AValue: TMouseEvent);
     procedure SetOnMouseMove(AValue: TMouseMoveEvent);
     procedure SetOnMouseUp(AValue: TMouseEvent);
+    procedure SetPopupMenu(AValue: TPopupMenu);
   public
     constructor Create(AParent: TWinControl);
     destructor Destroy; override;
@@ -78,6 +80,7 @@ type
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write SetOnMouseMove;
     property OnMouseUp: TMouseEvent read FOnMouseUp write SetOnMouseUp;
+    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
   end;
 
 implementation
@@ -132,6 +135,11 @@ begin
   Result := FGrip[AIndex];
 end;
 
+function TAnchorGrips.GetPopupMenu: TPopupMenu;
+begin
+  Result := FGrip[0].PopupMenu;
+end;
+
 procedure TAnchorGrips.InitGrip(AGrip: TAnchorGrip; ACursor: TCursor);
 begin
   AGrip.Parent := FParent;
@@ -166,6 +174,15 @@ begin
   FOnMouseUp := AValue;
   for i := 0 to 7 do
     FGrip[i].OnMouseUp := AValue;
+end;
+
+procedure TAnchorGrips.SetPopupMenu(AValue: TPopupMenu);
+var
+  i: Integer;
+begin
+  if GetPopupMenu = AValue then Exit;
+  for i := 0 to 7 do
+    FGrip[i].PopupMenu := AValue;
 end;
 
 constructor TAnchorGrips.Create(AParent: TWinControl);

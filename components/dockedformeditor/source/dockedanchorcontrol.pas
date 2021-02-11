@@ -28,6 +28,13 @@ const
     ('Top', 'Bottom', 'Center');
 
 type
+  TAttachDetach = (adAttachControl, adDetachControl, adAttachPoint, adDetachPoint, adAttachSide, adDetachSide);
+
+const
+  AttachDetachStr: array[Low(TAttachDetach)..High(TAttachDetach)] of String =
+    (SAttachControl, SDetachControl, SAttachPoint, SDetachPoint, SAttachSide, SDetachSide);
+
+type
 
   TAnchorControlState = (acsNone, acsInvalid, acsSelected, acsUpdating);
   TAnchorControlStates = set of TAnchorControlState;

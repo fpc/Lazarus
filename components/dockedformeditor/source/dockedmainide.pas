@@ -18,7 +18,7 @@
   TODO:
     - Lazarus AnchorEditor isn't refreshed after control is changed in DockedAnchorDesigner
     - center form (popup Designer) destroys form position in DockedFormEditor
-    - popup for grips to fix control/point/side at parent
+    - Undo
 
 }
 

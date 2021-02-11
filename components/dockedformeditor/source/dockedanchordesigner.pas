@@ -18,7 +18,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, math, Types,
   // LCL
-  LCLProc, Controls, LCLIntf, Forms, ExtCtrls, Graphics, Dialogs,
+  LCLProc, Controls, LCLIntf, Forms, ExtCtrls, Graphics, Dialogs, Menus,
   // IDEIntf
   PropEdits,
   // DockedFormEditor
@@ -39,8 +39,11 @@ type
     FCurrentBounds: TRect;
     FDesignControl: TWinControl;
     FDesignForm: TDesignForm;
+    FMenuAttachDetach: TMenuItem;
     FMousePos: TPoint;
     FParent: TWinControl;
+    FPopupMenu: TPopupMenu;
+    FPopupAnchors: TAnchors;
     FPreviousControl: TAnchorControl;
     FSelectedControl: TAnchorControl;
     FState: TAnchorStates;
@@ -58,11 +61,16 @@ type
     procedure BringToFront(AControl: TAnchorControl);
     function  CalculateRect(AControl: TControl): TRect;
     procedure CreateAnchorControl(AControl: TControl; AParent: TWinControl);
+    procedure CreateAnchorGrips;
+    procedure CreateBackGround;
+    procedure CreatePopupMenu;
     function  FindNearestControl(APoint: TPoint): TAnchorControl;
     function  FindAnchorHorzSide(ARect: TRect; ARootPoint: TPoint; out Side: TAnchorSideReference): Boolean;
     function  FindAnchorVertSide(ARect: TRect; ARootPoint: TPoint; out Side: TAnchorSideReference): Boolean;
+    procedure MenuAttachDetachClick(Sender: TObject);
     function  MouseStartMoving: Boolean;
     function  MouseOffset: TPoint;
+    procedure PopupMenuAdapt(Sender: TObject);
     procedure SelectedAdaptAnchors;
     procedure SelectedAdaptBorder;
     procedure SelectedAdaptBounds(var ALeft, ATop, AWidth, AHeight: Integer);
@@ -110,9 +118,9 @@ end;
 procedure TAnchorDesigner.AnchorControlMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  PopupMenuAdapt(Sender);
   if not (State = []) then Exit;
   if Assigned(OnDesignerSetFocus) then OnDesignerSetFocus();
-  if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   if Sender = FBackGround then
   begin
     SelectedControl := nil;
@@ -121,6 +129,7 @@ begin
   end;
   SelectedControl := TAnchorControl(Sender);
   Invalidate;
+  if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   GetCursorPos(FMousePos);
   Include(FState, asMouseDown);
   {$IF Defined(LCLWin32) or Defined(LCLWin64)}
@@ -193,6 +202,7 @@ begin
   ReleaseCapture;
   {$ENDIF}
 
+  FState := [];
   GlobalDesignHook.Modified(FSelectedControl.RootControl);
   GlobalDesignHook.SelectOnlyThis(TAnchorControl(Sender).RootControl);
 end;
@@ -205,6 +215,7 @@ end;
 procedure TAnchorDesigner.AnchorGripMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  PopupMenuAdapt(Sender);
   if Assigned(OnDesignerSetFocus) then OnDesignerSetFocus();
   if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   GetCursorPos(FMousePos);
@@ -358,6 +369,7 @@ begin
     LAnchorControl.OnMouseMove := @AnchorControlMouseMove;
     LAnchorControl.OnMouseUp   := @AnchorControlMouseUp;
     LAnchorControl.OnPaint     := @AnchorControlPaint;
+    LAnchorControl.PopupMenu   := FPopupMenu;
     FAnchorControls.Add(LAnchorControl);
   end;
   LAnchorControl.Validate;
@@ -370,6 +382,38 @@ begin
   end;
   if AControl = FDesignForm.SelectedControl then
     SelectedControl := LAnchorControl;
+end;
+
+procedure TAnchorDesigner.CreateAnchorGrips;
+begin
+  FAnchorGrips := TAnchorGrips.Create(FParent);
+  FAnchorGrips.BackGround := FBackGround;
+  FAnchorGrips.OnMouseDown := @AnchorGripMouseDown;
+  FAnchorGrips.OnMouseMove := @AnchorGripMouseMove;
+  FAnchorGrips.OnMouseUp := @AnchorGripMouseUp;
+  FAnchorGrips.Hide;
+end;
+
+procedure TAnchorDesigner.CreateBackGround;
+begin
+  FBackGround := TAnchorControl.Create(FParent, FDesignControl);
+  FBackGround.BevelOuter := bvNone;
+  FBackGround.Align := alClient;
+  FBackGround.Name := 'AnchorBackGround';
+  FBackGround.Parent := FParent;
+  FBackGround.OnMouseDown := @AnchorControlMouseDown;
+  FBackGround.OnPaint := @AnchorControlPaint;
+  FBackGround.OnShowHint := nil;
+  FAnchorControls.Add(FBackGround);
+end;
+
+procedure TAnchorDesigner.CreatePopupMenu;
+begin
+  FPopupMenu := TPopupMenu.Create(FBackGround);
+  FAnchorGrips.PopupMenu := FPopupMenu;
+  FMenuAttachDetach := TMenuItem.Create(FPopupMenu);
+  FMenuAttachDetach.OnClick := @MenuAttachDetachClick;
+  FPopupMenu.Items.Add(FMenuAttachDetach);
 end;
 
 function TAnchorDesigner.FindNearestControl(APoint: TPoint): TAnchorControl;
@@ -501,6 +545,39 @@ begin
     Result := FSelectedControl.AnchorValid(akBottom, FTargetControl, Side);
 end;
 
+procedure TAnchorDesigner.MenuAttachDetachClick(Sender: TObject);
+var
+  LKind: TAnchorKind;
+begin
+  case TAttachDetach(FMenuAttachDetach.Tag) of
+    adAttachControl:
+      begin
+        FSelectedControl.RemoveAnchorSides;
+        FSelectedControl.Anchors := [akLeft, akTop];
+      end;
+    adDetachControl:
+      FSelectedControl.RemoveAnchorSides;
+    adAttachPoint, adAttachSide:
+      for LKind := akTop to akBottom do
+      begin
+        if [LKind] * FPopupAnchors = [] then Continue;
+        FSelectedControl.RemoveAnchorSide(LKind);
+        FSelectedControl.Anchors := FSelectedControl.Anchors + [LKind];
+      end;
+    adDetachPoint, adDetachSide:
+      for LKind := akTop to akBottom do
+      begin
+        if [LKind] * FPopupAnchors = [] then Continue;
+        FSelectedControl.RemoveAnchorSide(LKind);
+      end;
+  end;
+
+  FSelectedControl.AssignToRoot_Anchors;
+  FState := [];
+  GlobalDesignHook.Modified(FSelectedControl.RootControl);
+  GlobalDesignHook.SelectOnlyThis(FSelectedControl.RootControl);
+end;
+
 function TAnchorDesigner.MouseStartMoving: Boolean;
 var
   LMousePos: TPoint;
@@ -514,6 +591,87 @@ begin
   Result := Point(0, 0);
   GetCursorPos(Result);
   Result := Result - FMousePos;
+end;
+
+procedure TAnchorDesigner.PopupMenuAdapt(Sender: TObject);
+var
+  LAttachDetach: TAttachDetach;
+begin
+  FPopupAnchors := [];
+  if Sender is TAnchorControl then
+  begin
+    if TAnchorControl(Sender).Anchors = [] then
+      LAttachDetach := adAttachControl
+    else
+      LAttachDetach := adDetachControl;
+  end else
+  if Sender = FAnchorGrips.GripTopLeft then
+  begin
+    if FSelectedControl.Anchors * [akLeft, akTop] = [] then
+      LAttachDetach := adAttachPoint
+    else
+      LAttachDetach := adDetachPoint;
+    FPopupAnchors := FPopupAnchors + [akLeft, akTop];
+  end else
+  if Sender = FAnchorGrips.GripTopCenter then
+  begin
+    if FSelectedControl.Anchors * [akTop] = [] then
+      LAttachDetach := adAttachSide
+    else
+      LAttachDetach := adDetachSide;
+    FPopupAnchors := FPopupAnchors + [akTop];
+  end else
+  if Sender = FAnchorGrips.GripTopRight then
+  begin
+    if FSelectedControl.Anchors * [akTop, akRight] = [] then
+      LAttachDetach := adAttachPoint
+    else
+      LAttachDetach := adDetachPoint;
+    FPopupAnchors := FPopupAnchors + [akTop, akRight];
+  end else
+  if Sender = FAnchorGrips.GripCenterRight then
+  begin
+    if FSelectedControl.Anchors * [akRight] = [] then
+      LAttachDetach := adAttachSide
+    else
+      LAttachDetach := adDetachSide;
+    FPopupAnchors := FPopupAnchors + [akRight];
+  end else
+  if Sender = FAnchorGrips.GripBottomRight then
+  begin
+    if FSelectedControl.Anchors * [akBottom, akRight] = [] then
+      LAttachDetach := adAttachPoint
+    else
+      LAttachDetach := adDetachPoint;
+    FPopupAnchors := FPopupAnchors + [akBottom, akRight];
+  end else
+  if Sender = FAnchorGrips.GripBottomCenter then
+  begin
+    if FSelectedControl.Anchors * [akBottom] = [] then
+      LAttachDetach := adAttachSide
+    else
+      LAttachDetach := adDetachSide;
+    FPopupAnchors := FPopupAnchors + [akBottom];
+  end else
+  if Sender = FAnchorGrips.GripBottomLeft then
+  begin
+    if FSelectedControl.Anchors * [akBottom, akLeft] = [] then
+      LAttachDetach := adAttachPoint
+    else
+      LAttachDetach := adDetachPoint;
+    FPopupAnchors := FPopupAnchors + [akBottom, akLeft];
+  end else
+  if Sender = FAnchorGrips.GripCenterLeft then
+  begin
+    if FSelectedControl.Anchors * [akLeft] = [] then
+      LAttachDetach := adAttachSide
+    else
+      LAttachDetach := adDetachSide;
+    FPopupAnchors := FPopupAnchors + [akLeft];
+  end else
+    raise Exception.Create('TAnchorDesigner.PopupMenuAdapt: Wrong Sender');
+  FMenuAttachDetach.Caption := AttachDetachStr[LAttachDetach];
+  FMenuAttachDetach.Tag     := ord(LAttachDetach);
 end;
 
 procedure TAnchorDesigner.SelectedAdaptAnchors;
@@ -696,22 +854,10 @@ begin
   FAnchorBarWidth := -1;
   FDesignControl := FDesignForm.DesignWinControl;
   FAnchorControls := TAnchorControls.Create;
-  FBackGround := TAnchorControl.Create(FParent, FDesignControl);
-  FBackGround.BevelOuter := bvNone;
-  FBackGround.Align := alClient;
-  FBackGround.Name := 'AnchorBackGround';
-  FBackGround.Parent := FParent;
-  FBackGround.OnMouseDown := @AnchorControlMouseDown;
-  FBackGround.OnPaint := @AnchorControlPaint;
-  FBackGround.OnShowHint := nil;
-  FAnchorControls.Add(FBackGround);
-  FAnchorGrips := TAnchorGrips.Create(FParent);
-  FAnchorGrips.BackGround := FBackGround;
-  FAnchorGrips.OnMouseDown := @AnchorGripMouseDown;
-  FAnchorGrips.OnMouseMove := @AnchorGripMouseMove;
-  FAnchorGrips.OnMouseUp := @AnchorGripMouseUp;
-  FAnchorGrips.Hide;
   FBorderControl := TBorderControl.Create(nil);
+  CreateBackGround;
+  CreateAnchorGrips;
+  CreatePopupMenu;
 end;
 
 destructor TAnchorDesigner.Destroy;
@@ -726,12 +872,15 @@ procedure TAnchorDesigner.Abort;
 begin
   if Assigned(FTargetControl) then FTargetControl.Color := DockedOptions.AnchorControlColor;
   FTargetControl := nil;
-  if not Assigned(FPreviousControl) then Exit;
-  FSelectedControl.AssignFull(FPreviousControl);
-  FreeAndNil(FPreviousControl);
+  if Assigned(FPreviousControl) then
+  begin
+    FSelectedControl.AssignFull(FPreviousControl);
+    FreeAndNil(FPreviousControl);
+  end;
   Screen.Cursor := crDefault;
   {$IF Defined(LCLWin32) or Defined(LCLWin64)}
-  ReleaseCapture;
+  if asMouseDown in State then
+    ReleaseCapture;
   {$ENDIF}
   FState := [];
   Invalidate;
