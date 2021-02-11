@@ -66,6 +66,7 @@ type
   private
     FState: integer;
     FStatusEvent: TStatusEvent;
+    fCS: TRTLCriticalSection;
     procedure FSetRegisterCacheSize(sz: cardinal);
     procedure FResetStatusEvent;
     // Blocking
@@ -127,7 +128,7 @@ uses
   {$ENDIF}
 
 var
-  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, DBG_RSP: PLazLoggerLogGroup;
 
 procedure TRspConnection.FSetRegisterCacheSize(sz: cardinal);
 begin
@@ -230,7 +231,7 @@ begin
   end
   else
   begin
-    DebugLn(DBG_VERBOSE, ['RSP -> ', cmd]);
+    DebugLn(DBG_RSP, ['RSP -> ', cmd]);
   end;
 end;
 
@@ -330,7 +331,7 @@ begin
   end;
 
   //WriteLn('RSP <- ', retval);
-  DebugLn(DBG_VERBOSE, ['RSP <- ', retval]);
+  DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
 
 function TRspConnection.FSendCmdWaitForReply(const cmd: string; out reply: string
@@ -385,16 +386,27 @@ end;
 
 procedure TRspConnection.Break();
 begin
-  WriteByte(3);  // Ctrl-C
+  EnterCriticalSection(fCS);
+  try
+    WriteByte(3);  // Ctrl-C
+  finally
+    LeaveCriticalSection(fCS);
+  end;
 end;
 
 function TRspConnection.Kill(): boolean;
 var
   c: char;
 begin
-  result := FSendCommand('k');
-  // Swallow the last ack if send
-  result := FWaitForData(1000);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCommand('k');
+    // Swallow the last ack if send
+    result := FWaitForData(1000);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
+
   if result then
   begin
     c := char(ReadByte);
@@ -406,7 +418,12 @@ function TRspConnection.Detach(): boolean;
 var
   reply: string;
 begin
-  result := FSendCmdWaitForReply('D', reply);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply('D', reply);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   result := pos('OK', reply) = 1;
 end;
 
@@ -415,11 +432,13 @@ constructor TRspConnection.Create(const AHost: String; APort: Word;
 begin
   inherited Create(AHost, APort);
   //self.IOTimeout := 1000;  // socket read timeout = 1000 ms
+  InitCriticalSection(fCS);
 end;
 
 destructor TRspConnection.Destroy;
 begin
   inherited;
+  DoneCriticalSection(fCS);
 end;
 
 function TRspConnection.WaitForSignal(out msg: string; out
@@ -434,19 +453,24 @@ begin
   res := false;
   SetLength(registers, 0);
 
-  // False if no data available, e.g. socket is closed
-  if not FWaitForData() then
-  begin
-    msg := '';
-    result := SIGHUP;
-    exit;
-  end;
-
+  EnterCriticalSection(fCS);
   try
-    res := FReadReply(msg);
-  except
-    on E: Exception do
-      DebugLn(DBG_WARNINGS, ['Warning: WaitForSignal exception: ', E.Message]);
+    // False if no data available, e.g. socket is closed
+    if not FWaitForData() then
+    begin
+      msg := '';
+      result := SIGHUP;
+      exit;
+    end;
+
+    try
+      res := FReadReply(msg);
+    except
+      on E: Exception do
+        DebugLn(DBG_WARNINGS, ['Warning: WaitForSignal exception: ', E.Message]);
+    end;
+  finally
+    LeaveCriticalSection(fCS);
   end;
 
   if res then
@@ -531,7 +555,12 @@ function TRspConnection.MustReplyEmpty: boolean;
 var
   reply: string;
 begin
-  FSendCmdWaitForReply('vMustReplyEmpty', reply);
+  EnterCriticalSection(fCS);
+  try
+    FSendCmdWaitForReply('vMustReplyEmpty', reply);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   result := reply = '';
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
@@ -551,7 +580,12 @@ begin
     wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
   end;
 
-  result := FSendCmdWaitForReply(cmd, reply);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if result then
     result := pos('OK', reply) > 0;
 end;
@@ -570,7 +604,12 @@ begin
     wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
   end;
 
-  result := FSendCmdWaitForReply(cmd, reply);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if result then
     result := pos('OK', reply) > 0;
 end;
@@ -578,14 +617,24 @@ end;
 function TRspConnection.Continue(): boolean;
 begin
   DebugLn(DBG_VERBOSE, ['TRspConnection.Continue() called']);
-  result := FSendCommandOK('c');
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCommandOK('c');
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: Continue command failure in TRspConnection.Continue()']);
 end;
 
 function TRspConnection.SingleStep(): boolean;
 begin
-  result := FSendCommandOK('s');
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCommandOK('s');
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: SingleStep command failure in TRspConnection.SingleStep()']);
 end;
@@ -596,7 +645,12 @@ var
   tmp: qword;
 begin
   cmd := 'p'+IntToHex(ind, 2);
-  result := FSendCmdWaitForReply(cmd, reply);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if result then
   begin
     result := convertHexWithLittleEndianSwap(reply, tmp);
@@ -612,8 +666,12 @@ var
   cmd, reply: string;
 begin
   cmd := 'P'+IntToHex(ind, 2);
-  result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
-
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: "P" command returned unexpected result: ', reply]);
 end;
@@ -627,8 +685,13 @@ begin
   reply := '';
   setlength(b, sz);
   // Normal receive error, or an error response of the form Exx
-  result := FSendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
-    and (length(reply) = 2*sz);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
+      and (length(reply) = 2*sz);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if Result then
   begin
     //WriteLn('Read registers reply: ', reply);
@@ -665,7 +728,12 @@ begin
   end;
 
   // Normal receive error, or an error number of the form Exx
-  result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: "G" command returned unexpected result: ', reply]);
 end;
@@ -680,7 +748,12 @@ begin
   result := false;
   getmem(buf, ASize);
   cmd := 'm'+IntToHex(AAddress, 2)+',' + IntToHex(ASize, 2);
-  result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2);
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if result then
   begin
     for i := 0 to ASize-1 do
@@ -716,7 +789,12 @@ begin
     inc(pb);
   end;
 
-  result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+  EnterCriticalSection(fCS);
+  try
+    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+  finally
+    LeaveCriticalSection(fCS);
+  end;
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: "M" command returned unexpected result: ', reply]);
 end;
@@ -725,24 +803,32 @@ function TRspConnection.Init: integer;
 var
   reply: string;
   intRegs: TInitializedRegisters;
+  res: boolean;
 begin
   result := 0;
   reply := '';
-  if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') then
-  begin
-    DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
-    exit;
+  EnterCriticalSection(fCS);
+  try
+    if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') then
+    begin
+      DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
+      exit;
+    end;
+    res := FSendCommand('?');
+  finally
+    LeaveCriticalSection(fCS);
   end;
 
-  if FSendCommandOK('?') then
+  if res then
   begin
+    // Already wrapped in critical section
     result := WaitForSignal(reply, intRegs);
   end;
-  // TODO: Do something with fresh register information
 end;
 
 initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  DBG_RSP := DebugLogger.FindOrRegisterLogGroup('DBG_RSP' {$IFDEF DBG_RSP} , True {$ENDIF} );
 end.
 
