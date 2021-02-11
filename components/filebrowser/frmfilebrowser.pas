@@ -346,7 +346,7 @@ begin
   if FRootDir = '' then
     FRootDir := PathDelim;
   if (FRootDir <> PathDelim) and (FRootDir[length(FRootDir)] = PathDelim) then
-    FRootDir := copy(FRootDir, 1, length(FRootDir) - 1);
+    SetLength(FRootDir, length(FRootDir)-1);
   { Find or Create the root node and add it to the Tree View. }
   RootNode := TV.Items.FindTopLvlNode(FRootDir + PathDelim);
   if RootNode = nil then

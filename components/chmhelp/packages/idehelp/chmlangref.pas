@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   Dialogs, LazHelpIntf, HelpIntfs,
-  FileUtil, LazFileUtils, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazUTF8,
   IDEHelpIntf, MacroIntf;
 
 const
@@ -199,7 +199,7 @@ begin
       for i := 0 to FRTLIndex.Count - 1 do
       begin
         s := FRTLIndex.Names[i];
-        if SameText(KeyWord, Copy(s, 1, Length(KeyWord))) and
+        if LazStartsText(KeyWord, s) and
           ((Length(s) = Length(KeyWord)) or (s[Length(KeyWord) + 1] = ' ')) then
         begin
           KeywordNode := THelpNode.CreateURL(Self,KeyWord,'rtl.chm://' + FRTLIndex.ValueFromIndex[i]);

@@ -556,7 +556,7 @@ begin
     NewName := ExtractFileName(SaveDialog1.FileName);
     l := length(ExtractFileExt(NewName));
     if (l > 0) and (l+1 < Length(NewName)) then
-      NewName := Copy(NewName, 1, Length(NewName) - l);
+      SetLength(NewName, Length(NewName) - l);
     l := UTF8CodepointSize(PChar(NewName));
     if l > 0 then
       NewName := UTF8UpperCase(copy(NewName, 1, l)) + copy(NewName, 1+l, length(NewName));

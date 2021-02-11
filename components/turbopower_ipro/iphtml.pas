@@ -11329,7 +11329,7 @@ var
   begin
     FormData := TIpFormDataEntity.Create(nil);
     for i := 0 to Pred(FList.Count) do
-      if copy(VList[i], 1, 7) = 'file://' then
+      if StartsStr('file://', VList[i]) then
         FormData.AddFile(copy(VList[i], 8, length(VList[i])),
           Accept, 'plain', embinary)
       else

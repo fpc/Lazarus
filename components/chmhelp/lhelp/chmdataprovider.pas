@@ -84,7 +84,7 @@ begin
   Result := AURL;
   i := Pos('#', Result);
   if i > 0 then
-    Result := Copy(Result, 1, i-1);
+    SetLength(Result, i-1);
 end;
 
 function TIpChmDataProvider.GetChms: TChmFileList;

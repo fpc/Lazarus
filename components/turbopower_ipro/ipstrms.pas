@@ -1568,10 +1568,9 @@ end;
 procedure TIpDownloadFileStream.dfsMakeTempFile(const aPath : string);
 begin
   { Make sure the path has no backslash. }
-  if aPath[length(aPath)] = '\' then
-    FPath := Copy(aPath, 1, pred(length(aPath)))
-  else
-    FPath := aPath;
+  FPath := aPath;
+  if FPath[length(FPath)] = '\' then
+    SetLength(FPath, pred(length(FPath)))
 
   { Check that it really exists. }
   if not DirExists(aPath) then

@@ -370,9 +370,8 @@ begin
     Exit; // Not a Todo/Done item, leave
 
   // Remove the ending comment chars from input string
-  if (aEndComment <> '')
-    and (RightStr(lParsingString, Length(aEndComment)) = aEndComment) then
-      lParsingString := Copy(lParsingString, 1, Length(lParsingString)-Length(aEndComment));
+  if (aEndComment <> '') and StartsStr(aEndComment, lParsingString) then
+    SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
 
   // Remove the Token
   Delete(lParsingString, 1, Length(TODO_TOKENS[lFoundTokenStyle, lTodoType]));

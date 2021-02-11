@@ -26,11 +26,11 @@ unit SynEditMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, StrUtils,
   // LCL
   LCLProc, Controls, ExtCtrls,
   // LazUtils
-  LazClasses, LazUTF8, LazMethodList,
+  LazClasses, LazUTF8, LazMethodList, LazStringUtils,
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
   SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
@@ -1384,7 +1384,7 @@ begin
     Len := length(o.SearchTerm);
     MatchBegin := MatchEnd - Len - FFindLineTextLower + FFindLineText;
 
-    if o.MatchCase and not(copy(MatchBegin, 1, Len) = o.SearchTerm) then begin
+    if o.MatchCase and not StartsStr(o.SearchTerm, MatchBegin) then begin
       MatchIdx := FTermDict.GetIndexForNextWordOccurrence(MatchIdx);
       continue;
     end;
@@ -2713,7 +2713,7 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
     Result := copy(s, i, MaxInt);
     i := length(Result);
     while (i > 0) and (Result[i] in [#1..#32]) do dec(i);
-    Result := copy(Result, 1, i);
+    SetLength(Result, i);
   end;
 var
   LowBnd, UpBnd: TPoint;

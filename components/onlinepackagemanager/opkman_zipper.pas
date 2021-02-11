@@ -266,7 +266,7 @@ begin
   if not AIsDirZipped then
     ABaseDir := ''
   else
-    ABaseDir := Copy(ABaseDir, 1, Length(ABaseDir) - 1);
+    SetLength(ABaseDir, Length(ABaseDir)-1);
 end;
 
 

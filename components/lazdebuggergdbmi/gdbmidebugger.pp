@@ -4547,8 +4547,10 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
         {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
         j := (ItmPtr^.Addr - ItmPtr2^.Addr) * 2;
         {$POP}
-        if length(ItmPtr2^.Dump) > j then debugln(DBG_DISASSEMBLER, ['NOTICE, CopyToRange: Shortening Dump at the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
-        if length(ItmPtr2^.Dump) > j then ItmPtr2^.Dump := copy(ItmPtr2^.Dump, 1, j);
+        if length(ItmPtr2^.Dump) > j then
+          debugln(DBG_DISASSEMBLER, ['NOTICE, CopyToRange: Shortening Dump at the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
+        if length(ItmPtr2^.Dump) > j then
+          SetLength(ItmPtr2^.Dump, j);
       end;
     end;
 

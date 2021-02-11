@@ -549,7 +549,7 @@ var
   procedure WordBreak(ADropCount: Integer = 0);
   begin
     ARemains:= copy(AText, length(AText) - left + 1 + ADropCount, left);
-    AText := copy(AText, 1, length(AText) - left);
+    SetLength(AText, length(AText) - left);
   end;
 
 begin

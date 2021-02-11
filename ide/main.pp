@@ -9940,7 +9940,7 @@ function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
 var
   SrcEdit, NewSrcEdit: TSourceEditor;
   AnEditorInfo: TUnitEditorInfo;
-  s: String;
+  STB, FNStart: String;
 begin
   Result:=mrCancel;
   if NewSource=nil then begin
@@ -9974,10 +9974,12 @@ begin
       ActiveUnitInfo := Project1.UnitInfoWithFilename(NewSource.Filename);
       if (ActiveUnitInfo = nil) and (Project1.IsVirtual) and (jfSearchVirtualFullPath in Flags)
       then begin
-        s := AppendPathDelim(GetTestBuildDirectory);
-        if UTF8LowerCase(copy(NewSource.Filename, 1, length(s))) = UTF8LowerCase(s)
-        then ActiveUnitInfo := Project1.UnitInfoWithFilename(copy(NewSource.Filename,
-                1+length(s), length(NewSource.Filename)), [pfsfOnlyVirtualFiles]);
+        STB := AppendPathDelim(GetTestBuildDirectory);
+        FNStart := copy(NewSource.Filename, 1, length(STB));
+        if UTF8CompareLatinTextFast(FNStart, STB) = 0 then
+          ActiveUnitInfo := Project1.UnitInfoWithFilename(
+                                  copy(NewSource.Filename, 1+length(STB), MaxInt),
+                                  [pfsfOnlyVirtualFiles]);
       end;
 
       AnEditorInfo := nil;

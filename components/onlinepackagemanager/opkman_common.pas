@@ -326,8 +326,8 @@ var
             if Trim(PackageData.FPackageRelativePath) <> '' then
             begin
               if PackageData.FPackageRelativePath[Length(PackageData.FPackageRelativePath)] = PathDelim then
-                PackageData.FPackageRelativePath := Copy(PackageData.FPackageRelativePath, 1, Length(PackageData.FPackageRelativePath) - 1);
-              PackageData.FPackageRelativePath := PackageData.FPackageRelativePath;
+                SetLength(PackageData.FPackageRelativePath, Length(PackageData.FPackageRelativePath)-1);
+              //PackageData.FPackageRelativePath := PackageData.FPackageRelativePath; ???
             end;
             PackageData.FFullPath := Path + SR.Name;
             APackageList.AddObject(PackageData.FName, PackageData);

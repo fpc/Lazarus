@@ -30,7 +30,7 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // RTL / FCL
-  Classes, SysUtils, Types, TypInfo, math,
+  Classes, SysUtils, Types, TypInfo, StrUtils, math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLType, LCLIntf, Forms, Buttons, Graphics,
   StdCtrls, Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes, LMessages, ImgList,
@@ -38,7 +38,7 @@ uses
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   TreeFilterEdit, ListFilterEdit,
   // LazUtils
-  GraphType, LazConfigStorage, LazLoggerBase, LazUTF8,
+  GraphType, LazConfigStorage, LazLoggerBase, LazStringUtils, LazUTF8,
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
@@ -2127,7 +2127,7 @@ begin
   a := 0;
   while a < FExpandedProperties.Count do
   begin
-    if copy(FExpandedProperties[a], 1, length(CurPath)) = CurPath then
+    if StartsStr(CurPath, FExpandedProperties[a]) then
       FExpandedProperties.Delete(a)
     else
       inc(a);

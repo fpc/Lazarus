@@ -38,7 +38,7 @@ unit ProcedureList;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, StrUtils,
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
   Graphics, Grids,
@@ -608,24 +608,16 @@ begin
   end
   else
   if not pSearchAll and tbFilterStart.Down then
-  begin
-    Result := ClassMatches and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr)));
-  end
+    Result := ClassMatches and StartsStr(pSearchStr, pProcName)
   else
   if not pSearchAll and tbFilterAny.Down then
-  begin
-    Result := ClassMatches and FilterFits(pSearchStr, pProcName);
-  end
+    Result := ClassMatches and FilterFits(pSearchStr, pProcName)
   else
   if pSearchAll and tbFilterStart.Down then
-  begin
-    Result := SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr)));
-  end
+    Result := StartsStr(pSearchStr, pProcName)
   else
   if pSearchAll then
-  begin
     Result := FilterFits(pSearchStr, pProcName);
-  end;
 end;
 
 procedure TProcedureListForm.ClearGrid;

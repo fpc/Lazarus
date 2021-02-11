@@ -220,18 +220,19 @@ var
   function IndexOfAutoCreateForm(FormName: string): integer;
   var
     p: integer;
+    S: String;
   begin
     p := Pos(':', FormName);
     if p > 0 then
-      FormName := Copy(FormName, 1, p - 1);
+      SetLength(FormName, p-1);
     Result := FormsAutoCreatedListBox.Items.Count - 1;
     while (Result >= 0) do
     begin
-      p := Pos(':', FormsAutoCreatedListBox.Items[Result]);
-      if p < 1 then
-        p := Length(FormsAutoCreatedListBox.Items[Result]) + 1;
-      if CompareText(copy(FormsAutoCreatedListBox.Items[Result], 1, p - 1),
-        FormName) = 0 then
+      S := FormsAutoCreatedListBox.Items[Result];
+      p := Pos(':', S);
+      if p > 0 then
+        SetLength(S, p-1);
+      if CompareText(S, FormName) = 0 then
         Exit;
       Dec(Result);
     end;

@@ -596,7 +596,7 @@ begin
       j := i - length(s) - 1;
     s := copy(FSpaces, j + 1, MaxInt);
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CaretChanged - Trimming,part to ',length(s),' ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
-    FSpaces := copy(FSpaces, 1, j);
+    SetLength(FSpaces, j);
     i := length(s);
     MaybeAddUndoForget(FLineIndex+1, s);
     SendNotification(senrLineChange, self, fLineIndex, 1);
@@ -1000,7 +1000,7 @@ begin
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditMoveToTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), ' Y=',LogY, '  len=',Len]);{$ENDIF}
   t := NextLines[LogY - 1];
   s := copy(t, 1 + length(t) - Len, Len) + Spaces(LogY - 1);
-  t := copy(t, 1, length(t) - Len);
+  SetLength(t, length(t) - Len);
   StoreSpacesForLine(LogY - 1, s, t);
   NextLines[LogY - 1] := t;
   CurUndoList.AddChange(TSynEditUndoTrimMoveTo.Create(LogY, Len));
@@ -1118,7 +1118,7 @@ begin
       LenNS := LastNoneSpacePos(AText);
       if LenNS < Len then begin
         EditInsertTrim(1, LogY, copy(AText, 1 + LenNS, Len));
-        AText := copy(AText, 1, LenNS);
+        SetLength(AText, LenNS);
       end;
     end;
   end;
@@ -1276,7 +1276,7 @@ begin
       LenNS := LastNoneSpacePos(AText);
       if LenNS < Len then begin
         EditInsertTrim(1, LogY, copy(AText, 1 + LenNS, Len));
-        AText := copy(AText, 1, LenNS);
+        SetLength(AText, LenNS);
       end;
     end;
   end;

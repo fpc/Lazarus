@@ -40,7 +40,9 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,
+  Classes, SysUtils, StrUtils,
+  LCLProc,
+  LazStringUtils,
   SynEditMiscClasses, SynEditMiscProcs, LazSynEditText, SynEditPointClasses,
   SynEditKeyCmds, SynEditTypes;
 
@@ -602,9 +604,9 @@ begin
     dec(BackCounter);
     Temp := GetLine(BackCounter);
     if Temp <> '' then begin
-      Temp := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
+      SetLength(Temp, GetIndentForLine(FCurrentEditor, Temp, False));
       PhysLen := GetIndentForLine(FCurrentEditor, Temp, True);
-      if (PhysLen > KnownPhysLen) and (copy(temp, 1, length(BasedMix)) = BasedMix) then
+      if (PhysLen > KnownPhysLen) and StartsStr(BasedMix, Temp) then
       begin
         KnownMix := Temp;
         KnownPhysLen := PhysLen;
@@ -712,7 +714,7 @@ begin
   //  Temp := Lines[FoundLine-1]
   //else
   //  FoundLine := BackCounter + 1;
-  Temp := copy(Temp, 1, GetIndentForLine(Editor, Temp, False));
+  SetLength(Temp, GetIndentForLine(Editor, Temp, False));
 
   case FIndentType of
     sbitCopySpaceTab:

@@ -17,11 +17,11 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils,
+  Math, Classes, SysUtils, StrUtils,
   // LCL
   LCLIntf, LCLType, Forms, Controls,
   // LazUtils
-  LazConfigStorage, LazUTF8, LazMethodList, LazLoggerBase,
+  LazConfigStorage, LazUTF8, LazMethodList, LazLoggerBase, LazStringUtils,
   // BuildIntf
   IDEOptionsIntf;
 
@@ -580,11 +580,8 @@ var
   I: Integer;
 begin
   for I := 0 to FOptList.Count-1 do
-  if Copy(aFormID, 1, Length(FOptList[I])) = FOptList[I] then
-  begin
-    Result := TIDEWindowGlobalOption(FOptList.Objects[I]).CanSetVisibility;
-    Exit;
-  end;
+  if StartsStr(FOptList[I], aFormID) then
+    Exit(TIDEWindowGlobalOption(FOptList.Objects[I]).CanSetVisibility);
   Result := True;//default is true
 end;
 
@@ -1311,7 +1308,7 @@ begin
   if (i < 1) or (i = length(Result)) then
     exit;
   SubIndex := StrToInt(copy(Result, i+1, length(Result)));
-  Result := copy(Result, 1, i);
+  SetLength(Result, i);
 end;
 
 procedure TSimpleWindowLayout.SetForm(const AForm: TCustomForm);

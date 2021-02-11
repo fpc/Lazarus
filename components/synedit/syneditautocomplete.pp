@@ -44,9 +44,10 @@ unit SynEditAutoComplete;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc, SysUtils, Menus,
-  Classes, SynEdit, SynEditKeyCmds, SynEditPlugins,
-  Controls;
+  Classes, StrUtils,
+  LCLIntf, LCLType, LCLProc, Controls, SysUtils, Menus,
+  LazStringUtils, LazUTF8,
+  SynEdit, SynEditKeyCmds, SynEditPlugins;
 
 const
   CodeTemplateMacroMagic = '$(EnableMakros)';
@@ -264,9 +265,9 @@ begin
     if fCaseSensitive then begin
       while i > -1 do begin
         s := fCompletions[i];
-        if AnsiCompareStr(s, AToken) = 0 then
+        if s = AToken then
           break
-        else if AnsiCompareStr(Copy(s, 1, Len), AToken) = 0 then begin
+        else if StartsStr(AToken, s) then begin
           Inc(NumMaybe);
           IdxMaybe := i;
         end;
@@ -275,9 +276,9 @@ begin
     end else begin
       while i > -1 do begin
         s := fCompletions[i];
-        if AnsiCompareText(s, AToken) = 0 then
+        if UTF8CompareLatinTextFast(s, AToken) = 0 then
           break
-        else if AnsiCompareText(Copy(s, 1, Len), AToken) = 0 then begin
+        else if UTF8CompareLatinTextFast(Copy(s, 1, Len), AToken) = 0 then begin
           Inc(NumMaybe);
           IdxMaybe := i;
         end;

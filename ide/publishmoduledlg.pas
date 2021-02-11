@@ -36,7 +36,7 @@ uses
   // LCL
   LCLType, Forms, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase, UITypes, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase, UITypes, LazUTF8,
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
@@ -209,7 +209,7 @@ begin
   UpALevel := '..' + DirectorySeparator;
   RelPath := ExtractRelativePath(FTopDir, AFilename);
   Adjusted := False;
-  while Copy(RelPath, 1, 3) = UpALevel do
+  while StartsStr(UpALevel, RelPath) do
   begin
     FTopDir := FTopDir + UpALevel; // This file is in upper dir. Move TopDir up, too.
     Delete(RelPath, 1, 3);

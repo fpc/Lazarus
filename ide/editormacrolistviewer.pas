@@ -5,7 +5,7 @@ unit EditorMacroListViewer;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, StrUtils,
   // LCL
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus, Buttons,
@@ -1444,7 +1444,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  If (copy(AName, 1, length(EditorMacroVirtualDrive)) <> EditorMacroVirtualDrive) or
+  If not StartsStr(EditorMacroVirtualDrive, AName) or
      (copy(AName, NameStart-1, 1) <> '|')
   then exit;
   Alist := NameToMacroList(copy(AName, FolderStart, 3));

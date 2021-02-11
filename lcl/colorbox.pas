@@ -20,8 +20,9 @@ unit ColorBox;
 interface
 
 uses
-  LResources, SysUtils, Types, Classes,
-  LCLProc, LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls;
+  LResources, SysUtils, Types, Classes, StrUtils,
+  LCLProc, LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  LazStringUtils;
 
 const
   cDefaultColorRectWidth = 14;
@@ -363,7 +364,7 @@ begin
   if not FindInMap(ColorName, Result) then
   begin
     Result := ColorName;
-    if Copy(Result, 1, 2) = 'cl' then
+    if StartsStr('cl', Result) then
       Delete(Result, 1, 2);
   end;
 end;

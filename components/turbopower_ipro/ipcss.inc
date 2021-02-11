@@ -513,7 +513,7 @@ end;
 
 function SizePxFromString(S: String): Integer;
 begin
-  S := Copy(S, 1, PosI('px',S)-1);
+  SetLength(S, PosI('px',S)-1);
   Result := StrToIntDef(S, 0);
 end;
 

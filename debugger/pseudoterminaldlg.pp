@@ -701,8 +701,8 @@ var
   begin
     if lineNumberLength = 0 then begin
       lineNumberAsText := '';
-      dataAsByteArray := BytesOf(Copy(stringList[currentLine], 1,
-                                Length(stringList[currentLine])))
+      // Was: Copy(stringList[currentLine], 1, Length(stringList[currentLine]))
+      dataAsByteArray := BytesOf(stringList[currentLine])
     end else begin                      (* Remember one extra space after number *)
       lineNumberAsText := Copy(stringList[currentLine], 1, lineNumberLength + 1);
       dataAsByteArray := BytesOf(Copy(stringList[currentLine], lineNumberLength + 2,
