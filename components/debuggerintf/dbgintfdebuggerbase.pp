@@ -2314,7 +2314,7 @@ function TDBGDisassemblerRangeExtender.DisassembleRange(ALinesBefore,
   ALinesAfter: integer; AStartAddr: TDBGPtr; AnEndAddr: TDBGPtr): boolean;
 var
   TryStartAt, TryEndAt: TDisassemblerAddress;
-  TmpAddr: TDBGPtr;
+  TmpAddr, TmpOffset: TDBGPtr;
   GotCnt, LastGotCnt: Integer;
   RngBefore, RngAfter: TDBGDisassemblerEntryRange;
 begin
@@ -2335,7 +2335,11 @@ begin
   and (TryStartAt.Value - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > ALinesBefore * DAssBytesPerCommandAvg)
   then RngBefore := nil;
   {$POP}
-  TmpAddr := AStartAddr - Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+  TmpOffset := Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+  if TmpOffset > AStartAddr then
+    TmpAddr := 0
+  else
+    TmpAddr := AStartAddr - TmpOffset;
   TryStartAt.GuessedValue := TmpAddr;
   AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
   // check max size
@@ -2445,7 +2449,11 @@ begin
     end;
 
     TryEndAt := InitAddress(RngAfter.RangeStartAddr, avFoundRange);
-    TmpAddr := TryEndAt.Value - Min((ALinesBefore - GotCnt) * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+    TmpOffset := Min((ALinesBefore - GotCnt) * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+    if TryEndAt.Value > TmpOffset then
+      TmpAddr := TryEndAt.Value - TmpOffset
+    else
+      TmpAddr := 0;
     TryStartAt := InitAddress(TryEndAt.Value - 1, avGuessed);
     TryStartAt.GuessedValue := TmpAddr;
     // and adjust

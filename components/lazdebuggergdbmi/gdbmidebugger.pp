@@ -4493,7 +4493,10 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
   begin
     Result := False;
     // TODO: maybe try "info symbol <addr>
-    s := (AStartAddr.GuessedValue -1) div 4 * 4;  // 4 byte boundary
+    if AStartAddr.GuessedValue = 0 then
+      s := 0
+    else
+      s := (AStartAddr.GuessedValue -1) div 4 * 4;  // 4 byte boundary
     DisAssList := ExecDisassmble(s, s+1, False);
     if DisAssList.Count > 0 then begin
       DisAssItm := DisAssList.Item[0];
@@ -4788,7 +4791,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     i, Cnt, DisAssStartIdx: Integer;
     NewRange: TDBGDisassemblerEntryRange;
     OrigLastAddress, OrigFirstAddress: TDisassemblerAddress;
-    TmpAddr: TDBGPtr;
+    TmpAddr, TmpOffset: TDBGPtr;
     BlockOk, SkipDisAssInFirstLoop, ContinueAfterSource: Boolean;
     Itm: TDisassemblerEntry;
   begin
@@ -4809,8 +4812,8 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
 
     // No nice startingpoint found, just start to disassemble aprox 5 instructions before it
     // and hope that when we started in the middle of an instruction it get sorted out.
-    // If so, the 4st for lines from the result must be discarded
-    if not (AFirstAddr.Validity in TrustedValidity)
+    // If so, the 1st four lines from the result must be discarded
+    if not (AFirstAddr.Validity in TrustedValidity) and (AFirstAddr.Value > 5 * DAssBytesPerCommandMax)
     then PadAddress(AFirstAddr, - 5 * DAssBytesPerCommandMax);
 
     // Adjust ALastAddr
@@ -4833,7 +4836,11 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     // TODO: limit offset ONLY, if previous range known (already have disass)
     if (AFirstAddr.Offset >= 0)
     then begin
-      TmpAddr := AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg);
+      TmpOffset := Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg);
+      if AFirstAddr.Value > TmpOffset then
+        TmpAddr := AFirstAddr.Value - TmpOffset
+      else
+        TmpAddr := 0;
       DisAssListWithSrc := ExecDisassmble(TmpAddr, ALastAddr.Value, True);
     end;
 
