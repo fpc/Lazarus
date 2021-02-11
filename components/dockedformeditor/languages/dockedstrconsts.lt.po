@@ -57,11 +57,11 @@ msgid "Anchors"
 msgstr ""
 
 #: dockedstrconsts.sanchortabvisiblecaption
-msgid "Show Tab Anchors"
+msgid "Show Anchors Tab"
 msgstr ""
 
 #: dockedstrconsts.sanchortabvisiblehint
-msgid "Show Anchor Designer"
+msgid "Show Anchor Editor"
 msgstr ""
 
 #: dockedstrconsts.sanchortargetcolorcaption
@@ -83,7 +83,7 @@ msgstr ""
 
 #: dockedstrconsts.sargumentoutofrange
 msgctxt "dockedstrconsts.sargumentoutofrange"
-msgid "Argument out of range"
+msgid "Argument out of range."
 msgstr ""
 
 #: dockedstrconsts.sattachcontrol
@@ -111,7 +111,7 @@ msgid "Minimal distance to capture a control with mouse"
 msgstr ""
 
 #: dockedstrconsts.scirculardependency
-msgid "This will create a circular dependency"
+msgid "This will create a circular dependency."
 msgstr ""
 
 #: dockedstrconsts.scode
@@ -191,19 +191,19 @@ msgid "Top"
 msgstr ""
 
 #: dockedstrconsts.streataligncaption
-msgid "Automatic Treat Aligns"
+msgid "Automatically treat Aligns"
 msgstr ""
 
 #: dockedstrconsts.streatalignhint
-msgid "Automatically replacing Aligns with appropriate Anchors"
+msgid "Automatically replace Aligns with appropriate Anchors"
 msgstr ""
 
 #: dockedstrconsts.streatbordercaption
-msgid "Automatic Treat Around Border"
+msgid "Automatically treat Around Border"
 msgstr ""
 
 #: dockedstrconsts.streatborderhint
-msgid "Automatically replacing Bordering Around and adapt side Borderings if needed"
+msgid "Automatically replace BorderSpace around the control and adapt side BorderSpaces if needed"
 msgstr ""
 
 #: dockedstrconsts.swarningcaption

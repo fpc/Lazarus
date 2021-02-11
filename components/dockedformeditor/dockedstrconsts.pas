@@ -16,8 +16,8 @@ resourceString
   SAnchorControlBorderHint    = 'Color of borders around selected control';
   SAnchorControlColorCaption  = 'Control Background';
   SAnchorControlColorHint     = 'Normal panel background color';
-  SAnchorTabVisibleCaption    = 'Show Tab Anchors';
-  SAnchorTabVisibleHint       = 'Show Anchor Designer';
+  SAnchorTabVisibleCaption    = 'Show Anchors Tab';
+  SAnchorTabVisibleHint       = 'Show Anchor Editor';
   SAnchorTargetColorCaption   = 'Anchor Target';
   SAnchorTargetColorHint      = 'Color of selected Anchor of selected control';
   SAnchorTopColorCaption      = 'Top Anchor';
@@ -34,7 +34,7 @@ resourceString
   SCaptionDockedFormEditor    = 'Docked Form Editor';
   SCaptureDistanceCaption     = 'Capture Distance';
   SCaptureDistanceHint        = 'Minimal distance to capture a control with mouse';
-  SCircularDependency         = 'This will create a circular dependency';
+  SCircularDependency         = 'This will create a circular dependency.';
   SColorsCaption              = 'Colors';
   SDetachControl              = 'Detach Control';
   SDetachPoint                = 'Detach Control Sides';
@@ -47,10 +47,10 @@ resourceString
   SResizerColorHint           = 'Color of resizer bars';
   STabPositionCaption         = 'Tab Position';
   STabPositionHint            = 'Position of Tab Code, Designer, Anchors';
-  STreatAlignCaption          = 'Automatic Treat Aligns';
-  STreatAlignHint             = 'Automatically replacing Aligns with appropriate Anchors';
-  STreatBorderCaption         = 'Automatic Treat Around Border';
-  STreatBorderHint            = 'Automatically replacing Bordering Around and adapt side Borderings if needed';
+  STreatAlignCaption          = 'Automatically treat Aligns';
+  STreatAlignHint             = 'Automatically replace Aligns with appropriate Anchors';
+  STreatBorderCaption         = 'Automatically treat Around Border';
+  STreatBorderHint            = 'Automatically replace BorderSpace around the control and adapt side BorderSpaces if needed';
   SWarningCaption             = 'Warning';
 
   STabPositionTop             = 'Top';
@@ -58,7 +58,7 @@ resourceString
   STabPositionLeft            = 'Left';
   STabPositionRight           = 'Right';
 
-  SArgumentOutOfRange         = 'Argument out of range';
+  SArgumentOutOfRange         = 'Argument out of range.';
 
 const
   STabPosition: array [Low(TTabPosition)..High(TTabPosition)] of String = (
