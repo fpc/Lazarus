@@ -3373,6 +3373,8 @@ begin
   NewLeft:=Max(30,(Screen.Width-Form.Width) div 2);
   NewTop:=Max(30,(Screen.Height-Form.Height) div 2);
   Form.SetBounds(NewLeft,NewTop,Form.Width,Form.Height);
+  if Assigned(IDETabMaster) then
+    IDETabMaster.ShowForm(Form);
 end;
 
 procedure TDesigner.OnCopyMenuClick(Sender: TObject);
