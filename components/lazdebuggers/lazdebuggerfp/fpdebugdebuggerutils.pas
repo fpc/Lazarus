@@ -31,7 +31,7 @@ interface
 
 uses
   FpDbgUtil, FpdMemoryTools, LazLoggerBase, DbgIntfDebuggerBase, sysutils,
-  Classes, syncobjs;
+  Classes, syncobjs, Forms;
 
 type
 
@@ -155,9 +155,9 @@ type
     TFpDbgPriorytyFifoQueue = class(TFpDbgTypedFifoQueue2)
     private
       FOnQueueIdle: TThreadMethod;
-      FQueuedThread: TThread;
       FQueues: array[TFpThreadWorkerPriority] of TFpDbgTypedFifoQueue2;
       FLowestAvail: TFpThreadWorkerPriority;
+      procedure DoOnIdle(Data: PtrInt);
     public
       constructor create(AQueueDepth: Integer = 10);
       destructor Destroy; override;
@@ -366,6 +366,13 @@ end;
 
 { TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue }
 
+procedure TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue.DoOnIdle(
+  Data: PtrInt);
+begin
+  if Assigned(FOnQueueIdle) then
+    FOnQueueIdle();
+end;
+
 constructor TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue.create(
   AQueueDepth: Integer);
 var
@@ -380,7 +387,7 @@ destructor TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue.Destroy;
 var
   a: TFpThreadWorkerPriority;
 begin
-  TThread.RemoveQueuedEvents(FQueuedThread, FOnQueueIdle);
+  Application.RemoveAsyncCalls(Self);
   inherited Destroy;
   for a in TFpThreadWorkerPriority do
     FQueues[a].Free;
@@ -389,7 +396,7 @@ end;
 function TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue.PushItem(
   const AItem: TFpThreadWorkerItem): Boolean;
 begin
-  TThread.RemoveQueuedEvents(FQueuedThread, FOnQueueIdle);
+  Application.RemoveAsyncCalls(Self);
   inc(FTotalItemsPushed);
   if not (AItem is TFpThreadPriorityWorkerItem) then begin
     Result := FQueues[twpDefault].PushItem(AItem);
@@ -416,8 +423,8 @@ begin
   end
   else begin
     // IDLE => there is only one worker thread, so no other items are running
-    FQueuedThread := TThread.CurrentThread;
-    TThread.Queue(FQueuedThread, FOnQueueIdle);
+    if Assigned(FOnQueueIdle) then
+      Application.QueueAsyncCall(@DoOnIdle, 0);
   end;
   assert(result or (TotalItemsPushed=TotalItemsPopped), 'TFpThreadPriorityWorkerQueue.TFpDbgPriorytyFifoQueue.PopItem: result or (TotalItemsPushed=TotalItemsPopped)');
 end;
