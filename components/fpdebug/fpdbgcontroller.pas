@@ -1662,6 +1662,10 @@ begin
     IsFinished:=false;
     if FPDEvent=deExitProcess then begin
       FreeAndNil(FCommand);
+      if assigned(FOnThreadProcessLoopCycleEvent) then begin
+        FOnThreadProcessLoopCycleEvent(AExit, FPDEvent, CurCmd, IsFinished);
+        FPDEvent := deExitProcess;
+      end;
       break;
     end
     else

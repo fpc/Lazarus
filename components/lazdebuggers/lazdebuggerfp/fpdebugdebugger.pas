@@ -2332,7 +2332,23 @@ var
   EFlags, Cnt: Cardinal;
   Frames: TFrameList;
   FinallyData: Array of array [0..3] of DWORD;
+  n: String;
 begin
+  case AnEventType of
+    deExitProcess: begin
+      FDebugger.FExceptionStepper.DoDbgStopped;
+      exit;
+    end;
+    deLoadLibrary: begin
+      if (CurrentProcess <> nil) and (CurrentProcess.LastLibraryLoaded <> nil) then begin
+        n := ExtractFileName(CurrentProcess.LastLibraryLoaded.Name);
+        if n = 'ntdll.dll' then
+          FDebugger.FExceptionStepper.DoNtDllLoaded(CurrentProcess.LastLibraryLoaded);
+      end;
+      exit;
+    end;
+  end;
+
   if CurrentThread = nil then
     exit;
   if (FState = esSteppingFpcSpecialHandler) and AnIsFinished and
@@ -2517,6 +2533,7 @@ begin
     AFinishLoopAndSendEvents := False;
     FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
     o := FAddressFrameList.IndexOf(PC);
+    Rdx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(1).NumValue;
     if o >= 0 then begin
       Frames := FAddressFrameList.Data[o];
       Frames.Remove(CurrentThread.GetStackPointerRegisterValue);
@@ -2570,7 +2587,7 @@ begin
   if FState in [esAtWSehExcept] then begin
     FDebugger.EnterPause(FDebugger.GetLocation);
     FState := esNone;
-    exit;
+    exit(True);
   end;
 
   Result := Assigned(Breakpoint);
@@ -2652,7 +2669,6 @@ begin
   LockRelease;
   try
     SetState(dsStop);
-    FExceptionStepper.DoDbgStopped;
     StopAllWorkers;
     FreeDebugThread;
   finally
@@ -2732,9 +2748,6 @@ var
 begin
   n := ExtractFileName(ALib.Name);
   DoDbgEvent(ecModule, etModuleLoad, 'Loaded: ' + n + ' (' + ALib.Name +')');
-
-  if n = 'ntdll.dll' then
-    FExceptionStepper.DoNtDllLoaded(ALib);
 end;
 
 procedure TFpDebugDebugger.FDbgControllerLibraryUnloaded(var continue: boolean;
