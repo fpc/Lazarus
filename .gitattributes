@@ -648,7 +648,6 @@ components/chmhelp/lhelp/lhelp.res -text
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.pas svneol=native#text/plain
 components/chmhelp/lhelp/lhelpstrconsts.pas svneol=native#text/pascal
-components/chmhelp/lhelp/lnethttpdataprovider.pas svneol=native#text/plain
 components/chmhelp/packages/help/Makefile svneol=native#text/plain
 components/chmhelp/packages/help/Makefile.compiled svneol=native#text/plain
 components/chmhelp/packages/help/Makefile.fpc svneol=native#text/plain

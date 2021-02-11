@@ -5,8 +5,10 @@ unit HTTPContentProvider;
 interface
 
 uses
-  Classes, SysUtils, BaseContentProvider, LNetHTTPDataProvider, IpHtml, ComCtrls,
-  Menus, Controls, lhelpstrconsts;
+  Classes, SysUtils,
+  ComCtrls, Menus, Controls,
+  IpHtml,
+  BaseContentProvider, lhelpstrconsts;
   
 type
 
