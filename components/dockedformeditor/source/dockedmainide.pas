@@ -16,7 +16,6 @@
     - ObjectInspector eats focus of AnchorDesigner (bug or feature?)
     - Qt5 shows own menu in form, this isn't shown in anchor editor
   TODO:
-    - Lazarus AnchorEditor isn't refreshed after control is changed in DockedAnchorDesigner
     - Undo
 
 }

@@ -203,7 +203,7 @@ begin
   {$ENDIF}
 
   FState := [];
-  GlobalDesignHook.Modified(FSelectedControl.RootControl);
+  GlobalDesignHook.Modified(Self, 'Anchors');
   GlobalDesignHook.SelectOnlyThis(TAnchorControl(Sender).RootControl);
 end;
 
@@ -329,7 +329,7 @@ begin
   {$ENDIF}
 
   FState := [];
-  GlobalDesignHook.Modified(FSelectedControl.RootControl);
+  GlobalDesignHook.Modified(Self, 'Anchors');
 end;
 
 procedure TAnchorDesigner.BringToFront(AControl: TAnchorControl);
@@ -574,7 +574,7 @@ begin
 
   FSelectedControl.AssignToRoot_Anchors;
   FState := [];
-  GlobalDesignHook.Modified(FSelectedControl.RootControl);
+  GlobalDesignHook.Modified(Self, 'Anchors');
   GlobalDesignHook.SelectOnlyThis(FSelectedControl.RootControl);
 end;
 

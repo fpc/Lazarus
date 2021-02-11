@@ -181,6 +181,7 @@ type
     FUpdating: Boolean;
     FNeedUpdate: boolean;
     FSideControls: array[TAnchorKind] of TAnchorDesignerSideControls;
+    procedure OnModifiedWithName(Sender: TObject; PropName: ShortString);
     procedure Refresh;
     procedure OnRefreshPropertyValues;
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
@@ -404,6 +405,7 @@ begin
   LoadGlyphs;
   CreateSideControls;
 
+  GlobalDesignHook.AddHandlerModifiedWithName(@OnModifiedWithName);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
 end;
@@ -1065,6 +1067,13 @@ begin
   finally
     FUpdating:=False;
   end;
+end;
+
+procedure TAnchorDesigner.OnModifiedWithName(Sender: TObject; PropName: ShortString);
+begin
+  if Sender = Self then Exit;
+  if PropName = 'Anchors' then
+    Refresh;
 end;
 
 procedure TAnchorDesigner.OnRefreshPropertyValues;
