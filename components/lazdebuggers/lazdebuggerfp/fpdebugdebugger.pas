@@ -1382,17 +1382,12 @@ end;
 function TFpDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
   AContext: TFpDbgLocationContext): Boolean;
 begin
-  if FFpDebugDebugger.FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FRegNum := ARegNum;
-    FRegContext := AContext;
-    FRegValue := 0; // TODO: error detection
-    FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
-    AValue := FRegValue;
-    result := FRegResult;
-  end
-  else
-    result := inherited ReadRegister(ARegNum, AValue, AContext);
+  FRegNum := ARegNum;
+  FRegContext := AContext;
+  FRegValue := 0; // TODO: error detection
+  FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
+  AValue := FRegValue;
+  result := FRegResult;
 end;
 
 { TFPCallStackSupplier }
@@ -3482,71 +3477,45 @@ end;
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
   ): TFpDbgBreakpoint;
 begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheLocation:=ALocation;
-    FCacheBoolean:=AnEnabled;
-    FCacheBreakpoint := nil;
-    ExecuteInDebugThread(@DoAddBreakLocation);
-    result := FCacheBreakpoint;
-  end
-  else
-    if ALocation = 0 then
-      result := FDbgController.CurrentProcess.AddBreak(nil, AnEnabled)
-    else
-      result := FDbgController.CurrentProcess.AddBreak(ALocation, AnEnabled);
+  FCacheLocation:=ALocation;
+  FCacheBoolean:=AnEnabled;
+  FCacheBreakpoint := nil;
+  ExecuteInDebugThread(@DoAddBreakLocation);
+  result := FCacheBreakpoint;
 end;
 
 function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
   AnEnabled: Boolean): TFpDbgBreakpoint;
 begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheFileName:=AFuncName;
-    FCacheLib:=ALib;
-    FCacheBoolean:=AnEnabled;
-    FCacheBreakpoint := nil;
-    ExecuteInDebugThread(@DoAddBreakFuncLib);
-    result := FCacheBreakpoint;
-  end
-  else
-    if ALib <> nil then
-      result := ALib.AddBreak(AFuncName, AnEnabled)
-    else
-      result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled);
+  FCacheFileName:=AFuncName;
+  FCacheLib:=ALib;
+  FCacheBoolean:=AnEnabled;
+  FCacheBreakpoint := nil;
+  ExecuteInDebugThread(@DoAddBreakFuncLib);
+  result := FCacheBreakpoint;
 end;
 
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
 begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheLocation := AAdress;
-    FCacheLine:=ASize;
-    FCachePointer := @AData;
-    FCacheBoolean := False;
-    ExecuteInDebugThread(@DoReadData);
-    result := FCacheBoolean;
-  end
-  else
-    result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
+  FCacheLocation := AAdress;
+  FCacheLine:=ASize;
+  FCachePointer := @AData;
+  FCacheBoolean := False;
+  ExecuteInDebugThread(@DoReadData);
+  result := FCacheBoolean;
 end;
 
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr;
   const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean;
 begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheLocation := AAdress;
-    FCacheLine:=ASize;
-    FCachePointer := @AData;
-    FCacheBoolean := False;
-    FCacheBytesRead := 0;
-    ExecuteInDebugThread(@DoReadPartialData);
-    result := FCacheBoolean;
-    ABytesRead := FCacheBytesRead;
-  end
-  else
-    result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData, ABytesRead);
+  FCacheLocation := AAdress;
+  FCacheLine:=ASize;
+  FCachePointer := @AData;
+  FCacheBoolean := False;
+  FCacheBytesRead := 0;
+  ExecuteInDebugThread(@DoReadPartialData);
+  result := FCacheBoolean;
+  ABytesRead := FCacheBytesRead;
 end;
 
 function TFpDebugDebugger.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
@@ -3577,23 +3546,15 @@ var
   CList: TDbgCallstackEntryList;
   P: TFpSymbol;
 begin
+  assert(GetCurrentThreadId=MainThreadID, 'TFpDebugDebugger.SetStackFrameForBasePtr: GetCurrentThreadId=MainThreadID');
+
   Result := 0;
   if FDbgController.CurrentThread = nil then
     exit;
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheLocation:=ABasePtr;
-    FCacheLocation2:=CurAddr;
-    ExecuteInDebugThread(@DoSetStackFrameForBasePtr);
-    f := FCacheStackFrame;
-  end
-  else begin
-    FDbgController.CurrentThread.PrepareCallStackEntryList(7);
-    if (ABasePtr = 0) and (CurAddr <> 0) then
-      f := FDbgController.CurrentThread.FindCallStackEntryByInstructionPointer(CurAddr, 15, 1)
-    else
-      f := FDbgController.CurrentThread.FindCallStackEntryByBasePointer(ABasePtr, 30, 1);
-  end;
+  FCacheLocation:=ABasePtr;
+  FCacheLocation2:=CurAddr;
+  ExecuteInDebugThread(@DoSetStackFrameForBasePtr);
+  f := FCacheStackFrame;
 
   if (f >= 2) and ASearchAssert and (ABasePtr <> 0) then begin
     // stack is already prepared / exe in thread not needed
@@ -3623,16 +3584,12 @@ end;
 
 function TFpDebugDebugger.FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
 begin
-  if FDbgController.CurrentProcess.RequiresExecutionInDebuggerThread then
-  begin
-    FCacheThreadId := AThreadId;
-    FCacheStackFrame := AStackFrame;
-    FCacheContext := nil;
-    ExecuteInDebugThread(@DoFindContext);
-    Result := FCacheContext;
-  end
-  else
-    Result := FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
+  assert(GetCurrentThreadId=MainThreadID, 'TFpDebugDebugger.FindSymbolScope: GetCurrentThreadId=MainThreadID');
+  FCacheThreadId := AThreadId;
+  FCacheStackFrame := AStackFrame;
+  FCacheContext := nil;
+  ExecuteInDebugThread(@DoFindContext);
+  Result := FCacheContext;
 end;
 
 procedure TFpDebugDebugger.StopAllWorkers;
