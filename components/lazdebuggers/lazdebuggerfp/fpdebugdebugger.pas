@@ -263,7 +263,6 @@ type
     (* Each thread must only lock max one item at a time.
        This ensures the locking will be dead-lock free.
     *)
-    FWorkThread: TThread; // for TThread.queue / 3.0.4 can only unqueue if there is a thread
     FWorkerThreadId: TThreadID;
     FEvalWorkItem: TFpThreadWorkerCmdEval;
     FQuickPause, FPauseForEvent, FSendingEvents: boolean;
@@ -580,9 +579,13 @@ end;
 { TFpThreadWorkerRunLoopUpdate }
 
 procedure TFpThreadWorkerRunLoopUpdate.LoopFinished_DecRef(Data: PtrInt);
+var
+  dbg: TFpDebugDebugger;
 begin
-  Application.QueueAsyncCall(@FpDebugger.DebugLoopFinished, 0);
+  dbg := FpDebugger;
   UnQueue_DecRef;
+  // self may now be invalid
+  dbg.DebugLoopFinished(0);
 end;
 
 { TFpThreadWorkerRunLoopAfterIdleUpdate }
@@ -2878,8 +2881,8 @@ end;
 
 procedure TFpDebugDebugger.FreeDebugThread;
 begin
-  FWorkQueue.ThreadCount := 0;
-  FWorkThread := nil;
+  FWorkQueue.TerminateAllThreads(True);
+  Application.ProcessMessages; // run the AsyncMethods
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
@@ -3066,8 +3069,8 @@ begin
         Exit;
       end;
     end;
+    FWorkQueue.Clear;
     FWorkQueue.ThreadCount := 1;
-    FWorkThread := FWorkQueue.Threads[0];
     WorkItem := TFpThreadWorkerControllerRun.Create(Self);
     FWorkQueue.PushItem(WorkItem);
     FWorkQueue.WaitForItem(WorkItem, True);
@@ -3323,6 +3326,8 @@ end;
 procedure TFpDebugDebugger.DoRelease;
 begin
   DebugLn(DBG_VERBOSE, ['++++ dorelase  ', Dbgs(ptrint(FDbgController)), dbgs(state)]);
+  if FWorkQueue <> nil then
+    FWorkQueue.OnQueueIdle := nil;
 //  SetState(dsDestroying);
   if (State <> dsDestroying) and //assigned(FFpDebugThread) and //???
      (FDbgController <> nil) and (FDbgController.MainProcess <> nil)
@@ -3682,6 +3687,7 @@ begin
   if FEvalWorkItem <> nil then begin
     FEvalWorkItem.Abort;
     FEvalWorkItem.DecRef;
+    FEvalWorkItem := nil;
   end;
 end;
 
@@ -3697,6 +3703,7 @@ end;
 
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
+  ProcessMessagesProc := @Application.ProcessMessages;
   inherited Create(AExternalDebugger);
   FLockList := TFpDbgLockList.Create;
   FWorkQueue := TFpThreadPriorityWorkerQueue.Create(100);
@@ -3726,14 +3733,18 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
+  FWorkQueue.OnQueueIdle := nil;
+  FWorkQueue.DoShutDown;
   StopAllWorkers;
+  FWorkQueue.TerminateAllThreads(False);
 
   if state in [dsPause, dsInternalPause] then
     try
       SetState(dsStop);
     except
     end;
-  StopAllWorkers; // In case state change added workes
+  FWorkQueue.TerminateAllThreads(True);
+  Application.ProcessMessages; // run the AsyncMethods
 
   Application.RemoveAsyncCalls(Self);
   FreeAndNil(FDbgController);

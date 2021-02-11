@@ -275,7 +275,7 @@ begin
     RTLeventSetEvent(FHasItemEvent);
 
   RTLeventResetEvent(FHasRoomEvent);
-  if not FFifoQueue.IsFull then
+  if ShutDown or not FFifoQueue.IsFull then
     RTLeventSetEvent(FHasRoomEvent);
 end;
 
@@ -286,7 +286,7 @@ begin
     RTLeventSetEvent(FHasRoomEvent);
 
   RTLeventResetEvent(FHasItemEvent);
-  if not FFifoQueue.IsEmpty then
+  if ShutDown or not FFifoQueue.IsEmpty then
     RTLeventSetEvent(FHasItemEvent);
 end;
 

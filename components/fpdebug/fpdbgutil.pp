@@ -71,6 +71,7 @@ type
   protected
     procedure DoExecute; virtual;
     procedure DoFinished; virtual;
+    procedure DoUnQueued; virtual; // When queue shuts down / Not called when Item is Cancelled
 
     procedure ExecuteInThread(MyWorkerThread: TFpWorkerThread); // called by worker thread
     procedure WaitForFinish(AnMainWaitEvent: PRTLEvent; AWaitForExecInThread: Boolean); // called by main thread => calls DoExecute, if needed
@@ -133,6 +134,9 @@ type
     destructor Destroy; override; // Will not wait for the threads.
 
     procedure Clear; // Not thread safe // remove all none running items
+    procedure TerminateAllThreads(AWait: Boolean = False);
+    procedure DoProcessMessages; virtual;
+
     procedure PushItem(const AItem: TFpThreadWorkerItem);
     procedure PushItemIdleOrRun(const AItem: TFpThreadWorkerItem);
 
@@ -205,6 +209,9 @@ property FpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue read GetFpDbgGlobalW
 
 function dbgsThread: String;
 function dbgsWorkItemState(AState: Integer): String;
+
+var
+  ProcessMessagesProc: procedure of object; // Application.ProcessMessages, if needed. To be called while waiting.
 
 implementation
 
@@ -558,6 +565,11 @@ begin
     Destroy;
 end;
 
+procedure TFpThreadWorkerItem.DoUnQueued;
+begin
+  //
+end;
+
 procedure TFpThreadWorkerItem.ExecuteInThread(MyWorkerThread: TFpWorkerThread);
 var
   OldState: Cardinal;
@@ -706,7 +718,7 @@ var
   IsMarkedIdle: Boolean;
 begin
   IsMarkedIdle := False;
-  while not Terminated do begin
+  while not (Terminated or FQueue.ShutDown) do begin
     if (FQueue.PopItemTimeout(WorkItem, 0) <> wrSignaled) or
        (WorkItem = nil)
     then begin
@@ -869,40 +881,9 @@ begin
 end;
 
 destructor TFpThreadWorkerQueue.Destroy;
-var
-  WorkItem: TFpThreadWorkerItem;
-  i: Integer;
-  mt: Boolean;
 begin
-  Lock;
-  FThreadMonitor.Enter;
-  try
-    for i := 0 to FWorkerThreadList.Count - 1 do
-      FWorkerThreadList[i].Terminate; // also signals that the queue is no longer valid
-
-    while TryPopItemUnprotected(WorkItem) do begin
-      WorkItem.RequestStop;
-      WorkItem.DecRef;
-    end;
-  finally
-    FThreadMonitor.Leave;
-    Unlock;
-  end;
-
-  ThreadCount := 0;
-
-  // Wait for threads.
-  mt := MainThreadID = ThreadID;
-  while CurrentCount > 0 do begin
-    sleep(1);
-    if mt then
-      CheckSynchronize(1);
-    if TotalItemsPushed = TotalItemsPopped then
-      ThreadCount := 0; // Add more TFpThreadWorkerTerminateItem
-  end;
-
-  // Free any TFpThreadWorkerTerminateItem items that were not picked up
-  Clear;
+  DoShutDown;
+  TerminateAllThreads(True);
 
   inherited Destroy;
   FWorkerThreadList.Free;
@@ -914,8 +895,67 @@ procedure TFpThreadWorkerQueue.Clear;
 var
   WorkItem: TFpThreadWorkerItem;
 begin
-  while PopItemTimeout(WorkItem, 1) = wrSignaled do
-    WorkItem.DecRef;
+  Lock;
+  try
+    while TryPopItemUnprotected(WorkItem) do begin
+      WorkItem.DoUnQueued;
+      WorkItem.DecRef;
+    end;
+  finally
+    Unlock;
+  end;
+end;
+
+procedure TFpThreadWorkerQueue.TerminateAllThreads(AWait: Boolean);
+var
+  WorkItem: TFpThreadWorkerItem;
+  i: Integer;
+  mt: Boolean;
+begin
+  Lock;
+  FThreadMonitor.Enter;
+  try
+    ThreadCount := 0;
+
+    for i := 0 to FWorkerThreadList.Count - 1 do
+      FWorkerThreadList[i].Terminate; // also signals that the queue is no longer valid
+
+    while TryPopItemUnprotected(WorkItem) do begin
+      WorkItem.RequestStop;
+      WorkItem.DoUnQueued;
+      WorkItem.DecRef;
+    end;
+  finally
+    FThreadMonitor.Leave;
+    Unlock;
+  end;
+
+  ThreadCount := 0;
+
+  if AWait then begin
+    // Wait for threads.
+    i := 0;
+    mt := MainThreadID = ThreadID;
+    while CurrentCount > 0 do begin
+      sleep(1);
+      if mt then begin
+        CheckSynchronize(1);
+        if (i and 15) = 0 then
+          DoProcessMessages;
+      end;
+      if (not ShutDown) and (TotalItemsPushed = TotalItemsPopped) then
+        ThreadCount := 0; // Add more TFpThreadWorkerTerminateItem      inc(i);
+      inc(i);
+    end;
+    // Free any TFpThreadWorkerTerminateItem items that were not picked up
+    Clear;
+  end;
+end;
+
+procedure TFpThreadWorkerQueue.DoProcessMessages;
+begin
+  if ProcessMessagesProc <> nil then
+    ProcessMessagesProc();
 end;
 
 procedure TFpThreadWorkerQueue.PushItem(const AItem: TFpThreadWorkerItem);
@@ -923,6 +963,11 @@ begin
   DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSH WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
   AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
+  if ShutDown or (ThreadCount = 0) then begin
+    AItem.DoUnQueued;
+    AItem.DecRef;
+    exit;
+  end;
   inherited PushItem(AItem);
 end;
 
@@ -934,6 +979,11 @@ begin
   DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSHorRUN WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
   AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
+  if ShutDown or (ThreadCount = 0) then begin
+    AItem.DoUnQueued;
+    AItem.DecRef;
+    exit;
+  end;
   Lock;
   try
     q := IdleThreadCount > 0;

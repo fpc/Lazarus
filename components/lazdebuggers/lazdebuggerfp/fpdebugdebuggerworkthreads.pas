@@ -306,7 +306,6 @@ procedure TFpDbgDebggerThreadWorkerItem.UnQueue_DecRef(ABlockQueuing: Boolean);
 var
   HasQ: THasQueued;
 begin
-  assert(system.ThreadID = Classes.MainThreadID, 'TFpDbgDebggerThreadWorkerItem.UnQueue_DecRef: system.ThreadID = classes.MainThreadID');
   FDebugger.FLockList.Lock;
   HasQ := FHasQueued;
   if ABlockQueuing then begin
