@@ -285,7 +285,7 @@ begin
     NamePostFix := NamePostFix + NewExeID;
   end;
 
-  AnExeName := ExePath + AnExeName + SymbolTypeNames[SymbolType] + '_' + NameToFileName(Self.Name) + NamePostFix + GetExeExt;
+  AnExeName := ExePath + AnExeName + '_'+IntToStr(GetProcessID)+'_'+ SymbolTypeNames[SymbolType] + '_' + NameToFileName(Self.Name) + NamePostFix + GetExeExt;
 
   {$IFDEF windows}
   ExtraArgs := ExtraArgs + ' -WG';
