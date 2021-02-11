@@ -3478,6 +3478,7 @@ begin
     exit(DoOpenPackageFile(AFilename,Flags,ShowAbort));
   // open a package editor
   PackageEditors.OpenEditor(APackage,true);
+  PackageGraph.RebuildDefineTemplates;
   // add to recent packages
   if (pofAddToRecent in Flags) and FileExistsCached(AFilename) then
     AddToMenuRecentPackages(AFilename);
