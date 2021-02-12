@@ -15,6 +15,8 @@
       grid (dots)
     - ObjectInspector eats focus of AnchorDesigner (bug or feature?)
     - Qt5 shows own menu in form, this isn't shown in anchor editor
+    - designer: mouse wheel to scroll content doesn't work - csDesigning is set and
+      form doesn't get a LM_MOUSEWHEEL message
   TODO:
     - Undo
 

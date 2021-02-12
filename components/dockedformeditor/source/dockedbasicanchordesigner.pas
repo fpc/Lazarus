@@ -32,6 +32,7 @@ type
   private
     FIsFocusedFunc: TBoolFunc;
     FOnDesignerSetFocus: TProcedureOfObject;
+    FOnMouseWheel: TMouseWheelEvent;
   public
     constructor Create;
     function IsFocused: Boolean; virtual; abstract;
@@ -43,6 +44,7 @@ type
   public
     property IsFocusedFunc: TBoolFunc read FIsFocusedFunc write FIsFocusedFunc;
     property OnDesignerSetFocus: TProcedureOfObject read FOnDesignerSetFocus write FOnDesignerSetFocus;
+    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
   end;
 
 implementation

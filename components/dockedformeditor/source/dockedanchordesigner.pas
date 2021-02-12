@@ -54,6 +54,7 @@ type
     procedure AnchorControlMouseDown(Sender: TObject; {%H-}Button: TMouseButton; Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure AnchorControlMouseMove(Sender: TObject; Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure AnchorControlMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure AnchorControlMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure AnchorControlPaint(Sender: TObject);
     procedure AnchorGripMouseDown(Sender: TObject; {%H-}Button: TMouseButton; Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure AnchorGripMouseMove(Sender: TObject; Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
@@ -205,6 +206,14 @@ begin
   FState := [];
   GlobalDesignHook.Modified(Self, 'Anchors');
   GlobalDesignHook.SelectOnlyThis(TAnchorControl(Sender).RootControl);
+end;
+
+procedure TAnchorDesigner.AnchorControlMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if Assigned(OnMouseWheel) then
+    OnMouseWheel(Sender, Shift, WheelDelta, MousePos, Handled);
 end;
 
 procedure TAnchorDesigner.AnchorControlPaint(Sender: TObject);
@@ -365,11 +374,12 @@ begin
     LAnchorControl := FAnchorControls[LIndex];
   end else begin
     LAnchorControl := TAnchorControl.Create(AParent, AControl);
-    LAnchorControl.OnMouseDown := @AnchorControlMouseDown;
-    LAnchorControl.OnMouseMove := @AnchorControlMouseMove;
-    LAnchorControl.OnMouseUp   := @AnchorControlMouseUp;
-    LAnchorControl.OnPaint     := @AnchorControlPaint;
-    LAnchorControl.PopupMenu   := FPopupMenu;
+    LAnchorControl.OnMouseDown  := @AnchorControlMouseDown;
+    LAnchorControl.OnMouseMove  := @AnchorControlMouseMove;
+    LAnchorControl.OnMouseUp    := @AnchorControlMouseUp;
+    LAnchorControl.OnPaint      := @AnchorControlPaint;
+    LAnchorControl.OnMouseWheel := @AnchorControlMouseWheel;
+    LAnchorControl.PopupMenu    := FPopupMenu;
     FAnchorControls.Add(LAnchorControl);
   end;
   LAnchorControl.Validate;
@@ -403,6 +413,7 @@ begin
   FBackGround.Parent := FParent;
   FBackGround.OnMouseDown := @AnchorControlMouseDown;
   FBackGround.OnPaint := @AnchorControlPaint;
+  FBackGround.OnMouseWheel := @AnchorControlMouseWheel;
   FBackGround.OnShowHint := nil;
   FAnchorControls.Add(FBackGround);
 end;
