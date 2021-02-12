@@ -16,40 +16,20 @@ msgstr ""
 msgid "Bottom Anchor"
 msgstr ""
 
-#: dockedstrconsts.sanchorbottomcolorhint
-msgid "Color of bottom side, when bottom is anchored"
-msgstr ""
-
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
-msgstr ""
-
-#: dockedstrconsts.sanchorcontrolborderhint
-msgid "Color of borders around selected control"
 msgstr ""
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
 msgstr ""
 
-#: dockedstrconsts.sanchorcontrolcolorhint
-msgid "Normal panel background color"
-msgstr ""
-
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
 msgstr ""
 
-#: dockedstrconsts.sanchorleftcolorhint
-msgid "Color of left side, when left is anchored"
-msgstr ""
-
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
-msgstr ""
-
-#: dockedstrconsts.sanchorrightcolorhint
-msgid "Color of right side, when right is anchored"
 msgstr ""
 
 #: dockedstrconsts.sanchors
@@ -68,17 +48,8 @@ msgstr ""
 msgid "Anchor Target"
 msgstr ""
 
-#: dockedstrconsts.sanchortargetcolorhint
-msgctxt "dockedstrconsts.sanchortargetcolorhint"
-msgid "Color of selected Anchor of selected control"
-msgstr ""
-
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
-msgstr ""
-
-#: dockedstrconsts.sanchortopcolorhint
-msgid "Color of top side, when top is anchored"
 msgstr ""
 
 #: dockedstrconsts.sargumentoutofrange
@@ -151,11 +122,11 @@ msgid "Force refreshing form when user is sizing it"
 msgstr ""
 
 #: dockedstrconsts.smouseborderfactorcaption
-msgid "Mouse Border Factor"
+msgid "Mouse cursor factor for BorderSpacing property"
 msgstr ""
 
 #: dockedstrconsts.smouseborderfactorhint
-msgid "Factor to border more precise small distances"
+msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr ""
 
 #: dockedstrconsts.sresizercolorcaption
@@ -175,7 +146,7 @@ msgid "Tab Position"
 msgstr ""
 
 #: dockedstrconsts.stabpositionhint
-msgid "Position of Tab Code, Designer, Anchors"
+msgid "Position of Code, Designer, Anchors tabs"
 msgstr ""
 
 #: dockedstrconsts.stabpositionleft
@@ -191,19 +162,19 @@ msgid "Top"
 msgstr ""
 
 #: dockedstrconsts.streataligncaption
-msgid "Automatically treat Aligns"
+msgid "Automatically treat Align properties"
 msgstr ""
 
 #: dockedstrconsts.streatalignhint
-msgid "Automatically replace Aligns with appropriate Anchors"
+msgid "Automatically replace Align properties with appropriate Anchors"
 msgstr ""
 
 #: dockedstrconsts.streatbordercaption
-msgid "Automatically treat Around Border"
+msgid "Automatically treat BorderSpacing properties"
 msgstr ""
 
 #: dockedstrconsts.streatborderhint
-msgid "Automatically replace BorderSpace around the control and adapt side BorderSpaces if needed"
+msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
 msgstr ""
 
 #: dockedstrconsts.swarningcaption

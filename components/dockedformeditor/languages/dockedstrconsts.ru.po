@@ -15,41 +15,21 @@ msgstr ""
 msgid "Bottom Anchor"
 msgstr "Нижняя привязка"
 
-#: dockedstrconsts.sanchorbottomcolorhint
-msgid "Color of bottom side, when bottom is anchored"
-msgstr ""
-
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
 msgstr "Область зазора вокруг компонента"
-
-#: dockedstrconsts.sanchorcontrolborderhint
-msgid "Color of borders around selected control"
-msgstr ""
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
 msgstr "Фон компонента"
 
-#: dockedstrconsts.sanchorcontrolcolorhint
-msgid "Normal panel background color"
-msgstr ""
-
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
 msgstr "Левая привязка"
 
-#: dockedstrconsts.sanchorleftcolorhint
-msgid "Color of left side, when left is anchored"
-msgstr ""
-
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
 msgstr "Правая привязка"
-
-#: dockedstrconsts.sanchorrightcolorhint
-msgid "Color of right side, when right is anchored"
-msgstr ""
 
 #: dockedstrconsts.sanchors
 msgid "Anchors"
@@ -67,18 +47,9 @@ msgstr "Показывать редактор привязок"
 msgid "Anchor Target"
 msgstr "Объект привязки"
 
-#: dockedstrconsts.sanchortargetcolorhint
-msgctxt "dockedstrconsts.sanchortargetcolorhint"
-msgid "Color of selected Anchor of selected control"
-msgstr ""
-
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
 msgstr "Верхняя привязка"
-
-#: dockedstrconsts.sanchortopcolorhint
-msgid "Color of top side, when top is anchored"
-msgstr ""
 
 #: dockedstrconsts.sargumentoutofrange
 msgctxt "dockedstrconsts.sargumentoutofrange"
@@ -87,15 +58,15 @@ msgstr "Аргумент вне границ диапазона."
 
 #: dockedstrconsts.sattachcontrol
 msgid "Attach Control"
-msgstr ""
+msgstr "Привязать компонент"
 
 #: dockedstrconsts.sattachpoint
 msgid "Attach Control Sides"
-msgstr ""
+msgstr "Привязать стороны компонента"
 
 #: dockedstrconsts.sattachside
 msgid "Attach Control Side"
-msgstr ""
+msgstr "Привязать сторону компонента"
 
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
@@ -103,11 +74,11 @@ msgstr "Встроенный редактор форм"
 
 #: dockedstrconsts.scapturedistancecaption
 msgid "Capture Distance"
-msgstr ""
+msgstr "Расстояние захвата"
 
 #: dockedstrconsts.scapturedistancehint
 msgid "Minimal distance to capture a control with mouse"
-msgstr ""
+msgstr "Минимальное расстояние для захвата компонента мышью"
 
 #: dockedstrconsts.scirculardependency
 msgid "This will create a circular dependency."
@@ -125,35 +96,35 @@ msgstr "Цвета"
 #: dockedstrconsts.sdesigner
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Designer"
-msgstr "Дизайнер"
+msgstr "Редактор формы"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
-msgstr ""
+msgstr "Отвязать компонент"
 
 #: dockedstrconsts.sdetachpoint
 msgid "Detach Control Sides"
-msgstr ""
+msgstr "Отвязать стороны компонента"
 
 #: dockedstrconsts.sdetachside
 msgid "Detach Control Side"
-msgstr ""
+msgstr "Отвязать сторону компонента"
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
-msgstr ""
+msgstr "Принудительно обновлять при изменении размера"
 
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
-msgstr ""
+msgstr "Принудительно обновлять форму при изменении её размера"
 
 #: dockedstrconsts.smouseborderfactorcaption
-msgid "Mouse Border Factor"
-msgstr ""
+msgid "Mouse cursor factor for BorderSpacing property"
+msgstr "Масштаб движения курсора мыши для свойства BorderSpacing"
 
 #: dockedstrconsts.smouseborderfactorhint
-msgid "Factor to border more precise small distances"
-msgstr ""
+msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
+msgstr "Масштаб движения курсора мыши используется для более точной установки малых значений свойства BorderSpacing"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
@@ -172,8 +143,8 @@ msgid "Tab Position"
 msgstr "Положение заголовков вкладок"
 
 #: dockedstrconsts.stabpositionhint
-msgid "Position of Tab Code, Designer, Anchors"
-msgstr "Положение заголовков вкладок \"Код\", \"Дизайнер\", \"Привязки\""
+msgid "Position of Code, Designer, Anchors tabs"
+msgstr "Положение заголовков вкладок \"Код\", \"Редактор формы\", \"Привязки\""
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
@@ -188,20 +159,20 @@ msgid "Top"
 msgstr "Сверху"
 
 #: dockedstrconsts.streataligncaption
-msgid "Automatically treat Aligns"
-msgstr ""
+msgid "Automatically treat Align properties"
+msgstr "Автоматически обрабатывать свойства Align"
 
 #: dockedstrconsts.streatalignhint
-msgid "Automatically replace Aligns with appropriate Anchors"
-msgstr ""
+msgid "Automatically replace Align properties with appropriate Anchors"
+msgstr "Автоматически заменять свойства Align соответствующими привязками"
 
 #: dockedstrconsts.streatbordercaption
-msgid "Automatically treat Around Border"
-msgstr ""
+msgid "Automatically treat BorderSpacing properties"
+msgstr "Автоматически обрабатывать свойства BorderSpacing"
 
 #: dockedstrconsts.streatborderhint
-msgid "Automatically replace BorderSpace around the control and adapt side BorderSpaces if needed"
-msgstr ""
+msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
+msgstr "Автоматически заменять свойства BorderSpacing.Around компонентов и корректировать BorderSpacing.Left/Right/Top/Bottom при необходимости"
 
 #: dockedstrconsts.swarningcaption
 msgid "Warning"
