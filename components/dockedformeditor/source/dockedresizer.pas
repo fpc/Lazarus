@@ -50,7 +50,7 @@ type
       WheelDelta: Integer; {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
     procedure SetDesignForm(AValue: TDesignForm);
     procedure SetDesignScroll(AIndex: Integer; AValue: Boolean);
-    procedure ScrollBarScroll(Sender: TObject; {%H-}ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
   public
     ResizeFrame: TResizeFrame;
     ScrollBarVert: TScrollBar;
@@ -143,6 +143,21 @@ procedure TResizer.ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
 var
   LScrollPos: Integer;
 begin
+  case ScrollCode of
+    scLineDown: ScrollPos := ScrollPos + 50;
+    scLineUp:   ScrollPos := ScrollPos - 50;
+    scPageDown:
+      begin
+        if Sender = ScrollBarHorz then ScrollPos := ScrollPos + ResizeFrame.Width;
+        if Sender = ScrollBarVert then ScrollPos := ScrollPos + ResizeFrame.Height;
+      end;
+    scPageUp:
+      begin
+        if Sender = ScrollBarHorz then ScrollPos := ScrollPos - ResizeFrame.Width;
+        if Sender = ScrollBarVert then ScrollPos := ScrollPos - ResizeFrame.Height;
+      end;
+  end;
+
   DesignForm.BeginUpdate;
   if Sender = ScrollBarVert then
   begin
