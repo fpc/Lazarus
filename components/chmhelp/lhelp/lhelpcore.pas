@@ -105,7 +105,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure MiActionsGoForwardClick ( Sender: TObject ) ;
-    procedure HelpMenuItemClick ( Sender: TObject ) ;
     procedure MiHideClick ( Sender: TObject ) ;
     procedure MiActionsGoBackClick ( Sender: TObject ) ;
     procedure MiActionsGoHomeClick ( Sender: TObject ) ;
@@ -197,7 +196,7 @@ var
 
 const
   INVALID_FILE_TYPE = 1;
-  VERSION_STAMP = '2020-12-10'; //used in displaying version in about form etc
+  VERSION_STAMP = '2021-02-12'; //used in displaying version in about form etc
 
 implementation
 
@@ -228,20 +227,20 @@ begin
     f.Caption := slhelp_About;
     f.BorderStyle := bsDialog;
     f.Position := poMainFormCenter;
-    f.Constraints.MinWidth := 150;
-    f.Constraints.MaxWidth := 350;
+    f.Constraints.MinWidth := Scale96ToForm(150);
+    f.Constraints.MaxWidth := Scale96ToForm(350);
     l := TLabel.Create(f);
     l.Parent := f;;
     l.Align := alTop;
     l.Alignment:=taCenter;
-    l.BorderSpacing.Around := 6;
+    l.BorderSpacing.Around := Scale96ToForm(6);
     l.Caption := Format(slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz, [LineEnding, VERSION_STAMP, LineEnding +
       LineEnding, LineEnding]);
     l.AutoSize := True;
     //l.WordWrap := True; {don't wrap author's name}
     b := TButton.Create(f);
     b.Parent := f;
-    b.BorderSpacing.Around := 6;
+    b.BorderSpacing.Around := Scale96ToForm(6);
     b.Anchors := [akTop, akLeft];
     b.AnchorSide[akTop].Control := l;
     b.AnchorSide[akTop].Side := asrBottom;
@@ -249,6 +248,8 @@ begin
     b.AnchorSide[akLeft].Side := asrCenter;
     b.Caption := slhelp_Ok;
     b.ModalResult := mrOk;
+    b.Constraints.MinWidth := Scale96ToFont(70);
+    b.AutoSize := true;
     f.AutoSize := False;
     f.AutoSize := True;
     f.ShowModal;
@@ -443,11 +444,6 @@ end;
 procedure THelpForm.MiActionsGoForwardClick ( Sender: TObject ) ;
 begin
   if Assigned(ActivePage) then ActivePage.ContentProvider.GoForward;
-end;
-
-procedure THelpForm.HelpMenuItemClick ( Sender: TObject ) ;
-begin
-
 end;
 
 procedure THelpForm.MiHideClick ( Sender: TObject ) ;

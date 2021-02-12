@@ -36,6 +36,7 @@ var
 {$R *.res}
 
 begin
+  Application.Scaled:=True;
   Application.Title:='';
   Application.Initialize;
   for X := 1 to ParamCount do

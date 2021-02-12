@@ -169,7 +169,9 @@ msgid "%s not found!"
 msgstr "%s未找到!"
 
 #: lhelpstrconsts.slhelp_ok
-msgid "Ok"
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
 msgstr "确定"
 
 #: lhelpstrconsts.slhelp_open

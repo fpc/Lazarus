@@ -9,7 +9,7 @@ resourcestring
   // GUI
   slhelp_About = 'About';
   slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz = 'LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors';
-  slhelp_Ok = 'Ok';
+  slhelp_Ok = 'OK';
   slhelp_PleaseEnterAURL = 'Please enter a URL';
   slhelp_SupportedURLTypeS = 'Supported URL type(s): [ %s ]';
   slhelp_File = '&File';

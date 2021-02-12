@@ -9,7 +9,11 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
+      <Scaled Value="True"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <i18n>
       <EnableI18N Value="True" LFM="False"/>
@@ -133,7 +137,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="9">
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -157,34 +161,29 @@
         <UnitName Value="LHelpCore"/>
       </Unit3>
       <Unit4>
-        <Filename Value="lnethttpdataprovider.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="LNetHTTPDataProvider"/>
-      </Unit4>
-      <Unit5>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BaseContentProvider"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ChmContentProvider"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="HTTPContentProvider"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="lhelpstrconsts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LHelpStrConsts"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="filecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit9>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

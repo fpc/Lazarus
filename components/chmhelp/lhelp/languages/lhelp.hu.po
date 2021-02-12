@@ -168,7 +168,9 @@ msgid "%s not found!"
 msgstr "A(z) %s nem található!"
 
 #: lhelpstrconsts.slhelp_ok
-msgid "Ok"
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: lhelpstrconsts.slhelp_open

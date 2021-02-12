@@ -158,7 +158,7 @@ msgid "%s not found!"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_ok
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_open
