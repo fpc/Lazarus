@@ -2300,26 +2300,26 @@ begin
   List.Add('UTF-8BOM');
   List.Add('Ansi');
 
-  List.Add(UpperCase(EncodingCP1250));
-  List.Add(UpperCase(EncodingCP1251));
-  List.Add(UpperCase(EncodingCP1252));
-  List.Add(UpperCase(EncodingCP1253));
-  List.Add(UpperCase(EncodingCP1254));
-  List.Add(UpperCase(EncodingCP1255));
-  List.Add(UpperCase(EncodingCP1256));
-  List.Add(UpperCase(EncodingCP1257));
-  List.Add(UpperCase(EncodingCP1258));
-  List.Add(UpperCase(EncodingCP437));
-  List.Add(UpperCase(EncodingCP850));
-  List.Add(UpperCase(EncodingCP852));
-  List.Add(UpperCase(EncodingCP866));
-  List.Add(UpperCase(EncodingCP874));
+  List.Add(EncodingCP1250);
+  List.Add(EncodingCP1251);
+  List.Add(EncodingCP1252);
+  List.Add(EncodingCP1253);
+  List.Add(EncodingCP1254);
+  List.Add(EncodingCP1255);
+  List.Add(EncodingCP1256);
+  List.Add(EncodingCP1257);
+  List.Add(EncodingCP1258);
+  List.Add(EncodingCP437);
+  List.Add(EncodingCP850);
+  List.Add(EncodingCP852);
+  List.Add(EncodingCP866);
+  List.Add(EncodingCP874);
 
   {$IFnDEF DisableAsianCodePages}
-  List.Add(UpperCase(EncodingCP932));
-  List.Add(UpperCase(EncodingCP936));
-  List.Add(UpperCase(EncodingCP949));
-  List.Add(UpperCase(EncodingCP950));
+  List.Add(EncodingCP932);
+  List.Add(EncodingCP936);
+  List.Add(EncodingCP949);
+  List.Add(EncodingCP950);
   {$ENDIF}
 
   List.Add('ISO-8859-1');
