@@ -40,7 +40,7 @@ type
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
 
     function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
-      AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer;
+      AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
       out AClassName: String; out AnError: TFpError): boolean;
   end;
 
@@ -139,7 +139,7 @@ type
     procedure KindNeeded; override;
     //function GetInstanceClass(AValueObj: TFpValueDwarf): TFpSymbolDwarf; override;
     class function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
-      AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer;
+      AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
       out AClassName: String; out AnError: TFpError): boolean;
   public
     function GetInstanceClassName(AValueObj: TFpValue; out
@@ -364,11 +364,11 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
-  APVmt: TDbgPtr; AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer; out
+  APVmt: TDbgPtr; AContext: TFpDbgLocationContext; ASizeOfAddr: Integer; out
   AClassName: String; out AnError: TFpError): boolean;
 begin
   Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
-    AMemManager, ASizeOfAddr, AClassName, AnError);
+    AContext, ASizeOfAddr, AClassName, AnError);
 end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf2 }
@@ -574,7 +574,7 @@ begin
   SearchCtx := TFpDbgDwarfSimpleLocationContext.Create(MemManager, 0, SizeOfAddress, LocationContext.ThreadId, i);
 
   cur_fp := 0;
-  if MemManager.ReadRegister(RegFp, cur_fp, Self.LocationContext) then begin
+  if LocationContext.ReadRegister(RegFp, cur_fp) then begin
     if cur_fp > par_fp then
       d := -1  // cur_fp must go down
     else
@@ -583,7 +583,7 @@ begin
       SearchCtx.FStackFrame := i;
       // TODO: get reg num via memreader name-to-num
       prev_fp := cur_fp;
-      if not MemManager.ReadRegister(RegFp, cur_fp, SearchCtx) then
+      if not SearchCtx.ReadRegister(RegFp, cur_fp) then
         break;
       inc(i);
       if (cur_fp = prev_fp) or ((cur_fp < prev_fp) xor (d = -1)) then
@@ -595,7 +595,7 @@ begin
 
   if (par_fp <> cur_fp) or (cur_fp = 0) or
      (i <= 0) or
-     not MemManager.ReadRegister(RegPc, pc, SearchCtx)
+     not SearchCtx.ReadRegister(RegPc, pc)
   then begin
     FOuterNotFound := True;
     SearchCtx.ReleaseReference;
@@ -781,13 +781,13 @@ begin
   Result := AValueObj.MemManager <> nil;
   if not Result then
     exit;
-  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
+  AnAddress := AValueObj.Context.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if (not Result) and
-     IsError(AValueObj.MemManager.LastError)
+     IsError(AValueObj.Context.LastMemError)
   then
-    SetLastError(AValueObj, AValueObj.MemManager.LastError);
+    SetLastError(AValueObj, AValueObj.Context.LastMemError);
 end;
 
 function TFpSymbolDwarfFreePascalTypePointer.GetTypedValueObject(
@@ -862,13 +862,13 @@ begin
   if not Result then
     exit;
   Result := GetInstanceClassNameFromPVmt(LocToAddrOrNil(AValueObj.DataAddress),
-    TFpValueDwarf(AValueObj).MemManager, TFpValueDwarf(AValueObj).Context.SizeOfAddress, AClassName, AnErr);
+    TFpValueDwarf(AValueObj).Context, TFpValueDwarf(AValueObj).Context.SizeOfAddress, AClassName, AnErr);
   if not Result then
     SetLastError(AValueObj, AnErr);
 end;
 
 class function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt
-  (APVmt: TDbgPtr; AMemManager: TFpDbgMemManager; ASizeOfAddr: Integer; out
+  (APVmt: TDbgPtr; AContext: TFpDbgLocationContext; ASizeOfAddr: Integer; out
   AClassName: String; out AnError: TFpError): boolean;
 var
   VmtAddr, ClassNameAddr: TFpDbgMemLocation;
@@ -877,8 +877,8 @@ begin
   Result := False;
   AnError := NoError;
   AClassName := '';
-  if not AMemManager.ReadAddress(TargetLoc(APVmt), SizeVal(ASizeOfAddr), VmtAddr) then begin
-    AnError := AMemManager.LastError;
+  if not AContext.ReadAddress(TargetLoc(APVmt), SizeVal(ASizeOfAddr), VmtAddr) then begin
+    AnError := AContext.LastMemError;
     exit;
   end;
   if not IsReadableMem(VmtAddr) then begin
@@ -889,31 +889,31 @@ begin
   VmtAddr.Address := VmtAddr.Address + TDBGPtr(3 * ASizeOfAddr);
   {$POP}
 
-  if not AMemManager.ReadAddress(VmtAddr, SizeVal(ASizeOfAddr), ClassNameAddr) then begin
-    AnError := AMemManager.LastError;
+  if not AContext.ReadAddress(VmtAddr, SizeVal(ASizeOfAddr), ClassNameAddr) then begin
+    AnError := AContext.LastMemError;
     exit;
   end;
   if not IsReadableMem(ClassNameAddr) then begin
     AnError := CreateError(fpErrCanNotReadMemAtAddr, [ClassNameAddr.Address]);
     exit;
   end;
-  if not AMemManager.ReadUnsignedInt(ClassNameAddr, SizeVal(1), NameLen) then begin
-    AnError := AMemManager.LastError;
+  if not AContext.ReadUnsignedInt(ClassNameAddr, SizeVal(1), NameLen) then begin
+    AnError := AContext.LastMemError;
     exit;
   end;
   if NameLen = 0 then begin
     AnError := CreateError(fpErrAnyError, ['No name found']);
     exit;
   end;
-  if not AMemManager.SetLength(AClassName, NameLen) then begin
-    AnError := AMemManager.LastError;
+  if not AContext.MemManager.SetLength(AClassName, NameLen) then begin
+    AnError := AContext.LastMemError;
     exit;
   end;
 
   ClassNameAddr.Address := ClassNameAddr.Address + 1;
-  Result := AMemManager.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AClassName[1]);
+  Result := AContext.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AClassName[1]);
   if not Result then
-    AnError := AMemManager.LastError;
+    AnError := AContext.LastMemError;
 end;
 
 { TFpValueDwarfV2FreePascalShortString }
@@ -981,9 +981,9 @@ begin
   assert(StSym is TFpValueDwarf, 'StSym is TFpValueDwarf');
 
   if len > 0 then
-    if not MemManager.ReadMemory(StSym.DataAddress, SizeVal(len), @Result[1]) then begin
+    if not Context.ReadMemory(StSym.DataAddress, SizeVal(len), @Result[1]) then begin
       Result := ''; // TODO: error
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
       StSym.ReleaseReference;
       exit;
     end;
@@ -1088,14 +1088,14 @@ begin
     if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
       exit(0); // dyn array, but bad data
     Addr.Address := Addr.Address - AddressSize;
-    if MemManager.ReadSignedInt(Addr, SizeVal(AddressSize), h) then begin
+    if Context.ReadSignedInt(Addr, SizeVal(AddressSize), h) then begin
 // TODO h < -1  => Error
       if (h >= 0) and (h < maxLongint) then
         Result := h+1;
       exit;
     end
     else
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
     Result := 0;
     exit;
   end;
@@ -1345,7 +1345,7 @@ begin
           // read data and check for DW_OP_shr ?
           Addr2 := Addr;
           Addr2.Address := Addr2.Address - AddressSize;
-          if MemManager.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
+          if Context.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
             if (i shr 1) = HighBound then
               HighBound := i;
           end
@@ -1370,9 +1370,9 @@ begin
       SetLastError(MemManager.LastError);
     end
     else
-    if not MemManager.ReadMemory(Addr, SizeVal((HighBound-LowBound+1)*2), @WResult[1]) then begin
+    if not Context.ReadMemory(Addr, SizeVal((HighBound-LowBound+1)*2), @WResult[1]) then begin
       WResult := '';
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
     end;
 
     Result := WResult;
@@ -1384,9 +1384,9 @@ begin
       SetLastError(MemManager.LastError);
     end
     else
-    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
+    if not Context.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @Result[1]) then begin
       Result := '';
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
     end;
   end
   else begin
@@ -1395,9 +1395,9 @@ begin
       SetLastError(MemManager.LastError);
     end
     else
-    if not MemManager.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @RResult[1]) then begin
+    if not Context.ReadMemory(Addr, SizeVal(HighBound-LowBound+1), @RResult[1]) then begin
       Result := '';
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
     end else begin
       if GetDynamicCodePage(Addr, Codepage) then
         SetCodePage(RResult, Codepage, False);
@@ -1432,7 +1432,7 @@ begin
     // fpc.
     CodepageOffset := AddressSize * 3;
     Addr.Address := Addr.Address - CodepageOffset;
-    if MemManager.ReadMemory(Addr, SizeVal(2), @Codepage) then
+    if Context.ReadMemory(Addr, SizeVal(2), @Codepage) then
       Result := CodePageToCodePageName(Codepage) <> '';
   end;
 end;

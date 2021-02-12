@@ -762,11 +762,10 @@ type
     FCU: TDwarfCompilationUnit;
     FData: PByte;
     FMaxData: PByte;
-    FMemManager: TFpDbgMemManager;
   public
   //TODO: caller keeps data, and determines livetime of data
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
-      AMemManager: TFpDbgMemManager; AContext: TFpDbgLocationContext);
+      AContext: TFpDbgLocationContext);
     procedure SetLastError(ALastError: TFpError);
     procedure Evaluate;
     function ResultData: TFpDbgMemLocation;
@@ -774,7 +773,6 @@ type
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
-    property MemManager: TFpDbgMemManager read FMemManager;
     property Context: TFpDbgLocationContext read FContext write FContext;
     // for DW_OP_push_object_address
     property CurrentObjectAddress: TFpDbgMemLocation read FCurrentObjectAddress write FCurrentObjectAddress;
@@ -1932,14 +1930,14 @@ end;
 
 { TDwarfLocationExpression }
 
-constructor TDwarfLocationExpression.Create(AExpressionData: Pointer; AMaxCount: Integer;
-  ACU: TDwarfCompilationUnit; AMemManager: TFpDbgMemManager; AContext: TFpDbgLocationContext);
+constructor TDwarfLocationExpression.Create(AExpressionData: Pointer;
+  AMaxCount: Integer; ACU: TDwarfCompilationUnit;
+  AContext: TFpDbgLocationContext);
 begin
   FStack.Clear;
   FCU := ACU;
   FData := AExpressionData;
   FMaxData := FData + AMaxCount;
-  FMemManager := AMemManager;
   FContext := AContext;
 end;
 
@@ -1957,14 +1955,14 @@ var
   procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
     FStack.Push(InvalidLoc); // Mark as failed
-    if IsError(FMemManager.LastError)
-    then FLastError := CreateError(fpErrLocationParserMemRead, FMemManager.LastError, [])
+    if IsError(FContext.LastMemError)
+    then FLastError := CreateError(fpErrLocationParserMemRead, FContext.LastMemError, [])
     else FLastError := CreateError(fpErrLocationParser, []);
     debugln(FPDBG_DWARF_ERRORS,
             ['DWARF ERROR in TDwarfLocationExpression: Failed at Pos=', CurInstr-FData,
              ' OpCode=', IntToHex(CurInstr^, 2), ' Depth=', FStack.Count,
              ' Data: ', dbgMemRange(FData, FMaxData-FData),
-             ' MemReader.LastError: ', ErrorHandler.ErrorAsString(FMemManager.LastError),
+             ' MemReader.LastError: ', ErrorHandler.ErrorAsString(FContext.LastMemError),
              ' Extra: ', ErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
   end;
 
@@ -1986,7 +1984,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    Result := FMemManager.ReadAddress(AnAddress, SizeVal(ASize), AValue, FContext);
+    Result := FContext.ReadAddress(AnAddress, SizeVal(ASize), AValue);
     if not Result then
       SetError;
   end;
@@ -1995,7 +1993,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, SizeVal(ASize), FContext);
+    AValue := FContext.ReadAddressEx(AnAddress, AnAddrSpace, SizeVal(ASize));
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
@@ -2039,7 +2037,7 @@ begin
   *)
 
   AddrSize := FCU.FAddressSize;
-  FMemManager.ClearLastError;
+  FContext.ClearLastMemError;
   FLastError := NoError;
   CurData := FData;
   while CurData < FMaxData do begin
@@ -2094,7 +2092,7 @@ begin
       DW_OP_lit0..DW_OP_lit31: FStack.PushConst(CurInstr^-DW_OP_lit0);
 
       DW_OP_reg0..DW_OP_reg31: begin
-          if not FMemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue, FContext) then begin
+          if not FContext.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
             SetError;
             exit;
           end;
@@ -2105,7 +2103,7 @@ begin
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not FMemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue, FContext) then begin
+          if not FContext.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
             SetError;
             exit;
           end;
@@ -2114,7 +2112,7 @@ begin
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
+          if not FContext.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;

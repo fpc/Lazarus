@@ -2775,8 +2775,6 @@ function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
   StackFrame: Integer): TFpDbgSymbolScope;
 begin
   Result := FindSymbolScope(ThreadId, StackFrame);
-  if Result <> nil then
-    Result.MemManager.DefaultContext := Result.LocationContext;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -2787,7 +2785,7 @@ begin
   if (FDbgController.CurrentProcess <> nil) then
     TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(FDbgController.CurrentProcess.DbgInfo)
     .GetInstanceClassNameFromPVmt
-      (AnAddr, FMemManager, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
+      (AnAddr, FDbgController.DefaultContext, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
 end;
 
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
@@ -2814,14 +2812,14 @@ var
   ExceptionMessage: string;
   ExceptItem: TBaseException;
 begin
-  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
-    SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
+  if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
+    SizeVal(SizeOf(ExceptIP)), ExceptIP)
   then
     ExceptIP := 0;
   AnExceptionLocation:=GetLocationRec(ExceptIP, -1);
 
-  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
-    SizeVal(SizeOf(AnExceptionObjectLocation)), AnExceptionObjectLocation, FDbgController.DefaultContext)
+  if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(AnExceptionObjectLocation)), AnExceptionObjectLocation)
   then
     AnExceptionObjectLocation := 0;
   ExceptionClass := '';
@@ -2841,8 +2839,8 @@ begin
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 
   if not &continue then begin
-    if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
-      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr, FDbgController.DefaultContext)
+    if FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
+      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr)
     then
       ExceptIP := SetStackFrameForBasePtr(ExceptFramePtr, True, ExceptIP);
       if ExceptIP <> 0 then
@@ -2858,14 +2856,14 @@ var
   ExceptItem: TBaseException;
   ExceptionLocation: TDBGLocationRec;
 begin
-  if not FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
-    SizeVal(SizeOf(ExceptIP)), ExceptIP, FDbgController.DefaultContext)
+  if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
+    SizeVal(SizeOf(ExceptIP)), ExceptIP)
   then
     ExceptIP := 0;
   ExceptionLocation:=GetLocationRec(ExceptIP, -1);
 
-  if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
-    SizeVal(SizeOf(LongInt)), ErrNo, FDbgController.DefaultContext)
+  if FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(LongInt)), ErrNo)
   then
     ExceptName := Format('RunError(%d)', [ErrNo])
   else
@@ -2881,8 +2879,8 @@ begin
   DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 
   if not &continue then begin
-    if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
-      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr, FDbgController.DefaultContext)
+    if FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(2),
+      SizeVal(SizeOf(ExceptFramePtr)), ExceptFramePtr)
     then
       SetStackFrameForBasePtr(ExceptFramePtr);
 
@@ -2900,8 +2898,8 @@ begin
   // NO Addr / No Frame
   ExceptionLocation:=GetLocationRec;
 
-  if FMemManager.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
-    SizeVal(SizeOf(Word)), ErrNo, FDbgController.DefaultContext)
+  if FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(0),
+    SizeVal(SizeOf(Word)), ErrNo)
   then
     ExceptName := Format('RunError(%d)', [ErrNo])
   else

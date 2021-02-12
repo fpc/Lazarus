@@ -663,9 +663,9 @@ begin
     Result := FValue.AsCardinal
   else
   if svfAddress in f then begin
-    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, SizeVal(FContext.SizeOfAddress), Result) then begin
+    if not FContext.ReadUnsignedInt(FValue.Address, SizeVal(FContext.SizeOfAddress), Result) then begin
       Result := 0;
-      SetLastError(FContext.MemManager.LastError);
+      SetLastError(FContext.LastMemError);
     end;
   end
   else begin
@@ -816,9 +816,9 @@ end;
 function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
-  Result := Context.MemManager.ReadAddress(Result, SizeVal(Context.SizeOfAddress));
+  Result := Context.ReadAddress(Result, SizeVal(Context.SizeOfAddress));
   if IsValidLoc(Result) then begin
-    SetLastError(Context.MemManager.LastError);
+    SetLastError(Context.LastMemError);
     exit;
   end;
 
@@ -865,7 +865,7 @@ begin
   FCardinalRead := True;
   Addr := GetAddress;
   if not IsReadableLoc(Addr) then exit;
-  FCardinal := LocToAddrOrNil(m.ReadAddress(Addr, SizeVal(Ctx.SizeOfAddress)));
+  FCardinal := LocToAddrOrNil(Ctx.ReadAddress(Addr, SizeVal(Ctx.SizeOfAddress)));
 
   Result := FCardinal;
 end;

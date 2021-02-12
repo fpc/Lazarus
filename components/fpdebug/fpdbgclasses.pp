@@ -1182,7 +1182,6 @@ var
   m: TFpValue;
   v: String;
   i: Integer;
-  OldContext: TFpDbgLocationContext;
 begin
   result := '';
   if assigned(ProcSymbol) then begin
@@ -1192,10 +1191,8 @@ begin
         LocToAddrOrNil(ProcSymbol.Address), DBGPTRSIZE[FThread.Process.Mode], FThread.ID, Index);
 
       if AContext <> nil then begin
-        OldContext := AContext.MemManager.DefaultContext;
-        AContext.MemManager.DefaultContext := AContext;
         TFpValueDwarf(ProcVal).Context := AContext;
-        APrettyPrinter.MemManager := AContext.MemManager;
+        APrettyPrinter.Context := AContext;
         APrettyPrinter.AddressSize := AContext.SizeOfAddress;
         for i := 0 to ProcVal.MemberCount - 1 do begin
           m := ProcVal.Member[i];
@@ -1207,7 +1204,6 @@ begin
           m.ReleaseReference;
         end;
         TFpValueDwarf(ProcVal).Context := nil;
-        AContext.MemManager.DefaultContext := OldContext;
         AContext.ReleaseReference;
       end;
       ProcVal.ReleaseReference;

@@ -1748,6 +1748,7 @@ end;
 
 function TFpValueDwarf.MemManager: TFpDbgMemManager;
 begin
+assert(Context<>nil, 'TFpValueDwarf.MemManager: Context<>nil');
   Result := nil;
   if Context <> nil then
     Result := Context.MemManager;
@@ -2115,9 +2116,9 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsInteger
   else
-  if not MemManager.ReadSignedInt(OrdOrDataAddr, Size, Result, Context) then begin
+  if not Context.ReadSignedInt(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    SetLastError(MemManager.LastError);
+    SetLastError(Context.LastMemError);
   end;
 
   FIntValue := Result;
@@ -2130,8 +2131,8 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
     inherited SetAsCardinal(AValue)
   else
-  if not MemManager.WriteSignedInt(OrdOrDataAddr, Size, AValue, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.WriteSignedInt(OrdOrDataAddr, Size, AValue) then begin
+    SetLastError(Context.LastMemError);
   end;
   Exclude(FEvaluated, doneUInt);
 end;
@@ -2151,9 +2152,9 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, Size, Result, Context) then begin
+  if not Context.ReadUnsignedInt(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    SetLastError(MemManager.LastError);
+    SetLastError(Context.LastMemError);
   end;
 
   FValue := Result;
@@ -2177,8 +2178,8 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
     inherited SetAsCardinal(AValue)
   else
-  if not MemManager.WriteUnsignedInt(OrdOrDataAddr, Size, AValue, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.WriteUnsignedInt(OrdOrDataAddr, Size, AValue) then begin
+    SetLastError(Context.LastMemError);
   end;
   Exclude(FEvaluated, doneUInt);
 end;
@@ -2209,9 +2210,9 @@ begin
     SetLastError(CreateError(fpErrorBadFloatSize));
   end
   else
-  if not MemManager.ReadFloat(OrdOrDataAddr, Size, Result, Context) then begin
+  if not Context.ReadFloat(OrdOrDataAddr, Size, Result) then begin
     Result := 0; // TODO: error
-    SetLastError(MemManager.LastError);
+    SetLastError(Context.LastMemError);
   end;
 
   FValue := Result;
@@ -2297,8 +2298,8 @@ begin
   if (Size > 0) then begin
     Addr := OrdOrDataAddr;
     if not IsNilLoc(Addr) then begin
-      if not MemManager.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result, Context) then
-        SetLastError(MemManager.LastError);
+      if not Context.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result) then
+        SetLastError(Context.LastMemError);
     end;
   end;
   FPointetToAddr := Result;
@@ -2381,13 +2382,13 @@ begin
       exit;
     end;
 
-    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], Context, [mmfPartialRead]) then begin
+    if not Context.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], [mmfPartialRead]) then begin
       Result := '';
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
       exit;
     end;
 
-    i := MemManager.PartialReadResultLenght;
+    i := Context.PartialReadResultLenght;
     SetLength(Result,i);
     i := pos(#0, Result);
     if i > 0 then
@@ -2417,13 +2418,13 @@ begin
       exit;
     end;
 
-    if not MemManager.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], Context, [mmfPartialRead]) then begin
+    if not Context.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], [mmfPartialRead]) then begin
       Result := '';
-      SetLastError(MemManager.LastError);
+      SetLastError(Context.LastMemError);
       exit;
     end;
 
-    i := MemManager.PartialReadResultLenght;
+    i := Context.PartialReadResultLenght;
     SetLength(Result, i div 2);
     i := pos(#0, Result);
     if i > 0 then
@@ -2482,8 +2483,8 @@ end;
 
 procedure TFpValueDwarfPointer.SetAsCardinal(AValue: QWord);
 begin
-  if not MemManager.WriteSignedInt(OrdOrDataAddr, SizeVal(Context.SizeOfAddress), AValue, Context) then
-    SetLastError(MemManager.LastError);
+  if not Context.WriteSignedInt(OrdOrDataAddr, SizeVal(Context.SizeOfAddress), AValue) then
+    SetLastError(Context.LastMemError);
 end;
 
 { TFpValueDwarfEnum }
@@ -2531,8 +2532,8 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadEnum(OrdOrDataAddr, Size, Result, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.ReadEnum(OrdOrDataAddr, Size, Result) then begin
+    SetLastError(Context.LastMemError);
     Result := 0; // TODO: error
   end;
 
@@ -2546,8 +2547,8 @@ begin
   if (not GetSize(Size)) or (Size <= 0) or (Size > SizeOf(AValue)) then
     inherited SetAsCardinal(AValue)
   else
-  if not MemManager.WriteEnum(OrdOrDataAddr, Size, AValue, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.WriteEnum(OrdOrDataAddr, Size, AValue) then begin
+    SetLastError(Context.LastMemError);
   end;
   Exclude(FEvaluated, doneUInt);
 end;
@@ -2660,8 +2661,8 @@ begin
   if t = nil then exit;
 
   GetDwarfDataAddress(DAddr);
-  if not MemManager.ReadSet(DAddr, Size, FMem, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.ReadSet(DAddr, Size, FMem) then begin
+    SetLastError(Context.LastMemError);
     exit; // TODO: error
   end;
 
@@ -2886,8 +2887,8 @@ begin
   if not IsValidLoc(Addr) then
     SetLastError(CreateError(fpErrFailedWriteMem))
   else begin
-    if not MemManager.WriteUnsignedInt(Addr, SizeVal(Context.SizeOfAddress), AValue, Context) then
-      SetLastError(MemManager.LastError);
+    if not Context.WriteUnsignedInt(Addr, SizeVal(Context.SizeOfAddress), AValue) then
+      SetLastError(Context.LastMemError);
   end;
 end;
 
@@ -3041,8 +3042,8 @@ end;
 function TFpValueDwarfArray.GetAsCardinal: QWord;
 begin
   // TODO cache
-  if not MemManager.ReadUnsignedInt(OrdOrAddress, SizeVal(AddressSize), Result, Context) then begin
-    SetLastError(MemManager.LastError);
+  if not Context.ReadUnsignedInt(OrdOrAddress, SizeVal(AddressSize), Result) then begin
+    SetLastError(Context.LastMemError);
     Result := 0;
   end;
 end;
@@ -3752,7 +3753,7 @@ begin
   end;
 
   LocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
-    AValueObj.MemManager, AValueObj.Context);
+    AValueObj.Context);
   InitLocationParser(LocationParser, AnInitLocParserData);
   LocationParser.Evaluate;
 
@@ -4457,13 +4458,13 @@ begin
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
-  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
+  AnAddress := AValueObj.Context.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if (not Result) and
-     IsError(AValueObj.MemManager.LastError)
+     IsError(AValueObj.Context.LastMemError)
   then
-    SetLastError(AValueObj, AValueObj.MemManager.LastError);
+    SetLastError(AValueObj, AValueObj.Context.LastMemError);
   // Todo: other error
 end;
 
@@ -4805,12 +4806,12 @@ begin
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
-  AnAddress := AValueObj.MemManager.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
+  AnAddress := AValueObj.Context.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
   Result := IsValidLoc(AnAddress);
 
   if not Result then
-    if IsError(AValueObj.MemManager.LastError) then
-      SetLastError(AValueObj, AValueObj.MemManager.LastError);
+    if IsError(AValueObj.Context.LastMemError) then
+      SetLastError(AValueObj, AValueObj.Context.LastMemError);
   // Todo: other error
 end;
 
@@ -5715,7 +5716,7 @@ begin
     end;
 
     FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
-      ASender.MemManager, ASender.Context);
+      ASender.Context);
     FFrameBaseParser.Evaluate;
   end;
 

@@ -241,7 +241,7 @@ var
 begin
   ValueObj := AValueObj as TDbgHardcodedVariableValue;
   SizeAddr := AValueObj.DataAddress + SizeVal(-ValueObj.Context.SizeOfAddress);
-  result := ValueObj.Context.MemManager.ReadSignedInt(SizeAddr, SizeVal(ValueObj.Context.SizeOfAddress), Size, ValueObj.Context);
+  result := ValueObj.Context.ReadSignedInt(SizeAddr, SizeVal(ValueObj.Context.SizeOfAddress), Size);
   ASize := SizeVal(Size);
 end;
 
@@ -251,7 +251,7 @@ var
 begin
   // Dereference the pointer that points to the real string-data
   Context := AValueObj.Context;
-  AnAddress := Context.MemManager.ReadAddress(AnAddress, SizeVal(Context.SizeOfAddress), Context);
+  AnAddress := Context.ReadAddress(AnAddress, SizeVal(Context.SizeOfAddress));
   Result := AnAddress.MType <> mlfInvalid;
 end;
 
@@ -336,7 +336,7 @@ var
 begin
   ValueObj := AValueObj as TDbgHardcodedVariableValue;
   SizeAddr := AValueObj.DataAddress + SizeVal(-1);
-  Result := ValueObj.Context.MemManager.ReadMemory(SizeAddr, SizeVal(1), @Size, ValueObj.Context);
+  Result := ValueObj.Context.ReadMemory(SizeAddr, SizeVal(1), @Size);
   ASize := SizeVal(Size);
 end;
 
@@ -378,7 +378,7 @@ begin
   ObjAddr := GetDataAddress;
 
   // Dereference the pointer to the class to get the address of the VMT
-  VMTAddr := Context.MemManager.ReadAddress(ObjAddr, SizeVal(Context.SizeOfAddress), Context);
+  VMTAddr := Context.ReadAddress(ObjAddr, SizeVal(Context.SizeOfAddress));
   if IsValidLoc(VMTAddr) and IsTargetNil(VMTAddr) then
     exit;
 
@@ -386,7 +386,7 @@ begin
   ClassnameAddr := VMTAddr + SizeVal(3*Context.SizeOfAddress);
 
   // Dereference, so we have the address of the shortstring with the classname
-  ClassNameAddr := FContext.MemManager.ReadAddress(ClassnameAddr, SizeVal(FContext.SizeOfAddress));
+  ClassNameAddr := FContext.ReadAddress(ClassnameAddr, SizeVal(FContext.SizeOfAddress));
   if IsTargetNil(ClassNameAddr) then
     exit;
 
@@ -456,7 +456,7 @@ begin
     if not Context.MemManager.SetLength(Result, SizeInBytes) then
       Result := ''
     else
-      Context.MemManager.ReadMemory(DataAddress, Size, @Result[1], Context);
+      Context.ReadMemory(DataAddress, Size, @Result[1]);
     end
   else
     Result := '';
@@ -616,7 +616,7 @@ var
 begin
   // Dereference the pointer that points to the real class-data
   Context := AValueObj.Context;
-  AnAddress := Context.MemManager.ReadAddress(AnAddress, SizeVal(Context.SizeOfAddress), Context);
+  AnAddress := Context.ReadAddress(AnAddress, SizeVal(Context.SizeOfAddress));
   Result := AnAddress.MType <> mlfInvalid;
 end;
 

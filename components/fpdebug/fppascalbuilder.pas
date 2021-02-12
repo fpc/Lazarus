@@ -50,7 +50,7 @@ type
   TFpPascalPrettyPrinter = class
   private
     FAddressSize: Integer;
-    FMemManager: TFpDbgMemManager;
+    FContext: TFpDbgLocationContext;
     function InternalPrintValue(out APrintedValue: String;
                                 AValue: TFpValue;
                                 AnAddressSize: Integer;
@@ -76,7 +76,7 @@ type
                         ARepeatCount: Integer = -1
                        ): Boolean;
     property AddressSize: Integer read FAddressSize write FAddressSize;
-    property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
+    property Context: TFpDbgLocationContext read FContext write FContext;
   end;
 
 
@@ -1069,14 +1069,14 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       exit;
     end;
 
-    if not MemManager.CheckDataSize(SizeToFullBytes(AValue.DataSize)) then begin
-      APrintedValue := ErrorHandler.ErrorAsString(MemManager.LastError);
+    if not Context.MemManager.CheckDataSize(SizeToFullBytes(AValue.DataSize)) then begin
+      APrintedValue := ErrorHandler.ErrorAsString(Context.LastMemError);
       Result := True;
       exit;
     end;
 
-    if (MemManager <> nil) and (MemManager.CacheManager <> nil) then
-      Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, SizeToFullBytes(AValue.DataSize))
+    if Context.MemManager.CacheManager <> nil then
+      Cache := Context.MemManager.CacheManager.AddCache(AValue.DataAddress.Address, SizeToFullBytes(AValue.DataSize))
     else
       Cache := nil;
     try
@@ -1171,7 +1171,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       Result := True;
     finally
       if Cache <> nil then
-        MemManager.CacheManager.RemoveCache(Cache)
+        Context.MemManager.CacheManager.RemoveCache(Cache)
     end;
   end;
 
@@ -1193,8 +1193,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     end;
 
     Cnt := AValue.MemberCount;
-    if (FMemManager.MemLimits.MaxArrayLen > 0) and (Cnt > FMemManager.MemLimits.MaxArrayLen) then
-      Cnt := FMemManager.MemLimits.MaxArrayLen;
+    if (Context.MemManager.MemLimits.MaxArrayLen > 0) and (Cnt > Context.MemManager.MemLimits.MaxArrayLen) then
+      Cnt := Context.MemManager.MemLimits.MaxArrayLen;
 
     FullCnt := Cnt;
     if (Cnt = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
@@ -1244,7 +1244,7 @@ begin
   end;
 
   if ADisplayFormat = wdfMemDump then begin
-    if FMemManager <> nil then begin
+    if FContext <> nil then begin
       MemAddr := UnInitializedLoc;
       if svfDataAddress in AValue.FieldFlags then begin
         MemAddr := AValue.DataAddress;
@@ -1261,11 +1261,11 @@ begin
       if MemSize <= 0 then MemSize := 256;
 
       if IsTargetAddr(MemAddr) then begin
-        if not MemManager.SetLength(MemDest, MemSize) then begin
-          APrintedValue := ErrorHandler.ErrorAsString(MemManager.LastError);
+        if not Context.MemManager.SetLength(MemDest, MemSize) then begin
+          APrintedValue := ErrorHandler.ErrorAsString(Context.MemManager.LastError);
         end
         else
-        if FMemManager.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[0]) then begin
+        if FContext.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[0]) then begin
           APrintedValue := IntToHex(MemAddr.Address, AnAddressSize*2)+ ':' + LineEnding;
           for i := 0 to high(MemDest) do begin
             if (i > 0) and (i mod 16 = 0) then

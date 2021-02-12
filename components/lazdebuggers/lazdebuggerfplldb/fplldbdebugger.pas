@@ -436,7 +436,7 @@ begin
       exit;
     end;
     FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
-    FpDebugger.FPrettyPrinter.MemManager := ctx.MemManager;
+    FpDebugger.FPrettyPrinter.Context := ctx.LocationContext;
 
     ALocals.Clear;
     for i := 0 to ProcVal.MemberCount - 1 do begin
@@ -1499,9 +1499,8 @@ begin
   end;
   if Ctx = nil then exit;
 
-  FMemManager.DefaultContext := Ctx.LocationContext;
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
-  FPrettyPrinter.MemManager := ctx.MemManager;
+  FPrettyPrinter.Context := ctx.LocationContext;
 
   LockUnLoadDwarf;
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
@@ -1538,14 +1537,14 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
     then begin
       CastName := '';
-      if FMemManager.ReadAddress(ResValue.DataAddress, SizeVal(Ctx.SizeOfAddress), ClassAddr) then begin
+      if ctx.LocationContext.ReadAddress(ResValue.DataAddress, SizeVal(Ctx.SizeOfAddress), ClassAddr) then begin
         ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
-        if FMemManager.ReadAddress(ClassAddr, SizeVal(Ctx.SizeOfAddress), CNameAddr) then begin
-          if (FMemManager.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
+        if ctx.LocationContext.ReadAddress(ClassAddr, SizeVal(Ctx.SizeOfAddress), CNameAddr) then begin
+          if (ctx.LocationContext.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
             if NameLen > 0 then begin
               if FMemManager.SetLength(CastName, NameLen) then begin
                 CNameAddr.Address := CNameAddr.Address + 1;
-                FMemManager.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
+                ctx.LocationContext.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
                 PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
                 PasExpr2.ResultValue;
                 if PasExpr2.Valid then begin
@@ -1620,7 +1619,6 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
   finally
     PasExpr.Free;
-    FMemManager.DefaultContext := nil;
     Ctx.ReleaseReference;
     UnLockUnLoadDwarf;
   end;

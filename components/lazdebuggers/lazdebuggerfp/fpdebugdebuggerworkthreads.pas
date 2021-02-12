@@ -581,7 +581,7 @@ begin
   if (FDbgCallStack <> nil) and (not StopRequested) then begin
     Prop := TFpDebugDebuggerProperties(FDebugger.GetProperties);
     PrettyPrinter := TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FDebugger.FDbgController.CurrentProcess.Mode]);
-    PrettyPrinter.MemManager := FDebugger.FMemManager;
+    PrettyPrinter.Context := FDebugger.FDbgController.DefaultContext;
 
     FDebugger.FMemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxStackArrayLen;
     FDebugger.FMemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStackStringLen;
@@ -649,8 +649,8 @@ begin
   end;
 
   PrettyPrinter := TFpPascalPrettyPrinter.Create(LocalScope.SizeOfAddress);
-  PrettyPrinter.MemManager := LocalScope.MemManager;
-  PrettyPrinter.MemManager.DefaultContext := LocalScope.LocationContext;
+  PrettyPrinter.Context := LocalScope.LocationContext;
+//  PrettyPrinter.MemManager.DefaultContext := LocalScope.LocationContext;
 
   FResults := TResultList.Create;
   for i := 0 to ProcVal.MemberCount - 1 do begin
@@ -702,8 +702,6 @@ begin
   if WatchScope = nil then
     exit;
 
-  WatchScope.MemManager.DefaultContext := WatchScope.LocationContext;
-
   APasExpr := nil;
   PrettyPrinter := nil;
   try
@@ -746,7 +744,7 @@ begin
       exit;
 
     PrettyPrinter := TFpPascalPrettyPrinter.Create(WatchScope.SizeOfAddress);
-    PrettyPrinter.MemManager := WatchScope.MemManager;
+    PrettyPrinter.Context := WatchScope.LocationContext;
 
     if defNoTypeInfo in AnEvalFlags then
       Result := PrettyPrinter.PrintValue(AResText, ResValue, ADispFormat, ARepeatCnt)

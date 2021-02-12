@@ -298,7 +298,7 @@ begin
       exit;
     end;
     FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
-    FpDebugger.FPrettyPrinter.MemManager := ctx.MemManager;
+    FpDebugger.FPrettyPrinter.Context := ctx.LocationContext;
 
     ALocals.Clear;
     for i := 0 to ProcVal.MemberCount - 1 do begin
@@ -1057,9 +1057,8 @@ begin
   end;
   if Ctx = nil then exit;
 
-  FMemManager.DefaultContext := Ctx.LocationContext;
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
-  FPrettyPrinter.MemManager := ctx.MemManager;
+  FPrettyPrinter.Context := ctx.LocationContext;
 
   LockUnLoadDwarf;
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
@@ -1161,7 +1160,6 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
   finally
     PasExpr.Free;
-    FMemManager.DefaultContext := nil;
     UnLockUnLoadDwarf;
   end;
 end;
