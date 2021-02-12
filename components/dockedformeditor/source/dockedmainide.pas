@@ -576,10 +576,11 @@ begin
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LActiveSourceWindowInterface];
   if LSourceEditorWindow = nil then Exit;
 
-  LPageCtrl.InitPage;
   if not (LPageCtrl.PageIndex in [1, 2]) then
-    LSourceEditorWindow.ActiveDesignForm := nil
-  else begin
+  begin
+    LSourceEditorWindow.ActiveDesignForm := nil;
+    LPageCtrl.InitPage;
+  end else begin
     // deactivate design tab in other source editor page control
     for LSourceEditorWindow in SourceEditorWindows do
       if LSourceEditorWindow.SourceEditorWindowInterface = LActiveSourceWindowInterface then
@@ -593,6 +594,7 @@ begin
     LSourceEditorWindow.ActiveDesignForm := LDesignForm;
     // enable autosizing after creating a new form
     DockedTabMaster.EnableAutoSizing(LDesignForm.Form);
+    LPageCtrl.InitPage;
     LPageCtrl.DesignerSetFocus;
   end;
 end;
