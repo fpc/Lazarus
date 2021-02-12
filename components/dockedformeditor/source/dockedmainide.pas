@@ -197,7 +197,7 @@ var
 begin
   if ASourceEditor = nil then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
-  LPageCtrl.PageIndex := 0;
+  LPageCtrl.ShowCode;
 end;
 
 procedure TDockedTabMaster.ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer);
@@ -206,11 +206,7 @@ var
 begin
   if ASourceEditor = nil then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
-  if (AIndex = 0) or not (LPageCtrl.Pages[AIndex].TabVisible) then
-    AIndex := 1;
-  if not LPageCtrl.Pages[AIndex].TabVisible then Exit;
-  LPageCtrl.PageIndex := AIndex;
-  LPageCtrl.OnChange(LPageCtrl);
+  LPageCtrl.ShowDesigner(AIndex);
 end;
 
 procedure TDockedTabMaster.ShowForm(AForm: TCustomForm);
@@ -233,7 +229,7 @@ begin
   LPageCtrl := SourceEditorWindows.FindModulePageControl(LastActiveSourceEditor);
   LRefreshDesigner := Assigned(LPageCtrl) and (LPageCtrl.PageIndex in [1, 2]);
   LPageIndex := LPageCtrl.PageIndex;
-  LPageCtrl.ShowAnchorPage;
+  LPageCtrl.CreateTabSheetAnchors;
 
   DesignForms.RemoveAllAnchorDesigner;
 
@@ -292,9 +288,9 @@ begin
       if LPageCtrl <> nil then
       begin
         LPageCtrl.DesignForm := LDesignForm;
-        LPageCtrl.ShowDesignPage;
+        LPageCtrl.CreateTabSheetDesigner;
         if LDesignForm.IsAnchorDesign then
-          LPageCtrl.ShowAnchorPage;
+          LPageCtrl.CreateTabSheetAnchors;
       end;
     end;
     SetTimer(AForm.Handle, WM_SETNOFRAME, 10, nil);
@@ -445,9 +441,9 @@ begin
     else begin
       if not Assigned(LPageCtrl.Resizer) then
         LPageCtrl.CreateResizer;
-      LPageCtrl.ShowDesignPage;
+      LPageCtrl.CreateTabSheetDesigner;
       if LDesignForm.IsAnchorDesign then
-        LPageCtrl.ShowAnchorPage;
+        LPageCtrl.CreateTabSheetAnchors;
     end;
 
     LSourceEditorWindowInterface := TSourceEditorWindowInterface(LPageCtrl.Owner);
@@ -473,6 +469,7 @@ begin
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := nil;
     end;
 
+    LPageCtrl.InitPage;
     if (LPageCtrl.PageIndex in [1, 2]) then
     begin
       if not LDesignForm.Hiding then
@@ -579,6 +576,7 @@ begin
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LActiveSourceWindowInterface];
   if LSourceEditorWindow = nil then Exit;
 
+  LPageCtrl.InitPage;
   if not (LPageCtrl.PageIndex in [1, 2]) then
     LSourceEditorWindow.ActiveDesignForm := nil
   else begin
@@ -595,7 +593,6 @@ begin
     LSourceEditorWindow.ActiveDesignForm := LDesignForm;
     // enable autosizing after creating a new form
     DockedTabMaster.EnableAutoSizing(LDesignForm.Form);
-    LPageCtrl.InitPage;
     LPageCtrl.DesignerSetFocus;
   end;
 end;

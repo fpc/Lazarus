@@ -35,6 +35,9 @@ type
 
   TModulePageControl = class(TPageControl)
   private
+    FTabSheetAnchors: TTabSheet;
+    FTabSheetCode: TTabSheet;
+    FTabSheetDesigner: TTabSheet;
     FResizer: TResizer;
     FDesignForm: TDesignForm;
     procedure OnAdjustPage(Sender: TObject);
@@ -45,12 +48,14 @@ type
     destructor Destroy; override;
     procedure AdjustPage;
     procedure CreateResizer;
+    procedure CreateTabSheetAnchors;
+    procedure CreateTabSheetDesigner;
     procedure DesignerSetFocus;
     procedure HideDesignPages;
     procedure InitPage;
     procedure RefreshResizer;
-    procedure ShowAnchorPage;
-    procedure ShowDesignPage;
+    procedure ShowCode;
+    procedure ShowDesigner(AIndex: Integer = 0);
   public
     property DesignForm: TDesignForm read FDesignForm write SetDesignForm;
     property Resizer: TResizer read FResizer;
@@ -90,28 +95,17 @@ begin
 end;
 
 constructor TModulePageControl.Create(TheOwner: TComponent);
-var
-  LNewTabSheet: TTabSheet;
 begin
   inherited Create(TheOwner);
   FResizer := nil;
 
   TabPosition := DockedOptions.TabPosition;
   Align := alClient;
+  ShowTabs := False;
 
-  LNewTabSheet := TTabSheet.Create(Self);
-  LNewTabSheet.PageControl := Self;
-  LNewTabSheet.Caption := SCode;
-
-  LNewTabSheet := TTabSheet.Create(Self);
-  LNewTabSheet.PageControl := Self;
-  LNewTabSheet.Caption := SDesigner;
-  Pages[1].TabVisible := False;
-
-  LNewTabSheet := TTabSheet.Create(Self);
-  LNewTabSheet.PageControl := Self;
-  LNewTabSheet.Caption := SAnchors;
-  Pages[2].TabVisible := False;
+  FTabSheetCode := TTabSheet.Create(Self);
+  FTabSheetCode.PageControl := Self;
+  FTabSheetCode.Caption := SCode;
 end;
 
 destructor TModulePageControl.Destroy;
@@ -132,7 +126,26 @@ begin
   if Assigned(FResizer) then
     raise Exception.Create('TModulePageControl.CreateResizer: Resizer already created');
   FResizer := TResizer.Create(Self);
-  FResizer.Parent := Pages[1];
+  if not Assigned(FTabSheetDesigner) then
+    CreateTabSheetDesigner;
+  FResizer.Parent := FTabSheetDesigner;
+end;
+
+procedure TModulePageControl.CreateTabSheetAnchors;
+begin
+  if not DockedOptions.AnchorTabVisible then Exit;
+  if Assigned(FTabSheetAnchors) then Exit;
+  FTabSheetAnchors := TTabSheet.Create(Self);
+  FTabSheetAnchors.PageControl := Self;
+  FTabSheetAnchors.Caption := SAnchors;
+end;
+
+procedure TModulePageControl.CreateTabSheetDesigner;
+begin
+  if Assigned(FTabSheetDesigner) then Exit;
+  FTabSheetDesigner := TTabSheet.Create(Self);
+  FTabSheetDesigner.PageControl := Self;
+  FTabSheetDesigner.Caption := SDesigner;
 end;
 
 procedure TModulePageControl.DesignerSetFocus;
@@ -142,33 +155,31 @@ end;
 
 procedure TModulePageControl.HideDesignPages;
 begin
-  Pages[1].TabVisible := False;
-  Pages[2].TabVisible := False;
+  FreeAndNil(FTabSheetAnchors);
+  FreeAndNil(FTabSheetDesigner);
 end;
 
 procedure TModulePageControl.InitPage;
 begin
-  case PageIndex of
-    1:
-      begin
-        Resizer.Parent := Pages[1];
-        Resizer.ResizeFrame.PanelFormClient.Visible := True;
-        Resizer.ResizeFrame.PanelAnchorContainer.Visible := False;
-      end;
-    2:
-      begin
-        Resizer.Parent := Pages[2];
-        Resizer.ResizeFrame.PanelFormClient.Visible := False;
-        Resizer.ResizeFrame.PanelAnchorContainer.Visible := True;
-        if not Assigned(DesignForm.AnchorDesigner) then
-        begin
-          DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeFrame.PanelAnchorContainer);
-          DesignForm.AnchorDesigner.IsFocusedFunc := @Resizer.ResizeFrame.IsFocused;
-          DesignForm.AnchorDesigner.OnDesignerSetFocus := @DesignerSetFocus;
-        end;
-        DesignForm.AnchorDesigner.Refresh;
-      end;
-    else;
+  ShowTabs := PageCount > 1;
+  if ActivePage = FTabSheetDesigner then
+  begin
+    Resizer.Parent := FTabSheetDesigner;
+    Resizer.ResizeFrame.PanelFormClient.Visible := True;
+    Resizer.ResizeFrame.PanelAnchorContainer.Visible := False;
+  end
+  else if ActivePage = FTabSheetAnchors then
+  begin
+    Resizer.Parent := FTabSheetAnchors;
+    Resizer.ResizeFrame.PanelFormClient.Visible := False;
+    Resizer.ResizeFrame.PanelAnchorContainer.Visible := True;
+    if not Assigned(DesignForm.AnchorDesigner) then
+    begin
+      DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeFrame.PanelAnchorContainer);
+      DesignForm.AnchorDesigner.IsFocusedFunc := @Resizer.ResizeFrame.IsFocused;
+      DesignForm.AnchorDesigner.OnDesignerSetFocus := @DesignerSetFocus;
+    end;
+    DesignForm.AnchorDesigner.Refresh;
   end;
 end;
 
@@ -179,14 +190,21 @@ begin
   CreateResizer;
 end;
 
-procedure TModulePageControl.ShowAnchorPage;
+procedure TModulePageControl.ShowCode;
 begin
-  Pages[2].TabVisible := DockedOptions.AnchorTabVisible;
+  PageIndex := 0;
+  InitPage;
 end;
 
-procedure TModulePageControl.ShowDesignPage;
+procedure TModulePageControl.ShowDesigner(AIndex: Integer);
 begin
-  Pages[1].TabVisible := True;
+  if (AIndex = 0) or not (Pages[AIndex].TabVisible) then
+    AIndex := 1;
+  if PageCount <= AIndex then Exit;
+  if not Pages[AIndex].TabVisible then Exit;
+  PageIndex := AIndex;
+  InitPage;
+  OnChange(Self);
 end;
 
 end.

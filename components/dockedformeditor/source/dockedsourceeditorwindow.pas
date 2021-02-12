@@ -275,9 +275,9 @@ begin
     then
       LPageCtrl.HideDesignPages
     else begin
-      LPageCtrl.ShowDesignPage;
+      LPageCtrl.CreateTabSheetDesigner;
       if not (LPageCtrl.DesignForm.Form is TNonControlProxyDesignerForm) then
-        LPageCtrl.ShowAnchorPage;
+        LPageCtrl.CreateTabSheetAnchors;
     end;
   end;
 end;
