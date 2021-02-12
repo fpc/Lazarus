@@ -200,6 +200,7 @@ var
     end;
 
     OldDC := ALV.Canvas.Handle;
+    ALV.Canvas.Handle := DrawInfo^.nmcd.hdc;
     ALV.Canvas.Font.Assign(ALV.Font);
     ALV.Canvas.Brush.Assign(ALV.Brush);
 
@@ -226,7 +227,6 @@ var
     begin
       DrawInfo^.clrText := ColorToRGB(ALV.Canvas.Font.Color);
       DrawInfo^.clrTextBk := ColorToRGB(ALV.Canvas.Brush.Color);
-      SelectObject(DrawInfo^.nmcd.hdc, ALV.Canvas.Font.Handle); //jp
     end;
     ALV.Canvas.Handle := OldDC;
 
