@@ -114,12 +114,12 @@ begin
   for i := 0 to AProperties.Count - 1 do begin
     if AProperties[i] is TFlowPanelControlIndexProperty then
       Exit;
-    propname := UpperCase(AProperties[i].GetName);
-    if propname = 'CONTROLINDEX' then
+    propname := AProperties[i].GetName;
+    if CompareText(propname, 'CONTROLINDEX') = 0 then
       Exit
-    else if propname = 'LEFT' then
+    else if CompareText(propname, 'LEFT') = 0 then
       todelete[0] := i
-    else if propname = 'TOP' then
+    else if CompareText(propname, 'TOP') = 0 then
       todelete[1] := i;
   end;
 

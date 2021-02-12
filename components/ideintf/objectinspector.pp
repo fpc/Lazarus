@@ -510,8 +510,7 @@ type
                                        write FDefaultItemHeight default 0;
     property DrawHorzGridLines: Boolean read FDrawHorzGridLines write
       SetDrawHorzGridLines default True;
-    property ExpandedProperties: TStringList read FExpandedProperties
-                                            write FExpandedProperties;
+    property ExpandedProperties: TStringList read FExpandedProperties;
     property Indent: integer read FIndent write FIndent;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
@@ -907,8 +906,8 @@ implementation
 
 function SortGridRows(Item1, Item2 : pointer) : integer;
 begin
-  Result:=SysUtils.CompareText(TOIPropertyGridRow(Item1).Name,
-                               TOIPropertyGridRow(Item2).Name);
+  Result:=CompareText(TOIPropertyGridRow(Item1).Name,
+                      TOIPropertyGridRow(Item2).Name);
 end;
 
 function dbgs(s: TOIPropertyGridState): string;
@@ -1446,7 +1445,8 @@ end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
-var CurName:string;
+var
+  CurName:string;
   s,e:integer;
   CurParentRow:TOIPropertyGridRow;
 begin
@@ -1457,14 +1457,14 @@ begin
   while (s<=length(PropPath)) do begin
     e:=s;
     while (e<=length(PropPath)) and (PropPath[e]<>'.') do inc(e);
-    CurName:=uppercase(copy(PropPath,s,e-s));
+    CurName:=copy(PropPath,s,e-s);
     s:=e+1;
     // search name in children
     if CurParentRow=nil then
       Result:=Rows[0]
     else
       Result:=CurParentRow.FirstChild;
-    while (Result<>nil) and (uppercase(Result.Name)<>CurName) do
+    while (Result<>nil) and (CompareText(Result.Name, CurName)<>0) do
       Result:=Result.NextBrother;
     if Result=nil then begin
       exit;
@@ -2058,11 +2058,11 @@ begin
   SetItemsTops;
   FExpandingRow.FExpanded := True;
   a := 0;
-  CurPath:=uppercase(PropertyPath(FExpandingRow.Index));
+  CurPath:=PropertyPath(FExpandingRow.Index);
   AlreadyInExpandList:=false;
   while a < FExpandedProperties.Count do
   begin
-    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a])) then
+    if LazStartsText(FExpandedProperties[a], CurPath) then
     begin
       if Length(FExpandedProperties[a]) = Length(CurPath) then
       begin
@@ -2123,17 +2123,17 @@ begin
   end;
   SetItemsTops;
   CurRow.FExpanded := False;
-  CurPath := UpperCase(PropertyPath(CurRow.Index));
+  CurPath := PropertyPath(CurRow.Index);
   a := 0;
   while a < FExpandedProperties.Count do
   begin
-    if StartsStr(CurPath, FExpandedProperties[a]) then
+    if LazStartsText(CurPath, FExpandedProperties[a]) then
       FExpandedProperties.Delete(a)
     else
       inc(a);
   end;
   if CurRow.Parent <> nil then
-    FExpandedProperties.Add(UpperCase(PropertyPath(CurRow.Parent.Index)));
+    FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
   UpdateScrollBar;
   Invalidate;
 end;
@@ -2527,8 +2527,8 @@ var
       else
         IIndex := ItemIndex;
       for i := 0 to RowCount - 1 do
-        if (Rows[i].Lvl = Rows[IIndex].Lvl) and
-          (UpperCase(LeftStr(Rows[i].Name, Length(FKeySearchText))) = FKeySearchText) then
+        if (Rows[i].Lvl = Rows[IIndex].Lvl)
+        and LazStartsText(FKeySearchText, Rows[i].Name) then
         begin
           // Set item index. To go to Value user must hit either Tab or Enter.
           SetItemIndex(i);
