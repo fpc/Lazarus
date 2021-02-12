@@ -373,13 +373,15 @@ var
   sym: TFpValue;
   ImgLoader: TTestLoaderSetupBasic;
   TmpResVal: TFpValue;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
-
-  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
+  Ctx := TFpDbgSimpleLocationContext.Create(FMemManager, TTestSetupBasicProcMainAddr, 4, 0, 0);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(Ctx, TTestSetupBasicProcMainAddr);
+  Ctx.ReleaseReference;
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
@@ -423,13 +425,16 @@ var
   TmpResVal: TFpValue;
   i: Integer;
   s: String;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
 
-  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
+  Ctx := TFpDbgSimpleLocationContext.Create(FMemManager, TTestSetupBasicProcMainAddr, 4, 0, 0);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(Ctx, TTestSetupBasicProcMainAddr);
+  Ctx.ReleaseReference;
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
@@ -488,12 +493,15 @@ var
   TmpResVal: TFpValue;
   i: Integer;
   s: String;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   InitDwarf(TTestLoaderSetupArray);
   ImgLoader := TTestLoaderSetupArray(FImageLoader);
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
-  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupArrayProcMainAddr);
+  Ctx := TFpDbgSimpleLocationContext.Create(FMemManager, TTestSetupBasicProcMainAddr, 4, 0, 0);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(Ctx, TTestSetupArrayProcMainAddr);
+  Ctx.ReleaseReference;
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarDynIntArray');
@@ -588,6 +596,7 @@ var
   AddrExp: TDbgPtr;
   s, s2: String;
   ImgLoader: TTestLoaderSetup1;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   InitDwarf(TTestLoaderSetup1);
   ImgLoader := TTestLoaderSetup1(FImageLoader);
@@ -598,7 +607,9 @@ begin
   ImgLoader.TestStackFrame.Int1 := -299;
   ImgLoader.TestStackFrame.Obj1 := obj1;
   try
-    FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetup1ProcBarAddr);
+    Ctx := TFpDbgSimpleLocationContext.Create(FMemManager, TTestSetupBasicProcMainAddr, 4, 0, 0);
+    FCurrentContext := FDwarfInfo.FindSymbolScope(Ctx, TTestSetup1ProcBarAddr);
+    Ctx.ReleaseReference;
     AssertTrue('got ctx', FCurrentContext <> nil);
 
     sym := FCurrentContext.FindSymbol('Int1');
@@ -1244,13 +1255,16 @@ var
   sym: TFpValue;
   ImgLoader: TTestLoaderSetupBasic;
   TmpResVal: TFpValue;
+  Ctx: TFpDbgSimpleLocationContext;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);
   //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
 
-  FCurrentContext := FDwarfInfo.FindSymbolScope(0, 0, TTestSetupBasicProcMainAddr);
+  Ctx := TFpDbgSimpleLocationContext.Create(FMemManager, TTestSetupBasicProcMainAddr, 4, 0, 0);
+  FCurrentContext := FDwarfInfo.FindSymbolScope(Ctx, TTestSetupBasicProcMainAddr);
+  Ctx.ReleaseReference;
   AssertTrue('got ctx', FCurrentContext <> nil);
 
   sym := FCurrentContext.FindSymbol('VarEnum0');

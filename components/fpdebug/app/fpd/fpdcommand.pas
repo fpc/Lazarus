@@ -263,7 +263,10 @@ begin
       Val(P, Address, e);
       if e <> 0
       then begin
-        AContext := GController.CurrentProcess.SymbolTableInfo.FindSymbolScope(GController.CurrentThread.GetInstructionPointerRegisterValue);
+        AContext := GController.CurrentProcess.SymbolTableInfo.FindSymbolScope(
+          GController.DefaultContext,
+          GController.CurrentThread.GetInstructionPointerRegisterValue
+        );
         if AContext = nil then begin
           Writeln('Invalid context');
           exit;
@@ -593,7 +596,10 @@ begin
   S := AParams;
   P := GetPart([], [' ', #9], S);
 
-  AContext := GController.CurrentProcess.DbgInfo.FindSymbolScope(GController.CurrentThread.GetInstructionPointerRegisterValue);
+  AContext := GController.CurrentProcess.DbgInfo.FindSymbolScope(
+    GController.DefaultContext,
+    GController.CurrentThread.GetInstructionPointerRegisterValue
+  );
   if AContext = nil then begin
     Writeln('Invalid context');
     exit;

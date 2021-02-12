@@ -5,8 +5,9 @@ unit TestMemManager;
 interface
 
 uses
-  FpDbgDwarf, FpDbgUtil, FpdMemoryTools, TestHelperClasses, LazLoggerBase, LazUTF8,
-  DbgIntfBaseTypes, sysutils, fpcunit, testregistry;
+  FpDbgDwarf, FpDbgUtil, FpdMemoryTools, FpDbgInfo, TestHelperClasses,
+  LazLoggerBase, LazUTF8, LazClasses, DbgIntfBaseTypes, sysutils, fpcunit,
+  testregistry;
 
 type
 
@@ -19,6 +20,7 @@ type
     FMemConvTarget: TFpDbgMemConvertorLittleEndian;
     FMemConvSelf: TFpDbgMemConvertorLittleEndian;
     FMemManager: TFpDbgMemManager;
+    FDummyContext: TFpDbgSimpleLocationContext;
 
     procedure InitMemMgr;
     procedure SetUp; override;
@@ -36,6 +38,7 @@ begin
   FMemConvTarget := TFpDbgMemConvertorLittleEndian.Create;
   FMemConvSelf   := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager    := TFpDbgMemManager.Create(FMemReader, FMemConvTarget, FMemConvSelf);
+  FDummyContext := TFpDbgSimpleLocationContext.Create(FMemManager, 0, 4, 0, 0);
 end;
 
 procedure TTestMemManager.SetUp;
@@ -50,6 +53,7 @@ end;
 procedure TTestMemManager.TearDown;
 begin
   inherited TearDown;
+  ReleaseRefAndNil(FDummyContext);
   FreeAndNil(FMemReader);
   FreeAndNil(FMemConvTarget);
   FreeAndNil(FMemConvSelf);
@@ -99,28 +103,28 @@ var
   var
     a: Cardinal;
   begin
-    GotRes := FMemManager.ReadSignedInt(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotInt);
+    GotRes := FDummyContext.ReadSignedInt(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotInt);
     CheckIntRes('signed target', ExpIntVal);
 
-    GotRes := FMemManager.ReadSignedInt(SelfLoc(@Data),               SizeVal(ReadSize), GotInt);
+    GotRes := FDummyContext.ReadSignedInt(SelfLoc(@Data),               SizeVal(ReadSize), GotInt);
     CheckIntRes('signed self',   ExpIntVal);
 
     FMemReader.RegisterSizes[2] := ReadSize;
-    GotRes := FMemManager.ReadSignedInt(RegisterLoc(2),               SizeVal(ReadSize), GotInt);
+    GotRes := FDummyContext.ReadSignedInt(RegisterLoc(2),               SizeVal(ReadSize), GotInt);
     CheckIntRes('signed Reg ',    ExpIntVal);
 
     for a := ReadSize+1 to 8 do begin
       // expanded
       FMemReader.RegisterSizes[2] := ReadSize;
-      GotRes := FMemManager.ReadSignedInt(RegisterLoc(2),             SizeVal(a), GotInt);
+      GotRes := FDummyContext.ReadSignedInt(RegisterLoc(2),             SizeVal(a), GotInt);
       CheckIntRes('signed Reg  readsize='+IntToStr(a),    ExpIntVal);
 
       FMemReader.RegisterSizes[2] := a;
-      GotRes := FMemManager.ReadSignedInt(RegisterLoc(2),             SizeVal(ReadSize), GotInt);
+      GotRes := FDummyContext.ReadSignedInt(RegisterLoc(2),             SizeVal(ReadSize), GotInt);
       CheckIntRes('signed Reg  regsize'+IntToStr(a),    ExpIntVal);
     end;
 
-    GotRes := FMemManager.ReadSignedInt(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotInt);
+    GotRes := FDummyContext.ReadSignedInt(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotInt);
     CheckIntRes('signed const (pre-expanded)', ExpIntVal);
   end;
 
@@ -128,85 +132,85 @@ var
   var
     a: Cardinal;
   begin
-    GotRes := FMemManager.ReadUnsignedInt(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotUInt);
+    GotRes := FDummyContext.ReadUnsignedInt(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotUInt);
     CheckUIntRes('unsigned target', ExpIntVal);
 
-    GotRes := FMemManager.ReadUnsignedInt(SelfLoc(@Data),               SizeVal(ReadSize), GotUInt);
+    GotRes := FDummyContext.ReadUnsignedInt(SelfLoc(@Data),               SizeVal(ReadSize), GotUInt);
     CheckUIntRes('unsigned self',   ExpIntVal);
 
     FMemReader.RegisterSizes[2] := ReadSize;
-    GotRes := FMemManager.ReadUnsignedInt(RegisterLoc(2),               SizeVal(ReadSize), GotUInt);
+    GotRes := FDummyContext.ReadUnsignedInt(RegisterLoc(2),               SizeVal(ReadSize), GotUInt);
     CheckUIntRes('unsigned Reg ',    ExpIntVal);
 
     for a := ReadSize+1 to 8 do begin
       // expanded
       FMemReader.RegisterSizes[2] := ReadSize;
-      GotRes := FMemManager.ReadUnsignedInt(RegisterLoc(2),             SizeVal(a), GotUInt);
+      GotRes := FDummyContext.ReadUnsignedInt(RegisterLoc(2),             SizeVal(a), GotUInt);
       CheckUIntRes('unsigned Reg  readsize='+IntToStr(a),    ExpIntVal);
 
       FMemReader.RegisterSizes[2] := a;
-      GotRes := FMemManager.ReadUnsignedInt(RegisterLoc(2),             SizeVal(ReadSize), GotUInt);
+      GotRes := FDummyContext.ReadUnsignedInt(RegisterLoc(2),             SizeVal(ReadSize), GotUInt);
       CheckUIntRes('unsigned Reg  regsize'+IntToStr(a),    ExpIntVal);
     end;
 
-    GotRes := FMemManager.ReadUnsignedInt(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotUInt);
+    GotRes := FDummyContext.ReadUnsignedInt(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotUInt);
     CheckUIntRes('unsigned const (pre-expanded)', ExpIntVal);
 
     //////
     // Address
-    GotRes := FMemManager.ReadAddress(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotAddr);
+    GotRes := FDummyContext.ReadAddress(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize), GotAddr);
     CheckAddrRes('addr target', ExpIntVal);
 
-    GotRes := FMemManager.ReadAddress(SelfLoc(@Data),               SizeVal(ReadSize), GotAddr);
+    GotRes := FDummyContext.ReadAddress(SelfLoc(@Data),               SizeVal(ReadSize), GotAddr);
     CheckAddrRes('addr self',   ExpIntVal);
 
     FMemReader.RegisterSizes[2] := ReadSize;
-    GotRes := FMemManager.ReadAddress(RegisterLoc(2),               SizeVal(ReadSize), GotAddr);
+    GotRes := FDummyContext.ReadAddress(RegisterLoc(2),               SizeVal(ReadSize), GotAddr);
     CheckAddrRes('addr Reg ',    ExpIntVal);
 
     for a := ReadSize+1 to 8 do begin
       // expanded
       FMemReader.RegisterSizes[2] := ReadSize;
-      GotRes := FMemManager.ReadAddress(RegisterLoc(2),             SizeVal(a), GotAddr);
+      GotRes := FDummyContext.ReadAddress(RegisterLoc(2),             SizeVal(a), GotAddr);
       CheckAddrRes('addr Reg  readsize='+IntToStr(a),    ExpIntVal);
 
       FMemReader.RegisterSizes[2] := a;
-      GotRes := FMemManager.ReadAddress(RegisterLoc(2),             SizeVal(ReadSize), GotAddr);
+      GotRes := FDummyContext.ReadAddress(RegisterLoc(2),             SizeVal(ReadSize), GotAddr);
       CheckAddrRes('addr Reg  regsize'+IntToStr(a),    ExpIntVal);
     end;
 
-    GotRes := FMemManager.ReadAddress(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotAddr);
+    GotRes := FDummyContext.ReadAddress(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize), GotAddr);
     CheckAddrRes('addr const (pre-expanded)', ExpIntVal);
 
     //////
     // Address
-    GotAddr := FMemManager.ReadAddress(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize));
+    GotAddr := FDummyContext.ReadAddress(TargetLoc(TDbgPtr(@Data)),    SizeVal(ReadSize));
     GotRes := isValidLoc(GotAddr);
     CheckAddrRes('addr target', ExpIntVal);
 
-    GotAddr := FMemManager.ReadAddress(SelfLoc(@Data),               SizeVal(ReadSize));
+    GotAddr := FDummyContext.ReadAddress(SelfLoc(@Data),               SizeVal(ReadSize));
     GotRes := isValidLoc(GotAddr);
     CheckAddrRes('addr self',   ExpIntVal);
 
     FMemReader.RegisterSizes[2] := ReadSize;
-    GotAddr := FMemManager.ReadAddress(RegisterLoc(2),               SizeVal(ReadSize));
+    GotAddr := FDummyContext.ReadAddress(RegisterLoc(2),               SizeVal(ReadSize));
     GotRes := isValidLoc(GotAddr);
     CheckAddrRes('addr Reg ',    ExpIntVal);
 
     for a := ReadSize+1 to 8 do begin
       // expanded
       FMemReader.RegisterSizes[2] := ReadSize;
-      GotAddr := FMemManager.ReadAddress(RegisterLoc(2),             SizeVal(a));
+      GotAddr := FDummyContext.ReadAddress(RegisterLoc(2),             SizeVal(a));
       GotRes := isValidLoc(GotAddr);
       CheckAddrRes('addr Reg  readsize='+IntToStr(a),    ExpIntVal);
 
       FMemReader.RegisterSizes[2] := a;
-      GotAddr := FMemManager.ReadAddress(RegisterLoc(2),             SizeVal(ReadSize));
+      GotAddr := FDummyContext.ReadAddress(RegisterLoc(2),             SizeVal(ReadSize));
       GotRes := isValidLoc(GotAddr);
       CheckAddrRes('addr Reg  regsize'+IntToStr(a),    ExpIntVal);
     end;
 
-    GotAddr := FMemManager.ReadAddress(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize));
+    GotAddr := FDummyContext.ReadAddress(ConstLoc(QWord(ExpIntVal)), SizeVal(ReadSize));
     GotRes := isValidLoc(GotAddr);
     CheckAddrRes('addr const (pre-expanded)', ExpIntVal);
 
@@ -246,21 +250,21 @@ begin
 
   FCurrentTestName := 'Extended';
   DataExt := 1.7722;
-  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(SizeOf(Extended)), GotExt);
+  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(SizeOf(Extended)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataExt);
   AssertEquals(FCurrentTestName + 'Val', DataExt, GotExt);
 
   FCurrentTestName := 'Double';
   DataDouble := 1.7722;
-  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataDouble)), SizeVal(SizeOf(Double)), GotExt);
+  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataDouble)), SizeVal(SizeOf(Double)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataDouble);
   AssertEquals(FCurrentTestName + 'Val', DataDouble, GotExt);
 
   FCurrentTestName := 'Single';
   DataSingle := 1.7722;
-  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataSingle)), SizeVal(SizeOf(Single)), GotExt);
+  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataSingle)), SizeVal(SizeOf(Single)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataSingle);
   AssertEquals(FCurrentTestName + 'Val', DataSingle, GotExt);

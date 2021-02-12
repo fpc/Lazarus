@@ -686,7 +686,6 @@ begin
     end;
 
   Result := True;
-  AContext.MemManager.DefaultContext := AContext.LocationContext;
   APasExpr := TFpPascalExpression.Create(FExpression, AContext);
   try
     APasExpr.ResultValue; // trigger full validation
@@ -700,7 +699,7 @@ begin
       APrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
       try
         APrettyPrinter.AddressSize:=AContext.SizeOfAddress;
-        APrettyPrinter.MemManager := AContext.MemManager;
+        APrettyPrinter.Context := AContext.LocationContext;
         Res := APrettyPrinter.PrintValue(FResText, ATypeInfo, APasExpr.ResultValue);
         if Res then
           begin

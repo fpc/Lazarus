@@ -203,7 +203,7 @@ begin
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   ImageLoader.AddToLoaderList(FImageLoaderList);
 
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, nil);
   FCUCount := FDwarfInfo.LoadCompilationUnits;
 end;
 
