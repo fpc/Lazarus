@@ -862,6 +862,7 @@ begin
   if (csDesigning in ComponentState) then Exit;
 
   Files := TStringList.Create;
+  Items.BeginUpdate;
   try
     Files.OwnsObjects := True;
     GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files, FFileSortType);
@@ -886,6 +887,7 @@ begin
     end;
   finally
     Files.Free;
+    Items.EndUpdate;
   end;
 end;
 
@@ -899,22 +901,27 @@ var
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
-  Items.Clear;
-  r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
-  if r = 0 then Exit;
-  if r > SizeOf(Drives) then Exit;
-//    raise Exception.Create(SysErrorMessage(ERROR_OUTOFMEMORY));
-  pDrive := Drives;
-  while pDrive^ <> #0 do
-  begin
-    NewNode := Items.AddChildObject(nil, ExcludeTrailingBackslash(pDrive), pDrive);
-    //Yes, we want to remove the backslash,so don't use ChompPathDelim here
-    TShellTreeNode(NewNode).FFileInfo.Name := ExcludeTrailingBackslash(pDrive);
-    //On NT platforms drive-roots really have these attributes
-    TShellTreeNode(NewNode).FFileInfo.Attr := faDirectory + faSysFile{%H-} + faHidden{%H-};
-    TShellTreeNode(NewNode).SetBasePath('');
-    NewNode.HasChildren := True;
-    Inc(pDrive, 4);
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
+    if r = 0 then Exit;
+    if r > SizeOf(Drives) then Exit;
+  //    raise Exception.Create(SysErrorMessage(ERROR_OUTOFMEMORY));
+    pDrive := Drives;
+    while pDrive^ <> #0 do
+    begin
+      NewNode := Items.AddChildObject(nil, ExcludeTrailingBackslash(pDrive), pDrive);
+      //Yes, we want to remove the backslash,so don't use ChompPathDelim here
+      TShellTreeNode(NewNode).FFileInfo.Name := ExcludeTrailingBackslash(pDrive);
+      //On NT platforms drive-roots really have these attributes
+      TShellTreeNode(NewNode).FFileInfo.Attr := faDirectory + faSysFile{%H-} + faHidden{%H-};
+      TShellTreeNode(NewNode).SetBasePath('');
+      NewNode.HasChildren := True;
+      Inc(pDrive, 4);
+    end;
+  finally
+    Items.EndUpdate;
   end;
 end;
 {$else}
@@ -1409,9 +1416,14 @@ begin
        and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
        Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
-    Clear;
-    Items.Clear;
-    PopulateWithRoot();
+    BeginUpdate;
+    try
+      Clear;
+      Items.Clear;
+      PopulateWithRoot();
+    finally
+      EndUpdate;
+    end;
   end;
 end;
 
@@ -1455,6 +1467,7 @@ begin
   // Check inputs
   if Trim(FRoot) = '' then Exit;
 
+  Items.BeginUpdate;
   Files := TStringList.Create;
   try
     Files.OwnsObjects := True;
@@ -1489,6 +1502,7 @@ begin
     Sort;
   finally
     Files.Free;
+    Items.EndUpdate;
   end;
 end;
 
