@@ -79,27 +79,6 @@ implementation
 
 {$R *.lfm}
 
-function LongestCaption(AControls: array of TControl): TControl;
-var
-  AControl: TControl;
-  AWidth, AHeight, ResultWidth: Integer;
-begin
-  Result := nil;
-  ResultWidth := -1;
-  AWidth := 0;
-  AHeight := 0;
-  for AControl in AControls do
-    if Assigned(AControl) then
-    begin
-      AControl.GetPreferredSize(AWidth, AHeight);
-      if AWidth > ResultWidth then
-      begin
-        Result := AControl;
-        ResultWidth := AWidth;
-      end;
-    end;
-end;
-
 { TFrameDockedOptions }
 
 procedure TFrameDockedOptions.CheckBoxAnchorTabVisibleChange(Sender: TObject);
@@ -170,10 +149,6 @@ begin
   ComboBoxTabPosition.Hint       := STabPositionHint;
   SpinEditCaptureDistance.Hint   := SCaptureDistanceHint;
   SpinEditMouseBorderFactor.Hint := SMouseBorderFactorHint;
-
-  ComboBoxTabPosition.AnchorSide[akLeft].Control :=
-    LongestCaption([LabelTabPosition, LabelResizerColor, LabelCaptureDistance,
-                    LabelColors, LabelMouseBorderFactor]);
 end;
 
 procedure TFrameDockedOptions.ReadSettings(AOptions: TAbstractIDEOptions);
