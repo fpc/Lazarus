@@ -5303,7 +5303,7 @@ end;
 
 procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
 begin
-  //if APackage=PackageGraph.SynEditPackage then
+  if APackage=PackageGraph.SynEditPackage then ;
   //  EditorOpts.TranslateResourceStrings;  // ToDo
 end;
 

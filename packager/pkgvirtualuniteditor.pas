@@ -68,7 +68,7 @@ begin
   Result:= mrCancel;
   if not Assigned(PkgFile) then exit;
 
-  SetLength(Str, 2);
+  SetLength(Str{%H-}, 2);
   Str[0]:= PkgFile.Filename;
   Str[1]:= PkgFile.Unit_Name;
 

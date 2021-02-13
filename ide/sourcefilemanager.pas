@@ -38,7 +38,7 @@ uses
   LResources, LCLMemManager,
   // LazUtils
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazStringUtils, LazUTF8, LazTracer, AvgLvlTree,
+  LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,

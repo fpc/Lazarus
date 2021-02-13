@@ -134,7 +134,7 @@ type
     procedure CodeExplorerViewDestroy(Sender: TObject);
     procedure CodeFilterEditChange(Sender: TObject);
     procedure CodeTreeviewMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure DirectivesFilterEditChange(Sender: TObject);
     procedure DirRefreshSpeedButtonClick(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);

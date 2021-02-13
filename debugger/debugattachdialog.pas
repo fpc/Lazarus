@@ -110,7 +110,7 @@ function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
   begin
     S := TFileStream.Create('/proc/' + IntToStr(Pid) + '/cmdline', fmOpenRead or fmShareDenyNone);
     try
-      SetLength(Result, 255);
+      SetLength(Result{%H-}, 255);
       Sz := S.Read(Result[1], 255);
       SetLength(Result, Sz);
     finally

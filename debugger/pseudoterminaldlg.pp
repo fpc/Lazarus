@@ -416,7 +416,7 @@ var
     u: unicodestring;
 
   begin
-    SetLength(u, Length(str));
+    SetLength(u{%H-}, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)
@@ -551,7 +551,7 @@ var
     u: unicodestring;
 
   begin
-    SetLength(u, Length(str));
+    SetLength(u{%H-}, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)

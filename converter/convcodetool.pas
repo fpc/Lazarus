@@ -675,7 +675,7 @@ var
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
       IdentLen:=IdentEndPos-xStart;
-      SetLength(IdentName, IdentLen);
+      SetLength(IdentName{%H-}, IdentLen);
       StrMove(PChar(IdentName), @Src[xStart], IdentLen);
       // Don't try to uselessly find short identifiers
       if (IdentLen<ReplaceFuncs.MinFuncLen) and (IdentName<>'Ptr') then Exit;
