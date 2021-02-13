@@ -100,7 +100,7 @@ type
     procedure FileMenuOpenURLItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyDown ( Sender: TObject; var Key: Word; Shift: TShiftState
+    procedure FormKeyDown ( Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState
       ) ;
     procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
