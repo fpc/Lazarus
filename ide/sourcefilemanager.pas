@@ -32,13 +32,13 @@ unit SourceFileManager;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, typinfo, math, fpjson, Laz_AVL_Tree,
+  Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
   // LazUtils
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, LazTracer, AvgLvlTree,
+  LazStringUtils, LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
