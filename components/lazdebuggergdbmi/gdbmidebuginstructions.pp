@@ -578,7 +578,7 @@ type
       Result := ldGdb;
       exit;
     end;
-    if StartsStr('^done,', AData) {or (AData = '^done')} then begin
+    if StartsStr('^done,', AData) or (AData = '^done') then begin
       if FList = nil then
         FList := TGDBMINameValueList.Create(ALineData)
       else
@@ -762,7 +762,7 @@ begin
 //  "(gdb) "
 
   Result := False;
-  if StartsStr('^done,', AData) {or (AData = '^done')} then begin
+  if StartsStr('^done,', AData) or (AData = '^done') then begin
     Result := True;
     if FDone then
       HandleContentError;
@@ -824,7 +824,7 @@ begin
 //OR ^error => keep selected ?
 
   Result := False;
-  if StartsStr('^done,', AData) {or (AData = '^done')} then begin
+  if StartsStr('^done,', AData) or (AData = '^done') then begin
     Result := True;
     if FDone then
       HandleContentError;
