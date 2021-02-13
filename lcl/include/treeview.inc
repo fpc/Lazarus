@@ -1754,16 +1754,24 @@ function TTreeNode.DisplayTextLeft: integer;
 var
   TV: TCustomTreeView;
   ImgIndex: TImageIndex;
+  sz: TSize;
 begin
   Result := DisplayIconLeft;
   TV := TreeView;
-  if (TV = nil) or (TV.Images = nil) then Exit;
+  if TV = nil then
+    exit;
+  sz := TV.GetImageSize;
+  if (TV.Images = nil) then
+  begin
+    inc(Result, sz.CX);
+    exit;
+  end;
   if (TV.Selected = Self) then
     ImgIndex:=SelectedIndex
   else
     ImgIndex:=ImageIndex;
   if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then Exit;
-  Inc(Result, TV.Images.WidthForPPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
+  Inc(Result, sz.CX + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -3667,12 +3675,11 @@ begin
   if (tvoAutoItemHeight in FOptions)
   and HandleAllocated and Canvas.HandleAllocated then begin
     NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+FDefItemSpace;
-    if Assigned(FImages) then
-      ImageSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
+    ImageSize := GetImageSize;
     if Assigned(FStateImages) then
       StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
     if NewDefItemHeight<FDefItemSpace then NewDefItemHeight:=FDefItemSpace;
-    if (Images<>nil) and (ImageSize.cy+FDefItemSpace>NewDefItemHeight) then
+    if (ImageSize.cy > 0) and (ImageSize.cy + FDefItemSpace > NewDefItemHeight) then
       NewDefItemHeight:=ImageSize.cy+FDefItemSpace;
     if (StateImages<>nil) and (StateImageSize.cy+FDefItemSpace>NewDefItemHeight) then
       NewDefItemHeight:=StateImageSize.cy+FDefItemSpace;
@@ -4704,6 +4711,20 @@ begin
     Result := nil;
 end;
 
+function TCustomTreeView.GetBuiltinIconSize: TSize;
+begin
+  Result := Types.Size(0, 0);
+end;
+
+function TCustomTreeView.GetImageSize: TSize;
+begin
+  if FImages <> nil then
+  begin
+    Result := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch]
+  end else
+    Result := GetBuiltinIconSize;
+end;
+
 procedure TCustomTreeView.UpdateInsertMark(X,Y: integer);
 begin
   if (tvoAutoInsertMark in Options) and (not (csDesigning in ComponentState))
@@ -5339,7 +5360,7 @@ var
 
 var
   x, ImgIndex: integer;
-  CurTextRect: TRect;
+  CurTextRect, ImgRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
   OverlayIndex: Integer;
@@ -5404,7 +5425,12 @@ begin
     end;
 
     // draw icon
-    if (Images <> nil) then
+    if (Images = nil) then
+    begin
+      imgRect := NodeRect;
+      imgRect.Left := x+1;
+      inc(x, DrawBuiltinIcon(Node, imgRect).CX + FDefItemSpace);
+    end else
     begin
       if FSelectedNode <> Node then
       begin
@@ -5477,6 +5503,11 @@ begin
       Include(DrawState,cdsMarked);
     if not CustomDrawItem(Node,DrawState,cdPostPaint,PaintImages) then exit;
   end;
+end;
+
+function TCustomTreeView.DrawBuiltinIcon(ANode: TTreeNode; ARect: TRect): TSize;
+begin
+  Result := Size(0, 0);
 end;
 
 procedure TCustomTreeView.GetImageIndex(Node: TTreeNode);

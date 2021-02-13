@@ -3511,7 +3511,9 @@ type
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
     function ExpandSignSizeIsStored: Boolean;
+    function GetBuiltinIconSize: TSize; virtual;
     function GetDragImages: TDragImageList; override;
+    function GetImageSize: TSize;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
     function GetMaxScrollTop: integer;
@@ -3545,6 +3547,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
+    function DrawBuiltinIcon(ANode: TTreeNode; ARect: TRect): TSize; virtual;
     procedure EndEditing(Cancel: boolean = false); virtual;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); virtual;

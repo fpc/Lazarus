@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Forms, Graphics, ComCtrls, LCLProc, LCLStrConsts,
+  Forms, Graphics, ComCtrls, LCLProc, LCLType, LCLStrConsts, Types,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Masks;
 
@@ -64,6 +64,7 @@ type
     FShellListView: TCustomShellListView;
     FFileSortType: TFileSortType;
     FInitialRoot: String;
+    FUseBuiltinIcons: Boolean;
     FOnAddItem: TAddItemEvent;
     { Setters and getters }
     function GetPath: string;
@@ -72,6 +73,7 @@ type
     procedure SetPath(AValue: string);
     procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
+    procedure SetUseBuiltinIcons(const AValue: Boolean);
   protected
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); override;
     procedure Loaded; override;
@@ -82,6 +84,15 @@ type
     procedure DoSelectionChanged; override;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function CanExpand(Node: TTreeNode): Boolean; override;
+
+  {$ifdef mswindows}
+  private
+    FBuiltinIconSize: TSize;
+  protected
+    function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
+    function GetBuiltinIconSize: TSize; override;
+  {$endif}
+
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -97,6 +108,7 @@ type
     function  GetPathFromNode(ANode: TTreeNode): string;
     procedure PopulateWithBaseFiles;
     procedure Refresh(ANode: TTreeNode); overload;
+    property UseBuiltinIcons: Boolean read FUseBuiltinIcons write SetUseBuiltinIcons default true;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes;
@@ -365,7 +377,7 @@ procedure Register;
 implementation
 
 {$ifdef windows}
-uses Windows;
+uses Windows, ShellApi;
 {$endif}
 
 const
@@ -409,7 +421,6 @@ begin
   FBasePath:= ABasePath;
   isFolder:=DirInfo.Attr and FaDirectory > 0;
 end;
-
 
 
 { TShellTreeNode }
@@ -470,6 +481,12 @@ begin
     Value.ShellTreeView := Self;
 end;
 
+procedure TCustomShellTreeView.SetUseBuiltinIcons(const AValue: Boolean);
+begin
+  if FUseBuiltinIcons = AValue then exit;
+  FUseBuiltinIcons := AValue;
+  Invalidate;
+end;
 
 procedure TCustomShellTreeView.DoCreateNodeClass(
   var NewNodeClass: TTreeNodeClass);
@@ -608,6 +625,7 @@ constructor TCustomShellTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInitialRoot := '';
+  FUseBuiltinIcons := true;
 
   // Initial property values
   FObjectTypes:= [otFolders];
@@ -984,6 +1002,65 @@ begin
     FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
+{$ifdef mswindows}
+{ Extracts the windows shell icon of the specified file. }
+function GetShellIcon(const AFileName: WideString): TIcon;
+var
+  FileInfo: TSHFileInfoW;
+  imgHandle: DWORD_PTR;
+begin
+  imgHandle := SHGetFileInfoW(PWideChar(AFileName), 0, FileInfo, SizeOf(FileInfo),
+    SHGFI_ICON + SHGFI_SMALLICON + SHGFI_SYSICONINDEX);
+  if imgHandle <> 0 then
+  begin
+    Result := TIcon.Create;
+    Result.Handle := FileInfo.hIcon;
+  end else
+    Result := nil;
+end;
+
+function TCustomShellTreeView.DrawBuiltinIcon(ANode: TTreeNode; ARect: TRect): TSize;
+var
+  filename: widestring;
+  ico: TIcon;
+begin
+  if FUseBuiltinIcons then
+  begin
+    fileName := widestring(GetPathFromNode(ANode));
+    ico := GetShellIcon(fileName);
+    try
+      Canvas.Draw(ARect.Left, (ARect.Top + ARect.Bottom - ico.Height) div 2, ico);
+      Result := Types.Size(ico.Width, ico.Height);
+    finally
+      ico.Free;
+    end;
+  end else
+    Result := Types.Size(0, 0);
+end;
+
+function TCustomShellTreeView.GetBuiltinIconSize: TSize;
+var
+  ico: TIcon;
+begin
+  if FUseBuiltinIcons then
+  begin
+    if (FBuiltinIconSize.CX > 0) and (FBuiltinIconSize.CY > 0) then
+      Result := FBuiltinIconSize
+    else
+    begin
+      ico := GetShellIcon(WideString('C:'));
+      try
+        Result := Types.Size(ico.Width, ico.Height);
+        FBuiltinIconSize := Result;
+      finally
+        ico.Free;
+      end;
+    end;
+  end else
+    Result := Types.Size(0, 0);
+end;
+{$endif}
+
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
   if Assigned(ANode) then
@@ -997,7 +1074,6 @@ begin
   else
     Result := '';
 end;
-
 
 procedure TCustomShellTreeView.Refresh(ANode: TTreeNode);
 //nil will refresh root
@@ -1270,8 +1346,6 @@ begin
   {$ifdef debug_shellctrls}
   for i := 0 to sl.Count - 1 do debugln(['sl[',i,']="',sl[i],'"']);
   {$endif}
-
-
 
   BeginUpdate;
   try
