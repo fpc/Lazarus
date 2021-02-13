@@ -26,8 +26,8 @@ uses
   cthreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  SysUtils, Classes, Controls, Dialogs, Forms, lazmouseandkeyinput,
-  SimpleIPC, lhelpcontrolpkg, lhelpcore, lhelpstrconsts, filecontentprovider;
+  SysUtils, Classes, Controls, Dialogs, Forms, LazMouseAndKeyInput,
+  SimpleIPC, lhelpcontrolpkg, LHelpCore, LHelpStrConsts, filecontentprovider;
 
 var
   X: Integer;

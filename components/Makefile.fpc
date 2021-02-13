@@ -75,6 +75,7 @@ bigide:
 	$(MAKE) -C datetimectrls
 	$(MAKE) -C datetimectrls/design
 	$(MAKE) -C jcf2/IdePlugin/lazarus
+	$(MAKE) -C mouseandkeyinput
 	$(MAKE) -C chmhelp/packages/help
 	$(MAKE) -C chmhelp/packages/idehelp
 	$(MAKE) -C instantfpc
@@ -121,6 +122,7 @@ clean:
 	$(MAKE) -C datetimectrls clean
 	$(MAKE) -C datetimectrls/design clean
 	$(MAKE) -C jcf2/IdePlugin/lazarus clean
+	$(MAKE) -C mouseandkeyinput clean
 	$(MAKE) -C chmhelp/packages/help clean
 	$(MAKE) -C chmhelp/packages/idehelp clean
 	$(MAKE) -C instantfpc clean
@@ -167,6 +169,7 @@ distclean:
 	$(MAKE) -C datetimectrls distclean
 	$(MAKE) -C datetimectrls/design distclean
 	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
+	$(MAKE) -C mouseandkeyinput distclean
 	$(MAKE) -C chmhelp/packages/help distclean
 	$(MAKE) -C chmhelp/packages/idehelp distclean
 	$(MAKE) -C instantfpc distclean

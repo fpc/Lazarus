@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for ChmHelpPkg 0.2
+#   Makefile.fpc for ChmHelpPkg 0.2.1
 #
-#   This file was generated on 14-7-20
+#   This file was generated on 13-2-21
 
 [package]
 name=chmhelppkg
-version=0.2
+version=0.2.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
