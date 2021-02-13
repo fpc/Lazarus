@@ -97,8 +97,9 @@ msgstr ""
 
 #: dockedstrconsts.sdesigner
 #, fuzzy
+#| msgid "Designer"
 msgctxt "dockedstrconsts.sdesigner"
-msgid "Designer"
+msgid "Form"
 msgstr "Komponuotojas"
 
 #: dockedstrconsts.sdetachcontrol
@@ -146,7 +147,7 @@ msgid "Tab Position"
 msgstr ""
 
 #: dockedstrconsts.stabpositionhint
-msgid "Position of Code, Designer, Anchors tabs"
+msgid "Position of Code, Form, Anchors tabs"
 msgstr ""
 
 #: dockedstrconsts.stabpositionleft

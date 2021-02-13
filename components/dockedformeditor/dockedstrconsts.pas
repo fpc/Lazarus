@@ -10,7 +10,7 @@ uses
 
 resourceString
   SCode                       = 'Code';
-  SDesigner                   = 'Designer';
+  SDesigner                   = 'Form';
   SAnchors                    = 'Anchors';
   SAnchorControlBorderCaption = 'Border Around Control';
   SAnchorControlColorCaption  = 'Control Background';
@@ -39,7 +39,7 @@ resourceString
   SResizerColorCaption        = 'Resizer Color';
   SResizerColorHint           = 'Color of resizer bars';
   STabPositionCaption         = 'Tab Position';
-  STabPositionHint            = 'Position of Code, Designer, Anchors tabs';
+  STabPositionHint            = 'Position of Code, Form, Anchors tabs';
   STreatAlignCaption          = 'Automatically treat Align properties';
   STreatAlignHint             = 'Automatically replace Align properties with appropriate Anchors';
   STreatBorderCaption         = 'Automatically treat BorderSpacing properties';
