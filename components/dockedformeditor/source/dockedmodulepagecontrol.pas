@@ -51,6 +51,7 @@ type
     procedure CreateTabSheetAnchors;
     procedure CreateTabSheetDesigner;
     procedure DesignerSetFocus;
+    function  DesignerFocused: Boolean;
     procedure HideDesignPages;
     procedure InitPage;
     procedure RefreshResizer;
@@ -82,7 +83,6 @@ begin
   FDesignForm := AValue;
   if AValue = nil then
   begin
-    //find
     if Assigned(FResizer) then
       FResizer.DesignForm := nil;
   end else begin
@@ -151,6 +151,12 @@ end;
 procedure TModulePageControl.DesignerSetFocus;
 begin
   Resizer.DesignerSetFocus;
+end;
+
+function TModulePageControl.DesignerFocused: Boolean;
+begin
+  Result := (ActivePage = FTabSheetDesigner) or
+            (ActivePage = FTabSheetAnchors);
 end;
 
 procedure TModulePageControl.HideDesignPages;

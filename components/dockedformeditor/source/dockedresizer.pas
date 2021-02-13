@@ -107,6 +107,10 @@ end;
 
 procedure TResizer.SetDesignForm(AValue: TDesignForm);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR}
+  if Assigned(AValue) then DebugLn('TResizer.SetDesignForm: New Designform: ', DbgSName(AValue.Form))
+                      else DebugLn('TResizer.SetDesignForm: New Designform: nil');
+  {$ENDIF}
   if FDesignForm <> nil then
     FDesignForm.OnChangeHackedBounds := nil;
   FDesignForm := AValue;

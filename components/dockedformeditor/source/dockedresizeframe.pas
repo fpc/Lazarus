@@ -447,8 +447,13 @@ end;
 procedure TResizeFrame.SetDesignForm(const AValue: TDesignForm);
 begin
   FDesignForm := AValue;
-  // special for QT (at start "design form" has wrong position)
-  TryBoundDesignForm;
+  if Assigned(AValue) then
+  begin
+    // special for QT (at start "design form" has wrong position)
+    TryBoundDesignForm;
+    Application.AddOnIdleHandler(@AppOnIdle);
+  end else
+    Application.RemoveOnIdleHandler(@AppOnIdle);
 end;
 
 procedure TResizeFrame.TryBoundDesignForm;
@@ -481,14 +486,11 @@ begin
   PanelFormClient.OnChangeBounds := @ClientChangeBounds;
   PanelAnchorContainer.OnChangeBounds := @ClientChangeBounds;
   AdjustPanelResizer;
-
-  Application.AddOnIdleHandler(@AppOnIdle);
 end;
 
 destructor TResizeFrame.Destroy;
 begin
-  Pointer(FDesignForm) := nil;
-  Application.RemoveOnIdleHandler(@AppOnIdle);
+  DesignForm := nil;
   FBitmapBarInactive.Free;
   FBitmapBarActive.Free;
   inherited Destroy;

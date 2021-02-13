@@ -229,7 +229,7 @@ var
   LPageIndex: Integer;
 begin
   LPageCtrl := SourceEditorWindows.FindModulePageControl(LastActiveSourceEditor);
-  LRefreshDesigner := Assigned(LPageCtrl) and (LPageCtrl.PageIndex in [1, 2]);
+  LRefreshDesigner := Assigned(LPageCtrl) and LPageCtrl.DesignerFocused;
   LPageIndex := LPageCtrl.PageIndex;
   LPageCtrl.CreateTabSheetAnchors;
 
@@ -465,14 +465,14 @@ begin
         // Prevent unexpected events (when is deactivated some control outside designed form)
         if (LDesignForm.LastActiveSourceWindow = LSourceEditorWindowInterface)
         // important!!! for many error - switching between editors...
-        and (LPageCtrl.PageIndex in [1, 2]) then
+        and LPageCtrl.DesignerFocused then
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := LDesignForm
         else
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := nil;
     end;
 
     LPageCtrl.InitPage;
-    if (LPageCtrl.PageIndex in [1, 2]) then
+    if LPageCtrl.DesignerFocused then
     begin
       if not LDesignForm.Hiding then
       begin
@@ -578,7 +578,7 @@ begin
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LActiveSourceWindowInterface];
   if LSourceEditorWindow = nil then Exit;
 
-  if not (LPageCtrl.PageIndex in [1, 2]) then
+  if not LPageCtrl.DesignerFocused then
   begin
     LSourceEditorWindow.ActiveDesignForm := nil;
     LPageCtrl.InitPage;
