@@ -52,7 +52,7 @@ type
     procedure CreateTabSheetDesigner;
     procedure DesignerSetFocus;
     function  DesignerFocused: Boolean;
-    procedure HideDesignPages;
+    procedure RemoveDesignPages;
     procedure InitPage;
     procedure RefreshResizer;
     procedure ShowCode;
@@ -159,7 +159,7 @@ begin
             (ActivePage = FTabSheetAnchors);
 end;
 
-procedure TModulePageControl.HideDesignPages;
+procedure TModulePageControl.RemoveDesignPages;
 begin
   FreeAndNil(FTabSheetAnchors);
   FreeAndNil(FTabSheetDesigner);
@@ -182,7 +182,6 @@ begin
     if not Assigned(DesignForm.AnchorDesigner) then
     begin
       DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeFrame.PanelAnchorContainer);
-      DesignForm.AnchorDesigner.IsFocusedFunc := @Resizer.ResizeFrame.IsFocused;
       DesignForm.AnchorDesigner.OnDesignerSetFocus := @DesignerSetFocus;
     end;
     DesignForm.AnchorDesigner.Refresh;

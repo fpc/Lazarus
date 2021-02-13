@@ -439,7 +439,7 @@ begin
 
     LDesignForm := SourceEditorWindows.FindDesignForm(LPageCtrl);
     if LDesigner = nil then
-      LPageCtrl.HideDesignPages
+      LPageCtrl.RemoveDesignPages
     else begin
       if not Assigned(LPageCtrl.Resizer) then
         LPageCtrl.CreateResizer;

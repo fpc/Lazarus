@@ -273,7 +273,7 @@ begin
     if (LWindow.SourceEditorWindowInterface.ActiveEditor = nil)
     or (LWindow.SourceEditorWindowInterface.ActiveEditor.GetDesigner(True) <> nil)
     then
-      LPageCtrl.HideDesignPages
+      LPageCtrl.RemoveDesignPages
     else begin
       LPageCtrl.CreateTabSheetDesigner;
       if not (LPageCtrl.DesignForm.Form is TNonControlProxyDesignerForm) then

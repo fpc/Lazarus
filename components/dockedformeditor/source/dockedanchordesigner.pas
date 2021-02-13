@@ -84,7 +84,6 @@ type
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
     procedure Invalidate; override;
-    function  IsFocused: Boolean; override;
     procedure Refresh; override;
   public
     property SelectedControl: TAnchorControl read FSelectedControl write SetSelectedControl;
@@ -919,14 +918,6 @@ procedure TAnchorDesigner.Invalidate;
 begin
   AdjustGrips;
   FBackGround.Invalidate;
-end;
-
-function TAnchorDesigner.IsFocused: Boolean;
-begin
-  if Assigned(IsFocusedFunc) then
-    Result := IsFocusedFunc()
-  else
-    Result := False;
 end;
 
 procedure TAnchorDesigner.Refresh;
