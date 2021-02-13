@@ -25,15 +25,11 @@ uses
   {$IFdef WithWinMemReader}
   windows,
   {$ENDIF}
-  Classes, sysutils, math,
-  Forms,
-  LazLoggerBase, LazUTF8, LazClasses,
-  // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  // FpDebug
-  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpDbgLoader, FpDbgDwarf,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgCommon,
-  LldbDebugger, LldbInstructions, LldbHelper;
+  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
+  LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
+  Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
+  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
+  FpDbgCommon;
 
 type
 
@@ -255,7 +251,7 @@ type
 
   TFpLldbLineInfo = class(TDBGLineInfo)
   private
-    FRequestedSources: TStringListUTF8Fast;
+    FRequestedSources: TStringList;
   protected
     function  FpDebugger: TFpLldbDebugger;
     procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
@@ -714,7 +710,7 @@ begin
   end;
 
   for i := 0 to Reg.Count - 1 do
-    if CompareText(Reg[i].Name, rname) = 0 then
+    if UpperCase(Reg[i].Name) = rname then
       begin
         RegVObj := Reg[i].ValueObjFormat[rdDefault];
         if RegVObj <> nil then
@@ -895,7 +891,7 @@ end;
 
 constructor TFpLldbLineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
-  FRequestedSources := TStringListUTF8Fast.Create;
+  FRequestedSources := TStringList.Create;
   inherited Create(ADebugger);
 end;
 

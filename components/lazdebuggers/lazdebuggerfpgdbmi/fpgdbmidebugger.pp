@@ -12,15 +12,12 @@ uses
   {$IFdef WithWinMemReader}
   windows,
   {$ENDIF}
-  Classes, sysutils, math,
-  Forms,
-  LazUTF8, LazLoggerBase, LazClasses,
-  MenuIntf,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  GDBMIDebugger, GDBMIMiscClasses, GDBTypeInfo,
-  // FpDebug
-  FpDbgInfo, FpDbgLoader, FpDbgDwarf, FpPascalParser, FpPascalBuilder,
-  FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgCommon;
+  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses,
+  GDBMIDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses,
+  GDBTypeInfo, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
+  LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder,
+  FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon,
+  MenuIntf;
 
 type
 
@@ -200,7 +197,7 @@ type
 
   TFpGDBMILineInfo = class(TDBGLineInfo) //class(TGDBMILineInfo)
   private
-    FRequestedSources: TStringListUTF8Fast;
+    FRequestedSources: TStringList;
   protected
     function  FpDebugger: TFpGDBMIDebugger;
     procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
@@ -526,7 +523,7 @@ begin
   assert(AContext <> nil, 'TFpGDBMIDbgMemReader.ReadRegister: AContext <> nil');
   Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
   for i := 0 to Reg.Count - 1 do
-    if CompareText(Reg[i].Name, rname) = 0 then
+    if UpperCase(Reg[i].Name) = rname then
       begin
         RegVObj := Reg[i].ValueObjFormat[rdDefault];
         if RegVObj <> nil then
@@ -668,7 +665,7 @@ end;
 
 constructor TFpGDBMILineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
-  FRequestedSources := TStringListUTF8Fast.Create;
+  FRequestedSources := TStringList.Create;
   inherited Create(ADebugger);
 end;
 

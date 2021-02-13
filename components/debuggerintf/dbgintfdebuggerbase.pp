@@ -48,7 +48,7 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  LazClasses, LazLoggerBase, LazFileUtils, LazStringUtils, Maps, LazMethodList, LazUTF8,
+  LazClasses, LazLoggerBase, LazFileUtils, LazStringUtils, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal, DbgIntfCommonStrings;
 
@@ -6068,12 +6068,12 @@ procedure TDebuggerIntf.EnvironmentChanged(Sender: TObject);
 var
   n, idx: integer;
   S: String;
-  Env: TStringListUTF8Fast;
+  Env: TStringList;
 begin
   // Createe local copy
   if FState <> dsNone then
   begin
-    Env := TStringListUTF8Fast.Create;
+    Env := TStringList.Create;
     try
       Env.Assign(Environment);
 
@@ -6230,7 +6230,7 @@ var
   idx: Integer;
 begin
   if MDebuggerPropertiesList = nil
-  then MDebuggerPropertiesList := TStringListUTF8Fast.Create;
+  then MDebuggerPropertiesList := TStringList.Create;
   idx := MDebuggerPropertiesList.IndexOf(ClassName);
   if idx = -1
   then begin
@@ -6534,7 +6534,7 @@ constructor TBaseDebugManagerIntf.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FValueFormatterList := TStringListUTF8Fast.Create;
+  FValueFormatterList := TStringList.Create;
   FValueFormatterList.Sorted := True;
   FValueFormatterList.Duplicates := dupError;
 end;
@@ -6629,7 +6629,7 @@ initialization
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
   DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
 
-  MDebuggerClasses := TStringListUTF8Fast.Create;
+  MDebuggerClasses := TStringList.Create;
   MDebuggerClasses.Sorted := True;
   MDebuggerClasses.Duplicates := dupError;
 

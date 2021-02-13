@@ -1453,13 +1453,13 @@ begin
         while i > 1 do begin
           s := copy(ExpTpName, 1, i-1);
           delete(ExpTpName, i, i);
-          if CompareText(s, WtchTpName) = 0 then begin
+          if UpperCase(s) = UpperCase(WtchTpName) then begin
             Result := TestEquals('TypeName'+n, s, WtchTpName, EqIgnoreCase, AContext, AnIgnoreRsn);
             exit;
           end;
           i := pos('|', ExpTpName);
         end;
-        if (ExpTpName <> '') and (CompareText(ExpTpName, WtchTpName) = 0) then begin
+        if (ExpTpName <> '') and (UpperCase(ExpTpName) = UpperCase(WtchTpName)) then begin
           Result := TestEquals('TypeName'+n, ExpTpName, WtchTpName, EqIgnoreCase, AContext, AnIgnoreRsn);
           exit;
         end;
@@ -2103,13 +2103,10 @@ begin
 end;
 
 procedure TWatchExpectationList.AddTypeNameAlias(ATypeName, AnAliases: String);
-var
-  S: String;
 begin
   ATypeName := UpperCase(ATypeName);
-  S := FTypeNameAliases.Values[ATypeName];
-  if S <> '' then
-    AnAliases := S + '|' + S;
+  if FTypeNameAliases.Values[ATypeName] <> '' then
+    AnAliases := FTypeNameAliases.Values[ATypeName] + '|' + FTypeNameAliases.Values[ATypeName];
   FTypeNameAliases.Values[ATypeName] := AnAliases;
 end;
 
