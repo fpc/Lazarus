@@ -96,7 +96,7 @@ msgstr "Цвета"
 #: dockedstrconsts.sdesigner
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Designer"
-msgstr "Редактор формы"
+msgstr "Редактор форм"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
@@ -144,7 +144,7 @@ msgstr "Положение заголовков вкладок"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Designer, Anchors tabs"
-msgstr "Положение заголовков вкладок \"Код\", \"Редактор формы\", \"Привязки\""
+msgstr "Положение заголовков вкладок \"Код\", \"Редактор форм\", \"Привязки\""
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
