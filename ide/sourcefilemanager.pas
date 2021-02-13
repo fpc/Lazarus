@@ -33,12 +33,18 @@ interface
 
 uses
   Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
+  {$IF FPC_FULLVERSION>30004}
+  StrUtils, // StartsStr
+  {$ENDIF}
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
   // LazUtils
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazStringUtils, LazUTF8, LazTracer, AvgLvlTree,
+  {$IF FPC_FULLVERSION=30004}
+  LazStringUtils, // StartsStr
+  {$ENDIF}
+  LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
