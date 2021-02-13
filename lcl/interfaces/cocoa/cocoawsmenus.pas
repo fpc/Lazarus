@@ -284,10 +284,16 @@ begin
 end;
 
 function TCocoaMenu.performKeyEquivalent(theEvent: NSEvent): LCLObjCBoolean;
+var
+  OldKeyEq: boolean;
 begin
+  OldKeyEq:=isKeyEq;
   isKeyEq := true;
-  inherited performKeyEquivalent(theEvent);
-  isKeyEq := false;
+  try
+    inherited performKeyEquivalent(theEvent);
+  finally
+    isKeyEq := OldKeyEq;
+  end;
 end;
 
 function TCocoaMenu.lclIsKeyEquivalent: LCLObjCBoolean;
