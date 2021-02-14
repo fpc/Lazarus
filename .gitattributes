@@ -623,11 +623,33 @@ components/chmhelp/lhelp/chmpopup.pas svneol=native#text/plain
 components/chmhelp/lhelp/chmspecialparser.pas svneol=native#text/plain
 components/chmhelp/lhelp/filecontentprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/httpcontentprovider.pas svneol=native#text/plain
+components/chmhelp/lhelp/images/arrow-left.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/arrow-left_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/arrow-left_200.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/arrow-right.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/arrow-right_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/arrow-right_200.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/home.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/home_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/home_200.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/lhelp.ico -text svneol=unset#image/x-icon
+components/chmhelp/lhelp/images/lhelp.png -text svneol=unset#image/png
 components/chmhelp/lhelp/images/lhelp16.png -text
 components/chmhelp/lhelp/images/lhelp32.png -text
+components/chmhelp/lhelp/images/lhelp_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/lhelp_200.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/open.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/open_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/open_200.png -text svneol=unset#image/png
 components/chmhelp/lhelp/images/table_close.png -text
+components/chmhelp/lhelp/images/table_close_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/table_close_200.png -text svneol=unset#image/png
 components/chmhelp/lhelp/images/table_item.png -text
+components/chmhelp/lhelp/images/table_item_150.png -text
+components/chmhelp/lhelp/images/table_item_200.png -text svneol=unset#image/png
 components/chmhelp/lhelp/images/table_open.png -text
+components/chmhelp/lhelp/images/table_open_150.png -text svneol=unset#image/png
+components/chmhelp/lhelp/images/table_open_200.png -text svneol=unset#image/png
 components/chmhelp/lhelp/languages/lhelp.fi.po svneol=native#text/plain
 components/chmhelp/lhelp/languages/lhelp.fr.po svneol=native#text/plain
 components/chmhelp/lhelp/languages/lhelp.hu.po svneol=native#text/plain

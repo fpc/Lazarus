@@ -131,7 +131,7 @@ msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
 #, object-pascal-format
-msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgid "CHM file viewer%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_lhelpoptions

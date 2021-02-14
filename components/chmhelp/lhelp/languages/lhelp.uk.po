@@ -3,14 +3,15 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2019-09-20 21:02+0200\n"
+"PO-Revision-Date: 2021-02-14 18:19+0100\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 2.4.2\n"
+"POT-Creation-Date: \n"
 
 #: lhelpstrconsts.slhelp_about
 msgid "About"
@@ -142,8 +143,8 @@ msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
 #, object-pascal-format
-msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
-msgstr "LHelp (програма перегляду файлів CHM)%sВерсія %s%s(C) Andrew Haines, %sучасники проєкту Lazarus"
+msgid "CHM file viewer%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "програма перегляду файлів CHM%sВерсія %s%s(C) Andrew Haines, %sучасники проєкту Lazarus"
 
 #: lhelpstrconsts.slhelp_lhelpoptions
 msgid "  LHelp options:"
@@ -242,4 +243,3 @@ msgstr "    Використання: lhelp [[назва файлу] [--context 
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Вигляд"
-

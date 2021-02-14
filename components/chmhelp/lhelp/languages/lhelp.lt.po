@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 11:22+0200\n"
+"PO-Revision-Date: 2021-02-14 18:17+0100\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -10,7 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 2.4.2\n"
+"POT-Creation-Date: \n"
 
 #: lhelpstrconsts.slhelp_about
 msgid "About"
@@ -142,8 +143,8 @@ msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
 #, object-pascal-format
-msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
-msgstr "LHelp („CHM“ failų žiūryklė)%sLaida %s%sAutoriaus teisės (C) Andrew Haines, %sLazarus talkininkai"
+msgid "CHM file viewer%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "„CHM“ failų žiūryklė%sLaida %s%sAutoriaus teisės (C) Andrew Haines, %sLazarus talkininkai"
 
 #: lhelpstrconsts.slhelp_lhelpoptions
 msgid "  LHelp options:"
@@ -242,4 +243,3 @@ msgstr "    Naudojimas: lhelp [[failo_pavadinimas] [--context id] [--hide] [--ip
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Rodymas"
-

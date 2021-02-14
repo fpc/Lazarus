@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
   // LCL
-  Forms, Controls, Dialogs, Buttons, ComCtrls, ExtCtrls, Menus, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, Buttons, ComCtrls, ExtCtrls, Menus, StdCtrls, Types,
   LCLProc, LCLType, LCLIntf, DefaultTranslator,
   // LazUtils
   LazFileUtils, LazUTF8, LazLoggerBase,
@@ -219,37 +219,94 @@ type
 procedure THelpForm.AboutItemClick(Sender: TObject);
 var
   f: TForm;
-  l: TLabel;
+  l1, l2: TLabel;
   b: TButton;
+  i: TImage;
+  bv: TBevel;
+  d6: Integer;
 begin
+  d6 := Scale96ToForm(6);
   f := TForm.Create(Application);
   try
     f.Caption := slhelp_About;
     f.BorderStyle := bsDialog;
     f.Position := poMainFormCenter;
-    f.Constraints.MinWidth := Scale96ToForm(150);
-    f.Constraints.MaxWidth := Scale96ToForm(350);
-    l := TLabel.Create(f);
-    l.Parent := f;;
-    l.Align := alTop;
-    l.Alignment:=taCenter;
-    l.BorderSpacing.Around := Scale96ToForm(6);
-    l.Caption := Format(slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz, [LineEnding, VERSION_STAMP, LineEnding +
+
+    i := TImage.Create(f);
+    i.Parent := f;
+    i.Width := Scale96ToForm(128);
+    i.Height := Scale96ToForm(128);
+    i.Proportional := true;
+    i.Picture.Icon.Assign(Application.Icon);
+    i.Picture.Icon.Current := i.Picture.Icon.GetBestIndexForSize(Types.Size(256, 256));
+    i.BorderSpacing.Around := d6;
+    i.Anchors := [akLeft, akTop];
+    i.AnchorSideTop.Control := f;
+    i.AnchorSideTop.Side := asrTop;
+    i.AnchorSideLeft.Control := f;
+    i.AnchorSideLeft.Side := asrTop;
+
+    l1 := TLabel.Create(f);
+    l1.Parent := f;;
+    l1.Alignment:=taCenter;
+    l1.BorderSpacing.Around := d6;
+    l1.Caption := 'LHelp';
+    l1.Font.Size := 20;
+    l1.Font.Style := [fsBold];
+    l1.Anchors := [akLeft,akTop, akRight];
+    l1.AnchorSideTop.Control := f;
+    l1.AnchorSideTop.Side := asrTop;
+    l1.AnchorSideLeft.Control := i;
+    l1.AnchorSideLeft.Side := asrBottom;
+    l1.AnchorSideRight.Control := f;
+    l1.AnchorSideRight.Side := asrBottom;
+    l1.AutoSize := True;
+
+    l2 := TLabel.Create(f);
+    l2.Parent := f;
+    l2.Alignment := taCenter;
+    l2.BorderSpacing.Around := d6;
+    l2.Caption := Format(slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz, [LineEnding, VERSION_STAMP, LineEnding +
       LineEnding, LineEnding]);
-    l.AutoSize := True;
+    l2.Anchors := [akLeft,akTop, akRight];
+    l2.AnchorSideTop.Control := l1;
+    l2.AnchorSideTop.Side := asrBottom;
+    l2.AnchorSideLeft.Control := i;
+    l2.AnchorSideLeft.Side := asrBottom;
+    l2.AnchorSideRight.Control := f;
+    l2.AnchorSideRight.Side := asrBottom;
+    l2.AutoSize := True;
     //l.WordWrap := True; {don't wrap author's name}
+
+    bv := TBevel.Create(f);
+    bv.Parent := f;
+    bv.Height := 2;
+    bv.Shape := bsTopLine;
+    bv.BorderSpacing.Around := d6;
+    bv.Anchors := [akLeft, akRight, akTop];
+    bv.AnchorSideLeft.Control := f;
+    bv.AnchorSideLeft.Side := asrTop;
+    bv.AnchorSideRight.Control := f;
+    bv.AnchorSideRight.Side := asrBottom;
+    if i.Top + i.Height > l2.Top + l2.Height then
+      bv.AnchorSideTop.Control := i
+    else
+      bv.AnchorSideTop.Control := l2;
+    bv.AnchorSideTop.Side := asrBottom;
+
     b := TButton.Create(f);
     b.Parent := f;
-    b.BorderSpacing.Around := Scale96ToForm(6);
+    b.BorderSpacing.Around := d6;
     b.Anchors := [akTop, akLeft];
-    b.AnchorSide[akTop].Control := l;
-    b.AnchorSide[akTop].Side := asrBottom;
-    b.AnchorSide[akLeft].Control := f;
-    b.AnchorSide[akLeft].Side := asrCenter;
+    b.AnchorSideTop.Control := bv;
+    b.AnchorSideTop.Side := asrBottom;
+    b.AnchorSideLeft.Control := f;
+    b.AnchorSideLeft.Side := asrCenter;
     b.Caption := slhelp_Ok;
     b.ModalResult := mrOk;
     b.Constraints.MinWidth := Scale96ToFont(70);
     b.AutoSize := true;
+
     f.AutoSize := False;
     f.AutoSize := True;
     f.ShowModal;
