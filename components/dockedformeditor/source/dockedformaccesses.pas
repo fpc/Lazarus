@@ -75,6 +75,7 @@ type
     FAnchorDesigner: TBasicAnchorDesigner;
     FLastActiveSourceWindow: TSourceEditorWindowInterface;
     FSelectedControl: TControl;
+    function GetCurrentObjectInspector: TObjectInspectorDlg;
     function GetDesigner: TIDesigner;
     function GetDesignWinControl: TWinControl;
   public
@@ -85,6 +86,7 @@ type
     function IsAnchorDesign: Boolean;
   public
     property AnchorDesigner: TBasicAnchorDesigner read FAnchorDesigner write FAnchorDesigner;
+    property CurrentObjectInspector: TObjectInspectorDlg read GetCurrentObjectInspector;
     property Designer: TIDesigner read GetDesigner;
     property DesignWinControl: TWinControl read GetDesignWinControl;
     property LastActiveSourceWindow: TSourceEditorWindowInterface read FLastActiveSourceWindow write FLastActiveSourceWindow;
@@ -194,6 +196,14 @@ begin
   Result := FForm.Designer;
 end;
 
+function TDesignFormIDE.GetCurrentObjectInspector: TObjectInspectorDlg;
+begin
+  if Assigned(FormEditingHook) and (FormEditingHook.GetCurrentDesigner = Designer) then
+    Result := FormEditingHook.GetCurrentObjectInspector
+  else
+    Result := nil;
+end;
+
 function TDesignFormIDE.GetDesignWinControl: TWinControl;
 begin
   Result := Form;
@@ -226,20 +236,13 @@ begin
 end;
 
 procedure TDesignFormIDE.EndUpdate(AModified: Boolean);
-var
-  OI: TObjectInspectorDlg;
 begin
   THackForm(FForm).SetDesigning(True, False);
   if Assigned(FAnchorDesigner) then
     FAnchorDesigner.EndUpdate;
   inherited EndUpdate(AModified);
-  if AModified and (FormEditingHook <> nil)
-  and (FormEditingHook.GetCurrentDesigner = Designer) then
-  begin
-    OI := FormEditingHook.GetCurrentObjectInspector;
-    if Assigned(OI) then
-      OI.RefreshPropertyValues;
-  end;
+  if AModified and Assigned(CurrentObjectInspector) then
+    CurrentObjectInspector.RefreshPropertyValues;
 end;
 
 function TDesignFormIDE.IsAnchorDesign: Boolean;
