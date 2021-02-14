@@ -242,3 +242,4 @@ msgstr "    Usage(用法): lhelp [[filename(文件名称)] [--context(上下文)
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "查看(&V)"
+

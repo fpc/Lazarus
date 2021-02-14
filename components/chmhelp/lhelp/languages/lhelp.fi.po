@@ -239,3 +239,4 @@ msgstr "    Käyttö: lhelp [[tiedosto] [--context id] [--hide] [--ipcname lhelp
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "Näytä"
+

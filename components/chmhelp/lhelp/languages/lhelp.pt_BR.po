@@ -241,3 +241,4 @@ msgstr "    Uso: lhelp [[arquivo] [--context id] [--hide] [--ipcname lhelp-meuap
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Exibir"
+
