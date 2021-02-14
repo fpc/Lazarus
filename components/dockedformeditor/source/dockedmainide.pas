@@ -583,6 +583,7 @@ begin
   begin
     LSourceEditorWindow.ActiveDesignForm := nil;
     LPageCtrl.InitPage;
+    LActiveSourceWindowInterface.ActiveEditor.EditorControl.SetFocus;
   end else begin
     // deactivate design tab in other source editor page control
     for LSourceEditorWindow in SourceEditorWindows do
