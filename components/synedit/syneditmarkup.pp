@@ -358,12 +358,12 @@ end;
 
 function TSynEditMarkup.ScreenRowToRow(aRow : Integer) : Integer;
 begin
-  Result := SynEdit.ScreenXYToTextXY(Point(1, ToPos(aRow))).Y;
+  Result := SynEdit.ScreenRowToRow(aRow);
 end;
 
 function TSynEditMarkup.RowToScreenRow(aRow : Integer) : Integer;
 begin
-  Result := SynEdit.TextXYToScreenXY(Point(0, aRow)).Y;
+  Result := SynEdit.RowToScreenRow(aRow);
 end;
 
 function TSynEditMarkup.LogicalToPhysicalPos(const p : TPoint) : TPoint;

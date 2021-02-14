@@ -232,6 +232,12 @@ type
     function CaretXPix: Integer; virtual; abstract;
     function CaretYPix: Integer; virtual; abstract;
 
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; virtual; abstract; deprecated 'use ScreenXYToTextXY';
+    function RowToScreenRow(PhysicalRow: integer): integer; virtual; abstract; deprecated 'use TextXYToScreenXY';
+    (* ScreenXY:
+       First visible (scrolled in) screen line is 1
+       First column is 1 => column does not take scrolling into account
+    *)
     function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; virtual; abstract;
     function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual; abstract;
 

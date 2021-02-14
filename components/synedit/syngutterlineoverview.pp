@@ -962,7 +962,7 @@ procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
 begin
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
   FCurTopLine := SynEdit.TopLine;
-  FCurBottomLine := SynEdit.ScreenXYToTextXY(Point(0, SynEdit.LinesInWindow)).Y;
+  FCurBottomLine := SynEdit.ScreenRowToRow(SynEdit.LinesInWindow);
   ReCalc;
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
 end;

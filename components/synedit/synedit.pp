@@ -1016,8 +1016,8 @@ type
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     //
-    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; deprecated 'use ScreenXYToTextXY';
-    function RowToScreenRow(PhysicalRow: integer): integer; deprecated 'use TextXYToScreenXY';
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; override; deprecated 'use ScreenXYToTextXY';
+    function RowToScreenRow(PhysicalRow: integer): integer; override; deprecated 'use TextXYToScreenXY';
     (* ScreenXY:
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
