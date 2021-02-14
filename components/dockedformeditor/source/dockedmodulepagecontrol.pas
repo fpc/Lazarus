@@ -35,11 +35,14 @@ type
 
   TModulePageControl = class(TPageControl)
   private
+    FDesignerSetFocusAsyncCount: Integer;
+    FDesignForm: TDesignForm;
+    FResizer: TResizer;
     FTabSheetAnchors: TTabSheet;
     FTabSheetCode: TTabSheet;
     FTabSheetDesigner: TTabSheet;
-    FResizer: TResizer;
-    FDesignForm: TDesignForm;
+    procedure AsyncDesignerSetFocus({%H-}Data: PtrInt);
+    procedure ModulePageControlMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure OnAdjustPage(Sender: TObject);
   protected
     procedure SetDesignForm(const AValue: TDesignForm); virtual;
@@ -47,11 +50,14 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure AdjustPage;
+    function  AnchorPageActive: Boolean;
     procedure CreateResizer;
     procedure CreateTabSheetAnchors;
     procedure CreateTabSheetDesigner;
     procedure DesignerSetFocus;
-    function  DesignerFocused: Boolean;
+    procedure DesignerSetFocusAsync;
+    function  DesignerPageActive: Boolean;
+    function  FormPageActive: Boolean;
     procedure RemoveDesignPages;
     procedure InitPage;
     procedure RefreshResizer;
@@ -69,6 +75,19 @@ implementation
 procedure TModulePageControl.OnAdjustPage(Sender: TObject);
 begin
   AdjustPage;
+end;
+
+procedure TModulePageControl.ModulePageControlMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if DesignerPageActive then
+    DesignerSetFocus;
+end;
+
+procedure TModulePageControl.AsyncDesignerSetFocus(Data: PtrInt);
+begin
+  DesignerSetFocus;
+  FDesignerSetFocusAsyncCount := 0;
 end;
 
 procedure TModulePageControl.SetDesignForm(const AValue: TDesignForm);
@@ -97,11 +116,13 @@ end;
 constructor TModulePageControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FDesignerSetFocusAsyncCount := 0;
   FResizer := nil;
 
   TabPosition := DockedOptions.TabPosition;
   Align := alClient;
   ShowTabs := False;
+  OnMouseUp := @ModulePageControlMouseUp;
 
   FTabSheetCode := TTabSheet.Create(Self);
   FTabSheetCode.PageControl := Self;
@@ -116,9 +137,14 @@ end;
 
 procedure TModulePageControl.AdjustPage;
 begin
-  if not (ActivePageIndex in [1,2]) then Exit;
+  if not DesignerPageActive then Exit;
   if Assigned(FResizer) then
     FResizer.AdjustResizer(nil);
+end;
+
+function TModulePageControl.AnchorPageActive: Boolean;
+begin
+  Result := ActivePage = FTabSheetAnchors;
 end;
 
 procedure TModulePageControl.CreateResizer;
@@ -150,13 +176,27 @@ end;
 
 procedure TModulePageControl.DesignerSetFocus;
 begin
+  if not Assigned(Resizer) then Exit;
+  if not Assigned(DesignForm) then Exit;
   Resizer.DesignerSetFocus;
 end;
 
-function TModulePageControl.DesignerFocused: Boolean;
+procedure TModulePageControl.DesignerSetFocusAsync;
+begin
+  if FDesignerSetFocusAsyncCount = 0 then
+    Application.QueueAsyncCall(@AsyncDesignerSetFocus, 0);
+  Inc(FDesignerSetFocusAsyncCount);
+end;
+
+function TModulePageControl.DesignerPageActive: Boolean;
 begin
   Result := (ActivePage = FTabSheetDesigner) or
             (ActivePage = FTabSheetAnchors);
+end;
+
+function TModulePageControl.FormPageActive: Boolean;
+begin
+  Result := ActivePage = FTabSheetDesigner;
 end;
 
 procedure TModulePageControl.RemoveDesignPages;

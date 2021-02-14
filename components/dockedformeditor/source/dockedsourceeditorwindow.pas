@@ -28,7 +28,7 @@ uses
   // LCL
   Forms, Controls,
   // IDEIntf
-  SrcEditorIntf, LazIDEIntf, FormEditingIntf,
+  SrcEditorIntf, LazIDEIntf, FormEditingIntf, ExtendedNotebook,
   // DockedFormEditor
   DockedSourceEditorPageControls, DockedDesignForm, DockedModulePageControl;
 
@@ -39,21 +39,27 @@ type
   TSourceEditorWindow = class
   private
     FActiveDesignForm: TDesignForm;
-    FSourceEditorWindowInterface: TSourceEditorWindowInterface;
-    FPageControlList: TSourceEditorPageControls;
     FLastTopParent: TControl;
+    FNotebookPageChanged: TNotifyEvent;
+    FPageControlList: TSourceEditorPageControls;
+    FSourceEditorNotebook: TExtendedNotebook;
+    FSourceEditorWindowInterface: TSourceEditorWindowInterface;
+    function GetActiveEditor: TSourceEditorInterface;
+    procedure HookIntoOnPageChanged;
     procedure SetActiveDesignForm(const AValue: TDesignForm);
+    procedure SourceEditorPageChanged(Sender: TObject);
   public
     constructor Create(ASourceEditorWindowInterface: TSourceEditorWindowInterface);
     destructor Destroy; override;
-    procedure AddPageCtrl(ASrcEditor: TSourceEditorInterface; APageControl: TModulePageControl);
+    procedure AddPageCtrl(ASourceEditor: TSourceEditorInterface; APageControl: TModulePageControl);
     procedure AdjustPageControl;
-    function FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl; overload;
-    function FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
+    function  FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl; overload;
+    function  FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
     procedure RemoveActiveDesignForm;
-    procedure RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
+    procedure RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
   public
     property ActiveDesignForm: TDesignForm read FActiveDesignForm write SetActiveDesignForm;
+    property ActiveEditor: TSourceEditorInterface read GetActiveEditor;
     property LastTopParent: TControl read FLastTopParent write FLastTopParent;
     property PageControlList: TSourceEditorPageControls read FPageControlList;
     property SourceEditorWindowInterface: TSourceEditorWindowInterface read FSourceEditorWindowInterface;
@@ -88,6 +94,26 @@ implementation
 
 { TSourceEditorWindow }
 
+procedure TSourceEditorWindow.HookIntoOnPageChanged;
+var
+  i: Integer;
+begin
+  for i := 0 to FSourceEditorWindowInterface.ControlCount - 1 do
+    if FSourceEditorWindowInterface.Controls[i] is TExtendedNotebook then
+    begin
+      FSourceEditorNotebook := TExtendedNotebook(FSourceEditorWindowInterface.Controls[i]);
+      Break;
+    end;
+  if not Assigned(FSourceEditorNotebook) then Exit;
+  FNotebookPageChanged := FSourceEditorNotebook.OnChange;
+  FSourceEditorNotebook.OnChange := @SourceEditorPageChanged;
+end;
+
+function TSourceEditorWindow.GetActiveEditor: TSourceEditorInterface;
+begin
+  Result := FSourceEditorWindowInterface.ActiveEditor;
+end;
+
 procedure TSourceEditorWindow.SetActiveDesignForm(const AValue: TDesignForm);
 var
   LPageCtrl: TModulePageControl;
@@ -102,27 +128,49 @@ begin
   LPageCtrl := FindModulePageControl(FSourceEditorWindowInterface);
   // important when we want back to tab where was oppened form
   if (AValue <> nil) then
-    LazarusIDE.DoShowDesignerFormOfSrc(FSourceEditorWindowInterface.ActiveEditor);
+    LazarusIDE.DoShowDesignerFormOfSrc(ActiveEditor);
 
   if LPageCtrl = nil then Exit;
   LPageCtrl.DesignForm := AValue;
+end;
+
+procedure TSourceEditorWindow.SourceEditorPageChanged(Sender: TObject);
+var
+  LPageCtrl: TModulePageControl;
+begin
+  FNotebookPageChanged(Sender);
+  LPageCtrl := FindModulePageControl(FSourceEditorWindowInterface.ActiveEditor);
+  if not Assigned(LPageCtrl) then Exit;
+  if LPageCtrl.DesignerPageActive then
+  begin
+    LPageCtrl.AdjustPage;
+    {$IF DEFINED(LCLGtk2)}
+      LPageCtrl.DesignerSetFocusAsync;
+    {$ELSE}
+      LPageCtrl.DesignerSetFocus;
+    {$ENDIF}
+  end;
 end;
 
 constructor TSourceEditorWindow.Create(ASourceEditorWindowInterface: TSourceEditorWindowInterface);
 begin
   FSourceEditorWindowInterface := ASourceEditorWindowInterface;
   FPageControlList := TSourceEditorPageControls.Create;
+  FSourceEditorNotebook := nil;
+  HookIntoOnPageChanged;
 end;
 
 destructor TSourceEditorWindow.Destroy;
 begin
+  if Assigned(FSourceEditorNotebook) then
+    FSourceEditorNotebook.OnChange := FNotebookPageChanged;
   FPageControlList.Free;
   inherited Destroy;
 end;
 
-procedure TSourceEditorWindow.AddPageCtrl(ASrcEditor: TSourceEditorInterface; APageControl: TModulePageControl);
+procedure TSourceEditorWindow.AddPageCtrl(ASourceEditor: TSourceEditorInterface; APageControl: TModulePageControl);
 begin
-  FPageControlList.Add(ASrcEditor, APageControl);
+  FPageControlList.Add(ASourceEditor, APageControl);
 end;
 
 procedure TSourceEditorWindow.AdjustPageControl;
@@ -160,9 +208,9 @@ begin
   FActiveDesignForm := nil;
 end;
 
-procedure TSourceEditorWindow.RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
+procedure TSourceEditorWindow.RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
 begin
-  FPageControlList.Remove(ASrcEditor);
+  FPageControlList.Remove(ASourceEditor);
 end;
 
 { TSourceEditorWindows }

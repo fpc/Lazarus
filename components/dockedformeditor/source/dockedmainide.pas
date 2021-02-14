@@ -229,7 +229,7 @@ var
   LPageIndex: Integer;
 begin
   LPageCtrl := SourceEditorWindows.FindModulePageControl(LastActiveSourceEditor);
-  LRefreshDesigner := Assigned(LPageCtrl) and LPageCtrl.DesignerFocused;
+  LRefreshDesigner := Assigned(LPageCtrl) and LPageCtrl.DesignerPageActive;
   LPageIndex := LPageCtrl.PageIndex;
   LPageCtrl.CreateTabSheetAnchors;
 
@@ -465,19 +465,20 @@ begin
         // Prevent unexpected events (when is deactivated some control outside designed form)
         if (LDesignForm.LastActiveSourceWindow = LSourceEditorWindowInterface)
         // important!!! for many error - switching between editors...
-        and LPageCtrl.DesignerFocused then
+        and LPageCtrl.DesignerPageActive then
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := LDesignForm
         else
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := nil;
     end;
 
     LPageCtrl.InitPage;
-    if LPageCtrl.DesignerFocused then
+    if LPageCtrl.DesignerPageActive then
     begin
       if not LDesignForm.Hiding then
       begin
         LPageCtrl.AdjustPage;
-        LPageCtrl.DesignerSetFocus;
+        // don't focus designer here, focus can be on ObjectInspector, then
+        // <Del> in OI Events deletes component instead event handler
       end;
     end else begin
       if LDesignForm <> nil then
@@ -578,7 +579,7 @@ begin
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LActiveSourceWindowInterface];
   if LSourceEditorWindow = nil then Exit;
 
-  if not LPageCtrl.DesignerFocused then
+  if not LPageCtrl.DesignerPageActive then
   begin
     LSourceEditorWindow.ActiveDesignForm := nil;
     LPageCtrl.InitPage;
@@ -656,7 +657,7 @@ begin
       if (LSourceEditorInterface = nil) or (LSourceEditorInterface.GetDesigner(True) <> LDesignForm.Designer) then
         Continue;
       LPageCtrl := SourceEditorWindows.FindModulePageControl(LSourceEditorInterface);
-      if LPageCtrl.PageIndex = 1 then
+      if LPageCtrl.FormPageActive then
         Exit;
     end;
   end;
