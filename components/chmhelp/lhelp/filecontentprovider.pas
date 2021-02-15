@@ -5,7 +5,9 @@ unit filecontentprovider;
 interface
 
 uses
-  Classes, Controls, SysUtils, BaseContentProvider;
+  Classes, Controls, SysUtils,
+  LazLoggerBase,
+  BaseContentProvider;
   
 type
 
@@ -39,7 +41,10 @@ var
 function RegisteredFileTypes( ) : TStringList;
 begin
   if FileContentProviders = nil Then // Singleton
+  begin
     FileContentProviders := TStringList.Create;
+    {$IF FPC_FULLVERSION>=30200}FileContentProviders.UseLocale := false;{$ENDIF}
+  end;
   Result := FileContentProviders;
 end;
 
@@ -47,6 +52,7 @@ function RegisterFileType(const AFileType: String;
   ContentProvider: TBaseContentProviderClass): Boolean;
 begin
   Result := False;
+  //DebugLn(['RegisterFileType: ', AFileType, ', ProviderClass=', ContentProvider]);
   if RegisteredFileTypes.IndexOf(AFileType) > -1 then Exit;
   RegisteredFileTypes.AddObject(AFileType, TObject(ContentProvider));
 end;

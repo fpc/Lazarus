@@ -239,7 +239,7 @@ begin
     fHelpConnection.BeginUpdate;
     for i := 0 to CHMFiles.Count-1 do
     begin
-      if CompareFileExtQuick(CHMFiles[i], 'chm') = 0 then
+      if FilenameExtIs(CHMFiles[i], 'chm') then
       begin
         fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
         // This is probably no longer necessary as we're now waiting for the viewer's

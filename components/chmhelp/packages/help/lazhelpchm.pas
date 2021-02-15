@@ -222,7 +222,7 @@ begin
       OnFindLHelp(Path);
 
     // append exe extension
-    if (ExtractFileExt(Path)='') and (GetExeExt<>'') then
+    if ExtractFileExt(Path)='' then
       Path:=Path+GetExeExt;
 
     // search in Path
