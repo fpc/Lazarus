@@ -1182,7 +1182,8 @@ begin
       if ExtractFileExt(NewFilename)='' then begin
         // append extension
         NewFileName:=NewFileName+'.lpk';
-      end else if ExtractFileExt(NewFilename)<>'.lpk' then begin
+      end
+      else if not FilenameExtIs(NewFilename,'.lpk',true) then begin
         Result:=IDEMessageDialog(lisPkgMangInvalidPackageFileExtension,
           lisPkgMangPackagesMustHaveTheExtensionLpk,
           mtInformation,[mbRetry,mbAbort]);
@@ -2268,9 +2269,9 @@ var
               continue;
             // output filename and source have same unitname
             SeparateOutDir:=CompareFilenames(ChompPathDelim(ExtractFilePath(OldFilename)),OutDir)<>0;
-            Ext:=lowercase(ExtractFileExt(OutFilename));
-            if (Ext='ppu') or (Ext='o') or (Ext='ppl') or (Ext='rst') or (Ext='lrt')
-            or (SeparateOutDir and ((Ext='lrs') or (Ext='lfm'))) then begin
+            if FilenameExtIn(OutFilename,['ppu','o','ppl','rst','lrt'])
+            or (SeparateOutDir and FilenameExtIn(OutFilename,['lrs','lfm'])) then
+            begin
               // automatically created file found => delete
               r:=DeleteFileInteractive(OutFilename,[mbCancel,mbIgnore]);
               if not (r in [mrOk,mrIgnore]) then exit;
@@ -3534,8 +3535,7 @@ begin
   AFilename:=GetPhysicalFilenameCached(CleanAndExpandFilename(AFilename),false);
 
   // check file extension
-  if (CompareFileExt(AFilename,'lpk',true)<>0)
-  and (not (pofRevert in Flags)) then begin
+  if not ( FilenameExtIs(AFilename,'lpk',true) or (pofRevert in Flags) ) then begin
     DoQuestionDlg(lisPkgMangInvalidFileExtension,
       Format(lisPkgMangTheFileIsNotALazarusPackage, [AFilename]));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
