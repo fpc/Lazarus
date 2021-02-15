@@ -2632,16 +2632,14 @@ var
   Reg : TRegistry;
   Ext : string;
   {$ifndef MSWindows}
-  ExtU: string;
   i : integer;
   {$ENDIF}
 begin
   Result := '';
   Ext := ExtractFileExt(TheFileName);
   {$ifndef MSWindows}
-  ExtU := AnsiLowerCase(Ext);
   for i := 0 to high(MimeTypeExt) do
-    if MimeTypeExt[i] = ExtU then
+    if CompareText(MimeTypeExt[i], Ext) = 0 then
     begin
       result := MimeTypes[i];
       break;

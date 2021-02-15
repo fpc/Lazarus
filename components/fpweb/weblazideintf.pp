@@ -22,8 +22,7 @@ unit WebLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,  IDEExternToolIntf,
-  Controls, Dialogs, forms, LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEMsgIntf,
+  Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,
   fpextjs, extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
   fpextdirect,fpwebdata,
 {$IF FPC_FULLVERSION>=30004}
@@ -35,7 +34,12 @@ uses
   fpoauth2,
   fpoauth2ini,
 {$ENDIF}
-  webjsonrpc, fpWebStrConsts;
+  webjsonrpc,
+  Controls, Dialogs, Forms,
+  LazFileUtils,
+  IDEExternToolIntf, ProjectIntf,
+  LazIDEIntf, SrcEditorIntf, IDEMsgIntf,
+  fpWebStrConsts;
 
 type
   { TCGIApplicationDescriptor }
@@ -1096,7 +1100,6 @@ function TJSSyntaxChecker.CheckSource(Sender: TObject; var Handled: boolean
 
 Var
   AE : TSourceEditorInterface;
-  E : String;
   S : TStringStream;
 
 begin
@@ -1106,9 +1109,8 @@ begin
   AE:=SourceEditorManagerIntf.ActiveEditor;
   If (AE<>Nil) then
     begin
-    E:=ExtractFileExt(AE.FileName);
     FSFN:=ExtractFileName(AE.FileName);
-    Handled:=CompareText(E,'.js')=0;
+    Handled:=FilenameExtIs(AE.FileName,'.js');
     If Handled then
       begin
       S:=TStringStream.Create(AE.SourceText);

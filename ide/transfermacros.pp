@@ -481,11 +481,8 @@ end;
 
 function TTransferMacroList.MF_NameOnly(const Filename:string;
   const Data: PtrInt; var Abort: boolean):string;
-var Ext:string;
 begin
-  Result:=ExtractFileName(Filename);
-  Ext:=ExtractFileExt(Result);
-  Result:=copy(Result,1,length(Result)-length(Ext));
+  Result:=ChangeFileExt(ExtractFileName(Filename),'');
 end;
 
 function TTransferMacroList.MF_MakeDir(const Filename: string;

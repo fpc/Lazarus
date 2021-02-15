@@ -991,7 +991,7 @@ var
   StartTime, EndTime: TDateTime;
   s: string;
 begin
-  if CompareFileExtQuick(fSettings.MainFilename,'dproj')=0 then begin
+  if FilenameExtIs(fSettings.MainFilename,'dproj') then begin
     fErrorMsg := lisConvDprojFileNotSupportedYet;
     Exit(mrCancel);
   end;
@@ -1009,7 +1009,7 @@ begin
       fLazPMainFilename:=fSettings.DelphiToLazFilename(fSettings.MainFilename,
                                                        fLazPMainSuffix, false);
       // Find Delphi project / package file name
-      if CompareFileExtQuick(fSettings.MainFilename,fDelphiPSuffix)=0 then
+      if FilenameExtIs(fSettings.MainFilename,fDelphiPSuffix) then
         fDelphiPFilename:=fSettings.MainFilename
       else
         fDelphiPFilename:=ChangeFileExt(fSettings.MainFilename,fDelphiPSuffix);

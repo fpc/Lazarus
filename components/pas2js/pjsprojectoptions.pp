@@ -257,7 +257,7 @@ begin
     For I:=0 to PRJ.FileCount-1 do
       begin
       PF:=PRJ.Files[i];
-      if CompareFileExtQuick(PF.Filename,'html')=0 then
+      if FilenameExtIs(PF.Filename,'html') then
         begin
         L.AddObject(PF.FileName,PF);
         If PF.CustomData[PJSIsProjectHTMLFile]='1' then

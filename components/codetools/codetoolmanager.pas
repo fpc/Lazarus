@@ -5873,9 +5873,9 @@ end;
 function TCodeToolManager.DoOnGetSrcPathForCompiledUnit(Sender: TObject;
   const AFilename: string): string;
 begin
-  if CompareFileExt(AFilename,'ppu',true)=0 then
+  if FilenameExtIs(AFilename,'ppu',true) then
     Result:=GetPPUSrcPathForDirectory(ExtractFilePath(AFilename))
-  else if CompareFileExt(AFilename,'dcu')=0 then
+  else if FilenameExtIs(AFilename,'dcu') then
     Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename))
   else
     Result:='';

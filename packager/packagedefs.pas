@@ -901,13 +901,13 @@ var
 begin
   HasName:=ExtractFileNameOnly(AFilename)<>'';
   if HasName then begin
-    if CompareFileExt(AFilename,'lfm',true)=0 then
+    if FilenameExtIs(AFilename,'lfm',true) then
       exit(pftLFM)
-    else if CompareFileExt(AFilename,'lrs',true)=0 then
+    else if FilenameExtIs(AFilename,'lrs',true) then
       exit(pftLRS)
-    else if CompareFileExtQuick(AFilename,'inc')=0 then
+    else if FilenameExtIs(AFilename,'inc') then
       exit(pftInclude)
-    else if CompareFileExtQuick(AFilename,'xml')=0 then
+    else if FilenameExtIs(AFilename,'xml') then
       exit(pftIssues)
     else if FilenameHasPascalExt(AFilename) then begin
       Result:=pftUnit;
@@ -2072,8 +2072,8 @@ var
 begin
   Result:='';
   AFilename:=TrimFilename(DefaultFilename);
-  if (CompareFileExt(AFilename,'lpk',true)<>0)
-  or (SysUtils.CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0) then
+  if not FilenameExtIs(AFilename,'lpk',true)
+  or (CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0) then
     exit;
   if not FilenameIsAbsolute(AFilename) then begin
     CurDir:=GetDependencyOwnerDirectory(Self);

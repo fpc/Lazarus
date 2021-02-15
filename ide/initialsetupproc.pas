@@ -327,7 +327,7 @@ var
   function CheckPPU(const AnUnitName: string): boolean;
   begin
     if (CfgCache.Units=nil)
-    or (CompareFileExt(CfgCache.Units[AnUnitName],'ppu',true)<>0) then
+    or not FilenameExtIs(CfgCache.Units[AnUnitName],'ppu',true) then
     begin
       Note:=Format(lisPpuNotFoundCheckYourFpcCfg, [AnUnitName]);
       Result:=false;

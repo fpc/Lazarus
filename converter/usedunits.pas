@@ -35,7 +35,7 @@ uses
   // LCL
   Forms, Controls,
   // LazUtils
-  AvgLvlTree,
+  LazFileUtils, AvgLvlTree,
   // codetools
   StdCodeTools, CodeTree, CodeAtom, CodeCache,
   LinkScanner, KeywordFuncLists, SourceChanger, CodeToolsStrConsts,
@@ -521,11 +521,9 @@ end;
 
 function TMainUsedUnits.UsesSectionNode: TCodeTreeNode;
 var
-  s: String;
   IsPackage: Boolean;
 begin
-  s:=ExtractFileExt(fOwnerTool.fFilename);
-  IsPackage := (s='.dpk') or (s='.lpk');
+  IsPackage := FilenameExtIn(fOwnerTool.fFilename,['.dpk','.lpk'],True);
   Result:=fCTLink.CodeTool.FindMainUsesNode(IsPackage);
 end;
 

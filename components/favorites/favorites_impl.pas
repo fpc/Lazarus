@@ -165,7 +165,7 @@ end;
 procedure TOpenFileFavToolButton.RefreshMenu(Sender: TObject);
 var
   xM, xSep: TMenuItem;
-  xFavoriteFile, xExt: string;
+  xFavoriteFile: string;
   xMI, xAddToFav: TFileNameMenuItem;
   xProj: TLazProject;
   xMIndex: Integer;
@@ -182,8 +182,7 @@ begin
     xMI.FileName := xFavoriteFile;
     xMI.Caption := xFavoriteFile;
     xMI.OnClick := @mnuFavoriteFile;
-    xExt := ExtractFileExt(xFavoriteFile);
-    if SameFileName(xExt, '.lpi') or SameFileName(xExt, '.lpr') then
+    if FilenameExtIn(xFavoriteFile,['.lpi','.lpr']) then
       xMI.ImageIndex := LoadProjectIconIntoImages(xFavoriteFile, DropdownMenu.Images, FIndex);
 
     xM.Insert(xMIndex, xMI);

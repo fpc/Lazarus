@@ -272,7 +272,7 @@ var
 begin
   Result := FileName;
   {$IFnDEF WINCE}
-  if (LowerCase(ExtractFileExt(FileName)) = '.lnk') then
+  if FilenameExtIs(FileName, '.lnk') then
   begin
     if (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
                          IShellLinkW, ShellLinkW) = S_OK) then

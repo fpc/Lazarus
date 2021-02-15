@@ -872,7 +872,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
     if ConfigCache.Units=nil then exit;
     AFilename:=ConfigCache.Units['system'];
     if AFilename='' then exit;
-    if CompareFileExt(AFilename,'ppu',true)<>0 then exit;
+    if not FilenameExtIs(AFilename,'ppu',true) then exit;
     Result:=true;
   end;
 
@@ -1537,7 +1537,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   end;
 
 var
-  Ext, LowExt: string;
+  LowExt: string;
   i: integer;
 begin
   Result:=mrOk;
@@ -1546,8 +1546,7 @@ begin
   and not Compiling then exit;
 
   if FilenameHasPascalExt(AFilename) then begin
-    Ext:=ExtractFileExt(AFilename);
-    LowExt:=lowercase(Ext);
+    LowExt:=lowercase(ExtractFileExt(AFilename));
     for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
       if LowExt<>PascalFileExt[i] then begin
         Result:=CheckFile(ChangeFileExt(AFilename,PascalFileExt[i]));
@@ -1688,7 +1687,7 @@ begin
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
             if FilenameHasPascalExt(FileInfo.Name) then
               CurUnitTree:=SourceUnitTree
-            else if (CompareFileExt(FileInfo.Name,CompiledExt,true)=0) then
+            else if FilenameExtIs(FileInfo.Name,CompiledExt,true) then
               CurUnitTree:=CompiledUnitTree
             else
               continue;

@@ -729,7 +729,7 @@ begin
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
       // check extension
-      if CompareFileExt(FileInfo.Name,Ext,false)=0 then begin
+      if FilenameExtIs(FileInfo.Name,Ext,false) then begin
         Result:=AppendPathDelim(Directory)+FileInfo.Name;
         break;
       end;

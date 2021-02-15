@@ -31,12 +31,12 @@ function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer; overload;
-function CompareFilenamesP(Filename1, Filename2: PChar;
-  IgnoreCase: boolean = false // false = use default
-  ): integer;
+function CompareFilenamesP(Filename1, Filename2: PChar; IgnoreCase: boolean=false): integer;
 function CompareFileExt(const Filename: string; Ext: string; CaseSensitive: boolean): integer;
 function CompareFileExt(const Filename, Ext: string): integer;
-function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
+function FilenameExtIs(const Filename,Ext: string; CaseSensitive: boolean=false): boolean;
+function FilenameExtIn(const Filename: string; Exts: array of string;
+  CaseSensitive: boolean=false): boolean;
 
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
@@ -318,8 +318,7 @@ begin
   {$ENDIF}
 end;
 
-function CompareFilenamesP(Filename1, Filename2: PChar;
-  IgnoreCase: boolean = false): integer;
+function CompareFilenamesP(Filename1, Filename2: PChar; IgnoreCase: boolean): integer;
 {$IFDEF darwin}
 var
   F1: CFStringRef;
@@ -398,28 +397,78 @@ begin
                 {$IFDEF CaseInsensitiveFilenames} False {$ELSE} True {$ENDIF} );
 end;
 
-function CompareFileExtQuick(const Filename: string; LowerExt: string): integer;
-// Compares case-insensitively but only with ASCII characters.
-// LowerExt must be lowercase. It can contain a point or not.
+function FilenameExtIs(const Filename, Ext: string; CaseSensitive: boolean): boolean;
+// Return True if Filename has an extension Ext.
+// Ext can contain a point or not. Case-insensitive comparison supports only ASCII.
 var
-  FnExt: String;
-  FnPos: integer;
+  FnExtLen, ExtLen: integer;
+  FnStart, FnEnd, FnP, ExtP: PChar;
 begin
   // Filename
-  FnPos := length(Filename);
-  while (FnPos>=1) and (Filename[FnPos]<>'.') do dec(FnPos);
-  if FnPos < 1 then
-    exit(1);          // no extension in filename
-  FnExt := LowerCase(Copy(Filename, FnPos+1, length(FileName))); // FnPos+1 skips point
+  FnStart := PChar(Filename);
+  FnEnd := FnStart + Length(Filename) - 1;
+  FnP := FnEnd;
+  while (FnP >= FnStart) and (FnP^ <> '.') do
+    Dec(FnP);
+  if FnP < FnStart then
+    exit(False);          // no extension in filename
+  Inc(FnP);               // Skip '.' in Filename
+  FnExtLen := 1 + FnEnd - FnP;
   // Ext
-  if (length(LowerExt) > 1) and (LowerExt[1] = '.') then
-    Delete(LowerExt, 1, 1);
+  ExtLen := Length(Ext);
+  ExtP := PChar(Ext);
+  if ExtP^ = '.' then
+  begin
+    Inc(ExtP);            // Skip '.' in Ext
+    Dec(ExtLen);
+  end;
+  if ExtLen <> FnExtLen then
+    exit(False);          // Ext has different length than Filename
   // compare extensions
-  Result := CompareStr(FnExt, LowerExt);
-  if Result < 0 then
-    Result := -1
-  else if Result > 0 then
-    Result := 1;
+  if CaseSensitive then
+    Result := StrLComp(ExtP, FnP, ExtLen) = 0
+  else
+    Result := StrLIComp(ExtP, FnP, ExtLen) = 0
+end;
+
+function FilenameExtIn(const Filename: string; Exts: array of string;
+  CaseSensitive: boolean): boolean;
+// Return True if Filename's extension is one of Exts.
+// Ext can contain a point or not. Case-insensitive comparison supports only ASCII.
+var
+  FnExtLen, ExtLen, i: integer;
+  FnStart, FnEnd, FnP, ExtP: PChar;
+begin
+  // Filename
+  FnStart := PChar(Filename);
+  FnEnd := FnStart + Length(Filename) - 1;
+  FnP := FnEnd;
+  while (FnP >= FnStart) and (FnP^ <> '.') do
+    Dec(FnP);
+  if FnP < FnStart then
+    exit(False);          // no extension in filename
+  Inc(FnP);               // Skip '.' in Filename
+  FnExtLen := 1 + FnEnd - FnP;
+  // Extensions
+  for i := low(Exts) to high(Exts) do
+  begin
+    ExtLen := Length(Exts[i]);
+    ExtP := PChar(Exts[i]);
+    if ExtP^ = '.' then
+    begin
+      Inc(ExtP);          // Skip '.' in Ext
+      Dec(ExtLen);
+    end;
+    if ExtLen <> FnExtLen then
+      continue;           // Ext has different length than Filename
+    // compare extensions
+    if CaseSensitive then
+      Result := StrLComp(ExtP, FnP, ExtLen) = 0
+    else
+      Result := StrLIComp(ExtP, FnP, ExtLen) = 0;
+    if Result then exit;
+  end;
+  Result := False;
 end;
 
 {$IFDEF darwin}

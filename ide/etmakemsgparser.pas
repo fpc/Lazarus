@@ -352,7 +352,7 @@ begin
       System.Move(p^,Filename[1],length(Filename));
       Filename:=TrimFilename(Filename);
       if FilenameIsAbsolute(Filename)
-      and ((GetExeExt='') or (ExtractFileExt(Filename)=GetExeExt))
+      and ( (GetExeExt='') or FilenameExtIs(Filename,GetExeExt) )
       and IsFileExecutable(Filename) then begin
         Handled:=true;
         MsgLine:=CreateMsgLine(OutputIndex);

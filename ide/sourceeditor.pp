@@ -6965,8 +6965,7 @@ begin
   CurFilename:=ASrcEdit.FileName;
   ShortFileName:=ExtractFileName(CurFilename);
   MainCodeBuf:=nil;
-  if FilenameHasPascalExt(ShortFileName)
-  or (CompareFileExtQuick(ShortFileName,'inc')=0) then
+  if FilenameHasPascalExt(ShortFileName) or FilenameExtIs(ShortFileName,'inc') then
     MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer)
   else if FilenameIsPascalSource(ShortFileName) then
     MainCodeBuf:=ASrcEdit.CodeBuffer;
@@ -6989,16 +6988,14 @@ begin
       MaybeAddPopup('.s');
     end;
     // ToDo: unit resources
-    if (CompareFileExt(ShortFileName,'lfm',true)=0)
-    or (CompareFileExtQuick(ShortFileName,'dfm')=0) then begin
+    if FilenameExtIs(ShortFileName,'lfm',true)
+    or FilenameExtIs(ShortFileName,'dfm') then begin
       MaybeAddPopup('.pas');
       MaybeAddPopup('.pp');
       MaybeAddPopup('.p');
     end;
-    if (CompareFileExt(ShortFileName,'lpi',true)=0)
-    or (CompareFileExt(ShortFileName,'lpk',true)=0) then begin
-      AddContextPopupMenuItem(
-        Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+    if FilenameExtIn(ShortFileName, ['lpi','lpk'], true) then begin
+      AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
     end;
     FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
     if FPDocSrc<>'' then
@@ -8064,10 +8061,9 @@ begin
   aFilename:=copy(aFilename,p,length(aFilename)-(length(ResStr)-2));
   if not FilenameIsAbsolute(aFilename) then
     aFilename:=TrimFilename(ExtractFilePath(GetActiveSE.Filename)+aFilename);
-  if CompareFileExt(aFilename,'lpi',true)=0 then
-    MainIDEInterface.DoOpenProjectFile(aFilename,
-      [ofOnlyIfExists,ofAddToRecent,ofUseCache])
-  else if CompareFileExt(aFilename,'lpk',true)=0 then
+  if FilenameExtIs(aFilename,'lpi',true) then
+    MainIDEInterface.DoOpenProjectFile(aFilename,[ofOnlyIfExists,ofAddToRecent,ofUseCache])
+  else if FilenameExtIs(aFilename,'lpk',true) then
     PackageEditingInterface.DoOpenPackageFile(aFilename,[pofAddToRecent],false)
   else
     MainIDEInterface.DoOpenEditorFile(aFilename,
@@ -10190,8 +10186,7 @@ begin
   CurFilename:=SrcEdit.FileName;
   ShortFileName:=ExtractFileName(CurFilename);
   MainCodeBuf:=nil;
-  if FilenameHasPascalExt(ShortFileName)
-  or (CompareFileExtQuick(ShortFileName,'inc')=0) then
+  if FilenameHasPascalExt(ShortFileName) or FilenameExtIs(ShortFileName,'inc') then
     MainCodeBuf:=CodeToolBoss.GetMainCode(SrcEdit.CodeBuffer)
   else if FilenameIsPascalSource(ShortFileName) then
     MainCodeBuf:=SrcEdit.CodeBuffer;

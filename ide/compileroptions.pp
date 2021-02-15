@@ -1948,7 +1948,7 @@ var
 begin
   if ExtractFileName(aFilename)='' then exit;
   Ext:=GetTargetFileExt;
-  if (Ext<>'') and (CompareFileExtQuick(aFilename,Ext)<>0) then
+  if (Ext<>'') and not FilenameExtIs(aFilename,Ext) then
     aFilename:=aFilename+Ext;
   //DebugLn('Filename is ',AFilename,' in AppendDefaultExt');
 end;

@@ -2314,10 +2314,10 @@ begin
   // try command line project
   if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
     AProjectFilename:=CmdLineFiles[0];
-    if (CompareFileExt(AProjectFilename,'lpr',true)=0) then
+    if FilenameExtIs(AProjectFilename,'lpr',true) then
       AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
     // only try to load .lpi files, other files are loaded later
-    if (CompareFileExt(AProjectFilename,'lpi',true)=0) then begin
+    if FilenameExtIs(AProjectFilename,'lpi',true) then begin
       AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
       if FileExistsUTF8(AProjectFilename) then begin
         CmdLineFiles.Delete(0);
@@ -2403,7 +2403,7 @@ begin
         // => create a project
         DoNewProject(ProjectDescriptorEmptyProject);
       end;
-      if CompareFileExt(AFilename,'lpk',true)=0 then begin
+      if FilenameExtIs(AFilename,'lpk',true) then begin
         if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
         then
           break;
@@ -6460,7 +6460,7 @@ begin
   end;
 
   // if there is a project info file, load that instead
-  if CompareFileExtQuick(AFileName, 'lpi') <> 0 then begin
+  if not FilenameExtIs(AFileName, 'lpi') then begin
     LpiFile := ChangeFileExt(AFileName,'.lpi');
     if FileExistsUTF8(LpiFile) then
       AFileName:=LpiFile;   // load instead of program file the project info file
@@ -7103,7 +7103,7 @@ function TMainIDE.CleanUpTestUnitOutputDir(Dir: string): TModalResult;
 var
   Files: TStrings;
   i: Integer;
-  Filename, Ext: String;
+  Filename: String;
 begin
   Dir:=AppendPathDelim(Dir);
   Files:=TStringList.Create;
@@ -7111,10 +7111,7 @@ begin
     CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
-      Ext:=ExtractFileExt(Filename);
-      if (SysUtils.CompareText(Ext,'.ppu')=0)
-      or (SysUtils.CompareText(Ext,'.o')=0)
-      then begin
+      if FilenameExtIn(Filename,['.ppu','.o']) then begin
         Result:=DeleteFileInteractive(Dir+Filename,[]);
         if Result<>mrOk then exit;
       end;
@@ -7556,9 +7553,9 @@ procedure TMainIDE.DoExecuteRemoteControl;
     AProjectFilename:='';
     for i:=Files.Count-1 downto 0 do begin
       AProjectFilename:=Files[0];
-      if (CompareFileExt(AProjectFilename,'lpr',true)=0) then
+      if FilenameExtIs(AProjectFilename,'lpr',true) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-      if (CompareFileExt(AProjectFilename,'lpi',true)=0) then begin
+      if FilenameExtIs(AProjectFilename,'lpi',true) then begin
         // open a project
         Files.Delete(i); // remove from the list
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
@@ -7587,7 +7584,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
       for i:=0 to Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(Files.Strings[i]);
         DebugLn(['Hint: (lazarus) TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
-        if CompareFileExt(AFilename,'lpk',true)=0 then begin
+        if FilenameExtIs(AFilename,'lpk',true) then begin
           if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],true)=mrAbort
           then
             break;
@@ -8893,7 +8890,7 @@ begin
 
   if (ActiveUnitInfo.Component=nil)
   and (ActiveUnitInfo.Source<>nil) then begin
-    if (CompareFileExtQuick(ActiveUnitInfo.Filename,'inc')=0) then begin
+    if FilenameExtIs(ActiveUnitInfo.Filename,'inc') then begin
       // include file => get unit
       UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
       if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
@@ -8907,7 +8904,7 @@ begin
         end;
       end;
     end;
-    if (CompareFileExt(ActiveUnitInfo.Filename,'lfm',true)=0) then begin
+    if FilenameExtIs(ActiveUnitInfo.Filename,'lfm',true) then begin
       // lfm file => get unit
       aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
       if aFilename<>'' then begin
@@ -12567,7 +12564,7 @@ begin
       end;
     end;
   end
-  else if CompareFileExtQuick(AnUnitInfo.Filename,'inc')=0 then
+  else if FilenameExtIs(AnUnitInfo.Filename,'inc') then
     OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,True);
   if OkToAdd then
     ;

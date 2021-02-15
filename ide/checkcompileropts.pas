@@ -476,7 +476,7 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
             continue;
           // check extension
-          if CompareFileExt(FileInfo.Name,'ppu',true)=0 then
+          if FilenameExtIs(FileInfo.Name,'ppu',true) then
             Result.Add(Directory+FileInfo.Name);
         until FindNextUTF8(FileInfo)<>0;
       end;
@@ -625,7 +625,7 @@ begin
     Node:=CfgCache.Units.Tree.FindLowest;
     while Node<>nil do begin
       Item:=PStringToStringItem(Node.Data);
-      if (Item^.Value<>'') and (CompareFileExt(Item^.Value,'ppu',true)=0) then
+      if (Item^.Value<>'') and FilenameExtIs(Item^.Value,'ppu',true) then
         CheckFileAge(Item^.Value);
       Node:=CfgCache.Units.Tree.FindSuccessor(Node);
     end;
@@ -804,9 +804,7 @@ begin
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
           continue;
         // check extension
-        if (CompareFileExt(FileInfo.Name,'ppu',true)<>0)
-        and (CompareFileExt(FileInfo.Name,'o',true)<>0)
-        then
+        if not FilenameExtIn(FileInfo.Name, ['ppu','o'], true) then
           continue;
         PPUFiles.Add(Directory+FileInfo.Name);
       until FindNextUTF8(FileInfo)<>0;

@@ -385,15 +385,13 @@ end;
 
 function WikiFilenameToPage(Filename: string): string;
 var
-  Ext: String;
   p: Integer;
 begin
   Result:=ExtractFileName(Filename);
   if Result='' then exit;
   // delete .xml
-  Ext:=lowercase(ExtractFileExt(Result));
-  if Ext='.xml' then
-    Result:=LeftStr(Result,length(Result)-length(Ext));
+  if FilenameExtIs(Result,'.xml') then
+    Result:=LeftStr(Result,length(Result)-4);
   // delete case id
   p:=length(Result);
   while (p>=1) and (Result[p] in ['0'..'9','a'..'z']) do

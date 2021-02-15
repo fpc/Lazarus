@@ -232,7 +232,6 @@ var
   DirCache: TCTDirectoryCache;
   i: Integer;
   Filename: PChar;
-  Ext: String;
   aFile: TICCFile;
   j: Integer;
 begin
@@ -242,9 +241,8 @@ begin
   if (DirCache=nil) or (DirCache.Listing=nil) then exit;
   for i:=0 to DirCache.Listing.Count-1 do begin
     Filename:=DirCache.Listing.GetFilename(i);
-    Ext:=lowercase(ExtractFileExt(Filename));
-    if ((Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu'))
-    and (SysUtils.CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
+    if FilenameExtIn(Filename,['.pas','.pp','.p','.ppu'])
+    and (CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
     then begin
       j:=Files.Count-1;
       while (j>=0) and (CompareFilenames(Files[j].Filename,Filename)<>0) do
@@ -338,7 +336,7 @@ begin
     FileNode:=nil;
     for i:=0 to Files.Count-1 do begin
       aFile:=Files[i];
-      if CompareFileExt(aFile.Filename,'ppu',true)=0 then
+      if FilenameExtIs(aFile.Filename,'ppu',true) then
         inc(PPUCount)
       else
         inc(SrcCount);

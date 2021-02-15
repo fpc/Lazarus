@@ -34,8 +34,12 @@ unit fpWebNewHTMLFileUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ComCtrls,
+  FileUtil, LazFileUtils,
+  ProjectIntf, LazIDEIntf,
+  fpWebStrConsts;
+
 
 type
 
@@ -78,8 +82,6 @@ const
   HTML_Copyright = 'HTML_Copyright';
 
 implementation
-
-uses fpWebStrConsts, SrcEditorIntf, ProjectIntf, LazIDEIntf;
 
 {$R *.lfm}
 const
@@ -143,18 +145,17 @@ end;
 procedure TfpWebNewHTMLFileForm.FillLinks;
 var
   i:integer;
-  S, Ext: string;
+  S: string;
 begin
   if Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
     for i:=0 to LazarusIDE.ActiveProject.FileCount - 1 do
     begin
       S:=LazarusIDE.ActiveProject.Files[i].Filename;
-      Ext:=ExtractFileExt(S);
-      if CompareText(Ext, '.JS') = 0 then
+      if FilenameExtIs(S, '.JS') then
         edtJS.Items.Add(S)
       else
-      if CompareText(Ext, '.CSS') = 0 then
+      if FilenameExtIs(S, '.CSS') then
         edtCSS.Items.Add(S);
     end;
   end;

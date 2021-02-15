@@ -226,7 +226,7 @@ begin
       end;
       if ok then
       begin
-        if CompareFileExtQuick(FileListBox1.Items[i], 'lrs') = 0 then
+        if FilenameExtIs(FileListBox1.Items[i], 'lrs') then
         begin
           if ConvertMeLRS(tmp) then
           begin

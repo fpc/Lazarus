@@ -392,7 +392,7 @@ procedure TLazPackageLinks.UpdateGlobalLinks;
   begin
     Result:=false;
     PkgName:='';
-    if CompareFileExt(Filename,'lpl',true)<>0 then exit;
+    if not FilenameExtIs(Filename,'lpl',true) then exit;
     StartPos:=1;
     // parse identifier
     if (StartPos>length(Filename))
@@ -463,7 +463,7 @@ begin
     LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
     for i:=0 to Files.Count-1 do begin
       LPLFilename:=GlobalLinksDir+Files[i];
-      if CompareFileExt(LPLFilename,'lpl',true)<>0 then continue;
+      if not FilenameExtIs(LPLFilename,'lpl',true) then continue;
       if (not ParseFilename(Files[i],NewPkgName,PkgVersion))
       then begin
         DebugLn('Warning: (lazarus) suspicious pkg link file found (name): ',LPLFilename);

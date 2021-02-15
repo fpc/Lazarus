@@ -1894,7 +1894,7 @@ begin
   begin
     MsgLine.Urgency:=mluVerbose;
   end else if HideHintsUnitNotUsedInMainSource then begin
-    if CompareFileExt(MsgLine.Filename, 'lpr', true)=0 then
+    if FilenameExtIs(MsgLine.Filename, 'lpr', true) then
       // a lpr does not use a unit => not important
       MsgLine.Urgency:=mluVerbose
     else if FilenameIsAbsolute(MsgLine.Filename)

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs,
-  LazFglHash, LazLoggerBase, LazUTF8,
+  LazFglHash, LazLoggerBase, LazFileUtils, LazUTF8,
   DbgIntfBaseTypes,
   // FpDebug
   macho, FpImgReaderMachoFile, FpImgReaderBase, fpDbgSymTable, FpDbgUtil;
@@ -365,7 +365,7 @@ begin
   dSYMFilename:=ChangeFileExt(PLoader.FileName, '.dSYM');
   dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(fname); // TDbgProcess.Name
 
-  if ExtractFileExt(dSYMFilename)='.app' then
+  if FilenameExtIs(dSYMFilename,'.app',true) then
     dSYMFilename := ChangeFileExt(dSYMFilename,'');
 
   if FileExists(dSYMFilename) then

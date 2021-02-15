@@ -227,7 +227,7 @@ begin
       if (FileInfo.Attr and faDirectory)>0 then begin
         // scan sub directories too
         ScanPackages(AppendPathDelim(Dir+FileInfo.Name),Packages);
-      end else if CompareFileExt(FileInfo.Name,'lpk',true)=0 then begin
+      end else if FilenameExtIs(FileInfo.Name,'lpk',true) then begin
         ScanPackage(Dir+FileInfo.Name,Packages);
       end;
     until FindNextUTF8(FileInfo)<>0;
@@ -272,7 +272,7 @@ begin
         continue;
       if (FileInfo.Attr and faDirectory)>0 then begin
         // skip
-      end else if CompareFileExt(FileInfo.Name,'lpl',true)=0 then begin
+      end else if FilenameExtIs(FileInfo.Name,'lpl',true) then begin
         ScanLink(Dir+FileInfo.Name,Links);
       end;
     until FindNextUTF8(FileInfo)<>0;

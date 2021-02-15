@@ -1939,10 +1939,7 @@ var
   FileCount: Integer;
   Abort: boolean;
   FileInfo: TSearchRec;
-  ShortFilename: String;
-  Filename: String;
-  Ext: String;
-  File_Name: String;
+  ShortFilename, Filename, File_Name: String;
 begin
   // units sources
   Units:=TStringToStringTree.Create(false);
@@ -1965,11 +1962,11 @@ begin
             continue;
           //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
           Filename:=Directory+ShortFilename;
-          Ext:=LowerCase(ExtractFileExt(ShortFilename));
-          if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
+          if FilenameExtIn(ShortFilename,['.pas','.pp','.p','.ppu']) then begin
             File_Name:=ExtractFileNameOnly(Filename);
             if (not Units.Contains(File_Name))
-            or ((Ext<>'.ppu') and (CompareFileExt(Units[File_Name],'ppu',true)=0))
+            or (not FilenameExtIs(ShortFilename,'.ppu',true)
+              and FilenameExtIs(Units[File_Name],'ppu',true) )
             then
               Units[File_Name]:=Filename;
           end;
@@ -1997,8 +1994,7 @@ begin
             continue;
           //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
           Filename:=Directory+ShortFilename;
-          Ext:=LowerCase(ExtractFileExt(ShortFilename));
-          if (Ext='.inc') then begin
+          if FilenameExtIs(ShortFilename,'.inc') then begin
             File_Name:=ExtractFileName(Filename);
             if (not Includes.Contains(File_Name))
             then
@@ -2052,7 +2048,7 @@ begin
     //if Pos('lazmkunit',Filename)>0 then
       //debugln(['GatherUnitsInFPMSources ===== ',Filename]);
     AVLNode:=Units.Tree.FindSuccessor(AVLNode);
-    if CompareFileExt(Filename,'ppu',true)<>0 then continue;
+    if not FilenameExtIs(Filename,'ppu',true) then continue;
     // check if filename has the form
     //                  /something/units/<FPCTarget>/<pkgname>/<unitname>.ppu
     // and if there is  /something/fpmkinst/<FPCTarget>/<pkgname>.fpm
@@ -2877,7 +2873,7 @@ begin
     Item:=PStringToStringItem(Node.Data);
     Unit_Name:=Item^.Name;
     Filename:=Item^.Value;
-    if CompareFileExt(Filename,'ppu',true)=0 then begin
+    if FilenameExtIs(Filename,'ppu',true) then begin
       SrcFilename:=UnitToSource[Unit_Name];
       if SrcFilename<>'' then begin
         DuplicateFilenames:=UnitToDuplicates[Unit_Name];
@@ -3945,7 +3941,7 @@ begin
 
   // dcc*.exe
   if LazStartsText('dcc',ShortFilename)
-  and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
+  and ( (ExeExt='') or FilenameExtIs(Filename,ExeExt) )
   then
     exit(pcDelphi);
 
@@ -3980,7 +3976,7 @@ begin
 
   // dcc*.exe
   if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
-      and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
+  and ( (ExeExt='') or FilenameExtIs(AFilename,ExeExt) )
   then begin
     Kind:=pcDelphi;
     exit(true);
@@ -4048,7 +4044,7 @@ begin
 
   // allow ppcxxx.exe
   if (LazStartsText('ppc',ShortFilename))
-  and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
+  and ( (ExeExt='') or FilenameExtIs(AFilename,ExeExt) )
   then
     exit(true);
 
@@ -9111,7 +9107,7 @@ begin
       end;
       // check if the system ppu exists
       HasPPUs:=(Kind=pcFPC) and (Units<>nil)
-          and (CompareFileExt(Units['system'],'ppu',true)=0);
+          and FilenameExtIs(Units['system'],'ppu',true);
       // check compiler version define
       if (CTConsoleVerbosity>=-1) and (Defines<>nil) then begin
         case Kind of
@@ -10417,7 +10413,7 @@ begin
   if (ConfigCache.Units<>nil) then begin
     UnitInFPCPath:=ConfigCache.Units[AnUnitName];
     //if Pos('lazmkunit',AnUnitName)>0 then debugln(['TFPCUnitSetCache.GetUnitSrcFile UnitInFPCPath=',UnitInFPCPath]);
-    if (CompareFileExt(UnitInFPCPath,'ppu',true)=0) then begin
+    if FilenameExtIs(UnitInFPCPath,'ppu',true) then begin
       // there is a ppu
     end else if UnitInFPCPath<>'' then begin
       // there is a pp or pas in the FPC search path
@@ -10469,7 +10465,7 @@ begin
   if ConfigCache.Units=nil then exit;
   Result:=ConfigCache.Units[AUnitName];
   if Result='' then exit;
-  if CompareFileExt(Result,'ppu',true)<>0 then
+  if not FilenameExtIs(Result,'ppu',true) then
     Result:='';
 end;
 

@@ -620,15 +620,8 @@ begin
 end;
 
 class function TvHTMLVectorialReader.IsSupportedRasterImage(AFileName: string): Boolean;
-var
-  lExt: string;
 begin
-  Result := False;
-  lExt := LowerCase(ExtractFileExt(AFileName));
-  case lExt of
-  '.png', '.jpg', '.jpeg', '.bmp', '.xpm', '.gif':
-    Result := True
-  end;
+  Result := FilenameExtIn(AFileName,['.png','.jpg','.jpeg','.bmp','.xpm','.gif']);
 end;
 
 initialization

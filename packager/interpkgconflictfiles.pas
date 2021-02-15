@@ -141,7 +141,6 @@ type
 function CheckInterPkgFiles(IDEObject: TObject;
   PkgList: TFPList; out FilesChanged: boolean
   ): boolean; // returns false if user cancelled
-function FilenameIsCompiledSource(aFilename: string): boolean;
 
 implementation
 
@@ -173,6 +172,11 @@ begin
   // compare case insensitive to find cross platform duplicates
   // Note: do not use CompareFilenamesIgnoreCase, because of Turkish ı, I
   Result:=CompareText(F1.ShortFilename,F2.ShortFilename);
+end;
+
+function FilenameIsCompiledSource(aFilename: string): boolean;
+begin
+  Result:=FilenameExtIn(aFilename,['.ppu','.o','.rst','.rsj']);
 end;
 
 { TPGIPAmbiguousFileGroup }
@@ -623,7 +627,6 @@ var
   var
     Files: TStrings;
     aFilename: String;
-    Ext: String;
     AnUnitName: String;
     NewFile: TPGInterPkgFile;
   begin
@@ -642,18 +645,16 @@ var
       begin
         if (aFilename='') or (aFilename='.') or (aFilename='..') then continue;
         if CompareFilenames(aFilename,'fpmake.pp')=0 then continue;
-        Ext:=LowerCase(ExtractFileExt(aFilename));
         AnUnitName:='';
-        case Ext of
-        '.ppu','.o','.rst','.rsj','.pas','.pp','.p':
-          begin
-            AnUnitName:=ExtractFileNameOnly(aFilename);
-            if not IsDottedIdentifier(AnUnitName) then continue;
-          end;
-        '.inc', '.lfm', '.dfm': ;
+        if FilenameExtIn(aFilename,['.ppu','.o','.rst','.rsj','.pas','.pp','.p']) then
+        begin
+          AnUnitName:=ExtractFileNameOnly(aFilename);
+          if not IsDottedIdentifier(AnUnitName) then continue;
+        end
+        else if FilenameExtIn(aFilename,['.inc', '.lfm', '.dfm']) then
+        begin {Do nothing} end
         else
           continue;
-        end;
         NewFile:=TPGInterPkgFile.Create(AppendPathDelim(Dir)+aFilename,
                                         AnUnitName,OwnerInfo);
         FullFiles.Add(NewFile);
@@ -710,7 +711,7 @@ var
       Node:=Node.Successor;
       OFile:=TPGInterPkgFile(ONode.Data);
       if not FilenameIsCompiledSource(OFile.ShortFilename) then continue;
-      if CompareFileExt(OFile.ShortFilename,'ppu',true)=0 then continue;
+      if FilenameExtIs(OFile.ShortFilename,'ppu',true) then continue;
       // search corresponding .ppu
       PPUFileName:=ChangeFileExt(OFile.FullFilename,'.ppu');
       SearchFile:=TPGInterPkgFile.Create(PPUFileName,'',nil);
@@ -1091,14 +1092,6 @@ begin
     FullFiles.Free;
     OwnerInfos.Free;
   end;
-end;
-
-function FilenameIsCompiledSource(aFilename: string): boolean;
-var
-  Ext: String;
-begin
-  Ext:=lowercase(ExtractFileExt(aFilename));
-  Result:=(Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj');
 end;
 
 end.

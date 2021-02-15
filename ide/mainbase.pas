@@ -502,7 +502,6 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
   procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
   var
     AMenuItem: TOpenFileMenuItem;
-    xExt: string;
   begin
     AMenuItem := TOpenFileMenuItem.Create(DropdownMenu);
     DropdownMenu.Items.Add(AMenuItem);
@@ -510,8 +509,7 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
     AMenuItem.FileName := AFileName;
     AMenuItem.Caption := ShortDisplayFilename(AFilename);
     AMenuItem.Hint := AFilename; // Hint is not shown, it just holds the full filename.
-    xExt := ExtractFileExt(AFileName);
-    if SameFileName(xExt, '.lpi') or SameFileName(xExt, '.lpr') then
+    if FilenameExtIn(AFileName,['.lpi','.lpr']) then
       AMenuItem.ImageIndex := LoadProjectIconIntoImages(AFileName, DropdownMenu.Images, FIndex);
   end;
 

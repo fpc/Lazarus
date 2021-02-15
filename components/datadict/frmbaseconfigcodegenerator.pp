@@ -5,9 +5,11 @@ unit frmBaseConfigCodeGenerator;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, EditBtn, ComCtrls, RTTIGrids, CheckLst, fpddcodegen, Buttons,
-  ActnList, ButtonPanel, ldd_consts, SynEdit, SynHighlighterPas;
+  Classes, SysUtils, fpddcodegen,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, EditBtn, ComCtrls,
+  RTTIGrids, CheckLst, Buttons, ActnList, ButtonPanel,
+  LazFileUtils,
+  ldd_consts, SynEdit, SynHighlighterPas;
 
 type
 
@@ -246,7 +248,7 @@ begin
      NewName:=ExtractFileName(FEFile.FileName);
      FLastName:=NewName;
      // Strip off known extensions
-     if (IndexStr(LowerCase(ExtractFileExt(NewName)),['.pas','.pp','.inc','.lpr','.dpr'])<>-1) then
+     if FilenameExtIn(NewName,['.pas','.pp','.inc','.lpr','.dpr']) then
        FCodeOptions.UnitName:=ChangeFileExt(NewName,'')
      else
        FCodeOptions.UnitName:=NewName;

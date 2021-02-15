@@ -276,6 +276,7 @@ begin
     Name:='Template Project';
   FVariables:=TStringList.Create;
   FIgnoreExts:=TStringList.Create;
+  {$IF FPC_FULLVERSION>=30200}FIgnoreExts.UseLocale := false;{$ENDIF}
   FIgnoreExts.CommaText:='.lpr,.lps,.lfm,.lrs,.ico,.res,.lpi,.bak';
 end;
 
@@ -326,7 +327,6 @@ Var
   I : Integer;
   AFile: TLazProjectFile;
   FN : String;
-  B : Boolean;
   L : TStringList;
   
 begin
@@ -343,13 +343,12 @@ begin
     For I:=0 to FTemplate.FileCount-1 do
       begin
       FN:=FTemplate.FileNames[I];
-      B:=CompareText(ExtractFileExt(FN),'.lpr')=0;
-      If B then
+      If FilenameExtIs(FN,'lpr') then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
         AFile:=AProject.CreateProjectFile(FN);
         AFile.IsPartOfProject:=true;
-        AProject.AddFile(AFile,Not B);
+        AProject.AddFile(AFile,False);
         AProject.MainFileID:=0;
         L:=TStringList.Create;
         try
@@ -373,7 +372,7 @@ Function TTemplateProjectDescriptor.CreateStartFiles(AProject: TLazProject) : TM
 
 Var
   I : Integer;
-  E,FN : String;
+  FN : String;
 
 begin
   if Assigned(FTemplate) then
@@ -382,8 +381,7 @@ begin
     For I:=0 to FTemplate.FileCount-1 do
       begin
       FN:=FTemplate.FileNames[I];
-      E:=ExtractFileExt(FN);
-      If (FIgnoreExts.IndexOf(E)=-1) then
+      If (FIgnoreExts.IndexOf(ExtractFileExt(FN))=-1) then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
         LazarusIDE.DoOpenEditorFile(FN, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);

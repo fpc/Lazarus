@@ -317,7 +317,7 @@ var
     begin
       try
         repeat
-          if CompareFileExtQuick(SR.Name, 'lpk') = 0 then
+          if FilenameExtIs(SR.Name, 'lpk') then
           begin
             PackageData := TPackageData.Create;
             PackageData.FName := SR.Name;
@@ -385,7 +385,7 @@ var
       for I := 0 to SLExcludedFiles.Count - 1 do
       begin
         DebugLn(['OPM IsAllowed: ExcFile=', SLExcludedFiles.Strings[I], ', AName=', AName]);
-        if CompareFileExt(AName, SLExcludedFiles.Strings[I], False) = 0 then
+        if FilenameExtIs(AName, SLExcludedFiles.Strings[I]) then
         begin
           Result := False;
           Break;

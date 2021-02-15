@@ -310,7 +310,7 @@ var
 begin
   Result:=false;
   if not FilenameIsAbsolute(LPKFilename) then exit;
-  if CompareFilenames(ExtractFileExt(LPKFilename),'.lpk')<>0 then exit;
+  if not FilenameExtIs(LPKFilename,'.lpk') then exit;
   PkgName:=ExtractFileNameOnly(LPKFilename);
   if not IsValidPkgName(PkgName) then exit;
   Result:=true;

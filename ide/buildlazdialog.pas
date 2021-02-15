@@ -275,7 +275,6 @@ end;
 procedure TLazarusBuilder.CleanDir(Dir: string; Recursive: boolean = true);
 var
   FileInfo: TSearchRec;
-  Ext: String;
   Filename: TFilename;
 begin
   Dir:=AppendPathDelim(TrimFilename(Dir));
@@ -292,8 +291,7 @@ begin
           CleanDir(Filename)
       end
       else begin
-        Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
-        if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj') then begin
+        if FilenameExtIn(FileInfo.Name,['.ppu','.o','.rst','.rsj']) then begin
           if not DeleteFileUTF8(Filename) then
             debugln(['Error : (lazarus) Clean directory: failed to delete file "',Filename,'"']);
         end;

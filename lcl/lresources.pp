@@ -1363,7 +1363,7 @@ function LFMtoLRSfile(const LFMfilename: string):boolean;
 var
   LFMFileStream, LRSFileStream: TFileStream;
   LFMMemStream, LRSMemStream: TMemoryStream;
-  LRSfilename, LFMfilenameExt: string;
+  LRSfilename: string;
 begin
   Result:=true;
   try
@@ -1374,9 +1374,7 @@ begin
       LFMMemStream.SetSize(LFMFileStream.Size);
       LFMMemStream.CopyFrom(LFMFileStream,LFMFileStream.Size);
       LFMMemStream.Position:=0;
-      LFMfilenameExt:=ExtractFileExt(LFMfilename);
-      LRSfilename:=copy(LFMfilename,1,
-                    length(LFMfilename)-length(LFMfilenameExt))+'.lrs';
+      LRSfilename:=ChangeFileExt(LFMfilename,'.lrs');
       Result:=LFMtoLRSstream(LFMMemStream,LRSMemStream);
       if not Result then exit;
       LRSMemStream.Position:=0;
