@@ -588,7 +588,7 @@ begin
     // deactivate design tab in other source editor page control
     for LSourceEditorWindow in SourceEditorWindows do
       if LSourceEditorWindow.SourceEditorWindowInterface = LActiveSourceWindowInterface then
-        Continue
+        LPageCtrl.DesignForm := LDesignForm
       else begin
         for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
           if (LSourceEditorPageControl.PageControl.DesignForm = LDesignForm) and (LSourceEditorPageControl.PageControl <> Sender) then

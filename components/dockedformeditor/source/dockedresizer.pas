@@ -120,6 +120,8 @@ begin
     FDesignForm.Form.Parent := ResizeFrame.PanelFormContainer;
     FDesignForm.EndUpdate;
     FDesignForm.OnChangeHackedBounds := @AdjustResizer;
+    if Assigned(FDesignForm.AnchorDesigner) then
+      FDesignForm.AnchorDesigner.Parent := ResizeFrame.PanelAnchorContainer;
   end;
   ResizeFrame.DesignForm := AValue;
 end;

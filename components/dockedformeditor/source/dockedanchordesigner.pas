@@ -41,7 +41,6 @@ type
     FDesignForm: TDesignForm;
     FMenuAttachDetach: TMenuItem;
     FMousePos: TPoint;
-    FParent: TWinControl;
     FPopupMenu: TPopupMenu;
     FPopupAnchors: TAnchors;
     FPreviousControl: TAnchorControl;
@@ -76,6 +75,7 @@ type
     procedure SelectedAdaptBorder;
     procedure SelectedAdaptBounds(RemoveAnchorSides: Boolean);
     procedure SelectedAnchorNewTarget(AKind: TAnchorKind);
+    procedure SetParent(AValue: TWinControl); override;
     procedure SetSelectedControl(AValue: TAnchorControl);
   public
     constructor Create(ADesignForm: TDesignForm; AParent: TWinControl);
@@ -388,7 +388,7 @@ end;
 
 procedure TAnchorDesigner.CreateAnchorGrips;
 begin
-  FAnchorGrips := TAnchorGrips.Create(FParent);
+  FAnchorGrips := TAnchorGrips.Create(FBackGround);
   FAnchorGrips.BackGround := FBackGround;
   FAnchorGrips.OnMouseDown := @AnchorGripMouseDown;
   FAnchorGrips.OnMouseMove := @AnchorGripMouseMove;
@@ -398,11 +398,11 @@ end;
 
 procedure TAnchorDesigner.CreateBackGround;
 begin
-  FBackGround := TAnchorControl.Create(FParent, FDesignControl);
+  FBackGround := TAnchorControl.Create(Parent, FDesignControl);
   FBackGround.BevelOuter := bvNone;
   FBackGround.Align := alClient;
   FBackGround.Name := 'AnchorBackGround';
-  FBackGround.Parent := FParent;
+  FBackGround.Parent := Parent;
   FBackGround.OnMouseDown := @AnchorControlMouseDown;
   FBackGround.OnPaint := @AnchorControlPaint;
   FBackGround.OnMouseWheel := @AnchorControlMouseWheel;
@@ -836,6 +836,13 @@ begin
   FSelectedControl.Anchors := FSelectedControl.Anchors + [AKind];
 end;
 
+procedure TAnchorDesigner.SetParent(AValue: TWinControl);
+begin
+  inherited SetParent(AValue);
+  if Assigned(FBackGround) then
+    FBackGround.Parent := Parent;
+end;
+
 procedure TAnchorDesigner.SetSelectedControl(AValue: TAnchorControl);
 begin
   if FSelectedControl = AValue then Exit;
@@ -853,7 +860,7 @@ constructor TAnchorDesigner.Create(ADesignForm: TDesignForm; AParent: TWinContro
 begin
   FState := [];
   FDesignForm := ADesignForm;
-  FParent := AParent;
+  Parent := AParent;
   FAnchorBarWidth := -1;
   FDesignControl := FDesignForm.DesignWinControl;
   FAnchorControls := TAnchorControls.Create;
@@ -891,7 +898,7 @@ end;
 
 procedure TAnchorDesigner.BeginUpdate;
 begin
-  if not FParent.Visible then Exit;
+  if not Parent.Visible then Exit;
   FAnchorGrips.Hide;
   FBorderControl.Visible := False;
   FAnchorControls.BeginUpdate;
@@ -900,7 +907,7 @@ end;
 
 procedure TAnchorDesigner.EndUpdate;
 begin
-  if not FParent.Visible then Exit;
+  if not Parent.Visible then Exit;
   FAnchorControls.EndUpdate;
   if (FBackGround.Height <> FCurrentBounds.Height)
   or (FBackGround.Width <> FCurrentBounds.Width) then
