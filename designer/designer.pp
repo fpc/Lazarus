@@ -4328,7 +4328,7 @@ var
   AComponent: TComponent;
 begin
   FHintTimer.Enabled := False;
-  if [dfShowEditorHints]*FFlags=[] then exit;
+  if ([dfShowEditorHints]*FFlags=[]) or (Form=nil) then exit;
 
   Position := Mouse.CursorPos;
   if not (dfHasSized in FFlags) then
