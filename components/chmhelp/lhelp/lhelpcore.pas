@@ -43,7 +43,7 @@ uses
   LazFileUtils, LazUTF8, LazLoggerBase,
   // ChmHelp
   {$IFDEF USE_LNET}HTTPContentProvider,{$ENDIF}
-  BaseContentProvider, filecontentprovider, ChmContentProvider, lhelpstrconsts;
+  BaseContentProvider, FileContentProvider, ChmContentProvider, LHelpStrConsts;
 
 type
 
@@ -100,8 +100,7 @@ type
     procedure FileMenuOpenURLItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyDown ( Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState
-      ) ;
+    procedure FormKeyDown ( Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState) ;
     procedure FormShow(Sender: TObject);
     procedure FormWindowStateChange(Sender: TObject);
     procedure MiActionsGoForwardClick ( Sender: TObject ) ;
@@ -119,7 +118,6 @@ type
     procedure ViewShowSepTabsClick(Sender: TObject);
     procedure ViewShowStatusClick(Sender: TObject);
   private
-    { private declarations }
     // SimpleIPC server name (including unique part as per help protocol)
     fServerName: String;
     // Receives commands from IDE
@@ -182,9 +180,9 @@ type
     // Bring App on Top and show
     procedure ShowApp();
     // Event process
-    procedure DoShowContent(Sender:Tobject);
+    //procedure DoShowContent(Sender:Tobject);
   public
-    { public declarations }
+
   end;
 
 var
@@ -412,7 +410,7 @@ begin
   //close all tabs to avoid AV with many tabs
   BeginUpdate;
   PageControl.ShowTabs:= False;
-  while TContentTab(ActivePage) <>nil do
+  while ActivePage <> nil do
     ActivePage.Free;
   EndUpdate;
   //Visible := false;
@@ -1053,8 +1051,7 @@ function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
 
 var
   fURLPrefix: String;
-  fContentProvider: TBaseContentProviderClass;
-  fRealContentProvider: TBaseContentProviderClass;
+  ContentProviderClass: TBaseContentProviderClass;
   fPage: TContentTab = nil;
   fFirstSameTypePage: TContentTab = nil;
   I: Integer;
@@ -1062,17 +1059,17 @@ var
 begin
   Result := Ord(srInvalidURL);
   fURLPrefix := GetUriPrefix(AURL);
-  fContentProvider := GetContentProvider(fURLPrefix);
+  ContentProviderClass := GetContentProvider(fURLPrefix);
 
-  if fContentProvider = nil then
+  if ContentProviderClass = nil then
   begin
     ShowError(Format(slhelp_CannotHandleThisTypeOfContentForUrl, [fURLPrefix, LineEnding, AURL]));
     Result := Ord(srInvalidURL);
     Exit;
   end;
 
-  fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
-  if fRealContentProvider = nil then
+  ContentProviderClass := ContentProviderClass.GetProperContentProvider(AURL);
+  if ContentProviderClass = nil then
   begin
     ShowError(Format(slhelp_CannotHandleThisTypeOfSubcontentForUrl, [fURLPrefix, LineEnding, AURL]));
     Result := Ord(srInvalidURL);
@@ -1091,7 +1088,7 @@ begin
   for I := 0 to PageControl.PageCount-1 do
   begin
     fPage := TContentTab(PageControl.Pages[I]);
-    if fRealContentProvider.ClassName = fPage.ContentProvider.ClassName then
+    if ContentProviderClass.ClassName = fPage.ContentProvider.ClassName then
     begin
       if fFirstSameTypePage = nil then fFirstSameTypePage:= fPage;
       if fPage.ContentProvider.HasLoadedData(AURL) then // need to update data
@@ -1124,7 +1121,7 @@ begin
     // none existing page that can handle this content, so create one
     fIsNewPage := true;
     fPage := TContentTab.Create(PageControl);
-    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1, fUpdateCount);
+    fPage.ContentProvider := ContentProviderClass.Create(fPage, ImageList1, fUpdateCount);
     fPage.ContentProvider.OnTitleChange := @ContentTitleChange;
     //fPage.ContentProvider.OnContentComplete := @DoShowContent;
     fPage.Parent := PageControl;
@@ -1187,7 +1184,7 @@ begin
       end;
     end;
   end
-    else
+  else
   begin
     en := Assigned(ActivePage);
     // Show content page
@@ -1240,7 +1237,6 @@ begin
       Tab.ContentProvider.BeginUpdate;
     end;
   end;
-
 end;
 
 procedure THelpForm.EndUpdate;
@@ -1276,12 +1272,12 @@ begin
 {$ENDIF}
   end;
 end;
-
+{
 procedure THelpForm.DoShowContent(Sender: Tobject);
 begin
   ShowApp();
 end;
-
+}
 
 { TContentTab }
 

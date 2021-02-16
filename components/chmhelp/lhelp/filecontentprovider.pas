@@ -1,4 +1,4 @@
-unit filecontentprovider;
+unit FileContentProvider;
 
 {$mode objfpc}{$H+}
 
