@@ -1264,12 +1264,7 @@ begin
     fMustClose:= false;
     Application.Restore;
     Application.BringToFront;
-{$IFDEF WINDOWS}
-    // Go to TOC TreeView and to get focus on foreground window
-    KeyInput.Apply([ssCtrl]);
-    KeyInput.Press(VK_T);
-    KeyInput.UnApply([ssCtrl]);
-{$ENDIF}
+    MiActionsTOCClick(Nil);   // Go to TOC TreeView.
   end;
 end;
 {
